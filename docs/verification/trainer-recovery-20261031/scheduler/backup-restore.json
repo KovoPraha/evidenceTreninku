@@ -1,0 +1,14 @@
+{
+  "run_id": 41188508579,
+  "status": "success",
+  "backup": "evidence_2026-10-31_092007_2a97aa3c.sql.gz",
+  "sha256": "0a557551c0478a6622791637b55cd5e7103be5dce9de23c1fe4a4dda412af6dd",
+  "engine": "MariaDB 11.4 isolated container",
+  "tables": 337,
+  "triggers": 2,
+  "gzip_sha256_verified": true,
+  "sql_import_verified": true,
+  "all_table_counts_verified": true,
+  "trigger_names_verified": true,
+  "trainer_password_reset_tokens_included": true
+}

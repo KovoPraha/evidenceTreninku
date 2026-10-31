@@ -9,7 +9,7 @@ zůstává v [CURRENT_STATE](CURRENT_STATE.md).
 
 **Navazující provozní oprava:** intervaly skutečných běhů existujícího GitHub
 plánovače byly několik hodin (31. 10. 00:39 a 06:18 UTC), což nelze použít
-jako spolehlivý transport hodinových resetovacích odkazů. Připravuje se proto
+jako spolehlivý transport hodinových resetovacích odkazů. Nasazen je proto
 minutový cron hostingu, výhradně pro trenérské obnovy. Instalátor smí vytvořit
 jen vlastní nový soubor v existujícím zapisovatelném `CRON.1minuta`; cizí obsah
 nepřepisuje. Stav se dokládá aktuálním heartbeat skutečného hostitelského běhu,
@@ -17,7 +17,9 @@ nikoli jen konfigurací. Worker má společný zámek pro cron i ruční běh.
 Spouštěcí soubor má práva `0700` podle [dokumentace hostingu](https://www.cesky-hosting.cz/napoveda/skripty-na-serveru/cron/);
 samotné čtení bez práva spuštění by hostingový cron neaktivovalo.
 GitHub workflow zůstává pro chráněnou instalaci, diagnostiku a ruční zpracování.
-Dokud není živý heartbeat ověřen, automatické doručování nelze označit za připravené.
+Dva úspěšné hostingové běhy 31. 10. v 09:23:03 a 09:24:03 UTC jsou
+[doložené](verification/trainer-recovery-20261031/scheduler/RESULTS.md).
+To potvrzuje plánovač trenérské fronty; příjemce ještě nepotvrdil skutečné doručení testu.
 
 - Odkaz „Zapomenuté heslo“ na trenérském přihlášení vede na samostatný režim
   `booking/zapomenute_heslo.php?pro=trener`; spotřebování odkazu a návrat na

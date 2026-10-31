@@ -7,6 +7,11 @@ Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
 ## 31. 10. 2026 — obnova trenérských hesel
 
+Navazující PR #260 a deploy 41188114928 SUCCESS: místo opožděného GitHub
+schedule samostatný minutový cron KOVO. Dva automatické heartbeat PASS,
+Linux 1878/37987, nová záloha a skutečná obnova 337 tabulek / 2 triggerů.
+[Protokol plánovače](verification/trainer-recovery-20261031/scheduler/RESULTS.md).
+
 PR #258, deploy 41185815825 SUCCESS. Trenérský reset přes jednoznačný e-mail,
 odvolání relací, šifrovaná fronta a samostatný worker. Linux 1873/37959,
 MariaDB 10.3/11.4, izolovaný HTTP průchod a obnova zálohy PASS.

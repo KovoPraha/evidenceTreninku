@@ -1,0 +1,13 @@
+{
+  "domain": "kovopraha.cz",
+  "domain_id": 70155,
+  "cron": "CRON.1minuta",
+  "cron_id": 4354,
+  "schedule": "every minute",
+  "created_via": "authenticated hosting administration",
+  "confirmation": "Cron byl vytvořen.",
+  "existing_schedules_unchanged": true,
+  "application_script_installed": false,
+  "observed_at": "2026-10-31 09:16:06 UTC"
+}
+

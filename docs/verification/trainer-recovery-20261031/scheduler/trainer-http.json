@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-31T09:26:28.546984+00:00",
+  "method": "anonymous GET only; no form submitted",
+  "checks": [
+    {
+      "path": "/login.php",
+      "status": 200,
+      "content_ok": true,
+      "no_store": true,
+      "local_test_link_exposed": false
+    },
+    {
+      "path": "/booking/zapomenute_heslo.php?pro=trener",
+      "status": 200,
+      "content_ok": true,
+      "no_store": true,
+      "local_test_link_exposed": false
+    },
+    {
+      "path": "/booking/nove_heslo.php?pro=trener",
+      "status": 200,
+      "content_ok": true,
+      "no_store": true,
+      "local_test_link_exposed": false
+    }
+  ],
+  "ok": true
+}

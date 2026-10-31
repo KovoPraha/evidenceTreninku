@@ -2,6 +2,9 @@
 
 31. 10. 2026, Europe/Prague. Technické nasazení PASS; úplný trenérský pilot
 zatím není připraven bez údajů o rozsazích a potvrzení doručení.
+Následuje [nasazená oprava plánovače v PR #260](scheduler/RESULTS.md),
+včetně dvou skutečných minutových běhů a obnovy nové zálohy 337 tabulek.
+Níže zůstávají zachované doklady prvního aplikačního vydání PR #258.
 
 ## Vydání a data
 
@@ -42,8 +45,8 @@ její vlastnictví je zahrnuto v novém kontraktu budoucích záloh.
   žádný chybějící klíč. Trenérská fronta prázdná. Tři staré klubové zprávy
   zůstaly čekající; jejich odeslání nebylo tímto rozsahem autorizováno.
 - [Worker](trainer-worker.json) při ručním spuštění PASS, 0 zpracovaných/odeslaných
-  zpráv, výhradně trenérské obnovy. GitHub workflow je aktivní, cron `*/5 * * * *`;
-  skutečný běh vyvolaný plánovačem zatím nebyl zachycen. Interval není zárukou latence.
+  zpráv, výhradně trenérské obnovy. Původní GitHub plánovač neměl doloženou
+  včasnou aktivaci; navazuje [oprava plánování na hostingu](scheduler/RESULTS.md).
 - Vlastník schválil jednu zprávu na `info@kovopraha.cz`. [Transportní test](mail-probe.json)
   `EP-TRENER-20261031` byl přijat funkcí `mail()`; soukromý marker brání opakování.
   Příjemce dosud nepotvrdil doručení do schránky. Nejde o produkční reset reálného hesla.

@@ -1,0 +1,55 @@
+{
+  "head": "4eb54d210e3c4deb1e0ec398139503318ddc9482",
+  "checks": [
+    {
+      "name": "Analyze (actions)",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066983/job/124498944952"
+    },
+    {
+      "name": "Analyze (python)",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066983/job/124498944928"
+    },
+    {
+      "name": "Analyze (javascript-typescript)",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066983/job/124498944811"
+    },
+    {
+      "name": "MariaDB profily čtení (MariaDB 10.3)",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066851/job/124498941829"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066851/job/124498941693"
+    },
+    {
+      "name": "MariaDB profily čtení (MariaDB 11.4)",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066851/job/124498941690"
+    },
+    {
+      "name": "PHPUnit na PHP 8.2",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066851/job/124498941670"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066851/job/124498941528"
+    },
+    {
+      "name": "PHPStan level 5 and changed-file style",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066804/job/124498941390"
+    },
+    {
+      "name": "docs",
+      "conclusion": "success",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41188066794/job/124498941206"
+    }
+  ]
+}

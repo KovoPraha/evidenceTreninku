@@ -1,0 +1,73 @@
+{
+  "read_only": true,
+  "accounts": {
+    "active_staff": 36,
+    "reset_eligible": 28,
+    "reset_blocked": 8,
+    "linked_reset_eligible": 6,
+    "coaches": 36,
+    "coaches_without_current_grant": 36
+  },
+  "mail": {
+    "schema": "evidence.transactional-notification-status.v1",
+    "read_only": true,
+    "ready": true,
+    "attention_required": true,
+    "transport": "mail",
+    "scheduler_verified": false,
+    "mailbox_delivery_verified": false,
+    "missing_queued_key_versions": 0,
+    "issues": [],
+    "queues": {
+      "auth_mail_outbox": {
+        "available": true,
+        "counts": {
+          "pending": 0,
+          "processing": 0,
+          "sent": 0,
+          "failed": 0,
+          "cancelled": 0
+        },
+        "due": 0,
+        "stale_processing": 0,
+        "oldest_pending_age_seconds": null
+      },
+      "club_event_notifications": {
+        "available": true,
+        "counts": {
+          "pending": 3,
+          "processing": 0,
+          "sent": 0,
+          "failed": 0,
+          "cancelled": 0
+        },
+        "due": 3,
+        "stale_processing": 0,
+        "oldest_pending_age_seconds": 853565
+      }
+    }
+  },
+  "trainer_queue": [],
+  "scope_assignments_changed": false,
+  "full_trainer_uat_verified": false,
+  "at": "2026-10-31T09:23:29+00:00",
+  "scheduler": {
+    "hosting_directory_available": true,
+    "installed_expected_source": true,
+    "executable": false,
+    "last_hosting_run": {
+      "trigger": "hosting_cron",
+      "completed_at": "2026-10-31T09:23:03+00:00",
+      "ok": true,
+      "result": {
+        "processed": 0,
+        "sent": 0,
+        "failed": 0,
+        "cancelled": 0,
+        "trainer_only": true
+      }
+    },
+    "recent_successful_hosting_run": true
+  },
+  "verification_run": 41188486474
+}
