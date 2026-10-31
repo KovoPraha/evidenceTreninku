@@ -2,6 +2,9 @@
 
 Aktualizováno 30. 10. 2026 (Europe/Prague), po úspěšném finálním nasazení.
 
+- **Navazující práce 31. 10.:** [trenérská obnova hesla a pilot](TRAINER_READINESS_2026-10-31.md)
+  implementovány ve větvi; nasazení a doručení zatím nejsou potvrzeny.
+
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
 - **Živé vydání:** `d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d`,

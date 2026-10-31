@@ -76,7 +76,7 @@ function authMailEnqueue(
     ?array $keyConfig = null
 ): int {
     if (!$pdo->inTransaction() || !in_array($kind, ['verify','reset'], true)
-        || !in_array($targetType, ['public','child'], true) || $targetId < 1
+        || !in_array($targetType, ['public','child','trainer'], true) || ($targetType === 'trainer' && $kind !== 'reset') || $targetId < 1
         || preg_match('/^[a-f0-9]{64}$/D', $tokenHash) !== 1
         || !filter_var($email, FILTER_VALIDATE_EMAIL)
         || trim($subject) === '' || preg_match('/[\r\n\x00-\x1F\x7F]/', $subject)
@@ -150,6 +150,10 @@ function authMailResendVerification(
 function authMailTokenIsCurrent(PDO $pdo, array $row, ?int $now = null): bool
 {
     $nowSql = gmdate('Y-m-d H:i:s', $now ?? time());
+    if ((string)$row['target_type'] === 'trainer') {
+        require_once __DIR__ . '/trainer_password_reset.php';
+        return trainerPasswordResetMailIsCurrent($pdo, $row, $nowSql);
+    }
     if ((string)$row['kind'] === 'verify') {
         $query = $pdo->prepare(('SELECT 1 FROM verejni_uzivatele WHERE id=? AND email=? AND aktivni=1 AND email_overeno=0 AND verifik'
  . 'acni_token=? AND verifikacni_token_expires_at>=?'));
@@ -174,20 +178,26 @@ function authMailTokenIsCurrent(PDO $pdo, array $row, ?int $now = null): bool
 }
 
 /** @return array<string,mixed>|null */
-function authMailClaim(PDO $pdo): ?array
+function authMailClaim(PDO $pdo, bool $trainerOnly = false): ?array
 {
     require_once __DIR__ . "/notification_claim_retry.php";
-    return notificationClaimWithRetry($pdo, static fn (): ?array => authMailClaimAttempt($pdo));
+    return notificationClaimWithRetry($pdo, static fn (): ?array => authMailClaimAttempt($pdo, $trainerOnly));
 }
 
-function authMailClaimAttempt(PDO $pdo): ?array
+function authMailClaimAttempt(PDO $pdo, bool $trainerOnly = false): ?array
 {
     $pdo->beginTransaction();
     try {
         $mysql = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
         $stale = $mysql ? 'CURRENT_TIMESTAMP - INTERVAL 15 MINUTE' : "datetime('now','-15 minutes')";
-        notificationQueueHoldStale($pdo, 'auth_mail_outbox', $stale);
-        $sql = "SELECT * FROM auth_mail_outbox WHERE status='pending' AND available_at<=CURRENT_TIMESTAMP ORDER BY id LIMIT 1";
+        $filter = $trainerOnly ? " AND target_type='trainer' AND kind='reset'" : '';
+        if ($trainerOnly) {
+            $pdo->exec("UPDATE auth_mail_outbox SET status='failed',claim_token=NULL,last_error='delivery_unknown: ověřit doručení před ručním opakováním.',updated_at=CURRENT_TIMESTAMP "
+                . "WHERE status='processing' AND claimed_at<" . $stale . $filter);
+        } else {
+            notificationQueueHoldStale($pdo, 'auth_mail_outbox', $stale);
+        }
+        $sql = "SELECT * FROM auth_mail_outbox WHERE status='pending' AND available_at<=CURRENT_TIMESTAMP" . $filter . ' ORDER BY id LIMIT 1';
         if ($mysql) {
             $sql .= ' FOR UPDATE';
         }
@@ -238,9 +248,9 @@ function authMailComplete(PDO $pdo, array $row, string $status, string $error = 
 /** @param callable(string,string,string):bool $sender
  * @return 'sent'|'failed'|'cancelled'|null
  */
-function authMailProcessOne(PDO $pdo, callable $sender, ?array $keyConfig = null): ?string
+function authMailProcessOne(PDO $pdo, callable $sender, ?array $keyConfig = null, bool $trainerOnly = false): ?string
 {
-    $row = authMailClaim($pdo);
+    $row = authMailClaim($pdo, $trainerOnly);
     if ($row === null) {
         return null;
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -26,5 +27,11 @@ final class PasswordResetWiringTest extends TestCase
         self::assertStringContainsString('for="password-reset-identifier"', $request);
         self::assertStringContainsString("appUrl('booking/nove_heslo.php')", $request);
         self::assertStringNotContainsString('HTTP_HOST', $request);
+        self::assertStringContainsString('trainerPasswordResetQueueRequest', $request);
+        self::assertStringContainsString('trainerPasswordResetConsume', $consume);
+        self::assertStringContainsString('window.location.pathname + window.location.search', $consume);
+        self::assertStringContainsString("auth_session_clear_identity('trainer')", $consume);
+        self::assertStringContainsString("'../login.php'", $consume);
+        self::assertStringContainsString('booking/zapomenute_heslo.php?pro=trener', (string)file_get_contents($root . '/login.php'));
     }
 }

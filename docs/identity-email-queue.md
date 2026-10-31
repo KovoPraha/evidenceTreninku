@@ -1,5 +1,12 @@
 # Ověřovací a obnovovací e-maily
 
+Trenérská obnova připravená 31. 10. 2026 používá stejnou šifrovanou frontu,
+ale vlastní tokeny a `target_type=trainer`. Její samostatný chráněný worker
+`trainer-access-production.yml` vybírá výhradně trenérské obnovy; nezapíná
+historickou veřejnou nebo klubovou frontu. Plánovaný interval je pět minut,
+skutečný provoz a doručení je třeba ověřit. Podmínky a přejímka jsou v
+[přípravě trenérů](TRAINER_READINESS_2026-10-31.md); nasazení v CURRENT_STATE.
+
 Fronta je součástí kódu `main` od 19. 10. 2026; lokální doplnění diagnostiky a testů z 20. 10. 2026 samo o sobě není nasazením. Produkční doručení zatím nebylo ověřeno. Worker vyžaduje migraci `20261019100000_auth_mail_outbox` a provozně ověřený plán `bin/club-event-notifications.php`; samotný úspěch HTTP požadavku ani `mail()` doručení nedokazuje.
 
 ## Datový tok
