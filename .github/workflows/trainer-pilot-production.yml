@@ -88,7 +88,16 @@ jobs:
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
           sha256sum bin/trainer-pilot-operations.php includes/trainer_pilot.php > /tmp/trainer-pilot-source-local.txt
-          "${SSH[@]}" "cd '$REMOTE_DIR' && php -r 'foreach (array_slice(\$argv, 1) as \$file) { if (!is_file(\$file)) { exit(1); } echo hash_file(\"sha256\", \$file), \"  \", \$file, PHP_EOL; }' bin/trainer-pilot-operations.php includes/trainer_pilot.php" > /tmp/trainer-pilot-source-remote.txt
+          cat > /tmp/trainer-pilot-hashes.php <<EOF
+          <?php
+          if (!chdir('$REMOTE_DIR')) { exit(1); }
+          foreach (['bin/trainer-pilot-operations.php', 'includes/trainer_pilot.php'] as \$file) {
+              if (!is_file(\$file)) { exit(1); }
+              echo hash_file('sha256', \$file), '  ', \$file, PHP_EOL;
+          }
+          EOF
+          "${SCP[@]}" /tmp/trainer-pilot-hashes.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/trainer-pilot-hashes.php"
+          "${SSH[@]}" "chmod 600 '$DEPLOY_BASE/trainer-pilot-hashes.php';php '$DEPLOY_BASE/trainer-pilot-hashes.php'" > /tmp/trainer-pilot-source-remote.txt
           diff /tmp/trainer-pilot-source-local.txt /tmp/trainer-pilot-source-remote.txt
           cat > /tmp/run-trainer-pilot.php <<EOF
           <?php
@@ -143,6 +152,6 @@ jobs:
           if [ -n "${SSH_HOST:-}" ]; then
             source .github/scripts/production-ssh-retry.sh
             production_ssh_init
-            "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-trainer-pilot.php' '$DEPLOY_BASE/run-trainer-pilot-backup.php' '$DEPLOY_BASE/trainer-pilot-input.json'"
+            "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-trainer-pilot.php' '$DEPLOY_BASE/run-trainer-pilot-backup.php' '$DEPLOY_BASE/trainer-pilot-input.json' '$DEPLOY_BASE/trainer-pilot-hashes.php'"
           fi
-          rm -f /tmp/trainer-pilot-*.json /tmp/trainer-pilot-source-*.txt /tmp/run-trainer-pilot.php /tmp/run-trainer-pilot-backup.php
+          rm -f /tmp/trainer-pilot-*.json /tmp/trainer-pilot-source-*.txt /tmp/run-trainer-pilot.php /tmp/run-trainer-pilot-backup.php /tmp/trainer-pilot-hashes.php

@@ -13,7 +13,8 @@ Jeho nástroj je nasazen a [technicky ověřen](verification/trainer-pilot-20261
 Po doplnění použít chráněné workflow `trainer-pilot-production.yml` na main:
 nejprve `status` s potvrzeným jménem vlastníka, potom `create` s e-mailem a
 `confirm=VYTVORIT-TEST-PILOT`. Provést pouze při jednoznačném oprávněném účtu.
-První kontrola narazila na chybějící `sha256sum` v chrootu; PR #262 používá PHP.
+Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
+PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.
 
 W9.2 / W10.1 jsou [nasazené a ověřené](verification/refactoring-w92-release-20261030/RESULTS.md).
