@@ -1,0 +1,28 @@
+{
+  "before_live": {
+    "sha": "4eb54d210e3c4deb1e0ec398139503318ddc9482",
+    "run_id": "41188114928",
+    "deployed_at": "2026-10-31T09:20:41+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "256744513ecc1201ee5ae3071f30cbd4a637be58",
+    "run_id": "41194869109",
+    "deployed_at": "2026-10-31T11:01:07+00:00",
+    "uat_approved": false
+  },
+  "pre_run": 41194228334,
+  "post_run": 41195290750,
+  "unchanged": {
+    "config_sha256": true,
+    "integration_flags": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true
+  },
+  "migration_ledger": {
+    "before": 143,
+    "after": 143,
+    "expected_delta": 0
+  },
+  "identity_scope": "Deployment metadata and successful protected workflow; pilot source hashes verified separately by protected status workflow, no full runtime inventory"
+}
