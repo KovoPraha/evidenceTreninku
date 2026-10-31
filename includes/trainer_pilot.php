@@ -26,7 +26,7 @@ function trainerPilotOwner(PDO $pdo, string $name, bool $forUpdate = false): arr
         throw new RuntimeException('pilot_owner_name_invalid');
     }
     $lock = $forUpdate && $pdo->inTransaction() && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
-    $rows = trainerPilotRows($pdo, 'SELECT id,email,aktivni FROM treneri WHERE LOWER(TRIM(jmeno))=LOWER(?)' . $lock, [$name]);
+    $rows = trainerPilotRows($pdo, 'SELECT id,jmeno,email,heslo,role,aktivni,session_version FROM treneri WHERE LOWER(TRIM(jmeno))=LOWER(?)' . $lock, [$name]);
     if (count($rows) !== 1 || (int)$rows[0]['aktivni'] !== 1) {
         throw new RuntimeException('pilot_owner_not_unique_active');
     }
@@ -38,6 +38,7 @@ function trainerPilotOwner(PDO $pdo, string $name, bool $forUpdate = false): arr
     ), 'position_code');
     $owner['superadmin'] = trainerPilotRows($pdo, 'SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?' . $lock, [$owner['id']]) !== [];
     $owner['can_provision'] = $owner['superadmin'] || in_array('sports_lead', $owner['positions'], true);
+    $owner['fingerprint'] = hash('sha256', json_encode([$rows[0], $owner['positions'], $owner['superadmin']], JSON_THROW_ON_ERROR));
     $target = trainerPasswordResetTarget($pdo, (string)$owner['email']);
     $owner['reset_eligible'] = $target !== null && (int)$target['trainer_id'] === (int)$owner['id'];
     return $owner;
@@ -197,6 +198,9 @@ function trainerPilotCreate(PDO $pdo, string $ownerName, string $email): array
         $result = trainerPilotStatus($pdo, $ownerName, $email);
         if (!$result['scope_ready']) {
             throw new RuntimeException('pilot_scope_not_ready');
+        }
+        if (!hash_equals($owner['fingerprint'], trainerPilotOwner($pdo, $ownerName, true)['fingerprint'])) {
+            throw new RuntimeException('pilot_owner_changed');
         }
         $pdo->commit();
         return array_replace($result, ['read_only' => false, 'changed' => true]);

@@ -39,8 +39,13 @@ final class TrainerPilotTest extends TestCase
         self::assertTrue($result['scope_ready']);
         self::assertTrue($result['reset_eligible']);
         self::assertSame(2, $result['visible_test_people']);
-        self::assertSame(14 * 86400, strtotime($result['valid_to']) - strtotime($result['valid_from']));
+        $zone = new \DateTimeZone('UTC');
+        self::assertSame(14 * 86400, (new \DateTimeImmutable($result['valid_to'], $zone))->getTimestamp()
+            - (new \DateTimeImmutable($result['valid_from'], $zone))->getTimestamp());
         self::assertFalse($result['outside_scope_visible']);
+        $json = json_encode($result, JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('owner@example.test', $json);
+        self::assertStringNotContainsString('unchanged-owner-hash', $json);
         self::assertSame('unchanged-owner-hash', $pdo->query('SELECT heslo FROM treneri WHERE id=1')->fetchColumn());
         self::assertSame(['coach'], $pdo->query('SELECT position_code FROM staff_user_positions WHERE trainer_id=' . $result['trainer_id'])->fetchAll(PDO::FETCH_COLUMN));
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM coach_scope_events')->fetchColumn());
