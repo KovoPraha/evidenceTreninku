@@ -1,0 +1,24 @@
+{
+  "run_id": 41185815825,
+  "status": "success",
+  "live": {
+    "sha": "3d19aae6f9e0c9e008fe4c80e7229faa07b09cf1",
+    "run_id": "41185815825",
+    "deployed_at": "2026-10-31T08:46:40+00:00",
+    "uat_approved": false
+  },
+  "tests": 1873,
+  "assertions": 37959,
+  "backup": {
+    "file": "evidence_2026-10-31_084609_21ea6ef9.sql.gz",
+    "sha256": "2b91d108496d1851666a90e90ec03abed1524d76f5d54d0abc5053218bcfe3ba",
+    "tables": 336,
+    "triggers": 2,
+    "compressed_bytes": 6063739
+  },
+  "schema_current": true,
+  "pending": [],
+  "vs_unchanged": true,
+  "uat_approved": false,
+  "imports_enabled": false
+}

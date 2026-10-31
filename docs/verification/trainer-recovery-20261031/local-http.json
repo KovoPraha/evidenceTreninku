@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "source_head": "de8023c8790048afb954c6fc2e6afe830dbb28c8",
+  "method": "Actual PHP HTTP forms on loopback, copied source, SQLite fixture, separate cookie jars",
+  "isolated_sqlite": true,
+  "http_csrf_rejected": true,
+  "request_queued": true,
+  "reset_succeeded": true,
+  "replay_rejected": true,
+  "trainer_return_link": true,
+  "original_password_login_before_reset": true,
+  "original_password_rejected_after_reset": true,
+  "previous_authenticated_session_revoked": true,
+  "new_password_login_303": true,
+  "mail_disabled": true,
+  "production_accounts_changed": false
+}
