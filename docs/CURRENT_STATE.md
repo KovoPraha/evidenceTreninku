@@ -7,7 +7,8 @@ Aktualizováno 31. 10. 2026 (Europe/Prague), po nasazení přípravy oddělenéh
   28 z 36 aktivních pracovních účtů splňuje podmínky obnovy; 8 je blokováno
   e-mailem nebo explicitní vazbou. Všech 36 účtů má pozici trenéra, ale žádný
   aktuální explicitní rozsah. Nástroj pro [oddělený syntetický pilot](TRAINER_PILOT_2026-10-31.md) je nasazen;
-  účet ani skupina zatím nevznikly, čeká se na samostatný e-mail vlastníka.
+  účet ani skupina zatím nevznikly. Volná adresa je zvolená; připravuje se
+  [provozní založení](TRAINER_PILOT_OPERATIONAL_2026-11-01.md) bez povýšení veřejného účtu.
   Jediný schválený testovací e-mail transport přijal a příjemce 31. 10.
   [potvrdil doručení](verification/trainer-recovery-20261031/mailbox-confirmation.json). Hostingový minutový cron ověřen dvěma úspěšnými
   běhy 09:23:03 a 09:24:03 UTC. Tři staré klubové zprávy nedotčeny.

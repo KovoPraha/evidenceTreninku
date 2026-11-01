@@ -23,18 +23,27 @@ try {
     }
     $paths = trainerResetSchedulerPaths($root, (string)getenv('TRAINER_RESET_OPERATIONS_DIR'));
     $input = json_decode((string)file_get_contents($paths['operations'] . '/trainer-pilot-input.json'), true, 512, JSON_THROW_ON_ERROR);
+    $mode = $input['mode'] ?? 'staff_owner';
+    if (!in_array($mode, ['staff_owner', 'operational'], true)) {
+        throw new RuntimeException('pilot_mode_invalid');
+    }
+    $ownerName = $mode === 'operational' ? TRAINER_PILOT_ACTOR_NAME : $input['owner_name'];
     $pdo = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, PDO::ATTR_EMULATE_PREPARES => false,
     ]);
     if ($input['action'] === 'status') {
         $pdo->exec('START TRANSACTION READ ONLY');
         try {
-            $result = trainerPilotStatus($pdo, $input['owner_name'], $input['email']);
+            $result = trainerPilotStatus($pdo, $ownerName, $input['email']);
         } finally {
             $pdo->rollBack();
         }
     } elseif ($input['action'] === 'create' && $input['confirm'] === 'VYTVORIT-TEST-PILOT') {
-        $result = trainerPilotCreate($pdo, $input['owner_name'], $input['email']);
+        $operation = $mode === 'operational' ? ($input['operation'] ?? []) : [];
+        if ($mode === 'operational') {
+            trainerPilotValidateOperation($operation);
+        }
+        $result = trainerPilotCreate($pdo, $ownerName, $input['email'], $operation);
     } else {
         throw new RuntimeException('pilot_action_invalid');
     }

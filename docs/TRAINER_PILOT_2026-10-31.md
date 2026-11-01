@@ -8,6 +8,9 @@ neukládá se do zdrojů ani důkazů v Gitu.
 ## Postup
 
 1. Pouze čtením ověřit jednoznačný aktivní účet vlastníka a jeho oprávnění.
+   Pokud vlastník používá pouze veřejný účet bez pracovní vazby, použít
+   [výslovně schválenou provozní variantu](TRAINER_PILOT_OPERATIONAL_2026-11-01.md)
+   s neaktivní technickou auditní identitou; nepovyšovat veřejný účet.
 2. Připravit úzce omezený CLI provisioner: nový účet pouze s pozicí `coach`,
    vlastní testovací sezona/soupiska a syntetičtí sportovci. Vše v jediné
    transakci s auditem a identifikačním záznamem, bez převzetí cizích dat.
