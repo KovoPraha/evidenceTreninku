@@ -1,0 +1,24 @@
+{
+  "run_id": 41330031591,
+  "sha": "87596760f4267c9db378e8a4062e604fd22d68fa",
+  "conclusion": "success",
+  "tests": {
+    "tests": 1895,
+    "assertions": 38095
+  },
+  "schema": {
+    "pending": [],
+    "new_migrations": 0
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-11-01_171205_e2f28209.sql.gz",
+    "manifest": "evidence_2026-11-01_171205_e2f28209.manifest.json",
+    "sha256": "218408c1f50309066e20fe15955edf5ff41b1b134ae34cb3d037ede318b219f7",
+    "tables": 337,
+    "triggers": 2,
+    "compressed_bytes": 6064147
+  },
+  "uat_approved": false,
+  "import_enabled": false
+}

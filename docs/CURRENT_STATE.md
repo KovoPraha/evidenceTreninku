@@ -1,35 +1,37 @@
 # Aktuální stav projektu
 
-Aktualizováno 31. 10. 2026 (Europe/Prague), po nasazení přípravy odděleného pilotu.
+Aktualizováno 1. 11. 2026 (Europe/Prague), po založení odděleného trenérského pilotu.
 
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
-  28 z 36 aktivních pracovních účtů splňuje podmínky obnovy; 8 je blokováno
-  e-mailem nebo explicitní vazbou. Všech 36 účtů má pozici trenéra, ale žádný
-  aktuální explicitní rozsah. Nástroj pro [oddělený syntetický pilot](TRAINER_PILOT_2026-10-31.md) je nasazen;
-  účet ani skupina zatím nevznikly. Volná adresa je zvolená; připravuje se
-  [provozní založení](TRAINER_PILOT_OPERATIONAL_2026-11-01.md) bez povýšení veřejného účtu.
+  [Oddělený syntetický pilot](verification/trainer-pilot-20261101/RESULTS.md) je založen:
+  trenér 56, soupiska 77, dvě syntetické osoby, třetí mimo rozsah. Grant končí
+  15. 11. 2026 v 18:17:31 databázového času; obnova hesla způsobilá.
+  37 aktivních pracovních účtů má pozici trenéra, 36 zůstává bez rozsahu;
+  29 účtů je způsobilých k obnově hesla a původních 8 zůstává blokovaných.
+  [Provozní auditní identita](TRAINER_PILOT_OPERATIONAL_2026-11-01.md) je neaktivní a bez oprávnění;
+  veřejné účty se nepropojovaly ani nepovyšovaly. Úplné lidské UAT ještě neproběhlo.
   Jediný schválený testovací e-mail transport přijal a příjemce 31. 10.
-  [potvrdil doručení](verification/trainer-recovery-20261031/mailbox-confirmation.json). Hostingový minutový cron ověřen dvěma úspěšnými
-  běhy 09:23:03 a 09:24:03 UTC. Tři staré klubové zprávy nedotčeny.
+  [potvrdil doručení](verification/trainer-recovery-20261031/mailbox-confirmation.json). Hostingový minutový cron znovu ověřen
+  [1. 11. v 17:22:03 UTC](verification/trainer-pilot-20261101/trainer-readiness.json). Tři staré klubové zprávy nedotčeny.
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `256744513ecc1201ee5ae3071f30cbd4a637be58`,
-  [deploy 41194869109](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41194869109) SUCCESS.
-  Zahrnuje přípravu pilotu PR #261, obnovu hesla #258/#260 a W6–W15.
-  [Protokol](verification/trainer-pilot-20261031/RESULTS.md),
-  [porovnání vydání](verification/trainer-pilot-20261031/release-comparison.json).
-  Živé SHA/run potvrdil následný read-only audit 41195290750;
+- **Živé vydání:** `87596760f4267c9db378e8a4062e604fd22d68fa`,
+  [deploy 41330031591](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41330031591) SUCCESS.
+  Zahrnuje provozní pilot PR #266, předchozí obnovu hesla a W6–W15.
+  [Protokol](verification/trainer-pilot-20261101/RESULTS.md),
+  [porovnání vydání](verification/trainer-pilot-20261101/release-comparison.json).
+  Živé SHA/run potvrdil následný read-only audit 41330824978;
   identita je doložena deployment metadata a workflow, nikoli novou inventurou všech souborů.
 - **Ověření:** všech 11 PR kontrol PASS, sloučený strom shodný s ověřeným,
-  Linux 1885 testů / 38032 assertions,
+  Linux 1895 testů / 38095 assertions,
   POSIX bez skipů, MariaDB 10.3/11.4 a objemové profily PASS.
-  Deploy znovu provedl 1885/38032; HTTP před i po 26/26, trenérské stránky 3/3.
+  Deploy znovu provedl 1895/38095; HTTP před i po 26/26, trenérské stránky 3/3.
   Izolovaný HTTP průchod prokázal reset, přihlášení a odvolání původní relace.
-- **Záloha a schéma:** čerstvá záloha 337 tabulek / 2 triggery včetně tokenové
-  tabulky. [Izolovaná obnova této zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41195348796)
-  po nasazení PASS. Schéma current / pending [], ledger 143 beze změny,
+- **Záloha a schéma:** čerstvá záloha 337 tabulek / 2 triggery včetně hotového
+  pilotu. [Izolovaná obnova této zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41330986065)
+  PASS. Schéma current / pending [], ledger 143 beze změny,
   dosavadní variabilní symboly beze změny.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
