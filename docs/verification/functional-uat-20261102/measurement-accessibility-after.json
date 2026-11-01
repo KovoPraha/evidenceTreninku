@@ -1,0 +1,246 @@
+{
+  "create": [
+    {
+      "controls": [
+        {
+          "label": "Vzdálenost",
+          "visible": true
+        },
+        {
+          "label": "Jednotka vzdálenosti",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Převod",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "kolo"
+    },
+    {
+      "controls": [
+        {
+          "label": "Segment",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "kolo_krouzek"
+    },
+    {
+      "controls": [
+        {
+          "label": "Segment",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "kolo_silnice"
+    },
+    {
+      "controls": [
+        {
+          "label": "Segment",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "kolo_mtb"
+    },
+    {
+      "controls": [
+        {
+          "label": "Vzdálenost",
+          "visible": true
+        },
+        {
+          "label": "Jednotka vzdálenosti",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "beh"
+    },
+    {
+      "controls": [
+        {
+          "label": "Váha (kg)",
+          "visible": true
+        },
+        {
+          "label": "Počet opakování",
+          "visible": true
+        },
+        {
+          "label": "RPE (1–10)",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "posilovna"
+    }
+  ],
+  "edit": [
+    {
+      "controls": [
+        {
+          "label": "Vzdálenost",
+          "visible": true
+        },
+        {
+          "label": "Jednotka vzdálenosti",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Převod",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "kolo"
+    },
+    {
+      "controls": [
+        {
+          "label": "Segment",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "kolo_krouzek"
+    },
+    {
+      "controls": [
+        {
+          "label": "Segment",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "kolo_silnice"
+    },
+    {
+      "controls": [
+        {
+          "label": "Segment",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "kolo_mtb"
+    },
+    {
+      "controls": [
+        {
+          "label": "Vzdálenost",
+          "visible": true
+        },
+        {
+          "label": "Jednotka vzdálenosti",
+          "visible": true
+        },
+        {
+          "label": "Čas měření",
+          "visible": true
+        },
+        {
+          "label": "Převod",
+          "visible": false
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "beh"
+    },
+    {
+      "controls": [
+        {
+          "label": "Váha (kg)",
+          "visible": true
+        },
+        {
+          "label": "Počet opakování",
+          "visible": true
+        },
+        {
+          "label": "RPE (1–10)",
+          "visible": true
+        },
+        {
+          "label": "Poznámka k měření",
+          "visible": true
+        }
+      ],
+      "type": "posilovna"
+    }
+  ]
+}

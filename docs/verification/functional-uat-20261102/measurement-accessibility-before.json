@@ -1,0 +1,32 @@
+[
+  {
+    "ariaLabel": null,
+    "associatedLabels": 0,
+    "className": "form-control js-vzdalenost",
+    "title": null
+  },
+  {
+    "ariaLabel": "Jednotka vzdálenosti",
+    "associatedLabels": 0,
+    "className": "form-select js-distance-unit",
+    "title": null
+  },
+  {
+    "ariaLabel": null,
+    "associatedLabels": 0,
+    "className": "form-control form-control-sm js-cas",
+    "title": "MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm"
+  },
+  {
+    "ariaLabel": null,
+    "associatedLabels": 0,
+    "className": "form-control form-control-sm js-prevod",
+    "title": null
+  },
+  {
+    "ariaLabel": null,
+    "associatedLabels": 0,
+    "className": "form-control form-control-sm js-poznamka",
+    "title": null
+  }
+]

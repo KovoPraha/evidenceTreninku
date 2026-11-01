@@ -15,7 +15,16 @@ async (page) => {
     scripts:[...document.scripts].map(x=>x.src)}));
    if(data.overflow||data.injected||data.fields[0].id!=='app-admin-field-2'||data.fields[1].id!=='app-admin-field-4'||data.active!=='/booking/eshop.php')throw Error(JSON.stringify({role,width,data}));
    if((role==='family')!==data.links.includes('/booking/sportovni_prehled.php'))throw Error('Wrong family navigation');
-   if(role==='family'){await page.locator('summary').focus();await page.keyboard.press('Enter');if(!await page.locator('details').evaluate(x=>x.open))throw Error('Keyboard account menu');}
+   if(role==='family'){
+    await page.locator('summary').focus();await page.keyboard.press('Enter');
+    if(!await page.locator('details').evaluate(x=>x.open))throw Error('Keyboard account menu');
+    const accountTargets=await page.locator('.app-account-menu .dropdown-item').evaluateAll(links=>links.map(link=>{
+     const r=link.getBoundingClientRect();
+     const hit=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);
+     return {label:link.textContent.trim(),reachable:!!hit&&(hit===link||link.contains(hit))};
+    }));
+    if(accountTargets.length!==5||accountTargets.some(link=>!link.reachable))throw Error('Covered account menu: '+JSON.stringify({width,accountTargets}));
+   }
    await page.screenshot({path:'output/playwright/'+role+'-'+width+'.png',fullPage:true});
    results.push({role,width,...data});
   }

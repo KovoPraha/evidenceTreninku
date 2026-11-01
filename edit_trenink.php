@@ -13,7 +13,10 @@ if (!isset($_SESSION['trener_id'])) {
     exit;
 }
 
-function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s)
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 
 $treninkId = $_GET['id'] ?? null;
 if (!$treninkId || !ctype_digit((string)$treninkId)) {
@@ -108,7 +111,7 @@ $stmtU = $pdo->prepare("
 ");
 $stmtU->execute([$treninkId]);
 $ucastniciSelected = $stmtU->fetchAll(PDO::FETCH_ASSOC);
-$ucastniciHidden = implode(', ', array_map(fn($x) => ((int)$x['id']).':'.$x['label'], $ucastniciSelected));
+$ucastniciHidden = implode(', ', array_map(fn ($x) => ((int)$x['id']).':'.$x['label'], $ucastniciSelected));
 
 // Tagy vybrané (chipy + hidden JSON)
 $stmtTag = $pdo->prepare("
@@ -162,7 +165,9 @@ $mereniHiddenJson = json_encode($mereniRows, JSON_UNESCAPED_UNICODE);
 $existingImages = [];
 if (!empty($trenink['obrazky'])) {
     $decoded = json_decode((string)$trenink['obrazky'], true);
-    if (is_array($decoded)) $existingImages = $decoded;
+    if (is_array($decoded)) {
+        $existingImages = $decoded;
+    }
 }
 $existingImagesJson = json_encode($existingImages, JSON_UNESCAPED_UNICODE);
 
@@ -178,7 +183,7 @@ unset($_SESSION['flash_success']);
 $dupDatumStr = '';
 if (!empty($trenink['datum'])) {
     $dtObj = new DateTime($trenink['datum']);
-    $czDays2 = ['Monday'=>'Po','Tuesday'=>'Út','Wednesday'=>'St','Thursday'=>'Čt','Friday'=>'Pá','Saturday'=>'So','Sunday'=>'Ne'];
+    $czDays2 = ['Monday' => 'Po','Tuesday' => 'Út','Wednesday' => 'St','Thursday' => 'Čt','Friday' => 'Pá','Saturday' => 'So','Sunday' => 'Ne'];
     $dupDatumStr = ($czDays2[$dtObj->format('l')] ?? '') . ' ' . $dtObj->format('j.n.Y');
 }
 ?>
@@ -188,7 +193,9 @@ if (!empty($trenink['datum'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Úprava tréninku #<?= (int)$trenink['id'] ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .suggest-box { z-index: 1100; max-height: 220px; overflow-y: auto; width: 100%; }
         .chip { display:inline-flex; align-items:center; gap:.35rem; padding:.25rem .55rem; border-radius:999px; background:#0d6efd; color:#fff; font-size:.9rem; }
@@ -268,10 +275,17 @@ if (!empty($trenink['datum'])) {
                             <select name="kategorie" id="kategorie" class="form-select">
                                 <option value="">— vyber —</option>
                                 <?php
-                                    $opts = ['silnice'=>'Silnice','mtb'=>'MTB','draha'=>'Dráha','cyklokros'=>'Cyklokros','posilovna'=>'Posilovna','atletika'=>'Atletika','cviceni'=>'Cvičení','plavani'=>'Plavání'];
-                                    foreach ($opts as $k => $lbl):
-                                        $sel = ($k === $kategorieVal) ? 'selected' : '';
-                                ?>
+                                    $opts = ['silnice' => 'Silnice',
+                                        'mtb' => 'MTB',
+                                        'draha' => 'Dráha',
+                                        'cyklokros' => 'Cyklokros',
+                                        'posilovna' => 'Posilovna',
+                                        'atletika' => 'Atletika',
+                                        'cviceni' => 'Cvičení',
+                                        'plavani' => 'Plavání'];
+foreach ($opts as $k => $lbl):
+    $sel = ($k === $kategorieVal) ? 'selected' : '';
+    ?>
                                     <option value="<?= h($k) ?>" <?= $sel ?>><?= h($lbl) ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -419,7 +433,7 @@ if (!empty($trenink['datum'])) {
                         $isCurrent = ($tid === $currentTrener);
                         $checked = in_array($tid, $trenereSelected, true) ? 'checked' : '';
                         $disabled = (!$isAdmin && !$isCurrent) ? 'disabled' : '';
-                    ?>
+                        ?>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="trenere[]" value="<?= $tid ?>"
                                id="tr_<?= $tid ?>" <?= $checked ?> <?= $disabled ?>>
@@ -582,7 +596,7 @@ if (!empty($trenink['datum'])) {
    TAGY: chipy + hidden JSON
 ---------------------------- */
 (function(){
-    const TAGS = <?= json_encode($tagyAll, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
+    const TAGS = <?= json_encode($tagyAll, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     const input = document.getElementById('tag_input');
     const sug   = document.getElementById('tag_suggestions');
     const wrap  = document.getElementById('tag_selected');
@@ -693,8 +707,8 @@ if (!empty($trenink['datum'])) {
    MĚŘENÍ: render řádků z hidden JSON + možnost přidat řádek
 ---------------------------- */
 (function(){
-    const CVIKY = <?= json_encode($cviky, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
-    const SEGMENTY = <?= json_encode($segmenty, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
+    const CVIKY = <?= json_encode($cviky, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const SEGMENTY = <?= json_encode($segmenty, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
     const form = document.getElementById('treninkForm');
     const btnAdd = document.getElementById('btnAddMereni');
@@ -713,19 +727,19 @@ if (!empty($trenink['datum'])) {
             const sel = (String(c.id) === String(selectedId)) ? 'selected' : '';
             return `<option value="${escapeHtml(c.id)}" ${sel}>${escapeHtml(c.nazev)}</option>`;
         }).join('');
-        return `<select class="form-select js-cvik_id"><option value="">— vyber cvik —</option>${opts}</select>`;
+        return `<select class="form-select js-cvik_id" aria-label="Cvik"><option value="">— vyber cvik —</option>${opts}</select>`;
     }
 
     function buildSegmentSelect(selectedId, kategorie) {
         const filtered = (SEGMENTY || []).filter(s => s.kategorie === kategorie);
         if (!filtered.length) {
-            return `<input type="text" class="form-control js-segment_text" placeholder="Segment (žádné k dispozici)" disabled>`;
+            return `<input type="text" class="form-control js-segment_text" aria-label="Segment" placeholder="Segment (žádné k dispozici)" disabled>`;
         }
         const opts = filtered.map(s => {
             const sel = (String(s.id) === String(selectedId)) ? 'selected' : '';
             return `<option value="${escapeHtml(s.id)}" ${sel}>${escapeHtml(s.nazev)}</option>`;
         }).join('');
-        return `<select class="form-select js-segment_id"><option value="">— vyber segment —</option>${opts}</select>`;
+        return `<select class="form-select js-segment_id" aria-label="Segment"><option value="">— vyber segment —</option>${opts}</select>`;
     }
 
     function renderFields(row) {
@@ -741,7 +755,7 @@ if (!empty($trenink['datum'])) {
                     <div class="col-md-3">
                         <label class="form-label mb-1">Vzdálenost</label>
                         <div class="input-group">
-                            <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" placeholder="Vzdálenost">
+                            <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" aria-label="Vzdálenost" placeholder="Vzdálenost">
                             <select class="form-select js-distance-unit" aria-label="Jednotka vzdálenosti">
                                 <option value="">jednotka</option><option value="m">m</option><option value="km">km</option>
                             </select>
@@ -750,15 +764,17 @@ if (!empty($trenink['datum'])) {
                     </div>
                     <div class="col-md-3">
                         <label class="form-label mb-1">Čas (mm:ss.xx)</label>
-                        <input type="text" class="form-control js-cas" placeholder="02:13.45" pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)" title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
+                        <input type="text" class="form-control js-cas" aria-label="Čas měření" placeholder="02:13.45"
+                            pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)"
+                            title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                     </div>
                     <div class="col-md-3 ${typ === 'kolo' ? '' : 'd-none'}">
                         <label class="form-label mb-1">Převod</label>
-                        <input type="text" class="form-control js-prevod" placeholder="52×15">
+                        <input type="text" class="form-control js-prevod" aria-label="Převod" placeholder="52×15">
                     </div>
-                    <div class="col-md-3 ${typ === 'beh' ? '' : 'd-none'}">
+                    <div class="${typ === 'kolo' ? 'col-md-3' : 'col-md-6'}">
                         <label class="form-label mb-1">Poznámka</label>
-                        <input type="text" class="form-control js-poznamka" placeholder="vítr, povrch…">
+                        <input type="text" class="form-control js-poznamka" aria-label="Poznámka k měření" placeholder="vítr, povrch…">
                     </div>
                 </div>
             `;
@@ -771,19 +787,19 @@ if (!empty($trenink['datum'])) {
                     </div>
                     <div class="col-md-2">
                         <label class="form-label mb-1">Váha</label>
-                        <input type="number" step="0.5" class="form-control js-vaha">
+                        <input type="number" step="0.5" class="form-control js-vaha" aria-label="Váha (kg)">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label mb-1">Opak.</label>
-                        <input type="number" step="1" class="form-control js-opakovani">
+                        <input type="number" step="1" class="form-control js-opakovani" aria-label="Počet opakování">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label mb-1">RPE</label>
-                        <input type="number" min="1" max="10" step="0.5" class="form-control js-rpe" placeholder="7">
+                        <input type="number" min="1" max="10" step="0.5" class="form-control js-rpe" aria-label="RPE (1–10)" placeholder="7">
                     </div>
                     <div class="col-md-2">
                         <label class="form-label mb-1">Pozn.</label>
-                        <input type="text" class="form-control js-poznamka">
+                        <input type="text" class="form-control js-poznamka" aria-label="Poznámka k měření">
                     </div>
                 </div>
             `;
@@ -797,11 +813,13 @@ if (!empty($trenink['datum'])) {
                     </div>
                     <div class="col-md-3">
                         <label class="form-label mb-1">Čas (mm:ss.xx)</label>
-                        <input type="text" class="form-control js-cas" placeholder="02:13.45" pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)" title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
+                        <input type="text" class="form-control js-cas" aria-label="Čas měření" placeholder="02:13.45"
+                            pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)"
+                            title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                     </div>
                     <div class="col-md-4">
                         <label class="form-label mb-1">Poznámka</label>
-                        <input type="text" class="form-control js-poznamka">
+                        <input type="text" class="form-control js-poznamka" aria-label="Poznámka k měření">
                     </div>
                 </div>
             `;
@@ -816,7 +834,7 @@ if (!empty($trenink['datum'])) {
             <div class="row g-2 align-items-end">
                 <div class="col-md-3">
                     <label class="form-label mb-1">Typ</label>
-                    <select class="form-select js-typ">
+                    <select class="form-select js-typ" aria-label="Typ měření">
                         <option value="">— vyber —</option>
                         <option value="kolo">Kolo</option>
                         <option value="kolo_krouzek">Kolo - Kroužek</option>
@@ -829,13 +847,13 @@ if (!empty($trenink['datum'])) {
 
                 <div class="col-md-6 position-relative">
                     <label class="form-label mb-1">Sportovec</label>
-                    <input type="text" class="form-control js-sp-name" placeholder="Začni psát jméno…" autocomplete="off">
+                    <input type="text" class="form-control js-sp-name" aria-label="Sportovec pro měření" placeholder="Začni psát jméno…" autocomplete="off">
                     <input type="hidden" class="js-sp-id" value="">
                     <div class="list-group position-absolute suggest-box js-sp-sug"></div>
                 </div>
 
                 <div class="col-md-3 text-end">
-                    <button type="button" class="btn btn-sm btn-outline-danger js-remove">Odebrat</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger js-remove" aria-label="Odebrat měření">Odebrat</button>
                 </div>
             </div>
 

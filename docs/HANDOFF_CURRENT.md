@@ -34,6 +34,8 @@ Stav deploye, SHA a flags určují výhradně CURRENT_STATE a jeho doklady.
 [Autonomní rozšíření](verification/trainer-recovery-autonomous-20261101-2341/RESULTS.md)
 ověřilo skutečné nové doručení, platnou předběžnou kontrolu a oba režimy bez změny hesla.
 Nový izolovaný test se dvěma PHP relacemi ověřuje backend revokace, nepředstírá produkční T07.
+[Funkční rozšíření 2. 11.](verification/functional-uat-20261102/RESULTS.md) odkládá změnu hesla/T07 dle vlastníka;
+opravuje vrstvy účtového menu, přístupné názvy a skrytou poznámku měření. Ověřeno místně, dosud nenasazeno.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.

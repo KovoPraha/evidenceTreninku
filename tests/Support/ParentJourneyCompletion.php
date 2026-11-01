@@ -43,7 +43,12 @@ function parentJourneyComplete(PDO $pdo, int $accountId, int $paymentId): void
     Assert::assertTrue(familyPortalCanViewPerson($pdo, $accountId, 101));
     Assert::assertFalse(familyPortalCanViewPerson($pdo, 11, 101));
     $_SESSION['staff_active_position'] = 'finance_manager';
-    $today = date('Y-m-d');
+    // SQLite CURRENT_TIMESTAMP is UTC. Use the recorded synthetic payment day,
+    // rather than the host's local date, which differs around midnight.
+    $paid = $pdo->prepare('SELECT paid_at FROM payments WHERE id=?');
+    $paid->execute([$paymentId]);
+    $today = substr((string)$paid->fetchColumn(), 0, 10);
+    Assert::assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}$/D', $today);
     $reason = 'LOCALHOST synthetic parent journey completion.';
     $account = accountingLedgerCreateAccount($pdo, ['code' => 'W15', 'name' => 'Synthetic', 'kind' => 'bank',
         'opened_on' => $date, 'opening_minor' => 0, 'evidence' => $reason], 7, $reason, true);

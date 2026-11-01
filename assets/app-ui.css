@@ -125,6 +125,12 @@ body.app-loading .app-loading-bar {
     opacity: 1;
 }
 
+/* Account dropdowns must remain above the shop/category and anchor navigation. */
+.app-public-nav {
+    position: relative;
+    z-index: 1020;
+}
+
 .app-public-nav.bg-white {
     background: linear-gradient(105deg, var(--app-navy), #1459b2 78%, var(--app-blue)) !important;
     border-bottom: 3px solid var(--app-red) !important;

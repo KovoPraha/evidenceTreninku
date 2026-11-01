@@ -1,0 +1,30 @@
+{
+  "full_windows": {
+    "tests": 1902,
+    "assertions": 38196,
+    "skipped": 3,
+    "passed": true
+  },
+  "javascript": {
+    "tests": 19,
+    "passed": true
+  },
+  "targeted_security_and_parent_journey": {
+    "tests": 16,
+    "assertions": 388,
+    "passed": true
+  },
+  "ui_shell": {
+    "tests": 15,
+    "assertions": 90,
+    "passed": true
+  },
+  "phpstan": {
+    "passed": true
+  },
+  "changed_php_style": {
+    "files": 5,
+    "errors": 0
+  },
+  "production_deployed": false
+}

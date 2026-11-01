@@ -8,6 +8,7 @@ if (PHP_SAPI !== 'cli') {
 }
 define('APP_BASE_URL', 'http://127.0.0.1:18413');
 require_once dirname(__DIR__, 2) . '/includes/ui_shell.php';
+require_once dirname(__DIR__, 2) . '/includes/shop_public_navigation.php';
 $role = $argv[1] ?? 'public';
 $_SESSION = match ($role) {
     'family' => ['verejny_uzivatel_id' => 10],
@@ -20,6 +21,7 @@ $_SESSION = match ($role) {
 <html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Syntetické ověření rozhraní</title><?php appUiAssets(); ?></head>
 <body class="app-admin-shell"><?php publicShellNav('shop'); ?>
+<?= shopPublicNavigationHtml([['category_path' => 'Testovací nabídka', 'display_name' => 'Testovací nabídka']]); ?>
 <main class="container py-4"><h1>Syntetické ověření rozhraní</h1>
 <p><?= publicShellH('<img src=x onerror=alert(1)>') ?></p>
 <p class="alert alert-info">Zatím žádné výsledky.</p>
