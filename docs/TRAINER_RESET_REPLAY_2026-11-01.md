@@ -1,5 +1,8 @@
 # Ověření a oprava opakovaného otevření obnovovacího odkazu
 
+Toto je doklad původní implementační etapy. Následné sloučení a produkční
+nasazení na nové výslovné schválení vlastníka popisuje [vydání opravy](TRAINER_RESET_RELEASE_2026-11-01.md).
+
 1. 11. 2026, Europe/Prague. Pracovní větev `codex/trainer-reset-replay-20261101`,
 samostatné worktree `evidencePavel-trainer-reset-replay-20261101`, základ
 `origin/main` = `97a0ff213a871639f7708d99613282f73652302e`.

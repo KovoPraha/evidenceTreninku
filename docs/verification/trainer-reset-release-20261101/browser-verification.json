@@ -1,0 +1,50 @@
+{
+  "browser": "Google Chrome via supported browser extension",
+  "viewport": {
+    "width": 1536,
+    "height": 674
+  },
+  "authentication": "anonymous; no credentials entered",
+  "phase": "post-deploy",
+  "base_url": "https://kis.kovopraha.cz",
+  "checks": [
+    {
+      "path": "/booking/nove_heslo.php?pro=trener",
+      "case": "missing fragment",
+      "password_fields": 0,
+      "preflight_form_count": 1,
+      "invalid_message": true,
+      "status": "PASS",
+      "screenshot": "trainer-missing-link.jpg"
+    },
+    {
+      "path": "/booking/nove_heslo.php?pro=trener",
+      "case": "synthetic nonexistent token; actual automatic CSRF-protected check POST",
+      "password_fields": 0,
+      "preflight_form_count": 0,
+      "invalid_message": true,
+      "new_request_href": "zapomenute_heslo.php?pro=trener",
+      "status": "PASS",
+      "screenshot": "trainer-invalid-link.jpg"
+    },
+    {
+      "path": "/booking/nove_heslo.php",
+      "case": "synthetic nonexistent token; actual automatic CSRF-protected check POST",
+      "password_fields": 0,
+      "preflight_form_count": 0,
+      "invalid_message": true,
+      "new_request_href": "zapomenute_heslo.php",
+      "status": "PASS",
+      "screenshot": "public-invalid-link.jpg"
+    }
+  ],
+  "before_activation": {
+    "path": "/booking/nove_heslo.php?pro=trener",
+    "password_fields": 2,
+    "preflight_form_count": 0
+  },
+  "real_used_link_tested": false,
+  "password_changes_performed": false,
+  "reset_requests_sent": false,
+  "training_writes": 0
+}

@@ -1,0 +1,87 @@
+{
+  "pr": 269,
+  "url": "https://github.com/KovoPraha/evidenceTreninku/pull/269",
+  "reviewed_head": "3d4d40dd3d3b9495db5277dbb931f31550e51f15",
+  "merged_at": "2026-11-01T20:52:23Z",
+  "merged_sha": "acce3c1351cddbcad12fb5fea11afe6ae8936001",
+  "reviewed_tree": "542551664bf57a80c03c444a46d3f466a3c5ee7a",
+  "merged_tree": "542551664bf57a80c03c444a46d3f466a3c5ee7a",
+  "trees_equal": true,
+  "checks": [
+    {
+      "name": "Analyze (actions)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347971205/job/124971781182"
+    },
+    {
+      "name": "docs",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347974206/job/124971786050"
+    },
+    {
+      "name": "PHPStan level 5 and changed-file style",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347974218/job/124971786324"
+    },
+    {
+      "name": "PHPUnit na PHP 8.2",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347974193/job/124971786539"
+    },
+    {
+      "name": "Analyze (javascript-typescript)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347971205/job/124971781141"
+    },
+    {
+      "name": "Analyze (python)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347971205/job/124971781060"
+    },
+    {
+      "name": "MariaDB integra\u010dn\u00ed smoke (MariaDB 10.3)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347974193/job/124971786556"
+    },
+    {
+      "name": "MariaDB integra\u010dn\u00ed smoke (MariaDB 11.4)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347974193/job/124971786569"
+    },
+    {
+      "name": "MariaDB profily \u010dten\u00ed (MariaDB 10.3)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347974193/job/124971786399"
+    },
+    {
+      "name": "MariaDB profily \u010dten\u00ed (MariaDB 11.4)",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41347974193/job/124971786495"
+    },
+    {
+      "name": "CodeQL",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/runs/124971915655"
+    }
+  ],
+  "linux_phpunit": {
+    "tests": 1900,
+    "assertions": 38192
+  },
+  "linux_posix": {
+    "tests": 3,
+    "assertions": 45,
+    "skipped": 0
+  }
+}

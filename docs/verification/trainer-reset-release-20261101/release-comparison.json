@@ -1,0 +1,24 @@
+{
+  "before_live": {
+    "sha": "87596760f4267c9db378e8a4062e604fd22d68fa",
+    "run_id": "41330031591",
+    "deployed_at": "2026-11-01T17:13:16+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "acce3c1351cddbcad12fb5fea11afe6ae8936001",
+    "run_id": "41349120615",
+    "deployed_at": "2026-11-01T20:55:25+00:00",
+    "uat_approved": false
+  },
+  "pre_run": 41349042948,
+  "post_run": 41349491104,
+  "unchanged": {
+    "config_sha256": true,
+    "integration_flags": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "migration_ledger_count": true
+  },
+  "identity_scope": "Protected workflow deployment metadata and observed reset UI; no complete runtime hash inventory"
+}
