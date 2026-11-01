@@ -9,10 +9,12 @@ Navazuje [trenérská obnova hesla](TRAINER_READINESS_2026-10-31.md) a její
 Odesílání trenérských odkazů zajišťuje [ověřený minutový cron hostingu](verification/trainer-recovery-20261031/scheduler/RESULTS.md).
 Vlastník potvrdil doručení a zvolil [samostatný syntetický pilot](TRAINER_PILOT_2026-10-31.md).
 Jeho nástroj je nasazen a [technicky ověřen](verification/trainer-pilot-20261031/RESULTS.md);
-účet ani skupina ještě nevznikly. Čeká se na samostatný e-mail v otevřené otázce.
-Dodaná adresa je již obsazená veřejným účtem. Vlastníka lze nyní dohledat
+účet ani skupina ještě nevznikly. Vlastník již zvolil volnou samostatnou adresu.
+První dvě adresy jsou obsazené veřejnými účty bez pracovní vazby. Vlastníka lze dohledat
 přesným e-mailem přes read-only `trainer-owner-lookup-production.yml`;
 ověřit také jeho existující explicitní pracovní vazbu. [Postup](TRAINER_OWNER_LOOKUP_2026-11-01.md).
+Pro tohoto vlastníka se připravuje [provozní varianta](TRAINER_PILOT_OPERATIONAL_2026-11-01.md):
+po jejím nasazení použít `mode=operational`, bez přiřazení cizího správce.
 Po doplnění použít chráněné workflow `trainer-pilot-production.yml` na main:
 nejprve `status` s potvrzeným jménem vlastníka, potom `create` s e-mailem a
 `confirm=VYTVORIT-TEST-PILOT`. Provést pouze při jednoznačném oprávněném účtu.
