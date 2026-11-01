@@ -27,8 +27,13 @@ vznikl a jednou se upravil syntetický trénink 1604, záznam zůstává pro dia
 Nález zobrazení formuláře pro použitý odkaz řeší nasazený PR #269;
 [protokol vydání](verification/trainer-reset-release-20261101/RESULTS.md) odděluje technické
 ověření neplatných odkazů od skutečného použitého odkazu a T07, které zůstávají odložené.
-Hesla a přihlášení nadále provádí vlastník; nečíst resetovací odkazy ani správce hesel.
+Nové heslo nadále zadává vlastník; nečíst hesla ani správce hesel.
+Výslovně povolené otevření odkazu z cílené testovací zprávy je doloženo níže;
+hodnotu odkazu neexportovat ani neukládat do důkazů.
 Stav deploye, SHA a flags určují výhradně CURRENT_STATE a jeho doklady.
+[Autonomní rozšíření](verification/trainer-recovery-autonomous-20261101-2341/RESULTS.md)
+ověřilo skutečné nové doručení, platnou předběžnou kontrolu a oba režimy bez změny hesla.
+Nový izolovaný test se dvěma PHP relacemi ověřuje backend revokace, nepředstírá produkční T07.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.

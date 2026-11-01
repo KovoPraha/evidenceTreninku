@@ -11,8 +11,12 @@ Aktualizováno 1. 11. 2026 (Europe/Prague), po nasazení opravy obnovovacího od
   29 účtů je způsobilých k obnově hesla a původních 8 zůstává blokovaných.
   [Provozní auditní identita](TRAINER_PILOT_OPERATIONAL_2026-11-01.md) je neaktivní a bez oprávnění;
   veřejné účty se nepropojovaly ani nepovyšovaly. Úplné lidské UAT ještě neproběhlo.
-  Jediný schválený testovací e-mail transport přijal a příjemce 31. 10.
-  [potvrdil doručení](verification/trainer-recovery-20261031/mailbox-confirmation.json). Hostingový minutový cron znovu ověřen
+  Původní testovací e-mail transport přijal a příjemce 31. 10.
+  [potvrdil doručení](verification/trainer-recovery-20261031/mailbox-confirmation.json).
+  [Autonomní ověření 1. 11. 23:42](verification/trainer-recovery-autonomous-20261101-2341/RESULTS.md)
+  potvrdilo doručení nové žádosti ve webmailu, platný odkaz i anonymní/mobilní formulář;
+  produkční heslo nezměněno, skutečné spotřebování a T07 nadále nejsou ověřeny.
+  Hostingový minutový cron znovu ověřen
   [1. 11. v 17:22:03 UTC](verification/trainer-pilot-20261101/trainer-readiness.json). Tři staré klubové zprávy nedotčeny.
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**

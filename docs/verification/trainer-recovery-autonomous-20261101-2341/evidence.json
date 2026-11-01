@@ -1,0 +1,83 @@
+{
+  "run": "20261101-2341",
+  "timezone": "Europe/Prague",
+  "live_release": "acce3c1351cddbcad12fb5fea11afe6ae8936001",
+  "identity": {
+    "trainer": 56,
+    "name": "TEST - Trenérský pilot 20261031",
+    "position": "coach",
+    "allowed_people": [
+      11783,
+      11784
+    ],
+    "denied_person": 11785
+  },
+  "training": {
+    "id": 1604,
+    "visible_records": 1,
+    "duration_hours": 1,
+    "run_marker_present": true,
+    "alfa_visible": true,
+    "beta_visible": true,
+    "new_writes": 0
+  },
+  "recovery": {
+    "requests_submitted": 1,
+    "accepted_after_checkpoint": "2026-11-01 23:41:26",
+    "mail_received_ui": "Dnes 23:42",
+    "recipient_match_observed": true,
+    "fresh_message_observed": true,
+    "mail_body_or_address_exported": false,
+    "fresh_link_preflight_passed": true,
+    "password_fields_blank": true,
+    "fragment_removed": true,
+    "preuse_reopening_valid": true,
+    "anonymous_preflight_valid": true,
+    "wrong_mode_rejected": true,
+    "correct_mode_still_valid_after_wrong_mode": true,
+    "password_changed": false,
+    "real_consumed_link_tested": false,
+    "production_t07_completed": false
+  },
+  "mobile": {
+    "width": 390,
+    "height": 844,
+    "client_width": 390,
+    "scroll_width": 390,
+    "viewport_reset": true
+  },
+  "logout": {
+    "completed": true,
+    "protected_routes_require_login": [
+      "/prehled_sportovcu.php",
+      "/moje_treninky.php",
+      "/edit_trenink.php?id=1604",
+      "/formular.php"
+    ]
+  },
+  "live_results": {
+    "passed": 13,
+    "blocked": 2,
+    "not_run_or_inconclusive": 2
+  },
+  "tests": {
+    "targeted": {
+      "tests": 57,
+      "assertions": 442,
+      "passed": true
+    },
+    "javascript": {
+      "tests": 2,
+      "passed": true
+    },
+    "full_windows": {
+      "tests": 1902,
+      "assertions": 38187,
+      "skipped": 3,
+      "exit_code": 0
+    },
+    "new_cases": "Two isolated PHP sessions; linked and unrelated public identities; synthetic SQLite only"
+  },
+  "runtime_code_changed": false,
+  "deployment_performed": false
+}
