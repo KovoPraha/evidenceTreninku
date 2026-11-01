@@ -1,0 +1,77 @@
+{
+  "run_id": 41330782300,
+  "conclusion": "success",
+  "result": {
+    "read_only": true,
+    "created": true,
+    "owner": {
+      "unique_active": false,
+      "positions": [],
+      "superadmin": false,
+      "can_provision": false,
+      "reset_eligible": false,
+      "changed": false
+    },
+    "operational_mode": true,
+    "audit_actor_disabled": true,
+    "audit_actor_created": true,
+    "trainer_id": 56,
+    "team_id": 77,
+    "test_name": "TEST - Trenérský pilot 20261031",
+    "member_ids": [
+      11783,
+      11784
+    ],
+    "outside_test_person_id": 11785,
+    "valid_from": "2026-11-01 18:17:31",
+    "valid_to": "2026-11-15 18:17:31",
+    "visible_test_people": 2,
+    "scope_ready": true,
+    "outside_scope_visible": false,
+    "reset_eligible": true,
+    "operation_run_id": "41330611475",
+    "full_interactive_uat_verified": false,
+    "changed": false
+  },
+  "after": {
+    "read_only": true,
+    "created": true,
+    "owner": {
+      "unique_active": false,
+      "positions": [],
+      "superadmin": false,
+      "can_provision": false,
+      "reset_eligible": false,
+      "changed": false
+    },
+    "operational_mode": true,
+    "audit_actor_disabled": true,
+    "audit_actor_created": true,
+    "trainer_id": 56,
+    "team_id": 77,
+    "test_name": "TEST - Trenérský pilot 20261031",
+    "member_ids": [
+      11783,
+      11784
+    ],
+    "outside_test_person_id": 11785,
+    "valid_from": "2026-11-01 18:17:31",
+    "valid_to": "2026-11-15 18:17:31",
+    "visible_test_people": 2,
+    "scope_ready": true,
+    "outside_scope_visible": false,
+    "reset_eligible": true,
+    "operation_run_id": "41330611475",
+    "full_interactive_uat_verified": false
+  },
+  "backup_contains_pilot": {
+    "ok": true,
+    "backup": "evidence_2026-11-01_171851_2b94bff9.sql.gz",
+    "manifest": "evidence_2026-11-01_171851_2b94bff9.manifest.json",
+    "sha256": "2fb4237ba53247d5063280a696bcd3ce48a5659b0fa2a63dc26fb2d24601989c",
+    "tables": 337,
+    "triggers": 2,
+    "compressed_bytes": 6065839
+  },
+  "messages_sent": 0
+}

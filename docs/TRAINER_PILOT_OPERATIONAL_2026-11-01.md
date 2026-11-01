@@ -26,3 +26,10 @@ neobnovuje ani neprodlužuje. Ověřit SQLite i celé migrované MariaDB schéma
 Po CI sloučit a nasadit, založit pilot, ověřit rozsah a obnovu hesla pouze
 čtením a obnovit čerstvou zálohu v izolaci. Nastavení vlastního hesla a úplné
 interaktivní UAT provede vlastník sám. Nová rozesílka není součástí operace.
+
+## Provedení
+
+PR #266 je nasazeno. Pilot vytvořil chráněný běh 41330611475, opakování
+41330782300 potvrdilo `changed=false` a vytvořilo zálohu již obsahující pilot.
+Trenér 56 / soupiska 77, dvě syntetické osoby v rozsahu, třetí odmítnuta.
+Auditní identita je neaktivní a bez pozic. [Výsledky a důkazy](verification/trainer-pilot-20261101/RESULTS.md).

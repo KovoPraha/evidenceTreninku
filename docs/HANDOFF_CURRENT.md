@@ -8,16 +8,17 @@ Navazuje [trenérská obnova hesla](TRAINER_READINESS_2026-10-31.md) a její
 [produkční přejímka](verification/trainer-recovery-20261031/RESULTS.md).
 Odesílání trenérských odkazů zajišťuje [ověřený minutový cron hostingu](verification/trainer-recovery-20261031/scheduler/RESULTS.md).
 Vlastník potvrdil doručení a zvolil [samostatný syntetický pilot](TRAINER_PILOT_2026-10-31.md).
-Jeho nástroj je nasazen a [technicky ověřen](verification/trainer-pilot-20261031/RESULTS.md);
-účet ani skupina ještě nevznikly. Vlastník již zvolil volnou samostatnou adresu.
-První dvě adresy jsou obsazené veřejnými účty bez pracovní vazby. Vlastníka lze dohledat
-přesným e-mailem přes read-only `trainer-owner-lookup-production.yml`;
-ověřit také jeho existující explicitní pracovní vazbu. [Postup](TRAINER_OWNER_LOOKUP_2026-11-01.md).
-Pro tohoto vlastníka se připravuje [provozní varianta](TRAINER_PILOT_OPERATIONAL_2026-11-01.md):
-po jejím nasazení použít `mode=operational`, bez přiřazení cizího správce.
-Po doplnění použít chráněné workflow `trainer-pilot-production.yml` na main:
-nejprve `status` s potvrzeným jménem vlastníka, potom `create` s e-mailem a
-`confirm=VYTVORIT-TEST-PILOT`. Provést pouze při jednoznačném oprávněném účtu.
+Pilot je [založen a technicky ověřen](verification/trainer-pilot-20261101/RESULTS.md):
+trenér 56, soupiska 77, pouze dvě syntetické osoby. Grant končí 15. 11. 2026
+v 18:17:31 databázového času; nedochází k automatickému prodloužení ani smazání.
+Vlastník si nastaví heslo sám přes trenérskou obnovu na schválené samostatné
+adrese. Adresa zůstává v soukromém provozním dokladu, není součástí zdrojů.
+První dvě adresy patřily veřejným účtům bez pracovní vazby; nepovyšovaly se.
+[Dohledání](TRAINER_OWNER_LOOKUP_2026-11-01.md) a
+[provozní varianta](TRAINER_PILOT_OPERATIONAL_2026-11-01.md) mají samostatné doklady.
+Ke kontrole použít `trainer-pilot-production.yml` na main s `action=status`
+a `mode=operational`. Opakované `create` neobnovuje heslo ani neprodlužuje grant.
+Technická auditní identita zůstává neaktivní, bez pozic a superadmina.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.
