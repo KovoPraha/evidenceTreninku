@@ -1,5 +1,8 @@
 # Prověření obnovovacího odkazu a lokální oprava
 
+Tento protokol zachovává původní implementační a testovací etapu bez nasazení.
+Následné schválené nasazení má [samostatný produkční protokol](../trainer-reset-release-20261101/RESULTS.md).
+
 1. 11. 2026, Europe/Prague. Bez nasazení a bez produkčních změn.
 Základ: `97a0ff213a871639f7708d99613282f73652302e` (origin/main).
 Větev: `codex/trainer-reset-replay-20261101`.

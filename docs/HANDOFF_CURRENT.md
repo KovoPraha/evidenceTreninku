@@ -22,8 +22,13 @@ Technická auditní identita zůstává neaktivní, bez pozic a superadmina.
 Pro interní test jsou připravené [scénáře T01–T08](TRAINER_UAT_POSTUP_2026-11-01.md),
 [checklist k přeposlání](TRAINER_UAT_CHECKLIST_2026-11-01.md) a
 [browser zadání pro jiné vlákno](TRAINER_UAT_BROWSER_2026-11-01.md).
-Testování tím nebylo spuštěno; nastavování hesel je asistované vlastníkem,
-výsledky musí rozlišit PASS/FAIL/BLOCKED/NOT RUN a doložit vzniklé testovací ID.
+[Částečné browser UAT](verification/trainer-browser-uat-20261101-1955-a7c2/RESULTS.md) proběhlo:
+vznikl a jednou se upravil syntetický trénink 1604, záznam zůstává pro diagnostiku.
+Nález zobrazení formuláře pro použitý odkaz řeší nasazený PR #269;
+[protokol vydání](verification/trainer-reset-release-20261101/RESULTS.md) odděluje technické
+ověření neplatných odkazů od skutečného použitého odkazu a T07, které zůstávají odložené.
+Hesla a přihlášení nadále provádí vlastník; nečíst resetovací odkazy ani správce hesel.
+Stav deploye, SHA a flags určují výhradně CURRENT_STATE a jeho doklady.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.
