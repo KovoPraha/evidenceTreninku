@@ -1,6 +1,6 @@
 # Dokumentace EvidencePavel / KIS
 
-Aktualizováno: 30. 10. 2026, Europe/Prague
+Aktualizováno: 1. 11. 2026, Europe/Prague
 
 Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
 webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
@@ -12,6 +12,9 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 |---|---|
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
+| [Interní test trenérů](TRAINER_UAT_POSTUP_2026-11-01.md) | Scénáře T01–T08, očekávané výsledky a hlášení chyb |
+| [Checklist pro trenéry](TRAINER_UAT_CHECKLIST_2026-11-01.md) | Krátký text připravený k přeposlání účastníkům |
+| [Browser UAT pro jiné vlákno](TRAINER_UAT_BROWSER_2026-11-01.md) | Stejné scénáře, přesný rozsah automatizace, důkazy a asistované kroky s heslem |
 | [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | Aktuální dispozice W6–W15, přijaté změny a důvody nepřijatých kandidátů |
 | [Závěrečná technická přejímka refaktoringu](REFACTORING_CLOSURE_2026-10-30.md) | W6–W15 sloučeno a CI PASS; finální nasazení blokuje DB disk full, živé vydání v CURRENT_STATE |
 | [Finální CI a provozní incident](verification/refactoring-final-release-20261030/RESULTS.md) | Záloha odmítla nasazení před migrací/aktivací, aktuální HTTP dopad a podklady pro hosting |

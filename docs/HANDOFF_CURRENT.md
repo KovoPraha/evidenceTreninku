@@ -19,6 +19,11 @@ První dvě adresy patřily veřejným účtům bez pracovní vazby; nepovyšova
 Ke kontrole použít `trainer-pilot-production.yml` na main s `action=status`
 a `mode=operational`. Opakované `create` neobnovuje heslo ani neprodlužuje grant.
 Technická auditní identita zůstává neaktivní, bez pozic a superadmina.
+Pro interní test jsou připravené [scénáře T01–T08](TRAINER_UAT_POSTUP_2026-11-01.md),
+[checklist k přeposlání](TRAINER_UAT_CHECKLIST_2026-11-01.md) a
+[browser zadání pro jiné vlákno](TRAINER_UAT_BROWSER_2026-11-01.md).
+Testování tím nebylo spuštěno; nastavování hesel je asistované vlastníkem,
+výsledky musí rozlišit PASS/FAIL/BLOCKED/NOT RUN a doložit vzniklé testovací ID.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.

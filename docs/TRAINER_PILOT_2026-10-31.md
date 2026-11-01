@@ -37,18 +37,12 @@ neukládá se do zdrojů ani důkazů v Gitu.
 
 ## Předání testujícímu po založení účtu
 
-1. Na trenérském přihlášení zvolit „Zapomenuté heslo“, zadat výhradně e-mail
-   samostatného testovacího účtu a otevřít doručený odkaz. Nastavit vlastní heslo;
-   heslo ani odkaz neposílat vývojáři. Odkaz je jednorázový a platí 60 minut.
-2. Přihlásit se jménem `TEST - Trenérský pilot 20261031`. Pracovní pozice má
-   být pouze Trenér. Ověřit testovací soupisku a osoby TEST Alfa a TEST Beta.
-3. Vyzkoušet dostupné trenérské obrazovky a práci se syntetickými daty.
-   Zaznamenat očekávaný a skutečný výsledek, adresu stránky a čas chyby.
-4. Ověřit, že se nezobrazují skuteční sportovci ani syntetická osoba
-   TEST Mimo rozsah. Administrace a finanční agendy musejí zůstat nepřístupné.
-5. Novou obnovou hesla ověřit nové přihlášení a odvolání starší relace.
-   Nepředávat účet dalším trenérům; další účastníci potřebují vlastní identitu.
+Scénáře T01–T08, očekávané výsledky a formulář chyb jsou v
+[podrobném postupu](TRAINER_UAT_POSTUP_2026-11-01.md).
+Pro přeposlání použít [krátký checklist](TRAINER_UAT_CHECKLIST_2026-11-01.md).
+Jiné vlákno dostane [samostatné browser zadání](TRAINER_UAT_BROWSER_2026-11-01.md)
+se stejnými scénáři a povinným rozlišením automatických/asistovaných výsledků.
 
-Tyto kroky jsou plán lidského UAT, nikoli tvrzení, že již proběhly.
-Před založením účtu nelze tento postup provést. Přesný aktuální stav a doklady
-nasazení jsou v [CURRENT_STATE](CURRENT_STATE.md).
+Testovací dokumenty jsou připravené, samotný browser běh jimi není proveden.
+Každý trenér potřebuje vlastní identitu a rozsah; pilotní účet se nesdílí.
+Přesný aktuální stav a doklady nasazení jsou v [CURRENT_STATE](CURRENT_STATE.md).
