@@ -103,22 +103,29 @@ function trainerPasswordResetMailIsCurrent(PDO $pdo, array $mail, string $nowSql
     return $reset && hash_equals((string)$reset['recipient_email'], (string)$mail['recipient_email']) && trainerPasswordResetStillAuthorized($pdo, $reset);
 }
 
-/** @return array{target_type:string,target_id:int}|null */
-function trainerPasswordResetConsume(PDO $pdo, string $token, string $password, ?int $now = null): ?array
+/** Read-only preflight; consumption must repeat this lookup under a transaction lock. */
+function trainerPasswordResetLookup(PDO $pdo, string $token, ?int $now = null, bool $lock = false): ?array
 {
-    passwordPolicyValidate($password);
     $hash = one_time_token_hash(TRAINER_PASSWORD_RESET_PURPOSE, trim($token));
     if ($hash === '') {
         return null;
     }
+    $suffix = $lock && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
+    $query = $pdo->prepare('SELECT * FROM trainer_password_reset_tokens WHERE token_hash=? AND consumed_at IS NULL AND expires_at>=?' . $suffix);
+    $query->execute([$hash, gmdate('Y-m-d H:i:s', $now ?? time())]);
+    $reset = $query->fetch(PDO::FETCH_ASSOC);
+    return $reset && trainerPasswordResetStillAuthorized($pdo, $reset, $lock) ? $reset : null;
+}
+
+/** @return array{target_type:string,target_id:int}|null */
+function trainerPasswordResetConsume(PDO $pdo, string $token, string $password, ?int $now = null): ?array
+{
+    passwordPolicyValidate($password);
     $nowSql = gmdate('Y-m-d H:i:s', $now ?? time());
     $pdo->beginTransaction();
     try {
-        $suffix = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
-        $query = $pdo->prepare('SELECT * FROM trainer_password_reset_tokens WHERE token_hash=? AND consumed_at IS NULL AND expires_at>=?' . $suffix);
-        $query->execute([$hash, $nowSql]);
-        $reset = $query->fetch(PDO::FETCH_ASSOC);
-        if (!$reset || !trainerPasswordResetStillAuthorized($pdo, $reset, true)) {
+        $reset = trainerPasswordResetLookup($pdo, $token, $now, true);
+        if ($reset === null) {
             $pdo->rollBack();
             return null;
         }

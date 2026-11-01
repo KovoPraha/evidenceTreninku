@@ -13,6 +13,7 @@ final class PasswordResetWiringTest extends TestCase
         $root = dirname(__DIR__, 2);
         $request = (string)file_get_contents($root . '/booking/zapomenute_heslo.php');
         $consume = (string)file_get_contents($root . '/booking/nove_heslo.php');
+        $handler = (string)file_get_contents($root . '/includes/password_reset_form.php');
 
         self::assertStringContainsString('csrf_verify', $request);
         self::assertStringContainsString('auth_rate_limit_reserve_attempt', $request);
@@ -28,7 +29,8 @@ final class PasswordResetWiringTest extends TestCase
         self::assertStringContainsString("appUrl('booking/nove_heslo.php')", $request);
         self::assertStringNotContainsString('HTTP_HOST', $request);
         self::assertStringContainsString('trainerPasswordResetQueueRequest', $request);
-        self::assertStringContainsString('trainerPasswordResetConsume', $consume);
+        self::assertStringContainsString('passwordResetFormSubmit', $consume);
+        self::assertStringContainsString('trainerPasswordResetConsume', $handler);
         self::assertStringContainsString('window.location.pathname + window.location.search', $consume);
         self::assertStringContainsString("auth_session_clear_identity('trainer')", $consume);
         self::assertStringContainsString("'../login.php'", $consume);
