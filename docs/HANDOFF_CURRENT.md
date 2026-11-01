@@ -10,6 +10,9 @@ Odesílání trenérských odkazů zajišťuje [ověřený minutový cron hostin
 Vlastník potvrdil doručení a zvolil [samostatný syntetický pilot](TRAINER_PILOT_2026-10-31.md).
 Jeho nástroj je nasazen a [technicky ověřen](verification/trainer-pilot-20261031/RESULTS.md);
 účet ani skupina ještě nevznikly. Čeká se na samostatný e-mail v otevřené otázce.
+Dodaná adresa je již obsazená veřejným účtem. Vlastníka lze nyní dohledat
+přesným e-mailem přes read-only `trainer-owner-lookup-production.yml`;
+ověřit také jeho existující explicitní pracovní vazbu. [Postup](TRAINER_OWNER_LOOKUP_2026-11-01.md).
 Po doplnění použít chráněné workflow `trainer-pilot-production.yml` na main:
 nejprve `status` s potvrzeným jménem vlastníka, potom `create` s e-mailem a
 `confirm=VYTVORIT-TEST-PILOT`. Provést pouze při jednoznačném oprávněném účtu.

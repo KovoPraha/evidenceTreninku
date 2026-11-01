@@ -64,7 +64,25 @@ final class TrainerOwnerLookupTest extends TestCase
         self::assertSame([], $collision['matches']);
         self::assertSame(1, $collision['public_account_matches']);
         self::assertFalse($collision['email_available_for_separate_pilot']);
+        self::assertNull($collision['public_accounts'][0]['explicit_staff_link']);
         self::assertTrue(\trainerOwnerLookup($pdo, 'unused@example.test')['email_available_for_separate_pilot']);
+    }
+
+    public function testOnlyExplicitPublicLinkFindsStaffWithAnotherAddress(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("INSERT INTO verejni_uzivatele VALUES(1,1,'public@example.test',1,1,1),(2,999,'broken@example.test',1,1,1)");
+        $pdo->exec('PRAGMA query_only=ON');
+        $result = \trainerOwnerLookup($pdo, 'public@example.test');
+        self::assertSame([], $result['matches']);
+        $account = $result['public_accounts'][0];
+        self::assertTrue($account['active']);
+        self::assertTrue($account['email_verified']);
+        self::assertSame('actual.login', $account['explicit_staff_link']['login_name']);
+        self::assertTrue($account['explicit_staff_link']['can_provision']);
+        // Explicitly linked emails differ: the existing reset contract must remain blocked.
+        self::assertFalse($account['explicit_staff_link']['reset_eligible']);
+        self::assertSame(['exists' => false], \trainerOwnerLookup($pdo, 'broken@example.test')['public_accounts'][0]['explicit_staff_link']);
     }
 
     public function testInvalidEmailIsRejectedBeforeQuerying(): void
