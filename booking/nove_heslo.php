@@ -9,43 +9,29 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
     throw new RuntimeException('Database bootstrap unavailable.');
 }
 require_once dirname(__DIR__) . '/csrf_helper.php';
-require_once dirname(__DIR__) . '/includes/password_reset.php';
-require_once dirname(__DIR__) . '/includes/trainer_password_reset.php';
+require_once dirname(__DIR__) . '/includes/password_reset_form.php';
 
 $trainerReset = ($_GET['pro'] ?? '') === 'trener';
 $loginUrl = $trainerReset ? '../login.php' : 'prihlaseni.php';
+$requestUrl = $trainerReset ? 'zapomenute_heslo.php?pro=trener' : 'zapomenute_heslo.php';
 
 $errors = [];
 $success = false;
-if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
-        $errors[] = 'Neplatný bezpečnostní token.';
-    } else {
-        $password = (string)($_POST['heslo'] ?? '');
-        $confirmation = (string)($_POST['heslo2'] ?? '');
-        if ($password !== $confirmation) {
-            $errors[] = 'Hesla se neshodují.';
-        } else {
-            try {
-                $result = $trainerReset
-                    ? trainerPasswordResetConsume($pdo, (string)($_POST['token'] ?? ''), $password)
-                    : passwordResetConsume($pdo, (string)($_POST['token'] ?? ''), $password);
-                if ($result === null) {
-                    $errors[] = 'Odkaz není platný nebo už byl použit.';
-                } else {
-                    $success = true;
-                    auth_session_clear_identity('public');
-                    auth_session_clear_identity('child');
-                    auth_session_clear_identity('trainer');
-                    app_session_mark_identity_changed();
-                }
-            } catch (InvalidArgumentException $exception) {
-                $errors[] = $exception->getMessage();
-            } catch (Throwable $exception) {
-                error_log('Password reset consume failed: ' . $exception->getMessage());
-                $errors[] = 'Heslo nyní nelze změnit. Zkuste to znovu.';
-            }
-        }
+$showForm = false;
+$token = '';
+$checkLink = ($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST';
+if (!$checkLink) {
+    ['errors' => $errors, 'success' => $success, 'showForm' => $showForm, 'token' => $token] = passwordResetFormSubmit(
+        $pdo,
+        $trainerReset,
+        $_POST,
+        csrf_verify((string)($_POST['csrf_token'] ?? ''))
+    );
+    if ($success) {
+        auth_session_clear_identity('public');
+        auth_session_clear_identity('child');
+        auth_session_clear_identity('trainer');
+        app_session_mark_identity_changed();
     }
 }
 ?>
@@ -72,10 +58,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <?php if ($success): ?>
 <div class="alert alert-success">Heslo bylo změněno. Všechna starší přihlášení byla odhlášena.</div>
 <a class="btn btn-primary w-100" href="<?= htmlspecialchars($loginUrl, ENT_QUOTES, 'UTF-8') ?>">Přejít na přihlášení</a>
-<?php else: ?>
+<?php elseif ($showForm): ?>
 <form method="post" id="password-reset-form">
 <?= csrf_field() ?>
-<input type="hidden" name="token" id="password-reset-token">
+<input type="hidden" name="action" value="consume">
+<input type="hidden" name="token" id="password-reset-token" value="<?= htmlspecialchars($token, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
 <div class="mb-3">
 <label class="form-label" for="reset-password">Nové heslo <small class="text-muted">(12–200 znaků)</small>
 </label>
@@ -97,15 +84,34 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 </div>
 <button class="btn btn-primary w-100">Změnit heslo</button>
 </form>
+<?php elseif ($checkLink): ?>
+<p id="password-reset-check-status" role="status">Ověřujeme platnost odkazu…</p>
+<form method="post" id="password-reset-check-form" hidden>
+<?= csrf_field() ?>
+<input type="hidden" name="action" value="check">
+<input type="hidden" name="token" id="password-reset-token">
+</form>
+<noscript><p>Pro bezpečné ověření odkazu zapněte JavaScript a znovu otevřete odkaz z e-mailu.</p></noscript>
+<?php endif; ?>
+<?php if (!$success && !$showForm): ?>
+<a href="<?= htmlspecialchars($requestUrl, ENT_QUOTES, 'UTF-8') ?>">Vyžádat nový odkaz pro obnovu</a>
 <?php endif; ?>
 </div>
 </div>
 </main>
-<?php if (!$success): ?>
+<?php if ($checkLink || $showForm): ?>
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+<?php if ($checkLink): ?>
 const fragment = new URLSearchParams(window.location.hash.slice(1));
-document.getElementById('password-reset-token').value = fragment.get('token') || '';
+const token = fragment.get('token') || '';
 if (window.location.hash) history.replaceState(null, '', window.location.pathname + window.location.search);
+if (token) {
+    document.getElementById('password-reset-token').value = token;
+    document.getElementById('password-reset-check-form').submit();
+} else {
+    document.getElementById('password-reset-check-status').textContent = 'Odkaz není platný nebo už byl použit.';
+}
+<?php endif; ?>
 document.querySelectorAll('[data-password-toggle]').forEach(button => button.addEventListener('click', () => {
     const input = document.getElementById(button.dataset.passwordToggle);
     if (!input) return;

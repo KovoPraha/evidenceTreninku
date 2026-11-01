@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Integration;
@@ -7,9 +8,34 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/password_reset.php';
+require_once dirname(__DIR__, 2) . '/includes/password_reset_form.php';
 
 final class PasswordResetTest extends TestCase
 {
+    public function testChildFormPreflightAndReplayPreserveTheFirstPasswordAndSingleAuditEvent(): void
+    {
+        $pdo = $this->database();
+        $token = '';
+        \passwordResetRequest($pdo, 'anna.u15', static function (string $email, string $issued) use (&$token): bool {
+            $token = $issued;
+            return true;
+        });
+        $check = \passwordResetFormSubmit($pdo, false, ['action' => 'check', 'token' => $token], true);
+        self::assertTrue($check['showForm']);
+        self::assertFalse($check['success']);
+        self::assertSame('old', $pdo->query('SELECT password_hash FROM child_access_accounts WHERE id=20')->fetchColumn());
+        $input = ['token' => $token, 'heslo' => 'Child synthetic password 123!', 'heslo2' => 'Child synthetic password 123!'];
+        self::assertTrue(\passwordResetFormSubmit($pdo, false, $input, true)['success']);
+        $hash = $pdo->query('SELECT password_hash FROM child_access_accounts WHERE id=20')->fetchColumn();
+        $input['heslo'] = $input['heslo2'] = 'Rejected synthetic password 456!';
+        self::assertFalse(\passwordResetFormSubmit($pdo, false, $input, true)['success']);
+        self::assertFalse(\passwordResetFormSubmit($pdo, false, ['action' => 'check', 'token' => $token], true)['showForm']);
+        self::assertSame($hash, $pdo->query('SELECT password_hash FROM child_access_accounts WHERE id=20')->fetchColumn());
+        self::assertTrue(password_verify('Child synthetic password 123!', $hash));
+        self::assertSame(2, (int)$pdo->query('SELECT session_version FROM child_access_accounts WHERE id=20')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM child_access_events')->fetchColumn());
+    }
+
     public function testPublicAndChildResetAreSingleUseAndRevokeSessions(): void
     {
         $pdo = $this->database();
@@ -124,9 +150,11 @@ final class PasswordResetTest extends TestCase
         $pdo->exec("INSERT INTO sportovci VALUES(10,'Anna','První'),(11,'Bára','Druhá')");
         $pdo->exec('CREATE TABLE treneri(id INTEGER PRIMARY KEY,heslo TEXT,aktivni INTEGER,session_version INTEGER)');
         $pdo->exec("INSERT INTO treneri VALUES(1,'old',1,1)");
-        $pdo->exec('CREATE TABLE child_access_accounts(id INTEGER PRIMARY KEY,sportovec_id INTEGER,login_key TEXT,password_hash TEXT,active INTEGER,session_version INTEGER,password_changed_at TEXT,updated_at TEXT)');
+        $pdo->exec('CREATE TABLE child_access_accounts(id INTEGER PRIMARY KEY,sportovec_id INTEGER,login_key TEXT,'
+            . 'password_hash TEXT,active INTEGER,session_version INTEGER,password_changed_at TEXT,updated_at TEXT)');
         $pdo->exec("INSERT INTO child_access_accounts VALUES(20,10,'anna.u15','old',1,1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),(21,11,'bara.u13','old',1,1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)");
-        $pdo->exec('CREATE TABLE child_access_events(id INTEGER PRIMARY KEY AUTOINCREMENT,access_account_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)');
+        $pdo->exec('CREATE TABLE child_access_events(id INTEGER PRIMARY KEY AUTOINCREMENT,access_account_id INTEGER,'
+            . 'actor_type TEXT,actor_id INTEGER,action TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)');
         $pdo->exec('CREATE TABLE account_person_roles(id INTEGER PRIMARY KEY,account_id INTEGER,sportovec_id INTEGER,relation_role TEXT,status TEXT,valid_from TEXT,valid_to TEXT)');
         $pdo->exec("INSERT INTO account_person_roles VALUES(1,1,10,'guardian','approved','2020-01-01',NULL),(2,1,11,'guardian','approved','2020-01-01',NULL)");
         $migration = require dirname(__DIR__, 2) . '/migrations/20260804235900_password_reset_tokens.php';

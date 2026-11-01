@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/one_time_token.php';
@@ -62,23 +63,40 @@ function passwordResetRequest(PDO $pdo, string $identifier, callable $deliver, ?
 }
 
 /** Queue an encrypted reset link. Earlier delivered links remain valid until used or expired. */
-function passwordResetQueueRequest(PDO $pdo,string $identifier,string $resetUrl,?array $keyConfig=null,?int $now=null):array
+function passwordResetQueueRequest(PDO $pdo, string $identifier, string $resetUrl, ?array $keyConfig = null, ?int $now = null): array
 {
-    $identifier=trim($identifier);
-    if($identifier===''||strlen($identifier)>160)return ['accepted'=>true,'issued'=>false,'token'=>null];
-    $target=passwordResetResolveTarget($pdo,$identifier);
-    if($target===null)return ['accepted'=>true,'issued'=>false,'token'=>null];
-    $issued=one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET,3600,$now);
+    $identifier = trim($identifier);
+    if ($identifier === '' || strlen($identifier) > 160) {
+        return ['accepted' => true,'issued' => false,'token' => null];
+    }
+    $target = passwordResetResolveTarget($pdo, $identifier);
+    if ($target === null) {
+        return ['accepted' => true,'issued' => false,'token' => null];
+    }
+    $issued = one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET, 3600, $now);
     $pdo->beginTransaction();
-    try{
+    try {
         $pdo->prepare('INSERT INTO password_reset_tokens(target_type,target_id,delivery_account_id,token_hash,expires_at) VALUES(?,?,?,?,?)')
             ->execute([$target['type'],$target['target_id'],$target['delivery_account_id'],$issued['hash'],$issued['expires_at']]);
-        $link=$resetUrl.'#token='.rawurlencode($issued['token']);
-        authMailEnqueue($pdo,'reset',$target['type'],$target['target_id'],$issued['hash'],(string)$target['email'],
-            'Obnova hesla — Kovopraha',"Pro nastavení nového hesla otevřete odkaz:\n{$link}\n\nOdkaz je platný 60 minut.",$keyConfig);
+        $link = $resetUrl.'#token='.rawurlencode($issued['token']);
+        authMailEnqueue(
+            $pdo,
+            'reset',
+            $target['type'],
+            $target['target_id'],
+            $issued['hash'],
+            (string)$target['email'],
+            'Obnova hesla — Kovopraha',
+            "Pro nastavení nového hesla otevřete odkaz:\n{$link}\n\nOdkaz je platný 60 minut.",
+            $keyConfig
+        );
         $pdo->commit();
-        return ['accepted'=>true,'issued'=>true,'token'=>$issued['token']];
-    }catch(Throwable $exception){if($pdo->inTransaction())$pdo->rollBack();throw $exception;}
+        return ['accepted' => true,'issued' => true,'token' => $issued['token']];
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }throw $exception;
+    }
 }
 
 /** @return array{type:string,target_id:int,delivery_account_id:int,email:string}|null */
@@ -130,26 +148,33 @@ function passwordResetResolveTarget(PDO $pdo, string $identifier): ?array
     ];
 }
 
-/** @return array{target_type:string,target_id:int}|null */
-function passwordResetConsume(PDO $pdo, string $token, string $newPassword, ?int $now = null): ?array
+/** Read-only preflight; consumption repeats the lookup while holding the token lock. */
+function passwordResetLookup(PDO $pdo, string $token, ?int $now = null, bool $lock = false): ?array
 {
-    passwordPolicyValidate($newPassword);
     $hash = one_time_token_hash(ONE_TIME_TOKEN_PASSWORD_RESET, trim($token));
     if ($hash === '') {
         return null;
     }
+    $sql = 'SELECT * FROM password_reset_tokens '
+        . 'WHERE token_hash=? AND consumed_at IS NULL AND expires_at>=? LIMIT 1';
+    if ($lock && (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+        $sql .= ' FOR UPDATE';
+    }
+    $statement = $pdo->prepare($sql);
+    $statement->execute([$hash, gmdate('Y-m-d H:i:s', $now ?? time())]);
+    $reset = $statement->fetch(PDO::FETCH_ASSOC);
+    return $reset && passwordResetTargetStillAuthorized($pdo, $reset) ? $reset : null;
+}
+
+/** @return array{target_type:string,target_id:int}|null */
+function passwordResetConsume(PDO $pdo, string $token, string $newPassword, ?int $now = null): ?array
+{
+    passwordPolicyValidate($newPassword);
     $nowSql = gmdate('Y-m-d H:i:s', $now ?? time());
     $pdo->beginTransaction();
     try {
-        $sql = 'SELECT * FROM password_reset_tokens '
-            . 'WHERE token_hash=? AND consumed_at IS NULL AND expires_at>=? LIMIT 1';
-        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
-            $sql .= ' FOR UPDATE';
-        }
-        $statement = $pdo->prepare($sql);
-        $statement->execute([$hash, $nowSql]);
-        $reset = $statement->fetch(PDO::FETCH_ASSOC);
-        if (!$reset || !passwordResetTargetStillAuthorized($pdo, $reset)) {
+        $reset = passwordResetLookup($pdo, $token, $now, true);
+        if ($reset === null) {
             $pdo->rollBack();
             return null;
         }
