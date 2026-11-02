@@ -2,10 +2,15 @@
 
 Aktualizováno 2. 11. 2026 (Europe/Prague), po sloučení a nasazení druhé funkční vlny PR #274.
 
-- **Evidence členů bez sezon: sloučeno, dosud nenasazeno.** PR #279–#281 přidávají
+- **Evidence členů bez sezon: sloučeno, dosud nenasazeno.** PR #279–#283 přidávají
   trvalé soupisky, časové členství, datované nabídky/náhrady a nástroj převodu.
-  Všech 11 kontrol #281 PASS, Linux 1 936 testů / 38 191 assertions. Čtecí produkční
-  inventura a technický nácvik 44 soupisek na izolované záloze včetně obnovy prošly.
+  Všech 11 kontrol #283 PASS, Linux 1 947 testů / 38 243 assertions. Vlastník potvrdil
+  převzetí 435 aktivních zařazení od 2. 11. 2026 a odstranění 560 historických;
+  nástroj podporuje jednu poslední synchronizaci s neměnným počátečním dnem.
+  Čtecí produkční
+  inventura a [nácvik na izolované záloze](verification/member-evidence-20261102/RESULTS.md)
+  prošly: 44 soupisek, 435 převzatých intervalů, odstraněno 560 historických intervalů
+  a 560 importních událostí; parita, opakování a obnova 337 tabulek / 2 triggerů PASS.
   [Konkrétní podklady a otevřená rozhodnutí](MEMBER_EVIDENCE_PRODUCTION_TRANSITION_2026-11-02.md).
   E7/E8, cleanup a přihlášená přejímka nejsou dokončené; živé vydání níže se nemění.
 

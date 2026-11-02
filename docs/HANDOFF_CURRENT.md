@@ -13,6 +13,8 @@ inventura a technický nácvik skutečné aplikační zálohy prošly. [Podklady
 obsahují potvrzené rozhodnutí převzít 435 aktivních zařazení od 2. 11. 2026 a odstranit
 560 historických. Jedna poslední synchronizace je očekávána; datum začátku neposouvá.
 Nový nástroj přijímá explicitní rozdíl nad konkrétním exportem a odmítá opakovanou dávku.
+Rozšířený nácvik 435/560 na skutečné izolované záloze prošel v běhu 41512931635,
+včetně odstranění 560 importních událostí, odpojení převodních vazeb a úplné obnovy.
 Konkrétní produkční mapa soupisek, manifest
 úklidu a UAT zůstávají otevřené; E7/E8 nebyly provedeny. Tento stav není potvrzením
 nasazení ani provedeného mazání.
