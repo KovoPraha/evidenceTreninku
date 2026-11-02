@@ -12,6 +12,42 @@ require_once dirname(__DIR__, 2) . '/includes/member_evidence_guard.php';
 
 final class MemberEvidenceCutoverTest extends TestCase
 {
+    public function testApplicationScopeAllowsIndependentForeignWritesAndPreservesThem(): void
+    {
+        $pdo = $this->database();
+        $config = $this->config() + ['scope' => 'application_backup'];
+        $manifest = \memberEvidencePreview($pdo, $config);
+        self::assertArrayHasKey('club_roster_members', $manifest['snapshot']);
+        self::assertArrayNotHasKey('retained_finance', $manifest['snapshot']);
+        $pdo->exec('UPDATE retained_finance SET amount_minor=45678 WHERE id=1');
+        $result = \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+        self::assertTrue($result['preserved_parity']);
+        self::assertSame(45678, (int) $pdo->query('SELECT amount_minor FROM retained_finance WHERE id=1')->fetchColumn());
+    }
+
+    public function testApplicationScopeRejectsNewForeignBoundaryEvenWithoutRows(): void
+    {
+        $pdo = $this->database();
+        $config = $this->config() + ['scope' => 'application_backup'];
+        $manifest = \memberEvidencePreview($pdo, $config);
+        $pdo->exec('CREATE TABLE foreign_app(id INTEGER PRIMARY KEY,team_id INTEGER REFERENCES club_teams(id) ON DELETE CASCADE)');
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Cizí FK');
+        \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+    }
+
+    public function testApplicationScopeStillRejectsAChangedPayment(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec('CREATE TABLE payments(id INTEGER PRIMARY KEY,amount_minor INTEGER)');
+        $pdo->exec('INSERT INTO payments VALUES(1,12345)');
+        $manifest = \memberEvidencePreview($pdo, $this->config() + ['scope' => 'application_backup']);
+        $pdo->exec('UPDATE payments SET amount_minor=45678 WHERE id=1');
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Databáze se od náhledu změnila');
+        \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+    }
+
     public function testSnapshotIncludesLegacyIdentifiersWithoutInterpretingSql(): void
     {
         $pdo = $this->database();

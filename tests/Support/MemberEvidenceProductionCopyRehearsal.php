@@ -78,7 +78,7 @@ try {
     if ($actor < 1) {
         throw new RuntimeException('No existing registrar in the isolated copy.');
     }
-    $config = ['cutover_on' => date('Y-m-d'), 'reason' => 'ISOLATED COPY REHEARSAL; not production approval',
+    $config = ['scope' => 'application_backup', 'cutover_on' => date('Y-m-d'), 'reason' => 'ISOLATED COPY REHEARSAL; not production approval',
         'teams' => $teams, 'delete' => []];
     $phase = 'preview';
     $stable = memberEvidenceSnapshot($pdo);

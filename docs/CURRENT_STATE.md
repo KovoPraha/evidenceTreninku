@@ -2,6 +2,13 @@
 
 Aktualizováno 2. 11. 2026 (Europe/Prague), po sloučení a nasazení druhé funkční vlny PR #274.
 
+- **Evidence členů bez sezon: sloučeno, dosud nenasazeno.** PR #279–#281 přidávají
+  trvalé soupisky, časové členství, datované nabídky/náhrady a nástroj převodu.
+  Všech 11 kontrol #281 PASS, Linux 1 936 testů / 38 191 assertions. Čtecí produkční
+  inventura a technický nácvik 44 soupisek na izolované záloze včetně obnovy prošly.
+  [Konkrétní podklady a otevřená rozhodnutí](MEMBER_EVIDENCE_PRODUCTION_TRANSITION_2026-11-02.md).
+  E7/E8, cleanup a přihlášená přejímka nejsou dokončené; živé vydání níže se nemění.
+
 - [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
 
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
