@@ -8,6 +8,10 @@ require_once __DIR__ . '/includes/staff_account_lifecycle.php';
 
 staffRequireActivePosition('system_admin');
 
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Databázové připojení není dostupné.');
+}
+
 function staffAdminH(mixed $value): string
 {
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');

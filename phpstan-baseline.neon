@@ -2735,12 +2735,6 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 32
-			path: sprava_pracovnich_pozic.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 14
 			path: sprava_segmentu.php
 
