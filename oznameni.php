@@ -13,8 +13,12 @@ if (!canAccess('oznameni')) {
 }
 require_once __DIR__ . '/csrf_helper.php';
 
-function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
-function cleanHtml($html) {
+function h($s)
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
+function cleanHtml($html)
+{
     // Povolené minimum: odstavce, zalomení, tučné, kurzíva, seznamy, odkazy
     $allowed = '<p><br><b><strong><i><em><ul><ol><li><a>';
     $html = (string)$html;
@@ -24,7 +28,8 @@ function cleanHtml($html) {
     return $html;
 }
 
-function safeOznameniHtml($html): string {
+function safeOznameniHtml($html): string
+{
     $html = strip_tags((string)$html, '<p><br><b><strong><i><em><ul><ol><li><a>');
     return preg_replace_callback('~<\s*(/)?\s*([a-z0-9]+)([^>]*)>~i', function ($m) {
         $closing = $m[1] === '/';
@@ -89,9 +94,15 @@ if ($editId > 0) {
         while ($r = $stT->fetch(PDO::FETCH_ASSOC)) {
             $type = $r['target_type'];
             $tid  = (int)$r['target_id'];
-            if ($type === 'skupina') $editTargets['skupiny'][] = $tid;
-            if ($type === 'podskupina') $editTargets['podskupiny'][] = $tid;
-            if ($type === 'sportovec') $editTargets['sportovci'][] = $tid;
+            if ($type === 'skupina') {
+                $editTargets['skupiny'][] = $tid;
+            }
+            if ($type === 'podskupina') {
+                $editTargets['podskupiny'][] = $tid;
+            }
+            if ($type === 'sportovec') {
+                $editTargets['sportovci'][] = $tid;
+            }
         }
     }
 }
@@ -112,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $stmt = $pdo->prepare("DELETE FROM oznameni WHERE id = ? LIMIT 1");
             $stmt->execute([$deleteId]);
-            header('Location: oznameni.php?ok=1');
+            header('Location: oznameni.php?deleted=1', true, 303);
             exit;
         } catch (Exception $e) {
             $errors[] = 'Chyba při mazání: ' . $e->getMessage();
@@ -190,9 +201,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 VALUES (?, ?, ?)
             ");
 
-            foreach ($t_skupiny as $gid)    $insT->execute([$ozId, 'skupina', (int)$gid]);
-            foreach ($t_podskupiny as $pid) $insT->execute([$ozId, 'podskupina', (int)$pid]);
-            foreach ($t_sportovci as $sid)  $insT->execute([$ozId, 'sportovec', (int)$sid]);
+            foreach ($t_skupiny as $gid) {
+                $insT->execute([$ozId, 'skupina', (int)$gid]);
+            }
+            foreach ($t_podskupiny as $pid) {
+                $insT->execute([$ozId, 'podskupina', (int)$pid]);
+            }
+            foreach ($t_sportovci as $sid) {
+                $insT->execute([$ozId, 'sportovec', (int)$sid]);
+            }
 
             $pdo->commit();
 
@@ -200,13 +217,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
 
         } catch (Exception $e) {
-            if ($pdo->inTransaction()) $pdo->rollBack();
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             $errors[] = 'Chyba při ukládání: ' . $e->getMessage();
         }
     }
 }
 
-if (isset($_GET['ok']) && $_GET['ok'] === '1') $success = true;
+if (isset($_GET['ok']) && $_GET['ok'] === '1') {
+    $success = true;
+}
+$deleted = ($_GET['deleted'] ?? '') === '1';
 
 // -------------------------------
 // Výpis oznámení (poslední nahoře)
@@ -221,7 +243,7 @@ $oznameni = $pdo->query("
 
 $targetsByOznameni = [];
 if (!empty($oznameni)) {
-    $ids = array_map(fn($r) => (int)$r['id'], $oznameni);
+    $ids = array_map(fn ($r) => (int)$r['id'], $oznameni);
     $in = implode(',', array_fill(0, count($ids), '?'));
 
     $stT = $pdo->prepare("
@@ -233,7 +255,9 @@ if (!empty($oznameni)) {
     $stT->execute($ids);
     while ($r = $stT->fetch(PDO::FETCH_ASSOC)) {
         $oid = (int)$r['oznameni_id'];
-        if (!isset($targetsByOznameni[$oid])) $targetsByOznameni[$oid] = ['skupina'=>[], 'podskupina'=>[], 'sportovec'=>[]];
+        if (!isset($targetsByOznameni[$oid])) {
+            $targetsByOznameni[$oid] = ['skupina' => [], 'podskupina' => [], 'sportovec' => []];
+        }
         $targetsByOznameni[$oid][$r['target_type']][] = (int)$r['target_id'];
     }
 }
@@ -268,7 +292,8 @@ if (!empty($form['target_sportovci'])) {
 <head>
     <meta charset="UTF-8">
     <title>Oznámení</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .small-muted { font-size: .85rem; color: #666; }
         .chip {
@@ -303,8 +328,8 @@ if (!empty($form['target_sportovci'])) {
         <?php endif; ?>
     </div>
 
-    <?php if ($success): ?>
-        <div class="alert alert-success mt-3">Uloženo.</div>
+    <?php if ($success || $deleted): ?>
+        <div class="alert alert-success mt-3"><?= $deleted ? 'Oznámení bylo smazáno.' : 'Uloženo.' ?></div>
     <?php endif; ?>
 
     <?php if (!empty($errors)): ?>
@@ -379,16 +404,16 @@ if (!empty($form['target_sportovci'])) {
                                     // pokud editace poslala podskupiny, necháme je zatím bez názvů - JS si je umí dočíst po načtení skupiny,
                                     // ale pro pohodlí načteme rovnou názvy:
                                     $psSelected = array_values(array_unique(array_filter(array_map('intval', (array)$form['target_podskupiny']))));
-                                    if (!empty($psSelected)) {
-                                        $in = implode(',', array_fill(0, count($psSelected), '?'));
-                                        $st = $pdo->prepare("SELECT id, nazev FROM podskupiny WHERE id IN ($in) ORDER BY nazev");
-                                        $st->execute($psSelected);
-                                        $rows = $st->fetchAll(PDO::FETCH_ASSOC);
-                                        foreach ($rows as $r) {
-                                            echo '<option value="'.(int)$r['id'].'" selected>'.h($r['nazev']).'</option>';
-                                        }
-                                    }
-                                    ?>
+if (!empty($psSelected)) {
+    $in = implode(',', array_fill(0, count($psSelected), '?'));
+    $st = $pdo->prepare("SELECT id, nazev FROM podskupiny WHERE id IN ($in) ORDER BY nazev");
+    $st->execute($psSelected);
+    $rows = $st->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($rows as $r) {
+        echo '<option value="'.(int)$r['id'].'" selected>'.h($r['nazev']).'</option>';
+    }
+}
+?>
                                 </select>
 
                                 <div class="form-text">Vyber skupinu výše a podskupiny se načtou bez reloadu.</div>
@@ -427,8 +452,9 @@ if (!empty($form['target_sportovci'])) {
                         <button type="submit"
                                 name="delete_id"
                                 value="<?= (int)$editId ?>"
+                                formnovalidate
                                 class="btn btn-danger"
-                                data-confirm="Opravdu smazat toto oznámení?">
+                                data-confirm="Opravdu smazat toto oznámení? Tuto akci nelze vrátit.">
                             Smazat
                         </button>
                     <?php endif; ?>
@@ -452,8 +478,8 @@ if (!empty($form['target_sportovci'])) {
                         $headingId  = 'oz_h_' . $oid;
                         $open = ($i === 0);
 
-                        $targets = $targetsByOznameni[$oid] ?? ['skupina'=>[], 'podskupina'=>[], 'sportovec'=>[]];
-                    ?>
+                        $targets = $targetsByOznameni[$oid] ?? ['skupina' => [], 'podskupina' => [], 'sportovec' => []];
+                        ?>
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="<?= h($headingId) ?>">
                                 <button class="accordion-button <?= $open ? '' : 'collapsed' ?>"
@@ -478,6 +504,13 @@ if (!empty($form['target_sportovci'])) {
                                         </div>
                                         <div class="d-flex gap-2">
                                             <a class="btn btn-sm btn-outline-secondary" href="oznameni.php?edit=<?= $oid ?>#form">Upravit</a>
+                                            <form method="post" action="oznameni.php" class="m-0"
+                                                  data-confirm="<?= h('Opravdu smazat oznámení „' . ($o['nazev'] ?: ('#' . $oid)) . '“? Tuto akci nelze vrátit.') ?>">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="delete_id" value="<?= $oid ?>">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                        aria-label="<?= h('Smazat oznámení ' . ($o['nazev'] ?: ('#' . $oid))) ?>">Smazat</button>
+                                            </form>
                                         </div>
                                     </div>
 
@@ -490,12 +523,18 @@ if (!empty($form['target_sportovci'])) {
                                     <div class="small text-muted">
                                         <strong>Cílení:</strong>
                                         <?php
-                                        $parts = [];
-                                        if (!empty($targets['skupina'])) $parts[] = 'skupiny: ' . count($targets['skupina']);
-                                        if (!empty($targets['podskupina'])) $parts[] = 'podskupiny: ' . count($targets['podskupina']);
-                                        if (!empty($targets['sportovec'])) $parts[] = 'sportovci: ' . count($targets['sportovec']);
-                                        echo h($parts ? implode(' · ', $parts) : '—');
-                                        ?>
+                                            $parts = [];
+                        if (!empty($targets['skupina'])) {
+                            $parts[] = 'skupiny: ' . count($targets['skupina']);
+                        }
+                        if (!empty($targets['podskupina'])) {
+                            $parts[] = 'podskupiny: ' . count($targets['podskupina']);
+                        }
+                        if (!empty($targets['sportovec'])) {
+                            $parts[] = 'sportovci: ' . count($targets['sportovec']);
+                        }
+                        echo h($parts ? implode(' · ', $parts) : '—');
+                        ?>
                                     </div>
 
                                 </div>
@@ -511,7 +550,8 @@ if (!empty($form['target_sportovci'])) {
 </div>
 
 <!-- TinyMCE je volitelné vylepšení. Bez internetu zůstává funkční obyčejné textarea. -->
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" integrity="sha384-1Miaw0hyo/w0cd9ZHUnc7Z8ACgtO+lphAEziGNW4z2C1h3nJfMVVEWA5MI031P+X" crossorigin="anonymous"></script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js"
+        integrity="sha384-1Miaw0hyo/w0cd9ZHUnc7Z8ACgtO+lphAEziGNW4z2C1h3nJfMVVEWA5MI031P+X" crossorigin="anonymous"></script>
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 if (typeof window.tinymce !== 'undefined') {
     window.tinymce.init({
