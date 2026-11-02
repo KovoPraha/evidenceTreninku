@@ -1,0 +1,18 @@
+{
+  "run_id": "41545925704",
+  "conclusion": "success",
+  "cutover_run_id": "41542954307",
+  "operator_revision": "bfe3816eabcd6a9caf76b629c37c6346f383ac62",
+  "result_and_recovery_verified": true,
+  "fingerprint": "79e8e7fbfa50afbde2e52122f578d25c90b28f499558f0bbb601bb1e6c3cd352",
+  "backup_sha256": "c633457ae631140bc30951f488855baf9b5251d347a107f13df894bce6725203",
+  "restored_in_isolation": true,
+  "row_counts_matched_tables": 342,
+  "triggers_matched": 2,
+  "http": {
+    "index.php": 200,
+    "kis_rosters_admin.php": 302
+  },
+  "production_database_restored": false,
+  "cutover_reapplied": false
+}

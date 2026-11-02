@@ -100,4 +100,4 @@ Podrobná mapa skutečných ID zůstává mimo Git.
 - E8, tedy destruktivní odstranění starého schématu a backendů, navazuje až na
   ověřený E7 a uzavřený bod návratu. Samotné sloučení kódu tuto podmínku nenaplňuje.
 
-Provozní vydání určuje [CURRENT_STATE](CURRENT_STATE.md). Datový převod a schválený cleanup jsou potvrzené; poslední synchronizace, E8 a úplná přejímka nikoli. Běh převodu selhal až na HTTP timeoutu runneru po commitu. Následné nezávislé HTTP 40/40 a inventura PASS; čerstvá záloha čeká na samostatnou izolovanou obnovu. Importy a rozesílky se nezapnuly.
+Provozní vydání určuje [CURRENT_STATE](CURRENT_STATE.md). Datový převod a schválený cleanup jsou potvrzené; poslední synchronizace, E8 a úplná přejímka nikoli. Běh převodu selhal až na HTTP timeoutu runneru po commitu. Následné nezávislé HTTP 40/40 a inventura PASS; čerstvá záloha byla samostatně obnovena v izolaci (41545925704, 342 tabulek / 2 triggery). Čtecí kontrola 41545932556 potvrdila všechny počátky a neaktivní technickou identitu bez oprávnění. Importy a rozesílky se nezapnuly.

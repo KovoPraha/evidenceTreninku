@@ -269,7 +269,7 @@ Pro aplikační PR: syntaxe dotčených PHP, `git diff --check`, `composer valid
 - [x] E6: nácvik přesné mapy 435/560, parit, technické identity a obnovy na izolované záloze.
 - [ ] E6/E7: dokončit přihlášené UAT všech rolí.
 - [x] E7: schválený převod 41542954307 potvrzen, provoz obnoven, technické oprávnění odebráno; nezávislé HTTP 40/40 a inventura PASS.
-- [ ] E7: izolovaně obnovit čerstvou zálohu konkrétního převodu (původní workflow tento krok po HTTP timeoutu vynechalo).
+- [x] E7: čerstvá záloha přesného převodu obnovena v izolaci — běh 41545925704, 342 tabulek / 2 triggery PASS; nezávislá inventura 41545932556 potvrdila 435 počátků a technickou identitu bez oprávnění.
 - [ ] Dokončit jednu poslední synchronizaci po dodání nového exportu; datum 2. 11. neměnit.
 - [ ] E8: odstranit sezonní schéma a zbylé historické cesty.
 
