@@ -1,6 +1,6 @@
 # Pracovní plán jednotné evidence členů bez sezon
 
-Datum: 2. 11. 2026, Europe/Prague. Stav: **aplikační části E1–E5 a nástroj převodu E6 implementovány v pracovní větvi; produkční převod E7 a odstranění schématu E8 neprovedeny**. Přesný rozsah, přechodové závislosti a zbývající přejímky uvádí [implementační protokol](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md).
+Datum: 2. 11. 2026, Europe/Prague. Stav: **aplikační části E1–E5 a nástroj převodu E6 sloučeny v PR #279; produkční převod E7 a odstranění schématu E8 neprovedeny**. Přesný rozsah, přechodové závislosti a zbývající přejímky uvádí [implementační protokol](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md).
 
 Vlastník potvrdil cílový koncept: jedna karta osoby, trvalé skupiny a soupisky, časově platné členství, datované nabídky kroužků a společné využití členství v celé aplikaci. Historie před přechodem zůstane v původním KIS. Nový systém převezme potřebný výchozí stav a bude uchovávat vlastní provozní historii od přechodu.
 
