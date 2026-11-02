@@ -6,10 +6,12 @@ require_once __DIR__ . '/roster_hierarchy.php';
 
 function memberEvidenceIdentifier(string $name): string
 {
-    if (!preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/D', $name)) {
+    if ($name === '' || str_contains($name, "\0")) {
         throw new InvalidArgumentException('Neplatný databázový identifikátor.');
     }
-    return '`' . $name . '`';
+    // Catalogs also contain legacy identifiers with spaces, dashes or backticks.
+    // Quoting, not a naming convention, provides SQL isolation.
+    return '`' . str_replace('`', '``', $name) . '`';
 }
 
 /** Includes unknown tables: an unowned dependency must not disappear from the audit. */

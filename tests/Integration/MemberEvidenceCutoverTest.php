@@ -12,6 +12,22 @@ require_once dirname(__DIR__, 2) . '/includes/member_evidence_guard.php';
 
 final class MemberEvidenceCutoverTest extends TestCase
 {
+    public function testSnapshotIncludesLegacyIdentifiersWithoutInterpretingSql(): void
+    {
+        $pdo = $this->database();
+        $name = '2020 archive-` ; DROP TABLE retained_finance; --';
+        $identifier = \memberEvidenceIdentifier($name);
+        $pdo->exec('CREATE TABLE ' . $identifier . '(id INTEGER PRIMARY KEY,value TEXT)');
+        $pdo->exec('INSERT INTO ' . $identifier . " VALUES(1,'LOCALHOST retained')");
+        $before = \memberEvidenceSnapshot($pdo);
+        self::assertSame(1, $before[$name]['count']);
+        $manifest = \memberEvidencePreview($pdo, $this->config());
+        \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+        $after = \memberEvidenceSnapshot($pdo);
+        self::assertSame($before[$name], $after[$name]);
+        self::assertSame($before['retained_finance'], $after['retained_finance']);
+    }
+
     private function database(): PDO
     {
         $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);

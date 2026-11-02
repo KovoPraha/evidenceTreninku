@@ -1,6 +1,6 @@
 # Evidence členů bez sezon — implementace a převod
 
-Navazuje na [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md). Tento dokument popisuje aplikační změnu a nácvik nad syntetickými daty. Nepotvrzuje nasazení, převod produkčních dat ani dokončení E7/E8.
+Navazuje na [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md). Tento dokument popisuje aplikační změnu a nácvik nad syntetickými daty i izolovanou kopií skutečné aplikační zálohy. Nepotvrzuje nasazení, převod živých dat ani dokončení E7/E8.
 
 ## Co aplikace nově používá
 
@@ -63,7 +63,7 @@ Po zapsání převodu jsou na úrovni služeb zablokovány nové sezony, rollove
 
 ## Stav před provozním přechodem
 
-Technicky jsou implementovány aplikační části E1–E5 a nástroj E6. E0 má zdrojový inventář, chybí ověřená aktuální produkční inventura. E6 má syntetický nácvik a samostatnou obnovu, chybí nácvik konkrétního produkčního manifestu včetně souborů a přihlášené UAT všech rolí. E7/E8 nebyly provedeny.
+Technicky jsou implementovány a sloučeny aplikační části E1–E5 a nástroj E6. E0 má zdrojový inventář, chybí uzavřená aktuální produkční inventura. E6 má syntetický nácvik a úspěšný technický převod 44 soupisek na skutečné izolované aplikační záloze včetně obnovy všech 337 původních tabulek. Chybí nácvik konkrétního produkčního manifestu úklidu včetně souborů, kontrola hranice cizích tabulek sdílené DB a přihlášené UAT všech rolí. E7/E8 nebyly provedeny. Přesné důkazy obsahuje [ověřovací protokol](verification/member-evidence-20261102/RESULTS.md).
 
 Před E7 uzavřít D1–D3 nad skutečnými daty. D4/D5/D8 zůstávají výslovnými rozhodnutími v příslušných agendách: systém neodhaduje poměrné ceny, výjimky z plateb ani rušení členství pro dluh. D6 spravuje matice náhrad; D7 explicitní věkové pravidlo. Žádné uvedené syntetické ověření nepotvrzuje účetní/lidskou přejímku nebo oprávnění zapnout skutečné importy a rozesílky.
 
