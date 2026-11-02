@@ -19,6 +19,24 @@
       "disposition": "Backup/restore ownership: preserve transitional schema until E8."
     },
     {
+      "path": "bin/diagnose-member-evidence.php",
+      "line": 41,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Read-only pre-deploy inventory of legacy schema; no DDL/DML."
+    },
+    {
+      "path": "bin/diagnose-member-evidence.php",
+      "line": 42,
+      "references": [
+        "club_seasons",
+        "season_id",
+        "season_type"
+      ],
+      "disposition": "Read-only pre-deploy inventory of legacy schema; no DDL/DML."
+    },
+    {
       "path": "bin/member-evidence-cutover.php",
       "line": 61,
       "references": [
@@ -952,5 +970,5 @@
       "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
     }
   ],
-  "remaining_files": 17
+  "remaining_files": 18
 }

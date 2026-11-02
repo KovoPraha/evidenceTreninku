@@ -59,4 +59,4 @@ Technicky jsou implementovány aplikační části E1–E5 a nástroj E6. E0 má
 
 Před E7 uzavřít D1–D3 nad skutečnými daty. D4/D5/D8 zůstávají výslovnými rozhodnutími v příslušných agendách: systém neodhaduje poměrné ceny, výjimky z plateb ani rušení členství pro dluh. D6 spravuje matice náhrad; D7 explicitní věkové pravidlo. Žádné uvedené syntetické ověření nepotvrzuje účetní/lidskou přejímku nebo oprávnění zapnout skutečné importy a rozesílky.
 
-Referenční čtečky výkonových profilů W7.2/W7.3 přebírají pouze záměrnou změnu projekce soupisek (nulové sezonní aliasy a řazení podle začátku členství). Původní způsob načítání osob a rozpočty dotazů zůstávají, aby měření stále odhalilo návrat N+1.
+Referenční čtečky výkonových profilů W7.2/W7.3 přebírají pouze záměrnou změnu projekce soupisek (nulové sezonní aliasy a řazení podle začátku členství). Šablona W7.2 používá aktuální HTML bez sezonního sloupce při zachování původního controlleru. Původní způsob načítání osob a rozpočty dotazů zůstávají, aby měření stále odhalilo návrat N+1.

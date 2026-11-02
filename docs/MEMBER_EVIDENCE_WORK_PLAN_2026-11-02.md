@@ -261,14 +261,16 @@ Pro aplikační PR: syntaxe dotčených PHP, `git diff --check`, `composer valid
 - [x] Zapsat potvrzený koncept a změnu rozhodnutí o staré historii.
 - [x] Připravit výchozí inventář stránek, služeb, rizik a akceptace podle kódu.
 - [ ] E0: dokončit úplný registr závislostí a čtecí datovou inventuru.
-- [ ] E1: uzavřít kontrakty a připravit migrace/společné služby.
-- [ ] E2: dokončit jednotnou administraci a oprávnění.
-- [ ] E3: převést kroužky, nabídky, aktivaci a pravidla náhrad.
-- [ ] E4: sjednotit tréninky, akce, rodinu a komunikaci.
-- [ ] E5: ověřit příspěvky a návaznosti plateb.
+- [x] E1: uzavřít kontrakty a připravit migrace/společné služby.
+- [x] E2: dokončit jednotnou administraci a oprávnění.
+- [x] E3: převést kroužky, nabídky, aktivaci a pravidla náhrad.
+- [x] E4: sjednotit tréninky, akce, rodinu a komunikaci.
+- [x] E5: ověřit příspěvky a návaznosti plateb.
 - [ ] E6: provést nácvik převodu, obnovy a úplné UAT.
 - [ ] E7: provést schválený provozní přechod a ověření.
 - [ ] E8: odstranit sezonní schéma a zbylé historické cesty.
+
+Zaškrtnuté E1–E5 označují dokončenou aplikační část, nikoli produkční UAT. Výsledky a omezení jsou v [ověřovacím protokolu](verification/member-evidence-20261102/RESULTS.md).
 
 Při převzetí uvést poslední dokončenou etapu, SHA, PR/CI, seznam změněných tras, rozhodnutí D1–D8, stav datového manifestu a chybějící scénáře A01–A20. Implementováno, sloučeno, nasazeno a provozně ověřeno jsou čtyři samostatné stavy.
 
