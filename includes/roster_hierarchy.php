@@ -34,7 +34,7 @@ function kisRosterHierarchyHasColumn(PDO $pdo, string $table, string $column): b
 }
 
 /** Current or historical descendants, including the requested team itself. */
-function kisRosterDescendantIds(PDO $pdo, int $teamId, string $date): array
+function kisRosterDescendantIds(PDO $pdo, int $teamId, string $date, bool $lock = true): array
 {
     $date = kisRosterDate($date);
     if ($teamId < 1) {
@@ -45,7 +45,7 @@ function kisRosterDescendantIds(PDO $pdo, int $teamId, string $date): array
         return [$teamId];
     }
     $stmt = $pdo->prepare('SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)'
-        . ($pdo->inTransaction() && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
+        . ($lock && $pdo->inTransaction() && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
     $stmt->execute([$date, $date]);
     $children = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $edge) {
@@ -65,10 +65,10 @@ function kisRosterDescendantIds(PDO $pdo, int $teamId, string $date): array
 }
 
 /** One athlete ID per person, even when several descendant paths match. */
-function kisRosterEffectiveMemberIds(PDO $pdo, int $teamId, string $date): array
+function kisRosterEffectiveMemberIds(PDO $pdo, int $teamId, string $date, bool $lock = true): array
 {
     $date = kisRosterDate($date);
-    $teamIds = kisRosterDescendantIds($pdo, $teamId, $date);
+    $teamIds = kisRosterDescendantIds($pdo, $teamId, $date, $lock);
     if (!$teamIds || !kisRosterHierarchyHasTable($pdo, 'club_roster_members')) {
         return [];
     }

@@ -52,6 +52,12 @@ try {
     $config = ['cutover_on' => date('Y-m-d'), 'reason' => 'LOCALHOST nácvik převodu', 'delete' => [],
         'teams' => [['id' => $team['id'], 'standing_code' => 'STANDING', 'name' => 'LOCALHOST trvalá', 'activity_kind' => 'competitive']]];
     $before = memberEvidenceSnapshot($pdo);
+    $pdo->exec('START TRANSACTION READ ONLY');
+    $readOnlyConfig = $config + ['groups' => [['standing_code' => 'GROUP', 'name' => 'LOCALHOST skupina',
+        'activity_kind' => 'competitive', 'child_ids' => [$team['id']]]]];
+    $readOnlyManifest = memberEvidencePreview($pdo, $readOnlyConfig);
+    $check($readOnlyManifest['groups'][0]['membership'][date('Y-m-d')]['count'] === 1, 'Read-only group preview failed.');
+    $pdo->exec('ROLLBACK');
     $manifest = memberEvidencePreview($pdo, $config);
     $check($before === memberEvidenceSnapshot($pdo), 'Preview changed data.');
     $pdo->exec('UPDATE retained_finance SET amount_minor=12346 WHERE id=1');

@@ -1,0 +1,150 @@
+name: Schválený převod evidence členů
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'PREVEST-CLENSTVI: schválená mapa, 435 aktivních od 2. 11. 2026, odstranění 560 historických'
+        required: true
+        type: string
+      release_sha:
+        description: 'Úplné SHA právě nasazeného a ověřeného vydání'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  cutover:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    steps:
+      - name: Ověřit schválený cíl
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+          RELEASE_SHA: ${{ inputs.release_sha }}
+        run: |
+          set -euo pipefail
+          test "$POTVRZENI" = PREVEST-CLENSTVI
+          [[ "$RELEASE_SHA" =~ ^[a-f0-9]{40}$ ]]
+          test "$APP_HOST" = kis.kovopraha.cz
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]]
+
+      - name: Stáhnout ověřené nástroje
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Připravit ověřené SSH spojení
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!name}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Připravit soukromou operaci
+        env:
+          PRIVATE_MAPPING_JSON: ${{ secrets.KIS_MEMBER_EVIDENCE_MAP }}
+          RELEASE_SHA: ${{ inputs.release_sha }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          umask 077
+          LOCAL="/tmp/kis-member-operation-$GITHUB_RUN_ID"
+          PRIVATE="$DEPLOY_BASE/member-cutover-$GITHUB_RUN_ID"
+          install -d -m 700 "$LOCAL"
+          test -n "$PRIVATE_MAPPING_JSON"
+          printf '%s' "$PRIVATE_MAPPING_JSON" > "$LOCAL/mapping.json"
+          unset PRIVATE_MAPPING_JSON
+          jq -n --arg actor "$GITHUB_ACTOR" --arg run "$GITHUB_RUN_ID" --arg ref "$GITHUB_WORKFLOW_REF" --arg sha "$RELEASE_SHA" \
+            '{confirmation:"PREVEST-CLENSTVI",actor:$actor,run_id:$run,workflow_ref:$ref,release_sha:$sha}' > "$LOCAL/operation.json"
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          paths = ['includes/member_evidence_cutover.php', 'includes/member_evidence_snapshot.php',
+                   'includes/member_evidence_opening.php', 'includes/member_evidence_groups.php',
+                   'includes/member_evidence_identity.php', 'includes/roster_hierarchy.php',
+                   'includes/operational_cases.php', 'includes/trainer_pilot.php', 'bin/db-backup.php']
+          target = Path('/tmp/kis-member-operation-' + os.environ['GITHUB_RUN_ID']) / 'runtime.json'
+          target.write_text(json.dumps({p: hashlib.sha256(Path(p).read_bytes()).hexdigest() for p in paths}))
+          PY
+          production_retry "${SSH[@]}" "mkdir -m 700 '$PRIVATE'"
+          production_retry "${SCP[@]}" "$LOCAL/mapping.json" "$LOCAL/operation.json" "$LOCAL/runtime.json" "$SSH_USER@$SSH_HOST:$PRIVATE/"
+          production_retry "${SCP[@]}" bin/member-evidence-production.php includes/member_evidence_operation.php "$SSH_USER@$SSH_HOST:$PRIVATE/"
+          for MODE in apply recover; do
+            cat > "$LOCAL/$MODE.php" <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('MEMBER_OPERATION_DIRECTORY=$PRIVATE');
+          putenv('MEMBER_OPERATION_MODE=$MODE');
+          require __DIR__ . '/member-evidence-production.php';
+          EOF
+            production_retry "${SCP[@]}" "$LOCAL/$MODE.php" "$SSH_USER@$SSH_HOST:$PRIVATE/$MODE.php"
+          done
+          production_retry "${SSH[@]}" "chmod 600 '$PRIVATE/'*.php '$PRIVATE/'*.json"
+
+      - name: Pozastavit zápisy, zálohovat, převést a obnovit provoz
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          # Deliberately no retry around a mutating operation. The ledger and committed.json resolve ambiguity.
+          "${SSH[@]}" "php '$DEPLOY_BASE/member-cutover-$GITHUB_RUN_ID/apply.php'" | tee "/tmp/kis-member-operation-$GITHUB_RUN_ID/result.json"
+          jq -e '.ok and .cutover_committed and .technical_actor_revoked and .maintenance_restored and .idempotent'             "/tmp/kis-member-operation-$GITHUB_RUN_ID/result.json" >/dev/null
+
+      - name: Obnovit provoz a odebrat dočasné oprávnění i po chybě
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            PRIVATE="$DEPLOY_BASE/member-cutover-$GITHUB_RUN_ID"
+            "${SSH[@]}" "if test -f '$PRIVATE/recover.php'; then php '$PRIVATE/recover.php'; fi"
+          fi
+
+      - name: Ověřit dostupnost po obnově provozu
+        if: always()
+        run: |
+          set -euo pipefail
+          test "$(curl --silent --show-error --max-time 30 --output /dev/null --write-out '%{http_code}' https://kis.kovopraha.cz/)" = 200
+          test "$(curl --silent --show-error --max-time 30 --output /dev/null --write-out '%{http_code}' https://kis.kovopraha.cz/kis_rosters_admin.php)" = 302
+
+      - name: Ověřit obnovu čerstvé zálohy v izolaci
+        run: bash .github/scripts/member-evidence-operation-restore.sh
+
+      - name: Odstranit soukromé soubory z runneru
+        if: always()
+        run: |
+          docker rm -f "kis-member-operation-$GITHUB_RUN_ID" >/dev/null 2>&1 || true
+          rm -rf -- "/tmp/kis-member-operation-$GITHUB_RUN_ID"
