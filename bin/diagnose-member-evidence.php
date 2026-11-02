@@ -32,11 +32,11 @@ function diagnoseMemberEvidenceMain(): void
             . "WHERE TABLE_SCHEMA=DATABASE() AND TABLE_TYPE='BASE TABLE' ORDER BY TABLE_NAME")->fetchAll();
         foreach ($tables as &$table) {
             $name = (string)$table['TABLE_NAME'];
-            if (!preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/D', $name)) {
+            if ($name === '' || str_contains($name, "\0")) {
                 throw new RuntimeException('Unsupported table identifier.');
             }
             $phase = 'count:' . $name;
-            $table['rows'] = (int)$pdo->query('SELECT COUNT(*) FROM `' . $name . '`')->fetchColumn();
+            $table['rows'] = (int)$pdo->query('SELECT COUNT(*) FROM `' . str_replace('`', '``', $name) . '`')->fetchColumn();
         }
         unset($table);
         $phase = 'foreign_keys';

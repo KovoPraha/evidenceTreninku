@@ -19,6 +19,26 @@ První [čtecí inventura 41498151528](https://github.com/KovoPraha/evidenceTren
 selhala bez zápisu; doplněna diagnostika fáze a SQLSTATE bez výpisu osobních dat
 nebo textu PDO výjimky. Úspěšný výsledek inventury musí doložit další běh.
 
+Navazující PR #280 je sloučen jako `c3cb0168fdcbac36147e6c86a138e92281a5350e`,
+opět po všech 11 kontrolách PASS. [Nácvik 41500616687](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41500616687)
+nad skutečnou zálohou aplikace **prošel**: 337 zdrojových tabulek, po upgradu
+341 tabulek ve snapshotu (ledger převodu se nepočítá), **44 převedených soupisek**,
+0 smazaných řádků, nemutující preview, zachovaná parita a idempotentní opakování.
+Po opětovné obnově souhlasily otisky dat i schématu všech 337 původních tabulek
+a oba triggery. SHA-256 zdrojové zálohy:
+`62aa5ba85830fdbd0d02ada60a0d365147eeff1a97621ac4fe268b673f5e1bdb`.
+
+Rozsah tohoto důkazu je **aplikační ownership zálohy**, nikoli všechny cizí či
+archivní tabulky sdílené produkční databáze. Kódy soupisek byly pouze technické
+`REHEARSAL-ID`. Nejde o schválenou cílovou mapu, nácvik mazání ani přejímku příloh.
+Celá E6 a E7/E8 tím nejsou uzavřené.
+
+[Druhá inventura 41500610498](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41500610498)
+odhalila příliš úzkou kontrolu názvů tabulek v katalogu. Nástroje nyní identifikátory
+bezpečně uzavírají a zdvojují vnitřní backtick; zahrnou také staré názvy s mezerou,
+pomlčkou či číslicí. Regrese s názvem obsahujícím SQL text potvrzuje zahrnutí
+tabulky do snapshotu a zachování finanční tabulky při převodu: **6 testů / 21 assertions PASS**.
+
 ## Doložené výsledky
 
 | Kontrola | Výsledek a rozsah |
@@ -44,10 +64,9 @@ Linux CI; rozhodující stav celého vydání je na přesném headu PR.
 ## Provozní hranice
 
 Tento protokol nedokládá produkční nasazení ani provedení E7/E8. Chybí uzavřená
-produkční inventura, konkrétní mapa D1–D3 a manifest cleanupu, jeho nácvik na
-skutečné izolované kopii včetně příloh a přihlášená/lidská přejímka všech rolí.
-Zde popsané databázové změny a opakování operací proběhly výhradně nad
-syntetickými daty. Žádné skutečné importy, rozesílky ani bankovní přepínače se
-tímto ověřením nezapínají.
+produkční inventura, konkrétní mapa D1–D3 a manifest cleanupu, jeho nácvik včetně
+příloh a přihlášená/lidská přejímka všech rolí. Databázové změny a opakování
+operací proběhly nad syntetickými daty a oddělenou kopií aplikační zálohy.
+Žádné skutečné importy, rozesílky ani bankovní přepínače se tímto ověřením nezapínají.
 
 Rozsah a postup převodu: [implementační protokol](../../MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md).
