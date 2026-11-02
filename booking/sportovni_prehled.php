@@ -37,6 +37,8 @@ function familyPageH(mixed $value): string
 function familyPageChargeStatus(string $status): string
 {
     return ['pending' => 'Čeká na úhradu', 'paid' => 'Uhrazeno', 'refund_required' => 'Čeká na vrácení',
+
+
      'refunded' => 'Vráceno', 'cancelled' => 'Zrušeno'][$status] ?? $status;
 }
 
@@ -54,6 +56,8 @@ function familyPageEventType(string $type): string
 function familyPageEventStatus(string $status): string
 {
     return ['confirmed' => 'Potvrzeno', 'payment_pending' => 'Čeká na platbu', 'waitlisted' => 'Na čekací listině',
+
+
      'cancelled' => 'Zrušeno'][$status] ?? $status;
 }
 
@@ -105,6 +109,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 );
                 $_SESSION['training_rsvp_message'] = trainingRsvpSavedMessage($saved);
                 header('Location: sportovni_prehled.php?mesic=' . $trainingCalendarMonth->format('Y-m') .
+
+
      '#potvrzeni-treninku', true, 303);
                 exit;
             }
@@ -141,35 +147,38 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $_SESSION['family_weekly_delivery_message'] = $enabled
                     ? 'Týdenní rodinný souhrn je zapnutý. První zpráva vznikne při nejbližším pondělním zpracování.'
                     : 'Týdenní rodinný souhrn je vypnutý. Zrušené neodeslané zprávy: ' . (int)$saved['cancelled'] .
+
+
      '.';
                 header('Location: sportovni_prehled.php#tydenni-souhrn', true, 303);
                 exit;
             }
             $calendarError = 'Neznámá akce kalendáře.';
-        } catch (InvalidArgumentException | MemberChargeReminderException | FamilyWeeklyDeliveryException | TrainingRsvpException $exception) {
-            if ($action === 'training_rsvp_save') {
-                $trainingRsvpError = $exception->getMessage();
-            } elseif ($action === 'family_weekly_delivery_save') {
-                $weeklyDeliveryError = $exception->getMessage();
-            } elseif ($action === 'member_charge_reminder_save') {
-                $reminderError = $exception->getMessage();
-            } else {
-                $calendarError = $exception->getMessage();
-            }
-        } catch (FamilyCalendarFeedException $exception) {
+        } catch (InvalidArgumentException | MemberChargeReminderException | FamilyWeeklyDeliveryException | TrainingRsvpException
+    $exception) {
+        if ($action === 'training_rsvp_save') {
+            $trainingRsvpError = $exception->getMessage();
+        } elseif ($action === 'family_weekly_delivery_save') {
+            $weeklyDeliveryError = $exception->getMessage();
+        } elseif ($action === 'member_charge_reminder_save') {
+            $reminderError = $exception->getMessage();
+        } else {
             $calendarError = $exception->getMessage();
-        } catch (Throwable $exception) {
-            error_log('booking/sportovni_prehled.php calendar action: ' . $exception->getMessage());
-            if ($action === 'training_rsvp_save') {
-                $trainingRsvpError = 'Odpověď k tréninku se nyní nepodařilo uložit.';
-            } elseif ($action === 'family_weekly_delivery_save') {
-                $weeklyDeliveryError = 'Nastavení týdenního souhrnu se nyní nepodařilo uložit.';
-            } elseif ($action === 'member_charge_reminder_save') {
-                $reminderError = 'Nastavení připomínek se nyní nepodařilo uložit.';
-            } else {
-                $calendarError = 'Nastavení kalendáře se nyní nepodařilo uložit.';
-            }
         }
+    } catch (FamilyCalendarFeedException $exception) {
+        $calendarError = $exception->getMessage();
+    } catch (Throwable $exception) {
+        error_log('booking/sportovni_prehled.php calendar action: ' . $exception->getMessage());
+        if ($action === 'training_rsvp_save') {
+            $trainingRsvpError = 'Odpověď k tréninku se nyní nepodařilo uložit.';
+        } elseif ($action === 'family_weekly_delivery_save') {
+            $weeklyDeliveryError = 'Nastavení týdenního souhrnu se nyní nepodařilo uložit.';
+        } elseif ($action === 'member_charge_reminder_save') {
+            $reminderError = 'Nastavení připomínek se nyní nepodařilo uložit.';
+        } else {
+            $calendarError = 'Nastavení kalendáře se nyní nepodařilo uložit.';
+        }
+    }
     }
 }
 
@@ -292,7 +301,8 @@ try {
             }
         }
     }
-    $unansweredTrainings = count(array_filter($trainingRsvps, static fn (array $training): bool => trim((string)($training['response'] ?? '')) === ''));
+    $unansweredTrainings = count(array_filter($trainingRsvps, static fn (array $training): bool => trim((string)($training['response']
+    ?? '')) === ''));
     $trainingCalendarItems = [];
     foreach ($trainingRsvps as $training) {
         $response = (string)($training['response'] ?? '');
@@ -303,10 +313,15 @@ try {
             'meta' => trainingRsvpLabel($response),
             'href' => '#training-rsvp-' . (int)$training['plan_id'] . '-' . (int)$training['sportovec_id'],
 
+
+
             'tone' => $response === 'going' ? 'success' : ($response === 'not_going' ? 'warning' : 'primary'),
+
+
 
         ];
     }
+
 
     ?>
 <!doctype html>
@@ -316,644 +331,1001 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sportovní přehled — Kovopraha</title>
     <?php
-    appUiAssets();
+        appUiAssets();
+
     ?>
 </head>
 <body class="bg-light">
 <?php
-    publicShellNav();
+        publicShellNav();
+
     ?>
 <main class="container py-4" style="max-width:1100px">
     <h1 class="h4 mb-1"><i class="bi bi-person-vcard me-2 text-primary"></i>Sportovní přehled</h1>
     <p class="text-muted">Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.</p>
     <?php
 if ($pendingFamilyClaims === null):
-    ?><?php echo '<div class="alert alert-warning">Stav žádostí o propojení nyní nelze ověřit. Zko'
-        . 'ntrolujte jej v <a href="moje_osoby.php">Mých osobách</a>.</div>
+
+    ?><?php
+    echo '<div class="alert alert-warning">Stav žádostí o propojení nyní nelze ověřit. Zko'
+            . 'ntrolujte jej v <a href="moje_osoby.php">Mých osobách</a>.</div>
     ';
+
     ?><?php elseif ($pendingFamilyClaims > 0):
+
         ?><div class="alert alert-info"><strong>Čeká na ověření klubem: <?=
-        $pendingFamilyClaims
-        ?><?php echo ' žádostí o propojení.</strong> Žádost nepodávejte znovu. V <a href="moje_osoby.p'
-            . 'hp">Mých osobách</a> najdete její stav; pro osobní doložení kontaktujte registrá'
-            . 'ře.</div>';
+
+                $pendingFamilyClaims
+
+        ?><?php
+        echo ' žádostí o propojení.</strong> Žádost nepodávejte znovu. V <a href="moje_osoby.p'
+                    . 'hp">Mých osobách</a> najdete její stav; pro osobní doložení kontaktujte registrá'
+                    . 'ře.</div>';
+
         ?><?php
     endif;
+
     ?>
     <?php
-    require dirname(__DIR__).'/includes/family_tasks_view.php';
+        require dirname(__DIR__).'/includes/family_tasks_view.php';
+
     ?>
-<?php echo '    <p class="small text-muted">Přehled obsahuje dostupná převedená data. Chyběj'
-        . 'ící starší tréninky neznamenají, že sportovec netrénoval. Nesrovnalost sdělte tr'
-        . 'enérovi.</p>
+<?php
+    echo '    <p class="small text-muted">Přehled obsahuje dostupná převedená data. Chyběj'
+            . 'ící starší tréninky neznamenají, že sportovec netrénoval. Nesrovnalost sdělte tr'
+            . 'enérovi.</p>
     ';
+
     ?><?php
 if ($loadError !== ''):
+
     ?><div class="alert alert-danger"><?=
-     familyPageH($loadError)
+
+         familyPageH($loadError)
+
     ?></div>
     <?php elseif ($overview === []):
+
         ?>
-<?php echo '        <section class="card border-0 shadow-sm mb-4" aria-labelledby="overview-'
-            . 'first-step"><div class="card-body p-4"><h2 class="h5" id="overview-first-step">'
-            . 'Začněte propojením sportovce</h2><p>Účet je připravený. Pokud už jste vy nebo vaš'
-            . 'e dítě v evidenci klubu, požádejte o propojení profilu. Po schválení tu uvidíte '
-            . 'tréninky, akce a platby.</p><div class="d-flex flex-wrap gap-2"><a class="btn bt'
-            . 'n-primary" href="moje_osoby.php#propojeni">Propojit existující profil</a><a clas'
-            . 's="btn btn-outline-primary" href="eshop.php">Přejít do e-shopu</a></div></div></'
-            . 'section>
+<?php
+        echo '        <section class="card border-0 shadow-sm mb-4" aria-labelledby="overview-'
+                    . 'first-step"><div class="card-body p-4"><h2 class="h5" id="overview-first-step">'
+                    . 'Začněte propojením sportovce</h2><p>Účet je připravený. Pokud už jste vy nebo vaš'
+                    . 'e dítě v evidenci klubu, požádejte o propojení profilu. Po schválení tu uvidíte '
+                    . 'tréninky, akce a platby.</p><div class="d-flex flex-wrap gap-2"><a class="btn bt'
+                    . 'n-primary" href="moje_osoby.php#propojeni">Propojit existující profil</a><a clas'
+                    . 's="btn btn-outline-primary" href="eshop.php">Přejít do e-shopu</a></div></div></'
+                    . 'section>
         <p class="small text-muted">Nemáte zatím klubový profil? V čás'
-            . 'ti <a href="moje_osoby.php">Moje osoby</a> zjistíte aktuální možnost registrace '
-            . 'nového sportovce.</p>
+                    . 'ti <a href="moje_osoby.php">Moje osoby</a> zjistíte aktuální možnost registrace '
+                    . 'nového sportovce.</p>
     ';
+
         ?><?php else:
+
             ?>
-<?php echo '
+<?php
+            echo '
     <div class="row g-3 mb-3" aria-label="Souhrn sportovního přehledu">
      '
-                . '   <div class="col-6 col-lg-3"><a href="#potvrzeni-treninku" class="card card-bo'
-                . 'dy h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted"'
-                . '>Čeká na odpověď v zobrazeném měsíci</span><strong class="fs-3 ';
+                            . '   <div class="col-6 col-lg-3"><a href="#potvrzeni-treninku" class="card card-bo'
+                            . 'dy h-100 border-0 shadow-sm text-decoration-none"><span class="small text-muted"'
+                            . '>Čeká na odpověď v zobrazeném měsíci</span><strong class="fs-3 ';
+
             ?><?=
-            $unansweredTrainings > 0 ? 'text-warning' : 'text-success'
+
+                        $unansweredTrainings > 0 ? 'text-warning' : 'text-success'
+
             ?>"><?=
-            $unansweredTrainings
+
+                        $unansweredTrainings
+
             ?></strong><span class="small"><?=
-             $unansweredTrainings === 1 ? 'trénink' : ($unansweredTrainings >= 2 && $unansweredTrainings <= 4 ? 'tréninky' : 'tréninků')
-            ?><?php echo '</span></a></div>
+
+                         $unansweredTrainings === 1 ? 'trénink' : ($unansweredTrainings >= 2 && $unansweredTrainings <= 4 ? 'tréninky'
+                : 'tréninků')
+
+            ?><?php
+            echo '</span></a></div>
         <div class="col-6 col-lg-3"><a href="#rodinny-program'
-                . '" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span cla'
-                . 'ss="small text-muted">Příštích 30 dní</span><strong class="fs-3 text-primary">';
+                            . '" class="card card-body h-100 border-0 shadow-sm text-decoration-none"><span cla'
+                            . 'ss="small text-muted">Příštích 30 dní</span><strong class="fs-3 text-primary">';
+
             ?><?=
-            count($familyAgenda)
+
+                        count($familyAgenda)
+
             ?></strong><span class="small"><?=
-             count($familyAgenda) === 1 ? 'položka programu' : (count($familyAgenda) >= 2 && count($familyAgenda) <= 4 ? 'položky programu' : 'položek programu')
-            ?><?php echo '</span></a></div>
+
+                         count($familyAgenda) === 1 ? 'položka programu' : (count($familyAgenda) >= 2 && count($familyAgenda) <= 4 ? 'položky programu'
+                : 'položek programu')
+
+            ?><?php
+            echo '</span></a></div>
         <div class="col-6 col-lg-3"><a href="#profily" class='
-                . '"card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="smal'
-                . 'l text-muted">Propojené profily</span><strong class="fs-3 text-primary">';
+                            . '"card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="smal'
+                            . 'l text-muted">Propojené profily</span><strong class="fs-3 text-primary">';
+
             ?><?=
-            count($overview)
+
+                        count($overview)
+
             ?></strong><span class="small"><?=
-            count($overview) === 1 ? 'schválený profil' : (count($overview) < 5 ? 'schválené profily' : 'schválených profilů')
-            ?><?php echo '</span></a></div>
+
+                        count($overview) === 1 ? 'schválený profil' : (count($overview) < 5 ? 'schválené profily' : 'schválených profilů')
+
+            ?><?php
+            echo '</span></a></div>
         <div class="col-6 col-lg-3"><a href="#profily" class='
-                . '"card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="smal'
-                . 'l text-muted">K úhradě</span><strong class="fs-3 ';
+                            . '"card card-body h-100 border-0 shadow-sm text-decoration-none"><span class="smal'
+                            . 'l text-muted">K úhradě</span><strong class="fs-3 ';
+
             ?><?=
-            $pendingCharges > 0 ? 'text-danger' : 'text-success'
+
+                        $pendingCharges > 0 ? 'text-danger' : 'text-success'
+
             ?>"><?=
-            $pendingCharges
+
+                        $pendingCharges
+
             ?></strong><span class="small"><?=
-             $pendingCharges === 1 ? 'členský předpis' : ($pendingCharges >= 2 && $pendingCharges <= 4 ? 'členské předpisy' : 'členských předpisů')
-            ?><?php echo '</span></a></div>
+
+                         $pendingCharges === 1 ? 'členský předpis' : ($pendingCharges >= 2 && $pendingCharges <= 4 ? 'členské předpisy'
+                : 'členských předpisů')
+
+            ?><?php
+            echo '</span></a></div>
     </div>
     <nav class="app-anchor-nav border rounded p-2'
-                . ' mb-4 d-flex flex-wrap gap-2" aria-label="Obsah sportovního přehledu"><a class="'
-                . 'btn btn-sm btn-outline-primary" href="#potvrzeni-treninku">Odpovědi na tréninky<'
-                . '/a><a class="btn btn-sm btn-outline-primary" href="#rodinny-program">Program</a>'
-                . '<a class="btn btn-sm btn-outline-primary" href="#profily">Profily a platby</a><a'
-                . ' class="btn btn-sm btn-outline-secondary" href="#nastaveni">Nastavení a přehledy'
-                . '</a></nav>
+                            . ' mb-4 d-flex flex-wrap gap-2" aria-label="Obsah sportovního přehledu"><a class="'
+                            . 'btn btn-sm btn-outline-primary" href="#potvrzeni-treninku">Odpovědi na tréninky<'
+                            . '/a><a class="btn btn-sm btn-outline-primary" href="#rodinny-program">Program</a>'
+                            . '<a class="btn btn-sm btn-outline-primary" href="#profily">Profily a platby</a><a'
+                            . ' class="btn btn-sm btn-outline-secondary" href="#nastaveni">Nastavení a přehledy'
+                            . '</a></nav>
 
     <section class="card border-primary shadow-sm mb-4" id="potvrz'
-                . 'eni-treninku">
+                            . 'eni-treninku">
         <div class="card-header bg-primary-subtle d-flex flex-wr'
-                . 'ap justify-content-between align-items-center gap-2"><strong><i class="bi bi-che'
-                . 'ck2-circle me-2"></i>Potvrzení účasti na trénincích</strong><span class="badge t'
-                . 'ext-bg-light border text-dark">';
+                            . 'ap justify-content-between align-items-center gap-2"><strong><i class="bi bi-che'
+                            . 'ck2-circle me-2"></i>Potvrzení účasti na trénincích</strong><span class="badge t'
+                            . 'ext-bg-light border text-dark">';
+
             ?><?=
-             count($trainingRsvps)
-            ?><?php echo ' položek</span></div>
+
+                         count($trainingRsvps)
+
+            ?><?php
+            echo ' položek</span></div>
         <div class="card-body">
             <p class="sm'
-                . 'all text-muted">Zobrazují se tréninky schválených profilů. U konkrétního trénink'
-                . 'u můžete potvrdit účast a napsat trenérovi. Docházku po tréninku zaznamenává tre'
-                . 'nér.</p>
+                            . 'all text-muted">Zobrazují se tréninky schválených profilů. U konkrétního trénink'
+                            . 'u můžete potvrdit účast a napsat trenérovi. Docházku po tréninku zaznamenává tre'
+                            . 'nér.</p>
             <p><a class="btn btn-sm btn-outline-primary" href="nahrady'
-                . '.php">Náhradní lekce kroužků a moje nároky</a></p>
+                            . '.php">Náhradní lekce kroužků a moje nároky</a></p>
             ';
+
             ?><?php
 if ($trainingRsvpMessage !== ''):
+
     ?><div class="alert alert-success py-2"><?=
-     familyPageH($trainingRsvpMessage)
+
+         familyPageH($trainingRsvpMessage)
+
     ?></div><?php
 endif;
+
     ?>
             <?php
 if ($trainingRsvpError !== ''):
+
     ?><div class="alert alert-danger py-2"><?=
-     familyPageH($trainingRsvpError)
+
+         familyPageH($trainingRsvpError)
+
     ?></div><?php
 endif;
+
     ?>
             <?php
 if ($trainingRsvps !== []):
+
     ?><nav class="d-flex justify-content-between align-items-center gap-2 mb-3" aria-label="Měsíc tréninků">
                 <?php
 if ($trainingCalendarMonth > trainingRsvpCalendarMonth('')):
+
     ?><a class="btn btn-outline-secondary btn-sm" href="?mesic=<?=
-     $trainingCalendarMonth->modify('-1 month')->format('Y-m')
+
+         $trainingCalendarMonth->modify('-1 month')->format('Y-m')
+
     ?>#potvrzeni-treninku">Předchozí měsíc</a><?php else:
+
         ?><span></span><?php
     endif;
+
     ?>
                 <strong><?=
-     familyPageH(uiFormatMonthName($trainingCalendarMonth))
+
+         familyPageH(uiFormatMonthName($trainingCalendarMonth))
+
     ?></strong>
                 <?php
 if ($trainingCalendarMonth < trainingRsvpCalendarMonth('9999-12')):
+
     ?><a class="btn btn-outline-secondary btn-sm" href="?mesic=<?=
-     $trainingCalendarMonth->modify('+1 month')->format('Y-m')
+
+         $trainingCalendarMonth->modify('+1 month')->format('Y-m')
+
     ?>#potvrzeni-treninku">Další měsíc</a><?php else:
+
         ?><span></span><?php
     endif;
+
     ?>
             </nav>
             <?=
-     calendarUiRender($trainingCalendarMonth, $trainingCalendarItems, 'Bez plánovaného tréninku.')
+
+         calendarUiRender($trainingCalendarMonth, $trainingCalendarItems, 'Bez plánovaného tréninku.')
+
     ?>
             <div class="list-group list-group-flush"><?php
 foreach ($trainingRsvps as $training): $response = (string)($training['response'] ?? '');
+
     ?>
                 <div class="list-group-item px-0" id="training-rsvp-<?=
-     (int)$training['plan_id']
+
+         (int)$training['plan_id']
+
     ?>-<?=
-     (int)$training['sportovec_id']
+
+         (int)$training['sportovec_id']
+
     ?>"><div class="d-flex flex-wrap justify-content-between gap-3"><div><strong><?=
-     familyPageH($training['nazev'])
+
+         familyPageH($training['nazev'])
+
     ?></strong><div class="small text-muted"><?=
-     familyPageH($training['jmeno'].' '.$training['prijmeni'])
+
+         familyPageH($training['jmeno'].' '.$training['prijmeni'])
+
     ?> · <?=
-     familyPageH($training['team_name_snapshot'])
+
+         familyPageH($training['team_name_snapshot'])
+
     ?><br><?=
-     familyPageH(uiFormatDayName(new DateTimeImmutable((string)$training['datum'])))
+
+         familyPageH(uiFormatDayName(new DateTimeImmutable((string)$training['datum'])))
+
     ?> <?=
-     familyPageH(uiFormatDate((string)$training['datum']))
+
+         familyPageH(uiFormatDate((string)$training['datum']))
+
     ?><?=
-     $training['cas_od'] ? ' · '.familyPageH(uiFormatTime((string)$training['cas_od'])) : ''
+
+         $training['cas_od'] ? ' · '.familyPageH(uiFormatTime((string)$training['cas_od'])) : ''
+
     ?></div><?php
 if (trim((string)$training['popis']) !== ''):
+
     ?><div class="small mt-1"><?=
-     familyPageH($training['popis'])
+
+         familyPageH($training['popis'])
+
     ?></div><?php
 endif;
+
     ?></div><div><span class="badge <?=
-     $response === 'going' ? 'text-bg-success' : ($response === 'not_going' ? 'text-bg-secondary' : 'text-bg-warning')
+
+         $response === 'going' ? 'text-bg-success' : ($response === 'not_going' ? 'text-bg-secondary' : 'text-bg-warning')
+
     ?> mb-2"><?=
-     familyPageH(trainingRsvpLabel($response))
+
+         familyPageH(trainingRsvpLabel($response))
+
     ?></span><form method="post"><?=
-     csrf_field()
+
+         csrf_field()
+
     ?><input type="hidden" name="action" value="training_rsvp_save"><input type="hidden" name="plan_id" value="<?=
-     (int)$training['plan_id']
+
+         (int)$training['plan_id']
+
     ?>"><input type="hidden" name="profile_id" value="<?=
-     (int)$training['sportovec_id']
+
+         (int)$training['sportovec_id']
+
     ?>"><label class="form-label small" for="training-note-<?=
-     (int)$training['plan_id']
+
+         (int)$training['plan_id']
+
     ?>-<?=
-     (int)$training['sportovec_id']
+
+         (int)$training['sportovec_id']
+
     ?>">Zpráva pro trenéra (nepovinná)</label><textarea class="form-control form-control-sm mb-2" id="training-note-<?=
-     (int)$training['plan_id']
+
+         (int)$training['plan_id']
+
     ?>-<?=
-     (int)$training['sportovec_id']
+
+         (int)$training['sportovec_id']
+
     ?>" name="member_note" maxlength="500" rows="2" placeholder="Např. přijdu o 5 minut později"><?=
-     familyPageH($training['member_note'] ?? '')
+
+         familyPageH($training['member_note'] ?? '')
+
     ?></textarea><div class="d-flex flex-wrap gap-2"><button class="btn btn-sm <?=
-     $response === 'going' ? 'btn-success' : 'btn-outline-success'
+
+         $response === 'going' ? 'btn-success' : 'btn-outline-success'
+
     ?>" name="response" value="going">Zúčastním se</button><button class="btn btn-sm <?=
-     $response === 'not_going' ? 'btn-secondary' : 'btn-outline-secondary'
+
+         $response === 'not_going' ? 'btn-secondary' : 'btn-outline-secondary'
+
     ?>" name="response" value="not_going">Nezúčastním se</button></div></form></div></div></div>
             <?php
 endforeach;
+
     ?></div><?php else:
+
         ?><p class="text-muted mb-0">V tomto měsíci nemáte žádný plánovaný trénink.</p><?php
     endif;
+
     ?>
-<?php echo '        </div>
+<?php
+    echo '        </div>
     </section>
 
     <section class="card border-0 shadow-sm mb'
-        . '-4" id="rodinny-program">
+            . '-4" id="rodinny-program">
         <div class="card-header bg-white d-flex flex-'
-        . 'wrap justify-content-between align-items-center gap-2"><strong><i class="bi bi-c'
-        . 'alendar2-week me-2 text-success"></i>Co nás čeká v příštích 30 dnech</strong><sp'
-        . 'an class="badge text-bg-light border text-dark">';
+            . 'wrap justify-content-between align-items-center gap-2"><strong><i class="bi bi-c'
+            . 'alendar2-week me-2 text-success"></i>Co nás čeká v příštích 30 dnech</strong><sp'
+            . 'an class="badge text-bg-light border text-dark">';
+
     ?><?=
-     familyPageH(familyPageItemCount(count($familyAgenda)))
-    ?><?php echo '</span></div>
+
+         familyPageH(familyPageItemCount(count($familyAgenda)))
+
+    ?><?php
+    echo '</span></div>
         <div class="card-body">
             <p class="small text'
-        . '-muted">Tréninky, přihlášené akce, rezervace a splatnosti všech vašich propojený'
-        . 'ch profilů na jednom místě.</p>
+            . '-muted">Tréninky, přihlášené akce, rezervace a splatnosti všech vašich propojený'
+            . 'ch profilů na jednom místě.</p>
             ';
+
     ?><?php
 if ($agendaError !== ''):
+
     ?><div class="alert alert-warning mb-0"><?=
-     familyPageH($agendaError)
+
+         familyPageH($agendaError)
+
     ?></div>
             <?php elseif ($familyAgenda === []):
+
                 ?><p class="text-muted mb-0">V nejbližších 30 dnech není evidovaná žádná položka.</p>
             <?php else:
+
                 ?><div class="list-group list-group-flush">
                 <?php
 foreach ($familyAgenda as $item):
+
     ?>
-<?php echo '                    <div class="list-group-item px-0"><div class="d-flex flex-wr'
-        . 'ap justify-content-between gap-2"><div><span class="badge text-bg-';
+<?php
+    echo '                    <div class="list-group-item px-0"><div class="d-flex flex-wr'
+            . 'ap justify-content-between gap-2"><div><span class="badge text-bg-';
+
     ?><?=
-     $item['category'] === 'Členský předpis' ? 'warning' : ($item['category'] === 'Rodinný trénink' ? 'primary' : 'success')
+
+         $item['category'] === 'Členský předpis' ? 'warning' : ($item['category'] === 'Rodinný trénink' ? 'primary' : 'success')
+
     ?> me-2"><?=
-     familyPageH($item['category'])
+
+         familyPageH($item['category'])
+
     ?></span><strong><?=
-     familyPageH($item['summary'])
+
+         familyPageH($item['summary'])
+
     ?></strong><?php
 if ($item['location'] !== ''):
+
     ?><div class="small text-muted mt-1"><i class="bi bi-geo-alt me-1"></i><?=
-     familyPageH($item['location'])
+
+         familyPageH($item['location'])
+
     ?></div><?php
 endif;
+
     ?><?php
 if ($item['description'] !== ''):
+
     ?><div class="small text-muted"><?=
-     familyPageH($item['description'])
+
+         familyPageH($item['description'])
+
     ?></div><?php
 endif;
+
     ?></div><div class="text-md-end"><strong><?=
-     familyPageH($item['date_label'])
+
+         familyPageH($item['date_label'])
+
     ?></strong><div class="small text-muted"><?=
-     familyPageH($item['time_label'])
+
+         familyPageH($item['time_label'])
+
     ?></div></div></div></div>
                 <?php
 endforeach;
+
     ?>
             </div><?php
-    endif;
+        endif;
+
     ?>
-<?php echo '        </div>
+<?php
+    echo '        </div>
     </section>
 
     <div id="nastaveni"><h2 class="h5 mb-3">Na'
-        . 'stavení a podrobné přehledy</h2><details class="card border-info shadow-sm mb-4"'
-        . ' id="tydenni-souhrn"';
+            . 'stavení a podrobné přehledy</h2><details class="card border-info shadow-sm mb-4"'
+            . ' id="tydenni-souhrn"';
+
     ?><?=
-     $weeklyDeliveryMessage !== '' || $weeklyDeliveryError !== '' || $weeklyError !== '' || isset($_GET['week']) ? ' open' : ''
-    ?><?php echo '>
+
+         $weeklyDeliveryMessage !== '' || $weeklyDeliveryError !== '' || $weeklyError !== '' || isset($_GET['week']) ? ' open'
+        : ''
+
+    ?><?php
+    echo '>
         <summary class="card-header bg-info-subtle d-flex flex-wrap justify-c'
-        . 'ontent-between align-items-center gap-2"><strong><i class="bi bi-envelope-paper '
-        . 'me-2"></i>Týdenní souhrn</strong><span class="d-flex gap-2"><span class="badge ';
+            . 'ontent-between align-items-center gap-2"><strong><i class="bi bi-envelope-paper '
+            . 'me-2"></i>Týdenní souhrn</strong><span class="d-flex gap-2"><span class="badge ';
+
     ?><?=
-    $weeklyDeliveryPreference['enabled'] ? 'text-bg-success' : 'text-bg-secondary'
+
+        $weeklyDeliveryPreference['enabled'] ? 'text-bg-success' : 'text-bg-secondary'
+
     ?>"><?=
-    $weeklyDeliveryPreference['enabled'] ? 'zapnutý' : 'vypnutý'
+
+        $weeklyDeliveryPreference['enabled'] ? 'zapnutý' : 'vypnutý'
+
     ?></span><?php
 if ($weeklySummary !== null):
+
     ?><span class="badge text-bg-light border text-dark"><?=
-     familyPageH($weeklySummary['period_label'])
+
+         familyPageH($weeklySummary['period_label'])
+
     ?></span><?php
 endif;
+
     ?></span></summary>
         <div class="card-body">
             <?php
 if ($weeklyDeliveryMessage !== ''):
+
     ?><div class="alert alert-success py-2"><?=
-     familyPageH($weeklyDeliveryMessage)
+
+         familyPageH($weeklyDeliveryMessage)
+
     ?></div><?php
 endif;
+
     ?>
             <?php
 if ($weeklyDeliveryError !== ''):
+
     ?><div class="alert alert-danger py-2"><?=
-     familyPageH($weeklyDeliveryError)
+
+         familyPageH($weeklyDeliveryError)
+
     ?></div><?php
 endif;
+
     ?>
             <div class="alert alert-info py-2">
                 <strong><?=
-     $weeklyDeliveryPreference['enabled'] ? 'Odběr je zapnutý.' : 'Odběr je vypnutý.'
+
+         $weeklyDeliveryPreference['enabled'] ? 'Odběr je zapnutý.' : 'Odběr je vypnutý.'
+
     ?></strong>
                 Souhrn se připravuje nejvýše jednou týdně a používá vždy aktuální oprávnění k rodinným profilům.
                 <?=
-    familyPageH(familyTasksDeliveryNotice())
+
+        familyPageH(familyTasksDeliveryNotice())
+
     ?>
             </div>
             <form method="post" class="d-flex flex-wrap align-items-center gap-2 mb-3">
                 <?=
-     csrf_field()
+
+         csrf_field()
+
     ?><input type="hidden" name="action" value="family_weekly_delivery_save">
                 <input type="hidden" name="enabled" value="<?=
-     $weeklyDeliveryPreference['enabled'] ? '0' : '1'
+
+         $weeklyDeliveryPreference['enabled'] ? '0' : '1'
+
     ?>">
                 <button class="btn btn-sm <?=
-     $weeklyDeliveryPreference['enabled'] ? 'btn-outline-danger' : 'btn-info'
+
+         $weeklyDeliveryPreference['enabled'] ? 'btn-outline-danger' : 'btn-info'
+
     ?>">
                     <?=
-     $weeklyDeliveryPreference['enabled'] ? 'Vypnout týdenní souhrn' : 'Zapnout týdenní souhrn'
+
+         $weeklyDeliveryPreference['enabled'] ? 'Vypnout týdenní souhrn' : 'Zapnout týdenní souhrn'
+
     ?>
                 </button>
                 <span class="small text-muted">Čeká <?=
-     (int)$weeklyDeliverySummary['pending']
+
+         (int)$weeklyDeliverySummary['pending']
+
     ?> · zpracováno <?=
-     (int)$weeklyDeliverySummary['sent']
+
+         (int)$weeklyDeliverySummary['sent']
+
     ?> · selhalo <?=
-     (int)$weeklyDeliverySummary['failed']
+
+         (int)$weeklyDeliverySummary['failed']
+
     ?></span>
             </form>
             <?php
 if ($weeklyError !== ''):
+
     ?><div class="alert alert-warning"><?=
-     familyPageH($weeklyError)
+
+         familyPageH($weeklyError)
+
     ?></div>
             <?php elseif ($weeklySummary !== null):
+
                 ?>
                 <div class="d-flex justify-content-between gap-2 mb-3"><a class="btn btn-sm btn-outline-secondary" href="?week=<?=
-                 urlencode($weeklyPrevious)
+
+                                 urlencode($weeklyPrevious)
+
                 ?>#tydenni-souhrn">← Předchozí týden</a><a class="btn btn-sm btn-outline-secondary" href="?week=<?=
-                 urlencode($weeklyNext)
+
+                                 urlencode($weeklyNext)
+
                 ?>#tydenni-souhrn">Další týden →</a></div>
                 <div class="d-flex flex-wrap gap-2 mb-3"><span class="badge text-bg-primary">Tréninky <?=
-                 (int)$weeklySummary['counts']['training']
+
+                                 (int)$weeklySummary['counts']['training']
+
                 ?></span><span class="badge text-bg-success">Akce <?=
-                 (int)$weeklySummary['counts']['event']
+
+                                 (int)$weeklySummary['counts']['event']
+
                 ?></span><span class="badge text-bg-success">Rezervace <?=
-                 (int)$weeklySummary['counts']['reservation']
+
+                                 (int)$weeklySummary['counts']['reservation']
+
                 ?></span><span class="badge text-bg-warning">Splatnosti <?=
-                 (int)$weeklySummary['counts']['charge']
+
+                                 (int)$weeklySummary['counts']['charge']
+
                 ?></span></div>
                 <dl class="row small"><dt class="col-sm-2">Předmět</dt><dd class="col-sm-10"><strong><?=
-                 familyPageH($weeklySummary['subject'])
+
+                                 familyPageH($weeklySummary['subject'])
+
                 ?></strong></dd></dl>
                 <pre class="bg-light border rounded p-3 mb-0" style="white-space:pre-wrap"><?=
-                 familyPageH($weeklySummary['body'])
+
+                                 familyPageH($weeklySummary['body'])
+
                 ?></pre>
             <?php
             endif;
+
     ?>
         </div>
     </details>
 
     <details class="card border-success shadow-sm mb-4" id="rocni-prehled-uhrad"<?=
-     $annualPaidOverviewError !== '' || isset($_GET['year']) ? ' open' : ''
+
+         $annualPaidOverviewError !== '' || isset($_GET['year']) ? ' open' : ''
+
     ?>>
         <summary class="card-header bg-success-subtle d-flex flex-wrap justify-content-between align-items-center gap-2">
             <strong><i class="bi bi-receipt me-2"></i>Roční přehled uhrazených klubových služeb</strong>
             <?php
 if ($annualPaidOverview !== null):
+
     ?><span class="badge text-bg-light border text-dark">Rok <?=
-     (int)$annualPaidOverview['year']
+
+         (int)$annualPaidOverview['year']
+
     ?></span><?php
 endif;
+
     ?>
-<?php echo '        </summary>
+<?php
+    echo '        </summary>
         <div class="card-body">
             <div class="ale'
-        . 'rt alert-warning py-2"><strong>Informační přehled.</strong> Není účetním ani daňovým dokladem'
-        . ' a nenahrazuje potvrzení vystavené klubem.</div>
+            . 'rt alert-warning py-2"><strong>Informační přehled.</strong> Není účetním ani daňovým dokladem'
+            . ' a nenahrazuje potvrzení vystavené klubem.</div>
             ';
+
     ?><?php
 if ($annualPaidOverviewError !== ''):
+
     ?><div class="alert alert-danger mb-0"><?=
-     familyPageH($annualPaidOverviewError)
+
+         familyPageH($annualPaidOverviewError)
+
     ?></div>
             <?php elseif ($annualPaidOverview !== null):
+
                 ?>
                 <div class="d-flex justify-content-between gap-2 mb-3">
                     <a class="btn btn-sm btn-outline-secondary" href="?year=<?=
-                 (int)$annualPaidOverviewPrevious
+
+                                 (int)$annualPaidOverviewPrevious
+
                 ?>#rocni-prehled-uhrad">← Rok <?=
-                 (int)$annualPaidOverviewPrevious
+
+                                 (int)$annualPaidOverviewPrevious
+
                 ?></a>
                     <?php
 if ($annualPaidOverviewNext !== null):
+
     ?><a class="btn btn-sm btn-outline-secondary" href="?year=<?=
-     (int)$annualPaidOverviewNext
+
+         (int)$annualPaidOverviewNext
+
     ?>#rocni-prehled-uhrad">Rok <?=
-     (int)$annualPaidOverviewNext
+
+         (int)$annualPaidOverviewNext
+
     ?> →</a><?php
 endif;
+
     ?>
-<?php echo '                </div>
+<?php
+    echo '                </div>
                 <p class="small text-muted">Přehled zahr'
-        . 'nuje jen skutečně uhrazené položky přiřazené schváleným profilům rodiny. Členské'
-        . ' předpisy a e-shop zůstávají oddělené a nesčítají se do jednoho součtu, protože '
-        . 'v přechodném období může být stejná služba evidována v obou systémech.</p>
+            . 'nuje jen skutečně uhrazené položky přiřazené schváleným profilům rodiny. Členské'
+            . ' předpisy a e-shop zůstávají oddělené a nesčítají se do jednoho součtu, protože '
+            . 'v přechodném období může být stejná služba evidována v obou systémech.</p>
     '
-        . '            <div class="row g-3">
+            . '            <div class="row g-3">
                     <div class="col-lg-6">
  '
-        . '                       <div class="border rounded h-100">
+            . '                       <div class="border rounded h-100">
                      '
-        . '       <div class="p-3 border-bottom d-flex justify-content-between gap-2"><stro'
-        . 'ng>Členské předpisy</strong><span>';
+            . '       <div class="p-3 border-bottom d-flex justify-content-between gap-2"><stro'
+            . 'ng>Členské předpisy</strong><span>';
+
     ?><?=
-     familyPageH(familyAnnualPaidOverviewTotalsLabel($annualPaidOverview['totals']['member_charges']))
+
+         familyPageH(familyAnnualPaidOverviewTotalsLabel($annualPaidOverview['totals']['member_charges']))
+
     ?></span></div>
                             <?php
 if ($annualPaidOverview['member_charges'] === []):
+
     ?><p class="small text-muted p-3 mb-0">V tomto roce není evidovaný žádný uhrazený členský předpis.</p>
                             <?php else:
-                                ?><?php echo '<div class="table-responsive"><table class="table table-sm align-middle mb-0"><t'
-                                    . 'head><tr><th>Profil a předpis</th><th>Uhrazeno</th><th class="text-end">Částka</'
-                                    . 'th></tr></thead><tbody>
+
+                                ?><?php
+                                echo '<div class="table-responsive"><table class="table table-sm align-middle mb-0"><t'
+                                                                    . 'head><tr><th>Profil a předpis</th><th>Uhrazeno</th><th class="text-end">Částka</'
+                                                                    . 'th></tr></thead><tbody>
                             ';
+
                                 ?><?php
 foreach ($annualPaidOverview['member_charges'] as $item):
+
     ?><tr>
                                 <td><?=
-     familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name'])
+
+         familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name'])
+
     ?><div class="small"><strong><?=
-     familyPageH($item['title_snapshot'])
+
+         familyPageH($item['title_snapshot'])
+
     ?></strong> · <code><?=
-     familyPageH($item['public_code'])
+
+         familyPageH($item['public_code'])
+
     ?></code></div></td>
                                 <td><?=
-     familyPageH(substr((string)$item['paid_at'], 0, 10))
+
+         familyPageH(substr((string)$item['paid_at'], 0, 10))
+
     ?></td>
                                 <td class="text-end text-nowrap"><?=
-     familyPageH(number_format(((int)$item['amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency'])
+
+         familyPageH(number_format(((int)$item['amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency'])
+
     ?></td>
                             </tr><?php
 endforeach;
+
                                 ?></tbody></table></div><?php
                             endif;
+
     ?>
                         </div>
                     </div>
                     <div class="col-lg-6">
                         <div class="border rounded h-100">
                             <div class="p-3 border-bottom d-flex justify-content-between gap-2"><strong>E-shopové položky</strong><span><?=
-     familyPageH(familyAnnualPaidOverviewTotalsLabel($annualPaidOverview['totals']['shop_items']))
+
+         familyPageH(familyAnnualPaidOverviewTotalsLabel($annualPaidOverview['totals']['shop_items']))
+
     ?></span></div>
                             <?php
 if ($annualPaidOverview['shop_items'] === []):
+
     ?><p class="small text-muted p-3 mb-0">V tomto roce není evidovaná žádná uhrazená e-shopová položka přiřazená profilu.</p>
                             <?php else:
-                                ?><?php echo '<div class="table-responsive"><table class="table table-sm align-middle mb-0"><t'
-                                    . 'head><tr><th>Profil a položka</th><th>Uhrazeno</th><th class="text-end">Částka</'
-                                    . 'th></tr></thead><tbody>
+
+                                ?><?php
+                                echo '<div class="table-responsive"><table class="table table-sm align-middle mb-0"><t'
+                                                                    . 'head><tr><th>Profil a položka</th><th>Uhrazeno</th><th class="text-end">Částka</'
+                                                                    . 'th></tr></thead><tbody>
                             ';
+
                                 ?><?php
 foreach ($annualPaidOverview['shop_items'] as $item):
+
     ?><tr>
                                 <td><?=
-     familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name'])
+
+         familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name'])
+
     ?><div class="small"><strong><?=
-     familyPageH($item['product_name_snapshot'])
+
+         familyPageH($item['product_name_snapshot'])
+
     ?></strong><?php
 if ((int)$item['quantity'] > 1):
+
     ?> × <?=
-     (int)$item['quantity']
+
+         (int)$item['quantity']
+
     ?><?php
 endif;
+
     ?> · <code><?=
-     familyPageH($item['public_code'])
+
+         familyPageH($item['public_code'])
+
     ?></code></div></td>
                                 <td><?=
-     familyPageH(substr((string)$item['paid_at'], 0, 10))
+
+         familyPageH(substr((string)$item['paid_at'], 0, 10))
+
     ?></td>
                                 <td class="text-end text-nowrap"><?=
-     familyPageH(number_format(((int)$item['amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency'])
+
+         familyPageH(number_format(((int)$item['amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency'])
+
     ?></td>
                             </tr><?php
 endforeach;
+
     ?></tbody></table></div><?php
-    endif;
+        endif;
+
     ?>
                         </div>
                     </div>
                 </div>
             <?php
-    endif;
+        endif;
+
     ?>
         </div>
     </details>
 
     <details class="card border-0 shadow-sm mb-4" id="rodinny-kalendar"<?=
-     $calendarMessage !== '' || $calendarError !== '' || $calendarUrl !== '' ? ' open' : ''
-    ?><?php echo '>
+
+         $calendarMessage !== '' || $calendarError !== '' || $calendarUrl !== '' ? ' open' : ''
+
+    ?><?php
+    echo '>
         <summary class="card-header bg-white d-flex justify-content-between a'
-        . 'lign-items-center"><strong><i class="bi bi-calendar3 me-2 text-primary"></i>Rodi'
-        . 'nný kalendář v telefonu</strong><span class="badge ';
+            . 'lign-items-center"><strong><i class="bi bi-calendar3 me-2 text-primary"></i>Rodi'
+            . 'nný kalendář v telefonu</strong><span class="badge ';
+
     ?><?=
-    $calendarState !== null && (int)$calendarState['active'] === 1 ? 'text-bg-success' : 'text-bg-secondary'
+
+        $calendarState !== null && (int)$calendarState['active'] === 1 ? 'text-bg-success' : 'text-bg-secondary'
+
     ?>"><?=
-    $calendarState !== null && (int)$calendarState['active'] === 1 ? 'aktivní' : 'nenastavený'
-    ?><?php echo '</span></summary>
+
+        $calendarState !== null && (int)$calendarState['active'] === 1 ? 'aktivní' : 'nenastavený'
+
+    ?><?php
+    echo '</span></summary>
         <div class="card-body">
             <p class="mb-2">'
-        . 'Přidejte si do telefonu osobní kalendář tréninků, přihlášených akcí, rezervací a'
-        . ' splatností za všechny schválené profily.</p>
+            . 'Přidejte si do telefonu osobní kalendář tréninků, přihlášených akcí, rezervací a'
+            . ' splatností za všechny schválené profily.</p>
             <p class="small text-'
-        . 'muted">Odkaz funguje jako soukromý klíč. Neposílejte ho dalším lidem. Při podezř'
-        . 'ení na sdílení vytvořte nový nebo jej zrušte.</p>
+            . 'muted">Odkaz funguje jako soukromý klíč. Neposílejte ho dalším lidem. Při podezř'
+            . 'ení na sdílení vytvořte nový nebo jej zrušte.</p>
             ';
+
     ?><?php
 if ($calendarMessage !== ''):
+
     ?><div class="alert alert-success py-2"><?=
-     familyPageH($calendarMessage)
+
+         familyPageH($calendarMessage)
+
     ?></div><?php
 endif;
+
     ?>
             <?php
 if ($calendarError !== ''):
+
     ?><div class="alert alert-danger py-2"><?=
-     familyPageH($calendarError)
+
+         familyPageH($calendarError)
+
     ?></div><?php
 endif;
+
     ?>
             <?php
 if ($calendarUrl !== ''):
+
     ?>
                 <div class="alert alert-warning">
                     <strong>Odkaz se zobrazuje pouze nyní.</strong> Zkopírujte jej do aplikace Kalendář jako odebíraný kalendář.
                     <label for="family-calendar-url" class="visually-hidden">Soukromý odkaz kalendáře</label>
                     <input id="family-calendar-url" class="form-control mt-2" type="text" readonly value="<?=
-     familyPageH($calendarUrl)
+
+         familyPageH($calendarUrl)
+
     ?>" data-app-csp-handler="<?=
-    htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+
+        htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+
     ?>" onclick="this.select()">
                 </div>
             <?php
 endif;
+
     ?>
             <?php
 if ($calendarState !== null && (int)$calendarState['active'] === 1):
+
     ?>
                 <p class="small mb-3">Kalendář je aktivní. Kontrolní konec odkazu: <code>…<?=
-     familyPageH($calendarState['token_hint'])
+
+         familyPageH($calendarState['token_hint'])
+
     ?></code></p>
                 <div class="d-flex gap-2 flex-wrap">
                     <form method="post"><?=
-     csrf_field()
-    ?><?php echo '<input type="hidden" name="action" value="family_calendar_issue"><button class="'
-        . 'btn btn-outline-primary btn-sm">Vytvořit nový odkaz</button></form>
+
+         csrf_field()
+
+    ?><?php
+    echo '<input type="hidden" name="action" value="family_calendar_issue"><button class="'
+            . 'btn btn-outline-primary btn-sm">Vytvořit nový odkaz</button></form>
            '
-        . '         <form method="post" data-app-csp-handler="';
+            . '         <form method="post" data-app-csp-handler="';
+
     ?><?=
-    htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+
+        htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+
     ?>" onsubmit="return confirm('Opravdu zrušit odběr rodinného kalendáře?');"><?=
-     csrf_field()
-    ?><?php echo '<input type="hidden" name="action" value="family_calendar_revoke"><button class='
-        . '"btn btn-outline-danger btn-sm">Zrušit odkaz</button></form>
+
+         csrf_field()
+
+    ?><?php
+    echo '<input type="hidden" name="action" value="family_calendar_revoke"><button class='
+            . '"btn btn-outline-danger btn-sm">Zrušit odkaz</button></form>
                 </'
-        . 'div>
+            . 'div>
             ';
+
     ?><?php else:
+
         ?>
                 <form method="post"><?=
-         csrf_field()
+
+                 csrf_field()
+
         ?><input type="hidden" name="action" value="family_calendar_issue"><button class="btn btn-primary">Vytvořit soukromý odkaz</button></form>
             <?php
     endif;
+
     ?>
         </div>
     </details>
 
     <details class="card border-0 shadow-sm mb-4" id="pripominky-plateb"<?=
-     $reminderMessage !== '' || $reminderError !== '' ? ' open' : ''
-    ?><?php echo '>
+
+         $reminderMessage !== '' || $reminderError !== '' ? ' open' : ''
+
+    ?><?php
+    echo '>
         <summary class="card-header bg-white d-flex justify-content-between a'
-        . 'lign-items-center"><strong><i class="bi bi-bell me-2 text-warning"></i>'
-        . 'Připomínky klubových plateb</strong><span class="badge ';
+            . 'lign-items-center"><strong><i class="bi bi-bell me-2 text-warning"></i>'
+            . 'Připomínky klubových plateb</strong><span class="badge ';
+
     ?><?=
-    $reminderPreference['enabled'] ? 'text-bg-success' : 'text-bg-secondary'
+
+        $reminderPreference['enabled'] ? 'text-bg-success' : 'text-bg-secondary'
+
     ?>"><?=
-    $reminderPreference['enabled'] ? 'zapnuté' : 'vypnuté'
-    ?><?php echo '</span></summary>
+
+        $reminderPreference['enabled'] ? 'zapnuté' : 'vypnuté'
+
+    ?><?php
+    echo '</span></summary>
         <div class="card-body">
             <p class="mb-2">'
-        . 'Dobrovolně si zapněte e-mail před splatností členského předpisu. Odkaz v e-mailu'
-        . ' vede pouze na přihlášení a neobsahuje jméno dítěte ani identifikátor platby.</p'
-        . '>
+            . 'Dobrovolně si zapněte e-mail před splatností členského předpisu. Odkaz v e-mailu'
+            . ' vede pouze na přihlášení a neobsahuje jméno dítěte ani identifikátor platby.</p'
+            . '>
             <p class="small text-muted">Nejvýše jedna připomínka za 20 hodin '
-        . 'na jeden účet. Každý předpis se zařadí jen jednou a před odesláním se znovu kont'
-        . 'roluje jeho stav.</p>
+            . 'na jeden účet. Každý předpis se zařadí jen jednou a před odesláním se znovu kont'
+            . 'roluje jeho stav.</p>
             ';
+
     ?><?php
 if ($reminderMessage !== ''):
+
     ?><div class="alert alert-success py-2"><?=
-     familyPageH($reminderMessage)
+
+         familyPageH($reminderMessage)
+
     ?></div><?php
 endif;
+
     ?>
             <?php
 if ($reminderError !== ''):
+
     ?><div class="alert alert-danger py-2"><?=
-     familyPageH($reminderError)
+
+         familyPageH($reminderError)
+
     ?></div><?php
 endif;
+
     ?>
             <form method="post" class="row g-2 align-items-end">
                 <?=
-     csrf_field()
+
+         csrf_field()
+
     ?><input type="hidden" name="action" value="member_charge_reminder_save">
                 <div class="col-sm-5">
                     <label for="reminder-enabled" class="form-label">E-mailové připomínky</label>
                     <select id="reminder-enabled" name="enabled" class="form-select">
                         <option value="0" <?=
-     !$reminderPreference['enabled'] ? 'selected' : ''
+
+         !$reminderPreference['enabled'] ? 'selected' : ''
+
     ?>>Vypnuté</option>
                         <option value="1" <?=
-     $reminderPreference['enabled'] ? 'selected' : ''
+
+         $reminderPreference['enabled'] ? 'selected' : ''
+
     ?>>Zapnuté</option>
                     </select>
                 </div>
@@ -962,37 +1334,58 @@ endif;
                     <select id="reminder-days" name="days_before" class="form-select">
                         <?php
 foreach ([3, 7, 14] as $days):
+
     ?><option value="<?=
-     $days
+
+         $days
+
     ?>" <?=
-     $reminderPreference['days_before'] === $days ? 'selected' : ''
+
+         $reminderPreference['days_before'] === $days ? 'selected' : ''
+
     ?>><?=
-     $days
+
+         $days
+
     ?> dní</option><?php
 endforeach;
+
     ?>
                     </select>
                 </div>
                 <div class="col-sm-3"><button class="btn btn-outline-primary w-100">Uložit nastavení</button></div>
             </form>
             <?php
-if ($reminderSummary['pending'] + $reminderSummary['processing'] + $reminderSummary['sent'] + $reminderSummary['failed'] > 0):
+if ($reminderSummary['pending'] + $reminderSummary['processing'] + $reminderSummary['sent'] + $reminderSummary['failed'] >
+        0):
+
     ?>
                 <p class="small text-muted mt-3 mb-0">Připravené: <?=
-     $reminderSummary['pending']
+
+         $reminderSummary['pending']
+
     ?> · zpracovává se: <?=
-     $reminderSummary['processing']
+
+         $reminderSummary['processing']
+
     ?> · odeslané: <?=
-     $reminderSummary['sent']
+
+         $reminderSummary['sent']
+
     ?><?php
 if ($reminderSummary['failed'] > 0):
+
     ?> · neúspěšné: <?=
-     $reminderSummary['failed']
+
+         $reminderSummary['failed']
+
     ?><?php
 endif;
+
     ?></p>
             <?php
 endif;
+
     ?>
         </div>
     </details>
@@ -1003,39 +1396,62 @@ endif;
     <?php
 foreach ($overview as $profileIndex => $profile): $person = $profile['person'];
     $makeupSummary = $makeupProfileSummaries[(int)$person['sportovec_id']] ?? null;
+
     ?>
         <details id="family-profile-<?=
-    (int)$person['sportovec_id']
+
+        (int)$person['sportovec_id']
+
     ?>" class="card border-0 shadow-sm mb-4"<?=
-     $profileIndex === 0 ? ' open' : ''
+
+         $profileIndex === 0 ? ' open' : ''
+
     ?>>
             <summary class="card-header bg-white d-flex justify-content-between align-items-start flex-wrap gap-2">
                 <div><strong class="fs-5"><?=
-     familyPageH($person['jmeno'] . ' ' . $person['prijmeni'])
+
+         familyPageH($person['jmeno'] . ' ' . $person['prijmeni'])
+
     ?></strong> <?=
-    sportovecStatusBadge($person)
+
+        sportovecStatusBadge($person)
+
     ?><div class="small text-muted">Rok narození: <?=
-     familyPageH($person['narozeni'] ? substr((string)$person['narozeni'], 0, 4) : 'neuveden')
+
+         familyPageH($person['narozeni'] ? substr((string)$person['narozeni'], 0, 4) : 'neuveden')
+
     ?></div></div>
                 <div class="d-flex align-items-center gap-2"><span class="small text-muted">Rozbalit detail</span><?php
 foreach ($person['relation_roles'] as $role):
+
     ?><span class="badge text-bg-primary ms-1"><?=
-     familyPageH($roleLabels[$role] ?? $role)
+
+         familyPageH($roleLabels[$role] ?? $role)
+
     ?></span><?php
 endforeach;
+
     ?></div>
             </summary>
             <div class="card-body">
                 <?php
 if (isset($profile['sports_summary'])):$actual = $profile['sports_summary'];
+
     ?><p class="alert alert-light border"><strong>Ověřená činnost letos:</strong> <?=
-    (int)$actual['training_count']
+
+        (int)$actual['training_count']
+
     ?> tréninků · <?=
-    (int)$actual['training_minutes']
+
+        (int)$actual['training_minutes']
+
     ?> minut · <?=
-    (int)$actual['race_count']
+
+        (int)$actual['race_count']
+
     ?> závodních startů. Započtena je potvrzená skutečná účast.</p><?php
 endif;
+
     ?>
                 <?php
 if (familyPortalTableExists($pdo, 'medical_clearance_watches')):$medicalRows = medicalClearanceView(
@@ -1045,213 +1461,338 @@ if (familyPortalTableExists($pdo, 'medical_clearance_watches')):$medicalRows = m
     $accountId
 );
     if ($medicalRows):
+
         ?><section class="border rounded p-3 mb-3"><h2 class="h6">Platnost podkladů dnes</h2><?php
 foreach ($medicalRows as $medical):
+
     ?><p class="mb-1"><strong><?=
-    familyPageH($medical['purpose'])
+
+        familyPageH($medical['purpose'])
+
     ?>:</strong> <?=
-    familyPageH(['missing' => 'Nedoloženo','pending' => 'Čeká na ověření','valid' => 'Platné','expired' =>
-         'Platnost skončila','not_yet_valid' => 'Dosud neplatné','revoked' => 'Odvoláno'][$medical['status']])
+
+        familyPageH(['missing' => 'Nedoloženo','pending' => 'Čeká na ověření','valid' => 'Platné','expired'
+        =>
+             'Platnost skončila','not_yet_valid' => 'Dosud neplatné','revoked' => 'Odvoláno'][$medical['status']])
+
     ?><?=
-     $medical['valid_until'] ? ' do '.familyPageH(uiFormatDate($medical['valid_until'])) : ''
+
+         $medical['valid_until'] ? ' do '.familyPageH(uiFormatDate($medical['valid_until'])) : ''
+
     ?>. <?=
-    familyPageH($medical['next_step'])
+
+        familyPageH($medical['next_step'])
+
     ?></p><?php
 endforeach;
+
         ?></section><?php
     endif;endif;
+
     ?>
                 <?php
-    $financeBalance = $financeBalances[(int)$person['sportovec_id']] ?? null;
+        $financeBalance = $financeBalances[(int)$person['sportovec_id']] ?? null;
     if ($financeBalance !== null):
+
         ?><div class="alert <?=
-        $financeBalance['overdue_minor'] > 0 ? 'alert-warning' : 'alert-light'
+
+                $financeBalance['overdue_minor'] > 0 ? 'alert-warning' : 'alert-light'
+
         ?> border"><strong>Saldo klubových služeb:</strong> <?=
-        familyPageH(number_format($financeBalance['open_minor'] / 100, 2, ',', ' '))
+
+                familyPageH(number_format($financeBalance['open_minor'] / 100, 2, ',', ' '))
+
         ?> Kč k úhradě · po lhůtě <?=
-        familyPageH(number_format($financeBalance['overdue_minor'] / 100, 2, ',', ' '))
+
+                familyPageH(number_format($financeBalance['overdue_minor'] / 100, 2, ',', ' '))
+
         ?> Kč<?php
 if ($financeBalance['credit_minor'] > 0):
+
     ?> · přeplatek <?=
-    familyPageH(number_format($financeBalance['credit_minor'] / 100, 2, ',', ' '))
+
+        familyPageH(number_format($financeBalance['credit_minor'] / 100, 2, ',', ' '))
+
     ?> Kč<?php
 endif;
+
         ?><div class="small mt-1">Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k <?=
-        familyPageH(uiFormatDateTime((string)$financeBalance['as_of']))
+
+                familyPageH(uiFormatDateTime((string)$financeBalance['as_of']))
+
         ?>.</div></div><?php
     endif;
+
     ?>
                 <?php
 if ($makeupSummary !== null):
-    ?><?php echo '<div class="alert alert-light border d-flex flex-wrap align-items-center gap-2">'
-        . '<strong>Náhradní lekce kroužků</strong><span class="badge text-bg-warning">Omluv'
-        . 'ené, čekají na potvrzení ';
+
+    ?><?php
+    echo '<div class="alert alert-light border d-flex flex-wrap align-items-center gap-2">'
+            . '<strong>Náhradní lekce kroužků</strong><span class="badge text-bg-warning">Omluv'
+            . 'ené, čekají na potvrzení ';
+
     ?><?=
-     (int)$makeupSummary['pending']
+
+         (int)$makeupSummary['pending']
+
     ?></span><span class="badge text-bg-success">K využití <?=
-     (int)$makeupSummary['available']
+
+         (int)$makeupSummary['available']
+
     ?></span><span class="badge text-bg-secondary">Převedené uzamčené <?=
-     (int)$makeupSummary['locked']
+
+         (int)$makeupSummary['locked']
+
     ?></span><span class="badge text-bg-primary">Rezervované <?=
-     (int)$makeupSummary['reserved']
+
+         (int)$makeupSummary['reserved']
+
     ?></span><a class="btn btn-sm btn-outline-primary ms-auto" href="nahrady.php?person_id=<?=
-     (int)$person['sportovec_id']
+
+         (int)$person['sportovec_id']
+
     ?>">Zobrazit náhrady</a></div><?php
 endif;
+
     ?>
                 <h2 class="h6">Soupisky</h2>
                 <?php
 if ($profile['rosters'] === []):
+
     ?><p class="text-muted small">Žádná evidovaná soupiska.</p><?php else:
+
         ?>
-<?php echo '                <div class="table-responsive mb-4"><table class="table table-sm '
-            . 'align-middle"><thead><tr><th>Tým</th><th>Sezóna</th><th>Platnost</th><th>Stav</t'
-            . 'h></tr></thead><tbody>
+<?php
+        echo '                <div class="table-responsive mb-4"><table class="table table-sm '
+                    . 'align-middle"><thead><tr><th>Tým</th><th>Platnost</th><th>Stav</t'
+                    . 'h></tr></thead><tbody>
                 ';
+
         ?><?php
 foreach ($profile['rosters'] as $roster):
+
     ?><tr><td><strong><?=
-     familyPageH($roster['team_name'])
+
+         familyPageH($roster['team_name'])
+
     ?></strong><div class="small text-muted"><?=
-     familyPageH(trim($roster['discipline'] . ' ' . $roster['age_label']))
+
+         familyPageH(trim($roster['discipline'] . ' ' . $roster['age_label']))
+
     ?></div></td><td><?=
-     familyPageH($roster['season_name'])
-    ?></td><td><?=
-     familyPageH(uiFormatDate((string)$roster['valid_from']))
+
+         familyPageH(uiFormatDate((string)$roster['valid_from']))
+
     ?> – <?=
-     familyPageH($roster['valid_to'] ? uiFormatDate((string)$roster['valid_to']) : 'dosud')
+
+         familyPageH($roster['valid_to'] ? uiFormatDate((string)$roster['valid_to']) : 'dosud')
+
     ?></td><td><span class="badge <?=
-     $roster['status'] === 'active' ? 'text-bg-success' : 'text-bg-secondary'
+
+         $roster['status'] === 'active' ? 'text-bg-success' : 'text-bg-secondary'
+
     ?>"><?=
-     familyPageH(familyPageRosterStatus((string)$roster['status']))
+
+         familyPageH(familyPageRosterStatus((string)$roster['status']))
+
     ?></span></td></tr><?php
 endforeach;
+
         ?>
                 </tbody></table></div><?php
     endif;
+
     ?>
 
                 <h2 class="h6">Klubové události</h2>
                 <?php
 if ($profile['events'] === []):
+
     ?><p class="text-muted small">Žádná přihláška na klubovou událost.</p><?php else:
+
         ?>
-<?php echo '                <div class="table-responsive mb-4"><table class="table table-sm '
-            . 'align-middle"><thead><tr><th>Událost</th><th>Typ</th><th>Přihlášeno</th><th>Stav'
-            . '</th></tr></thead><tbody>
+<?php
+        echo '                <div class="table-responsive mb-4"><table class="table table-sm '
+                    . 'align-middle"><thead><tr><th>Událost</th><th>Typ</th><th>Přihlášeno</th><th>Stav'
+                    . '</th></tr></thead><tbody>
                 ';
+
         ?><?php
 foreach ($profile['events'] as $event):
+
     ?><tr><td><?=
-     familyPageH($event['event_name'])
+
+         familyPageH($event['event_name'])
+
     ?></td><td><?=
-     familyPageH(familyPageEventType((string)$event['event_type']))
+
+         familyPageH(familyPageEventType((string)$event['event_type']))
+
     ?></td><td><?=
-     familyPageH(uiFormatDateTime((string)$event['registered_at']))
+
+         familyPageH(uiFormatDateTime((string)$event['registered_at']))
+
     ?></td><td><?=
-     familyPageH(familyPageEventStatus((string)$event['status']))
+
+         familyPageH(familyPageEventStatus((string)$event['status']))
+
     ?></td></tr><?php
 endforeach;
+
         ?>
                 </tbody></table></div><?php
     endif;
+
     ?>
 
                 <h2 class="h6">Členské předpisy</h2>
                 <?php
 if ($profile['member_charges'] === []):
+
     ?><p class="text-muted small">Žádný členský předpis.</p><?php else:
+
         ?>
                 <?php
-        $openChargeMinor = [];
+                $openChargeMinor = [];
         foreach (($financeBalance['items'] ?? []) as $financeItem) {
             if (($financeItem['kind'] ?? '') === 'member_charge') {
                 $openChargeMinor[(int)$financeItem['id']] = (int)$financeItem['amount_minor'];
             }
         }
+
         ?>
-<?php echo '                <div class="table-responsive mb-4"><table class="table table-sm '
-            . 'align-middle"><thead><tr><th>Předpis</th><th>Předepsáno / zbývá</th><th>Splatnos'
-            . 't</th><th>Stav</th></tr></thead><tbody>
+<?php
+        echo '                <div class="table-responsive mb-4"><table class="table table-sm '
+                    . 'align-middle"><thead><tr><th>Předpis</th><th>Předepsáno / zbývá</th><th>Splatnos'
+                    . 't</th><th>Stav</th></tr></thead><tbody>
                 ';
+
         ?><?php
 foreach ($profile['member_charges'] as $charge):
+
     ?><tr>
                     <td><strong><?=
-     familyPageH($charge['title_snapshot'])
+
+         familyPageH($charge['title_snapshot'])
+
     ?></strong><div class="small text-muted"><code><?=
-     familyPageH($charge['public_code'])
+
+         familyPageH($charge['public_code'])
+
     ?></code></div><?php
 if ($charge['status'] === 'pending' && (int)($charge['payer_account_id'] ?? 0) === $accountId):
+
     ?><a class="small" href="platba_predpisu.php?id=<?=
-    (int)$charge['id']
+
+        (int)$charge['id']
+
     ?>">Zobrazit platbu a QR</a><?php
 endif;
+
     ?></td>
                     <td><?=
-     familyPageH(number_format(((int)$charge['amount_minor']) / 100, 2, ',', ' ') . ' ' . $charge['currency'])
+
+         familyPageH(number_format(((int)$charge['amount_minor']) / 100, 2, ',', ' ') . ' ' . $charge['currency'])
+
     ?><?php
     $remaining = $openChargeMinor[(int)$charge['id']] ?? null;
     if ($remaining !== null && $remaining < (int)$charge['amount_minor']):
+
         ?><div class="small text-success">Po započtení plateb zbývá <?=
-        familyPageH(number_format($remaining / 100, 2, ',', ' '))
+
+                familyPageH(number_format($remaining / 100, 2, ',', ' '))
+
         ?> Kč</div><?php
     endif;
+
     ?></td>
                     <td><?=
-     familyPageH($charge['due_on'] ? uiFormatDate((string)$charge['due_on']) : 'neuvedeno')
+
+         familyPageH($charge['due_on'] ? uiFormatDate((string)$charge['due_on']) : 'neuvedeno')
+
     ?></td>
                     <td><span class="badge <?=
-     $charge['status'] === 'paid' ? 'text-bg-success' : ($charge['status'] === 'pending' ? 'text-bg-warning' : 'text-bg-secondary')
+
+         $charge['status'] === 'paid' ? 'text-bg-success' : ($charge['status'] === 'pending' ? 'text-bg-warning' : 'text-bg-secondary')
+
     ?>"><?=
-     familyPageH(familyPageChargeStatus((string)$charge['status']))
+
+         familyPageH(familyPageChargeStatus((string)$charge['status']))
+
     ?></span><?php
 if ($charge['paid_at']):
+
     ?><div class="small text-muted">Uhrazeno <?=
-     familyPageH(substr((string)$charge['paid_at'], 0, 10))
+
+         familyPageH(substr((string)$charge['paid_at'], 0, 10))
+
     ?></div><?php
 endif;
+
     ?></td>
                 </tr><?php
 endforeach;
+
     ?>
                 </tbody></table></div><?php
-    endif;
+        endif;
+
     ?>
 
                 <h2 class="h6">Docházka na tréninky <a class="small fw-normal ms-2" href="soupiskove_treninky.php?sportovec_id=<?=
-     (int)$person['sportovec_id']
+
+         (int)$person['sportovec_id']
+
     ?>">Všechny tréninky ze soupisek</a></h2>
                 <?php
 if ($profile['trainings'] === []):
+
     ?><p class="text-muted small mb-0">Žádná zaznamenaná účast.</p><?php else:
+
         ?>
-<?php echo '                <div class="table-responsive"><table class="table table-sm align'
-            . '-middle mb-0"><thead><tr><th>Datum</th><th>Náplň</th><th>Kategorie</th><th>Délka'
-            . '</th></tr></thead><tbody>
+<?php
+        echo '                <div class="table-responsive"><table class="table table-sm align'
+                    . '-middle mb-0"><thead><tr><th>Datum</th><th>Náplň</th><th>Kategorie</th><th>Délka'
+                    . '</th></tr></thead><tbody>
                 ';
+
         ?><?php
 foreach ($profile['trainings'] as $training):
+
     ?><tr><td><?=
-     familyPageH(uiFormatDate((string)$training['datum']))
+
+         familyPageH(uiFormatDate((string)$training['datum']))
+
     ?></td><td><?=
-     familyPageH($training['napln'])
+
+         familyPageH($training['napln'])
+
     ?><div class="small text-muted"><?=
-    !empty($training['attendance_confirmed']) ? 'Účast potvrzena' : 'Historický záznam — účast zatím neověřena'
+
+        !empty($training['attendance_confirmed']) ? 'Účast potvrzena' : 'Historický záznam — účast zatím neověřena'
+
     ?></div></td><td><?=
-     familyPageH($training['kategorie'])
+
+         familyPageH($training['kategorie'])
+
     ?></td><td><?=
-     familyPageH($training['delka'])
+
+         familyPageH($training['delka'])
+
     ?> h</td></tr><?php
 endforeach;
+
         ?>
                 </tbody></table></div><?php
     endif;
+
     ?>
             </div>
         </details>
     <?php
 endforeach;
+
     ?>
 
     <section class="card border-0 shadow-sm mb-4">
@@ -1259,43 +1800,61 @@ endforeach;
         <div class="card-body p-0">
             <?php
 if ($familyOrderItems === []):
+
     ?>
-<?php echo '                <p class="text-muted small p-3 mb-0">Zatím zde není žádná objedn'
-        . 'ávková položka přiřazená konkrétnímu sportovci.</p>
+<?php
+    echo '                <p class="text-muted small p-3 mb-0">Zatím zde není žádná objedn'
+            . 'ávková položka přiřazená konkrétnímu sportovci.</p>
             ';
+
     ?><?php else:
+
         ?>
                 <div class="table-responsive"><table class="table table-sm align-middle mb-0">
                     <thead><tr><th>Objednávka</th><th>Příjemce</th><th>Položka</th><th>Částka</th><th>Platba</th></tr></thead>
                     <tbody><?php
 foreach ($familyOrderItems as $item):
+
     ?><tr>
                         <td><code><?=
-     familyPageH($item['public_code'])
+
+         familyPageH($item['public_code'])
+
     ?></code></td>
                         <td><?=
-     familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name'])
+
+         familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name'])
+
     ?></td>
                         <td><?=
-     familyPageH($item['product_name_snapshot'])
+
+         familyPageH($item['product_name_snapshot'])
+
     ?></td>
                         <td><?=
-     familyPageH(number_format(((int)$item['line_amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency'])
+
+         familyPageH(number_format(((int)$item['line_amount_minor']) / 100, 2, ',', ' ') . ' ' . $item['currency'])
+
     ?></td>
                         <td><?=
-     familyPageH(familyPageChargeStatus((string)$item['payment_status']))
+
+         familyPageH(familyPageChargeStatus((string)$item['payment_status']))
+
     ?></td>
                     </tr><?php
 endforeach;
+
         ?></tbody>
                 </table></div>
             <?php
     endif;
+
     ?>
         </div>
     </section>
     <?php
-    endif;
+        endif;
+
     ?>
 </main>
 </body>

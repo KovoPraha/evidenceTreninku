@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+require_once __DIR__.'/member_evidence_guard.php';
 
 require_once __DIR__ . '/kis_match_lib.php';
 require_once __DIR__ . '/kis_source_archive.php';
@@ -14,8 +16,16 @@ function kisImportJson(array $value): string
     return json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '{}';
 }
 
-function kisImportCreateRun(PDO $pdo, array $people, array $meta, array $warnings, array $sourceNames, ?int $userId, array $sourceArtifactIds = []): int
-{
+function kisImportCreateRun(
+    PDO $pdo,
+    array $people,
+    array $meta,
+    array $warnings,
+    array $sourceNames,
+    ?int $userId,
+    array $sourceArtifactIds = []
+): int {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     $stats = [
         'rows' => count($people),
         'warnings' => count($warnings),
@@ -90,7 +100,8 @@ function kisImportFinalizeFieldContract(PDO $pdo, int $runId, array $people, arr
 {
     $report = kisFieldContractEvaluate($people, $meta, $warnings);
     $statement = $pdo->prepare(
-        'UPDATE kis_import_runs SET field_contract_version=?,field_contract_fingerprint=?,field_contract_report_json=?,field_contract_blockers=? WHERE id=?'
+        ('UPDATE kis_import_runs SET field_contract_version=?,field_contract_fingerprint=?,field_contract_report_json=?,' .
+    'field_contract_blockers=? WHERE id=?')
     );
     $statement->execute([
         KIS_IMPORT_FIELD_CONTRACT,
@@ -238,7 +249,8 @@ function kisImportFinalizePreview(PDO $pdo, int $runId): array
 {
     $report = kisImportBuildPreviewReport($pdo, $runId);
     $statement = $pdo->prepare(
-        'UPDATE kis_import_runs SET preview_contract_version=?,preview_fingerprint=?,preview_report_json=?,classified_rows=?,blocker_rows=? WHERE id=?'
+        ('UPDATE kis_import_runs SET preview_contract_version=?,preview_fingerprint=?,preview_report_json=?,classified_r' .
+    'ows=?,blocker_rows=? WHERE id=?')
     );
     $statement->execute([
         KIS_IMPORT_PREVIEW_CONTRACT,
@@ -317,35 +329,44 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array
     $hasExternalIdColumn = kisImportColumnExists($pdo, 'kis_import_rows', 'kis_external_id');
     $columns = [
         'run_id', 'person_key', 'jmeno', 'prijmeni', 'narozeni', 'email', 'uciid', 'oddil',
-        'kis_aktivni', 'kis_platebne_aktivni', 'kis_neuhrazeno', 'kis_posledni_uhrada', 'kis_soupisky', 'raw_json',
+        'kis_aktivni', 'kis_platebne_aktivni', 'kis_neuhrazeno', 'kis_posledni_uhrada', 'kis_soupisky',
+     'raw_json',
     ];
     if ($hasExternalIdColumn) {
         $columns[] = 'kis_external_id';
     }
     $optionalSnapshots = [
-        'kis_roster_count' => static fn(array $person): int => count((array)($person['_soupisky_parsed'] ?? [])),
-        'kis_payment_paid_count' => static fn(array $person): int => max(0, (int)($person['_kis_payment']['paid_rows'] ?? 0)),
-        'kis_payment_open_count' => static fn(array $person): int => max(0, (int)($person['_kis_payment']['open_rows'] ?? 0)),
+        'kis_roster_count' => static fn (array $person): int => count((array)($person['_soupisky_parsed'] ?? [])),
+
+        'kis_payment_paid_count' => static fn (array $person): int => max(0, (int)($person['_kis_payment']['paid_rows'] ??
+    0)),
+        'kis_payment_open_count' => static fn (array $person): int => max(0, (int)($person['_kis_payment']['open_rows'] ??
+    0)),
     ];
     foreach (array_keys($optionalSnapshots) as $optionalColumn) {
-        if (kisImportColumnExists($pdo, 'kis_import_rows', $optionalColumn)) $columns[] = $optionalColumn;
+        if (kisImportColumnExists($pdo, 'kis_import_rows', $optionalColumn)) {
+            $columns[] = $optionalColumn;
+        }
     }
     $rowStmt = $pdo->prepare(
         'INSERT INTO kis_import_rows (' . implode(',', $columns) . ') VALUES ('
-        . implode(',', array_map(static fn(string $column): string => ':' . $column, $columns)) . ')'
+        . implode(',', array_map(static fn (string $column): string => ':' . $column, $columns)) . ')'
     );
-    $matchStmt = $pdo->prepare("
+    $matchStmt = $pdo->prepare(('
         INSERT INTO kis_import_matches
-            (run_id, row_id, sportovec_id, match_status, confidence, reason, candidate_json)
+            (run_id, row_id, sportovec_id, match_status, ' .
+    'confidence, reason, candidate_json)
         VALUES
-            (:run_id, :row_id, :sportovec_id, :match_status, :confidence, :reason, :candidate_json)
-    ");
+            (:run_id, :row_id, :sportovec_id, ' .
+    ':match_status, :confidence, :reason, :candidate_json)
+    '));
     $paymentStmt = null;
     if (kisImportTableExists($pdo, 'kis_import_payment_rows')) {
         $paymentStmt = $pdo->prepare(
             'INSERT INTO kis_import_payment_rows '
             . '(run_id,import_row_id,source_ref,payment_external_id,status_snapshot,amount_minor,outstanding_minor,currency,due_on,paid_on) '
-            . 'VALUES (:run_id,:import_row_id,:source_ref,:payment_external_id,:status_snapshot,:amount_minor,:outstanding_minor,:currency,:due_on,:paid_on)'
+            . ('VALUES (:run_id,:import_row_id,:source_ref,:payment_external_id,:status_snapshot,:amount_minor,:outstanding_mi' .
+    'nor,:currency,:due_on,:paid_on)')
         );
     }
     $paymentOrdinal = 0;
@@ -374,7 +395,9 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array
             $parameters[':kis_external_id'] = kisFieldNormalizeExternalId($person['kis_external_id'] ?? '') ?: null;
         }
         foreach ($optionalSnapshots as $optionalColumn => $resolver) {
-            if (in_array($optionalColumn, $columns, true)) $parameters[':' . $optionalColumn] = $resolver($person);
+            if (in_array($optionalColumn, $columns, true)) {
+                $parameters[':' . $optionalColumn] = $resolver($person);
+            }
         }
         $rowStmt->execute($parameters);
         $rowId = (int)$pdo->lastInsertId();
@@ -418,15 +441,21 @@ function kisImportStoreRowsAndMatches(PDO $pdo, int $runId, array $people, array
 
 function kisImportLatestRuns(PDO $pdo, int $limit = 20): array
 {
-    $stmt = $pdo->query("
+    $stmt = $pdo->query(
+        ('
         SELECT r.*, t.jmeno AS created_by_name,
-               (SELECT COUNT(*) FROM kis_import_matches m WHERE m.run_id = r.id AND m.match_status = 'ambiguous') AS ambiguous_count,
-               (SELECT COUNT(*) FROM kis_import_matches m WHERE m.run_id = r.id AND m.match_status = 'conflict') AS conflict_count,
-               (SELECT COUNT(*) FROM kis_import_rows rr WHERE rr.run_id = r.id) AS row_count
-        FROM kis_import_runs r
+               (SELECT COUNT(*) FROM kis_import_matches m ' .
+    'WHERE m.run_id = r.id AND m.match_status = \'ambiguous\') AS ambiguous_count,
+               (SELECT COUNT(*) ' .
+    'FROM kis_import_matches m WHERE m.run_id = r.id AND m.match_status = \'conflict\') AS conflict_count,
+         ' .
+    '      (SELECT COUNT(*) FROM kis_import_rows rr WHERE rr.run_id = r.id) AS row_count
+        FROM ' .
+    'kis_import_runs r
         LEFT JOIN treneri t ON t.id = r.created_by
-        ORDER BY r.created_at DESC, r.id DESC
-        LIMIT " . max(1, min(100, $limit))
+        ORDER BY r.created_at DESC, ' .
+    'r.id DESC
+        LIMIT ') . max(1, min(100, $limit))
     );
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -439,15 +468,19 @@ function kisImportRunDetail(PDO $pdo, int $runId): array
     if (!$run) {
         return ['run' => null, 'rows' => []];
     }
-    $rowsStmt = $pdo->prepare("
+    $rowsStmt = $pdo->prepare(('
         SELECT ir.*, im.match_status, im.confidence, im.reason, im.sportovec_id, im.candidate_json,
-               s.jmeno AS db_jmeno, s.prijmeni AS db_prijmeni
+       ' .
+    '        s.jmeno AS db_jmeno, s.prijmeni AS db_prijmeni
         FROM kis_import_rows ir
-        LEFT JOIN kis_import_matches im ON im.row_id = ir.id
+        LEFT JOIN ' .
+    'kis_import_matches im ON im.row_id = ir.id
         LEFT JOIN sportovci s ON s.id = im.sportovec_id
-        WHERE ir.run_id = ?
-        ORDER BY FIELD(im.match_status, 'ambiguous','conflict','new','matched','ignored'), ir.prijmeni, ir.jmeno
-    ");
+        ' .
+    'WHERE ir.run_id = ?
+        ORDER BY FIELD(im.match_status, ' .
+    '\'ambiguous\',\'conflict\',\'new\',\'matched\',\'ignored\'), ir.prijmeni, ir.jmeno
+    '));
     $rowsStmt->execute([$runId]);
     return ['run' => $run, 'rows' => $rowsStmt->fetchAll(PDO::FETCH_ASSOC)];
 }

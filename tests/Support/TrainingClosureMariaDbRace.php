@@ -157,6 +157,8 @@ try {
                 . "VALUES(1,1,2,1,12,1);INSERT INTO "
                 . "club_makeup_slots(plan_id,offer_id,capacity,accepting,birth_year_from,birth_year_to,updated_by_trainer_id) "
                 . "VALUES(200,2,1,1,2016,2018,1)");
+            $m = require dirname(__DIR__, 2).'/migrations/20261102171000_offer_makeup_scopes.php';
+            $m['up']($pdo);
             foreach ([1 => 10,
             2 => 11] as $credit => $person) {
                 $pdo->prepare("INSERT INTO "

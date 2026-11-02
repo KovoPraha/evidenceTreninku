@@ -168,6 +168,12 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261025231000_kis_review_handoff',
                 '20261030170000_kis_preview_match_index',
                 '20261031090000_trainer_password_reset',
+                '20261102170000_roster_activity_kind',
+                '20261102170500_dated_program_offers',
+                '20261102171000_offer_makeup_scopes',
+                '20261102172000_member_roster_operations',
+                '20261102173000_member_roster_age_rules',
+                '20261102174000_member_evidence_cutover_runs',
 
             ],
             array_keys($catalog)
@@ -292,7 +298,9 @@ final class AuthSecurityMigrationTest extends TestCase
         $statement = $pdo->prepare('INSERT INTO nastaveni (klic, hodnota) VALUES (:key, :value)');
         $statement->execute(['key' => 'schema_version', 'value' => \LEGACY_SCHEMA_VERSION]);
 
-        $pdo->exec('CREATE TABLE treneri (id INTEGER PRIMARY KEY, jmeno TEXT, email TEXT UNIQUE, heslo TEXT, role TEXT, aktivni INTEGER NOT NULL DEFAULT 1)');
+        $pdo->exec(('CREATE TABLE treneri (id INTEGER PRIMARY KEY, jmeno TEXT, email TEXT UNIQUE, heslo TEXT, role TEXT, aktivni '
+    .
+    'INTEGER NOT NULL DEFAULT 1)'));
         $pdo->exec("INSERT INTO treneri (id,jmeno,email,heslo,role,aktivni) VALUES (1,'Admin','admin@example.test','x','admin',1)");
         $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE kis_import_matches (id INTEGER PRIMARY KEY,run_id INTEGER NOT NULL,row_id INTEGER NOT NULL)');

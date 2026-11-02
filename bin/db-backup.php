@@ -22,7 +22,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-31.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-02.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -39,6 +39,8 @@ const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-31.1';
  * before the migrations of the release it precedes.
  */
 const EVIDENCE_OWNED_COLUMN_CONTRACT = [
+    'club_teams' => ['activity_kind'],
+    'club_program_schedule_slots' => ['valid_from', 'valid_to'],
     'club_event_notifications' => ['system_template_key', 'system_template_version'],
     // Imported profiles may legitimately have an unknown birth date.
     'sportovci' => ['narozeni'],
@@ -53,6 +55,8 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
         'custom_visible',
     ],
     'athlete_registration_text_drafts' => ['title_plain', 'custom_consent_id', 'custom_required', 'custom_visible'],
+
+
     // Immutable proof of the terms a parent accepted, carried from the order.
     'club_program_enrollments' => [
         'account_id',
@@ -61,6 +65,8 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
         'terms_accepted_by_account_id',
     ],
     'club_program_admissions' => ['payer_account_id','payer_name_snapshot','payer_relation_snapshot'],
+
+
     // A program item cannot be written without them; checkout is fail-closed.
     'shop_order_items' => [
         'program_terms_snapshot_json',
@@ -187,6 +193,8 @@ const EVIDENCE_TABLES = [
     'club_makeup_excuse_rules',
     'club_makeup_offer_periods',
     'club_makeup_policies',
+    'club_makeup_offer_policies',
+    'club_makeup_offer_routes',
     'club_makeup_reservations',
     'club_makeup_slots',
     'club_event_admin_events',
@@ -224,6 +232,9 @@ const EVIDENCE_TABLES = [
     'club_roster_members',
     'club_team_edges',
     'club_roster_structure_events',
+    'member_roster_operations',
+    'member_roster_age_rules',
+    'member_evidence_cutover_runs',
     'club_roster_rollover_exception_events',
     'club_roster_rollover_exceptions',
     'club_roster_rollover_run_items',
@@ -505,7 +516,9 @@ const EVIDENCE_REQUIRED_TABLES = ['nastaveni', 'sportovci', 'treneri', 'treninky
 function outputResult(array $payload, bool $json): void
 {
     if ($json) {
-        echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL;
+        echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) .
+
+     PHP_EOL;
         return;
     }
 
@@ -525,7 +538,10 @@ function failBackup(string $message, bool $json, array $cleanupFiles = []): neve
         $name = is_string($file) ? basename($file) : '';
         if (
             is_string($file)
-            && preg_match('/^evidence_[0-9A-Za-z_-]+\.(?:sql\.gz|sha256|manifest\.json)(?:\.partial)?$/', $name) === 1
+            && preg_match(
+                '/^evidence_[0-9A-Za-z_-]+\.(?:sql\.gz|sha256|manifest\.json)(?:\.partial)?$/',
+                $name
+            ) === 1
             && is_file($file)
         ) {
             @unlink($file);
@@ -761,7 +777,12 @@ try {
         if ($createTrigger === '') {
             throw new RuntimeException("Nelze načíst definici triggeru {$triggerName}.");
         }
-        $createTrigger = preg_replace('/^CREATE\s+DEFINER\s*=\s*[^ ]+\s+TRIGGER\s+/i', 'CREATE TRIGGER ', $createTrigger, 1) ?? '';
+        $createTrigger = preg_replace(
+            '/^CREATE\s+DEFINER\s*=\s*[^ ]+\s+TRIGGER\s+/i',
+            'CREATE TRIGGER ',
+            $createTrigger,
+            1
+        ) ?? '';
         if (!preg_match('/^CREATE\s+TRIGGER\s+/i', $createTrigger)) {
             throw new RuntimeException("Trigger {$triggerName} má nepodporovanou definici.");
         }
@@ -786,7 +807,10 @@ try {
             $type = strtolower((string)$column['Type']);
             $columns[$table][] = [
                 'name' => (string)$column['Field'],
-                'binary' => preg_match('/(?:^|\b)(?:binary|varbinary|blob|tinyblob|mediumblob|longblob)(?:\b|\()/i', $type) === 1,
+                'binary' => preg_match(
+                    '/(?:^|\b)(?:binary|varbinary|blob|tinyblob|mediumblob|longblob)(?:\b|\()/i',
+                    $type
+                ) === 1,
             ];
         }
     }
@@ -819,7 +843,10 @@ try {
                 $rowCounts[$table] = 0;
                 continue;
             }
-            $quotedColumns = array_map(static fn (array $column): string => quoteIdentifier($column['name']), $columnMeta);
+            $quotedColumns = array_map(
+                static fn (array $column): string => quoteIdentifier($column['name']),
+                $columnMeta
+            );
             $columnSql = implode(',', $quotedColumns);
             $statement = $pdo->query("SELECT {$columnSql} FROM {$quotedTable}");
             $batch = [];
@@ -832,12 +859,17 @@ try {
                 $batch[] = '(' . implode(',', $values) . ')';
                 $count++;
                 if (count($batch) === 200) {
-                    gzWriteAll($gz, "INSERT INTO {$quotedTable} ({$columnSql}) VALUES\n" . implode(",\n", $batch) . ";\n");
+                    gzWriteAll($gz, "INSERT INTO {$quotedTable} ({$columnSql}) VALUES\n" . implode(
+                        ",\n",
+                        $batch
+                    ) . ";\n");
                     $batch = [];
                 }
             }
             if ($batch !== []) {
-                gzWriteAll($gz, "INSERT INTO {$quotedTable} ({$columnSql}) VALUES\n" . implode(",\n", $batch) . ";\n");
+                gzWriteAll($gz, "INSERT INTO {$quotedTable} ({$columnSql}) VALUES\n" . implode(",\n", $batch) .
+
+     ";\n");
             }
             gzWriteAll($gz, "\n");
             $rowCounts[$table] = $count;
@@ -904,7 +936,8 @@ try {
         'tables' => $rowCounts,
         'triggers' => array_column($triggers, 'name'),
     ];
-    $manifestJson = json_encode($manifest, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR) . PHP_EOL;
+    $manifestJson = json_encode($manifest, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR)
+    . PHP_EOL;
 
     if (!rename($sqlPartial, $sqlFinal)) {
         throw new RuntimeException('Nelze atomicky dokončit SQL zálohu.');

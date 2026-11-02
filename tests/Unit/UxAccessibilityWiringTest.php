@@ -143,7 +143,7 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString('Klubové ceny pro konkrétní soupisky', $memberPrices);
         self::assertStringContainsString('Sleva pro všechny zákazníky', $memberPrices);
         self::assertStringContainsString('Klubové ceny teď nelze založit', $memberPrices);
-        self::assertStringContainsString('if($teams!==[])', $memberPrices);
+        self::assertMatchesRegularExpression('/if\s*\(\$teams\s*!==\s*\[\]\)/', $memberPrices);
 
         $orders = (string)file_get_contents($this->root . 'eshop_orders_admin.php');
         self::assertStringContainsString('Čeká na vrácení hospodářem', $orders);

@@ -13,8 +13,8 @@ function trainingRosterBridgeEligibleTeams(PDO $pdo, string $date): array
 {
     trainingRosterBridgeAssertDate($date);
     $statement = $pdo->query(
-        "SELECT t.id,t.code,t.name,t.discipline,t.age_label,s.name season_name "
-        . "FROM club_teams t JOIN club_seasons s ON s.id=t.season_id "
+        "SELECT t.id,t.code,t.name,t.discipline,t.age_label,'' season_name "
+        . "FROM club_teams t "
         . "WHERE t.status='active' ORDER BY t.name,t.id"
     );
     return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -71,7 +71,10 @@ function trainingRosterBridgeTrainingLabels(PDO $pdo, array $rows): array
             $names[(int)$row['trenink_id']][] = (string)$row['team_name_snapshot'];
         }
     }
-    return array_map(static fn (array $labels): string => implode(', ', array_values(array_unique($labels))), $names);
+    return array_map(
+        static fn (array $labels): string => implode(', ', array_values(array_unique($labels))),
+        $names
+    );
 }
 
 /** @param list<array<string,mixed>> $rows @return array<int,string> */
@@ -90,7 +93,10 @@ function trainingRosterBridgePlanLabels(PDO $pdo, array $rows): array
             $names[(int)$row['plan_id']][] = (string)$row['team_name_snapshot'];
         }
     }
-    return array_map(static fn (array $labels): string => implode(', ', array_values(array_unique($labels))), $names);
+    return array_map(
+        static fn (array $labels): string => implode(', ', array_values(array_unique($labels))),
+        $names
+    );
 }
 
 /**
@@ -130,7 +136,10 @@ function trainingRosterBridgeExpectedForPlan(PDO $pdo, int $planId): array
         );
     }
     $statement->execute([$planId]);
-    return array_map(static fn (array $row): array => ['id' => (int)$row['id'], 'label' => (string)$row['label']], $statement->fetchAll(PDO::FETCH_ASSOC));
+    return array_map(
+        static fn (array $row): array => ['id' => (int)$row['id'], 'label' => (string)$row['label']],
+        $statement->fetchAll(PDO::FETCH_ASSOC)
+    );
 }
 
 /**
@@ -160,14 +169,20 @@ function trainingRosterBridgeCopyPlanToTraining(PDO $pdo, int $planId, int $trai
         $old->execute([$trainingId]);
         $oldIds = array_map('intval', $old->fetchAll(PDO::FETCH_COLUMN));
         if ($oldIds !== []) {
-            $pdo->prepare('DELETE FROM training_roster_expected WHERE link_id IN ('.implode(',', array_fill(0, count($oldIds), '?')).')')->execute($oldIds);
+            $pdo->prepare('DELETE FROM training_roster_expected WHERE link_id IN ('.implode(',', array_fill(
+                0,
+                count($oldIds),
+                '?'
+            )).')')->execute($oldIds);
         }
         $pdo->prepare('DELETE FROM training_roster_links WHERE trenink_id=?')->execute([$trainingId]);
         $links = $pdo->prepare('SELECT id,team_id,target_date,team_code_snapshot,team_name_snapshot FROM training_roster_links WHERE plan_id=? ORDER BY id');
         $links->execute([$planId]);
         $links = $links->fetchAll(PDO::FETCH_ASSOC);
         $insertLink = $pdo->prepare('INSERT INTO '
-            . 'training_roster_links(plan_id,trenink_id,team_id,target_date,team_code_snapshot,team_name_snapshot,created_by_trainer_id) VALUES(NULL,?,?,?,?,?,?)');
+            . ('training_roster_links(plan_id,trenink_id,team_id,target_date,team_code_snapshot,team_name_snapshot,created_by_'
+    .
+    'trainer_id) VALUES(NULL,?,?,?,?,?,?)'));
         $expected = $pdo->prepare('SELECT sportovec_id,roster_member_id,member_valid_from_snapshot,member_valid_to_snapshot FROM training_roster_expected '
             . 'WHERE link_id=? ORDER BY id');
         $insertExpected = $pdo->prepare('INSERT INTO '
@@ -175,7 +190,9 @@ function trainingRosterBridgeCopyPlanToTraining(PDO $pdo, int $planId, int $trai
             . 'VALUES(?,?,?,?,?)');
         $people = [];
         foreach ($links as $link) {
-            $insertLink->execute([$trainingId,(int)$link['team_id'],(string)$link['target_date'],(string)$link['team_code_snapshot'],(string)$link['team_name_snapshot'],$actorId]);
+            $insertLink->execute([$trainingId,(int)$link['team_id'],(string)$link['target_date'],(string)$link['team_code_snapshot'],
+
+    (string)$link['team_name_snapshot'],$actorId]);
             $newLinkId = (int)$pdo->lastInsertId();
             $expected->execute([(int)$link['id']]);
             foreach ($expected->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -195,7 +212,11 @@ function trainingRosterBridgeCopyPlanToTraining(PDO $pdo, int $planId, int $trai
             $pdo->rollBack();
         }if ($exception instanceof InvalidArgumentException || $exception instanceof TrainingRosterBridgeException) {
             throw$exception;
-        }throw new TrainingRosterBridgeException('Očekávání soupisek se nepodařilo přenést bez částečného zápisu.', 0, $exception);
+        }throw new TrainingRosterBridgeException(
+            'Očekávání soupisek se nepodařilo přenést bez částečného zápisu.',
+            0,
+            $exception
+        );
     }
 }
 
@@ -227,7 +248,9 @@ function trainingRosterBridgePlanAttendanceComparison(PDO $pdo, int $planId): ar
             . "ts.trenink_id=? ORDER BY sp.prijmeni,sp.jmeno,sp.id");
         $attendance->execute([$trainingId]);
         foreach ($attendance->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $actual[(int)$row['id']] = ['id' => (int)$row['id'],'label' => trim((string)$row['prijmeni'].' '.(string)$row['jmeno'])];
+            $actual[(int)$row['id']] = ['id' => (int)$row['id'],'label' => trim((string)$row['prijmeni'].
+
+    ' '.(string)$row['jmeno'])];
         }
     }
     $attendedExpected = [];
@@ -260,7 +283,8 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
     if (!in_array($kind, ['plan', 'training'], true) || $entityId < 1 || $actorId < 1) {
         throw new InvalidArgumentException('Neplatná vazba tréninku nebo aktér.');
     }
-    $ids = array_values(array_unique(array_filter(array_map('intval', $teamIds), static fn (int $id): bool => $id > 0)));
+    $ids = array_values(array_unique(array_filter(array_map('intval', $teamIds), static fn (int $id): bool
+    => $id > 0)));
     $ownerColumn = $kind === 'plan' ? 'plan_id' : 'trenink_id';
     $ownerTable = $kind === 'plan' ? 'planovane_treninky' : 'treninky';
     $dateColumn = 'datum';
@@ -296,13 +320,17 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
         $oldLinks->execute([$entityId]);
         $oldIds = array_map('intval', $oldLinks->fetchAll(PDO::FETCH_COLUMN));
         if ($oldIds !== []) {
-            $deleteExpected = $pdo->prepare('DELETE FROM training_roster_expected WHERE link_id IN (' . implode(',', array_fill(0, count($oldIds), '?')) . ')');
+            $deleteExpected = $pdo->prepare('DELETE FROM training_roster_expected WHERE link_id IN (' .
+
+     implode(',', array_fill(0, count($oldIds), '?')) . ')');
             $deleteExpected->execute($oldIds);
         }
         $pdo->prepare("DELETE FROM training_roster_links WHERE {$ownerColumn}=?")->execute([$entityId]);
 
         $linkInsert = $pdo->prepare(
-            'INSERT INTO training_roster_links(plan_id,trenink_id,team_id,target_date,team_code_snapshot,team_name_snapshot,created_by_trainer_id) '
+            ('INSERT INTO training_roster_links(plan_id,trenink_id,team_id,target_date,team_code_snapshot,team_name_snapshot'
+    .
+    ',created_by_trainer_id) ')
             . 'VALUES(?,?,?,?,?,?,?)'
         );
         $expectedInsert = $pdo->prepare(
@@ -337,7 +365,9 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
                 // An expectation is an immutable snapshot; attendance is entered separately.
                 // The source interval can be in any descendant and may later be closed.
                 $source = $sourceByPerson[(int)$personId] ?? null;
-                $expectedInsert->execute([$linkId, $personId, $source['id'] ?? null, $source['valid_from'] ?? $date, $source['valid_to'] ?? null]);
+                $expectedInsert->execute([$linkId, $personId, $source['id'] ?? null, $source['valid_from'] ?? $date,
+
+     $source['valid_to'] ?? null]);
                 $expectedPeople[(int)$personId] = true;
             }
         }
@@ -352,7 +382,11 @@ function trainingRosterBridgeReplace(PDO $pdo, string $kind, int $entityId, arra
         if ($exception instanceof InvalidArgumentException || $exception instanceof TrainingRosterBridgeException) {
             throw $exception;
         }
-        throw new TrainingRosterBridgeException('Vazby soupisek se nepodařilo uložit bez částečného zápisu.', 0, $exception);
+        throw new TrainingRosterBridgeException(
+            'Vazby soupisek se nepodařilo uložit bez částečného zápisu.',
+            0,
+            $exception
+        );
     }
 }
 

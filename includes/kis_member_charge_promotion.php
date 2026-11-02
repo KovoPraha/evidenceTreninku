@@ -1,23 +1,35 @@
 <?php
+
 declare(strict_types=1);
+require_once __DIR__.'/member_evidence_guard.php';
 
 require_once __DIR__ . '/kis_import_run_lib.php';
 
-final class KisMemberChargePromotionException extends RuntimeException {}
+final class KisMemberChargePromotionException extends RuntimeException
+{
+}
 
 function kisMemberChargePromotionReason(string $reason): string
 {
     $reason = trim((string)preg_replace('/\s+/u', ' ', $reason));
     $length = mb_strlen($reason, 'UTF-8');
-    if ($length < 5 || $length > 1000) throw new InvalidArgumentException('Důvod musí mít 5 až 1000 znaků.');
+    if ($length < 5 || $length > 1000) {
+        throw new InvalidArgumentException('Důvod musí mít 5 až 1000 znaků.');
+    }
     return $reason;
 }
 
 function kisMemberChargePromotionAssertAllowed(bool $confirmed, bool $allowed, int $actorId): void
 {
-    if (!$allowed) throw new KisMemberChargePromotionException('Přenos členských předpisů je povolen pouze administrátorovi na localhostu.');
-    if (!$confirmed) throw new InvalidArgumentException('Akci je nutné výslovně potvrdit.');
-    if ($actorId < 1) throw new InvalidArgumentException('Chybí auditní identita administrátora.');
+    if (!$allowed) {
+        throw new KisMemberChargePromotionException('Přenos členských předpisů je povolen pouze administrátorovi na localhostu.');
+    }
+    if (!$confirmed) {
+        throw new InvalidArgumentException('Akci je nutné výslovně potvrdit.');
+    }
+    if ($actorId < 1) {
+        throw new InvalidArgumentException('Chybí auditní identita administrátora.');
+    }
 }
 
 /** @return array{run:array<string,mixed>,report:array<string,mixed>} */
@@ -27,11 +39,15 @@ function kisMemberChargeLockedParity(PDO $pdo, int $runId, string $fingerprint):
         throw new InvalidArgumentException('Neplatný běh nebo fingerprint paritního reportu.');
     }
     $sql = 'SELECT * FROM kis_import_runs WHERE id=?';
-    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+        $sql .= ' FOR UPDATE';
+    }
     $statement = $pdo->prepare($sql);
     $statement->execute([$runId]);
     $run = $statement->fetch(PDO::FETCH_ASSOC);
-    if (!$run || (string)$run['status'] !== 'preview') throw new KisMemberChargePromotionException('KIS preview běh nebyl nalezen nebo už není v náhledu.');
+    if (!$run || (string)$run['status'] !== 'preview') {
+        throw new KisMemberChargePromotionException('KIS preview běh nebyl nalezen nebo už není v náhledu.');
+    }
     $stored = kisImportStoredParityReport($run);
     $fresh = kisImportBuildParityReport($pdo, $runId);
     if ($stored === null
@@ -81,15 +97,21 @@ function kisMemberChargePromotionRows(PDO $pdo, int $runId): array
             'snapshot_fingerprint' => hash('sha256', kisImportJson($snapshot)),
         ];
     }
-    if ($rows === []) throw new KisMemberChargePromotionException('Import neobsahuje žádné jednotlivé členské předpisy.');
+    if ($rows === []) {
+        throw new KisMemberChargePromotionException('Import neobsahuje žádné jednotlivé členské předpisy.');
+    }
     return $rows;
 }
 
 function kisMemberChargePublicCode(int $runId, string $sourceRef): string
 {
-    if (preg_match('/^payment:([1-9][0-9]*)$/D', $sourceRef, $match) !== 1) throw new KisMemberChargePromotionException('Předpis nemá platnou neprůhlednou referenci.');
+    if (preg_match('/^payment:([1-9][0-9]*)$/D', $sourceRef, $match) !== 1) {
+        throw new KisMemberChargePromotionException('Předpis nemá platnou neprůhlednou referenci.');
+    }
     $code = 'KIS-' . $runId . '-' . $match[1];
-    if (strlen($code) > 32) throw new KisMemberChargePromotionException('Kód importovaného předpisu je příliš dlouhý.');
+    if (strlen($code) > 32) {
+        throw new KisMemberChargePromotionException('Kód importovaného předpisu je příliš dlouhý.');
+    }
     return $code;
 }
 
@@ -102,7 +124,9 @@ function kisMemberChargeVariableSymbol(int $runId, string $sourceRef): string
 /** @return array<string,mixed> */
 function kisMemberChargePromotionForRun(PDO $pdo, int $runId): array
 {
-    if (!kisImportTableExists($pdo, 'kis_import_charge_promotions')) return [];
+    if (!kisImportTableExists($pdo, 'kis_import_charge_promotions')) {
+        return [];
+    }
     $statement = $pdo->prepare(
         'SELECT p.*,'
         . '(SELECT COUNT(*) FROM kis_import_charge_promotion_items i WHERE i.promotion_id=p.id AND i.status=\'active\') AS active_items,'
@@ -114,24 +138,43 @@ function kisMemberChargePromotionForRun(PDO $pdo, int $runId): array
 }
 
 /** @param array<string,mixed> $row @param array<string,mixed>|null $storedItem */
-function kisMemberChargeCreateTarget(PDO $pdo, int $runId, int $promotionId, array $row, int $actorId, string $reason, ?array $storedItem = null): array
-{
+function kisMemberChargeCreateTarget(
+    PDO $pdo,
+    int $runId,
+    int $promotionId,
+    array $row,
+    int $actorId,
+    string $reason,
+    ?array $storedItem = null
+): array {
     $projection = $row['projection'];
-    $publicCode = $storedItem ? (string)$storedItem['public_code'] : kisMemberChargePublicCode($runId, (string)$row['source_ref']);
+    $publicCode = $storedItem ? (string)$storedItem['public_code'] : kisMemberChargePublicCode(
+        $runId,
+        (string)$row['source_ref']
+    );
     $variableSymbol = $projection['status'] === 'paid'
-        ? ($storedItem && $storedItem['variable_symbol'] !== null ? (string)$storedItem['variable_symbol'] : kisMemberChargeVariableSymbol($runId, (string)$row['source_ref']))
+        ? ($storedItem && $storedItem['variable_symbol'] !== null ? (string)$storedItem['variable_symbol'] : kisMemberChargeVariableSymbol(
+            $runId,
+            (string)$row['source_ref']
+        ))
         : null;
     $existing = $pdo->prepare("SELECT id FROM club_member_charges WHERE source_system='kis_import' AND source_external_id=?");
     $existing->execute([$projection['source_external_id']]);
-    if ($existing->fetchColumn()) throw new KisMemberChargePromotionException('Cílový členský předpis už existuje mimo tento auditovaný přenos.');
+    if ($existing->fetchColumn()) {
+        throw new KisMemberChargePromotionException('Cílový členský předpis už existuje mimo tento auditovaný přenos.');
+    }
     if ($variableSymbol !== null) {
         $existingPayment = $pdo->prepare('SELECT id FROM payments WHERE variable_symbol=?');
         $existingPayment->execute([$variableSymbol]);
-        if ($existingPayment->fetchColumn()) throw new KisMemberChargePromotionException('Odvozený variabilní symbol koliduje s existující platbou.');
+        if ($existingPayment->fetchColumn()) {
+            throw new KisMemberChargePromotionException('Odvozený variabilní symbol koliduje s existující platbou.');
+        }
     }
 
     $pdo->prepare(
-        'INSERT INTO club_member_charges(sportovec_id,payer_account_id,public_code,charge_type,title_snapshot,period_from,period_to,amount_minor,currency,due_on,status,source_system,source_external_id,source_import_run_id) '
+        ('INSERT INTO club_member_charges(sportovec_id,payer_account_id,public_code,charge_type,title_snapshot,period_fr'
+    .
+    'om,period_to,amount_minor,currency,due_on,status,source_system,source_external_id,source_import_run_id) ')
         . "VALUES (?,NULL,?,'membership','Členský předpis KIS',NULL,NULL,?,?,?,?, 'kis_import',?,?)"
     )->execute([
         (int)$row['sportovec_id'],
@@ -152,7 +195,9 @@ function kisMemberChargeCreateTarget(PDO $pdo, int $runId, int $promotionId, arr
         'currency' => $projection['currency'],
     ]);
     $pdo->prepare(
-        "INSERT INTO club_member_charge_events(charge_id,action,from_status,to_status,actor_type,actor_id,reason,snapshot_json) VALUES (?,'kis_import_create',NULL,?,'trainer',?,?,?)"
+        ('INSERT INTO club_member_charge_events(charge_id,action,from_status,to_status,actor_type,actor_id,reason,snapsh'
+    .
+    'ot_json) VALUES (?,\'kis_import_create\',NULL,?,\'trainer\',?,?,?)')
     )->execute([$chargeId, $projection['status'], $actorId, $reason, $chargeSnapshot]);
 
     $paymentId = null;
@@ -160,7 +205,9 @@ function kisMemberChargeCreateTarget(PDO $pdo, int $runId, int $promotionId, arr
         $dueAt = ($projection['due_on'] ?? $projection['paid_on']) . ' 00:00:00';
         $paidAt = $projection['paid_on'] . ' 00:00:00';
         $pdo->prepare(
-            'INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot,bic_snapshot,account_label_snapshot,spd_payload,due_at,paid_at,confirmed_by_trainer_id,confirmation_note) '
+            ('INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,iban_snapshot'
+    .
+    ',bic_snapshot,account_label_snapshot,spd_payload,due_at,paid_at,confirmed_by_trainer_id,confirmation_note) ')
             . "VALUES ('member_charge',?,'kis_import','paid',?,?,?,'',NULL,'Historický import KIS','',?,?,?,?)"
         )->execute([
             $chargeId,
@@ -174,7 +221,8 @@ function kisMemberChargeCreateTarget(PDO $pdo, int $runId, int $promotionId, arr
         ]);
         $paymentId = (int)$pdo->lastInsertId();
     }
-    return ['charge_id' => $chargeId, 'payment_id' => $paymentId, 'public_code' => $publicCode, 'variable_symbol' => $variableSymbol];
+    return ['charge_id' => $chargeId, 'payment_id' => $paymentId, 'public_code' => $publicCode, 'variable_symbol'
+    => $variableSymbol];
 }
 
 /** @param list<array<string,mixed>> $rows */
@@ -187,10 +235,15 @@ function kisMemberChargeVerifyApplied(PDO $pdo, array $promotion, array $rows): 
         throw new KisMemberChargePromotionException('Položky přenosu neodpovídají uzamčenému stagingu.');
     }
     $byStagedId = [];
-    foreach ($rows as $row) $byStagedId[(int)$row['id']] = $row;
+    foreach ($rows as $row) {
+        $byStagedId[(int)$row['id']] = $row;
+    }
     foreach ($items as $item) {
         $row = $byStagedId[(int)$item['staged_payment_row_id']] ?? null;
-        if (!$row || (string)$item['status'] !== 'active' || !hash_equals((string)$item['snapshot_fingerprint'], (string)$row['snapshot_fingerprint'])) {
+        if (!$row || (string)$item['status'] !== 'active' || !hash_equals(
+            (string)$item['snapshot_fingerprint'],
+            (string)$row['snapshot_fingerprint']
+        )) {
             throw new KisMemberChargePromotionException('Auditní položka přenosu se změnila.');
         }
         $chargeStatement = $pdo->prepare('SELECT * FROM club_member_charges WHERE id=?');
@@ -238,8 +291,16 @@ function kisMemberChargeVerifyApplied(PDO $pdo, array $promotion, array $rows): 
     }
 }
 
-function kisMemberChargePromotionEvent(PDO $pdo, int $promotionId, string $action, int $actorId, string $reason, string $sourceFingerprint, int $itemCount, int $paymentCount): void
-{
+function kisMemberChargePromotionEvent(
+    PDO $pdo,
+    int $promotionId,
+    string $action,
+    int $actorId,
+    string $reason,
+    string $sourceFingerprint,
+    int $itemCount,
+    int $paymentCount
+): void {
     $snapshot = kisImportJson([
         'contract' => 'kis-member-charge-promotion-event-v1',
         'member_charge_contract' => MEMBER_CHARGE_CONTRACT,
@@ -252,8 +313,16 @@ function kisMemberChargePromotionEvent(PDO $pdo, int $promotionId, string $actio
 }
 
 /** @return array<string,mixed> */
-function kisMemberChargePromote(PDO $pdo, int $runId, string $parityFingerprint, int $actorId, string $reason, bool $confirmed, bool $allowed): array
-{
+function kisMemberChargePromote(
+    PDO $pdo,
+    int $runId,
+    string $parityFingerprint,
+    int $actorId,
+    string $reason,
+    bool $confirmed,
+    bool $allowed
+): array {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     kisMemberChargePromotionAssertAllowed($confirmed, $allowed, $actorId);
     $reason = kisMemberChargePromotionReason($reason);
     $ownsTransaction = !$pdo->inTransaction();
@@ -263,18 +332,25 @@ function kisMemberChargePromote(PDO $pdo, int $runId, string $parityFingerprint,
         $locked = kisMemberChargeLockedParity($pdo, $runId, $parityFingerprint);
         $rows = kisMemberChargePromotionRows($pdo, $runId);
         $sourceFingerprint = (string)($locked['report']['source_fingerprints']['payment_prescriptions'] ?? '');
-        if (preg_match('/^[a-f0-9]{64}$/D', $sourceFingerprint) !== 1) throw new KisMemberChargePromotionException('Chybí fingerprint stagingu členských předpisů.');
+        if (preg_match('/^[a-f0-9]{64}$/D', $sourceFingerprint) !== 1) {
+            throw new KisMemberChargePromotionException('Chybí fingerprint stagingu členských předpisů.');
+        }
 
         $sql = 'SELECT * FROM kis_import_charge_promotions WHERE import_run_id=?';
-        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }
         $statement = $pdo->prepare($sql);
         $statement->execute([$runId]);
         $promotion = $statement->fetch(PDO::FETCH_ASSOC);
         if ($promotion && (string)$promotion['status'] === 'applied') {
-            if (!hash_equals((string)$promotion['source_fingerprint'], $sourceFingerprint)) throw new KisMemberChargePromotionException('Staging se od aplikovaného přenosu změnil.');
+            if (!hash_equals((string)$promotion['source_fingerprint'], $sourceFingerprint)) {
+                throw new KisMemberChargePromotionException('Staging se od aplikovaného přenosu změnil.');
+            }
             kisMemberChargeVerifyApplied($pdo, $promotion, $rows);
             $ownsTransaction ? $pdo->commit() : $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
-            return array_merge(kisMemberChargePromotionForRun($pdo, $runId), ['idempotent' => true, 'reapplied' => false]);
+            return array_merge(kisMemberChargePromotionForRun($pdo, $runId), ['idempotent' => true, 'reapplied'
+    => false]);
         }
 
         $domain = $locked['report']['domains']['payment_prescriptions'] ?? [];
@@ -287,13 +363,17 @@ function kisMemberChargePromote(PDO $pdo, int $runId, string $parityFingerprint,
             throw new KisMemberChargePromotionException('Paritní report není čistý podklad pro přenos členských předpisů.');
         }
 
-        $paymentCount = count(array_filter($rows, static fn(array $row): bool => $row['projection']['status'] === 'paid'));
+        $paymentCount = count(array_filter($rows, static fn (array $row): bool => $row['projection']['status'] === 'paid'));
         $reapplied = false;
         $storedItems = [];
         if (!$promotion) {
             $pdo->prepare(
-                "INSERT INTO kis_import_charge_promotions(import_run_id,source_fingerprint,contract_version,status,item_count,payment_count,applied_by,apply_reason) VALUES (?,?,?,'applying',?,?,?,?)"
-            )->execute([$runId, $sourceFingerprint, MEMBER_CHARGE_CONTRACT, count($rows), $paymentCount, $actorId, $reason]);
+                ('INSERT INTO kis_import_charge_promotions(import_run_id,source_fingerprint,contract_version,status,item_count,p'
+    .
+    'ayment_count,applied_by,apply_reason) VALUES (?,?,?,\'applying\',?,?,?,?)')
+            )->execute([$runId, $sourceFingerprint, MEMBER_CHARGE_CONTRACT, count($rows), $paymentCount,
+
+     $actorId, $reason]);
             $promotionId = (int)$pdo->lastInsertId();
         } else {
             if ((string)$promotion['status'] !== 'rolled_back'
@@ -305,41 +385,75 @@ function kisMemberChargePromote(PDO $pdo, int $runId, string $parityFingerprint,
             $promotionId = (int)$promotion['id'];
             $itemStatement = $pdo->prepare('SELECT * FROM kis_import_charge_promotion_items WHERE promotion_id=?');
             $itemStatement->execute([$promotionId]);
-            foreach ($itemStatement->fetchAll(PDO::FETCH_ASSOC) as $item) $storedItems[(int)$item['staged_payment_row_id']] = $item;
-            if (count($storedItems) !== count($rows)) throw new KisMemberChargePromotionException('Vrácený přenos nemá úplný auditní seznam položek.');
+            foreach ($itemStatement->fetchAll(PDO::FETCH_ASSOC) as $item) {
+                $storedItems[(int)$item['staged_payment_row_id']] = $item;
+            }
+            if (count($storedItems) !== count($rows)) {
+                throw new KisMemberChargePromotionException('Vrácený přenos nemá úplný auditní seznam položek.');
+            }
             $reapplied = true;
         }
 
         foreach ($rows as $row) {
             $storedItem = $storedItems[(int)$row['id']] ?? null;
-            if ($reapplied && (!$storedItem || !hash_equals((string)$storedItem['snapshot_fingerprint'], (string)$row['snapshot_fingerprint']))) {
+            if ($reapplied && (!$storedItem || !hash_equals(
+                (string)$storedItem['snapshot_fingerprint'],
+                (string)$row['snapshot_fingerprint']
+            ))) {
                 throw new KisMemberChargePromotionException('Vrácená auditní položka neodpovídá stagingu.');
             }
-            $target = kisMemberChargeCreateTarget($pdo, $runId, $promotionId, $row, $actorId, $reason, $storedItem);
+            $target = kisMemberChargeCreateTarget(
+                $pdo,
+                $runId,
+                $promotionId,
+                $row,
+                $actorId,
+                $reason,
+                $storedItem
+            );
             if ($storedItem) {
                 $pdo->prepare("UPDATE kis_import_charge_promotion_items SET charge_id=?,payment_id=?,status='active',updated_at=CURRENT_TIMESTAMP WHERE id=?")
                     ->execute([$target['charge_id'], $target['payment_id'], (int)$storedItem['id']]);
             } else {
                 $pdo->prepare(
-                    "INSERT INTO kis_import_charge_promotion_items(promotion_id,staged_payment_row_id,source_ref,public_code,variable_symbol,snapshot_fingerprint,charge_id,payment_id,status) VALUES (?,?,?,?,?,?,?,?,'active')"
-                )->execute([$promotionId, (int)$row['id'], (string)$row['source_ref'], $target['public_code'], $target['variable_symbol'], (string)$row['snapshot_fingerprint'], $target['charge_id'], $target['payment_id']]);
+                    ('INSERT INTO kis_import_charge_promotion_items(promotion_id,staged_payment_row_id,source_ref,public_code,variab'
+    .
+    'le_symbol,snapshot_fingerprint,charge_id,payment_id,status) VALUES (?,?,?,?,?,?,?,?,\'active\')')
+                )->execute([$promotionId, (int)$row['id'], (string)$row['source_ref'], $target['public_code'],
+
+     $target['variable_symbol'], (string)$row['snapshot_fingerprint'], $target['charge_id'], $target['payment_id']]);
             }
         }
         if ($reapplied) {
             $pdo->prepare(
-                "UPDATE kis_import_charge_promotions SET status='applied',apply_count=apply_count+1,applied_by=?,apply_reason=?,applied_at=CURRENT_TIMESTAMP,rolled_back_by=NULL,rollback_reason=NULL,rolled_back_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?"
+                ('UPDATE kis_import_charge_promotions SET status=\'applied\',apply_count=apply_count+1,applied_by=?,apply_reason=?'
+    .
+    ',applied_at=CURRENT_TIMESTAMP,rolled_back_by=NULL,rollback_reason=NULL,rolled_back_at=NULL,updated_at=CURRENT_' .
+
+    'TIMESTAMP WHERE id=?')
             )->execute([$actorId, $reason, $promotionId]);
         } else {
             $pdo->prepare("UPDATE kis_import_charge_promotions SET status='applied',updated_at=CURRENT_TIMESTAMP WHERE id=?")
                 ->execute([$promotionId]);
         }
-        kisMemberChargePromotionEvent($pdo, $promotionId, $reapplied ? 'reapplied' : 'applied', $actorId, $reason, $sourceFingerprint, count($rows), $paymentCount);
+        kisMemberChargePromotionEvent(
+            $pdo,
+            $promotionId,
+            $reapplied ? 'reapplied' : 'applied',
+            $actorId,
+            $reason,
+            $sourceFingerprint,
+            count($rows),
+            $paymentCount
+        );
         kisImportFinalizeParityReport($pdo, $runId);
         $ownsTransaction ? $pdo->commit() : $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
-        return array_merge(kisMemberChargePromotionForRun($pdo, $runId), ['idempotent' => false, 'reapplied' => $reapplied]);
+        return array_merge(kisMemberChargePromotionForRun($pdo, $runId), ['idempotent' => false, 'reapplied'
+    => $reapplied]);
     } catch (Throwable $exception) {
-        if ($ownsTransaction && $pdo->inTransaction()) $pdo->rollBack();
-        elseif (!$ownsTransaction && $pdo->inTransaction()) {
+        if ($ownsTransaction && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        } elseif (!$ownsTransaction && $pdo->inTransaction()) {
             $pdo->exec('ROLLBACK TO SAVEPOINT ' . $savepoint);
             $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
         }
@@ -348,8 +462,15 @@ function kisMemberChargePromote(PDO $pdo, int $runId, string $parityFingerprint,
 }
 
 /** @return array<string,mixed> */
-function kisMemberChargeRollback(PDO $pdo, int $runId, string $parityFingerprint, int $actorId, string $reason, bool $confirmed, bool $allowed): array
-{
+function kisMemberChargeRollback(
+    PDO $pdo,
+    int $runId,
+    string $parityFingerprint,
+    int $actorId,
+    string $reason,
+    bool $confirmed,
+    bool $allowed
+): array {
     kisMemberChargePromotionAssertAllowed($confirmed, $allowed, $actorId);
     $reason = kisMemberChargePromotionReason($reason);
     $ownsTransaction = !$pdo->inTransaction();
@@ -360,16 +481,22 @@ function kisMemberChargeRollback(PDO $pdo, int $runId, string $parityFingerprint
         $rows = kisMemberChargePromotionRows($pdo, $runId);
         $sourceFingerprint = (string)($locked['report']['source_fingerprints']['payment_prescriptions'] ?? '');
         $sql = 'SELECT * FROM kis_import_charge_promotions WHERE import_run_id=?';
-        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }
         $statement = $pdo->prepare($sql);
         $statement->execute([$runId]);
         $promotion = $statement->fetch(PDO::FETCH_ASSOC);
-        if (!$promotion || !hash_equals((string)$promotion['source_fingerprint'], $sourceFingerprint)) throw new KisMemberChargePromotionException('Auditovaný přenos pro rollback nebyl nalezen nebo staging nesouhlasí.');
+        if (!$promotion || !hash_equals((string)$promotion['source_fingerprint'], $sourceFingerprint)) {
+            throw new KisMemberChargePromotionException('Auditovaný přenos pro rollback nebyl nalezen nebo staging nesouhlasí.');
+        }
         if ((string)$promotion['status'] === 'rolled_back') {
             $ownsTransaction ? $pdo->commit() : $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
             return array_merge(kisMemberChargePromotionForRun($pdo, $runId), ['idempotent' => true]);
         }
-        if ((string)$promotion['status'] !== 'applied') throw new KisMemberChargePromotionException('Přenos nelze vrátit z aktuálního stavu.');
+        if ((string)$promotion['status'] !== 'applied') {
+            throw new KisMemberChargePromotionException('Přenos nelze vrátit z aktuálního stavu.');
+        }
         kisMemberChargeVerifyApplied($pdo, $promotion, $rows);
 
         $items = $pdo->prepare('SELECT * FROM kis_import_charge_promotion_items WHERE promotion_id=? ORDER BY id DESC');
@@ -378,25 +505,43 @@ function kisMemberChargeRollback(PDO $pdo, int $runId, string $parityFingerprint
             if ($item['payment_id'] !== null) {
                 $deletedPayment = $pdo->prepare("DELETE FROM payments WHERE id=? AND payable_type='member_charge' AND payable_id=? AND method='kis_import'");
                 $deletedPayment->execute([(int)$item['payment_id'], (int)$item['charge_id']]);
-                if ($deletedPayment->rowCount() !== 1) throw new KisMemberChargePromotionException('Importovanou platbu nelze bezpečně vrátit.');
+                if ($deletedPayment->rowCount() !== 1) {
+                    throw new KisMemberChargePromotionException('Importovanou platbu nelze bezpečně vrátit.');
+                }
             }
             $pdo->prepare('DELETE FROM club_member_charge_events WHERE charge_id=?')->execute([(int)$item['charge_id']]);
             $deletedCharge = $pdo->prepare("DELETE FROM club_member_charges WHERE id=? AND source_system='kis_import' AND source_import_run_id=?");
             $deletedCharge->execute([(int)$item['charge_id'], $runId]);
-            if ($deletedCharge->rowCount() !== 1) throw new KisMemberChargePromotionException('Importovaný předpis nelze bezpečně vrátit.');
-            $pdo->prepare("UPDATE kis_import_charge_promotion_items SET charge_id=NULL,payment_id=NULL,status='rolled_back',updated_at=CURRENT_TIMESTAMP WHERE id=?")
+            if ($deletedCharge->rowCount() !== 1) {
+                throw new KisMemberChargePromotionException('Importovaný předpis nelze bezpečně vrátit.');
+            }
+            $pdo->prepare(('UPDATE kis_import_charge_promotion_items SET charge_id=NULL,payment_id=NULL,status=\'rolled_back\',updated_at=CU'
+    .
+    'RRENT_TIMESTAMP WHERE id=?'))
                 ->execute([(int)$item['id']]);
         }
         $pdo->prepare(
-            "UPDATE kis_import_charge_promotions SET status='rolled_back',rolled_back_by=?,rollback_reason=?,rolled_back_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?"
+            ('UPDATE kis_import_charge_promotions SET status=\'rolled_back\',rolled_back_by=?,rollback_reason=?,rolled_back_at'
+    .
+    '=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?')
         )->execute([$actorId, $reason, (int)$promotion['id']]);
-        kisMemberChargePromotionEvent($pdo, (int)$promotion['id'], 'rolled_back', $actorId, $reason, $sourceFingerprint, (int)$promotion['item_count'], (int)$promotion['payment_count']);
+        kisMemberChargePromotionEvent(
+            $pdo,
+            (int)$promotion['id'],
+            'rolled_back',
+            $actorId,
+            $reason,
+            $sourceFingerprint,
+            (int)$promotion['item_count'],
+            (int)$promotion['payment_count']
+        );
         kisImportFinalizeParityReport($pdo, $runId);
         $ownsTransaction ? $pdo->commit() : $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
         return array_merge(kisMemberChargePromotionForRun($pdo, $runId), ['idempotent' => false]);
     } catch (Throwable $exception) {
-        if ($ownsTransaction && $pdo->inTransaction()) $pdo->rollBack();
-        elseif (!$ownsTransaction && $pdo->inTransaction()) {
+        if ($ownsTransaction && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        } elseif (!$ownsTransaction && $pdo->inTransaction()) {
             $pdo->exec('ROLLBACK TO SAVEPOINT ' . $savepoint);
             $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
         }

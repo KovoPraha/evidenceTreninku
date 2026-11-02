@@ -1,5 +1,8 @@
 # Skupiny, soupisky a časové členství – implementační předání
 
+> Navazující práce od 2. 11. 2026 se řídí [pracovním plánem evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md).
+> Starší stav implementace níže není potvrzením dokončení nového konceptu. Vlastník rozhodl ponechat předchozí historii ve starém KIS; nový plán zahrnuje dokončení jednotné správy a řízený úklid importovaných kopií.
+
 Stav: implementace sloučena z PR #138 a nasazena na `kis.kovopraha.cz` jako `4991c91f966eb65852876fd0084dd6ad041e3b69` v [běhu 39472709660](https://github.com/KovoPraha/evidenceTreninku/actions/runs/39472709660). Migrace jsou aktuální (`catalog_count=106`, `pending=[]`); deploy neprováděl přiřazení živých soupisek ani zapnutí plateb či plánovaného opakování nabídek. Původní požadavky a rozhodnutí jsou v `ROSTER_GROUPS_TRAINING_SEASON_IMPLEMENTATION_PLAN_2026-10-20.md`.
 
 ## Co je připraveno

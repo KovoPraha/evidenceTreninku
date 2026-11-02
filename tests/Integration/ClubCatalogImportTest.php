@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Tests\Integration;
 
 require_once dirname(__DIR__).'/Support/ShopAccountingPublicationFixture.php';
@@ -10,177 +12,389 @@ use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-require_once dirname(__DIR__,2).'/includes/club_catalog_import.php';
-require_once dirname(__DIR__,2).'/includes/club_tocnaci_split.php';
+require_once dirname(__DIR__, 2).'/includes/club_catalog_import.php';
+require_once dirname(__DIR__, 2).'/includes/club_tocnaci_split.php';
 
 final class ClubCatalogImportTest extends TestCase
 {
     private string$root;
-    protected function setUp():void
+    protected function setUp(): void
     {
-        $this->root=sys_get_temp_dir().DIRECTORY_SEPARATOR.'club-catalog-import-'.bin2hex(random_bytes(5));mkdir($this->root.'/assets/clubs/animals',0750,true);
-        foreach(['source-group.jpg','source-trail.jpg','source-youngest.jpg','source-descent.jpg','source-coach.jpg']as$file)copy(dirname(__DIR__,2).'/assets/clubs/'.$file,$this->root.'/assets/clubs/'.$file);
-        foreach(\clubCatalogImportAnimalImages()as$file)copy(dirname(__DIR__,2).'/assets/clubs/'.$file,$this->root.'/assets/clubs/'.$file);
-    }
-    protected function tearDown():void
-    {
-        if(!is_dir($this->root))return;$iterator=new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->root,FilesystemIterator::SKIP_DOTS),RecursiveIteratorIterator::CHILD_FIRST);
-        foreach($iterator as$item)$item->isDir()?rmdir($item->getPathname()):unlink($item->getPathname());rmdir($this->root);
-    }
-
-    public function testAnimalImagesUseExactCzechNamesInsteadOfPlatformDependentSlugs():void
-    {
-        self::assertSame(array_slice(array_column(\legacyClubCatalog(),'name'),0,18),array_keys(\clubCatalogImportAnimalImages()));
-        self::assertArrayHasKey('Aligátoři',\clubCatalogImportAnimalImages());
-        self::assertArrayHasKey('Lvíčci',\clubCatalogImportAnimalImages());
-        self::assertArrayHasKey('Žirafy',\clubCatalogImportAnimalImages());
-    }
-
-    public function testImportCreatesCanonicalKisProductsAndIsIdempotent():void
-    {
-        $pdo=$this->database();$first=\clubCatalogImport($pdo,7,$this->root);
-        $animalBefore=$pdo->query("SELECT p.code,i.image_url FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE i.alt_text LIKE 'Malovaný maskot kroužku % jako cyklista' ORDER BY p.code")->fetchAll(PDO::FETCH_KEY_PAIR);
-        $filesBefore=glob($this->root.'/uploads/shop-products/*.jpg')?:[];$second=\clubCatalogImport($pdo,7,$this->root);
-        self::assertSame(26,$first['created']);self::assertSame(0,$second['created']);self::assertSame(26,$second['updated']);
-        self::assertTrue($second['terms_ready']);self::assertFalse($second['terms_dummy']);
-        self::assertSame(26,$second['programs']);self::assertSame(26,$second['products']);self::assertSame(74,$second['variants']);
-        self::assertSame(26,(int)$pdo->query("SELECT COUNT(*) FROM club_program_presentations WHERE listing_status='published'")->fetchColumn());
-        self::assertSame(26,(int)$pdo->query('SELECT COUNT(*) FROM club_program_images')->fetchColumn());
-        self::assertCount(18,$animalBefore);
-        self::assertSame($animalBefore,$pdo->query("SELECT p.code,i.image_url FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE i.alt_text LIKE 'Malovaný maskot kroužku % jako cyklista' ORDER BY p.code")->fetchAll(PDO::FETCH_KEY_PAIR));
-        self::assertCount(count($filesBefore),glob($this->root.'/uploads/shop-products/*.jpg')?:[]);
-        self::assertSame(18,(int)$pdo->query("SELECT COUNT(*) FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE i.alt_text LIKE 'Malovaný maskot kroužku % jako cyklista'")->fetchColumn());
-        self::assertSame(18,(int)$pdo->query("SELECT COUNT(DISTINCT ci.id) FROM club_program_images ci JOIN club_program_offers o ON o.program_id=ci.program_id JOIN shop_product_images si ON si.product_id=o.product_id WHERE ci.alt_text LIKE 'Malovaný maskot kroužku % jako cyklista' AND ci.image_url<>si.image_url")->fetchColumn());
-        self::assertSame(26,(int)$pdo->query("SELECT COUNT(DISTINCT team_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn());
-        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%' AND v.stock_quantity_decimal IS NOT NULL")->fetchColumn());
-        $shared=$pdo->query("SELECT COUNT(DISTINCT team_id) teams,COUNT(*) offers FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code='KROUZKY-2627-ALIGATORI'")->fetch(PDO::FETCH_ASSOC);
-        self::assertSame(1,(int)$shared['teams']);self::assertSame(3,(int)$shared['offers']);
-        $aligators=$pdo->query("SELECT purchase_option,amount_minor,birth_year_from,birth_year_to FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id JOIN club_programs p ON p.id=o.program_id WHERE p.code='KROUZKY-2627-ALIGATORI' ORDER BY CASE purchase_option WHEN 'first_half' THEN 1 WHEN 'second_half' THEN 2 ELSE 3 END")->fetchAll(PDO::FETCH_ASSOC);
-        self::assertSame(['first_half','second_half','full_year'],array_column($aligators,'purchase_option'));
-        self::assertSame([410000,410000,720000],array_map('intval',array_column($aligators,'amount_minor')));
-        self::assertSame([2018,2018,2018],array_map('intval',array_column($aligators,'birth_year_from')));
-        self::assertSame([2019,2019,2019],array_map('intval',array_column($aligators,'birth_year_to')));
-        self::assertSame([null,null],\clubCatalogImportBirthYears('školní děti'));
-    }
-
-    public function testTocnaciSplitKeepsTwoDayProgramAndRetiresAmbiguousProduct():void
-    {
-        $pdo=$this->database();\clubCatalogImport($pdo,7,$this->root);
-        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(154,'import','shoptet:154','Točňáci 1x týdně (úterý NEBO čtvrtek) září - leden','Úterý nebo čtvrtek','goods','visible','product','active')");
-        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,unit_code,stock_quantity_decimal,visible,catalog_status) VALUES(682,154,'import','708','{}','fixed',440000,'CZK','piece','4988.000000',1,'active')");
-        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(154,'active','Točňáci 1× týdně','Úterý nebo čtvrtek')");
-        $bothBefore=(int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TOCNACI-2X-TYDNE'")->fetchColumn();
-        $pdo->exec('UPDATE club_program_offers SET capacity=30 WHERE program_id='.$bothBefore);
-        $first=\clubTocnaciSplitApply($pdo,7,$this->root);$second=\clubTocnaciSplitApply($pdo,7,$this->root);
-        self::assertSame($first,$second);
-        self::assertNotSame($first['targets']['UTERY']['team_id'],$first['targets']['CTVRTEK']['team_id']);
-        foreach(['UTERY'=>2,'CTVRTEK'=>4]as$key=>$weekday){
-            $programId=$first['targets'][$key]['program_id'];$teamId=$first['targets'][$key]['team_id'];
-            $offers=$pdo->query('SELECT o.*,v.amount_minor FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id WHERE o.program_id='.(int)$programId.' ORDER BY o.id')->fetchAll(PDO::FETCH_ASSOC);
-            self::assertSame(['first_half','second_half'],array_column($offers,'purchase_option'));
-            self::assertSame([30,30],array_map('intval',array_column($offers,'capacity')));
-            self::assertSame([$teamId,$teamId],array_map('intval',array_column($offers,'team_id')));
-            self::assertSame([440000,440000],array_map('intval',array_column($offers,'amount_minor')));
-            self::assertSame((string)$weekday,(string)$pdo->query('SELECT weekday FROM club_program_schedule_slots WHERE program_id='.(int)$programId)->fetchColumn());
-            self::assertSame('published',(string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$programId)->fetchColumn());
+        $this->root = sys_get_temp_dir().DIRECTORY_SEPARATOR.'club-catalog-import-'.bin2hex(random_bytes(5));
+        mkdir($this->root.'/assets/clubs/animals', 0750, true);
+        foreach (['source-group.jpg','source-trail.jpg','source-youngest.jpg','source-descent.jpg','source-coach.jpg'] as $file) {
+            copy(dirname(__DIR__, 2).'/assets/clubs/'.$file, $this->root.'/assets/clubs/'.$file);
         }
-        self::assertSame($bothBefore,(int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TOCNACI-2X-TYDNE'")->fetchColumn());
-        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers WHERE program_id=".(int)$first['old_program_id']." AND status<>'closed'")->fetchColumn());
-        self::assertSame('inactive',(string)$pdo->query('SELECT catalog_status FROM shop_products WHERE id=154')->fetchColumn());
-        self::assertSame('hidden',(string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$first['old_program_id'])->fetchColumn());
-        \clubCatalogImport($pdo,7,$this->root);
-        self::assertSame('hidden',(string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$first['old_program_id'])->fetchColumn());
+        foreach (\clubCatalogImportAnimalImages() as $file) {
+            copy(dirname(__DIR__, 2).'/assets/clubs/'.$file, $this->root.'/assets/clubs/'.$file);
+        }
+    }
+    protected function tearDown(): void
+    {
+        if (!is_dir($this->root)) {
+            return;
+        }$iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($this->root, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($iterator as $item) {
+            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        }rmdir($this->root);
     }
 
-    public function testTocnaciSplitAcceptsProductionImportSlugs():void
+    public function testAnimalImagesUseExactCzechNamesInsteadOfPlatformDependentSlugs(): void
     {
-        $pdo=$this->database();\clubCatalogImport($pdo,7,$this->root);
-        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(154,'import','shoptet:154','Točňáci 1x týdně (úterý NEBO čtvrtek) září - leden','Úterý nebo čtvrtek','goods','visible','product','active')");
-        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,unit_code,stock_quantity_decimal,visible,catalog_status) VALUES(682,154,'import','708','{}','fixed',440000,'CZK','piece','4988.000000',1,'active')");
-        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(154,'active','Točňáci 1× týdně','Úterý nebo čtvrtek')");
+        self::assertSame(array_slice(array_column(\legacyClubCatalog(), 'name'), 0, 18), array_keys(\clubCatalogImportAnimalImages()));
+        self::assertArrayHasKey('Aligátoři', \clubCatalogImportAnimalImages());
+        self::assertArrayHasKey('Lvíčci', \clubCatalogImportAnimalImages());
+        self::assertArrayHasKey('Žirafy', \clubCatalogImportAnimalImages());
+    }
+
+    public function testImportCreatesCanonicalKisProductsAndIsIdempotent(): void
+    {
+        $pdo = $this->database();
+        $first = \clubCatalogImport($pdo, 7, $this->root);
+        $animalBefore = $pdo->query(('SELECT p.code,i.image_url FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE '
+    .
+    'i.alt_text LIKE \'Malovaný maskot kroužku % jako cyklista\' ORDER BY p.code'))->fetchAll(PDO::FETCH_KEY_PAIR);
+        $filesBefore = glob($this->root.'/uploads/shop-products/*.jpg') ?: [];
+        $second = \clubCatalogImport($pdo, 7, $this->root);
+        self::assertSame(26, $first['created']);
+        self::assertSame(0, $second['created']);
+        self::assertSame(26, $second['updated']);
+        self::assertTrue($second['terms_ready']);
+        self::assertFalse($second['terms_dummy']);
+        self::assertSame(26, $second['programs']);
+        self::assertSame(26, $second['products']);
+        self::assertSame(74, $second['variants']);
+        self::assertSame(26, (int)$pdo->query("SELECT COUNT(*) FROM club_program_presentations WHERE listing_status='published'")->fetchColumn());
+        self::assertSame(26, (int)$pdo->query('SELECT COUNT(*) FROM club_program_images')->fetchColumn());
+        self::assertCount(18, $animalBefore);
+        self::assertSame($animalBefore, $pdo->query(('SELECT p.code,i.image_url FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE '
+    .
+    'i.alt_text LIKE \'Malovaný maskot kroužku % jako cyklista\' ORDER BY p.code'))->fetchAll(PDO::FETCH_KEY_PAIR));
+        self::assertCount(count($filesBefore), glob($this->root.'/uploads/shop-products/*.jpg') ?: []);
+        self::assertSame(18, (int)$pdo->query(('SELECT COUNT(*) FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE i.alt_text LIKE '
+    .
+    '\'Malovaný maskot kroužku % jako cyklista\''))->fetchColumn());
+        self::assertSame(18, (int)$pdo->query(('SELECT COUNT(DISTINCT ci.id) FROM club_program_images ci JOIN club_program_offers o ON '
+    .
+    'o.program_id=ci.program_id JOIN shop_product_images si ON si.product_id=o.product_id WHERE ci.alt_text LIKE ' .
+
+    '\'Malovaný maskot kroužku % jako cyklista\' AND ci.image_url<>si.image_url'))->fetchColumn());
+        self::assertSame(26, (int)$pdo->query(('SELECT COUNT(DISTINCT team_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE '
+    .
+    'p.code LIKE \'KROUZKY-2627-%\''))->fetchColumn());
+        self::assertSame(0, (int)$pdo->query(('SELECT COUNT(*) FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id JOIN club_programs p ON '
+    .
+    'p.id=o.program_id WHERE p.code LIKE \'KROUZKY-2627-%\' AND v.stock_quantity_decimal IS NOT NULL'))->fetchColumn());
+        $shared = $pdo->query(('SELECT COUNT(DISTINCT team_id) teams,COUNT(*) offers FROM club_program_offers o JOIN club_programs p ON '
+    .
+    'p.id=o.program_id WHERE p.code=\'KROUZKY-2627-ALIGATORI\''))->fetch(PDO::FETCH_ASSOC);
+        self::assertSame(1, (int)$shared['teams']);
+        self::assertSame(3, (int)$shared['offers']);
+        $aligators = $pdo->query(('SELECT purchase_option,amount_minor,birth_year_from,birth_year_to FROM club_program_offers o JOIN '
+    .
+    'shop_variants v ON v.id=o.variant_id JOIN club_programs p ON p.id=o.program_id WHERE ' .
+    'p.code=\'KROUZKY-2627-ALIGATORI\' ORDER BY CASE purchase_option WHEN \'first_half\' THEN 1 WHEN \'second_half\' ' .
+
+    'THEN 2 ELSE 3 END'))->fetchAll(PDO::FETCH_ASSOC);
+        self::assertSame(['first_half','second_half','full_year'], array_column($aligators, 'purchase_option'));
+        self::assertSame([410000,410000,720000], array_map('intval', array_column($aligators, 'amount_minor')));
+        self::assertSame([2018,2018,2018], array_map('intval', array_column($aligators, 'birth_year_from')));
+        self::assertSame([2019,2019,2019], array_map('intval', array_column($aligators, 'birth_year_to')));
+        self::assertSame([null,null], \clubCatalogImportBirthYears('školní děti'));
+    }
+
+    public function testTocnaciSplitKeepsTwoDayProgramAndRetiresAmbiguousProduct(): void
+    {
+        $pdo = $this->database();
+        \clubCatalogImport($pdo, 7, $this->root);
+        $pdo->exec(('INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_typ'
+    .
+    'e,catalog_status) VALUES(154,\'import\',\'shoptet:154\',\'Točňáci 1x týdně (úterý NEBO čtvrtek) září - ' .
+
+    'leden\',\'Úterý nebo čtvrtek\',\'goods\',\'visible\',\'product\',\'active\')'));
+        $pdo->exec(('INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,unit_code,'
+    .
+    'stock_quantity_decimal,visible,catalog_status) VALUES(682,154,\'import\',\'708\',\'{}\',\'fixed\',440000,\'CZK\',\'piece\''
+    .
+    ',\'4988.000000\',1,\'active\')'));
+        $pdo->exec(('INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) ' .
+
+    'VALUES(154,\'active\',\'Točňáci 1× týdně\',\'Úterý nebo čtvrtek\')'));
+        $bothBefore = (int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TOCNACI-2X-TYDNE'")->fetchColumn();
+        $pdo->exec('UPDATE club_program_offers SET capacity=30 WHERE program_id='.$bothBefore);
+        $first = \clubTocnaciSplitApply($pdo, 7, $this->root);
+        $second = \clubTocnaciSplitApply($pdo, 7, $this->root);
+        self::assertSame($first, $second);
+        self::assertNotSame($first['targets']['UTERY']['team_id'], $first['targets']['CTVRTEK']['team_id']);
+        foreach (['UTERY' => 2,'CTVRTEK' => 4] as $key => $weekday) {
+            $programId = $first['targets'][$key]['program_id'];
+            $teamId = $first['targets'][$key]['team_id'];
+            $offers = $pdo->query('SELECT o.*,v.amount_minor FROM club_program_offers o JOIN shop_variants v ON v.id=o.variant_id WHERE o.program_id='.
+
+    (int)$programId.' ORDER BY o.id')->fetchAll(PDO::FETCH_ASSOC);
+            self::assertSame(['first_half','second_half'], array_column($offers, 'purchase_option'));
+            self::assertSame([30,30], array_map('intval', array_column($offers, 'capacity')));
+            self::assertSame([$teamId,$teamId], array_map('intval', array_column($offers, 'team_id')));
+            self::assertSame([440000,440000], array_map('intval', array_column($offers, 'amount_minor')));
+            self::assertSame((string)$weekday, (string)$pdo->query('SELECT weekday FROM club_program_schedule_slots WHERE program_id='.
+
+    (int)$programId)->fetchColumn());
+            self::assertSame('published', (string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.
+
+    (int)$programId)->fetchColumn());
+        }
+        self::assertSame($bothBefore, (int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TOCNACI-2X-TYDNE'")->fetchColumn());
+        self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM club_program_offers WHERE program_id=".
+
+    (int)$first['old_program_id']." AND status<>'closed'")->fetchColumn());
+        self::assertSame('inactive', (string)$pdo->query('SELECT catalog_status FROM shop_products WHERE id=154')->fetchColumn());
+        self::assertSame('hidden', (string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.
+
+    (int)$first['old_program_id'])->fetchColumn());
+        \clubCatalogImport($pdo, 7, $this->root);
+        self::assertSame('hidden', (string)$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.
+
+    (int)$first['old_program_id'])->fetchColumn());
+    }
+
+    public function testTocnaciSplitAcceptsProductionImportSlugs(): void
+    {
+        $pdo = $this->database();
+        \clubCatalogImport($pdo, 7, $this->root);
+        $pdo->exec(('INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_typ'
+    .
+    'e,catalog_status) VALUES(154,\'import\',\'shoptet:154\',\'Točňáci 1x týdně (úterý NEBO čtvrtek) září - ' .
+
+    'leden\',\'Úterý nebo čtvrtek\',\'goods\',\'visible\',\'product\',\'active\')'));
+        $pdo->exec(('INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,unit_code,'
+    .
+    'stock_quantity_decimal,visible,catalog_status) VALUES(682,154,\'import\',\'708\',\'{}\',\'fixed\',440000,\'CZK\',\'piece\''
+    .
+    ',\'4988.000000\',1,\'active\')'));
+        $pdo->exec(('INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) ' .
+
+    'VALUES(154,\'active\',\'Točňáci 1× týdně\',\'Úterý nebo čtvrtek\')'));
         $pdo->exec("UPDATE club_programs SET code='KROUZKY-2627-TO-CI-1X-T-DN' WHERE name='Točňáci 1× týdně'");
         $pdo->exec("UPDATE club_programs SET code='KROUZKY-2627-TO-CI-2X-T-DN' WHERE name='Točňáci 2× týdně'");
-        $twice=(int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TO-CI-2X-T-DN'")->fetchColumn();
+        $twice = (int)$pdo->query("SELECT id FROM club_programs WHERE code='KROUZKY-2627-TO-CI-2X-T-DN'")->fetchColumn();
         $pdo->exec('UPDATE club_program_offers SET capacity=30 WHERE program_id='.$twice);
 
-        $first=\clubTocnaciSplitApply($pdo,7,$this->root);
-        $second=\clubTocnaciSplitApply($pdo,7,$this->root);
+        $first = \clubTocnaciSplitApply($pdo, 7, $this->root);
+        $second = \clubTocnaciSplitApply($pdo, 7, $this->root);
 
-        self::assertSame($first,$second);
-        self::assertSame($twice,$first['twice_weekly']['program_id']);
-        self::assertCount(2,$first['twice_weekly']['physical_team_ids']);
-        self::assertNotSame($first['targets']['UTERY']['team_id'],$first['targets']['CTVRTEK']['team_id']);
+        self::assertSame($first, $second);
+        self::assertSame($twice, $first['twice_weekly']['program_id']);
+        self::assertCount(2, $first['twice_weekly']['physical_team_ids']);
+        self::assertNotSame($first['targets']['UTERY']['team_id'], $first['targets']['CTVRTEK']['team_id']);
     }
 
-    public function testFallbackNeverLinksTheOldShopOrDisplaysMigrationCopy():void
+    public function testFallbackNeverLinksTheOldShopOrDisplaysMigrationCopy(): void
     {
-        $fallback=\legacyClubCatalogFallback([],new \DateTimeImmutable('2026-09-24',new \DateTimeZone('Europe/Prague')));
+        $fallback = \legacyClubCatalogFallback([], new \DateTimeImmutable('2026-09-24', new \DateTimeZone('Europe/Prague')));
         self::assertNotEmpty($fallback);
-        foreach($fallback as$program){self::assertSame('',$program['public_summary']);foreach($program['offers']as$offer){self::assertFalse($offer['saleable']);self::assertNull($offer['source_url']);}}
-        $page=(string)file_get_contents(dirname(__DIR__,2).'/booking/cyklisticke_krouzky.php');
-        self::assertStringNotContainsString('Koupit ve stávajícím e-shopu',$page);
-        self::assertStringNotContainsString('shop.kovopraha.cz',$page);
-        self::assertStringContainsString('height:148px',$page);
-        self::assertStringContainsString('object-fit:contain',$page);
-        self::assertStringNotContainsString('object-fit:cover',$page);
+        foreach ($fallback as $program) {
+            self::assertSame('', $program['public_summary']);
+            foreach ($program['offers'] as $offer) {
+                self::assertFalse($offer['saleable']);
+                self::assertNull($offer['source_url']);
+            }
+        }
+        $page = (string)file_get_contents(dirname(__DIR__, 2).'/booking/cyklisticke_krouzky.php');
+        self::assertStringNotContainsString('Koupit ve stávajícím e-shopu', $page);
+        self::assertStringNotContainsString('shop.kovopraha.cz', $page);
+        self::assertStringContainsString('height:148px', $page);
+        self::assertStringContainsString('object-fit:contain', $page);
+        self::assertStringNotContainsString('object-fit:cover', $page);
     }
 
-    public function testImportReplacesLegacyAnimalPhotographsAndThenStopsChangingThem():void
+    public function testImportReplacesLegacyAnimalPhotographsAndThenStopsChangingThem(): void
     {
-        $pdo=$this->database();\clubCatalogImport($pdo,7,$this->root);
-        $ids=$pdo->query("SELECT p.id program_id,o.product_id FROM club_programs p JOIN club_program_offers o ON o.program_id=p.id WHERE p.code='KROUZKY-2627-ALIGATORI' ORDER BY o.id LIMIT 1")->fetch(PDO::FETCH_ASSOC);
-        $legacyProgram=\shopProductImageStoreFile($this->root.'/assets/clubs/source-group.jpg',false,$this->root);
-        $legacyProduct=\shopProductImageStoreFile($this->root.'/assets/clubs/source-group.jpg',false,$this->root);
-        $pdo->prepare('UPDATE club_program_images SET image_url=?,alt_text=? WHERE program_id=?')->execute([$legacyProgram['image_url'],'Děti na cyklistickém kroužku Aligátoři',(int)$ids['program_id']]);
-        $pdo->prepare('UPDATE shop_product_images SET image_url=? WHERE product_id=?')->execute([$legacyProduct['image_url'],(int)$ids['product_id']]);
-        \clubCatalogImport($pdo,7,$this->root);
-        $afterReplacement=$pdo->query("SELECT i.image_url,i.alt_text FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE p.code='KROUZKY-2627-ALIGATORI'")->fetch(PDO::FETCH_ASSOC);
-        self::assertNotSame($legacyProgram['image_url'],$afterReplacement['image_url']);
-        self::assertSame('Malovaný maskot kroužku Aligátoři jako cyklista',$afterReplacement['alt_text']);
-        $filesBefore=glob($this->root.'/uploads/shop-products/*.jpg')?:[];\clubCatalogImport($pdo,7,$this->root);
-        self::assertSame($afterReplacement,$pdo->query("SELECT i.image_url,i.alt_text FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE p.code='KROUZKY-2627-ALIGATORI'")->fetch(PDO::FETCH_ASSOC));
-        self::assertCount(count($filesBefore),glob($this->root.'/uploads/shop-products/*.jpg')?:[]);
+        $pdo = $this->database();
+        \clubCatalogImport($pdo, 7, $this->root);
+        $ids = $pdo->query(('SELECT p.id program_id,o.product_id FROM club_programs p JOIN club_program_offers o ON o.program_id=p.id '
+    .
+    'WHERE p.code=\'KROUZKY-2627-ALIGATORI\' ORDER BY o.id LIMIT 1'))->fetch(PDO::FETCH_ASSOC);
+        $legacyProgram = \shopProductImageStoreFile(
+            $this->root.'/assets/clubs/source-group.jpg',
+            false,
+            $this->root
+        );
+        $legacyProduct = \shopProductImageStoreFile(
+            $this->root.'/assets/clubs/source-group.jpg',
+            false,
+            $this->root
+        );
+        $pdo->prepare('UPDATE club_program_images SET image_url=?,alt_text=? WHERE program_id=?')->execute([$legacyProgram['image_url'],
+
+    'Děti na cyklistickém kroužku Aligátoři',(int)$ids['program_id']]);
+        $pdo->prepare('UPDATE shop_product_images SET image_url=? WHERE product_id=?')->execute([$legacyProduct['image_url'],
+
+    (int)$ids['product_id']]);
+        \clubCatalogImport($pdo, 7, $this->root);
+        $afterReplacement = $pdo->query(('SELECT i.image_url,i.alt_text FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE '
+    .
+    'p.code=\'KROUZKY-2627-ALIGATORI\''))->fetch(PDO::FETCH_ASSOC);
+        self::assertNotSame($legacyProgram['image_url'], $afterReplacement['image_url']);
+        self::assertSame('Malovaný maskot kroužku Aligátoři jako cyklista', $afterReplacement['alt_text']);
+        $filesBefore = glob($this->root.'/uploads/shop-products/*.jpg') ?: [];
+        \clubCatalogImport($pdo, 7, $this->root);
+        self::assertSame($afterReplacement, $pdo->query(('SELECT i.image_url,i.alt_text FROM club_program_images i JOIN club_programs p ON p.id=i.program_id WHERE '
+    .
+    'p.code=\'KROUZKY-2627-ALIGATORI\''))->fetch(PDO::FETCH_ASSOC));
+        self::assertCount(count($filesBefore), glob($this->root.'/uploads/shop-products/*.jpg') ?: []);
     }
 
-    public function testMissingApprovedTermsFallsBackToNonApprovedDrafts():void
+    public function testMissingApprovedTermsFallsBackToNonApprovedDrafts(): void
     {
-        $pdo=$this->database();$pdo->exec('DELETE FROM club_event_term_versions');$templates=\clubCatalogImportTermTemplates($pdo);
-        foreach($templates as$template){self::assertFalse($template['approved']);self::assertTrue($template['dummy']);self::assertSame(0,$template['id']);self::assertStringStartsWith('vzorový text',$template['text']);}
-        $result=\clubCatalogImport($pdo,7,$this->root);self::assertFalse($result['terms_ready']);self::assertTrue($result['terms_dummy']);self::assertSame(26,$result['products']);
-        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM shop_product_publications WHERE status='active'")->fetchColumn());
-        self::assertSame(52,(int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions t JOIN club_programs p ON t.scope_key='program:' || p.id WHERE p.code LIKE 'KROUZKY-2627-%' AND t.status='active' AND t.consent_text_plain LIKE 'vzorový text%'")->fetchColumn());
-        $templatesAfter=\clubCatalogImportTermTemplates($pdo);
+        $pdo = $this->database();
+        $pdo->exec('DELETE FROM club_event_term_versions');
+        $templates = \clubCatalogImportTermTemplates($pdo);
+        foreach ($templates as $template) {
+            self::assertFalse($template['approved']);
+            self::assertTrue($template['dummy']);
+            self::assertSame(0, $template['id']);
+            self::assertStringStartsWith('vzorový text', $template['text']);
+        }
+        $result = \clubCatalogImport($pdo, 7, $this->root);
+        self::assertFalse($result['terms_ready']);
+        self::assertTrue($result['terms_dummy']);
+        self::assertSame(26, $result['products']);
+        self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM shop_product_publications WHERE status='active'")->fetchColumn());
+        self::assertSame(52, (int)$pdo->query(('SELECT COUNT(*) FROM club_event_term_versions t JOIN club_programs p ON t.scope_key=\'program:\' || p.id WHERE '
+    .
+    'p.code LIKE \'KROUZKY-2627-%\' AND t.status=\'active\' AND t.consent_text_plain LIKE \'vzorový text%\''))->fetchColumn());
+        $templatesAfter = \clubCatalogImportTermTemplates($pdo);
         self::assertTrue($templatesAfter['program_cancellation']['dummy']);
         self::assertTrue($templatesAfter['program_consent']['dummy']);
     }
 
-    private function database():PDO
+    private function database(): PDO
     {
-        $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=OFF');
-        $schema=[
+        $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE
+    => PDO::FETCH_ASSOC]);
+        $pdo->exec('PRAGMA foreign_keys=OFF');
+        $schema = [
             "CREATE TABLE treneri(id INTEGER PRIMARY KEY,jmeno TEXT,role TEXT,aktivni INTEGER)","INSERT INTO treneri VALUES(7,'Admin','admin',1)",
-            "CREATE TABLE shop_products(id INTEGER PRIMARY KEY AUTOINCREMENT,source_candidate_id INTEGER NULL,source_run_id INTEGER NULL,origin TEXT NOT NULL,created_by_trainer_id INTEGER NULL,external_product_key TEXT NOT NULL UNIQUE,name TEXT NOT NULL,short_description TEXT NULL,description_html_untrusted TEXT NULL,offer_type TEXT NOT NULL,visibility TEXT NULL,item_type TEXT NULL,catalog_status TEXT NOT NULL DEFAULT 'draft',created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            "CREATE TABLE shop_variants(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT NULL,source_candidate_id INTEGER NULL,origin TEXT NOT NULL,created_by_trainer_id INTEGER NULL,sku TEXT NOT NULL UNIQUE,ean TEXT NULL,attributes_json TEXT NOT NULL,price_mode TEXT NOT NULL,amount_minor INTEGER NULL,compare_at_amount_minor INTEGER NULL,currency TEXT NULL,includes_vat INTEGER NULL,vat_rate_basis_points INTEGER NULL,stock_quantity_decimal TEXT NULL,unit_code TEXT NULL,availability_in_stock TEXT NULL,availability_out_of_stock TEXT NULL,free_shipping INTEGER NULL,free_billing INTEGER NULL,visible INTEGER NULL,catalog_status TEXT NOT NULL DEFAULT 'draft',created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            'CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,category_path TEXT,is_default INTEGER,sort_order INTEGER,UNIQUE(product_id,category_path))',
-            'CREATE TABLE shop_product_images(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,image_url TEXT,sort_order INTEGER,UNIQUE(product_id,image_url))',
-            'CREATE TABLE shop_catalog_admin_events(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,variant_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,reason TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            'CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT,decision_note TEXT,activated_by_trainer_id INTEGER,activated_at TEXT,deactivated_at TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            'CREATE TABLE shop_product_publication_events(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,actor_trainer_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,public_name TEXT,public_summary TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            "CREATE TABLE club_seasons(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,season_type TEXT,starts_on TEXT,ends_on TEXT,status TEXT DEFAULT 'active',created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            "CREATE TABLE club_teams(id INTEGER PRIMARY KEY AUTOINCREMENT,season_id INTEGER,series_id INTEGER NULL,code TEXT,name TEXT,discipline TEXT,age_label TEXT,status TEXT DEFAULT 'active',created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(season_id,code))",
-            'CREATE TABLE club_team_series(id INTEGER PRIMARY KEY,season_type TEXT,status TEXT)','CREATE TABLE club_roster_events(id INTEGER PRIMARY KEY AUTOINCREMENT,team_id INTEGER,roster_member_id INTEGER,actor_trainer_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            "CREATE TABLE club_programs(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,description TEXT,status TEXT DEFAULT 'active',created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            "CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,season_id INTEGER,team_id INTEGER,product_id INTEGER,variant_id INTEGER UNIQUE,code TEXT UNIQUE,name TEXT,starts_on TEXT,ends_on TEXT,sales_open_at TEXT,sales_close_at TEXT,capacity INTEGER,birth_year_from INTEGER,birth_year_to INTEGER,status TEXT,created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            'CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY AUTOINCREMENT,offer_id INTEGER,sportovec_id INTEGER,status TEXT,valid_from TEXT)',
-            'CREATE TABLE club_program_events(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,offer_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            "CREATE TABLE club_event_term_versions(id INTEGER PRIMARY KEY AUTOINCREMENT,scope_type TEXT,scope_key TEXT,consent_purpose TEXT,event_id INTEGER,terms_version TEXT,consent_text_plain TEXT,cancellation_policy_plain TEXT,cancellation_deadline_at TEXT,actor_trainer_id INTEGER,actor_type TEXT,actor_id INTEGER,status TEXT DEFAULT 'active',archived_at TEXT,archived_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(scope_type,scope_key,consent_purpose,terms_version))",
-        ];foreach($schema as$sql)$pdo->exec($sql);
+
+
+            ('CREATE TABLE shop_products(id INTEGER PRIMARY KEY AUTOINCREMENT,source_candidate_id INTEGER ' .
+
+    'NULL,source_run_id INTEGER NULL,origin TEXT NOT NULL,created_by_trainer_id INTEGER NULL,external_product_key ' .
+
+    'TEXT NOT NULL UNIQUE,name TEXT NOT NULL,short_description TEXT NULL,description_html_untrusted TEXT ' .
+
+    'NULL,offer_type TEXT NOT NULL,visibility TEXT NULL,item_type TEXT NULL,catalog_status TEXT NOT NULL DEFAULT ' .
+
+    '\'draft\',created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+
+
+            ('CREATE TABLE shop_variants(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT ' .
+
+    'NULL,source_candidate_id INTEGER NULL,origin TEXT NOT NULL,created_by_trainer_id INTEGER NULL,sku TEXT NOT ' .
+
+    'NULL UNIQUE,ean TEXT NULL,attributes_json TEXT NOT NULL,price_mode TEXT NOT NULL,amount_minor INTEGER ' .
+
+    'NULL,compare_at_amount_minor INTEGER NULL,currency TEXT NULL,includes_vat INTEGER NULL,vat_rate_basis_points ' .
+
+    'INTEGER NULL,stock_quantity_decimal TEXT NULL,unit_code TEXT NULL,availability_in_stock TEXT ' .
+    'NULL,availability_out_of_stock TEXT NULL,free_shipping INTEGER NULL,free_billing INTEGER NULL,visible INTEGER ' .
+
+    'NULL,catalog_status TEXT NOT NULL DEFAULT \'draft\',created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT ' .
+
+    'DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,category_path '
+    .
+    'TEXT,is_default INTEGER,sort_order INTEGER,UNIQUE(product_id,category_path))'),
+            ('CREATE TABLE shop_product_images(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,image_url ' .
+
+    'TEXT,sort_order INTEGER,UNIQUE(product_id,image_url))'),
+            ('CREATE TABLE shop_catalog_admin_events(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,variant_id '
+    .
+    'INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,reason TEXT,created_at ' .
+
+    'TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name ' .
+
+    'TEXT,public_summary TEXT,decision_note TEXT,activated_by_trainer_id INTEGER,activated_at TEXT,deactivated_at ' .
+
+    'TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE shop_product_publication_events(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id ' .
+
+    'INTEGER,actor_trainer_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,public_name TEXT,public_summary ' .
+
+    'TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_seasons(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,season_type ' .
+
+    'TEXT,starts_on TEXT,ends_on TEXT,status TEXT DEFAULT \'active\',created_by_trainer_id INTEGER,created_at TEXT ' .
+
+    'DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_teams(id INTEGER PRIMARY KEY AUTOINCREMENT,season_id INTEGER,series_id INTEGER NULL,code '
+    .
+    'TEXT,name TEXT,discipline TEXT,age_label TEXT,status TEXT DEFAULT \'active\',created_by_trainer_id ' .
+
+    'INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT ' .
+    'CURRENT_TIMESTAMP,UNIQUE(season_id,code))'),
+            'CREATE TABLE club_team_series(id INTEGER PRIMARY KEY,season_type TEXT,status TEXT)',
+            ('CREATE TABLE club_roster_events(id INTEGER PRIMARY KEY AUTOINCREMENT,team_id INTEGER,roster_member_id '
+    .
+    'INTEGER,actor_trainer_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,note TEXT,created_at TEXT ' .
+
+    'DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_programs(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,description ' .
+
+    'TEXT,status TEXT DEFAULT \'active\',created_by_trainer_id INTEGER,created_at TEXT DEFAULT ' .
+    'CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,season_id ' .
+
+    'INTEGER,team_id INTEGER,product_id INTEGER,variant_id INTEGER UNIQUE,code TEXT UNIQUE,name TEXT,starts_on ' .
+
+    'TEXT,ends_on TEXT,sales_open_at TEXT,sales_close_at TEXT,capacity INTEGER,birth_year_from ' .
+    'INTEGER,birth_year_to INTEGER,status TEXT,created_by_trainer_id INTEGER,created_at TEXT DEFAULT ' .
+
+    'CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY AUTOINCREMENT,offer_id INTEGER,sportovec_id ' .
+
+    'INTEGER,status TEXT,valid_from TEXT,valid_to TEXT)'),
+            ('CREATE TABLE club_program_events(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,offer_id ' .
+
+    'INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,created_at TEXT DEFAULT ' .
+
+    'CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_event_term_versions(id INTEGER PRIMARY KEY AUTOINCREMENT,scope_type TEXT,scope_key ' .
+
+    'TEXT,consent_purpose TEXT,event_id INTEGER,terms_version TEXT,consent_text_plain ' .
+    'TEXT,cancellation_policy_plain TEXT,cancellation_deadline_at TEXT,actor_trainer_id INTEGER,actor_type ' .
+
+    'TEXT,actor_id INTEGER,status TEXT DEFAULT \'active\',archived_at TEXT,archived_by_trainer_id INTEGER,created_at ' .
+
+    'TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(scope_type,scope_key,consent_purpose,terms_version))'),
+        ];
+        foreach ($schema as $sql) {
+            $pdo->exec($sql);
+        }
         \shopAccountingPublicationFixture($pdo);
-        $physicalTeams=require dirname(__DIR__,2).'/migrations/20261020140000_club_program_physical_teams.php';
-        $physicalTeams['up']($pdo);self::assertTrue($physicalTeams['verify']($pdo));
-        $migration=require dirname(__DIR__,2).'/migrations/20260923200000_club_program_storefront.php';$migration['up']($pdo);
-        $pdo->exec("INSERT INTO club_programs(id,code,name,description,status,created_by_trainer_id) VALUES(900,'TEMPLATE','Schválený vzor','Vzor','active',7)");
-        $pdo->exec("INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id,status) VALUES('club_program','program:900','program_cancellation','v1','Schválené storno podmínky.','trainer',7,'active'),('club_program','program:900','program_consent','v1','Schválený souhlas s účastí.','trainer',7,'active')");
+        $physicalTeams = require dirname(__DIR__, 2).'/migrations/20261020140000_club_program_physical_teams.php';
+        $physicalTeams['up']($pdo);
+        self::assertTrue($physicalTeams['verify']($pdo));
+        $migration = require dirname(__DIR__, 2).'/migrations/20260923200000_club_program_storefront.php';
+        $migration['up']($pdo);
+        $pdo->exec(('INSERT INTO club_programs(id,code,name,description,status,created_by_trainer_id) ' .
+
+    'VALUES(900,\'TEMPLATE\',\'Schválený vzor\',\'Vzor\',\'active\',7)'));
+        $pdo->exec(('INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,act'
+    .
+    'or_type,actor_id,status) VALUES(\'club_program\',\'program:900\',\'program_cancellation\',\'v1\',\'Schválené storno '
+    .
+    'podmínky.\',\'trainer\',7,\'active\'),(\'club_program\',\'program:900\',\'program_consent\',\'v1\',\'Schválený souhlas s '
+    .
+    'účastí.\',\'trainer\',7,\'active\')'));
+        $pdo->exec("ALTER TABLE club_teams ADD COLUMN team_kind TEXT DEFAULT 'roster'");
+        $pdo->exec('ALTER TABLE club_teams ADD COLUMN standing_code TEXT');
+        $migration = require dirname(__DIR__, 2).'/migrations/20261102170500_dated_program_offers.php';
+        $migration['up']($pdo);
         return$pdo;
     }
 }

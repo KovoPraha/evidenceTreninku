@@ -10,6 +10,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 | Dokument | Účel |
 |---|---|
+| [Pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | Potvrzený cílový koncept, inventář stránek a služeb, etapy E0–E8, úklid importované historie a akceptace A01–A20; realizace zatím čeká |
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
 | [Nasazení druhé funkční vlny PR #274](verification/functional-round2-release-20261102/RESULTS.md) | Sloučení, chráněný deploy, záloha, čtecí porovnání a produkční HTTP/browser ověření |
@@ -90,3 +91,5 @@ Velké dokumenty `uzivatelska-prirucka.md`, `technicka-dokumentace.md`,
 `databazove-schema.md` a `vyvojarsky-pruvodce.md` jsou historický základ
 baseline 2.20. Aktuální doplňky jsou vedené tematicky a přesný stav určuje kód,
 migrace a testy.
+
+- [Implementace evidence členů bez sezon a postup převodu](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md) — aplikační rozsah, kompatibilita a zbývající E6–E8.

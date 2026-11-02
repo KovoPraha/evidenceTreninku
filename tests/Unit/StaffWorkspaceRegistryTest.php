@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -56,7 +57,9 @@ final class StaffWorkspaceRegistryTest extends TestCase
             self::assertFileExists(dirname(__DIR__, 2) . '/' . $route, $route);
             self::assertNotSame([], $delegates, $route);
             self::assertNotContains(\staffRouteOwner($route), $delegates, $route);
-            foreach ($delegates as $delegate) self::assertArrayHasKey($delegate, $definitions, $route);
+            foreach ($delegates as $delegate) {
+                self::assertArrayHasKey($delegate, $definitions, $route);
+            }
         }
         self::assertSame(['coach', 'sports_lead'], \staffRouteAllowedPositions('edit_trenink.php'));
         self::assertSame(['coach', 'sports_lead'], \staffRouteAllowedPositions('nacti_podskupiny.php'));
@@ -72,12 +75,16 @@ final class StaffWorkspaceRegistryTest extends TestCase
         $systemLocal = \staffPositionMenuGroups('system_admin', true);
         $routes = static function (array $groups): array {
             $result = [];
-            foreach ($groups as $group) foreach ($group['items'] as $item) $result[] = $item['route'];
+            foreach ($groups as $group) {
+                foreach ($group['items'] as $item) {
+                    $result[] = $item['route'];
+                }
+            }
             return $result;
         };
         self::assertNotContains('kis_rollover_a06_admin.php', $routes($registrarProduction));
         self::assertNotContains('testovaci_scenare.php', $routes($systemProduction));
-        self::assertContains('kis_rollover_a06_admin.php', $routes($registrarLocal));
+        self::assertNotContains('kis_rollover_a06_admin.php', $routes($registrarLocal));
         self::assertContains('testovaci_scenare.php', $routes($systemLocal));
     }
 
@@ -150,29 +157,38 @@ final class StaffWorkspaceRegistryTest extends TestCase
         foreach (\staffPositionCodes() as $position) {
             $primary = [];
             foreach (\staffPositionPrimaryMenuGroups($position, false) as $group) {
-                foreach ($group['items'] as $item) $primary[] = $item['route'];
+                foreach ($group['items'] as $item) {
+                    $primary[] = $item['route'];
+                }
             }
             $advanced = [];
             foreach (\staffPositionAdvancedMenuGroups($position, false) as $group) {
-                foreach ($group['items'] as $item) $advanced[] = $item['route'];
+                foreach ($group['items'] as $item) {
+                    $advanced[] = $item['route'];
+                }
             }
             $all = [];
             foreach (\staffPositionMenuGroups($position, false) as $group) {
-                foreach ($group['items'] as $item) $all[] = $item['route'];
+                foreach ($group['items'] as $item) {
+                    $all[] = $item['route'];
+                }
             }
             self::assertLessThanOrEqual($position === 'registrar' ? 4 : 3, count($primary), $position);
             self::assertSame([], array_intersect($primary, $advanced), $position);
             self::assertEqualsCanonicalizing($all, array_merge($primary, $advanced), $position);
         }
-        $catalogPrimary = array_merge(...array_map(static fn(array $group): array => array_column($group['items'], 'route'), \staffPositionPrimaryMenuGroups('catalog_manager', false)));
+        $catalogPrimary = array_merge(...array_map(static fn (array $group): array => array_column(
+            $group['items'],
+            'route'
+        ), \staffPositionPrimaryMenuGroups('catalog_manager', false)));
         self::assertContains('eshop_produkt_admin.php', $catalogPrimary);
         self::assertNotContains('eshop_admin.php', $catalogPrimary);
     }
 
     public function testDelegatedWorkflowsAreReachableWithoutChangingOwnershipOrPermissions(): void
     {
-        $routes = static fn(string $position): array => array_merge(...array_map(
-            static fn(array $group): array => array_column($group['items'], 'route'),
+        $routes = static fn (string $position): array => array_merge(...array_map(
+            static fn (array $group): array => array_column($group['items'], 'route'),
             \staffPositionMenuGroups($position, false)
         ));
         self::assertContains('club_rewards_admin.php', $routes('coach'));
@@ -186,13 +202,17 @@ final class StaffWorkspaceRegistryTest extends TestCase
         foreach (\staffPositionCodes() as $position) {
             $visible = $routes($position);
             self::assertSame(array_values(array_unique($visible)), $visible);
-            foreach ($visible as $route) self::assertContains($position, \staffRouteAllowedPositions($route));
+            foreach ($visible as $route) {
+                self::assertContains($position, \staffRouteAllowedPositions($route));
+            }
         }
     }
 
     public function testActivePositionControlsLegacyCompatibilityWithoutMergingMenus(): void
     {
-        $_SESSION = ['trener_id'=>7,'role'=>'admin','staff_positions'=>['coach','finance_manager'],'staff_active_position'=>'coach','staff_is_superadmin'=>false];
+        $_SESSION = ['trener_id' => 7,'role' => 'admin','staff_positions' => ['coach','finance_manager'],
+
+    'staff_active_position' => 'coach','staff_is_superadmin' => false];
         self::assertSame('coach', \staffActivePosition());
         self::assertSame('trener', \staffEffectiveLegacyRole('admin'));
         self::assertSame(['coach','finance_manager'], \staffAvailablePositions());
@@ -205,7 +225,8 @@ final class StaffWorkspaceRegistryTest extends TestCase
 
     public function testSuperadminMayActivateAllPositionsButOnlyOneAtATime(): void
     {
-        $_SESSION = ['trener_id'=>7,'role'=>'admin','staff_positions'=>['system_admin'],'staff_active_position'=>'system_admin','staff_is_superadmin'=>true];
+        $_SESSION = ['trener_id' => 7,'role' => 'admin','staff_positions' => ['system_admin'],'staff_active_position'
+    => 'system_admin','staff_is_superadmin' => true];
         self::assertSame(\staffPositionCodes(), \staffAvailablePositions());
         self::assertSame('system_admin', \staffActivePosition());
         $_SESSION['staff_active_position'] = 'catalog_manager';

@@ -1,0 +1,974 @@
+{
+  "baseline": "2aa5cbd89040474074678c6a04cfb099cc8235a9",
+  "scope": "Tracked runtime PHP/JS/workflows plus new worktree files. Source audit, not production data audit. Migrations and tests excluded deliberately.",
+  "references": [
+    {
+      "path": "bin/db-backup.php",
+      "line": 242,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Backup/restore ownership: preserve transitional schema until E8."
+    },
+    {
+      "path": "bin/db-backup.php",
+      "line": 243,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Backup/restore ownership: preserve transitional schema until E8."
+    },
+    {
+      "path": "bin/diagnose-member-evidence.php",
+      "line": 41,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Read-only pre-deploy inventory of legacy schema; no DDL/DML."
+    },
+    {
+      "path": "bin/diagnose-member-evidence.php",
+      "line": 42,
+      "references": [
+        "club_seasons",
+        "season_id",
+        "season_type"
+      ],
+      "disposition": "Read-only pre-deploy inventory of legacy schema; no DDL/DML."
+    },
+    {
+      "path": "bin/member-evidence-cutover.php",
+      "line": 61,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "bin/seed-local-demo.php",
+      "line": 745,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy migration validation / synthetic fixtures; retire or replace in E8. Not a new seasonal user workflow."
+    },
+    {
+      "path": "club_program_wizard_admin.php",
+      "line": 72,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/club_makeup.php",
+      "line": 198,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/club_migration_sports.php",
+      "line": 16,
+      "references": [
+        "club_seasons",
+        "season_id"
+      ],
+      "disposition": "Legacy migration validation / synthetic fixtures; retire or replace in E8. Not a new seasonal user workflow."
+    },
+    {
+      "path": "includes/club_program.php",
+      "line": 402,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/club_program.php",
+      "line": 423,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/club_program_storefront.php",
+      "line": 198,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/club_program_wizard.php",
+      "line": 102,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/club_program_wizard.php",
+      "line": 330,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/club_program_wizard.php",
+      "line": 361,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/kis_a06_acceptance.php",
+      "line": 21,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_a06_acceptance.php",
+      "line": 28,
+      "references": [
+        "club_seasons",
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_a06_acceptance.php",
+      "line": 29,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_a06_acceptance.php",
+      "line": 34,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 75,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 81,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 87,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 97,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 169,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 256,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 257,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 260,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 265,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 274,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 283,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_current_rosters.php",
+      "line": 360,
+      "references": [
+        "club_seasons",
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 18,
+      "references": [
+        "club_seasons",
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 19,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 29,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 33,
+      "references": [
+        "club_seasons",
+        "season_id",
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 34,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 55,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 60,
+      "references": [
+        "club_seasons",
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 61,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 77,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 81,
+      "references": [
+        "club_seasons",
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 82,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 87,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 130,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 131,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 134,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 147,
+      "references": [
+        "season_id",
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 210,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 217,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 273,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 355,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_hobby_transition.php",
+      "line": 367,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_legacy_rosters.php",
+      "line": 195,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_legacy_rosters.php",
+      "line": 202,
+      "references": [
+        "club_seasons",
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_legacy_rosters.php",
+      "line": 208,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_legacy_rosters.php",
+      "line": 216,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_legacy_rosters.php",
+      "line": 221,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_legacy_rosters.php",
+      "line": 223,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 104,
+      "references": [
+        "club_team_series",
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 107,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 111,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 118,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 129,
+      "references": [
+        "club_team_series",
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 135,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 202,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 207,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 211,
+      "references": [
+        "club_seasons",
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 214,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 278,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 285,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 290,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 294,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 303,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 309,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 366,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 373,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 405,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 417,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 450,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 457,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 489,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 497,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 501,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 551,
+      "references": [
+        "club_seasons",
+        "club_team_series",
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 554,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 763,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 765,
+      "references": [
+        "club_seasons",
+        "club_team_series",
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 773,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 780,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 787,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 800,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 841,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 850,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 909,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 915,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 921,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 931,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 939,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 990,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1007,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1017,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1047,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1139,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1163,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1205,
+      "references": [
+        "club_team_series"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1213,
+      "references": [
+        "club_seasons"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1215,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1221,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1225,
+      "references": [
+        "club_seasons",
+        "club_team_series",
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1230,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1232,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1239,
+      "references": [
+        "season_type"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/kis_roster.php",
+      "line": 1241,
+      "references": [
+        "club_seasons",
+        "club_team_series",
+        "season_id"
+      ],
+      "disposition": "Legacy backend: blocked mutation paths after cutover ledger; retained until E8 and rollback closure."
+    },
+    {
+      "path": "includes/member_evidence_cutover.php",
+      "line": 46,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Explicit cutover mapping and inventory; retained until E8."
+    },
+    {
+      "path": "includes/member_evidence_cutover.php",
+      "line": 115,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Explicit cutover mapping and inventory; retained until E8."
+    },
+    {
+      "path": "includes/roster_hierarchy.php",
+      "line": 384,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/roster_hierarchy.php",
+      "line": 389,
+      "references": [
+        "season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    },
+    {
+      "path": "includes/season_preparation.php",
+      "line": 30,
+      "references": [
+        "target_season_id"
+      ],
+      "disposition": "Nullable legacy column / compatibility API; new dated operations pass NULL or reject legacy target. Remove in E8."
+    }
+  ],
+  "remaining_files": 18
+}

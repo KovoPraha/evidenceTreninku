@@ -3,49 +3,352 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/club_program.php';
-if (!isset($_SESSION['trener_id']) || !canAccess('sync_evidence')) { header('Location: login.php');exit; }
-function clubProgramAdminH(mixed $value): string { return htmlspecialchars((string)$value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8'); }
-function clubProgramNullableInt(mixed $value): ?int { $value=trim((string)$value);return $value===''?null:(int)$value; }
-$errors=[];$actorId=(int)$_SESSION['trener_id'];
-if ($_SERVER['REQUEST_METHOD']==='POST') {
-    if (!csrf_verify((string)($_POST['csrf_token']??''))) $errors[]='Formulář vypršel. Obnovte stránku.';
-    else try {
-        $action=(string)($_POST['action']??'');
-        if ($action==='create_program') {
-            $program=clubProgramCreate($pdo,$actorId,(string)$_POST['code'],(string)$_POST['name'],(string)($_POST['description']??''));
-            $_SESSION['club_program_flash']='Program '.$program['name'].' je připraven.';
-        } elseif ($action==='create_offer') {
-            $offer=clubProgramCreateOffer($pdo,$actorId,(int)$_POST['program_id'],(int)$_POST['season_id'],(int)$_POST['team_id'],(int)$_POST['product_id'],(int)$_POST['variant_id'],(string)$_POST['code'],(string)$_POST['name'],(string)$_POST['starts_on'],(string)$_POST['ends_on'],(string)($_POST['sales_open_at']??''),(string)($_POST['sales_close_at']??''),clubProgramNullableInt($_POST['capacity']??null),(string)$_POST['status'],clubProgramNullableInt($_POST['birth_year_from']??null),clubProgramNullableInt($_POST['birth_year_to']??null));
-            $_SESSION['club_program_flash']='Nabídka '.$offer['name'].' je připravena.';
-        } elseif($action==='configure_terms'){
-            $targetType=(string)$_POST['target_type'];$targetId=(int)$_POST['target_id'];
-            $result=clubProgramTermsConfigure($pdo,$actorId,$targetType,$targetId,(string)$_POST['purpose'],(string)$_POST['text'],isset($_POST['confirmed']));
-            $_SESSION['club_program_flash']='Vznikla neměnná verze '.$result['terms_version'].' dokumentu.';
-            $redirect='club_programs_admin.php?terms_program_id='.(int)$_POST['program_id'].($targetType==='offer'?'&terms_offer_id='.$targetId:'');
-            header('Location: '.$redirect,true,303);exit;
-        } else throw new InvalidArgumentException('Neznámá akce.');
-        header('Location: club_programs_admin.php',true,303);exit;
-    } catch (InvalidArgumentException|ClubProgramException|ClubProgramTermsException $exception) { $errors[]=$exception->getMessage(); }
-    catch (Throwable $exception) { error_log('club_programs_admin.php: '.$exception->getMessage());$errors[]='Operace selhala bez částečného zápisu.'; }
+if (!isset($_SESSION['trener_id']) || !canAccess('sync_evidence')) {
+    header('Location: login.php');
+    exit;
 }
-$success=(string)($_SESSION['club_program_flash']??'');unset($_SESSION['club_program_flash']);
-$programs=$pdo->query('SELECT * FROM club_programs ORDER BY name,id')->fetchAll(PDO::FETCH_ASSOC);
-$seasons=$pdo->query('SELECT * FROM club_seasons ORDER BY starts_on DESC,id DESC')->fetchAll(PDO::FETCH_ASSOC);
-$teams=$pdo->query('SELECT t.*,s.name AS season_name FROM club_teams t JOIN club_seasons s ON s.id=t.season_id ORDER BY s.starts_on DESC,t.name')->fetchAll(PDO::FETCH_ASSOC);
-$variants=clubProgramAdminSelectableVariants($pdo);
-$offers=clubProgramAdminOffers($pdo);
-$termsProgramId=(int)($_GET['terms_program_id']??0);$termsOfferId=(int)($_GET['terms_offer_id']??0);$termsTargetType=$termsOfferId>0?'offer':'program';$termsTargetId=$termsOfferId>0?$termsOfferId:$termsProgramId;$termsEditor=[];
-if($termsProgramId>0&&$termsTargetId>0){
-    foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){
-        $own=clubProgramTermsCurrent($pdo,$termsTargetType,$termsTargetId,$purpose);
-        $inherited=$termsTargetType==='offer'?clubProgramTermsCurrent($pdo,'program',$termsProgramId,$purpose):false;
-        $termsEditor[$purpose]=['current'=>$own?:null,'text'=>(string)(($own?:$inherited)['consent_text_plain']??CLUB_PROGRAM_TERM_DEFAULTS[$purpose]),'inherited'=>!$own&&$inherited];
+function clubProgramAdminH(mixed $value): string
+{
+    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+function clubProgramNullableInt(mixed $value): ?int
+{
+    $value = trim((string)$value);
+    return $value === '' ? null : (int)$value;
+}
+$errors = [];
+$actorId = (int)$_SESSION['trener_id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+        $errors[] = 'Formulář vypršel. Obnovte stránku.';
+    } else {
+        try {
+            $action = (string)($_POST['action'] ?? '');
+            if ($action === 'create_program') {
+                $program = clubProgramCreate(
+                    $pdo,
+                    $actorId,
+                    (string)$_POST['code'],
+                    (string)$_POST['name'],
+                    (string)($_POST['description'] ?? '')
+                );
+                $_SESSION['club_program_flash'] = 'Program '.$program['name'].' je připraven.';
+            } elseif ($action === 'create_offer') {
+                $offer = clubProgramCreateOffer(
+                    $pdo,
+                    $actorId,
+                    (int)$_POST['program_id'],
+                    null,
+                    (int)$_POST['team_id'],
+                    (int)$_POST['product_id'],
+                    (int)$_POST['variant_id'],
+                    (string)$_POST['code'],
+                    (string)$_POST['name'],
+                    (string)$_POST['starts_on'],
+                    (string)$_POST['ends_on'],
+                    (string)($_POST['sales_open_at'] ?? ''),
+                    (string)($_POST['sales_close_at']
+    ?? ''),
+                    clubProgramNullableInt($_POST['capacity'] ?? null),
+                    (string)$_POST['status'],
+                    clubProgramNullableInt($_POST['birth_year_from']
+    ?? null),
+                    clubProgramNullableInt($_POST['birth_year_to'] ?? null)
+                );
+                $_SESSION['club_program_flash'] = 'Nabídka '.$offer['name'].' je připravena.';
+            } elseif ($action === 'configure_terms') {
+                $targetType = (string)$_POST['target_type'];
+                $targetId = (int)$_POST['target_id'];
+                $result = clubProgramTermsConfigure(
+                    $pdo,
+                    $actorId,
+                    $targetType,
+                    $targetId,
+                    (string)$_POST['purpose'],
+                    (string)$_POST['text'],
+                    isset($_POST['confirmed'])
+                );
+                $_SESSION['club_program_flash'] = 'Vznikla neměnná verze '.$result['terms_version'].' dokumentu.';
+                $redirect = 'club_programs_admin.php?terms_program_id='.(int)$_POST['program_id'].($targetType === 'offer'
+    ? '&terms_offer_id='.$targetId : '');
+                header('Location: '.$redirect, true, 303);
+                exit;
+            } else {
+                throw new InvalidArgumentException('Neznámá akce.');
+            }
+            header('Location: club_programs_admin.php', true, 303);
+            exit;
+        } catch (InvalidArgumentException|ClubProgramException|ClubProgramTermsException $exception) {
+            $errors[] = $exception->getMessage();
+        } catch (Throwable $exception) {
+            error_log('club_programs_admin.php: '.$exception->getMessage());
+            $errors[] = 'Operace selhala bez částečného zápisu.';
+        }
     }
 }
+$success = (string)($_SESSION['club_program_flash'] ?? '');
+unset($_SESSION['club_program_flash']);
+$programs = $pdo->query('SELECT * FROM club_programs ORDER BY name,id')->fetchAll(PDO::FETCH_ASSOC);
+$teams = $pdo->query("SELECT t.* FROM club_teams t WHERE t.status='active' AND t.team_kind='roster' ORDER BY t.name,t.id")->fetchAll(PDO::FETCH_ASSOC);
+$variants = clubProgramAdminSelectableVariants($pdo);
+$offers = clubProgramAdminOffers($pdo);
+$termsProgramId = (int)($_GET['terms_program_id'] ?? 0);
+$termsOfferId = (int)($_GET['terms_offer_id'] ?? 0);
+$termsTargetType = $termsOfferId > 0 ? 'offer' : 'program';
+$termsTargetId = $termsOfferId > 0 ? $termsOfferId : $termsProgramId;
+$termsEditor = [];
+if ($termsProgramId > 0 && $termsTargetId > 0) {
+    foreach (CLUB_PROGRAM_TERM_PURPOSES as $purpose) {
+        $own = clubProgramTermsCurrent($pdo, $termsTargetType, $termsTargetId, $purpose);
+        $inherited = $termsTargetType === 'offer' ? clubProgramTermsCurrent(
+            $pdo,
+            'program',
+            $termsProgramId,
+            $purpose
+        ) : false;
+        $termsEditor[$purpose] = ['current' => $own ?: null,'text' => (string)(($own ?: $inherited)['consent_text_plain']
+    ?? CLUB_PROGRAM_TERM_DEFAULTS[$purpose]),'inherited' => !$own && $inherited];
+    }
+}
+
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kroužkové programy</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></head><body class="bg-light"><?php include __DIR__.'/hlavicka.php';?><main class="container-fluid py-4" style="max-width:1500px"><div class="d-flex justify-content-between mb-3"><div><h1 class="h4 mb-0">Kroužkové programy a podmínky</h1><div class="small text-muted">Pokročilá správa kroužků, jejich období, soupisek a právních textů.</div></div><div class="d-flex gap-2"><a class="btn btn-outline-primary btn-sm" href="club_makeup_policies_admin.php">Omluvy a náhradní lekce</a><a class="btn btn-primary btn-sm" href="club_program_wizard_admin.php">Vypsat kroužek</a><span class="small text-muted align-self-center">Pro běžné založení použijte průvodce.</span></div></div>
-<div class="alert alert-info"><strong>Jak tomu rozumět:</strong> stabilní program je dlouhodobý název kroužku; nabízené období je konkrétní prodej pro školní rok nebo sezonu; soupiska určuje skupinu dětí; po zaplacení objednávky vznikne účast a dítě se automaticky zapíše do této soupisky. Tato stránka je určená hlavně pro opravy a výjimky.</div>
-<?php foreach($errors as $error):?><div class="alert alert-danger"><?=clubProgramAdminH($error)?></div><?php endforeach;?><?php if($success!==''):?><div class="alert alert-success"><?=clubProgramAdminH($success)?></div><?php endif;?>
-<div class="row g-3"><div class="col-xl-4"><div class="card mb-3"><div class="card-header fw-semibold">Nový stabilní program</div><div class="card-body"><form method="post" class="row g-2"><?=csrf_field()?><input type="hidden" name="action" value="create_program"><div class="col-4"><label class="form-label">Kód</label><input class="form-control" name="code" required></div><div class="col-8"><label class="form-label">Název</label><input class="form-control" name="name" required></div><div class="col-12"><label class="form-label">Popis</label><textarea class="form-control" name="description"></textarea></div><div><button class="btn btn-primary">Vytvořit program</button></div></form></div></div>
-<div class="card"><div class="card-header fw-semibold">Nové nabízené období</div><div class="card-body"><form method="post" class="row g-2"><?=csrf_field()?><input type="hidden" name="action" value="create_offer"><div class="col-12"><label class="form-label">Program</label><select class="form-select" name="program_id" required><option value="">Vyberte</option><?php foreach($programs as $program):?><option value="<?=(int)$program['id']?>"><?=clubProgramAdminH($program['name'])?></option><?php endforeach;?></select></div><div class="col-12"><label class="form-label">Sezona</label><select class="form-select" name="season_id" required><option value="">Vyberte</option><?php foreach($seasons as $season):?><option value="<?=(int)$season['id']?>"><?=clubProgramAdminH($season['name'])?></option><?php endforeach;?></select></div><div class="col-12"><label class="form-label">Cílová soupiska</label><select class="form-select" name="team_id" required><option value="">Vyberte</option><?php foreach($teams as $team):?><option value="<?=(int)$team['id']?>"><?=clubProgramAdminH($team['season_name'].' / '.$team['name'])?></option><?php endforeach;?></select></div><div class="col-12"><label class="form-label">Produktová varianta e-shopu</label><select class="form-select" id="club-program-variant" name="variant_id" required><option value="">Vyberte</option><?php foreach($variants as $variant):?><option value="<?=(int)$variant['variant_id']?>" data-product="<?=(int)$variant['product_id']?>"><?=clubProgramAdminH($variant['product_name'].' / '.$variant['sku'].' / '.$variant['offer_type'].' / '.$variant['product_status'].'→'.$variant['variant_status'])?></option><?php endforeach;?></select><div class="form-text">Koncept je možné navázat pouze u typu program; běžné zboží musí zůstat aktivní.</div><input type="hidden" id="club-program-product" name="product_id" required></div><div class="col-4"><label class="form-label">Kód období</label><input class="form-control" name="code" required></div><div class="col-8"><label class="form-label">Název období</label><input class="form-control" name="name" required></div><div class="col-6"><label class="form-label">Od</label><input type="date" class="form-control" name="starts_on" required></div><div class="col-6"><label class="form-label">Do</label><input type="date" class="form-control" name="ends_on" required></div><div class="col-6"><label class="form-label">Prodej od</label><input type="datetime-local" class="form-control" name="sales_open_at"></div><div class="col-6"><label class="form-label">Prodej do</label><input type="datetime-local" class="form-control" name="sales_close_at"></div><div class="col-6"><label class="form-label">Kapacita</label><input type="number" min="1" class="form-control" name="capacity"></div><div class="col-3"><label class="form-label">Ročník narození od</label><input type="number" min="1900" max="<?=date('Y')?>" class="form-control" name="birth_year_from"></div><div class="col-3"><label class="form-label">Ročník narození do</label><input type="number" min="1900" max="<?=date('Y')?>" class="form-control" name="birth_year_to"></div><div class="col-12 form-text">Obě pole prázdná = bez omezení. Veřejně se zobrazí například „pro ročníky 2016–2019“.</div><div class="col-6"><label class="form-label">Stav</label><select class="form-select" name="status"><option value="draft">Koncept</option><option value="active">Aktivní</option><option value="closed">Uzavřená</option></select></div><div class="col-6 d-flex align-items-end"><button class="btn btn-primary w-100">Vytvořit období</button></div></form></div></div></div>
-<div class="col-xl-8"><?php if($termsEditor!==[]):?><div class="card mb-3"><div class="card-header fw-semibold"><?=$termsTargetType==='offer'?'Přepsání podmínek nabídky':'Výchozí podmínky programu'?></div><div class="card-body"><div class="alert alert-info small">Každé uložení změněného textu založí novou verzi. Staré znění zůstane u dřívějších objednávek a účastí.</div><div class="row g-3"><?php foreach(['program_cancellation'=>'Storno podmínky','program_consent'=>'Souhlas s přihlášením']as$purpose=>$label):$editor=$termsEditor[$purpose];?><div class="col-lg-6"><form method="post"><?=csrf_field()?><input type="hidden" name="action" value="configure_terms"><input type="hidden" name="target_type" value="<?=clubProgramAdminH($termsTargetType)?>"><input type="hidden" name="target_id" value="<?=$termsTargetId?>"><input type="hidden" name="program_id" value="<?=$termsProgramId?>"><input type="hidden" name="purpose" value="<?=clubProgramAdminH($purpose)?>"><label class="form-label fw-semibold"><?=clubProgramAdminH($label)?></label><textarea class="form-control" name="text" rows="7" maxlength="4000" required><?=clubProgramAdminH($editor['text'])?></textarea><div class="form-text"><?php if($editor['current']):?>Aktivní verze <?=clubProgramAdminH($editor['current']['terms_version'])?>.<?php elseif($editor['inherited']):?>Nyní se dědí výchozí verze programu; uložením vznikne override nabídky.<?php else:?>Připravený výchozí text před zveřejněním zkontrolujte.<?php endif;?></div><div class="form-check my-2"><input class="form-check-input" type="checkbox" name="confirmed" value="1" id="confirm-<?=clubProgramAdminH($purpose)?>" required><label class="form-check-label" for="confirm-<?=clubProgramAdminH($purpose)?>">Potvrzuji vytvoření nové neměnné verze</label></div><button class="btn btn-success">Uložit novou verzi</button></form></div><?php endforeach;?></div></div></div><?php endif;?><div class="card"><div class="card-header fw-semibold">Programy a období</div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Program</th><th>Období</th><th>Soupiska</th><th>E-shop</th><th>Kapacita</th><th>Podmínky</th><th>Stav</th></tr></thead><tbody><?php foreach($offers as $offer):?><tr><td><?=clubProgramAdminH($offer['program_name'])?> <code><?=clubProgramAdminH($offer['program_code'])?></code><div><a class="small" href="?terms_program_id=<?=(int)$offer['program_id']?>">Výchozí podmínky</a></div></td><td><strong><?=clubProgramAdminH($offer['name'])?></strong><div class="small text-muted"><?=clubProgramAdminH($offer['starts_on'].' – '.$offer['ends_on'])?></div><div class="small text-primary"><?=clubProgramAdminH(clubProgramBirthYearLabel($offer))?></div></td><td><?=clubProgramAdminH($offer['team_name'].' / '.$offer['season_name'])?></td><td><?=clubProgramAdminH($offer['product_name'])?><br><code><?=clubProgramAdminH($offer['sku'])?></code></td><td><div>Aktivní / zaplacené: <strong><?=(int)$offer['active_enrollment_count']?></strong></div><div>Drží nezaplacené: <strong><?=(int)$offer['held_order_count']?></strong></div><div>Skutečně volné: <strong><?=clubProgramAdminH($offer['available_count']??'∞')?></strong> / <?=clubProgramAdminH($offer['capacity']??'∞')?></div></td><td><div class="<?=$offer['terms_complete']?'text-success':'text-danger'?>"><?=$offer['terms_complete']?'Platné':'Chybí'?></div><a class="small" href="?terms_program_id=<?=(int)$offer['program_id']?>&terms_offer_id=<?=(int)$offer['id']?>">Přepsat pro období</a></td><td><?=clubProgramAdminH($offer['status'])?></td></tr><?php endforeach;?></tbody></table></div></div></div></div></main><script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">const variant=document.getElementById('club-program-variant');const product=document.getElementById('club-program-product');variant?.addEventListener('change',()=>{product.value=variant.selectedOptions[0]?.dataset.product||'';});</script></body></html>
+<?php
+echo('<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" ' .
+    'content="width=device-width,initial-scale=1"><title>Kroužkové programy</title><link ' .
+    'href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" ' .
+
+    'integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" ' .
+    'crossorigin="anonymous"></head><body class="bg-light">');
+?><?php
+include __DIR__.'/hlavicka.php';
+?><?php
+echo('<main class="container-fluid py-4" style="max-width:1500px"><div class="d-flex justify-content-between ' .
+
+    'mb-3"><div><h1 class="h4 mb-0">Kroužkové programy a podmínky</h1><div class="small text-muted">Pokročilá ' .
+
+    'správa kroužků, jejich období, soupisek a právních textů.</div></div><div class="d-flex gap-2"><a class="btn ' .
+
+    'btn-outline-primary btn-sm" href="club_makeup_policies_admin.php">Omluvy a náhradní lekce</a><a class="btn ' .
+
+    'btn-primary btn-sm" href="club_program_wizard_admin.php">Vypsat kroužek</a><span class="small text-muted ' .
+
+    'align-self-center">Pro běžné založení použijte průvodce.</span></div></div>
+');
+?><?php
+echo('<div class="alert alert-info"><strong>Jak tomu rozumět:</strong> stabilní program je dlouhodobý název ' .
+
+    'kroužku; nabízené období je konkrétní prodej pro školní rok nebo sezonu; soupiska určuje skupinu dětí; po ' .
+
+    'zaplacení objednávky vznikne účast a dítě se automaticky zapíše do této soupisky. Tato stránka je určená ' .
+
+    'hlavně pro opravy a výjimky.</div>
+');
+?><?php
+foreach ($errors as $error):
+    ?><div class="alert alert-danger"><?=
+    clubProgramAdminH($error)
+    ?></div><?php
+endforeach;
+?><?php
+if ($success !== ''):
+    ?><div class="alert alert-success"><?=
+    clubProgramAdminH($success)
+    ?></div><?php
+endif;
+?>
+<?php
+echo('<div class="row g-3"><div class="col-xl-4"><div class="card mb-3"><div class="card-header fw-semibold">Nový ' .
+
+    'stabilní program</div><div class="card-body"><form method="post" class="row g-2">');
+?><?=
+csrf_field()
+?><?php
+echo('<input type="hidden" name="action" value="create_program"><div class="col-4"><label ' .
+    'class="form-label">Kód</label><input class="form-control" name="code" required></div><div ' .
+    'class="col-8"><label class="form-label">Název</label><input class="form-control" name="name" ' .
+    'required></div><div class="col-12"><label class="form-label">Popis</label><textarea class="form-control" ' .
+
+    'name="description"></textarea></div><div><button class="btn btn-primary">Vytvořit ' .
+    'program</button></div></form></div></div>
+');
+?><div class="card"><div class="card-header fw-semibold">Nové nabízené období</div><div class="card-body"><form method="post" class="row g-2"><?=
+csrf_field()
+?><?php
+echo('<input type="hidden" name="action" value="create_offer"><div class="col-12"><label ' .
+    'class="form-label">Program</label><select class="form-select" name="program_id" required><option ' .
+
+    'value="">Vyberte</option>');
+?><?php
+foreach ($programs as $program):
+    ?><option value="<?=
+    (int)$program['id']
+    ?>"><?=
+    clubProgramAdminH($program['name'])
+    ?></option><?php
+endforeach;
+?></select></div><div class="col-12"><label class="form-label">Cílová soupiska</label><select class="form-select" name="team_id" required><option value="">Vyberte</option><?php
+foreach ($teams as $team):
+    ?><option value="<?=
+    (int)$team['id']
+    ?>"><?=
+    clubProgramAdminH($team['name'])
+    ?></option><?php
+endforeach;
+?><?php
+echo('</select></div><div class="col-12"><label class="form-label">Produktová varianta e-shopu</label><select ' .
+
+    'class="form-select" id="club-program-variant" name="variant_id" required><option value="">Vyberte</option>');
+?><?php
+foreach ($variants as $variant):
+    ?><option value="<?=
+    (int)$variant['variant_id']
+    ?>" data-product="<?=
+    (int)$variant['product_id']
+    ?>"><?=
+    clubProgramAdminH($variant['product_name'].
+        ' / '.$variant['sku'].' / '.$variant['offer_type'].' / '.$variant['product_status'].'→'.$variant['variant_status'])
+    ?></option><?php
+endforeach;
+?><?php
+echo('</select><div class="form-text">Koncept je možné navázat pouze u typu program; běžné zboží musí zůstat ' .
+
+    'aktivní.</div><input type="hidden" id="club-program-product" name="product_id" required></div><div ' .
+
+    'class="col-4"><label class="form-label">Kód období</label><input class="form-control" name="code" ' .
+
+    'required></div><div class="col-8"><label class="form-label">Název období</label><input class="form-control" ' .
+
+    'name="name" required></div><div class="col-6"><label class="form-label">Od</label><input type="date" ' .
+
+    'class="form-control" name="starts_on" required></div><div class="col-6"><label ' .
+    'class="form-label">Do</label><input type="date" class="form-control" name="ends_on" required></div><div ' .
+
+    'class="col-6"><label class="form-label">Prodej od</label><input type="datetime-local" class="form-control" ' .
+
+    'name="sales_open_at"></div><div class="col-6"><label class="form-label">Prodej do</label><input ' .
+
+    'type="datetime-local" class="form-control" name="sales_close_at"></div><div class="col-6"><label ' .
+
+    'class="form-label">Kapacita</label><input type="number" min="1" class="form-control" ' .
+    'name="capacity"></div><div class="col-3"><label class="form-label">Ročník narození od</label><input ' .
+
+    'type="number" min="1900" max="');
+?><?=
+date('Y')
+?>" class="form-control" name="birth_year_from"></div><div class="col-3"><label class="form-label">Ročník narození do</label><input type="number" min="1900" max="<?=
+date('Y')
+?><?php
+echo('" class="form-control" name="birth_year_to"></div><div class="col-12 form-text">Obě pole prázdná = bez ' .
+
+    'omezení. Veřejně se zobrazí například „pro ročníky 2016–2019“.</div><div class="col-6"><label ' .
+
+    'class="form-label">Stav</label><select class="form-select" name="status"><option ' .
+    'value="draft">Koncept</option><option value="active">Aktivní</option><option ' .
+    'value="closed">Uzavřená</option></select></div><div class="col-6 d-flex align-items-end"><button class="btn ' .
+
+    'btn-primary w-100">Vytvořit období</button></div></form></div></div></div>
+');
+?><div class="col-xl-8"><?php
+if ($termsEditor !== []):
+    ?><div class="card mb-3"><div class="card-header fw-semibold"><?=
+    $termsTargetType
+        === 'offer' ? 'Přepsání podmínek nabídky' : 'Výchozí podmínky programu'
+    ?><?php
+    echo('</div><div class="card-body"><div class="alert alert-info small">Každé uložení změněného textu založí novou ' .
+
+        'verzi. Staré znění zůstane u dřívějších objednávek a účastí.</div><div class="row g-3">');
+    ?><?php
+foreach (['program_cancellation'
+        => 'Storno podmínky','program_consent' => 'Souhlas s přihlášením'] as $purpose => $label):$editor = $termsEditor[$purpose];
+    ?><div class="col-lg-6"><form method="post"><?=
+    csrf_field()
+    ?><input type="hidden" name="action" value="configure_terms"><input type="hidden" name="target_type" value="<?=
+    clubProgramAdminH($termsTargetType)
+    ?>"><input type="hidden" name="target_id" value="<?=
+    $termsTargetId
+    ?>"><input type="hidden" name="program_id" value="<?=
+    $termsProgramId
+    ?>"><input type="hidden" name="purpose" value="<?=
+    clubProgramAdminH($purpose)
+    ?>"><label class="form-label fw-semibold"><?=
+    clubProgramAdminH($label)
+    ?></label><textarea class="form-control" name="text" rows="7" maxlength="4000" required><?=
+    clubProgramAdminH($editor['text'])
+    ?></textarea><div class="form-text"><?php
+if ($editor['current']):
+    ?>Aktivní verze <?=
+    clubProgramAdminH($editor['current']['terms_version'])
+    ?>.<?php elseif ($editor['inherited']):
+        ?>Nyní se dědí výchozí verze programu; uložením vznikne override nabídky.<?php else:
+            ?>Připravený výchozí text před zveřejněním zkontrolujte.<?php
+        endif;
+    ?></div><div class="form-check my-2"><input class="form-check-input" type="checkbox" name="confirmed" value="1" id="confirm-<?=
+    clubProgramAdminH($purpose)
+    ?>" required><label class="form-check-label" for="confirm-<?=
+    clubProgramAdminH($purpose)
+    ?>">Potvrzuji vytvoření nové neměnné verze</label></div><button class="btn btn-success">Uložit novou verzi</button></form></div><?php
+endforeach;
+?></div></div></div><?php
+endif;
+?><?php
+echo('<div class="card"><div class="card-header fw-semibold">Programy a období</div><div ' .
+    'class="table-responsive"><table class="table table-sm align-middle ' .
+    'mb-0"><thead><tr><th>Program</th><th>Období</th><th>Soupiska</th><th>E-shop</th><th>Kapacita</th><th>Podmínky<' .
+
+    '/th><th>Stav</th></tr></thead><tbody>');
+?><?php
+foreach ($offers as $offer):
+    ?><tr><td><?=
+    clubProgramAdminH($offer['program_name'])
+    ?> <code><?=
+    clubProgramAdminH($offer['program_code'])
+    ?></code><div><a class="small" href="?terms_program_id=<?=
+    (int)$offer['program_id']
+    ?>">Výchozí podmínky</a></div></td><td><strong><?=
+    clubProgramAdminH($offer['name'])
+    ?></strong><div class="small text-muted"><?=
+    clubProgramAdminH($offer['starts_on'].
+        ' – '.$offer['ends_on'])
+    ?></div><div class="small text-primary"><?=
+    clubProgramAdminH(clubProgramBirthYearLabel($offer))
+    ?></div></td><td><?=
+    clubProgramAdminH($offer['team_name'])
+    ?></td><td><?=
+    clubProgramAdminH($offer['product_name'])
+    ?><br><code><?=
+    clubProgramAdminH($offer['sku'])
+    ?></code></td><td><div>Aktivní / zaplacené: <strong><?=
+    (int)$offer['active_enrollment_count']
+    ?></strong></div><div>Drží nezaplacené: <strong><?=
+    (int)$offer['held_order_count']
+    ?></strong></div><div>Skutečně volné: <strong><?=
+    clubProgramAdminH($offer['available_count']
+        ?? '∞')
+    ?></strong> / <?=
+    clubProgramAdminH($offer['capacity'] ?? '∞')
+    ?></div></td><td><div class="<?=
+    $offer['terms_complete']
+        ? 'text-success' : 'text-danger'
+    ?>"><?=
+    $offer['terms_complete'] ? 'Platné' : 'Chybí'
+    ?></div><a class="small" href="?terms_program_id=<?=
+    (int)$offer['program_id']
+    ?>&terms_offer_id=<?=
+    (int)$offer['id']
+    ?>">Přepsat pro období</a></td><td><?=
+    clubProgramAdminH($offer['status'])
+    ?></td></tr><?php
+endforeach;
+?></tbody></table></div></div></div></div></main><script nonce="<?=
+htmlspecialchars(
+    app_csp_nonce(),
+    ENT_QUOTES,
+    'UTF-8'
+)
+?><?php
+echo('">const variant=document.getElementById(\'club-program-variant\');const ' .
+    'product=document.getElementById(\'club-program-product\');variant?.addEventListener(\'change\',()=>{product.value=' .
+
+    'variant.selectedOptions[0]?.dataset.product||\'\';});</script></body></html>
+');
+?>

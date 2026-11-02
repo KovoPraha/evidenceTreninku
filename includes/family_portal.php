@@ -76,7 +76,10 @@ function familyPortalAuthorizedPeople(PDO $pdo, int $accountId, ?int $sportovecI
     $statement->execute($sportovecId !== null ? [$accountId, $sportovecId] : [$accountId]);
 
     $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
-    $personIds = array_values(array_unique(array_map(static fn (array $row): int => (int) $row['sportovec_id'], $rows)));
+    $personIds = array_values(array_unique(array_map(
+        static fn (array $row): int => (int) $row['sportovec_id'],
+        $rows
+    )));
     $membership = familyPortalMembershipFieldsForPeople($pdo, $personIds);
     $people = [];
     foreach ($rows as $row) {
@@ -111,7 +114,11 @@ function familyPortalMembershipFieldsForPeople(PDO $pdo, array $personIds): arra
     $membership = [];
     foreach (array_chunk($personIds, 400) as $batch) {
         // SELECT * retains compatibility with legacy schemas lacking optional membership columns.
-        $statement = $pdo->prepare('SELECT * FROM sportovci WHERE id IN (' . implode(',', array_fill(0, count($batch), '?')) . ')');
+        $statement = $pdo->prepare('SELECT * FROM sportovci WHERE id IN (' . implode(',', array_fill(
+            0,
+            count($batch),
+            '?'
+        )) . ')');
         $statement->execute($batch);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $membership[(int) $row['id']] = array_intersect_key($row, $fields);
@@ -148,17 +155,17 @@ function familyPortalPersonOverview(PDO $pdo, int $accountId, int $sportovecId):
     }
 
     $rosters = [];
-    if (familyPortalHasTables($pdo, ['club_roster_members', 'club_teams', 'club_seasons'])) {
+    if (familyPortalHasTables($pdo, ['club_roster_members', 'club_teams'])) {
         $statement = $pdo->prepare(
             'SELECT m.id, m.status, m.source, m.valid_from, m.valid_to, '
             . 't.id AS team_id, t.code AS team_code, t.name AS team_name, '
-            . "t.discipline, t.age_label, s.code AS season_code, COALESCE(s.name,'Bez sezóny') AS season_name, "
-            . 's.starts_on AS season_starts_on, s.ends_on AS season_ends_on '
+            . "t.discipline, t.age_label, NULL AS season_code, NULL AS season_name, "
+            . 'NULL AS season_starts_on, NULL AS season_ends_on '
             . 'FROM club_roster_members m '
             . 'JOIN club_teams t ON t.id=m.team_id '
-            . 'LEFT JOIN club_seasons s ON s.id=t.season_id '
+            . ''
             . 'WHERE m.sportovec_id=? '
-            . "ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END, s.starts_on DESC, t.name, m.id"
+            . "ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END, m.valid_from DESC, t.name, m.id"
         );
         $statement->execute([$sportovecId]);
         $rosters = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -208,6 +215,8 @@ function familyPortalPersonOverview(PDO $pdo, int $accountId, int $sportovecId):
     }
     unset($training);
     return ['person' => $person, 'rosters' => $rosters, 'events' => $events, 'trainings' => $trainings,
+
+
      'member_charges' => $memberCharges,'sports_summary' => $summary];
 }
 

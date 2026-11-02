@@ -43,7 +43,8 @@ function kisRosterDescendantIds(PDO $pdo, int $teamId, string $date): array
     if (!kisRosterHierarchyHasTable($pdo, 'club_team_edges')) {
         return [$teamId];
     }
-    $stmt = $pdo->prepare('SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)');
+    $stmt = $pdo->prepare('SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)'
+        . ($pdo->inTransaction() && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
     $stmt->execute([$date, $date]);
     $children = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $edge) {
@@ -72,7 +73,9 @@ function kisRosterEffectiveMemberIds(PDO $pdo, int $teamId, string $date): array
     }
     $marks = implode(',', array_fill(0, count($teamIds), '?'));
     $stmt = $pdo->prepare("SELECT DISTINCT sportovec_id FROM club_roster_members WHERE team_id IN ($marks) AND valid_from<=? "
-        . "AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' AND (status<>'removed' OR valid_to IS NOT NULL) ORDER BY sportovec_id");
+        . ('AND (valid_to IS NULL OR valid_to>=?) AND status<>\'cancelled\' AND (status<>\'removed\' OR valid_to IS NOT NULL) '
+    .
+    'ORDER BY sportovec_id'));
     $stmt->execute([...$teamIds, $date, $date]);
     return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
 }
@@ -144,7 +147,8 @@ function kisRosterSelectableTeams(PDO $pdo, string $date): array
     $rows = [];
     $assigned = [];
     foreach ($groups as $groupId => $group) {
-        $rows[] = ['id' => $groupId,'name' => (string)$group['name'],'group_id' => $groupId,'group_name' =>
+        $rows[] = ['id' => $groupId,'name' => (string)$group['name'],'group_id' => $groupId,'group_name'
+    =>
      (string)$group['name'],'is_group' => true];
         foreach (kisRosterDescendantIds($pdo, $groupId, $date) as $memberTeamId) {
             if ($memberTeamId === $groupId || !isset($byId[$memberTeamId])) {
@@ -165,6 +169,8 @@ function kisRosterSelectableTeams(PDO $pdo, string $date): array
             continue;
         }
         $rows[] = ['id' => $id,'name' => (string)$team['name'],'group_id' => 0,'group_name' => 'Bez skupiny',
+
+
     'is_group' => false];
     }
     return $rows;
@@ -198,6 +204,8 @@ function kisRosterGrantPeriod(
         $lock = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
         $hasTeamKind = kisRosterHierarchyHasColumn($pdo, 'club_teams', 'team_kind');
         $stmt = $pdo->prepare('SELECT id,status'.($hasTeamKind ? ',team_kind' : '').' FROM club_teams WHERE id=?'.
+
+
     $lock);
         $stmt->execute([$teamId]);
         $team = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -210,6 +218,8 @@ function kisRosterGrantPeriod(
         $hasUci = kisRosterHierarchyHasColumn($pdo, 'sportovci', 'uciid');
         $hasMemberStatus = kisRosterHierarchyHasColumn($pdo, 'sportovci', 'stav_clenstvi');
         $stmt = $pdo->prepare('SELECT id'.($hasUci ? ',uciid' : '').($hasMemberStatus ? ',stav_clenstvi' : '').
+
+
     ' FROM sportovci WHERE id=?'.$lock);
         $stmt->execute([$sportovecId]);
         $person = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -266,8 +276,10 @@ function kisRosterGrantPeriod(
         }
         $pdo->prepare('INSERT INTO club_roster_members('.$columns.') VALUES ('.$values.')')->execute($arguments);
         $id = (int)$pdo->lastInsertId();
-        kisRosterEvent($pdo, $teamId, $id, $actorId, 'grant_period', null, ['id' => $id,'sportovec_id' =>
-     $sportovecId,'source' => $source,'source_ref' => $sourceRef,'valid_from' => $validFrom,'valid_to' =>
+        kisRosterEvent($pdo, $teamId, $id, $actorId, 'grant_period', null, ['id' => $id,'sportovec_id'
+    =>
+     $sportovecId,'source' => $source,'source_ref' => $sourceRef,'valid_from' => $validFrom,'valid_to'
+    =>
      $validTo], $note);
         if ($ownTransaction) {
             $pdo->commit();
@@ -294,7 +306,8 @@ function kisRosterEndPeriod(PDO $pdo, int $memberId, int $actorId, string $valid
         $pdo->beginTransaction();
     }
     try {
-        $stmt = $pdo->prepare('SELECT * FROM club_roster_members WHERE id=?'.((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
+        $stmt = $pdo->prepare('SELECT * FROM club_roster_members WHERE id=?'.((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)
+    === 'mysql' ? ' FOR UPDATE' : ''));
         $stmt->execute([$memberId]);
         $before = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$before) {
@@ -319,6 +332,8 @@ function kisRosterEndPeriod(PDO $pdo, int $memberId, int $actorId, string $valid
         $newStatus = $cancelledBeforeStart ? 'cancelled' : 'removed';
         $storedEnd = $cancelledBeforeStart ? $before['valid_from'] : $validTo;
         $pdo->prepare('UPDATE club_roster_members SET status=?,valid_to=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$newStatus,
+
+
     $storedEnd,$memberId]);
         $after = $before;
         $after['status'] = $newStatus;
@@ -390,12 +405,30 @@ function kisRosterCreateStandingTeam(
 }
 
 /** All-time reachability prevents a future edge from creating a cycle later. */
+/** Idempotent provisioning by explicit code; legacy IDs require the reviewed cutover map. */
+function kisRosterEnsureStandingTeam(PDO $pdo, int $actorId, string $code, string $name, string $reason): array
+{
+    $code = kisRosterCode($code);
+    $query = $pdo->prepare('SELECT * FROM club_teams WHERE code=? ORDER BY id');
+    $query->execute([$code]);
+    $rows = $query->fetchAll(PDO::FETCH_ASSOC);
+    if (!$rows) {
+        return kisRosterCreateStandingTeam($pdo, $actorId, $code, $name, 'roster', $reason);
+    }
+    if (count($rows) !== 1 || $rows[0]['standing_code'] !== $code || $rows[0]['team_kind'] !== 'roster'
+        || $rows[0]['status'] !== 'active' || $rows[0]['name'] !== $name) {
+        throw new KisRosterException('Kód již používá odlišná nebo původní soupiska. Vyřešte její převod podle mapy ID.');
+    }
+    return $rows[0];
+}
+
 function kisRosterWouldCycle(PDO $pdo, int $parentId, int $childId): bool
 {
     if ($parentId === $childId) {
         return true;
     }
-    $stmt = $pdo->query('SELECT parent_team_id,child_team_id FROM club_team_edges');
+    $stmt = $pdo->query('SELECT parent_team_id,child_team_id FROM club_team_edges'
+        . ($pdo->inTransaction() && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
     $children = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $edge) {
         $children[(int)$edge['parent_team_id']][] = (int)$edge['child_team_id'];
@@ -450,7 +483,8 @@ function kisRosterHierarchyImpact(PDO $pdo, int $parentId, string $fromDate): ar
                 $count->execute([$planId]);
                 $makeupCount = (int)$count->fetchColumn();
             }
-            $plans[$planId] = ['id' => $planId,'name' => (string)$row['nazev'],'date' => $date,'rsvp_count' =>
+            $plans[$planId] = ['id' => $planId,'name' => (string)$row['nazev'],'date' => $date,'rsvp_count'
+    =>
      $responseCount,'makeup_count' => $makeupCount];
         }
     }
@@ -477,7 +511,8 @@ function kisRosterHierarchyImpact(PDO $pdo, int $parentId, string $fromDate): ar
                 $count->execute([$eventId]);
                 $registrations = (int)$count->fetchColumn();
             }
-            $events[$eventId] = ['id' => $eventId,'name' => (string)$row['name'],'date' => $date,'registration_count' =>
+            $events[$eventId] = ['id' => $eventId,'name' => (string)$row['name'],'date' => $date,'registration_count'
+    =>
      $registrations];
         }
     }
@@ -498,13 +533,15 @@ function kisRosterHierarchyImpact(PDO $pdo, int $parentId, string $fromDate): ar
 function kisRosterPreviewHierarchy(PDO $pdo, int $parentId, array $childIds, string $date): array
 {
     $date = kisRosterDate($date);
-    $childIds = array_values(array_unique(array_filter(array_map('intval', $childIds), static fn (int $id): bool =>
+    $childIds = array_values(array_unique(array_filter(array_map('intval', $childIds), static fn (int $id): bool
+    =>
      $id > 0)));
     sort($childIds, SORT_NUMERIC);
     if ($parentId < 1 || !$childIds) {
         throw new InvalidArgumentException('Vyberte skupinu a alespoň jednu soupisku.');
     }
-    $stmt = $pdo->prepare('SELECT id,name,status'.(kisRosterHierarchyHasColumn($pdo, 'club_teams', 'team_kind') ? ',team_kind' : '').
+    $stmt = $pdo->prepare('SELECT id,name,status'.(kisRosterHierarchyHasColumn($pdo, 'club_teams', 'team_kind') ? ',team_kind'
+    : '').
     ' FROM club_teams WHERE id=?');
     $stmt->execute([$parentId]);
     $parent = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -542,9 +579,14 @@ function kisRosterPreviewHierarchy(PDO $pdo, int $parentId, array $childIds, str
     sort($overlapIds, SORT_NUMERIC);
     $impact = kisRosterHierarchyImpact($pdo, $parentId, $date);
     $fingerprint = hash('sha256', json_encode([$parentId,$childIds,$date,$allIds,$overlapIds,$edgeSnapshot,
+
+
     $impact], JSON_THROW_ON_ERROR));
     return ['parent' => $parent,'children' => $children,'date' => $date,'before_count' => count($existing),
-    'after_count' => count($all),'after_member_ids' => $allIds,'overlap_count' => count($overlap),'overlap_member_ids' =>
+
+
+    'after_count' => count($all),'after_member_ids' => $allIds,'overlap_count' => count($overlap),'overlap_member_ids'
+    =>
      $overlapIds,'impact' => $impact,'fingerprint' => $fingerprint];
 }
 
@@ -568,10 +610,9 @@ function kisRosterAttachChildren(
     }
     try {
         if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
-            $lock = $pdo->prepare('SELECT id FROM club_teams WHERE id=? FOR UPDATE');
-            $lock->execute([$parentId]);
-            $lock->fetchColumn();
-            $lock->closeCursor();
+            // Serialize graph edits in deterministic order, including opposite-parent attachments.
+            $pdo->query('SELECT id FROM club_teams ORDER BY id FOR UPDATE')->fetchAll(PDO::FETCH_COLUMN);
+            $pdo->query('SELECT id FROM club_team_edges ORDER BY id FOR UPDATE')->fetchAll(PDO::FETCH_COLUMN);
         }
         $preview = kisRosterPreviewHierarchy($pdo, $parentId, $childIds, $date);
         if (!hash_equals($preview['fingerprint'], $fingerprint)) {
@@ -596,7 +637,8 @@ function kisRosterAttachChildren(
             $pdo->prepare('INSERT INTO club_team_edges(parent_team_id,child_team_id,valid_from,actor_trainer_id,reason) VALUES(?,?,?,?,?)')
                 ->execute([$parentId,$childId,$date,$actorId,$reason]);
             $edgeId = (int)$pdo->lastInsertId();
-            kisRosterStructureEvent($pdo, 'edge', $edgeId, $actorId, 'attach_team', $reason, [], ['parent_team_id' =>
+            kisRosterStructureEvent($pdo, 'edge', $edgeId, $actorId, 'attach_team', $reason, [], ['parent_team_id'
+    =>
      $parentId,'child_team_id' => $childId,'valid_from' => $date]);
             $created++;
         }
@@ -651,7 +693,8 @@ function kisRosterEndHierarchyEdge(
         $pdo->beginTransaction();
     }
     try {
-        $stmt = $pdo->prepare('SELECT * FROM club_team_edges WHERE id=?'.((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
+        $stmt = $pdo->prepare('SELECT * FROM club_team_edges WHERE id=?'.((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)
+    === 'mysql' ? ' FOR UPDATE' : ''));
         $stmt->execute([$edgeId]);
         $before = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$before) {

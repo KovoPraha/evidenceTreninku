@@ -1,9 +1,13 @@
 <?php
+
 declare(strict_types=1);
+require_once __DIR__.'/member_evidence_guard.php';
 
 require_once __DIR__ . '/kis_import_run_lib.php';
 
-final class KisImportSandboxException extends RuntimeException {}
+final class KisImportSandboxException extends RuntimeException
+{
+}
 
 function kisImportSandboxReason(string $reason): string
 {
@@ -98,8 +102,16 @@ function kisImportSandboxPromotionForRun(PDO $pdo, int $runId): array
 }
 
 /** @return array<string,mixed> */
-function kisImportSandboxPromote(PDO $pdo, int $runId, string $fingerprint, int $actorId, string $reason, bool $confirmed, bool $sandboxAllowed): array
-{
+function kisImportSandboxPromote(
+    PDO $pdo,
+    int $runId,
+    string $fingerprint,
+    int $actorId,
+    string $reason,
+    bool $confirmed,
+    bool $sandboxAllowed
+): array {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     kisImportSandboxAssertAllowed($confirmed, $sandboxAllowed, $actorId);
     $reason = kisImportSandboxReason($reason);
     $ownsTransaction = !$pdo->inTransaction();
@@ -124,7 +136,8 @@ function kisImportSandboxPromote(PDO $pdo, int $runId, string $fingerprint, int 
         $reapplied = false;
         if (!$promotion) {
             $statement = $pdo->prepare(
-                "INSERT INTO kis_import_sandbox_promotions(import_run_id,preview_fingerprint,status,item_count,applied_by,apply_reason) VALUES(?,?,'applied',?,?,?)"
+                ('INSERT INTO kis_import_sandbox_promotions(import_run_id,preview_fingerprint,status,item_count,applied_by,apply' .
+    '_reason) VALUES(?,?,\'applied\',?,?,?)')
             );
             $statement->execute([$runId, $fingerprint, count($items), $actorId, $reason]);
             $promotionId = (int)$pdo->lastInsertId();
@@ -143,14 +156,17 @@ function kisImportSandboxPromote(PDO $pdo, int $runId, string $fingerprint, int 
             kisImportSandboxVerifyItems($pdo, $promotionId, $items, false);
             $pdo->prepare('UPDATE kis_import_sandbox_items SET active=1,updated_at=CURRENT_TIMESTAMP WHERE promotion_id=?')->execute([$promotionId]);
             $pdo->prepare(
-                "UPDATE kis_import_sandbox_promotions SET status='applied',apply_count=apply_count+1,applied_by=?,apply_reason=?,applied_at=CURRENT_TIMESTAMP,rolled_back_by=NULL,rollback_reason=NULL,rolled_back_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?"
+                ('UPDATE kis_import_sandbox_promotions SET status=\'applied\',apply_count=apply_count+1,applied_by=?,apply_reason=' .
+    '?,applied_at=CURRENT_TIMESTAMP,rolled_back_by=NULL,rollback_reason=NULL,rolled_back_at=NULL,updated_at=CURRENT' .
+    '_TIMESTAMP WHERE id=?')
             )->execute([$actorId, $reason, $promotionId]);
             $eventAction = 'reapplied';
             $reapplied = true;
         }
         kisImportSandboxEvent($pdo, $promotionId, $eventAction, $actorId, $reason, $fingerprint, count($items));
         $ownsTransaction ? $pdo->commit() : $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
-        return array_merge(kisImportSandboxPromotionForRun($pdo, $runId), ['idempotent' => false, 'reapplied' => $reapplied]);
+        return array_merge(kisImportSandboxPromotionForRun($pdo, $runId), ['idempotent' => false, 'reapplied'
+    => $reapplied]);
     } catch (Throwable $exception) {
         if ($ownsTransaction && $pdo->inTransaction()) {
             $pdo->rollBack();
@@ -163,8 +179,15 @@ function kisImportSandboxPromote(PDO $pdo, int $runId, string $fingerprint, int 
 }
 
 /** @return array<string,mixed> */
-function kisImportSandboxRollback(PDO $pdo, int $runId, string $fingerprint, int $actorId, string $reason, bool $confirmed, bool $sandboxAllowed): array
-{
+function kisImportSandboxRollback(
+    PDO $pdo,
+    int $runId,
+    string $fingerprint,
+    int $actorId,
+    string $reason,
+    bool $confirmed,
+    bool $sandboxAllowed
+): array {
     kisImportSandboxAssertAllowed($confirmed, $sandboxAllowed, $actorId);
     $reason = kisImportSandboxReason($reason);
     $ownsTransaction = !$pdo->inTransaction();
@@ -195,13 +218,15 @@ function kisImportSandboxRollback(PDO $pdo, int $runId, string $fingerprint, int
             throw new KisImportSandboxException('Sandbox promote nelze vrátit z aktuálního stavu.');
         }
         $promotionId = (int)$promotion['id'];
-        $active = (int)$pdo->query('SELECT COUNT(*) FROM kis_import_sandbox_items WHERE promotion_id=' . $promotionId . ' AND active=1')->fetchColumn();
+        $active = (int)$pdo->query('SELECT COUNT(*) FROM kis_import_sandbox_items WHERE promotion_id=' .
+     $promotionId . ' AND active=1')->fetchColumn();
         if ($active !== (int)$promotion['item_count']) {
             throw new KisImportSandboxException('Sandbox položky neodpovídají auditovanému promote.');
         }
         $pdo->prepare('UPDATE kis_import_sandbox_items SET active=0,updated_at=CURRENT_TIMESTAMP WHERE promotion_id=?')->execute([$promotionId]);
         $pdo->prepare(
-            "UPDATE kis_import_sandbox_promotions SET status='rolled_back',rolled_back_by=?,rollback_reason=?,rolled_back_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?"
+            ('UPDATE kis_import_sandbox_promotions SET status=\'rolled_back\',rolled_back_by=?,rollback_reason=?,rolled_back_a' .
+    't=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=?')
         )->execute([$actorId, $reason, $promotionId]);
         kisImportSandboxEvent($pdo, $promotionId, 'rolled_back', $actorId, $reason, $fingerprint, (int)$promotion['item_count']);
         $ownsTransaction ? $pdo->commit() : $pdo->exec('RELEASE SAVEPOINT ' . $savepoint);
@@ -223,7 +248,7 @@ function kisImportSandboxVerifyItems(PDO $pdo, int $promotionId, array $expected
     $statement = $pdo->prepare('SELECT source_ref,action,target_ref,active FROM kis_import_sandbox_items WHERE promotion_id=? ORDER BY source_ref');
     $statement->execute([$promotionId]);
     $actual = $statement->fetchAll(PDO::FETCH_ASSOC);
-    usort($expected, static fn(array $a, array $b): int => strcmp($a['source_ref'], $b['source_ref']));
+    usort($expected, static fn (array $a, array $b): int => strcmp($a['source_ref'], $b['source_ref']));
     if (count($actual) !== count($expected)) {
         throw new KisImportSandboxException('Sandbox položky mají neočekávaný počet.');
     }
@@ -237,8 +262,15 @@ function kisImportSandboxVerifyItems(PDO $pdo, int $promotionId, array $expected
     }
 }
 
-function kisImportSandboxEvent(PDO $pdo, int $promotionId, string $action, int $actorId, string $reason, string $fingerprint, int $itemCount): void
-{
+function kisImportSandboxEvent(
+    PDO $pdo,
+    int $promotionId,
+    string $action,
+    int $actorId,
+    string $reason,
+    string $fingerprint,
+    int $itemCount
+): void {
     $snapshot = kisImportJson([
         'contract' => 'kis-import-sandbox-event-v1',
         'preview_fingerprint' => $fingerprint,

@@ -31,8 +31,14 @@ final class ProgramOfferBatchReadTest extends TestCase
         $pdo = \Tests\Support\programStorefrontFixture(50);
         self::assertCount(50, \shopPublicCatalogCards($pdo));
         self::assertLessThanOrEqual(125, count($pdo->queries));
-        self::assertCount(1, array_filter($pdo->queries, static fn (string $q): bool => str_contains($q, 'SELECT o.*,p.name AS program_name')));
-        self::assertCount(1, array_filter($pdo->queries, static fn (string $q): bool => str_contains($q, 'FROM club_program_physical_teams WHERE')));
+        self::assertCount(1, array_filter($pdo->queries, static fn (string $q): bool => str_contains(
+            $q,
+            'SELECT o.*,p.name AS program_name'
+        )));
+        self::assertCount(1, array_filter($pdo->queries, static fn (string $q): bool => str_contains(
+            $q,
+            'FROM club_program_physical_teams WHERE'
+        )));
     }
 
     public function testBatchMatchesCanonicalSharedCapacityAndFallbackTeams(): void
@@ -84,7 +90,7 @@ final class ProgramOfferBatchReadTest extends TestCase
             self::assertSame(\clubProgramOfferForVariant($pdo, $id), $context->offer($id));
         }
         self::assertNull($context->offer(1)['program_description']);
-        self::assertNull($context->offer(1)['team_name']);
+        self::assertSame('LOCALHOST team', $context->offer(1)['team_name']);
         self::assertSame([1], \clubProgramPhysicalTeamIds($pdo, ['team_id' => 1, 'program_id' => 1], $context));
     }
 

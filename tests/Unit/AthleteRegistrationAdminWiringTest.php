@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -26,8 +27,12 @@ final class AthleteRegistrationAdminWiringTest extends TestCase
         self::assertStringContainsString('athlete_sensitive_admin.php', $page);
         self::assertStringContainsString('private_download.php?kind=athlete-photo', $page);
         self::assertStringContainsString("file_kind='profile_photo'", $service);
-        self::assertStringContainsString("VALUES (?,'profile_photo'", (string)file_get_contents($root . '/includes/athlete_registration.php'));
-        self::assertStringContainsString("file_kind='profile_photo'", (string)file_get_contents($root . '/private_download.php'));
+        self::assertStringContainsString("VALUES (?,'profile_photo'", (string)file_get_contents($root .
+
+     '/includes/athlete_registration.php'));
+        self::assertStringContainsString("file_kind='profile_photo'", (string)file_get_contents($root .
+
+     '/private_download.php'));
     }
 
     public function testApprovalAssignmentAndChargeRemainSeparateExplicitActions(): void
@@ -36,10 +41,13 @@ final class AthleteRegistrationAdminWiringTest extends TestCase
         self::assertStringContainsString('beginTransaction()', $service);
         self::assertStringContainsString('accountPersonClaimApprove', $service);
         self::assertStringContainsString('athleteRegistrationAdminApplyToPerson', $service);
-        self::assertStringContainsString("kis_external_id) ", (string)file_get_contents(dirname(__DIR__, 2) . '/includes/person_match.php'));
+        self::assertStringContainsString("kis_external_id) ", (string)file_get_contents(dirname(
+            __DIR__,
+            2
+        ) . '/includes/person_match.php'));
         self::assertStringContainsString('athleteRegistrationAdminAssign', $service);
-        self::assertStringContainsString('sportovec_skupina', $service);
-        self::assertStringContainsString('sportovec_podskupina', $service);
+        self::assertStringNotContainsString('INSERT INTO sportovec_skupina', $service);
+        self::assertStringNotContainsString('INSERT INTO sportovec_podskupina', $service);
         self::assertStringContainsString('club_roster_members', $service);
         self::assertStringContainsString('athlete_registration_assign', $service);
         self::assertStringContainsString('athleteRegistrationAdminChargeContext', $service);
@@ -47,8 +55,17 @@ final class AthleteRegistrationAdminWiringTest extends TestCase
         self::assertStringContainsString('club_member_charges', $service);
         self::assertStringContainsString('club_member_charge_events', $service);
         self::assertStringContainsString("'source_system' => 'membership'", $service);
-        self::assertStringContainsString('create_registration_charge', (string)file_get_contents(dirname(__DIR__, 2) . '/eshop_identity_admin.php'));
-        self::assertStringContainsString('name="confirmed"', (string)file_get_contents(dirname(__DIR__, 2) . '/eshop_identity_admin.php'));
-        self::assertStringNotContainsString('athleteRegistrationAdminCreateCharge(', (string)file_get_contents(dirname(__DIR__, 2) . '/includes/athlete_registration.php'));
+        self::assertStringContainsString('create_registration_charge', (string)file_get_contents(dirname(
+            __DIR__,
+            2
+        ) . '/eshop_identity_admin.php'));
+        self::assertStringContainsString('name="confirmed"', (string)file_get_contents(dirname(
+            __DIR__,
+            2
+        ) . '/eshop_identity_admin.php'));
+        self::assertStringNotContainsString('athleteRegistrationAdminCreateCharge(', (string)file_get_contents(dirname(
+            __DIR__,
+            2
+        ) . '/includes/athlete_registration.php'));
     }
 }
