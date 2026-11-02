@@ -29,5 +29,12 @@
     "checks": 40
   },
   "rehearsal_run": "41538817658",
-  "preview_run": "41539667209"
+  "preview_run": "41539667209",
+  "restore_run": "41540526914",
+  "restored_tables": 342,
+  "restored_triggers": 2,
+  "runtime_verification_run": "41541533269",
+  "core_files_checked": 9,
+  "core_mismatches": [],
+  "host_proc_open": false
 }

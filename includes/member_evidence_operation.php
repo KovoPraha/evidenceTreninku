@@ -173,3 +173,18 @@ function memberEvidenceOperationResume(string $root, string $directory): bool
     }
     return true;
 }
+
+/** A split SSH backup may continue only while both independently verified guards remain installed. */
+function memberEvidenceOperationAssertPaused(string $root, string $directory): array
+{
+    $state = json_decode((string) file_get_contents($directory . '/pause.json'), true, 512, JSON_THROW_ON_ERROR);
+    if (array_keys($state['files']) !== ['config.php', '.htaccess']) {
+        throw new RuntimeException('Incomplete maintenance state.');
+    }
+    foreach ($state['files'] as $name => $file) {
+        if (!hash_equals($file['paused_sha256'], (string) hash_file('sha256', $root . '/' . $name))) {
+            throw new RuntimeException('Maintenance was removed or changed before apply.');
+        }
+    }
+    return $state;
+}
