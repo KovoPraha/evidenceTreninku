@@ -33,6 +33,10 @@ Původní sezonní služby a nullable sloupce jsou přechodová kompatibilita pr
 
 Nové migrace `20261102170000` až `20261102174000` přidávají klasifikaci, datované nabídky/rozvrhy, rozsah náhrad, ledger ručních operací, věková pravidla a ledger převodu. Již aplikované migrace se nemění. `bin/db-backup.php` má ownership `2026-11-02.1`, nové tabulky a sloupcové kontrakty. Ověření zahrnuje SQLite fixture, MariaDB migrace a izolovanou zálohu/obnovu. CI spouští nový `tests/Support/MemberEvidenceMariaDbSmoke.php` v existující databázové matici.
 
+## Čtecí inventura před nasazením
+
+Workflow `diagnose-member-evidence-production.yml` spouští samostatný `bin/diagnose-member-evidence.php` z privátního provozního adresáře. Nevyžaduje nové migrace ani nasazený nový runtime. Ověří cílový host a produkční konfiguraci, otevře `START TRANSACTION READ ONLY`, načte tabulky/FK, strukturu soupisek a agregace intervalů/předpisů, potom provede rollback. Nevypisuje osoby, kontakty, bankovní údaje ani jednotlivé předpisy. Výsledek neukládat do Gitu jako skutečnou mapu ID. Nástroj byl ověřen na izolovaném kompletním schématu bez nového sloupce `activity_kind`.
+
 ## Nástroj převodu a přesný rozsah
 
 `bin/member-evidence-cutover.php` je CLI. Připojení získává z `MEMBER_EVIDENCE_DSN`, `MEMBER_EVIDENCE_DB_USER`, `MEMBER_EVIDENCE_DB_PASSWORD`; tajemství nepředávat argumenty ani ukládat do Gitu. Výstupy musí být v soukromém adresáři mimo webroot.
@@ -54,3 +58,5 @@ Po zapsání převodu jsou na úrovni služeb zablokovány nové sezony, rollove
 Technicky jsou implementovány aplikační části E1–E5 a nástroj E6. E0 má zdrojový inventář, chybí ověřená aktuální produkční inventura. E6 má syntetický nácvik a samostatnou obnovu, chybí nácvik konkrétního produkčního manifestu včetně souborů a přihlášené UAT všech rolí. E7/E8 nebyly provedeny.
 
 Před E7 uzavřít D1–D3 nad skutečnými daty. D4/D5/D8 zůstávají výslovnými rozhodnutími v příslušných agendách: systém neodhaduje poměrné ceny, výjimky z plateb ani rušení členství pro dluh. D6 spravuje matice náhrad; D7 explicitní věkové pravidlo. Žádné uvedené syntetické ověření nepotvrzuje účetní/lidskou přejímku nebo oprávnění zapnout skutečné importy a rozesílky.
+
+Referenční čtečky výkonových profilů W7.2/W7.3 přebírají pouze záměrnou změnu projekce soupisek (nulové sezonní aliasy a řazení podle začátku členství). Původní způsob načítání osob a rozpočty dotazů zůstávají, aby měření stále odhalilo návrat N+1.
