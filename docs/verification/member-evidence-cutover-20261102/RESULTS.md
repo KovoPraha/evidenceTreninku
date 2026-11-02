@@ -61,8 +61,8 @@ Všech 11 kontrol #290 PASS, Linux 1957 testů / 38326 assertions.
 
 **Celý workflow má výsledek FAILURE:** až následný GitHub-runner HTTP požadavek
 vypršel na spojení (curl 28). Commit i recovery předtím uspěly. Převod se neopakuje.
-Izolovaná obnova čerstvé zálohy byla kvůli tomuto timeoutu přeskočena; čeká na
-samostatné čtecí ověření. Záloha má 342 tabulek / 2 triggery, SHA-256
+Izolovaná obnova čerstvé zálohy byla kvůli tomuto timeoutu přeskočena; následné
+samostatné čtecí ověření ji úspěšně dokončilo (viz níže). Záloha má 342 tabulek / 2 triggery, SHA-256
 `c633457ae631140bc30951f488855baf9b5251d347a107f13df894bce6725203`.
 
 ## Nezávislé kontroly po převodu
@@ -78,3 +78,22 @@ samostatné čtecí ověření. Záloha má 342 tabulek / 2 triggery, SHA-256
 
 Přihlášené UAT a poslední synchronizace nejsou dokončené. Nový export nebyl předán;
 počáteční datum zůstává 2. 11. 2026. E8 zachová mapy a bod návratu do jejich vypořádání.
+
+
+## Dokončené nezávislé ověření
+
+[PR #291](https://github.com/KovoPraha/evidenceTreninku/pull/291) prošlo všemi 11 kontrolami,
+Linux 1957 testů / 38326 assertions. Head `62fa82ccb29d0504ea151336c534dfcfda25479b`
+má shodný strom jako merge `bfe3816eabcd6a9caf76b629c37c6346f383ac62`. Aplikace se znovu nenasazovala.
+
+- [Ověření 41545925704](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41545925704) **SUCCESS**:
+  přesný otisk výsledku a zálohy, recovery a odebrání oprávnění; serverové HTTP 200/302;
+  izolovaná obnova čerstvé zálohy včetně počtů řádků **342 tabulek a 2 triggerů PASS**.
+  Živá DB se neobnovovala, převod se neopakoval. [Strojový souhrn](fresh-backup-verification.json).
+- [Čtecí inventura 41545932556](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41545932556) **SUCCESS**:
+  DB ledger odpovídá potvrzenému manifestu; všech **435** výchozích intervalů začíná **2. 11. 2026**;
+  technická identita je **neaktivní, bez pracovních pozic, superadmina i trenérských grantů**.
+  [Neosobní souhrn](final-inventory.json).
+
+Technická část schváleného převodu je dokončená. Otevřené zůstávají jedna poslední synchronizace
+po novém exportu, úplné přihlášené UAT a navazující E8 po uzavření bodu návratu.

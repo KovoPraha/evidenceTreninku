@@ -72,5 +72,16 @@
   },
   "post_inventory_run": "41543567289",
   "post_release_check_run": "41544284892",
-  "fresh_backup_restore_pending": true
+  "fresh_backup_restore_pending": false,
+  "restore_run": "41545925704",
+  "final_inventory_run": "41545932556",
+  "technical_actor_inactive_without_grants": true,
+  "opening_dates_verified": {
+    "intervals": 435,
+    "first_start": "2026-11-02",
+    "last_start": "2026-11-02"
+  },
+  "verification_pr": 291,
+  "verification_ci_run": "41545001491",
+  "verification_checks_passed": 11
 }

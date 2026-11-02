@@ -1,0 +1,30 @@
+{
+  "run_id": "41545932556",
+  "read_only": true,
+  "generated_at": "2026-11-02T23:31:58+00:00",
+  "completed_cutover": {
+    "summary": {
+      "fingerprint": "79e8e7fbfa50afbde2e52122f578d25c90b28f499558f0bbb601bb1e6c3cd352",
+      "cutover_on": "2026-11-02",
+      "converted_teams": 44,
+      "created_groups": 8,
+      "created_edges": 44,
+      "group_membership_parity": true,
+      "opening_count": 435,
+      "opening_on": "2026-11-02",
+      "final_sync_pending": true,
+      "detached_claim_count": 560,
+      "deleted": {
+        "club_roster_members": 560,
+        "club_roster_events": 560
+      },
+      "preserved_parity": true
+    },
+    "technical_actor_inactive_without_grants": true,
+    "opening": {
+      "intervals": 435,
+      "first_start": "2026-11-02",
+      "last_start": "2026-11-02"
+    }
+  }
+}

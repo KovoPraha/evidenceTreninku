@@ -8,7 +8,7 @@ Aktualizováno 3. 11. 2026 (Europe/Prague), po potvrzeném produkčním převodu
   intervalů a 560 importních událostí. Osoby, doklady a dosavadní trenérské rozsahy zachované.
   [Schválená mapa](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md) je živá: sedm provozních
   skupin / 41 soupisek a TEST / 3 soupisky. Rexonix závodní, KDC a Bikros samostatně `other`.
-  Technická identita převodu je neaktivní a její dočasné oprávnění bylo odebráno.
+  Čtecí inventura 41545932556 potvrdila počátky všech 435 intervalů i neaktivní technickou identitu bez oprávnění.
   Běh skončil červeně až na HTTP timeoutu runneru po commitu; následné nezávislé
   HTTP 40/40 a čtecí inventura všech 44 soupisek / 8 skupin PASS.
   [Důkazy a meze](verification/member-evidence-cutover-20261102/RESULTS.md).
@@ -43,13 +43,13 @@ Aktualizováno 3. 11. 2026 (Europe/Prague), po potvrzeném produkčním převodu
   [strojový souhrn](verification/member-evidence-cutover-20261102/release-comparison.json).
   Živé SHA a 9 souborů převodu ověřila inventura 41541533269; nejde o úplnou inventuru runtime.
   Datový převod provedl nástroj z PR #290; aplikace zůstává na výše uvedeném vydání.
-- **Ověření:** všech 11 kontrol #290 PASS, sloučený strom shodný s ověřeným,
+- **Ověření:** všech 11 kontrol #291 PASS, sloučený strom shodný s ověřeným,
   Linux 1957 testů / 38326 assertions; MariaDB 10.3/11.4, profily a PHPStan/styl PASS.
   Nácvik přesné mapy na skutečné izolované záloze PASS. Deploy ověřil HTTP dostupnost
   a ochranu klíče archivu; následná anonymní HTTP kontrola 40/40 PASS. Přihlášené UAT není dokončené. Změna hesla a T07 zůstávají odložené.
-- **Záloha a schéma:** nová ověřená záloha, 342 tabulek / 2 triggery;
-  [izolovaná obnova této generace 41540526914](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41540526914) PASS.
-  Čerstvá záloha převodu má SHA-256 `c633457ae631140bc30951f488855baf9b5251d347a107f13df894bce6725203`; její izolovaná obnova čeká.
+- **Záloha a schéma:** čerstvá záloha konkrétního převodu, 342 tabulek / 2 triggery;
+  [izolovaná obnova 41545925704](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41545925704) PASS včetně počtů řádků všech tabulek.
+  SHA-256 `c633457ae631140bc30951f488855baf9b5251d347a107f13df894bce6725203`.
   Schéma current / pending [], migrační ledger 149; dosavadní variabilní symboly zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
