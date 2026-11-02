@@ -79,19 +79,23 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
                 : 'Evidenci lze zadat pouze pro plánovaný trénink.'));
     }
     if ($planPrefill) {
-        coachScopeRequirePlan($pdo,(int)$planPrefill['id']);
+        coachScopeRequirePlan($pdo, (int)$planPrefill['id']);
         try {
-            $subgroups=$pdo->prepare('SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=? ORDER BY podskupina_id');
+            $subgroups = $pdo->prepare('SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=? ORDER BY podskupina_id');
             $subgroups->execute([(int)$planPrefill['id']]);
-            $planPrefillSubgroups=array_map('intval',$subgroups->fetchAll(PDO::FETCH_COLUMN));
+            $planPrefillSubgroups = array_map('intval', $subgroups->fetchAll(PDO::FETCH_COLUMN));
         } catch (PDOException $exception) {
             error_log('formular.php plan subgroups: '.$exception->getMessage());
         }
-        if($planPrefillSubgroups===[]&&(int)($planPrefill['podskupina_id']??0)>0)$planPrefillSubgroups=[(int)$planPrefill['podskupina_id']];
+        if ($planPrefillSubgroups === [] && (int)($planPrefill['podskupina_id'] ?? 0) > 0) {
+            $planPrefillSubgroups = [(int)$planPrefill['podskupina_id']];
+        }
         $planExpectedParticipants = trainingRosterBridgeExpectedForPlan($pdo, (int)$planPrefill['id']);
         $selectedTeamIds = trainingRosterBridgePlanTeamIds($pdo, (int)$planPrefill['id']);
         $planMakeupParticipants = clubMakeupReservationsForPlan($pdo, (int)$planPrefill['id']);
-        foreach (array_merge($planExpectedParticipants, $planMakeupParticipants) as $participant) coachScopeRequirePerson($pdo, (int)($participant['sportovec_id'] ?? $participant['id'] ?? 0));
+        foreach (array_merge($planExpectedParticipants, $planMakeupParticipants) as $participant) {
+            coachScopeRequirePerson($pdo, (int)($participant['sportovec_id'] ?? $participant['id'] ?? 0));
+        }
     }
 }
 
@@ -105,7 +109,9 @@ if (isset($_GET['duplikat']) && ctype_digit($_GET['duplikat'])) {
         $r0 = $pdo->prepare('SELECT datum,napln,delka,kategorie FROM treninky WHERE id = ?');
         $r0->execute([$did]);
         $dupSource = $r0->fetch(PDO::FETCH_ASSOC);
-        if (!$dupSource) throw new RuntimeException('Zdrojový trénink nebyl nalezen.');
+        if (!$dupSource) {
+            throw new RuntimeException('Zdrojový trénink nebyl nalezen.');
+        }
 
         $r1 = $pdo->prepare('SELECT skupina_id FROM trenink_skupina WHERE trenink_id = ? LIMIT 1');
         $r1->execute([$did]);
@@ -132,12 +138,14 @@ if (isset($_GET['duplikat']) && ctype_digit($_GET['duplikat'])) {
             'kategorie' => (string)$dupSource['kategorie'],
             'skupina_id' => $dupSkupina,
             'podskupiny' => $dupPodskupiny,
-            'ucastnici'  => array_map(fn($sp) => [
+            'ucastnici'  => array_map(fn ($sp) => [
                 'id'    => (int)$sp['id'],
                 'label' => trim(($sp['prijmeni'] ?? '') . ' ' . ($sp['jmeno'] ?? '')),
             ], $dupSportovci),
         ];
-        if ($planPrefill === null) $selectedTeamIds = trainingRosterBridgeTrainingTeamIds($pdo, $did);
+        if ($planPrefill === null) {
+            $selectedTeamIds = trainingRosterBridgeTrainingTeamIds($pdo, $did);
+        }
     } catch (Throwable $e) {
         error_log('formular.php duplikat: ' . $e->getMessage());
     }
@@ -160,18 +168,28 @@ $dnesDate     = date('Y-m-d');
 $vceraDate    = date('Y-m-d', strtotime('-1 day'));
 $predvcirDate = date('Y-m-d', strtotime('-2 days'));
 
-$czDaysMap = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
-              'Thursday'=>'Čtvrtek','Friday'=>'Pátek','Saturday'=>'Sobota','Sunday'=>'Neděle'];
-function fmtCzDate(string $d, array $map): string {
+$czDaysMap = ['Monday' => 'Pondělí','Tuesday' => 'Úterý','Wednesday' => 'Středa',
+              'Thursday' => 'Čtvrtek','Friday' => 'Pátek','Saturday' => 'Sobota','Sunday' => 'Neděle'];
+function fmtCzDate(string $d, array $map): string
+{
     try {
         $dt = new DateTime($d);
         return ($map[$dt->format('l')] ?? '') . ' ' . $dt->format('j. n. Y');
-    } catch (Exception $e) { return $d; }
+    } catch (Exception $e) {
+        return $d;
+    }
 }
-function fmtDateLabel(string $d, string $dnes, string $vcera, string $predvcir, array $map): string {
-    if ($d === $dnes)     return 'Dnes — '        . fmtCzDate($d, $map);
-    if ($d === $vcera)    return 'Včera — '        . fmtCzDate($d, $map);
-    if ($d === $predvcir) return 'Předevčírem — '  . fmtCzDate($d, $map);
+function fmtDateLabel(string $d, string $dnes, string $vcera, string $predvcir, array $map): string
+{
+    if ($d === $dnes) {
+        return 'Dnes — '        . fmtCzDate($d, $map);
+    }
+    if ($d === $vcera) {
+        return 'Včera — '        . fmtCzDate($d, $map);
+    }
+    if ($d === $predvcir) {
+        return 'Předevčírem — '  . fmtCzDate($d, $map);
+    }
     return fmtCzDate($d, $map);
 }
 
@@ -206,10 +224,15 @@ try {
 }
 
 // Flash zprávy
-$flashError   = $_SESSION['flash_error']   ?? null; unset($_SESSION['flash_error']);
-$flashSuccess = $_SESSION['flash_success'] ?? null; unset($_SESSION['flash_success']);
+$flashError   = $_SESSION['flash_error']   ?? null;
+unset($_SESSION['flash_error']);
+$flashSuccess = $_SESSION['flash_success'] ?? null;
+unset($_SESSION['flash_success']);
 
-function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s)
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 ?>
 <!DOCTYPE html>
 <html lang="cs">
@@ -217,8 +240,12 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $duplikat ? 'Duplikovat trénink' : 'Zadání tréninku' ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"
+        integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD"
+        crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 
         /* Autocomplete dropdown */
@@ -319,14 +346,19 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
             <?= h($planPrefill['nazev']) ?>
             <span class="text-muted ms-2 small"><?= h($planPrefill['datum']) ?>
             <?php if ($planPrefill['cas_od']): ?>
-                <?= h(substr($planPrefill['cas_od'],0,5)) ?>–<?= h(substr($planPrefill['cas_do'] ?? '',0,5)) ?>
+                <?= h(substr($planPrefill['cas_od'], 0, 5)) ?>–<?= h(substr($planPrefill['cas_do'] ?? '', 0, 5)) ?>
             <?php endif; ?>
             <?php if ($planPrefill['skupina_nazev']): ?>
                 · <?= h($planPrefill['skupina_nazev']) ?>
             <?php endif; ?>
             </span><br>
-            <span class="small text-muted">Datum odpovídá plánu; ostatní údaje můžete upravit. Ze snapshotu soupisek bylo předvybráno <?= count($planExpectedParticipants) ?> očekávaných účastníků; skutečnou docházku před uložením ručně opravte.</span>
-            <?php if ($planMakeupParticipants !== []): ?><br><span class="small text-primary">Přihlášení náhradníci: <?= count($planMakeupParticipants) ?>. Také u nich před uložením potvrďte skutečnou docházku.</span><?php endif; ?>
+            <span class="small text-muted">
+                Datum odpovídá plánu; ostatní údaje můžete upravit.
+                Ze snapshotu soupisek bylo předvybráno <?= count($planExpectedParticipants) ?> očekávaných účastníků; skutečnou docházku před uložením ručně opravte.</span>
+            <?php if ($planMakeupParticipants !== []): ?>
+            <br><span class="small text-primary">
+                Přihlášení náhradníci: <?= count($planMakeupParticipants) ?>. Také u nich před uložením potvrďte skutečnou docházku.</span>
+            <?php endif; ?>
         </div>
         <input type="hidden" name="plan_id" value="<?= (int)$planPrefill['id'] ?>">
     </div>
@@ -383,8 +415,15 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                             </label>
                             <select name="kategorie" id="kategorie" class="form-select">
                                 <option value="">— vyber —</option>
-                                <?php foreach (['silnice'=>'Silnice','mtb'=>'MTB','draha'=>'Dráha','cyklokros'=>'Cyklokros','posilovna'=>'Posilovna','atletika'=>'Atletika','cviceni'=>'Cvičení','plavani'=>'Plavání'] as $value=>$label): ?>
-                                    <option value="<?= h($value) ?>" <?= $duplikat && $duplikat['kategorie']===$value ? 'selected' : '' ?>><?= h($label) ?></option>
+                                <?php foreach (['silnice' => 'Silnice',
+                                    'mtb' => 'MTB',
+                                    'draha' => 'Dráha',
+                                    'cyklokros' => 'Cyklokros',
+                                    'posilovna' => 'Posilovna',
+                                    'atletika' => 'Atletika',
+                                    'cviceni' => 'Cvičení',
+                                    'plavani' => 'Plavání'] as $value => $label): ?>
+                                    <option value="<?= h($value) ?>" <?= $duplikat && $duplikat['kategorie'] === $value ? 'selected' : '' ?>><?= h($label) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -404,7 +443,9 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                     <div id="training-target-error" class="alert alert-danger mt-2 d-none" role="alert">Vyberte skupinu nebo soupisku pro trénink.</div>
                     <div class="mini-muted mt-1">Celá skupina zahrne všechny její soupisky. Skutečnou účast dále vybírá trenér.</div>
                     <?php if ($planPrefill && $selectedTeamIds === []): ?>
-                        <div class="alert alert-warning mt-2 mb-0">Historický plán používá původní skupiny. Jeho cílení zůstane zachováno; pro nové cílení vyberte skupinu či soupisku v plánovači.</div>
+                        <div class="alert alert-warning mt-2 mb-0">
+                            Historický plán používá původní skupiny. Jeho cílení zůstane zachováno;
+                            pro nové cílení vyberte skupinu či soupisku v plánovači.</div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -524,7 +565,7 @@ function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
                         $isCurrent = ((int)$tr['id'] === $currentTrener);
                         $checked   = $isCurrent ? 'checked' : '';
                         $disabled  = $isCurrent ? 'disabled' : '';
-                    ?>
+                        ?>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox"
                                name="trenere[]" value="<?= (int)$tr['id'] ?>"
@@ -652,7 +693,7 @@ const PLAN_PREFILL = <?= json_encode($planPrefill ? [
     'datum'         => $planPrefill['datum'] ?? '',
     'kategorie'     => $planPrefill['kategorie'] ?? '',
     'nazev'         => $planPrefill['nazev'] ?? '',
-    'sportoviste_id'=> (int)($planPrefill['sportoviste_id'] ?? 0),
+    'sportoviste_id' => (int)($planPrefill['sportoviste_id'] ?? 0),
     'cas_od'        => $planPrefill['cas_od'] ?? '',
     'cas_do'        => $planPrefill['cas_do'] ?? '',
 ] : null, JSON_UNESCAPED_UNICODE) ?>;
@@ -805,7 +846,13 @@ if (PLAN_PREFILL) {
         DUPLIKAT.ucastnici.forEach(sp => addParticipant(sp.id, sp.label));
     }
     const rosterExpected = <?= json_encode($planExpectedParticipants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-    const makeupExpected = <?= json_encode(array_map(static fn(array $person): array => ['id'=>(int)$person['sportovec_id'],'label'=>trim((string)$person['prijmeni'].' '.(string)$person['jmeno'])], $planMakeupParticipants), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const makeupExpected = <?= json_encode(
+        array_map(static fn (array $person): array => [
+            'id' => (int)$person['sportovec_id'],
+            'label' => trim((string)$person['prijmeni'].' '.(string)$person['jmeno']),
+        ], $planMakeupParticipants),
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+    ) ?>;
     rosterExpected.forEach(sp => addParticipant(parseInt(sp.id, 10), sp.label));
     makeupExpected.forEach(sp => addParticipant(parseInt(sp.id, 10), sp.label));
 })();
@@ -846,17 +893,17 @@ if (PLAN_PREFILL) {
         }
         let opts = `<option value="">-- vyber cvik --</option>`;
         CVIKY.forEach(c => { opts += `<option value="${c.id}">${escapeHtml(c.nazev)}</option>`; });
-        return `<select class="form-select form-select-sm js-cvik_id">${opts}</select>`;
+        return `<select class="form-select form-select-sm js-cvik_id" aria-label="Cvik">${opts}</select>`;
     }
 
     function segmentySelectHtml(kategorie) {
         const filtered = (SEGMENTY || []).filter(s => s.kategorie === kategorie);
         if (!filtered.length) {
-            return `<input type="text" class="form-control form-control-sm js-segment_text" placeholder="Segment (žádné k dispozici)" disabled>`;
+            return `<input type="text" class="form-control form-control-sm js-segment_text" aria-label="Segment" placeholder="Segment (žádné k dispozici)" disabled>`;
         }
         let opts = `<option value="">-- vyber segment --</option>`;
         filtered.forEach(s => { opts += `<option value="${s.id}">${escapeHtml(s.nazev)}</option>`; });
-        return `<select class="form-select form-select-sm js-segment_id">${opts}</select>`;
+        return `<select class="form-select form-select-sm js-segment_id" aria-label="Segment">${opts}</select>`;
     }
 
     function renderFieldsByType(row) {
@@ -869,7 +916,7 @@ if (PLAN_PREFILL) {
                 <div class="col-md-3">
                     <label class="form-label small mb-1">Vzdálenost</label>
                     <div class="input-group input-group-sm">
-                        <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" placeholder="Vzdálenost">
+                        <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" aria-label="Vzdálenost" placeholder="Vzdálenost">
                         <select class="form-select js-distance-unit" aria-label="Jednotka vzdálenosti">
                             <option value="">jednotka</option><option value="m">m</option><option value="km">km</option>
                         </select>
@@ -881,17 +928,19 @@ if (PLAN_PREFILL) {
                         Čas
                         <span class="text-muted fw-normal" style="font-size:.78rem;">mm:ss.xx</span>
                     </label>
-                    <input type="text" class="form-control form-control-sm js-cas" placeholder="02:13.45" pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)" title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
+                    <input type="text" class="form-control form-control-sm js-cas" aria-label="Čas měření" placeholder="02:13.45"
+                        pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)"
+                        title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                     <small class="text-muted" style="font-size:.76rem;">např. 2 min 13,45 s → 02:13.45</small>
                 </div>
                 ${type === 'kolo' ? `
                 <div class="col-md-3">
                     <label class="form-label small mb-1">Převod <span class="text-muted fw-normal">(vol.)</span></label>
-                    <input type="text" class="form-control form-control-sm js-prevod" placeholder="např. 50/15">
+                    <input type="text" class="form-control form-control-sm js-prevod" aria-label="Převod" placeholder="např. 50/15">
                 </div>` : ''}
                 <div class="${type === 'kolo' ? 'col-md-3' : 'col-md-6'}">
                     <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
-                    <input type="text" class="form-control form-control-sm js-poznamka" placeholder="">
+                    <input type="text" class="form-control form-control-sm js-poznamka" aria-label="Poznámka k měření" placeholder="">
                 </div>
             `));
         } else if (type === 'posilovna') {
@@ -902,19 +951,19 @@ if (PLAN_PREFILL) {
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small mb-1">Váha <span class="text-muted fw-normal">kg</span></label>
-                    <input type="number" step="0.5" class="form-control form-control-sm js-vaha" placeholder="0">
+                    <input type="number" step="0.5" class="form-control form-control-sm js-vaha" aria-label="Váha (kg)" placeholder="0">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small mb-1">Opak.</label>
-                    <input type="number" class="form-control form-control-sm js-opakovani" placeholder="10">
+                    <input type="number" class="form-control form-control-sm js-opakovani" aria-label="Počet opakování" placeholder="10">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small mb-1">RPE <span class="text-muted fw-normal">1–10</span></label>
-                    <input type="number" step="0.5" min="1" max="10" class="form-control form-control-sm js-rpe" placeholder="7">
+                    <input type="number" step="0.5" min="1" max="10" class="form-control form-control-sm js-rpe" aria-label="RPE (1–10)" placeholder="7">
                 </div>
                 <div class="col-md-12">
                     <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
-                    <input type="text" class="form-control form-control-sm js-poznamka" placeholder="">
+                    <input type="text" class="form-control form-control-sm js-poznamka" aria-label="Poznámka k měření" placeholder="">
                 </div>
             `));
         } else if (type === 'kolo_krouzek' || type === 'kolo_silnice' || type === 'kolo_mtb') {
@@ -929,11 +978,13 @@ if (PLAN_PREFILL) {
                         Čas
                         <span class="text-muted fw-normal" style="font-size:.78rem;">mm:ss.xx</span>
                     </label>
-                    <input type="text" class="form-control form-control-sm js-cas" placeholder="02:13.45" pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)" title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
+                    <input type="text" class="form-control form-control-sm js-cas" aria-label="Čas měření" placeholder="02:13.45"
+                        pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)"
+                        title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                 </div>
                 <div class="col-md-4">
                     <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
-                    <input type="text" class="form-control form-control-sm js-poznamka" placeholder="">
+                    <input type="text" class="form-control form-control-sm js-poznamka" aria-label="Poznámka k měření" placeholder="">
                 </div>
             `));
         } else {
@@ -1328,7 +1379,8 @@ if (PLAN_PREFILL) {
         outEl.innerHTML = '<span class="text-muted"><i class="bi bi-hourglass-split me-1"></i>Kontroluji…</span>';
 
         try {
-            const url = `ajax_dostupnost_sportovist.php?sportoviste_id=${encodeURIComponent(sportId)}&datum=${encodeURIComponent(datum)}&cas_od=${encodeURIComponent(od)}&cas_do=${encodeURIComponent(doo)}`;
+            const url = `ajax_dostupnost_sportovist.php?sportoviste_id=${encodeURIComponent(sportId)}`
+                + `&datum=${encodeURIComponent(datum)}&cas_od=${encodeURIComponent(od)}&cas_do=${encodeURIComponent(doo)}`;
             const resp = await fetch(url);
             const data = await resp.json();
             const obsazeno  = data.obsazeno  ?? 0;

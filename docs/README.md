@@ -12,6 +12,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 |---|---|
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
+| [Funkční browser ověření 2. 11.](verification/functional-uat-20261102/RESULTS.md) | Veřejná produkce, místní syntetické průchody, tři UI opravy a jejich regrese |
 | [Nasazení opravy obnovovacího odkazu](TRAINER_RESET_RELEASE_2026-11-01.md) | Review a merge PR #269, produkční ověření a zbývající asistované UAT |
 | [Autonomní ověření trenérské obnovy](verification/trainer-recovery-autonomous-20261101-2341/RESULTS.md) | Skutečné doručení, platný odkaz, mobilní formulář a izolované testy dvou relací bez změny produkčního hesla |
 | [Interní test trenérů](TRAINER_UAT_POSTUP_2026-11-01.md) | Scénáře T01–T08, očekávané výsledky a hlášení chyb |

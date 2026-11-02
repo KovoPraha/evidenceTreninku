@@ -1,0 +1,44 @@
+{
+    "database": {
+        "version": "10.4.32-MariaDB",
+        "port": 3319
+    },
+    "orders": [
+        {
+            "id": 1,
+            "status": "placed",
+            "total_minor": 44820
+        }
+    ],
+    "items": 2,
+    "payments": [
+        {
+            "status": "pending",
+            "amount_minor": 44820
+        }
+    ],
+    "trainings": [
+        {
+            "id": 1,
+            "napln": "LOCALHOST-UAT-20261102-FUNCTIONAL - evidence z pl\u00e1nu - upraveno",
+            "delka": "0.02"
+        }
+    ],
+    "measurements": [
+        {
+            "sportovec_id": 1,
+            "typ": "kolo",
+            "vzdalenost": "500.00",
+            "cas": "00:45.250",
+            "poznamka": "LOCALHOST syntetick\u00e9 m\u011b\u0159en\u00ed - upraven\u00e1 pozn\u00e1mka"
+        }
+    ],
+    "coach_grants": 0,
+    "external_flags": [
+        false,
+        false,
+        false,
+        false,
+        false
+    ]
+}

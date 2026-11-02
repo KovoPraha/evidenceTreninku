@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Integration;
@@ -22,7 +23,10 @@ final class SecurityAuditRegressionTest extends TestCase
 
     #[DataProvider('permissionChanges')]
     public function testFirstPostUsesCurrentPermissionBeforeCancellingOwnedLesson(
-        string $minimumRole, string $expectedState, int $expectedEvents, int $expectedReservations
+        string $minimumRole,
+        string $expectedState,
+        int $expectedEvents,
+        int $expectedReservations
     ): void {
         $root = dirname(__DIR__, 2);
         $source = (string)file_get_contents($root . '/individualni_lekce_sprava.php');
@@ -92,10 +96,16 @@ PHP;
         $checked = 0;
         foreach (glob($root . '/*.php') ?: [] as $path) {
             $source = (string)file_get_contents($path);
-            if (!preg_match('~require(?:_once)?[^;]*(?:db|init)\.php[^;]*;~', $source, $bootstrap, PREG_OFFSET_CAPTURE)) continue;
-            if (!preg_match('~\bcanAccess\s*\(~', $source, $guard, PREG_OFFSET_CAPTURE)) continue;
+            if (!preg_match('~require(?:_once)?[^;]*(?:db|init)\.php[^;]*;~', $source, $bootstrap, PREG_OFFSET_CAPTURE)) {
+                continue;
+            }
+            if (!preg_match('~\bcanAccess\s*\(~', $source, $guard, PREG_OFFSET_CAPTURE)) {
+                continue;
+            }
             $checked++;
-            if ($guard[0][1] < $bootstrap[0][1]) $violations[] = basename($path);
+            if ($guard[0][1] < $bootstrap[0][1]) {
+                $violations[] = basename($path);
+            }
         }
         self::assertGreaterThanOrEqual(27, $checked);
         self::assertSame([], $violations, 'Permission check before live authorization refresh');
@@ -165,11 +175,11 @@ PHP;
     public function testParticipantJsonCannotCreateHtmlOutsideScript(string $variable): void
     {
         $source = (string)file_get_contents(dirname(__DIR__, 2) . '/formular.php');
-        self::assertSame(1, preg_match('~const ' . $variable . ' = <\?= (.*?) \?>;~', $source, $expression));
+        self::assertSame(1, preg_match('~const ' . $variable . ' = <\?= (.*?) \?>;~s', $source, $expression));
         $surname = '</script><p id=audit-injected>LOCALHOST NEPLATIT</p>';
         $label = $surname . ' Žluťoučký & "Jan"';
-        $planExpectedParticipants = [['id'=>1,'label'=>$label]];
-        $planMakeupParticipants = [['sportovec_id'=>1,'prijmeni'=>$surname,'jmeno'=>'Žluťoučký & "Jan"']];
+        $planExpectedParticipants = [['id' => 1,'label' => $label]];
+        $planMakeupParticipants = [['sportovec_id' => 1,'prijmeni' => $surname,'jmeno' => 'Žluťoučký & "Jan"']];
         // Evaluate only the trusted expression from the real template.
         $json = eval('return ' . $expression[1] . ';');
         self::assertSame($planExpectedParticipants, json_decode($json, true, 512, JSON_THROW_ON_ERROR));
@@ -218,30 +228,40 @@ $_SERVER['SCRIPT_FILENAME']=$root.'/list.php';
 staffEnforceCurrentRoute($root);
 echo 'AUTHORIZED_GROUP_QUERY';
 PHP);
-        $process = proc_open([PHP_BINARY, '-S', $address, $router],
-            [['pipe','r'],['file',$log,'a'],['file',$log,'a']], $pipes, $root);
+        $process = proc_open(
+            [PHP_BINARY, '-S', $address, $router],
+            [['pipe','r'],['file',$log,'a'],['file',$log,'a']],
+            $pipes,
+            $root
+        );
         self::assertIsResource($process);
         fclose($pipes[0]);
         try {
             $deadline = microtime(true) + 5;
             do {
                 $connection = @stream_socket_client('tcp://' . $address, $errno, $error, 0.1);
-                if (is_resource($connection)) { fclose($connection); break; }
+                if (is_resource($connection)) {
+                    fclose($connection);
+                    break;
+                }
                 usleep(20000);
             } while (microtime(true) < $deadline);
             self::assertIsResource($connection, (string)file_get_contents($log));
             foreach (\staffPositionCodes() as $position) {
                 $curl = curl_init('http://' . $address . '/list.php?position=' . rawurlencode($position));
-                curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER=>true, CURLOPT_TIMEOUT=>5,
-                    CURLOPT_PROXY=>'', CURLOPT_FOLLOWLOCATION=>false]);
+                curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 5,
+                    CURLOPT_PROXY => '', CURLOPT_FOLLOWLOCATION => false]);
                 $body = curl_exec($curl);
                 $status = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
                 $error = curl_error($curl);
                 curl_close($curl);
                 self::assertIsString($body, $error);
                 self::assertSame($position === 'sports_lead' ? 200 : 403, $status, $position);
-                if ($position === 'sports_lead') self::assertSame('AUTHORIZED_GROUP_QUERY', $body);
-                else self::assertStringNotContainsString('AUTHORIZED_GROUP_QUERY', $body, $position);
+                if ($position === 'sports_lead') {
+                    self::assertSame('AUTHORIZED_GROUP_QUERY', $body);
+                } else {
+                    self::assertStringNotContainsString('AUTHORIZED_GROUP_QUERY', $body, $position);
+                }
             }
         } finally {
             proc_terminate($process);

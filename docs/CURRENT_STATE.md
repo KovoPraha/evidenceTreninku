@@ -1,6 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 1. 11. 2026 (Europe/Prague), po nasazení opravy obnovovacího odkazu.
+Aktualizováno 2. 11. 2026 (Europe/Prague), bez dalšího produkčního nasazení.
+
+- [Funkční browser ověření](verification/functional-uat-20261102/RESULTS.md): 36 PASS a 3 místně opravené UI nálezy; veřejná produkce pouze čtena, zápisy pouze synteticky místně. Nové opravy dosud nenasazeny.
 
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).

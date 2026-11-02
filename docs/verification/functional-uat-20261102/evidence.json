@@ -1,0 +1,677 @@
+{
+  "base": "e916f0861f3994891dbc7e5e5ba9fa7cfe285187",
+  "timezone": "Europe/Prague",
+  "production": {
+    "anonymousOnly": true,
+    "writes": 0,
+    "passwordChanged": false,
+    "t07": "SKIPPED_BY_USER",
+    "deployment": false
+  },
+  "localhost": {
+    "syntheticOnly": true,
+    "dbPort": 3319,
+    "webPort": 18419,
+    "externalSendsDisabled": true,
+    "integrationsEnabled": false,
+    "newScopeGrants": 0,
+    "orders": [
+      1
+    ],
+    "trainings": [
+      1
+    ]
+  },
+  "checks": [
+    {
+      "id": "P01",
+      "environment": "production",
+      "status": "PASS",
+      "feature": "Public home and catalogue navigation",
+      "observation": "Homepage, catalogue and categories rendered without login."
+    },
+    {
+      "id": "P02",
+      "environment": "production",
+      "status": "PASS",
+      "feature": "Catalogue search",
+      "observation": "Bidon query returned exactly one product and preserved query in URL after completed navigation."
+    },
+    {
+      "id": "L01",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Empty catalogue filter",
+      "observation": "Unique nonmatching query displayed zero results and a clear-filter link."
+    },
+    {
+      "id": "L02",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Filter reset and product detail",
+      "observation": "Clear filter restored the only published product; detail showed capacity 12, price 249 CZK, terms and account login/quick entry choices."
+    },
+    {
+      "id": "L03",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Parent login and member price",
+      "observation": "Seeded parent login returned to product detail; public price 249 CZK changed to eligible member price 224.10 CZK for LOCALHOST U15 2026."
+    },
+    {
+      "id": "L04",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Participant cart insert",
+      "observation": "One POST produced one cart row for Sportovec A with member price 224.10 CZK; database count also one."
+    },
+    {
+      "id": "L05",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Two-child cart",
+      "observation": "Distinct A and B cart rows at 224.10 CZK each, total 448.20 CZK, single-order guidance and separate participant controls."
+    },
+    {
+      "id": "L06",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Invalid coupon",
+      "observation": "Enter submission rejected missing coupon and preserved two rows/448.20 CZK. Initial button action was inconclusive."
+    },
+    {
+      "id": "L07",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Coupon applicability",
+      "observation": "Existing LOCAL10 coupon correctly rejected for program-only cart; two rows and 448.20 CZK preserved. A positive merchandise discount is not claimed."
+    },
+    {
+      "id": "L08",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Required per-child consent",
+      "observation": "Submitting with both terms unchecked left two invalid required checkboxes, zero orders and two cart rows."
+    },
+    {
+      "id": "L09",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Synthetic two-child checkout",
+      "observation": "Exactly one order id 1, total 44820 minor units, two saved items, bank data visibly LOCALHOST TEST - NEPLATIT. Order appeared in My orders awaiting payment; no actual payment."
+    },
+    {
+      "id": "F01",
+      "environment": "localhost",
+      "status": "FIXED",
+      "feature": "Account menu overlapping shop navigation",
+      "observation": "Before: Profile and My people hit-tests reached shop navigation instead of links. After CSS fix all five account links reached correctly; actual My people click rendered three seeded approved identities."
+    },
+    {
+      "id": "L10",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Family people",
+      "observation": "Parent self profile plus both seeded children approved; no automatic claim; empty claim history and explicit verification workflow."
+    },
+    {
+      "id": "L11",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Profile persistence",
+      "observation": "Profile link opened via fixed menu; synthetic phone change persisted after reload. Password untouched."
+    },
+    {
+      "id": "L12",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Family overview/calendar/payment projection",
+      "observation": "Three approved profiles, one planned training deduplicated across overlapping rosters; order split between A/B in family payment table awaiting payment."
+    },
+    {
+      "id": "L13",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Training RSVP persistence",
+      "observation": "Keyboard activation saved going + synthetic note; badge and note survived reload and pending-family task disappeared. Earlier pointer attempt did not prove a save."
+    },
+    {
+      "id": "L14",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Pending program enrollment",
+      "observation": "My programs showed A and B awaiting payment for the one order; no active enrollment before confirmed payment."
+    },
+    {
+      "id": "L15",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Mobile account menu",
+      "observation": "390x844; clientWidth=scrollWidth=375 (native scrollbar), all five account links hit-test correctly after collapse animation. Menu stays inside viewport."
+    },
+    {
+      "id": "L16",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Parent versus staff namespace",
+      "observation": "Logged-in parent could not enter staff workspace; staff login required. No identity linking performed."
+    },
+    {
+      "id": "P03",
+      "environment": "production",
+      "status": "PASS",
+      "feature": "Category filter",
+      "observation": "Knihy category rendered exactly two expected public books with prices 450 and 250 CZK."
+    },
+    {
+      "id": "L17",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Staff workspace switch",
+      "observation": "Seeded superadmin switched existing system context to trainer; trainer menu and today plan appeared without merged administration menus. This is not a limited-trainer authorization test."
+    },
+    {
+      "id": "L18",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Fail-closed trainer scope",
+      "observation": "Demo trainer context had zero coach scope grants; even its own plan was explicitly denied. Trainer write scenarios remain blocked by this fixture, not counted as passed."
+    },
+    {
+      "id": "P04",
+      "environment": "production",
+      "status": "PASS",
+      "feature": "Price sorting",
+      "observation": "Knihy category retained and sorted books 250 then 450 CZK after selecting ascending price."
+    },
+    {
+      "id": "L19",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Sports lead planned training prefill",
+      "observation": "Existing sports-lead context opened plan 1, checked both source rosters, deduplicated expected participant A, date and title prefilled. No new scope grants."
+    },
+    {
+      "id": "L20",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Invalid measurement blocking",
+      "observation": "00:65 remained invalid; missing unit and invalid time created no training or measurement. Marker/selection preserved."
+    },
+    {
+      "id": "L21",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Planned training + measurement + tag save",
+      "observation": "Exactly one training id 1, 1.50 h, A participant, 500 m/00:45.250 cycling measurement and plan 1 linked as recorded. UI redirected to attendance closure, still draft."
+    },
+    {
+      "id": "F02",
+      "environment": "localhost",
+      "status": "FIXED",
+      "feature": "Measurement accessible names",
+      "observation": "Dynamic fields lacked programmatic names. Explicit names verified for all six types in both create and edit; 24 isolated render combinations covered by JS regression."
+    },
+    {
+      "id": "F03",
+      "environment": "localhost",
+      "status": "FIXED",
+      "feature": "Hidden cycling note",
+      "observation": "Existing cycling note was prefilled inside d-none and could not be edited. After fix note is visible, editable and saved while preserving measurement values."
+    },
+    {
+      "id": "L22",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Edit persistence without duplicate training",
+      "observation": "One training id 1 remains, length 1.50, same A and 500m/00:45.250; marker suffix and measurement note changed via UI and confirmed in local DB."
+    },
+    {
+      "id": "P05",
+      "environment": "production",
+      "status": "PASS",
+      "feature": "Kroužky public rendering",
+      "observation": "Observed heading: Kroužek vyberete podle dítěte, dne a místa.. Public navigation/render only; no booking or enrollment submitted."
+    },
+    {
+      "id": "P06",
+      "environment": "production",
+      "status": "PASS",
+      "feature": "Tréninky public rendering",
+      "observation": "Observed heading: Rozvrh tréninků. Public navigation/render only; no booking or enrollment submitted."
+    },
+    {
+      "id": "P07",
+      "environment": "production",
+      "status": "PASS",
+      "feature": "Akce a kalendář public rendering",
+      "observation": "Observed heading: Akce a klubový kalendář. Public navigation/render only; no booking or enrollment submitted."
+    },
+    {
+      "id": "P08",
+      "environment": "production",
+      "status": "PASS",
+      "feature": "Individuální lekce public rendering",
+      "observation": "Observed heading: Individuální lekce. Public navigation/render only; no booking or enrollment submitted."
+    },
+    {
+      "id": "P09",
+      "environment": "production",
+      "status": "PASS",
+      "feature": "Velodrom public rendering",
+      "observation": "Observed heading: Veřejné hodiny velodromu. Public navigation/render only; no booking or enrollment submitted."
+    },
+    {
+      "id": "L23",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Attendance closure",
+      "observation": "Purely fictional local lesson closed as version 1 with A and existing admin, actual interval 00:01–00:02 and explicit synthetic reason; history displayed. Not a real attendance confirmation."
+    },
+    {
+      "id": "L24",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Athlete read projection",
+      "observation": "Limited sport account showed only A, one confirmed training from closure, 0.02 h for the explicitly synthetic one-minute actual interval, and only A share 224.10 CZK due."
+    },
+    {
+      "id": "L25",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Month navigation",
+      "observation": "Next-month link rendered prosinec 2026 calendar and enabled previous-month link."
+    },
+    {
+      "id": "L26",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Limited athlete denies family and staff routes",
+      "observation": "Four known family/staff routes required their own login, while return to athlete profile remained valid; no sibling/parent administration was exposed."
+    },
+    {
+      "id": "L27",
+      "environment": "localhost",
+      "status": "PASS",
+      "feature": "Athlete logout protection",
+      "observation": "After explicit logout own sport page required sport login."
+    }
+  ],
+  "publicPages": [
+    {
+      "bodyPresent": true,
+      "buttons": 2,
+      "error": false,
+      "forms": 0,
+      "headings": [
+        "Kroužek vyberete podle dítěte, dne a místa."
+      ],
+      "feature": "Kroužky"
+    },
+    {
+      "bodyPresent": true,
+      "buttons": 1,
+      "error": false,
+      "forms": 0,
+      "headings": [
+        "Rozvrh tréninků"
+      ],
+      "feature": "Tréninky"
+    },
+    {
+      "bodyPresent": true,
+      "buttons": 1,
+      "error": false,
+      "forms": 0,
+      "headings": [
+        "Akce a klubový kalendář"
+      ],
+      "feature": "Akce a kalendář"
+    },
+    {
+      "bodyPresent": true,
+      "buttons": 2,
+      "error": false,
+      "forms": 1,
+      "headings": [
+        "Individuální lekce"
+      ],
+      "feature": "Individuální lekce"
+    },
+    {
+      "bodyPresent": true,
+      "buttons": 1,
+      "error": false,
+      "forms": 0,
+      "headings": [
+        "Veřejné hodiny velodromu"
+      ],
+      "feature": "Velodrom"
+    }
+  ],
+  "athleteDenials": [
+    {
+      "path": "/booking/moje_osoby.php",
+      "headings": [
+        "Přihlášení"
+      ],
+      "loginForm": 1
+    },
+    {
+      "path": "/booking/moje_objednavky.php",
+      "headings": [
+        "Přihlášení"
+      ],
+      "loginForm": 1
+    },
+    {
+      "path": "/booking/sportovni_prehled.php",
+      "headings": [
+        "Přihlášení"
+      ],
+      "loginForm": 1
+    },
+    {
+      "path": "/pracovni_pozice.php",
+      "headings": [
+        "Evidence tréninků"
+      ],
+      "loginForm": 1
+    }
+  ],
+  "measurementMatrix": {
+    "create": [
+      {
+        "controls": [
+          {
+            "label": "Vzdálenost",
+            "visible": true
+          },
+          {
+            "label": "Jednotka vzdálenosti",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Převod",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "kolo"
+      },
+      {
+        "controls": [
+          {
+            "label": "Segment",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "kolo_krouzek"
+      },
+      {
+        "controls": [
+          {
+            "label": "Segment",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "kolo_silnice"
+      },
+      {
+        "controls": [
+          {
+            "label": "Segment",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "kolo_mtb"
+      },
+      {
+        "controls": [
+          {
+            "label": "Vzdálenost",
+            "visible": true
+          },
+          {
+            "label": "Jednotka vzdálenosti",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "beh"
+      },
+      {
+        "controls": [
+          {
+            "label": "Váha (kg)",
+            "visible": true
+          },
+          {
+            "label": "Počet opakování",
+            "visible": true
+          },
+          {
+            "label": "RPE (1–10)",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "posilovna"
+      }
+    ],
+    "edit": [
+      {
+        "controls": [
+          {
+            "label": "Vzdálenost",
+            "visible": true
+          },
+          {
+            "label": "Jednotka vzdálenosti",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Převod",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "kolo"
+      },
+      {
+        "controls": [
+          {
+            "label": "Segment",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "kolo_krouzek"
+      },
+      {
+        "controls": [
+          {
+            "label": "Segment",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "kolo_silnice"
+      },
+      {
+        "controls": [
+          {
+            "label": "Segment",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "kolo_mtb"
+      },
+      {
+        "controls": [
+          {
+            "label": "Vzdálenost",
+            "visible": true
+          },
+          {
+            "label": "Jednotka vzdálenosti",
+            "visible": true
+          },
+          {
+            "label": "Čas měření",
+            "visible": true
+          },
+          {
+            "label": "Převod",
+            "visible": false
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "beh"
+      },
+      {
+        "controls": [
+          {
+            "label": "Váha (kg)",
+            "visible": true
+          },
+          {
+            "label": "Počet opakování",
+            "visible": true
+          },
+          {
+            "label": "RPE (1–10)",
+            "visible": true
+          },
+          {
+            "label": "Poznámka k měření",
+            "visible": true
+          }
+        ],
+        "type": "posilovna"
+      }
+    ]
+  },
+  "cleanup": {
+    "localSessionsLoggedOut": true,
+    "agentTabsClosed": true,
+    "viewportReset": true,
+    "mailboxUntouched": true,
+    "productionUserTabsUntouched": true
+  },
+  "findings": [
+    {
+      "id": "F01",
+      "severity": "P2",
+      "before": {
+        "profileReachable": false,
+        "peopleReachable": false,
+        "hit": "shop navigation"
+      },
+      "after": {
+        "allFiveLinksReachable": true,
+        "desktop": true,
+        "mobile390x844": true
+      }
+    },
+    {
+      "id": "F02",
+      "severity": "P3",
+      "before": {
+        "dynamicLabelsMissing": true
+      },
+      "after": {
+        "createTypes": 6,
+        "editTypes": 6,
+        "namesPresent": true
+      }
+    },
+    {
+      "id": "F03",
+      "severity": "P2",
+      "before": {
+        "cyclingNoteContainer": "col-md-3 d-none",
+        "storedNotePresent": true,
+        "visible": false
+      },
+      "after": {
+        "visible": true,
+        "editedThroughUi": true,
+        "saved": true
+      }
+    }
+  ]
+}

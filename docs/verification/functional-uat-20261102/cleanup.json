@@ -1,0 +1,9 @@
+{
+  "owned_servers_stopped": true,
+  "synthetic_data_preserved": true,
+  "ports": [
+    3319,
+    18419
+  ],
+  "production_untouched": true
+}

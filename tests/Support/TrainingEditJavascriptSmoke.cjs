@@ -7,6 +7,38 @@ const vm=require('node:vm');
 const source=fs.readFileSync(path.join(__dirname,'../../edit_trenink.php'),'utf8');
 const rendered=source.replace(/<\?[\s\S]*?\?>/g,'[]');
 
+test('dynamic measurement controls have accessible names and editable notes in create and edit forms',()=>{
+    const forms=[
+        {file:'formular.php',start:'    function cvikySelectHtml()',end:'    function makeSportovecAutocomplete(row)',render:'renderFieldsByType'},
+        {file:'edit_trenink.php',start:'    function buildCvikSelect(selectedId)',end:'    function addRow(prefill = null)',render:'renderFields'}
+    ];
+    for(const form of forms){
+        const text=fs.readFileSync(path.join(__dirname,'../..',form.file),'utf8');
+        const start=text.indexOf(form.start),end=text.indexOf(form.end,start);
+        assert.ok(start>=0&&end>start,'Actual render functions must be found');
+        for(const type of ['kolo','beh','posilovna','kolo_krouzek','kolo_silnice','kolo_mtb']){
+            for(const emptyCatalog of [false,true]){
+                const fields={html:'',set innerHTML(value){this.html=value;},appendChild(child){this.html+=child.html;}};
+                const context={CVIKY:emptyCatalog?[]:[{id:1,nazev:'Synthetic exercise'}],
+                    SEGMENTY:emptyCatalog?[]:['krouzek','silnice','mtb'].map((kategorie,id)=>({id:id+1,kategorie,nazev:'Synthetic segment'})),
+                    escapeHtml:value=>String(value),el:(tag,attributes,html)=>({html}),
+                    row:{querySelector:selector=>selector==='.js-typ'?{value:type}:fields}};
+                vm.runInNewContext(text.slice(start,end)+'\n'+form.render+'(row);',context);
+                const controls=[...fields.html.matchAll(/<(?:input|select)\b[^>]*>/g)].map(match=>match[0]);
+                assert.ok(controls.length>0,form.file+' '+type);
+                for(const control of controls)assert.match(control,/\baria-label="[^"\s][^"]*"/,form.file+' '+type+': '+control);
+                const hiddenContainers=[];
+                for(const match of fields.html.matchAll(/<div\b[^>]*>|<\/div>|<input\b[^>]*>/g)){
+                    const tag=match[0];
+                    if(tag.startsWith('</div'))hiddenContainers.pop();
+                    else if(tag.startsWith('<div'))hiddenContainers.push(/\bclass="[^"]*\bd-none\b/.test(tag));
+                    else if(tag.includes('js-poznamka'))assert.ok(!hiddenContainers.includes(true),form.file+' '+type+': measurement note must remain editable');
+                }
+            }
+        }
+    }
+});
+
 test('all training edit inline scripts compile (PHP lint does not check JavaScript)',()=>{
     let count=0;
     for(const match of rendered.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script[^>]*>/gi)){
