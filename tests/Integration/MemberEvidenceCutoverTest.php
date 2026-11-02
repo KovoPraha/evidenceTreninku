@@ -9,9 +9,127 @@ use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/member_evidence_cutover.php';
 require_once dirname(__DIR__, 2) . '/includes/member_evidence_guard.php';
+require_once dirname(__DIR__, 2) . '/includes/member_evidence_final_sync.php';
 
 final class MemberEvidenceCutoverTest extends TestCase
 {
+    private function openedDatabase(): PDO
+    {
+        $pdo = $this->database();
+        $migration = require dirname(__DIR__, 2) . '/migrations/20261102172000_member_roster_operations.php';
+        $migration['up']($pdo);
+        $pdo->exec("UPDATE club_roster_members SET source='kis_shadow' WHERE id=1");
+        $config = array_replace($this->config(), ['cutover_on' => '2026-11-02',
+            'opening' => ['member_ids' => [1], 'expected_count' => 1, 'final_sync_pending' => true]]);
+        $manifest = \memberEvidencePreview($pdo, $config);
+        \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+        $pdo->exec("INSERT INTO sportovci VALUES(11,'aktivni')");
+        return $pdo;
+    }
+
+    public function testFinalSyncKeepsOpeningDayIsIdempotentAndAllowsExactlyOneBatch(): void
+    {
+        $pdo = $this->openedDatabase();
+        $config = ['source_sha256' => str_repeat('b', 64), 'reason' => 'LOCALHOST poslední aktualizace',
+            'operations' => [['action' => 'add', 'team_id' => 1, 'person_id' => 11, 'valid_from' => '2026-11-03']]];
+        $manifest = \memberEvidenceFinalSyncPreview($pdo, $config);
+        $result = \memberEvidenceFinalSyncApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+        self::assertSame('2026-11-02', $result['opening_on']);
+        self::assertFalse($result['final_sync_pending']);
+        self::assertSame([10], \kisRosterEffectiveMemberIds($pdo, 1, '2026-11-02'));
+        self::assertSame([10, 11], \kisRosterEffectiveMemberIds($pdo, 1, '2026-11-03'));
+        self::assertTrue(\memberEvidenceFinalSyncApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true)['idempotent']);
+        $next = \memberEvidenceFinalSyncPreview($pdo, ['source_sha256' => str_repeat('c', 64), 'reason' => 'LOCALHOST další', 'operations' => []]);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Jedna poslední synchronizace už proběhla');
+        \memberEvidenceFinalSyncApply($pdo, $next, $next['fingerprint'], 7, str_repeat('a', 64), true);
+    }
+
+    public function testFinalSyncCannotRecreatePreOpeningHistory(): void
+    {
+        $pdo = $this->openedDatabase();
+        $this->expectException(\InvalidArgumentException::class);
+        \memberEvidenceFinalSyncPreview($pdo, ['source_sha256' => str_repeat('b', 64), 'reason' => 'LOCALHOST historie',
+            'operations' => [['action' => 'add', 'team_id' => 1, 'person_id' => 11, 'valid_from' => '2026-11-01']]]);
+    }
+
+    public function testFinalSyncDoesNotDuplicateExistingOpeningMembership(): void
+    {
+        $pdo = $this->openedDatabase();
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('duplicitu');
+        \memberEvidenceFinalSyncPreview($pdo, ['source_sha256' => str_repeat('b', 64), 'reason' => 'LOCALHOST opakovaný vstup',
+            'operations' => [['action' => 'add', 'team_id' => 1, 'person_id' => 10, 'valid_from' => '2026-11-02']]]);
+    }
+
+    public function testFinalSyncEndsOnlySelectedOpeningPeriodWithInclusiveLastDay(): void
+    {
+        $pdo = $this->openedDatabase();
+        $manifest = \memberEvidenceFinalSyncPreview($pdo, ['source_sha256' => str_repeat('b', 64), 'reason' => 'LOCALHOST ukončení',
+            'operations' => [['action' => 'end', 'member_id' => 1, 'valid_to' => '2026-11-03']]]);
+        \memberEvidenceFinalSyncApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+        self::assertSame([10], \kisRosterEffectiveMemberIds($pdo, 1, '2026-11-03'));
+        self::assertSame([], \kisRosterEffectiveMemberIds($pdo, 1, '2026-11-04'));
+        self::assertSame('2026-11-02', $pdo->query('SELECT valid_from FROM club_roster_members WHERE id=1')->fetchColumn());
+    }
+
+    public function testFinalSyncRejectsRevokedActorBeforeWriting(): void
+    {
+        $pdo = $this->openedDatabase();
+        $manifest = \memberEvidenceFinalSyncPreview($pdo, ['source_sha256' => str_repeat('b', 64), 'reason' => 'LOCALHOST shoda', 'operations' => []]);
+        $pdo->exec('DELETE FROM staff_user_positions');
+        $this->expectException(\DomainException::class);
+        \memberEvidenceFinalSyncApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+    }
+
+    public function testFinalSyncRejectsChangedApplicationData(): void
+    {
+        $pdo = $this->openedDatabase();
+        $manifest = \memberEvidenceFinalSyncPreview($pdo, ['source_sha256' => str_repeat('b', 64), 'reason' => 'LOCALHOST shoda', 'operations' => []]);
+        $pdo->exec("UPDATE sportovci SET stav_clenstvi='archiv' WHERE id=11");
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Databáze se od náhledu synchronizace změnila');
+        \memberEvidenceFinalSyncApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+    }
+
+    public function testOpeningDateAndHistoricalCleanupPreserveCurrentMappingForFinalSync(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE club_roster_members SET source='kis_shadow' WHERE id=1");
+        $pdo->exec("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,valid_to,created_by_trainer_id) "
+            . "VALUES(1,10,'removed','kis_shadow','2019-01-01','2019-12-31',7)");
+        $history = (int) $pdo->lastInsertId();
+        \kisRosterEvent($pdo, 1, $history, 7, 'import_legacy_member', null, ['id' => $history], 'LOCALHOST historie');
+        $pdo->exec('CREATE TABLE kis_legacy_roster_claims(id INTEGER PRIMARY KEY,status TEXT,member_id INTEGER REFERENCES club_roster_members(id))');
+        $pdo->exec('CREATE TABLE kis_current_roster_claims(id INTEGER PRIMARY KEY,legacy_claim_id INTEGER REFERENCES kis_legacy_roster_claims(id),'
+            . 'member_id INTEGER REFERENCES club_roster_members(id))');
+        $pdo->exec("INSERT INTO kis_legacy_roster_claims VALUES(1,'matched',$history)");
+        $pdo->exec('INSERT INTO kis_current_roster_claims VALUES(1,1,1)');
+        $config = \memberEvidencePrepareOpening($pdo, array_replace($this->config(), ['cutover_on' => '2026-11-02']), 1, 1);
+        $manifest = \memberEvidencePreview($pdo, $config);
+        $result = \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+        self::assertSame(1, $result['opening_count']);
+        self::assertTrue($result['final_sync_pending']);
+        self::assertSame('2026-11-02', $result['opening_on']);
+        self::assertSame(['club_roster_members' => 1, 'club_roster_events' => 1], $result['deleted']);
+        self::assertSame([], \kisRosterEffectiveMemberIds($pdo, 1, '2026-11-01'));
+        self::assertSame([10], \kisRosterEffectiveMemberIds($pdo, 1, '2026-11-02'));
+        $row = $pdo->query('SELECT source,source_ref,valid_from FROM club_roster_members WHERE id=1')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame(['source' => 'manual', 'source_ref' => 'kis-opening:1', 'valid_from' => '2026-11-02'], $row);
+        self::assertNull($pdo->query('SELECT member_id FROM kis_legacy_roster_claims WHERE id=1')->fetchColumn());
+        self::assertSame(1, (int) $pdo->query('SELECT member_id FROM kis_current_roster_claims WHERE id=1')->fetchColumn());
+        self::assertTrue(\memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true)['idempotent']);
+    }
+
+    public function testOpeningCannotSilentlyOmitAnActiveImportedMember(): void
+    {
+        $pdo = $this->database();
+        $config = $this->config() + ['opening' => ['member_ids' => [1], 'expected_count' => 1]];
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Aktivní výchozí členství');
+        \memberEvidencePreview($pdo, $config);
+    }
+
     public function testApplicationScopeAllowsIndependentForeignWritesAndPreservesThem(): void
     {
         $pdo = $this->database();

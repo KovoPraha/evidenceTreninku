@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/member_evidence_snapshot.php';
 require_once __DIR__ . '/operational_cases.php';
+require_once __DIR__ . '/member_evidence_opening.php';
 
 /** In-place IDs preserve all references and historical documents. No name-based merging. */
 function memberEvidencePreview(PDO $pdo, array $config, bool $lock = false): array
@@ -39,7 +40,9 @@ function memberEvidencePreview(PDO $pdo, array $config, bool $lock = false): arr
         $teams[$id] = ['id' => $id,'standing_code' => $code,'name' => $name,'activity_kind' => $activity];
     }
     ksort($teams);
-    $deletions = memberEvidenceDeletionRows($pdo, (array) ($config['delete'] ?? []), $on);
+    $opening = memberEvidenceOpeningRows($pdo, $config, $on);
+    $detached = memberEvidenceDetachClaims($pdo, $config);
+    $deletions = memberEvidenceDeletionRows($pdo, (array) ($config['delete'] ?? []), $on, $detached);
     if (!$teams && !$deletions) {
         throw new InvalidArgumentException('Prázdný plán nemůže uzavřít přechod evidence.');
     }
@@ -63,7 +66,8 @@ function memberEvidencePreview(PDO $pdo, array $config, bool $lock = false): arr
     $deleteCounts = array_map('count', $deletions);
     $payload = ['contract' => 'member-evidence-cutover-v1','config' => $config,'cutover_on' => $on,'reason'
     => $reason,
-        'teams' => array_values($teams),'delete_counts' => $deleteCounts,'snapshot' => $snapshot,'membership'
+        'teams' => array_values($teams),'opening_count' => count($opening),'detached_claim_count' => count($detached),
+        'delete_counts' => $deleteCounts,'snapshot' => $snapshot,'membership'
     => $members];
     return $payload + ['fingerprint' => hash('sha256', json_encode($payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE))];
 }
@@ -127,7 +131,13 @@ function memberEvidenceApply(
                 $team
             );
         }
-        $rows = memberEvidenceDeletionRows($pdo, $manifest['config']['delete'] ?? [], $manifest['cutover_on']);
+        $opening = memberEvidenceOpeningRows($pdo, $manifest['config'], $manifest['cutover_on']);
+        $detached = memberEvidenceDetachClaims($pdo, $manifest['config']);
+        $rows = memberEvidenceDeletionRows($pdo, $manifest['config']['delete'] ?? [], $manifest['cutover_on'], $detached);
+        foreach ($detached as $claim) {
+            $pdo->prepare('UPDATE kis_legacy_roster_claims SET member_id=NULL WHERE id=?')->execute([$claim['id']]);
+        }
+        memberEvidenceApplyOpening($pdo, $opening, $manifest['cutover_on'], $actor, $manifest['reason']);
         foreach (['kis_current_roster_claims','kis_legacy_roster_claims','club_roster_events','club_roster_members'] as $table) {
             foreach (array_keys($rows[$table] ?? []) as $id) {
                 $pdo->prepare('DELETE FROM ' . memberEvidenceIdentifier($table) . ' WHERE id=?')->execute([$id]);
@@ -135,6 +145,12 @@ function memberEvidenceApply(
         }
         $after = memberEvidenceCutoverSnapshot($pdo, $manifest['config']);
         $changed = ['club_teams','club_roster_structure_events',...array_keys($rows)];
+        if ($opening) {
+            $changed = array_merge($changed, ['club_roster_members', 'club_roster_events']);
+        }
+        if ($detached) {
+            $changed[] = 'kis_legacy_roster_claims';
+        }
         foreach ($snapshot as $table => $state) {
             if (!in_array($table, $changed, true) && ($after[$table] ?? null) !== $state) {
                 throw new RuntimeException('Parita zachovaných dat selhala: ' . $table);
@@ -152,7 +168,10 @@ function memberEvidenceApply(
             }
         }
         $result = ['fingerprint' => $approvedFingerprint,'cutover_on' => $manifest['cutover_on'],
-            'converted_teams' => count($manifest['teams']),'deleted' => $manifest['delete_counts'],'preserved_parity'
+            'converted_teams' => count($manifest['teams']),'opening_count' => count($opening),
+            'opening_on' => $manifest['cutover_on'],
+            'final_sync_pending' => (bool) ($manifest['config']['opening']['final_sync_pending'] ?? false),
+            'detached_claim_count' => count($detached),'deleted' => $manifest['delete_counts'],'preserved_parity'
     => true];
         $pdo->prepare('INSERT INTO member_evidence_cutover_runs(fingerprint,actor_trainer_id,backup_sha256,summary_json) VALUES(?,?,?,?)')
             ->execute([$approvedFingerprint,$actor,$backupHash,json_encode($result, JSON_THROW_ON_ERROR)]);

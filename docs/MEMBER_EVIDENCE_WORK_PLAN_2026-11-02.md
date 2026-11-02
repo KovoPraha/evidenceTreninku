@@ -166,9 +166,9 @@ Toto jsou zbývající parametry realizace, nikoli důvod odkládat inventář n
 
 | ID | Co uzavřít | Výstup a návaznost |
 |---|---|---|
-| D1 | Datum přechodu a hranice vlastního provozu nového systému. | Konkrétní den/čas, zdroj výchozích dat a odpovědná osoba; nutné před finálním převodem E7. |
+| D1 — rozhodnuto | Vlastní členská historie od **2. 11. 2026**, potvrzeno vlastníkem v chatu. | Datum zůstává pevné i při pozdější technické aplikaci a jedné následné synchronizaci. |
 | D2 | Finální názvy skupin/soupisek, jejich vazby, typ činnosti a správci. | Jednoznačná mapa ID, žádné automatické sloučení podle názvu; E1/E2 a E7. |
-| D3 | Co převzít z otevřených plateb, objednávek, zaplacených období a náhrad. | Seznam zachovávaných nároků a finanční parity; E3/E5/E7. |
+| D3 — výchozí členství potvrzeno | Převzít **435 aktivních** a odstranit **560 historických** zařazení. Existující osoby a doklady zachovat. | Přesný manifest ID, finanční parity a jedna další synchronizace; podrobnosti v podkladech produkčního přechodu. |
 | D4 | Pozdní nástup, druhé pololetí vs. celoroční nabídka, zpětná platnost. | Schválené pravidlo nároku a ceny, explicitní vyřešení překryvu; E3. Do té doby konfliktní nákup blokovat s vysvětlením. |
 | D5 | První/poslední měsíc příspěvku, souběh plánů a úlevy. | Konkrétní pravidla a částky ve správě plánů; E5. Neodhadovat poměrnou část automaticky. |
 | D6 | Náhrady mezi pololetími, programy a po přestupu. | Explicitní matice povolených převodů, expirace a kapacity; E3/E4. |

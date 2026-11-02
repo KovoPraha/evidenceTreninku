@@ -7,17 +7,20 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 require_once dirname(__DIR__) . '/includes/member_evidence_cutover.php';
+require_once dirname(__DIR__) . '/includes/member_evidence_final_sync.php';
 
 /** Credentials are supplied through environment variables, never arguments or output. */
 function memberEvidenceCutoverMain(array $arguments): void
 {
     $options = getopt('', ['inventory','preview:','apply:','output:','confirm:','actor:','backup:','backup-sha256:',
 
-    'writes-paused']);
-    $modes = array_intersect(['inventory','preview','apply'], array_keys($options));
+    'writes-paused','sync-preview:','sync-apply:','source:']);
+    $modes = array_intersect(['inventory','preview','apply','sync-preview','sync-apply'], array_keys($options));
     if (count($modes) !== 1) {
         throw new InvalidArgumentException('Použití: --inventory | --preview=config.json --output=manifest.json | '
-            . '--apply=manifest.json --confirm=SHA256 --actor=ID --backup=soubor --backup-sha256=SHA256 --writes-paused');
+            . '--apply=manifest.json --confirm=SHA256 --actor=ID --backup=soubor --backup-sha256=SHA256 --writes-paused | '
+            . '--sync-preview=config.json --source=export --output=manifest.json | '
+            . '--sync-apply=manifest.json --source=export --confirm=SHA256 --actor=ID --backup=soubor --backup-sha256=SHA256 --writes-paused');
     }
     $dsn = (string) getenv('MEMBER_EVIDENCE_DSN');
     if ($dsn === '' || !preg_match('/^(mysql|sqlite):/', $dsn)) {
@@ -33,15 +36,25 @@ function memberEvidenceCutoverMain(array $arguments): void
         $pdo->exec('PRAGMA foreign_keys=ON');
     }
     $mode = array_values($modes)[0];
-    if ($mode === 'apply') {
-        $manifest = memberEvidenceReadJson((string) $options['apply']);
+    $sync = in_array($mode, ['sync-preview','sync-apply'], true);
+    $syncInput = $sync ? memberEvidenceReadJson((string) $options[$mode]) : [];
+    if ($sync) {
+        $source = (string) ($options['source'] ?? '');
+        if (!is_file($source) || filesize($source) < 1
+            || !hash_equals((string) ($syncInput['source_sha256'] ?? ''), (string) hash_file('sha256', $source))) {
+            throw new RuntimeException('Konkrétní zdrojový export chybí nebo neodpovídá otisku synchronizace.');
+        }
+    }
+    if (in_array($mode, ['apply','sync-apply'], true)) {
+        $manifest = $sync ? $syncInput : memberEvidenceReadJson((string) $options['apply']);
         $backup = (string) ($options['backup'] ?? '');
         $expectedBackup = (string) ($options['backup-sha256'] ?? '');
         if (!is_file($backup) || filesize($backup) < 1 || !preg_match('/^[a-f0-9]{64}$/D', $expectedBackup)
             || !hash_equals($expectedBackup, (string) hash_file('sha256', $backup))) {
             throw new RuntimeException('Záloha chybí nebo její obsah neodpovídá ověřenému otisku.');
         }
-        $result = memberEvidenceApply(
+        $apply = $sync ? 'memberEvidenceFinalSyncApply' : 'memberEvidenceApply';
+        $result = $apply(
             $pdo,
             $manifest,
             (string) ($options['confirm'] ?? ''),
@@ -54,14 +67,14 @@ function memberEvidenceCutoverMain(array $arguments): void
     }
     $pdo->beginTransaction();
     try {
-        $result = $mode === 'preview'
+        $result = $sync ? memberEvidenceFinalSyncPreview($pdo, $syncInput) : ($mode === 'preview'
             ? memberEvidencePreview($pdo, memberEvidenceReadJson((string) $options['preview']))
             : ['contract' => 'member-evidence-inventory-v1','tables' => memberEvidenceSnapshot($pdo),
                 'foreign_keys' => memberEvidenceForeignKeys($pdo),
                 'teams' => $pdo->query('SELECT id,code,name,season_id,standing_code,team_kind,activity_kind,status FROM club_teams ORDER BY id')->fetchAll(),
 
 
-                'legacy_memberships' => $pdo->query("SELECT id,team_id,status,valid_from,valid_to FROM club_roster_members WHERE source='kis_shadow' ORDER BY id")->fetchAll()];
+                'legacy_memberships' => $pdo->query("SELECT id,team_id,status,valid_from,valid_to FROM club_roster_members WHERE source='kis_shadow' ORDER BY id")->fetchAll()]);
         $pdo->rollBack();
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {

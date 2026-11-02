@@ -78,8 +78,10 @@ try {
     if ($actor < 1) {
         throw new RuntimeException('No existing registrar in the isolated copy.');
     }
-    $config = ['scope' => 'application_backup', 'cutover_on' => date('Y-m-d'), 'reason' => 'ISOLATED COPY REHEARSAL; not production approval',
+    $config = ['scope' => 'application_backup', 'cutover_on' => '2026-11-02', 'reason' => 'ISOLATED COPY REHEARSAL; opening and cleanup approved 2026-11-02',
         'teams' => $teams, 'delete' => []];
+    $phase = 'opening_candidate';
+    $config = memberEvidencePrepareOpening($pdo, $config, 435, 560);
     $phase = 'preview';
     $stable = memberEvidenceSnapshot($pdo);
     $manifest = memberEvidencePreview($pdo, $config);
@@ -100,7 +102,10 @@ try {
     echo json_encode(
         ['contract' => 'member-evidence-copy-rehearsal-v1', 'isolated_copy_only' => true,
         'source_backup_sha256' => hash_file('sha256', $backup), 'source_tables' => count($before),
-        'upgraded_tables' => count($stable), 'converted_teams' => count($teams), 'deleted_rows' => 0,
+        'upgraded_tables' => count($stable), 'converted_teams' => count($teams),
+        'opening_on' => $result['opening_on'], 'opening_count' => $result['opening_count'],
+        'deleted' => $result['deleted'], 'detached_claim_count' => $result['detached_claim_count'],
+        'final_sync_pending' => $result['final_sync_pending'],
         'preview_read_only' => true, 'preserved_parity' => true, 'idempotent' => true,
         'production_mapping_approved' => false, 'attachments_verified' => false],
         JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT

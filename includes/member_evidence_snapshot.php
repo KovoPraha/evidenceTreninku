@@ -103,7 +103,7 @@ function memberEvidenceForeignKeys(PDO $pdo): array
 }
 
 /** Primary records and financial/access ledgers are always preserved by this cutover. */
-function memberEvidenceDeletionRows(PDO $pdo, array $input, string $on): array
+function memberEvidenceDeletionRows(PDO $pdo, array $input, string $on, array $detachedClaims = []): array
 {
     $allowed = ['club_roster_members','club_roster_events','kis_legacy_roster_claims','kis_current_roster_claims'];
     $rows = [];
@@ -148,6 +148,10 @@ function memberEvidenceDeletionRows(PDO $pdo, array $input, string $on): array
                 . ' WHERE ' . memberEvidenceIdentifier($key['child_column']) . '=?');
             $query->execute([$row[$key['parent_column']]]);
             foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $child) {
+                if ($key['child_table'] === 'kis_legacy_roster_claims' && $key['child_column'] === 'member_id'
+                    && isset($detachedClaims[(int) ($child['id'] ?? 0)])) {
+                    continue;
+                }
                 if (!isset($child['id'], $rows[$key['child_table']][(int) $child['id']])) {
                     throw new RuntimeException('Zachovaná závislost brání odstranění: ' . $key['child_table'] .
 
