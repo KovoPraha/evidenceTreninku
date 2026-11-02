@@ -137,6 +137,7 @@ function kisLegacyRosterPreview(PDO $pdo, ?array $configOverride = null): array
 
 function kisLegacyRosterInsertMember(PDO $pdo, int $teamId, int $personId, int $actorId, string $note): int
 {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     $existing = $pdo->prepare('SELECT id FROM club_roster_members WHERE team_id=? AND sportovec_id=?');
     $existing->execute([$teamId,$personId]);
     if ($existing->fetchColumn()) {
@@ -258,6 +259,7 @@ function kisLegacyRosterApply(PDO $pdo, int $actorId, string $expectedFingerprin
 
 function kisLegacyRosterDecide(PDO $pdo, int $claimId, int $actorId, string $decision, string $note): void
 {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     if ($claimId < 1 || $actorId < 1 || !in_array($decision, ['approve','skip'], true) || trim($note) === ''
     || mb_strlen($note) > 1000) {
         throw new InvalidArgumentException('Vyberte rozhodnutí a zapište důvod.');

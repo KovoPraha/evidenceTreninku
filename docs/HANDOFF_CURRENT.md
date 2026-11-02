@@ -10,7 +10,10 @@ historie před přechodem zůstane v původním KIS. Plán obsahuje inventář s
 etapy E0–E8, rozhodnutí D1–D8 a akceptaci A01–A20. Aplikační implementaci E1–E5 a nástroj E6 popisuje
 [implementační protokol](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md). Produkční
 inventura a technický nácvik skutečné aplikační zálohy prošly. [Podklady převodu](MEMBER_EVIDENCE_PRODUCTION_TRANSITION_2026-11-02.md)
-rozlišují 435 aktivních a 560 ukončených importovaných intervalů. Konkrétní manifest
+obsahují potvrzené rozhodnutí převzít 435 aktivních zařazení od 2. 11. 2026 a odstranit
+560 historických. Jedna poslední synchronizace je očekávána; datum začátku neposouvá.
+Nový nástroj přijímá explicitní rozdíl nad konkrétním exportem a odmítá opakovanou dávku.
+Konkrétní produkční mapa soupisek, manifest
 úklidu a UAT zůstávají otevřené; E7/E8 nebyly provedeny. Tento stav není potvrzením
 nasazení ani provedeného mazání.
 

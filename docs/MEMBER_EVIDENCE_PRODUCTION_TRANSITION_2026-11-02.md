@@ -2,7 +2,10 @@
 
 Stav k 2. 11. 2026, 18:41 UTC. Navazuje na [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md)
 a [implementační protokol](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md).
-Nejde o provedený převod ani schválený manifest mazání.
+Vlastník následně v tomto chatu **potvrdil převzetí 435 aktivních zařazení,
+odstranění 560 historických a počáteční den 2. 11. 2026**. Po tomto dni proběhne
+ještě jedna synchronizace. Datum je pevné i při pozdějším technickém přechodu.
+Nejde zatím o doklad provedeného převodu.
 
 ## Co potvrdila produkční inventura
 
@@ -25,25 +28,47 @@ proběhlo úspěšně v READ ONLY transakci. Výstup neobsahuje osobní identity
 načíst znovu za pozastavených dotčených zápisů a porovnat s manifestem.
 Podrobná mapa skutečných ID zůstává mimo Git.
 
-## Doporučené zadání konkrétního manifestu
+## Rozhodnutý rozsah a konkrétní manifest
 
-1. **D1:** vlastní členskou historii začít dnem skutečného provozního přechodu.
-   Zpětné předpisy ani minulou docházku nevytvářet. Datum dosud není uzavřeno.
+1. **D1 uzavřeno:** vlastní členskou historii začít **2. 11. 2026** (Europe/Prague).
+   Převzaté intervaly mají tento začátek, ID osoby i členství zůstává. Zdrojový
+   import je doložen auditem a `source_ref=kis-opening:ID`; další běžné změny
+   spravuje registrář. Zpětné předpisy ani minulou docházku nevytvářet.
 2. **D2:** zachovat identitu současných kolektivů a vazby, odstranit roční suffix
    z trvalého názvu, neslučovat podle podobnosti názvů. Zaměření zadat výslovně.
    Závodní oddíly jsou dnes také navázané na `school_year`; toto pole samo
    nedokazuje, že jde o kroužek. Tři testovací kolektivy vypořádat samostatně.
-3. **D3:** doporučeno převzít 435 aktivních importovaných intervalů jako výchozí
-   členství a připravit odstranění 560 ukončených importovaných intervalů
-   s jejich přesně určenými importními vazbami. Vlastník musí upřesnit, zda
-   požadavkem „stará data nepotřebujeme“ myslí historii, nebo i toto aktivní
-   výchozí členství. Volba prázdného začátku je jiná datová operace; dnešní nástroj
-   ji úmyslně nepředstírá jako smazání expirované historie.
+3. **Výchozí členství potvrzeno:** převzít 435 aktivních importovaných intervalů
+   a odstranit 560 ukončených intervalů včetně jejich importních událostí.
+   Nástroj odmítne jiný počet nebo změněná data. Převodní vazby na odstraněné
+   historické intervaly odpojí přesně určeným `member_id=NULL`; vazby na osoby
+   a současné členství zůstanou pro poslední synchronizaci. Technické převodní
+   tabulky se definitivně odstraní až v E8, po této synchronizaci.
 4. Všech 8 objednávek a 8 plateb ponechat beze změny. Nulové počty nároků při
    inventuře nejsou povolení zrušit případný novější nárok.
 5. Rozsah manifestu nastavit na `application_backup`. Cizí tabulky, BAR,
    výsledkové agendy a archivní tabulky se nemění ani nezamykají. Nová FK přes
    tuto hranici převod odmítne. Aplikační finanční tabulky zůstávají v otisku.
+
+## Jedna poslední synchronizace
+
+- Staré importy a sezonní rozhodovací cesty zůstávají po převodu zablokované.
+  Poslední synchronizace je samostatná, jednorázová operace nad konkrétním novým
+  exportem; neotevírá obecný import historie.
+- `bin/member-evidence-cutover.php --sync-preview=delta.json --source=export --output=manifest.json`
+  ověří skutečný otisk exportu a sestaví náhled. Delta obsahuje `source_sha256`,
+  `reason` a výslovné `operations`: `add` s existující osobou, trvalou soupiskou
+  a `valid_from/valid_to`, nebo `end` s ID převzatého intervalu a posledním dnem.
+  Chybějící řádek v exportu sám nezpůsobí mazání; neznámou identitu musí nejprve
+  vyřešit registrář. Automatický parser budoucího neznámého formátu se nepředpokládá.
+- Datum nové platnosti nesmí být před 2. 11. 2026. Existující nárok nesmí vzniknout
+  podruhé. Placené a novější vlastní nároky se neukončují tímto importem.
+- `--sync-apply=manifest.json --source=export` používá stejné parametry otisku,
+  správce, zálohy a pozastavených zápisů jako běžný apply. Přepočte data a práva
+  v transakci. Jednu dávku lze bezpečně opakovat; jiná druhá dávka se odmítne.
+- Provedení eviduje `member_roster_operations`; počáteční den v původním ledgeru
+  se neposouvá. Dokud nový export není předán a zpracován, poslední synchronizace
+  zůstává čekající. Nesmí být zaměněna za již provedenou synchronizaci.
 
 ## Co je již ověřeno a co ještě zbývá
 
@@ -53,9 +78,10 @@ Podrobná mapa skutečných ID zůstává mimo Git.
 - [Technický nácvik skutečné zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41500616687)
   převedl 44 soupisek, zachoval data a opakování bylo idempotentní. Následná
   obnova vrátila shodné otisky 337 tabulek a 2 triggery. Nic se nemazalo.
-- Před ostrým přechodem zbývá uzavřít výše uvedený výchozí stav, vytvořit
+- Před ostrým přechodem zbývá dokončit cílovou mapu soupisek D2 a vytvořit
   **konkrétní manifest ID včetně cleanupu**, ověřit jeho závislosti a nácvik,
-  obnovu příloh a přihlášené UAT. Zatím neexistuje schválený otisk tohoto manifestu.
+  obnovu příloh a přihlášené UAT. Souhlas s výchozím stavem a datem je již udělený;
+  není třeba se na tyto dvě otázky znovu ptát.
 - E8, tedy destruktivní odstranění starého schématu a backendů, navazuje až na
   ověřený E7 a uzavřený bod návratu. Samotné sloučení kódu tuto podmínku nenaplňuje.
 

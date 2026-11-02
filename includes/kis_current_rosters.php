@@ -181,6 +181,7 @@ function kisCurrentRosterInsertMember(
     string $validFrom,
     string $note
 ): int {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     $existing = $pdo->prepare('SELECT id FROM club_roster_members WHERE team_id=? AND sportovec_id=?');
     $existing->execute([$teamId,$personId]);
     if ($existing->fetchColumn()) {
@@ -328,6 +329,7 @@ function kisCurrentRosterDecide(
     ?int $targetTeamId,
     string $note
 ): void {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     $note = trim($note);
     if ($claimId < 1 || $actorId < 1 || !in_array($decision, ['approve','skip'], true) || $note === ''
     || mb_strlen($note) > 1000) {
