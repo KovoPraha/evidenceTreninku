@@ -43,7 +43,7 @@ Aktualizováno 2. 11. 2026 (Europe/Prague), po nasazení aplikační evidence č
   [deploy 41533206850](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41533206850) SUCCESS.
   Aplikační části evidence členů bez sezon a nástroj převodu z PR #279–#285 jsou nasazené.
   [Protokol](verification/member-evidence-release-20261102/RESULTS.md),
-  [strojový souhrn](verification/member-evidence-release-20261102/release.json).
+  [strojový souhrn](verification/member-evidence-release-20261102/release-comparison.json).
   Živé SHA/run potvrdil čtecí audit 41534082174. Nejde o úplnou inventuru hashů runtime.
   CLI převod, hromadné přejmenování, nové skupiny a cleanup v produkci dosud neběžely.
 - **Ověření:** všech 11 kontrol #285 PASS, sloučený strom shodný s ověřeným,

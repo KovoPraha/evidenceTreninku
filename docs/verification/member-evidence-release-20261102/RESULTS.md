@@ -21,7 +21,7 @@ autonomní implementaci a následně schválil konkrétní mapu a počáteční 
 
 Anonymní kontrola HTTP po nasazení: **38/38 PASS**, včetně členských stránek a ochrany CLI/helperů ([výsledek](post-http.json)). První běh [37/38](post-http-initial.json) očekával přesměrování u přípravy období; zdroj této stránky správně vrací nepřihlášeným 403. Očekávání bylo opraveno a doplněno ověření konkrétního textu odmítnutí; aplikace se kvůli tomu neměnila.
 
-[Strojový souhrn](release.json) obsahuje pouze neosobní údaje ověření.
+[Strojový souhrn](release-comparison.json) obsahuje pouze neosobní údaje ověření.
 
 ## Záloha a nácvik
 
