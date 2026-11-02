@@ -136,7 +136,8 @@ try {
         . "VALUES(1,1,'active','manual','2020-01-01',7)");
     $pdo->exec("INSERT INTO training_roster_links(plan_id,team_id,target_date,team_code_snapshot,team_name_snapshot,created_by_trainer_id)
         VALUES(100,1,DATE_ADD(CURRENT_DATE,INTERVAL 5 DAY),'S1','Synthetic',7),(200,2,DATE_ADD(CURRENT_DATE,INTERVAL 6 DAY),'S2','Synthetic',7)");
-    $pdo->exec("INSERT INTO club_makeup_policies(program_id,season_id,team_id,enabled,excuse_hours,updated_by_trainer_id) VALUES(2,1,2,1,12,7)");
+    clubMakeupPolicySave($pdo, 7, 2, true, 12, false);
+    clubMakeupRouteSave($pdo, 7, 1, 2, true);
     $pdo->exec('INSERT INTO club_makeup_slots(plan_id,offer_id,capacity,birth_year_from,birth_year_to,updated_by_trainer_id) VALUES(200,2,1,2016,2018,7)');
     $pdo->exec("INSERT INTO club_makeup_credits(id,source_plan_id,sportovec_id,source_enrollment_id,source_offer_id,expires_on,excused_at)
         VALUES(1,100,1,1,1,DATE_ADD(CURRENT_DATE,INTERVAL 1 YEAR),CURRENT_TIMESTAMP)");
