@@ -6,6 +6,19 @@
 testovací přípravy a reference výkonových profilů. Aktuální head a stav všech
 kontrol určuje [CI PR](https://github.com/KovoPraha/evidenceTreninku/pull/279/checks).
 
+PR #279 byl sloučen jako `58690c42fdd38c620cfa6ba5663b966088e55976` po všech
+11 úspěšných kontrolách přesného headu `103b140a014a650e326bca53499105805d9bee99`.
+[Testovací matice 41496584905](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41496584905)
+prošla včetně PHPUnit, všech integračních kroků i profilů na MariaDB 10.3/11.4.
+Sloučení není nasazení.
+
+Samostatná [obnova skutečné poslední zálohy 41498416970](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41498416970)
+prošla: **337 tabulek a 2 triggery**. Tento běh ověřuje zdrojovou zálohu, nikoli
+ještě převod novým nástrojem nebo obnovu soukromých příloh.
+První [čtecí inventura 41498151528](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41498151528)
+selhala bez zápisu; doplněna diagnostika fáze a SQLSTATE bez výpisu osobních dat
+nebo textu PDO výjimky. Úspěšný výsledek inventury musí doložit další běh.
+
 ## Doložené výsledky
 
 | Kontrola | Výsledek a rozsah |

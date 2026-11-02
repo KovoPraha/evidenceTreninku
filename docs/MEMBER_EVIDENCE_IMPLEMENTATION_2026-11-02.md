@@ -39,6 +39,14 @@ Workflow `diagnose-member-evidence-production.yml` spouští samostatný `bin/di
 
 ## Nástroj převodu a přesný rozsah
 
+### Technický nácvik na skutečné databázové kopii
+
+Workflow `member-evidence-copy-rehearsal.yml` stáhne poslední ověřenou zálohu do privátního adresáře izolovaného runneru, ověří SHA-256, počty všech tabulek a triggery. Skript `tests/Support/MemberEvidenceProductionCopyRehearsal.php` přijímá jen loopback a pevné jméno dočasné DB. Provede upgrade, nemutující preview, převod se zachováním ID a veškerých řádků, opakování a úplnou paritu chráněných tabulek. Potom workflow obnoví zdrojovou zálohu do stejné izolované DB a porovná otisky dat i schématu. Kopie se vždy uklízí, nezveřejňuje se jako artifact.
+
+Kódy `REHEARSAL-ID` jsou výhradně technický vstup pro kopii, nikoli návrh produkční mapy D2. Neurčené zaměření převod zastaví. Tento nácvik nic nemaže, neschvaluje D1–D3, neověřuje přílohy ani přihlášené UAT a nemůže sám uzavřít celou E6. Produkční spojení workflow používá pouze ke stažení již existující zálohy; PHP mutace běží v kontejneru runneru.
+
+### Produkční manifest
+
 `bin/member-evidence-cutover.php` je CLI. Připojení získává z `MEMBER_EVIDENCE_DSN`, `MEMBER_EVIDENCE_DB_USER`, `MEMBER_EVIDENCE_DB_PASSWORD`; tajemství nepředávat argumenty ani ukládat do Gitu. Výstupy musí být v soukromém adresáři mimo webroot.
 
 1. `--inventory --output=/private/inventory.json`: úplný seznam tabulek, počtů, otisků dat/schématu a FK, metadata soupisek a seznam importovaných členských intervalů. Inventář nenahrazuje kontrolu aplikačních odkazů v JSON/frontách a soukromých souborech.
