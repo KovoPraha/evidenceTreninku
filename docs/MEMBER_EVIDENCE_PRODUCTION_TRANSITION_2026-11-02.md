@@ -73,6 +73,13 @@ Podrobná mapa skutečných ID zůstává mimo Git.
 
 ## Co je již ověřeno a co ještě zbývá
 
+- [PR #285](https://github.com/KovoPraha/evidenceTreninku/pull/285) implementuje schválenou mapu skupin,
+  kontrolu původní identity a auditované dohledání přejmenované soupisky. Všech 11 kontrol PASS,
+  Linux 1953 testů / 38293 assertions. [Nácvik přesné mapy 41532405191](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41532405191)
+  prošel: 8 skupin, 44 hran, 435 převzatých intervalů, 560 odstraněných historických intervalů
+  a 560 událostí, shodné skupinové členství, zachovaný pilot a úplná obnova DB.
+  Úplné doklady jsou v [protokolu](verification/member-evidence-20261102/RESULTS.md).
+
 - Aplikační implementace je sloučená v PR #279, navazující nácvik a omezení
   rozsahu v #280–#282. [PR #283](https://github.com/KovoPraha/evidenceTreninku/pull/283)
   přidává schválený počáteční stav a jednu poslední synchronizaci; merge
