@@ -34,10 +34,11 @@ Podrobná mapa skutečných ID zůstává mimo Git.
    Převzaté intervaly mají tento začátek, ID osoby i členství zůstává. Zdrojový
    import je doložen auditem a `source_ref=kis-opening:ID`; další běžné změny
    spravuje registrář. Zpětné předpisy ani minulou docházku nevytvářet.
-2. **D2:** zachovat identitu současných kolektivů a vazby, odstranit roční suffix
-   z trvalého názvu, neslučovat podle podobnosti názvů. Zaměření zadat výslovně.
-   Závodní oddíly jsou dnes také navázané na `school_year`; toto pole samo
-   nedokazuje, že jde o kroužek. Tři testovací kolektivy vypořádat samostatně.
+2. **D2 uzavřeno:** vlastník schválil [úplnou mapu](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md).
+   Sedm provozních skupin / 41 soupisek a osmá skupina pro tři testovací kolektivy.
+   Rexonix je závodní oddíl; KDC znamená kurz dráhové cyklistiky a společně s Bikrosem
+   tvoří dvě samostatné placené skupiny typu `other`, mimo Rexonix. Žádné členské
+   záznamy se neslučují. Názvy a vazby jsou výslovné, dosavadní správci a rozsahy zůstávají.
 3. **Výchozí členství potvrzeno:** převzít 435 aktivních importovaných intervalů
    a odstranit 560 ukončených intervalů včetně jejich importních událostí.
    Nástroj odmítne jiný počet nebo změněná data. Převodní vazby na odstraněné
@@ -80,7 +81,7 @@ Podrobná mapa skutečných ID zůstává mimo Git.
 - [Technický nácvik skutečné zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41500616687)
   převedl 44 soupisek, zachoval data a opakování bylo idempotentní. Následná
   obnova vrátila shodné otisky 337 tabulek a 2 triggery. Nic se nemazalo.
-- Před ostrým přechodem zbývá dokončit cílovou mapu soupisek D2 a vytvořit
+- Cílová mapa D2 je schválená. Před ostrým přechodem zbývá vytvořit
   **konkrétní manifest ID včetně cleanupu**, ověřit jeho závislosti a nácvik,
   obnovu příloh a přihlášené UAT. Souhlas s výchozím stavem a datem je již udělený;
   není třeba se na tyto dvě otázky znovu ptát.

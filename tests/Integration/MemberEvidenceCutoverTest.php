@@ -13,6 +13,104 @@ require_once dirname(__DIR__, 2) . '/includes/member_evidence_final_sync.php';
 
 final class MemberEvidenceCutoverTest extends TestCase
 {
+    private function groupedConfig(): array
+    {
+        return $this->config() + ['groups' => [['standing_code' => 'GROUP', 'name' => 'LOCALHOST skupina',
+            'activity_kind' => 'competitive', 'child_ids' => [1]]]];
+    }
+
+    public function testGroupsPreserveRosterIdentityDeduplicateMembersAndKeepPermissions(): void
+    {
+        $pdo = $this->database();
+        \kisRosterCreateTeam($pdo, 1, 7, 'SECOND', 'LOCALHOST druhý', 'kolo', 'vše', 'LOCALHOST fixture');
+        \kisRosterGrantPeriod($pdo, 2, 10, 7, 'manual', '2020-01-01', null, 'LOCALHOST překryv');
+        $pdo->exec('CREATE TABLE coach_scope_grants(id INTEGER PRIMARY KEY,team_id INTEGER,trainer_id INTEGER)');
+        $pdo->exec('INSERT INTO coach_scope_grants VALUES(1,1,7)');
+        $config = $this->groupedConfig();
+        $config['cutover_on'] = '2026-11-02';
+        $config['teams'][] = ['id' => 2, 'standing_code' => 'SECOND-NEW', 'name' => 'LOCALHOST druhý', 'activity_kind' => 'competitive'];
+        $config['groups'][0]['child_ids'][] = 2;
+        $before = \memberEvidenceSnapshot($pdo);
+        $manifest = \memberEvidencePreview($pdo, $config);
+        self::assertSame($before, \memberEvidenceSnapshot($pdo));
+        self::assertSame(1, $manifest['groups'][0]['membership']['2026-11-02']['count']);
+        $result = \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+        self::assertSame(1, $result['created_groups']);
+        self::assertSame(2, $result['created_edges']);
+        $parent = (int) $pdo->query("SELECT id FROM club_teams WHERE code='GROUP'")->fetchColumn();
+        self::assertSame([], \kisRosterEffectiveMemberIds($pdo, $parent, '2026-11-01'));
+        self::assertSame([10], \kisRosterEffectiveMemberIds($pdo, $parent, '2026-11-02'));
+        self::assertSame(0, (int) $pdo->query('SELECT COUNT(*) FROM club_roster_members WHERE team_id=' . $parent)->fetchColumn());
+        $after = \memberEvidenceSnapshot($pdo);
+        self::assertSame($before['club_roster_members'], $after['club_roster_members']);
+        self::assertSame($before['coach_scope_grants'], $after['coach_scope_grants']);
+        self::assertTrue(\memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true)['idempotent']);
+        self::assertSame(2, (int) $pdo->query('SELECT COUNT(*) FROM club_team_edges')->fetchColumn());
+    }
+
+    public function testGroupMapRejectsDuplicateOrUnassignedChildrenAndCodeCollisions(): void
+    {
+        foreach (['duplicate', 'missing', 'collision', 'unknown'] as $case) {
+            $pdo = $this->database();
+            $config = $this->groupedConfig();
+            if ($case === 'duplicate') {
+                $config['groups'][] = array_replace($config['groups'][0], ['standing_code' => 'SECOND-GROUP']);
+            } elseif ($case === 'missing') {
+                $config['groups'] = [];
+            } elseif ($case === 'collision') {
+                $config['groups'][0]['standing_code'] = 'PERMANENT';
+            } else {
+                $config['groups'][0]['child_ids'] = [999];
+            }
+            $before = \memberEvidenceSnapshot($pdo);
+            try {
+                \memberEvidencePreview($pdo, $config);
+                self::fail('Unsafe group map accepted: ' . $case);
+            } catch (\RuntimeException $error) {
+                self::assertNotSame('', $error->getMessage());
+            }
+            self::assertSame($before, \memberEvidenceSnapshot($pdo));
+        }
+    }
+
+    public function testExistingHierarchyCannotBeSilentlyReparented(): void
+    {
+        $pdo = $this->database();
+        $parent = \kisRosterCreateStandingTeam($pdo, 7, 'EXISTING', 'LOCALHOST existující', 'group', 'LOCALHOST fixture');
+        $pdo->prepare('INSERT INTO club_team_edges(parent_team_id,child_team_id,valid_from,actor_trainer_id,reason) VALUES(?,1,?,7,?)')
+            ->execute([$parent['id'], '2020-01-01', 'LOCALHOST fixture']);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Existující organizační vazby');
+        \memberEvidencePreview($pdo, $this->groupedConfig());
+    }
+
+    public function testMapChecksExactSourceIdentityBeforeRenaming(): void
+    {
+        $pdo = $this->database();
+        $config = $this->groupedConfig();
+        $config['teams'][0]['expected_code'] = 'ANOTHER';
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Původní soupiska');
+        \memberEvidencePreview($pdo, $config);
+    }
+
+    public function testAuditedRenameResolvesSameIdentityAndRejectsSubsequentDrift(): void
+    {
+        $pdo = $this->database();
+        $manifest = \memberEvidencePreview($pdo, $this->groupedConfig());
+        \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+        $before = \memberEvidenceSnapshot($pdo);
+        $team = \kisRosterEnsureStandingTeam($pdo, 7, 'OLD', 'LOCALHOST původní', 'LOCALHOST retry');
+        self::assertSame(1, (int) $team['id']);
+        self::assertSame('PERMANENT', $team['code']);
+        self::assertSame($before, \memberEvidenceSnapshot($pdo));
+        self::assertNull(\memberEvidenceMappedTeam($pdo, 'UNKNOWN'));
+        $pdo->exec("UPDATE club_teams SET name='LOCALHOST drift' WHERE id=1");
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('auditované mapy');
+        \kisRosterEnsureStandingTeam($pdo, 7, 'OLD', 'LOCALHOST původní', 'LOCALHOST retry');
+    }
+
     private function openedDatabase(): PDO
     {
         $pdo = $this->database();

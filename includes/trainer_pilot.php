@@ -154,7 +154,11 @@ function trainerPilotStatus(PDO $pdo, string $ownerName, string $email = ''): ar
         'SELECT sportovec_id FROM club_roster_members WHERE team_id=? ORDER BY sportovec_id',
         [$record['team_id']]
     ), 'sportovec_id'));
-    if (count($team) !== 1 || $team[0]['code'] !== TRAINER_PILOT_CODE || $team[0]['name'] !== TRAINER_PILOT_NAME
+    $mapped = memberEvidenceMappedTeam($pdo, TRAINER_PILOT_CODE, TRAINER_PILOT_NAME);
+    $expectedCode = $mapped['code'] ?? TRAINER_PILOT_CODE;
+    $expectedName = $mapped['name'] ?? TRAINER_PILOT_NAME;
+    if (($mapped !== null && (int) $mapped['id'] !== (int) $record['team_id'])
+        || count($team) !== 1 || $team[0]['code'] !== $expectedCode || $team[0]['name'] !== $expectedName
         || $team[0]['status'] !== 'active' || $members !== $record['member_ids']) {
         throw new RuntimeException('pilot_roster_drift');
     }

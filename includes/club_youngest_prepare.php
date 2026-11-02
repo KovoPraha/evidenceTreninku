@@ -106,6 +106,9 @@ function clubYoungestDescription(array $group): string
 /** @return array{created:int,groups:list<array{program_id:int,team_id:int,product_id:int,purchase:string}>} */
 function clubYoungestPrepare(PDO $pdo, int $actorId, bool $apply): array
 {
+    if ($apply) {
+        memberEvidenceAssertLegacyWriteAllowed($pdo);
+    }
     if ($actorId < 1) {
         throw new InvalidArgumentException('Příprava vyžaduje správce.');
     }

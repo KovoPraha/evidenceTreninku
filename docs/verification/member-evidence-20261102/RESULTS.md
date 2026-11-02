@@ -104,7 +104,7 @@ Linux CI; rozhodující stav celého vydání je na přesném headu PR.
 Tento protokol nedokládá produkční nasazení ani provedení E7/E8. Čtecí produkční
 inventura prošla. D1 a výchozí rozsah D3 jsou potvrzené: 435 aktivních od 2. 11. 2026,
 560 historických odstranit, jedna poslední synchronizace zůstává čekající.
-Chybí uzavřená cílová mapa D2 a konkrétní produkční manifest cleanupu, nácvik včetně
+Cílová mapa D2 byla následně schválena vlastníkem. Zbývá konkrétní produkční manifest cleanupu, nácvik přesné mapy včetně
 příloh a přihlášená/lidská přejímka všech rolí. Databázové změny a opakování
 operací proběhly nad syntetickými daty a oddělenou kopií aplikační zálohy.
 Žádné skutečné importy, rozesílky ani bankovní přepínače se tímto ověřením nezapínají.

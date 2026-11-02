@@ -9,6 +9,7 @@ if (PHP_SAPI !== 'cli') {
 }
 require_once dirname(__DIR__, 2) . '/includes/member_evidence_cutover.php';
 require_once dirname(__DIR__, 2) . '/includes/migration_runner.php';
+require_once dirname(__DIR__, 2) . '/includes/trainer_pilot.php';
 
 $phase = 'target';
 try {
@@ -80,6 +81,25 @@ try {
     }
     $config = ['scope' => 'application_backup', 'cutover_on' => '2026-11-02', 'reason' => 'ISOLATED COPY REHEARSAL; opening and cleanup approved 2026-11-02',
         'teams' => $teams, 'delete' => []];
+    $mappingPath = (string) getenv('MEMBER_REHEARSAL_MAP_FILE');
+    $mappingHash = null;
+    if ($mappingPath !== '') {
+        $phase = 'approved_mapping';
+        if (realpath(dirname($mappingPath)) !== $directory || !is_file($mappingPath) || filesize($mappingPath) > 100000) {
+            throw new RuntimeException('Private mapping must be in the disposable directory.');
+        }
+        $config = json_decode((string) file_get_contents($mappingPath), true, 512, JSON_THROW_ON_ERROR);
+        if (($config['scope'] ?? '') !== 'application_backup' || ($config['cutover_on'] ?? '') !== '2026-11-02'
+            || count($config['teams'] ?? []) !== 44 || count($config['groups'] ?? []) !== 8) {
+            throw new RuntimeException('Private mapping does not match the approved scope.');
+        }
+        foreach ($config['teams'] as $team) {
+            if (!isset($team['expected_code'], $team['expected_name'])) {
+                throw new RuntimeException('Private mapping must identify the source explicitly.');
+            }
+        }
+        $mappingHash = hash_file('sha256', $mappingPath);
+    }
     $phase = 'opening_candidate';
     $config = memberEvidencePrepareOpening($pdo, $config, 435, 560);
     $phase = 'preview';
@@ -99,15 +119,27 @@ try {
     if (!$result['preserved_parity'] || !($replay['idempotent'] ?? false)) {
         throw new RuntimeException('Cutover or replay parity failed.');
     }
+    $phase = 'pilot_scope_after_rename';
+    $pilotPreserved = null;
+    $pilotRecord = trainerPilotRecord($pdo);
+    if (!empty($pilotRecord['operational_authorization'])) {
+        $pilotPreserved = trainerPilotStatus($pdo, TRAINER_PILOT_ACTOR_NAME)['scope_ready'];
+        if (!$pilotPreserved) {
+            throw new RuntimeException('Existing synthetic pilot scope changed.');
+        }
+    }
     echo json_encode(
         ['contract' => 'member-evidence-copy-rehearsal-v1', 'isolated_copy_only' => true,
         'source_backup_sha256' => hash_file('sha256', $backup), 'source_tables' => count($before),
         'upgraded_tables' => count($stable), 'converted_teams' => count($teams),
+        'created_groups' => $result['created_groups'], 'created_edges' => $result['created_edges'],
+        'group_membership_parity' => $result['group_membership_parity'], 'mapping_sha256' => $mappingHash,
+        'existing_pilot_scope_preserved' => $pilotPreserved,
         'opening_on' => $result['opening_on'], 'opening_count' => $result['opening_count'],
         'deleted' => $result['deleted'], 'detached_claim_count' => $result['detached_claim_count'],
         'final_sync_pending' => $result['final_sync_pending'],
         'preview_read_only' => true, 'preserved_parity' => true, 'idempotent' => true,
-        'production_mapping_approved' => false, 'attachments_verified' => false],
+        'production_mapping_approved' => $mappingHash !== null, 'attachments_verified' => false],
         JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT
     ) . PHP_EOL;
 } catch (Throwable $error) {

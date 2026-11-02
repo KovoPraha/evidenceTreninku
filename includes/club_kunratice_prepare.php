@@ -55,6 +55,7 @@ function clubKunraticeSource(PDO $pdo): array
  */
 function clubKunraticePrepare(PDO $pdo, int $actorId): array
 {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     if ($actorId < 1) {
         throw new InvalidArgumentException('Příprava Kunratic vyžaduje správce.');
     }

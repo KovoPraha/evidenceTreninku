@@ -8,9 +8,36 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2) . '/includes/trainer_pilot.php';
+require_once dirname(__DIR__, 2) . '/includes/member_evidence_cutover.php';
 
 final class TrainerPilotTest extends TestCase
 {
+    public function testApprovedRosterRenamePreservesPilotStatusAndIdempotentProvisioning(): void
+    {
+        $pdo = $this->database();
+        $pilot = \trainerPilotCreate($pdo, 'Fixture Owner', 'pilot@example.test');
+        foreach (['20260822170000_club_roster_structure_events', '20261102170000_roster_activity_kind',
+            '20261102174000_member_evidence_cutover_runs'] as $id) {
+            $migration = require dirname(__DIR__, 2) . '/migrations/' . $id . '.php';
+            $migration['up']($pdo);
+        }
+        $pdo->exec("INSERT INTO staff_user_positions(trainer_id,position_code,is_default) VALUES(1,'registrar',0)");
+        $config = ['cutover_on' => '2026-11-02', 'reason' => 'LOCALHOST approved rename', 'delete' => [],
+            'teams' => [['id' => $pilot['team_id'], 'standing_code' => 'TEST-PILOT-NEW',
+                'name' => 'TEST – Trenérský pilot', 'activity_kind' => 'other']],
+            'groups' => [['standing_code' => 'TEST-GROUP', 'name' => 'TEST – interní ověřování',
+                'activity_kind' => 'other', 'child_ids' => [$pilot['team_id']]]]];
+        $beforeGrants = $pdo->query('SELECT * FROM coach_scope_grants')->fetchAll();
+        $manifest = \memberEvidencePreview($pdo, $config);
+        \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 1, str_repeat('a', 64), true);
+        $status = \trainerPilotStatus($pdo, 'Fixture Owner', 'pilot@example.test');
+        self::assertTrue($status['scope_ready']);
+        self::assertSame(2, $status['visible_test_people']);
+        self::assertSame($beforeGrants, $pdo->query('SELECT * FROM coach_scope_grants')->fetchAll());
+        self::assertFalse(\trainerPilotCreate($pdo, 'Fixture Owner', 'pilot@example.test')['changed']);
+        self::assertSame(2, (int) $pdo->query('SELECT COUNT(*) FROM club_teams')->fetchColumn());
+    }
+
     private function operation(): array
     {
         return ['confirmation' => 'VYTVORIT-TEST-PILOT', 'actor' => 'fixture-operator', 'run_id' => '12345',

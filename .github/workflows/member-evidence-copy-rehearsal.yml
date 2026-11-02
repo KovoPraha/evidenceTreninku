@@ -7,6 +7,14 @@ on:
         description: 'Napište NACVIK-KOPIE; živá databáze se nemění'
         required: true
         type: string
+      mapping:
+        description: 'technical = testovací kódy; approved = schválená soukromá mapa'
+        required: true
+        type: choice
+        default: technical
+        options:
+          - technical
+          - approved
 
 permissions:
   contents: read
@@ -77,12 +85,24 @@ jobs:
           echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
 
       - name: Obnovit vybrane generace zaloh do izolovane MariaDB
+        env:
+          MAPPING_MODE: ${{ inputs.mapping }}
+          PRIVATE_MAPPING_JSON: ${{ secrets.KIS_MEMBER_EVIDENCE_MAP }}
         run: |
           set -euo pipefail
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
           TMP="/tmp/kis-member-rehearsal-$GITHUB_RUN_ID"
           install -d -m 700 "$TMP"
+          if [ "$MAPPING_MODE" = approved ]; then
+            test -n "$PRIVATE_MAPPING_JSON"
+            umask 077
+            printf '%s' "$PRIVATE_MAPPING_JSON" > "$TMP/mapping.json"
+            export MEMBER_REHEARSAL_MAP_FILE="$TMP/mapping.json"
+          else
+            test "$MAPPING_MODE" = technical
+          fi
+          unset PRIVATE_MAPPING_JSON
           COUNT=1
           BACKUP_OUTPUT=$(production_retry_capture "${SSH[@]}" "set -eu; ls -1t '$BACKUP_DIR'/evidence_*.sql.gz 2>/dev/null | head -n '$COUNT'")
           BACKUPS=()
