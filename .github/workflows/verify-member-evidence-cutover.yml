@@ -1,0 +1,104 @@
+name: Ověřit dokončený převod členů a obnovu jeho zálohy
+
+on:
+  workflow_dispatch:
+    inputs:
+      cutover_run_id:
+        description: 'Run dokončeného převodu; databáze se pouze ověřuje, převod se neopakuje'
+        required: true
+        type: string
+      expected_fingerprint:
+        description: 'Otisk již potvrzeného datového manifestu'
+        required: true
+        type: string
+      expected_backup_sha256:
+        description: 'Otisk zálohy z potvrzeného výsledku'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  MEMBER_OPERATION_RUN_ID: ${{ inputs.cutover_run_id }}
+  EXPECTED_FINGERPRINT: ${{ inputs.expected_fingerprint }}
+  EXPECTED_BACKUP_SHA256: ${{ inputs.expected_backup_sha256 }}
+
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    steps:
+      - name: Ověřit konkrétní cíl
+        run: |
+          set -euo pipefail
+          test "$APP_HOST" = kis.kovopraha.cz
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]]
+          [[ "$MEMBER_OPERATION_RUN_ID" =~ ^[1-9][0-9]{0,19}$ ]]
+          [[ "$EXPECTED_FINGERPRINT" =~ ^[a-f0-9]{64}$ ]]
+          [[ "$EXPECTED_BACKUP_SHA256" =~ ^[a-f0-9]{64}$ ]]
+
+      - name: Stáhnout nástroje
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Připravit ověřené SSH spojení
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!name}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Přečíst a ověřit potvrzený výsledek a odebrání oprávnění
+        id: result
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          LOCAL="/tmp/kis-member-operation-$GITHUB_RUN_ID"
+          PRIVATE="$DEPLOY_BASE/member-cutover-$MEMBER_OPERATION_RUN_ID"
+          install -d -m 700 "$LOCAL"
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$PRIVATE/result.json" "$LOCAL/result.json"
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$PRIVATE/recovery.json" "$LOCAL/recovery.json"
+          jq -e --arg fingerprint "$EXPECTED_FINGERPRINT" --arg backup "$EXPECTED_BACKUP_SHA256"             '.ok and .cutover_committed and .technical_actor_revoked and .maintenance_restored and .idempotent and .cutover.fingerprint == $fingerprint and .backup.sha256 == $backup'             "$LOCAL/result.json" >/dev/null
+          jq -e '.ok and .recovery_only and .technical_actor_revoked and .maintenance_restored' "$LOCAL/recovery.json" >/dev/null
+          echo 'Potvrzený převod, odebrání technického oprávnění a obnova provozu: PASS.'
+
+      - name: Ověřit živé HTTP ze serveru
+        run: bash .github/scripts/member-evidence-operation-http.sh
+
+      - name: Obnovit přesnou zálohu dokončeného převodu v izolaci
+        if: always() && steps.result.outcome == 'success'
+        run: bash .github/scripts/member-evidence-operation-restore.sh
+
+      - name: Uklidit soukromou kopii a kontejner
+        if: always()
+        run: |
+          docker rm -f "kis-member-operation-$GITHUB_RUN_ID" >/dev/null 2>&1 || true
+          rm -rf -- "/tmp/kis-member-operation-$GITHUB_RUN_ID"

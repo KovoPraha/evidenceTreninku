@@ -60,8 +60,11 @@ výchozí zamykání a ostrý převod navíc zamyká celý schválený aplikačn
 Regrese je pokryta skutečným READ ONLY náhledem skupiny na MariaDB 10.3/11.4.
 Neúspěšný čtecí běh nic nezapsal a provoz nepozastavil.
 
-Provozní data zatím nejsou tímto dokumentem prohlášena za převedená. Výsledek
-bude doplněn do [aktuálního stavu](CURRENT_STATE.md) a protokolu konkrétního runu.
+Převod 41542954307 je potvrzený v [protokolu](verification/member-evidence-cutover-20261102/RESULTS.md)
+a [aktuálním stavu](CURRENT_STATE.md). Mutující workflow neopakovat. Samostatné
+`verify-member-evidence-cutover.yml` pouze přečte potvrzený výsledek a recovery,
+ověří jejich otisky, dostupnost webu ze serveru a obnoví přesnou zálohu v izolovaném Dockeru.
+Nikdy nevolá apply ani neobnovuje živou DB. Obnova zálohy proběhne i při selhání HTTP kontroly.
 Přihlášená přejímka všech rolí a dva již chybějící podklady zůstávají otevřené;
 členský převod nemění soubory příloh. Poslední synchronizace čeká na další export.
 E8 nesmí odstranit její technické mapy ani předčasně uzavřít bod návratu.

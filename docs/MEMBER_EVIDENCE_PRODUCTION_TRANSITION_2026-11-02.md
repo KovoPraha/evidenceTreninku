@@ -1,11 +1,11 @@
 # Podklady pro provozní přechod evidence členů
 
-Stav k 2. 11. 2026, 18:41 UTC. Navazuje na [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md)
+Aktualizováno 3. 11. 2026 (Europe/Prague), po potvrzeném produkčním převodu. Navazuje na [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md)
 a [implementační protokol](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md).
 Vlastník následně v tomto chatu **potvrdil převzetí 435 aktivních zařazení,
 odstranění 560 historických a počáteční den 2. 11. 2026**. Po tomto dni proběhne
 ještě jedna synchronizace. Datum je pevné i při pozdějším technickém přechodu.
-Nejde zatím o doklad provedeného převodu.
+Schválený převod proběhl v běhu 41542954307; [protokol a neosobní důkazy](verification/member-evidence-cutover-20261102/RESULTS.md). Níže uvedená původní inventura je historický podklad.
 
 ## Co potvrdila produkční inventura
 
@@ -88,10 +88,10 @@ Podrobná mapa skutečných ID zůstává mimo Git.
 - [Technický nácvik skutečné zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41500616687)
   převedl 44 soupisek, zachoval data a opakování bylo idempotentní. Následná
   obnova vrátila shodné otisky 337 tabulek a 2 triggery. Nic se nemazalo.
-- Cílová mapa D2 je schválená. Před ostrým přechodem zbývá vytvořit
-  **konkrétní manifest ID včetně cleanupu**, ověřit jeho závislosti a nácvik,
-  obnovu příloh a přihlášené UAT. Souhlas s výchozím stavem a datem je již udělený;
-  není třeba se na tyto dvě otázky znovu ptát.
+- Cílová mapa D2 i konkrétní manifest cleanupu byly aplikovány: 8 skupin / 44 hran,
+  435 počátečních zařazení a 560 odstraněných historických intervalů i událostí.
+  Technická identita převodu má odebraná oprávnění, provoz byl obnoven.
+  Zbývá přihlášené UAT, vypořádání chybějících příloh a poslední synchronizace.
 - [Rozšířený nácvik 41512931635](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41512931635)
   ověřil také konkrétní rozsah úklidu: převzal 435 intervalů od 2. 11., odstranil
   560 historických intervalů a 560 importních událostí, odpojil 560 technických vazeb.
@@ -100,5 +100,4 @@ Podrobná mapa skutečných ID zůstává mimo Git.
 - E8, tedy destruktivní odstranění starého schématu a backendů, navazuje až na
   ověřený E7 a uzavřený bod návratu. Samotné sloučení kódu tuto podmínku nenaplňuje.
 
-Provozní vydání určuje [CURRENT_STATE](CURRENT_STATE.md). Aplikační kód a migrace jsou nasazené v běhu 41533206850; [protokol vydání](verification/member-evidence-release-20261102/RESULTS.md). Tato práce dosud
-neprovedla živý členský převod ani cleanup a nezapnula importy či rozesílky.
+Provozní vydání určuje [CURRENT_STATE](CURRENT_STATE.md). Datový převod a schválený cleanup jsou potvrzené; poslední synchronizace, E8 a úplná přejímka nikoli. Běh převodu selhal až na HTTP timeoutu runneru po commitu. Následné nezávislé HTTP 40/40 a inventura PASS; čerstvá záloha čeká na samostatnou izolovanou obnovu. Importy a rozesílky se nezapnuly.

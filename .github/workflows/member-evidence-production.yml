@@ -135,6 +135,7 @@ jobs:
           jq -e '.ok and .maintenance_active and (.cutover_committed == false)' "/tmp/kis-member-operation-$GITHUB_RUN_ID/prepare-result.json" >/dev/null
 
       - name: Zálohovat samostatným SSH procesem při pozastavených zápisech
+        id: backup
         run: |
           set -euo pipefail
           source .github/scripts/production-ssh-retry.sh
@@ -164,12 +165,10 @@ jobs:
 
       - name: Ověřit dostupnost po obnově provozu
         if: always()
-        run: |
-          set -euo pipefail
-          test "$(curl --silent --show-error --max-time 30 --output /dev/null --write-out '%{http_code}' https://kis.kovopraha.cz/)" = 200
-          test "$(curl --silent --show-error --max-time 30 --output /dev/null --write-out '%{http_code}' https://kis.kovopraha.cz/kis_rosters_admin.php)" = 302
+        run: bash .github/scripts/member-evidence-operation-http.sh
 
       - name: Ověřit obnovu čerstvé zálohy v izolaci
+        if: always() && steps.backup.outcome == 'success'
         run: bash .github/scripts/member-evidence-operation-restore.sh
 
       - name: Odstranit soukromé soubory z runneru

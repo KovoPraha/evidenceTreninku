@@ -1,0 +1,24 @@
+{
+  "run_id": "41544284892",
+  "read_only": true,
+  "as_of": "2026-11-03",
+  "live": {
+    "sha": "7c31ea174dae063fc781f708b8caa105ba57feb6",
+    "run_id": "41539094174",
+    "deployed_at": "2026-11-02T22:42:15+00:00",
+    "uat_approved": false
+  },
+  "integration_flags": {
+    "FIO_IMPORT_ENABLED": false,
+    "FIO_AUTO_CONFIRM_ENABLED": false,
+    "SUMUP_ENABLED": false,
+    "STRIPE_ENABLED": false,
+    "VELOCOTA_INTEGRATION": false,
+    "PACKETA_ENABLED": null
+  },
+  "kis_canonical_write_enabled": false,
+  "migration_ledger_count": 149,
+  "domain_mutations": false,
+  "missing_attachments": 2,
+  "scope": "Live metadata, flags and ledger only. Historical source comparisons in the generic drill are not a current runtime audit."
+}

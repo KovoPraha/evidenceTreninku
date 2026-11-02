@@ -1,22 +1,19 @@
 # Aktuální stav projektu
 
-Aktualizováno 2. 11. 2026 (Europe/Prague), po nasazení aplikační evidence členů bez sezon přes PR #285.
+Aktualizováno 3. 11. 2026 (Europe/Prague), po potvrzeném produkčním převodu evidence členů.
 
-- **Evidence členů bez sezon: aplikační část nasazena, datový převod neproveden.** PR #279–#285 přidávají
-  trvalé soupisky, časové členství, datované nabídky/náhrady a nástroj převodu.
-  Všech 11 kontrol #285 PASS, Linux 1 953 testů / 38 293 assertions. Vlastník potvrdil
-  převzetí 435 aktivních zařazení od 2. 11. 2026 a odstranění 560 historických;
-  nástroj podporuje jednu poslední synchronizaci s neměnným počátečním dnem.
-  Čtecí produkční
-  inventura a [nácvik na izolované záloze](verification/member-evidence-20261102/RESULTS.md)
-  prošly: 44 soupisek, 435 převzatých intervalů, odstraněno 560 historických intervalů
-  a 560 importních událostí; parita, opakování a obnova 337 tabulek / 2 triggerů PASS.
-  [Schválená mapa D2](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md) je implementovaná:
-  sedm provozních skupin / 41 soupisek, samostatná skupina TEST / 3 soupisky.
-  [Nácvik přesné mapy 41532405191](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41532405191)
-  PASS: 8 nových skupin, 44 hran, shoda skupinového členství i dosavadního trenérského pilotu.
-  [Konkrétní podklady a otevřená rozhodnutí](MEMBER_EVIDENCE_PRODUCTION_TRANSITION_2026-11-02.md).
-  E7/E8, cleanup a přihlášená přejímka nejsou dokončené. Schválení mapy není dokladem živé aplikace datového manifestu.
+- **Evidence členů bez sezon: aplikace nasazena a schválená data převedena.**
+  [Převod 41542954307](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41542954307)
+  potvrdil 435 výchozích zařazení od **2. 11. 2026**, odstranění 560 historických
+  intervalů a 560 importních událostí. Osoby, doklady a dosavadní trenérské rozsahy zachované.
+  [Schválená mapa](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md) je živá: sedm provozních
+  skupin / 41 soupisek a TEST / 3 soupisky. Rexonix závodní, KDC a Bikros samostatně `other`.
+  Technická identita převodu je neaktivní a její dočasné oprávnění bylo odebráno.
+  Běh skončil červeně až na HTTP timeoutu runneru po commitu; následné nezávislé
+  HTTP 40/40 a čtecí inventura všech 44 soupisek / 8 skupin PASS.
+  [Důkazy a meze](verification/member-evidence-cutover-20261102/RESULTS.md).
+  Jedna poslední synchronizace čeká na nový export, počáteční den se neposouvá.
+  Přihlášené UAT a E8 nejsou dokončené; převodní mapy a bod návratu zůstávají zachované.
 
 - [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
 
@@ -45,14 +42,14 @@ Aktualizováno 2. 11. 2026 (Europe/Prague), po nasazení aplikační evidence č
   [Protokol](verification/member-evidence-cutover-20261102/RESULTS.md),
   [strojový souhrn](verification/member-evidence-cutover-20261102/release-comparison.json).
   Živé SHA a 9 souborů převodu ověřila inventura 41541533269; nejde o úplnou inventuru runtime.
-  Datový převod neproběhl: první pokus zastavil preflight (hosting nepodporuje proc_open).
-- **Ověření:** všech 11 kontrol #288 PASS, sloučený strom shodný s ověřeným,
-  Linux 1957 testů / 38324 assertions; MariaDB 10.3/11.4, profily a PHPStan/styl PASS.
+  Datový převod provedl nástroj z PR #290; aplikace zůstává na výše uvedeném vydání.
+- **Ověření:** všech 11 kontrol #290 PASS, sloučený strom shodný s ověřeným,
+  Linux 1957 testů / 38326 assertions; MariaDB 10.3/11.4, profily a PHPStan/styl PASS.
   Nácvik přesné mapy na skutečné izolované záloze PASS. Deploy ověřil HTTP dostupnost
   a ochranu klíče archivu; následná anonymní HTTP kontrola 40/40 PASS. Přihlášené UAT není dokončené. Změna hesla a T07 zůstávají odložené.
 - **Záloha a schéma:** nová ověřená záloha, 342 tabulek / 2 triggery;
   [izolovaná obnova této generace 41540526914](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41540526914) PASS.
-  SHA-256 `3c699ad75305b261294f9e0974dac73eac9f49f953425e577557600cb9ae3d6d`.
+  Čerstvá záloha převodu má SHA-256 `c633457ae631140bc30951f488855baf9b5251d347a107f13df894bce6725203`; její izolovaná obnova čeká.
   Schéma current / pending [], migrační ledger 149; dosavadní variabilní symboly zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
