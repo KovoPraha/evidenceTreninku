@@ -101,11 +101,17 @@ function memberEvidenceProductionMain(): void
         } else {
             $phase = 'runtime';
             $deployment = json_decode((string) file_get_contents($root . '/var/deployment.json'), true, 512, JSON_THROW_ON_ERROR);
+            $result['runtime'] = ['deployment_sha' => $deployment['sha'] ?? null,
+                'proc_open' => function_exists('proc_open'), 'curl_init' => function_exists('curl_init')];
             if (!preg_match('/^[a-f0-9]{40}$/D', (string) ($operation['release_sha'] ?? ''))
-                || ($deployment['sha'] ?? '') !== $operation['release_sha']
-                || !function_exists('proc_open') || !function_exists('curl_init')) {
+                || ($deployment['sha'] ?? '') !== $operation['release_sha']) {
                 throw new RuntimeException('Unexpected deployed application.');
             }
+            $phase = 'runtime_capabilities';
+            if (!$result['runtime']['proc_open'] || !$result['runtime']['curl_init']) {
+                throw new RuntimeException('Required operational capability unavailable.');
+            }
+            $phase = 'runtime_hashes';
             $hashes = json_decode((string) file_get_contents($directory . '/runtime.json'), true, 512, JSON_THROW_ON_ERROR);
             foreach ($hashes as $path => $hash) {
                 if (!preg_match('~^(?:includes|bin)/[a-z_/-]+[.]php$~D', $path)

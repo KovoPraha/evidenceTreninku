@@ -1,0 +1,21 @@
+[
+  {
+    "ok": false,
+    "cutover_committed": false,
+    "technical_actor_revoked": false,
+    "maintenance_restored": false,
+    "failure": {
+      "phase": "runtime",
+      "type": "RuntimeException"
+    },
+    "finished_at": "2026-11-02T22:45:51+00:00"
+  },
+  {
+    "ok": true,
+    "cutover_committed": false,
+    "recovery_only": true,
+    "technical_actor_revoked": false,
+    "maintenance_restored": false,
+    "finished_at": "2026-11-02T22:45:53+00:00"
+  }
+]

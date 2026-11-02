@@ -1,0 +1,33 @@
+[
+  {
+    "contract": "member-evidence-copy-rehearsal-v1",
+    "isolated_copy_only": true,
+    "source_backup_sha256": "9e546aecbac3fcc3a0de44f0cd39795cb029dc0bcf0e910276216b790c53e9ce",
+    "source_tables": 337,
+    "upgraded_tables": 341,
+    "converted_teams": 44,
+    "created_groups": 8,
+    "created_edges": 44,
+    "group_membership_parity": true,
+    "mapping_sha256": "b4168c1bc94b824e4d70c167cdba795465607fc07f8ee3c71b9593b467fea0c9",
+    "existing_pilot_scope_preserved": true,
+    "technical_actor_revoked": true,
+    "opening_on": "2026-11-02",
+    "opening_count": 435,
+    "deleted": {
+      "club_roster_members": 560,
+      "club_roster_events": 560
+    },
+    "detached_claim_count": 560,
+    "final_sync_pending": true,
+    "preview_read_only": true,
+    "preserved_parity": true,
+    "idempotent": true,
+    "production_mapping_approved": true,
+    "attachments_verified": false
+  },
+  {
+    "restore_parity": true,
+    "tables": 337
+  }
+]

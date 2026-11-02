@@ -60,6 +60,17 @@ function diagnoseMemberEvidenceMain(): void
             . 'FROM club_member_charges GROUP BY source_system,status,currency ORDER BY source_system,status,currency')->fetchAll();
         $phase = 'offers';
         $offers = $pdo->query('SELECT id,program_id,team_id,status,starts_on,ends_on FROM club_program_offers ORDER BY id')->fetchAll();
+        $phase = 'runtime_capabilities';
+        $deployment = json_decode((string) file_get_contents($root . '/var/deployment.json'), true, 512, JSON_THROW_ON_ERROR);
+        $runtime = ['deployment_sha' => $deployment['sha'] ?? null, 'proc_open' => function_exists('proc_open'),
+            'curl_init' => function_exists('curl_init'), 'allow_url_fopen' => (bool) filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOL),
+            'core_sha256' => []];
+        foreach (['includes/member_evidence_cutover.php', 'includes/member_evidence_snapshot.php',
+            'includes/member_evidence_opening.php', 'includes/member_evidence_groups.php',
+            'includes/member_evidence_identity.php', 'includes/roster_hierarchy.php',
+            'includes/operational_cases.php', 'includes/trainer_pilot.php', 'bin/db-backup.php'] as $path) {
+            $runtime['core_sha256'][$path] = is_file($root . '/' . $path) ? hash_file('sha256', $root . '/' . $path) : null;
+        }
         $preview = null;
         $previewDirectory = (string) getenv('MEMBER_EVIDENCE_PREVIEW_DIR');
         if ($previewDirectory !== '') {
@@ -109,7 +120,7 @@ function diagnoseMemberEvidenceMain(): void
         echo json_encode(
             ['contract' => 'member-evidence-predeploy-inventory-v1', 'read_only' => true,
             'generated_at' => gmdate('c'), 'tables' => $tables, 'foreign_keys' => $keys, 'teams' => $teams,
-            'memberships' => $memberships, 'charges' => $charges, 'offers' => $offers, 'approved_preview' => $preview],
+            'memberships' => $memberships, 'charges' => $charges, 'offers' => $offers, 'approved_preview' => $preview, 'runtime' => $runtime],
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
         ) . PHP_EOL;
     } catch (Throwable $error) {
