@@ -72,9 +72,11 @@ Podrobná mapa skutečných ID zůstává mimo Git.
 
 ## Co je již ověřeno a co ještě zbývá
 
-- Aplikační implementace je sloučená v PR #279, navazující nácvik v #280 a oprava
-  katalogových identifikátorů v #281. Poslední úplná sada: 1 936 testů / 38 191
-  assertions, všech 11 kontrol PASS na headu #281.
+- Aplikační implementace je sloučená v PR #279, navazující nácvik a omezení
+  rozsahu v #280–#282. [PR #283](https://github.com/KovoPraha/evidenceTreninku/pull/283)
+  přidává schválený počáteční stav a jednu poslední synchronizaci; merge
+  `1d0a562194aefa66711dd6da3b0558babf68d33e`. Poslední úplná sada: **1 947 testů / 38 243
+  assertions**, všech 11 kontrol PASS na headu #283.
 - [Technický nácvik skutečné zálohy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41500616687)
   převedl 44 soupisek, zachoval data a opakování bylo idempotentní. Následná
   obnova vrátila shodné otisky 337 tabulek a 2 triggery. Nic se nemazalo.
@@ -82,6 +84,11 @@ Podrobná mapa skutečných ID zůstává mimo Git.
   **konkrétní manifest ID včetně cleanupu**, ověřit jeho závislosti a nácvik,
   obnovu příloh a přihlášené UAT. Souhlas s výchozím stavem a datem je již udělený;
   není třeba se na tyto dvě otázky znovu ptát.
+- [Rozšířený nácvik 41512931635](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41512931635)
+  ověřil také konkrétní rozsah úklidu: převzal 435 intervalů od 2. 11., odstranil
+  560 historických intervalů a 560 importních událostí, odpojil 560 technických vazeb.
+  Parita chráněných dat, opakování a obnova 337 tabulek / 2 triggerů PASS.
+  Cílové názvy/zaměření D2 stále nahrazovaly technické kódy pro nácvik; živá DB se neměnila.
 - E8, tedy destruktivní odstranění starého schématu a backendů, navazuje až na
   ověřený E7 a uzavřený bod návratu. Samotné sloučení kódu tuto podmínku nenaplňuje.
 

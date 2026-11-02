@@ -54,6 +54,31 @@ stále zneplatní manifest. Cílená sada: **9 testů / 29 assertions PASS**.
 
 ## Doložené výsledky
 
+PR #283 je sloučen jako `1d0a562194aefa66711dd6da3b0558babf68d33e`.
+[Všech 11 kontrol](https://github.com/KovoPraha/evidenceTreninku/pull/283/checks)
+PASS; [úplná Linux sada](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41511689296/job/125504841907)
+**1 947 testů / 38 243 assertions**, bez skipů. Cílená místní sada **26 testů / 149 assertions**
+ověřuje počáteční den, zachování současných vazeb při odstranění historie,
+idempotenci, jedinou poslední synchronizaci, odmítnutí starší historie/duplicit,
+inkluzivní ukončení, revokovaná práva a změnu dat po náhledu. PHPStan, Composer
+validate a styl PASS. Samotné testy neznamenají provedení produkčního převodu.
+
+[Rozšířený nácvik 41512931635](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41512931635)
+nad skutečnou zálohou **prošel 2. 11. 2026 v 19:46 UTC** na sloučeném SHA #283:
+
+- 337 zdrojových tabulek, 341 po upgradu ve snapshotu, 44 převedených soupisek;
+- 435 převzatých intervalů s počátečním dnem **2026-11-02**;
+- odstraněno přesně 560 historických intervalů a 560 jejich importních událostí;
+- odpojeno 560 vypořádaných technických vazeb, jejich mapy zachovány pro poslední synchronizaci;
+- preview bez zápisu, shoda chráněných dat a idempotentní opakování PASS;
+- úplná obnova: shodné otisky dat/schématu 337 původních tabulek, 2 triggery;
+- zdrojový SHA-256 `62aa5ba85830fdbd0d02ada60a0d365147eeff1a97621ac4fe268b673f5e1bdb`.
+
+Mazání proběhlo pouze v izolované kopii runneru, která byla následně odstraněna.
+Poslední synchronizace zůstala čekající. Mapování soupisek mělo technické kódy
+`REHEARSAL-ID`, takže tento běh nenahrazuje schválení cílového zaměření/mapy D2,
+produkční manifest, obnovu příloh, přihlášené UAT ani živý E7/E8.
+
 | Kontrola | Výsledek a rozsah |
 |---|---|
 | Úplná linuxová PHPUnit | [Běh 41493722731, PHPUnit job](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41493722731/job/125443088099): **1935 testů, 38188 assertions, PASS**, bez skipů. Celý tehdejší CI běh nebyl zelený kvůli následným samostatným databázovým profilům; nepovažovat tento dílčí PASS za všechny kontroly. |
@@ -77,7 +102,9 @@ Linux CI; rozhodující stav celého vydání je na přesném headu PR.
 ## Provozní hranice
 
 Tento protokol nedokládá produkční nasazení ani provedení E7/E8. Čtecí produkční
-inventura prošla; chybí uzavřená mapa D1–D3 a manifest cleanupu, jeho nácvik včetně
+inventura prošla. D1 a výchozí rozsah D3 jsou potvrzené: 435 aktivních od 2. 11. 2026,
+560 historických odstranit, jedna poslední synchronizace zůstává čekající.
+Chybí uzavřená cílová mapa D2 a konkrétní produkční manifest cleanupu, nácvik včetně
 příloh a přihlášená/lidská přejímka všech rolí. Databázové změny a opakování
 operací proběhly nad syntetickými daty a oddělenou kopií aplikační zálohy.
 Žádné skutečné importy, rozesílky ani bankovní přepínače se tímto ověřením nezapínají.
