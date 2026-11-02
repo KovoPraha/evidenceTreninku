@@ -1,6 +1,6 @@
 # Pracovní plán jednotné evidence členů bez sezon
 
-Datum: 2. 11. 2026, Europe/Prague. Stav: **aplikační části E1–E5 a nástroj převodu E6 sloučeny v PR #279; produkční převod E7 a odstranění schématu E8 neprovedeny**. Přesný rozsah, přechodové závislosti a zbývající přejímky uvádí [implementační protokol](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md).
+Datum plánu: 2. 11. 2026, aktualizace 3. 11. 2026, Europe/Prague. Stav: **E1–E5 nasazeny; nácvik E6 a schválený datový převod E7 provedeny. Úplná přihlášená přejímka, poslední synchronizace a E8 zůstávají otevřené**. Přesný rozsah, přechodové závislosti a zbývající přejímky uvádí [implementační protokol](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md).
 
 Vlastník potvrdil cílový koncept: jedna karta osoby, trvalé skupiny a soupisky, časově platné členství, datované nabídky kroužků a společné využití členství v celé aplikaci. Historie před přechodem zůstane v původním KIS. Nový systém převezme potřebný výchozí stav a bude uchovávat vlastní provozní historii od přechodu.
 
@@ -266,8 +266,11 @@ Pro aplikační PR: syntaxe dotčených PHP, `git diff --check`, `composer valid
 - [x] E3: převést kroužky, nabídky, aktivaci a pravidla náhrad.
 - [x] E4: sjednotit tréninky, akce, rodinu a komunikaci.
 - [x] E5: ověřit příspěvky a návaznosti plateb.
-- [ ] E6: provést nácvik převodu, obnovy a úplné UAT.
-- [ ] E7: provést schválený provozní přechod a ověření.
+- [x] E6: nácvik přesné mapy 435/560, parit, technické identity a obnovy na izolované záloze.
+- [ ] E6/E7: dokončit přihlášené UAT všech rolí.
+- [x] E7: schválený převod 41542954307 potvrzen, provoz obnoven, technické oprávnění odebráno; nezávislé HTTP 40/40 a inventura PASS.
+- [ ] E7: izolovaně obnovit čerstvou zálohu konkrétního převodu (původní workflow tento krok po HTTP timeoutu vynechalo).
+- [ ] Dokončit jednu poslední synchronizaci po dodání nového exportu; datum 2. 11. neměnit.
 - [ ] E8: odstranit sezonní schéma a zbylé historické cesty.
 
 Zaškrtnuté E1–E5 označují dokončenou aplikační část, nikoli produkční UAT. Výsledky a omezení jsou v [ověřovacím protokolu](verification/member-evidence-20261102/RESULTS.md).

@@ -22,8 +22,12 @@ Zdrojová ID, kódy a názvy jsou v soukromém provozním podkladu mimo Git.
 Implementace mapy je sloučená v PR #285. Nácvik přesné mapy 41532405191 prošel:
 8 skupin, 44 hran, 435 počátečních zařazení, 560 odstraněných historických intervalů,
 parita skupin, pilotu, opakování i obnova DB PASS. Všech 11 kontrol PASS (1953 testů / 38293 assertions).
-Produkční manifest úklidu a UAT zůstávají otevřené; E7/E8 nebyly provedeny. Tento stav není potvrzením
-provedeného mazání. Aplikační kód byl následně nasazen v běhu 41533206850; živé SHA a přesný rozsah ověření jsou v CURRENT_STATE a [protokolu vydání](verification/member-evidence-release-20261102/RESULTS.md).
+Schválený produkční převod byl potvrzen v běhu 41542954307: 435 počátečních zařazení od 2. 11.,
+560 historických intervalů a importních událostí odstraněno, 8 skupin / 44 hran. Technická
+identita je po převodu neaktivní bez oprávnění; provoz obnoven. Červený výsledek workflow
+způsobil až následný HTTP timeout runneru; nezávislé HTTP 40/40 a čtecí inventura PASS.
+Přihlášené UAT, poslední synchronizace a E8 zůstávají otevřené. Živé vydání a zálohy
+určuje CURRENT_STATE a [protokol převodu](verification/member-evidence-cutover-20261102/RESULTS.md). Převod neopakovat.
 
 Navazuje [trenérská obnova hesla](TRAINER_READINESS_2026-10-31.md) a její
 [produkční přejímka](verification/trainer-recovery-20261031/RESULTS.md).

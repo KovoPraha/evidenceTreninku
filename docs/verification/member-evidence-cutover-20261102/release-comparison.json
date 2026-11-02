@@ -4,12 +4,6 @@
     "run_id": "41539094174",
     "uat_approved": false
   },
-  "backup": {
-    "sha256": "3c699ad75305b261294f9e0974dac73eac9f49f953425e577557600cb9ae3d6d",
-    "tables": 342,
-    "triggers": 2,
-    "compressed_bytes": 6249806
-  },
   "schema": {
     "ok": true,
     "current": true,
@@ -21,7 +15,7 @@
     "catalog_count": 148,
     "pending": []
   },
-  "cutover_committed": false,
+  "cutover_committed": true,
   "failed_cutover_run": "41539911294",
   "failure_before_maintenance_and_database_writes": true,
   "anonymous_http_before_cutover": {
@@ -30,11 +24,53 @@
   },
   "rehearsal_run": "41538817658",
   "preview_run": "41539667209",
-  "restore_run": "41540526914",
   "restored_tables": 342,
   "restored_triggers": 2,
   "runtime_verification_run": "41541533269",
   "core_files_checked": 9,
   "core_mismatches": [],
-  "host_proc_open": false
+  "host_proc_open": false,
+  "previous_backup": {
+    "sha256": "3c699ad75305b261294f9e0974dac73eac9f49f953425e577557600cb9ae3d6d",
+    "tables": 342,
+    "triggers": 2,
+    "compressed_bytes": 6249806
+  },
+  "backup": {
+    "sha256": "c633457ae631140bc30951f488855baf9b5251d347a107f13df894bce6725203",
+    "tables": 342,
+    "triggers": 2,
+    "compressed_bytes": 6249806
+  },
+  "previous_backup_restore_run": "41540526914",
+  "cutover_run": "41542954307",
+  "cutover_workflow_conclusion": "failure",
+  "cutover_postcheck_failure": "GitHub runner curl connection timeout after successful commit and recovery",
+  "cutover": {
+    "fingerprint": "79e8e7fbfa50afbde2e52122f578d25c90b28f499558f0bbb601bb1e6c3cd352",
+    "cutover_on": "2026-11-02",
+    "converted_teams": 44,
+    "created_groups": 8,
+    "created_edges": 44,
+    "group_membership_parity": true,
+    "opening_count": 435,
+    "opening_on": "2026-11-02",
+    "final_sync_pending": true,
+    "detached_claim_count": 560,
+    "deleted": {
+      "club_roster_members": 560,
+      "club_roster_events": 560
+    },
+    "preserved_parity": true
+  },
+  "technical_actor_revoked": true,
+  "maintenance_restored": true,
+  "operator_revision": "09df7a14804323393f1df923e9fa8c52af649728",
+  "anonymous_http_after_cutover": {
+    "passed": 40,
+    "checks": 40
+  },
+  "post_inventory_run": "41543567289",
+  "post_release_check_run": "41544284892",
+  "fresh_backup_restore_pending": true
 }

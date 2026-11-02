@@ -71,6 +71,24 @@ function diagnoseMemberEvidenceMain(): void
             'includes/operational_cases.php', 'includes/trainer_pilot.php', 'bin/db-backup.php'] as $path) {
             $runtime['core_sha256'][$path] = is_file($root . '/' . $path) ? hash_file('sha256', $root . '/' . $path) : null;
         }
+        $phase = 'completed_cutover';
+        $completed = null;
+        if (in_array('member_evidence_cutover_runs', array_column($tables, 'TABLE_NAME'), true)) {
+            $run = $pdo->query('SELECT actor_trainer_id,summary_json FROM member_evidence_cutover_runs ORDER BY created_at DESC,fingerprint DESC LIMIT 1')->fetch();
+            if ($run) {
+                $q = $pdo->prepare('SELECT aktivni,(SELECT COUNT(*) FROM staff_user_positions p WHERE p.trainer_id=t.id) AS positions,'
+                    . '(SELECT COUNT(*) FROM staff_superadmins s WHERE s.trainer_id=t.id) AS superadmins,'
+                    . '(SELECT COUNT(*) FROM coach_scope_grants g WHERE g.trainer_id=t.id) AS coach_grants '
+                    . 'FROM treneri t WHERE t.id=? AND t.jmeno=?');
+                $q->execute([(int) $run['actor_trainer_id'], 'Převod evidence členů']);
+                $actor = $q->fetch();
+                $completed = ['summary' => json_decode($run['summary_json'], true, 512, JSON_THROW_ON_ERROR),
+                    'technical_actor_inactive_without_grants' => $actor && (int) $actor['aktivni'] === 0
+                        && (int) $actor['positions'] === 0 && (int) $actor['superadmins'] === 0 && (int) $actor['coach_grants'] === 0,
+                    'opening' => $pdo->query("SELECT COUNT(*) AS intervals,MIN(valid_from) AS first_start,MAX(valid_from) AS last_start "
+                        . "FROM club_roster_members WHERE source_ref LIKE 'kis-opening:%'")->fetch()];
+            }
+        }
         $preview = null;
         $previewDirectory = (string) getenv('MEMBER_EVIDENCE_PREVIEW_DIR');
         if ($previewDirectory !== '') {
@@ -120,7 +138,8 @@ function diagnoseMemberEvidenceMain(): void
         echo json_encode(
             ['contract' => 'member-evidence-predeploy-inventory-v1', 'read_only' => true,
             'generated_at' => gmdate('c'), 'tables' => $tables, 'foreign_keys' => $keys, 'teams' => $teams,
-            'memberships' => $memberships, 'charges' => $charges, 'offers' => $offers, 'approved_preview' => $preview, 'runtime' => $runtime],
+            'memberships' => $memberships, 'charges' => $charges, 'offers' => $offers,
+            'approved_preview' => $preview, 'runtime' => $runtime, 'completed_cutover' => $completed],
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
         ) . PHP_EOL;
     } catch (Throwable $error) {

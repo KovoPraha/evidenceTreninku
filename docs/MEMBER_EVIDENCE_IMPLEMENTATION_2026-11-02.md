@@ -1,6 +1,6 @@
 # Evidence členů bez sezon — implementace a převod
 
-Navazuje na [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md). Tento dokument popisuje aplikační změnu a nácvik nad syntetickými daty i izolovanou kopií skutečné aplikační zálohy. Nepotvrzuje nasazení, převod živých dat ani dokončení E7/E8.
+Navazuje na [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md). Tento dokument popisuje aplikační změnu a nácvik nad syntetickými daty i izolovanou kopií skutečné aplikační zálohy. Produkční převod byl následně potvrzen; aktuální důkazy jsou v [protokolu převodu](verification/member-evidence-cutover-20261102/RESULTS.md). Úplné přihlášené UAT ani E8 nejsou dokončené.
 
 ## Co aplikace nově používá
 
@@ -75,10 +75,10 @@ Současný cleanup podporuje pouze explicitně vybrané ukončené intervaly `so
 
 Po zapsání převodu jsou na úrovni služeb zablokovány nové sezony, rollover, původní přestupový průvodce, import osob/soupisek, vznik dalších starých importních běhů a propagace starých finančních importů. Obnovovací/čtecí cesty zůstávají pro návrat a audit.
 
-## Stav před provozním přechodem
+## Stav po provozním převodu — 3. 11. 2026
 
-Technicky jsou implementovány a sloučeny aplikační části E1–E5 a nástroj E6. E0 má zdrojový inventář a úspěšnou čtecí produkční inventuru; konkrétní dispozice a manifest ještě nejsou uzavřené. E6 má syntetický nácvik a úspěšný technický převod 44 soupisek na skutečné izolované aplikační záloze včetně obnovy všech 337 původních tabulek. Chybí nácvik konkrétního produkčního manifestu úklidu včetně souborů a přihlášené UAT všech rolí. E7/E8 nebyly provedeny. Přesné důkazy obsahuje [ověřovací protokol](verification/member-evidence-20261102/RESULTS.md); aktuální čísla a rozhodnutí obsahují [podklady převodu](MEMBER_EVIDENCE_PRODUCTION_TRANSITION_2026-11-02.md).
+Aplikační části E1–E5 jsou nasazené. Po nácviku přesné mapy a READ ONLY produkčním náhledu proběhl schválený datový převod 41542954307: 44 soupisek, 8 skupin / 44 hran, 435 výchozích zařazení od 2. 11. 2026, odstranění 560 historických intervalů a 560 importních událostí. Parity chráněných dat, skupin a pilotu i idempotence PASS. Technická identita je neaktivní, dočasné oprávnění odebrané, provoz obnovený.
 
-D1 a výchozí rozsah D3 jsou potvrzené: 2. 11. 2026, převzetí 435 aktivních a odstranění 560 historických zařazení. Mapa D2 je také schválená. Nácvik přesné organizační mapy prošel v běhu 41532405191. Před E7 zbývá aktuální produkční manifest včetně provozních podmínek, ověření příloh a přihlášené přejímky. D4/D5/D8 zůstávají výslovnými rozhodnutími v příslušných agendách: systém neodhaduje poměrné ceny, výjimky z plateb ani rušení členství pro dluh. D6 spravuje matice náhrad; D7 explicitní věkové pravidlo. Žádné uvedené syntetické ověření nepotvrzuje účetní/lidskou přejímku nebo oprávnění zapnout skutečné importy a rozesílky.
+Workflow selhalo až na následném HTTP timeoutu runneru. Nezávislé HTTP 40/40 a čtecí inventura potvrzují provoz i mapu. Čerstvá záloha konkrétního převodu čeká na samostatnou izolovanou obnovu; starší generace 342 tabulek / 2 triggerů již ověřena. Podrobnosti a přesná vydání uvádí [protokol](verification/member-evidence-cutover-20261102/RESULTS.md).
 
-Referenční čtečky výkonových profilů W7.2/W7.3 přebírají pouze záměrnou změnu projekce soupisek (nulové sezonní aliasy a řazení podle začátku členství). Šablona W7.2 používá aktuální HTML bez sezonního sloupce při zachování původního controlleru. Původní způsob načítání osob a rozpočty dotazů zůstávají, aby měření stále odhalilo návrat N+1.
+Úplná přihlášená přejímka všech rolí, chybějící přílohy a jedna poslední synchronizace zůstávají otevřené. E8 vyžaduje dokončení synchronizace a uzavřený bod návratu; převodní mapy se zatím nemažou. D1/D2 a rozsah D3 jsou splněné. D4/D5/D8 zůstávají explicitními rozhodnutími příslušných agend: systém neodhaduje poměrné ceny, platební výjimky ani rušení členství pro dluh. D6 spravuje matice náhrad, D7 explicitní věkové pravidlo. Integrace a rozesílky se nezapnuly.

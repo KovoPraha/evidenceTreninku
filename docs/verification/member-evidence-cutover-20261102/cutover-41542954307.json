@@ -1,0 +1,63 @@
+{
+  "operation_run": "41542954307",
+  "workflow_conclusion": "failure",
+  "failure_after_commit": "runner HTTP connection timed out (curl 28)",
+  "prepare": {
+    "ok": true,
+    "cutover_committed": false,
+    "runtime": {
+      "deployment_sha": "7c31ea174dae063fc781f708b8caa105ba57feb6",
+      "proc_open": false,
+      "curl_init": true,
+      "allow_url_fopen": true
+    },
+    "maintenance_active": true,
+    "finished_at": "2026-11-02T23:10:48+00:00"
+  },
+  "apply": {
+    "ok": true,
+    "cutover_committed": true,
+    "runtime": {
+      "deployment_sha": "7c31ea174dae063fc781f708b8caa105ba57feb6",
+      "proc_open": false,
+      "curl_init": true,
+      "allow_url_fopen": true
+    },
+    "backup": {
+      "sha256": "c633457ae631140bc30951f488855baf9b5251d347a107f13df894bce6725203",
+      "tables": 342,
+      "triggers": 2,
+      "compressed_bytes": 6249806
+    },
+    "cutover": {
+      "fingerprint": "79e8e7fbfa50afbde2e52122f578d25c90b28f499558f0bbb601bb1e6c3cd352",
+      "cutover_on": "2026-11-02",
+      "converted_teams": 44,
+      "created_groups": 8,
+      "created_edges": 44,
+      "group_membership_parity": true,
+      "opening_count": 435,
+      "opening_on": "2026-11-02",
+      "final_sync_pending": true,
+      "detached_claim_count": 560,
+      "deleted": {
+        "club_roster_members": 560,
+        "club_roster_events": 560
+      },
+      "preserved_parity": true
+    },
+    "idempotent": true,
+    "existing_pilot_scope_preserved": true,
+    "technical_actor_revoked": true,
+    "maintenance_restored": true,
+    "finished_at": "2026-11-02T23:11:05+00:00"
+  },
+  "recovery": {
+    "ok": true,
+    "cutover_committed": false,
+    "recovery_only": true,
+    "technical_actor_revoked": true,
+    "maintenance_restored": true,
+    "finished_at": "2026-11-02T23:11:07+00:00"
+  }
+}

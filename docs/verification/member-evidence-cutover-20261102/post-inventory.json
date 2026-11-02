@@ -1,0 +1,44 @@
+{
+  "run": "41543567289",
+  "read_only": true,
+  "rosters_checked": 44,
+  "roster_mapping_matches": true,
+  "groups_checked": 8,
+  "group_mapping_matches": true,
+  "groups_total": 8,
+  "table_counts": {
+    "club_teams": {
+      "before": 77,
+      "after": 85
+    },
+    "club_team_edges": {
+      "before": 0,
+      "after": 44
+    },
+    "club_roster_members": {
+      "before": 998,
+      "after": 438
+    },
+    "sportovci": {
+      "before": 1507,
+      "after": 1507
+    },
+    "treneri": {
+      "before": 42,
+      "after": 43
+    },
+    "staff_user_positions": {
+      "before": 80,
+      "after": 80
+    },
+    "coach_scope_grants": {
+      "before": 1,
+      "after": 1
+    },
+    "member_evidence_cutover_runs": {
+      "before": 0,
+      "after": 1
+    }
+  },
+  "remaining_imported_memberships": 0
+}

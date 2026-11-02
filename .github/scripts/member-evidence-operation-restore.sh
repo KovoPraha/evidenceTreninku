@@ -3,7 +3,10 @@ set -euo pipefail
 source .github/scripts/production-ssh-retry.sh
 production_ssh_init
 LOCAL="/tmp/kis-member-operation-$GITHUB_RUN_ID"
-PRIVATE="$DEPLOY_BASE/member-cutover-$GITHUB_RUN_ID"
+OPERATION_RUN="${MEMBER_OPERATION_RUN_ID:-$GITHUB_RUN_ID}"
+[[ "$OPERATION_RUN" =~ ^[1-9][0-9]{0,19}$ ]]
+install -d -m 700 "$LOCAL"
+PRIVATE="$DEPLOY_BASE/member-cutover-$OPERATION_RUN"
 production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$PRIVATE/backup-result.json" "$LOCAL/backup-result.json"
 BACKUP=$(jq -r '.backup' "$LOCAL/backup-result.json")
 [[ "$BACKUP" =~ ^evidence_[0-9A-Za-z_-]+\.sql\.gz$ ]]
@@ -13,7 +16,10 @@ for FILE in "$BACKUP" "$STEM.sha256" "$STEM.manifest.json"; do
 done
 cd "$LOCAL"
 sha256sum -c "$STEM.sha256"
-test "$(jq -r '.sha256' "$STEM.manifest.json")" = "$(sha256sum "$BACKUP" | awk '{print $1}')"
+ACTUAL_SHA=$(sha256sum "$BACKUP" | awk '{print $1}')
+test "$(jq -r '.sha256' "$STEM.manifest.json")" = "$ACTUAL_SHA"
+test "$(jq -r '.sha256' backup-result.json)" = "$ACTUAL_SHA"
+if [ -n "${EXPECTED_BACKUP_SHA256:-}" ]; then test "$EXPECTED_BACKUP_SHA256" = "$ACTUAL_SHA"; fi
 CONTAINER="kis-member-operation-$GITHUB_RUN_ID"
 PASSWORD=$(openssl rand -hex 24)
 docker run -d --name "$CONTAINER" -e MARIADB_ROOT_PASSWORD="$PASSWORD" mariadb:11.4 >/dev/null

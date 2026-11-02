@@ -113,4 +113,4 @@ Zaměření: `other`. Členství v nové skupině se odvozuje z následujících
 - Existující organizační vazba, kolize kódu nebo odlišná zdrojová soupiska převod zastaví.
 - Všech 435 aktivních importovaných zařazení začíná 2. 11. 2026; 560 historických intervalů a jejich importní události se odstraní podle zvláštního manifestu.
 - 33 uzavřených historických soupisek se neslučuje s aktivními a není zdrojem nového členství. Jejich konečné odstranění řeší E8 po vypořádání vazeb a poslední synchronizaci.
-- Po nácviku přesné mapy zbývá produkční manifest, provozní podmínky E7 a přihlášené ověření. Nový export pro poslední synchronizaci dosud není dodán.
+- Přesná mapa byla aplikována na produkci v běhu 41542954307 a nezávislá inventura 41543567289 ji potvrdila. [Důkazy](verification/member-evidence-cutover-20261102/RESULTS.md). Přihlášené ověření a nový export pro poslední synchronizaci zůstávají otevřené.
