@@ -1,5 +1,8 @@
 # Plán implementace: skupiny, soupisky, tréninky, akce a časové členství
 
+> Aktualizace rozhodnutí 2. 11. 2026: navazuje [pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md).
+> Vlastník nově určil, že stará historie zůstane v původním KIS. Níže uvedený požadavek zachovat importovanou historii a sezonní kompatibilitu není cílovým stavem nové realizace. Tento dokument zachycuje původní plán; jeho změněné části nahrazuje nový pracovní plán.
+
 Stav: původní schválený plán z 20. 10. 2026. Stav lokální implementace a kroky před nasazením popisuje `ROSTER_HIERARCHY_IMPLEMENTATION_HANDOFF_2026-10-20.md`. Tento soubor zachycuje výchozí zjištění, nikoli aktuální stav produkce. Soupisky importované ze starého KIS a jejich historické vazby se nemažou. Import soupisek pro 2026/27 už proběhl; jejich napojení je vstupem pro tento plán, nikoli důvodem znovu importovat osoby. Automatické rozesílky ani bankovní párování se tímto plánem nezapínají.
 
 ## Produktová pravidla
