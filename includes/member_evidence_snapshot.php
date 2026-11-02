@@ -24,10 +24,10 @@ function memberEvidenceTables(PDO $pdo): array
 }
 
 /** No personal values in the summary. The full read is also the apply-time lock set. */
-function memberEvidenceSnapshot(PDO $pdo, bool $lock = false): array
+function memberEvidenceSnapshot(PDO $pdo, bool $lock = false, ?array $tables = null): array
 {
     $snapshot = [];
-    foreach (memberEvidenceTables($pdo) as $table) {
+    foreach ($tables ?? memberEvidenceTables($pdo) as $table) {
         if ($table === 'member_evidence_cutover_runs') {
             continue;
         }
@@ -56,6 +56,30 @@ function memberEvidenceSnapshot(PDO $pdo, bool $lock = false): array
             'schema_sha256' => hash('sha256', $schema)];
     }
     return $snapshot;
+}
+
+/** Keep production locking and restore inside the exact application backup boundary. */
+function memberEvidenceCutoverSnapshot(PDO $pdo, array $config, bool $lock = false): array
+{
+    $scope = $config['scope'] ?? 'whole_database';
+    if ($scope === 'whole_database') {
+        return memberEvidenceSnapshot($pdo, $lock);
+    }
+    if ($scope !== 'application_backup') {
+        throw new InvalidArgumentException('Neznámý rozsah databázového převodu.');
+    }
+    if (!defined('EVIDENCE_BACKUP_LIBRARY_ONLY')) {
+        define('EVIDENCE_BACKUP_LIBRARY_ONLY', true);
+    }
+    require_once dirname(__DIR__) . '/bin/db-backup.php';
+    $owned = array_fill_keys(EVIDENCE_TABLES, true);
+    foreach (memberEvidenceForeignKeys($pdo) as $key) {
+        if (isset($owned[$key['child_table']]) !== isset($owned[$key['parent_table']])) {
+            throw new RuntimeException('Cizí FK překračuje hranici aplikační zálohy: ' . $key['child_table'] . ' -> ' . $key['parent_table']);
+        }
+    }
+    $tables = array_values(array_filter(memberEvidenceTables($pdo), static fn (string $table): bool => isset($owned[$table])));
+    return memberEvidenceSnapshot($pdo, $lock, $tables);
 }
 
 /** All inbound foreign keys, including SET NULL/CASCADE, are blocking unless explicitly selected. */

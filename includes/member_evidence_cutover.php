@@ -48,7 +48,7 @@ function memberEvidencePreview(PDO $pdo, array $config, bool $lock = false): arr
             throw new RuntimeException('V mapě chybí aktivní původní soupiska #' . (int) $id);
         }
     }
-    $snapshot = memberEvidenceSnapshot($pdo, $lock);
+    $snapshot = memberEvidenceCutoverSnapshot($pdo, $config, $lock);
     $members = [];
     foreach (array_keys($teams) as $id) {
         foreach ([$on,(new DateTimeImmutable($on))->modify('+1 day')->format('Y-m-d'),
@@ -99,8 +99,8 @@ function memberEvidenceApply(
             $pdo->commit();
             return json_decode($previous, true, 512, JSON_THROW_ON_ERROR) + ['idempotent' => true];
         }
-        // Lock the complete observed database before checking the plan again. Never disable FK checks.
-        $snapshot = memberEvidenceSnapshot($pdo, true);
+        // Lock the approved backup scope before checking the plan again. Never disable FK checks.
+        $snapshot = memberEvidenceCutoverSnapshot($pdo, $manifest['config'], true);
         if ($snapshot !== $manifest['snapshot']) {
             throw new RuntimeException('Databáze se od náhledu změnila. Vytvořte nový manifest a zálohu.');
         }
@@ -133,7 +133,7 @@ function memberEvidenceApply(
                 $pdo->prepare('DELETE FROM ' . memberEvidenceIdentifier($table) . ' WHERE id=?')->execute([$id]);
             }
         }
-        $after = memberEvidenceSnapshot($pdo);
+        $after = memberEvidenceCutoverSnapshot($pdo, $manifest['config']);
         $changed = ['club_teams','club_roster_structure_events',...array_keys($rows)];
         foreach ($snapshot as $table => $state) {
             if (!in_array($table, $changed, true) && ($after[$table] ?? null) !== $state) {

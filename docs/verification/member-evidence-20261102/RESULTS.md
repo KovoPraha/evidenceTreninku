@@ -39,6 +39,19 @@ bezpečně uzavírají a zdvojují vnitřní backtick; zahrnou také staré náz
 pomlčkou či číslicí. Regrese s názvem obsahujícím SQL text potvrzuje zahrnutí
 tabulky do snapshotu a zachování finanční tabulky při převodu: **6 testů / 21 assertions PASS**.
 
+PR #281 je sloučen jako `f4fa996b33f0e59955db0222fd1dffe73b8e88be`.
+[Všech 11 kontrol](https://github.com/KovoPraha/evidenceTreninku/pull/281/checks)
+PASS; úplná Linux sada **1 936 testů / 38 191 assertions**.
+[Třetí produkční inventura 41502903619](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41502903619)
+prošla. Doložila 367 InnoDB tabulek, 30 mimo aplikační ownership a žádné FK přes
+tuto hranici. Neobvyklý identifikátor byl archivní `sportovci-backup1911`.
+Souhrn dat a zbývajících rozhodnutí je v [podkladech převodu](../../MEMBER_EVIDENCE_PRODUCTION_TRANSITION_2026-11-02.md).
+
+Navazující rozsah `application_backup` omezuje otisk a transakční zámky na
+tabulky stejného ownership jako záloha. Cizí agendy mohou nezávisle zapisovat;
+jejich nová FK do aplikace převod blokuje i bez řádků. Změna aplikační platby
+stále zneplatní manifest. Cílená sada: **9 testů / 29 assertions PASS**.
+
 ## Doložené výsledky
 
 | Kontrola | Výsledek a rozsah |
@@ -63,8 +76,8 @@ Linux CI; rozhodující stav celého vydání je na přesném headu PR.
 
 ## Provozní hranice
 
-Tento protokol nedokládá produkční nasazení ani provedení E7/E8. Chybí uzavřená
-produkční inventura, konkrétní mapa D1–D3 a manifest cleanupu, jeho nácvik včetně
+Tento protokol nedokládá produkční nasazení ani provedení E7/E8. Čtecí produkční
+inventura prošla; chybí uzavřená mapa D1–D3 a manifest cleanupu, jeho nácvik včetně
 příloh a přihlášená/lidská přejímka všech rolí. Databázové změny a opakování
 operací proběhly nad syntetickými daty a oddělenou kopií aplikační zálohy.
 Žádné skutečné importy, rozesílky ani bankovní přepínače se tímto ověřením nezapínají.
