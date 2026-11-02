@@ -54,6 +54,34 @@ stále zneplatní manifest. Cílená sada: **9 testů / 29 assertions PASS**.
 
 ## Doložené výsledky
 
+### Schválená mapa skupin — PR #285
+
+[PR #285](https://github.com/KovoPraha/evidenceTreninku/pull/285) je sloučen jako
+`d920515952fe8bab36f1c34f8dddb44435264c3b`; strom se shoduje s ověřeným headem
+`1768811f0c8ef1216ce939555c56a0c9d972f04e`. Všech 11 kontrol PASS,
+[Linux PHPUnit](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41531401656/job/125572228206)
+**1 953 testů / 38 293 assertions**. Cílená sada **54 testů / 431 assertions**
+ověřila skupiny, jedinečnost mapy, sjednocení členů bez duplicit, neměnné trenérské
+rozsahy a funkční pilot i po auditovaném přejmenování. Composer validate a styl PASS.
+
+[Nácvik 41532405191](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41532405191)
+v režimu `mapping=approved` prošel 2. 11. 2026 ve 21:54 UTC:
+
+- přesná soukromá mapa schválených jmen, kódů a klasifikací, nikoli `REHEARSAL-ID`;
+- otisk vstupní mapy `b4168c1bc94b824e4d70c167cdba795465607fc07f8ee3c71b9593b467fea0c9`;
+- 44 převedených soupisek, **8 nových skupin a 44 hran**, shoda skupinového členství PASS;
+- **435** převzatých intervalů od **2026-11-02**, odstraněno **560** historických intervalů a **560** importních událostí;
+- odpojeno 560 technických vazeb, poslední synchronizace ponechána čekající;
+- chráněná data, idempotentní opakování a dosavadní rozsah trenérského pilotu PASS;
+- úplná obnova shodných dat/schématu **337 tabulek a 2 triggerů**;
+- stejná zdrojová záloha `62aa5ba85830fdbd0d02ada60a0d365147eeff1a97621ac4fe268b673f5e1bdb`.
+
+Nácvik nevytvářel nové trenérské granty, neměnil živá data a neověřoval přílohy
+ani lidskou přejímku. Schválení D2 a důkaz převodu přesné mapy jsou dokončené;
+aktuální produkční manifest, podmínky E7 a následné E8 tím nejsou nahrazené.
+
+### Předchozí nácvik počátečního stavu — PR #283
+
 PR #283 je sloučen jako `1d0a562194aefa66711dd6da3b0558babf68d33e`.
 [Všech 11 kontrol](https://github.com/KovoPraha/evidenceTreninku/pull/283/checks)
 PASS; [úplná Linux sada](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41511689296/job/125504841907)
@@ -104,8 +132,9 @@ Linux CI; rozhodující stav celého vydání je na přesném headu PR.
 Tento protokol nedokládá produkční nasazení ani provedení E7/E8. Čtecí produkční
 inventura prošla. D1 a výchozí rozsah D3 jsou potvrzené: 435 aktivních od 2. 11. 2026,
 560 historických odstranit, jedna poslední synchronizace zůstává čekající.
-Cílová mapa D2 byla následně schválena vlastníkem. Zbývá konkrétní produkční manifest cleanupu, nácvik přesné mapy včetně
-příloh a přihlášená/lidská přejímka všech rolí. Databázové změny a opakování
+Cílová mapa D2 byla následně schválena vlastníkem a její databázový nácvik prošel.
+Zbývá konkrétní produkční manifest cleanupu, ověření příloh a přihlášená/lidská
+přejímka všech rolí. Databázové změny a opakování
 operací proběhly nad syntetickými daty a oddělenou kopií aplikační zálohy.
 Žádné skutečné importy, rozesílky ani bankovní přepínače se tímto ověřením nezapínají.
 

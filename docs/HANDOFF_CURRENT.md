@@ -19,6 +19,9 @@ Vlastník následně schválil [konkrétní mapu D2](MEMBER_EVIDENCE_APPROVED_MA
 sedm provozních skupin / 41 soupisek a samostatná skupina pro tři testy.
 Rexonix je závodní, KDC a Bikros dvě samostatné placené skupiny `other`.
 Zdrojová ID, kódy a názvy jsou v soukromém provozním podkladu mimo Git.
+Implementace mapy je sloučená v PR #285. Nácvik přesné mapy 41532405191 prošel:
+8 skupin, 44 hran, 435 počátečních zařazení, 560 odstraněných historických intervalů,
+parita skupin, pilotu, opakování i obnova DB PASS. Všech 11 kontrol PASS (1953 testů / 38293 assertions).
 Produkční manifest úklidu a UAT zůstávají otevřené; E7/E8 nebyly provedeny. Tento stav není potvrzením
 nasazení ani provedeného mazání.
 
