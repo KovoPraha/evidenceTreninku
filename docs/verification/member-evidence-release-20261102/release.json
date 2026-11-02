@@ -1,0 +1,47 @@
+{
+  "deployment_run": "41533206850",
+  "read_only_verification_run": "41534082174",
+  "restore_run": "41534088050",
+  "live": {
+    "sha": "d920515952fe8bab36f1c34f8dddb44435264c3b",
+    "run_id": "41533206850",
+    "deployed_at": "2026-11-02T22:02:09+00:00",
+    "uat_approved": false
+  },
+  "backup": {
+    "sha256": "9e546aecbac3fcc3a0de44f0cd39795cb029dc0bcf0e910276216b790c53e9ce",
+    "tables": 337,
+    "triggers": 2,
+    "compressed_bytes": 6231527
+  },
+  "schema": {
+    "ok": true,
+    "current": true,
+    "reason": "current",
+    "legacy_version": "2.20.2",
+    "legacy_target": "2.20.2",
+    "legacy_state": "current",
+    "ledger_exists": true,
+    "catalog_count": 148,
+    "pending": []
+  },
+  "migration_ledger_count": 149,
+  "variable_symbols_unchanged": true,
+  "integration_flags": {
+    "FIO_IMPORT_ENABLED": false,
+    "FIO_AUTO_CONFIRM_ENABLED": false,
+    "SUMUP_ENABLED": false,
+    "STRIPE_ENABLED": false,
+    "VELOCOTA_INTEGRATION": false,
+    "PACKETA_ENABLED": null
+  },
+  "kis_canonical_write_enabled": false,
+  "private_migration_candidates": {
+    "movable": 0,
+    "missing": 2,
+    "already_private": 0,
+    "invalid": 0
+  },
+  "cutover_executed": false,
+  "final_sync_executed": false
+}

@@ -7,6 +7,11 @@ on:
         description: 'Pro čtecí inventuru napište OVERIT-CLENSTVI'
         required: true
         type: string
+      approved_preview:
+        description: 'Po nasazení vytvořit soukromý náhled schválené mapy; žádné zápisy do DB'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -65,27 +70,46 @@ jobs:
           echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
 
       - name: Přečíst tabulky, vazby a neosobní souhrny členství
+        env:
+          APPROVED_PREVIEW: ${{ inputs.approved_preview }}
+          PRIVATE_MAPPING_JSON: ${{ secrets.KIS_MEMBER_EVIDENCE_MAP }}
         run: |
           set -euo pipefail
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
+          PREVIEW_PATH=''
+          if [ "$APPROVED_PREVIEW" = true ]; then
+            test -n "$PRIVATE_MAPPING_JSON"
+            umask 077
+            printf '%s' "$PRIVATE_MAPPING_JSON" > /tmp/kis-member-approved-mapping.json
+            PREVIEW_PATH="$DEPLOY_BASE/member-preview-$GITHUB_RUN_ID"
+            production_retry "${SSH[@]}" "mkdir -m 700 '$PREVIEW_PATH'"
+            production_retry "${SCP[@]}" /tmp/kis-member-approved-mapping.json "$SSH_USER@$SSH_HOST:$PREVIEW_PATH/mapping.json"
+            production_retry "${SSH[@]}" "chmod 600 '$PREVIEW_PATH/mapping.json'"
+          fi
+          unset PRIVATE_MAPPING_JSON
           production_retry "${SCP[@]}" bin/diagnose-member-evidence.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/diagnose-member-evidence.php"
           cat > /tmp/run-member-evidence-diagnostic.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
           putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('MEMBER_EVIDENCE_PREVIEW_DIR=$PREVIEW_PATH');
           require __DIR__ . '/diagnose-member-evidence.php';
           diagnoseMemberEvidenceMain();
           EOF
           production_retry "${SCP[@]}" /tmp/run-member-evidence-diagnostic.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-member-evidence-diagnostic.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-member-evidence-diagnostic.php'" | tee /tmp/kis-member-evidence-inventory.json
           jq -e '.read_only == true and (.tables | length > 0) and (.teams | type == "array")' /tmp/kis-member-evidence-inventory.json >/dev/null
+          if [ "$APPROVED_PREVIEW" = true ]; then
+            jq -e '.approved_preview.opening_count == 435 and .approved_preview.delete_counts.club_roster_members == 560 and (.approved_preview.groups | length) == 8' /tmp/kis-member-evidence-inventory.json >/dev/null
+            echo "Soukromý manifest: $PREVIEW_PATH/manifest.json; DB se neměnila, zápisy nebyly pozastaveny."
+          fi
 
       - name: Uklidit dočasné skripty
         if: always()
         continue-on-error: true
         run: |
-          rm -f /tmp/kis-member-evidence-inventory.json /tmp/run-member-evidence-diagnostic.php
+          rm -f /tmp/kis-member-evidence-inventory.json /tmp/run-member-evidence-diagnostic.php /tmp/kis-member-approved-mapping.json
           if [ -n "${SSH_HOST:-}" ]; then
             source .github/scripts/production-ssh-retry.sh
             production_ssh_init

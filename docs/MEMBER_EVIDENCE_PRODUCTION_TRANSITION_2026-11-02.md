@@ -100,5 +100,5 @@ Podrobná mapa skutečných ID zůstává mimo Git.
 - E8, tedy destruktivní odstranění starého schématu a backendů, navazuje až na
   ověřený E7 a uzavřený bod návratu. Samotné sloučení kódu tuto podmínku nenaplňuje.
 
-Provozní vydání určuje [CURRENT_STATE](CURRENT_STATE.md). Tato práce dosud
-nespustila deploy, nezměnila živá data ani nezapnula importy či rozesílky.
+Provozní vydání určuje [CURRENT_STATE](CURRENT_STATE.md). Aplikační kód a migrace jsou nasazené v běhu 41533206850; [protokol vydání](verification/member-evidence-release-20261102/RESULTS.md). Tato práce dosud
+neprovedla živý členský převod ani cleanup a nezapnula importy či rozesílky.

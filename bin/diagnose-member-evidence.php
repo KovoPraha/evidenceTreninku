@@ -60,11 +60,56 @@ function diagnoseMemberEvidenceMain(): void
             . 'FROM club_member_charges GROUP BY source_system,status,currency ORDER BY source_system,status,currency')->fetchAll();
         $phase = 'offers';
         $offers = $pdo->query('SELECT id,program_id,team_id,status,starts_on,ends_on FROM club_program_offers ORDER BY id')->fetchAll();
+        $preview = null;
+        $previewDirectory = (string) getenv('MEMBER_EVIDENCE_PREVIEW_DIR');
+        if ($previewDirectory !== '') {
+            $phase = 'private_preview_target';
+            $directory = realpath($previewDirectory);
+            if ($directory === false || !is_dir($directory) || $directory === $root
+                || str_starts_with($directory . DIRECTORY_SEPARATOR, $root . DIRECTORY_SEPARATOR)
+                || is_file($directory . '/manifest.json')) {
+                throw new RuntimeException('Preview requires a new private target outside the application.');
+            }
+            $config = json_decode((string) file_get_contents($directory . '/mapping.json'), true, 512, JSON_THROW_ON_ERROR);
+            if (($config['scope'] ?? '') !== 'application_backup' || ($config['cutover_on'] ?? '') !== '2026-11-02'
+                || count($config['teams'] ?? []) !== 44 || count($config['groups'] ?? []) !== 8) {
+                throw new RuntimeException('Unexpected approved mapping scope.');
+            }
+            $phase = 'approved_preview';
+            require_once $root . '/includes/member_evidence_cutover.php';
+            if (!function_exists('memberEvidenceGroupsPreview')) {
+                throw new RuntimeException('Approved mapping runtime must be deployed first.');
+            }
+            $manifest = memberEvidencePreview($pdo, memberEvidencePrepareOpening($pdo, $config, 435, 560));
+            $preview = ['fingerprint' => $manifest['fingerprint'], 'opening_on' => $manifest['cutover_on'],
+                'opening_count' => $manifest['opening_count'], 'delete_counts' => $manifest['delete_counts'],
+                'detached_claim_count' => $manifest['detached_claim_count'], 'groups' => array_map(
+                    static fn (array $group): array => ['code' => $group['standing_code'], 'rosters' => count($group['child_ids']),
+                        'members_on_opening_day' => $group['membership']['2026-11-02']['count']],
+                    $manifest['groups']
+                ), 'current_snapshot_only' => true, 'writes_paused' => false];
+        }
         $pdo->exec('ROLLBACK');
+        if ($preview !== null) {
+            $phase = 'save_private_manifest';
+            umask(0077);
+            $stream = fopen($directory . '/manifest.json', 'x');
+            if ($stream === false) {
+                throw new RuntimeException('Cannot create private manifest.');
+            }
+            try {
+                $json = json_encode($manifest, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . PHP_EOL;
+                if (fwrite($stream, $json) !== strlen($json)) {
+                    throw new RuntimeException('Incomplete private manifest.');
+                }
+            } finally {
+                fclose($stream);
+            }
+        }
         echo json_encode(
             ['contract' => 'member-evidence-predeploy-inventory-v1', 'read_only' => true,
             'generated_at' => gmdate('c'), 'tables' => $tables, 'foreign_keys' => $keys, 'teams' => $teams,
-            'memberships' => $memberships, 'charges' => $charges, 'offers' => $offers],
+            'memberships' => $memberships, 'charges' => $charges, 'offers' => $offers, 'approved_preview' => $preview],
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
         ) . PHP_EOL;
     } catch (Throwable $error) {
