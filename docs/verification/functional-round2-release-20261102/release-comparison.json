@@ -1,0 +1,24 @@
+{
+  "before_live": {
+    "sha": "c1686b4895c2d45428a4ca492b3c56fc4d0fe286",
+    "run_id": "41365449270",
+    "deployed_at": "2026-11-02T00:11:00+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "51796fcafa16823f6c84208406a5c75682023409",
+    "run_id": "41437064975",
+    "deployed_at": "2026-11-02T11:30:42+00:00",
+    "uat_approved": false
+  },
+  "pre_run": 41436805053,
+  "post_run": 41437714419,
+  "unchanged": {
+    "config_sha256": true,
+    "integration_flags": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "migration_ledger_count": true
+  },
+  "identity_scope": "Protected deployment metadata and successful rsync activation of both changed application files; no full live runtime hash inventory"
+}

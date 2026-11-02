@@ -1,0 +1,21 @@
+{
+  "anonymous": true,
+  "checks": [
+    {
+      "result": "PASS",
+      "observed": "Knihy: 2 výsledky, načtené veřejné rozhraní"
+    },
+    {
+      "result": "PASS",
+      "observed": "Řazení podle ceny: Zábavně k výkonu 250 Kč před Když trénink dává smysl 450 Kč"
+    },
+    {
+      "result": "PASS",
+      "observed": "Hledání Zábavně zachová kategorii a vrátí jeden odpovídající výsledek"
+    }
+  ],
+  "production_user_writes": false,
+  "password_change": "SKIPPED",
+  "T07": "SKIPPED",
+  "viewport_changed": false
+}

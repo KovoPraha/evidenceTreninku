@@ -1,0 +1,18 @@
+{
+  "pr": 274,
+  "pr_head": "b76e8c8c9cd5ecb94b45bdbc630caf867158a49f",
+  "release": "51796fcafa16823f6c84208406a5c75682023409",
+  "deployment_run": 41437064975,
+  "merged_tree_equals_tested_tree": true,
+  "application_files": [
+    {
+      "file": "bin/seed-local-demo.php",
+      "expected_sha256": "07928cf32a69f80ba29140399eb47a8913f9fe2499fb7a109a77bd5c031d9428"
+    },
+    {
+      "file": "includes/localhost_demo_catalog.php",
+      "expected_sha256": "c3366a5e46b2bba75bbbadfaaf15ddc36c08886dd7231fe9f6743b4b6cc836eb"
+    }
+  ],
+  "scope": "Expected Git blob hashes, not direct live PHP hashes"
+}

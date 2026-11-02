@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 2. 11. 2026 (Europe/Prague), po druhém místním funkčním průchodu; živé vydání beze změny.
+Aktualizováno 2. 11. 2026 (Europe/Prague), po sloučení a nasazení druhé funkční vlny PR #274.
 
-- [Další funkční testování](verification/functional-uat-round2-20261102/RESULTS.md): 35 PASS a opravený seed dema; Windows 1905/38260 (3 skipy). Nová oprava zatím nesloučena a nenasazena.
+- [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
 
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
@@ -23,22 +23,22 @@ Aktualizováno 2. 11. 2026 (Europe/Prague), po druhém místním funkčním prů
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `c1686b4895c2d45428a4ca492b3c56fc4d0fe286`,
-  [deploy 41365449270](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41365449270) SUCCESS.
-  [PR #272](https://github.com/KovoPraha/evidenceTreninku/pull/272) přidává tři UI opravy;
-  předchozí oprava neplatných/použitých odkazů PR #269, pilot a W6–W15 zachovány.
-  [Protokol](verification/functional-release-20261102/RESULTS.md),
-  [porovnání](verification/functional-release-20261102/release-comparison.json).
-  Živé SHA/run potvrdil čtecí audit 41365953921; rsync všech tří runtime souborů
-  a přesný veřejný CSS hash ověřeny. Nejde o úplnou inventuru hashů runtime.
+- **Živé vydání:** `51796fcafa16823f6c84208406a5c75682023409`,
+  [deploy 41437064975](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41437064975) SUCCESS.
+  [PR #274](https://github.com/KovoPraha/evidenceTreninku/pull/274) odděluje zboží a program v localhost seedu;
+  předchozí UI opravy #272, reset #269, pilot a W6–W15 zachovány. Bez nové migrace.
+  [Protokol](verification/functional-round2-release-20261102/RESULTS.md),
+  [porovnání](verification/functional-round2-release-20261102/release-comparison.json).
+  Živé SHA/run potvrdil čtecí audit 41437714419; rsync obou aplikačních souborů PASS.
+  Nejde o úplnou inventuru hashů runtime. CLI příprava dema se v produkci nespouštěla.
 - **Ověření:** všech 11 PR kontrol PASS, sloučený strom shodný s ověřeným,
-  Linux 1902 testů / 38239 assertions, JavaScript 19/19;
-  POSIX bez skipů, MariaDB 10.3/11.4 a objemové profily PASS.
-  Deploy zopakoval 1902/38239; HTTP před i po 26/26; produkční katalog/filtry PASS.
-  Produkční relace odhlášená: přihlášené UI znovu neověřeno; syntetické UAT je místní.
+  Linux 1905 testů / 38263 assertions bez skipů;
+  MariaDB 10.3/11.4, objemové profily a PHPStan/styl PASS.
+  Deploy zopakoval 1905/38263; HTTP před i po 26/26; browser katalog/filtry PASS.
+  Webové guardy seedu a helperu 403, localhost rozcestníku 404; přihlášené UAT neopakováno.
   Změna hesla, skutečný použitý odkaz a T07 jsou dle vlastníka nyní vynechány.
 - **Záloha a schéma:** nová ověřená záloha 337 tabulek / 2 triggery;
-  [doklad](verification/functional-release-20261102/deployment.json). Poslední doložená
+  [doklad](verification/functional-round2-release-20261102/deployment.json). Poslední doložená
   [izolovaná obnova starší generace](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41330986065)
   PASS; nová generace se v tomto vydání neobnovovala. Schéma current / pending [], ledger 143,
   dosavadní variabilní symboly beze změny.
@@ -49,7 +49,7 @@ Aktualizováno 2. 11. 2026 (Europe/Prague), po druhém místním funkčním prů
   Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
   návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
   [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).
-- **Konfigurace a flags:** hash i přílohy před/po shodné; Fio import/auto-confirm,
+- **Konfigurace a flags:** hash konfigurace a kandidáti příloh před/po shodné; Fio import/auto-confirm,
   SumUp, Stripe a Velocota false; Packeta nedefinovaná, KIS canonical writes false.
   UAT false, import false; žádné integrace nebyly aktivovány.
 - **Otevřené provozní převzetí:** lidská/účetní přejímka D12–D14, skutečná
