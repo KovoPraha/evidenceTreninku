@@ -1,0 +1,33 @@
+{
+  "live": {
+    "sha": "7c31ea174dae063fc781f708b8caa105ba57feb6",
+    "run_id": "41539094174",
+    "uat_approved": false
+  },
+  "backup": {
+    "sha256": "3c699ad75305b261294f9e0974dac73eac9f49f953425e577557600cb9ae3d6d",
+    "tables": 342,
+    "triggers": 2,
+    "compressed_bytes": 6249806
+  },
+  "schema": {
+    "ok": true,
+    "current": true,
+    "reason": "current",
+    "legacy_version": "2.20.2",
+    "legacy_target": "2.20.2",
+    "legacy_state": "current",
+    "ledger_exists": true,
+    "catalog_count": 148,
+    "pending": []
+  },
+  "cutover_committed": false,
+  "failed_cutover_run": "41539911294",
+  "failure_before_maintenance_and_database_writes": true,
+  "anonymous_http_before_cutover": {
+    "passed": 40,
+    "checks": 40
+  },
+  "rehearsal_run": "41538817658",
+  "preview_run": "41539667209"
+}

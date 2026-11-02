@@ -1,0 +1,418 @@
+{
+  "phase": "pre",
+  "product_ids": [
+    "247",
+    "218",
+    "221"
+  ],
+  "checked_at": "2026-11-02T22:43:49.468950+00:00",
+  "base_url": "https://kis.kovopraha.cz",
+  "method": "GET only; anonymous; no cookies or redirects",
+  "checks": 40,
+  "passed": 40,
+  "results": [
+    {
+      "path": "/index.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 249,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 410,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/prihlaseni.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 136,
+      "ok": true
+    },
+    {
+      "path": "/booking/moje_objednavky.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 115,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=moje_objednavky.php"
+    },
+    {
+      "path": "/eshop_orders_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 154,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/booking/sportovni_prehled.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 528,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=sportovni_prehled.php"
+    },
+    {
+      "path": "/booking/moje_osoby.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 138,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=moje_osoby.php"
+    },
+    {
+      "path": "/booking/nahrady.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 138,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=nahrady.php"
+    },
+    {
+      "path": "/booking/soupiskove_treninky.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 303,
+      "elapsed_ms": 151,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=soupiskove_treninky.php"
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 440,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 309,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 330,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=2147483647",
+      "expected": [
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 270,
+      "ok": true
+    },
+    {
+      "path": "/includes/shop_storefront_read.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 119,
+      "ok": true
+    },
+    {
+      "path": "/var/deployment.json",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 124,
+      "ok": true
+    },
+    {
+      "path": "/tests/Support/StorefrontReadMariaDbSmoke.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 160,
+      "ok": true
+    },
+    {
+      "path": "/composer.lock",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 136,
+      "ok": true
+    },
+    {
+      "path": "/var/private/kis-person-import.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 140,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 361,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 460,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 293,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 317,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 340,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 380,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 312,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 267,
+      "ok": true
+    },
+    {
+      "path": "/kis_rosters_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 106,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/kis_roster_settings_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 148,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/kis_current_rosters_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 137,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/kis_legacy_rosters_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 149,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/kis_rollover_a06_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 139,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/kis_transition_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 140,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/kis_training_a07_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 147,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/kis_roster_hierarchy_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 161,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/club_makeup_policies_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 135,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/season_preparation_admin.php",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "elapsed_ms": 150,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/includes/member_evidence_cutover.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 137,
+      "ok": true
+    },
+    {
+      "path": "/bin/member-evidence-cutover.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 140,
+      "ok": true
+    },
+    {
+      "path": "/includes/member_evidence_operation.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 143,
+      "ok": true
+    },
+    {
+      "path": "/bin/member-evidence-production.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 117,
+      "ok": true
+    }
+  ]
+}

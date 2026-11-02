@@ -1,0 +1,54 @@
+{
+  "fingerprint": "42ca2d495282be6c099992780616c4f813a20b65d787cda4737b26e3ec8dda03",
+  "opening_on": "2026-11-02",
+  "opening_count": 435,
+  "delete_counts": {
+    "club_roster_members": 560,
+    "club_roster_events": 560
+  },
+  "detached_claim_count": 560,
+  "groups": [
+    {
+      "code": "G-BIKROS",
+      "rosters": 1,
+      "members_on_opening_day": 5
+    },
+    {
+      "code": "G-KDC",
+      "rosters": 1,
+      "members_on_opening_day": 3
+    },
+    {
+      "code": "G-KROUZKY",
+      "rosters": 23,
+      "members_on_opening_day": 129
+    },
+    {
+      "code": "G-KUNRATICE",
+      "rosters": 3,
+      "members_on_opening_day": 0
+    },
+    {
+      "code": "G-NEJMENSI",
+      "rosters": 3,
+      "members_on_opening_day": 0
+    },
+    {
+      "code": "G-REXONIX",
+      "rosters": 6,
+      "members_on_opening_day": 183
+    },
+    {
+      "code": "G-TEST",
+      "rosters": 3,
+      "members_on_opening_day": 2
+    },
+    {
+      "code": "G-TOCNA",
+      "rosters": 4,
+      "members_on_opening_day": 2
+    }
+  ],
+  "current_snapshot_only": true,
+  "writes_paused": false
+}
