@@ -100,7 +100,7 @@ jobs:
           production_retry "${SSH[@]}" "mkdir -m 700 '$PRIVATE'"
           production_retry "${SCP[@]}" "$LOCAL/mapping.json" "$LOCAL/operation.json" "$LOCAL/runtime.json" "$SSH_USER@$SSH_HOST:$PRIVATE/"
           production_retry "${SCP[@]}" bin/member-evidence-production.php includes/member_evidence_operation.php "$SSH_USER@$SSH_HOST:$PRIVATE/"
-          for MODE in apply recover; do
+          for MODE in prepare apply recover; do
             cat > "$LOCAL/$MODE.php" <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
@@ -111,9 +111,38 @@ jobs:
           EOF
             production_retry "${SCP[@]}" "$LOCAL/$MODE.php" "$SSH_USER@$SSH_HOST:$PRIVATE/$MODE.php"
           done
+          cat > "$LOCAL/backup.php" <<EOF
+          <?php
+          require __DIR__ . '/member_evidence_operation.php';
+          \$root = realpath('$REMOTE_DIR');
+          \$state = memberEvidenceOperationAssertPaused(\$root, __DIR__);
+          putenv('KIS_MEMBER_CUTOVER_TOKEN=' . \$state['token']);
+          putenv('APP_HOST=$APP_HOST');
+          putenv('BACKUP_APP_ROOT=' . \$root);
+          putenv('BACKUP_TARGET_DIR=' . __DIR__ . '/backup');
+          putenv('BACKUP_JSON=1');
+          require \$root . '/bin/db-backup.php';
+          EOF
+          production_retry "${SCP[@]}" "$LOCAL/backup.php" "$SSH_USER@$SSH_HOST:$PRIVATE/backup.php"
           production_retry "${SSH[@]}" "chmod 600 '$PRIVATE/'*.php '$PRIVATE/'*.json"
 
-      - name: Pozastavit zápisy, zálohovat, převést a obnovit provoz
+      - name: Pozastavit zápisy a uložit výchozí otisky
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          "${SSH[@]}" "php '$DEPLOY_BASE/member-cutover-$GITHUB_RUN_ID/prepare.php'" | tee "/tmp/kis-member-operation-$GITHUB_RUN_ID/prepare-result.json"
+          jq -e '.ok and .maintenance_active and (.cutover_committed == false)' "/tmp/kis-member-operation-$GITHUB_RUN_ID/prepare-result.json" >/dev/null
+
+      - name: Zálohovat samostatným SSH procesem při pozastavených zápisech
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          PRIVATE="$DEPLOY_BASE/member-cutover-$GITHUB_RUN_ID"
+          "${SSH[@]}" "umask 077; php '$PRIVATE/backup.php' > '$PRIVATE/backup-result.json'"
+
+      - name: Ověřit zálohu, převést a obnovit provoz
         run: |
           set -euo pipefail
           source .github/scripts/production-ssh-retry.sh

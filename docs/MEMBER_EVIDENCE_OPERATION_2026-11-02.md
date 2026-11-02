@@ -17,11 +17,14 @@ Ověří nasazené SHA i obsah souborů jádra převodu proti zdroji workflow.
 1. Náhled v READ ONLY transakci ověří původní názvy/kódy, vazby a přesně 435/560.
 2. Soukromě uloží původní konfiguraci a `.htaccess`, jejich práva a otisky.
    Dočasná pravidla vracejí HTTP 503; konfigurace odmítá nové CLI procesy
-   kromě právě běžícího převodu a jeho zálohovacího procesu. Tři skutečné URL
+   kromě právě běžícího převodu a samostatného SSH zálohovacího kroku. Tři skutečné URL
    musí vracet 503 s textem údržby. Dosavadní DB spojení musí doběhnout;
    nástroj žádné cizí spojení neukončuje. Při nedoběhnutí převod neprovede.
-3. Vytvoří novou aplikační zálohu v soukromém adresáři operace, ověří její SHA
-   a shodu dat před/po zálohování. Nevyprazdňuje starší zálohy.
+3. Samostatným SSH spuštěním stejného `db-backup.php` jako při deployi vytvoří
+   novou aplikační zálohu v soukromém adresáři operace. PHP nemusí spouštět podprocesy.
+   Před zálohou i aplikací ověří, že oba ochranné soubory stále odpovídají
+   pozastavenému stavu; následně ověří SHA zálohy a shodu dat před/po zálohování.
+   Nevyprazdňuje starší zálohy. HTTP kontrola podporuje cURL i ověřené HTTPS streams.
 4. Vytvoří přesně jednu technickou identitu s neplatným heslovým formátem,
    prázdným e-mailem a dočasnou pozicí registráře. Login tak nemá ověřitelné
    heslo a reset nemá cílový e-mail. Kolize s existující osobou operaci zastaví.

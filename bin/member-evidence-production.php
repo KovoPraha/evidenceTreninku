@@ -25,40 +25,51 @@ function memberEvidenceProductionConnection(string $root): PDO
 function memberEvidenceProductionHttpPaused(): void
 {
     foreach (['/', '/kis_rosters_admin.php', '/booking/eshop.php'] as $path) {
-        $curl = curl_init('https://kis.kovopraha.cz' . $path);
-        curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15, CURLOPT_FOLLOWLOCATION => false]);
-        $body = curl_exec($curl);
-        $status = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
-        curl_close($curl);
+        $url = 'https://kis.kovopraha.cz' . $path;
+        $status = 0;
+        if (function_exists('curl_init')) {
+            $curl = curl_init($url);
+            curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15, CURLOPT_FOLLOWLOCATION => false]);
+            $body = curl_exec($curl);
+            $status = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+            curl_close($curl);
+        } else {
+            $context = stream_context_create(['http' => ['method' => 'GET', 'ignore_errors' => true, 'follow_location' => 0, 'timeout' => 15]]);
+            $http_response_header = [];
+            $body = file_get_contents($url, false, $context);
+            foreach ($http_response_header as $header) {
+                if (preg_match('~^HTTP/\S+\s+(\d{3})~', $header, $match)) {
+                    $status = (int) $match[1];
+                    break;
+                }
+            }
+        }
         if ($status !== 503 || !is_string($body) || !str_contains($body, 'Probíhá převod evidence členů')) {
             throw new RuntimeException('HTTP maintenance is not effective.');
         }
     }
 }
 
-function memberEvidenceProductionBackup(string $root, string $directory): array
+function memberEvidenceProductionBackupResult(string $directory): array
 {
-    mkdir($directory . '/backup', 0700);
-    $wrapper = "<?php\nputenv('APP_HOST=kis.kovopraha.cz');\n"
-        . 'putenv(' . var_export('BACKUP_APP_ROOT=' . $root, true) . ");\n"
-        . 'putenv(' . var_export('BACKUP_TARGET_DIR=' . $directory . '/backup', true) . ");\n"
-        . "putenv('BACKUP_JSON=1');\nrequire " . var_export($root . '/bin/db-backup.php', true) . ";\n";
-    memberEvidenceOperationWrite($directory . '/backup-run.php', $wrapper);
-    $process = proc_open([PHP_BINARY, $directory . '/backup-run.php'], [0 => ['pipe', 'r'],
-        1 => ['file', $directory . '/backup-result.json', 'w'], 2 => ['file', $directory . '/backup-error.log', 'w']], $pipes);
-    if (!is_resource($process)) {
-        throw new RuntimeException('Cannot start backup.');
-    }
-    fclose($pipes[0]);
-    if (proc_close($process) !== 0) {
-        throw new RuntimeException('Fresh backup failed; private error log retained.');
-    }
     $result = json_decode((string) file_get_contents($directory . '/backup-result.json'), true, 512, JSON_THROW_ON_ERROR);
     if (!($result['ok'] ?? false) || basename($result['backup']) !== $result['backup']
         || !hash_equals($result['sha256'], (string) hash_file('sha256', $directory . '/backup/' . $result['backup']))) {
         throw new RuntimeException('Fresh backup verification failed.');
     }
     return $result;
+}
+
+function memberEvidenceProductionDrain(PDO $pdo): void
+{
+    for ($attempt = 0; $attempt < 30; ++$attempt) {
+        $q = $pdo->query('SELECT COUNT(*) FROM information_schema.PROCESSLIST WHERE DB=DATABASE() AND ID<>CONNECTION_ID()');
+        if ((int) $q->fetchColumn() === 0) {
+            return;
+        }
+        usleep(1000000);
+    }
+    throw new RuntimeException('Existing database clients did not drain.');
 }
 
 function memberEvidenceProductionMain(): void
@@ -73,6 +84,7 @@ function memberEvidenceProductionMain(): void
     $result = ['ok' => false, 'cutover_committed' => false];
     $lock = null;
     $locked = false;
+    $mode = (string) getenv('MEMBER_OPERATION_MODE');
     try {
         if (getenv('APP_HOST') !== 'kis.kovopraha.cz' || $root === false || $directory === false
             || $directory === $root || str_starts_with($directory . '/', $root . '/')
@@ -86,13 +98,19 @@ function memberEvidenceProductionMain(): void
         $locked = true;
         $operation = json_decode((string) file_get_contents($directory . '/operation.json'), true, 512, JSON_THROW_ON_ERROR);
         memberEvidenceOperationAuthorize($operation);
+        if (!in_array($mode, ['prepare', 'apply', 'recover'], true)) {
+            throw new RuntimeException('Invalid operation phase.');
+        }
         if (basename($directory) !== 'member-cutover-' . $operation['run_id']) {
             throw new RuntimeException('Operation identity mismatch.');
         }
-        $recover = getenv('MEMBER_OPERATION_MODE') === 'recover';
-        if ($recover && is_file($directory . '/pause.json')) {
+        $recover = $mode === 'recover';
+        if (($recover || $mode === 'apply') && is_file($directory . '/pause.json')) {
             $state = json_decode((string) file_get_contents($directory . '/pause.json'), true, 512, JSON_THROW_ON_ERROR);
             putenv('KIS_MEMBER_CUTOVER_TOKEN=' . $state['token']);
+        }
+        if ($mode === 'apply') {
+            memberEvidenceOperationAssertPaused($root, $directory);
         }
         $pdo = memberEvidenceProductionConnection($root);
         if ($recover) {
@@ -102,13 +120,14 @@ function memberEvidenceProductionMain(): void
             $phase = 'runtime';
             $deployment = json_decode((string) file_get_contents($root . '/var/deployment.json'), true, 512, JSON_THROW_ON_ERROR);
             $result['runtime'] = ['deployment_sha' => $deployment['sha'] ?? null,
-                'proc_open' => function_exists('proc_open'), 'curl_init' => function_exists('curl_init')];
+                'proc_open' => function_exists('proc_open'), 'curl_init' => function_exists('curl_init'),
+                'allow_url_fopen' => (bool) filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOL)];
             if (!preg_match('/^[a-f0-9]{40}$/D', (string) ($operation['release_sha'] ?? ''))
                 || ($deployment['sha'] ?? '') !== $operation['release_sha']) {
                 throw new RuntimeException('Unexpected deployed application.');
             }
             $phase = 'runtime_capabilities';
-            if (!$result['runtime']['proc_open'] || !$result['runtime']['curl_init']) {
+            if (!$result['runtime']['curl_init'] && !$result['runtime']['allow_url_fopen']) {
                 throw new RuntimeException('Required operational capability unavailable.');
             }
             $phase = 'runtime_hashes';
@@ -134,47 +153,44 @@ function memberEvidenceProductionMain(): void
             $pdo->exec('START TRANSACTION READ ONLY');
             memberEvidencePreview($pdo, memberEvidencePrepareOpening($pdo, $config, 435, 560));
             $pdo->exec('ROLLBACK');
-            $phase = 'pause';
-            memberEvidenceOperationPause($root, $directory);
+            if ($mode === 'prepare') {
+                $phase = 'pause';
+                memberEvidenceOperationPause($root, $directory);
+            }
             memberEvidenceProductionHttpPaused();
             // Protected GitHub workers share produkce-kis. New host CLI workers fail in config.php.
             // Drain old connections without killing another application on the shared database.
             $phase = 'drain';
-            $idle = false;
-            for ($attempt = 0; $attempt < 30; ++$attempt) {
-                $q = $pdo->query('SELECT COUNT(*) FROM information_schema.PROCESSLIST WHERE DB=DATABASE() AND ID<>CONNECTION_ID()');
-                if ((int) $q->fetchColumn() === 0) {
-                    $idle = true;
-                    break;
+            memberEvidenceProductionDrain($pdo);
+            if ($mode === 'prepare') {
+                $beforeBackup = memberEvidenceCutoverSnapshot($pdo, $config);
+                memberEvidenceOperationWrite($directory . '/before-backup.json', json_encode($beforeBackup, JSON_THROW_ON_ERROR));
+                $result['maintenance_active'] = true;
+            } else {
+                $phase = 'backup';
+                $backup = memberEvidenceProductionBackupResult($directory);
+                $beforeBackup = json_decode((string) file_get_contents($directory . '/before-backup.json'), true, 512, JSON_THROW_ON_ERROR);
+                if ($beforeBackup !== memberEvidenceCutoverSnapshot($pdo, $config)) {
+                    throw new RuntimeException('Application data changed while writers should be paused.');
                 }
-                usleep(1000000);
-            }
-            if (!$idle) {
-                throw new RuntimeException('Existing database clients did not drain.');
-            }
-            $beforeBackup = memberEvidenceCutoverSnapshot($pdo, $config);
-            $phase = 'backup';
-            $backup = memberEvidenceProductionBackup($root, $directory);
-            if ($beforeBackup !== memberEvidenceCutoverSnapshot($pdo, $config)) {
-                throw new RuntimeException('Application data changed while writers should be paused.');
-            }
-            $result['backup'] = array_intersect_key($backup, array_flip(['sha256', 'tables', 'triggers', 'compressed_bytes']));
-            $phase = 'technical_identity';
-            $actor = memberEvidenceOperationActor($pdo, $operation);
-            $phase = 'fresh_manifest';
-            $manifest = memberEvidencePreview($pdo, memberEvidencePrepareOpening($pdo, $config, 435, 560));
-            memberEvidenceOperationWrite($directory . '/manifest.json', json_encode($manifest, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-            $phase = 'apply';
-            $result['cutover'] = memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], $actor, $backup['sha256'], true);
-            $result['cutover_committed'] = true;
-            memberEvidenceOperationWrite($directory . '/committed.json', json_encode($result, JSON_THROW_ON_ERROR));
-            $phase = 'verify';
-            $result['idempotent'] = memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], $actor, $backup['sha256'], true)['idempotent'];
-            $pilot = trainerPilotRecord($pdo);
-            $result['existing_pilot_scope_preserved'] = empty($pilot['operational_authorization'])
-                ? null : trainerPilotStatus($pdo, TRAINER_PILOT_ACTOR_NAME)['scope_ready'];
-            if ($result['existing_pilot_scope_preserved'] === false) {
-                throw new RuntimeException('Pilot scope verification failed after commit.');
+                $result['backup'] = array_intersect_key($backup, array_flip(['sha256', 'tables', 'triggers', 'compressed_bytes']));
+                $phase = 'technical_identity';
+                $actor = memberEvidenceOperationActor($pdo, $operation);
+                $phase = 'fresh_manifest';
+                $manifest = memberEvidencePreview($pdo, memberEvidencePrepareOpening($pdo, $config, 435, 560));
+                memberEvidenceOperationWrite($directory . '/manifest.json', json_encode($manifest, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+                $phase = 'apply';
+                $result['cutover'] = memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], $actor, $backup['sha256'], true);
+                $result['cutover_committed'] = true;
+                memberEvidenceOperationWrite($directory . '/committed.json', json_encode($result, JSON_THROW_ON_ERROR));
+                $phase = 'verify';
+                $result['idempotent'] = memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], $actor, $backup['sha256'], true)['idempotent'];
+                $pilot = trainerPilotRecord($pdo);
+                $result['existing_pilot_scope_preserved'] = empty($pilot['operational_authorization'])
+                    ? null : trainerPilotStatus($pdo, TRAINER_PILOT_ACTOR_NAME)['scope_ready'];
+                if ($result['existing_pilot_scope_preserved'] === false) {
+                    throw new RuntimeException('Pilot scope verification failed after commit.');
+                }
             }
             $result['ok'] = true;
         }
@@ -186,7 +202,8 @@ function memberEvidenceProductionMain(): void
         }
     } finally {
         // Never let revocation failure prevent restoring HTTP; record both recovery outcomes.
-        if ($locked && $operation !== []) {
+        $leavePaused = $mode === 'prepare' && $result['ok'] && $failure === null;
+        if ($locked && $operation !== [] && !$leavePaused) {
             try {
                 if ($pdo instanceof PDO) {
                     if ($pdo->inTransaction()) {
@@ -215,7 +232,9 @@ function memberEvidenceProductionMain(): void
         }
         $result['finished_at'] = gmdate('c');
         if ($directory !== false && $locked) {
-            $filename = getenv('MEMBER_OPERATION_MODE') === 'recover' ? 'recovery.json' : 'result.json';
+            $filename = match ($mode) {
+                'recover' => 'recovery.json', 'prepare' => 'prepare-result.json', default => 'result.json'
+            };
             memberEvidenceOperationWrite($directory . '/' . $filename, json_encode($result, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
         }
         if (is_resource($lock)) {

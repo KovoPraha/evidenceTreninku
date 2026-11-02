@@ -1,0 +1,17 @@
+{
+  "deployment_sha": "7c31ea174dae063fc781f708b8caa105ba57feb6",
+  "proc_open": false,
+  "curl_init": true,
+  "allow_url_fopen": true,
+  "core_sha256": {
+    "includes/member_evidence_cutover.php": "9ed4561b3a3ac90efa56ef2983b62ed321636cc18d46f22af4c1d58b205af025",
+    "includes/member_evidence_snapshot.php": "ce0a87eaa5a608b60fd8e684fadcaa87ee75c74fdbcd229ce79af275a5aa50bd",
+    "includes/member_evidence_opening.php": "e63b4806de09173f13a0dde691f1a73c73ffb2bd8616c775b7baf6e716b42b01",
+    "includes/member_evidence_groups.php": "b4413c999385523113bca0b50c46ae108fb9ba02b546530e1f982b4207093496",
+    "includes/member_evidence_identity.php": "75f699dd76ed2ed10df00b092a93f754d5498bbaec8e5a90c04a03a4cb168411",
+    "includes/roster_hierarchy.php": "3a0775ebf1edbad18f584a63e2a8043b7e82a14a0c235ef8c0d130c0348a8b10",
+    "includes/operational_cases.php": "e015d3749689c2e6f3f0633fc7429c8c8836c7503ef321e948fae043512d2ecc",
+    "includes/trainer_pilot.php": "f1a22af39a380d267b472aa46f29eaa4751dd810accb6f4de998a70fc8fa5b33",
+    "bin/db-backup.php": "56d4a802a8a5f898a8eabb216e763622fd0959440027fc83676a203843f0f3ca"
+  }
+}

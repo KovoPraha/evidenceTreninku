@@ -27,7 +27,19 @@ zápisem členského převodu**. Výstup má `cutover_committed=false`;
 
 Původní kontrola nerozlišovala nesoulad vydání, chybějící CLI funkci a odlišný
 soubor. Diagnostika proto nově uvádí přesné nasazené SHA, dostupnost procesů/HTTP
-a otisky souborů jádra; nečte ani nevypisuje přístupové údaje. Příčina se teprve ověřuje.
+a otisky souborů jádra; nečte ani nevypisuje přístupové údaje.
+
+[Čtecí běh 41541533269](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41541533269)
+potvrdil příčinu: **proc_open=false**, cURL a HTTPS streams dostupné. Živé SHA
+odpovídá 7c31ea1 a všech devět souborů jádra má shodný SHA-256 s tímto commitem
+([doklad](runtime-preflight.json)). Zálohování se proto upravuje na samostatné
+SSH spuštění již používaného `db-backup.php`; hostingové omezení se nemění.
+Před zálohou i aplikací musí být oba soubory údržby stále shodné s ověřeným
+pozastaveným stavem. Záloha, nové přepočítání manifestu a kontrola parit zůstávají povinné.
+
+[Izolovaná obnova 41540526914](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41540526914)
+ověřila nejnovější zálohu `3c699ad75305b261294f9e0974dac73eac9f49f953425e577557600cb9ae3d6d`:
+342 tabulek a 2 triggery PASS. Živá databáze se neobnovovala.
 
 Přihlášené browser ověření se neprovedlo: CDP dvakrát vypršelo na
 `Emulation.setFocusEmulationEnabled`, poté computer-use ukončilo přístup kvůli

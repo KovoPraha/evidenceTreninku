@@ -80,6 +80,7 @@ final class MemberEvidenceOperationTest extends TestCase
         $previousToken = getenv('KIS_MEMBER_CUTOVER_TOKEN');
         try {
             $state = \memberEvidenceOperationPause($base . '/app', $base . '/private');
+            self::assertSame($state, \memberEvidenceOperationAssertPaused($base . '/app', $base . '/private'));
             $child = static function (string $token) use ($base): string {
                 putenv('KIS_MEMBER_CUTOVER_TOKEN=' . $token);
                 $process = proc_open([PHP_BINARY, $base . '/app/config.php'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
@@ -106,6 +107,12 @@ final class MemberEvidenceOperationTest extends TestCase
             self::assertTrue(\memberEvidenceOperationResume($base . '/app', $base . '/private'));
             self::assertSame($original, file_get_contents($base . '/app/config.php'));
             self::assertSame("Options -Indexes\n", file_get_contents($base . '/app/.htaccess'));
+            try {
+                \memberEvidenceOperationAssertPaused($base . '/app', $base . '/private');
+                self::fail('Resumed application accepted as paused');
+            } catch (\RuntimeException) {
+                self::assertSame($original, file_get_contents($base . '/app/config.php'));
+            }
         } finally {
             putenv($previousToken === false ? 'KIS_MEMBER_CUTOVER_TOKEN' : 'KIS_MEMBER_CUTOVER_TOKEN=' . $previousToken);
             foreach (['app', 'private'] as $subdir) {
