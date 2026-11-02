@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 2. 11. 2026 (Europe/Prague), po sloučení a nasazení druhé funkční vlny PR #274.
+Aktualizováno 2. 11. 2026 (Europe/Prague), po nasazení aplikační evidence členů bez sezon přes PR #285.
 
-- **Evidence členů bez sezon: sloučeno, dosud nenasazeno.** PR #279–#285 přidávají
+- **Evidence členů bez sezon: aplikační část nasazena, datový převod neproveden.** PR #279–#285 přidávají
   trvalé soupisky, časové členství, datované nabídky/náhrady a nástroj převodu.
   Všech 11 kontrol #285 PASS, Linux 1 953 testů / 38 293 assertions. Vlastník potvrdil
   převzetí 435 aktivních zařazení od 2. 11. 2026 a odstranění 560 historických;
@@ -16,7 +16,7 @@ Aktualizováno 2. 11. 2026 (Europe/Prague), po sloučení a nasazení druhé fun
   [Nácvik přesné mapy 41532405191](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41532405191)
   PASS: 8 nových skupin, 44 hran, shoda skupinového členství i dosavadního trenérského pilotu.
   [Konkrétní podklady a otevřená rozhodnutí](MEMBER_EVIDENCE_PRODUCTION_TRANSITION_2026-11-02.md).
-  E7/E8, cleanup a přihlášená přejímka nejsou dokončené; živé vydání níže se nemění.
+  E7/E8, cleanup a přihlášená přejímka nejsou dokončené. Schválení mapy není dokladem živé aplikace datového manifestu.
 
 - [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
 
@@ -39,25 +39,21 @@ Aktualizováno 2. 11. 2026 (Europe/Prague), po sloučení a nasazení druhé fun
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `51796fcafa16823f6c84208406a5c75682023409`,
-  [deploy 41437064975](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41437064975) SUCCESS.
-  [PR #274](https://github.com/KovoPraha/evidenceTreninku/pull/274) odděluje zboží a program v localhost seedu;
-  předchozí UI opravy #272, reset #269, pilot a W6–W15 zachovány. Bez nové migrace.
-  [Protokol](verification/functional-round2-release-20261102/RESULTS.md),
-  [porovnání](verification/functional-round2-release-20261102/release-comparison.json).
-  Živé SHA/run potvrdil čtecí audit 41437714419; rsync obou aplikačních souborů PASS.
-  Nejde o úplnou inventuru hashů runtime. CLI příprava dema se v produkci nespouštěla.
-- **Ověření:** všech 11 PR kontrol PASS, sloučený strom shodný s ověřeným,
-  Linux 1905 testů / 38263 assertions bez skipů;
-  MariaDB 10.3/11.4, objemové profily a PHPStan/styl PASS.
-  Deploy zopakoval 1905/38263; HTTP před i po 26/26; browser katalog/filtry PASS.
-  Webové guardy seedu a helperu 403, localhost rozcestníku 404; přihlášené UAT neopakováno.
-  Změna hesla, skutečný použitý odkaz a T07 jsou dle vlastníka nyní vynechány.
-- **Záloha a schéma:** nová ověřená záloha 337 tabulek / 2 triggery;
-  [doklad](verification/functional-round2-release-20261102/deployment.json). Poslední doložená
-  [izolovaná obnova starší generace](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41330986065)
-  PASS; nová generace se v tomto vydání neobnovovala. Schéma current / pending [], ledger 143,
-  dosavadní variabilní symboly beze změny.
+- **Živé vydání:** `d920515952fe8bab36f1c34f8dddb44435264c3b`,
+  [deploy 41533206850](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41533206850) SUCCESS.
+  Aplikační části evidence členů bez sezon a nástroj převodu z PR #279–#285 jsou nasazené.
+  [Protokol](verification/member-evidence-release-20261102/RESULTS.md),
+  [strojový souhrn](verification/member-evidence-release-20261102/release-comparison.json).
+  Živé SHA/run potvrdil čtecí audit 41534082174. Nejde o úplnou inventuru hashů runtime.
+  CLI převod, hromadné přejmenování, nové skupiny a cleanup v produkci dosud neběžely.
+- **Ověření:** všech 11 kontrol #285 PASS, sloučený strom shodný s ověřeným,
+  Linux 1953 testů / 38293 assertions; MariaDB 10.3/11.4, profily a PHPStan/styl PASS.
+  Nácvik přesné mapy na skutečné izolované záloze PASS. Deploy ověřil HTTP dostupnost
+  a ochranu klíče archivu; následná anonymní HTTP kontrola 38/38 PASS. Přihlášené UAT není dokončené. Změna hesla a T07 zůstávají odložené.
+- **Záloha a schéma:** nová ověřená záloha před migracemi, 337 tabulek / 2 triggery;
+  [izolovaná obnova této generace 41534088050](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41534088050) PASS.
+  SHA-256 `9e546aecbac3fcc3a0de44f0cd39795cb029dc0bcf0e910276216b790c53e9ce`.
+  Schéma current / pending [], migrační ledger 149; dosavadní variabilní symboly zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
   31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu.
@@ -65,7 +61,7 @@ Aktualizováno 2. 11. 2026 (Europe/Prague), po sloučení a nasazení druhé fun
   Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
   návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
   [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).
-- **Konfigurace a flags:** hash konfigurace a kandidáti příloh před/po shodné; Fio import/auto-confirm,
+- **Konfigurace a flags:** čtecí audit po nasazení potvrdil Fio import/auto-confirm,
   SumUp, Stripe a Velocota false; Packeta nedefinovaná, KIS canonical writes false.
   UAT false, import false; žádné integrace nebyly aktivovány.
 - **Otevřené provozní převzetí:** lidská/účetní přejímka D12–D14, skutečná

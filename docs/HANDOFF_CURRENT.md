@@ -23,7 +23,7 @@ Implementace mapy je sloučená v PR #285. Nácvik přesné mapy 41532405191 pro
 8 skupin, 44 hran, 435 počátečních zařazení, 560 odstraněných historických intervalů,
 parita skupin, pilotu, opakování i obnova DB PASS. Všech 11 kontrol PASS (1953 testů / 38293 assertions).
 Produkční manifest úklidu a UAT zůstávají otevřené; E7/E8 nebyly provedeny. Tento stav není potvrzením
-nasazení ani provedeného mazání.
+provedeného mazání. Aplikační kód byl následně nasazen v běhu 41533206850; živé SHA a přesný rozsah ověření jsou v CURRENT_STATE a [protokolu vydání](verification/member-evidence-release-20261102/RESULTS.md).
 
 Navazuje [trenérská obnova hesla](TRAINER_READINESS_2026-10-31.md) a její
 [produkční přejímka](verification/trainer-recovery-20261031/RESULTS.md).
