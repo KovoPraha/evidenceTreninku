@@ -12,6 +12,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 |---|---|
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
+| [Nasazení druhé funkční vlny PR #274](verification/functional-round2-release-20261102/RESULTS.md) | Sloučení, chráněný deploy, záloha, čtecí porovnání a produkční HTTP/browser ověření |
 | [Druhý funkční průchod 2. 11.](verification/functional-uat-round2-20261102/RESULTS.md) | 35 místních kontrol, kupóny/sklad/akce/velodrom, simulovaná úhrada a vratka; oprava odděleného demo zboží a programu |
 | [Nasazení funkčních oprav PR #272](verification/functional-release-20261102/RESULTS.md) | Review, CI, chráněný deploy, záloha, produkční HTTP/browser důkazy a limity ověření |
 | [Funkční browser ověření 2. 11.](verification/functional-uat-20261102/RESULTS.md) | Veřejná produkce, místní syntetické průchody, tři UI opravy a jejich regrese |

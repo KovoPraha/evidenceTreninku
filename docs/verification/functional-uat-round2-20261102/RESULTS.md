@@ -1,5 +1,8 @@
 # Druhý autonomní funkční průchod — 2. 11. 2026
 
+Následné autorizované [sloučení PR #274 a nasazení](../functional-round2-release-20261102/RESULTS.md) mají samostatný protokol.
+Níže je zachován rozsah původního místního běhu před tímto vydáním.
+
 **35 konkrétních kontrol PASS, 1 chyba místního dema opravena.**
 [Jednotlivá pozorování](observations.json) rozlišují hlavní syntetickou DB
 a čerstvou DB po opravě. Nejde o úplnou přejímku aplikace ani o produkční UAT.

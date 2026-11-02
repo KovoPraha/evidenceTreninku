@@ -1,5 +1,8 @@
 # Druhé autonomní funkční ověření — 2. 11. 2026
 
+Následné autorizované [sloučení PR #274 a nasazení](verification/functional-round2-release-20261102/RESULTS.md) mají samostatný protokol.
+Níže je zachován rozsah původního místního běhu před tímto vydáním.
+
 Vlastník povolil další autonomní testování, opravy a jejich ověření.
 Změna hesla a T07 jsou vynechány. Tento běh neopakuje předchozí produkční
 nasazení; případné nové změny budou předány přes vlastní PR a CI.

@@ -1,0 +1,70 @@
+{
+  "run": 41437064975,
+  "conclusion": "success",
+  "headSha": "51796fcafa16823f6c84208406a5c75682023409",
+  "createdAt": "2026-11-02T11:28:05Z",
+  "updatedAt": "2026-11-02T11:32:32Z",
+  "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41437064975",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "backup": {
+    "ok": true,
+    "tables": 337,
+    "triggers": 2,
+    "sha256": "25e7202d52707bffc6c659ac08b1da334bd930e5ee8cd20006c7f7f1abcabf59"
+  },
+  "migrations": [
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 142,
+      "pending": []
+    },
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 142,
+      "pending": []
+    }
+  ],
+  "variable_symbols_unchanged": true,
+  "private_storage": {
+    "ok": true,
+    "storage_created": false,
+    "existing_configuration_preserved": true,
+    "config_appended": false,
+    "cli_write_read_delete_probe": true,
+    "web_runtime_verified": false,
+    "attachments_moved": false,
+    "database_accessed": false
+  },
+  "smoke": {
+    "ok": true,
+    "http": 200,
+    "via": "curl"
+  },
+  "tests": {
+    "tests": 1905,
+    "assertions": 38263,
+    "passed": true
+  },
+  "activation_logged_files": [
+    "bin/seed-local-demo.php",
+    "includes/localhost_demo_catalog.php"
+  ],
+  "backup_restore_performed": false,
+  "localhost_seed_executed_in_production": false
+}

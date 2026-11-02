@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-11-02T11:32:31.060448+00:00",
+  "method": "GET only; no cookies or redirects",
+  "checks": 3,
+  "passed": 3,
+  "results": [
+    {
+      "path": "/bin/seed-local-demo.php",
+      "http": 403,
+      "ok": true
+    },
+    {
+      "path": "/includes/localhost_demo_catalog.php",
+      "http": 403,
+      "ok": true
+    },
+    {
+      "path": "/testovaci_scenare.php",
+      "http": 404,
+      "ok": true
+    }
+  ]
+}
