@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 2. 11. 2026 (Europe/Prague), bez dalšího produkčního nasazení.
+Aktualizováno 2. 11. 2026 (Europe/Prague), po nasazení funkčních oprav PR #272.
 
-- [Funkční browser ověření](verification/functional-uat-20261102/RESULTS.md): 36 PASS a 3 místně opravené UI nálezy; veřejná produkce pouze čtena, zápisy pouze synteticky místně. Nové opravy dosud nenasazeny.
+- [Funkční opravy PR #272 nasazeny](verification/functional-release-20261102/RESULTS.md): vrstvy účtového menu, přístupné názvy měření a viditelná poznámka Kolo. [Místní browser](verification/functional-uat-20261102/RESULTS.md): 36 PASS / 3 FIXED.
 
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
@@ -23,22 +23,22 @@ Aktualizováno 2. 11. 2026 (Europe/Prague), bez dalšího produkčního nasazen�
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `acce3c1351cddbcad12fb5fea11afe6ae8936001`,
-  [deploy 41349120615](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41349120615) SUCCESS.
-  [PR #269](https://github.com/KovoPraha/evidenceTreninku/pull/269) ověřuje odkaz před zadáním hesla;
-  použitý/neplatný odkaz nenabízí heslový formulář. Pilot a W6–W15 zůstávají součástí vydání.
-  [Protokol](verification/trainer-reset-release-20261101/RESULTS.md),
-  [porovnání](verification/trainer-reset-release-20261101/release-comparison.json).
-  Živé SHA/run potvrdil čtecí audit 41349491104 a nové chování prohlížeč;
-  nejde o úplnou inventuru hashů runtime ani nový skutečný reset hesla.
+- **Živé vydání:** `c1686b4895c2d45428a4ca492b3c56fc4d0fe286`,
+  [deploy 41365449270](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41365449270) SUCCESS.
+  [PR #272](https://github.com/KovoPraha/evidenceTreninku/pull/272) přidává tři UI opravy;
+  předchozí oprava neplatných/použitých odkazů PR #269, pilot a W6–W15 zachovány.
+  [Protokol](verification/functional-release-20261102/RESULTS.md),
+  [porovnání](verification/functional-release-20261102/release-comparison.json).
+  Živé SHA/run potvrdil čtecí audit 41365953921; rsync všech tří runtime souborů
+  a přesný veřejný CSS hash ověřeny. Nejde o úplnou inventuru hashů runtime.
 - **Ověření:** všech 11 PR kontrol PASS, sloučený strom shodný s ověřeným,
-  Linux 1900 testů / 38192 assertions,
+  Linux 1902 testů / 38239 assertions, JavaScript 19/19;
   POSIX bez skipů, MariaDB 10.3/11.4 a objemové profily PASS.
-  Deploy zopakoval 1900/38192; HTTP před i po 26/26 a browser odmítnutí neplatného odkazu PASS.
-  [Částečné browser UAT](verification/trainer-browser-uat-20261101-1955-a7c2/RESULTS.md) před opravou
-  zůstává historické; skutečný použitý odkaz po opravě a T07 vyžadují součinnost vlastníka.
+  Deploy zopakoval 1902/38239; HTTP před i po 26/26; produkční katalog/filtry PASS.
+  Produkční relace odhlášená: přihlášené UI znovu neověřeno; syntetické UAT je místní.
+  Změna hesla, skutečný použitý odkaz a T07 jsou dle vlastníka nyní vynechány.
 - **Záloha a schéma:** nová ověřená záloha 337 tabulek / 2 triggery;
-  [doklad](verification/trainer-reset-release-20261101/deployment.json). Poslední doložená
+  [doklad](verification/functional-release-20261102/deployment.json). Poslední doložená
   [izolovaná obnova starší generace](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41330986065)
   PASS; nová generace se v tomto vydání neobnovovala. Schéma current / pending [], ledger 143,
   dosavadní variabilní symboly beze změny.

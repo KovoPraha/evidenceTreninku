@@ -1,0 +1,36 @@
+{
+  "anonymous": true,
+  "css": {
+    "anonymous": true,
+    "publicNavZ": "1020",
+    "shopNavZ": "1010",
+    "stylesheet": [
+      "/assets/app-ui.css?v=1793578058"
+    ]
+  },
+  "checks": [
+    {
+      "id": "PB01",
+      "result": "PASS",
+      "description": "Katalog Knihy, řazení od nejnižší ceny: Zábavně k výkonu 250 Kč před Když trénink dává smysl 450 Kč"
+    },
+    {
+      "id": "PB02",
+      "result": "PASS",
+      "description": "Vyhledání Zábavně vrací jedinou odpovídající knihu"
+    },
+    {
+      "id": "PB03",
+      "result": "PASS",
+      "description": "formular.php přesměruje anonymního návštěvníka na login.php"
+    },
+    {
+      "id": "PB04",
+      "result": "PASS",
+      "description": "edit_trenink.php?id=1604 přesměruje anonymního návštěvníka na login.php"
+    }
+  ],
+  "authenticated_production_retest": "NOT_PERFORMED: existing session logged out",
+  "password_change": "SKIPPED",
+  "T07": "SKIPPED"
+}

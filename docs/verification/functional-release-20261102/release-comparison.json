@@ -1,0 +1,24 @@
+{
+  "before_live": {
+    "sha": "acce3c1351cddbcad12fb5fea11afe6ae8936001",
+    "run_id": "41349120615",
+    "deployed_at": "2026-11-01T20:55:25+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "c1686b4895c2d45428a4ca492b3c56fc4d0fe286",
+    "run_id": "41365449270",
+    "deployed_at": "2026-11-02T00:11:00+00:00",
+    "uat_approved": false
+  },
+  "pre_run": 41365136475,
+  "post_run": 41365953921,
+  "unchanged": {
+    "config_sha256": true,
+    "integration_flags": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "migration_ledger_count": true
+  },
+  "identity_scope": "Protected workflow deployment metadata, successful rsync of three runtime files, exact public CSS hash and observed browser CSS; no full runtime hash inventory"
+}
