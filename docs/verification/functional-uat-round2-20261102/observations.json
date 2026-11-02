@@ -1,0 +1,221 @@
+{
+  "base": "25085e4ef4d771d9d36429265e61b0f0c5053d88",
+  "browser": "Chrome",
+  "synthetic_only": true,
+  "production_mutations": false,
+  "password_change": "SKIPPED",
+  "T07": "SKIPPED",
+  "passed": 35,
+  "cases": [
+    {
+      "id": "R01",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Rodič se přihlásí a otevře svůj přehled."
+    },
+    {
+      "id": "R02",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Cílená akce nabízí A pouze jednou přes dvě soupisky, neoprávněné B nenabízí."
+    },
+    {
+      "id": "R03",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Bez souhlasu bezplatná přihláška nepokračuje; prohlížeč zaměří povinné políčko."
+    },
+    {
+      "id": "R04",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Potvrzená přihláška A sníží kapacitu 2 → 1."
+    },
+    {
+      "id": "R05",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Již přihlášené A je v nabídce zakázané."
+    },
+    {
+      "id": "R06",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Zrušení s důvodem vrátí kapacitu 1 → 2, přihláška zůstane v historii jako cancelled."
+    },
+    {
+      "id": "R07",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Bezplatný velodrom: potvrzená rezervace sníží kapacitu 3 → 2."
+    },
+    {
+      "id": "R08",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Opakovaná rezervace stejného termínu odmítnuta."
+    },
+    {
+      "id": "R09",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Storno bezplatné rezervace vrátí kapacitu 2 → 3."
+    },
+    {
+      "id": "R10",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Placený velodrom se vloží do košíku za 250 Kč."
+    },
+    {
+      "id": "R11",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Vznikne objednávka velodromu za 250 Kč, účet je pouze NEPLATIT."
+    },
+    {
+      "id": "R12",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Neuhrazená výhradní rezervace drží 1 místo a čeká na úhradu, není potvrzená."
+    },
+    {
+      "id": "R13",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Neplatné ruční SKU bez KP- odmítnuto; vyplněné hodnoty formuláře zachovány."
+    },
+    {
+      "id": "R14",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Platné ruční zboží vytvořeno jako koncept, cena 123,45 Kč a sklad 5."
+    },
+    {
+      "id": "R15",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Zveřejnění konceptu bez účetního zařazení není dostupné."
+    },
+    {
+      "id": "R16",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Přiřazení konkrétního produktu do 3/00 se uloží s historií."
+    },
+    {
+      "id": "R17",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Po zařazení lze produkt zveřejnit; objeví se v zákaznickém katalogu."
+    },
+    {
+      "id": "R18",
+      "database": "main",
+      "result": "PASS",
+      "observed": "6 kusů při skladu 5 lze mít v košíku, checkout je odmítne bez nové objednávky či částečného zápisu."
+    },
+    {
+      "id": "R19",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Změna na 2 kusy přepočte mezisoučet na 246,90 Kč."
+    },
+    {
+      "id": "R20",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Kód s mezerami a malými písmeny se normalizuje na LOCAL10; sleva 24,69 Kč."
+    },
+    {
+      "id": "R21",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Po změně na 1 kus se kupón přepočte: 12,34 Kč dolů dle intdiv politiky, celkem 111,11 Kč."
+    },
+    {
+      "id": "R22",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Checkout uloží neměnný snapshot 12345 − 1234 = 11111 haléřů, finance sportovec 1."
+    },
+    {
+      "id": "R23",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Reload výsledné objednávky nevytvoří duplikát; celkem právě 2 objednávky."
+    },
+    {
+      "id": "R24",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Simulovaný příjem hotovosti změní způsob i stav společně, částka 111,11 Kč."
+    },
+    {
+      "id": "R25",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Potvrzená příprava uloží ready_at a zobrazí Připraveno k odběru."
+    },
+    {
+      "id": "R26",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Storno po úhradě vrátí sklad na 5 a vytvoří samostatný refund_required."
+    },
+    {
+      "id": "R27",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Předání hospodáři a simulované potvrzení vratky uloží refunded a auditní referenci."
+    },
+    {
+      "id": "R28",
+      "database": "main",
+      "result": "PASS",
+      "observed": "Opravený seed zachová celé dosavadní objednávky, položky, platby a rezervace podle SHA-256 snapshotů."
+    },
+    {
+      "id": "R29",
+      "database": "fresh",
+      "result": "PASS",
+      "observed": "Po dvou seedech jsou veřejně oddělené goods #1 a program #5; dva produkty."
+    },
+    {
+      "id": "R30",
+      "database": "fresh",
+      "result": "PASS",
+      "observed": "Klubová cena se týká zboží 249 → 224,10 Kč; samostatný program stojí 249 Kč."
+    },
+    {
+      "id": "R31",
+      "database": "fresh",
+      "result": "PASS",
+      "observed": "LOCAL10 na standardním demo zboží dá slevu 22,41 Kč, celkem 201,69 Kč."
+    },
+    {
+      "id": "R32",
+      "database": "fresh",
+      "result": "PASS",
+      "observed": "Smíšený košík: 473,10 − 22,41 = 450,69 Kč; kupón nesnižuje program."
+    },
+    {
+      "id": "R33",
+      "database": "fresh",
+      "result": "PASS",
+      "observed": "Bez programového souhlasu smíšený checkout blokován prohlížečem."
+    },
+    {
+      "id": "R34",
+      "database": "fresh",
+      "result": "PASS",
+      "observed": "Smíšená objednávka uložena: 2 položky, 45069 haléřů, sklad zboží 11 a program NULL, platba pending a 0 admissions."
+    },
+    {
+      "id": "R35",
+      "database": "fresh",
+      "result": "PASS",
+      "observed": "Po logoutu moje objednávky přesměrují na login; vlastní karty zavřeny."
+    }
+  ]
+}

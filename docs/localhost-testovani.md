@@ -56,6 +56,11 @@ Administrátor: localhost-admin / LocalhostAdmin123!
 Sportovec: localhost-sportovec / LocalhostSportovec123!
 ```
 
+Program má vlastní demo produkt a nespotřebuje jediné skladové zboží. Pokud
+starší demo již zboží přetvořilo na program, seed doplní samostatné syntetické
+zboží a původní program i historické objednávky zachová. Opakované spuštění
+nezaloží další kopie. [Regrese a browser ověření](verification/functional-uat-round2-20261102/RESULTS.md).
+
 Lokální checkout musí mít v ignorovaném `config.php` syntetické bankovní údaje.
 Použitý účet má neexistující bankovní kód `9999` a označení
 `LOCALHOST TEST - NEPLATIT`. QR slouží jen pro kontrolu obrazovky; nesmí se

@@ -1,0 +1,39 @@
+{
+  "synthetic_only": true,
+  "port": 3320,
+  "production_mutations": false,
+  "old_source": "25085e4ef4d771d9d36429265e61b0f0c5053d88",
+  "regression_reproduced": {
+    "fresh_seed_exit": 0,
+    "published_goods": 0,
+    "repeated_seed_exit": 1,
+    "reason": "local_demo_goods_missing"
+  },
+  "legacy_repaired": {
+    "goods_ids": [
+      5
+    ],
+    "program": [
+      "1",
+      "1",
+      "program",
+      "Klubová lahev"
+    ],
+    "products": 5,
+    "variants": 5
+  },
+  "fresh_fixed": {
+    "goods_ids": [
+      1
+    ],
+    "program": [
+      "5",
+      "5",
+      "program",
+      "LOCALHOST – placený kroužek (NEPLATIT)"
+    ],
+    "products": 5,
+    "variants": 5
+  },
+  "repeated_seed_stable": true
+}

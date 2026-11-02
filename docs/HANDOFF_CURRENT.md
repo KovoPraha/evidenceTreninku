@@ -40,6 +40,10 @@ opravuje vrstvy účtového menu, přístupné názvy a skrytou poznámku měře
 HTTP 26/26, skutečné CSS a veřejné filtry PASS; přihlášené produkční UI
 se kvůli odhlášené relaci neopakovalo. Změnu hesla a T07 nadále vynechat.
 Dokumentační PR nemění živé SHA a nevyžaduje další deploy.
+[Druhý místní funkční průchod](verification/functional-uat-round2-20261102/RESULTS.md)
+ověřil akce, velodrom, katalog, kupóny, storno a simulovanou úhradu/vratku.
+Oprava odděluje zboží od programu v localhost seedu a zachovává historii staršího dema.
+Předání opravy určuje navazující PR; produkce se neměnila, heslo a T07 vynechány.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.

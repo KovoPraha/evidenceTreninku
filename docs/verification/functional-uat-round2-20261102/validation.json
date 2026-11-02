@@ -1,0 +1,31 @@
+{
+  "phpunit_windows": {
+    "tests": 1905,
+    "assertions": 38260,
+    "skipped": 3,
+    "exit_code": 0
+  },
+  "targeted": {
+    "tests": 7,
+    "assertions": 71,
+    "passed": true
+  },
+  "phpstan_level_5": "PASS",
+  "baseline_budget": "UNCHANGED",
+  "phpstan_contract": "PASS",
+  "changed_php_style": {
+    "files": 4,
+    "errors": 0
+  },
+  "anonymous": {
+    "public": 32,
+    "cli": 2,
+    "protected": 237,
+    "errors": 0
+  },
+  "catalog_real_mariadb": "PASS: original regression, legacy repair, fresh seed, repeated stable",
+  "production_mutations": false,
+  "password_change": "SKIPPED",
+  "T07": "SKIPPED",
+  "linux_mariadb_ci": "See exact PR head checks; not inferred from Windows"
+}
