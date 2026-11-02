@@ -1,0 +1,8 @@
+{
+  "url": "https://kis.kovopraha.cz/assets/app-ui.css?release=c1686b4895c2d45428a4ca492b3c56fc4d0fe286",
+  "http": 200,
+  "bytes": 28192,
+  "expected_sha256": "34300685642cb3269e39e46c76a2bfcf9df6c0ffa52b220537fcae66c9805bd4",
+  "actual_sha256": "34300685642cb3269e39e46c76a2bfcf9df6c0ffa52b220537fcae66c9805bd4",
+  "match": true
+}

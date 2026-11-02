@@ -1,0 +1,22 @@
+{
+  "before": "acce3c1351cddbcad12fb5fea11afe6ae8936001",
+  "pr_head": "0cc2081921d1973b3981d805a43701d7baadd939",
+  "release": "c1686b4895c2d45428a4ca492b3c56fc4d0fe286",
+  "deployment_run": 41365449270,
+  "merged_tree_equals_tested_tree": true,
+  "runtime_files": [
+    {
+      "file": "assets/app-ui.css",
+      "expected_sha256": "34300685642cb3269e39e46c76a2bfcf9df6c0ffa52b220537fcae66c9805bd4"
+    },
+    {
+      "file": "edit_trenink.php",
+      "expected_sha256": "90add7780bcdc0bb16e12b2ebcc34c9133aeff728e388c03085a9dc9b1b1b845"
+    },
+    {
+      "file": "formular.php",
+      "expected_sha256": "e023e2de651a21aabe1e2206d1fb685bde3fce49a028ee2ae967a829291cdd25"
+    }
+  ],
+  "scope": "Expected Git blob hashes; not a full live runtime hash inventory"
+}

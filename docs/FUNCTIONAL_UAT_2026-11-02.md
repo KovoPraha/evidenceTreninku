@@ -1,5 +1,8 @@
 # Autonomní funkční ověření 2. 11. 2026
 
+Následné autorizované [sloučení PR #272 a nasazení](verification/functional-release-20261102/RESULTS.md) mají samostatný protokol.
+Níže je zachován rozsah původního testovacího běhu před nasazením.
+
 Pracovní kopie `evidencePavel-functional-uat-20261102`, větev
 `codex/functional-uat-20261102`, výchozí main `e916f086`.
 Vlastník povolil autonomní testování dalších funkcí, opravy a jejich testy.

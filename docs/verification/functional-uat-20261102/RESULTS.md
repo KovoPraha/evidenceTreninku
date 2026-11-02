@@ -1,5 +1,8 @@
 # Autonomní funkční ověření — 2. 11. 2026
 
+Následné autorizované [sloučení PR #272 a nasazení](../functional-release-20261102/RESULTS.md) mají samostatný protokol.
+Níže je zachován rozsah původního testovacího běhu před nasazením.
+
 Chrome, Europe/Prague; časové body nálezů jsou uvedeny níže.
 Výchozí main `e916f0861f3994891dbc7e5e5ba9fa7cfe285187`, větev
 `codex/functional-uat-20261102`. Vlastník povolil další testování, opravy a testy;

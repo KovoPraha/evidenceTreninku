@@ -1,0 +1,11 @@
+{
+  "anonymous": true,
+  "headings": [
+    "Klubový e-shop"
+  ],
+  "publicNavZ": "auto",
+  "shopNavZ": "1010",
+  "stylesheet": [
+    "/assets/app-ui.css?v=1793566392"
+  ]
+}
