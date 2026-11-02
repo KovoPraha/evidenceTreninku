@@ -5,6 +5,7 @@ declare(strict_types=1);
 require_once __DIR__.'/family_schema_read_scope.php';
 
 require_once __DIR__.'/kis_roster.php';
+require_once __DIR__.'/member_evidence_identity.php';
 
 function kisRosterHierarchyHasTable(PDO $pdo, string $table): bool
 {
@@ -409,6 +410,10 @@ function kisRosterCreateStandingTeam(
 function kisRosterEnsureStandingTeam(PDO $pdo, int $actorId, string $code, string $name, string $reason): array
 {
     $code = kisRosterCode($code);
+    $mapped = memberEvidenceMappedTeam($pdo, $code);
+    if ($mapped !== null) {
+        return $mapped;
+    }
     $query = $pdo->prepare('SELECT * FROM club_teams WHERE code=? ORDER BY id');
     $query->execute([$code]);
     $rows = $query->fetchAll(PDO::FETCH_ASSOC);

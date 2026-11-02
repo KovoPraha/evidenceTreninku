@@ -292,6 +292,7 @@ function clubCatalogImportSchedule(string$value): array
 /** @return array{created:int,updated:int,programs:int,products:int,variants:int,terms_ready:bool,terms_dummy:bool} */
 function clubCatalogImport(PDO$pdo, int$actorId, string$applicationRoot): array
 {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     if ($actorId < 1) {
         throw new InvalidArgumentException('Import vyžaduje aktivního správce.');
     }

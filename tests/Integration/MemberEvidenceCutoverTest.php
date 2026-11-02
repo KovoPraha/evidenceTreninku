@@ -94,6 +94,23 @@ final class MemberEvidenceCutoverTest extends TestCase
         \memberEvidencePreview($pdo, $config);
     }
 
+    public function testAuditedRenameResolvesSameIdentityAndRejectsSubsequentDrift(): void
+    {
+        $pdo = $this->database();
+        $manifest = \memberEvidencePreview($pdo, $this->groupedConfig());
+        \memberEvidenceApply($pdo, $manifest, $manifest['fingerprint'], 7, str_repeat('a', 64), true);
+        $before = \memberEvidenceSnapshot($pdo);
+        $team = \kisRosterEnsureStandingTeam($pdo, 7, 'OLD', 'LOCALHOST původní', 'LOCALHOST retry');
+        self::assertSame(1, (int) $team['id']);
+        self::assertSame('PERMANENT', $team['code']);
+        self::assertSame($before, \memberEvidenceSnapshot($pdo));
+        self::assertNull(\memberEvidenceMappedTeam($pdo, 'UNKNOWN'));
+        $pdo->exec("UPDATE club_teams SET name='LOCALHOST drift' WHERE id=1");
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('auditované mapy');
+        \kisRosterEnsureStandingTeam($pdo, 7, 'OLD', 'LOCALHOST původní', 'LOCALHOST retry');
+    }
+
     private function openedDatabase(): PDO
     {
         $pdo = $this->database();

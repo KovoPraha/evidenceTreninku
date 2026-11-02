@@ -9,6 +9,7 @@ if (PHP_SAPI !== 'cli') {
 }
 require_once dirname(__DIR__, 2) . '/includes/member_evidence_cutover.php';
 require_once dirname(__DIR__, 2) . '/includes/migration_runner.php';
+require_once dirname(__DIR__, 2) . '/includes/trainer_pilot.php';
 
 $phase = 'target';
 try {
@@ -118,12 +119,22 @@ try {
     if (!$result['preserved_parity'] || !($replay['idempotent'] ?? false)) {
         throw new RuntimeException('Cutover or replay parity failed.');
     }
+    $phase = 'pilot_scope_after_rename';
+    $pilotPreserved = null;
+    $pilotRecord = trainerPilotRecord($pdo);
+    if (!empty($pilotRecord['operational_authorization'])) {
+        $pilotPreserved = trainerPilotStatus($pdo, TRAINER_PILOT_ACTOR_NAME)['scope_ready'];
+        if (!$pilotPreserved) {
+            throw new RuntimeException('Existing synthetic pilot scope changed.');
+        }
+    }
     echo json_encode(
         ['contract' => 'member-evidence-copy-rehearsal-v1', 'isolated_copy_only' => true,
         'source_backup_sha256' => hash_file('sha256', $backup), 'source_tables' => count($before),
         'upgraded_tables' => count($stable), 'converted_teams' => count($teams),
         'created_groups' => $result['created_groups'], 'created_edges' => $result['created_edges'],
         'group_membership_parity' => $result['group_membership_parity'], 'mapping_sha256' => $mappingHash,
+        'existing_pilot_scope_preserved' => $pilotPreserved,
         'opening_on' => $result['opening_on'], 'opening_count' => $result['opening_count'],
         'deleted' => $result['deleted'], 'detached_claim_count' => $result['detached_claim_count'],
         'final_sync_pending' => $result['final_sync_pending'],

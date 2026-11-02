@@ -121,6 +121,7 @@ function clubTocnaciSplitPlan(PDO $pdo, int $legacyVariantId = 682): array
 /** @return array<string,mixed> */
 function clubTocnaciSplitApply(PDO $pdo, int $actorId, string $applicationRoot, int $legacyVariantId = 682): array
 {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     if ($actorId < 1) {
         throw new InvalidArgumentException('Převod vyžaduje správce.');
     }
@@ -251,6 +252,7 @@ function clubTocnaciSplitApply(PDO $pdo, int $actorId, string $applicationRoot, 
 /** @param array<string,array<string,int>> $dayPrograms */
 function clubTocnaciConnectTwiceWeekly(PDO $pdo, array $dayPrograms, int $actorId): array
 {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
     $program = clubTocnaciSplitFindProgram($pdo, 'Točňáci 2× týdně');
     $programId = (int)($program['id'] ?? 0);
     if ($programId < 1) {
