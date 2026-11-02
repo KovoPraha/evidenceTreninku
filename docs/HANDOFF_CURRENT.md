@@ -7,9 +7,10 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 Pro následující práci na členství platí [pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md)
 z 2. 11. 2026. Vlastník potvrdil trvalé skupiny/soupisky a časové členství;
 historie před přechodem zůstane v původním KIS. Plán obsahuje inventář stránek,
-etapy E0–E8, rozhodnutí D1–D8 a akceptaci A01–A20. Jde o připravený plán,
-nikoli dokončenou implementaci nebo provedené mazání. Začít úplným inventářem E0;
-konkrétní produkční převod a úklid navazuje až na ověřený manifest a nácvik.
+etapy E0–E8, rozhodnutí D1–D8 a akceptaci A01–A20. Aplikační implementaci E1–E5 a nástroj E6 popisuje
+[implementační protokol](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md). Produkční
+inventura, nácvik konkrétního manifestu a UAT zůstávají otevřené; E7/E8 nebyly
+provedeny. Tento stav není potvrzením nasazení ani provedeného mazání.
 
 Navazuje [trenérská obnova hesla](TRAINER_READINESS_2026-10-31.md) a její
 [produkční přejímka](verification/trainer-recovery-20261031/RESULTS.md).

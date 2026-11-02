@@ -65,7 +65,10 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('php run-migrate-apply.php', $workflow);
         self::assertStringContainsString('php run-migrate-check.php', $workflow);
         self::assertStringContainsString("rm -f '\$RELEASE_DIR/run-migrate-apply.php'", $workflow);
-        self::assertStringContainsString("putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');", $workflow);
+        self::assertStringContainsString(
+            "putenv('BACKUP_TARGET_DIR=' . dirname(__DIR__) . '/.kis-backups');",
+            $workflow
+        );
         self::assertStringContainsString("php '\$DEPLOY_BASE/run-backup.php'", $workflow);
 
         // Hosting může blokovat IP rozsahy GitHub runnerů; smoke test má proto
@@ -155,7 +158,7 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString("'auth_login_limits'", $backup);
         self::assertStringContainsString(
-            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-10-31.1'",
+            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-02.1'",
             $backup
         );
         foreach (['source_candidate_id', 'source_run_id', 'origin', 'created_by_trainer_id'] as $column) {
@@ -282,7 +285,11 @@ final class DeployWorkflowContractTest extends TestCase
             self::assertIsString($source);
             // Do not backtrack to interpreting IF as a table when the actual
             // name is interpolated; dynamic tables have an explicit contract test.
-            preg_match_all('/CREATE TABLE(?> IF NOT EXISTS)?\\s+`?(?!IF\\b)([A-Za-z0-9_]+)/i', $source, $createdMatches);
+            preg_match_all(
+                '/CREATE TABLE(?> IF NOT EXISTS)?\\s+`?(?!IF\\b)([A-Za-z0-9_]+)/i',
+                $source,
+                $createdMatches
+            );
             foreach ($createdMatches[1] as $table) {
                 if (str_ends_with($table, '_next')) {
                     continue;
@@ -318,7 +325,10 @@ final class DeployWorkflowContractTest extends TestCase
             $workflow = $this->source('.github/workflows/' . $name);
             self::assertStringContainsString($pin, $workflow);
             self::assertStringNotContainsString('actions/checkout@v', $workflow);
-            self::assertStringNotContainsString('actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5', $workflow);
+            self::assertStringNotContainsString(
+                'actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5',
+                $workflow
+            );
         }
     }
 
@@ -409,7 +419,10 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString('uat_schvaleno:', $deploy);
         self::assertStringContainsString('var/deployment.json', $deploy);
-        self::assertStringContainsString("'{sha:\$sha,run_id:\$run_id,deployed_at:\$deployed_at,uat_approved:\$uat_approved}'", $deploy);
+        self::assertStringContainsString(
+            "'{sha:\$sha,run_id:\$run_id,deployed_at:\$deployed_at,uat_approved:\$uat_approved}'",
+            $deploy
+        );
         self::assertStringContainsString('KIS_UAT_READINESS_CONFIRM=OVERIT', $workflow);
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $readiness);
         self::assertStringNotContainsString('UPDATE ', $readiness);
@@ -446,7 +459,10 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('KIS_PRIVATE_STORAGE_CONFIRM=PRIPRAVIT-PRIVATNI-ULOZISTE', $workflow);
         self::assertStringContainsString('exit(provisionProductionPrivateStorageMain());', $workflow);
         self::assertStringContainsString('.private_config_backup_verified == true', $workflow);
-        self::assertStringContainsString('.database_accessed == false and .attachments_moved == false', $workflow);
+        self::assertStringContainsString(
+            '.database_accessed == false and .attachments_moved == false',
+            $workflow
+        );
         $cleanup = substr($workflow, strpos($workflow, '- name: Odstranit kopii produkční konfigurace z release'));
         self::assertStringContainsString('if: always()', $cleanup);
         self::assertStringContainsString('provision-production-private-storage.php', $cleanup);

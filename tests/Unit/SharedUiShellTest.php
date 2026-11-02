@@ -22,7 +22,9 @@ final class SharedUiShellTest extends TestCase
     public function testSharedHeaderActionsUseCanonicalPathsOnNestedStaffForms(): void
     {
         $header = (string)file_get_contents(dirname(__DIR__, 2).'/hlavicka.php');
-        foreach (['logout.php','prepnout_pracovni_pozici.php','booking/eshop.php','ajax_global_search.php','sw.js','push_subscribe.php'] as $route) {
+        foreach (['logout.php','prepnout_pracovni_pozici.php','booking/eshop.php','ajax_global_search.php',
+
+    'sw.js','push_subscribe.php'] as $route) {
             self::assertStringContainsString("appUiUrl('".$route."')", $header);
         }
         self::assertStringNotContainsString('action="logout.php"', $header);
@@ -48,7 +50,11 @@ final class SharedUiShellTest extends TestCase
             }
             // This is the standalone, self-contained HTML input to the PDF renderer,
             // not an application page. The guarded admin page uses appUiAssets.
-            if (in_array($relative, ['includes/accounting_documents.php','includes/shop_stock_documents.php'], true)) {
+            if (in_array(
+                $relative,
+                ['includes/accounting_documents.php','includes/shop_stock_documents.php'],
+                true
+            )) {
                 continue;
             }
             $source = (string)file_get_contents($path);
@@ -60,7 +66,10 @@ final class SharedUiShellTest extends TestCase
             }
         }
 
-        self::assertSame([], $missing, 'HTML pages without the shared UI foundation: ' . implode(', ', $missing));
+        self::assertSame([], $missing, 'HTML pages without the shared UI foundation: ' . implode(
+            ', ',
+            $missing
+        ));
     }
 
     public function testEveryHlavickaIncludingPageHasOwnBootstrapCss(): void
@@ -87,7 +96,9 @@ final class SharedUiShellTest extends TestCase
             }
         }
 
-        self::assertSame([], $missing, 'Pages including hlavicka.php without their own Bootstrap CSS link: ' . implode(', ', $missing));
+        self::assertSame([], $missing, 'Pages including hlavicka.php without their own Bootstrap CSS link: ' .
+
+     implode(', ', $missing));
     }
 
     private function includesSharedHeader(string $source): bool
@@ -122,7 +133,10 @@ final class SharedUiShellTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         $helper = (string)file_get_contents($root . '/includes/ui_shell.php');
-        self::assertStringContainsString("appUiUrl('assets/vendor/bootstrap/bootstrap.bundle.min.js')", $helper);
+        self::assertStringContainsString(
+            "appUiUrl('assets/vendor/bootstrap/bootstrap.bundle.min.js')",
+            $helper
+        );
         self::assertStringNotContainsString('cdn.jsdelivr.net/npm/bootstrap@', $helper);
 
         $manualCopies = [];
@@ -163,7 +177,10 @@ final class SharedUiShellTest extends TestCase
             self::assertGreaterThan(0, filesize($root . '/' . $relative));
         }
         self::assertStringContainsString("appUiUrl('assets/vendor/bootstrap/bootstrap.min.css')", $helper);
-        self::assertStringContainsString("appUiUrl('assets/vendor/bootstrap-icons/font/bootstrap-icons.css')", $helper);
+        self::assertStringContainsString(
+            "appUiUrl('assets/vendor/bootstrap-icons/font/bootstrap-icons.css')",
+            $helper
+        );
     }
 
     public function testNavbarBreakpointsStayAlignedWithXxlExpansion(): void
@@ -209,7 +226,10 @@ final class SharedUiShellTest extends TestCase
     {
         $helper = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/ui_shell.php');
         self::assertStringContainsString('<details class="dropdown app-account-menu">', $helper);
-        self::assertStringContainsString('<summary class="btn btn-outline-secondary btn-sm dropdown-toggle">', $helper);
+        self::assertStringContainsString(
+            '<summary class="btn btn-outline-secondary btn-sm dropdown-toggle">',
+            $helper
+        );
         self::assertStringContainsString('dropdown-menu dropdown-menu-end', $helper);
         self::assertStringNotContainsString('<details class="acct-menu', $helper);
     }
@@ -240,10 +260,16 @@ final class SharedUiShellTest extends TestCase
         ];
 
         foreach ($expected as $relative => $needle) {
-            self::assertStringContainsString($needle, (string)file_get_contents($root . '/' . $relative), $relative);
+            self::assertStringContainsString(
+                $needle,
+                (string)file_get_contents($root . '/' . $relative),
+                $relative
+            );
         }
         self::assertStringContainsString("publicShellNav('home')", (string)file_get_contents($root . '/index.php'));
-        self::assertStringContainsString("require_once __DIR__ . '/config.php';", (string)file_get_contents($root . '/index.php'));
+        self::assertStringContainsString("require_once __DIR__ . '/config.php';", (string)file_get_contents($root .
+
+     '/index.php'));
         self::assertStringContainsString('navbar-expand-xxl', (string)file_get_contents($root . '/includes/ui_shell.php'));
     }
 
@@ -271,8 +297,8 @@ final class SharedUiShellTest extends TestCase
         'formular.php', 'formular_zavod.php', 'google_sheets_linky.php',
         'hromadne_odmeny.php', 'hromadne_podskupiny.php', 'index.php',
         'individualni_lekce_form.php', 'individualni_lekce_sprava.php',
-        'kalendar_sportovist.php', 'kis_child_access_admin.php', 'kis_rosters_admin.php',
-        'kis_sync_center.php', 'kis_training_a07_admin.php', 'kis_transition_admin.php',
+        'kalendar_sportovist.php', 'kis_child_access_admin.php',
+        'kis_sync_center.php',
         'login.php', 'member_charge_reminders_admin.php', 'moje_skupiny.php',
         'moje_treninky.php', 'nastaveni_opravneni.php', 'nastaveni_zadavani.php',
         'nova_cinnost.php', 'odeslat_emaily.php', 'oznameni.php',
@@ -328,7 +354,10 @@ final class SharedUiShellTest extends TestCase
             }
         }
 
-        self::assertSame([], $missing, 'Navigation hrefs pointing at files that do not exist: ' . implode(', ', $missing));
+        self::assertSame([], $missing, 'Navigation hrefs pointing at files that do not exist: ' . implode(
+            ', ',
+            $missing
+        ));
     }
 
     public function testSharedInteractionsAreSafeAndReusable(): void
@@ -368,7 +397,10 @@ final class SharedUiShellTest extends TestCase
             }
         }
 
-        self::assertSame([], $automaticThemePages, 'Pages enabling a theme from OS preference: ' . implode(', ', $automaticThemePages));
+        self::assertSame([], $automaticThemePages, 'Pages enabling a theme from OS preference: ' . implode(
+            ', ',
+            $automaticThemePages
+        ));
         self::assertStringContainsString("localStorage.getItem('bs-theme') || 'light'", $header);
         self::assertStringContainsString('[data-bs-theme="dark"] body.bg-light', $css);
         self::assertStringContainsString('background-color: var(--app-page-bg) !important;', $css);

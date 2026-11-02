@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/roster_hierarchy.php';
@@ -16,9 +17,9 @@ function clubEventRosterTargets(PDO $pdo, int $eventId): array
     $statement = $pdo->prepare(
         'SELECT rt.event_id,rt.team_id,rt.actor_trainer_id,rt.decision_note,rt.created_at, '
         . 't.code AS team_code,t.name AS team_name,t.status AS team_status, '
-        . 's.name AS season_name,s.starts_on,s.ends_on,s.status AS season_status '
+        . 'NULL AS season_name,NULL AS starts_on,NULL AS ends_on,t.status AS season_status '
         . 'FROM club_event_roster_targets rt JOIN club_teams t ON t.id=rt.team_id '
-        . 'JOIN club_seasons s ON s.id=t.season_id WHERE rt.event_id=? ORDER BY t.name,t.id'
+        . 'WHERE rt.event_id=? ORDER BY t.name,t.id'
     );
     $statement->execute([$eventId]);
     return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -28,8 +29,8 @@ function clubEventRosterTargets(PDO $pdo, int $eventId): array
 function clubEventRosterAvailableTeams(PDO $pdo): array
 {
     return $pdo->query(
-        "SELECT t.id,t.code,t.name,t.status,s.name AS season_name,s.starts_on,s.ends_on "
-        . "FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id "
+        "SELECT t.id,t.code,t.name,t.status,NULL AS season_name,NULL AS starts_on,NULL AS ends_on "
+        . "FROM club_teams t LEFT "
         . "WHERE t.status='active' ORDER BY t.name,t.id"
     )->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -98,11 +99,20 @@ function clubEventRosterReplaceTargets(
         foreach ($normalized as $teamId) {
             $insert->execute([$eventId, $teamId, $actorTrainerId, $note]);
         }
-        clubEventAudit($pdo, $eventId, $actorTrainerId, 'set_roster_targets', 'event', $eventId, $note, [
+        clubEventAudit(
+            $pdo,
+            $eventId,
+            $actorTrainerId,
+            'set_roster_targets',
+            'event',
+            $eventId,
+            $note,
+            [
             'before_team_ids' => $before,
             'after_team_ids' => $normalized,
             'audience_mode' => $normalized === [] ? 'public' : 'roster_targeted',
-        ]);
+        ]
+        );
         $pdo->commit();
         return ['event_id' => $eventId, 'team_ids' => $normalized, 'changed' => true];
     } catch (Throwable $exception) {
@@ -154,7 +164,9 @@ function clubEventRosterEligibility(PDO $pdo, int $eventId, int $sportovecId): a
     return [
         'mode' => 'roster_targeted',
         'team_ids' => $matching,
-        'reason' => 'Platné členství v cílové skupině nebo soupisce k datu první části události ' . $eventDate . '.',
+        'reason' => 'Platné členství v cílové skupině nebo soupisce k datu první části události ' . $eventDate .
+
+     '.',
     ];
 }
 

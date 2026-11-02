@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 const MEMBER_ENGAGEMENT_LEVELS = [
@@ -16,11 +17,16 @@ const MEMBER_ENGAGEMENT_LEVELS = [
  */
 function memberEngagementMap(PDO $pdo, array $personIds, ?string $onDate = null): array
 {
-    $personIds = array_values(array_unique(array_filter(array_map('intval', $personIds), static fn(int $id): bool => $id > 0)));
-    if ($personIds === []) return [];
+    $personIds = array_values(array_unique(array_filter(array_map('intval', $personIds), static fn (int $id): bool
+    => $id > 0)));
+    if ($personIds === []) {
+        return [];
+    }
     $onDate ??= (new DateTimeImmutable('today'))->format('Y-m-d');
     $date = DateTimeImmutable::createFromFormat('!Y-m-d', $onDate);
-    if (!$date || $date->format('Y-m-d') !== $onDate) throw new InvalidArgumentException('Datum přehledu není platné.');
+    if (!$date || $date->format('Y-m-d') !== $onDate) {
+        throw new InvalidArgumentException('Datum přehledu není platné.');
+    }
 
     $result = [];
     foreach ($personIds as $personId) {
@@ -29,20 +35,23 @@ function memberEngagementMap(PDO $pdo, array $personIds, ?string $onDate = null)
     $placeholders = implode(',', array_fill(0, count($personIds), '?'));
 
     $rosters = $pdo->prepare(
-        "SELECT m.sportovec_id,s.season_type,t.name FROM club_roster_members m "
-        . "JOIN club_teams t ON t.id=m.team_id JOIN club_seasons s ON s.id=t.season_id "
-        . "WHERE m.sportovec_id IN ($placeholders) AND m.status='active' AND t.status='active' AND s.status='active' "
-        . "AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND s.starts_on<=? AND s.ends_on>=?"
+        "SELECT m.sportovec_id,t.activity_kind,t.name FROM club_roster_members m "
+        . "JOIN club_teams t ON t.id=m.team_id "
+        . "WHERE m.sportovec_id IN ($placeholders) AND m.status<>'cancelled' AND (m.status<>'removed' OR m.valid_to IS NOT NULL) "
+        . "AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) "
     );
-    $rosters->execute([...$personIds, $onDate, $onDate, $onDate, $onDate]);
+    $rosters->execute([...$personIds, $onDate, $onDate]);
     $competitive = [];
     foreach ($rosters->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $personId = (int)$row['sportovec_id'];
-        if ((string)$row['season_type'] === 'calendar_year') {
+        if ((string)$row['activity_kind'] === 'competitive') {
             $competitive[$personId] = true;
             $result[$personId]['reasons'][] = 'Aktivní závodní soupiska: ' . (string)$row['name'];
-        } else {
-            $result[$personId] = MEMBER_ENGAGEMENT_LEVELS['circle'] + ['key' => 'circle', 'reasons' => array_merge($result[$personId]['reasons'], ['Aktivní kroužková soupiska: ' . (string)$row['name']])];
+        } elseif ($row['activity_kind'] === 'circle') {
+            $result[$personId] = MEMBER_ENGAGEMENT_LEVELS['circle'] + ['key' => 'circle', 'reasons' => array_merge(
+                $result[$personId]['reasons'],
+                ['Aktivní kroužková soupiska: ' . (string)$row['name']]
+            )];
         }
     }
 
@@ -63,11 +72,14 @@ function memberEngagementMap(PDO $pdo, array $personIds, ?string $onDate = null)
 
     foreach (array_keys($competitive) as $personId) {
         $reasons = $result[$personId]['reasons'];
-        $result[$personId] = MEMBER_ENGAGEMENT_LEVELS['competitive'] + ['key' => 'competitive', 'reasons' => $reasons];
+        $result[$personId] = MEMBER_ENGAGEMENT_LEVELS['competitive'] + ['key' => 'competitive', 'reasons'
+    => $reasons];
     }
     foreach ($result as &$level) {
         $level['reasons'] = array_values(array_unique($level['reasons']));
-        if ($level['reasons'] === []) $level['reasons'][] = 'Bez aktuálního programu nebo platné soupisky.';
+        if ($level['reasons'] === []) {
+            $level['reasons'][] = 'Bez aktuálního programu nebo platné soupisky.';
+        }
     }
     unset($level);
     return $result;

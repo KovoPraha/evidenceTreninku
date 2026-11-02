@@ -1,23 +1,37 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Tests\Integration;
+
 use PHPUnit\Framework\TestCase;
+
 require_once dirname(__DIR__) . '/Support/SportovecEditorDetailsFixture.php';
 
 final class SportovecEditorDetailsTest extends TestCase
 {
-    protected function tearDown(): void { $_SESSION = []; }
+    protected function tearDown(): void
+    {
+        $_SESSION = [];
+    }
 
     public function testMigrationPreservesRegistrationCiphertextAuditAndForeignKeys(): void
     {
-        $pdo = $this->pdo(); $fixture = sportovecEditorDetailsFixture($pdo, false);
+        $pdo = $this->pdo();
+        $fixture = sportovecEditorDetailsFixture($pdo, false);
         $ciphertext = $pdo->query('SELECT rc_ciphertext FROM osoba_citlive_udaje')->fetchColumn();
         $migration = require dirname(__DIR__, 2) . '/migrations/20261020230000_athlete_editor_relations.php';
         self::assertFalse($migration['verify']($pdo));
-        $migration['up']($pdo); $migration['up']($pdo);
+        $migration['up']($pdo);
+        $migration['up']($pdo);
         self::assertTrue($migration['verify']($pdo));
         self::assertSame($ciphertext, $pdo->query('SELECT rc_ciphertext FROM osoba_citlive_udaje')->fetchColumn());
-        self::assertSame('850101/0001', personSensitiveAdminReveal($pdo, $fixture['old_record_id'], 'LOCALHOST kontrola migrace', $fixture['keys']));
+        self::assertSame('850101/0001', personSensitiveAdminReveal(
+            $pdo,
+            $fixture['old_record_id'],
+            'LOCALHOST kontrola migrace',
+            $fixture['keys']
+        ));
         self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM osoba_citlive_pristupy')->fetchColumn());
         self::assertSame(1, (int)$pdo->query('PRAGMA foreign_keys')->fetchColumn());
         self::assertFalse($pdo->query('PRAGMA foreign_key_check')->fetchColumn());
@@ -25,7 +39,9 @@ final class SportovecEditorDetailsTest extends TestCase
 
     public function testNewAndCorrectedBirthNumberUseCanonicalEncryptedPersonContext(): void
     {
-        $pdo = $this->pdo(); $fixture = sportovecEditorDetailsFixture($pdo); $digits = $this->digits('2010-01-02');
+        $pdo = $this->pdo();
+        $fixture = sportovecEditorDetailsFixture($pdo);
+        $digits = $this->digits('2010-01-02');
         sportovecEditorSaveBirthNumber($pdo, 10, $digits, '', 'LOCALHOST první doplnění', 7, $fixture['keys']);
         $row = $pdo->query('SELECT * FROM osoba_citlive_udaje WHERE sportovec_id=10')->fetch(\PDO::FETCH_ASSOC);
         self::assertNull($row['request_id']);
@@ -43,17 +59,25 @@ final class SportovecEditorDetailsTest extends TestCase
         self::assertStringNotContainsString($next, json_encode($pdo->query('SELECT * FROM sportovec_history')->fetchAll()));
         self::assertStringNotContainsString($next, json_encode($pdo->query('SELECT * FROM osoba_citlive_pristupy')->fetchAll()));
         $row['sportovec_id'] = 11;
-        try { personSensitiveDecryptForAdmin($row, $fixture['keys']); self::fail('Ciphertext moved to another person'); }
-        catch (\PersonSensitiveException) { self::assertTrue(true); }
+        try {
+            personSensitiveDecryptForAdmin($row, $fixture['keys']);
+            self::fail('Ciphertext moved to another person');
+        } catch (\PersonSensitiveException) {
+            self::assertTrue(true);
+        }
     }
 
     public function testDuplicateBirthNumberRollsBackDateAndAuditAndRejectsNonAdmin(): void
     {
-        $pdo = $this->pdo(); $fixture = sportovecEditorDetailsFixture($pdo); $digits = $this->digits('2010-01-02');
+        $pdo = $this->pdo();
+        $fixture = sportovecEditorDetailsFixture($pdo);
+        $digits = $this->digits('2010-01-02');
         sportovecEditorSaveBirthNumber($pdo, 10, $digits, '', 'LOCALHOST první doplnění', 7, $fixture['keys']);
         $auditCount = (int)$pdo->query('SELECT COUNT(*) FROM osoba_citlive_pristupy')->fetchColumn();
-        try { sportovecEditorSaveBirthNumber($pdo, 11, $digits, '', 'LOCALHOST duplicitní údaj', 7, $fixture['keys']); self::fail('Duplicate RČ accepted'); }
-        catch (\PersonSensitiveException) {
+        try {
+            sportovecEditorSaveBirthNumber($pdo, 11, $digits, '', 'LOCALHOST duplicitní údaj', 7, $fixture['keys']);
+            self::fail('Duplicate RČ accepted');
+        } catch (\PersonSensitiveException) {
             self::assertNull(sportovecEditorPerson($pdo, 11)['narozeni']);
             self::assertSame($auditCount, (int)$pdo->query('SELECT COUNT(*) FROM osoba_citlive_pristupy')->fetchColumn());
         }
@@ -64,19 +88,43 @@ final class SportovecEditorDetailsTest extends TestCase
 
     public function testCanonicalReplaceAndKeyRotationAlsoWorkWithoutRegistrationRequest(): void
     {
-        $pdo = $this->pdo(); $fixture = sportovecEditorDetailsFixture($pdo); $digits = $this->digits('2010-01-02');
+        $pdo = $this->pdo();
+        $fixture = sportovecEditorDetailsFixture($pdo);
+        $digits = $this->digits('2010-01-02');
         sportovecEditorSaveBirthNumber($pdo, 10, $digits, '', 'LOCALHOST doplnění údaje', 7, $fixture['keys']);
         $record = $pdo->query('SELECT * FROM osoba_citlive_udaje WHERE sportovec_id=10')->fetch(\PDO::FETCH_ASSOC);
-        personSensitiveAdminReplace($pdo, (int)$record['id'], $digits, '2010-01-02', 'LOCALHOST kanonická oprava', $fixture['keys']);
-        $rotated = $fixture['keys']; $rotated['keys']['next'] = str_repeat('n', 32); $rotated['active_version'] = 'next';
+        personSensitiveAdminReplace(
+            $pdo,
+            (int)$record['id'],
+            $digits,
+            '2010-01-02',
+            'LOCALHOST kanonická oprava',
+            $fixture['keys']
+        );
+        $rotated = $fixture['keys'];
+        $rotated['keys']['next'] = str_repeat('n', 32);
+        $rotated['active_version'] = 'next';
         personSensitiveAdminRotate($pdo, (int)$record['id'], 'LOCALHOST rotace klíče', $rotated);
-        self::assertSame(substr($digits, 0, 6) . '/' . substr($digits, 6), personSensitiveAdminReveal($pdo, (int)$record['id'], 'LOCALHOST kontrola rotace', $rotated));
+        self::assertSame(substr($digits, 0, 6) . '/' . substr($digits, 6), personSensitiveAdminReveal(
+            $pdo,
+            (int)$record['id'],
+            'LOCALHOST kontrola rotace',
+            $rotated
+        ));
     }
 
     public function testEditingSharedParentPreservesLoginAndGroupsAliases(): void
     {
-        $pdo = $this->pdo(); sportovecEditorDetailsFixture($pdo);
-        sportovecEditorSaveParent($pdo, 10, 'link10', ['parent_name' => 'LOCALHOST Upravený rodič', 'parent_emails' => 'new-contact@example.test', 'parent_phones' => '456; 789', 'relationship' => 'zákonný zástupce'], 7);
+        $pdo = $this->pdo();
+        sportovecEditorDetailsFixture($pdo);
+        sportovecEditorSaveParent(
+            $pdo,
+            10,
+            'link10',
+            ['parent_name' => 'LOCALHOST Upravený rodič', 'parent_emails'
+    => 'new-contact@example.test', 'parent_phones' => '456; 789', 'relationship' => 'zákonný zástupce'],
+            7
+        );
         $context = sportovecEditorContext($pdo, 10);
         self::assertCount(1, $context['parents']);
         self::assertSame('LOCALHOST Upravený rodič', $context['parents'][0]['display_name']);
@@ -90,7 +138,8 @@ final class SportovecEditorDetailsTest extends TestCase
 
     public function testUnlinkEndsAllPersonAliasesAndRevokesOnlyTheirGuardianAccess(): void
     {
-        $pdo = $this->pdo(); sportovecEditorDetailsFixture($pdo);
+        $pdo = $this->pdo();
+        sportovecEditorDetailsFixture($pdo);
         sportovecEditorUnlinkParent($pdo, 10, 'link10', 7);
         self::assertCount(0, sportovecEditorContext($pdo, 10)['parents']);
         self::assertCount(1, sportovecEditorContext($pdo, 11)['parents']);
@@ -102,10 +151,13 @@ final class SportovecEditorDetailsTest extends TestCase
 
     public function testUnlinkRollsBackContactsAndAccessIfHistoryFails(): void
     {
-        $pdo = $this->pdo(); sportovecEditorDetailsFixture($pdo);
+        $pdo = $this->pdo();
+        sportovecEditorDetailsFixture($pdo);
         $pdo->exec("CREATE TRIGGER fail_history BEFORE INSERT ON sportovec_history BEGIN SELECT RAISE(ABORT,'test audit failure'); END");
-        try { sportovecEditorUnlinkParent($pdo, 10, 'link10', 7); self::fail('Unaudited unlink succeeded'); }
-        catch (\PDOException) {
+        try {
+            sportovecEditorUnlinkParent($pdo, 10, 'link10', 7);
+            self::fail('Unaudited unlink succeeded');
+        } catch (\PDOException) {
             self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM kis_person_links WHERE ended_at IS NOT NULL')->fetchColumn());
             self::assertSame('approved', $pdo->query('SELECT status FROM account_person_roles WHERE sportovec_id=10')->fetchColumn());
             self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM account_person_role_events WHERE action='revoke'")->fetchColumn());
@@ -114,8 +166,11 @@ final class SportovecEditorDetailsTest extends TestCase
 
     public function testManualParentAndAccountCanBeAddedWithoutInventingImportOrEnablingAccount(): void
     {
-        $pdo = $this->pdo(); sportovecEditorDetailsFixture($pdo);
-        sportovecEditorSaveParent($pdo, 10, '', ['parent_name' => 'LOCALHOST Nový', 'parent_emails' => 'manual@example.test', 'parent_phones' => '123', 'relationship' => 'otec'], 7);
+        $pdo = $this->pdo();
+        sportovecEditorDetailsFixture($pdo);
+        sportovecEditorSaveParent($pdo, 10, '', ['parent_name' => 'LOCALHOST Nový', 'parent_emails' => 'manual@example.test',
+
+     'parent_phones' => '123', 'relationship' => 'otec'], 7);
         $row = $pdo->query("SELECT * FROM kis_person_contacts WHERE display_name='LOCALHOST Nový'")->fetch(\PDO::FETCH_ASSOC);
         self::assertNull($row['batch_fingerprint']);
         sportovecEditorGuardianAccount($pdo, 10, 2, 7, 'LOCALHOST explicitní propojení', $row['contact_key']);
@@ -127,44 +182,67 @@ final class SportovecEditorDetailsTest extends TestCase
 
     public function testForeignParentAndAccountIdentifiersAreRejected(): void
     {
-        $pdo = $this->pdo(); sportovecEditorDetailsFixture($pdo);
+        $pdo = $this->pdo();
+        sportovecEditorDetailsFixture($pdo);
         $foreignRelation = (int)$pdo->query('SELECT id FROM account_person_roles WHERE sportovec_id=11')->fetchColumn();
         foreach ([
-            static fn() => sportovecEditorUnlinkParent($pdo, 10, 'link11', 7),
-            static fn() => sportovecEditorSaveParent($pdo, 10, 'link11', ['parent_name' => 'Wrong'], 7),
-            static fn() => sportovecEditorRevokeAccount($pdo, 10, $foreignRelation, 7, 'LOCALHOST cizí vazba'),
+            static fn () => sportovecEditorUnlinkParent($pdo, 10, 'link11', 7),
+            static fn () => sportovecEditorSaveParent($pdo, 10, 'link11', ['parent_name' => 'Wrong'], 7),
+
+
+            static fn () => sportovecEditorRevokeAccount($pdo, 10, $foreignRelation, 7, 'LOCALHOST cizí vazba'),
+
+
         ] as $operation) {
-            try { $operation(); self::fail('Foreign identifier accepted'); }
-            catch (\InvalidArgumentException) { self::assertFalse($pdo->inTransaction()); }
+            try {
+                $operation();
+                self::fail('Foreign identifier accepted');
+            } catch (\InvalidArgumentException) {
+                self::assertFalse($pdo->inTransaction());
+            }
         }
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM kis_person_links WHERE ended_at IS NOT NULL')->fetchColumn());
     }
 
     public function testRosterAddIsIdempotentAndHistoryIncludesOldAndFutureMemberships(): void
     {
-        $pdo = $this->pdo(); sportovecEditorDetailsFixture($pdo);
+        $pdo = $this->pdo();
+        sportovecEditorDetailsFixture($pdo);
         sportovecEditorAddRoster($pdo, 10, 1, 7, '2026-10-20', 'LOCALHOST přidání');
         sportovecEditorAddRoster($pdo, 10, 1, 7, '2026-10-20', 'LOCALHOST opakování');
-        $pdo->exec("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,valid_to,created_by_trainer_id) VALUES(2,10,'removed','kis_shadow','2025-09-01','2026-08-31',7),(3,10,'active','manual','2098-09-01',NULL,7),(1,11,'active','manual','2026-10-20',NULL,7)");
-        $pdo->exec('CREATE TABLE kis_legacy_roster_claims(id INTEGER,sportovec_id INTEGER,team_id INTEGER,legacy_label TEXT,member_id INTEGER,status TEXT,decision_note TEXT)');
+        $pdo->exec(('INSERT INTO club_roster_members(team_id,sportovec_id,status,source,valid_from,valid_to,created_by_trainer_id) '
+    .
+    'VALUES(2,10,\'removed\',\'kis_shadow\',\'2025-09-01\',\'2026-08-31\',7),(3,10,\'active\',\'manual\',\'2098-09-01\',NULL,7),('
+    .
+    '1,11,\'active\',\'manual\',\'2026-10-20\',NULL,7)'));
+        $pdo->exec(('CREATE TABLE kis_legacy_roster_claims(id INTEGER,sportovec_id INTEGER,team_id INTEGER,legacy_label '
+    .
+    'TEXT,member_id INTEGER,status TEXT,decision_note TEXT)'));
         $pdo->exec("INSERT INTO kis_legacy_roster_claims VALUES(1,10,2,'LOCALHOST návrh',NULL,'review',NULL)");
         $pdo->exec('CREATE TABLE kis_current_roster_runs(id INTEGER,season_id INTEGER)');
         $pdo->exec('INSERT INTO kis_current_roster_runs VALUES(1,1)');
-        $pdo->exec('CREATE TABLE kis_current_roster_claims(id INTEGER,run_id INTEGER,legacy_claim_id INTEGER,sportovec_id INTEGER,suggested_team_id INTEGER,target_team_id INTEGER,member_id INTEGER,status TEXT,decision_note TEXT)');
+        $pdo->exec(('CREATE TABLE kis_current_roster_claims(id INTEGER,run_id INTEGER,legacy_claim_id INTEGER,sportovec_id '
+    .
+    'INTEGER,suggested_team_id INTEGER,target_team_id INTEGER,member_id INTEGER,status TEXT,decision_note TEXT)'));
         $pdo->exec("INSERT INTO kis_current_roster_claims VALUES(1,1,1,10,1,NULL,NULL,'review',NULL)");
         $rosters = sportovecEditorRosters($pdo, 10, '2026-10-20');
-        self::assertCount(1, $rosters['current']); self::assertCount(1, $rosters['history']); self::assertCount(1, $rosters['planned']);
+        self::assertCount(1, $rosters['current']);
+        self::assertCount(1, $rosters['history']);
+        self::assertCount(1, $rosters['planned']);
         self::assertCount(1, $rosters['events']);
-        self::assertCount(1, $rosters['current_claims']);
-        self::assertSame('review', $rosters['current_claims'][0]['status']);
-        self::assertSame([3,1], array_map('intval', array_column($rosters['choices'], 'id')));
+        self::assertSame([], $rosters['current_claims']);
+        self::assertSame([], $rosters['claims']);
+        self::assertSame([3,2,1], array_map('intval', array_column($rosters['choices'], 'id')));
+        $pdo->exec("UPDATE club_teams SET status='closed' WHERE id=2");
         $this->expectException(\InvalidArgumentException::class);
         sportovecEditorAddRoster($pdo, 10, 2, 7, '2025-10-20', 'LOCALHOST stará sezona');
     }
 
     public function testAllAssignedPaymentsIncludeHistoryAndSharedOrdersButExcludeSiblings(): void
     {
-        $pdo = $this->pdo(); sportovecEditorDetailsFixture($pdo); sportovecEditorPaymentFixture($pdo);
+        $pdo = $this->pdo();
+        sportovecEditorDetailsFixture($pdo);
+        sportovecEditorPaymentFixture($pdo);
         $result = sportovecEditorPayments($pdo, 10);
         self::assertSame([2,1], array_map('intval', array_column($result['charges'], 'id')));
         self::assertSame('111', $result['charges'][1]['variable_symbol']);
@@ -172,18 +250,26 @@ final class SportovecEditorDetailsTest extends TestCase
         self::assertSame(3000, (int)$result['orders'][0]['athlete_items_minor']);
         self::assertSame(8000, (int)$result['orders'][0]['total_minor']);
         self::assertSame('222', $result['orders'][1]['variable_symbol']);
-        self::assertCount(1, $result['receipts']); self::assertCount(1, $result['allocations']);
+        self::assertCount(1, $result['receipts']);
+        self::assertCount(1, $result['allocations']);
         self::assertSame(1, (int)$result['allocations'][0]['charge_id']);
         self::assertStringNotContainsString('SIBLING', json_encode($result));
     }
 
-    private function pdo(): \PDO { return new \PDO('sqlite::memory:', null, null, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION, \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]); }
+    private function pdo(): \PDO
+    {
+        return new \PDO('sqlite::memory:', null, null, [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+
+     \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC]);
+    }
     private function digits(string $date): string
     {
         $prefix = (new \DateTimeImmutable($date))->format('ymd');
         for ($suffix = 0; $suffix <= 9999; $suffix++) {
             $value = $prefix . str_pad((string)$suffix, 4, '0', STR_PAD_LEFT);
-            if ((int)$value % 11 === 0) return $value;
+            if ((int)$value % 11 === 0) {
+                return $value;
+            }
         }
         throw new \LogicException('No synthetic number');
     }

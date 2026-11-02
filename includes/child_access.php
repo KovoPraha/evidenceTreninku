@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 require_once __DIR__ . '/sportovec_status_lib.php';
 
@@ -57,7 +58,9 @@ function childAccessNormalizeLogin(string $login): string
         || preg_match('/\A[a-z0-9][a-z0-9._@+\-]*\z/D', $normalized) !== 1
     ) {
         throw new InvalidArgumentException(
-            'Přihlašovací jméno musí mít 3–120 znaků a smí obsahovat jen písmena bez diakritiky, čísla, tečku, zavináč, plus, pomlčku a podtržítko.'
+            ('Přihlašovací jméno musí mít 3–120 znaků a smí obsahovat jen písmena bez diakritiky, čísla, tečku, zavináč, '
+    .
+    'plus, pomlčku a podtržítko.')
         );
     }
     return $normalized;
@@ -171,7 +174,13 @@ function childAccessSetActive(
     int $actorTrainerId,
     string $reason
 ): void {
-    childAccessChangeState($pdo, $accessAccountId, $actorTrainerId, $active ? 'activate' : 'deactivate', $reason);
+    childAccessChangeState(
+        $pdo,
+        $accessAccountId,
+        $actorTrainerId,
+        $active ? 'activate' : 'deactivate',
+        $reason
+    );
 }
 
 function childAccessChangeState(
@@ -305,7 +314,11 @@ function childAccessIdentity(PDO $pdo, int $accessAccountId): ?array
     return is_array($row) ? array_replace($row, sportovecMembershipFields($pdo, (int)$row['sportovec_id'])) : null;
 }
 
-/** @return array{person:array<string,mixed>,rosters:list<array<string,mixed>>,events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,payments:list<array<string,mixed>>,member_charges:list<array<string,mixed>>} */
+/**
+ * @return array{person:array<string,mixed>,rosters:list<array<string,mixed>>,
+ * events:list<array<string,mixed>>,trainings:list<array<string,mixed>>,
+ * payments:list<array<string,mixed>>,member_charges:list<array<string,mixed>>}
+ */
 function childAccessOverview(PDO $pdo, int $accessAccountId): array
 {
     $person = childAccessIdentity($pdo, $accessAccountId);
@@ -339,14 +352,14 @@ function childAccessScopedRows(PDO $pdo, int $accessAccountId, string $section):
         return [];
     }
     if ($section === 'rosters') {
-        if (!childAccessHasTables($pdo, ['club_roster_members', 'club_teams', 'club_seasons'])) {
+        if (!childAccessHasTables($pdo, ['club_roster_members', 'club_teams'])) {
             return [];
         }
         $sql = 'SELECT m.status,m.valid_from,m.valid_to,t.name AS team_name,t.discipline,t.age_label,'
-            . "COALESCE(s.name,'Bez sezóny') AS season_name FROM child_access_accounts a "
+            . "NULL AS season_name FROM child_access_accounts a "
             . 'JOIN club_roster_members m ON m.sportovec_id=a.sportovec_id '
-            . 'JOIN club_teams t ON t.id=m.team_id LEFT JOIN club_seasons s ON s.id=t.season_id '
-            . 'WHERE a.id=? AND a.active=1 ORDER BY s.starts_on DESC,t.name,m.id';
+            . 'JOIN club_teams t ON t.id=m.team_id '
+            . 'WHERE a.id=? AND a.active=1 ORDER BY m.valid_from DESC,t.name,m.id';
     } elseif ($section === 'events') {
         if (!childAccessHasTables($pdo, ['club_event_registrations', 'club_events'])) {
             return [];

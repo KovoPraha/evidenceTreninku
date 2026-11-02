@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -82,45 +83,48 @@ final class TesterFeedbackWiringTest extends TestCase
         self::assertStringContainsString('staffRouteOwner($next) === $targetPosition', $switch);
         $policies = (string)file_get_contents($root . '/club_makeup_policies_admin.php');
         self::assertStringContainsString('Nezařazeno', $policies);
-        self::assertStringContainsString('value="" <?=$period===null?\'selected\':\'\'?> disabled', $policies);
+        self::assertMatchesRegularExpression('/value=""\s*<\?=\s*\$period\s*===\s*null\s*\?\s*\'selected\'\s*:\s*\'\'\s*\?>\s*disabled/', $policies);
     }
 
-    public function testReportsAndLegacyRouteFailVisiblyAndUseCanonicalMeasurementLinks():void
+    public function testReportsAndLegacyRouteFailVisiblyAndUseCanonicalMeasurementLinks(): void
     {
-        $root=dirname(__DIR__,2);$report=(string)file_get_contents($root.'/prehled_vsech_vykazu.php');$legacy=(string)file_get_contents($root.'/vypis_vsech_vykazu.php');
-        self::assertStringContainsString('trenink_mereni',$report);
-        self::assertStringContainsString('vendor/autoload.php',$report);
-        self::assertStringContainsString('Referenční kód:',$report);
-        self::assertStringContainsString("(int)\$data['id']",$report);
-        self::assertStringContainsString('prehled_vsech_vykazu.php',$legacy);
+        $root = dirname(__DIR__, 2);
+        $report = (string)file_get_contents($root.'/prehled_vsech_vykazu.php');
+        $legacy = (string)file_get_contents($root.'/vypis_vsech_vykazu.php');
+        self::assertStringContainsString('trenink_mereni', $report);
+        self::assertStringContainsString('vendor/autoload.php', $report);
+        self::assertStringContainsString('Referenční kód:', $report);
+        self::assertStringContainsString("(int)\$data['id']", $report);
+        self::assertStringContainsString('prehled_vsech_vykazu.php', $legacy);
     }
 
-    public function testRewardSectionHeadersHaveStableContrast():void
+    public function testRewardSectionHeadersHaveStableContrast(): void
     {
-        $root=dirname(__DIR__,2);$css=(string)file_get_contents($root.'/assets/app-ui.css');
-        self::assertStringContainsString('.app-section-header-primary',$css);
-        self::assertStringContainsString('.app-admin-shell .card > .card-header',$css);
-        self::assertStringContainsString('background:var(--bs-body-bg) !important',$css);
-        self::assertStringContainsString('color:var(--app-blue) !important',$css);
-        foreach(['hromadne_odmeny.php','sprava_sportovec_obdobi.php']as$file){
-            $page=(string)file_get_contents($root.'/'.$file);
-            self::assertStringContainsString('app-section-header-',$page,$file);
-            self::assertStringNotContainsString('--bs-card-color: #fff',$page,$file);
+        $root = dirname(__DIR__, 2);
+        $css = (string)file_get_contents($root.'/assets/app-ui.css');
+        self::assertStringContainsString('.app-section-header-primary', $css);
+        self::assertStringContainsString('.app-admin-shell .card > .card-header', $css);
+        self::assertStringContainsString('background:var(--bs-body-bg) !important', $css);
+        self::assertStringContainsString('color:var(--app-blue) !important', $css);
+        foreach (['hromadne_odmeny.php','sprava_sportovec_obdobi.php'] as $file) {
+            $page = (string)file_get_contents($root.'/'.$file);
+            self::assertStringContainsString('app-section-header-', $page, $file);
+            self::assertStringNotContainsString('--bs-card-color: #fff', $page, $file);
         }
     }
 
-    public function testMonthlyPlansAreDiscoverableFromIndividualCharges():void
+    public function testMonthlyPlansAreDiscoverableFromIndividualCharges(): void
     {
-        $page=(string)file_get_contents(dirname(__DIR__,2).'/member_charges_admin.php');
-        self::assertStringContainsString('member_fee_plans_admin.php',$page);
-        self::assertStringContainsString('Pravidelné měsíční příspěvky',$page);
+        $page = (string)file_get_contents(dirname(__DIR__, 2).'/member_charges_admin.php');
+        self::assertStringContainsString('member_fee_plans_admin.php', $page);
+        self::assertStringContainsString('Pravidelné měsíční příspěvky', $page);
     }
 
-    public function testQuickProgramCheckoutDoesNotPresentUnlimitedCapacityAsZero():void
+    public function testQuickProgramCheckoutDoesNotPresentUnlimitedCapacityAsZero(): void
     {
-        $page=(string)file_get_contents(dirname(__DIR__,2).'/booking/rychla_prihlaska.php');
-        self::assertStringContainsString("if(\$offer['capacity']!==null)",$page);
-        self::assertStringContainsString('Kapacita není omezena.',$page);
-        self::assertStringNotContainsString("Volná místa: <strong><?=(int)\$offer['available_count']?></strong><?php if(\$offer['capacity']!==null)",$page);
+        $page = (string)file_get_contents(dirname(__DIR__, 2).'/booking/rychla_prihlaska.php');
+        self::assertStringContainsString("if(\$offer['capacity']!==null)", $page);
+        self::assertStringContainsString('Kapacita není omezena.', $page);
+        self::assertStringNotContainsString("Volná místa: <strong><?=(int)\$offer['available_count']?></strong><?php if(\$offer['capacity']!==null)", $page);
     }
 }

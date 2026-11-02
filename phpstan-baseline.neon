@@ -887,12 +887,6 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 7
-			path: club_makeup_policies_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 8
 			path: club_program_admissions_admin.php
 
@@ -935,7 +929,7 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 10
+			count: 9
 			path: club_programs_admin.php
 
 		-
@@ -1103,7 +1097,7 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 41
+			count: 40
 			path: eshop_identity_admin.php
 
 		-
@@ -1499,12 +1493,6 @@ parameters:
 		-
 			message: '#^Call to function is_array\(\) with array\<string, string\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
-			count: 1
-			path: includes/localhost_acceptance_hub.php
-
-		-
-			message: '#^Function localhostAcceptanceScenarios\(\) should return list\<array\{id\: string, role\: string, area\: string, status\: string, steps\: list\<string\>, expected\: string, note\: string, links\: list\<array\{label\: string, path\: string, scope\: string\}\>\}\> but returns array\{array\{id\: ''A01'', role\: ''Rodič'', area\: ''Zákaznická část'', declared_status\: ''ready'', steps\: array\{''Přihlaste se…'', ''Otevřete Moje osoby…'', ''Zkontrolujte obě…''\}, expected\: ''Rodič vidí právě…'', note\: ''Použijte…'', links\: array\{array\{label\: ''Přihlášení zákazníka'', path\: ''booking/prihlaseni…'', scope\: ''customer''\}, array\{label\: ''Moje osoby'', path\: ''booking/moje_osoby…'', scope\: ''customer''\}, array\{label\: ''Sportovní přehled'', path\: ''booking/sportovni…'', scope\: ''customer''\}\}\}, array\{id\: ''A02'', role\: ''Dítě'', area\: ''Sportovní část'', declared_status\: ''ready'', steps\: array\{''Přihlaste se…'', ''Otevřete Můj sport\.'', ''Ověřte, že nejsou…''\}, expected\: ''Dítě vidí jen…'', note\: ''Seed vytváří jeden…'', links\: array\{array\{label\: ''Přihlášení sportovce'', path\: ''booking/sportovec…'', scope\: ''customer''\}, array\{label\: ''Můj sport'', path\: ''booking/muj_sport…'', scope\: ''customer''\}\}\}, array\{id\: ''A03'', role\: ''Rodič'', area\: ''Zákaznická část'', declared_status\: ''ready'', steps\: array\{''V e\-shopu vložte…'', ''Jako příjemce…'', ''Dokončete…''\}, expected\: ''Objednávka patří…'', note\: ''Nevybírejte druhé…'', links\: array\{array\{label\: ''E\-shop'', path\: ''booking/eshop\.php'', scope\: ''customer''\}, array\{label\: ''Moje objednávky'', path\: ''booking/moje…'', scope\: ''customer''\}\}\}, array\{id\: ''A04'', role\: ''Administrátor'', area\: ''Administrace'', declared_status\: ''ready'', steps\: array\{''V objednávkách…'', ''Ručně potvrďte…'', ''Zkontrolujte…''\}, expected\: ''Vznikne právě jedna…'', note\: ''Přepnutí role…'', links\: array\{array\{label\: ''Objednávky'', path\: ''eshop_orders_admin…'', scope\: ''admin''\}, array\{label\: ''Programy'', path\: ''club_programs_admin…'', scope\: ''admin''\}, array\{label\: ''Soupisky'', path\: ''kis_rosters_admin…'', scope\: ''admin''\}\}\}, array\{id\: ''A05'', role\: ''Administrátor'', area\: ''Administrace'', declared_status\: ''ready'', steps\: array\{''V průvodci vyberte…'', ''Zkontrolujte náhled…'', ''Proveďte potvrzený…''\}, expected\: ''Sportovec zůstane…'', note\: ''Průvodce zachovává…'', links\: array\{array\{label\: ''Průvodce přechodem'', path\: ''kis_transition…'', scope\: ''admin''\}, array\{label\: ''Soupisky a rollover'', path\: ''kis_rosters_admin…'', scope\: ''admin''\}\}\}, array\{id\: ''A06'', role\: ''Administrátor'', area\: ''Administrace'', declared_status\: ''ready'', steps\: array\{''Vyberte demo…'', ''Nejprve…'', ''Teprve potom…''\}, expected\: ''Věkový člen se…'', note\: ''Proveďte pouze nad…'', links\: array\{array\{label\: ''Průvodce A06'', path\: ''kis_rollover_a06…'', scope\: ''admin''\}, array\{label\: ''Soupisky a rollover'', path\: ''kis_rosters_admin…'', scope\: ''admin''\}\}\}, array\{id\: ''A07'', role\: ''Trenér'', area\: ''Administrace'', declared_status\: ''ready'', steps\: array\{''Otevřete testovací…'', ''Zkontrolujte cílové…'', ''Zapište skutečnou…''\}, expected\: ''Očekávaní účastníci…'', note\: ''Používejte jen…'', links\: array\{array\{label\: ''Průvodce A07'', path\: ''kis_training_a07…'', scope\: ''admin''\}, array\{label\: ''Plánovač tréninků'', path\: ''planovac\.php'', scope\: ''admin''\}, array\{label\: ''Sportovní přehled'', path\: ''booking/sportovni…'', scope\: ''customer''\}\}\}, array\{id\: ''A08'', role\: ''Rodič'', area\: ''Zákaznická část'', declared_status\: ''ready'', steps\: array\{''Otevřete cílené…'', ''Vyberte oprávněné…'', ''Přihlášku odešlete…''\}, expected\: ''Vznikne právě jedna…'', note\: ''Neoprávněné dítě…'', links\: array\{array\{label\: ''Klubové události'', path\: ''booking/krouzky\.php'', scope\: ''customer''\}\}\}, \.\.\.\}\.$#'
-			identifier: return.type
 			count: 1
 			path: includes/localhost_acceptance_hub.php
 
@@ -2135,56 +2123,14 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 9
-			path: kis_current_rosters_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 7
-			path: kis_legacy_rosters_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 10
 			path: kis_person_import_admin.php
 
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 2
-			path: kis_rollover_a06_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 11
+			count: 10
 			path: kis_roster_hierarchy_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 9
-			path: kis_roster_settings_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 13
-			path: kis_rosters_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
-			path: kis_training_a07_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 4
-			path: kis_transition_admin.php
 
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
@@ -2579,7 +2525,7 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 4
+			count: 3
 			path: season_preparation_admin.php
 
 		-

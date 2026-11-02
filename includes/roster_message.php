@@ -11,7 +11,8 @@ final class RosterMessageException extends RuntimeException
 function rosterMessageText(string$value, int$max, string$label): string
 {
     $value = str_replace(["\r\n","\r"], "\n", trim($value));
-    if ($value === '' || mb_strlen($value, 'UTF-8') > $max || preg_match('/[\r\n]/u', $label === 'Předmět' ? $value : '') === 1) {
+    if ($value === '' || mb_strlen($value, 'UTF-8') > $max || preg_match('/[\r\n]/u', $label === 'Předmět' ? $value : '')
+    === 1) {
         throw new InvalidArgumentException($label.' není platný text.');
     }return$value;
 }
@@ -36,8 +37,7 @@ function rosterMessagePreview(PDO$pdo, int$teamId, string$subject, string$body, 
 function rosterMessageAudience(PDO $pdo, int $teamId, string $onDate): array
 {
     $onDate = kisRosterDate($onDate);
-    $q = $pdo->prepare(('SELECT t.id,t.name,s.name AS season_name FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season'
- . '_id WHERE t.id=? AND t.status=\'active\' AND (t.season_id IS NULL OR s.status=\'active\')'));
+    $q = $pdo->prepare("SELECT t.id,t.name,NULL AS season_name FROM club_teams t WHERE t.id=? AND t.status='active'");
     $q->execute([$teamId]);
     $team = $q->fetch(PDO::FETCH_ASSOC);
     if (!$team) {
@@ -189,6 +189,8 @@ function rosterMessageComplete(PDO$pdo, array$row, bool$sent, string$error = '')
     }if (($map['pending'] ?? 0) + ($map['processing'] ?? 0) === 0) {
         $status = ($map['failed'] ?? 0) > 0 ? (($map['sent'] ?? 0) > 0 ? 'partial' : 'failed') : 'sent';
         $pdo->prepare('UPDATE roster_messages SET status=?,completed_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$status,
+
+
     $messageId]);
     }
 }

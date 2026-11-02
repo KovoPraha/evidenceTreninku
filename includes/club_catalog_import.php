@@ -1,68 +1,96 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__.'/legacy_club_catalog.php';
 require_once __DIR__.'/club_program_wizard.php';
 require_once __DIR__.'/club_program_storefront.php';
 
-final class ClubCatalogImportException extends RuntimeException{}
+final class ClubCatalogImportException extends RuntimeException
+{
+}
 
-const CLUB_CATALOG_DUMMY_TERMS=[
-    'program_cancellation'=>'vzorový text – Přihlášku lze před zahájením zrušit písemným oznámením klubu. Způsob případného vrácení uhrazené ceny bude posouzen podle okamžiku zrušení a již vzniklých nákladů.',
-    'program_consent'=>'vzorový text – Zákonný zástupce souhlasí s přihlášením vybraného dítěte do uvedeného kroužku, jeho účastí na programu a s organizační komunikací klubu.',
+const CLUB_CATALOG_DUMMY_TERMS = [
+    'program_cancellation' => ('vzorový text – Přihlášku lze před zahájením zrušit písemným oznámením klubu. Způsob případného vrácení '
+    .
+    'uhrazené ceny bude posouzen podle okamžiku zrušení a již vzniklých nákladů.'),
+    'program_consent' => ('vzorový text – Zákonný zástupce souhlasí s přihlášením vybraného dítěte do uvedeného kroužku, jeho účastí na '
+    .
+    'programu a s organizační komunikací klubu.'),
 ];
 
 /** @return array{program_cancellation:array{id:int,text:string,approved:bool,dummy:bool},program_consent:array{id:int,text:string,approved:bool,dummy:bool>} */
-function clubCatalogImportTermTemplates(PDO $pdo):array
+function clubCatalogImportTermTemplates(PDO $pdo): array
 {
-    $result=[];
-    $statement=$pdo->prepare(
+    $result = [];
+    $statement = $pdo->prepare(
         "SELECT t.id,t.consent_text_plain FROM club_event_term_versions t "
         ."JOIN club_programs p ON t.scope_key="
-        .((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql'?"CONCAT('program:',p.id)":"'program:' || p.id")
+        .((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? "CONCAT('program:',p.id)" : "'program:' || p.id")
         ." WHERE t.scope_type='club_program' AND t.consent_purpose=? AND t.status='active' "
         ."AND p.status='active' AND p.name NOT LIKE 'TEST - %' "
         ."ORDER BY t.id DESC"
     );
-    foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){
-        $statement->execute([$purpose]);$row=false;
-        foreach($statement->fetchAll(PDO::FETCH_ASSOC)as$candidate)if(clubProgramTermTextReady((string)$candidate['consent_text_plain'])){$row=$candidate;break;}
-        if(!$row)$result[$purpose]=['id'=>0,'text'=>CLUB_CATALOG_DUMMY_TERMS[$purpose],'approved'=>false,'dummy'=>true];
-        else$result[$purpose]=['id'=>(int)$row['id'],'text'=>(string)$row['consent_text_plain'],'approved'=>true,'dummy'=>false];
+    foreach (CLUB_PROGRAM_TERM_PURPOSES as $purpose) {
+        $statement->execute([$purpose]);
+        $row = false;
+        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $candidate) {
+            if (clubProgramTermTextReady((string)$candidate['consent_text_plain'])) {
+                $row = $candidate;
+                break;
+            }
+        }
+        if (!$row) {
+            $result[$purpose] = ['id' => 0,'text' => CLUB_CATALOG_DUMMY_TERMS[$purpose],'approved' => false,
+
+    'dummy' => true];
+        } else {
+            $result[$purpose] = ['id' => (int)$row['id'],'text' => (string)$row['consent_text_plain'],
+
+    'approved' => true,'dummy' => false];
+        }
     }
     return$result;
 }
 
-function clubCatalogImportSlug(string$value):string{return clubProgramWizardSlug($value);}
+function clubCatalogImportSlug(string$value): string
+{
+    return clubProgramWizardSlug($value);
+}
 
 /** @return array<string,string> Exact public program name to repository asset path, relative to assets/clubs. */
-function clubCatalogImportAnimalImages():array
+function clubCatalogImportAnimalImages(): array
 {
     return[
-        'Aligátoři'=>'animals/aligatori-cyclist.png','Kamzíci'=>'animals/kamzici-cyclist.png',
-        'Papuchálci'=>'animals/papuchalci-cyclist.png','Zebry'=>'animals/zebry-cyclist.png',
-        'Svišti'=>'animals/svisti-cyclist.png','Jezevci'=>'animals/jezevci-cyclist.png',
-        'Sumci'=>'animals/sumci-cyclist.png','Zubříci'=>'animals/zubrici-cyclist.png',
-        'Kapybary'=>'animals/kapybary-cyclist.png','Lenochodi'=>'animals/lenochodi-cyclist.png',
-        'Lamy'=>'animals/lamy-cyclist.png','Pásovci'=>'animals/pasovci-cyclist.png',
-        'Mývalové'=>'animals/myvalove-cyclist.png','Lvíčci'=>'animals/lvicci-cyclist.png',
-        'Lemuři'=>'animals/lemuri-cyclist.png','Sloni'=>'animals/sloni-cyclist.png',
-        'Surikaty'=>'animals/surikaty-cyclist.png','Žirafy'=>'animals/zirafy-cyclist.png',
+        'Aligátoři' => 'animals/aligatori-cyclist.png','Kamzíci' => 'animals/kamzici-cyclist.png',
+        'Papuchálci' => 'animals/papuchalci-cyclist.png','Zebry' => 'animals/zebry-cyclist.png',
+        'Svišti' => 'animals/svisti-cyclist.png','Jezevci' => 'animals/jezevci-cyclist.png',
+        'Sumci' => 'animals/sumci-cyclist.png','Zubříci' => 'animals/zubrici-cyclist.png',
+        'Kapybary' => 'animals/kapybary-cyclist.png','Lenochodi' => 'animals/lenochodi-cyclist.png',
+        'Lamy' => 'animals/lamy-cyclist.png','Pásovci' => 'animals/pasovci-cyclist.png',
+        'Mývalové' => 'animals/myvalove-cyclist.png','Lvíčci' => 'animals/lvicci-cyclist.png',
+        'Lemuři' => 'animals/lemuri-cyclist.png','Sloni' => 'animals/sloni-cyclist.png',
+        'Surikaty' => 'animals/surikaty-cyclist.png','Žirafy' => 'animals/zirafy-cyclist.png',
     ];
 }
 
-function clubCatalogImportStoredHash(string$imageUrl,string$applicationRoot):?string
+function clubCatalogImportStoredHash(string$imageUrl, string$applicationRoot): ?string
 {
-    $path=shopProductImagePath($imageUrl,$applicationRoot);
-    if($path===null||!is_file($path))return null;
-    $hash=hash_file('sha256',$path);return is_string($hash)?$hash:null;
+    $path = shopProductImagePath($imageUrl, $applicationRoot);
+    if ($path === null || !is_file($path)) {
+        return null;
+    }
+    $hash = hash_file('sha256', $path);
+    return is_string($hash) ? $hash : null;
 }
 
 /** @param array{image_url:string} $stored */
-function clubCatalogImportDiscardStored(array$stored,string$applicationRoot):void
+function clubCatalogImportDiscardStored(array$stored, string$applicationRoot): void
 {
-    $path=shopProductImagePath((string)$stored['image_url'],$applicationRoot);
-    if($path!==null&&is_file($path))@unlink($path);
+    $path = shopProductImagePath((string)$stored['image_url'], $applicationRoot);
+    if ($path !== null && is_file($path)) {
+        @unlink($path);
+    }
 }
 
 /**
@@ -70,185 +98,422 @@ function clubCatalogImportDiscardStored(array$stored,string$applicationRoot):voi
  * The expected encoded file hash makes repeated production imports idempotent.
  */
 function clubCatalogImportSyncAnimalImages(
-    PDO$pdo,int$actorId,int$programId,int$productId,string$source,string$programName,string$reason,string$applicationRoot
-):bool{
-    $programStored=shopProductImageStoreFile($source,false,$applicationRoot);
-    try{$productStored=shopProductImageStoreFile($source,false,$applicationRoot);}catch(Throwable$exception){
-        shopProductImageQuarantine(shopProductImagePath((string)$programStored['image_url'],$applicationRoot),$applicationRoot);throw$exception;
+    PDO$pdo,
+    int$actorId,
+    int$programId,
+    int$productId,
+    string$source,
+    string$programName,
+    string$reason,
+    string$applicationRoot
+): bool {
+    $programStored = shopProductImageStoreFile($source, false, $applicationRoot);
+    try {
+        $productStored = shopProductImageStoreFile($source, false, $applicationRoot);
+    } catch (Throwable$exception) {
+        shopProductImageQuarantine(
+            shopProductImagePath((string)$programStored['image_url'], $applicationRoot),
+            $applicationRoot
+        );
+        throw$exception;
     }
-    $programRows=$pdo->prepare('SELECT * FROM club_program_images WHERE program_id=? ORDER BY sort_order,id');$programRows->execute([$programId]);$oldProgram=$programRows->fetchAll(PDO::FETCH_ASSOC);
-    $productRows=$pdo->prepare('SELECT * FROM shop_product_images WHERE product_id=? ORDER BY sort_order,id');$productRows->execute([$productId]);$oldProduct=$productRows->fetchAll(PDO::FETCH_ASSOC);
-    $altText='Malovaný maskot kroužku '.$programName.' jako cyklista';
-    $programMatches=count($oldProgram)===1&&(string)$oldProgram[0]['alt_text']===$altText&&clubCatalogImportStoredHash((string)$oldProgram[0]['image_url'],$applicationRoot)===$programStored['sha256_hex'];
-    $productMatches=count($oldProduct)===1&&clubCatalogImportStoredHash((string)$oldProduct[0]['image_url'],$applicationRoot)===$productStored['sha256_hex'];
-    if($programMatches&&$productMatches){clubCatalogImportDiscardStored($programStored,$applicationRoot);clubCatalogImportDiscardStored($productStored,$applicationRoot);return false;}
-    try{
-        $pdo->beginTransaction();clubProgramStorefrontLockProgram($pdo,$programId);shopManualCatalogLockProduct($pdo,$productId);
-        $programRows->execute([$programId]);$oldProgram=$programRows->fetchAll(PDO::FETCH_ASSOC);$productRows->execute([$productId]);$oldProduct=$productRows->fetchAll(PDO::FETCH_ASSOC);
+    $programRows = $pdo->prepare('SELECT * FROM club_program_images WHERE program_id=? ORDER BY sort_order,id');
+    $programRows->execute([$programId]);
+    $oldProgram = $programRows->fetchAll(PDO::FETCH_ASSOC);
+    $productRows = $pdo->prepare('SELECT * FROM shop_product_images WHERE product_id=? ORDER BY sort_order,id');
+    $productRows->execute([$productId]);
+    $oldProduct = $productRows->fetchAll(PDO::FETCH_ASSOC);
+    $altText = 'Malovaný maskot kroužku '.$programName.' jako cyklista';
+    $programMatches = count($oldProgram) === 1 && (string)$oldProgram[0]['alt_text'] === $altText && clubCatalogImportStoredHash(
+        (string)$oldProgram[0]['image_url'],
+        $applicationRoot
+    ) === $programStored['sha256_hex'];
+    $productMatches = count($oldProduct) === 1 && clubCatalogImportStoredHash(
+        (string)$oldProduct[0]['image_url'],
+        $applicationRoot
+    ) === $productStored['sha256_hex'];
+    if ($programMatches && $productMatches) {
+        clubCatalogImportDiscardStored($programStored, $applicationRoot);
+        clubCatalogImportDiscardStored($productStored, $applicationRoot);
+        return false;
+    }
+    try {
+        $pdo->beginTransaction();
+        clubProgramStorefrontLockProgram($pdo, $programId);
+        shopManualCatalogLockProduct($pdo, $productId);
+        $programRows->execute([$programId]);
+        $oldProgram = $programRows->fetchAll(PDO::FETCH_ASSOC);
+        $productRows->execute([$productId]);
+        $oldProduct = $productRows->fetchAll(PDO::FETCH_ASSOC);
         $pdo->prepare('DELETE FROM club_program_images WHERE program_id=?')->execute([$programId]);
-        if($oldProgram)clubProgramEvent($pdo,$programId,null,'trainer',$actorId,'remove_storefront_image',['images'=>$oldProgram],['removed'=>true,'_audit_reason'=>$reason]);
-        $pdo->prepare('INSERT INTO club_program_images(program_id,image_url,alt_text,sort_order) VALUES(?,?,?,0)')->execute([$programId,$programStored['image_url'],$altText]);$programImageId=(int)$pdo->lastInsertId();
-        clubProgramEvent($pdo,$programId,null,'trainer',$actorId,'add_storefront_image',null,['id'=>$programImageId,'image_url'=>$programStored['image_url'],'alt_text'=>$altText,'sort_order'=>0,'file'=>$programStored,'_audit_reason'=>$reason]);
+        if ($oldProgram) {
+            clubProgramEvent($pdo, $programId, null, 'trainer', $actorId, 'remove_storefront_image', ['images'
+    => $oldProgram], ['removed' => true,'_audit_reason' => $reason]);
+        }
+        $pdo->prepare('INSERT INTO club_program_images(program_id,image_url,alt_text,sort_order) VALUES(?,?,?,0)')->execute([$programId,
+
+    $programStored['image_url'],$altText]);
+        $programImageId = (int)$pdo->lastInsertId();
+        clubProgramEvent($pdo, $programId, null, 'trainer', $actorId, 'add_storefront_image', null, ['id'
+    => $programImageId,'image_url' => $programStored['image_url'],'alt_text' => $altText,'sort_order'
+    => 0,'file' => $programStored,'_audit_reason' => $reason]);
         $pdo->prepare('DELETE FROM shop_product_images WHERE product_id=?')->execute([$productId]);
-        if($oldProduct)shopManualCatalogEvent($pdo,$productId,null,$actorId,'replace_imported_images',['images'=>$oldProduct],['removed'=>true],$reason);
-        shopProductImageAddStoredInTransaction($pdo,$actorId,$productId,$productStored,0,$reason,true);
+        if ($oldProduct) {
+            shopManualCatalogEvent($pdo, $productId, null, $actorId, 'replace_imported_images', ['images'
+    => $oldProduct], ['removed' => true], $reason);
+        }
+        shopProductImageAddStoredInTransaction(
+            $pdo,
+            $actorId,
+            $productId,
+            $productStored,
+            0,
+            $reason,
+            true
+        );
         $pdo->commit();
-    }catch(Throwable$exception){
-        if($pdo->inTransaction())$pdo->rollBack();
-        shopProductImageQuarantine(shopProductImagePath((string)$programStored['image_url'],$applicationRoot),$applicationRoot);
-        shopProductImageQuarantine(shopProductImagePath((string)$productStored['image_url'],$applicationRoot),$applicationRoot);throw$exception;
+    } catch (Throwable$exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        shopProductImageQuarantine(
+            shopProductImagePath((string)$programStored['image_url'], $applicationRoot),
+            $applicationRoot
+        );
+        shopProductImageQuarantine(
+            shopProductImagePath((string)$productStored['image_url'], $applicationRoot),
+            $applicationRoot
+        );
+        throw$exception;
     }
-    $currentUrls=[(string)$programStored['image_url']=>(string)$programStored['image_url'],(string)$productStored['image_url']=>(string)$productStored['image_url']];
-    foreach(array_merge($oldProgram,$oldProduct)as$old){
-        $url=(string)($old['image_url']??'');if($url===''||isset($currentUrls[$url]))continue;
-        $references=$pdo->prepare('SELECT (SELECT COUNT(*) FROM club_program_images WHERE image_url=?)+(SELECT COUNT(*) FROM shop_product_images WHERE image_url=?)');$references->execute([$url,$url]);
-        if((int)$references->fetchColumn()===0)shopProductImageQuarantine(shopProductImagePath($url,$applicationRoot),$applicationRoot);
+    $currentUrls = [(string)$programStored['image_url'] => (string)$programStored['image_url'],(string)$productStored['image_url']
+    => (string)$productStored['image_url']];
+    foreach (array_merge($oldProgram, $oldProduct) as $old) {
+        $url = (string)($old['image_url'] ?? '');
+        if ($url === '' || isset($currentUrls[$url])) {
+            continue;
+        }
+        $references = $pdo->prepare('SELECT (SELECT COUNT(*) FROM club_program_images WHERE image_url=?)+(SELECT COUNT(*) FROM shop_product_images WHERE image_url=?)');
+        $references->execute([$url,$url]);
+        if ((int)$references->fetchColumn() === 0) {
+            shopProductImageQuarantine(shopProductImagePath($url, $applicationRoot), $applicationRoot);
+        }
     }
     return true;
 }
 
-function clubCatalogImportPurchaseOption(string$label):string
+function clubCatalogImportPurchaseOption(string$label): string
 {
-    $label=mb_strtolower($label,'UTF-8');
-    if(str_contains($label,'celý rok')||str_contains($label,'září–červen')||str_contains($label,'září-červen'))return'full_year';
-    if(str_contains($label,'2. pololetí')||str_contains($label,'únor'))return'second_half';
+    $label = mb_strtolower($label, 'UTF-8');
+    if (str_contains($label, 'celý rok') || str_contains($label, 'září–červen') || str_contains(
+        $label,
+        'září-červen'
+    )) {
+        return'full_year';
+    }
+    if (str_contains($label, '2. pololetí') || str_contains($label, 'únor')) {
+        return'second_half';
+    }
     return'first_half';
 }
 
 /** @param list<array<string,mixed>>$offers @return list<array<string,mixed>> */
-function clubCatalogImportPaymentOffers(array$offers):array
+function clubCatalogImportPaymentOffers(array$offers): array
 {
-    $hasSecondHalf=false;$firstHalf=null;
-    foreach($offers as$offer){
-        $option=clubCatalogImportPurchaseOption((string)($offer['label']??''));
-        if($option==='second_half')$hasSecondHalf=true;
-        if($option==='first_half'&&$firstHalf===null)$firstHalf=$offer;
+    $hasSecondHalf = false;
+    $firstHalf = null;
+    foreach ($offers as $offer) {
+        $option = clubCatalogImportPurchaseOption((string)($offer['label'] ?? ''));
+        if ($option === 'second_half') {
+            $hasSecondHalf = true;
+        }
+        if ($option === 'first_half' && $firstHalf === null) {
+            $firstHalf = $offer;
+        }
     }
-    if($hasSecondHalf||$firstHalf===null)return$offers;
-    $result=[];$secondHalfAdded=false;
-    foreach($offers as$offer){
-        $result[]=$offer;
-        if(!$secondHalfAdded&&clubCatalogImportPurchaseOption((string)($offer['label']??''))==='first_half'){
-            $second=$offer;$second['label']='2. pololetí';$second['url']=null;$result[]=$second;
-            $secondHalfAdded=true;
+    if ($hasSecondHalf || $firstHalf === null) {
+        return$offers;
+    }
+    $result = [];
+    $secondHalfAdded = false;
+    foreach ($offers as $offer) {
+        $result[] = $offer;
+        if (!$secondHalfAdded && clubCatalogImportPurchaseOption((string)($offer['label'] ?? '')) === 'first_half') {
+            $second = $offer;
+            $second['label'] = '2. pololetí';
+            $second['url'] = null;
+            $result[] = $second;
+            $secondHalfAdded = true;
         }
     }
     return$result;
 }
 
 /** @return array{0:?int,1:?int} */
-function clubCatalogImportBirthYears(string$ageLabel,int$schoolYearStart=2026):array
+function clubCatalogImportBirthYears(string$ageLabel, int$schoolYearStart = 2026): array
 {
-    if(preg_match('/(\d{1,2})\s*[–-]\s*(\d{1,2})/u',$ageLabel,$match)!==1)return[null,null];
-    $minAge=(int)$match[1];$maxAge=(int)$match[2];
-    if($minAge<1||$maxAge<$minAge||$maxAge>99)return[null,null];
-    return[$schoolYearStart-$maxAge,$schoolYearStart-$minAge];
+    if (preg_match('/(\d{1,2})\s*[–-]\s*(\d{1,2})/u', $ageLabel, $match) !== 1) {
+        return[null,null];
+    }
+    $minAge = (int)$match[1];
+    $maxAge = (int)$match[2];
+    if ($minAge < 1 || $maxAge < $minAge || $maxAge > 99) {
+        return[null,null];
+    }
+    return[$schoolYearStart - $maxAge,$schoolYearStart - $minAge];
 }
 
 /** @return list<array{weekday:int,starts_at:string,ends_at:string}> */
-function clubCatalogImportSchedule(string$value):array
+function clubCatalogImportSchedule(string$value): array
 {
-    if(str_contains($value,'Úterý nebo čtvrtek'))return[['weekday'=>2,'starts_at'=>'16:00','ends_at'=>'17:00'],['weekday'=>4,'starts_at'=>'16:00','ends_at'=>'17:00']];
-    if(str_contains($value,'Úterý a čtvrtek'))return[['weekday'=>2,'starts_at'=>'16:00','ends_at'=>'17:00'],['weekday'=>4,'starts_at'=>'16:00','ends_at'=>'17:00']];
-    $days=['Pondělí'=>1,'Po'=>1,'Úterý'=>2,'Středa'=>3,'St'=>3,'Čtvrtek'=>4];$slots=[];
-    foreach(preg_split('/\s*·\s*/u',$value)?:[]as$part){
-        if(preg_match('/^(Pondělí|Po|Úterý|Středa|St|Čtvrtek)\s+(\d{2}:\d{2})[–-](\d{2}:\d{2})/u',trim($part),$match)!==1)continue;
-        $slots[]=['weekday'=>$days[$match[1]],'starts_at'=>$match[2],'ends_at'=>$match[3]];
+    if (str_contains($value, 'Úterý nebo čtvrtek')) {
+        return[['weekday' => 2,'starts_at' => '16:00','ends_at' => '17:00'],['weekday' => 4,'starts_at'
+    => '16:00','ends_at' => '17:00']];
+    }
+    if (str_contains($value, 'Úterý a čtvrtek')) {
+        return[['weekday' => 2,'starts_at' => '16:00','ends_at' => '17:00'],['weekday' => 4,'starts_at'
+    => '16:00','ends_at' => '17:00']];
+    }
+    $days = ['Pondělí' => 1,'Po' => 1,'Úterý' => 2,'Středa' => 3,'St' => 3,'Čtvrtek' => 4];
+    $slots = [];
+    foreach (preg_split('/\s*·\s*/u', $value) ?: [] as $part) {
+        if (preg_match(
+            '/^(Pondělí|Po|Úterý|Středa|St|Čtvrtek)\s+(\d{2}:\d{2})[–-](\d{2}:\d{2})/u',
+            trim($part),
+            $match
+        ) !== 1) {
+            continue;
+        }
+        $slots[] = ['weekday' => $days[$match[1]],'starts_at' => $match[2],'ends_at' => $match[3]];
     }
     return$slots;
 }
 
 /** @return array{created:int,updated:int,programs:int,products:int,variants:int,terms_ready:bool,terms_dummy:bool} */
-function clubCatalogImport(PDO$pdo,int$actorId,string$applicationRoot):array
+function clubCatalogImport(PDO$pdo, int$actorId, string$applicationRoot): array
 {
-    if($actorId<1)throw new InvalidArgumentException('Import vyžaduje aktivního správce.');
-    $templates=clubCatalogImportTermTemplates($pdo);$reason='Import nabídky cyklistických kroužků 2026/27 do KIS.';
-    $season=kisRosterCreateSeason($pdo,$actorId,'SCHOOL-2026-27','Školní rok 2026/27','2026-09-01','2027-08-31','school_year');
-    $seasonId=(int)$season['id'];$created=0;$updated=0;
-    $images=['source-group.jpg','source-trail.jpg','source-youngest.jpg','source-descent.jpg','source-coach.jpg'];$animalImages=clubCatalogImportAnimalImages();
+    if ($actorId < 1) {
+        throw new InvalidArgumentException('Import vyžaduje aktivního správce.');
+    }
+    $templates = clubCatalogImportTermTemplates($pdo);
+    $reason = 'Import nabídky cyklistických kroužků 2026/27 do KIS.';
+    $created = 0;
+    $updated = 0;
+    $images = ['source-group.jpg','source-trail.jpg','source-youngest.jpg','source-descent.jpg','source-coach.jpg'];
+    $animalImages = clubCatalogImportAnimalImages();
     // Once both day-specific replacements exist, never republish the retired
     // ambiguous 1×-weekly program on a later catalogue import.
-    $splitPrograms=$pdo->query("SELECT code FROM club_programs WHERE code IN ('KROUZKY-2627-TOCNACI-UTERY','KROUZKY-2627-TOCNACI-CTVRTEK')")
+    $splitPrograms = $pdo->query("SELECT code FROM club_programs WHERE code IN ('KROUZKY-2627-TOCNACI-UTERY','KROUZKY-2627-TOCNACI-CTVRTEK')")
         ->fetchAll(PDO::FETCH_COLUMN);
-    $tocnaciSplitReady=count($splitPrograms)===2;
-    $kunraticePrograms=$pdo->query("SELECT code FROM club_programs WHERE code IN ('KROUZKY-2627-KUNRATICE-3-4','KROUZKY-2627-KUNRATICE-5-6')")
+    $tocnaciSplitReady = count($splitPrograms) === 2;
+    $kunraticePrograms = $pdo->query("SELECT code FROM club_programs WHERE code IN ('KROUZKY-2627-KUNRATICE-3-4','KROUZKY-2627-KUNRATICE-5-6')")
         ->fetchAll(PDO::FETCH_COLUMN);
-    $kunraticeSplitReady=count($kunraticePrograms)===2;
-    foreach(legacyClubCatalog()as$index=>$row){
-        if($tocnaciSplitReady&&(string)$row['name']==='Točňáci 1× týdně')continue;
-        if($kunraticeSplitReady&&(string)$row['name']==='Cyklo kroužek ZŠ Kunratice')continue;
-        $slug=clubCatalogImportSlug((string)$row['name']);$programCode='KROUZKY-2627-'.$slug;$teamCode=substr('KR-2627-'.$slug,0,48);
-        $offers=clubCatalogImportPaymentOffers($row['offers']);[$birthYearFrom,$birthYearTo]=clubCatalogImportBirthYears((string)$row['age']);
-        $team=kisRosterCreateTeam($pdo,$seasonId,$actorId,$teamCode,(string)$row['name'].' 2026/27','Cyklistika',(string)$row['age'],$reason);
-        $programQuery=$pdo->prepare('SELECT * FROM club_programs WHERE code=?');$programQuery->execute([$programCode]);$program=$programQuery->fetch(PDO::FETCH_ASSOC);
-        $animalImage=$animalImages[(string)$row['name']]??null;$imageRelative=$animalImage??$images[$index%count($images)];
-        $imagePath=rtrim($applicationRoot,'/\\').DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'clubs'.DIRECTORY_SEPARATOR.str_replace('/',DIRECTORY_SEPARATOR,$imageRelative);
-        if(!is_file($imagePath))throw new ClubCatalogImportException('Chybí importovaný obrázek: '.basename($imagePath));
-        $first=$offers[0];$firstOption=clubCatalogImportPurchaseOption((string)$first['label']);
-        if(!$program){
-            $firstEnds=$firstOption==='full_year'?'2027-06-30':($firstOption==='second_half'?'2027-06-30':'2027-01-31');
-            $result=clubProgramWizardCreate($pdo,$actorId,[
-                'request_key'=>md5('club-catalog-2026-27-'.$slug),'source_mode'=>'new','name'=>$row['name'],
-                'description'=>'Cyklistický kroužek pro děti: '.$row['age'].', '.$row['schedule'].', '.$row['location'].'.',
-                'currency'=>'CZK','amount_minor'=>(int)$first['price']*100,'category_path'=>'Kroužky > Dětské',
-                'starts_on'=>'2026-09-01','ends_on'=>$firstEnds,'sales_open_at'=>'2026-09-01T00:00','sales_close_at'=>$firstEnds.'T23:59',
-                'capacity'=>'','program_code'=>$programCode,'offer_code'=>substr($programCode.'-'.strtoupper($firstOption),0,64),
-                'sku'=>substr('KP-KR-2627-'.$slug.'-'.strtoupper($firstOption),0,64),'purchase_option'=>$firstOption,'is_featured'=>$firstOption==='full_year',
-                'birth_year_from'=>$birthYearFrom,'birth_year_to'=>$birthYearTo,
-                'program_cancellation_source'=>$templates['program_cancellation']['id']>0?'existing':'new',
-                'program_cancellation_version_id'=>$templates['program_cancellation']['id'],'program_cancellation_text'=>$templates['program_cancellation']['text'],
-                'program_consent_source'=>$templates['program_consent']['id']>0?'existing':'new',
-                'program_consent_version_id'=>$templates['program_consent']['id'],'program_consent_text'=>$templates['program_consent']['text'],
-                'team_mode'=>'existing','team_id'=>(int)$team['id'],'reason'=>$reason,'confirmed'=>true,
-                'defer_publication'=>$templates['program_cancellation']['dummy']||$templates['program_consent']['dummy'],
-            ],$imagePath,false,$applicationRoot);
-            $programId=(int)$result['program_id'];$productId=(int)$result['product_id'];$baseOfferId=(int)$result['offer_id'];$created++;
-        }else{
-            if((string)$program['name']!==(string)$row['name'])throw new ClubCatalogImportException('Stabilní kód programu už používá jiný kroužek: '.$programCode);
-            $programId=(int)$program['id'];$base=$pdo->prepare('SELECT * FROM club_program_offers WHERE program_id=? ORDER BY id LIMIT 1');$base->execute([$programId]);$base=$base->fetch(PDO::FETCH_ASSOC);
-            if(!$base)throw new ClubCatalogImportException('Existující program nemá výchozí nabídku: '.$programCode);
-            $productId=(int)$base['product_id'];$baseOfferId=(int)$base['id'];$updated++;
+    $kunraticeSplitReady = count($kunraticePrograms) === 2;
+    foreach (legacyClubCatalog() as $index => $row) {
+        if ($tocnaciSplitReady && (string)$row['name'] === 'Točňáci 1× týdně') {
+            continue;
         }
-        foreach(CLUB_PROGRAM_TERM_PURPOSES as$purpose){
-            if(!clubProgramTermsCurrent($pdo,'program',$programId,$purpose))clubProgramTermsConfigure($pdo,$actorId,'program',$programId,$purpose,$templates[$purpose]['text'],true);
+        if ($kunraticeSplitReady && (string)$row['name'] === 'Cyklo kroužek ZŠ Kunratice') {
+            continue;
         }
-        $pdo->prepare('UPDATE club_program_offers SET purchase_option=?,is_featured=? WHERE id=?')->execute([$firstOption,$firstOption==='full_year'?1:0,$baseOfferId]);
-        foreach(array_slice($offers,1)as$offer){
-            $option=clubCatalogImportPurchaseOption((string)$offer['label']);$exists=$pdo->prepare('SELECT id FROM club_program_offers WHERE program_id=? AND purchase_option=?');$exists->execute([$programId,$option]);
-            if($exists->fetchColumn()!==false)continue;$ends=$option==='full_year'?'2027-06-30':($option==='second_half'?'2027-06-30':'2027-01-31');$starts=$option==='second_half'?'2027-02-01':'2026-09-01';
-            clubProgramCreatePaymentOption($pdo,$actorId,$baseOfferId,[
-                'purchase_option'=>$option,'is_featured'=>$option==='full_year','sku'=>substr('KP-KR-2627-'.$slug.'-'.strtoupper($option),0,64),
-                'amount_minor'=>(int)$offer['price']*100,'code'=>substr($programCode.'-'.strtoupper($option),0,64),'name'=>$row['name'].' · '.$offer['label'],
-                'starts_on'=>$starts,'ends_on'=>$ends,'sales_open_at'=>'2026-09-01T00:00','sales_close_at'=>$ends.'T23:59','capacity'=>'','status'=>'active',
-                'birth_year_from'=>$birthYearFrom,'birth_year_to'=>$birthYearTo,
-            ],$reason,true);
+        $slug = clubCatalogImportSlug((string)$row['name']);
+        $programCode = 'KROUZKY-2627-'.$slug;
+        $teamCode = substr('KR-2627-'.$slug, 0, 48);
+        $offers = clubCatalogImportPaymentOffers($row['offers']);
+        [$birthYearFrom,$birthYearTo] = clubCatalogImportBirthYears((string)$row['age']);
+        $team = kisRosterEnsureStandingTeam($pdo, $actorId, $teamCode, (string)$row['name'], $reason);
+        $programQuery = $pdo->prepare('SELECT * FROM club_programs WHERE code=?');
+        $programQuery->execute([$programCode]);
+        $program = $programQuery->fetch(PDO::FETCH_ASSOC);
+        $animalImage = $animalImages[(string)$row['name']] ?? null;
+        $imageRelative = $animalImage ?? $images[$index % count($images)];
+        $imagePath = rtrim($applicationRoot, '/\\').DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'clubs'.
+
+    DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $imageRelative);
+        if (!is_file($imagePath)) {
+            throw new ClubCatalogImportException('Chybí importovaný obrázek: '.basename($imagePath));
         }
-        $offerRows=$pdo->prepare('SELECT * FROM club_program_offers WHERE program_id=? ORDER BY id');$offerRows->execute([$programId]);
-        foreach($offerRows->fetchAll(PDO::FETCH_ASSOC)as$currentOffer){
-            if((string)($currentOffer['birth_year_from']??'')===(string)($birthYearFrom??'')&&(string)($currentOffer['birth_year_to']??'')===(string)($birthYearTo??''))continue;
-            clubProgramUpdateOffer($pdo,$actorId,(int)$currentOffer['id'],[
-                'name'=>$currentOffer['name'],'starts_on'=>$currentOffer['starts_on'],'ends_on'=>$currentOffer['ends_on'],
-                'sales_open_at'=>$currentOffer['sales_open_at'],'sales_close_at'=>$currentOffer['sales_close_at'],'capacity'=>$currentOffer['capacity'],
-                'birth_year_from'=>$birthYearFrom,'birth_year_to'=>$birthYearTo,'status'=>$currentOffer['status'],
-                'purchase_option'=>$currentOffer['purchase_option']??'custom','is_featured'=>(int)($currentOffer['is_featured']??0),
-            ],$reason,true);
+        $first = $offers[0];
+        $firstOption = clubCatalogImportPurchaseOption((string)$first['label']);
+        if (!$program) {
+            $firstEnds = $firstOption === 'full_year' ? '2027-06-30' : ($firstOption === 'second_half' ? '2027-06-30' : '2027-01-31');
+            $result = clubProgramWizardCreate($pdo, $actorId, [
+                'request_key' => md5('club-catalog-2026-27-'.$slug),'source_mode' => 'new','name' => $row['name'],
+
+
+                'description' => 'Cyklistický kroužek pro děti: '.$row['age'].', '.$row['schedule'].', '.
+
+    $row['location'].'.',
+                'currency' => 'CZK','amount_minor' => (int)$first['price'] * 100,'category_path' => 'Kroužky > Dětské',
+
+
+                'starts_on' => '2026-09-01','ends_on' => $firstEnds,'sales_open_at' => '2026-09-01T00:00',
+
+    'sales_close_at' => $firstEnds.'T23:59',
+                'capacity' => '','program_code' => $programCode,'offer_code' => substr($programCode.'-'.
+
+    strtoupper($firstOption), 0, 64),
+                'sku' => substr('KP-KR-2627-'.$slug.'-'.strtoupper($firstOption), 0, 64),'purchase_option'
+    => $firstOption,'is_featured' => $firstOption === 'full_year',
+                'birth_year_from' => $birthYearFrom,'birth_year_to' => $birthYearTo,
+                'program_cancellation_source' => $templates['program_cancellation']['id'] > 0 ? 'existing' : 'new',
+
+
+                'program_cancellation_version_id' => $templates['program_cancellation']['id'],'program_cancellation_text'
+    => $templates['program_cancellation']['text'],
+                'program_consent_source' => $templates['program_consent']['id'] > 0 ? 'existing' : 'new',
+
+
+                'program_consent_version_id' => $templates['program_consent']['id'],'program_consent_text'
+    => $templates['program_consent']['text'],
+                'team_mode' => 'existing','team_id' => (int)$team['id'],'reason' => $reason,'confirmed'
+    => true,
+                'defer_publication' => $templates['program_cancellation']['dummy'] || $templates['program_consent']['dummy'],
+
+
+            ], $imagePath, false, $applicationRoot);
+            $programId = (int)$result['program_id'];
+            $productId = (int)$result['product_id'];
+            $baseOfferId = (int)$result['offer_id'];
+            $created++;
+        } else {
+            if ((string)$program['name'] !== (string)$row['name']) {
+                throw new ClubCatalogImportException('Stabilní kód programu už používá jiný kroužek: '.
+
+    $programCode);
+            }
+            $programId = (int)$program['id'];
+            $base = $pdo->prepare('SELECT * FROM club_program_offers WHERE program_id=? ORDER BY id LIMIT 1');
+            $base->execute([$programId]);
+            $base = $base->fetch(PDO::FETCH_ASSOC);
+            if (!$base) {
+                throw new ClubCatalogImportException('Existující program nemá výchozí nabídku: '.$programCode);
+            }
+            $productId = (int)$base['product_id'];
+            $baseOfferId = (int)$base['id'];
+            $updated++;
         }
-        clubProgramStorefrontSavePresentation($pdo,$actorId,$programId,[
-            'public_name'=>$row['name'],'public_summary'=>'','location_name'=>$row['location'],'age_label'=>$row['age'],
-            'listing_status'=>'published','sort_order'=>$index,'interest_enabled'=>1,
-        ],$reason,true);
-        foreach(clubCatalogImportSchedule((string)$row['schedule'])as$sort=>$slot){
-            $exists=$pdo->prepare('SELECT id FROM club_program_schedule_slots WHERE program_id=? AND season_id=? AND weekday=? AND starts_at=? AND ends_at=?');
-            $exists->execute([$programId,$seasonId,$slot['weekday'],$slot['starts_at'].':00',$slot['ends_at'].':00']);
-            if($exists->fetchColumn()===false)clubProgramStorefrontAddSchedule($pdo,$actorId,$programId,['season_id'=>$seasonId,'weekday'=>$slot['weekday'],'starts_at'=>$slot['starts_at'],'ends_at'=>$slot['ends_at'],'location_name'=>$row['location'],'sort_order'=>$sort],$reason,true);
+        foreach (CLUB_PROGRAM_TERM_PURPOSES as $purpose) {
+            if (!clubProgramTermsCurrent($pdo, 'program', $programId, $purpose)) {
+                clubProgramTermsConfigure(
+                    $pdo,
+                    $actorId,
+                    'program',
+                    $programId,
+                    $purpose,
+                    $templates[$purpose]['text'],
+                    true
+                );
+            }
         }
-        $programImages=$pdo->prepare('SELECT COUNT(*) FROM club_program_images WHERE program_id=?');$programImages->execute([$programId]);
-        $programImageAlt=$animalImage!==null?'Malovaný maskot kroužku '.$row['name'].' jako cyklista':'Děti na cyklistickém kroužku '.$row['name'];
-        if((int)$programImages->fetchColumn()===0)clubProgramStorefrontAddImage($pdo,$actorId,$programId,$imagePath,$programImageAlt,0,$reason,true,false,$applicationRoot);
-        $productImages=$pdo->prepare('SELECT COUNT(*) FROM shop_product_images WHERE product_id=?');$productImages->execute([$productId]);
-        if((int)$productImages->fetchColumn()===0)shopProductImageAdd($pdo,$actorId,$productId,$imagePath,0,$reason,true,false,$applicationRoot);
-        if($animalImage!==null)clubCatalogImportSyncAnimalImages($pdo,$actorId,$programId,$productId,$imagePath,(string)$row['name'],$reason,$applicationRoot);
+        $pdo->prepare('UPDATE club_program_offers SET purchase_option=?,is_featured=? WHERE id=?')->execute([$firstOption,
+
+    $firstOption === 'full_year' ? 1 : 0,$baseOfferId]);
+        foreach (array_slice($offers, 1) as $offer) {
+            $option = clubCatalogImportPurchaseOption((string)$offer['label']);
+            $exists = $pdo->prepare('SELECT id FROM club_program_offers WHERE program_id=? AND purchase_option=?');
+            $exists->execute([$programId,$option]);
+            if ($exists->fetchColumn() !== false) {
+                continue;
+            }$ends = $option === 'full_year' ? '2027-06-30' : ($option === 'second_half' ? '2027-06-30' : '2027-01-31');
+            $starts = $option === 'second_half' ? '2027-02-01' : '2026-09-01';
+            clubProgramCreatePaymentOption($pdo, $actorId, $baseOfferId, [
+                'purchase_option' => $option,'is_featured' => $option === 'full_year','sku' => substr('KP-KR-2627-'.
+
+    $slug.'-'.strtoupper($option), 0, 64),
+                'amount_minor' => (int)$offer['price'] * 100,'code' => substr(
+                    $programCode.'-'.strtoupper($option),
+                    0,
+                    64
+                ),'name' => $row['name'].' · '.$offer['label'],
+                'starts_on' => $starts,'ends_on' => $ends,'sales_open_at' => '2026-09-01T00:00','sales_close_at'
+    => $ends.'T23:59','capacity' => '','status' => 'active',
+                'birth_year_from' => $birthYearFrom,'birth_year_to' => $birthYearTo,
+            ], $reason, true);
+        }
+        $offerRows = $pdo->prepare('SELECT * FROM club_program_offers WHERE program_id=? ORDER BY id');
+        $offerRows->execute([$programId]);
+        foreach ($offerRows->fetchAll(PDO::FETCH_ASSOC) as $currentOffer) {
+            if ((string)($currentOffer['birth_year_from'] ?? '') === (string)($birthYearFrom ?? '') && (string)($currentOffer['birth_year_to']
+    ?? '') === (string)($birthYearTo ?? '')) {
+                continue;
+            }
+            clubProgramUpdateOffer($pdo, $actorId, (int)$currentOffer['id'], [
+                'name' => $currentOffer['name'],'starts_on' => $currentOffer['starts_on'],'ends_on' => $currentOffer['ends_on'],
+
+
+                'sales_open_at' => $currentOffer['sales_open_at'],'sales_close_at' => $currentOffer['sales_close_at'],
+
+    'capacity' => $currentOffer['capacity'],
+                'birth_year_from' => $birthYearFrom,'birth_year_to' => $birthYearTo,'status' => $currentOffer['status'],
+
+
+                'purchase_option' => $currentOffer['purchase_option'] ?? 'custom','is_featured' => (int)($currentOffer['is_featured']
+    ?? 0),
+            ], $reason, true);
+        }
+        clubProgramStorefrontSavePresentation($pdo, $actorId, $programId, [
+            'public_name' => $row['name'],'public_summary' => '','location_name' => $row['location'],'age_label'
+    => $row['age'],
+            'listing_status' => 'published','sort_order' => $index,'interest_enabled' => 1,
+        ], $reason, true);
+        foreach (clubCatalogImportSchedule((string)$row['schedule']) as $sort => $slot) {
+            $exists = $pdo->prepare('SELECT id FROM club_program_schedule_slots WHERE program_id=? AND weekday=? AND starts_at=? AND ends_at=?');
+            $exists->execute([$programId,$slot['weekday'],$slot['starts_at'].':00',$slot['ends_at'].':00']);
+            if ($exists->fetchColumn() === false) {
+                clubProgramStorefrontAddSchedule($pdo, $actorId, $programId, ['valid_from' => '2026-09-01',
+
+    'valid_to' => '2027-06-30','weekday' => $slot['weekday'],'starts_at' => $slot['starts_at'],'ends_at'
+    => $slot['ends_at'],'location_name' => $row['location'],'sort_order' => $sort], $reason, true);
+            }
+        }
+        $programImages = $pdo->prepare('SELECT COUNT(*) FROM club_program_images WHERE program_id=?');
+        $programImages->execute([$programId]);
+        $programImageAlt = $animalImage !== null ? 'Malovaný maskot kroužku '.$row['name'].' jako cyklista' : 'Děti na cyklistickém kroužku '.
+
+    $row['name'];
+        if ((int)$programImages->fetchColumn() === 0) {
+            clubProgramStorefrontAddImage(
+                $pdo,
+                $actorId,
+                $programId,
+                $imagePath,
+                $programImageAlt,
+                0,
+                $reason,
+                true,
+                false,
+                $applicationRoot
+            );
+        }
+        $productImages = $pdo->prepare('SELECT COUNT(*) FROM shop_product_images WHERE product_id=?');
+        $productImages->execute([$productId]);
+        if ((int)$productImages->fetchColumn() === 0) {
+            shopProductImageAdd($pdo, $actorId, $productId, $imagePath, 0, $reason, true, false, $applicationRoot);
+        }
+        if ($animalImage !== null) {
+            clubCatalogImportSyncAnimalImages(
+                $pdo,
+                $actorId,
+                $programId,
+                $productId,
+                $imagePath,
+                (string)$row['name'],
+                $reason,
+                $applicationRoot
+            );
+        }
     }
-    $termsDummy=false;foreach($templates as$template)$termsDummy=$termsDummy||$template['dummy'];
-    return['created'=>$created,'updated'=>$updated,'programs'=>(int)$pdo->query("SELECT COUNT(*) FROM club_programs WHERE code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'products'=>(int)$pdo->query("SELECT COUNT(DISTINCT product_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'variants'=>(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),'terms_ready'=>!$termsDummy,'terms_dummy'=>$termsDummy];
+    $termsDummy = false;
+    foreach ($templates as $template) {
+        $termsDummy = $termsDummy || $template['dummy'];
+    }
+    return['created' => $created,'updated' => $updated,'programs' => (int)$pdo->query("SELECT COUNT(*) FROM club_programs WHERE code LIKE 'KROUZKY-2627-%'")->fetchColumn(),
+
+    'products' => (int)$pdo->query(('SELECT COUNT(DISTINCT product_id) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE '
+    .
+    'p.code LIKE \'KROUZKY-2627-%\''))->fetchColumn(),
+        'variants' => (int)$pdo->query("SELECT COUNT(*) FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id WHERE p.code LIKE 'KROUZKY-2627-%'")->fetchColumn(),
+
+    'terms_ready' => !$termsDummy,'terms_dummy' => $termsDummy];
 }

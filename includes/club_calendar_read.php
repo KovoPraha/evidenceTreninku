@@ -8,21 +8,30 @@ final class ClubCalendarRead
     public static function hydrate(PDO $pdo, array $rows, bool $staff): array
     {
         $data = [];
-        foreach (array_chunk(array_values(array_unique(array_map('intval', array_column($rows, 'id')))), 400) as $ids) {
+        foreach (array_chunk(
+            array_values(array_unique(array_map('intval', array_column($rows, 'id')))),
+            400
+        ) as $ids) {
             $marks = implode(',', array_fill(0, count($ids), '?'));
             foreach ($ids as $id) {
                 $data[$id] = ['teams' => [], 'links' => [], 'people' => [], 'registration_count' => 0,
+
+
                     'capacity' => null, 'vehicle_conflicts' => []];
             }
             $queries = [
                 'teams' => 'SELECT rt.event_id,rt.team_id,rt.actor_trainer_id,rt.decision_note,rt.created_at, '
                     . 't.code AS team_code,t.name AS team_name,t.status AS team_status, '
-                    . 's.name AS season_name,s.starts_on,s.ends_on,s.status AS season_status '
+                    . 'NULL AS season_name,NULL AS starts_on,NULL AS ends_on,t.status AS season_status '
                     . 'FROM club_event_roster_targets rt JOIN club_teams t ON t.id=rt.team_id '
-                    . 'JOIN club_seasons s ON s.id=t.season_id WHERE rt.event_id IN (' . $marks . ') AND rt.event_id>0 ORDER BY t.name,t.id',
+                    . 'WHERE rt.event_id IN (' . $marks . ') AND rt.event_id>0 ORDER BY t.name,t.id',
                 'links' => 'SELECT * FROM club_event_links WHERE event_id IN (' . $marks . ') ORDER BY sort_order,id',
+
+
                 'people' => 'SELECT p.*,t.jmeno trainer_name FROM club_event_people p LEFT JOIN treneri t ON t.id=p.trainer_id '
-                    . 'WHERE p.event_id IN (' . $marks . ')' . ($staff ? '' : ' AND p.visible_to_members=1') . ' ORDER BY p.id',
+                    . 'WHERE p.event_id IN (' . $marks . ')' . ($staff ? '' : ' AND p.visible_to_members=1') .
+
+     ' ORDER BY p.id',
             ];
             foreach ($queries as $key => $sql) {
                 $statement = $pdo->prepare($sql);
@@ -62,7 +71,10 @@ final class ClubCalendarRead
             foreach (['teams', 'links', 'people', 'registration_count'] as $key) {
                 $row[$key] = $item[$key];
             }
-            $row['effective_capacity'] = $item['capacity'] === null ? (int) $row['capacity'] : min((int) $row['capacity'], $item['capacity']);
+            $row['effective_capacity'] = $item['capacity'] === null ? (int) $row['capacity'] : min(
+                (int) $row['capacity'],
+                $item['capacity']
+            );
             $row['vehicle_conflicts'] = $item['vehicle_conflicts'];
             if (!$staff) {
                 unset($row['internal_note']);
@@ -89,7 +101,13 @@ final class ClubCalendarRead
             $params = [];
             foreach ($batch as $row) {
                 $sources[] = 'SELECT ? source_id,? vehicle_id,? starts_at,? ends_at';
-                array_push($params, (int) $row['id'], (int) $row['vehicle_id'], (string) $row['starts_at'], (string) $row['ends_at']);
+                array_push(
+                    $params,
+                    (int) $row['id'],
+                    (int) $row['vehicle_id'],
+                    (string) $row['starts_at'],
+                    (string) $row['ends_at']
+                );
             }
             // Use the source interval already read, rather than re-reading potentially changed source rows.
             $statement = $pdo->prepare('SELECT source.source_id,r.id,r.event_id,r.starts_at,r.ends_at,e.name,e.planning_status '
@@ -116,7 +134,9 @@ final class ClubCalendarRead
         $conflicts = [];
         foreach ($vehicles as $row) {
             foreach ($row['conflicts'] as $conflict) {
-                $conflicts[] = ['reservation_id' => (int) $row['id'], 'vehicle' => (string) $row['znacka_model'] . ' ' . (string) $row['spz'], 'conflict' => $conflict];
+                $conflicts[] = ['reservation_id' => (int) $row['id'], 'vehicle' => (string) $row['znacka_model'] .
+
+     ' ' . (string) $row['spz'], 'conflict' => $conflict];
             }
         }
         return $conflicts;

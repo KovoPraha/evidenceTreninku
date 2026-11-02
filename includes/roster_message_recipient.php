@@ -11,8 +11,8 @@ function rosterMessageRecipientAllowed(PDO $pdo, array $row): bool
     rosterMessageText((string) $row['body_plain'], 10000, 'Zpráva');
     $date = (new DateTimeImmutable('today'))->format('Y-m-d');
     $teamId = (int) $row['team_id'];
-    $team = $pdo->prepare('SELECT t.id FROM club_teams t LEFT JOIN club_seasons s ON s.id=t.season_id '
-        . "WHERE t.id=? AND t.status='active' AND (t.season_id IS NULL OR s.status='active')");
+    $team = $pdo->prepare('SELECT t.id FROM club_teams t '
+        . "WHERE t.id=? AND t.status='active'");
     $team->execute([$teamId]);
     if ($team->fetchColumn() === false) {
         throw new RosterMessageException('Aktivní skupina nebo soupiska nebyla nalezena.');

@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Tests\Integration;
 
 use FilesystemIterator;
@@ -8,35 +10,52 @@ use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
-require_once dirname(__DIR__,2).'/includes/club_program_wizard.php';
-require_once dirname(__DIR__,2).'/includes/club_kunratice_prepare.php';
+require_once dirname(__DIR__, 2).'/includes/club_program_wizard.php';
+require_once dirname(__DIR__, 2).'/includes/club_kunratice_prepare.php';
 require_once dirname(__DIR__).'/Support/ShopAccountingPublicationFixture.php';
 
 final class ClubProgramWizardTest extends TestCase
 {
     private string $root;
 
-    protected function setUp():void{$this->root=sys_get_temp_dir().DIRECTORY_SEPARATOR.'club-program-wizard-'.bin2hex(random_bytes(6));mkdir($this->root,0750,true);}
-    protected function tearDown():void
+    protected function setUp(): void
     {
-        if(!is_dir($this->root))return;$iterator=new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->root,FilesystemIterator::SKIP_DOTS),RecursiveIteratorIterator::CHILD_FIRST);
-        foreach($iterator as$item)$item->isDir()?rmdir($item->getPathname()):unlink($item->getPathname());rmdir($this->root);
+        $this->root = sys_get_temp_dir().DIRECTORY_SEPARATOR.'club-program-wizard-'.bin2hex(random_bytes(6));
+        mkdir($this->root, 0750, true);
+    }
+    protected function tearDown(): void
+    {
+        if (!is_dir($this->root)) {
+            return;
+        }$iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($this->root, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($iterator as $item) {
+            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        }rmdir($this->root);
     }
 
-    public function testWizardCreatesCompletePublishedProgramInOneTransaction():void
+    public function testWizardCreatesCompletePublishedProgramInOneTransaction(): void
     {
-        $pdo=$this->database();$result=\clubProgramWizardCreate($pdo,7,$this->input(),null,false);
-        self::assertSame('active',$pdo->query('SELECT catalog_status FROM shop_products')->fetchColumn());
-        self::assertSame('active',$pdo->query('SELECT catalog_status FROM shop_variants')->fetchColumn());
-        self::assertSame('active',$pdo->query('SELECT status FROM shop_product_publications')->fetchColumn());
-        self::assertSame('active',$pdo->query('SELECT status FROM club_program_offers')->fetchColumn());
-        self::assertSame(['úroveň'=>'začátečníci'],json_decode((string)$pdo->query('SELECT attributes_json FROM shop_variants')->fetchColumn(),true,512,JSON_THROW_ON_ERROR));
-        self::assertSame('Kroužky > Dětské',$pdo->query('SELECT category_path FROM shop_product_categories')->fetchColumn());
-        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE status='active'")->fetchColumn());
-        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_seasons')->fetchColumn());
-        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_teams')->fetchColumn());
-        self::assertSame((int)$result['team_id'],(int)$pdo->query('SELECT team_id FROM club_program_offers')->fetchColumn());
-        self::assertSame(['create_product','assign_category','create_program_wizard'],$pdo->query("SELECT action FROM shop_catalog_admin_events ORDER BY id")->fetchAll(PDO::FETCH_COLUMN));
+        $pdo = $this->database();
+        $result = \clubProgramWizardCreate($pdo, 7, $this->input(), null, false);
+        self::assertSame('active', $pdo->query('SELECT catalog_status FROM shop_products')->fetchColumn());
+        self::assertSame('active', $pdo->query('SELECT catalog_status FROM shop_variants')->fetchColumn());
+        self::assertSame('active', $pdo->query('SELECT status FROM shop_product_publications')->fetchColumn());
+        self::assertSame('active', $pdo->query('SELECT status FROM club_program_offers')->fetchColumn());
+        self::assertSame(['úroveň' => 'začátečníci'], json_decode(
+            (string)$pdo->query('SELECT attributes_json FROM shop_variants')->fetchColumn(),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        ));
+        self::assertSame('Kroužky > Dětské', $pdo->query('SELECT category_path FROM shop_product_categories')->fetchColumn());
+        self::assertSame(2, (int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE status='active'")->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_seasons')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_teams')->fetchColumn());
+        self::assertSame((int)$result['team_id'], (int)$pdo->query('SELECT team_id FROM club_program_offers')->fetchColumn());
+        self::assertSame(['create_product','assign_category','create_program_wizard'], $pdo->query("SELECT action FROM shop_catalog_admin_events ORDER BY id")->fetchAll(PDO::FETCH_COLUMN));
         self::assertFalse($pdo->inTransaction());
     }
 
@@ -61,58 +80,104 @@ final class ClubProgramWizardTest extends TestCase
         self::assertSame(120000, (int)$pdo->query('SELECT amount_minor FROM shop_variants')->fetchColumn());
     }
 
-    public function testLateFailureRollsBackEveryWizardRow():void
+    public function testLateFailureRollsBackEveryWizardRow(): void
     {
-        $pdo=$this->database();$input=$this->input();$input['team_mode']='existing';$input['team_id']=999;
-        $source=dirname(__DIR__,2).'/icons/icon-192.png';
-        try{\clubProgramWizardCreate($pdo,7,$input,$source,false,$this->root);self::fail('Missing target roster must fail.');}
-        catch(\ClubProgramWizardException $exception){self::assertStringContainsString('soupiska',$exception->getMessage());}
-        foreach(['shop_products','shop_variants','shop_product_categories','shop_catalog_admin_events','shop_product_publications','shop_product_publication_events','club_programs','club_program_offers','club_program_events','club_event_term_versions']as$table){
-            self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM $table")->fetchColumn(),$table.' must stay empty');
+        $pdo = $this->database();
+        $input = $this->input();
+        $input['team_mode'] = 'existing';
+        $input['team_id'] = 999;
+        $source = dirname(__DIR__, 2).'/icons/icon-192.png';
+        try {
+            \clubProgramWizardCreate($pdo, 7, $input, $source, false, $this->root);
+            self::fail('Missing target roster must fail.');
+        } catch (\ClubProgramWizardException $exception) {
+            self::assertStringContainsString('soupiska', $exception->getMessage());
         }
-        self::assertSame([],glob($this->root.'/uploads/shop-products/*.jpg')?:[]);
-        self::assertCount(1,glob($this->root.'/var/_to_delete/shop-product-images/*.jpg')?:[]);
+        foreach (['shop_products','shop_variants','shop_product_categories','shop_catalog_admin_events',
+
+    'shop_product_publications','shop_product_publication_events','club_programs','club_program_offers',
+
+    'club_program_events','club_event_term_versions'] as $table) {
+            self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM $table")->fetchColumn(), $table.
+
+    ' must stay empty');
+        }
+        self::assertSame([], glob($this->root.'/uploads/shop-products/*.jpg') ?: []);
+        self::assertCount(1, glob($this->root.'/var/_to_delete/shop-product-images/*.jpg') ?: []);
         self::assertFalse($pdo->inTransaction());
     }
 
-    public function testExistingTermVersionsAreCopiedIntoNewProgramSnapshotSource():void
+    public function testExistingTermVersionsAreCopiedIntoNewProgramSnapshotSource(): void
     {
-        $pdo=$this->database();
-        $pdo->exec("INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id,status) VALUES('club_event','event:1','program_cancellation','v7','Existující storno vzor.','trainer',7,'active'),('club_event','event:1','program_consent','v4','Existující vzor souhlasu.','trainer',7,'active')");
-        $input=$this->input();$input['program_cancellation_source']='existing';$input['program_cancellation_version_id']=1;$input['program_consent_source']='existing';$input['program_consent_version_id']=2;
-        $result=\clubProgramWizardCreate($pdo,7,$input,null,false);
-        $statement=$pdo->prepare("SELECT consent_purpose,consent_text_plain FROM club_event_term_versions WHERE scope_type='club_program' AND scope_key=? ORDER BY consent_purpose");$statement->execute(['program:'.$result['program_id']]);
+        $pdo = $this->database();
+        $pdo->exec(('INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,act'
+    .
+    'or_type,actor_id,status) VALUES(\'club_event\',\'event:1\',\'program_cancellation\',\'v7\',\'Existující storno ' .
+
+    'vzor.\',\'trainer\',7,\'active\'),(\'club_event\',\'event:1\',\'program_consent\',\'v4\',\'Existující vzor ' .
+
+    'souhlasu.\',\'trainer\',7,\'active\')'));
+        $input = $this->input();
+        $input['program_cancellation_source'] = 'existing';
+        $input['program_cancellation_version_id'] = 1;
+        $input['program_consent_source'] = 'existing';
+        $input['program_consent_version_id'] = 2;
+        $result = \clubProgramWizardCreate($pdo, 7, $input, null, false);
+        $statement = $pdo->prepare(('SELECT consent_purpose,consent_text_plain FROM club_event_term_versions WHERE scope_type=\'club_program\' AND '
+    .
+    'scope_key=? ORDER BY consent_purpose'));
+        $statement->execute(['program:'.$result['program_id']]);
         self::assertSame([
-            ['consent_purpose'=>'program_cancellation','consent_text_plain'=>'Existující storno vzor.'],
-            ['consent_purpose'=>'program_consent','consent_text_plain'=>'Existující vzor souhlasu.'],
-        ],$statement->fetchAll(PDO::FETCH_ASSOC));
+            ['consent_purpose' => 'program_cancellation','consent_text_plain' => 'Existující storno vzor.'],
+
+
+            ['consent_purpose' => 'program_consent','consent_text_plain' => 'Existující vzor souhlasu.'],
+
+
+        ], $statement->fetchAll(PDO::FETCH_ASSOC));
     }
 
-    public function testWizardConvertsExistingProductAndClearsMisleadingStock():void
+    public function testWizardConvertsExistingProductAndClearsMisleadingStock(): void
     {
-        $pdo=$this->database();
-        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(243,'import','shoptet:pair:243','Přípravka','Přípravný cyklistický kroužek.','goods','visible','physical','active')");
-        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(343,243,'import','KROUZEK-243','{}','fixed',175000,'CZK','20','piece',1,'active')");
-        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(243,'active','Přípravka','Přípravný cyklistický kroužek.')");
-        $input=$this->input();$input['source_mode']='existing';$input['existing_variant_id']=343;
+        $pdo = $this->database();
+        $pdo->exec(('INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_typ'
+    .
+    'e,catalog_status) VALUES(243,\'import\',\'shoptet:pair:243\',\'Přípravka\',\'Přípravný cyklistický ' .
 
-        $result=\clubProgramWizardCreate($pdo,7,$input,null,false);
+    'kroužek.\',\'goods\',\'visible\',\'physical\',\'active\')'));
+        $pdo->exec(('INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quan'
+    .
+    'tity_decimal,unit_code,visible,catalog_status) VALUES(343,243,\'import\',\'KROUZEK-243\',\'{}\',\'fixed\',175000,\'CZK\''
+    .
+    ',\'20\',\'piece\',1,\'active\')'));
+        $pdo->exec(('INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) ' .
 
-        self::assertSame(243,$result['product_id']);self::assertSame(343,$result['variant_id']);
-        self::assertSame('program',$pdo->query('SELECT offer_type FROM shop_products WHERE id=243')->fetchColumn());
-        self::assertSame('service',$pdo->query('SELECT item_type FROM shop_products WHERE id=243')->fetchColumn());
+    'VALUES(243,\'active\',\'Přípravka\',\'Přípravný cyklistický kroužek.\')'));
+        $input = $this->input();
+        $input['source_mode'] = 'existing';
+        $input['existing_variant_id'] = 343;
+
+        $result = \clubProgramWizardCreate($pdo, 7, $input, null, false);
+
+        self::assertSame(243, $result['product_id']);
+        self::assertSame(343, $result['variant_id']);
+        self::assertSame('program', $pdo->query('SELECT offer_type FROM shop_products WHERE id=243')->fetchColumn());
+        self::assertSame('service', $pdo->query('SELECT item_type FROM shop_products WHERE id=243')->fetchColumn());
         self::assertNull($pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=343')->fetchColumn());
-        self::assertSame('person',$pdo->query('SELECT unit_code FROM shop_variants WHERE id=343')->fetchColumn());
-        self::assertSame(175000,(int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id=343')->fetchColumn());
-        self::assertSame(1,(int)$pdo->query('SELECT COUNT(*) FROM club_program_offers WHERE product_id=243 AND variant_id=343')->fetchColumn());
-        self::assertSame(['convert_to_program','clear_program_stock','assign_category','create_program_wizard'],$pdo->query('SELECT action FROM shop_catalog_admin_events ORDER BY id')->fetchAll(PDO::FETCH_COLUMN));
+        self::assertSame('person', $pdo->query('SELECT unit_code FROM shop_variants WHERE id=343')->fetchColumn());
+        self::assertSame(175000, (int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id=343')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM club_program_offers WHERE product_id=243 AND variant_id=343')->fetchColumn());
+        self::assertSame(
+            ['convert_to_program','clear_program_stock','assign_category','create_program_wizard'],
+            $pdo->query('SELECT action FROM shop_catalog_admin_events ORDER BY id')->fetchAll(PDO::FETCH_COLUMN)
+        );
         self::assertFalse($pdo->inTransaction());
     }
 
-    public function testSkuSlugDoesNotBreakCzechWordInside():void
+    public function testSkuSlugDoesNotBreakCzechWordInside(): void
     {
-        self::assertSame('RAJCATKA',\clubProgramWizardSlug('Rajčátka'));
-        self::assertStringNotContainsString('-ATKA',\clubProgramWizardSlug('Rajčátka'));
+        self::assertSame('RAJCATKA', \clubProgramWizardSlug('Rajčátka'));
+        self::assertStringNotContainsString('-ATKA', \clubProgramWizardSlug('Rajčátka'));
     }
 
     public function testWizardRollsBackNewProgramWhenAccountingIsUnassigned(): void
@@ -126,7 +191,11 @@ final class ClubProgramWizardTest extends TestCase
             self::assertStringContainsString('Nezařazeno', $exception->getMessage());
         }
         foreach (['shop_products','shop_variants','shop_product_categories','shop_catalog_admin_events',
+
+
             'shop_product_publications','shop_product_publication_events','club_programs','club_program_offers',
+
+
             'club_program_events','club_event_term_versions','club_seasons','club_teams','shop_number_series_counters'] as $table) {
             self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM $table")->fetchColumn(), $table);
         }
@@ -137,7 +206,9 @@ final class ClubProgramWizardTest extends TestCase
     {
         $pdo = $this->database();
         $this->seedConversionProduct($pdo, 'active');
-        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(601,'active','Přípravka','Původní zveřejněná nabídka.')");
+        $pdo->exec(('INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) ' .
+
+    'VALUES(601,\'active\',\'Přípravka\',\'Původní zveřejněná nabídka.\')'));
         $pdo->exec("INSERT INTO shop_accounting_mappings VALUES('product','601',80)");
         $input = $this->input();
         $input['source_mode'] = 'existing';
@@ -155,13 +226,25 @@ final class ClubProgramWizardTest extends TestCase
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_catalog_admin_events')->fetchColumn());
     }
 
-    public function testStockHistoryCannotBeErasedByConversionToService():void
+    public function testStockHistoryCannotBeErasedByConversionToService(): void
     {
-        $pdo=$this->database();$this->seedConversionProduct($pdo,'draft');
-        $migration=require dirname(__DIR__,2).'/migrations/20261022230000_shop_inventory.php';$migration['up']($pdo);
+        $pdo = $this->database();
+        $this->seedConversionProduct($pdo, 'draft');
+        $migration = require dirname(__DIR__, 2).'/migrations/20261022230000_shop_inventory.php';
+        $migration['up']($pdo);
         $pdo->exec("INSERT INTO shop_stock_balances(variant_id,mode,actor_trainer_id) VALUES(701,'tracked',7)");
-        $input=$this->input();$input['source_mode']='existing';$input['existing_variant_id']=701;$input['defer_publication']=true;
-        try{\clubProgramWizardCreate($pdo,7,$input,null,false);self::fail('Managed stock must survive');}catch(\ClubProgramWizardException){self::assertSame('goods',$pdo->query('SELECT offer_type FROM shop_products WHERE id=601')->fetchColumn());self::assertSame('20',$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=701')->fetchColumn());self::assertSame(0,(int)$pdo->query('SELECT COUNT(*) FROM club_program_offers')->fetchColumn());}
+        $input = $this->input();
+        $input['source_mode'] = 'existing';
+        $input['existing_variant_id'] = 701;
+        $input['defer_publication'] = true;
+        try {
+            \clubProgramWizardCreate($pdo, 7, $input, null, false);
+            self::fail('Managed stock must survive');
+        } catch (\ClubProgramWizardException) {
+            self::assertSame('goods', $pdo->query('SELECT offer_type FROM shop_products WHERE id=601')->fetchColumn());
+            self::assertSame('20', $pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=701')->fetchColumn());
+            self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_program_offers')->fetchColumn());
+        }
     }
 
     public function testDeferredConversionRemainsDraftWithoutAccounting(): void
@@ -182,87 +265,215 @@ final class ClubProgramWizardTest extends TestCase
 
     private function seedConversionProduct(PDO $pdo, string $status): void
     {
-        $pdo->prepare("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(601,'manual','manual:conversion','Přípravka','Přípravný cyklistický kroužek.','goods','visible','physical',?)")->execute([$status]);
-        $pdo->prepare("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(701,601,'manual','CONVERSION-601','{}','fixed',175000,'CZK','20','piece',1,?)")->execute([$status]);
+        $pdo->prepare(('INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_typ'
+    .
+    'e,catalog_status) VALUES(601,\'manual\',\'manual:conversion\',\'Přípravka\',\'Přípravný cyklistický ' .
+
+    'kroužek.\',\'goods\',\'visible\',\'physical\',?)'))->execute([$status]);
+        $pdo->prepare(('INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quan'
+    .
+    'tity_decimal,unit_code,visible,catalog_status) VALUES(701,601,\'manual\',\'CONVERSION-601\',\'{}\',\'fixed\',175000,\'C'
+    .
+    'ZK\',\'20\',\'piece\',1,?)'))->execute([$status]);
     }
 
-    public function testKunraticeSplitStaysUnpublishedAndKeepsHistoricProducts():void
+    public function testKunraticeSplitStaysUnpublishedAndKeepsHistoricProducts(): void
     {
-        $pdo=$this->database();
-        $migration=require dirname(__DIR__,2).'/migrations/20260923200000_club_program_storefront.php';
+        $pdo = $this->database();
+        $migration = require dirname(__DIR__, 2).'/migrations/20260923200000_club_program_storefront.php';
         $migration['up']($pdo);
-        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(227,'import','shoptet:pair:227','Cyklo kroužek ZŠ Kunratice (září-červen)','Původní společná nabídka.','goods','visible','goods','active')");
-        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(793,227,'import','952','{}','fixed',680000,'CZK','20.000000','piece',1,'active')");
-        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(227,'active','Cyklo kroužek ZŠ Kunratice','Původní společná nabídka.')");
-        $input=$this->input();
-        $input['name']='Cyklo kroužek ZŠ Kunratice';$input['amount_minor']=680000;
-        $input['program_code']='KROUZKY-2627-CYKLO-KROU-EK-Z-KUNRATICE';
-        $input['purchase_option']='full_year';$input['starts_on']='2026-09-01';$input['ends_on']='2027-06-30';
-        $input['capacity']=30;
-        $old=\clubProgramWizardCreate($pdo,7,$input,null,false);
-        \clubProgramStorefrontSavePresentation($pdo,7,(int)$old['program_id'],[
-            'public_name'=>$input['name'],'public_summary'=>'','location_name'=>'ZŠ Kunratice',
-            'age_label'=>'školní děti','listing_status'=>'published','sort_order'=>25,'interest_enabled'=>1,
-        ],'Založení původní nabídky pro test.',true);
-        self::assertSame([],\legacyClubCatalogSupersededNames($pdo));
+        $pdo->exec(('INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_typ'
+    .
+    'e,catalog_status) VALUES(227,\'import\',\'shoptet:pair:227\',\'Cyklo kroužek ZŠ Kunratice (září-červen)\',\'Původní '
+    .
+    'společná nabídka.\',\'goods\',\'visible\',\'goods\',\'active\')'));
+        $pdo->exec(('INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quan'
+    .
+    'tity_decimal,unit_code,visible,catalog_status) VALUES(793,227,\'import\',\'952\',\'{}\',\'fixed\',680000,\'CZK\',\'20.000'
+    .
+    '000\',\'piece\',1,\'active\')'));
+        $pdo->exec(('INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) ' .
 
-        $first=\clubKunraticePrepare($pdo,7);
-        $second=\clubKunraticePrepare($pdo,7);
-        self::assertSame(2,$first['created']);self::assertSame(0,$second['created']);
-        self::assertSame($first['groups'],$second['groups']);
-        self::assertCount(2,array_unique(array_column($first['groups'],'team_id')));
-        self::assertCount(2,array_unique(array_column($first['groups'],'product_id')));
-        self::assertSame(0,(int)$pdo->query("SELECT COUNT(*) FROM club_program_schedule_slots WHERE program_id IN (SELECT id FROM club_programs WHERE code LIKE 'KROUZKY-2627-KUNRATICE-%')")->fetchColumn());
-        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_program_presentations WHERE listing_status='draft' AND program_id IN (SELECT id FROM club_programs WHERE code LIKE 'KROUZKY-2627-KUNRATICE-%')")->fetchColumn());
-        self::assertSame(2,(int)$pdo->query("SELECT COUNT(*) FROM club_program_offers WHERE capacity=30 AND program_id IN (SELECT id FROM club_programs WHERE code LIKE 'KROUZKY-2627-KUNRATICE-%')")->fetchColumn());
-        self::assertSame('hidden',$pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.(int)$old['program_id'])->fetchColumn());
-        self::assertSame('inactive',$pdo->query('SELECT catalog_status FROM shop_products WHERE id=227')->fetchColumn());
-        self::assertSame('20.000000',$pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=793')->fetchColumn());
-        self::assertSame('goods',$pdo->query('SELECT offer_type FROM shop_products WHERE id=227')->fetchColumn());
-        self::assertSame('inactive',$pdo->query('SELECT catalog_status FROM shop_products WHERE id='.(int)$old['product_id'])->fetchColumn());
-        self::assertSame(4,(int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
-        self::assertSame(['Cyklo kroužek ZŠ Kunratice'],\legacyClubCatalogSupersededNames($pdo));
-        $fallback=\legacyClubCatalogFallback([],new \DateTimeImmutable('2026-10-20'),\legacyClubCatalogSupersededNames($pdo));
-        self::assertNotContains('Cyklo kroužek ZŠ Kunratice',array_column($fallback,'public_name'));
-        self::assertContains('Aligátoři',array_column($fallback,'public_name'));
+    'VALUES(227,\'active\',\'Cyklo kroužek ZŠ Kunratice\',\'Původní společná nabídka.\')'));
+        $input = $this->input();
+        $input['name'] = 'Cyklo kroužek ZŠ Kunratice';
+        $input['amount_minor'] = 680000;
+        $input['program_code'] = 'KROUZKY-2627-CYKLO-KROU-EK-Z-KUNRATICE';
+        $input['purchase_option'] = 'full_year';
+        $input['starts_on'] = '2026-09-01';
+        $input['ends_on'] = '2027-06-30';
+        $input['capacity'] = 30;
+        $old = \clubProgramWizardCreate($pdo, 7, $input, null, false);
+        \clubProgramStorefrontSavePresentation($pdo, 7, (int)$old['program_id'], [
+            'public_name' => $input['name'],'public_summary' => '','location_name' => 'ZŠ Kunratice',
+            'age_label' => 'školní děti','listing_status' => 'published','sort_order' => 25,'interest_enabled'
+    => 1,
+        ], 'Založení původní nabídky pro test.', true);
+        self::assertSame([], \legacyClubCatalogSupersededNames($pdo));
+
+        $first = \clubKunraticePrepare($pdo, 7);
+        $second = \clubKunraticePrepare($pdo, 7);
+        self::assertSame(2, $first['created']);
+        self::assertSame(0, $second['created']);
+        self::assertSame($first['groups'], $second['groups']);
+        self::assertCount(2, array_unique(array_column($first['groups'], 'team_id')));
+        self::assertCount(2, array_unique(array_column($first['groups'], 'product_id')));
+        self::assertSame(0, (int)$pdo->query(('SELECT COUNT(*) FROM club_program_schedule_slots WHERE program_id IN (SELECT id FROM club_programs WHERE code '
+    .
+    'LIKE \'KROUZKY-2627-KUNRATICE-%\')'))->fetchColumn());
+        self::assertSame(2, (int)$pdo->query(('SELECT COUNT(*) FROM club_program_presentations WHERE listing_status=\'draft\' AND program_id IN (SELECT id '
+    .
+    'FROM club_programs WHERE code LIKE \'KROUZKY-2627-KUNRATICE-%\')'))->fetchColumn());
+        self::assertSame(2, (int)$pdo->query(('SELECT COUNT(*) FROM club_program_offers WHERE capacity=30 AND program_id IN (SELECT id FROM club_programs '
+    .
+    'WHERE code LIKE \'KROUZKY-2627-KUNRATICE-%\')'))->fetchColumn());
+        self::assertSame('hidden', $pdo->query('SELECT listing_status FROM club_program_presentations WHERE program_id='.
+
+    (int)$old['program_id'])->fetchColumn());
+        self::assertSame('inactive', $pdo->query('SELECT catalog_status FROM shop_products WHERE id=227')->fetchColumn());
+        self::assertSame('20.000000', $pdo->query('SELECT stock_quantity_decimal FROM shop_variants WHERE id=793')->fetchColumn());
+        self::assertSame('goods', $pdo->query('SELECT offer_type FROM shop_products WHERE id=227')->fetchColumn());
+        self::assertSame('inactive', $pdo->query('SELECT catalog_status FROM shop_products WHERE id='.
+
+    (int)$old['product_id'])->fetchColumn());
+        self::assertSame(4, (int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
+        self::assertSame(['Cyklo kroužek ZŠ Kunratice'], \legacyClubCatalogSupersededNames($pdo));
+        $fallback = \legacyClubCatalogFallback([], new \DateTimeImmutable('2026-10-20'), \legacyClubCatalogSupersededNames($pdo));
+        self::assertNotContains('Cyklo kroužek ZŠ Kunratice', array_column($fallback, 'public_name'));
+        self::assertContains('Aligátoři', array_column($fallback, 'public_name'));
     }
 
     /** @return array<string,mixed> */
-    private function input():array{return[
-        'request_key'=>'abcdef0123456789abcdef0123456789','name'=>'Rajčátka','description'=>'Cyklistický kroužek pro děti.',
-        'currency'=>'CZK','amount_minor'=>150000,'includes_vat'=>1,'vat_rate_basis_points'=>2100,'category_path'=>'Kroužky > Dětské',
-        'attribute_keys'=>['úroveň'],'attribute_values'=>['začátečníci'],'starts_on'=>'2026-09-01','ends_on'=>'2027-06-30',
-        'sales_open_at'=>'2026-08-01T00:00','sales_close_at'=>'2026-09-30T23:59','capacity'=>12,
-        'birth_year_from'=>2018,'birth_year_to'=>2020,'program_cancellation_source'=>'new','program_cancellation_text'=>'Storno podmínky Rajčátek.',
-        'program_consent_source'=>'new','program_consent_text'=>'Souhlasím s účastí dítěte.','team_mode'=>'new',
-        'season_code'=>'SCHOOL-2026-27','season_name'=>'Školní rok 2026/27','season_type'=>'school_year','season_starts_on'=>'2026-09-01','season_ends_on'=>'2027-08-31',
-        'team_code'=>'RAJCATA-2026','team_name'=>'Rajčátka 2026/27','team_discipline'=>'Cyklistika','team_age_label'=>'2018 až 2020',
-        'reason'=>'Vypsání kroužku integračním testem.','confirmed'=>true,
-    ];}
-
-    private function database():PDO
+    private function input(): array
     {
-        $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);$pdo->exec('PRAGMA foreign_keys=ON');
-        $schema=[
+        return[
+            'request_key' => 'abcdef0123456789abcdef0123456789','name' => 'Rajčátka','description' => 'Cyklistický kroužek pro děti.',
+
+
+            'currency' => 'CZK','amount_minor' => 150000,'includes_vat' => 1,'vat_rate_basis_points'
+    => 2100,'category_path' => 'Kroužky > Dětské',
+            'attribute_keys' => ['úroveň'],'attribute_values' => ['začátečníci'],'starts_on' => '2026-09-01',
+
+    'ends_on' => '2027-06-30',
+            'sales_open_at' => '2026-08-01T00:00','sales_close_at' => '2026-09-30T23:59','capacity' => 12,
+
+
+            'birth_year_from' => 2018,'birth_year_to' => 2020,'program_cancellation_source' => 'new','program_cancellation_text'
+    => 'Storno podmínky Rajčátek.',
+            'program_consent_source' => 'new','program_consent_text' => 'Souhlasím s účastí dítěte.','team_mode'
+    => 'new',
+            'season_code' => 'SCHOOL-2026-27','season_name' => 'Školní rok 2026/27','season_type' => 'school_year',
+
+    'season_starts_on' => '2026-09-01','season_ends_on' => '2027-08-31',
+            'team_code' => 'RAJCATA-2026','team_name' => 'Rajčátka 2026/27','team_discipline' => 'Cyklistika',
+
+    'team_age_label' => '2018 až 2020',
+            'reason' => 'Vypsání kroužku integračním testem.','confirmed' => true,
+        ];
+    }
+
+    private function database(): PDO
+    {
+        $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE
+    => PDO::FETCH_ASSOC]);
+        $pdo->exec('PRAGMA foreign_keys=ON');
+        $schema = [
             'CREATE TABLE treneri(id INTEGER PRIMARY KEY,jmeno TEXT NOT NULL)',
             "INSERT INTO treneri VALUES(7,'Admin')",
-            "CREATE TABLE shop_products(id INTEGER PRIMARY KEY AUTOINCREMENT,source_candidate_id INTEGER NULL,source_run_id INTEGER NULL,origin TEXT NOT NULL,created_by_trainer_id INTEGER NULL,external_product_key TEXT NOT NULL UNIQUE,name TEXT NOT NULL,short_description TEXT NULL,offer_type TEXT NOT NULL,visibility TEXT NULL,item_type TEXT NULL,catalog_status TEXT NOT NULL DEFAULT 'draft',created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            "CREATE TABLE shop_variants(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT NULL,source_candidate_id INTEGER NULL,origin TEXT NOT NULL,created_by_trainer_id INTEGER NULL,sku TEXT NOT NULL UNIQUE,ean TEXT NULL,attributes_json TEXT NOT NULL,price_mode TEXT NOT NULL,amount_minor INTEGER NULL,compare_at_amount_minor INTEGER NULL,currency TEXT NULL,includes_vat INTEGER NULL,vat_rate_basis_points INTEGER NULL,stock_quantity_decimal TEXT NULL,unit_code TEXT NULL,visible INTEGER NULL,catalog_status TEXT NOT NULL DEFAULT 'draft',created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            'CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,category_path TEXT,is_default INTEGER,sort_order INTEGER)',
+            ('CREATE TABLE shop_products(id INTEGER PRIMARY KEY AUTOINCREMENT,source_candidate_id INTEGER ' .
+
+    'NULL,source_run_id INTEGER NULL,origin TEXT NOT NULL,created_by_trainer_id INTEGER NULL,external_product_key ' .
+
+    'TEXT NOT NULL UNIQUE,name TEXT NOT NULL,short_description TEXT NULL,offer_type TEXT NOT NULL,visibility TEXT ' .
+
+    'NULL,item_type TEXT NULL,catalog_status TEXT NOT NULL DEFAULT \'draft\',created_at TEXT DEFAULT ' .
+
+    'CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE shop_variants(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER NOT ' .
+
+    'NULL,source_candidate_id INTEGER NULL,origin TEXT NOT NULL,created_by_trainer_id INTEGER NULL,sku TEXT NOT ' .
+
+    'NULL UNIQUE,ean TEXT NULL,attributes_json TEXT NOT NULL,price_mode TEXT NOT NULL,amount_minor INTEGER ' .
+
+    'NULL,compare_at_amount_minor INTEGER NULL,currency TEXT NULL,includes_vat INTEGER NULL,vat_rate_basis_points ' .
+
+    'INTEGER NULL,stock_quantity_decimal TEXT NULL,unit_code TEXT NULL,visible INTEGER NULL,catalog_status TEXT ' .
+
+    'NOT NULL DEFAULT \'draft\',created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+
+
+            ('CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,category_path '
+    .
+    'TEXT,is_default INTEGER,sort_order INTEGER)'),
             'CREATE TABLE shop_product_images(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,image_url TEXT,sort_order INTEGER)',
-            'CREATE TABLE shop_catalog_admin_events(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,variant_id INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,reason TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            'CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name TEXT,public_summary TEXT,decision_note TEXT,activated_by_trainer_id INTEGER,activated_at TEXT,deactivated_at TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            'CREATE TABLE shop_product_publication_events(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,actor_trainer_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,public_name TEXT,public_summary TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            "CREATE TABLE club_seasons(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,season_type TEXT,starts_on TEXT,ends_on TEXT,status TEXT DEFAULT 'active',created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            "CREATE TABLE club_teams(id INTEGER PRIMARY KEY AUTOINCREMENT,season_id INTEGER,series_id INTEGER NULL,code TEXT,name TEXT,discipline TEXT,age_label TEXT,status TEXT DEFAULT 'active',created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(season_id,code))",
+
+
+            ('CREATE TABLE shop_catalog_admin_events(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,variant_id '
+    .
+    'INTEGER,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,reason TEXT,created_at ' .
+
+    'TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE shop_product_publications(product_id INTEGER PRIMARY KEY,status TEXT,public_name ' .
+
+    'TEXT,public_summary TEXT,decision_note TEXT,activated_by_trainer_id INTEGER,activated_at TEXT,deactivated_at ' .
+
+    'TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE shop_product_publication_events(id INTEGER PRIMARY KEY AUTOINCREMENT,product_id ' .
+
+    'INTEGER,actor_trainer_id INTEGER,action TEXT,from_status TEXT,to_status TEXT,public_name TEXT,public_summary ' .
+
+    'TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_seasons(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,season_type ' .
+
+    'TEXT,starts_on TEXT,ends_on TEXT,status TEXT DEFAULT \'active\',created_by_trainer_id INTEGER,created_at TEXT ' .
+
+    'DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_teams(id INTEGER PRIMARY KEY AUTOINCREMENT,season_id INTEGER,team_kind TEXT,standing_code '
+    .
+    'TEXT UNIQUE,series_id INTEGER NULL,code TEXT,name TEXT,discipline TEXT,age_label TEXT,status TEXT DEFAULT ' .
+
+    '\'active\',created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT ' .
+
+    'CURRENT_TIMESTAMP,UNIQUE(season_id,code))'),
             'CREATE TABLE club_team_series(id INTEGER PRIMARY KEY,season_type TEXT,status TEXT)',
-            'CREATE TABLE club_roster_events(id INTEGER PRIMARY KEY AUTOINCREMENT,team_id INTEGER,roster_member_id INTEGER NULL,actor_trainer_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,note TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            "CREATE TABLE club_programs(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,description TEXT,status TEXT DEFAULT 'active',created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
-            "CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,season_id INTEGER,team_id INTEGER,product_id INTEGER,variant_id INTEGER UNIQUE,code TEXT UNIQUE,name TEXT,starts_on TEXT,ends_on TEXT,sales_open_at TEXT NULL,sales_close_at TEXT NULL,capacity INTEGER NULL,birth_year_from INTEGER NULL,birth_year_to INTEGER NULL,status TEXT DEFAULT 'draft',created_by_trainer_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)",
+            ('CREATE TABLE club_roster_events(id INTEGER PRIMARY KEY AUTOINCREMENT,team_id INTEGER,roster_member_id INTEGER '
+    .
+    'NULL,actor_trainer_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,note TEXT,created_at TEXT DEFAULT ' .
+
+    'CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_programs(id INTEGER PRIMARY KEY AUTOINCREMENT,code TEXT UNIQUE,name TEXT,description ' .
+
+    'TEXT,status TEXT DEFAULT \'active\',created_by_trainer_id INTEGER,created_at TEXT DEFAULT ' .
+    'CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_program_offers(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,season_id ' .
+
+    'INTEGER,team_id INTEGER,product_id INTEGER,variant_id INTEGER UNIQUE,code TEXT UNIQUE,name TEXT,starts_on ' .
+
+    'TEXT,ends_on TEXT,sales_open_at TEXT NULL,sales_close_at TEXT NULL,capacity INTEGER NULL,birth_year_from ' .
+
+    'INTEGER NULL,birth_year_to INTEGER NULL,status TEXT DEFAULT \'draft\',created_by_trainer_id INTEGER,created_at ' .
+
+    'TEXT DEFAULT CURRENT_TIMESTAMP,updated_at TEXT DEFAULT CURRENT_TIMESTAMP)'),
             'CREATE TABLE club_program_enrollments(id INTEGER PRIMARY KEY AUTOINCREMENT,offer_id INTEGER,status TEXT)',
-            'CREATE TABLE club_program_events(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,offer_id INTEGER NULL,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP)',
-            "CREATE TABLE club_event_term_versions(id INTEGER PRIMARY KEY AUTOINCREMENT,scope_type TEXT,scope_key TEXT,consent_purpose TEXT,event_id INTEGER NULL,terms_version TEXT,consent_text_plain TEXT,cancellation_policy_plain TEXT NULL,cancellation_deadline_at TEXT NULL,actor_trainer_id INTEGER NULL,actor_type TEXT,actor_id INTEGER NULL,status TEXT DEFAULT 'active',archived_at TEXT NULL,archived_by_trainer_id INTEGER NULL,created_at TEXT DEFAULT CURRENT_TIMESTAMP,UNIQUE(scope_type,scope_key,consent_purpose,terms_version))",
-        ];foreach($schema as$sql)$pdo->exec($sql);
+
+
+            ('CREATE TABLE club_program_events(id INTEGER PRIMARY KEY AUTOINCREMENT,program_id INTEGER,offer_id INTEGER '
+    .
+    'NULL,actor_type TEXT,actor_id INTEGER,action TEXT,before_json TEXT,after_json TEXT,created_at TEXT DEFAULT ' .
+
+    'CURRENT_TIMESTAMP)'),
+            ('CREATE TABLE club_event_term_versions(id INTEGER PRIMARY KEY AUTOINCREMENT,scope_type TEXT,scope_key ' .
+
+    'TEXT,consent_purpose TEXT,event_id INTEGER NULL,terms_version TEXT,consent_text_plain ' .
+    'TEXT,cancellation_policy_plain TEXT NULL,cancellation_deadline_at TEXT NULL,actor_trainer_id INTEGER ' .
+
+    'NULL,actor_type TEXT,actor_id INTEGER NULL,status TEXT DEFAULT \'active\',archived_at TEXT ' .
+    'NULL,archived_by_trainer_id INTEGER NULL,created_at TEXT DEFAULT ' .
+    'CURRENT_TIMESTAMP,UNIQUE(scope_type,scope_key,consent_purpose,terms_version))'),
+        ];
+        foreach ($schema as $sql) {
+            $pdo->exec($sql);
+        }
         \shopAccountingPublicationFixture($pdo);
         return$pdo;
     }

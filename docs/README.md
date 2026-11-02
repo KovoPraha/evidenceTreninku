@@ -91,3 +91,5 @@ Velké dokumenty `uzivatelska-prirucka.md`, `technicka-dokumentace.md`,
 `databazove-schema.md` a `vyvojarsky-pruvodce.md` jsou historický základ
 baseline 2.20. Aktuální doplňky jsou vedené tematicky a přesný stav určuje kód,
 migrace a testy.
+
+- [Implementace evidence členů bez sezon a postup převodu](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md) — aplikační rozsah, kompatibilita a zbývající E6–E8.

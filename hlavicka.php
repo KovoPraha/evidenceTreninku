@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/session_security.php';
-if (session_status() === PHP_SESSION_NONE) app_session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    app_session_start();
+}
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/ui_shell.php';
 require_once __DIR__ . '/includes/admin_shell.php';
@@ -26,11 +28,13 @@ $staff_menu_groups = $is_logged_in && is_array($staff_active)
 
 // Active page detection for navbar highlighting
 $_currentPage = basename($_SERVER['SCRIPT_NAME'] ?? '');
-function _navActive(string ...$pages): string {
+function _navActive(string ...$pages): string
+{
     global $_currentPage;
     return in_array($_currentPage, $pages, true) ? ' active' : '';
 }
-function _dropActive(string ...$pages): string {
+function _dropActive(string ...$pages): string
+{
     global $_currentPage;
     return in_array($_currentPage, $pages, true) ? ' active fw-semibold' : '';
 }
@@ -41,16 +45,23 @@ if ($is_logged_in) {
     $stmt->execute([$_SESSION['trener_id']]);
     $trener_jmeno = (string)$stmt->fetchColumn();
 }
+
 ?>
 <!-- Dark mode: nastav téma co nejdříve, aby nedošlo k bliknutí -->
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+<script nonce="<?=
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>">
 (function(){
     var t = localStorage.getItem('bs-theme') || 'light';
     document.documentElement.setAttribute('data-bs-theme', t);
 })();
 </script>
-<?php appUiAssets(); ?>
-<style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+<?php
+appUiAssets();
+?>
+<style nonce="<?=
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>">
     .navbar .nav-link { border-bottom: 2px solid transparent; }
     .navbar .nav-link.active { color: #fff !important; border-bottom-color: var(--app-blue); }
     .dropdown-item.active { background-color: #e7f0fb !important; color: var(--app-navy) !important; }
@@ -215,159 +226,347 @@ if ($is_logged_in) {
 </style>
 <nav class="navbar navbar-expand-xxl navbar-dark bg-dark app-staff-topbar">
     <div class="container-fluid">
-        <a class="navbar-brand app-brand-link" href="<?= htmlspecialchars(appUiUrl($is_logged_in ? 'pracovni_pozice.php' : 'index.php')) ?>" aria-label="KOVO Praha – <?= $is_logged_in ? 'pracovní rozcestník' : 'úvodní stránka' ?>">
-            <span class="app-brand-logo" aria-hidden="true"><img src="<?= htmlspecialchars(appUiUrl('assets/kovo-praha-logo.png')) ?>" alt="" width="500" height="167"></span>
+        <a class="navbar-brand app-brand-link" href="<?=
+ htmlspecialchars(appUiUrl($is_logged_in ? 'pracovni_pozice.php' :
+    'index.php'))
+?>" aria-label="KOVO Praha – <?=
+ $is_logged_in ? 'pracovní rozcestník' : 'úvodní stránka'
+?>">
+            <span class="app-brand-logo" aria-hidden="true"><img src="<?=
+ htmlspecialchars(appUiUrl('assets/kovo-praha-logo.png'))
+
+?>" alt="" width="500" height="167"></span>
         </a>
-        <?php if ($is_logged_in && is_array($staff_active)): ?>
-        <button class="navbar-toggler app-sidebar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#appAdminSidebar" aria-controls="appAdminSidebar" aria-label="Otevřít pracovní nabídku"><span class="navbar-toggler-icon"></span></button>
-        <?php endif; ?>
+        <?php
+if ($is_logged_in && is_array($staff_active)):
+    ?>
+<?php
+    echo('        <button class="navbar-toggler app-sidebar-toggler" type="button" data-bs-toggle="offcanvas" ' .
+
+    'data-bs-target="#appAdminSidebar" aria-controls="appAdminSidebar" aria-label="Otevřít pracovní nabídku"><span ' .
+
+    'class="navbar-toggler-icon"></span></button>
+');
+    ?>        <?php
+endif;
+?>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Přepnout navigaci">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <?php if ($is_logged_in && is_array($staff_active)): ?>
+            <?php
+if ($is_logged_in && is_array($staff_active)):
+    ?>
             <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
-                <li class="nav-item"><a class="nav-link<?= _navActive('pracovni_pozice.php') ?>" href="<?= htmlspecialchars(appUiUrl('pracovni_pozice.php')) ?>"><i class="bi bi-grid me-1"></i>Rozcestník</a></li>
-                <?php foreach ($staff_menu_groups as $staff_group): ?>
+                <li class="nav-item"><a class="nav-link<?=
+     _navActive('pracovni_pozice.php')
+    ?>" href="<?=
+     htmlspecialchars(appUiUrl('pracovni_pozice.php'))
+
+    ?>"><i class="bi bi-grid me-1"></i>Rozcestník</a></li>
+                <?php
+foreach ($staff_menu_groups as $staff_group):
+    ?>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-<?= htmlspecialchars((string)$staff_group['icon']) ?> me-1"></i><?= htmlspecialchars((string)$staff_group['label']) ?></a>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-<?=
+
+                    htmlspecialchars((string)$staff_group['icon'])
+    ?> me-1"></i><?=
+     htmlspecialchars((string)$staff_group['label'])
+    ?></a>
                     <ul class="dropdown-menu">
-                        <?php foreach ($staff_group['items'] as $staff_item): ?>
-                        <li><a class="dropdown-item<?= _dropActive(basename((string)$staff_item['route'])) ?>" href="<?= htmlspecialchars(appUiUrl((string)$staff_item['route'])) ?>"><i class="bi bi-<?= htmlspecialchars((string)$staff_item['icon']) ?> me-2 text-primary"></i><?= htmlspecialchars((string)$staff_item['label']) ?></a></li>
-                        <?php endforeach; ?>
+                        <?php
+foreach ($staff_group['items'] as $staff_item):
+    ?>
+                        <li><a class="dropdown-item<?=
+     _dropActive(basename((string)$staff_item['route']))
+    ?>" href="<?=
+     htmlspecialchars(appUiUrl((string)$staff_item['route']))
+
+    ?>"><i class="bi bi-<?=
+     htmlspecialchars((string)$staff_item['icon'])
+    ?> me-2 text-primary"></i><?=
+     htmlspecialchars((string)$staff_item['label'])
+
+    ?></a></li>
+                        <?php
+endforeach;
+    ?>
                     </ul>
                 </li>
-                <?php endforeach; ?>
+                <?php
+endforeach;
+    ?>
             </ul>
-            <?php else: ?>
+            <?php else:
+                ?>
             <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
                 <li class="nav-item">
-                    <a class="nav-link<?= _navActive('index.php') ?>" href="index.php"><i class="bi bi-house me-1"></i>Domů</a>
+                    <a class="nav-link<?=
+                 _navActive('index.php')
+                ?>" href="index.php"><i class="bi bi-house me-1"></i>Domů</a>
                 </li>
 
-                <?php if ($is_logged_in): ?>
+                <?php
+if ($is_logged_in):
+    ?>
 
                     <!-- Vkládání dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle<?= _navActive('formular.php','nova_cinnost.php','zatezovy_test_form.php','duplikovat_trenink.php','formular_zavod.php') ?>" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle<?=
+     _navActive(
+         'formular.php',
+         'nova_cinnost.php',
+         'zatezovy_test_form.php',
+         'duplikovat_trenink.php',
+         'formular_zavod.php'
+     )
+    ?>" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-plus-square me-1"></i>Vložit
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item<?= _dropActive('formular.php') ?>" href="formular.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('formular.php')
+    ?>" href="formular.php">
                                 <i class="bi bi-calendar-plus me-2 text-primary"></i>Nový trénink</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('duplikovat_trenink.php') ?>" href="duplikovat_trenink.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('duplikovat_trenink.php')
+    ?>" href="duplikovat_trenink.php">
                                 <i class="bi bi-copy me-2 text-primary"></i>Duplikovat trénink</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('nova_cinnost.php') ?>" href="nova_cinnost.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('nova_cinnost.php')
+    ?>" href="nova_cinnost.php">
                                 <i class="bi bi-journal-plus me-2 text-secondary"></i>Další činnost</a></li>
-                            <?php if (canAccess('formular_zavod')): ?>
-                            <li><a class="dropdown-item<?= _dropActive('formular_zavod.php') ?>" href="formular_zavod.php">
+                            <?php
+if (canAccess('formular_zavod')):
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('formular_zavod.php')
+    ?>" href="formular_zavod.php">
                                 <i class="bi bi-trophy me-2 text-warning"></i>Nový závod</a></li>
-                            <?php endif; ?>
-                            <li><a class="dropdown-item<?= _dropActive('zatezovy_test_form.php') ?>" href="zatezovy_test_form.php">
+                            <?php
+endif;
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('zatezovy_test_form.php')
+    ?>" href="zatezovy_test_form.php">
                                 <i class="bi bi-heart-pulse me-2 text-danger"></i>Zátěžový test</a></li>
                         </ul>
                     </li>
 
                     <!-- Přehledy dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle<?= _navActive('moje_treninky.php','moje_skupiny.php','prehled_trenera.php','prehled_sportovcu.php','prehled_treninku_skupiny_kalendar.php','vypis_vykazu.php','prehled_popisu.php','prehled_zavodu.php','zavod_detail.php','sprava_zavodu.php','hromadne_podskupiny.php','oznameni.php','export_draha.php','export_seznam.php','export_uci.php','google_sheets_linky.php','cviky.php','sprava_segmentu.php','hromadne_odmeny.php') ?>" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle<?=
+     _navActive(
+         'moje_treninky.php',
+         'moje_skupiny.php',
+         'prehled_trenera.php',
+         'prehled_sportovcu.php',
+         'prehled_treninku_skupiny_kalendar.php',
+         'vypis_vykazu.php',
+         'prehled_popisu.php',
+         'prehled_zavodu.php',
+         'zavod_detail.php',
+         'sprava_zavodu.php',
+         'hromadne_podskupiny.php',
+         'oznameni.php',
+         'export_draha.php',
+         'export_seznam.php',
+         'export_uci.php',
+         'google_sheets_linky.php',
+         'cviky.php',
+         'sprava_segmentu.php',
+         'hromadne_odmeny.php'
+     )
+    ?>" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-bar-chart me-1"></i>Přehledy
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item<?= _dropActive('moje_treninky.php') ?>" href="moje_treninky.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('moje_treninky.php')
+    ?>" href="moje_treninky.php">
                                 <i class="bi bi-list-ul me-2 text-success"></i>Moje tréninky</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('moje_skupiny.php') ?>" href="moje_skupiny.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('moje_skupiny.php')
+    ?>" href="moje_skupiny.php">
                                 <i class="bi bi-people me-2 text-success"></i>Moje skupiny</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('prehled_trenera.php') ?>" href="prehled_trenera.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('prehled_trenera.php')
+    ?>" href="prehled_trenera.php">
                                 <i class="bi bi-calendar-range me-2 text-success"></i>Přehled tréninků</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('prehled_sportovcu.php') ?>" href="prehled_sportovcu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('prehled_sportovcu.php')
+    ?>" href="prehled_sportovcu.php">
                                 <i class="bi bi-person-lines-fill me-2 text-success"></i>Přehled sportovců</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('prehled_treninku_skupiny_kalendar.php') ?>" href="prehled_treninku_skupiny_kalendar.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('prehled_treninku_skupiny_kalendar.php')
+    ?>" href="prehled_treninku_skupiny_kalendar.php">
                                 <i class="bi bi-calendar3 me-2 text-success"></i>Kalendář tréninků</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item<?= _dropActive('vypis_vykazu.php') ?>" href="vypis_vykazu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('vypis_vykazu.php')
+    ?>" href="vypis_vykazu.php">
                                 <i class="bi bi-file-earmark-bar-graph me-2 text-secondary"></i>Výkaz činností</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('prehled_popisu.php') ?>" href="prehled_popisu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('prehled_popisu.php')
+    ?>" href="prehled_popisu.php">
                                 <i class="bi bi-journal-text me-2 text-success"></i>Přehled popisů</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item<?= _dropActive('prehled_zavodu.php') ?>" href="prehled_zavodu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('prehled_zavodu.php')
+    ?>" href="prehled_zavodu.php">
                                 <i class="bi bi-trophy me-2 text-warning"></i>Přehled závodů</a></li>
-                            <?php if (canAccess('sprava_zavodu')): ?>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_zavodu.php') ?>" href="sprava_zavodu.php">
+                            <?php
+if (canAccess('sprava_zavodu')):
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_zavodu.php')
+    ?>" href="sprava_zavodu.php">
                                 <i class="bi bi-gear me-2 text-warning"></i>Správa závodů</a></li>
-                            <?php endif; ?>
+                            <?php
+endif;
+    ?>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Exporty</h6></li>
-                            <li><a class="dropdown-item<?= _dropActive('export_draha.php') ?>" href="export_draha.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('export_draha.php')
+    ?>" href="export_draha.php">
                                 <i class="bi bi-file-earmark-excel me-2 text-success"></i>Export – dráha</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('export_uci.php') ?>" href="export_uci.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('export_uci.php')
+    ?>" href="export_uci.php">
                                 <i class="bi bi-file-earmark-person me-2 text-primary"></i>Export – UCI přihláška</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('export_seznam.php') ?>" href="export_seznam.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('export_seznam.php')
+    ?>" href="export_seznam.php">
                                 <i class="bi bi-file-earmark-spreadsheet me-2 text-success"></i>Export – Seznam sportovců</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('google_sheets_linky.php') ?>" href="google_sheets_linky.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('google_sheets_linky.php')
+    ?>" href="google_sheets_linky.php">
                                 <i class="bi bi-table me-2 text-success"></i>Google Sheets evidence</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Nástroje</h6></li>
-                            <?php if (canAccess('sprava_sportovcu')): ?>
-                            <li><a class="dropdown-item<?= _dropActive('hromadne_podskupiny.php') ?>" href="hromadne_podskupiny.php">
+                            <?php
+if (canAccess('sprava_sportovcu')):
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('hromadne_podskupiny.php')
+    ?>" href="hromadne_podskupiny.php">
                                 <i class="bi bi-diagram-3 me-2 text-warning"></i>Skupiny a podskupiny</a></li>
-                            <?php endif; ?>
-                            <?php if (canAccess('oznameni')): ?>
-                            <li><a class="dropdown-item<?= _dropActive('oznameni.php') ?>" href="oznameni.php">
+                            <?php
+endif;
+    ?>
+                            <?php
+if (canAccess('oznameni')):
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('oznameni.php')
+    ?>" href="oznameni.php">
                                 <i class="bi bi-bell me-2 text-warning"></i>Oznámení a zprávy</a></li>
-                            <?php endif; ?>
-                            <li><a class="dropdown-item<?= _dropActive('cviky.php') ?>" href="cviky.php">
+                            <?php
+endif;
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('cviky.php')
+    ?>" href="cviky.php">
                                 <i class="bi bi-activity me-2 text-secondary"></i>Cviky v posilovně</a></li>
-                            <?php if (canAccess('segmenty')): ?>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_segmentu.php') ?>" href="sprava_segmentu.php">
+                            <?php
+if (canAccess('segmenty')):
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_segmentu.php')
+    ?>" href="sprava_segmentu.php">
                                 <i class="bi bi-signpost-split me-2 text-secondary"></i>Segmenty</a></li>
-                            <?php endif; ?>
-                            <li><a class="dropdown-item<?= _dropActive('hromadne_odmeny.php') ?>" href="hromadne_odmeny.php">
+                            <?php
+endif;
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('hromadne_odmeny.php')
+    ?>" href="hromadne_odmeny.php">
                                 <i class="bi bi-star me-2 text-warning"></i>Nastavení odměn</a></li>
                         </ul>
                     </li>
 
                     <!-- Plánovač -->
-                    <?php if (canAccess('planovac')): ?>
+                    <?php
+if (canAccess('planovac')):
+    ?>
                     <li class="nav-item">
-                        <a class="nav-link<?= _navActive('planovac.php','planovany_trenink_form.php') ?>" href="planovac.php">
+                        <a class="nav-link<?=
+     _navActive('planovac.php', 'planovany_trenink_form.php')
+    ?>" href="planovac.php">
                             <i class="bi bi-calendar3-week me-1"></i>Plánovač
                         </a>
                     </li>
-                    <?php endif; ?>
+                    <?php
+endif;
+    ?>
 
                     <!-- Rezervace dropdown -->
-                    <?php if (canAccess('kalendar_sportovist') || canAccess('individualni_lekce')): ?>
+                    <?php
+if (canAccess('kalendar_sportovist') || canAccess('individualni_lekce')):
+    ?>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle<?= _navActive('kalendar_sportovist.php','rezervovat_sportoviste.php','individualni_lekce_form.php','individualni_lekce_sprava.php') ?>" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle<?=
+     _navActive(
+         'kalendar_sportovist.php',
+         'rezervovat_sportoviste.php',
+         'individualni_lekce_form.php',
+         'individualni_lekce_sprava.php'
+     )
+    ?>" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-building me-1"></i>Rezervace
                         </a>
                         <ul class="dropdown-menu">
-                            <?php if (canAccess('kalendar_sportovist')): ?>
-                            <li><a class="dropdown-item<?= _dropActive('kalendar_sportovist.php') ?>" href="kalendar_sportovist.php">
+                            <?php
+if (canAccess('kalendar_sportovist')):
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('kalendar_sportovist.php')
+    ?>" href="kalendar_sportovist.php">
                                 <i class="bi bi-calendar3 me-2 text-primary"></i>Kalendář sportovišť</a></li>
-                            <?php endif; ?>
-                            <?php if (canAccess('rezervace_sportovist')): ?>
-                            <li><a class="dropdown-item<?= _dropActive('rezervovat_sportoviste.php') ?>" href="rezervovat_sportoviste.php">
+                            <?php
+endif;
+    ?>
+                            <?php
+if (canAccess('rezervace_sportovist')):
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('rezervovat_sportoviste.php')
+    ?>" href="rezervovat_sportoviste.php">
                                 <i class="bi bi-calendar-plus me-2 text-success"></i>Nová rezervace</a></li>
-                            <?php endif; ?>
-                            <?php if (canAccess('individualni_lekce')): ?>
+                            <?php
+endif;
+    ?>
+                            <?php
+if (canAccess('individualni_lekce')):
+    ?>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item<?= _dropActive('individualni_lekce_sprava.php') ?>" href="individualni_lekce_sprava.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('individualni_lekce_sprava.php')
+    ?>" href="individualni_lekce_sprava.php">
                                 <i class="bi bi-person-circle me-2 text-success"></i>Individuální lekce</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('individualni_lekce_form.php') ?>" href="individualni_lekce_form.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('individualni_lekce_form.php')
+    ?>" href="individualni_lekce_form.php">
                                 <i class="bi bi-person-plus me-2 text-success"></i>Nová lekce</a></li>
-                            <?php endif; ?>
+                            <?php
+endif;
+    ?>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="booking/kalendar.php" target="_blank">
                                 <i class="bi bi-globe me-2 text-info"></i>Veřejný kalendář</a></li>
                         </ul>
                     </li>
-                    <?php endif; ?>
+                    <?php
+endif;
+    ?>
 
-                    <?php if ($is_hlavni): ?>
+                    <?php
+if ($is_hlavni):
+    ?>
                     <!-- Klub dropdown – správce + admin (cílová struktura: bývalá "Správa dat") -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -375,67 +574,117 @@ if ($is_logged_in) {
                         </a>
                         <ul class="dropdown-menu">
                             <li><h6 class="dropdown-header">Provoz</h6></li>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_sportovcu.php') ?>" href="sprava_sportovcu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_sportovcu.php')
+    ?>" href="sprava_sportovcu.php">
                                 <i class="bi bi-person-lines-fill me-2"></i>Správa sportovců</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('admin_dashboard.php') ?>" href="admin_dashboard.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('admin_dashboard.php')
+    ?>" href="admin_dashboard.php">
                                 <i class="bi bi-speedometer2 me-2 text-primary"></i>Admin dashboard</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_vsech_treninku.php') ?>" href="sprava_vsech_treninku.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_vsech_treninku.php')
+    ?>" href="sprava_vsech_treninku.php">
                                 <i class="bi bi-clipboard-data me-2"></i>Správa tréninků</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_skupin.php') ?>" href="sprava_skupin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_skupin.php')
+    ?>" href="sprava_skupin.php">
                                 <i class="bi bi-diagram-2 me-2"></i>Správa skupin</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_podskupin.php') ?>" href="sprava_podskupin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_podskupin.php')
+    ?>" href="sprava_podskupin.php">
                                 <i class="bi bi-diagram-3 me-2"></i>Správa podskupin</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_zavodu.php') ?>" href="sprava_zavodu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_zavodu.php')
+    ?>" href="sprava_zavodu.php">
                                 <i class="bi bi-flag me-2"></i>Správa závodů</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('formular_zavod.php') ?>" href="formular_zavod.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('formular_zavod.php')
+    ?>" href="formular_zavod.php">
                                 <i class="bi bi-plus-circle me-2 text-success"></i>Nový závod</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('prehled_zavodu.php') ?>" href="prehled_zavodu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('prehled_zavodu.php')
+    ?>" href="prehled_zavodu.php">
                                 <i class="bi bi-trophy me-2 text-warning"></i>Přehled závodů</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('verejny_prehled.php') ?>" href="verejny_prehled.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('verejny_prehled.php')
+    ?>" href="verejny_prehled.php">
                                 <i class="bi bi-globe me-2"></i>Veřejný přehled</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('prehled_vsech_vykazu.php') ?>" href="prehled_vsech_vykazu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('prehled_vsech_vykazu.php')
+    ?>" href="prehled_vsech_vykazu.php">
                                 <i class="bi bi-graph-up me-2"></i>Všechny výkazy</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('club_programs_admin.php') ?>" href="club_programs_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('club_programs_admin.php')
+    ?>" href="club_programs_admin.php">
                                 <i class="bi bi-calendar-range me-2 text-primary"></i>Kroužkové programy</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('club_program_offers_admin.php') ?>" href="club_program_offers_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('club_program_offers_admin.php')
+    ?>" href="club_program_offers_admin.php">
                                 <i class="bi bi-calendar2-check me-2 text-primary"></i>Nabídky kroužků</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('club_program_storefront_admin.php') ?>" href="club_program_storefront_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('club_program_storefront_admin.php')
+    ?>" href="club_program_storefront_admin.php">
                                 <i class="bi bi-images me-2 text-primary"></i>Veřejný rozcestník kroužků</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('club_program_wizard_admin.php') ?>" href="club_program_wizard_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('club_program_wizard_admin.php')
+    ?>" href="club_program_wizard_admin.php">
                                 <i class="bi bi-magic me-2 text-success"></i>Vypsat kroužek</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('verejny_velodrom_admin.php') ?>" href="verejny_velodrom_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('verejny_velodrom_admin.php')
+    ?>" href="verejny_velodrom_admin.php">
                                 <i class="bi bi-bicycle me-2 text-primary"></i>Veřejné hodiny velodromu</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_segmentu.php') ?>" href="sprava_segmentu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_segmentu.php')
+    ?>" href="sprava_segmentu.php">
                                 <i class="bi bi-signpost-split me-2"></i>Správa segmentů</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('odeslat_emaily.php') ?>" href="odeslat_emaily.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('odeslat_emaily.php')
+    ?>" href="odeslat_emaily.php">
                                 <i class="bi bi-envelope-fill me-2 text-primary"></i>Odeslat emaily</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('prehled_kreditu.php') ?>" href="prehled_kreditu.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('prehled_kreditu.php')
+    ?>" href="prehled_kreditu.php">
                                 <i class="bi bi-wallet2 me-2 text-success"></i>Přehled kreditů</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_sportovec_obdobi.php') ?>" href="sprava_sportovec_obdobi.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_sportovec_obdobi.php')
+    ?>" href="sprava_sportovec_obdobi.php">
                                 <i class="bi bi-cash-coin me-2 text-success"></i>Kreditní období</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Členové a KIS</h6></li>
-                            <li><a class="dropdown-item<?= _dropActive('sync_evidence.php') ?>" href="sync_evidence.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sync_evidence.php')
+    ?>" href="sync_evidence.php">
                                 <i class="bi bi-arrow-repeat me-2 text-primary"></i>Synchronizace evidence</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('kis_sync_center.php') ?>" href="kis_sync_center.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('kis_sync_center.php')
+    ?>" href="kis_sync_center.php">
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>KIS centrum</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('kis_rosters_admin.php') ?>" href="kis_rosters_admin.php">
-                                <i class="bi bi-people-fill me-2 text-primary"></i>Historické soupisky</a></li>
-                            <?php if ($is_admin): ?>
-                            <li><a class="dropdown-item<?= _dropActive('kis_roster_hierarchy_admin.php') ?>" href="kis_roster_hierarchy_admin.php">
+                            <?php
+if ($is_admin):
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('kis_roster_hierarchy_admin.php')
+    ?>" href="kis_roster_hierarchy_admin.php">
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>Skupiny a soupisky</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('kis_current_rosters_admin.php') ?>" href="kis_current_rosters_admin.php">
-                                <i class="bi bi-arrow-right-circle me-2 text-primary"></i>Převod soupisek 2026/27</a></li>
-                            <?php endif; ?>
-                            <?php if (defined('JE_LOKALNE') && JE_LOKALNE): ?>
-                            <li><a class="dropdown-item<?= _dropActive('kis_training_a07_admin.php') ?>" href="kis_training_a07_admin.php">
-                                <i class="bi bi-clipboard-check me-2 text-primary"></i>A07 trénink a docházka</a></li>
-                            <?php endif; ?>
+                            <?php
+endif;
+    ?>
+                            <?php
+if (defined('JE_LOKALNE') && JE_LOKALNE):
+    ?>
+                            <?php
+endif;
+    ?>
                         </ul>
                     </li>
-                    <?php endif; ?>
+                    <?php
+endif;
+    ?>
 
-                    <?php if ($is_admin): ?>
+                    <?php
+if ($is_admin):
+    ?>
                     <!-- Administrace dropdown – pouze admin (cílová struktura: samostatné top-level menu) -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -443,80 +692,142 @@ if ($is_logged_in) {
                         </a>
                         <ul class="dropdown-menu">
                             <li><h6 class="dropdown-header">E-shop</h6></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_admin.php') ?>" href="eshop_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_admin.php')
+    ?>" href="eshop_admin.php">
                                 <i class="bi bi-shop me-2 text-primary"></i>Administrace e-shopu</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_orders_admin.php') ?>" href="eshop_orders_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_orders_admin.php')
+    ?>" href="eshop_orders_admin.php">
                                 <i class="bi bi-receipt me-2 text-success"></i>Objednávky K4</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_bank_admin.php') ?>" href="eshop_bank_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_bank_admin.php')
+    ?>" href="eshop_bank_admin.php">
                                 <i class="bi bi-bank me-2 text-dark"></i>Bankovní účet e-shopu</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_catalog_publication_admin.php') ?>" href="eshop_catalog_publication_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_catalog_publication_admin.php')
+    ?>" href="eshop_catalog_publication_admin.php">
                                 <i class="bi bi-eye me-2 text-success"></i>Aktivace katalogu</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_categories_admin.php') ?>" href="eshop_categories_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_categories_admin.php')
+    ?>" href="eshop_categories_admin.php">
                                 <i class="bi bi-diagram-3 me-2 text-primary"></i>Kategorie e-shopu</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_catalog_admin.php') ?>" href="eshop_catalog_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_catalog_admin.php')
+    ?>" href="eshop_catalog_admin.php">
                                 <i class="bi bi-boxes me-2 text-dark"></i>Správa katalogu</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_attributes_admin.php') ?>" href="eshop_attributes_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_attributes_admin.php')
+    ?>" href="eshop_attributes_admin.php">
                                 <i class="bi bi-sliders me-2 text-primary"></i>Parametry produktů</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_member_prices_admin.php') ?>" href="eshop_member_prices_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_member_prices_admin.php')
+    ?>" href="eshop_member_prices_admin.php">
                                 <i class="bi bi-tags me-2 text-success"></i>Klubové ceny</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_events_admin.php') ?>" href="eshop_events_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_events_admin.php')
+    ?>" href="eshop_events_admin.php">
                                 <i class="bi bi-calendar-event me-2 text-primary"></i>Klubové akce a soupisky</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_notifications_admin.php') ?>" href="eshop_notifications_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_notifications_admin.php')
+    ?>" href="eshop_notifications_admin.php">
                                 <i class="bi bi-envelope-exclamation me-2 text-warning"></i>Fronta e-mailů K3</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Členové a KIS</h6></li>
-                            <li><a class="dropdown-item<?= _dropActive('member_charge_reminders_admin.php') ?>" href="member_charge_reminders_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('member_charge_reminders_admin.php')
+    ?>" href="member_charge_reminders_admin.php">
                                 <i class="bi bi-bell me-2 text-warning"></i>Připomínky plateb</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('member_charges_admin.php') ?>" href="member_charges_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('member_charges_admin.php')
+    ?>" href="member_charges_admin.php">
                                 <i class="bi bi-cash-stack me-2 text-warning"></i>Členské předpisy</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('member_fee_plans_admin.php') ?>" href="member_fee_plans_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('member_fee_plans_admin.php')
+    ?>" href="member_fee_plans_admin.php">
                                 <i class="bi bi-calendar-month me-2 text-warning"></i>Měsíční plány příspěvků</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('member_fee_annual_admin.php') ?>" href="member_fee_annual_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('member_fee_annual_admin.php')
+    ?>" href="member_fee_annual_admin.php">
                                 <i class="bi bi-calendar-check me-2 text-warning"></i>Roční hromadná úhrada</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('club_finance_admin.php') ?>" href="club_finance_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('club_finance_admin.php')
+    ?>" href="club_finance_admin.php">
                                 <i class="bi bi-sliders me-2 text-warning"></i>Finanční pravidla přihlášek</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('family_weekly_summaries_admin.php') ?>" href="family_weekly_summaries_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('family_weekly_summaries_admin.php')
+    ?>" href="family_weekly_summaries_admin.php">
                                 <i class="bi bi-envelope-paper me-2 text-info"></i>Týdenní souhrny</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_identity_admin.php') ?>" href="eshop_identity_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_identity_admin.php')
+    ?>" href="eshop_identity_admin.php">
                                 <i class="bi bi-people me-2 text-primary"></i>Účty, rodiče a sportovci</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('kis_person_import_admin.php') ?>" href="kis_person_import_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('kis_person_import_admin.php')
+    ?>" href="kis_person_import_admin.php">
                                 <i class="bi bi-person-lines-fill me-2 text-primary"></i>Osoby a kontakty ze starého KIS</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('kis_child_access_admin.php') ?>" href="kis_child_access_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('kis_child_access_admin.php')
+    ?>" href="kis_child_access_admin.php">
                                 <i class="bi bi-person-badge me-2 text-primary"></i>Přístupy sportovců</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('kis_transition_admin.php') ?>" href="kis_transition_admin.php">
-                                <i class="bi bi-arrow-left-right me-2 text-primary"></i>Přechod do závodního týmu</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('kis_rollover_a06_admin.php') ?>" href="kis_rollover_a06_admin.php">
-                                <i class="bi bi-arrow-clockwise me-2 text-primary"></i>Roční obnova soupisek (A06)</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('person_audit_admin.php') ?>" href="person_audit_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('person_audit_admin.php')
+    ?>" href="person_audit_admin.php">
                                 <i class="bi bi-clock-history me-2 text-primary"></i>Auditní osa osoby</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Provoz</h6></li>
-                            <li><a class="dropdown-item<?= _dropActive('provozni_prehled_admin.php') ?>" href="provozni_prehled_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('provozni_prehled_admin.php')
+    ?>" href="provozni_prehled_admin.php">
                                 <i class="bi bi-speedometer2 me-2 text-primary"></i>Provozní přehled</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('sports_data_quality_admin.php') ?>" href="sports_data_quality_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sports_data_quality_admin.php')
+    ?>" href="sports_data_quality_admin.php">
                                 <i class="bi bi-clipboard-data me-2 text-primary"></i>Kvalita sportovních dat</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('sports_import_review_admin.php') ?>" href="sports_import_review_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sports_import_review_admin.php')
+    ?>" href="sports_import_review_admin.php">
                                 <i class="bi bi-clipboard-check me-2 text-primary"></i>Příprava importu měření</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('eshop_order_expiry_admin.php') ?>" href="eshop_order_expiry_admin.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('eshop_order_expiry_admin.php')
+    ?>" href="eshop_order_expiry_admin.php">
                                 <i class="bi bi-hourglass-split me-2 text-warning"></i>Expirace nezaplacených objednávek</a></li>
-                            <?php if (defined('JE_LOKALNE') && JE_LOKALNE): ?>
-                            <li><a class="dropdown-item<?= _dropActive('testovaci_scenare.php') ?>" href="testovaci_scenare.php">
+                            <?php
+if (defined('JE_LOKALNE') && JE_LOKALNE):
+    ?>
+                            <li><a class="dropdown-item<?=
+     _dropActive('testovaci_scenare.php')
+    ?>" href="testovaci_scenare.php">
                                 <i class="bi bi-check2-square me-2 text-warning"></i>Finalizace M2</a></li>
-                            <?php endif; ?>
+                            <?php
+endif;
+    ?>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Nastavení a firemní evidence</h6></li>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_sportovist.php') ?>" href="sprava_sportovist.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_sportovist.php')
+    ?>" href="sprava_sportovist.php">
                                 <i class="bi bi-building-gear me-2"></i>Správa sportovišť</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('sprava_treneru.php') ?>" href="sprava_treneru.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('sprava_treneru.php')
+    ?>" href="sprava_treneru.php">
                                 <i class="bi bi-person-gear me-2"></i>Správa trenérů</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('nastaveni_opravneni.php') ?>" href="nastaveni_opravneni.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('nastaveni_opravneni.php')
+    ?>" href="nastaveni_opravneni.php">
                                 <i class="bi bi-sliders me-2 text-danger"></i>Nastavení oprávnění</a></li>
-                            <li><a class="dropdown-item<?= _dropActive('nastaveni_zadavani.php') ?>" href="nastaveni_zadavani.php">
+                            <li><a class="dropdown-item<?=
+     _dropActive('nastaveni_zadavani.php')
+    ?>" href="nastaveni_zadavani.php">
                                 <i class="bi bi-calendar-lock me-2"></i>Okno pro zadávání</a></li>
-                            <?php if (canAccess('auditlog')): ?>
+                            <?php
+if (canAccess('auditlog')):
+    ?>
                             <li><a class="dropdown-item" href="auditlog/seznam.php">
                                 <i class="bi bi-journal-text me-2"></i>Audit log</a></li>
-                            <?php endif; ?>
+                            <?php
+endif;
+    ?>
                             <li><a class="dropdown-item" href="vozidla/seznam.php">
                                 <i class="bi bi-car-front me-2"></i>Vozidla</a></li>
                             <li><a class="dropdown-item" href="uctenky/seznam.php">
@@ -525,18 +836,27 @@ if ($is_logged_in) {
                                 <i class="bi bi-calendar-event me-2"></i>Události</a></li>
                         </ul>
                     </li>
-                    <?php endif; ?>
+                    <?php
+endif;
+    ?>
 
-                <?php else: ?>
+                <?php else:
+                    ?>
                     <li class="nav-item"><a class="nav-link" href="booking/eshop.php"><i class="bi bi-bag me-1"></i>E-shop</a></li>
                     <li class="nav-item"><a class="nav-link" href="booking/krouzky.php"><i class="bi bi-calendar-event me-1"></i>Akce</a></li>
                     <li class="nav-item"><a class="nav-link" href="booking/velodrom.php"><i class="bi bi-bicycle me-1"></i>Velodrom</a></li>
                     <li class="nav-item"><a class="nav-link" href="booking/treninky.php"><i class="bi bi-calendar3 me-1"></i>Tréninky</a></li>
-                <?php endif; ?>
+                <?php
+                endif;
+?>
             </ul>
-            <?php endif; ?>
+            <?php
+endif;
+?>
 
-            <?php if (false && $is_logged_in): ?>
+            <?php
+if (false && $is_logged_in):
+    ?>
             <!-- Globální hledání -->
             <div id="globalSearchWrap" class="mx-xxl-3 my-2 my-xxl-0" role="search">
                 <div class="input-group input-group-sm">
@@ -553,19 +873,27 @@ if ($is_logged_in) {
                 </div>
                 <div id="globalSearchDropdown" role="listbox" aria-label="Výsledky hledání"></div>
             </div>
-            <?php endif; ?>
+            <?php
+endif;
+?>
 
             <ul class="navbar-nav align-items-xxl-center gap-1">
                 <!-- Tmavý režim + zkratky -->
                 <li class="nav-item d-flex align-items-center gap-1">
-                    <?php if ($is_logged_in): ?>
+                    <?php
+if ($is_logged_in):
+    ?>
                     <button id="pushToggleBtn" class="btn btn-sm btn-outline-secondary border-0 text-white-50"
                             style="display:none;padding:4px 8px" title="Push notifikace">
                         <i class="bi bi-bell-slash"></i>
                     </button>
-                    <?php endif; ?>
+                    <?php
+endif;
+?>
                     <button id="themeToggle" class="btn btn-sm btn-outline-secondary border-0 text-white-50"
-                            data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="toggleTheme()" title="Přepnout tmavý/světlý režim" style="padding:4px 8px">
+                            data-app-csp-handler="<?=
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>" onclick="toggleTheme()" title="Přepnout tmavý/světlý režim" style="padding:4px 8px">
                         <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary border-0 text-white-50"
@@ -573,64 +901,131 @@ if ($is_logged_in) {
                             title="Klávesové zkratky (?)" style="padding:4px 8px">
                         <i class="bi bi-keyboard"></i>
                     </button>
-                    <?php if ($is_logged_in): ?>
-                    <a href="<?= publicShellH(appUiUrl('booking/eshop.php')) ?>" target="_blank" rel="noopener"
+                    <?php
+if ($is_logged_in):
+    ?>
+                    <a href="<?=
+     publicShellH(appUiUrl('booking/eshop.php'))
+    ?>" target="_blank" rel="noopener"
                        class="btn btn-sm btn-outline-secondary border-0 text-white-50"
                        title="Otevřít veřejný portál v nové záložce" style="padding:4px 8px">
                         <i class="bi bi-box-arrow-up-right"></i>
                     </a>
-                    <?php endif; ?>
+                    <?php
+endif;
+?>
                 </li>
-                <?php if ($is_logged_in): ?>
-                    <?php if (count($staff_available) > 1): ?>
+                <?php
+if ($is_logged_in):
+    ?>
+                    <?php
+if (count($staff_available) > 1):
+    ?>
                     <li class="nav-item dropdown">
                         <button class="btn btn-sm btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-<?= htmlspecialchars((string)($staff_active['icon'] ?? 'person-workspace')) ?> me-1"></i><?= staffIsSuperadmin() ? 'Superadmin · ' : '' ?><?= htmlspecialchars((string)($staff_active['short_label'] ?? 'Pozice')) ?>
+                            <i class="bi bi-<?=
+     htmlspecialchars((string)($staff_active['icon'] ?? 'person-workspace'))
+    ?> me-1"></i><?=
+
+        staffIsSuperadmin() ? 'Superadmin · ' : ''
+    ?><?=
+     htmlspecialchars((string)($staff_active['short_label'] ?? 'Pozice'))
+
+    ?>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" style="min-width:270px">
                             <li><h6 class="dropdown-header">Přepnout pracovní pozici</h6></li>
-                            <?php foreach ($staff_available as $staff_code): $staff_position = $staff_definitions[$staff_code]; ?>
+                            <?php
+foreach ($staff_available as $staff_code): $staff_position = $staff_definitions[$staff_code];
+
+    ?>
                             <li>
-                                <form method="post" action="<?= publicShellH(appUiUrl('prepnout_pracovni_pozici.php')) ?>">
-                                    <?= csrf_field() ?>
-                                    <input type="hidden" name="position" value="<?= htmlspecialchars($staff_code) ?>">
-                                    <button class="dropdown-item<?= $staff_code === $staff_active_code ? ' active' : '' ?>" <?= $staff_code === $staff_active_code ? 'disabled' : '' ?>><i class="bi bi-<?= htmlspecialchars((string)$staff_position['icon']) ?> me-2"></i><?= htmlspecialchars((string)$staff_position['label']) ?></button>
+                                <form method="post" action="<?=
+     publicShellH(appUiUrl('prepnout_pracovni_pozici.php'))
+    ?>">
+                                    <?=
+     csrf_field()
+    ?>
+                                    <input type="hidden" name="position" value="<?=
+     htmlspecialchars($staff_code)
+    ?>">
+                                    <button class="dropdown-item<?=
+     $staff_code === $staff_active_code ? ' active' : ''
+    ?>" <?=
+
+                                    $staff_code === $staff_active_code ? 'disabled' : ''
+    ?>><i class="bi bi-<?=
+     htmlspecialchars((string)$staff_position['icon'])
+
+    ?> me-2"></i><?=
+     htmlspecialchars((string)$staff_position['label'])
+    ?></button>
                                 </form>
                             </li>
-                            <?php endforeach; ?>
+                            <?php
+endforeach;
+    ?>
                         </ul>
                     </li>
-                    <?php else: ?>
-                    <li class="nav-item"><span class="badge text-bg-secondary"><i class="bi bi-<?= htmlspecialchars((string)($staff_active['icon'] ?? 'person-workspace')) ?> me-1"></i><?= htmlspecialchars((string)($staff_active['short_label'] ?? 'Pozice')) ?></span></li>
-                    <?php endif; ?>
+                    <?php else:
+                        ?>
+                    <li class="nav-item"><span class="badge text-bg-secondary"><i class="bi bi-<?=
+                         htmlspecialchars((string)($staff_active['icon']
+                                                        ?? 'person-workspace'))
+                        ?> me-1"></i><?=
+                         htmlspecialchars((string)($staff_active['short_label'] ?? 'Pozice'))
+                        ?></span></li>
+                    <?php
+                    endif;
+?>
                     <li class="nav-item">
                         <span class="navbar-text text-light small">
-                            <i class="bi bi-person-circle me-1"></i><?= htmlspecialchars($trener_jmeno) ?>
+                            <i class="bi bi-person-circle me-1"></i><?=
+ htmlspecialchars($trener_jmeno)
+?>
                         </span>
                     </li>
                     <li class="nav-item">
-                        <form method="post" action="<?= publicShellH(appUiUrl('logout.php')) ?>" class="d-inline">
-                            <?= csrf_field() ?>
+                        <form method="post" action="<?=
+ publicShellH(appUiUrl('logout.php'))
+?>" class="d-inline">
+                            <?=
+ csrf_field()
+?>
                             <button type="submit" class="nav-link text-light border-0 bg-transparent">
                                 <i class="bi bi-box-arrow-right me-1"></i>Odhlásit
                             </button>
                         </form>
                     </li>
-                <?php else: ?>
-                    <?php if ($is_customer): ?>
+                <?php else:
+                    ?>
+                    <?php
+if ($is_customer):
+    ?>
                       <li class="nav-item"><a class="nav-link" href="booking/moje_osoby.php"><i class="bi bi-person-circle me-1"></i>Můj účet</a></li>
-                    <?php elseif ($is_athlete): ?>
+                    <?php elseif ($is_athlete):
+                        ?>
                       <li class="nav-item"><a class="nav-link" href="booking/muj_sport.php"><i class="bi bi-person-circle me-1"></i>Můj sport</a></li>
-                    <?php else: ?>
+                    <?php else:
+                        ?>
                       <li class="nav-item"><a class="nav-link" href="booking/prihlaseni.php"><i class="bi bi-person me-1"></i>Rodič / zákazník</a></li>
-                    <?php endif; ?>
+                    <?php
+                    endif;
+                    ?>
                     <li class="nav-item"><a class="nav-link" href="login.php"><i class="bi bi-shield-lock me-1"></i>Trenér</a></li>
-                <?php endif; ?>
+                <?php
+                endif;
+?>
             </ul>
         </div>
     </div>
 </nav>
-<?php if ($is_logged_in && is_array($staff_active)) appAdminSidebar($staff_active_code,staffCurrentRoute(__DIR__)??$_currentPage,defined('JE_LOKALNE') && JE_LOKALNE === true); ?>
+<?php
+if ($is_logged_in && is_array($staff_active)) {
+    appAdminSidebar($staff_active_code, staffCurrentRoute(__DIR__) ?? $_currentPage, defined('JE_LOKALNE')
+    && JE_LOKALNE === true);
+}
+?>
 
 <!-- Toast kontejner -->
 <div class="toast-container-global" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
@@ -697,8 +1092,11 @@ if (!empty($_SESSION['flash_info'])) {
     $_flashToasts[] = ['message' => $_SESSION['flash_info'], 'type' => 'info'];
     unset($_SESSION['flash_info']);
 }
+
 ?>
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+<script nonce="<?=
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>">
 // ── Toast notifikace — globální funkce ──────────────────────────────────────
 // Bezpečné společné toast notifikace poskytuje assets/app-ui.js.
 
@@ -735,13 +1133,19 @@ document.addEventListener('keydown', function(e) {
             if (si) { si.focus(); si.select(); }
             break;
         case 'n': case 'N':
-            if (!e.shiftKey) window.location.href = <?= json_encode(appUiUrl('formular.php')) ?>;
+            if (!e.shiftKey) window.location.href = <?=
+ json_encode(appUiUrl('formular.php'))
+?>;
             break;
         case 'p': case 'P':
-            window.location.href = <?= json_encode(appUiUrl('planovac.php')) ?>;
+            window.location.href = <?=
+ json_encode(appUiUrl('planovac.php'))
+?>;
             break;
         case 'k': case 'K':
-            window.location.href = <?= json_encode(appUiUrl('kalendar_sportovist.php')) ?>;
+            window.location.href = <?=
+ json_encode(appUiUrl('kalendar_sportovist.php'))
+?>;
             break;
         case '?':
             e.preventDefault();
@@ -762,28 +1166,47 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ── Auto-zobrazení flash zpráv ze session
-<?php if (!empty($_flashToasts)): ?>
+<?php
+if (!empty($_flashToasts)):
+    ?>
 document.addEventListener('DOMContentLoaded', function() {
-    <?php foreach ($_flashToasts as $t): ?>
-    showToast(<?= json_encode(htmlspecialchars($t['message'], ENT_QUOTES, 'UTF-8')) ?>, <?= json_encode($t['type']) ?>);
-    <?php endforeach; ?>
+    <?php
+foreach ($_flashToasts as $t):
+    ?>
+    showToast(<?=
+     json_encode(htmlspecialchars($t['message'], ENT_QUOTES, 'UTF-8'))
+    ?>, <?=
+     json_encode($t['type'])
+    ?>);
+    <?php
+endforeach;
+    ?>
 });
-<?php endif; ?>
+<?php
+endif;
+?>
 </script>
 
 <?php
 // Absolutní URL-cesta k search endpointu — funguje z kořene i podadresářů
 $_gsSearchUrl = appUiUrl('ajax_global_search.php');
+
 ?>
-<?php if ($is_logged_in): ?>
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+<?php
+if ($is_logged_in):
+    ?>
+<script nonce="<?=
+    htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+    ?>">
 // ── Web Push — registrace Service Workeru a subscribe ───────────────────────
 (function() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
 
-    const PUSH_PUBLIC_KEY = <?= json_encode(
-        $pdo->query("SELECT hodnota FROM nastaveni WHERE klic='push_vapid_public'")->fetchColumn() ?: ''
-    ) ?>;
+    const PUSH_PUBLIC_KEY = <?=
+     json_encode(
+         $pdo->query("SELECT hodnota FROM nastaveni WHERE klic='push_vapid_public'")->fetchColumn() ?: ''
+     )
+    ?>;
     if (!PUSH_PUBLIC_KEY) return; // VAPID klíče ještě nejsou nastaveny
 
     function urlBase64ToUint8Array(base64String) {
@@ -793,7 +1216,11 @@ $_gsSearchUrl = appUiUrl('ajax_global_search.php');
         return new Uint8Array([...raw].map(c => c.charCodeAt(0)));
     }
 
-    navigator.serviceWorker.register(<?= json_encode(appUiUrl('sw.js')) ?>, { scope: <?= json_encode(appUiUrl('')) ?> })
+    navigator.serviceWorker.register(<?=
+     json_encode(appUiUrl('sw.js'))
+    ?>, { scope: <?=
+     json_encode(appUiUrl(''))
+    ?> })
         .then(function(reg) {
             // Zkontrolovat stav subscripce
             return reg.pushManager.getSubscription().then(function(sub) {
@@ -824,10 +1251,14 @@ $_gsSearchUrl = appUiUrl('ajax_global_search.php');
                 reg.pushManager.getSubscription().then(sub => {
                     if (!sub) return;
                     sub.unsubscribe().then(() => {
-                        fetch(<?= json_encode(appUiUrl('push_subscribe.php')) ?>, {
+                        fetch(<?=
+     json_encode(appUiUrl('push_subscribe.php'))
+    ?>, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action: 'unsubscribe', csrf_token: <?= json_encode(csrf_token()) ?>, subscription: { endpoint: sub.endpoint } })
+                            body: JSON.stringify({ action: 'unsubscribe', csrf_token: <?=
+     json_encode(csrf_token())
+    ?>, subscription: { endpoint: sub.endpoint } })
                         });
                         btn.innerHTML = '<i class="bi bi-bell-slash"></i>';
                         btn.dataset.subscribed = '0';
@@ -846,10 +1277,14 @@ $_gsSearchUrl = appUiUrl('ajax_global_search.php');
                         userVisibleOnly: true,
                         applicationServerKey: urlBase64ToUint8Array(PUSH_PUBLIC_KEY)
                     }).then(sub => {
-                        fetch(<?= json_encode(appUiUrl('push_subscribe.php')) ?>, {
+                        fetch(<?=
+     json_encode(appUiUrl('push_subscribe.php'))
+    ?>, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ action: 'subscribe', csrf_token: <?= json_encode(csrf_token()) ?>, subscription: sub.toJSON() })
+                            body: JSON.stringify({ action: 'subscribe', csrf_token: <?=
+     json_encode(csrf_token())
+    ?>, subscription: sub.toJSON() })
                         });
                         btn.innerHTML = '<i class="bi bi-bell-fill"></i>';
                         btn.dataset.subscribed = '1';
@@ -871,7 +1306,9 @@ $_gsSearchUrl = appUiUrl('ajax_global_search.php');
     const dropdown = document.getElementById('globalSearchDropdown');
     if (!input || !dropdown) return;
 
-    const SEARCH_URL = <?= json_encode($_gsSearchUrl) ?>;
+    const SEARCH_URL = <?=
+     json_encode($_gsSearchUrl)
+    ?>;
 
     let controller = null;
     let timer      = null;
@@ -1120,7 +1557,9 @@ window.appConfirm = function (message) {
 
 // ── PWA — manifest + service worker (instalovatelná aplikace) ───────────────
 (function () {
-    var base = <?= json_encode(appUiUrl('')) ?>;
+    var base = <?=
+     json_encode(appUiUrl(''))
+    ?>;
     var link = document.createElement('link');
     link.rel = 'manifest';
     link.href = base + 'manifest.json';
@@ -1130,4 +1569,6 @@ window.appConfirm = function (message) {
     }
 })();
 </script>
-<?php endif; ?>
+<?php
+endif;
+?>

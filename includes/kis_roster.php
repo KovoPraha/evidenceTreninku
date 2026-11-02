@@ -1,233 +1,1258 @@
 <?php
-declare(strict_types=1);
 
-final class KisRosterException extends RuntimeException {}
+declare(strict_types=1);
+require_once __DIR__.'/member_evidence_guard.php';
+
+final class KisRosterException extends RuntimeException
+{
+}
 
 function kisRosterDate(string $value): string
 {
-    $date=DateTimeImmutable::createFromFormat('!Y-m-d',trim($value));
-    if(!$date||$date->format('Y-m-d')!==trim($value))throw new InvalidArgumentException('Datum musi mit format RRRR-MM-DD.');
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', trim($value));
+    if (!$date || $date->format('Y-m-d') !== trim($value)) {
+        throw new InvalidArgumentException('Datum musi mit format RRRR-MM-DD.');
+    }
     return$date->format('Y-m-d');
 }
-function kisRosterCode(string$value,int$max=48):string{$value=strtoupper(trim($value));if(strlen($value)>$max||preg_match('/^[A-Z0-9][A-Z0-9_-]{2,}$/D',$value)!==1)throw new InvalidArgumentException('Kod musi mit alespon 3 znaky A-Z, 0-9, pomlcku nebo podtrzitko.');return$value;}
-function kisRosterText(string$value,int$max,string$label):string{$value=trim($value);if($value===''||mb_strlen($value,'UTF-8')>$max||preg_match('/[<>]/u',$value)===1)throw new InvalidArgumentException($label.' musi byt neprazdny prosty text.');return$value;}
-function kisRosterEnum(string$value,array$allowed,string$label):string{$value=trim($value);if(!in_array($value,$allowed,true))throw new InvalidArgumentException($label.' nema podporovanou hodnotu.');return$value;}
-function kisRosterSeasonType(string$value):string{return kisRosterEnum($value,['school_year','calendar_year'],'Typ sezony');}
-function kisRosterInferSeasonType(string$startsOn,string$endsOn):string{return substr($startsOn,0,4)===substr($endsOn,0,4)?'calendar_year':'school_year';}
-
-/** @return array<string,mixed> */
-function kisRosterCreateSeries(PDO$pdo,int$actorId,string$code,string$name,string$seriesType,string$seasonType,string$rolloverPolicy,?int$nextSeriesId=null,?int$ageFrom=null,?int$ageTo=null,?int$birthYearFrom=null,?int$birthYearTo=null):array
+function kisRosterCode(string$value, int$max = 48): string
 {
-    $code=kisRosterCode($code);$name=kisRosterText($name,160,'Nazev serie');
-    $seriesType=kisRosterEnum($seriesType,['hobby','age','discipline','special'],'Typ serie');
-    $seasonType=kisRosterSeasonType($seasonType);
-    $rolloverPolicy=kisRosterEnum($rolloverPolicy,['renewal_required','age_progression','carry_forward','manual'],'Politika obnovy');
-    if($actorId<1)throw new InvalidArgumentException('Serie vyzaduje administratora.');
-    $allowed=['hobby'=>['school_year'=>['renewal_required','manual']],'age'=>['calendar_year'=>['age_progression','manual']],'discipline'=>['calendar_year'=>['carry_forward','manual']],'special'=>['school_year'=>['manual'],'calendar_year'=>['manual']]];
-    if(!isset($allowed[$seriesType][$seasonType])||!in_array($rolloverPolicy,$allowed[$seriesType][$seasonType],true))throw new InvalidArgumentException('Typ serie, kalendar a politika obnovy nejsou kompatibilni.');
-    foreach([$ageFrom,$ageTo]as$value)if($value!==null&&($value<0||$value>120))throw new InvalidArgumentException('Vekove pravidlo musi byt mezi 0 a 120 lety.');
-    foreach([$birthYearFrom,$birthYearTo]as$value)if($value!==null&&($value<1900||$value>2200))throw new InvalidArgumentException('Rocnikove pravidlo musi byt platny rok.');
-    if(($ageFrom===null)!==($ageTo===null)||($ageFrom!==null&&$ageFrom>$ageTo)||($birthYearFrom===null)!==($birthYearTo===null)||($birthYearFrom!==null&&$birthYearFrom>$birthYearTo)||($ageFrom!==null&&$birthYearFrom!==null))throw new InvalidArgumentException('Pouzijte jednu uplnou a serazenou dvojici vekovych nebo rocnikovych mezi.');
-    if($seriesType!=='age'&&($ageFrom!==null||$birthYearFrom!==null||$nextSeriesId!==null))throw new InvalidArgumentException('Vekova pravidla a nasledna serie patri pouze vekove rade.');
-    if($nextSeriesId!==null){if($nextSeriesId<1)throw new InvalidArgumentException('Nasledna serie neni platna.');$next=$pdo->prepare('SELECT id,series_type,season_type FROM club_team_series WHERE id=?');$next->execute([$nextSeriesId]);$next=$next->fetch(PDO::FETCH_ASSOC);if(!$next||$next['series_type']!=='age'||$next['season_type']!=='calendar_year')throw new KisRosterException('Nasledna vekova serie nebyla nalezena.');}
-    $existing=$pdo->prepare('SELECT * FROM club_team_series WHERE code=?');$existing->execute([$code]);$row=$existing->fetch(PDO::FETCH_ASSOC);
-    $values=[$name,$seriesType,$seasonType,$rolloverPolicy,$nextSeriesId,$ageFrom,$ageTo,$birthYearFrom,$birthYearTo];
-    if($row){$actual=[(string)$row['name'],(string)$row['series_type'],(string)$row['season_type'],(string)$row['rollover_policy'],$row['next_series_id']===null?null:(int)$row['next_series_id'],$row['age_from_years']===null?null:(int)$row['age_from_years'],$row['age_to_years']===null?null:(int)$row['age_to_years'],$row['birth_year_from']===null?null:(int)$row['birth_year_from'],$row['birth_year_to']===null?null:(int)$row['birth_year_to']];if($actual!==$values)throw new KisRosterException('Kod serie uz oznacuje jinou stabilni skupinu.');return$row;}
-    $pdo->prepare("INSERT INTO club_team_series(code,name,series_type,season_type,rollover_policy,next_series_id,age_from_years,age_to_years,birth_year_from,birth_year_to,status,created_by_trainer_id) VALUES (?,?,?,?,?,?,?,?,?,?,'active',?)")->execute([$code,...$values,$actorId]);
-    return['id'=>(int)$pdo->lastInsertId(),'code'=>$code,'name'=>$name,'series_type'=>$seriesType,'season_type'=>$seasonType,'rollover_policy'=>$rolloverPolicy,'next_series_id'=>$nextSeriesId,'age_from_years'=>$ageFrom,'age_to_years'=>$ageTo,'birth_year_from'=>$birthYearFrom,'birth_year_to'=>$birthYearTo,'status'=>'active'];
+    $value = strtoupper(trim($value));
+    if (strlen($value) > $max || preg_match('/^[A-Z0-9][A-Z0-9_-]{2,}$/D', $value) !== 1) {
+        throw new InvalidArgumentException('Kod musi mit alespon 3 znaky A-Z, 0-9, pomlcku nebo podtrzitko.');
+    }return$value;
+}
+function kisRosterText(string$value, int$max, string$label): string
+{
+    $value = trim($value);
+    if ($value === '' || mb_strlen($value, 'UTF-8') > $max || preg_match('/[<>]/u', $value) === 1) {
+        throw new InvalidArgumentException($label.' musi byt neprazdny prosty text.');
+    }return$value;
+}
+function kisRosterEnum(string$value, array$allowed, string$label): string
+{
+    $value = trim($value);
+    if (!in_array($value, $allowed, true)) {
+        throw new InvalidArgumentException($label.' nema podporovanou hodnotu.');
+    }return$value;
+}
+function kisRosterSeasonType(string$value): string
+{
+    return kisRosterEnum($value, ['school_year','calendar_year'], 'Typ sezony');
+}
+function kisRosterInferSeasonType(string$startsOn, string$endsOn): string
+{
+    return substr($startsOn, 0, 4) === substr($endsOn, 0, 4) ? 'calendar_year' : 'school_year';
 }
 
 /** @return array<string,mixed> */
-function kisRosterCreateSeason(PDO$pdo,int$actorId,string$code,string$name,string$startsOn,string$endsOn,?string$seasonType=null):array
-{
+function kisRosterCreateSeries(
+    PDO$pdo,
+    int$actorId,
+    string$code,
+    string$name,
+    string$seriesType,
+    string$seasonType,
+    string$rolloverPolicy,
+    ?int$nextSeriesId = null,
+    ?int$ageFrom = null,
+    ?int$ageTo = null,
+    ?int$birthYearFrom = null,
+    ?int$birthYearTo = null
+): array {
+    $code = kisRosterCode($code);
+    $name = kisRosterText($name, 160, 'Nazev serie');
+    $seriesType = kisRosterEnum($seriesType, ['hobby','age','discipline','special'], 'Typ serie');
+    $seasonType = kisRosterSeasonType($seasonType);
+    $rolloverPolicy = kisRosterEnum($rolloverPolicy, ['renewal_required','age_progression','carry_forward',
+
+    'manual'], 'Politika obnovy');
+    if ($actorId < 1) {
+        throw new InvalidArgumentException('Serie vyzaduje administratora.');
+    }
+    $allowed = ['hobby' => ['school_year' => ['renewal_required','manual']],'age' => ['calendar_year'
+    => ['age_progression','manual']],'discipline' => ['calendar_year' => ['carry_forward','manual']],'special'
+    => ['school_year' => ['manual'],'calendar_year' => ['manual']]];
+    if (!isset($allowed[$seriesType][$seasonType]) || !in_array(
+        $rolloverPolicy,
+        $allowed[$seriesType][$seasonType],
+        true
+    )) {
+        throw new InvalidArgumentException('Typ serie, kalendar a politika obnovy nejsou kompatibilni.');
+    }
+    foreach ([$ageFrom,$ageTo] as $value) {
+        if ($value !== null && ($value < 0 || $value > 120)) {
+            throw new InvalidArgumentException('Vekove pravidlo musi byt mezi 0 a 120 lety.');
+        }
+    }
+    foreach ([$birthYearFrom,$birthYearTo] as $value) {
+        if ($value !== null && ($value < 1900 || $value > 2200)) {
+            throw new InvalidArgumentException('Rocnikove pravidlo musi byt platny rok.');
+        }
+    }
+    if (($ageFrom === null) !== ($ageTo === null) || ($ageFrom !== null && $ageFrom > $ageTo) || ($birthYearFrom === null)
+    !== ($birthYearTo === null) || ($birthYearFrom !== null && $birthYearFrom > $birthYearTo) || ($ageFrom !== null
+    && $birthYearFrom !== null)) {
+        throw new InvalidArgumentException('Pouzijte jednu uplnou a serazenou dvojici vekovych nebo rocnikovych mezi.');
+    }
+    if ($seriesType !== 'age' && ($ageFrom !== null || $birthYearFrom !== null || $nextSeriesId !== null)) {
+        throw new InvalidArgumentException('Vekova pravidla a nasledna serie patri pouze vekove rade.');
+    }
+    if ($nextSeriesId !== null) {
+        if ($nextSeriesId < 1) {
+            throw new InvalidArgumentException('Nasledna serie neni platna.');
+        }$next = $pdo->prepare('SELECT id,series_type,season_type FROM club_team_series WHERE id=?');
+        $next->execute([$nextSeriesId]);
+        $next = $next->fetch(PDO::FETCH_ASSOC);
+        if (!$next || $next['series_type'] !== 'age' || $next['season_type'] !== 'calendar_year') {
+            throw new KisRosterException('Nasledna vekova serie nebyla nalezena.');
+        }
+    }
+    $existing = $pdo->prepare('SELECT * FROM club_team_series WHERE code=?');
+    $existing->execute([$code]);
+    $row = $existing->fetch(PDO::FETCH_ASSOC);
+    $values = [$name,$seriesType,$seasonType,$rolloverPolicy,$nextSeriesId,$ageFrom,$ageTo,$birthYearFrom,
+
+    $birthYearTo];
+    if ($row) {
+        $actual = [(string)$row['name'],(string)$row['series_type'],(string)$row['season_type'],(string)$row['rollover_policy'],
+
+    $row['next_series_id'] === null ? null : (int)$row['next_series_id'],$row['age_from_years'] === null ? null : (int)$row['age_from_years'],
+
+    $row['age_to_years'] === null ? null : (int)$row['age_to_years'],$row['birth_year_from'] === null ? null : (int)$row['birth_year_from'],
+
+    $row['birth_year_to'] === null ? null : (int)$row['birth_year_to']];
+        if ($actual !== $values) {
+            throw new KisRosterException('Kod serie uz oznacuje jinou stabilni skupinu.');
+        }return$row;
+    }
+    $pdo->prepare(('INSERT INTO club_team_series(code,name,series_type,season_type,rollover_policy,next_series_id,age_from_years,a'
+    .
+    'ge_to_years,birth_year_from,birth_year_to,status,created_by_trainer_id) VALUES ' .
+    '(?,?,?,?,?,?,?,?,?,?,\'active\',?)'))->execute([$code,...$values,$actorId]);
+    return['id' => (int)$pdo->lastInsertId(),'code' => $code,'name' => $name,'series_type' => $seriesType,
+
+    'season_type' => $seasonType,'rollover_policy' => $rolloverPolicy,'next_series_id' => $nextSeriesId,
+
+    'age_from_years' => $ageFrom,'age_to_years' => $ageTo,'birth_year_from' => $birthYearFrom,'birth_year_to'
+    => $birthYearTo,'status' => 'active'];
+}
+
+/** @return array<string,mixed> */
+function kisRosterCreateSeason(
+    PDO$pdo,
+    int$actorId,
+    string$code,
+    string$name,
+    string$startsOn,
+    string$endsOn,
+    ?string$seasonType = null
+): array {
     $pdo->beginTransaction();
-    try{$result=kisRosterCreateSeasonInTransaction($pdo,$actorId,$code,$name,$startsOn,$endsOn,$seasonType);$pdo->commit();return$result;}
-    catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Sezonu se nepodařilo založit bez částečného zápisu.',0,$e);}
+    try {
+        $result = kisRosterCreateSeasonInTransaction(
+            $pdo,
+            $actorId,
+            $code,
+            $name,
+            $startsOn,
+            $endsOn,
+            $seasonType
+        );
+        $pdo->commit();
+        return$result;
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Sezonu se nepodařilo založit bez částečného zápisu.', 0, $e);
+    }
 }
 /** @return array<string,mixed> */
-function kisRosterCreateSeasonInTransaction(PDO$pdo,int$actorId,string$code,string$name,string$startsOn,string$endsOn,?string$seasonType=null):array
-{
-    if(!$pdo->inTransaction())throw new LogicException('Založení sezony vyžaduje otevřenou transakci.');
-    $code=kisRosterCode($code,32);$name=kisRosterText($name,120,'Nazev sezony');$startsOn=kisRosterDate($startsOn);$endsOn=kisRosterDate($endsOn);$seasonType=kisRosterSeasonType($seasonType??kisRosterInferSeasonType($startsOn,$endsOn));
-    if($actorId<1||$startsOn>=$endsOn)throw new InvalidArgumentException('Sezona vyzaduje administratora a konec po zacatku.');
-    $startYear=(int)substr($startsOn,0,4);$endYear=(int)substr($endsOn,0,4);
-    if($seasonType==='calendar_year'&&$startYear!==$endYear)throw new InvalidArgumentException('Kalendarni sezona musi zacinat i koncit ve stejnem roce.');
-    if($seasonType==='school_year'&&$endYear!==$startYear+1)throw new InvalidArgumentException('Skolni sezona musi koncit v nasledujicim roce.');
-    $existing=$pdo->prepare('SELECT * FROM club_seasons WHERE code=?');$existing->execute([$code]);$row=$existing->fetch(PDO::FETCH_ASSOC);
-    if($row){if($row['name']!==$name||$row['starts_on']!==$startsOn||$row['ends_on']!==$endsOn||($row['season_type']??kisRosterInferSeasonType($startsOn,$endsOn))!==$seasonType)throw new KisRosterException('Kod sezony uz oznacuje jine nemenne obdobi.');return$row;}
-    $pdo->prepare("INSERT INTO club_seasons(code,name,season_type,starts_on,ends_on,status,created_by_trainer_id) VALUES (?,?,?,?,?,'active',?)")->execute([$code,$name,$seasonType,$startsOn,$endsOn,$actorId]);
-    return['id'=>(int)$pdo->lastInsertId(),'code'=>$code,'name'=>$name,'season_type'=>$seasonType,'starts_on'=>$startsOn,'ends_on'=>$endsOn,'status'=>'active'];
+function kisRosterCreateSeasonInTransaction(
+    PDO$pdo,
+    int$actorId,
+    string$code,
+    string$name,
+    string$startsOn,
+    string$endsOn,
+    ?string$seasonType = null
+): array {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
+    if (!$pdo->inTransaction()) {
+        throw new LogicException('Založení sezony vyžaduje otevřenou transakci.');
+    }
+    $code = kisRosterCode($code, 32);
+    $name = kisRosterText($name, 120, 'Nazev sezony');
+    $startsOn = kisRosterDate($startsOn);
+    $endsOn = kisRosterDate($endsOn);
+    $seasonType = kisRosterSeasonType($seasonType ?? kisRosterInferSeasonType($startsOn, $endsOn));
+    if ($actorId < 1 || $startsOn >= $endsOn) {
+        throw new InvalidArgumentException('Sezona vyzaduje administratora a konec po zacatku.');
+    }
+    $startYear = (int)substr($startsOn, 0, 4);
+    $endYear = (int)substr($endsOn, 0, 4);
+    if ($seasonType === 'calendar_year' && $startYear !== $endYear) {
+        throw new InvalidArgumentException('Kalendarni sezona musi zacinat i koncit ve stejnem roce.');
+    }
+    if ($seasonType === 'school_year' && $endYear !== $startYear + 1) {
+        throw new InvalidArgumentException('Skolni sezona musi koncit v nasledujicim roce.');
+    }
+    $existing = $pdo->prepare('SELECT * FROM club_seasons WHERE code=?');
+    $existing->execute([$code]);
+    $row = $existing->fetch(PDO::FETCH_ASSOC);
+    if ($row) {
+        if ($row['name'] !== $name || $row['starts_on'] !== $startsOn || $row['ends_on'] !== $endsOn
+    || ($row['season_type'] ?? kisRosterInferSeasonType($startsOn, $endsOn)) !== $seasonType) {
+            throw new KisRosterException('Kod sezony uz oznacuje jine nemenne obdobi.');
+        }return$row;
+    }
+    $pdo->prepare("INSERT INTO club_seasons(code,name,season_type,starts_on,ends_on,status,created_by_trainer_id) VALUES (?,?,?,?,?,'active',?)")->execute([$code,
+
+    $name,$seasonType,$startsOn,$endsOn,$actorId]);
+    return['id' => (int)$pdo->lastInsertId(),'code' => $code,'name' => $name,'season_type' => $seasonType,
+
+    'starts_on' => $startsOn,'ends_on' => $endsOn,'status' => 'active'];
 }
 
 /** @return array<string,mixed> */
-function kisRosterCreateTeam(PDO$pdo,int$seasonId,int$actorId,string$code,string$name,string$discipline,string$ageLabel,string$note,?int$seriesId=null):array
-{
+function kisRosterCreateTeam(
+    PDO$pdo,
+    int$seasonId,
+    int$actorId,
+    string$code,
+    string$name,
+    string$discipline,
+    string$ageLabel,
+    string$note,
+    ?int$seriesId = null
+): array {
     $pdo->beginTransaction();
-    try{
-        $result=kisRosterCreateTeamInTransaction($pdo,$seasonId,$actorId,$code,$name,$discipline,$ageLabel,$note,$seriesId);
-        $pdo->commit();return$result;
-    }catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Tym se nepodarilo zalozit bez castecneho zapisu.',0,$e);}
+    try {
+        $result = kisRosterCreateTeamInTransaction(
+            $pdo,
+            $seasonId,
+            $actorId,
+            $code,
+            $name,
+            $discipline,
+            $ageLabel,
+            $note,
+            $seriesId
+        );
+        $pdo->commit();
+        return$result;
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Tym se nepodarilo zalozit bez castecneho zapisu.', 0, $e);
+    }
 }
 /** @return array<string,mixed> */
-function kisRosterCreateTeamInTransaction(PDO$pdo,int$seasonId,int$actorId,string$code,string$name,string$discipline,string$ageLabel,string$note,?int$seriesId=null):array
-{
-    if(!$pdo->inTransaction())throw new LogicException('Založení týmu vyžaduje otevřenou transakci.');
-    $code=kisRosterCode($code);$name=kisRosterText($name,160,'Nazev tymu');$discipline=kisRosterText($discipline,120,'Disciplina');$ageLabel=kisRosterText($ageLabel,120,'Vekova kategorie');$note=kisRosterText($note,1000,'Duvod');
-    if($seasonId<1||$actorId<1)throw new InvalidArgumentException('Tym vyzaduje sezonu a administratora.');
-    $s=$pdo->prepare('SELECT * FROM club_seasons WHERE id=?');$s->execute([$seasonId]);$season=$s->fetch(PDO::FETCH_ASSOC);if(!$season)throw new KisRosterException('Sezona nebyla nalezena.');
-    if($seriesId!==null){$s=$pdo->prepare("SELECT * FROM club_team_series WHERE id=? AND status='active'");$s->execute([$seriesId]);$series=$s->fetch(PDO::FETCH_ASSOC);if(!$series)throw new KisRosterException('Aktivni serie nebyla nalezena.');if($series['season_type']!==$season['season_type'])throw new InvalidArgumentException('Serie a sezona pouzivaji jiny kalendar.');}
-    $s=$pdo->prepare('SELECT * FROM club_teams WHERE season_id=? AND code=?');$s->execute([$seasonId,$code]);$team=$s->fetch(PDO::FETCH_ASSOC);
-    if($team){if($team['name']!==$name||$team['discipline']!==$discipline||$team['age_label']!==$ageLabel||($team['series_id']===null?null:(int)$team['series_id'])!==$seriesId)throw new KisRosterException('Kod tymu uz oznacuje jiny tym.');return$team;}
-    $pdo->prepare("INSERT INTO club_teams(season_id,series_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES (?,?,?,?,?,?,'active',?)")->execute([$seasonId,$seriesId,$code,$name,$discipline,$ageLabel,$actorId]);$id=(int)$pdo->lastInsertId();
-    $after=['id'=>$id,'season_id'=>$seasonId,'series_id'=>$seriesId,'code'=>$code,'name'=>$name,'discipline'=>$discipline,'age_label'=>$ageLabel,'status'=>'active'];kisRosterEvent($pdo,$id,null,$actorId,'create_team',null,$after,$note);return$after;
-}
-function kisRosterCreateSeriesTeam(PDO$pdo,int$seriesId,int$seasonId,int$actorId,string$code,string$name,string$discipline,string$ageLabel,string$note):array{return kisRosterCreateTeam($pdo,$seasonId,$actorId,$code,$name,$discipline,$ageLabel,$note,$seriesId);}
+function kisRosterCreateTeamInTransaction(
+    PDO$pdo,
+    int$seasonId,
+    int$actorId,
+    string$code,
+    string$name,
+    string$discipline,
+    string$ageLabel,
+    string$note,
+    ?int$seriesId = null
+): array {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
+    if (!$pdo->inTransaction()) {
+        throw new LogicException('Založení týmu vyžaduje otevřenou transakci.');
+    }
+    $code = kisRosterCode($code);
+    $name = kisRosterText($name, 160, 'Nazev tymu');
+    $discipline = kisRosterText($discipline, 120, 'Disciplina');
+    $ageLabel = kisRosterText($ageLabel, 120, 'Vekova kategorie');
+    $note = kisRosterText($note, 1000, 'Duvod');
+    if ($seasonId < 1 || $actorId < 1) {
+        throw new InvalidArgumentException('Tym vyzaduje sezonu a administratora.');
+    }
+    $s = $pdo->prepare('SELECT * FROM club_seasons WHERE id=?');
+    $s->execute([$seasonId]);
+    $season = $s->fetch(PDO::FETCH_ASSOC);
+    if (!$season) {
+        throw new KisRosterException('Sezona nebyla nalezena.');
+    }
+    if ($seriesId !== null) {
+        $s = $pdo->prepare("SELECT * FROM club_team_series WHERE id=? AND status='active'");
+        $s->execute([$seriesId]);
+        $series = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$series) {
+            throw new KisRosterException('Aktivni serie nebyla nalezena.');
+        }if ($series['season_type'] !== $season['season_type']) {
+            throw new InvalidArgumentException('Serie a sezona pouzivaji jiny kalendar.');
+        }
+    }
+    $s = $pdo->prepare('SELECT * FROM club_teams WHERE season_id=? AND code=?');
+    $s->execute([$seasonId,$code]);
+    $team = $s->fetch(PDO::FETCH_ASSOC);
+    if ($team) {
+        if ($team['name'] !== $name || $team['discipline'] !== $discipline || $team['age_label'] !== $ageLabel
+    || ($team['series_id'] === null ? null : (int)$team['series_id']) !== $seriesId) {
+            throw new KisRosterException('Kod tymu uz oznacuje jiny tym.');
+        }return$team;
+    }
+    $pdo->prepare(('INSERT INTO club_teams(season_id,series_id,code,name,discipline,age_label,status,created_by_trainer_id) '
+    .
+    'VALUES (?,?,?,?,?,?,\'active\',?)'))->execute([$seasonId,$seriesId,$code,$name,$discipline,$ageLabel,
 
-function kisRosterStructureEvent(PDO$pdo,string$type,int$id,int$actorId,string$action,string$reason,array$before,array$after):void
-{
-    $pdo->prepare('INSERT INTO club_roster_structure_events(subject_type,subject_id,actor_trainer_id,action,reason,before_json,after_json) VALUES (?,?,?,?,?,?,?)')->execute([$type,$id,$actorId,$action,$reason,json_encode($before,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE),json_encode($after,JSON_THROW_ON_ERROR|JSON_UNESCAPED_UNICODE)]);
+    $actorId]);
+    $id = (int)$pdo->lastInsertId();
+    $after = ['id' => $id,'season_id' => $seasonId,'series_id' => $seriesId,'code' => $code,'name' => $name,
+
+    'discipline' => $discipline,'age_label' => $ageLabel,'status' => 'active'];
+    kisRosterEvent($pdo, $id, null, $actorId, 'create_team', null, $after, $note);
+    return$after;
+}
+function kisRosterCreateSeriesTeam(
+    PDO$pdo,
+    int$seriesId,
+    int$seasonId,
+    int$actorId,
+    string$code,
+    string$name,
+    string$discipline,
+    string$ageLabel,
+    string$note
+): array {
+    return kisRosterCreateTeam(
+        $pdo,
+        $seasonId,
+        $actorId,
+        $code,
+        $name,
+        $discipline,
+        $ageLabel,
+        $note,
+        $seriesId
+    );
+}
+
+function kisRosterStructureEvent(
+    PDO$pdo,
+    string$type,
+    int$id,
+    int$actorId,
+    string$action,
+    string$reason,
+    array$before,
+    array$after
+): void {
+    $pdo->prepare(('INSERT INTO club_roster_structure_events(subject_type,subject_id,actor_trainer_id,action,reason,before_json,af'
+    .
+    'ter_json) VALUES (?,?,?,?,?,?,?)'))->execute([$type,$id,$actorId,$action,$reason,json_encode(
+        $before,
+        JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE
+    ),json_encode($after, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE)]);
 }
 
 /** @return array{id:int,changed:bool,status:string} */
-function kisRosterRenameSeries(PDO$pdo,int$seriesId,int$actorId,string$name,string$reason,bool$confirmed):array
+function kisRosterRenameSeries(PDO$pdo, int$seriesId, int$actorId, string$name, string$reason, bool$confirmed): array
 {
-    $name=kisRosterText($name,160,'Nazev serie');$reason=kisRosterText($reason,1000,'Duvod');if(min($seriesId,$actorId)<1||!$confirmed)throw new InvalidArgumentException('Úprava série vyžaduje důvod a potvrzení.');$pdo->beginTransaction();try{$s=$pdo->prepare('SELECT * FROM club_team_series WHERE id=?');$s->execute([$seriesId]);$before=$s->fetch(PDO::FETCH_ASSOC);if(!$before||$before['status']!=='active')throw new KisRosterException('Aktivní série nebyla nalezena.');$changed=$before['name']!==$name;if($changed){$pdo->prepare('UPDATE club_team_series SET name=? WHERE id=?')->execute([$name,$seriesId]);$after=$before;$after['name']=$name;kisRosterStructureEvent($pdo,'series',$seriesId,$actorId,'rename_series',$reason,$before,$after);}$pdo->commit();return['id'=>$seriesId,'changed'=>$changed,'status'=>'active'];}catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Sérii se nepodařilo upravit.',0,$e);}
+    $name = kisRosterText($name, 160, 'Nazev serie');
+    $reason = kisRosterText($reason, 1000, 'Duvod');
+    if (min($seriesId, $actorId) < 1 || !$confirmed) {
+        throw new InvalidArgumentException('Úprava série vyžaduje důvod a potvrzení.');
+    }$pdo->beginTransaction();
+    try {
+        $s = $pdo->prepare('SELECT * FROM club_team_series WHERE id=?');
+        $s->execute([$seriesId]);
+        $before = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$before || $before['status'] !== 'active') {
+            throw new KisRosterException('Aktivní série nebyla nalezena.');
+        }$changed = $before['name'] !== $name;
+        if ($changed) {
+            $pdo->prepare('UPDATE club_team_series SET name=? WHERE id=?')->execute([$name,$seriesId]);
+            $after = $before;
+            $after['name'] = $name;
+            kisRosterStructureEvent(
+                $pdo,
+                'series',
+                $seriesId,
+                $actorId,
+                'rename_series',
+                $reason,
+                $before,
+                $after
+            );
+        }$pdo->commit();
+        return['id' => $seriesId,'changed' => $changed,'status' => 'active'];
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Sérii se nepodařilo upravit.', 0, $e);
+    }
 }
 
 /** @return array{id:int,changed:bool,status:string} */
-function kisRosterArchiveSeries(PDO$pdo,int$seriesId,int$actorId,string$reason,bool$confirmed):array
+function kisRosterArchiveSeries(PDO$pdo, int$seriesId, int$actorId, string$reason, bool$confirmed): array
 {
-    $reason=kisRosterText($reason,1000,'Duvod');if(min($seriesId,$actorId)<1||!$confirmed)throw new InvalidArgumentException('Archivace série vyžaduje důvod a potvrzení.');$pdo->beginTransaction();try{$s=$pdo->prepare('SELECT * FROM club_team_series WHERE id=?');$s->execute([$seriesId]);$before=$s->fetch(PDO::FETCH_ASSOC);if(!$before)throw new KisRosterException('Série nebyla nalezena.');if($before['status']==='archived'){$pdo->commit();return['id'=>$seriesId,'changed'=>false,'status'=>'archived'];}$teams=$pdo->prepare("SELECT COUNT(*) FROM club_teams WHERE series_id=? AND status='active'");$teams->execute([$seriesId]);if((int)$teams->fetchColumn()>0)throw new KisRosterException('Nejprve uzavřete aktivní soupisky série.');$pdo->prepare("UPDATE club_team_series SET status='archived' WHERE id=?")->execute([$seriesId]);$after=$before;$after['status']='archived';kisRosterStructureEvent($pdo,'series',$seriesId,$actorId,'archive_series',$reason,$before,$after);$pdo->commit();return['id'=>$seriesId,'changed'=>true,'status'=>'archived'];}catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Sérii se nepodařilo archivovat.',0,$e);}
+    $reason = kisRosterText($reason, 1000, 'Duvod');
+    if (min($seriesId, $actorId) < 1 || !$confirmed) {
+        throw new InvalidArgumentException('Archivace série vyžaduje důvod a potvrzení.');
+    }$pdo->beginTransaction();
+    try {
+        $s = $pdo->prepare('SELECT * FROM club_team_series WHERE id=?');
+        $s->execute([$seriesId]);
+        $before = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$before) {
+            throw new KisRosterException('Série nebyla nalezena.');
+        }if ($before['status'] === 'archived') {
+            $pdo->commit();
+            return['id' => $seriesId,'changed' => false,'status' => 'archived'];
+        }$teams = $pdo->prepare("SELECT COUNT(*) FROM club_teams WHERE series_id=? AND status='active'");
+        $teams->execute([$seriesId]);
+        if ((int)$teams->fetchColumn() > 0) {
+            throw new KisRosterException('Nejprve uzavřete aktivní soupisky série.');
+        }$pdo->prepare("UPDATE club_team_series SET status='archived' WHERE id=?")->execute([$seriesId]);
+        $after = $before;
+        $after['status'] = 'archived';
+        kisRosterStructureEvent(
+            $pdo,
+            'series',
+            $seriesId,
+            $actorId,
+            'archive_series',
+            $reason,
+            $before,
+            $after
+        );
+        $pdo->commit();
+        return['id' => $seriesId,'changed' => true,'status' => 'archived'];
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Sérii se nepodařilo archivovat.', 0, $e);
+    }
 }
 
 /** @return array{id:int,changed:bool,status:string} */
-function kisRosterRenameSeason(PDO$pdo,int$seasonId,int$actorId,string$name,string$reason,bool$confirmed):array
+function kisRosterRenameSeason(PDO$pdo, int$seasonId, int$actorId, string$name, string$reason, bool$confirmed): array
 {
-    $name=kisRosterText($name,120,'Nazev sezony');$reason=kisRosterText($reason,1000,'Duvod');if(min($seasonId,$actorId)<1||!$confirmed)throw new InvalidArgumentException('Úprava sezony vyžaduje důvod a potvrzení.');$pdo->beginTransaction();try{$s=$pdo->prepare('SELECT * FROM club_seasons WHERE id=?');$s->execute([$seasonId]);$before=$s->fetch(PDO::FETCH_ASSOC);if(!$before||$before['status']!=='active')throw new KisRosterException('Aktivní sezona nebyla nalezena.');$changed=$before['name']!==$name;if($changed){$pdo->prepare('UPDATE club_seasons SET name=? WHERE id=?')->execute([$name,$seasonId]);$after=$before;$after['name']=$name;kisRosterStructureEvent($pdo,'season',$seasonId,$actorId,'rename_season',$reason,$before,$after);}$pdo->commit();return['id'=>$seasonId,'changed'=>$changed,'status'=>'active'];}catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Sezonu se nepodařilo upravit.',0,$e);}
+    $name = kisRosterText($name, 120, 'Nazev sezony');
+    $reason = kisRosterText($reason, 1000, 'Duvod');
+    if (min($seasonId, $actorId) < 1 || !$confirmed) {
+        throw new InvalidArgumentException('Úprava sezony vyžaduje důvod a potvrzení.');
+    }$pdo->beginTransaction();
+    try {
+        $s = $pdo->prepare('SELECT * FROM club_seasons WHERE id=?');
+        $s->execute([$seasonId]);
+        $before = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$before || $before['status'] !== 'active') {
+            throw new KisRosterException('Aktivní sezona nebyla nalezena.');
+        }$changed = $before['name'] !== $name;
+        if ($changed) {
+            $pdo->prepare('UPDATE club_seasons SET name=? WHERE id=?')->execute([$name,$seasonId]);
+            $after = $before;
+            $after['name'] = $name;
+            kisRosterStructureEvent(
+                $pdo,
+                'season',
+                $seasonId,
+                $actorId,
+                'rename_season',
+                $reason,
+                $before,
+                $after
+            );
+        }$pdo->commit();
+        return['id' => $seasonId,'changed' => $changed,'status' => 'active'];
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Sezonu se nepodařilo upravit.', 0, $e);
+    }
 }
 
 /** @return array{id:int,changed:bool,status:string} */
-function kisRosterCloseSeason(PDO$pdo,int$seasonId,int$actorId,string$reason,bool$confirmed):array
+function kisRosterCloseSeason(PDO$pdo, int$seasonId, int$actorId, string$reason, bool$confirmed): array
 {
-    $reason=kisRosterText($reason,1000,'Duvod');if(min($seasonId,$actorId)<1||!$confirmed)throw new InvalidArgumentException('Uzavření sezony vyžaduje důvod a potvrzení.');$pdo->beginTransaction();try{$s=$pdo->prepare('SELECT * FROM club_seasons WHERE id=?');$s->execute([$seasonId]);$before=$s->fetch(PDO::FETCH_ASSOC);if(!$before)throw new KisRosterException('Sezona nebyla nalezena.');if($before['status']==='closed'){$pdo->commit();return['id'=>$seasonId,'changed'=>false,'status'=>'closed'];}$teams=$pdo->prepare("SELECT COUNT(*) FROM club_teams WHERE season_id=? AND status='active'");$teams->execute([$seasonId]);if((int)$teams->fetchColumn()>0)throw new KisRosterException('Nejprve uzavřete aktivní soupisky sezony.');$pdo->prepare("UPDATE club_seasons SET status='closed' WHERE id=?")->execute([$seasonId]);$after=$before;$after['status']='closed';kisRosterStructureEvent($pdo,'season',$seasonId,$actorId,'close_season',$reason,$before,$after);$pdo->commit();return['id'=>$seasonId,'changed'=>true,'status'=>'closed'];}catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Sezonu se nepodařilo uzavřít.',0,$e);}
+    $reason = kisRosterText($reason, 1000, 'Duvod');
+    if (min($seasonId, $actorId) < 1 || !$confirmed) {
+        throw new InvalidArgumentException('Uzavření sezony vyžaduje důvod a potvrzení.');
+    }$pdo->beginTransaction();
+    try {
+        $s = $pdo->prepare('SELECT * FROM club_seasons WHERE id=?');
+        $s->execute([$seasonId]);
+        $before = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$before) {
+            throw new KisRosterException('Sezona nebyla nalezena.');
+        }if ($before['status'] === 'closed') {
+            $pdo->commit();
+            return['id' => $seasonId,'changed' => false,'status' => 'closed'];
+        }$teams = $pdo->prepare("SELECT COUNT(*) FROM club_teams WHERE season_id=? AND status='active'");
+        $teams->execute([$seasonId]);
+        if ((int)$teams->fetchColumn() > 0) {
+            throw new KisRosterException('Nejprve uzavřete aktivní soupisky sezony.');
+        }$pdo->prepare("UPDATE club_seasons SET status='closed' WHERE id=?")->execute([$seasonId]);
+        $after = $before;
+        $after['status'] = 'closed';
+        kisRosterStructureEvent(
+            $pdo,
+            'season',
+            $seasonId,
+            $actorId,
+            'close_season',
+            $reason,
+            $before,
+            $after
+        );
+        $pdo->commit();
+        return['id' => $seasonId,'changed' => true,'status' => 'closed'];
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Sezonu se nepodařilo uzavřít.', 0, $e);
+    }
 }
 
 /** @return array{id:int,changed:bool,status:string} */
-function kisRosterUpdateTeam(PDO$pdo,int$teamId,int$actorId,string$name,string$discipline,string$ageLabel,?int$seriesId,string$reason,bool$confirmed):array
-{
-    $name=kisRosterText($name,160,'Nazev tymu');$discipline=kisRosterText($discipline,120,'Disciplina');$ageLabel=kisRosterText($ageLabel,120,'Vekova kategorie');$reason=kisRosterText($reason,1000,'Duvod');if(min($teamId,$actorId)<1||!$confirmed)throw new InvalidArgumentException('Úprava soupisky vyžaduje důvod a potvrzení.');$pdo->beginTransaction();try{$s=$pdo->prepare('SELECT * FROM club_teams WHERE id=?');$s->execute([$teamId]);$before=$s->fetch(PDO::FETCH_ASSOC);if(!$before||$before['status']!=='active')throw new KisRosterException('Aktivní soupiska nebyla nalezena.');if($seriesId!==null){$s=$pdo->prepare("SELECT ser.id FROM club_team_series ser JOIN club_seasons cs ON cs.season_type=ser.season_type WHERE ser.id=? AND ser.status='active' AND cs.id=?");$s->execute([$seriesId,$before['season_id']]);if(!$s->fetchColumn())throw new KisRosterException('Série neodpovídá kalendáři sezony.');}$changed=$before['name']!==$name||$before['discipline']!==$discipline||$before['age_label']!==$ageLabel||($before['series_id']===null?null:(int)$before['series_id'])!==$seriesId;if($changed){$pdo->prepare('UPDATE club_teams SET name=?,discipline=?,age_label=?,series_id=? WHERE id=?')->execute([$name,$discipline,$ageLabel,$seriesId,$teamId]);$after=$before;$after['name']=$name;$after['discipline']=$discipline;$after['age_label']=$ageLabel;$after['series_id']=$seriesId;kisRosterEvent($pdo,$teamId,null,$actorId,'update_team',$before,$after,$reason);}$pdo->commit();return['id'=>$teamId,'changed'=>$changed,'status'=>'active'];}catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Soupisku se nepodařilo upravit.',0,$e);}
+function kisRosterUpdateTeam(
+    PDO$pdo,
+    int$teamId,
+    int$actorId,
+    string$name,
+    string$discipline,
+    string$ageLabel,
+    ?int$seriesId,
+    string$reason,
+    bool$confirmed
+): array {
+    $name = kisRosterText($name, 160, 'Nazev tymu');
+    $discipline = kisRosterText($discipline, 120, 'Disciplina');
+    $ageLabel = kisRosterText($ageLabel, 120, 'Vekova kategorie');
+    $reason = kisRosterText($reason, 1000, 'Duvod');
+    if (min($teamId, $actorId) < 1 || !$confirmed) {
+        throw new InvalidArgumentException('Úprava soupisky vyžaduje důvod a potvrzení.');
+    }$pdo->beginTransaction();
+    try {
+        $s = $pdo->prepare('SELECT * FROM club_teams WHERE id=?');
+        $s->execute([$teamId]);
+        $before = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$before || $before['status'] !== 'active') {
+            throw new KisRosterException('Aktivní soupiska nebyla nalezena.');
+        }if ($seriesId !== null) {
+            $s = $pdo->prepare(('SELECT ser.id FROM club_team_series ser JOIN club_seasons cs ON cs.season_type=ser.season_type WHERE ser.id=? '
+    .
+    'AND ser.status=\'active\' AND cs.id=?'));
+            $s->execute([$seriesId,$before['season_id']]);
+            if (!$s->fetchColumn()) {
+                throw new KisRosterException('Série neodpovídá kalendáři sezony.');
+            }
+        }$changed = $before['name'] !== $name || $before['discipline'] !== $discipline || $before['age_label'] !== $ageLabel
+    || ($before['series_id'] === null ? null : (int)$before['series_id']) !== $seriesId;
+        if ($changed) {
+            $pdo->prepare('UPDATE club_teams SET name=?,discipline=?,age_label=?,series_id=? WHERE id=?')->execute([$name,
+
+    $discipline,$ageLabel,$seriesId,$teamId]);
+            $after = $before;
+            $after['name'] = $name;
+            $after['discipline'] = $discipline;
+            $after['age_label'] = $ageLabel;
+            $after['series_id'] = $seriesId;
+            kisRosterEvent($pdo, $teamId, null, $actorId, 'update_team', $before, $after, $reason);
+        }$pdo->commit();
+        return['id' => $teamId,'changed' => $changed,'status' => 'active'];
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Soupisku se nepodařilo upravit.', 0, $e);
+    }
 }
 
 /** @return array{id:int,changed:bool,status:string} */
-function kisRosterCloseTeam(PDO$pdo,int$teamId,int$actorId,string$reason,bool$confirmed):array
+function kisRosterCloseTeam(PDO$pdo, int$teamId, int$actorId, string$reason, bool$confirmed): array
 {
-    $reason=kisRosterText($reason,1000,'Duvod');if(min($teamId,$actorId)<1||!$confirmed)throw new InvalidArgumentException('Uzavření soupisky vyžaduje důvod a potvrzení.');$pdo->beginTransaction();try{$s=$pdo->prepare('SELECT * FROM club_teams WHERE id=?');$s->execute([$teamId]);$before=$s->fetch(PDO::FETCH_ASSOC);if(!$before)throw new KisRosterException('Soupiska nebyla nalezena.');if($before['status']==='closed'){$pdo->commit();return['id'=>$teamId,'changed'=>false,'status'=>'closed'];}$members=$pdo->prepare("SELECT COUNT(*) FROM club_roster_members WHERE team_id=? AND status='active' AND valid_to IS NULL");$members->execute([$teamId]);if((int)$members->fetchColumn()>0)throw new KisRosterException('Nejprve ukončete aktivní členství na soupisce.');$pdo->prepare("UPDATE club_teams SET status='closed' WHERE id=?")->execute([$teamId]);$after=$before;$after['status']='closed';kisRosterEvent($pdo,$teamId,null,$actorId,'close_team',$before,$after,$reason);$pdo->commit();return['id'=>$teamId,'changed'=>true,'status'=>'closed'];}catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Soupisku se nepodařilo uzavřít.',0,$e);}
+    $reason = kisRosterText($reason, 1000, 'Duvod');
+    if (min($teamId, $actorId) < 1 || !$confirmed) {
+        throw new InvalidArgumentException('Uzavření soupisky vyžaduje důvod a potvrzení.');
+    }$pdo->beginTransaction();
+    try {
+        $s = $pdo->prepare('SELECT * FROM club_teams WHERE id=?');
+        $s->execute([$teamId]);
+        $before = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$before) {
+            throw new KisRosterException('Soupiska nebyla nalezena.');
+        }if ($before['status'] === 'closed') {
+            $pdo->commit();
+            return['id' => $teamId,'changed' => false,'status' => 'closed'];
+        }$members = $pdo->prepare("SELECT COUNT(*) FROM club_roster_members WHERE team_id=? AND status='active' AND valid_to IS NULL");
+        $members->execute([$teamId]);
+        if ((int)$members->fetchColumn() > 0) {
+            throw new KisRosterException('Nejprve ukončete aktivní členství na soupisce.');
+        }$pdo->prepare("UPDATE club_teams SET status='closed' WHERE id=?")->execute([$teamId]);
+        $after = $before;
+        $after['status'] = 'closed';
+        kisRosterEvent($pdo, $teamId, null, $actorId, 'close_team', $before, $after, $reason);
+        $pdo->commit();
+        return['id' => $teamId,'changed' => true,'status' => 'closed'];
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Soupisku se nepodařilo uzavřít.', 0, $e);
+    }
 }
 
 /** @return array{id:int,created:bool,status:string} */
-function kisRosterAddMember(PDO$pdo,int$teamId,int$sportovecId,int$actorId,string$source,string$validFrom,string$note):array
-{
-    if(!in_array($source,['manual','kis_shadow'],true))throw new InvalidArgumentException('Nepodporovany zdroj soupisky.');$validFrom=kisRosterDate($validFrom);$note=kisRosterText($note,1000,'Duvod');if($teamId<1||$sportovecId<1||$actorId<1)throw new InvalidArgumentException('Pridani vyzaduje tym, sportovce a administratora.');
+function kisRosterAddMember(
+    PDO$pdo,
+    int$teamId,
+    int$sportovecId,
+    int$actorId,
+    string$source,
+    string$validFrom,
+    string$note
+): array {
+    if (!in_array($source, ['manual','kis_shadow'], true)) {
+        throw new InvalidArgumentException('Nepodporovany zdroj soupisky.');
+    }$validFrom = kisRosterDate($validFrom);
+    $note = kisRosterText($note, 1000, 'Duvod');
+    if ($teamId < 1 || $sportovecId < 1 || $actorId < 1) {
+        throw new InvalidArgumentException('Pridani vyzaduje tym, sportovce a administratora.');
+    }
     require_once __DIR__.'/roster_hierarchy.php';
-    if(kisRosterHierarchyHasColumn($pdo,'club_roster_members','source_ref'))return kisRosterGrantPeriod($pdo,$teamId,$sportovecId,$actorId,$source,$validFrom,null,$note);
-    $pdo->beginTransaction();try{
-        $sql='SELECT * FROM club_teams WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';$s=$pdo->prepare($sql);$s->execute([$teamId]);$team=$s->fetch(PDO::FETCH_ASSOC);if(!$team||$team['status']!=='active')throw new KisRosterException('Aktivni tym nebyl nalezen.');
-        $s=$pdo->prepare('SELECT id,uciid,stav_clenstvi FROM sportovci WHERE id=?');$s->execute([$sportovecId]);$person=$s->fetch(PDO::FETCH_ASSOC);if(!$person)throw new KisRosterException('Sportovec nebyl nalezen.');if($person['stav_clenstvi']==='archiv')throw new KisRosterException('Archivovaného sportovce nelze přidat na aktivní soupisku.');
-        $sql='SELECT * FROM club_roster_members WHERE team_id=? AND sportovec_id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';$s=$pdo->prepare($sql);$s->execute([$teamId,$sportovecId]);$member=$s->fetch(PDO::FETCH_ASSOC);if($member&&$member['status']==='active'&&$member['valid_to']===null){$pdo->commit();return['id'=>(int)$member['id'],'created'=>false,'status'=>'active'];}
-        $snapshot=trim((string)$person['uciid'])?:null;$before=$member?:null;
-        if($member){$pdo->prepare("UPDATE club_roster_members SET status='active',source=?,kis_external_id_snapshot=?,valid_from=?,valid_to=NULL,created_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$source,$snapshot,$validFrom,$actorId,(int)$member['id']]);$id=(int)$member['id'];$created=false;$action='reactivate_member';}
-        else{$pdo->prepare("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,kis_external_id_snapshot,valid_from,created_by_trainer_id) VALUES (?,?,'active',?,?,?,?)")->execute([$teamId,$sportovecId,$source,$snapshot,$validFrom,$actorId]);$id=(int)$pdo->lastInsertId();$created=true;$action='add_member';}
-        $after=['id'=>$id,'team_id'=>$teamId,'sportovec_id'=>$sportovecId,'status'=>'active','source'=>$source,'kis_external_id_snapshot'=>$snapshot,'valid_from'=>$validFrom,'valid_to'=>null];kisRosterEvent($pdo,$teamId,$id,$actorId,$action,$before,$after,$note);$pdo->commit();return['id'=>$id,'created'=>$created,'status'=>'active'];
-    }catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Sportovce se nepodarilo pridat bez castecneho zapisu.',0,$e);}
+    if (kisRosterHierarchyHasColumn($pdo, 'club_roster_members', 'source_ref')) {
+        return kisRosterGrantPeriod($pdo, $teamId, $sportovecId, $actorId, $source, $validFrom, null, $note);
+    }
+    $pdo->beginTransaction();
+    try {
+        $sql = 'SELECT * FROM club_teams WHERE id=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }$s = $pdo->prepare($sql);
+        $s->execute([$teamId]);
+        $team = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$team || $team['status'] !== 'active') {
+            throw new KisRosterException('Aktivni tym nebyl nalezen.');
+        }
+        $s = $pdo->prepare('SELECT id,uciid,stav_clenstvi FROM sportovci WHERE id=?');
+        $s->execute([$sportovecId]);
+        $person = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$person) {
+            throw new KisRosterException('Sportovec nebyl nalezen.');
+        }if ($person['stav_clenstvi'] === 'archiv') {
+            throw new KisRosterException('Archivovaného sportovce nelze přidat na aktivní soupisku.');
+        }
+        $sql = 'SELECT * FROM club_roster_members WHERE team_id=? AND sportovec_id=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }$s = $pdo->prepare($sql);
+        $s->execute([$teamId,$sportovecId]);
+        $member = $s->fetch(PDO::FETCH_ASSOC);
+        if ($member && $member['status'] === 'active' && $member['valid_to'] === null) {
+            $pdo->commit();
+            return['id' => (int)$member['id'],'created' => false,'status' => 'active'];
+        }
+        $snapshot = trim((string)$person['uciid']) ?: null;
+        $before = $member ?: null;
+        if ($member) {
+            $pdo->prepare(('UPDATE club_roster_members SET status=\'active\',source=?,kis_external_id_snapshot=?,valid_from=?,valid_to=NULL,'
+    .
+    'created_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'))->execute([$source,$snapshot,$validFrom,
+
+    $actorId,(int)$member['id']]);
+            $id = (int)$member['id'];
+            $created = false;
+            $action = 'reactivate_member';
+        } else {
+            $pdo->prepare(('INSERT INTO club_roster_members(team_id,sportovec_id,status,source,kis_external_id_snapshot,valid_from,created'
+    .
+    '_by_trainer_id) VALUES (?,?,\'active\',?,?,?,?)'))->execute([$teamId,$sportovecId,$source,$snapshot,
+
+    $validFrom,$actorId]);
+            $id = (int)$pdo->lastInsertId();
+            $created = true;
+            $action = 'add_member';
+        }
+        $after = ['id' => $id,'team_id' => $teamId,'sportovec_id' => $sportovecId,'status' => 'active',
+
+    'source' => $source,'kis_external_id_snapshot' => $snapshot,'valid_from' => $validFrom,'valid_to'
+    => null];
+        kisRosterEvent($pdo, $teamId, $id, $actorId, $action, $before, $after, $note);
+        $pdo->commit();
+        return['id' => $id,'created' => $created,'status' => 'active'];
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Sportovce se nepodarilo pridat bez castecneho zapisu.', 0, $e);
+    }
 }
 
 /** @return array{id:int,changed:bool,status:string} */
-function kisRosterRemoveMember(PDO$pdo,int$memberId,int$actorId,string$validTo,string$note):array
+function kisRosterRemoveMember(PDO$pdo, int$memberId, int$actorId, string$validTo, string$note): array
 {
-    $validTo=kisRosterDate($validTo);$note=kisRosterText($note,1000,'Duvod');if($memberId<1||$actorId<1)throw new InvalidArgumentException('Odebrani vyzaduje clena soupisky a administratora.');
+    $validTo = kisRosterDate($validTo);
+    $note = kisRosterText($note, 1000, 'Duvod');
+    if ($memberId < 1 || $actorId < 1) {
+        throw new InvalidArgumentException('Odebrani vyzaduje clena soupisky a administratora.');
+    }
     require_once __DIR__.'/roster_hierarchy.php';
-    if(kisRosterHierarchyHasColumn($pdo,'club_roster_members','source_ref'))return kisRosterEndPeriod($pdo,$memberId,$actorId,$validTo,$note);
-    $pdo->beginTransaction();try{$sql='SELECT * FROM club_roster_members WHERE id=?';if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$sql.=' FOR UPDATE';$s=$pdo->prepare($sql);$s->execute([$memberId]);$member=$s->fetch(PDO::FETCH_ASSOC);if(!$member)throw new KisRosterException('Clen soupisky nebyl nalezen.');if($member['status']==='removed'){$pdo->commit();return['id'=>$memberId,'changed'=>false,'status'=>'removed'];}if($validTo<$member['valid_from'])throw new InvalidArgumentException('Konec clenstvi nesmi byt pred jeho zacatkem.');$after=$member;$after['status']='removed';$after['valid_to']=$validTo;$pdo->prepare("UPDATE club_roster_members SET status='removed',valid_to=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$validTo,$memberId]);kisRosterEvent($pdo,(int)$member['team_id'],$memberId,$actorId,'remove_member',$member,$after,$note);$pdo->commit();return['id'=>$memberId,'changed'=>true,'status'=>'removed'];}catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Sportovce se nepodarilo odebrat bez castecneho zapisu.',0,$e);}
+    if (kisRosterHierarchyHasColumn($pdo, 'club_roster_members', 'source_ref')) {
+        return kisRosterEndPeriod($pdo, $memberId, $actorId, $validTo, $note);
+    }
+    $pdo->beginTransaction();
+    try {
+        $sql = 'SELECT * FROM club_roster_members WHERE id=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }$s = $pdo->prepare($sql);
+        $s->execute([$memberId]);
+        $member = $s->fetch(PDO::FETCH_ASSOC);
+        if (!$member) {
+            throw new KisRosterException('Clen soupisky nebyl nalezen.');
+        }if ($member['status'] === 'removed') {
+            $pdo->commit();
+            return['id' => $memberId,'changed' => false,'status' => 'removed'];
+        }if ($validTo < $member['valid_from']) {
+            throw new InvalidArgumentException('Konec clenstvi nesmi byt pred jeho zacatkem.');
+        }$after = $member;
+        $after['status'] = 'removed';
+        $after['valid_to'] = $validTo;
+        $pdo->prepare("UPDATE club_roster_members SET status='removed',valid_to=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$validTo,
+
+    $memberId]);
+        kisRosterEvent(
+            $pdo,
+            (int)$member['team_id'],
+            $memberId,
+            $actorId,
+            'remove_member',
+            $member,
+            $after,
+            $note
+        );
+        $pdo->commit();
+        return['id' => $memberId,'changed' => true,'status' => 'removed'];
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Sportovce se nepodarilo odebrat bez castecneho zapisu.', 0, $e);
+    }
 }
 
 /** @return array<string,mixed> */
-function kisRosterPreviewRollover(PDO$pdo,int$teamId,int$targetSeasonId):array
+function kisRosterPreviewRollover(PDO$pdo, int$teamId, int$targetSeasonId): array
 {
-    if($teamId<1||$targetSeasonId<1)throw new InvalidArgumentException('Nahled vyzaduje zdrojovou soupisku a cilovou sezonu.');
-    $s=$pdo->prepare('SELECT t.*,cs.season_type,ser.name series_name,ser.series_type,ser.rollover_policy,ser.next_series_id FROM club_teams t JOIN club_seasons cs ON cs.id=t.season_id LEFT JOIN club_team_series ser ON ser.id=t.series_id WHERE t.id=?');$s->execute([$teamId]);$team=$s->fetch(PDO::FETCH_ASSOC);if(!$team)throw new KisRosterException('Zdrojova soupiska nebyla nalezena.');
-    $s=$pdo->prepare('SELECT * FROM club_seasons WHERE id=?');$s->execute([$targetSeasonId]);$season=$s->fetch(PDO::FETCH_ASSOC);if(!$season)throw new KisRosterException('Cilova sezona nebyla nalezena.');
-    $policy=$team['series_id']===null?'manual':(string)$team['rollover_policy'];if(in_array($policy,['age_progression','carry_forward'],true)&&$team['season_type']!==$season['season_type'])throw new InvalidArgumentException('Cilova sezona pouziva jiny kalendar nez serie.');
-    $targetSeriesId=$policy==='age_progression'?($team['next_series_id']===null?null:(int)$team['next_series_id']):($team['series_id']===null?null:(int)$team['series_id']);$targetTeam=null;
-    if($targetSeriesId!==null){$s=$pdo->prepare("SELECT id,code,name FROM club_teams WHERE season_id=? AND series_id=? AND status='active'");$s->execute([$targetSeasonId,$targetSeriesId]);$targetTeam=$s->fetch(PDO::FETCH_ASSOC)?:null;}
-    $exceptions=[];$hasExceptions=true;if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='sqlite'){$check=$pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='club_roster_rollover_exceptions'");$check->execute();$hasExceptions=(bool)$check->fetchColumn();}if($hasExceptions){$s=$pdo->prepare('SELECT e.*,t.name target_team_name FROM club_roster_rollover_exceptions e LEFT JOIN club_teams t ON t.id=e.target_team_id WHERE e.source_team_id=? AND e.target_season_id=?');$s->execute([$teamId,$targetSeasonId]);foreach($s->fetchAll(PDO::FETCH_ASSOC)as$row)$exceptions[(int)$row['sportovec_id']]=$row;}
-    $s=$pdo->prepare("SELECT m.id member_id,m.sportovec_id,sp.jmeno,sp.prijmeni,sp.narozeni FROM club_roster_members m JOIN sportovci sp ON sp.id=m.sportovec_id WHERE m.team_id=? AND m.status='active' AND m.valid_to IS NULL ORDER BY sp.prijmeni,sp.jmeno,m.id");$s->execute([$teamId]);$members=$s->fetchAll(PDO::FETCH_ASSOC);$proposals=[];
-    foreach($members as$member){$action=$policy;if($policy==='renewal_required')$action='await_renewal';elseif($policy==='manual')$action='manual_review';elseif($targetSeriesId===null)$action='configuration_required';elseif($targetTeam===null)$action='target_team_required';$proposalTarget=$targetTeam===null?null:(int)$targetTeam['id'];$exception=$exceptions[(int)$member['sportovec_id']]??null;if($exception){$action=$exception['exception_action']==='skip'?'skip_exception':'target_override';$proposalTarget=$exception['target_team_id']===null?null:(int)$exception['target_team_id'];}if($proposalTarget!==null&&in_array($action,['age_progression','target_override'],true)){$ageCheck=kisRosterRolloverAgeCheck($pdo,$proposalTarget,(string)$member['narozeni'],(string)$season['starts_on']);if($ageCheck!==null)$action=$ageCheck;}$proposals[]=['member_id'=>(int)$member['member_id'],'sportovec_id'=>(int)$member['sportovec_id'],'name'=>trim($member['prijmeni'].' '.$member['jmeno']),'action'=>$action,'target_series_id'=>$targetSeriesId,'target_team_id'=>$proposalTarget,'exception_reason'=>$exception['reason']??null,'birth_date'=>$member['narozeni']];}
-    $fingerprintPayload=['source_team_id'=>$teamId,'target_season_id'=>$targetSeasonId,'target_starts_on'=>$season['starts_on'],'policy'=>$policy,'proposals'=>array_map(static fn(array$p):array=>array_intersect_key($p,array_flip(['member_id','sportovec_id','action','target_team_id','exception_reason','birth_date'])),$proposals)];
-    $fingerprint=hash('sha256',json_encode($fingerprintPayload,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR));
-    return['source_team_id'=>$teamId,'target_season_id'=>$targetSeasonId,'target_starts_on'=>$season['starts_on'],'policy'=>$policy,'target_series_id'=>$targetSeriesId,'target_team'=>$targetTeam,'proposals'=>$proposals,'fingerprint'=>$fingerprint,'executable_count'=>count(array_filter($proposals,static fn(array$p):bool=>in_array($p['action'],['age_progression','carry_forward','target_override'],true)&&$p['target_team_id']!==null)),'mutation_count'=>0];
+    if ($teamId < 1 || $targetSeasonId < 1) {
+        throw new InvalidArgumentException('Nahled vyzaduje zdrojovou soupisku a cilovou sezonu.');
+    }
+    $s = $pdo->prepare(('SELECT t.*,cs.season_type,ser.name series_name,ser.series_type,ser.rollover_policy,ser.next_series_id FROM '
+    .
+    'club_teams t JOIN club_seasons cs ON cs.id=t.season_id LEFT JOIN club_team_series ser ON ser.id=t.series_id ' .
+
+    'WHERE t.id=?'));
+    $s->execute([$teamId]);
+    $team = $s->fetch(PDO::FETCH_ASSOC);
+    if (!$team) {
+        throw new KisRosterException('Zdrojova soupiska nebyla nalezena.');
+    }
+    $s = $pdo->prepare('SELECT * FROM club_seasons WHERE id=?');
+    $s->execute([$targetSeasonId]);
+    $season = $s->fetch(PDO::FETCH_ASSOC);
+    if (!$season) {
+        throw new KisRosterException('Cilova sezona nebyla nalezena.');
+    }
+    $policy = $team['series_id'] === null ? 'manual' : (string)$team['rollover_policy'];
+    if (in_array($policy, ['age_progression','carry_forward'], true) && $team['season_type'] !== $season['season_type']) {
+        throw new InvalidArgumentException('Cilova sezona pouziva jiny kalendar nez serie.');
+    }
+    $targetSeriesId = $policy === 'age_progression' ? ($team['next_series_id'] === null ? null : (int)$team['next_series_id'])
+    : ($team['series_id'] === null ? null : (int)$team['series_id']);
+    $targetTeam = null;
+    if ($targetSeriesId !== null) {
+        $s = $pdo->prepare("SELECT id,code,name FROM club_teams WHERE season_id=? AND series_id=? AND status='active'");
+        $s->execute([$targetSeasonId,$targetSeriesId]);
+        $targetTeam = $s->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+    $exceptions = [];
+    $hasExceptions = true;
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {
+        $check = $pdo->prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='club_roster_rollover_exceptions'");
+        $check->execute();
+        $hasExceptions = (bool)$check->fetchColumn();
+    }if ($hasExceptions) {
+        $s = $pdo->prepare(('SELECT e.*,t.name target_team_name FROM club_roster_rollover_exceptions e LEFT JOIN club_teams t ON '
+    .
+    't.id=e.target_team_id WHERE e.source_team_id=? AND e.target_season_id=?'));
+        $s->execute([$teamId,$targetSeasonId]);
+        foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $exceptions[(int)$row['sportovec_id']] = $row;
+        }
+    }
+    $s = $pdo->prepare(('SELECT m.id member_id,m.sportovec_id,sp.jmeno,sp.prijmeni,sp.narozeni FROM club_roster_members m JOIN '
+    .
+    'sportovci sp ON sp.id=m.sportovec_id WHERE m.team_id=? AND m.status=\'active\' AND m.valid_to IS NULL ORDER BY ' .
+
+    'sp.prijmeni,sp.jmeno,m.id'));
+    $s->execute([$teamId]);
+    $members = $s->fetchAll(PDO::FETCH_ASSOC);
+    $proposals = [];
+    foreach ($members as $member) {
+        $action = $policy;
+        if ($policy === 'renewal_required') {
+            $action = 'await_renewal';
+        } elseif ($policy === 'manual') {
+            $action = 'manual_review';
+        } elseif ($targetSeriesId === null) {
+            $action = 'configuration_required';
+        } elseif ($targetTeam === null) {
+            $action = 'target_team_required';
+        }$proposalTarget = $targetTeam === null ? null : (int)$targetTeam['id'];
+        $exception = $exceptions[(int)$member['sportovec_id']] ?? null;
+        if ($exception) {
+            $action = $exception['exception_action'] === 'skip' ? 'skip_exception' : 'target_override';
+            $proposalTarget = $exception['target_team_id'] === null ? null : (int)$exception['target_team_id'];
+        }if ($proposalTarget !== null && in_array($action, ['age_progression','target_override'], true)) {
+            $ageCheck = kisRosterRolloverAgeCheck($pdo, $proposalTarget, (string)$member['narozeni'], (string)$season['starts_on']);
+            if ($ageCheck !== null) {
+                $action = $ageCheck;
+            }
+        }$proposals[] = ['member_id' => (int)$member['member_id'],'sportovec_id' => (int)$member['sportovec_id'],
+
+    'name' => trim($member['prijmeni'].' '.$member['jmeno']),'action' => $action,'target_series_id' => $targetSeriesId,
+
+    'target_team_id' => $proposalTarget,'exception_reason' => $exception['reason'] ?? null,'birth_date'
+    => $member['narozeni']];
+    }
+    $fingerprintPayload = ['source_team_id' => $teamId,'target_season_id' => $targetSeasonId,'target_starts_on'
+    => $season['starts_on'],'policy' => $policy,'proposals' => array_map(
+        static fn (array$p): array => array_intersect_key(
+            $p,
+            array_flip(['member_id','sportovec_id','action','target_team_id','exception_reason','birth_date'])
+        ),
+        $proposals
+    )];
+    $fingerprint = hash('sha256', json_encode($fingerprintPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+    return['source_team_id' => $teamId,'target_season_id' => $targetSeasonId,'target_starts_on' => $season['starts_on'],
+
+    'policy' => $policy,'target_series_id' => $targetSeriesId,'target_team' => $targetTeam,'proposals'
+    => $proposals,'fingerprint' => $fingerprint,
+        'executable_count' => count(array_filter($proposals, static fn (array$p): bool =>
+            in_array($p['action'], ['age_progression','carry_forward','target_override'], true) && $p['target_team_id'] !==
+    null)),'mutation_count' => 0];
 }
 
-function kisRosterEvent(PDO$pdo,int$teamId,?int$memberId,int$actorId,string$action,?array$before,array$after,string$note):void{$pdo->prepare('INSERT INTO club_roster_events(team_id,roster_member_id,actor_trainer_id,action,before_json,after_json,note) VALUES (?,?,?,?,?,?,?)')->execute([$teamId,$memberId,$actorId,$action,$before===null?null:json_encode($before,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),json_encode($after,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),$note]);}
+function kisRosterEvent(
+    PDO$pdo,
+    int$teamId,
+    ?int$memberId,
+    int$actorId,
+    string$action,
+    ?array$before,
+    array$after,
+    string$note
+): void {
+    $pdo->prepare(('INSERT INTO club_roster_events(team_id,roster_member_id,actor_trainer_id,action,before_json,after_json,note) '
+    .
+    'VALUES (?,?,?,?,?,?,?)'))->execute([$teamId,$memberId,$actorId,$action,$before === null ? null : json_encode(
+        $before,
+        JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
+    ),json_encode($after, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+    $note]);
+}
 
 /** @return array{id:int,created:bool} */
-function kisRosterSetRolloverException(PDO$pdo,int$sourceTeamId,int$targetSeasonId,int$sportovecId,string$action,?int$targetTeamId,int$actorId,string$reason,bool$confirmed):array
-{
-    if(!$confirmed)throw new InvalidArgumentException('Vyjimka vyzaduje explicitni potvrzeni.');$action=kisRosterEnum($action,['skip','target_override'],'Typ vyjimky');$reason=kisRosterText($reason,1000,'Duvod vyjimky');if(min($sourceTeamId,$targetSeasonId,$sportovecId,$actorId)<1)throw new InvalidArgumentException('Vyjimka nema platny kontext.');if($action==='skip')$targetTeamId=null;if($action==='target_override'&&($targetTeamId??0)<1)throw new InvalidArgumentException('Prepsani cile vyzaduje cilovou soupisku.');
-    $pdo->beginTransaction();try{
-        $s=$pdo->prepare("SELECT m.id FROM club_roster_members m WHERE m.team_id=? AND m.sportovec_id=? AND m.status='active' AND m.valid_to IS NULL");$s->execute([$sourceTeamId,$sportovecId]);if(!$s->fetchColumn())throw new KisRosterException('Sportovec neni aktivnim clenem zdrojove soupisky.');
-        $s=$pdo->prepare('SELECT id FROM club_seasons WHERE id=?');$s->execute([$targetSeasonId]);if(!$s->fetchColumn())throw new KisRosterException('Cilova sezona nebyla nalezena.');
-        if($targetTeamId!==null){$s=$pdo->prepare("SELECT id FROM club_teams WHERE id=? AND season_id=? AND status='active'");$s->execute([$targetTeamId,$targetSeasonId]);if(!$s->fetchColumn())throw new KisRosterException('Cilova soupiska neni aktivni v cilove sezone.');}
-        $s=$pdo->prepare('SELECT * FROM club_roster_rollover_exceptions WHERE source_team_id=? AND target_season_id=? AND sportovec_id=?');$s->execute([$sourceTeamId,$targetSeasonId,$sportovecId]);$before=$s->fetch(PDO::FETCH_ASSOC)?:null;
-        if($before){$id=(int)$before['id'];$pdo->prepare('UPDATE club_roster_rollover_exceptions SET exception_action=?,target_team_id=?,reason=?,created_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([$action,$targetTeamId,$reason,$actorId,$id]);$created=false;}
-        else{$pdo->prepare('INSERT INTO club_roster_rollover_exceptions(source_team_id,target_season_id,sportovec_id,exception_action,target_team_id,reason,created_by_trainer_id) VALUES(?,?,?,?,?,?,?)')->execute([$sourceTeamId,$targetSeasonId,$sportovecId,$action,$targetTeamId,$reason,$actorId]);$id=(int)$pdo->lastInsertId();$created=true;}
-        $after=['id'=>$id,'source_team_id'=>$sourceTeamId,'target_season_id'=>$targetSeasonId,'sportovec_id'=>$sportovecId,'exception_action'=>$action,'target_team_id'=>$targetTeamId,'reason'=>$reason];$pdo->prepare('INSERT INTO club_roster_rollover_exception_events(exception_id,actor_trainer_id,before_json,after_json,reason) VALUES(?,?,?,?,?)')->execute([$id,$actorId,$before===null?null:json_encode($before,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),json_encode($after,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),$reason]);$pdo->commit();return['id'=>$id,'created'=>$created];
-    }catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Vyjimku se nepodarilo ulozit bez castecneho zapisu.',0,$e);}
+function kisRosterSetRolloverException(
+    PDO$pdo,
+    int$sourceTeamId,
+    int$targetSeasonId,
+    int$sportovecId,
+    string$action,
+    ?int$targetTeamId,
+    int$actorId,
+    string$reason,
+    bool$confirmed
+): array {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
+    if (!$confirmed) {
+        throw new InvalidArgumentException('Vyjimka vyzaduje explicitni potvrzeni.');
+    }$action = kisRosterEnum($action, ['skip','target_override'], 'Typ vyjimky');
+    $reason = kisRosterText($reason, 1000, 'Duvod vyjimky');
+    if (min($sourceTeamId, $targetSeasonId, $sportovecId, $actorId) < 1) {
+        throw new InvalidArgumentException('Vyjimka nema platny kontext.');
+    }if ($action === 'skip') {
+        $targetTeamId = null;
+    }if ($action === 'target_override' && ($targetTeamId ?? 0) < 1) {
+        throw new InvalidArgumentException('Prepsani cile vyzaduje cilovou soupisku.');
+    }
+    $pdo->beginTransaction();
+    try {
+        $s = $pdo->prepare("SELECT m.id FROM club_roster_members m WHERE m.team_id=? AND m.sportovec_id=? AND m.status='active' AND m.valid_to IS NULL");
+        $s->execute([$sourceTeamId,$sportovecId]);
+        if (!$s->fetchColumn()) {
+            throw new KisRosterException('Sportovec neni aktivnim clenem zdrojove soupisky.');
+        }
+        $s = $pdo->prepare('SELECT id FROM club_seasons WHERE id=?');
+        $s->execute([$targetSeasonId]);
+        if (!$s->fetchColumn()) {
+            throw new KisRosterException('Cilova sezona nebyla nalezena.');
+        }
+        if ($targetTeamId !== null) {
+            $s = $pdo->prepare("SELECT id FROM club_teams WHERE id=? AND season_id=? AND status='active'");
+            $s->execute([$targetTeamId,$targetSeasonId]);
+            if (!$s->fetchColumn()) {
+                throw new KisRosterException('Cilova soupiska neni aktivni v cilove sezone.');
+            }
+        }
+        $s = $pdo->prepare('SELECT * FROM club_roster_rollover_exceptions WHERE source_team_id=? AND target_season_id=? AND sportovec_id=?');
+        $s->execute([$sourceTeamId,$targetSeasonId,$sportovecId]);
+        $before = $s->fetch(PDO::FETCH_ASSOC) ?: null;
+        if ($before) {
+            $id = (int)$before['id'];
+            $pdo->prepare(('UPDATE club_roster_rollover_exceptions SET exception_action=?,target_team_id=?,reason=?,created_by_trainer_id='
+    .
+    '?,updated_at=CURRENT_TIMESTAMP WHERE id=?'))->execute([$action,$targetTeamId,$reason,$actorId,$id]);
+            $created = false;
+        } else {
+            $pdo->prepare(('INSERT INTO club_roster_rollover_exceptions(source_team_id,target_season_id,sportovec_id,exception_action,targ'
+    .
+    'et_team_id,reason,created_by_trainer_id) VALUES(?,?,?,?,?,?,?)'))->execute([$sourceTeamId,$targetSeasonId,
+
+    $sportovecId,$action,$targetTeamId,$reason,$actorId]);
+            $id = (int)$pdo->lastInsertId();
+            $created = true;
+        }
+        $after = ['id' => $id,'source_team_id' => $sourceTeamId,'target_season_id' => $targetSeasonId,
+
+    'sportovec_id' => $sportovecId,'exception_action' => $action,'target_team_id' => $targetTeamId,'reason'
+    => $reason];
+        $pdo->prepare('INSERT INTO club_roster_rollover_exception_events(exception_id,actor_trainer_id,before_json,after_json,reason) VALUES(?,?,?,?,?)')->execute([$id,
+
+    $actorId,$before === null ? null : json_encode($before, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+
+    json_encode($after, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),$reason]);
+        $pdo->commit();
+        return['id' => $id,'created' => $created];
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Vyjimku se nepodarilo ulozit bez castecneho zapisu.', 0, $e);
+    }
 }
 
 /** @return array<string,mixed> */
-function kisRosterExecuteRollover(PDO$pdo,int$sourceTeamId,int$targetSeasonId,int$actorId,string$reason,bool$confirmed,string$previewFingerprint):array
-{
-    if(!$confirmed)throw new InvalidArgumentException('Provedeni obnovy vyzaduje explicitni potvrzeni.');$reason=kisRosterText($reason,1000,'Duvod provedeni');if(preg_match('/^[a-f0-9]{64}$/D',$previewFingerprint)!==1)throw new InvalidArgumentException('Nahled nema platny fingerprint.');if(min($sourceTeamId,$targetSeasonId,$actorId)<1)throw new InvalidArgumentException('Provedeni nema platny kontext.');
-    $mysql=(string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql';$lockName=null;if($mysql){$lockName='kis_rollover_'.substr($previewFingerprint,0,51);$lock=$pdo->prepare('SELECT GET_LOCK(?,10)');$lock->execute([$lockName]);if((int)$lock->fetchColumn()!==1)throw new KisRosterException('Souběžná obnova je stále zpracovávána. Zkuste požadavek znovu.');}
-    try{$pdo->beginTransaction();
-        $runSql='SELECT * FROM club_roster_rollover_runs WHERE source_team_id=? AND target_season_id=? AND preview_fingerprint=?';if($mysql)$runSql.=' FOR UPDATE';$s=$pdo->prepare($runSql);$s->execute([$sourceTeamId,$targetSeasonId,$previewFingerprint]);if($run=$s->fetch(PDO::FETCH_ASSOC)){$pdo->commit();$result=json_decode((string)$run['result_json'],true,512,JSON_THROW_ON_ERROR);$result['run_id']=(int)$run['id'];$result['idempotent']=true;kisRosterReleaseMysqlLock($pdo,$lockName);return$result;}
-        if($mysql){$lock=$pdo->prepare('SELECT id FROM club_roster_members WHERE team_id=? FOR UPDATE');$lock->execute([$sourceTeamId]);$lock->fetchAll();$lock=$pdo->prepare('SELECT id FROM club_roster_rollover_exceptions WHERE source_team_id=? AND target_season_id=? FOR UPDATE');$lock->execute([$sourceTeamId,$targetSeasonId]);$lock->fetchAll();}
-        $preview=kisRosterPreviewRollover($pdo,$sourceTeamId,$targetSeasonId);if(!hash_equals($preview['fingerprint'],$previewFingerprint))throw new KisRosterException('Nahled se mezitim zmenil. Obnovte jej a znovu potvrdte.');
-        $targetStart=kisRosterDate((string)$preview['target_starts_on']);$sourceEnd=(new DateTimeImmutable($targetStart))->modify('-1 day')->format('Y-m-d');
-        $pdo->prepare('INSERT INTO club_roster_rollover_runs(source_team_id,target_season_id,preview_fingerprint,actor_trainer_id,reason,moved_count,skipped_count,result_json) VALUES(?,?,?,?,?,0,0,?)')->execute([$sourceTeamId,$targetSeasonId,$previewFingerprint,$actorId,$reason,'{}']);$runId=(int)$pdo->lastInsertId();$moved=0;$skipped=0;
-        foreach($preview['proposals']as$proposal){$source=$pdo->prepare('SELECT * FROM club_roster_members WHERE id=? AND team_id=?');$source->execute([$proposal['member_id'],$sourceTeamId]);$before=$source->fetch(PDO::FETCH_ASSOC);if(!$before||$before['status']!=='active'||$before['valid_to']!==null)throw new KisRosterException('Zdrojove clenstvi se mezitim zmenilo.');$action=(string)$proposal['action'];$targetId=$proposal['target_team_id']===null?null:(int)$proposal['target_team_id'];
-            if(!in_array($action,['age_progression','carry_forward','target_override'],true)||$targetId===null){$after=['status'=>'unchanged','reason'=>$action];$pdo->prepare('INSERT INTO club_roster_rollover_run_items(run_id,sportovec_id,source_member_id,target_team_id,target_member_id,action,before_json,after_json) VALUES(?,?,?,?,?,?,?,?)')->execute([$runId,$proposal['sportovec_id'],$proposal['member_id'],null,null,$action,json_encode($before,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),json_encode($after,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]);$skipped++;continue;}
-            if($sourceEnd<(string)$before['valid_from'])throw new KisRosterException('Cilova sezona zacina pred zdrojovym clenstvim.');$teamSql="SELECT id FROM club_teams WHERE id=? AND season_id=? AND status='active'";if($mysql)$teamSql.=' FOR UPDATE';$team=$pdo->prepare($teamSql);$team->execute([$targetId,$targetSeasonId]);if(!$team->fetchColumn())throw new KisRosterException('Cilova soupiska se mezitim stala neplatnou.');
-            require_once __DIR__.'/roster_hierarchy.php';$temporal=kisRosterHierarchyHasColumn($pdo,'club_roster_members','source_ref');
-            $targetSql='SELECT * FROM club_roster_members WHERE team_id=? AND sportovec_id=?';if($temporal)$targetSql.=" AND status='active' AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) ORDER BY id DESC LIMIT 1";if($mysql)$targetSql.=' FOR UPDATE';$target=$pdo->prepare($targetSql);$target->execute($temporal?[$targetId,$proposal['sportovec_id'],$targetStart,$targetStart]:[$targetId,$proposal['sportovec_id']]);$targetBefore=$target->fetch(PDO::FETCH_ASSOC)?:null;
-            if($temporal&&$targetBefore===null){$grant=kisRosterGrantPeriod($pdo,$targetId,(int)$proposal['sportovec_id'],$actorId,'manual',$targetStart,null,$reason,'roster_rollover:'.$proposal['member_id'].':'.$targetId);$targetMemberId=(int)$grant['id'];}
-            elseif($targetBefore){$targetMemberId=(int)$targetBefore['id'];if(!$temporal&&($targetBefore['status']!=='active'||$targetBefore['valid_to']!==null))$pdo->prepare("UPDATE club_roster_members SET status='active',source='manual',valid_from=?,valid_to=NULL,created_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$targetStart,$actorId,$targetMemberId]);}
-            else{$snapshot=$before['kis_external_id_snapshot']??null;$pdo->prepare("INSERT INTO club_roster_members(team_id,sportovec_id,status,source,kis_external_id_snapshot,valid_from,valid_to,created_by_trainer_id) VALUES (?,?,'active','manual',?,?,NULL,?)")->execute([$targetId,$proposal['sportovec_id'],$snapshot,$targetStart,$actorId]);$targetMemberId=(int)$pdo->lastInsertId();}
-            $targetAfter=['id'=>$targetMemberId,'team_id'=>$targetId,'sportovec_id'=>(int)$proposal['sportovec_id'],'status'=>'active','source'=>$temporal&&$targetBefore?$targetBefore['source']:'manual','valid_from'=>$temporal&&$targetBefore?$targetBefore['valid_from']:$targetStart,'valid_to'=>$temporal&&$targetBefore?$targetBefore['valid_to']:null];if(!$temporal&&(!$targetBefore||$targetBefore['status']!=='active'||$targetBefore['valid_to']!==null))kisRosterEvent($pdo,$targetId,$targetMemberId,$actorId,'rollover_add_member',$targetBefore,$targetAfter,$reason);
-            $sourceAfter=$before;$sourceAfter['status']='removed';$sourceAfter['valid_to']=$sourceEnd;$pdo->prepare("UPDATE club_roster_members SET status='removed',valid_to=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$sourceEnd,$proposal['member_id']]);kisRosterEvent($pdo,$sourceTeamId,(int)$proposal['member_id'],$actorId,'rollover_close_member',$before,$sourceAfter,$reason);
-            $after=['source'=>$sourceAfter,'target'=>$targetAfter];$pdo->prepare('INSERT INTO club_roster_rollover_run_items(run_id,sportovec_id,source_member_id,target_team_id,target_member_id,action,before_json,after_json) VALUES(?,?,?,?,?,?,?,?)')->execute([$runId,$proposal['sportovec_id'],$proposal['member_id'],$targetId,$targetMemberId,$action,json_encode($before,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),json_encode($after,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]);$moved++;
+function kisRosterExecuteRollover(
+    PDO$pdo,
+    int$sourceTeamId,
+    int$targetSeasonId,
+    int$actorId,
+    string$reason,
+    bool$confirmed,
+    string$previewFingerprint
+): array {
+    memberEvidenceAssertLegacyWriteAllowed($pdo);
+    if (!$confirmed) {
+        throw new InvalidArgumentException('Provedeni obnovy vyzaduje explicitni potvrzeni.');
+    }$reason = kisRosterText($reason, 1000, 'Duvod provedeni');
+    if (preg_match('/^[a-f0-9]{64}$/D', $previewFingerprint) !== 1) {
+        throw new InvalidArgumentException('Nahled nema platny fingerprint.');
+    }if (min($sourceTeamId, $targetSeasonId, $actorId) < 1) {
+        throw new InvalidArgumentException('Provedeni nema platny kontext.');
+    }
+    $mysql = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+    $lockName = null;
+    if ($mysql) {
+        $lockName = 'kis_rollover_'.substr($previewFingerprint, 0, 51);
+        $lock = $pdo->prepare('SELECT GET_LOCK(?,10)');
+        $lock->execute([$lockName]);
+        if ((int)$lock->fetchColumn() !== 1) {
+            throw new KisRosterException('Souběžná obnova je stále zpracovávána. Zkuste požadavek znovu.');
         }
-        $result=['run_id'=>$runId,'source_team_id'=>$sourceTeamId,'target_season_id'=>$targetSeasonId,'fingerprint'=>$previewFingerprint,'moved_count'=>$moved,'skipped_count'=>$skipped,'idempotent'=>false];$json=json_encode($result,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);$pdo->prepare('UPDATE club_roster_rollover_runs SET moved_count=?,skipped_count=?,result_json=? WHERE id=?')->execute([$moved,$skipped,$json,$runId]);$pdo->commit();kisRosterReleaseMysqlLock($pdo,$lockName);return$result;
-    }catch(Throwable$e){if($pdo->inTransaction())$pdo->rollBack();kisRosterReleaseMysqlLock($pdo,$lockName);if($e instanceof InvalidArgumentException||$e instanceof KisRosterException)throw$e;throw new KisRosterException('Obnovu se nepodarilo provest bez castecneho zapisu.',0,$e);}
+    }
+    try {
+        $pdo->beginTransaction();
+        $runSql = 'SELECT * FROM club_roster_rollover_runs WHERE source_team_id=? AND target_season_id=? AND preview_fingerprint=?';
+        if ($mysql) {
+            $runSql .= ' FOR UPDATE';
+        }$s = $pdo->prepare($runSql);
+        $s->execute([$sourceTeamId,$targetSeasonId,$previewFingerprint]);
+        if ($run = $s->fetch(PDO::FETCH_ASSOC)) {
+            $pdo->commit();
+            $result = json_decode((string)$run['result_json'], true, 512, JSON_THROW_ON_ERROR);
+            $result['run_id'] = (int)$run['id'];
+            $result['idempotent'] = true;
+            kisRosterReleaseMysqlLock($pdo, $lockName);
+            return$result;
+        }
+        if ($mysql) {
+            $lock = $pdo->prepare('SELECT id FROM club_roster_members WHERE team_id=? FOR UPDATE');
+            $lock->execute([$sourceTeamId]);
+            $lock->fetchAll();
+            $lock = $pdo->prepare('SELECT id FROM club_roster_rollover_exceptions WHERE source_team_id=? AND target_season_id=? FOR UPDATE');
+            $lock->execute([$sourceTeamId,$targetSeasonId]);
+            $lock->fetchAll();
+        }
+        $preview = kisRosterPreviewRollover($pdo, $sourceTeamId, $targetSeasonId);
+        if (!hash_equals($preview['fingerprint'], $previewFingerprint)) {
+            throw new KisRosterException('Nahled se mezitim zmenil. Obnovte jej a znovu potvrdte.');
+        }
+        $targetStart = kisRosterDate((string)$preview['target_starts_on']);
+        $sourceEnd = (new DateTimeImmutable($targetStart))->modify('-1 day')->format('Y-m-d');
+        $pdo->prepare(('INSERT INTO club_roster_rollover_runs(source_team_id,target_season_id,preview_fingerprint,actor_trainer_id,rea'
+    .
+    'son,moved_count,skipped_count,result_json) VALUES(?,?,?,?,?,0,0,?)'))->execute([$sourceTeamId,$targetSeasonId,
+
+    $previewFingerprint,$actorId,$reason,'{}']);
+        $runId = (int)$pdo->lastInsertId();
+        $moved = 0;
+        $skipped = 0;
+        foreach ($preview['proposals'] as $proposal) {
+            $source = $pdo->prepare('SELECT * FROM club_roster_members WHERE id=? AND team_id=?');
+            $source->execute([$proposal['member_id'],$sourceTeamId]);
+            $before = $source->fetch(PDO::FETCH_ASSOC);
+            if (!$before || $before['status'] !== 'active' || $before['valid_to'] !== null) {
+                throw new KisRosterException('Zdrojove clenstvi se mezitim zmenilo.');
+            }$action = (string)$proposal['action'];
+            $targetId = $proposal['target_team_id'] === null ? null : (int)$proposal['target_team_id'];
+            if (!in_array($action, ['age_progression','carry_forward','target_override'], true) || $targetId === null) {
+                $after = ['status' => 'unchanged','reason' => $action];
+                $pdo->prepare(('INSERT INTO club_roster_rollover_run_items(run_id,sportovec_id,source_member_id,target_team_id,target_member_i'
+    .
+    'd,action,before_json,after_json) VALUES(?,?,?,?,?,?,?,?)'))->execute([$runId,$proposal['sportovec_id'],
+
+    $proposal['member_id'],null,null,$action,json_encode($before, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+
+    json_encode($after, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)]);
+                $skipped++;
+                continue;
+            }
+            if ($sourceEnd < (string)$before['valid_from']) {
+                throw new KisRosterException('Cilova sezona zacina pred zdrojovym clenstvim.');
+            }$teamSql = "SELECT id FROM club_teams WHERE id=? AND season_id=? AND status='active'";
+            if ($mysql) {
+                $teamSql .= ' FOR UPDATE';
+            }$team = $pdo->prepare($teamSql);
+            $team->execute([$targetId,$targetSeasonId]);
+            if (!$team->fetchColumn()) {
+                throw new KisRosterException('Cilova soupiska se mezitim stala neplatnou.');
+            }
+            require_once __DIR__.'/roster_hierarchy.php';
+            $temporal = kisRosterHierarchyHasColumn($pdo, 'club_roster_members', 'source_ref');
+            $targetSql = 'SELECT * FROM club_roster_members WHERE team_id=? AND sportovec_id=?';
+            if ($temporal) {
+                $targetSql .= " AND status='active' AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) ORDER BY id DESC LIMIT 1";
+            }if ($mysql) {
+                $targetSql .= ' FOR UPDATE';
+            }$target = $pdo->prepare($targetSql);
+            $target->execute($temporal ? [$targetId,$proposal['sportovec_id'],$targetStart,$targetStart] : [$targetId,
+
+    $proposal['sportovec_id']]);
+            $targetBefore = $target->fetch(PDO::FETCH_ASSOC) ?: null;
+            if ($temporal && $targetBefore === null) {
+                $grant = kisRosterGrantPeriod(
+                    $pdo,
+                    $targetId,
+                    (int)$proposal['sportovec_id'],
+                    $actorId,
+                    'manual',
+                    $targetStart,
+                    null,
+                    $reason,
+                    'roster_rollover:'.$proposal['member_id'].':'.$targetId
+                );
+                $targetMemberId = (int)$grant['id'];
+            } elseif ($targetBefore) {
+                $targetMemberId = (int)$targetBefore['id'];
+                if (!$temporal && ($targetBefore['status'] !== 'active' || $targetBefore['valid_to'] !== null)) {
+                    $pdo->prepare(('UPDATE club_roster_members SET status=\'active\',source=\'manual\',valid_from=?,valid_to=NULL,created_by_trainer_i'
+    .
+    'd=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'))->execute([$targetStart,$actorId,$targetMemberId]);
+                }
+            } else {
+                $snapshot = $before['kis_external_id_snapshot'] ?? null;
+                $pdo->prepare(('INSERT INTO club_roster_members(team_id,sportovec_id,status,source,kis_external_id_snapshot,valid_from,valid_t'
+    .
+    'o,created_by_trainer_id) VALUES (?,?,\'active\',\'manual\',?,?,NULL,?)'))->execute([$targetId,$proposal['sportovec_id'],
+
+    $snapshot,$targetStart,$actorId]);
+                $targetMemberId = (int)$pdo->lastInsertId();
+            }
+            $targetAfter = ['id' => $targetMemberId,'team_id' => $targetId,'sportovec_id' => (int)$proposal['sportovec_id'],
+
+    'status' => 'active','source' => $temporal && $targetBefore ? $targetBefore['source'] : 'manual','valid_from'
+    => $temporal && $targetBefore ? $targetBefore['valid_from'] : $targetStart,'valid_to' => $temporal
+    && $targetBefore ? $targetBefore['valid_to'] : null];
+            if (!$temporal && (!$targetBefore || $targetBefore['status'] !== 'active' || $targetBefore['valid_to'] !== null)) {
+                kisRosterEvent(
+                    $pdo,
+                    $targetId,
+                    $targetMemberId,
+                    $actorId,
+                    'rollover_add_member',
+                    $targetBefore,
+                    $targetAfter,
+                    $reason
+                );
+            }
+            $sourceAfter = $before;
+            $sourceAfter['status'] = 'removed';
+            $sourceAfter['valid_to'] = $sourceEnd;
+            $pdo->prepare("UPDATE club_roster_members SET status='removed',valid_to=?,updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$sourceEnd,
+
+    $proposal['member_id']]);
+            kisRosterEvent(
+                $pdo,
+                $sourceTeamId,
+                (int)$proposal['member_id'],
+                $actorId,
+                'rollover_close_member',
+                $before,
+                $sourceAfter,
+                $reason
+            );
+            $after = ['source' => $sourceAfter,'target' => $targetAfter];
+            $pdo->prepare(('INSERT INTO club_roster_rollover_run_items(run_id,sportovec_id,source_member_id,target_team_id,target_member_i'
+    .
+    'd,action,before_json,after_json) VALUES(?,?,?,?,?,?,?,?)'))->execute([$runId,$proposal['sportovec_id'],
+
+    $proposal['member_id'],$targetId,$targetMemberId,$action,json_encode($before, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+
+    json_encode($after, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR)]);
+            $moved++;
+        }
+        $result = ['run_id' => $runId,'source_team_id' => $sourceTeamId,'target_season_id' => $targetSeasonId,
+
+    'fingerprint' => $previewFingerprint,'moved_count' => $moved,'skipped_count' => $skipped,'idempotent'
+    => false];
+        $json = json_encode($result, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+        $pdo->prepare('UPDATE club_roster_rollover_runs SET moved_count=?,skipped_count=?,result_json=? WHERE id=?')->execute([$moved,
+
+    $skipped,$json,$runId]);
+        $pdo->commit();
+        kisRosterReleaseMysqlLock($pdo, $lockName);
+        return$result;
+    } catch (Throwable$e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }kisRosterReleaseMysqlLock($pdo, $lockName);
+        if ($e instanceof InvalidArgumentException || $e instanceof KisRosterException) {
+            throw$e;
+        }throw new KisRosterException('Obnovu se nepodarilo provest bez castecneho zapisu.', 0, $e);
+    }
 }
 
 /** Age transitions use the documented target year's cohort, never placeholder birthdays. */
-function kisRosterRolloverAgeCheck(PDO $pdo,int $targetTeam,string $birth,string $startsOn):?string {
-    $q=$pdo->prepare('SELECT s.* FROM club_teams t JOIN club_team_series s ON s.id=t.series_id WHERE t.id=?');$q->execute([$targetTeam]);$series=$q->fetch(PDO::FETCH_ASSOC);
-    if(!$series||$series['series_type']!=='age')return null;
+function kisRosterRolloverAgeCheck(PDO $pdo, int $targetTeam, string $birth, string $startsOn): ?string
+{
+    $q = $pdo->prepare('SELECT s.* FROM club_teams t JOIN club_team_series s ON s.id=t.series_id WHERE t.id=?');
+    $q->execute([$targetTeam]);
+    $series = $q->fetch(PDO::FETCH_ASSOC);
+    if (!$series || $series['series_type'] !== 'age') {
+        return null;
+    }
     require_once __DIR__.'/person_match.php';
-    $date=DateTimeImmutable::createFromFormat('!Y-m-d',$birth);
-    if(!$date||$date->format('Y-m-d')!==$birth||in_array($birth,['1900-01-01','0000-00-00'],true)||$birth>$startsOn)return 'age_verification_required';
-    $year=(int)$date->format('Y');$age=(int)substr($startsOn,0,4)-$year;
-    if($series['birth_year_from']!==null&&($year<(int)$series['birth_year_from']||$year>(int)$series['birth_year_to']))return 'age_outside_target';
-    if($series['age_from_years']!==null&&($age<(int)$series['age_from_years']||$age>(int)$series['age_to_years']))return 'age_outside_target';
-    if($series['birth_year_from']===null&&$series['age_from_years']===null)return 'age_rule_required';
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $birth);
+    if (!$date || $date->format('Y-m-d') !== $birth || in_array($birth, ['1900-01-01','0000-00-00'], true)
+    || $birth > $startsOn) {
+        return 'age_verification_required';
+    }
+    $year = (int)$date->format('Y');
+    $age = (int)substr($startsOn, 0, 4) - $year;
+    if ($series['birth_year_from'] !== null && ($year < (int)$series['birth_year_from'] || $year > (int)$series['birth_year_to'])) {
+        return 'age_outside_target';
+    }
+    if ($series['age_from_years'] !== null && ($age < (int)$series['age_from_years'] || $age > (int)$series['age_to_years'])) {
+        return 'age_outside_target';
+    }
+    if ($series['birth_year_from'] === null && $series['age_from_years'] === null) {
+        return 'age_rule_required';
+    }
     return null;
 }
 
-function kisRosterReleaseMysqlLock(PDO$pdo,?string$lockName):void{if($lockName===null)return;try{$s=$pdo->prepare('SELECT RELEASE_LOCK(?)');$s->execute([$lockName]);}catch(Throwable$e){error_log('KIS rollover lock release: '.$e->getMessage());}}
+function kisRosterReleaseMysqlLock(PDO$pdo, ?string$lockName): void
+{
+    if ($lockName === null) {
+        return;
+    }try {
+        $s = $pdo->prepare('SELECT RELEASE_LOCK(?)');
+        $s->execute([$lockName]);
+    } catch (Throwable$e) {
+        error_log('KIS rollover lock release: '.$e->getMessage());
+    }
+}
 
-function kisRosterSeries(PDO$pdo):array{return$pdo->query("SELECT s.*,n.name next_series_name,COUNT(CASE WHEN t.status='active' THEN 1 END) team_count,COUNT(t.id) total_team_count FROM club_team_series s LEFT JOIN club_team_series n ON n.id=s.next_series_id LEFT JOIN club_teams t ON t.series_id=s.id GROUP BY s.id,n.name ORDER BY s.name,s.id")->fetchAll(PDO::FETCH_ASSOC);}
-function kisRosterSeasons(PDO$pdo):array{return$pdo->query("SELECT s.*,COUNT(DISTINCT CASE WHEN t.status='active' THEN t.id END) team_count,COUNT(DISTINCT t.id) total_team_count,COUNT(DISTINCT CASE WHEN m.status='active' THEN m.id END) member_count FROM club_seasons s LEFT JOIN club_teams t ON t.season_id=s.id LEFT JOIN club_roster_members m ON m.team_id=t.id GROUP BY s.id ORDER BY s.starts_on DESC,s.id DESC")->fetchAll(PDO::FETCH_ASSOC);}
-function kisRosterTeams(PDO$pdo,int$seasonId=0):array{$sql="SELECT t.*,s.name season_name,s.season_type,ser.name series_name,ser.rollover_policy,COUNT(CASE WHEN m.status='active' THEN 1 END) member_count,COUNT(CASE WHEN m.status='removed' THEN 1 END) historical_member_count FROM club_teams t JOIN club_seasons s ON s.id=t.season_id LEFT JOIN club_team_series ser ON ser.id=t.series_id LEFT JOIN club_roster_members m ON m.team_id=t.id";$params=[];if($seasonId>0){$sql.=' WHERE t.season_id=?';$params[]=$seasonId;}$sql.=' GROUP BY t.id,s.name,s.season_type,ser.name,ser.rollover_policy ORDER BY s.starts_on DESC,t.name,t.id';$s=$pdo->prepare($sql);$s->execute($params);return$s->fetchAll(PDO::FETCH_ASSOC);}
-function kisRosterTeamDetail(PDO$pdo,int$teamId):array{$s=$pdo->prepare('SELECT t.*,s.name season_name,s.season_type,s.starts_on,s.ends_on,ser.name series_name,ser.rollover_policy FROM club_teams t JOIN club_seasons s ON s.id=t.season_id LEFT JOIN club_team_series ser ON ser.id=t.series_id WHERE t.id=?');$s->execute([$teamId]);$team=$s->fetch(PDO::FETCH_ASSOC);if(!$team)return['team'=>null,'members'=>[],'events'=>[]];$m=$pdo->prepare("SELECT m.*,sp.jmeno,sp.prijmeni,sp.narozeni,sp.uciid,sp.stav_clenstvi FROM club_roster_members m JOIN sportovci sp ON sp.id=m.sportovec_id WHERE m.team_id=? ORDER BY CASE m.status WHEN 'active' THEN 0 ELSE 1 END,sp.prijmeni,sp.jmeno,m.id");$m->execute([$teamId]);$e=$pdo->prepare('SELECT e.*,tr.jmeno actor_name FROM club_roster_events e LEFT JOIN treneri tr ON tr.id=e.actor_trainer_id WHERE e.team_id=? ORDER BY e.id DESC LIMIT 100');$e->execute([$teamId]);return['team'=>$team,'members'=>$m->fetchAll(PDO::FETCH_ASSOC),'events'=>$e->fetchAll(PDO::FETCH_ASSOC)];}
+function kisRosterSeries(PDO$pdo): array
+{
+    return$pdo->query(('SELECT s.*,n.name next_series_name,COUNT(CASE WHEN t.status=\'active\' THEN 1 END) team_count,COUNT(t.id) '
+    .
+    'total_team_count FROM club_team_series s LEFT JOIN club_team_series n ON n.id=s.next_series_id LEFT JOIN ' .
+
+    'club_teams t ON t.series_id=s.id GROUP BY s.id,n.name ORDER BY s.name,s.id'))->fetchAll(PDO::FETCH_ASSOC);
+}
+function kisRosterSeasons(PDO$pdo): array
+{
+    return$pdo->query(('SELECT s.*,COUNT(DISTINCT CASE WHEN t.status=\'active\' THEN t.id END) team_count,COUNT(DISTINCT t.id) '
+    .
+    'total_team_count,COUNT(DISTINCT CASE WHEN m.status=\'active\' THEN m.id END) member_count FROM club_seasons s ' .
+
+    'LEFT JOIN club_teams t ON t.season_id=s.id LEFT JOIN club_roster_members m ON m.team_id=t.id GROUP BY s.id ' .
+
+    'ORDER BY s.starts_on DESC,s.id DESC'))->fetchAll(PDO::FETCH_ASSOC);
+}
+function kisRosterTeams(PDO$pdo, int$seasonId = 0): array
+{
+    $sql = ('SELECT t.*,s.name season_name,s.season_type,ser.name series_name,ser.rollover_policy,COUNT(CASE WHEN ' .
+
+    'm.status=\'active\' THEN 1 END) member_count,COUNT(CASE WHEN m.status=\'removed\' THEN 1 END) ' .
+
+    'historical_member_count FROM club_teams t JOIN club_seasons s ON s.id=t.season_id LEFT JOIN club_team_series ' .
+
+    'ser ON ser.id=t.series_id LEFT JOIN club_roster_members m ON m.team_id=t.id');
+    $params = [];
+    if ($seasonId > 0) {
+        $sql .= ' WHERE t.season_id=?';
+        $params[] = $seasonId;
+    }$sql .= ' GROUP BY t.id,s.name,s.season_type,ser.name,ser.rollover_policy ORDER BY s.starts_on DESC,t.name,t.id';
+    $s = $pdo->prepare($sql);
+    $s->execute($params);
+    return$s->fetchAll(PDO::FETCH_ASSOC);
+}
+function kisRosterTeamDetail(PDO$pdo, int$teamId): array
+{
+    $s = $pdo->prepare(('SELECT t.*,s.name season_name,s.season_type,s.starts_on,s.ends_on,ser.name series_name,ser.rollover_policy '
+    .
+    'FROM club_teams t JOIN club_seasons s ON s.id=t.season_id LEFT JOIN club_team_series ser ON ' .
+    'ser.id=t.series_id WHERE t.id=?'));
+    $s->execute([$teamId]);
+    $team = $s->fetch(PDO::FETCH_ASSOC);
+    if (!$team) {
+        return['team' => null,'members' => [],'events' => []];
+    }$m = $pdo->prepare(('SELECT m.*,sp.jmeno,sp.prijmeni,sp.narozeni,sp.uciid,sp.stav_clenstvi FROM club_roster_members m JOIN '
+    .
+    'sportovci sp ON sp.id=m.sportovec_id WHERE m.team_id=? ORDER BY CASE m.status WHEN \'active\' THEN 0 ELSE 1 ' .
+
+    'END,sp.prijmeni,sp.jmeno,m.id'));
+    $m->execute([$teamId]);
+    $e = $pdo->prepare(('SELECT e.*,tr.jmeno actor_name FROM club_roster_events e LEFT JOIN treneri tr ON tr.id=e.actor_trainer_id '
+    .
+    'WHERE e.team_id=? ORDER BY e.id DESC LIMIT 100'));
+    $e->execute([$teamId]);
+    return['team' => $team,'members' => $m->fetchAll(PDO::FETCH_ASSOC),'events' => $e->fetchAll(PDO::FETCH_ASSOC)];
+}

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -30,7 +31,7 @@ final class TrainingRosterBridgeWiringTest extends TestCase
         self::assertStringContainsString('pt.trener_id = ?', $form);
         self::assertStringContainsString('rosterExpected.forEach', $form);
         self::assertStringContainsString('trainingRosterBridgeCopyPlanToTraining', $save);
-        self::assertStringContainsString('trainingRosterBridgePlanAttendanceComparison', $guide);
+        self::assertStringContainsString('http_response_code(410)', $guide);
         self::assertStringNotContainsString('INSERT INTO trenink_sportovec', $service);
         self::assertStringNotContainsString('UPDATE trenink_sportovec', $service);
     }
