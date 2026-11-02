@@ -63,7 +63,7 @@ function memberEvidencePreview(PDO $pdo, array $config, bool $lock = false): arr
     foreach (array_keys($teams) as $id) {
         foreach ([$on,(new DateTimeImmutable($on))->modify('+1 day')->format('Y-m-d'),
             (new DateTimeImmutable($on))->modify('+1 year')->format('Y-m-d')] as $date) {
-            $ids = kisRosterEffectiveMemberIds($pdo, $id, $date);
+            $ids = kisRosterEffectiveMemberIds($pdo, $id, $date, false);
             $members[$id][$date] = ['count' => count($ids),'sha256' => hash('sha256', json_encode(
                 $ids,
                 JSON_THROW_ON_ERROR

@@ -45,8 +45,8 @@ Do logu vrací jen otisky a souhrny; soubor s konkrétními ID zůstává mimo w
 v `data/.kis-deploy/member-preview-RUN/manifest.json`. Jde o náhled za běžného
 provozu, který se musí před aplikací znovu vytvořit po pozastavení zápisů.
 
-Pro ostrý převod je otevřená volba auditního správce: doporučená samostatná
-technická identita bez přihlašování, nebo vlastníkův konkrétní pracovní účet.
-Žádná nová auditní identita ani oprávnění tímto vydáním nevznikly.
+Vlastník následně schválil samostatnou technickou identitu bez přihlašování.
+[Provozní postup](../../MEMBER_EVIDENCE_OPERATION_2026-11-02.md) stanoví její dočasné
+oprávnění a pozastavení zápisů. Žádná nová auditní identita tímto aplikačním vydáním nevznikla.
 Zbývá provozní provedení E7, ověření příloh a přihlášená přejímka. Poslední
 synchronizace čeká na nový export; E8 nesmí předčasně odstranit její technické mapy.

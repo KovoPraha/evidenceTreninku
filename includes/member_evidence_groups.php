@@ -43,7 +43,7 @@ function memberEvidenceGroupsPreview(PDO $pdo, array $config, array $teams, stri
         foreach ($dates as $date) {
             $ids = [];
             foreach ($children as $id) {
-                foreach (kisRosterEffectiveMemberIds($pdo, $id, $date) as $person) {
+                foreach (kisRosterEffectiveMemberIds($pdo, $id, $date, false) as $person) {
                     $ids[$person] = true;
                 }
             }

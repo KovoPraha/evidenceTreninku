@@ -10,6 +10,7 @@ if (PHP_SAPI !== 'cli') {
 require_once dirname(__DIR__, 2) . '/includes/member_evidence_cutover.php';
 require_once dirname(__DIR__, 2) . '/includes/migration_runner.php';
 require_once dirname(__DIR__, 2) . '/includes/trainer_pilot.php';
+require_once dirname(__DIR__, 2) . '/includes/member_evidence_operation.php';
 
 $phase = 'target';
 try {
@@ -73,12 +74,6 @@ try {
     if ($teams === []) {
         throw new RuntimeException('No legacy active rosters to rehearse.');
     }
-    $actor = (int) $pdo->query("SELECT t.id FROM treneri t WHERE t.aktivni=1 AND ("
-        . "EXISTS(SELECT 1 FROM staff_user_positions p WHERE p.trainer_id=t.id AND p.position_code='registrar') "
-        . 'OR EXISTS(SELECT 1 FROM staff_superadmins a WHERE a.trainer_id=t.id)) ORDER BY t.id LIMIT 1')->fetchColumn();
-    if ($actor < 1) {
-        throw new RuntimeException('No existing registrar in the isolated copy.');
-    }
     $config = ['scope' => 'application_backup', 'cutover_on' => '2026-11-02', 'reason' => 'ISOLATED COPY REHEARSAL; opening and cleanup approved 2026-11-02',
         'teams' => $teams, 'delete' => []];
     $mappingPath = (string) getenv('MEMBER_REHEARSAL_MAP_FILE');
@@ -102,9 +97,15 @@ try {
     }
     $phase = 'opening_candidate';
     $config = memberEvidencePrepareOpening($pdo, $config, 435, 560);
+    $phase = 'isolated_technical_identity';
+    $operation = ['confirmation' => 'PREVEST-CLENSTVI', 'actor' => 'isolated-rehearsal', 'run_id' => '1',
+        'workflow_ref' => 'KovoPraha/evidenceTreninku/.github/workflows/member-evidence-production.yml@refs/heads/main'];
+    $actor = memberEvidenceOperationActor($pdo, $operation);
     $phase = 'preview';
     $stable = memberEvidenceSnapshot($pdo);
+    $pdo->exec('START TRANSACTION READ ONLY');
     $manifest = memberEvidencePreview($pdo, $config);
+    $pdo->exec('ROLLBACK');
     if ($stable !== memberEvidenceSnapshot($pdo)) {
         throw new RuntimeException('Preview changed the isolated copy.');
     }
@@ -128,6 +129,12 @@ try {
             throw new RuntimeException('Existing synthetic pilot scope changed.');
         }
     }
+    $phase = 'technical_identity_revocation';
+    $revoked = memberEvidenceOperationRevoke($pdo, $operation);
+    if (!$revoked || (int) $pdo->query('SELECT aktivni FROM treneri WHERE id=' . $actor)->fetchColumn() !== 0
+        || (int) $pdo->query('SELECT COUNT(*) FROM staff_user_positions WHERE trainer_id=' . $actor)->fetchColumn() !== 0) {
+        throw new RuntimeException('Technical identity was not fully revoked.');
+    }
     echo json_encode(
         ['contract' => 'member-evidence-copy-rehearsal-v1', 'isolated_copy_only' => true,
         'source_backup_sha256' => hash_file('sha256', $backup), 'source_tables' => count($before),
@@ -135,6 +142,7 @@ try {
         'created_groups' => $result['created_groups'], 'created_edges' => $result['created_edges'],
         'group_membership_parity' => $result['group_membership_parity'], 'mapping_sha256' => $mappingHash,
         'existing_pilot_scope_preserved' => $pilotPreserved,
+        'technical_actor_revoked' => $revoked,
         'opening_on' => $result['opening_on'], 'opening_count' => $result['opening_count'],
         'deleted' => $result['deleted'], 'detached_claim_count' => $result['detached_claim_count'],
         'final_sync_pending' => $result['final_sync_pending'],
