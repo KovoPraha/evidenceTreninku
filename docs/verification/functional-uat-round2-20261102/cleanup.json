@@ -1,0 +1,11 @@
+{
+  "owned_servers_stopped": true,
+  "synthetic_data_preserved": true,
+  "ports_closed": {
+    "3320": true,
+    "18420": true
+  },
+  "browser_tabs_closed": true,
+  "viewport_changed": false,
+  "production_mutations": false
+}

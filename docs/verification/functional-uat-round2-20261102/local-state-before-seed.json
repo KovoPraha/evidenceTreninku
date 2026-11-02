@@ -1,0 +1,79 @@
+{
+    "synthetic_only": true,
+    "port": 3320,
+    "db": "functional_round2",
+    "orders": [
+        {
+            "id": 1,
+            "status": "placed",
+            "subtotal_minor": 25000,
+            "discount_minor": 0,
+            "total_minor": 25000,
+            "finance_sportovec_id": 4
+        },
+        {
+            "id": 3,
+            "status": "cancelled",
+            "subtotal_minor": 12345,
+            "discount_minor": 1234,
+            "total_minor": 11111,
+            "finance_sportovec_id": 1
+        }
+    ],
+    "payments": [
+        {
+            "payable_id": 1,
+            "method": "bank_transfer",
+            "status": "pending",
+            "amount_minor": 25000,
+            "refund_reference": null
+        },
+        {
+            "payable_id": 3,
+            "method": "cash",
+            "status": "refunded",
+            "amount_minor": 11111,
+            "refund_reference": "LOCALHOST-ROUND2-REFUND-NO-MONEY"
+        }
+    ],
+    "goods": [
+        {
+            "id": 5,
+            "stock_quantity_decimal": "5.000000"
+        }
+    ],
+    "coupons": [
+        {
+            "code": "LOCAL10",
+            "usage_count": 1
+        }
+    ],
+    "event_registrations": [
+        {
+            "id": 1,
+            "event_id": 2,
+            "sportovec_id": 1,
+            "status": "cancelled"
+        }
+    ],
+    "reservations": [
+        {
+            "id": 1,
+            "lekce_id": 1,
+            "stav": "zrusena",
+            "zaplaceno": 1
+        },
+        {
+            "id": 2,
+            "lekce_id": 2,
+            "stav": "ceka",
+            "zaplaceno": 0
+        }
+    ],
+    "immutable_rows_sha256": {
+        "shop_orders": "e9bb59d3b15c375aeb2d862e00e2b3b711442e30731ffc867e852beb45656265",
+        "shop_order_items": "381a33610243bf3f8ffa2fc2bc142719813a595fff84530b4665ff76fef30be5",
+        "payments": "710502b25022f5c4e95e8d66db52e69ac08794ac2b8bf3086e90460bea75f90b",
+        "verejne_rezervace": "b5d9588b7c958f7d9fbb5c29b570788d4880ef63bb1d14d422c1e68367df3be0"
+    }
+}

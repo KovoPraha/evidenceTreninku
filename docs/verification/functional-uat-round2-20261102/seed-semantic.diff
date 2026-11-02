@@ -1,0 +1,46 @@
+diff --git a/tmp/round2/original-seed.php.ast.php.txt b/tmp/round2/seed-local-demo.php.ast.php.txt
+index 8c160457..7e0ee761 100644
+--- a/tmp/round2/original-seed.php.ast.php.txt
++++ b/tmp/round2/seed-local-demo.php.ast.php.txt
+@@ -25,6 +25,7 @@ try {
+         }
+     }
+     require_once $root . '/includes/shop_catalog_review.php';
++    require_once $root . '/includes/localhost_demo_catalog.php';
+     require_once $root . '/includes/shop_catalog_promotion.php';
+     require_once $root . '/includes/shop_catalog_publication.php';
+     require_once $root . '/includes/shop_product_image.php';
+@@ -221,9 +222,9 @@ try {
+         $pdo->prepare('INSERT INTO shop_variants(product_id,source_candidate_id,sku,attributes_json,price_mode,amount_minor,currency,includes_vat,stock_quantity_decimal,unit_code,free_shipping,free_billing,visible,catalog_status) VALUES (?,?,?,\'{}\',\'fixed\',250000,\'CZK\',0,NULL,\'person\',1,1,1,\'active\')')->execute([$paidEventProductId, $paidVariantCandidateId, 'LOCAL-PAID-EVENT']);
+     }
+     $paidEventVariantId = (int) $pdo->query('SELECT id FROM shop_variants WHERE sku=\'LOCAL-PAID-EVENT\'')->fetchColumn();
+-    $goods = $pdo->query("SELECT p.id,p.name,v.id variant_id FROM shop_products p JOIN shop_variants v ON v.product_id=p.id WHERE p.source_run_id={$runId} AND p.offer_type='goods' AND (v.visible=1 OR v.visible IS NULL) AND v.price_mode='fixed' AND v.amount_minor>0 AND (v.stock_quantity_decimal IS NULL OR v.stock_quantity_decimal>0) ORDER BY p.id,v.id LIMIT 1")->fetch(PDO::FETCH_ASSOC);
++    $goods = $pdo->query('SELECT p.id,p.name,v.id variant_id FROM shop_products p JOIN shop_variants v ON v.product_id=p.id WHERE p.source_run_id=' . (int) $runId . ' AND p.offer_type=\'goods\' ' . 'AND (v.visible=1 OR v.visible IS NULL) AND v.price_mode=\'fixed\' AND v.amount_minor>0 ' . 'AND (v.stock_quantity_decimal IS NULL OR v.stock_quantity_decimal>0) ORDER BY p.id,v.id LIMIT 1')->fetch(PDO::FETCH_ASSOC);
+     if (!$goods) {
+-        throw new RuntimeException('local_demo_goods_missing');
++        $goods = localhostDemoCatalogEnsureProduct($pdo, $actorId, 'goods');
+     }
+     $ensureLocalDemoImage = static function (int $productId) use ($pdo, $actorId, $root): void {
+         $rows = $pdo->prepare('SELECT id,image_url FROM shop_product_images WHERE product_id=? ORDER BY id');
+@@ -269,11 +270,8 @@ try {
+     $programGoodsStatement->execute();
+     $programGoods = $programGoodsStatement->fetch(PDO::FETCH_ASSOC);
+     if (!$programGoods) {
+-        $programGoodsStatement = $pdo->prepare("SELECT p.id,p.name,v.id variant_id FROM shop_products p JOIN shop_variants v ON v.product_id=p.id WHERE p.source_run_id={$runId} AND p.offer_type IN ('goods','program') AND p.id<>? AND (v.visible=1 OR v.visible IS NULL) AND v.price_mode='fixed' AND v.amount_minor>0 AND (v.stock_quantity_decimal IS NULL OR v.stock_quantity_decimal>0) ORDER BY p.id,v.id LIMIT 1");
+-        $programGoodsStatement->execute([(int) $goods['id']]);
+-        $programGoods = $programGoodsStatement->fetch(PDO::FETCH_ASSOC) ?: $goods;
++        $programGoods = localhostDemoCatalogEnsureProduct($pdo, $actorId, 'program');
+     }
+-    $pdo->prepare('UPDATE shop_products SET offer_type=\'program\',updated_at=CURRENT_TIMESTAMP WHERE id=?')->execute([(int) $programGoods['id']]);
+     if ((int) $programGoods['id'] !== (int) $goods['id']) {
+         $ensureLocalDemoImage((int) $programGoods['id']);
+     }
+@@ -337,7 +335,7 @@ try {
+     $targetPlaceholders = implode(',', array_fill(0, count($a06TargetIds), '?'));
+     $a06People = [...array_map('intval', $people), $a05PersonId];
+     $a06PeoplePlaceholders = implode(',', array_fill(0, count($a06People), '?'));
+-    $pdo->prepare('UPDATE club_roster_members SET status=\'cancelled\',source_ref=NULL,valid_to=\'2027-01-01\',updated_at=CURRENT_TIMESTAMP WHERE team_id IN (' . $targetPlaceholders . ') AND sportovec_id IN (' . $a06PeoplePlaceholders . ') AND source=\'manual\' AND valid_from=\'2027-01-01\' AND (source_ref IS NULL OR source_ref LIKE \'roster_rollover:%\')')->execute([...$a06TargetIds, ...$a06People]);
++    $pdo->prepare('UPDATE club_roster_members SET status=\'cancelled\',source_ref=NULL,valid_to=\'2027-01-01\',updated_at=CURRENT_TIMESTAMP WHERE team_id IN (' . $targetPlaceholders . ') AND sportovec_id IN (' . $a06PeoplePlaceholders . ') AND source=\'manual\' AND valid_from=\'2027-01-01\' ' . 'AND (source_ref IS NULL OR source_ref LIKE \'roster_rollover:%\')')->execute([...$a06TargetIds, ...$a06People]);
+     foreach ([[(int) $team['id'], (int) $people[0]], [(int) $trackTeam['id'], (int) $people[0]], [(int) $u13Team['id'], (int) $people[1]], [(int) $roadTeam['id'], (int) $people[1]]] as [$demoTeamId, $demoPersonId]) {
+         $pdo->prepare('UPDATE club_roster_members SET status=\'active\',valid_to=NULL,updated_at=CURRENT_TIMESTAMP WHERE team_id=? AND sportovec_id=? AND source=\'manual\' AND source_ref IS NULL AND valid_from=\'2026-01-01\' AND status=\'removed\' AND valid_to=\'2026-12-31\'')->execute([$demoTeamId, $demoPersonId]);
+     }

@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 2. 11. 2026 (Europe/Prague), po nasazení funkčních oprav PR #272.
+Aktualizováno 2. 11. 2026 (Europe/Prague), po druhém místním funkčním průchodu; živé vydání beze změny.
 
-- [Funkční opravy PR #272 nasazeny](verification/functional-release-20261102/RESULTS.md): vrstvy účtového menu, přístupné názvy měření a viditelná poznámka Kolo. [Místní browser](verification/functional-uat-20261102/RESULTS.md): 36 PASS / 3 FIXED.
+- [Další funkční testování](verification/functional-uat-round2-20261102/RESULTS.md): 35 PASS a opravený seed dema; Windows 1905/38260 (3 skipy). Nová oprava zatím nesloučena a nenasazena.
 
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
