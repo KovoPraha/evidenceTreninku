@@ -167,7 +167,7 @@ Toto jsou zbývající parametry realizace, nikoli důvod odkládat inventář n
 | ID | Co uzavřít | Výstup a návaznost |
 |---|---|---|
 | D1 — rozhodnuto | Vlastní členská historie od **2. 11. 2026**, potvrzeno vlastníkem v chatu. | Datum zůstává pevné i při pozdější technické aplikaci a jedné následné synchronizaci. |
-| D2 | Finální názvy skupin/soupisek, jejich vazby, typ činnosti a správci. | Jednoznačná mapa ID, žádné automatické sloučení podle názvu; E1/E2 a E7. |
+| D2 — rozhodnuto | [Schválená mapa](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md): sedm provozních skupin / 41 soupisek, samostatné testy, Rexonix závodní, KDC a Bikros samostatně ostatní. | Převod bez sloučení členství; dosavadní oprávnění zachovat, nová nepřidělovat. Soukromá mapa ID a kontrola přesných původních názvů/kódů; nácvik a E7. |
 | D3 — výchozí členství potvrzeno | Převzít **435 aktivních** a odstranit **560 historických** zařazení. Existující osoby a doklady zachovat. | Přesný manifest ID, finanční parity a jedna další synchronizace; podrobnosti v podkladech produkčního přechodu. |
 | D4 | Pozdní nástup, druhé pololetí vs. celoroční nabídka, zpětná platnost. | Schválené pravidlo nároku a ceny, explicitní vyřešení překryvu; E3. Do té doby konfliktní nákup blokovat s vysvětlením. |
 | D5 | První/poslední měsíc příspěvku, souběh plánů a úlevy. | Konkrétní pravidla a částky ve správě plánů; E5. Neodhadovat poměrnou část automaticky. |

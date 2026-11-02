@@ -15,8 +15,11 @@ obsahují potvrzené rozhodnutí převzít 435 aktivních zařazení od 2. 11. 2
 Nový nástroj přijímá explicitní rozdíl nad konkrétním exportem a odmítá opakovanou dávku.
 Rozšířený nácvik 435/560 na skutečné izolované záloze prošel v běhu 41512931635,
 včetně odstranění 560 importních událostí, odpojení převodních vazeb a úplné obnovy.
-Konkrétní produkční mapa soupisek, manifest
-úklidu a UAT zůstávají otevřené; E7/E8 nebyly provedeny. Tento stav není potvrzením
+Vlastník následně schválil [konkrétní mapu D2](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md):
+sedm provozních skupin / 41 soupisek a samostatná skupina pro tři testy.
+Rexonix je závodní, KDC a Bikros dvě samostatné placené skupiny `other`.
+Zdrojová ID, kódy a názvy jsou v soukromém provozním podkladu mimo Git.
+Produkční manifest úklidu a UAT zůstávají otevřené; E7/E8 nebyly provedeny. Tento stav není potvrzením
 nasazení ani provedeného mazání.
 
 Navazuje [trenérská obnova hesla](TRAINER_READINESS_2026-10-31.md) a její

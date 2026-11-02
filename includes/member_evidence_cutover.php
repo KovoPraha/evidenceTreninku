@@ -5,6 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/member_evidence_snapshot.php';
 require_once __DIR__ . '/operational_cases.php';
 require_once __DIR__ . '/member_evidence_opening.php';
+require_once __DIR__ . '/member_evidence_groups.php';
 
 /** In-place IDs preserve all references and historical documents. No name-based merging. */
 function memberEvidencePreview(PDO $pdo, array $config, bool $lock = false): array
@@ -31,8 +32,13 @@ function memberEvidencePreview(PDO $pdo, array $config, bool $lock = false): arr
         if (!$before || $before['team_kind'] !== 'roster' || $before['status'] !== 'active') {
             throw new RuntimeException('Převod vyžaduje existující aktivní soupisku #' . $id);
         }
-        $query = $pdo->prepare('SELECT id FROM club_teams WHERE standing_code=? AND id<>?');
-        $query->execute([$code,$id]);
+        foreach (['code', 'name'] as $field) {
+            if (isset($item['expected_' . $field]) && $item['expected_' . $field] !== $before[$field]) {
+                throw new RuntimeException('Původní soupiska neodpovídá schválené mapě.');
+            }
+        }
+        $query = $pdo->prepare('SELECT id FROM club_teams WHERE (standing_code=? OR code=?) AND id<>?');
+        $query->execute([$code,$code,$id]);
         if ($query->fetchColumn() || isset($codes[$code])) {
             throw new RuntimeException('Kód trvalé soupisky není jedinečný.');
         }
@@ -40,6 +46,7 @@ function memberEvidencePreview(PDO $pdo, array $config, bool $lock = false): arr
         $teams[$id] = ['id' => $id,'standing_code' => $code,'name' => $name,'activity_kind' => $activity];
     }
     ksort($teams);
+    $groups = memberEvidenceGroupsPreview($pdo, $config, $teams, $on);
     $opening = memberEvidenceOpeningRows($pdo, $config, $on);
     $detached = memberEvidenceDetachClaims($pdo, $config);
     $deletions = memberEvidenceDeletionRows($pdo, (array) ($config['delete'] ?? []), $on, $detached);
@@ -66,7 +73,7 @@ function memberEvidencePreview(PDO $pdo, array $config, bool $lock = false): arr
     $deleteCounts = array_map('count', $deletions);
     $payload = ['contract' => 'member-evidence-cutover-v1','config' => $config,'cutover_on' => $on,'reason'
     => $reason,
-        'teams' => array_values($teams),'opening_count' => count($opening),'detached_claim_count' => count($detached),
+        'teams' => array_values($teams),'groups' => $groups,'opening_count' => count($opening),'detached_claim_count' => count($detached),
         'delete_counts' => $deleteCounts,'snapshot' => $snapshot,'membership'
     => $members];
     return $payload + ['fingerprint' => hash('sha256', json_encode($payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE))];
@@ -143,6 +150,7 @@ function memberEvidenceApply(
                 $pdo->prepare('DELETE FROM ' . memberEvidenceIdentifier($table) . ' WHERE id=?')->execute([$id]);
             }
         }
+        $createdGroups = memberEvidenceGroupsApply($pdo, $manifest['groups'], $manifest['cutover_on'], $actor, $manifest['reason']);
         $after = memberEvidenceCutoverSnapshot($pdo, $manifest['config']);
         $changed = ['club_teams','club_roster_structure_events',...array_keys($rows)];
         if ($opening) {
@@ -150,6 +158,9 @@ function memberEvidenceApply(
         }
         if ($detached) {
             $changed[] = 'kis_legacy_roster_claims';
+        }
+        if ($createdGroups) {
+            $changed = array_merge($changed, ['club_roster_events', 'club_team_edges']);
         }
         foreach ($snapshot as $table => $state) {
             if (!in_array($table, $changed, true) && ($after[$table] ?? null) !== $state) {
@@ -168,7 +179,9 @@ function memberEvidenceApply(
             }
         }
         $result = ['fingerprint' => $approvedFingerprint,'cutover_on' => $manifest['cutover_on'],
-            'converted_teams' => count($manifest['teams']),'opening_count' => count($opening),
+            'converted_teams' => count($manifest['teams']),'created_groups' => count($createdGroups),
+            'created_edges' => array_sum(array_map(static fn (array $group): int => count($group['child_ids']), $manifest['groups'])),
+            'group_membership_parity' => true,'opening_count' => count($opening),
             'opening_on' => $manifest['cutover_on'],
             'final_sync_pending' => (bool) ($manifest['config']['opening']['final_sync_pending'] ?? false),
             'detached_claim_count' => count($detached),'deleted' => $manifest['delete_counts'],'preserved_parity'
