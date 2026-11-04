@@ -1,0 +1,23 @@
+{
+    "advisories": {
+        "symfony/filesystem": [
+            {
+                "advisoryId": "PKSA-g499-cm4q-v35y",
+                "packageName": "symfony/filesystem",
+                "affectedVersions": ">=5.4.0,<5.4.56|>=6.0.0,<6.1.0|>=6.1.0,<6.2.0|>=6.2.0,<6.3.0|>=6.3.0,<6.4.0|>=6.4.0,<6.4.50|>=7.0.0,<7.1.0|>=7.1.0,<7.2.0|>=7.2.0,<7.3.0|>=7.3.0,<7.4.0|>=7.4.0,<7.4.23|>=8.0.0,<8.1.0|>=8.1.0,<8.1.11",
+                "title": "Filesystem Path Treats Any Prefix Before \"://\" as a Root, Letting Paths Escape Their Base Directory",
+                "cve": null,
+                "link": "https://github.com/symfony/symfony/security/advisories/GHSA-6prc-h956-hxjq",
+                "reportedAt": "2026-11-04T00:00:00+00:00",
+                "sources": [
+                    {
+                        "name": "FriendsOfPHP/security-advisories",
+                        "remoteId": "symfony/filesystem/2026-11-04-18.yaml"
+                    }
+                ],
+                "severity": null
+            }
+        ]
+    },
+    "abandoned": []
+}
