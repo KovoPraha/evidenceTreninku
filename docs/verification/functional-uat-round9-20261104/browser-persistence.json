@@ -1,0 +1,136 @@
+{
+    "status": "PASS",
+    "tables": 16,
+    "before": {
+        "family_weekly_summaries": {
+            "count": 78,
+            "sha256": "b98725ae0a01889c21957b041fe40d827552a71659a0ba89680dffbf31c4be06"
+        },
+        "family_weekly_summary_preferences": {
+            "count": 2,
+            "sha256": "10bc04b2a19635ab00e6d324a7b181ae91bcd18bcff8bd01ec2e2baec2194f26"
+        },
+        "family_weekly_summary_events": {
+            "count": 74,
+            "sha256": "325b511cfa7925a41ea64b089a8262193a9bf59da8a72c1266a4b87578d3ed5d"
+        },
+        "notification_authorization_snapshots": {
+            "count": 16,
+            "sha256": "f2c9d1aa82f2f0d4544424fcb42544e56dab0b76d22b440147db5206c50f81de"
+        },
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_orders": {
+            "count": 4,
+            "sha256": "33bc782df42b6a7744b6286a700614aaec4cfa300c2080bc93beafc36eb28cf5"
+        },
+        "shop_order_items": {
+            "count": 4,
+            "sha256": "096dd8bc69bc3657cfa25dfe0540457cb29c06c6ab0b19e4a1d73fd948ccf624"
+        },
+        "club_program_admissions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "training_closures": {
+            "count": 5,
+            "sha256": "0895ded4dbc360904237f9032ccccd7d2b2311360d394e272b0d8bb81cc663da"
+        },
+        "training_rsvps": {
+            "count": 6,
+            "sha256": "a7ef6b8d5fad3345f42a782203c7fa03c76e9c37022040987cb4f8fd188caaa7"
+        },
+        "club_member_charges": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_paper_records": {
+            "count": 7,
+            "sha256": "4806d18689658e8107f40bc0e96e55383e6ea6469f7499859bc7c15b904c309a"
+        },
+        "medical_clearance_records": {
+            "count": 5,
+            "sha256": "eaf1f3ec596bd5963148f7ce56fe67fb0a9fee321bd898f05b1450946c2f3936"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+    },
+    "after": {
+        "family_weekly_summaries": {
+            "count": 78,
+            "sha256": "b98725ae0a01889c21957b041fe40d827552a71659a0ba89680dffbf31c4be06"
+        },
+        "family_weekly_summary_preferences": {
+            "count": 2,
+            "sha256": "10bc04b2a19635ab00e6d324a7b181ae91bcd18bcff8bd01ec2e2baec2194f26"
+        },
+        "family_weekly_summary_events": {
+            "count": 74,
+            "sha256": "325b511cfa7925a41ea64b089a8262193a9bf59da8a72c1266a4b87578d3ed5d"
+        },
+        "notification_authorization_snapshots": {
+            "count": 16,
+            "sha256": "f2c9d1aa82f2f0d4544424fcb42544e56dab0b76d22b440147db5206c50f81de"
+        },
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_orders": {
+            "count": 4,
+            "sha256": "33bc782df42b6a7744b6286a700614aaec4cfa300c2080bc93beafc36eb28cf5"
+        },
+        "shop_order_items": {
+            "count": 4,
+            "sha256": "096dd8bc69bc3657cfa25dfe0540457cb29c06c6ab0b19e4a1d73fd948ccf624"
+        },
+        "club_program_admissions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "training_closures": {
+            "count": 5,
+            "sha256": "0895ded4dbc360904237f9032ccccd7d2b2311360d394e272b0d8bb81cc663da"
+        },
+        "training_rsvps": {
+            "count": 6,
+            "sha256": "a7ef6b8d5fad3345f42a782203c7fa03c76e9c37022040987cb4f8fd188caaa7"
+        },
+        "club_member_charges": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_paper_records": {
+            "count": 7,
+            "sha256": "4806d18689658e8107f40bc0e96e55383e6ea6469f7499859bc7c15b904c309a"
+        },
+        "medical_clearance_records": {
+            "count": 5,
+            "sha256": "eaf1f3ec596bd5963148f7ce56fe67fb0a9fee321bd898f05b1450946c2f3936"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+    }
+}

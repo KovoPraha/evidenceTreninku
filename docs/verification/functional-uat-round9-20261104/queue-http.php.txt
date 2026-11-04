@@ -1,0 +1,124 @@
+<?php
+declare(strict_types=1);
+require __DIR__.'/prefix.php';
+require_once $root.'/includes/family_weekly_delivery.php';
+require_once $root.'/includes/club_communication.php';
+$httpRequests=0;
+function rq(array &$s,string $path,?array $post=null): array {
+    $GLOBALS['httpRequests']++;
+    return dwRequest($s,$path,$post);
+}
+function textOf(array $r): string {
+    return trim((string)preg_replace('/\s+/u',' ',dwDom($r)->evaluate('string(//main)')));
+}
+function summaryRow(int $id): array {
+    $q=$GLOBALS['pdo']->prepare('SELECT * FROM family_weekly_summaries WHERE id=?');$q->execute([$id]);return $q->fetch();
+}
+function snap(): array {
+    $out=[];
+    foreach(['club_roster_members','payments','shop_orders','shop_order_items','club_program_admissions','training_closures','training_rsvps','club_member_charges','club_paper_records','medical_clearance_records','financial_decisions','accounting_documents'] as $table){
+        $rows=$GLOBALS['pdo']->query('SELECT * FROM '.$table.' ORDER BY 1')->fetchAll();
+        $out[$table]=['count'=>count($rows),'sha256'=>hash('sha256',json_encode($rows,JSON_THROW_ON_ERROR))];
+    }
+    return $out;
+}
+$before=snap();
+$tag='R9-'.bin2hex(random_bytes(3));
+$pdo->beginTransaction();
+try {
+    $pdo->prepare("INSERT INTO treneri(jmeno,email,heslo,role,aktivni,session_version) SELECT ?,?,heslo,'admin',1,1 FROM treneri WHERE id=3 AND jmeno='round4-registrar'")->execute(['round9-order-'.$tag,strtolower($tag).'@example.invalid']);
+    $operator=(int)$pdo->lastInsertId();
+    if($operator<1)throw new RuntimeException('Synthetic seed actor missing');
+    dwInsert('staff_user_positions',['trainer_id'=>$operator,'position_code'=>'order_operator','is_default'=>1]);
+    $pdo->prepare("INSERT INTO verejni_uzivatele(jmeno,prijmeni,email,heslo_hash,email_overeno,aktivni) SELECT 'LOCALHOST',?,?,heslo_hash,1,1 FROM verejni_uzivatele ORDER BY id LIMIT 1")->execute([$tag,strtolower($tag).'@example.invalid']);
+    $account=(int)$pdo->lastInsertId();
+    $person=dwInsert('sportovci',['jmeno'=>'LOCALHOST','prijmeni'=>$tag,'narozeni'=>'2015-01-01','stav_clenstvi'=>'cekajici','hash'=>bin2hex(random_bytes(32)),'uci'=>0,'email'=>'']);
+    $relation=dwInsert('account_person_roles',['account_id'=>$account,'sportovec_id'=>$person,'relation_role'=>'guardian','status'=>'approved','valid_from'=>'2020-01-01 00:00:00','created_by_trainer_id'=>3,'approved_by_trainer_id'=>3,'decision_note'=>'LOCALHOST synthetic round9']);
+    $listIds=[];
+    for($i=0;$i<31;$i++){
+        $from=(new DateTimeImmutable('2024-01-01'))->modify('+'.($i*7).' days');
+        $listIds[]=dwInsert('family_weekly_summaries',['account_id'=>$account,'period_from'=>$from->format('Y-m-d'),'period_to'=>$from->modify('+6 days')->format('Y-m-d'),'recipient_email'=>strtolower($tag).'@example.invalid','recipient_name'=>$tag.' Family '.str_pad((string)$i,2,'0',STR_PAD_LEFT),'subject_plain'=>'LOCALHOST '.$tag.' <script>alert(9)</script> %_ literal','body_plain'=>'LOCALHOST '.$tag.' <img src=x onerror=alert(9)> frozen snapshot','status'=>$i===30?'failed':'sent','item_count'=>2,'available_at'=>'2030-01-01 00:00:00','created_at'=>'2026-11-03 '.($i===30?'23:59:59':'12:00:00')]);
+    }
+    $pdo->commit();
+}catch(Throwable $e){$pdo->rollBack();throw $e;}
+$fixture=compact('tag','operator','account','person','relation','listIds');
+file_put_contents(__DIR__.'/fixture.json',json_encode($fixture,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR));
+$operatorSession=dwSession($operator);$registrar=dwSession(3);$coach=dwSession(5);$anonymous=['cookie'=>'','csrf'=>''];
+session_id('');app_session_start();$_SESSION=[];auth_session_bind_public_user($account,1);app_session_mark_authenticated();$family=['cookie'=>session_name().'='.session_id(),'csrf'=>csrf_token()];session_write_close();
+$route='family_weekly_summaries_admin.php';
+$q='queue_q='.rawurlencode($tag).'&queue_from=2026-11-03&queue_to=2026-11-03';
+$response=rq($operatorSession,$route.'?'.$q);
+dwCheck($response['status']===200&&str_contains(textOf($response),'Nalezeno: 31 · strana 1 z 2'),'HTTP: operator sees all 31 same-day entries including 23:59:59');
+dwCheck(dwDom($response)->query('(//main//table)[1]//tbody/tr')->length===25,'HTTP: first page contains 25 entries');
+$next=(string)dwDom($response)->evaluate('string(//main//a[normalize-space(.)="Další"]/@href)');
+dwCheck(str_contains($next,'queue_from=2026-11-03')&&str_contains($next,'queue_to=2026-11-03')&&str_contains($next,'queue_page=2')&&str_contains($next,$tag),'HTTP: next-page link retains all filters');
+$response=rq($operatorSession,$route.$next);
+dwCheck(dwDom($response)->query('(//main//table)[1]//tbody/tr')->length===6&&str_contains(textOf($response),'strana 2 z 2'),'HTTP: second page shows remaining six entries');
+$response=rq($operatorSession,$route.'?'.$q.'&queue_page=999999');
+dwCheck(str_contains(textOf($response),'strana 2 z 2'),'HTTP: excessive page clamps to last page');
+$response=rq($operatorSession,$route.'?'.$q.'&queue_state=failed');
+dwCheck(str_contains(textOf($response),'Nalezeno: 1')&&str_contains(textOf($response),$tag.' Family 30'),'HTTP: failed state plus inclusive end date finds correct final row');
+$response=rq($operatorSession,$route.'?queue_q='.rawurlencode($tag.' %_').'&status=failed');
+dwCheck(str_contains(textOf($response),'Nalezeno: 1'),'HTTP: search treats percent/underscore literally and supports legacy status');
+$response=rq($operatorSession,$route.'?'.$q.'&preview_id='.$listIds[30]);
+dwCheck(str_contains(textOf($response),'<img src=x onerror=alert(9)> frozen snapshot')&&dwDom($response)->query('//main//script|//main//img')->length===0,'HTTP: stored subject/body are escaped in table and immutable preview');
+$previewBefore=hash('sha256',json_encode(summaryRow($listIds[30]),JSON_THROW_ON_ERROR));
+$response=rq($operatorSession,$route.'?'.$q.'&preview_id=999999999');
+dwCheck($response['status']===200&&str_contains(textOf($response),'Týdenní souhrn nebyl nalezen.'),'HTTP: nonexistent preview shows controlled error');
+foreach(['queue_state=bogus'=>'Vyberte stav z nabídky.','queue_from=2026-02-30'=>'Zadejte platné datum filtru.','queue_from=2026-11-04&queue_to=2026-11-03'=>'Začátek filtru musí být před koncem.'] as $filter=>$message){
+    $response=rq($operatorSession,$route.'?queue_q='.$tag.'&'.$filter);dwCheck(str_contains(textOf($response),$message)&&str_contains(textOf($response),'Nalezeno: 0'),'HTTP: invalid filter fails closed: '.$filter);
+}
+foreach(['registrar'=>&$registrar,'coach'=>&$coach,'family'=>&$family,'anonymous'=>&$anonymous] as $label=>&$s){
+    $r=rq($s,$route.'?preview_id='.$listIds[30]);dwCheck(in_array($r['status'],[302,303,403],true)&&!str_contains($r['body'],'frozen snapshot'),'HTTP: private preview denied to '.$label);
+}unset($s);
+$events=(int)$pdo->query('SELECT COUNT(*) FROM family_weekly_summary_events')->fetchColumn();
+$response=rq($operatorSession,$route,['action'=>'generate','confirm'=>'1','csrf_token'=>'invalid']);
+dwCheck(str_contains(textOf($response),'Formulář vypršel.')&&(int)$pdo->query('SELECT COUNT(*) FROM family_weekly_summary_events')->fetchColumn()===$events,'HTTP: invalid CSRF cannot enqueue');
+$response=rq($operatorSession,$route,['action'=>'generate']);
+dwCheck(str_contains(textOf($response),'výslovné potvrzení')&&(int)$pdo->query('SELECT COUNT(*) FROM family_weekly_summary_events')->fetchColumn()===$events,'HTTP: missing explicit confirmation cannot enqueue');
+dwCheck(hash('sha256',json_encode(summaryRow($listIds[30]),JSON_THROW_ON_ERROR))===$previewBefore,'Persistence: list/filter/preview and rejected POST preserve frozen queue entry');
+
+// All worker transports are local file sinks or deterministic callbacks. No mail sender is invoked.
+dwCheck((int)$pdo->query('SELECT COUNT(*) FROM family_weekly_summary_preferences WHERE enabled=1')->fetchColumn()===0,'Fixture: no other opted-in account before generation');
+$r=rq($family,'booking/sportovni_prehled.php',['action'=>'family_weekly_delivery_save','enabled'=>'1']);
+dwCheck($r['status']===303&&familyWeeklyDeliveryPreference($pdo,$account)['enabled'],'HTTP: family enables weekly summary for own account');
+$r=rq($operatorSession,$route,['action'=>'generate','confirm'=>'1']);
+dwCheck($r['status']===303,'HTTP: confirmed localhost generation redirects successfully');
+$pending=$pdo->query("SELECT id FROM family_weekly_summaries WHERE account_id=$account AND status='pending'")->fetchAll(PDO::FETCH_COLUMN);
+dwCheck(count($pending)===1,'Persistence: generation creates one own current-week snapshot');
+$r=rq($operatorSession,$route,['action'=>'generate','confirm'=>'1']);
+dwCheck($r['status']===303&&(int)$pdo->query("SELECT COUNT(*) FROM family_weekly_summaries WHERE account_id=$account AND status='pending'")->fetchColumn()===1,'HTTP: repeated generation is idempotent');
+$r=rq($family,'booking/sportovni_prehled.php',['action'=>'family_weekly_delivery_save','enabled'=>'0']);
+dwCheck($r['status']===303&&summaryRow((int)$pending[0])['status']==='cancelled','HTTP: own opt-out cancels pending summary');
+$calls=0;dwCheck(familyWeeklyDeliveryProcessOne($pdo,static function()use(&$calls){$calls++;return true;})===null&&$calls===0,'Worker: opted-out summary cannot reach sender');
+familyWeeklyDeliverySavePreference($pdo,$account,true);
+$factory=static fn(PDO $p,int $id,string $from):array=>['to'=>(new DateTimeImmutable($from))->modify('+6 days')->format('Y-m-d'),'subject'=>'LOCALHOST '.$tag,'body'=>'LOCALHOST frozen '.$tag,'counts'=>['total'=>0]];
+$generate=static function(string $day)use($pdo,$factory,$account):int{familyWeeklyDeliveryGenerate($pdo,new DateTimeImmutable($day,new DateTimeZone('Europe/Prague')),true,$factory);return(int)$pdo->query("SELECT id FROM family_weekly_summaries WHERE account_id=$account AND period_from=".$pdo->quote($day))->fetchColumn();};
+$id=$generate('2026-11-09');
+$outboxBefore=glob($root.'/var/family-weekly-summary-outbox/*.json')?:[];
+$r=rq($operatorSession,$route,['action'=>'deliver','confirm'=>'1']);
+dwCheck($r['status']===303&&summaryRow($id)['status']==='sent','HTTP: localhost worker stores one summary in local outbox');
+$files=array_values(array_diff(glob($root.'/var/family-weekly-summary-outbox/*.json')?:[],$outboxBefore));
+dwCheck(count($files)===1&&json_decode((string)file_get_contents($files[0]),true)['original_recipient']===strtolower($tag).'@example.invalid','Outbox: exact synthetic recipient captured once, without external transport');
+$r=rq($operatorSession,$route,['action'=>'deliver','confirm'=>'1']);
+dwCheck($r['status']===303&&count(glob($root.'/var/family-weekly-summary-outbox/*.json')?:[])===count($outboxBefore)+1,'HTTP: repeated worker does not resend completed summary');
+$relative='var/family-weekly-summary-outbox/'.basename($files[0]);
+$c=curl_init(APP_BASE_URL.'/'.$relative);curl_setopt_array($c,[CURLOPT_RETURNTRANSFER=>true,CURLOPT_PROXY=>'',CURLOPT_TIMEOUT=>20]);$body=curl_exec($c);$status=(int)curl_getinfo($c,CURLINFO_RESPONSE_CODE);curl_close($c);$httpRequests++;
+dwCheck($status===403&&!str_contains((string)$body,'original_recipient'),'HTTP: local outbox is inaccessible through webroot');
+$id=$generate('2026-11-16');$pdo->prepare('UPDATE verejni_uzivatele SET email=? WHERE id=?')->execute(['changed-'.$tag.'@example.invalid',$account]);
+$calls=0;dwCheck(familyWeeklyDeliveryProcessOne($pdo,static function()use(&$calls){$calls++;return true;})===false&&$calls===0&&summaryRow($id)['status']==='failed','Worker: changed contact holds frozen summary without sending');
+$pdo->prepare('UPDATE verejni_uzivatele SET email=? WHERE id=?')->execute([strtolower($tag).'@example.invalid',$account]);
+$id=$generate('2026-11-23');$pdo->prepare("UPDATE account_person_roles SET status='revoked' WHERE id=?")->execute([$relation]);
+$calls=0;dwCheck(familyWeeklyDeliveryProcessOne($pdo,static function()use(&$calls){$calls++;return true;})===false&&$calls===0&&summaryRow($id)['status']==='failed','Worker: revoked guardian relation holds frozen summary without sending');
+$pdo->prepare("UPDATE account_person_roles SET status='approved' WHERE id=?")->execute([$relation]);
+$id=$generate('2026-11-30');$calls=0;
+dwCheck(familyWeeklyDeliveryProcessOne($pdo,static function()use(&$calls){$calls++;throw new RuntimeException('LOCALHOST uncertain transport');})===false&&summaryRow($id)['status']==='failed'&&$calls===1,'Worker: ambiguous transport result held for manual review');
+dwCheck(familyWeeklyDeliveryProcessOne($pdo,static function()use(&$calls){$calls++;return true;})===null&&$calls===1,'Worker: uncertain delivery is never retried automatically');
+$id=$generate('2026-12-07');$claim=familyWeeklyDeliveryClaim($pdo);$pdo->prepare("UPDATE family_weekly_summaries SET claimed_at=DATE_SUB(NOW(),INTERVAL 20 MINUTE) WHERE id=?")->execute([$id]);
+dwCheck(familyWeeklyDeliveryProcessOne($pdo,static fn()=>true)===null&&summaryRow($id)['status']==='failed','Worker: stale claim is held rather than resent');
+familyWeeklyDeliverySavePreference($pdo,$account,false);
+dwCheck(!familyWeeklyDeliveryPreference($pdo,$account)['enabled'],'Cleanup: synthetic account opted out after tests');
+dwCheck($before===snap(),'Persistence: twelve unrelated domain tables unchanged');
+$report=['status'=>'PASS','base_sha'=>trim((string)shell_exec('git -C '.escapeshellarg($root).' rev-parse HEAD')),'checks'=>count($checks),'http_requests'=>$httpRequests,'results'=>$checks,'fixture'=>$fixture,'unrelated_before'=>$before,'unrelated_after'=>snap(),'external_sends'=>0,'production_mutations'=>false,'password_and_T07'=>'SKIPPED'];
+file_put_contents(__DIR__.'/queue-http.json',json_encode($report,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR));
+echo json_encode(['status'=>'PASS','checks'=>count($checks),'http_requests'=>$httpRequests,'fixture'=>$fixture],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),"\n";

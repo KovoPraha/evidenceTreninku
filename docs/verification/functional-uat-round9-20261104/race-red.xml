@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round9-20261104\phpunit.xml.dist" tests="2" assertions="4" errors="0" failures="2" skipped="0" time="0.121150">
+    <testsuite name="integration" tests="2" assertions="4" errors="0" failures="2" skipped="0" time="0.121150">
+      <testsuite name="Tests\Integration\FamilyWeeklyDeliveryTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round9-20261104\tests\Integration\FamilyWeeklyDeliveryTest.php" tests="2" assertions="4" errors="0" failures="2" skipped="0" time="0.121150">
+        <testcase name="testOptOutDuringPreviewDoesNotLeaveANewPendingSummary" file="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round9-20261104\tests\Integration\FamilyWeeklyDeliveryTest.php" line="112" class="Tests\Integration\FamilyWeeklyDeliveryTest" classname="Tests.Integration.FamilyWeeklyDeliveryTest" assertions="2" time="0.113785">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Integration\FamilyWeeklyDeliveryTest::testOptOutDuringPreviewDoesNotLeaveANewPendingSummary&#13;
+Failed asserting that 1 is identical to 0.
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round9-20261104\tests\Integration\FamilyWeeklyDeliveryTest.php:123</failure>
+        </testcase>
+        <testcase name="testFamilyRevocationDuringPreviewCannotAuthorizeOldContent" file="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round9-20261104\tests\Integration\FamilyWeeklyDeliveryTest.php" line="129" class="Tests\Integration\FamilyWeeklyDeliveryTest" classname="Tests.Integration.FamilyWeeklyDeliveryTest" assertions="2" time="0.007365">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Integration\FamilyWeeklyDeliveryTest::testFamilyRevocationDuringPreviewCannotAuthorizeOldContent&#13;
+Content composed before revocation must never reach the sender.
+Failed asserting that 1 is identical to 0.
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round9-20261104\tests\Integration\FamilyWeeklyDeliveryTest.php:143</failure>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

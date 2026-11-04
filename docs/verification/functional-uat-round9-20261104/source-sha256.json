@@ -1,0 +1,5 @@
+{
+  "includes/family_weekly_delivery.php": "78b183b25d75b0fc4febd21c8afff3601577d38f3e378da65828080bc8f593ee",
+  "tests/Integration/FamilyWeeklyDeliveryTest.php": "b1d5b677aa19ed7293b6b697ede6917df0af851615c2fefc92f90a3824684dd1",
+  "tests/Support/OperationalDeliveryMariaDbRace.php": "af4fa0325a171c5e3706232f370b2e78c51b61e8e3f9e55d608697c5016977eb"
+}

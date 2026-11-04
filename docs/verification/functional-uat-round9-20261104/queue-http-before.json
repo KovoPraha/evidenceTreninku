@@ -1,0 +1,188 @@
+{
+    "status": "PASS",
+    "base_sha": "5eb64c95e4b199fc339076524578e9a44efb3414",
+    "checks": 37,
+    "http_requests": 23,
+    "results": [
+        "HTTP: operator sees all 31 same-day entries including 23:59:59",
+        "HTTP: first page contains 25 entries",
+        "HTTP: next-page link retains all filters",
+        "HTTP: second page shows remaining six entries",
+        "HTTP: excessive page clamps to last page",
+        "HTTP: failed state plus inclusive end date finds correct final row",
+        "HTTP: search treats percent\/underscore literally and supports legacy status",
+        "HTTP: stored subject\/body are escaped in table and immutable preview",
+        "HTTP: nonexistent preview shows controlled error",
+        "HTTP: invalid filter fails closed: queue_state=bogus",
+        "HTTP: invalid filter fails closed: queue_from=2026-02-30",
+        "HTTP: invalid filter fails closed: queue_from=2026-11-04&queue_to=2026-11-03",
+        "HTTP: private preview denied to registrar",
+        "HTTP: private preview denied to coach",
+        "HTTP: private preview denied to family",
+        "HTTP: private preview denied to anonymous",
+        "HTTP: invalid CSRF cannot enqueue",
+        "HTTP: missing explicit confirmation cannot enqueue",
+        "Persistence: list\/filter\/preview and rejected POST preserve frozen queue entry",
+        "Fixture: no other opted-in account before generation",
+        "HTTP: family enables weekly summary for own account",
+        "HTTP: confirmed localhost generation redirects successfully",
+        "Persistence: generation creates one own current-week snapshot",
+        "HTTP: repeated generation is idempotent",
+        "HTTP: own opt-out cancels pending summary",
+        "Worker: opted-out summary cannot reach sender",
+        "HTTP: localhost worker stores one summary in local outbox",
+        "Outbox: exact synthetic recipient captured once, without external transport",
+        "HTTP: repeated worker does not resend completed summary",
+        "HTTP: local outbox is inaccessible through webroot",
+        "Worker: changed contact holds frozen summary without sending",
+        "Worker: revoked guardian relation holds frozen summary without sending",
+        "Worker: ambiguous transport result held for manual review",
+        "Worker: uncertain delivery is never retried automatically",
+        "Worker: stale claim is held rather than resent",
+        "Cleanup: synthetic account opted out after tests",
+        "Persistence: twelve unrelated domain tables unchanged"
+    ],
+    "fixture": {
+        "tag": "R9-ee16a0",
+        "operator": 42,
+        "account": 13,
+        "person": 1088,
+        "relation": 13,
+        "listIds": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+        ]
+    },
+    "unrelated_before": {
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_orders": {
+            "count": 4,
+            "sha256": "33bc782df42b6a7744b6286a700614aaec4cfa300c2080bc93beafc36eb28cf5"
+        },
+        "shop_order_items": {
+            "count": 4,
+            "sha256": "096dd8bc69bc3657cfa25dfe0540457cb29c06c6ab0b19e4a1d73fd948ccf624"
+        },
+        "club_program_admissions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "training_closures": {
+            "count": 5,
+            "sha256": "0895ded4dbc360904237f9032ccccd7d2b2311360d394e272b0d8bb81cc663da"
+        },
+        "training_rsvps": {
+            "count": 6,
+            "sha256": "a7ef6b8d5fad3345f42a782203c7fa03c76e9c37022040987cb4f8fd188caaa7"
+        },
+        "club_member_charges": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_paper_records": {
+            "count": 7,
+            "sha256": "4806d18689658e8107f40bc0e96e55383e6ea6469f7499859bc7c15b904c309a"
+        },
+        "medical_clearance_records": {
+            "count": 5,
+            "sha256": "eaf1f3ec596bd5963148f7ce56fe67fb0a9fee321bd898f05b1450946c2f3936"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+    },
+    "unrelated_after": {
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_orders": {
+            "count": 4,
+            "sha256": "33bc782df42b6a7744b6286a700614aaec4cfa300c2080bc93beafc36eb28cf5"
+        },
+        "shop_order_items": {
+            "count": 4,
+            "sha256": "096dd8bc69bc3657cfa25dfe0540457cb29c06c6ab0b19e4a1d73fd948ccf624"
+        },
+        "club_program_admissions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "training_closures": {
+            "count": 5,
+            "sha256": "0895ded4dbc360904237f9032ccccd7d2b2311360d394e272b0d8bb81cc663da"
+        },
+        "training_rsvps": {
+            "count": 6,
+            "sha256": "a7ef6b8d5fad3345f42a782203c7fa03c76e9c37022040987cb4f8fd188caaa7"
+        },
+        "club_member_charges": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_paper_records": {
+            "count": 7,
+            "sha256": "4806d18689658e8107f40bc0e96e55383e6ea6469f7499859bc7c15b904c309a"
+        },
+        "medical_clearance_records": {
+            "count": 5,
+            "sha256": "eaf1f3ec596bd5963148f7ce56fe67fb0a9fee321bd898f05b1450946c2f3936"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+    },
+    "external_sends": 0,
+    "production_mutations": false,
+    "password_and_T07": "SKIPPED"
+}

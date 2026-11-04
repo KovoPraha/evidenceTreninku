@@ -1,0 +1,12 @@
+{
+  "mariadb_pid": 24380,
+  "other_services": "untouched",
+  "status": "PASS",
+  "mariadb_shutdown": "Normal shutdown; Shutdown complete",
+  "apache_pids": [
+    23424,
+    9440
+  ],
+  "agent_browser_tab": "closed",
+  "apache_shutdown": "Exact owned processes stopped after service shutdown was unavailable"
+}

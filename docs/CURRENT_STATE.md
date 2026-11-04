@@ -1,14 +1,14 @@
 # Aktuální stav projektu
 
-Aktualizováno 4. 11. 2026 (Europe/Prague), po vydání PR #297/#298 a osmém funkčním průchodu.
+Aktualizováno 4. 11. 2026 (Europe/Prague), po devátém funkčním průchodu; nová oprava zatím nenasazená.
+
+- **[Devátý funkční průchod](verification/functional-uat-round9-20261104/RESULTS.md):** F09 opravená místně: souběh sestavení rodinného souhrnu s opt-out či změnou oprávnění. HTTP 37/37, cílené testy 34/365, MariaDB kontrakt 49 kontrol a skutečný browser PASS. Oprava **nenasazená**; heslo/T07 vynechané.
 
 - **[PR #297/#298 sloučené a nasazené](verification/functional-round7-release-20261104/RESULTS.md):** úplný filtr úrovní zapojení a stránkování; nově hlášená dev závislost opravena bez oslabení gate. CI i deploy 1983/38433, HTTP před/po 37/37 a izolovaná obnova PASS. Přihlášené produkční UAT bez relace NOT RUN; heslo/T07 vynechané.
 
 - **[Osmý funkční průchod](verification/functional-uat-round8-20261104/RESULTS.md):** příprava období, hierarchie ke dni lekce, věkové návrhy a stránkování. Skutečný místní browser, 25 kontrol HTTP/model/persistence a cílené 21/190 PASS; všech 12 doménových snapshotů shodných. Bez nové chyby runtime.
 
 - **[Pátý](verification/functional-uat-round5-20261104/RESULTS.md) a [šestý průchod](verification/functional-uat-round6-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob; následný skutečný Chrome a 16 kontrol persistence PASS. Bez další chyby runtime; výsledky jsou v nasazeném PR #295, heslo/T07 vynechané.
-
-- **[Čtvrtý funkční průchod](verification/functional-uat-round4-20261104/RESULTS.md):** 70 HTTP kontrol zdravotních podkladů, docházky a náhrad PASS; browser ověřil papírový podklad a návaznost do rodiny. Opravené zachování původu papírové docházky je **nasazené v PR #295**. Místní sada 1977 testů; heslo/T07 dále odložené.
 
 - **[Třetí funkční vlna sloučena a nasazena](verification/functional-round3-release-20261104/RESULTS.md):** opravené náhledy členství a české časové stavy rodinného přehledu. Přihlášený produkční náhled PASS bez potvrzení změny; rodinná stránka načtena, účet nemá propojené sportovce pro ověření štítků. Místní matice 119/119 PASS; úplné UAT všech rolí není uzavřené. Heslo/T07 nadále odložené.
 

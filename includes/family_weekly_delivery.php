@@ -188,10 +188,28 @@ function familyWeeklyDeliveryGenerate(
             continue;
         }
         $accountId = (int)$account['account_id'];
+        // Bind the content to the family access that existed before it was composed.
+        $authorizationBeforePreview = notificationAuthorizationHash($pdo, $accountId);
         $preview = $previewFactory($pdo, $accountId, $periodFrom);
         $recipientName = trim((string)$account['jmeno'] . ' ' . (string)$account['prijmeni']);
         $pdo->beginTransaction();
         try {
+            // Serialize enqueue with opt-out. If enqueue wins, opt-out cancels its row;
+            // if opt-out wins, no new pending row may appear after that cancellation.
+            $lock = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
+            $current = $pdo->prepare(
+                'SELECT p.enabled,a.email,a.aktivni,a.email_overeno FROM family_weekly_summary_preferences p '
+                . 'JOIN verejni_uzivatele a ON a.id=p.account_id WHERE p.account_id=?' . $lock
+            );
+            $current->execute([$accountId]);
+            $currentAccount = $current->fetch(PDO::FETCH_ASSOC);
+            if (!$currentAccount || (int)$currentAccount['enabled'] !== 1
+                || (int)$currentAccount['aktivni'] !== 1 || (int)$currentAccount['email_overeno'] !== 1
+                || !hash_equals((string)$account['email'], (string)$currentAccount['email'])) {
+                $pdo->rollBack();
+                $result['skipped']++;
+                continue;
+            }
             $pdo->prepare(
                 'INSERT INTO family_weekly_summaries(account_id,period_from,period_to,recipient_email,recipient_name,subject_plain,body_plain,item_count) '
                 . 'VALUES(?,?,?,?,?,?,?,?)'
@@ -203,6 +221,15 @@ function familyWeeklyDeliveryGenerate(
             ]);
             $id = (int)$pdo->lastInsertId();
             notificationAuthorizationRecord($pdo, 'family_weekly_summaries', $id, $accountId);
+            $snapshot = $pdo->prepare('SELECT authorization_hash FROM notification_authorization_snapshots WHERE queue_key=? AND message_id=?');
+            $snapshot->execute(['family_weekly_summaries', $id]);
+            if (!hash_equals($authorizationBeforePreview, (string)$snapshot->fetchColumn())) {
+                // Never authorize old content with a newer family fingerprint. A later
+                // revocation is still caught by the existing check immediately before send.
+                $pdo->rollBack();
+                $result['skipped']++;
+                continue;
+            }
             familyWeeklyDeliveryAudit(
                 $pdo,
                 $id,

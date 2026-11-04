@@ -1,0 +1,38 @@
+{
+    "expected_phase": "red",
+    "expected_behavior_observed": true,
+    "two_independent_mariadb_connections": true,
+    "external_sends": 0,
+    "observations": {
+        "opt_out": {
+            "generation": {
+                "due": true,
+                "queued": 1,
+                "existing": 0,
+                "skipped": 0,
+                "period_from": "2033-01-06"
+            },
+            "sender_calls": 0,
+            "worker_result": null,
+            "queue_row": {
+                "id": 41,
+                "status": "pending"
+            }
+        },
+        "revoke": {
+            "generation": {
+                "due": true,
+                "queued": 1,
+                "existing": 0,
+                "skipped": 0,
+                "period_from": "2033-02-03"
+            },
+            "sender_calls": 1,
+            "worker_result": true,
+            "queue_row": {
+                "id": 42,
+                "status": "sent"
+            }
+        }
+    }
+}

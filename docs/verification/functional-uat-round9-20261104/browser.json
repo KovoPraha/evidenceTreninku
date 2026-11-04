@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "browser": "ChatGPT in-app browser",
+  "production_authenticated": false,
+  "production_result": "NOT RUN: redirected to login",
+  "local_actor": "round9-order-R9-ee16a0",
+  "local_position": "order_operator",
+  "superadmin": false,
+  "actions": [
+    "Login using existing synthetic seed credential",
+    "Read inclusive same-day list: 31 entries, 25 on first page",
+    "Click Next: 6 entries on second page, filters retained",
+    "Select cancelled and submit search: exactly one entry",
+    "Click Preview: script/image payload rendered literally; stored body visible",
+    "Reload preview and follow Communication status: 63 processed, 15 cancelled, no pending/processing; read-only notice visible"
+  ],
+  "application_changes_in_browser": false,
+  "password_and_T07": "SKIPPED",
+  "persistence": "PASS: sixteen domain/queue tables unchanged across final read-only browser checks"
+}
