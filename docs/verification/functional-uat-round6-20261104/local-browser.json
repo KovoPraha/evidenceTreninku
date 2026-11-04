@@ -1,0 +1,31 @@
+{
+  "origin": "http://127.0.0.1:18422",
+  "synthetic_only": true,
+  "actor": "round4-registrar",
+  "person_id": 20,
+  "program_id": 9,
+  "consent_id": 4,
+  "observed": {
+    "draft_saved_separately": true,
+    "unchecked_publish_blocked_natively": true,
+    "placeholder_publication_refused": true,
+    "draft_A_published": 14,
+    "stale_draft_B_refused": 15,
+    "stale_message": "Koncept vychází ze starší verze. Zkontrolujte aktuální souhlas a uložte nový koncept.",
+    "published_consent_hidden_separately": true,
+    "future_signature_blocked_natively": true,
+    "evidence_or_original_required": true,
+    "invalid_form_retains_program_and_signer": true,
+    "paper_recorded": 6,
+    "paper_verified_separately": true,
+    "paper_correction_recorded": 7,
+    "original_superseded": true,
+    "replacement_needs_verification": true,
+    "historical_version_retained": 30,
+    "followup_open_saved": true,
+    "followup_closed_saved": true,
+    "membership_still_pending": true
+  },
+  "password_and_T07": "SKIPPED",
+  "independent_session_test": false
+}

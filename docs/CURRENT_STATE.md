@@ -1,6 +1,12 @@
 # Aktuální stav projektu
 
-Aktualizováno 4. 11. 2026 (Europe/Prague), po produkčním vydání PR #293.
+Aktualizováno 4. 11. 2026 (Europe/Prague), po vydání PR #293 a šestém funkčním průchodu.
+
+- **[Šestý funkční průchod](verification/functional-uat-round6-20261104/RESULTS.md):** skutečný Chrome registráře: produkční mobilní UI bez doménových zápisů a místní koncept/publikace/skrytí, historický papírový podklad s opravou a uzavření pracovního úkolu PASS. Všech 16 kontrol persistence PASS; bez nové chyby runtime. PR #295 stále otevřený/nenasazený, heslo/T07 vynechané.
+
+- **[Pátý funkční průchod](verification/functional-uat-round5-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob PASS; cílená sada 35/288 a souběžné zveřejnění v MariaDB PASS. Bez nové potvrzené chyby runtime; browser této vlny kvůli timeoutům NOT RUN. PR #295 zůstává nesloučený/nenasazený, heslo/T07 odložené.
+
+- **[Čtvrtý funkční průchod](verification/functional-uat-round4-20261104/RESULTS.md):** 70 HTTP kontrol zdravotních podkladů, docházky a náhrad PASS; browser ověřil papírový podklad a návaznost do rodiny. Opravené zachování původu papírové docházky je **nenasazené**. Místní sada 1977 testů; heslo/T07 dále odložené.
 
 - **[Třetí funkční vlna sloučena a nasazena](verification/functional-round3-release-20261104/RESULTS.md):** opravené náhledy členství a české časové stavy rodinného přehledu. Přihlášený produkční náhled PASS bez potvrzení změny; rodinná stránka načtena, účet nemá propojené sportovce pro ověření štítků. Místní matice 119/119 PASS; úplné UAT všech rolí není uzavřené. Heslo/T07 nadále odložené.
 

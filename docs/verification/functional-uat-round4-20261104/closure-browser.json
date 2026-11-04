@@ -1,0 +1,11 @@
+{
+  "browser_before": "Chrome",
+  "browser_after": "in-app Chromium",
+  "local_only": true,
+  "training_id": 1,
+  "version": 4,
+  "source_selected": "paper",
+  "fresh_reason_required": true,
+  "fresh_confirmation_required": true,
+  "source_dom": "combobox \"Podklad\":\n    - option \"Zápis trenéra\"\n    - option \"Přepis papírové docházky\" [selected]\n  - text: Důvod účasti"
+}
