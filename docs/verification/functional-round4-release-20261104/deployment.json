@@ -1,0 +1,34 @@
+{
+  "run_id": 41870966110,
+  "source_sha": "7e7a6364a3527bce1c6ec4b789468bd716f28fb4",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-11-04_164857_201ea519.sql.gz",
+    "manifest": "evidence_2026-11-04_164857_201ea519.manifest.json",
+    "sha256": "9f4d39a022d78e44ea2eb434c87bfb3e19007566d8850443df24cfa4bdc5ee11",
+    "tables": 342,
+    "triggers": 2,
+    "compressed_bytes": 6254663
+  },
+  "tests": {
+    "tests": 1977,
+    "assertions": 38403,
+    "skipped": 0
+  },
+  "migrations": {
+    "status": "current",
+    "pending": [],
+    "ledger_count": 149
+  },
+  "variable_symbols_unchanged": true,
+  "activation_log_lines": [
+    ">f.st...... includes/training_closure_form.php"
+  ],
+  "evidence_limit": "Activation log plus exact live release metadata and browser form. Not a full live runtime hash inventory or a production correction save."
+}

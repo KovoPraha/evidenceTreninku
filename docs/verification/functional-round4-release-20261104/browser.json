@@ -1,0 +1,29 @@
+{
+  "origin": "https://kis.kovopraha.cz",
+  "authenticated": true,
+  "initial_workspace": "registrar",
+  "verification_workspace": "sports_lead",
+  "superadmin": true,
+  "training_id": 1604,
+  "training_label": "TEST-UAT-AUTO-20261101-1955-a7c2 – upraveno",
+  "state": "Rozepsaná docházka",
+  "observed": {
+    "closure_page_loaded": true,
+    "default_source": "coach",
+    "paper_option_selectable": true,
+    "reason_required": true,
+    "fresh_reason_empty": true,
+    "confirmation_required": true,
+    "confirmation_unchecked": true
+  },
+  "form_submitted": false,
+  "domain_mutations": false,
+  "limitation": "Existing synthetic training is unclosed; this verifies the production form and new/legacy default. Persisted paper-to-paper correction is covered by local browser, regression tests and deployment evidence, not a production save.",
+  "password_and_T07": "SKIPPED",
+  "restored": {
+    "registrar_workspace": true,
+    "authenticated": true,
+    "url": "https://kis.kovopraha.cz/pracovni_pozice.php"
+  },
+  "helper_tab_closed": true
+}
