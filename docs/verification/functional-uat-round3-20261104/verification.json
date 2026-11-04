@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-04",
+  "timezone": "Europe/Prague",
+  "base_sha": "ef622b9924a73cb51419fa252b2bd4d1b83ea2fe",
+  "production_domain_writes": false,
+  "production_workspace_switches": true,
+  "deployed": false,
+  "password_and_T07": "SKIPPED",
+  "local_only": {
+    "database": "functional_round3",
+    "database_port": 3321,
+    "http_port": 18421,
+    "synthetic_only": true,
+    "web_mail_curl_disabled": true
+  },
+  "phpunit": {
+    "preview_before_fix": {
+      "tests": "2",
+      "assertions": "16",
+      "errors": "0",
+      "failures": "2",
+      "skipped": "0",
+      "skipped_cases": []
+    },
+    "cancel_before_fix": {
+      "tests": "1",
+      "assertions": "8",
+      "errors": "0",
+      "failures": "1",
+      "skipped": "0",
+      "skipped_cases": []
+    },
+    "family_before_fix": {
+      "tests": "11",
+      "assertions": "0",
+      "errors": "11",
+      "failures": "0",
+      "skipped": "0",
+      "skipped_cases": []
+    },
+    "targeted_after_fix": {
+      "tests": "30",
+      "assertions": "228",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "skipped_cases": []
+    },
+    "full_windows": {
+      "tests": "1971",
+      "assertions": "38341",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "3",
+      "skipped_cases": [
+        "testCanonicalPublicSymlinkFailsBeforeWriting",
+        "testCleanupDoesNotFollowOrDeleteReplacementSymlink",
+        "testRefusesSymlinkedDataBeforeChanges"
+      ]
+    }
+  },
+  "get_matrix": {
+    "checks": 64,
+    "passed": 64
+  },
+  "post_matrix": {
+    "checks": 55,
+    "passed": 55
+  }
+}

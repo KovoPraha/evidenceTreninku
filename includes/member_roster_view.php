@@ -40,16 +40,21 @@ if ($memberPreview):
      krha(['grant' => 'Zařazení','end_member' => 'Ukončení','transfer' => 'Přestup'][$memberPreview['request']['action']])
 
     ?>.
-                Platnost: <?=
-     krha($memberPreview['request']['valid_from'].' – '.($memberPreview['request']['valid_to'] ?:
-                'bez konce'))
-    ?>.
                 Důvod: <?=
      krha($memberPreview['request']['reason'])
     ?>.</p>
-                <p>Soupisky: <?=
-     krha(implode(', ', array_column($memberPreview['teams'], 'name')))
-    ?>.</p>
+                <p>Platnost členství po změně:</p>
+                <ul aria-label="Platnost členství po změně">
+                    <?php foreach ($memberPreview['periods'] as $period): ?>
+                        <li><?= krha($period['name']) ?>:
+                            <?php if (!empty($period['cancelled'])): ?>
+                                Zrušení před začátkem; členství nebude platné.
+                            <?php else: ?>
+                                <?= krha($period['valid_from'].' – '.($period['valid_to'] ?? 'bez konce')) ?>
+                            <?php endif; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
                 <ul><?php
 foreach ($memberPreview['people'] as $person):
     ?><li><?=
@@ -59,13 +64,13 @@ foreach ($memberPreview['people'] as $person):
      (int)$person['id']
     ?>)</li><?php
 endforeach;
-    ?></ul>
+?></ul>
                 <p>Dotčené budoucí tréninky: <?=
-     count($memberPreview['impact']['plans'])
-    ?>; akce: <?=
-     count($memberPreview['impact']['events'])
+ count($memberPreview['impact']['plans'])
+?>; akce: <?=
+ count($memberPreview['impact']['events'])
 
-    ?>.</p>
+?>.</p>
                 <?php
 foreach ($memberPreview['impact']['plans'] as $plan):
     ?><div><a href="training_rsvps_admin.php?plan_id=<?=
@@ -78,7 +83,7 @@ foreach ($memberPreview['impact']['plans'] as $plan):
 
     ?></div><?php
 endforeach;
-    ?>
+?>
                 <?php
 foreach ($memberPreview['impact']['events'] as $event):
     ?><div><?=
@@ -91,7 +96,7 @@ foreach ($memberPreview['impact']['events'] as $event):
     ?></div><?php
 endforeach;
 
-    ?>
+?>
                 <?php
 if ($memberPreview['impact']['blocked']):
     ?><p class="text-danger">Nejdřív vyřešte existující odpovědi/přihlášky u dotčených aktivit a načtěte nový náhled.</p>

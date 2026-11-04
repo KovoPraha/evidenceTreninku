@@ -14,6 +14,8 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 }
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
+require_once dirname(__DIR__) . '/includes/family_roster_status.php';
+$rosterStatusDate = (new DateTimeImmutable('today', new DateTimeZone('Europe/Prague')))->format('Y-m-d');
 require_once dirname(__DIR__) . '/includes/medical_clearance.php';
 require_once dirname(__DIR__) . '/includes/family_tasks.php';
 require_once dirname(__DIR__) . '/includes/family_calendar_feed.php';
@@ -40,11 +42,6 @@ function familyPageChargeStatus(string $status): string
 
 
      'refunded' => 'Vráceno', 'cancelled' => 'Zrušeno'][$status] ?? $status;
-}
-
-function familyPageRosterStatus(string $status): string
-{
-    return ['active' => 'Aktivní', 'pending' => 'Čeká', 'inactive' => 'Neaktivní', 'ended' => 'Ukončeno'][$status] ?? $status;
 }
 
 function familyPageEventType(string $type): string
@@ -1571,6 +1568,7 @@ if ($profile['rosters'] === []):
 
         ?><?php
 foreach ($profile['rosters'] as $roster):
+    $rosterDisplay = familyPortalRosterDisplayStatus($roster, $rosterStatusDate);
 
     ?><tr><td><strong><?=
 
@@ -1590,11 +1588,11 @@ foreach ($profile['rosters'] as $roster):
 
     ?></td><td><span class="badge <?=
 
-         $roster['status'] === 'active' ? 'text-bg-success' : 'text-bg-secondary'
+         familyPageH($rosterDisplay['class'])
 
     ?>"><?=
 
-         familyPageH(familyPageRosterStatus((string)$roster['status']))
+         familyPageH($rosterDisplay['label'])
 
     ?></span></td></tr><?php
 endforeach;

@@ -1,6 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 3. 11. 2026 (Europe/Prague), po potvrzeném produkčním převodu evidence členů.
+Aktualizováno 4. 11. 2026 (Europe/Prague), po třetím autonomním funkčním průchodu.
+
+- **[Třetí funkční průchod](verification/functional-uat-round3-20261104/RESULTS.md):** přihlášená produkční administrace a místní trenér/registrář/rodič; matice přístupů 119/119 PASS. Opravené náhledy členství a české časové stavy v rodinném přehledu jsou zatím **nenasazené**. Heslo/T07 nadále odložené; úplné UAT všech rolí není uzavřené.
 
 - **Evidence členů bez sezon: aplikace nasazena a schválená data převedena.**
   [Převod 41542954307](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41542954307)
