@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 const PRIVATE_STORAGE_RECEIPTS = 'receipts';
@@ -11,6 +12,7 @@ const PRIVATE_STORAGE_ACCOUNTING_DOCUMENTS = 'accounting-documents';
 const PRIVATE_STORAGE_ACCOUNTING_EXPORTS = 'accounting-exports';
 const PRIVATE_STORAGE_STOCK_DOCUMENTS = 'stock-documents';
 const PRIVATE_STORAGE_MEDICAL_DOCUMENTS = 'medical-documents';
+const PRIVATE_STORAGE_TV_IMAGES = 'tv-images';
 const PRIVATE_STORAGE_DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
 const PRIVATE_STORAGE_MAX_BATCH_FILES = 12;
 const PRIVATE_STORAGE_MAX_BATCH_BYTES = 30 * 1024 * 1024;
@@ -54,7 +56,7 @@ function privateStorageRoot(): string
     $normalizedDocumentRoot = $documentRoot !== ''
         ? strtolower(str_replace('\\', '/', realpath($documentRoot) ?: $documentRoot))
         : '';
-    $inside = static fn(string $candidate, string $parent): bool =>
+    $inside = static fn (string $candidate, string $parent): bool =>
         $parent !== '' && ($candidate === $parent || str_starts_with($candidate . '/', rtrim($parent, '/') . '/'));
     if ($inside($normalizedRoot, $appRoot) || $inside($normalizedRoot, $normalizedDocumentRoot)) {
         throw new RuntimeException('Soukrome uloziste musi byt mimo webroot aplikace.');
@@ -75,6 +77,7 @@ function privateStorageEnsureDirectory(string $category): string
         PRIVATE_STORAGE_ACCOUNTING_EXPORTS,
         PRIVATE_STORAGE_STOCK_DOCUMENTS,
         PRIVATE_STORAGE_MEDICAL_DOCUMENTS,
+        PRIVATE_STORAGE_TV_IMAGES,
     ], true)) {
         throw new InvalidArgumentException('Neplatna kategorie soukromeho souboru.');
     }
@@ -91,8 +94,7 @@ function privateStorageStore(
     string $category,
     bool $uploaded = true,
     int $maximumBytes = PRIVATE_STORAGE_DEFAULT_MAX_BYTES
-): string
-{
+): string {
     $size = is_file($source) ? filesize($source) : false;
     if (!is_int($size) || $size < 1 || $size > $maximumBytes) {
         throw new RuntimeException('Soubor musí mít nejvýše ' . (int)ceil($maximumBytes / 1048576) . ' MB.');
@@ -122,7 +124,9 @@ function privateStorageValidateUploadBatch(
         $errors = is_array($field['error'] ?? null) ? $field['error'] : [$field['error'] ?? UPLOAD_ERR_NO_FILE];
         $sizes = is_array($field['size'] ?? null) ? $field['size'] : [$field['size'] ?? 0];
         foreach ($names as $index => $name) {
-            if (trim((string)$name) === '' || (int)($errors[$index] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) continue;
+            if (trim((string)$name) === '' || (int)($errors[$index] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
             if ((int)($errors[$index] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
                 throw new RuntimeException('Některý soubor se nepodařilo kompletně nahrát.');
             }
@@ -144,7 +148,9 @@ function privateStorageValidateUploadBatch(
 
 function privateStorageResolve(string $key): ?string
 {
-    if (preg_match('~^private://(receipts|stress-tests|athlete-photos|service-documents|paper-documents|medical-documents|accounting-documents|stock-documents)/([a-f0-9]{32}\.(?:jpg|png|pdf))$~D', $key, $match) !== 1
+    $documentPattern = '~^private://(receipts|stress-tests|athlete-photos|service-documents|paper-documents|'
+        . 'medical-documents|accounting-documents|stock-documents|tv-images)/([a-f0-9]{32}\.(?:jpg|png|pdf))$~D';
+    if (preg_match($documentPattern, $key, $match) !== 1
         && preg_match('~^private://(accounting-exports)/([a-f0-9]{32}\.zip)$~D', $key, $match) !== 1
         && preg_match('~^private://(uci-temp)/([a-f0-9]{32}\.xlsx)$~D', $key, $match) !== 1
     ) {
@@ -292,7 +298,9 @@ function privateStorageStoreAthletePhoto(string $source, bool $uploaded = true):
             throw new RuntimeException('Fotografii nelze uložit do soukromého úložiště.');
         }
     } catch (Throwable $exception) {
-        if (is_file($target)) @unlink($target);
+        if (is_file($target)) {
+            @unlink($target);
+        }
         throw $exception;
     } finally {
         imagedestroy($image);
