@@ -30,9 +30,6 @@ function memberRosterPreview(PDO $pdo, array $input): array
     $lock = $pdo->inTransaction() && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
     $teamIds = array_values(array_unique(array_filter([(int) $request['team_id'], (int) $request['target_team_id']])));
     sort($teamIds, SORT_NUMERIC);
-    if (!$teamIds) {
-        throw new KisRosterException('Vyberte soupisku.');
-    }
     $marks = implode(',', array_fill(0, count($teamIds), '?'));
     $query = $pdo->prepare("SELECT * FROM club_teams WHERE id IN ($marks) ORDER BY id" . $lock);
     $query->execute($teamIds);
