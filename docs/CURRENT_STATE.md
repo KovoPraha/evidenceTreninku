@@ -1,12 +1,14 @@
 # Aktuální stav projektu
 
-Aktualizováno 4. 11. 2026 (Europe/Prague), po vydání PR #293 a šestém funkčním průchodu.
+Aktualizováno 4. 11. 2026 (Europe/Prague), po vydání PR #295 a ověření produkce.
 
-- **[Šestý funkční průchod](verification/functional-uat-round6-20261104/RESULTS.md):** skutečný Chrome registráře: produkční mobilní UI bez doménových zápisů a místní koncept/publikace/skrytí, historický papírový podklad s opravou a uzavření pracovního úkolu PASS. Všech 16 kontrol persistence PASS; bez nové chyby runtime. PR #295 stále otevřený/nenasazený, heslo/T07 vynechané.
+- **[PR #295 sloučený a nasazený](verification/functional-round4-release-20261104/RESULTS.md):** zachování papírového původu při opravě docházky. CI i deploy 1977/38403, HTTP před/po 35/35 a izolovaná obnova zálohy PASS. Produkční formulář ověřen bez zápisu; heslo/T07 vynechané.
 
-- **[Pátý funkční průchod](verification/functional-uat-round5-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob PASS; cílená sada 35/288 a souběžné zveřejnění v MariaDB PASS. Bez nové potvrzené chyby runtime; browser této vlny kvůli timeoutům NOT RUN. PR #295 zůstává nesloučený/nenasazený, heslo/T07 odložené.
+- **[Šestý funkční průchod](verification/functional-uat-round6-20261104/RESULTS.md):** skutečný Chrome registráře: produkční mobilní UI bez doménových zápisů a místní koncept/publikace/skrytí, historický papírový podklad s opravou a uzavření pracovního úkolu PASS. Všech 16 kontrol persistence PASS; bez nové chyby runtime. PR #295 již nasazený; heslo/T07 vynechané.
 
-- **[Čtvrtý funkční průchod](verification/functional-uat-round4-20261104/RESULTS.md):** 70 HTTP kontrol zdravotních podkladů, docházky a náhrad PASS; browser ověřil papírový podklad a návaznost do rodiny. Opravené zachování původu papírové docházky je **nenasazené**. Místní sada 1977 testů; heslo/T07 dále odložené.
+- **[Pátý funkční průchod](verification/functional-uat-round5-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob PASS; cílená sada 35/288 a souběžné zveřejnění v MariaDB PASS. Bez nové potvrzené chyby runtime; browser této vlny kvůli timeoutům NOT RUN. PR #295 již nasazený; heslo/T07 odložené.
+
+- **[Čtvrtý funkční průchod](verification/functional-uat-round4-20261104/RESULTS.md):** 70 HTTP kontrol zdravotních podkladů, docházky a náhrad PASS; browser ověřil papírový podklad a návaznost do rodiny. Opravené zachování původu papírové docházky je **nasazené v PR #295**. Místní sada 1977 testů; heslo/T07 dále odložené.
 
 - **[Třetí funkční vlna sloučena a nasazena](verification/functional-round3-release-20261104/RESULTS.md):** opravené náhledy členství a české časové stavy rodinného přehledu. Přihlášený produkční náhled PASS bez potvrzení změny; rodinná stránka načtena, účet nemá propojené sportovce pro ověření štítků. Místní matice 119/119 PASS; úplné UAT všech rolí není uzavřené. Heslo/T07 nadále odložené.
 
@@ -44,20 +46,20 @@ Aktualizováno 4. 11. 2026 (Europe/Prague), po vydání PR #293 a šestém funk�
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `94982c44d7b7737bddcca46d3ebb9fb4f698abef`,
-  [deploy 41835865547](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41835865547) SUCCESS.
-  PR #293 dodal čtyři runtime soubory; evidence bez sezon a předchozí CLI opravy jsou zahrnuté.
-  [Protokol](verification/functional-round3-release-20261104/RESULTS.md),
-  [strojové porovnání](verification/functional-round3-release-20261104/release-comparison.json).
-  Živé SHA potvrdil čtecí audit 41836644728, aktivaci souborů log rsync; nejde o úplnou hash inventuru.
+- **Živé vydání:** `7e7a6364a3527bce1c6ec4b789468bd716f28fb4`,
+  [deploy 41870966110](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41870966110) SUCCESS.
+  PR #295 dodal opravu přípravy formuláře docházky; bez změny writeru, historie a schématu.
+  [Protokol](verification/functional-round4-release-20261104/RESULTS.md),
+  [strojové porovnání](verification/functional-round4-release-20261104/release-comparison.json).
+  Živé SHA potvrdil čtecí audit 41871614594, dodání souboru log aktivace; nejde o úplnou hash inventuru.
   Schválený datový převod zůstává zachovaný, při vydání se neopakoval.
-- **Ověření:** všech 11 kontrol #293 PASS, sloučený strom shodný s ověřeným,
-  Linux i deploy 1971 testů / 38392 assertions; MariaDB 10.3/11.4, profily a PHPStan/styl PASS.
-  Deploy ověřil dostupnost a ochranu klíče archivu; anonymní HTTP před/po 30/30 PASS.
-  Produkční náhled členství PASS; úplné přihlášené UAT, změna hesla a T07 nejsou uzavřené.
+- **Ověření:** všech 11 kontrol #295 PASS, sloučený strom shodný s ověřeným,
+  Linux i deploy 1977 testů / 38403 assertions; MariaDB 10.3/11.4, profily a PHPStan/styl PASS.
+  Deploy ověřil dostupnost a ochranu klíče archivu; anonymní HTTP před/po 35/35 PASS.
+  Produkční formulář docházky PASS bez uložení; úplné UAT, změna hesla a T07 nejsou uzavřené.
 - **Záloha a schéma:** čerstvá záloha vydání, 342 tabulek / 2 triggery;
-  [izolovaná obnova 41837623683](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41837623683) PASS včetně počtů řádků všech tabulek.
-  SHA-256 `bd429f420f6fd0592b52f1a93ad2967b938731fa6ee881f8c5676bb1b182a553`.
+  [izolovaná obnova 41871628355](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41871628355) PASS včetně počtů řádků všech tabulek.
+  SHA-256 `9f4d39a022d78e44ea2eb434c87bfb3e19007566d8850443df24cfa4bdc5ee11`.
   Schéma current / pending [], migrační ledger 149; dosavadní variabilní symboly zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
