@@ -1,0 +1,111 @@
+{
+    "synthetic_only": true,
+    "tag": "R8-b8d1d6",
+    "checks": 25,
+    "http_requests": 15,
+    "results": [
+        "Model: continuing\/leaving\/joining reflect dated membership and child hierarchy",
+        "Model: first page is bounded and total includes all 31 people",
+        "Model: extreme page clamps to final six people",
+        "Model: later date includes joining child and excludes expired child",
+        "Model: last membership day is inclusive",
+        "Model: each lesson resolves its own hierarchy date and cancelled\/outside-child lessons are excluded",
+        "Model: one lesson linked to two valid descendants appears once",
+        "Model: expired midnight grant is inactive and revoked grant is absent",
+        "Model: eligible\/too old\/too young\/unknown birthdays stay distinct",
+        "Model: older person receives a suggestion without a membership write",
+        "HTTP: registrar sees correct total and first 25 people",
+        "HTTP: second page contains remaining six people",
+        "HTTP: pagination preserves team, date, search and change filter",
+        "HTTP: leaving filter finds exactly the ending person",
+        "HTTP: multi-word case-insensitive search works",
+        "HTTP: empty search result is explicit",
+        "HTTP: unknown change filter is refused",
+        "HTTP: impossible calendar day is refused",
+        "HTTP: legacy season renewal remains refused",
+        "HTTP: missing team is refused without mutation",
+        "HTTP: write method is refused by read-only guide",
+        "HTTP: sports lead sees permitted guide and sports-context person links",
+        "HTTP: coach and anonymous user cannot read the guide",
+        "HTTP: age warnings and non-mutating suggestion are visible",
+        "Persistence: all twelve domain table snapshots are unchanged"
+    ],
+    "model": {
+        "counts": {
+            "continuing": 29,
+            "leaving": 1,
+            "joining": 1
+        },
+        "later_counts": {
+            "continuing": 28,
+            "leaving": 2,
+            "joining": 2
+        },
+        "pages": 2,
+        "total": 31,
+        "included_plan_ids": [
+            13,
+            15,
+            16
+        ],
+        "age_counts": {
+            "eligible": 26,
+            "too_old": 1,
+            "too_young": 1,
+            "unknown": 1
+        }
+    },
+    "domain_snapshots_before": {
+        "sportovci": {
+            "rows": 1055,
+            "sha256": "d08938b6847203e12949f9736b0250728958d2aeed85a3cd10977eb3bce8b0d9"
+        },
+        "club_roster_members": {
+            "rows": 46,
+            "sha256": "56ababac1e372ff5a127132b90fe623cf32abdb53ed974650ade0fd71c681e0b"
+        },
+        "club_team_edges": {
+            "rows": 3,
+            "sha256": "3656d8f38869a3327219ff9399eb4610f37fa9ce7f1b9c096cb0703b6240d8e1"
+        },
+        "planovane_treninky": {
+            "rows": 17,
+            "sha256": "efe6817c5e6f686ae4794cd1efb2b3e11bcdc7218f6401fe59ccacb32bb6f74d"
+        },
+        "training_roster_links": {
+            "rows": 15,
+            "sha256": "f4f916ed67d9b2c9e54b7fac3213750f6c4d14203385d3221d2afab8ec969030"
+        },
+        "member_roster_age_rules": {
+            "rows": 1,
+            "sha256": "d61235cab1e8c9eae1bc367830f3d9097f0a09036fdb04861f609946ee669388"
+        },
+        "coach_scope_grants": {
+            "rows": 7,
+            "sha256": "d75ec4f88059678af37ddde7a6cfc3d3f814153877287b29c56d4a6fa9d929fa"
+        },
+        "verejni_uzivatele": {
+            "rows": 12,
+            "sha256": "d8a9a87dbc4ad5c20b46a3b115556f02c67ded18aa9efae31c089b9d49aae0f5"
+        },
+        "club_program_enrollments": {
+            "rows": 4,
+            "sha256": "a55bc7fea3a629d503b6bf384a5f55ca8747c4a880a4978567f0ab7c3b2afbc2"
+        },
+        "club_member_charges": {
+            "rows": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "payments": {
+            "rows": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "sports_activity_statements": {
+            "rows": 1,
+            "sha256": "f34317b096787b70093e2600583f3ec574ba8682272995dbc436af5ff31b9605"
+        }
+    },
+    "all_domain_snapshots_unchanged": true,
+    "production_mutations": false,
+    "password_and_T07": "SKIPPED"
+}

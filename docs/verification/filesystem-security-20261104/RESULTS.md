@@ -26,3 +26,5 @@ kód, workflow, oprávnění, schéma a data se nemění. Žádný advisory neby
 Jde o nutnou nápravu bezpečnostního zastavení již autorizovaného nasazení PR #297.
 Následný skutečný deploy a ověření budou doložené v samostatném protokolu vydání.
 Heslo, skutečný použitý obnovovací odkaz a T07 zůstávají SKIPPED.
+
+Následné úspěšné nasazení a jeho kontroly dokládá [protokol vydání](../functional-round7-release-20261104/RESULTS.md).

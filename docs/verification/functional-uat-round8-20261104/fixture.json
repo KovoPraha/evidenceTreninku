@@ -1,0 +1,59 @@
+{
+    "synthetic_only": true,
+    "tag": "R8-b8d1d6",
+    "teams": {
+        "parent": 21,
+        "main": 22,
+        "late": 23,
+        "departing": 24
+    },
+    "people": {
+        "continue-00": 1056,
+        "continue-01": 1057,
+        "continue-02": 1058,
+        "continue-03": 1059,
+        "continue-04": 1060,
+        "continue-05": 1061,
+        "continue-06": 1062,
+        "continue-07": 1063,
+        "continue-08": 1064,
+        "continue-09": 1065,
+        "continue-10": 1066,
+        "continue-11": 1067,
+        "continue-12": 1068,
+        "continue-13": 1069,
+        "continue-14": 1070,
+        "continue-15": 1071,
+        "continue-16": 1072,
+        "continue-17": 1073,
+        "continue-18": 1074,
+        "continue-19": 1075,
+        "continue-20": 1076,
+        "continue-21": 1077,
+        "continue-22": 1078,
+        "continue-23": 1079,
+        "continue-24": 1080,
+        "continue-25": 1081,
+        "continue-26": 1082,
+        "continue-27": 1083,
+        "leaving": 1084,
+        "joining": 1085,
+        "late-child": 1086,
+        "departing-child": 1087
+    },
+    "plans": {
+        "main": 13,
+        "late-before": 14,
+        "late-after": 15,
+        "depart-before": 16,
+        "depart-after": 17,
+        "cancelled": 18
+    },
+    "grants": {
+        "active": 6,
+        "expired": 7,
+        "revoked": 8
+    },
+    "review_on": "2026-12-01",
+    "later_on": "2026-12-20"
+}
