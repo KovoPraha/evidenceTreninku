@@ -83,6 +83,9 @@ při opravě docházky čeká na kontrolu/sloučení/nasazení. Heslo a T07 se n
 [Pátý funkční průchod](verification/functional-uat-round5-20261104/RESULTS.md) přidal 73 HTTP kontrol
 souhlasů, papírových podkladů a vyřízení osoby, cílené 35/288 a MariaDB souběžnost PASS.
 Nový runtime nález se nepotvrdil; ovládání prohlížeče neodpovídalo, browser této vlny NOT RUN.
+[Šestý průchod v Chrome](verification/functional-uat-round6-20261104/RESULTS.md) doplnil skutečné browser scénáře registráře:
+produkční mobilní UI bez zápisů, místní souhlasy, historický papírový podklad s opravou a pracovní úkol PASS;
+16 kontrol persistence PASS, bez nové chyby runtime. PR #295 zůstává otevřený/nenasazený; heslo/T07 vynechané.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.

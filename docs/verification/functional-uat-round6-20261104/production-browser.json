@@ -1,0 +1,62 @@
+{
+  "origin": "https://kis.kovopraha.cz",
+  "authenticated": true,
+  "workspace": "registrar",
+  "superadmin": true,
+  "domain_mutations": false,
+  "observed": {
+    "draft_and_publication_separate": true,
+    "new_custom_consent_publish_absent": true,
+    "empty_title_blocked_natively": true,
+    "custom_editor_mobile_overflow": false,
+    "mobile_navigation_opened": true,
+    "navigation_closed_dialog": true,
+    "paper_form_mobile_overflow": false,
+    "missing_person_blocked_natively": true,
+    "synthetic_search_found": "TEST-PR137 Ověření nasazení",
+    "lifecycle_links": [
+      {
+        "href": "person_audit_admin.php?sportovec_id=11782",
+        "step": "Identita"
+      },
+      {
+        "href": "sprava_sportovcu.php?edit_id=11782#parents-title",
+        "step": "Rodiče a přístupy"
+      },
+      {
+        "href": "paper_registrations_admin.php?person_id=11782#record",
+        "step": "Přihlášky a souhlasy"
+      },
+      {
+        "href": "sportovec_karta.php?sportovec_id=11782&tab=prehled",
+        "step": "Členství"
+      },
+      {
+        "href": "sprava_sportovcu.php?edit_id=11782#rosters-title",
+        "step": "Skupina a soupiska"
+      },
+      {
+        "href": "medical_clearance_admin.php?person_id=11782",
+        "step": "Zdravotní podklady"
+      },
+      {
+        "href": "club_program_admissions_admin.php?person_id=11782",
+        "step": "Osobní přijetí do programu"
+      }
+    ],
+    "lifecycle_confirmation_required": true,
+    "lifecycle_mobile_overflow": false,
+    "paper_context_selected": "TEST-PR137 Ověření nasazení · 2010-01-02 · #11782"
+  },
+  "viewport_reset": true,
+  "original_url_restored": true,
+  "password_change": "SKIPPED",
+  "T07": "SKIPPED",
+  "limitations": "Superadmin workspace view does not prove restricted registrar permissions.",
+  "final_restoration": {
+    "url": "https://kis.kovopraha.cz/pracovni_pozice.php",
+    "authenticated": true,
+    "registrar_context": true,
+    "viewport_reset": true
+  }
+}

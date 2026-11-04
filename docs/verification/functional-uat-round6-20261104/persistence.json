@@ -1,0 +1,92 @@
+{
+    "synthetic_only": true,
+    "database": "functional_round4",
+    "port": 3322,
+    "current_consent": {
+        "id": 31,
+        "terms_version": "custom-draft-16",
+        "custom_visible": 0,
+        "custom_required": 1
+    },
+    "paper": [
+        {
+            "id": 6,
+            "sportovec_id": 20,
+            "scope_type": "program",
+            "scope_id": 9,
+            "term_version_id": 30,
+            "version_label": "custom-draft-14",
+            "original_location": "LOCALHOST R6-ebfe92 testovací kartotéka",
+            "replaces_id": null,
+            "state": "superseded"
+        },
+        {
+            "id": 7,
+            "sportovec_id": 20,
+            "scope_type": "program",
+            "scope_id": 9,
+            "term_version_id": 30,
+            "version_label": "custom-draft-14",
+            "original_location": "LOCALHOST R6-ebfe92 nový originál",
+            "replaces_id": 6,
+            "state": "recorded"
+        }
+    ],
+    "paper_events": [
+        {
+            "record_id": 6,
+            "event_type": "recorded"
+        },
+        {
+            "record_id": 6,
+            "event_type": "accepted"
+        },
+        {
+            "record_id": 7,
+            "event_type": "recorded"
+        },
+        {
+            "record_id": 6,
+            "event_type": "superseded"
+        }
+    ],
+    "case": {
+        "id": 5,
+        "source_type": "person_followup",
+        "source_id": 20,
+        "owner_trainer_id": 3,
+        "next_step": "LOCALHOST R6-ebfe92 předat a vyřídit podklady",
+        "review_on": "2026-11-05",
+        "status": "closed",
+        "revision": 2
+    },
+    "case_events": [
+        {
+            "revision": 1,
+            "reason": "LOCALHOST R6-ebfe92 browser založení pracovního úkolu"
+        },
+        {
+            "revision": 2,
+            "reason": "LOCALHOST R6-ebfe92 browser uzavření pracovního úkolu"
+        }
+    ],
+    "checks": {
+        "current_consent_hidden": true,
+        "old_paper_superseded": true,
+        "replacement_needs_verification": true,
+        "historical_version_retained": true,
+        "historical_snapshot_identical": true,
+        "program_context_preserved": true,
+        "person_row_unchanged": true,
+        "public_accounts_unchanged": true,
+        "online_acceptances_unchanged": true,
+        "account_person_roles_person_empty": true,
+        "club_roster_members_person_empty": true,
+        "club_member_charges_person_empty": true,
+        "club_event_planned_participants_person_empty": true,
+        "registrar_single_position": true,
+        "registrar_not_superadmin": true,
+        "work_item_closed_independently": true
+    },
+    "pass": true
+}

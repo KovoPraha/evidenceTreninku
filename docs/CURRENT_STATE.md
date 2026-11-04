@@ -1,6 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 4. 11. 2026 (Europe/Prague), po vydání PR #293 a pátém funkčním průchodu.
+Aktualizováno 4. 11. 2026 (Europe/Prague), po vydání PR #293 a šestém funkčním průchodu.
+
+- **[Šestý funkční průchod](verification/functional-uat-round6-20261104/RESULTS.md):** skutečný Chrome registráře: produkční mobilní UI bez doménových zápisů a místní koncept/publikace/skrytí, historický papírový podklad s opravou a uzavření pracovního úkolu PASS. Všech 16 kontrol persistence PASS; bez nové chyby runtime. PR #295 stále otevřený/nenasazený, heslo/T07 vynechané.
 
 - **[Pátý funkční průchod](verification/functional-uat-round5-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob PASS; cílená sada 35/288 a souběžné zveřejnění v MariaDB PASS. Bez nové potvrzené chyby runtime; browser této vlny kvůli timeoutům NOT RUN. PR #295 zůstává nesloučený/nenasazený, heslo/T07 odložené.
 

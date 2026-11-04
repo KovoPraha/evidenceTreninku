@@ -8,6 +8,9 @@ Předchozí [oprava původu papírové docházky](../functional-uat-round4-20261
 zůstává součástí téhož PR a čeká na samostatné sloučení/nasazení.
 Změna hesla, použitý obnovovací odkaz a T07 nadále SKIPPED.
 
+Navazující [šestá vlna](../functional-uat-round6-20261104/RESULTS.md) později skutečně provedla
+vybrané scénáře v Chrome. Nemění zdejší historický stav Browser NOT RUN ani nepředstavuje přehrání všech 73 kontrol browserem.
+
 ## Prostředí a metoda
 
 Znovu spuštěná vlastní syntetická functional_round4, MariaDB 10.4.32 na
