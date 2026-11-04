@@ -7,7 +7,7 @@ namespace Tests\Unit;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-require_once dirname(__DIR__, 2) . '/includes/family_portal.php';
+require_once dirname(__DIR__, 2) . '/includes/family_roster_status.php';
 
 final class FamilyRosterDisplayStatusTest extends TestCase
 {

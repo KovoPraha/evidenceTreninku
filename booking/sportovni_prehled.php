@@ -14,6 +14,7 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 }
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/family_portal.php';
+require_once dirname(__DIR__) . '/includes/family_roster_status.php';
 $rosterStatusDate = (new DateTimeImmutable('today', new DateTimeZone('Europe/Prague')))->format('Y-m-d');
 require_once dirname(__DIR__) . '/includes/medical_clearance.php';
 require_once dirname(__DIR__) . '/includes/family_tasks.php';
