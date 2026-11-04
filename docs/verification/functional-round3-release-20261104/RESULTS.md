@@ -90,3 +90,7 @@ přejímka D12–D14 zůstávají otevřené. Technický PASS je neuzavírá.
 
 Dokumentační změny mají samostatný PR. Nevyžadují další deploy; skutečným živým
 aplikačním zdrojem zůstává výše uvedené SHA, i když se main posune o dokumentaci.
+Místní kontrola: CURRENT_STATE 71 řádků, 507 odkazů, 94 archivních bloků,
+0 chyb; existující PHPUnit kontrakt dokumentace **2/14 PASS**, git diff --check PASS.
+První CI dokumentačního PR zachytilo chybné jméno pole nového JSON souhrnu;
+formát byl sjednocen s existujícím kontraktem (`before_live` / `live`) bez změny runtime.

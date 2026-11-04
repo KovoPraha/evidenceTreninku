@@ -1,13 +1,13 @@
 {
   "pre_audit_run": 41835277266,
   "post_audit_run": 41836644728,
-  "before": {
+  "before_live": {
     "sha": "7c31ea174dae063fc781f708b8caa105ba57feb6",
     "run_id": "41539094174",
     "deployed_at": "2026-11-02T22:42:15+00:00",
     "uat_approved": false
   },
-  "after": {
+  "live": {
     "sha": "94982c44d7b7737bddcca46d3ebb9fb4f698abef",
     "run_id": "41835865547",
     "deployed_at": "2026-11-04T13:14:28+00:00",
