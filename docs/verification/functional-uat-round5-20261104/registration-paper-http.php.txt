@@ -1,0 +1,105 @@
+<?php
+declare(strict_types=1);
+require __DIR__.'/http-prefix.php.txt';
+require_once $root.'/includes/club_registration_consent_admin.php';
+require_once $root.'/includes/paper_registration.php';
+$run='LOCALHOST NEPLATIT R5 '.bin2hex(random_bytes(5));
+$checks=[];$actors=[];$sessions=[];
+foreach(['registrar','coach','finance_manager'] as $role){
+ $actors[$role]=dwInsert('treneri',['jmeno'=>$run.' '.$role,'email'=>bin2hex(random_bytes(8)).'@example.invalid','heslo'=>password_hash(bin2hex(random_bytes(20)),PASSWORD_DEFAULT),'role'=>'admin','aktivni'=>1,'session_version'=>1]);
+ dwInsert('staff_user_positions',['trainer_id'=>$actors[$role],'position_code'=>$role,'is_default'=>1]);
+ $sessions[$role]=dwSession($actors[$role]);
+}
+$registrar=&$sessions['registrar'];$coach=&$sessions['coach'];$finance=&$sessions['finance_manager'];
+function r5Location(array $response,string $key):int{parse_str((string)parse_url($response['location'],PHP_URL_QUERY),$params);return (int)($params[$key]??0);}
+function r5Term(int $id):array{return clubConsentTerm($GLOBALS['pdo'],$id);}
+function r5Hash(array $row):string{return hash('sha256',json_encode($row,JSON_THROW_ON_ERROR));}
+function r5PaperCount():int{return (int)$GLOBALS['pdo']->query('SELECT COUNT(*) FROM club_paper_records')->fetchColumn();}
+function r5Dependencies(int $person):string{
+ $p=$GLOBALS['pdo'];$q=$p->prepare('SELECT * FROM sportovci WHERE id=?');$q->execute([$person]);$data=['person'=>$q->fetch()];
+ foreach(['account_person_roles','verejni_uzivatele','club_registration_consent_acceptances'] as $table)$data[$table]=$p->query('SELECT * FROM '.$table.' ORDER BY id')->fetchAll();
+ return r5Hash($data);
+}
+$route='registration_texts_admin.php?custom=0';
+dwCheck(dwRequest($registrar,$route)['status']===200,'Registrar opens custom consent editor');
+dwCheck(dwRequest($coach,$route)['status']===403&&dwRequest($finance,$route)['status']===403,'Coach and finance cannot administer registration texts');
+$title=$run.' souhlas <b>pouze text</b>';$text=$run.' syntetické znění. <b>Formátování se nespouští.</b>';
+$create=['custom_action'=>'save','custom_id'=>0,'title'=>$title,'text'=>$text,'reason'=>$run.' vytvoření','custom_required'=>'1','custom_visible'=>'1'];
+$before=(int)$pdo->query('SELECT COUNT(*) FROM club_registration_consents')->fetchColumn();
+$bad=dwRequest($registrar,$route,['csrf_token'=>'forged']+$create);
+dwCheck((int)$pdo->query('SELECT COUNT(*) FROM club_registration_consents')->fetchColumn()===$before&&str_contains($bad['body'],'Formulář vypršel'),'Forged CSRF creates no custom consent');
+dwCheck(dwRequest($coach,$route,$create)['status']===403,'Valid coach CSRF cannot write registration texts');
+$saved=dwRequest($registrar,$route,$create);$id=r5Location($saved,'custom');$draft=r5Location($saved,'draft_id');
+dwCheck($saved['status']===303&&$id>0&&$draft>0,'Saving new custom consent creates a separate draft');
+$current=r5Term($id);$initial=(int)$current['id'];
+dwCheck((int)$current['custom_visible']===0,'New consent remains hidden until explicit publication');
+dwCheck(!in_array($id,array_map('intval',array_column(clubConsentCurrent($pdo),'custom_consent_id')),true),'Unpublished consent is absent from public consent bundle');
+$page=dwRequest($registrar,'registration_texts_admin.php?custom='.$id.'&draft_id='.$draft);
+dwCheck(str_contains($page['body'],htmlspecialchars($title,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8'))&&!str_contains($page['body'],$title),'Saved title and markup are rendered as escaped plain text');
+dwCheck(dwValue(dwDom($page),'title')===$title,'Editor preserves the exact submitted title');
+$competing=dwRequest($registrar,$route,['custom_id'=>$id,'base_term_id'=>$initial,'text'=>$run.' druhý koncept']+$create);
+$otherDraft=r5Location($competing,'draft_id');
+dwCheck($competing['status']===303&&$otherDraft>$draft&&r5Term($id)['id']===$current['id'],'Competing draft does not change current public version');
+$publish=['custom_action'=>'publish','custom_id'=>$id,'draft_id'=>$draft];
+$noConfirm=dwRequest($registrar,$route,$publish);
+dwCheck((int)r5Term($id)['id']===$initial&&str_contains($noConfirm['body'],'Výslovně potvrďte'),'Publication requires a separate explicit confirmation');
+dwCheck(dwRequest($registrar,$route,['confirmed'=>'1']+$publish)['status']===303,'Explicit publication activates saved consent');
+$published=r5Term($id);$publishedHash=r5Hash($published);
+dwCheck((int)$published['custom_visible']===1&&(int)$published['custom_required']===1&&$published['consent_text_plain']===$text,'Published bundle preserves exact text and required flag');
+dwCheck(in_array($id,array_map('intval',array_column(clubConsentCurrent($pdo),'custom_consent_id')),true),'Published consent appears in public consent bundle');
+$stale=dwRequest($registrar,$route,['confirmed'=>'1','draft_id'=>$otherDraft]+$publish);
+dwCheck(str_contains($stale['body'],'starší verze')&&r5Hash(r5Term($id))===$publishedHash,'Stale competing publication cannot overwrite current term');
+$termCount=(int)$pdo->query('SELECT COUNT(*) FROM club_event_term_versions')->fetchColumn();
+dwCheck(dwRequest($registrar,$route,['confirmed'=>'1']+$publish)['status']===303&&(int)$pdo->query('SELECT COUNT(*) FROM club_event_term_versions')->fetchColumn()===$termCount,'Retry of published draft is idempotent');
+$optional=dwRequest($registrar,$route,['custom_id'=>$id,'base_term_id'=>$published['id'],'custom_required'=>'0','text'=>$run.' nové volitelné znění']+$create);
+$optionalDraft=r5Location($optional,'draft_id');
+dwCheck($optional['status']===303&&(int)r5Term($id)['custom_required']===1,'Draft-only required-flag change does not affect new applications');
+dwCheck(dwRequest($registrar,$route,['confirmed'=>'1','draft_id'=>$optionalDraft]+$publish)['status']===303,'Publishing optional version changes future requirements');
+$optionalTerm=r5Term($id);
+dwCheck((int)$optionalTerm['custom_required']===0&&$optionalTerm['consent_text_plain']===$run.' nové volitelné znění','Optional consent has its own immutable text version');
+$q=$pdo->prepare('SELECT * FROM club_event_term_versions WHERE id=?');$q->execute([$published['id']]);
+dwCheck(r5Hash($q->fetch())===$publishedHash,'Earlier published text and metadata remain byte-for-byte unchanged');
+$hide=['custom_action'=>'hide','custom_id'=>$id,'base_term_id'=>$optionalTerm['id']];
+$noHide=dwRequest($registrar,$route,$hide);
+dwCheck(str_contains($noHide['body'],'Potvrďte skrytí')&&(int)r5Term($id)['custom_visible']===1,'Hiding consent also requires explicit confirmation');
+dwCheck(dwRequest($registrar,$route,['confirmed'=>'1']+$hide)['status']===303,'Registrar can hide consent for new applications');
+dwCheck((int)r5Term($id)['custom_visible']===0&&!in_array($id,array_map('intval',array_column(clubConsentCurrent($pdo),'custom_consent_id')),true),'Hidden consent disappears from future public bundle');
+$q->execute([$published['id']]);dwCheck(r5Hash($q->fetch())===$publishedHash,'Hiding never rewrites historical published text');
+
+$person=dwInsert('sportovci',['jmeno'=>'LOCALHOST','prijmeni'=>$run,'narozeni'=>'2015-01-02','stav_clenstvi'=>'cekajici','hash'=>bin2hex(random_bytes(32)),'uci'=>0,'email'=>'']);
+$program=dwInsert('club_programs',['code'=>bin2hex(random_bytes(8)),'name'=>$run.' syntetický program','created_by_trainer_id'=>$actors['registrar']]);
+$paper=['action'=>'record','sportovec_id'=>$person,'kind'=>'consent','scope_type'=>'program','scope_reference'=>'program:'.$program,'document_title'=>$run.' vlastní popisek','term_version_id'=>$published['id'],'signer_name'=>$run.' rodič','signer_relation'=>'guardian','signed_on'=>date('Y-m-d'),'original_location'=>'LOCALHOST R5 syntetický papírový originál','reason'=>$run.' doložení'];
+$dependencies=r5Dependencies($person);$paperCount=r5PaperCount();
+dwCheck(dwRequest($registrar,'paper_registrations_admin.php?person_id='.$person)['status']===200,'Registrar opens paper ledger for named person');
+$wrong=dwRequest($registrar,'paper_registrations_admin.php',['scope_reference'=>'event:'.$program]+$paper);
+dwCheck(r5PaperCount()===$paperCount&&str_contains($wrong['body'],'odpovídat účelu'),'Mismatched program/event reference is rejected without partial record');
+$missing=dwRequest($registrar,'paper_registrations_admin.php',['scope_reference'=>'']+$paper);
+dwCheck(r5PaperCount()===$paperCount&&str_contains($missing['body'],'konkrétní program'),'Program document requires a specific existing program');
+$badDate=dwRequest($registrar,'paper_registrations_admin.php',['signed_on'=>date('Y-m-d',strtotime('+1 day'))]+$paper);
+dwCheck(r5PaperCount()===$paperCount&&str_contains($badDate['body'],'nesmí být v budoucnu'),'Future signature date is refused without partial evidence');
+dwCheck(dwRequest($finance,'paper_registrations_admin.php',$paper)['status']===403,'Finance cannot record private paper evidence with valid CSRF');
+$recorded=dwRequest($registrar,'paper_registrations_admin.php',$paper);$record=r5Location($recorded,'id');
+dwCheck($recorded['status']===303&&$record>0,'Paper record stores explicit historical consent version');
+$stored=paperRegistrationGet($pdo,$record);
+dwCheck($stored['text_snapshot']===$text&&(int)$stored['term_version_id']===(int)$published['id']&&$stored['document_title']===$title,'Historical signature uses selected exact text and title, not current hidden version');
+dwCheck($stored['state']==='recorded'&&r5Dependencies($person)===$dependencies,'Recording paper evidence grants no membership, account verification or online acceptance');
+$edit=dwRequest($registrar,'paper_registrations_admin.php?id='.$record.'&correct=1');$dom=dwDom($edit);
+dwCheck((string)$dom->evaluate('string(//select[@name="scope_reference"]//option[@selected]/@value)')==='program:'.$program,'Correction form keeps the exact program reference');
+dwCheck((string)$dom->evaluate('string(//select[@name="term_version_id"]/option[@selected]/@value)')===(string)$published['id'],'Correction form keeps the historical selected consent version');
+$decide=['action'=>'accepted','id'=>$record,'reason'=>$run.' výslovné ověření'];
+dwCheck(dwRequest($registrar,'paper_registrations_admin.php',$decide)['status']===303&&paperRegistrationGet($pdo,$record)['state']==='accepted','Separate explicit paper verification records accepted state');
+dwCheck(r5Dependencies($person)===$dependencies,'Paper verification still grants no membership, family access or online acceptance');
+$eventCount=(int)$pdo->query('SELECT COUNT(*) FROM club_paper_record_events WHERE record_id='.$record)->fetchColumn();
+dwRequest($registrar,'paper_registrations_admin.php',$decide);
+dwCheck((int)$pdo->query('SELECT COUNT(*) FROM club_paper_record_events WHERE record_id='.$record)->fetchColumn()===$eventCount,'Stale repeated verification appends no duplicate decision');
+$replacement=dwRequest($registrar,'paper_registrations_admin.php',['replaces_id'=>$record,'term_version_id'=>$optionalTerm['id'],'reason'=>$run.' nová doložená verze']+$paper);$newRecord=r5Location($replacement,'id');
+dwCheck($replacement['status']===303&&$newRecord>$record,'Correction appends a new paper record');
+dwCheck(paperRegistrationGet($pdo,$record)['state']==='superseded'&&paperRegistrationGet($pdo,$newRecord)['state']==='recorded','Old record becomes superseded while replacement awaits its own verification');
+dwCheck(paperRegistrationGet($pdo,$record)['text_snapshot']===$text&&paperRegistrationGet($pdo,$newRecord)['text_snapshot']===$optionalTerm['consent_text_plain'],'Original signed text and newly selected replacement remain distinct');
+$beforeReplacement=r5PaperCount();dwRequest($registrar,'paper_registrations_admin.php',['replaces_id'=>$record]+$paper);
+dwCheck(r5PaperCount()===$beforeReplacement,'Previously superseded paper record cannot be corrected again');
+$view=dwRequest($registrar,'person_lifecycle_admin.php?id='.$person.'&intent=intake');
+dwCheck($view['status']===200&&str_contains($view['body'],'paper_registrations_admin.php?id='.$newRecord),'Person lifecycle links to latest paper evidence without deciding membership');
+dwCheck(r5Dependencies($person)===$dependencies,'Complete consent and paper journey leaves unrelated person/access domains unchanged');
+$report=['run'=>$run,'checks'=>count($checks),'passed'=>$checks,'custom_consent_id'=>$id,'person_id'=>$person,'paper_record_ids'=>[$record,$newRecord],'production_mutations'=>false,'external_sends'=>false,'browser_execution'=>false];
+echo json_encode($report,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).PHP_EOL;

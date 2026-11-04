@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-04",
+  "source_head_before_documentation": "46aa60738e0f6653969a1df89314f1d3f6419ef9",
+  "runtime_changes_in_wave5": false,
+  "new_confirmed_application_defects": 0,
+  "production_requests": false,
+  "production_mutations": false,
+  "external_sends": false,
+  "password_change": "SKIPPED",
+  "T07": "SKIPPED",
+  "browser": "NOT_RUN: both creation/recovery calls timed out; no new browser proof",
+  "environment": {
+    "synthetic_only": true,
+    "reused_owned_database": "functional_round4",
+    "database_port": 3322,
+    "http_port": 18422,
+    "runtime_and_session_directory": "C:/Users/Marek/AppData/Local/Temp/evidence-functional-round4-20261104",
+    "production_dump_or_config_used": false
+  },
+  "http": {
+    "registration_and_paper": 43,
+    "person_lifecycle": 30,
+    "total_passed": 73,
+    "person_lifecycle_transport_timeout_seconds": 45,
+    "initial_incomplete_run": "HTTP 0 with 30-second limit on family overview GET; no curl errno logged; not counted as PASS"
+  },
+  "phpunit_targeted": {
+    "tests": 35,
+    "assertions": 288,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "concurrency": {
+    "status": "PASS",
+    "mariadb": "10.4.32",
+    "standard_and_custom_publication": "exactly one published / one rejected for concurrent drafts",
+    "repeat_publication": "idempotent",
+    "hiding": "retains prior acceptance",
+    "temporary_database": "evidence_registration_texts_test_round5_20261104",
+    "temporary_database_removed_by_contract": true
+  },
+  "existing_contract_sha256": {
+    "PersonLifeDocumentsHttpAcceptance": "2593d115729a56ac19535e961fff6862185e61b1e3a14c1e4e267042b982ad89",
+    "RegistrationTextsMariaDbSmoke": "3fc94565e10bcd53b93110d7e1f779f0f547c092ca51f0a8793aa3c7bb1ecb20"
+  },
+  "previous_exact_head_full_ci": {
+    "run_id": 41848965312,
+    "tests": 1977,
+    "assertions": 38403,
+    "skipped": 0
+  },
+  "updated_pr_ci": "See PR 295 exact current head checks after documentation commit."
+}
