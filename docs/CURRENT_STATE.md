@@ -1,6 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 4. 11. 2026 (Europe/Prague), po produkčním vydání PR #293.
+Aktualizováno 4. 11. 2026 (Europe/Prague), po vydání PR #293 a čtvrtém funkčním průchodu.
+
+- **[Čtvrtý funkční průchod](verification/functional-uat-round4-20261104/RESULTS.md):** 70 HTTP kontrol zdravotních podkladů, docházky a náhrad PASS; browser ověřil papírový podklad a návaznost do rodiny. Opravené zachování původu papírové docházky je **nenasazené**. Místní sada 1977 testů; heslo/T07 dále odložené.
 
 - **[Třetí funkční vlna sloučena a nasazena](verification/functional-round3-release-20261104/RESULTS.md):** opravené náhledy členství a české časové stavy rodinného přehledu. Přihlášený produkční náhled PASS bez potvrzení změny; rodinná stránka načtena, účet nemá propojené sportovce pro ověření štítků. Místní matice 119/119 PASS; úplné UAT všech rolí není uzavřené. Heslo/T07 nadále odložené.
 

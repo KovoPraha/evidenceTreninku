@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-04",
+  "base_sha": "35a3985c40536575c807a8561d2436c03c9fcfe6",
+  "production_domain_mutations": false,
+  "production_workspace_switch": true,
+  "production_workspace_restored": "NOT_VERIFIED_CHROME_DISCONNECTED",
+  "merged": false,
+  "deployed": false,
+  "password_change": "SKIPPED",
+  "T07": "SKIPPED",
+  "environment": {
+    "synthetic_only": true,
+    "database": "functional_round4",
+    "db_port": 3322,
+    "http_port": 18422,
+    "production_dump_used": false,
+    "web_mail_curl_disabled": true
+  },
+  "phpunit": {
+    "baseline": {
+      "tests": 35,
+      "assertions": 212,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "skipped_cases": []
+    },
+    "source_before_fix": {
+      "tests": 6,
+      "assertions": 8,
+      "errors": 0,
+      "failures": 1,
+      "skipped": 0,
+      "skipped_cases": []
+    },
+    "targeted_after_fix": {
+      "tests": 41,
+      "assertions": 223,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "skipped_cases": []
+    },
+    "full_windows": {
+      "tests": 1977,
+      "assertions": 38360,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 3,
+      "skipped_cases": [
+        "testCanonicalPublicSymlinkFailsBeforeWriting",
+        "testCleanupDoesNotFollowOrDeleteReplacementSymlink",
+        "testRefusesSymlinkedDataBeforeChanges"
+      ]
+    }
+  },
+  "http_after_fix": {
+    "medical": {
+      "checks": 22,
+      "status": "PASS"
+    },
+    "closure": {
+      "checks": 25,
+      "status": "PASS"
+    },
+    "makeup": {
+      "checks": 23,
+      "status": "PASS"
+    }
+  },
+  "phpstan_local": "Stopped own analysis processes because host had about 140 MB free memory; complete analysis required in PR CI.",
+  "phpstan_baseline_budget": "503 entries / 2254 findings unchanged",
+  "style": "PASS, 2 changed PHP files",
+  "existing_http_contract_sha256": {
+    "MedicalClearanceHttpAcceptance": "0390a2ae83c87efcee64550fabf349fe778b773a45cbebdb74208e56b381add0",
+    "TrainingClosureHttpAcceptance": "b1e058522761e3faf31e3d4b07c1926cd84e83a7a47c9f3e0ebeb5383ee36297",
+    "MakeupJourneyHttpAcceptance": "a361e94bbbee2f3a367596036344485e15fd462436b870c75759b0eb963fba35"
+  }
+}

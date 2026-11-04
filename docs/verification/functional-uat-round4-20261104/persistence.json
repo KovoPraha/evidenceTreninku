@@ -1,0 +1,59 @@
+{
+    "database": "functional_round4",
+    "read_only": true,
+    "training_id": 1,
+    "versions": [
+        {
+            "version": 1,
+            "source": "paper",
+            "duration_minutes": 60,
+            "participants": [
+                1
+            ],
+            "coaches": [
+                4
+            ]
+        },
+        {
+            "version": 2,
+            "source": "coach",
+            "duration_minutes": 90,
+            "participants": [
+                1
+            ],
+            "coaches": [
+                4
+            ]
+        },
+        {
+            "version": 3,
+            "source": "paper",
+            "duration_minutes": 90,
+            "participants": [
+                1
+            ],
+            "coaches": [
+                4
+            ]
+        },
+        {
+            "version": 4,
+            "source": "paper",
+            "duration_minutes": 105,
+            "participants": [
+                1
+            ],
+            "coaches": [
+                4
+            ]
+        }
+    ],
+    "medical": {
+        "id": 2,
+        "state": "verified",
+        "issued_on": "2026-11-01",
+        "valid_until": "2026-11-04",
+        "revision": 2
+    },
+    "production_mutations": false
+}

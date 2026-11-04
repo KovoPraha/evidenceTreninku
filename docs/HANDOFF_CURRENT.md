@@ -77,6 +77,9 @@ a 119 kontrol pracovních přístupů. [PR #293 je sloučen a nasazen](verificat
 1971 testů, všech 11 kontrol, HTTP 30/30 i izolovaná obnova čerstvé zálohy PASS.
 Produkční náhled členství ověřen bez potvrzení; rodinná stránka funguje, ale účet nemá
 propojené profily pro ověření štítků. Úplné UAT všech rolí, poslední synchronizace a E8 zůstávají otevřené.
+[Čtvrtý funkční průchod](verification/functional-uat-round4-20261104/RESULTS.md) ověřil zdravotní podklady,
+docházku a náhrady: 70 HTTP scénářů a místní browser. Oprava zachování papírového původu
+při opravě docházky čeká na kontrolu/sloučení/nasazení. Heslo a T07 se nadále vynechávají.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.

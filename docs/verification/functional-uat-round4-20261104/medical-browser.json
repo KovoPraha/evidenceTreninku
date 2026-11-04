@@ -1,0 +1,17 @@
+{
+  "local_only": true,
+  "person_id": 1,
+  "watch_id": 2,
+  "record_id": 2,
+  "registrar_has_superadmin": false,
+  "paper_only_no_scan": true,
+  "pending_shown_to_family": true,
+  "verification_explicit": true,
+  "expiry_day": "2026-11-04",
+  "expiry_day_status": "valid",
+  "following_day_status": "expired",
+  "family_private_location_exposed": false,
+  "family_verified_minutes": 105,
+  "password_change": "SKIPPED",
+  "T07": "SKIPPED"
+}

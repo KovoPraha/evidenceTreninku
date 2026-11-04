@@ -1,0 +1,207 @@
+Sportovní přehled
+
+Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.
+
+Co zbývá vyřídit
+
+Podklady a odpovědi k tréninkům v příštích 30 dnech. Osobní vyřízení s oddílem zůstává možné.
+
+Na vás / domluvit s oddílem (1)
+Sportovec A LOCALHOST — potvrdit trénink
+
+LOCALHOST – trénink pro soupisky · 2026-11-04. Potvrzení pomůže trenérovi s přípravou; skutečnou docházku zapisuje trenér.
+
+Čeká na vyřízení klubem (4)
+Rodič Testovací — členství k ověření
+
+Evidovaný stav ještě vyžaduje doložení klubem. Platba ani online přístup nejsou rozhodnutím o členství.
+
+Sportovec A LOCALHOST — členství k ověření
+
+Evidovaný stav ještě vyžaduje doložení klubem. Platba ani online přístup nejsou rozhodnutím o členství.
+
+Sportovec A LOCALHOST — LOCALHOST NEPLATIT R29 617b7c155d
+
+Čeká na ověření. Podklad čeká na ověření registrářem. Nový podklad nepředávejte jen kvůli čekání.
+
+Sportovec B LOCALHOST — členství k ověření
+
+Evidovaný stav ještě vyžaduje doložení klubem. Platba ani online přístup nejsou rozhodnutím o členství.
+
+Přehled obsahuje dostupná převedená data. Chybějící starší tréninky neznamenají, že sportovec netrénoval. Nesrovnalost sdělte trenérovi.
+
+Čeká na odpověď v zobrazeném měsíci
+1
+trénink
+Příštích 30 dní
+1
+položka programu
+Propojené profily
+3
+schválené profily
+K úhradě
+0
+členských předpisů
+Odpovědi na tréninky
+Program
+Profily a platby
+Nastavení a přehledy
+Potvrzení účasti na trénincích
+1 položek
+
+Zobrazují se tréninky schválených profilů. U konkrétního tréninku můžete potvrdit účast a napsat trenérovi. Docházku po tréninku zaznamenává trenér.
+
+Náhradní lekce kroužků a moje nároky
+
+listopad 2026
+Další měsíc
+PO
+ÚT
+ST
+ČT
+PÁ
+SO
+NE
+26
+27
+28
+29
+30
+31
+1
+Bez plánovaného tréninku.
+2
+Bez plánovaného tréninku.
+3
+Bez plánovaného tréninku.
+4
+DNES
+16:00
+LOCALHOST – trénink pro soupisky · LOCALHOST
+5
+Bez plánovaného tréninku.
+6
+Bez plánovaného tréninku.
+7
+Bez plánovaného tréninku.
+8
+Bez plánovaného tréninku.
+9
+Bez plánovaného tréninku.
+10
+Bez plánovaného tréninku.
+11
+Bez plánovaného tréninku.
+12
+Bez plánovaného tréninku.
+13
+Bez plánovaného tréninku.
+14
+Bez plánovaného tréninku.
+15
+Bez plánovaného tréninku.
+16
+Bez plánovaného tréninku.
+17
+Bez plánovaného tréninku.
+18
+Bez plánovaného tréninku.
+19
+Bez plánovaného tréninku.
+20
+Bez plánovaného tréninku.
+21
+Bez plánovaného tréninku.
+22
+Bez plánovaného tréninku.
+23
+Bez plánovaného tréninku.
+24
+Bez plánovaného tréninku.
+25
+Bez plánovaného tréninku.
+26
+Bez plánovaného tréninku.
+27
+Bez plánovaného tréninku.
+28
+Bez plánovaného tréninku.
+29
+Bez plánovaného tréninku.
+30
+Bez plánovaného tréninku.
+1
+2
+3
+4
+5
+6
+LOCALHOST – trénink pro soupisky
+LOCALHOST Sportovec A · LOCALHOST Dráha 2026
+Středa 4. 11. 2026 · 16:00
+Očekávaní sportovci jsou předvyplněni z U15 a dráhové soupisky.
+Bez odpovědi
+Zpráva pro trenéra (nepovinná)
+Zúčastním se
+Nezúčastním se
+Co nás čeká v příštích 30 dnech
+1 položka
+
+Tréninky, přihlášené akce, rezervace a splatnosti všech vašich propojených profilů na jednom místě.
+
+Rodinný tréninkLOCALHOST – trénink pro soupisky – LOCALHOST Sportovec A
+LOCALHOST U15 2026
+04. 11. 2026
+16:00–17:30
+Nastavení a podrobné přehledy
+Týdenní souhrn
+vypnutý
+04. 11.–10. 11. 2026
+Roční přehled uhrazených klubových služeb
+Rok 2026
+Rodinný kalendář v telefonu
+nenastavený
+Připomínky klubových plateb
+vypnuté
+Testovací Rodič Čekající · k ověření
+Rok narození: 1985
+Rozbalit detail
+vlastní profil
+
+Ověřená činnost letos: 0 tréninků · 0 minut · 0 závodních startů. Započtena je potvrzená skutečná účast.
+
+Saldo klubových služeb: 0,00 Kč k úhradě · po lhůtě 0,00 Kč
+Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k 4. 11. 2026 15:18.
+Náhradní lekce kroužků
+Omluvené, čekají na potvrzení 0
+K využití 0
+Převedené uzamčené 0
+Rezervované 0
+Zobrazit náhrady
+Soupisky
+
+Žádná evidovaná soupiska.
+
+Klubové události
+
+Žádná přihláška na klubovou událost.
+
+Členské předpisy
+
+Žádný členský předpis.
+
+Docházka na tréninky Všechny tréninky ze soupisek
+
+Žádná zaznamenaná účast.
+
+LOCALHOST Sportovec A Aktivní · k ověření
+Rok narození: 2012
+Rozbalit detail
+rodič / zástupce
+LOCALHOST Sportovec B Aktivní · k ověření
+Rok narození: 2015
+Rozbalit detail
+rodič / zástupce
+Rodinné platby za klubové služby
+
+Zatím zde není žádná objednávková položka přiřazená konkrétnímu sportovci.
