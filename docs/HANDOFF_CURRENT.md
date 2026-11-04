@@ -71,6 +71,10 @@ Oprava odděluje zboží od programu v localhost seedu a zachovává historii st
 [PR #274 je sloučen a nasazen](verification/functional-round2-release-20261102/RESULTS.md);
 produkční dostupnost a konfigurace ověřeny. Samotný seed běží výhradně v lokálním testu;
 do produkce se demo data nepřenášela. Heslo a T07 nadále vynechat.
+[Třetí autonomní průchod 4. 11.](verification/functional-uat-round3-20261104/RESULTS.md)
+rozšířil přihlášené produkční kontroly, místní browser trenéra/registráře/rodiče
+a 119 kontrol pracovních přístupů. Dvě opravy zobrazení členství jsou připravené,
+dosud nenasazené. Úplné UAT všech rolí, poslední synchronizace a E8 zůstávají otevřené.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.

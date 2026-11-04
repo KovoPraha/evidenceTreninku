@@ -106,6 +106,69 @@ final class MemberRosterAdminTest extends TestCase
         }
     }
 
+    public function testTransferPreviewPeriodsMatchPersistedIntervalsDespiteUnrelatedEndField(): void
+    {
+        foreach (['2026-11-10', null] as $originalEnd) {
+            $pdo = $this->database();
+            $source = $this->team($pdo, 'SOURCE');
+            $target = $this->team($pdo, 'TARGET');
+            $member = \kisRosterGrantPeriod($pdo, $source, 10, 7, 'manual', '2026-11-05', $originalEnd, 'LOCALHOST členství');
+            $input = ['action' => 'transfer', 'team_id' => $source, 'target_team_id' => $target,
+                'member_id' => $member['id'], 'valid_from' => '2026-11-08', 'valid_to' => '2026-11-04',
+                'reason' => 'LOCALHOST náhled přestupu'];
+            $preview = \memberRosterPreview($pdo, $input);
+            self::assertArrayHasKey('periods', $preview);
+            self::assertSame([
+                ['team_id' => $source, 'name' => 'LOCALHOST SOURCE', 'valid_from' => '2026-11-05', 'valid_to' => '2026-11-07'],
+                ['team_id' => $target, 'name' => 'LOCALHOST TARGET', 'valid_from' => '2026-11-08', 'valid_to' => $originalEnd],
+            ], $preview['periods']);
+            $input['fingerprint'] = $preview['fingerprint'];
+            \memberRosterMutate($pdo, $input);
+            $stored = $pdo->query('SELECT team_id,valid_from,valid_to FROM club_roster_members ORDER BY team_id')->fetchAll(PDO::FETCH_ASSOC);
+            $shown = array_map(static fn (array $period): array => array_diff_key($period, ['name' => true]), $preview['periods']);
+            self::assertSame($stored, $shown);
+        }
+    }
+
+    public function testGrantAndEndPreviewsShowTheActualMembershipPeriod(): void
+    {
+        $pdo = $this->database();
+        $team = $this->team($pdo, 'SOURCE');
+        $input = ['action' => 'grant', 'team_id' => $team, 'person_ids' => [10],
+            'valid_from' => '2026-11-05', 'valid_to' => '2026-11-10', 'reason' => 'LOCALHOST náhled zařazení'];
+        $preview = \memberRosterPreview($pdo, $input);
+        self::assertArrayHasKey('periods', $preview);
+        self::assertSame([['team_id' => $team, 'name' => 'LOCALHOST SOURCE', 'valid_from' => '2026-11-05',
+            'valid_to' => '2026-11-10']], $preview['periods']);
+        $input['fingerprint'] = $preview['fingerprint'];
+        \memberRosterMutate($pdo, $input);
+        $memberId = (int) $pdo->query('SELECT id FROM club_roster_members')->fetchColumn();
+        $end = ['action' => 'end_member', 'team_id' => $team, 'member_id' => $memberId,
+            'valid_from' => '2026-11-04', 'valid_to' => '2026-11-08', 'reason' => 'LOCALHOST náhled ukončení'];
+        $preview = \memberRosterPreview($pdo, $end);
+        self::assertSame([['team_id' => $team, 'name' => 'LOCALHOST SOURCE', 'valid_from' => '2026-11-05',
+            'valid_to' => '2026-11-08']], $preview['periods']);
+        $end['fingerprint'] = $preview['fingerprint'];
+        \memberRosterMutate($pdo, $end);
+        self::assertSame('2026-11-08', $pdo->query('SELECT valid_to FROM club_roster_members')->fetchColumn());
+    }
+
+    public function testEndingBeforeMembershipStartsPreviewsCancellationInsteadOfAnInvertedPeriod(): void
+    {
+        $pdo = $this->database();
+        $team = $this->team($pdo, 'FUTURE');
+        $member = \kisRosterGrantPeriod($pdo, $team, 10, 7, 'manual', '2099-11-05', null, 'LOCALHOST budoucí členství');
+        $input = ['action' => 'end_member', 'team_id' => $team, 'member_id' => $member['id'],
+            'valid_to' => '2099-11-04', 'reason' => 'LOCALHOST zrušení před začátkem'];
+        $preview = \memberRosterPreview($pdo, $input);
+        self::assertTrue($preview['periods'][0]['cancelled'] ?? false);
+        self::assertSame('2099-11-05', $preview['periods'][0]['valid_to']);
+        $input['fingerprint'] = $preview['fingerprint'];
+        \memberRosterMutate($pdo, $input);
+        self::assertSame('cancelled', $pdo->query('SELECT status FROM club_roster_members')->fetchColumn());
+        self::assertSame([], \kisRosterEffectiveMemberIds($pdo, $team, '2099-11-05'));
+    }
+
     public function testRevokedRegistrarCannotWriteDespiteSessionSnapshot(): void
     {
         $pdo = $this->database();

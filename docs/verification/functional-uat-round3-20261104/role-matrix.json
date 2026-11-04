@@ -1,0 +1,514 @@
+[
+  {
+    "role": "coach",
+    "route": "formular.php",
+    "expected": 200,
+    "actual": 200,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "coach",
+    "route": "sprava_vsech_treninku.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "coach",
+    "route": "kis_roster_hierarchy_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "coach",
+    "route": "club_program_offers_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "coach",
+    "route": "eshop_produkt_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "coach",
+    "route": "eshop_orders_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "coach",
+    "route": "member_fee_plans_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "coach",
+    "route": "sprava_treneru.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "sports_lead",
+    "route": "formular.php",
+    "expected": 200,
+    "actual": 200,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "sports_lead",
+    "route": "sprava_vsech_treninku.php",
+    "expected": 200,
+    "actual": 200,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "sports_lead",
+    "route": "kis_roster_hierarchy_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "sports_lead",
+    "route": "club_program_offers_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "sports_lead",
+    "route": "eshop_produkt_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "sports_lead",
+    "route": "eshop_orders_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "sports_lead",
+    "route": "member_fee_plans_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "sports_lead",
+    "route": "sprava_treneru.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "registrar",
+    "route": "formular.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "registrar",
+    "route": "sprava_vsech_treninku.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "registrar",
+    "route": "kis_roster_hierarchy_admin.php",
+    "expected": 200,
+    "actual": 200,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "registrar",
+    "route": "club_program_offers_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "registrar",
+    "route": "eshop_produkt_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "registrar",
+    "route": "eshop_orders_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "registrar",
+    "route": "member_fee_plans_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "registrar",
+    "route": "sprava_treneru.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "program_coordinator",
+    "route": "formular.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "program_coordinator",
+    "route": "sprava_vsech_treninku.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "program_coordinator",
+    "route": "kis_roster_hierarchy_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "program_coordinator",
+    "route": "club_program_offers_admin.php",
+    "expected": 200,
+    "actual": 200,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "program_coordinator",
+    "route": "eshop_produkt_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "program_coordinator",
+    "route": "eshop_orders_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "program_coordinator",
+    "route": "member_fee_plans_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "program_coordinator",
+    "route": "sprava_treneru.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "catalog_manager",
+    "route": "formular.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "catalog_manager",
+    "route": "sprava_vsech_treninku.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "catalog_manager",
+    "route": "kis_roster_hierarchy_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "catalog_manager",
+    "route": "club_program_offers_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "catalog_manager",
+    "route": "eshop_produkt_admin.php",
+    "expected": 200,
+    "actual": 200,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "catalog_manager",
+    "route": "eshop_orders_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "catalog_manager",
+    "route": "member_fee_plans_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "catalog_manager",
+    "route": "sprava_treneru.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "order_operator",
+    "route": "formular.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "order_operator",
+    "route": "sprava_vsech_treninku.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "order_operator",
+    "route": "kis_roster_hierarchy_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "order_operator",
+    "route": "club_program_offers_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "order_operator",
+    "route": "eshop_produkt_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "order_operator",
+    "route": "eshop_orders_admin.php",
+    "expected": 200,
+    "actual": 200,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "order_operator",
+    "route": "member_fee_plans_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "order_operator",
+    "route": "sprava_treneru.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "finance_manager",
+    "route": "formular.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "finance_manager",
+    "route": "sprava_vsech_treninku.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "finance_manager",
+    "route": "kis_roster_hierarchy_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "finance_manager",
+    "route": "club_program_offers_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "finance_manager",
+    "route": "eshop_produkt_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "finance_manager",
+    "route": "eshop_orders_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "finance_manager",
+    "route": "member_fee_plans_admin.php",
+    "expected": 200,
+    "actual": 200,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "finance_manager",
+    "route": "sprava_treneru.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "system_admin",
+    "route": "formular.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "system_admin",
+    "route": "sprava_vsech_treninku.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "system_admin",
+    "route": "kis_roster_hierarchy_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "system_admin",
+    "route": "club_program_offers_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "system_admin",
+    "route": "eshop_produkt_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "system_admin",
+    "route": "eshop_orders_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "system_admin",
+    "route": "member_fee_plans_admin.php",
+    "expected": 403,
+    "actual": 403,
+    "pass": true,
+    "server_error": false
+  },
+  {
+    "role": "system_admin",
+    "route": "sprava_treneru.php",
+    "expected": 200,
+    "actual": 200,
+    "pass": true,
+    "server_error": false
+  }
+]
