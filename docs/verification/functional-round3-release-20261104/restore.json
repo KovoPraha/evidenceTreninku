@@ -1,0 +1,14 @@
+{
+  "run_id": 41837623683,
+  "conclusion": "success",
+  "source_sha": "94982c44d7b7737bddcca46d3ebb9fb4f698abef",
+  "operation": "obnovit-zalohu-izolovane",
+  "database": "isolated runner MariaDB 11.4",
+  "production_database_restored": false,
+  "backup": "evidence_2026-11-04_131351_a757c7e6.sql.gz",
+  "backup_sha256_from_deploy_manifest": "bd429f420f6fd0592b52f1a93ad2967b938731fa6ee881f8c5676bb1b182a553",
+  "generation_match_basis": "Exact backup filename matches successful checksum check in restore log; workflow also compares checksum with manifest.",
+  "tables_row_counts_verified": 342,
+  "triggers_verified": 2,
+  "temporary_restore_data_cleaned": true
+}

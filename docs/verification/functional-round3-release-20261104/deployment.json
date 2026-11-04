@@ -1,0 +1,37 @@
+{
+  "run_id": 41835865547,
+  "source_sha": "94982c44d7b7737bddcca46d3ebb9fb4f698abef",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-11-04_131351_a757c7e6.sql.gz",
+    "manifest": "evidence_2026-11-04_131351_a757c7e6.manifest.json",
+    "sha256": "bd429f420f6fd0592b52f1a93ad2967b938731fa6ee881f8c5676bb1b182a553",
+    "tables": 342,
+    "triggers": 2,
+    "compressed_bytes": 6254622
+  },
+  "tests": {
+    "tests": 1971,
+    "assertions": 38392,
+    "skipped": 0
+  },
+  "migrations": {
+    "status": "current",
+    "pending": [],
+    "ledger_count": 149
+  },
+  "variable_symbols_unchanged": true,
+  "activation_log_lines": [
+    ">f.st...... booking/sportovni_prehled.php",
+    ">f+++++++++ includes/family_roster_status.php",
+    ">f.st...... includes/member_roster_preview.php",
+    ">f.st...... includes/member_roster_view.php"
+  ],
+  "evidence_limit": "Activation lines and live release metadata; not a full live runtime hash inventory."
+}

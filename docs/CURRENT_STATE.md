@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 4. 11. 2026 (Europe/Prague), po třetím autonomním funkčním průchodu.
+Aktualizováno 4. 11. 2026 (Europe/Prague), po produkčním vydání PR #293.
 
-- **[Třetí funkční průchod](verification/functional-uat-round3-20261104/RESULTS.md):** přihlášená produkční administrace a místní trenér/registrář/rodič; matice přístupů 119/119 PASS. Opravené náhledy členství a české časové stavy v rodinném přehledu jsou zatím **nenasazené**. Heslo/T07 nadále odložené; úplné UAT všech rolí není uzavřené.
+- **[Třetí funkční vlna sloučena a nasazena](verification/functional-round3-release-20261104/RESULTS.md):** opravené náhledy členství a české časové stavy rodinného přehledu. Přihlášený produkční náhled PASS bez potvrzení změny; rodinná stránka načtena, účet nemá propojené sportovce pro ověření štítků. Místní matice 119/119 PASS; úplné UAT všech rolí není uzavřené. Heslo/T07 nadále odložené.
 
 - **Evidence členů bez sezon: aplikace nasazena a schválená data převedena.**
   [Převod 41542954307](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41542954307)
@@ -24,8 +24,8 @@ Aktualizováno 4. 11. 2026 (Europe/Prague), po třetím autonomním funkčním p
   [Oddělený syntetický pilot](verification/trainer-pilot-20261101/RESULTS.md) je založen:
   trenér 56, soupiska 77, dvě syntetické osoby, třetí mimo rozsah. Grant končí
   15. 11. 2026 v 18:17:31 databázového času; obnova hesla způsobilá.
-  37 aktivních pracovních účtů má pozici trenéra, 36 zůstává bez rozsahu;
-  29 účtů je způsobilých k obnově hesla a původních 8 zůstává blokovaných.
+  Audit 4. 11. potvrdil 30 aktivních pracovních účtů s pozicí trenéra, 29 bez rozsahu.
+  Historické počty způsobilosti k obnově určuje datovaná příprava pilotu.
   [Provozní auditní identita](TRAINER_PILOT_OPERATIONAL_2026-11-01.md) je neaktivní a bez oprávnění;
   veřejné účty se nepropojovaly ani nepovyšovaly. Úplné lidské UAT ještě neproběhlo.
   Původní testovací e-mail transport přijal a příjemce 31. 10.
@@ -38,20 +38,20 @@ Aktualizováno 4. 11. 2026 (Europe/Prague), po třetím autonomním funkčním p
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `7c31ea174dae063fc781f708b8caa105ba57feb6`,
-  [deploy 41539094174](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41539094174) SUCCESS.
-  Aplikační části evidence členů bez sezon a nástroj převodu z PR #279–#285 jsou nasazené.
-  [Protokol](verification/member-evidence-cutover-20261102/RESULTS.md),
-  [strojový souhrn](verification/member-evidence-cutover-20261102/release-comparison.json).
-  Živé SHA a 9 souborů převodu ověřila inventura 41541533269; nejde o úplnou inventuru runtime.
-  Datový převod provedl nástroj z PR #290; aplikace zůstává na výše uvedeném vydání.
-- **Ověření:** všech 11 kontrol #291 PASS, sloučený strom shodný s ověřeným,
-  Linux 1957 testů / 38326 assertions; MariaDB 10.3/11.4, profily a PHPStan/styl PASS.
-  Nácvik přesné mapy na skutečné izolované záloze PASS. Deploy ověřil HTTP dostupnost
-  a ochranu klíče archivu; následná anonymní HTTP kontrola 40/40 PASS. Přihlášené UAT není dokončené. Změna hesla a T07 zůstávají odložené.
-- **Záloha a schéma:** čerstvá záloha konkrétního převodu, 342 tabulek / 2 triggery;
-  [izolovaná obnova 41545925704](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41545925704) PASS včetně počtů řádků všech tabulek.
-  SHA-256 `c633457ae631140bc30951f488855baf9b5251d347a107f13df894bce6725203`.
+- **Živé vydání:** `94982c44d7b7737bddcca46d3ebb9fb4f698abef`,
+  [deploy 41835865547](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41835865547) SUCCESS.
+  PR #293 dodal čtyři runtime soubory; evidence bez sezon a předchozí CLI opravy jsou zahrnuté.
+  [Protokol](verification/functional-round3-release-20261104/RESULTS.md),
+  [strojové porovnání](verification/functional-round3-release-20261104/release-comparison.json).
+  Živé SHA potvrdil čtecí audit 41836644728, aktivaci souborů log rsync; nejde o úplnou hash inventuru.
+  Schválený datový převod zůstává zachovaný, při vydání se neopakoval.
+- **Ověření:** všech 11 kontrol #293 PASS, sloučený strom shodný s ověřeným,
+  Linux i deploy 1971 testů / 38392 assertions; MariaDB 10.3/11.4, profily a PHPStan/styl PASS.
+  Deploy ověřil dostupnost a ochranu klíče archivu; anonymní HTTP před/po 30/30 PASS.
+  Produkční náhled členství PASS; úplné přihlášené UAT, změna hesla a T07 nejsou uzavřené.
+- **Záloha a schéma:** čerstvá záloha vydání, 342 tabulek / 2 triggery;
+  [izolovaná obnova 41837623683](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41837623683) PASS včetně počtů řádků všech tabulek.
+  SHA-256 `bd429f420f6fd0592b52f1a93ad2967b938731fa6ee881f8c5676bb1b182a553`.
   Schéma current / pending [], migrační ledger 149; dosavadní variabilní symboly zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
