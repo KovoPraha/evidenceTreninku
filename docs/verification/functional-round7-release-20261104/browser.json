@@ -1,0 +1,10 @@
+{
+  "origin": "https://kis.kovopraha.cz",
+  "browser": "ChatGPT in-app browser",
+  "authenticated": false,
+  "observed_url": "https://kis.kovopraha.cz/login.php",
+  "authenticated_uat": "NOT RUN",
+  "reason": "Available browser has no production session; no authenticated Chrome browser connector is available. Existing native browser windows were not changed.",
+  "password_and_T07": "SKIPPED",
+  "domain_mutations": false
+}

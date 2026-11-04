@@ -1,0 +1,23 @@
+{
+  "origin": "http://127.0.0.1:18422",
+  "browser": "ChatGPT in-app browser",
+  "actor": "round4-registrar",
+  "synthetic_only": true,
+  "source_sha": "0171ba5ad2c05c26caf4322db1837bb81fd396b7",
+  "parent_team": 21,
+  "main_team": 22,
+  "review_on": "2026-12-01",
+  "observed": {
+    "first_page_total": true,
+    "next_page_opened": true,
+    "joining_and_leaving_visible": true,
+    "too_old_visible": true,
+    "too_young_visible": true,
+    "unknown_birthday_visible": true,
+    "no_automatic_membership_notice": true,
+    "leaving_filter_one_result": true
+  },
+  "browser_domain_writes": false,
+  "all_12_domain_snapshots_unchanged_before_and_after_browser": true,
+  "password_and_T07": "SKIPPED"
+}

@@ -1,0 +1,22 @@
+<?php
+require __DIR__.'/prefix.php';
+$tag='R8-'.bin2hex(random_bytes(3));
+$pdo->beginTransaction();
+$teams=[];
+foreach(['parent','main','late','departing'] as $name)$teams[$name]=dwInsert('club_teams',['code'=>$tag.'-'.$name,'name'=>'LOCALHOST '.$tag.' '.$name,'discipline'=>'test','age_label'=>'test','created_by_trainer_id'=>3,'team_kind'=>$name==='parent'?'group':'roster']);
+foreach([['main','2000-01-01',null],['late','2026-12-15',null],['departing','2000-01-01','2026-12-10']] as [$name,$from,$to])dwInsert('club_team_edges',['parent_team_id'=>$teams['parent'],'child_team_id'=>$teams[$name],'valid_from'=>$from,'valid_to'=>$to,'actor_trainer_id'=>3,'reason'=>'LOCALHOST '.$tag.' hierarchy']);
+$people=[];
+$person=static function(string $label,?string $born,string $team,string $from,?string $to=null)use(&$people,$tag,$teams):int{$id=dwInsert('sportovci',['jmeno'=>'LOCALHOST','prijmeni'=>$tag.' '.$label,'narozeni'=>$born,'stav_clenstvi'=>'cekajici','hash'=>bin2hex(random_bytes(32)),'uci'=>0,'email'=>'']);dwInsert('club_roster_members',['team_id'=>$teams[$team],'sportovec_id'=>$id,'source'=>'manual','valid_from'=>$from,'valid_to'=>$to,'created_by_trainer_id'=>3]);$people[$label]=$id;return$id;};
+for($i=0;$i<28;$i++)$person(sprintf('continue-%02d',$i),$i===0?'2010-01-02':($i===1?'2020-01-02':($i===2?null:'2015-01-02')),'main','2026-01-01');
+$person('leaving','2015-01-02','main','2026-01-01','2026-11-15');
+$person('joining','2015-01-02','main','2026-12-01');
+$person('late-child','2015-01-02','late','2026-01-01');
+$person('departing-child','2015-01-02','departing','2026-01-01');
+dwInsert('member_roster_age_rules',['team_id'=>$teams['main'],'age_min'=>10,'age_max'=>13,'reference_mode'=>'on_date','next_team_id'=>$teams['late']]);
+$plans=[];
+foreach([['main','2026-12-05','planovany'],['late-before','2026-12-05','planovany'],['late-after','2026-12-16','planovany'],['depart-before','2026-12-05','planovany'],['depart-after','2026-12-20','planovany'],['cancelled','2026-12-06','zruseny']] as [$name,$date,$state]){$id=dwInsert('planovane_treninky',['trener_id'=>5,'datum'=>$date,'cas_od'=>'10:00:00','cas_do'=>'11:00:00','nazev'=>'LOCALHOST '.$tag.' '.$name,'stav'=>$state,'je_verejny'=>0]);$plans[$name]=$id;$team=str_starts_with($name,'late')?'late':(str_starts_with($name,'depart')?'departing':'main');dwInsert('training_roster_links',['plan_id'=>$id,'team_id'=>$teams[$team],'target_date'=>$date,'team_code_snapshot'=>$tag.'-'.$team,'team_name_snapshot'=>'LOCALHOST '.$tag.' '.$team,'created_by_trainer_id'=>3]);}
+dwInsert('training_roster_links',['plan_id'=>$plans['main'],'team_id'=>$teams['departing'],'target_date'=>'2026-12-05','team_code_snapshot'=>$tag.'-departing','team_name_snapshot'=>'LOCALHOST '.$tag.' departing','created_by_trainer_id'=>3]);
+$grants=[];
+foreach([['active','2026-01-01 00:00:00',null,null],['expired','2026-01-01 00:00:00','2026-12-01 00:00:00',null],['revoked','2026-01-01 00:00:00',null,'2026-10-01 00:00:00']] as [$name,$from,$to,$revoked])$grants[$name]=dwInsert('coach_scope_grants',['trainer_id'=>5,'scope_kind'=>'team','scope_id'=>$teams['main'],'valid_from'=>$from,'valid_to'=>$to,'reason'=>'LOCALHOST '.$tag.' '.$name,'created_by_trainer_id'=>3,'revoked_at'=>$revoked]);
+$pdo->commit();
+echo json_encode(['synthetic_only'=>true,'tag'=>$tag,'teams'=>$teams,'people'=>$people,'plans'=>$plans,'grants'=>$grants,'review_on'=>'2026-12-01','later_on'=>'2026-12-20'],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).PHP_EOL;

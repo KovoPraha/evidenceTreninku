@@ -7,6 +7,9 @@ Oprava není sloučená ani nasazená. Heslo, použitý obnovovací odkaz a T07 
 Výchozí main `b20fb2a5b414c9f344f7b514839a0c82586fcb0c`,
 větev `codex/functional-uat-round7-20261104`, časová zóna Europe/Prague.
 
+Následné sloučení PR #297, bezpečnostní odblokování PR #298 a úspěšné nasazení dokládá
+[samostatný protokol vydání](../functional-round7-release-20261104/RESULTS.md). Výše uvedený stav nenasazení je původní snapshot.
+
 ## Prostředí
 
 Samostatné nové worktree, vlastní Apache/PHP 8.2.12 na 127.0.0.1:18422 a MariaDB 10.4.32

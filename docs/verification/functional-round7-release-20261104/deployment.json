@@ -1,0 +1,51 @@
+{
+  "run_id": 41899167396,
+  "source_sha": "0171ba5ad2c05c26caf4322db1837bb81fd396b7",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "initial_attempt": {
+    "run_id": 41896863045,
+    "source_sha": "a6f6bd9dd528568b1a22475dfb5b65d6f12f338d",
+    "conclusion": "failure",
+    "stage": "composer audit --locked",
+    "advisory": "GHSA-6prc-h956-hxjq",
+    "production_changed": false
+  },
+  "security_fix": {
+    "pr": 298,
+    "package": "symfony/filesystem",
+    "before": "7.4.21",
+    "after": "7.4.23",
+    "development_only": true,
+    "audit_clean": true
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-11-04_194236_ffa1d081.sql.gz",
+    "manifest": "evidence_2026-11-04_194236_ffa1d081.manifest.json",
+    "sha256": "d837d9d8b1400a9e8eba511329bf43fc53ae4486dcef6885cc83be1bcc42a7e2",
+    "tables": 342,
+    "triggers": 2,
+    "compressed_bytes": 6254704
+  },
+  "tests": {
+    "tests": 1983,
+    "assertions": 38433,
+    "skipped": 0
+  },
+  "migrations": {
+    "status": "current",
+    "pending": [],
+    "ledger_count": 149
+  },
+  "variable_symbols_unchanged": true,
+  "activation_log_lines": [
+    ">f.st...... member_engagement_admin.php",
+    ">f.st...... includes/member_engagement.php"
+  ],
+  "evidence_limit": "Exact live release metadata and activation log, not a full live runtime hash inventory. Authenticated production browser UAT unavailable."
+}
