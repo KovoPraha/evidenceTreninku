@@ -1,0 +1,33 @@
+{
+    "synthetic_only": true,
+    "tag": "R7-b8058c",
+    "checks": 16,
+    "http_requests": 52,
+    "results": [
+        "Circle filter finds person beyond former 1000-person cutoff",
+        "Filtered total uses complete result set",
+        "Unfiltered result exposes total and a bounded first page",
+        "Out-of-range page clamps to final two rows",
+        "Negative page clamps to first page",
+        "Public filter excludes active circle and counts all remaining people",
+        "Next-page link retains both search and engagement filter",
+        "Empty competitive result is explicit",
+        "Malformed optional filters cannot cause server error",
+        "Search text is escaped without active markup",
+        "Anonymous user cannot read engagement directory",
+        "Coach and sports-lead workspaces cannot read registrar directory",
+        "All 41 pages contain each of the 1002 people exactly once",
+        "Every page remains bounded to 25 rows",
+        "Directory reads leave all fixture person rows unchanged",
+        "Read-only tests do not create accounts or online consent answers"
+    ],
+    "pagination": {
+        "pages": 41,
+        "rows": 1002,
+        "unique_rows": 1002,
+        "max_page_rows": 25,
+        "elapsed_seconds": 2.899
+    },
+    "person_rows_unchanged": true,
+    "production_mutations": false
+}

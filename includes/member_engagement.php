@@ -8,6 +8,45 @@ const MEMBER_ENGAGEMENT_LEVELS = [
     'competitive' => ['label' => 'Závodní oddíl', 'badge' => 'danger'],
 ];
 
+/** Classify and filter the complete directory before reading one bounded page. */
+function memberEngagementDirectory(PDO $pdo, string $query, string $levelFilter, int $page = 1, ?string $onDate = null): array
+{
+    require_once __DIR__ . '/staff_record_list.php';
+    $onDate ??= (new DateTimeImmutable('today'))->format('Y-m-d');
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $onDate);
+    if (!$date || $date->format('Y-m-d') !== $onDate) {
+        throw new InvalidArgumentException('Datum přehledu není platné.');
+    }
+    $membership = "m.sportovec_id=s.id AND m.status<>'cancelled' AND (m.status<>'removed' OR m.valid_to IS NOT NULL) "
+        . 'AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?)';
+    $classification = "CASE WHEN EXISTS(SELECT 1 FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id WHERE $membership AND t.activity_kind='competitive') THEN 'competitive' "
+        . "WHEN EXISTS(SELECT 1 FROM club_roster_members m JOIN club_teams t ON t.id=m.team_id WHERE $membership AND t.activity_kind='circle') "
+        . 'OR EXISTS(SELECT 1 FROM club_program_enrollments e JOIN club_program_offers o ON o.id=e.offer_id '
+        . 'JOIN club_programs p ON p.id=o.program_id WHERE e.sportovec_id=s.id '
+        . "AND e.status='active' AND e.valid_from<=? AND e.valid_to>=?) THEN 'circle' ELSE 'public' END";
+    $params = array_fill(0, 6, $onDate);
+    $query = mb_substr(trim($query), 0, 100);
+    $where = "s.stav_clenstvi<>'archiv'";
+    if ($query !== '') {
+        $where .= ' AND (s.jmeno LIKE ? OR s.prijmeni LIKE ? OR s.email LIKE ?)';
+        array_push($params, ...array_fill(0, 3, '%' . $query . '%'));
+    }
+    $from = 'FROM (SELECT s.id,s.jmeno,s.prijmeni,s.narozeni,s.email,s.stav_clenstvi,'
+        . $classification . " AS engagement_key FROM sportovci s WHERE $where) directory WHERE 1=1";
+    if (isset(MEMBER_ENGAGEMENT_LEVELS[$levelFilter])) {
+        $from .= ' AND engagement_key=?';
+        $params[] = $levelFilter;
+    }
+    $counts = array_fill_keys(array_keys(MEMBER_ENGAGEMENT_LEVELS), 0);
+    $q = $pdo->prepare('SELECT engagement_key,COUNT(*) AS total ' . $from . ' GROUP BY engagement_key');
+    $q->execute($params);
+    foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $counts[$row['engagement_key']] = (int)$row['total'];
+    }
+    $result = staffListPage($pdo, 'id,jmeno,prijmeni,narozeni,email,stav_clenstvi', $from, 'prijmeni,jmeno,id', $params, $page);
+    return $result + ['counts' => $counts, 'levels' => memberEngagementMap($pdo, array_map('intval', array_column($result['rows'], 'id')), $onDate)];
+}
+
 /**
  * Vrstva je vždy odvozena z platných účastí a soupisek. Nesmí se ručně ukládat
  * na osobu, jinak by po ukončení programu vznikla druhá, rozporná evidence.

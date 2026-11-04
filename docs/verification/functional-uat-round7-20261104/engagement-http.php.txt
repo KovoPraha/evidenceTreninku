@@ -1,0 +1,36 @@
+<?php
+require __DIR__.'/prefix.php';
+$f=json_decode(file_get_contents(__DIR__.'/fixture.json'),true,512,JSON_THROW_ON_ERROR);
+$registrar=dwSession(3);$coach=dwSession(5);$lead=dwSession(4);$anonymous=['cookie'=>'','csrf'=>''];
+$route='member_engagement_admin.php?q='.urlencode($f['tag']);$requests=0;
+$read=static function(array &$session,string $url)use(&$requests):array{$requests++;return dwRequest($session,$url);};
+$personHash=static function()use($pdo,$f):string{$q=$pdo->prepare('SELECT * FROM sportovci WHERE prijmeni LIKE ? ORDER BY id');$q->execute([$f['tag'].'%']);return hash('sha256',json_encode($q->fetchAll(),JSON_THROW_ON_ERROR));};
+$before=$personHash();
+$circle=$read($registrar,$route.'&level=circle');
+dwCheck($circle['status']===200&&str_contains($circle['body'],$f['target_label']),'Circle filter finds person beyond former 1000-person cutoff');
+dwCheck(str_contains($circle['body'],'Nalezeno: 1 · strana 1 z 1'),'Filtered total uses complete result set');
+$all=$read($registrar,$route);$allDom=dwDom($all);
+dwCheck(str_contains($all['body'],'Nalezeno: 1002 · strana 1 z 41')&&(int)$allDom->evaluate('count(//tbody/tr[td/strong])')===25,'Unfiltered result exposes total and a bounded first page');
+$last=$read($registrar,$route.'&page=999');
+dwCheck(str_contains($last['body'],'strana 41 z 41')&&(int)dwDom($last)->evaluate('count(//tbody/tr[td/strong])')===2,'Out-of-range page clamps to final two rows');
+$first=$read($registrar,$route.'&page=-10');
+dwCheck(str_contains($first['body'],'strana 1 z 41'),'Negative page clamps to first page');
+$public=$read($registrar,$route.'&level=public');
+dwCheck(str_contains($public['body'],'Nalezeno: 1001')&&!str_contains($public['body'],$f['target_label']),'Public filter excludes active circle and counts all remaining people');
+$next=(string)dwDom($public)->evaluate('string(//a[normalize-space(.)="Další"]/@href)');parse_str((string)parse_url($next,PHP_URL_QUERY),$nextParams);
+dwCheck(($nextParams['q']??'')===$f['tag']&&($nextParams['level']??'')==='public'&&($nextParams['page']??'')==='2','Next-page link retains both search and engagement filter');
+$competitive=$read($registrar,$route.'&level=competitive');
+dwCheck(str_contains($competitive['body'],'Nalezeno: 0')&&str_contains($competitive['body'],'Filtru neodpovídá žádná osoba.'),'Empty competitive result is explicit');
+$invalid=$read($registrar,$route.'&level[]=bad&page[]=bad');
+dwCheck($invalid['status']===200&&str_contains($invalid['body'],'Nalezeno: 1002'),'Malformed optional filters cannot cause server error');
+$escaped=$read($registrar,'member_engagement_admin.php?q='.urlencode('<script>R7-test</script>'));
+dwCheck(!str_contains($escaped['body'],'<script>R7-test</script>')&&str_contains($escaped['body'],'&lt;script&gt;R7-test&lt;/script&gt;'),'Search text is escaped without active markup');
+dwCheck(in_array($read($anonymous,$route)['status'],[302,303,403],true),'Anonymous user cannot read engagement directory');
+dwCheck($read($coach,$route)['status']===403&&$read($lead,$route)['status']===403,'Coach and sports-lead workspaces cannot read registrar directory');
+$names=[];$pageRows=[];$start=microtime(true);
+for($page=1;$page<=41;$page++){$r=$read($registrar,$route.'&page='.$page);$dom=dwDom($r);$rows=$dom->query('//tbody/tr/td/strong');$pageRows[]=count($rows);foreach($rows as $node)$names[]=$node->textContent;}
+dwCheck(count($names)===1002&&count(array_unique($names))===1002&&in_array($f['target_label'],$names,true),'All 41 pages contain each of the 1002 people exactly once');
+dwCheck(max($pageRows)===25&&end($pageRows)===2,'Every page remains bounded to 25 rows');
+dwCheck($personHash()===$before,'Directory reads leave all fixture person rows unchanged');
+dwCheck((int)$pdo->query('SELECT COUNT(*) FROM verejni_uzivatele')->fetchColumn()===$f['accounts']&&(int)$pdo->query('SELECT COUNT(*) FROM club_registration_consent_acceptances')->fetchColumn()===$f['online_acceptances'],'Read-only tests do not create accounts or online consent answers');
+echo json_encode(['synthetic_only'=>true,'tag'=>$f['tag'],'checks'=>count($checks),'http_requests'=>$requests,'results'=>$checks,'pagination'=>['pages'=>41,'rows'=>1002,'unique_rows'=>count(array_unique($names)),'max_page_rows'=>max($pageRows),'elapsed_seconds'=>round(microtime(true)-$start,3)],'person_rows_unchanged'=>true,'production_mutations'=>false],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).PHP_EOL;

@@ -1,0 +1,40 @@
+{
+  "local_shutdown": "MariaDB normal shutdown, owned Apache stopped, helper browser tab closed",
+  "before": {
+    "tests": 4,
+    "failures": 4
+  },
+  "defect": "F08 engagement filter applied after first 1000 rows",
+  "composer_validate": "PASS",
+  "production_mutations": false,
+  "baseline_after": 2253,
+  "targeted_final": {
+    "assertions": 86,
+    "tests": 23,
+    "result": "PASS"
+  },
+  "phpstan": "PASS",
+  "branch": "codex/functional-uat-round7-20261104",
+  "style": "PASS",
+  "sports_http": {
+    "result": "PASS",
+    "scenarios": 23
+  },
+  "new_regression_tests": 5,
+  "base_sha": "b20fb2a5b414c9f344f7b514839a0c82586fcb0c",
+  "password_and_T07": "SKIPPED",
+  "live_sha": "7e7a6364a3527bce1c6ec4b789468bd716f28fb4",
+  "baseline_before": 2254,
+  "windows_full": {
+    "skipped": 3,
+    "assertions": 38387,
+    "failures": 0,
+    "note": "Before final strict program joins; final targeted and HTTP rerun passed.",
+    "tests": 1982
+  },
+  "engagement_http": {
+    "scenarios": 16,
+    "requests": 52,
+    "result": "PASS"
+  }
+}

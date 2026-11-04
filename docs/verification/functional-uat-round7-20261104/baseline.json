@@ -1,0 +1,12 @@
+{
+    "synthetic_only": true,
+    "person_id": 1022,
+    "search": "R7-b8058c",
+    "matching_people": 1002,
+    "filtered_status": 200,
+    "target_visible_filtered": false,
+    "target_visible_exact": true,
+    "filtered_empty_message": true,
+    "all_rows": 1000,
+    "pagination_available": false
+}

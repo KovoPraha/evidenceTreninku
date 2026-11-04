@@ -1,0 +1,21 @@
+{
+  "origin": "http://127.0.0.1:18422",
+  "synthetic_only": true,
+  "actor": "round4-registrar",
+  "superadmin": false,
+  "fixture_people": 1002,
+  "target_id": 1022,
+  "before": {
+    "filter": "circle",
+    "empty_result": true
+  },
+  "after": {
+    "target_visible": true,
+    "reason_visible": true,
+    "first_page_total": true,
+    "next_link_preserves_search": true,
+    "next_page_opened": true
+  },
+  "domain_mutations": false,
+  "password_and_T07": "SKIPPED"
+}

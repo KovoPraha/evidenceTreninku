@@ -1,12 +1,12 @@
 # Aktuální stav projektu
 
-Aktualizováno 4. 11. 2026 (Europe/Prague), po vydání PR #295 a ověření produkce.
+Aktualizováno 4. 11. 2026 (Europe/Prague), po sedmém funkčním průchodu; nová oprava zatím nenasazená.
+
+- **[Sedmý funkční průchod](verification/functional-uat-round7-20261104/RESULTS.md):** oprava F08 filtru úrovní zapojení za hranicí 1000 osob, nově úplné počty a stránkování. Chrome i 39 HTTP scénářů adresáře/sportovní činnosti PASS; místně 1982 testů (3 Windows skipy). Oprava **nenasazená**, heslo/T07 vynechané.
 
 - **[PR #295 sloučený a nasazený](verification/functional-round4-release-20261104/RESULTS.md):** zachování papírového původu při opravě docházky. CI i deploy 1977/38403, HTTP před/po 35/35 a izolovaná obnova zálohy PASS. Produkční formulář ověřen bez zápisu; heslo/T07 vynechané.
 
-- **[Šestý funkční průchod](verification/functional-uat-round6-20261104/RESULTS.md):** skutečný Chrome registráře: produkční mobilní UI bez doménových zápisů a místní koncept/publikace/skrytí, historický papírový podklad s opravou a uzavření pracovního úkolu PASS. Všech 16 kontrol persistence PASS; bez nové chyby runtime. PR #295 již nasazený; heslo/T07 vynechané.
-
-- **[Pátý funkční průchod](verification/functional-uat-round5-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob PASS; cílená sada 35/288 a souběžné zveřejnění v MariaDB PASS. Bez nové potvrzené chyby runtime; browser této vlny kvůli timeoutům NOT RUN. PR #295 již nasazený; heslo/T07 odložené.
+- **[Pátý](verification/functional-uat-round5-20261104/RESULTS.md) a [šestý průchod](verification/functional-uat-round6-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob; následný skutečný Chrome a 16 kontrol persistence PASS. Bez další chyby runtime; výsledky jsou v nasazeném PR #295, heslo/T07 vynechané.
 
 - **[Čtvrtý funkční průchod](verification/functional-uat-round4-20261104/RESULTS.md):** 70 HTTP kontrol zdravotních podkladů, docházky a náhrad PASS; browser ověřil papírový podklad a návaznost do rodiny. Opravené zachování původu papírové docházky je **nasazené v PR #295**. Místní sada 1977 testů; heslo/T07 dále odložené.
 
