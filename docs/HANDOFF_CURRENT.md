@@ -86,6 +86,9 @@ Nový runtime nález se nepotvrdil; ovládání prohlížeče neodpovídalo, bro
 [Šestý průchod v Chrome](verification/functional-uat-round6-20261104/RESULTS.md) doplnil skutečné browser scénáře registráře:
 produkční mobilní UI bez zápisů, místní souhlasy, historický papírový podklad s opravou a pracovní úkol PASS;
 16 kontrol persistence PASS, bez nové chyby runtime. PR #295 je následně sloučený a nasazený; heslo/T07 vynechané.
+[Sedmý funkční průchod](verification/functional-uat-round7-20261104/RESULTS.md) opravil ztrátu osob za první tisícovkou
+ve filtru úrovní zapojení; úplné počty a stránkování, Chrome a 39 HTTP scénářů PASS.
+Oprava čeká na kontrolu/sloučení/nasazení; sportovní podklady a původní export ověřené. Heslo/T07 vynechané.
 Chroot nemá `sha256sum` a zakazuje PHP `-r`; kontrola hashů používá soukromý
 PHP soubor spouštěný bez přepínačů, stejně jako již ověřený worker.
 Před použitím reálných skupin vyřešit blokované e-maily/vazby a potvrdit jejich rozsahy. Rozsahy nepřiřazovat odhadem.

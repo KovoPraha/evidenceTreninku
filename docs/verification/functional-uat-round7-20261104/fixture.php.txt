@@ -1,0 +1,18 @@
+<?php
+declare(strict_types=1);
+$root='C:/Users/Marek/Documents/Codex/evidencePavel-functional-uat-round7-20261104';
+require $root.'/config.php';
+if(DB_NAME!=='functional_round4'||DB_HOST!=='127.0.0.1;port=3322')throw new RuntimeException('Owned synthetic DB required');
+$pdo=new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
+if((int)$pdo->query('SELECT @@port')->fetchColumn()!==3322)throw new RuntimeException('Wrong port');
+$tag='R7-'.bin2hex(random_bytes(3));
+$pdo->beginTransaction();
+$insert=$pdo->prepare('INSERT INTO sportovci(jmeno,prijmeni,narozeni,stav_clenstvi,hash,uci,email) VALUES(?,?,?,?,?,0,?)');
+for($n=0;$n<1001;$n++)$insert->execute(['LOCALHOST',$tag.' A'.str_pad((string)$n,4,'0',STR_PAD_LEFT),'2015-01-02','cekajici',bin2hex(random_bytes(32)),'']);
+$insert->execute(['LOCALHOST',$tag.' Z-po-limitaci','2015-01-02','cekajici',bin2hex(random_bytes(32)),'']);
+$person=(int)$pdo->lastInsertId();
+$pdo->prepare("INSERT INTO club_teams(code,name,discipline,age_label,created_by_trainer_id,activity_kind) VALUES(?,?,'test','test',3,'circle')")->execute([$tag,'LOCALHOST '.$tag.' kroužek']);
+$team=(int)$pdo->lastInsertId();
+$pdo->prepare("INSERT INTO club_roster_members(team_id,sportovec_id,source,valid_from,created_by_trainer_id) VALUES(?,?,'manual','2026-01-01',3)")->execute([$team,$person]);
+$pdo->commit();
+echo json_encode(['synthetic_only'=>true,'tag'=>$tag,'people'=>1002,'target_id'=>$person,'target_label'=>$tag.' Z-po-limitaci LOCALHOST','team_id'=>$team,'registrar_id'=>3,'accounts'=>(int)$pdo->query('SELECT COUNT(*) FROM verejni_uzivatele')->fetchColumn(),'online_acceptances'=>(int)$pdo->query('SELECT COUNT(*) FROM club_registration_consent_acceptances')->fetchColumn(),'staff'=>$pdo->query("SELECT t.id,t.jmeno,p.position_code FROM treneri t JOIN staff_user_positions p ON p.trainer_id=t.id WHERE t.jmeno LIKE 'round4-%'")->fetchAll()],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).PHP_EOL;
