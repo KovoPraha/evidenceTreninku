@@ -5,6 +5,10 @@ Skutečný Chrome ověřil přihlášenou produkční administraci a samostatné
 účty trenéra, registráře a rodiče. Opravy tohoto průchodu nejsou nasazené.
 Nejde o úplné lidské UAT ani o browser přejímku všech osmi omezených rolí.
 
+Následné sloučení PR #293, produkční nasazení a ověření 4. 11. zachycuje
+[samostatný protokol vydání](../functional-round3-release-20261104/RESULTS.md).
+Výše uvedený stav nenasazení je původní snapshot před vydáním.
+
 Výchozí main: `ef622b9924a73cb51419fa252b2bd4d1b83ea2fe`.
 Větev: `codex/functional-uat-round3-20261104`. Časová zóna: Europe/Prague.
 Vlastník povolil pokračovat v autonomním testování; dřívější pokyn zahrnuje opravy.

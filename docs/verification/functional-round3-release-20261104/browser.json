@@ -1,0 +1,24 @@
+{
+  "environment": "production",
+  "origin": "https://kis.kovopraha.cz",
+  "password_change": "SKIPPED",
+  "T07": "SKIPPED",
+  "membership_preview": {
+    "status": "PASS",
+    "synthetic_person_id": 11782,
+    "roster": "TEST – UAT děti",
+    "requested_last_day": "2026-10-20",
+    "displayed_period": "2026-10-20 – 2026-10-20",
+    "confirmation_clicked": false,
+    "domain_mutation": false,
+    "evidence_excerpt": "heading \"Náhled změny členství\" [level=2]\n  - paragraph: \"Akce: Ukončení. Důvod: TEST PR293 pouze overeni nahledu, zmenu nepotvrzovat.\"\n  - paragraph: \"Platnost členství po změně:\"\n  - list \"Platnost členství po změně\":\n    - listitem: \"TEST – UAT děti: 2026-10-20 – 2026-10-20\"\n  - list:\n    - listitem: TEST-PR137 Ověření nasazení (#11782)\n  - paragraph: \"Dotčené budoucí tréninky: 0; akce: 0.\"\n  - button \"Potvrdit uvedenou změnu\""
+  },
+  "family_overview": {
+    "status": "PAGE_LOAD_PASS",
+    "linked_profiles": false,
+    "roster_badges": "NOT_VERIFIED_IN_PRODUCTION",
+    "evidence_excerpt": "- navigation \"Klubový portál\":\n  - link \"KOVO Praha – úvodní stránka\":\n    - /url: /index.php\n  - list:\n    - link \"Domů\":\n      - /url: /index.php\n    - link \"Kroužky\":\n      - /url: /booking/cyklisticke_krouzky.php\n    - link \"E-shop\":\n      - /url: /booking/eshop.php\n    - link \"Tréninky\":\n      - /url: /booking/treninky.php\n    - link \"Akce a kalendář\":\n      - /url: /booking/klubovy_kalendar.php\n    - link \"Individuální lekce\":\n      - /url: /booking/kalendar.php\n    - link \"Velodrom\":\n      - /url: /booking/velodrom.php\n  - link \" Můj přehled\":\n    - /url: /booking/sportovni_prehled.php\n    - generic: \n    - text: Můj přehled\n  - generic \" Můj účet\":\n    - generic: \n    - text: Můj účet\n  - link \" Evidence\":\n    - /url: /index.php\n    - generic: \n    - text: Evidence\n  - button \"Odhlásit\"\n- main:\n  - heading \" Sportovní přehled\" [level=1]:\n    - generic: \n    - text: Sportovní přehled\n  - paragraph: Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.\n  - region \"Co zbývá vyřídit\":\n    - heading \"Co zbývá vyřídit\" [level=2]\n    - paragraph: Podklady a odpovědi k tréninkům v příštích 30 dnech. Osobní vyřízení s oddílem zůstává možné.\n    - heading \"Na vás / domluvit s oddílem (1)\" [level=3]\n    - list:\n      - link \"Propojit osobu\":\n        - /url: moje_osoby.php#propojeni\n      - paragraph: Pokud už jste vy nebo vaše dítě v evidenci, použijte žádost o propojení původního profilu. Pro osobní vyřízení kontaktujte registráře.\n    - heading \"Čeká na vyřízení klubem (0)\" [level=3]\n    - paragraph: V dostupných údajích není další úkol této skupiny.\n  - paragraph: Přehled obsahuje dostupná převedená data. Chybějící starší tréninky neznamenají, že sportovec netrénoval. Nesrovnalost sdělte trenérovi.\n  - region \"Začněte propojením sportovce\":\n    - heading \"Začněte propojením sportovce\" [level=2]\n    - paragraph: Účet je připravený. Pokud už jste vy nebo vaše dítě v evidenci klubu, požádejte o propojení profilu. Po schválení tu uvidíte tréninky, akce a platby.\n    - link \"Propojit existující profil\":\n      - /url: moje_osoby.php#propojeni\n    - link \"Přejít do e-shopu\":\n      - /url: eshop.php\n  - paragraph:\n    - text: Nemáte zatím klubový profil? V části\n    - link \"Moje osoby\":\n      - /url: moje_osoby.php\n    - text: zjistíte aktuální možnost registrace nového sportovce."
+  },
+  "original_workspace_restored": "system_admin",
+  "screenshot_capture": "preview screenshot timed out; DOM proof retained"
+}

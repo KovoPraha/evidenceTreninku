@@ -1,0 +1,43 @@
+{
+  "pre_audit_run": 41835277266,
+  "post_audit_run": 41836644728,
+  "before_live": {
+    "sha": "7c31ea174dae063fc781f708b8caa105ba57feb6",
+    "run_id": "41539094174",
+    "deployed_at": "2026-11-02T22:42:15+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "94982c44d7b7737bddcca46d3ebb9fb4f698abef",
+    "run_id": "41835865547",
+    "deployed_at": "2026-11-04T13:14:28+00:00",
+    "uat_approved": false
+  },
+  "unchanged": {
+    "config_sha256": true,
+    "integration_flags": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "migration_ledger_count": true
+  },
+  "values_after": {
+    "config_sha256": "326c832d891a99d2780099391854a8daee3936adcdacf62c62f0a00b616fb772",
+    "integration_flags": {
+      "FIO_IMPORT_ENABLED": false,
+      "FIO_AUTO_CONFIRM_ENABLED": false,
+      "SUMUP_ENABLED": false,
+      "STRIPE_ENABLED": false,
+      "VELOCOTA_INTEGRATION": false,
+      "PACKETA_ENABLED": null
+    },
+    "private_migration_candidates": {
+      "movable": 0,
+      "missing": 2,
+      "already_private": 0,
+      "invalid": 0
+    },
+    "kis_canonical_write_enabled": false,
+    "migration_ledger_count": 149
+  },
+  "legacy_manifest_limit": "old_source/new_source compare historical hardcoded 44-file manifests, not this release."
+}
