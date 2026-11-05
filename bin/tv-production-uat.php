@@ -104,7 +104,7 @@ function tvUatPrepare(PDO $pdo, string $run, string $stateFile): array
     }
 }
 
-function tvUatCleanup(PDO $pdo, string $run, string $stateFile): array
+function tvUatCleanup(PDO $pdo, string $run, string $stateFile, int $keepProgramId = 0): array
 {
     $run = tvUatRunId($run);
     if (!is_file($stateFile)) {
@@ -119,12 +119,20 @@ function tvUatCleanup(PDO $pdo, string $run, string $stateFile): array
     $programs = $pdo->prepare("SELECT DISTINCT p.* FROM tv_programs p JOIN tv_program_events e ON e.program_id=p.id "
         . "WHERE e.actor_id=? AND e.action='created'");
     $programs->execute([$id]);
-    $ids = [];
-    foreach ($programs->fetchAll(PDO::FETCH_ASSOC) as $program) {
+    $owned = $programs->fetchAll(PDO::FETCH_ASSOC);
+    if ($keepProgramId !== 0 && ($keepProgramId < 1
+        || !in_array($keepProgramId, array_map('intval', array_column($owned, 'id')), true)
+        || tvPublicProgram($pdo, $keepProgramId) === null)) {
+        throw new RuntimeException('Only an explicitly selected published program of this run may be retained.');
+    }
+    foreach ($owned as $program) {
         if (!str_starts_with($program['name'], 'TEST TV ' . $run)) {
             throw new RuntimeException('TV UAT program identity changed.');
         }
-        if (!(int)$program['archived']) {
+    }
+    $ids = [];
+    foreach ($owned as $program) {
+        if ((int)$program['id'] !== $keepProgramId && !(int)$program['archived']) {
             tvMutateProgram($pdo, (int)$program['id'], (int)$program['lock_version'], $id, 'archive');
         }
         $ids[] = (int)$program['id'];
@@ -149,6 +157,7 @@ function tvUatCleanup(PDO $pdo, string $run, string $stateFile): array
             $after = $actor;
             $after['aktivni'] = 0;
             $after['session_version'] = (int)$actor['session_version'] + 1;
+            $after['retained_tv_program_id'] = $keepProgramId ?: null;
             staffAccountEvent($pdo, $id, $id, 'tv_uat_deactivated', 'Ukončení autorizovaného TV UAT a revokace relací', $actor, $after);
         }
         $pdo->commit();
@@ -167,11 +176,15 @@ function tvUatCleanup(PDO $pdo, string $run, string $stateFile): array
         $unchanged = $unchanged && ($current[$programId] ?? null) === $hash;
     }
     $publicAbsent = true;
+    $programStateValid = true;
     foreach ($ids as $programId) {
-        $publicAbsent = $publicAbsent && tvPublicProgram($pdo, $programId) === null;
+        $isPublic = tvPublicProgram($pdo, $programId) !== null;
+        $publicAbsent = $publicAbsent && !$isPublic;
+        $programStateValid = $programStateValid && ($isPublic === ($programId === $keepProgramId));
     }
-    return ['ok' => $unchanged && $publicAbsent && !in_array(false, array_column($images, 'valid_private_jpeg'), true),
+    return ['ok' => $unchanged && $programStateValid && !in_array(false, array_column($images, 'valid_private_jpeg'), true),
         'run_id' => $run, 'actor_id' => $id, 'program_ids' => $ids, 'programs_archived' => $publicAbsent,
+        'retained_program_id' => $keepProgramId ?: null,
         'actor_deactivated' => true, 'positions_revoked' => true, 'linked_customer_deactivated' => true,
         'other_programs_unchanged' => $unchanged, 'images' => $images];
 }
@@ -204,7 +217,7 @@ function tvUatMain(): int
     $action = (string)getenv('TV_UAT_ACTION');
     $result = match ($action) {
         'prepare' => tvUatPrepare($pdo, $run, $state),
-        'cleanup' => tvUatCleanup($pdo, $run, $state),
+        'cleanup' => tvUatCleanup($pdo, $run, $state, (int)getenv('TV_UAT_KEEP_PROGRAM_ID')),
         default => throw new RuntimeException('Unknown TV UAT operation.'),
     };
     echo json_encode($result, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE) . PHP_EOL;

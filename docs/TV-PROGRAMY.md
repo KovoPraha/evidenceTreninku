@@ -105,6 +105,14 @@ databázovým otiskům a nezměněné původní programy. Teprve poté odstraní
 soukromé provozní soubory. Historie a obrázky archivovaného testu se zachovají
 pro audit; veřejně se nevydávají.
 
+Pokud uživatel výslovně žádá ponechat ukázku pro fyzickou TV, lze při
+`cleanup` zadat `tv_uat_keep_program_id`. Musí to být ID již zveřejněného
+programu vytvořeného výhradně účtem stejného přípravného běhu. Jen tento
+program zůstane veřejný; účet, jeho pozice, relace i provozní přístupové
+soubory se zruší obvyklým způsobem. Bez tohoto parametru platí archivace
+všech vlastních testovacích programů. Veřejnou URL a obrázek ověřte znovu
+anonymně po úklidu.
+
 Prohlížečový přepínač `--post-cleanup` ověří odmítnutí staré relace a HTTP 404
 u archivovaného vysílání a obou obrázků. Přihlašovací údaje, soukromý klíč
 a cookies nepatří do výsledků ani do Gitu. Výsledky a snímky testovacího
