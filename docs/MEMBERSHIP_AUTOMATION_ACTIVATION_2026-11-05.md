@@ -28,4 +28,6 @@ Záloha configu je soukromá; nepřepisovat z ní pozdější změny jiných int
 
 ## Stav
 
-Plán před implementací. Živý výsledek bude doplněn po ověření.
+Dokončeno: [PR #318, produkční aktivace a první ostrý běh](verification/membership-automation-20261105/RESULTS.md)
+ověřeny. Denní plán a zápis zapnuté; první apply 0 členství, 0 předpisů,
+0 zpráv, žádná chyba. Následně ověřen úspěšný uložený heartbeat. Pošta vypnutá.
