@@ -52,7 +52,7 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení měsíčního členstv�
   Nové měsíční automatizace/pošta neaktivovány, plán nemá zapínací proměnné. Produkční dry-run PASS (0 členství), tarif dosud neschválen.
 - **Ověření:** 11 kontrol PR PASS, shodný sloučený strom; CI main i deploy SUCCESS, Linux 2054/39237 bez skipů, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
   HTTP před 48/48, po 54/54; přihlášený trenérský výběr/data/TEST hledání a měsíční správa PASS. Ostrý zápis, platba, nové PDF a upomínka NOT RUN.
-  Čtecí audit potvrdil živé SHA, shodný hash konfigurace a dosavadní integrační flags; úplná hash inventura se netvrdí.
+  [Čtecí porovnání](verification/monthly-coach-release-20261105/release-comparison.json) potvrdilo živé SHA, shodný hash konfigurace a dosavadní integrační flags; úplná hash inventura se netvrdí.
 - **Záloha a schéma:** čerstvá záloha před migrací, 347 tabulek / 2 triggery; [izolovaná obnova 42065531972](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42065531972) PASS včetně všech počtů.
   SHA-256 `568ff63f469f70911efa757d98c82374466a85562392f9e4527cf3b427a17947`. Schéma current / pending [], ledger 151, dosavadní VS zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search

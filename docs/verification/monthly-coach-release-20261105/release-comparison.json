@@ -30,5 +30,11 @@
   "kis_canonical_write_enabled": false,
   "monthly_workflow_variables_present": false,
   "monthly_activation_performed": false,
-  "historical_source_manifests_are_not_release_file_inventory": true
+  "historical_source_manifests_are_not_release_file_inventory": true,
+  "live": {
+    "sha": "9b0dec083a650df933b09ecd4545d782069daa62",
+    "run_id": "42064630068",
+    "deployed_at": "2026-11-05T16:30:37+00:00",
+    "uat_approved": false
+  }
 }
