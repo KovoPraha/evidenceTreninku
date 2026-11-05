@@ -4,6 +4,14 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
+[Klubové tarify #316](verification/membership-catalog-release-20261105/RESULTS.md) jsou nasazené.
+Produkční koncept Závodní tým 2200 Kč/měsíc (varianta 951) a skupina 86 → MTB 87,
+Silnice 88, Dráha 89 jsou založené. Výběr více disciplín pouze zařazuje na soupisky,
+nemění cenu. Vlastník doplní fakturační údaje přes `accounting_settings_admin.php`;
+vystavovatel, účetní pravidlo a tarif ještě nejsou schválené. Nezakládat koncept
+ručně znovu, použít existující. Nový prodej/účtování a pošta zůstávají neaktivované.
+Podporované roční tarify nemají zadanou skutečnou cenu a žádný roční produkt nevznikl.
+
 [Měsíční členství a zastupování trenérů #314](verification/monthly-coach-release-20261105/RESULTS.md) jsou sloučené a nasazené.
 Trenérské přiřazení nově určuje pořadí výběru, ne možnost vypsat/zapsat trénink za kolegu.
 Nové měsíční automatizace, plán a pošta nebyly zapnuté; před ostrým sjednáním je třeba schválit konkrétní tarif a aktivaci podle [runbooku](MONTHLY_MEMBERSHIP_RUNBOOK.md).
