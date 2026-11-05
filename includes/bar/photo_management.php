@@ -13,8 +13,8 @@ function barSetProductImage(PDO $pdo, int $id, int $version, ?string $uploadPath
     $image = $uploadPath === null ? null : barReadImage($uploadPath);
     $pdo->beginTransaction();
     try {
-        $actor = barActor($pdo, 'catalog_manage', true);
         $suffix = barLockState($pdo);
+        $actor = barActor($pdo, 'catalog_manage', true);
         $product = barLockedProduct($pdo, $id, $version, $suffix);
         $name = null;
         if ($image !== null) {

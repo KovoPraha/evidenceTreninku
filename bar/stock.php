@@ -45,6 +45,7 @@ $history = $pdo->query('SELECT o.id,o.kind,o.reason,o.created_at,p.name,m.locati
     . 'JOIN kis_bar_products p ON p.id=o.product_id ORDER BY o.id DESC,m.id LIMIT 40')->fetchAll(PDO::FETCH_ASSOC);
 $kinds = ['receive_stall' => 'Přijmout na stánek', 'receive_office' => 'Přijmout do předskladu', 'to_stall' => 'Přesunout z předskladu na stánek',
     'to_office' => 'Vrátit ze stánku do předskladu', 'inventory_stall' => 'Inventura stánku', 'inventory_office' => 'Inventura předskladu'];
+$kinds += ['sale' => 'Prodej', 'consumption' => 'Vlastní spotřeba', 'sale_void' => 'Storno prodeje', 'consumption_void' => 'Storno vlastní spotřeby'];
 ?>
 <!doctype html>
 <html lang="cs">
@@ -53,6 +54,7 @@ $kinds = ['receive_stall' => 'Přijmout na stánek', 'receive_office' => 'Přijm
 <?php require dirname(__DIR__) . '/hlavicka.php'; ?>
 <main class="container py-4">
     <h1>Sklad baru</h1>
+    <p>Zásoba uvádí volné kusy. Čekající objednávky již zboží rezervují; před inventurou takové položky nejprve vyřešte jejich platby.</p>
     <?php if ($error !== ''): ?><div class="alert alert-danger" role="alert"><?= barH($error) ?></div><?php endif; ?>
     <form method="get" class="mb-4">
         <label class="form-label" for="stock-product">Produkt</label>

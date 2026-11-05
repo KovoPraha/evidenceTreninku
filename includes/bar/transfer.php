@@ -129,12 +129,12 @@ function barImportTransfer(PDO $pdo, array $bundle, string $imagesDirectory): ar
     $bundle = barValidateTransferBundle($bundle, $imagesDirectory);
     $pdo->beginTransaction();
     try {
-        $actor = barActor($pdo, 'transfer', true);
         $suffix = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
         $state = $pdo->query('SELECT import_run_id FROM kis_bar_state WHERE id=1' . $suffix)->fetch(PDO::FETCH_ASSOC);
         if (!$state) {
             throw new RuntimeException('Chybí převodní zámek.');
         }
+        $actor = barActor($pdo, 'transfer', true);
         $query = $pdo->prepare('SELECT id,summary_json FROM kis_bar_import_runs WHERE bundle_sha256=?' . $suffix);
         $query->execute([$bundle['sha256']]);
         $old = $query->fetch(PDO::FETCH_ASSOC);

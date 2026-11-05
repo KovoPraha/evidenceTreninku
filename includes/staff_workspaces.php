@@ -391,12 +391,15 @@ function staffPositionDefinitions(): array
         'bar_operator' => [
             'label' => 'Obsluha baru',
             'short_label' => 'Bar',
-            'description' => 'Nabídka a zásoba stánku.',
+            'description' => 'Pokladna, vlastní kasa a nabídka stánku.',
             'icon' => 'cup-straw',
             'legacy_role' => 'trener',
             'sort' => 76,
             'groups' => [
                 ['label' => 'Bar', 'icon' => 'cup-straw', 'items' => [
+                    ['route' => 'bar/checkout.php', 'label' => 'Pokladna', 'description' => 'Prodej a potvrzení objednávky', 'icon' => 'cart-check'],
+                    ['route' => 'bar/cashbox.php', 'label' => 'Moje kasa', 'description' => 'Hotovost a uzávěrka vlastní kasy', 'icon' => 'cash-stack'],
+                    ['route' => 'bar/consumption.php', 'label' => 'Vlastní spotřeba', 'description' => 'Odběr s výslovně přiděleným oprávněním', 'icon' => 'cup-hot'],
                     ['route' => 'bar/index.php', 'label' => 'Nabídka stánku', 'description' => 'Produkty, ceny a zásoba stánku', 'icon' => 'cup-straw'],
                 ]],
             ],
@@ -413,6 +416,7 @@ function staffPositionDefinitions(): array
                     ['route' => 'bar/catalog.php', 'label' => 'Katalog baru', 'description' => 'Produkty, ceny a obě skladová místa', 'icon' => 'boxes'],
                     ['route' => 'bar/categories.php', 'label' => 'Kategorie baru', 'description' => 'Členění a pořadí nabídky', 'icon' => 'tags'],
                     ['route' => 'bar/stock.php', 'label' => 'Sklad baru', 'description' => 'Příjem, přesun a inventura', 'icon' => 'box-seam'],
+                    ['route' => 'bar/settings.php', 'label' => 'Nastavení baru', 'description' => 'Záloha za vratný kelímek', 'icon' => 'gear'],
                 ]],
             ],
         ],
@@ -493,7 +497,7 @@ function staffPositionPrimaryRoutes(): array
 
 
         'tv_operator' => ['tv_programs_admin.php'],
-        'bar_operator' => ['bar/index.php'],
+        'bar_operator' => ['bar/checkout.php', 'bar/cashbox.php', 'bar/consumption.php'],
         'bar_admin' => ['bar/catalog.php', 'bar/stock.php', 'bar/categories.php'],
         'system_admin' => ['sprava_pracovnich_pozic.php','sprava_treneru.php'],
     ];
@@ -521,7 +525,7 @@ function staffRouteOwners(): array
     }
 
     $additional = [
-        'bar_operator' => ['bar/image.php'],
+        'bar_operator' => ['bar/image.php', 'bar/receipt.php'],
         'coach' => [
             'ajax_denny_rozvrh.php','ajax_dostupnost_sportovist.php','ajax_nova_oznameni.php',
             'ajax_podskupiny.php','ajax_roster_target_selector.php','ajax_sportovci.php','ajax_treninky.php',
@@ -617,6 +621,10 @@ function staffRouteDelegates(): array
     return [
         'bar/index.php' => ['bar_admin'],
         'bar/image.php' => ['bar_admin'],
+        'bar/checkout.php' => ['bar_admin'],
+        'bar/cashbox.php' => ['bar_admin'],
+        'bar/consumption.php' => ['bar_admin'],
+        'bar/receipt.php' => ['bar_admin'],
         'season_preparation_admin.php' => ['sports_lead'],
         'club_communication_admin.php' => ['registrar','order_operator'],
         'club_rewards_admin.php' => ['coach','sports_lead'],
@@ -699,6 +707,7 @@ function staffPositionMenuGroups(string $position, bool $isLocal): array
      'zatezovy_test_form.php'],
         'catalog_manager' => ['shop_returns_admin.php'],
         'finance_manager' => ['eshop_inventory_admin.php', 'shop_returns_admin.php'],
+        'bar_admin' => ['bar/checkout.php', 'bar/cashbox.php', 'bar/consumption.php'],
     ][$position] ?? [];
     $workflowItems = [];
     foreach (staffPositionDefinitions() as $ownerDefinition) {

@@ -44,6 +44,15 @@ function barLockedProduct(PDO $pdo, int $id, int $version, string $suffix): arra
     return $row;
 }
 
+/** Pending sales already remove reserved units from available stock; resolve them before a physical inventory or mode change. */
+function barHasPendingStock(PDO $pdo, int $id, ?string $location = null): bool
+{
+    $query = $pdo->prepare("SELECT c.id FROM kis_bar_sale_components c JOIN kis_bar_sale_payments p ON p.sale_id=c.sale_id "
+        . "WHERE c.product_id=? AND p.status='pending'" . ($location === null ? '' : ' AND c.location_code=?') . ' LIMIT 1');
+    $query->execute($location === null ? [$id] : [$id, $location]);
+    return (bool)$query->fetchColumn();
+}
+
 function barSaveProduct(PDO $pdo, int $id, int $version, array $input, string $reason): int
 {
     $reason = barReason($reason);
@@ -60,8 +69,8 @@ function barSaveProduct(PDO $pdo, int $id, int $version, array $input, string $r
     }
     $pdo->beginTransaction();
     try {
-        $actor = barActor($pdo, 'catalog_manage', true);
         $suffix = barLockState($pdo);
+        $actor = barActor($pdo, 'catalog_manage', true);
         $before = $id > 0 ? barLockedProduct($pdo, $id, $version, $suffix) : null;
         $category = $pdo->prepare('SELECT id FROM kis_bar_categories WHERE id=?' . $suffix);
         $category->execute([$values['category_id']]);
@@ -71,6 +80,9 @@ function barSaveProduct(PDO $pdo, int $id, int $version, array $input, string $r
         if ($before !== null && ((int)$before['stock_stall'] !== 0 || (int)$before['stock_office'] !== 0)
             && ($values['archived'] === 1 || $values['stock_mode'] !== $before['stock_mode'])) {
             throw new DomainException('Nejprve vypořádejte zásobu obou skladových míst.');
+        }
+        if ($before !== null && ($values['archived'] === 1 || $values['stock_mode'] === 'nesledovat') && barHasPendingStock($pdo, $id)) {
+            throw new DomainException('Produkt je rezervovaný čekající platbou. Před archivací nebo vypnutím skladu platbu vyřešte.');
         }
         $used = $pdo->prepare('SELECT product_id FROM kis_bar_recipes WHERE ingredient_id=? LIMIT 1');
         $used->execute([$id]);
@@ -120,9 +132,12 @@ function barSetRecipe(PDO $pdo, int $id, int $version, array $ingredients, strin
     ksort($normalized, SORT_NUMERIC);
     $pdo->beginTransaction();
     try {
-        $actor = barActor($pdo, 'catalog_manage', true);
         $suffix = barLockState($pdo);
+        $actor = barActor($pdo, 'catalog_manage', true);
         $product = barLockedProduct($pdo, $id, $version, $suffix);
+        if ($normalized !== [] && barHasPendingStock($pdo, $id)) {
+            throw new DomainException('Před změnou fyzické skladové položky na recepturu nejprve vyřešte její čekající platby.');
+        }
         if ((int)$product['stock_stall'] !== 0 || (int)$product['stock_office'] !== 0 || (int)$product['archived'] === 1) {
             throw new DomainException('Recepturu lze měnit pouze u aktivního produktu s nulovou vlastní zásobou.');
         }

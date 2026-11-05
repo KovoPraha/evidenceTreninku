@@ -32,7 +32,7 @@ try {
         . 'role VARCHAR(20),aktivni INT,session_version INT) ENGINE=InnoDB');
     $pdo->exec("INSERT INTO treneri(id,jmeno,role,aktivni,session_version) VALUES(1,'LOCALHOST System','trener',1,1),(3,'LOCALHOST Bar admin','trener',1,1)");
     $migrations = ['20260821150000_staff_workspaces', '20261105150000_bar_foundation', '20261105160000_bar_transfer',
-        '20261105170000_bar_stock', '20261105180000_bar_catalog_management'];
+        '20261105170000_bar_stock', '20261105180000_bar_catalog_management', '20261105190000_bar_checkout'];
     foreach ($migrations as $id) {
         $migration = require dirname(__DIR__, 2) . '/migrations/' . $id . '.php';
         $migration['up']($pdo);

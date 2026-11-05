@@ -22,7 +22,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-05.3';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-05.4';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -169,6 +169,16 @@ function ownedColumnsPresentInSnapshot(array $columns): array
  */
 const EVIDENCE_TABLES = [
     'kis_bar_assets',
+    'kis_bar_settings',
+    'kis_bar_requests',
+    'kis_bar_cashboxes',
+    'kis_bar_cash_movements',
+    'kis_bar_sales',
+    'kis_bar_sale_lines',
+    'kis_bar_sale_components',
+    'kis_bar_sale_payments',
+    'kis_bar_cup_returns',
+    'kis_bar_voids',
     'kis_bar_import_runs',
     'kis_bar_state',
     'kis_bar_stock_operations',

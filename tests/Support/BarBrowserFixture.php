@@ -61,6 +61,16 @@ $bundle = barBuildTransferBundle($source, $runtime . '/images');
 barWriteTransferPackage($bundle, $runtime . '/images', $runtime . '/package');
 $_SESSION = ['trener_id' => 7001, 'trener_session_version' => 1, 'staff_active_position' => 'system_admin'];
 $result = barImportTransfer($pdo, $bundle, $runtime . '/package/images');
+if (getenv('BAR_BROWSER_CHECKOUT_DEMO') === '1') {
+    require_once $root . '/includes/bar/reversals.php';
+    require_once $root . '/includes/bar/stock.php';
+    $_SESSION = ['trener_id' => 7003, 'trener_session_version' => 1, 'staff_active_position' => 'bar_admin'];
+    $productId = (int)$pdo->query('SELECT id FROM kis_bar_products WHERE source_id=91')->fetchColumn();
+    barStockOperation($pdo, $productId, 1, 'receive_stall', 20, bin2hex(random_bytes(32)), 'LOCALHOST checkout demo initial stock');
+    barSetCupDeposit($pdo, 2000, 1, 'LOCALHOST checkout demo deposit', bin2hex(random_bytes(32)));
+    $_SESSION = ['trener_id' => 7001, 'trener_session_version' => 1, 'staff_active_position' => 'system_admin'];
+    barSetConsumptionPermission($pdo, $result['trainer_id'], true, 'LOCALHOST checkout demo explicit grant');
+}
 $config = ['DB_HOST' => '127.0.0.1;port=' . $port, 'DB_NAME' => $database, 'DB_USER' => 'root', 'DB_PASS' => '',
     'APP_BASE_URL' => 'http://127.0.0.1:8895', 'JE_LOKALNE' => true, 'VELOCOTA_INTEGRATION' => false,
     'AUTH_RATE_LIMIT_PEPPER' => 'LOCALHOST-bar-browser-rate-limit-0000000000000000', 'APP_PRIVATE_STORAGE_ROOT' => $runtime . '/private'];

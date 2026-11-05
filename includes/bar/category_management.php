@@ -36,8 +36,8 @@ function barSaveCategory(PDO $pdo, int $id, int $version, array $input, string $
     }
     $pdo->beginTransaction();
     try {
-        $actor = barActor($pdo, 'catalog_manage', true);
         $suffix = barLockState($pdo);
+        $actor = barActor($pdo, 'catalog_manage', true);
         $before = $id === 0 ? null : barLockedCategory($pdo, $id, $version, $suffix);
         $duplicate = $pdo->prepare('SELECT id FROM kis_bar_categories WHERE LOWER(TRIM(name))=LOWER(?) AND id<>?' . $suffix);
         $duplicate->execute([$name, $id]);
@@ -74,8 +74,8 @@ function barDeleteEmptyCategory(PDO $pdo, int $id, int $version, string $reason)
     $reason = barReason($reason);
     $pdo->beginTransaction();
     try {
-        $actor = barActor($pdo, 'catalog_manage', true);
         $suffix = barLockState($pdo);
+        $actor = barActor($pdo, 'catalog_manage', true);
         $before = barLockedCategory($pdo, $id, $version, $suffix);
         $query = $pdo->prepare('SELECT id FROM kis_bar_products WHERE category_id=? LIMIT 1');
         $query->execute([$id]);

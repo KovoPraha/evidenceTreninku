@@ -33,7 +33,7 @@ final class BarFoundationTest extends TestCase
         self::assertSame(34, (int)$pdo->query('SELECT sklad FROM jidlo_produkty WHERE id=91')->fetchColumn());
     }
 
-    public function testBarRolesDoNotAcquireCoachingAndRegistryDelegatesOnlyTheOffer(): void
+    public function testBarRolesDoNotAcquireCoachingAndRegistryDelegatesBarWorkflows(): void
     {
         $pdo = \barTestDatabase();
         \barTestLogin(2, 'bar_operator');
@@ -41,6 +41,10 @@ final class BarFoundationTest extends TestCase
         self::assertSame(['bar_operator'], \staffAvailablePositions());
         self::assertNotContains('bar_operator', \staffRouteAllowedPositions('formular.php'));
         self::assertSame(['bar_operator', 'bar_admin'], \staffRouteAllowedPositions('bar/index.php'));
+        foreach (['bar/checkout.php', 'bar/cashbox.php', 'bar/consumption.php', 'bar/receipt.php'] as $route) {
+            self::assertSame(['bar_operator', 'bar_admin'], \staffRouteAllowedPositions($route));
+        }
+        self::assertSame(['bar_admin'], \staffRouteAllowedPositions('bar/settings.php'));
         self::assertSame(['bar_admin'], \staffRouteAllowedPositions('bar/catalog.php'));
         self::assertSame(['system_admin'], \staffRouteAllowedPositions('bar/permissions.php'));
         self::assertSame('bar_operator', \barActor($pdo, 'catalog_read')['position']);

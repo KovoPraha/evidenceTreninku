@@ -16,8 +16,8 @@ function barStockOperation(PDO $pdo, int $productId, int $version, string $kind,
     $requestHash = hash('sha256', json_encode([$productId, $version, $kind, $quantity, $reason], JSON_THROW_ON_ERROR));
     $pdo->beginTransaction();
     try {
-        $actor = barActor($pdo, 'stock_manage', true);
         $suffix = barLockState($pdo);
+        $actor = barActor($pdo, 'stock_manage', true);
         $query = $pdo->prepare('SELECT id,actor_id,request_sha256 FROM kis_bar_stock_operations WHERE token=?' . $suffix);
         $query->execute([$token]);
         $old = $query->fetch(PDO::FETCH_ASSOC);
@@ -29,6 +29,9 @@ function barStockOperation(PDO $pdo, int $productId, int $version, string $kind,
             return ['id' => (int)$old['id'], 'repeated' => true];
         }
         $product = barLockedProduct($pdo, $productId, $version, $suffix);
+        if (str_starts_with($kind, 'inventory_') && barHasPendingStock($pdo, $productId, substr($kind, 10))) {
+            throw new DomainException('Položka je rezervovaná čekající platbou. Před fyzickou inventurou platbu potvrďte nebo objednávku stornujte.');
+        }
         $query = $pdo->prepare('SELECT product_id FROM kis_bar_recipes WHERE product_id=? LIMIT 1');
         $query->execute([$productId]);
         if ($product['stock_mode'] !== 'sledovat' || (int)$product['archived'] === 1 || $query->fetchColumn()) {
