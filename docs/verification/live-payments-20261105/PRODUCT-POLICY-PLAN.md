@@ -21,9 +21,11 @@ Offline testy ověřují vymezený rozsah, nezměněné ceny a staré platby,
 idempotenci, odmítnutí změněného otisku/počtu/oprávnění a skutečné přerušení
 uprostřed dávky s následným pokračováním bez duplicitního auditu.
 
-První produkční preview 42009711338 skončilo bez zápisu, protože původní
-pomocník vyžadoval výhradně superadmina. Skutečná stránka nastavení plateb
-patří pozici finance_manager (Hospodář a platby). Pomocník nyní kontroluje
-stejné existující oprávnění; trenér, samotný správce katalogu a neaktivní
-hospodář zůstávají odmítnutí. Regresní test nejprve prokázal původní odmítnutí
-oprávněného hospodáře. Nemění se uživatelské role ani runtime aplikace.
+První produkční preview 42009711338 skončilo bez zápisu: přesná dodaná adresa
+patří aktivnímu trenérovi bez finančního oprávnění. Čtecí dohledání 42009991461
+to potvrdilo; tento účet se pro dávku nepoužije. Současně se zjistil rozdíl
+pomocníka proti skutečné stránce, která patří finance_manager (Hospodář a platby).
+Pomocník nyní přijímá stejné existující oprávnění nebo superadmina; trenér,
+samotný správce katalogu a neaktivní hospodář zůstávají odmítnutí. Syntetický
+regresní test nejprve prokázal původní odmítnutí oprávněného hospodáře.
+Nemění se uživatelské role ani runtime aplikace.
