@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\phpunit.xml.dist" tests="2" assertions="4" errors="0" failures="2" skipped="0" time="1.303088">
+    <testsuite name="integration" tests="2" assertions="4" errors="0" failures="2" skipped="0" time="1.303088">
+      <testsuite name="Tests\Integration\SumUpGatewayTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Integration\SumUpGatewayTest.php" tests="2" assertions="4" errors="0" failures="2" skipped="0" time="1.303088">
+        <testcase name="testReversalsAndMismatchedTransactionDetailsCannotConfirmPayment" file="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Integration\SumUpGatewayTest.php" line="182" class="Tests\Integration\SumUpGatewayTest" classname="Tests.Integration.SumUpGatewayTest" assertions="2" time="1.297340">
+          <failure type="PHPUnit\Framework\AssertionFailedError">Tests\Integration\SumUpGatewayTest::testReversalsAndMismatchedTransactionDetailsCannotConfirmPayment&#13;
+Transaction detail must reject: refunded status
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Integration\SumUpGatewayTest.php:205</failure>
+        </testcase>
+        <testcase name="testTransactionApiFailureCanRetryAndProcessedReplayDoesNotReconfirm" file="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Integration\SumUpGatewayTest.php" line="216" class="Tests\Integration\SumUpGatewayTest" classname="Tests.Integration.SumUpGatewayTest" assertions="2" time="0.005748">
+          <failure type="PHPUnit\Framework\AssertionFailedError">Tests\Integration\SumUpGatewayTest::testTransactionApiFailureCanRetryAndProcessedReplayDoesNotReconfirm&#13;
+Unavailable transaction details must not confirm a payment.
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Integration\SumUpGatewayTest.php:226</failure>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
