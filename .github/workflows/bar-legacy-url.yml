@@ -1,0 +1,204 @@
+name: Prepnout stare adresy BAR do KIS
+
+on:
+  workflow_dispatch:
+    inputs:
+      operace:
+        description: 'inspect zalohuje a obnovi zdroj; apply prepne vstupni PHP; status pouze cte'
+        required: true
+        type: choice
+        options: [inspect, apply, status]
+      target_status_run:
+        description: 'Uspesny cerstvy status skutecneho prevodu katalogu a opravneni'
+        required: true
+        type: string
+      source_prepare_run:
+        description: 'Uspesny inspect tohoto workflow, povinny pro apply/status'
+        required: false
+        type: string
+      potvrzeni:
+        description: 'OVERIT pro inspect/status; PREPNOUT_BAR pro apply'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  DEPLOY_BASE: data/.kis-deploy
+  BACKUP_DIR: data/.kis-backups
+
+jobs:
+  urls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Overit skutecny prevod a konkretni bod navratu
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MODE: ${{ inputs.operace }}
+          CONFIRM: ${{ inputs.potvrzeni }}
+          TARGET_RUN: ${{ inputs.target_status_run }}
+          PREPARE_RUN: ${{ inputs.source_prepare_run }}
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$GITHUB_REF" = refs/heads/main
+          test "$APP_HOST" = kis.kovopraha.cz
+          [[ "$TARGET_RUN" =~ ^[1-9][0-9]{0,19}$ ]]
+          if [ "$MODE" = apply ]; then test "$CONFIRM" = PREPNOUT_BAR; else test "$CONFIRM" = OVERIT; fi
+          TMP=/tmp/kis-bar-url-$GITHUB_RUN_ID
+          install -d -m 700 "$TMP"
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$TARGET_RUN" > "$TMP/target-run.json"
+          jq -e '.conclusion == "success" and .head_branch == "main" and .event == "workflow_dispatch" and .path == ".github/workflows/bar-cutover-production.yml"' "$TMP/target-run.json" >/dev/null
+          if [ "$MODE" != status ]; then
+            jq -e '(.updated_at | fromdateiso8601) > now - 3600' "$TMP/target-run.json" >/dev/null
+          fi
+          gh run download "$TARGET_RUN" --repo "$GITHUB_REPOSITORY" --name "bar-cutover-result-$TARGET_RUN" --dir "$TMP/target"
+          jq -e '.ok and .mode == "status" and .catalog_committed and .permissions_committed and .verification.ok and .verification.catalog_exact and .verification.images_exact and .verification.operator_only and .verification.zero_stock and .verification.zero_operational_history and all(.permission_state[]; . == true)' "$TMP/target/result.json" >/dev/null
+          if [ "$MODE" = inspect ]; then PREPARE_RUN=$GITHUB_RUN_ID; else
+            [[ "$PREPARE_RUN" =~ ^[1-9][0-9]{0,19}$ ]]
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$PREPARE_RUN" > "$TMP/source-run.json"
+            jq -e '.conclusion == "success" and .head_branch == "main" and .event == "workflow_dispatch" and .path == ".github/workflows/bar-legacy-url.yml"' "$TMP/source-run.json" >/dev/null
+            gh run download "$PREPARE_RUN" --repo "$GITHUB_REPOSITORY" --name "bar-url-result-$PREPARE_RUN" --dir "$TMP/source"
+            jq -e '.ok and .mode == "prepare" and .backup.files > 0' "$TMP/source/result.json" >/dev/null
+            jq -e '.ok and .files > 0' "$TMP/source/restored.json" >/dev/null
+            test "$(jq -r '.backup.sha256' "$TMP/source/result.json")" = "$(jq -r '.sha256' "$TMP/source/restored.json")"
+          fi
+          echo "SOURCE_PREPARE_RUN=$PREPARE_RUN" >> "$GITHUB_ENV"
+
+      - name: Pripravit overene SSH spojeni
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for promenna in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!promenna}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Nahrat soukrome pomocniky
+        env:
+          MODE: ${{ inputs.operace }}
+          CONFIRM: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          OP="$DEPLOY_BASE/bar-url-$GITHUB_RUN_ID"
+          PRIVATE="$BACKUP_DIR/bar-url-$SOURCE_PREPARE_RUN"
+          production_retry "${SSH[@]}" "umask 077; mkdir -p '$OP' '$PRIVATE'; chmod 700 '$OP' '$PRIVATE'"
+          production_retry "${SCP[@]}" bin/bar-legacy-url.php bin/production-file-backup.php "$SSH_USER@$SSH_HOST:$OP/"
+          if [ "$MODE" = inspect ]; then MODE=prepare; fi
+          cat > /tmp/kis-bar-url-$GITHUB_RUN_ID/run.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('BAR_LEGACY_ROOT=bar.kovopraha.cz');
+          putenv('BAR_URL_PRIVATE=' . dirname(__DIR__, 2) . '/.kis-backups/bar-url-$SOURCE_PREPARE_RUN');
+          putenv('BAR_URL_MODE=$MODE');
+          putenv('BAR_URL_CONFIRM=$CONFIRM');
+          require __DIR__ . '/bar-legacy-url.php';
+          barLegacyUrlMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/kis-bar-url-$GITHUB_RUN_ID/run.php "$SSH_USER@$SSH_HOST:$OP/run.php"
+
+      - name: Provest jednou bez automatickeho opakovani zapisu
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          "${SSH[@]}" "php '$DEPLOY_BASE/bar-url-$GITHUB_RUN_ID/run.php'"
+
+      - name: Precist ulozeny vysledek
+        if: always()
+        run: |
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/bar-url-$GITHUB_RUN_ID/result.json" /tmp/kis-bar-url-$GITHUB_RUN_ID/result.json
+            cat /tmp/kis-bar-url-$GITHUB_RUN_ID/result.json
+          fi
+
+      - name: Skutecne obnovit vsechny puvodni soubory mimo hosting
+        if: inputs.operace == 'inspect'
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          TMP=/tmp/kis-bar-url-$GITHUB_RUN_ID
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BACKUP_DIR/bar-url-$GITHUB_RUN_ID/source.zip" "$TMP/source.zip"
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, zipfile
+          root = pathlib.Path('/tmp/kis-bar-url-' + os.environ['GITHUB_RUN_ID'])
+          expected = json.loads((root / 'result.json').read_text())['backup']
+          archive = root / 'source.zip'
+          assert archive.stat().st_size < 512 * 1024 * 1024
+          assert hashlib.file_digest(archive.open('rb'), 'sha256').hexdigest() == expected['sha256']
+          with zipfile.ZipFile(archive) as z:
+              manifest = json.loads(z.read('manifest.json'))
+              assert len(manifest) == expected['files'] and len(z.namelist()) == len(manifest) + 1
+              assert 'app/includes/config.php' in manifest and 'app/terminal/api.php' in manifest
+              total = 0
+              for name, meta in manifest.items():
+                  path = pathlib.PurePosixPath(name)
+                  assert not path.is_absolute() and path.parts[0] == 'app' and '..' not in path.parts
+                  total += meta['bytes']
+                  assert total < 1024 * 1024 * 1024
+                  target = root / 'restored' / path
+                  target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                  with z.open(name) as src, target.open('xb') as dst:
+                      os.chmod(target, 0o600)
+                      while chunk := src.read(1024 * 1024): dst.write(chunk)
+                  assert target.stat().st_size == meta['bytes']
+                  assert hashlib.file_digest(target.open('rb'), 'sha256').hexdigest() == meta['sha256']
+          proof = {'ok': True, 'files': len(manifest), 'sha256': expected['sha256']}
+          (root / 'restored.json').write_text(json.dumps(proof))
+          print(json.dumps(proof))
+          PY
+          production_retry "${SCP[@]}" "$TMP/restored.json" "$SSH_USER@$SSH_HOST:$BACKUP_DIR/bar-url-$GITHUB_RUN_ID/restored.json"
+
+      - name: Uchovat pouze necitlive dukazy
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: bar-url-result-${{ github.run_id }}
+          path: |
+            /tmp/kis-bar-url-${{ github.run_id }}/result.json
+            /tmp/kis-bar-url-${{ github.run_id }}/restored.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Uklidit pracovni kopie, zachovat soukromou zalohu a uctenku
+        if: always()
+        run: |
+          rm -rf -- /tmp/kis-bar-url-$GITHUB_RUN_ID
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            OP="$DEPLOY_BASE/bar-url-$GITHUB_RUN_ID"
+            production_retry "${SSH[@]}" "rm -f -- '$OP/run.php' '$OP/bar-legacy-url.php' '$OP/production-file-backup.php'" || true
+          fi

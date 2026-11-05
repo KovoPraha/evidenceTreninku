@@ -1,6 +1,6 @@
 # BAR → KIS: připravenost a budoucí postup B7
 
-Plán vznikl po technické přejímce B6, 5. 11. 2026. Vlastník následně výslovně povolil vydání kódu; modul je [nasazený a technicky ověřený](verification/bar-release-20261105/RESULTS.md). Skutečný zdrojový katalog, fotografie a lucka ještě nebyly převedené, starý BAR není přesměrovaný. Tento plán sám neuděluje další souhlasy k importu nebo finanční automatizaci.
+Plán vznikl po technické přejímce B6, 5. 11. 2026. Vlastník následně výslovně povolil nasazení a pokračování převodu; modul je [nasazený a technicky ověřený](verification/bar-release-20261105/RESULTS.md). **6. 11. je dokončený také [skutečný převod katalogu, fotografií, Lucky a schválených práv](verification/bar-cutover-20261106/RESULTS.md).** Starý BAR zatím není přesměrovaný. Tento plán sám neuděluje souhlas k finanční automatizaci; níže zachovává původní pořadí kontrol.
 
 ## Podklady před rozhodnutím o přechodu
 
@@ -28,3 +28,11 @@ Zastavit další zápisy a zachovat nové doklady/audit; neobnovovat starou zál
 5. 11. 2026 vlastník v chatu výslovně povolil produkční nasazení („ok, tedy nasadit“). Následuje chráněné vydání modulu z ověřeného PR #306; není tím doložená lidská přejímka ani parita dosud nepřipraveného skutečného katalogového balíčku. Před vydáním se novou operací `vytvorit-uplnou-zalohu-a-obnovit` v chráněném `production-drills.yml` vytvoří čerstvá DB záloha a soukromý ZIP nynější aplikace včetně konfigurace a celého soukromého úložiště. ZIP se nepublikuje jako artefakt; na izolovaném runneru se obnoví každý soubor a porovná jeho velikost a SHA-256. SQL se obnoví do samostatné MariaDB včetně všech počtů a triggerů. Cílová aplikace ani zdrojový BAR se tím nemění. Skutečný import, přidělení konkrétních dalších účtů a přesměrování původního BAR se řídí samostatným konkrétním převodním podkladem, nevznikají automaticky při nasazení kódu.
 
 Vydání kódu je dokončené: [protokol](verification/bar-release-20261105/RESULTS.md) odděluje skutečnou produkční zálohu/obnovu a živé ověření od zbývajícího převodu dat a lidské přejímky. Přenos skutečného zdroje a přidělení konkrétních účtů se neprovádějí odhadem.
+
+## Převod skutečných dat 6. 11. 2026
+
+[Konkrétní protokol B7](verification/bar-cutover-20261106/RESULTS.md) dokládá čerstvou úplnou zálohu/obnovu, úspěšný nácvik skutečného balíčku, čtecí kontrolu, import a nezávislý status. Vlastník určil jediný existující účet pro správu baru i vlastní spotřebu; ověřila se jeho přesná identita a zachovala se ostatní oprávnění. Převedeno 68 produktů / 5 kategorií / 51 fotografií, pouze lucka jako obsluha s podporovaným původním heslem. Provozní historie a počáteční zásoby nula. Přihlášené čtecí UI PASS, bez testovacího prodeje nebo kasy; skutečné přihlášení Lucky a lidské finanční UAT zůstávají otevřené.
+
+Následuje samostatné přepnutí URL podle `bar-legacy-url.yml`. `inspect` vyžaduje čerstvý úspěšný status převodu, prokáže webroot podle přesných bajtů podávaného service workeru, vytvoří úplný soukromý ZIP zdroje a skutečně obnoví každý soubor na runneru. `apply` musí odkazovat na tento úspěšný běh, ověří jeho otisk, čerstvost i nezměněné zdrojové PHP a teprve potom nahradí vstupní stránky pevnými obaly. Před zápisem pozastavit původní produkční deploy, správu testovacích/spotřebních účtů a redundantní staré zálohovací/monitorovací plány; zaznamenat původní stav pro případný řízený návrat. Samotný source ZIP neobsahuje databázi a žádná operace zde zdrojovou DB nemění ani nemaže.
+
+Přesměrování je dočasné a bez starých parametrů; staré API a každá zapisující metoda vrací 410. Tím se nezpracují fronty na starém původu jako nové prodeje. Následný `status` kontroluje všechny obaly a skutečné HTTP odpovědi pouze GET. Pokud cílový bar mezitím zahájí skutečný provoz, počáteční striktní status se nesmí vynucovat přepisem cen, skladu nebo historie; posoudit aktuální připravenost zvlášť.

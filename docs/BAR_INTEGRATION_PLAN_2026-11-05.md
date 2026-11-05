@@ -26,12 +26,12 @@ Ze zdroje `KovoPraha/bar.kovopraha.cz` se přebírají obchodní pravidla a vhod
 | --- | --- | --- | --- |
 | B0 | Rozsah, plán a oddělená větev | Zaznamenaná rozhodnutí vlastníka, bez produkčního zásahu | Hotovo |
 | B1 | Oprávnění a základ katalogu | Dvě pozice, oddělená spotřeba, aktuální DB autorizace, audit práv, idempotentní migrace, zálohovací kontrakt; normalizace zdrojového katalogu bez zásob | Implementováno a lokálně ověřeno |
-| B2 | Převod katalogu a lucky | Čtecí inventura zdroje, kontrolní manifest fotografií, transakční a opakovatelný převod, ochrana před kolizí jména/e-mailu, technický účet bez obnovy e-mailem; syntetický nácvik | Implementace a syntetický nácvik hotové; skutečný zdroj zatím nepřeveden |
+| B2 | Převod katalogu a lucky | Čtecí inventura zdroje, kontrolní manifest fotografií, transakční a opakovatelný převod, ochrana před kolizí jména/e-mailu, technický účet bez obnovy e-mailem; syntetický nácvik | Skutečný převod 68 produktů / 51 fotografií i nezávislý status PASS 6. 11. |
 | B3 | Katalog a sklad | Administrace produktů, cen a receptur, dvě skladová místa, příjem/přesun/inventura, historické nákladové snímky; obsluha nedostává předsklad ani nákupní ceny | Implementováno včetně kategorií a fotografií; místní testy a browser PASS |
 | B4 | Pokladna a vlastní spotřeba | Prodej, hotovost/karta/QR, kelímky, storno, vlastní a uzavíraná kasa, zásoby a audit v jedné transakci; opakování i souběh bezpečné | Implementace a místní přejímka hotové; samostatná Linux CI brána, nasazení zakázané |
 | B5 | Faktury, nabídky a účetní rozhraní | Příjem PDF, obrazovky/menu, přehledy, oddělené účetní zdroje a exportní kontrakt bez zdvojení tržeb | Implementováno, místní přejímka PASS; CI v PR #306 |
 | B6 | Integrační přejímka | Anonymní HTTP, matice rolí, skutečný místní browser, pokladní/skladové souběhy, ztráta spojení, fotografie a izolovaná obnova DB i souborů; zelené CI přesného headu | Místní technická přejímka PASS; konečný Linux CI stav přesného headu v PR #306 |
-| B7 | Produkční přechod | Nový výslovný souhlas vlastníka; katalogový manifest, nulový počátek, přidělení účtů, doména a provozní UAT | Kód nasazen po souhlasu; skutečný převod a lidská přejímka zbývají |
+| B7 | Produkční přechod | Nový výslovný souhlas vlastníka; katalogový manifest, nulový počátek, přidělení účtů, doména a provozní UAT | Kód, skutečný katalog a schválené role v KIS; přepnutí URL připravené, lidská finanční přejímka otevřená |
 
 ## Ověření
 

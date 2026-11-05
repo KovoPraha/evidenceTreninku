@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení BAR (#306) a samostatné aktivaci členství (#318) i jeho pošty (#321).
+Aktualizováno 6. 11. 2026 (Europe/Prague), po skutečném převodu katalogu BAR a schválených přístupů; dřívější nasazení a aktivace zachované.
 
 - **[Pravidelné zpracování členství i pošta zapnuté](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md):** automatizace, plán/zápis a pošta aktivní, denně 05:23 UTC. Ostrý apply --send `42108711699` PASS (0 členství/předpisů/dokladů/zpráv, žádná chyba), kontrola `42108836694` potvrdila úspěšný heartbeat v 21:01:18 UTC. Skutečné doručení při prázdné frontě neověřené. Závodní tým zůstává konceptem.
 
@@ -9,7 +9,7 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení BAR (#306) a samostatn�
   **Prodej zatím neaktivovaný:** chybí skutečné údaje a schválení vystavovatele, tarifu a publikace.
   Linux 2064/39368, obě MariaDB matice a všech 11 kontrol PASS. Live `ad09174e`, deploy `42076138376` SUCCESS. Stávající platby/VS a Fio/SumUp zachované; nová automatizace i pošta následně zapnuty podle záznamu výše.
 
-- **BAR → KIS nasazený jako modul:** [Vydání a živá přejímka](verification/bar-release-20261105/RESULTS.md), B0–B6 sloučené v PR #306. Pokladna, katalog/sklad, faktury/nabídky, účetní podklady a obnova jsou připravené. Skutečné produkty, fotografie a lucka zatím nepřevedené; cílový katalog je prázdný a starý BAR není přesměrovaný. Automatické účtování BAR se nezapínalo. [Další část B7](BAR_PRODUCTION_READINESS_2026-11-05.md) zahrnuje konkrétní převod, přístupy a lidskou přejímku.
+- **BAR → KIS: skutečný katalog a přístupy převedené:** [Protokol B7](verification/bar-cutover-20261106/RESULTS.md), import `42128255522` a nezávislý status `42128603361` PASS. Přesně 68 produktů / 5 kategorií / 51 fotografií, zásoby a historie nula. Pouze lucka jako obsluha s původním heslem; jediný schválený správce má explicitní vlastní spotřebu. Nová úplná záloha/obnova `42126301391` PASS (385 tabulek / 2 triggery / 4464 souborů). Přihlášený čtecí Chrome PASS; starý BAR zatím bez přesměrování. Účtování BAR a lidská finanční přejímka zůstávají otevřené.
 
 - **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** karta pro 223 aktivních produktů / nové objednávky, 8 starých plateb zachováno.
   **[Fio hostingový plán ověřený](verification/fio-followup-20261105/RESULTS.md):** dva skutečné importy, všech 45 pohybů bez shodného VS. Žádné vynucené přiřazení; skutečná placená úhrada stále nedoložená.
@@ -59,7 +59,7 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení BAR (#306) a samostatn�
 - **Živé vydání:** `76bf0370a06e0ab80bab5ee9af1815835ac24efc`, [deploy 42084130988](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42084130988) SUCCESS.
   [BAR protokol](verification/bar-release-20261105/RESULTS.md): otestovaný a sloučený strom shodný; předchozí členství #316 a předání #317 zachované.
 - **Ověření:** všech 11 kontrol PR, CI main i deploy PASS; Linux 2203/41286 bez skipů, samostatné unixové hranice 3/45, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
-  HTTP před 71/71, po 77/77; přihlášený Chrome Finance/Správa baru/Obsluha PASS, bez doménových zápisů. Běžná lucka a skutečná barová platba NOT RUN.
+  HTTP vydání před 71/71, po 77/77; přihlášený Chrome Finance/Správa baru/Obsluha i následný skutečný katalog PASS. Přihlášení lucky a skutečná barová platba NOT RUN.
   [Čtecí porovnání](verification/bar-release-20261105/release-comparison.json): živé SHA a shodná konfigurace/flags v okamžiku BAR vydání; pozdější samostatná aktivace členství viz výše. Historický manifest není úplnou inventurou BAR.
 - **Záloha a schéma:** [úplná izolovaná obnova 42080871410](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42080871410) PASS: 357 tabulek / 2 triggery a 4341 existujících souborů včetně konfigurace a příloh.
   [Nejnovější DB záloha](verification/bar-release-20261105/deploy-database.json) vznikla před migracemi; [obnova 42085710492](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42085710492) PASS. Schema current / pending [], ledger 159 a VS zachované.

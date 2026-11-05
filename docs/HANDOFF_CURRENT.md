@@ -211,15 +211,16 @@ Merge a produkční deploy jsou samostatná rozhodnutí vlastníka podle
 ## Průběžný plán
 
 Začlenění baru řídí [plán z 5. 11. 2026](BAR_INTEGRATION_PLAN_2026-11-05.md).
-Pracuje v oddělené větvi `codex/bar-kis-integration-20261105`; produkční nasazení
-není povolené. Zachovává se katalog a pouze účet lucka, provozní historie se
-nepřenáší. Dvě nové pozice doplňuje samostatné oprávnění vlastní spotřeby.
-Stav etap, ověření a další krok udržuje tento plán.
+Práce probíhá v izolovaném worktree; vlastník následně výslovně povolil nasazení
+a pokračování převodu. Zachovává se katalog a pouze účet lucka, provozní historie
+se nepřenáší. Dvě nové pozice doplňuje samostatné oprávnění vlastní spotřeby.
 B0–B6 jsou po výslovném souhlasu vlastníka sloučené a [nasazené do KIS](verification/bar-release-20261105/RESULTS.md).
 Úplná skutečná obnova DB i 4341 souborů před vydáním a čtecí přihlášený Chrome PASS;
-aktuální živé SHA, CI a migrace určuje výhradně CURRENT_STATE. Skutečný katalog,
-fotografie a lucka zatím nepřevedené; starý BAR zůstává bez přesměrování.
-Další je konkrétní balíček/nácvik převodu a lidská přejímka podle [B7](BAR_PRODUCTION_READINESS_2026-11-05.md).
+aktuální živé SHA, CI a migrace určuje výhradně CURRENT_STATE. [Skutečný převod B7](verification/bar-cutover-20261106/RESULTS.md)
+je ověřený: 68 produktů / 51 fotografií, pouze lucka jako obsluha s původním heslem,
+schválená správa a vlastní spotřeba přidělené pouze existujícímu vlastníkovi. Import
+neopakovat ani neobnovovat starou DB přes nové operace. Starý BAR zatím bez přesměrování;
+navazuje ověřené přepnutí URL se samostatnou souborovou zálohou a lidská přejímka.
 [Účetní kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md) a [návrh adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md)
 neaktivují skutečné zaúčtování ani nové bankovní párování.
 
