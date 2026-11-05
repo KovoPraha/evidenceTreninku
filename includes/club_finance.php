@@ -46,7 +46,8 @@ function clubFinanceColumnExists(PDO $pdo, string $table, string $column): bool
 /** The rollout starts in observation mode. A missing migration never activates restrictions. */
 function clubFinanceSettings(PDO $pdo): array
 {
-    $defaults = ['enforcement_enabled' => 0,'grace_days' => 14,'registration_limit_minor' => 200000,'training_notice_minor' =>
+    $defaults = ['enforcement_enabled' => 0,'grace_days' => 14,'registration_limit_minor' => 200000,'training_notice_minor'
+    =>
      500000];
     if (!clubFinanceTableExists($pdo, 'club_finance_settings')) {
         return $defaults;
@@ -85,7 +86,10 @@ function clubFinanceSaveSettings(PDO $pdo, int $actorId, array $input, string $r
         $after = ['enforcement_enabled' => $enabled,'grace_days' => $days,'registration_limit_minor' =>
      $block,'training_notice_minor' => $notice];
         $pdo->prepare('UPDATE club_finance_settings SET '
-            . 'enforcement_enabled=?,grace_days=?,registration_limit_minor=?,training_notice_minor=?,updated_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=1')
+            . ('enforcement_enabled=?,grace_days=?,registration_limit_minor=?,training_notice_minor=?,updated_by_trainer_id=?,updated_at=CURR'
+    .
+    'ENT_TIMESTAMP ' .
+    'WHERE id=1'))
             ->execute([$enabled,$days,$block,$notice,$actorId]);
         $pdo->prepare('INSERT INTO club_finance_setting_events(actor_trainer_id,before_json,after_json,reason) VALUES(?,?,?,?)')
             ->execute([$actorId,json_encode($before, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),json_encode(
@@ -232,7 +236,8 @@ function clubFinanceAvailableReceipts(PDO $pdo, int $sportovecId, ?DateTimeImmut
             if ($row['charge_status'] === 'cancelled' || $row['order_payment_status'] === 'cancelled') {
                 continue;
             }
-            if ($row['order_payment_status'] === 'pending' && !empty($row['payment_expires_at']) && (string)$row['payment_expires_at'] <= $asOf->format('Y-m-d H:i:s')) {
+            if ($row['order_payment_status'] === 'pending' && !empty($row['payment_expires_at']) && (string)$row['payment_expires_at'] <= $asOf
+    ->format('Y-m-d H:i:s')) {
                 continue;
             }
             $used += (int)$row['amount_minor'];
@@ -264,7 +269,14 @@ function clubFinanceBalanceForAthlete(PDO $pdo, int $sportovecId, ?DateTimeImmut
             . 'NULL GROUP BY charge_id) a ON a.charge_id=c.id' : ' ')
             .($hasPayerAllocations ? ' LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM member_payer_receipt_allocations GROUP BY '
                 . 'charge_id) pa ON pa.charge_id=c.id' : ' ');
-        $allocationSelect = ($hasAthleteAllocations ? 'COALESCE(a.allocated_minor,0)' : '0').'+'.($hasPayerAllocations ? 'COALESCE(pa.allocated_minor,0)' : '0');
+        if (clubFinanceTableExists($pdo, 'monthly_membership_allocations')) {
+            $allocationJoin .= (' LEFT JOIN (SELECT charge_id,SUM(amount_minor) AS allocated_minor FROM monthly_membership_allocations GROUP BY charge_id) ma '
+    .
+    'ON ma.charge_id=c.id');
+        }
+        $monthlySelect = clubFinanceTableExists($pdo, 'monthly_membership_allocations') ? '+COALESCE(ma.allocated_minor,0)' : '';
+        $allocationSelect = ($hasAthleteAllocations ? 'COALESCE(a.allocated_minor,0)' : '0').'+'.($hasPayerAllocations ? 'COALESCE(pa.allocated_minor,0)'
+    : '0').$monthlySelect;
         $s = $pdo->prepare("SELECT c.id,c.title_snapshot,c.amount_minor,c.currency,c.due_on,$allocationSelect AS allocated_minor "
             . "FROM club_member_charges c $allocationJoin WHERE c.sportovec_id=? AND c.status='pending' ORDER BY c.due_on,c.id");
         $s->execute([$sportovecId]);
@@ -278,7 +290,8 @@ function clubFinanceBalanceForAthlete(PDO $pdo, int $sportovecId, ?DateTimeImmut
             if ($isOverdue) {
                 $overdue += $minor;
             }
-            $items[] = ['kind' => 'member_charge','id' => (int)$row['id'],'title' => (string)$row['title_snapshot'],
+            $items[] = ['kind' => 'member_charge','id' => (int)$row['id'],'title' => (string)$row['title_snapshot']
+    ,
     'amount_minor' => $minor,'due_on' => $row['due_on'],'past_grace' => $isOverdue];
         }
     }
@@ -334,7 +347,8 @@ function clubFinanceBalanceForAthlete(PDO $pdo, int $sportovecId, ?DateTimeImmut
             if ($isOverdue) {
                 $overdue += $minor;
             }
-            $items[] = ['kind' => 'shop_order','id' => (int)$row['id'],'title' => 'Objednávka '.(string)$row['public_code'],
+            $items[] = ['kind' => 'shop_order','id' => (int)$row['id'],'title' => 'Objednávka '.(string)$row['public_code']
+    ,
     'amount_minor' => $minor,'due_on' => substr((string)$row['due_at'], 0, 10),'past_grace' => $isOverdue];
         }
     }
@@ -342,7 +356,8 @@ function clubFinanceBalanceForAthlete(PDO $pdo, int $sportovecId, ?DateTimeImmut
     foreach (clubFinanceAvailableReceipts($pdo, $sportovecId, $asOf) as $receipt) {
         $credit += $receipt['amount_minor'];
     }
-    return ['open_minor' => max(0, $open - $credit),'overdue_minor' => max(0, $overdue - $credit),'credit_minor' =>
+    return ['open_minor' => max(0, $open - $credit),'overdue_minor' => max(0, $overdue - $credit),'credit_minor'
+    =>
      max(0, $credit - $open),'items' => $items,'as_of' => $asOf->format('Y-m-d H:i:s')];
 }
 
@@ -368,9 +383,11 @@ function clubFinanceRegistrationDecision(PDO $pdo, int $sportovecId): array
     }
     $balance = clubFinanceBalanceForAthlete($pdo, $sportovecId);
     $allowed = $balance['overdue_minor'] <= $settings['registration_limit_minor'];
-    return ['allowed' => $allowed,'overdue_minor' => $balance['overdue_minor'],'limit_minor' => $settings['registration_limit_minor'],
+    return ['allowed' => $allowed,'overdue_minor' => $balance['overdue_minor'],'limit_minor' => $settings['registration_limit_minor']
+    ,
 
-        'reason' => $allowed ? 'Finanční podmínka je splněna.' : 'Přihlášení nyní není dostupné: neuhrazená částka po lhůtě překračuje limit. Přehled a pomoc najdete ve '
+        'reason' => $allowed ? 'Finanční podmínka je splněna.' :
+    'Přihlášení nyní není dostupné: neuhrazená částka po lhůtě překračuje limit. Přehled a pomoc najdete ve '
             . 'svém sportovním profilu.'];
 }
 
@@ -393,7 +410,8 @@ function clubFinanceAllocateCreditToCharge(PDO $pdo, int $sportovecId, int $char
     }
     require_once __DIR__.'/member_charge_admin.php';
     $lockSuffix = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
-    $s = $pdo->prepare("SELECT amount_minor,status FROM club_member_charges WHERE id=? AND sportovec_id=? AND currency='CZK'".
+    $s = $pdo->prepare("SELECT amount_minor,status FROM club_member_charges WHERE id=? AND sportovec_id=? AND currency='CZK'"
+    .
     $lockSuffix);
     $s->execute([$chargeId,$sportovecId]);
     $charge = $s->fetch(PDO::FETCH_ASSOC);
@@ -414,7 +432,8 @@ function clubFinanceAllocateCreditToCharge(PDO $pdo, int $sportovecId, int $char
             break;
         }
         $part = min($need, $receipt['amount_minor']);
-        $pdo->prepare('INSERT INTO club_finance_allocations(receipt_id,charge_id,amount_minor) VALUES(?,?,?)')->execute([$receipt['id'],
+        $pdo->prepare('INSERT INTO club_finance_allocations(receipt_id,charge_id,amount_minor) VALUES(?,?,?)')->execute([$receipt['id']
+    ,
     $chargeId,$part]);
         $need -= $part;
         $applied += $part;
@@ -424,7 +443,8 @@ function clubFinanceAllocateCreditToCharge(PDO $pdo, int $sportovecId, int $char
             . "status='paid',paid_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=?,updated_at=CURRENT_TIMESTAMP "
             . "WHERE id=? AND status='pending'")
             ->execute([$actorId,'Uhrazeno z dřívějšího ověřeného přeplatku.',(int)$payment['id']]);
-        $pdo->prepare("UPDATE club_member_charges SET status='paid',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='pending'")->execute([$chargeId]);
+        $pdo->prepare("UPDATE club_member_charges SET status='paid',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='pending'")
+    ->execute([$chargeId]);
         memberChargeAdminEvent(
             $pdo,
             $chargeId,
@@ -442,7 +462,7 @@ function clubFinanceAllocateCreditToCharge(PDO $pdo, int $sportovecId, int $char
 function clubFinanceChargeAllocatedMinor(PDO $pdo, int $chargeId): int
 {
     $total = 0;
-    foreach (['club_finance_allocations','member_payer_receipt_allocations'] as $table) {
+    foreach (['club_finance_allocations','member_payer_receipt_allocations','monthly_membership_allocations'] as $table) {
         if (!clubFinanceTableExists($pdo, $table)) {
             continue;
         }
@@ -466,7 +486,8 @@ function clubFinanceAssertBankReferenceUnused(PDO $pdo, string $reference, int $
         }
     }
     if (clubFinanceTableExists($pdo, 'fio_account_movements')) {
-        $movement = $pdo->prepare('SELECT amount_minor,currency,booked_on FROM fio_account_movements WHERE fio_movement_id=?'.
+        $movement = $pdo->prepare('SELECT amount_minor,currency,booked_on FROM fio_account_movements WHERE fio_movement_id=?'
+    .
     $lockSuffix);
         $movement->execute([$reference]);
         $row = $movement->fetch(PDO::FETCH_ASSOC);
@@ -485,6 +506,13 @@ function clubFinanceAssertBankReferenceUnused(PDO $pdo, string $reference, int $
         $duplicate->execute([$reference]);
         if ($duplicate->fetchColumn()) {
             throw new ClubFinanceException('Tato bankovní reference již patří rodinné platbě.');
+        }
+    }
+    if (clubFinanceTableExists($pdo, 'monthly_membership_receipts')) {
+        $monthly = $pdo->prepare('SELECT id FROM monthly_membership_receipts WHERE reference=?'.$lockSuffix);
+        $monthly->execute([$reference]);
+        if ($monthly->fetchColumn()) {
+            throw new ClubFinanceException('Bankovní reference již patří měsíčnímu členství.');
         }
     }
     if (clubFinanceColumnExists($pdo, 'payments', 'bank_movement_id')) {
@@ -519,7 +547,8 @@ function clubFinanceRecordBankReceipt(
         '/^[A-Za-z0-9._:\/-]{6,100}$/D',
         $reference
     ) !== 1
-        || !$date || $date->format('Y-m-d') !== $paidOn || $paidOn > (new DateTimeImmutable('today', new DateTimeZone('Europe/Prague')))->format('Y-m-d')
+        || !$date || $date->format('Y-m-d') !== $paidOn || $paidOn > (new DateTimeImmutable('today', new DateTimeZone('Europe/Prague')))
+    ->format('Y-m-d')
         || mb_strlen($reason, 'UTF-8') < 5 || mb_strlen($reason, 'UTF-8') > 1000) {
         throw new InvalidArgumentException('Přijatá platba vyžaduje sportovce, kladnou částku, platné datum, jedinečnou bankovní referenci, důvod a potvrzení.');
     }
@@ -538,11 +567,15 @@ function clubFinanceRecordBankReceipt(
         }
         clubFinanceAssertBankReferenceUnused($pdo, $reference, $amountMinor, $paidOn);
         $pdo->prepare("INSERT INTO "
-            . "club_finance_receipts(sportovec_id,plan_id,period_start,kind,reference,amount_minor,currency,paid_on,confirmed_by_trainer_id,reason) VALUES(?,NULL,NULL,'manual_bank',? ,?,'CZK',?,?,?)")
+            . ('club_finance_receipts(sportovec_id,plan_id,period_start,kind,reference,amount_minor,currency,paid_on,confirmed_by_trainer_id,'
+    .
+    'reason) ' .
+    'VALUES(?,NULL,NULL,\'manual_bank\',? ,?,\'CZK\',?,?,?)'))
             ->execute([$sportovecId,$reference,$amountMinor,$paidOn,$actorId,$reason]);
         $receiptId = (int)$pdo->lastInsertId();
         $items = clubFinanceBalanceForAthlete($pdo, $sportovecId)['items'];
-        usort($items, static fn (array $a, array $b): int => [(string)$a['due_on'],$a['kind'],$a['id']] <=> [(string)$b['due_on'],
+        usort($items, static fn (array $a, array $b): int => [(string)$a['due_on'],$a['kind'],$a['id']] <=> [(string)$b['due_on']
+    ,
     $b['kind'],$b['id']]);
         foreach ($items as $item) {
             $need = (int)$item['amount_minor'];
@@ -563,7 +596,8 @@ function clubFinanceRecordBankReceipt(
                 }
             } else {
                 $orderId = (int)$item['id'];
-                $payment = $pdo->prepare("SELECT id,method,status FROM payments WHERE payable_type='shop_order' AND payable_id=?".
+                $payment = $pdo->prepare("SELECT id,method,status FROM payments WHERE payable_type='shop_order' AND payable_id=?"
+    .
     ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
                 $payment->execute([$orderId]);
                 $payment = $payment->fetch(PDO::FETCH_ASSOC);
@@ -576,7 +610,8 @@ function clubFinanceRecordBankReceipt(
                         break;
                     }
                     $part = min($need - $applied, $available['amount_minor']);
-                    $pdo->prepare('INSERT INTO club_finance_allocations(receipt_id,order_id,amount_minor) VALUES(?,?,?)')->execute([$available['id'],
+                    $pdo->prepare('INSERT INTO club_finance_allocations(receipt_id,order_id,amount_minor) VALUES(?,?,?)')
+    ->execute([$available['id'],
     $orderId,$part]);
                     $applied += $part;
                 }

@@ -10,6 +10,7 @@ function accountingLedgerReadSource(PDO $pdo, string $sourceType, int $sourceId,
         ['payments',
     'club_finance_receipts',
     'member_payer_receipts',
+    'monthly_membership_receipts',
     'fio_account_movements',
     'legacy_refund'],
         true
@@ -76,7 +77,8 @@ function accountingLedgerReadSource(PDO $pdo, string $sourceType, int $sourceId,
     if ($result['source_context'] === 'bank-reference') {
         $result['account_kind'] = 'bank';
         foreach (['fio_account_movements' => 'fio_movement_id','club_finance_receipts' => 'reference',
-    'member_payer_receipts' => 'reference','payments' => 'bank_movement_id'] as $aliasTable => $column) {
+    'member_payer_receipts' => 'reference','monthly_membership_receipts' => 'reference','payments' => 'bank_movement_id'] as $aliasTable
+    => $column) {
             if (!($read !== null ? $read->tableExists($pdo, $aliasTable) : accountingLedgerTable(
                 $pdo,
                 $aliasTable
@@ -136,14 +138,17 @@ function accountingLedgerReadPendingSources(PDO $pdo, int $limit = 200): array
     $limit = max(1, min(10000, $limit));
     $result = [];
     $seen = [];
-    foreach (['fio_account_movements','club_finance_receipts','member_payer_receipts','payments',
+    foreach (['fio_account_movements','club_finance_receipts','member_payer_receipts','monthly_membership_receipts'
+    ,'payments',
     'legacy_refund'] as $type) {
         $table = $type === 'legacy_refund' ? 'payments' : $type;
         if (!$read->tableExists($pdo, $table)) {
             continue;
         }
-        $where = $type === 'payments' ? " WHERE s.status IN ('paid','refund_required','refunded')" : ($type === 'legacy_refund' ? " WHERE s.status='refunded'" : ' WHERE 1=1');
-        $q = $pdo->prepare('SELECT s.* FROM '.$table.' s'.$where.' AND NOT EXISTS (SELECT 1 FROM accounting_movement_sources a WHERE a.source_type=? AND a.source_id=s.id) ORDER BY s.id LIMIT '
+        $where = $type === 'payments' ? " WHERE s.status IN ('paid','refund_required','refunded')" : ($type === 'legacy_refund' ? " WHERE s.status='refunded'"
+    : ' WHERE 1=1');
+        $q = $pdo->prepare('SELECT s.* FROM '.$table.' s'.$where.
+    ' AND NOT EXISTS (SELECT 1 FROM accounting_movement_sources a WHERE a.source_type=? AND a.source_id=s.id) ORDER BY s.id LIMIT '
     .$limit);
         $q->execute([$type]);
         foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -268,7 +273,9 @@ function accountingLedgerReadSourceAllocations(PDO $pdo, array $source, ?Account
         $type = $alias['source_type'];
         $id = (int)$alias['source_id'];
         $table = match($type) {
-            'club_finance_receipts' => 'club_finance_allocations','member_payer_receipts' => 'member_payer_receipt_allocations',
+            'club_finance_receipts' => 'club_finance_allocations','member_payer_receipts' => 'member_payer_receipt_allocations'
+            ,
+            'monthly_membership_receipts' => 'monthly_membership_allocations',
             default => null
         };
         if ($table !== null && ($read !== null ? $read->tableExists($pdo, $table) : accountingLedgerTable(

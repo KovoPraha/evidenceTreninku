@@ -64,7 +64,8 @@ function fioTableExists(PDO $pdo, string $table): bool
 function fioProposePaymentMatch(PDO $pdo, int $amountMinor, string $currency, ?string $variableSymbol, bool $lock = false): array
 {
     $lockSuffix = $lock && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
-    $empty = static fn (string$status, string$reason): array => ['status' => $status,'payment_id' => null,'order_id' => null,'payable_type' => null,'payable_id' => null,'reason' => $reason];
+    $empty = static fn (string$status, string$reason): array => ['status' => $status,'payment_id' => null,'order_id'
+    => null,'payable_type' => null,'payable_id' => null,'reason' => $reason];
     if ($amountMinor <= 0) {
         return $empty('ignored_non_credit', 'Odchozí nebo nulový pohyb se nepáruje.');
     }
@@ -72,14 +73,16 @@ function fioProposePaymentMatch(PDO $pdo, int $amountMinor, string $currency, ?s
         return $empty('review_missing_vs', 'Příchozí platba nemá platný variabilní symbol.');
     }
     if (fioTableExists($pdo, 'member_payer_variable_symbols')) {
-        $payer = $pdo->prepare('SELECT payer_account_id FROM member_payer_variable_symbols WHERE variable_symbol=?'.$lockSuffix);
+        $payer = $pdo->prepare('SELECT payer_account_id FROM member_payer_variable_symbols WHERE variable_symbol=?'
+    .$lockSuffix);
         $payer->execute([$variableSymbol]);
         if ($payer->fetchColumn()) {
             return $empty('review_payer_split', 'Stálý VS plátce může hradit více dětí a období; rozdělte platbu ručně v administraci '
                 .'rodinných plateb.');
         }
     }
-    $hasPlans = fioTableExists($pdo, 'club_member_charges') && fioTableExists($pdo, 'member_fee_plan_run_items') && fioTableExists($pdo, 'member_fee_plan_runs');
+    $hasPlans = fioTableExists($pdo, 'club_member_charges') && fioTableExists($pdo, 'member_fee_plan_run_items')
+    && fioTableExists($pdo, 'member_fee_plan_runs');
     $planJoins = $hasPlans ? "LEFT JOIN club_member_charges c ON c.id=p.payable_id AND p.payable_type='member_charge' LEFT JOIN "
         ."member_fee_plan_run_items ri ON ri.charge_id=c.id LEFT JOIN member_fee_plan_runs rr ON "
         ."rr.id=ri.run_id " : '';
@@ -87,7 +90,8 @@ function fioProposePaymentMatch(PDO $pdo, int $amountMinor, string $currency, ?s
         .'payment_status,p.amount_minor,p.currency'
         .($hasPlans ? ',rr.plan_id AS charge_plan_id,c.sportovec_id,c.status AS charge_status,c.due_on'
             : ',NULL AS charge_plan_id,NULL AS sportovec_id,NULL AS charge_status,NULL AS due_on')
-        .' FROM payments p '.$planJoins.'WHERE p.variable_symbol=? ORDER BY '.($hasPlans ? 'c.due_on,' : '').'p.id'.$lockSuffix);
+        .' FROM payments p '.$planJoins.'WHERE p.variable_symbol=? ORDER BY '.($hasPlans ? 'c.due_on,' : '').'p.id'
+    .$lockSuffix);
     $statement->execute([$variableSymbol]);
     $candidates = $statement->fetchAll(PDO::FETCH_ASSOC);
     if (count($candidates) > 1) {
@@ -105,7 +109,8 @@ function fioProposePaymentMatch(PDO $pdo, int $amountMinor, string $currency, ?s
             return$empty('review_unknown_vs', 'Variabilní symbol neodpovídá jednomu členskému plánu a sportovci.');
         }
         $eligible = array_values(array_filter($candidates, static fn (array$row): bool => (string)$row['payment_status'] === 'pending'
-            && (string)$row['charge_status'] === 'pending' && (int)$row['amount_minor'] === $amountMinor && strtoupper((string)$row['currency']) === $currency));
+            && (string)$row['charge_status'] === 'pending' && (int)$row['amount_minor'] === $amountMinor && strtoupper((string)$row['currency']) ===
+    $currency));
         if ($eligible === []) {
             return$empty('review_amount', 'Částka nebo stav neodpovídá žádnému neuhrazenému období trvalého příkazu.');
         }
@@ -138,7 +143,8 @@ function fioProposePaymentMatch(PDO $pdo, int $amountMinor, string $currency, ?s
             return$empty('review_unknown_vs', 'Členský předpis přiřazený k platbě nebyl nalezen.');
         }$targetStatus = (string)$row['status'];
     } else {
-        return['status' => 'review_type','payment_id' => $paymentId,'order_id' => null,'payable_type' => $payableType,'payable_id' => $payableId,'reason' => 'Tento typ platby zatím nelze párovat.'];
+        return['status' => 'review_type','payment_id' => $paymentId,'order_id' => null,'payable_type' => $payableType
+    ,'payable_id' => $payableId,'reason' => 'Tento typ platby zatím nelze párovat.'];
     }
     $base = ['payment_id' => $paymentId,'order_id' => $orderId,'payable_type' => $payableType,'payable_id' => $payableId];
     if ((int)$candidate['amount_minor'] !== $amountMinor) {
@@ -243,7 +249,8 @@ function fioImportJson(PDO $pdo, string $json, string $periodFrom, string $perio
         if (!is_array($transactions) || count($transactions) > 2000) {
             throw new FioImportException('fio_invalid_transaction_list');
         }
-        $counts = ['fetched' => count($transactions),'inserted' => 0,'duplicates' => 0,'proposed' => 0,'review' => 0,'ignored' => 0];
+        $counts = ['fetched' => count($transactions),'inserted' => 0,'duplicates' => 0,'proposed' => 0,'review'
+    => 0,'ignored' => 0];
         $pdo->beginTransaction();
         foreach ($transactions as $transaction) {
             if (!is_array($transaction)) {
@@ -253,7 +260,8 @@ function fioImportJson(PDO $pdo, string $json, string $periodFrom, string $perio
             if ($movementId === '' || strlen($movementId) > 80 || preg_match('/^[A-Za-z0-9._:-]+$/D', $movementId) !== 1) {
                 throw new FioImportException('fio_invalid_movement_id');
             }
-            $rawHash = hash('sha256', (string)json_encode($transaction, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR));
+            $rawHash = hash('sha256', (string)json_encode($transaction, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION
+    | JSON_THROW_ON_ERROR));
             $bookedOn = fioBookedOn(fioColumn($transaction, 'column0')['value'] ?? null);
             if ($bookedOn < $periodFrom || $bookedOn > $periodTo) {
                 throw new FioImportException('fio_booking_outside_period');
@@ -275,7 +283,8 @@ function fioImportJson(PDO $pdo, string $json, string $periodFrom, string $perio
                     );
                     $pdo->prepare('UPDATE fio_account_movements SET '
                         .'match_status=?,candidate_payment_id=?,candidate_order_id=?,match_reason=? WHERE id=?')
-                        ->execute([$refreshed['status'],$refreshed['payment_id'],$refreshed['order_id'],$refreshed['reason'],(int)$existingRow['id']]);
+                        ->execute([$refreshed['status'],$refreshed['payment_id'],$refreshed['order_id'],$refreshed['reason']
+    ,(int)$existingRow['id']]);
                 }
                 $counts['duplicates']++;
                 continue;
@@ -310,7 +319,8 @@ function fioImportJson(PDO $pdo, string $json, string $periodFrom, string $perio
         $finish = $pdo->prepare("UPDATE fio_import_runs SET "
             ."source_account_iban=?,status='completed',fetched_count=?,inserted_count=?,duplicate_count=?,"
                 ."proposed_count=?,review_count=?,ignored_count=?,finished_at=CURRENT_TIMESTAMP WHERE id=?");
-        $finish->execute([$actualIban,$counts['fetched'],$counts['inserted'],$counts['duplicates'],$counts['proposed'],$counts['review'],$counts['ignored'],$runId]);
+        $finish->execute([$actualIban,$counts['fetched'],$counts['inserted'],$counts['duplicates'],$counts['proposed']
+    ,$counts['review'],$counts['ignored'],$runId]);
         $pdo->commit();
         return ['run_id' => $runId] + $counts;
     } catch (Throwable $exception) {
@@ -346,8 +356,10 @@ function fioFetchPeriodJson(string $token, string $periodFrom, string $periodTo)
         throw new FioImportException('fio_http_init_failed');
     }
     curl_setopt_array($handle, [
-        CURLOPT_RETURNTRANSFER => true,CURLOPT_FOLLOWLOCATION => false,CURLOPT_CONNECTTIMEOUT => 5,CURLOPT_TIMEOUT => 20,
-        CURLOPT_PROTOCOLS => CURLPROTO_HTTPS,CURLOPT_HTTPHEADER => ['Accept: application/json','User-Agent: KovoPrahaEvidence/1.0'],
+        CURLOPT_RETURNTRANSFER => true,CURLOPT_FOLLOWLOCATION => false,CURLOPT_CONNECTTIMEOUT => 5,CURLOPT_TIMEOUT
+    => 20,
+        CURLOPT_PROTOCOLS => CURLPROTO_HTTPS,CURLOPT_HTTPHEADER => ['Accept: application/json','User-Agent: KovoPrahaEvidence/1.0']
+    ,
     ]);
     $body = curl_exec($handle);
     $status = (int)curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
@@ -387,8 +399,16 @@ function fioConfirmExactMovement(PDO $pdo, int $movementId, ?int $actorTrainerId
         if (!$movement) {
             throw new FioImportException('Bankovní pohyb nebyl nalezen.');
         }
+        if (fioTableExists($pdo, 'monthly_membership_receipts')) {
+            $monthly = $pdo->prepare('SELECT id FROM monthly_membership_receipts WHERE movement_id=? OR reference=?');
+            $monthly->execute([$movementId,(string)$movement['fio_movement_id']]);
+            if ($monthly->fetchColumn()) {
+                throw new FioImportException('Pohyb již patří měsíčnímu členství a nelze jej potvrdit podruhé.');
+            }
+        }
         if (fioTableExists($pdo, 'member_payer_receipts')) {
-            $payerReceipt = $pdo->prepare('SELECT id FROM member_payer_receipts WHERE fio_movement_id=? OR reference=?'.($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
+            $payerReceipt = $pdo->prepare('SELECT id FROM member_payer_receipts WHERE fio_movement_id=? OR reference=?'
+    .($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
             $payerReceipt->execute([$movementId,(string)$movement['fio_movement_id']]);
             if ($payerReceipt->fetchColumn()) {
                 if ($automatic) {
@@ -406,10 +426,12 @@ function fioConfirmExactMovement(PDO $pdo, int $movementId, ?int $actorTrainerId
                 throw new FioImportException('Potvrzený bankovní pohyb není konzistentní s platbou.');
             }
             $pdo->commit();
-            return['movement_id' => $movementId,'payment_id' => $paymentId,'payable_type' => (string)$payment['payable_type'],'payable_id' => (int)$payment['payable_id'],'changed' => false];
+            return['movement_id' => $movementId,'payment_id' => $paymentId,'payable_type' => (string)$payment['payable_type']
+    ,'payable_id' => (int)$payment['payable_id'],'changed' => false];
         }
         if (fioTableExists($pdo, 'club_finance_receipts')) {
-            $receipt = $pdo->prepare('SELECT id FROM club_finance_receipts WHERE reference=?'.($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : ''));
+            $receipt = $pdo->prepare('SELECT id FROM club_finance_receipts WHERE reference=?'.($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql'
+    ? ' FOR UPDATE' : ''));
             $receipt->execute([(string)$movement['fio_movement_id']]);
             if ($receipt->fetchColumn()) {
                 if ($automatic) {
@@ -421,14 +443,16 @@ function fioConfirmExactMovement(PDO $pdo, int $movementId, ?int $actorTrainerId
         }
         // Current reads lock the candidate and its target before revalidation.
         $lockSuffix = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
-        $candidateLock = $pdo->prepare('SELECT id,payable_type,payable_id FROM payments WHERE variable_symbol=? ORDER BY id'.$lockSuffix);
+        $candidateLock = $pdo->prepare('SELECT id,payable_type,payable_id FROM payments WHERE variable_symbol=? ORDER BY id'
+    .$lockSuffix);
         $candidateLock->execute([$movement['variable_symbol']]);
         $lockedCandidates = $candidateLock->fetchAll(PDO::FETCH_ASSOC);
         if ($automatic) {
             if (count($lockedCandidates) !== 1) {
                 throw new FioAutomaticReviewException('Opakovaný nebo neznámý VS není jednoznačná platba.');
             }
-            $competing = $pdo->prepare('SELECT id FROM fio_account_movements WHERE variable_symbol=? AND amount_minor>0 ORDER BY id'.$lockSuffix);
+            $competing = $pdo->prepare('SELECT id FROM fio_account_movements WHERE variable_symbol=? AND amount_minor>0 ORDER BY id'
+    .$lockSuffix);
             $competing->execute([$movement['variable_symbol']]);
             if (count($competing->fetchAll(PDO::FETCH_COLUMN)) !== 1) {
                 throw new FioAutomaticReviewException('Stejný VS má více příchozích pohybů.');
@@ -451,7 +475,8 @@ function fioConfirmExactMovement(PDO $pdo, int $movementId, ?int $actorTrainerId
             $movement['variable_symbol'] !== null ? (string)$movement['variable_symbol'] : null,
             true
         );
-        if ($proposal['status'] !== 'proposed_exact' || !$proposal['payment_id'] || !$proposal['payable_type'] || !$proposal['payable_id']) {
+        if ($proposal['status'] !== 'proposed_exact' || !$proposal['payment_id'] || !$proposal['payable_type']
+    || !$proposal['payable_id']) {
             if ($automatic) {
                 throw new FioAutomaticReviewException($proposal['reason']);
             }
@@ -502,7 +527,8 @@ function fioConfirmExactMovement(PDO $pdo, int $movementId, ?int $actorTrainerId
         }
         $bind = $pdo->prepare('UPDATE payments SET bank_movement_id=?,bank_booked_on=?,paid_at=?,updated_at=CURRENT_TIMESTAMP '
             .'WHERE id=? AND (bank_movement_id IS NULL OR bank_movement_id=?)');
-        $bind->execute([(string)$movement['fio_movement_id'],(string)$movement['booked_on'],(string)$movement['booked_on'].' 12:00:00',$paymentId,(string)$movement['fio_movement_id']]);
+        $bind->execute([(string)$movement['fio_movement_id'],(string)$movement['booked_on'],(string)$movement['booked_on']
+    .' 12:00:00',$paymentId,(string)$movement['fio_movement_id']]);
         if ($bind->rowCount() !== 1) {
             throw new FioImportException('Platba už je svázána s jiným bankovním pohybem.');
         }
@@ -510,12 +536,14 @@ function fioConfirmExactMovement(PDO $pdo, int $movementId, ?int $actorTrainerId
             ."match_status='confirmed',candidate_payment_id=?,candidate_order_id=?,match_reason=?,"
                 ."confirmed_at=CURRENT_TIMESTAMP,confirmed_by_trainer_id=?,confirmation_note=? WHERE id=? AND "
                 ."match_status<>'confirmed'");
-        $update->execute([$paymentId,$proposal['order_id'],$automatic ? 'Přesná shoda potvrzena automaticky.' : 'Přesná shoda potvrzena správcem.',$actorTrainerId,$reason,$movementId]);
+        $update->execute([$paymentId,$proposal['order_id'],$automatic ? 'Přesná shoda potvrzena automaticky.' : 'Přesná shoda potvrzena správcem.'
+    ,$actorTrainerId,$reason,$movementId]);
         if ($update->rowCount() !== 1) {
             throw new FioImportException('Bankovní pohyb se nepodařilo potvrdit.');
         }
         $pdo->commit();
-        return['movement_id' => $movementId,'payment_id' => $paymentId,'payable_type' => (string)$proposal['payable_type'],'payable_id' => (int)$proposal['payable_id'],'changed' => true];
+        return['movement_id' => $movementId,'payment_id' => $paymentId,'payable_type' => (string)$proposal['payable_type']
+    ,'payable_id' => (int)$proposal['payable_id'],'changed' => true];
     } catch (Throwable$exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -529,12 +557,14 @@ function fioConfirmExactMovement(PDO $pdo, int $movementId, ?int $actorTrainerId
 function fioAdminMovements(PDO $pdo, int $limit = 200): array
 {
     $limit = max(1, min(500, $limit));
-    $memberJoin = fioTableExists($pdo, 'club_member_charges') ? ' LEFT JOIN club_member_charges c ON c.id=p.payable_id AND p.payable_type=\'member_charge\'' : '';
+    $memberJoin = fioTableExists($pdo, 'club_member_charges') ?
+    ' LEFT JOIN club_member_charges c ON c.id=p.payable_id AND p.payable_type=\'member_charge\'' : '';
     $memberSelect = fioTableExists($pdo, 'club_member_charges') ? ',c.public_code AS member_charge_code,c.title_snapshot AS member_charge_title'
         : ',NULL AS member_charge_code,NULL AS member_charge_title';
     return$pdo->query('SELECT m.*,o.public_code,p.status AS payment_status,p.payable_type,p.payable_id'.$memberSelect
         .' FROM fio_account_movements m LEFT JOIN shop_orders o ON o.id=m.candidate_order_id LEFT JOIN '
-        .'payments p ON p.id=m.candidate_payment_id'.$memberJoin.' ORDER BY m.booked_on DESC,m.id DESC LIMIT '.$limit)->fetchAll(PDO::FETCH_ASSOC);
+        .'payments p ON p.id=m.candidate_payment_id'.$memberJoin.' ORDER BY m.booked_on DESC,m.id DESC LIMIT '.$limit)
+    ->fetchAll(PDO::FETCH_ASSOC);
 }
 function fioAdminRuns(PDO $pdo, int $limit = 30): array
 {

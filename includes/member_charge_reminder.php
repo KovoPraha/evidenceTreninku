@@ -91,7 +91,8 @@ function memberChargeReminderSavePreference(PDO $pdo, int $accountId, bool $enab
             'INSERT INTO member_charge_reminder_events(reminder_id,account_id,actor_type,actor_id,action,from_status,to_status,note) '
             . 'VALUES(NULL,?,?,?,?,?,?,?)'
         )->execute([
-            $accountId, 'account', $accountId, 'preference_change', $current['enabled'] ? 'enabled' : 'disabled',
+            $accountId, 'account', $accountId, 'preference_change', $current['enabled'] ? 'enabled' : 'disabled'
+    ,
 
             $enabled ? 'enabled' : 'disabled', 'Předstih: ' . $daysBefore . ' dní.',
         ]);
@@ -153,6 +154,7 @@ function memberChargeReminderGenerate(PDO $pdo, ?DateTimeImmutable $today = null
         . "AND c.status='pending' AND c.due_on BETWEEN ? AND ? ORDER BY p.account_id,c.due_on,c.id"
     );
     $statement->execute([$today->format('Y-m-d'), $today->modify('+14 days')->format('Y-m-d')]);
+    require_once __DIR__.'/club_finance.php';
     $queued = $existing = $skipped = 0;
     foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $dueOn = DateTimeImmutable::createFromFormat('!Y-m-d', (string)$row['due_on'], new DateTimeZone('Europe/Prague'));
@@ -164,6 +166,11 @@ function memberChargeReminderGenerate(PDO $pdo, ?DateTimeImmutable $today = null
         }
         $accountId = (int)$row['account_id'];
         $chargeId = (int)$row['charge_id'];
+        $row['amount_minor'] = max(0, (int)$row['amount_minor'] - clubFinanceChargeAllocatedMinor($pdo, $chargeId));
+        if ($row['amount_minor'] < 1) {
+            $skipped++;
+            continue;
+        }
         $message = memberChargeReminderComposeMessage($row);
         $pdo->beginTransaction();
         try {
@@ -384,6 +391,15 @@ function memberChargeReminderProcessOne(
             notificationQueueHold($pdo, 'member_charge_reminders', $row, 'delivery_blocked: oprávnění, kontakt nebo předpis se změnily.');
             return false;
         }
+        require_once __DIR__.'/club_finance.php';
+        $balance = $pdo->prepare('SELECT amount_minor FROM club_member_charges WHERE id=?');
+        $balance->execute([(int)$row['charge_id']]);
+        $remaining = max(0, (int)$balance->fetchColumn() - clubFinanceChargeAllocatedMinor($pdo, (int)$row['charge_id']));
+        if ($remaining < 1) {
+            $pdo->prepare("UPDATE member_charge_reminders SET status='cancelled',claim_token=NULL WHERE id=?")->execute([(int)$row['id']]);
+            return false;
+        }
+        $row['body_plain'] = preg_replace('/Částka: [^\r\n]+/u', 'Částka: '.number_format($remaining / 100, 2, ',', ' ').' CZK', (string)$row['body_plain']);
         $sent = $sender(
             (string)$row['recipient_email'],
             (string)$row['subject_plain'],
