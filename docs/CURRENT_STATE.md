@@ -49,7 +49,7 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po aktivaci ostrých plateb Fio a Su
 - **Živé vydání:** `436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d`,
   [deploy 42006918844](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42006918844) SUCCESS.
   Opravy #308 ověřují autoritativní detail SumUp a odmítají Fio pohyb starší než platba.
-  [Protokol a souhrny](verification/live-payments-20261105/ACTIVATION.md); audit 42010713390 potvrdil živé SHA/flags.
+  [Protokol](verification/live-payments-20261105/ACTIVATION.md), [porovnání](verification/live-payments-20261105/release-comparison.json); audit 42010713390 potvrdil živé SHA/flags.
   Log aktivace dokládá změněné soubory; nejde o úplnou hash inventuru. Provozní #309/#310 nevyžadují deploy aplikace.
 - **Ověření:** všech 11 kontrol #308 PASS, sloučený strom shodný s ověřeným.
   Linux i deploy 2014 testů / 38866 assertions bez skipů; MariaDB 10.3/11.4, PHPStan/styl PASS.
