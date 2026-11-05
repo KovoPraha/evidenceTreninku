@@ -7,6 +7,50 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
+/** Configuration variables cannot overwrite the exporter's state. Diagnostics contain no values. */
+function barCutoverReadSourceConfig(string $legacy): array
+{
+    $oldHost = $_SERVER['HTTP_HOST'] ?? null;
+    $oldName = $_SERVER['SERVER_NAME'] ?? null;
+    $GLOBALS['bar_source_config_meta'] = [
+        'loader_readable' => is_readable($legacy . '/includes/config.php'),
+        'private_present' => is_file($legacy . '/includes/.config.php'),
+        'private_readable' => is_readable($legacy . '/includes/.config.php'),
+        'local_present' => is_file($legacy . '/includes/.config.local.php'),
+        'local_readable' => is_readable($legacy . '/includes/.config.local.php'),
+    ];
+    $_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'bar.kovopraha.cz';
+    ob_start();
+    try {
+        $value = (static function (string $file): mixed {
+            return require $file;
+        })($legacy . '/includes/config.php');
+        $output = ob_get_contents();
+    } finally {
+        ob_end_clean();
+        if ($oldHost === null) {
+            unset($_SERVER['HTTP_HOST']);
+        } else {
+            $_SERVER['HTTP_HOST'] = $oldHost;
+        }
+        if ($oldName === null) {
+            unset($_SERVER['SERVER_NAME']);
+        } else {
+            $_SERVER['SERVER_NAME'] = $oldName;
+        }
+    }
+    $GLOBALS['bar_source_config_meta'] += ['return_type' => get_debug_type($value),
+        'has_database_array' => is_array($value) && is_array($value['db'] ?? null),
+        'local_flag_type' => is_array($value) ? get_debug_type($value['lokalne'] ?? null) : 'missing',
+        'production_mode' => is_array($value) && !(bool)($value['lokalne'] ?? false),
+        'unexpected_output' => $output !== ''];
+    // Match the legacy application's je_lokalni_prostredi(): an omitted flag means production.
+    if ($output !== '' || !is_array($value) || (bool)($value['lokalne'] ?? false) || !is_array($value['db'] ?? null)) {
+        throw new RuntimeException('Unexpected source configuration.');
+    }
+    return $value;
+}
+
 /** Private, read-only production export. No application bootstrap or writes to either DB. */
 function barCutoverPrepare(): array
 {
@@ -40,18 +84,7 @@ function barCutoverPrepare(): array
     }
     require_once $root . '/includes/bar/transfer_package.php';
     $GLOBALS['bar_cutover_prepare_stage'] = 'source_configuration';
-    $_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'bar.kovopraha.cz';
-    ob_start();
-    try {
-        $sourceConfig = require $legacy . '/includes/config.php';
-    } finally {
-        $output = ob_get_clean();
-    }
-    $_SERVER['HTTP_HOST'] = $_SERVER['SERVER_NAME'] = 'kis.kovopraha.cz';
-    if ($output !== '' || !is_array($sourceConfig) || ($sourceConfig['lokalne'] ?? null) !== false
-        || !is_array($sourceConfig['db'] ?? null)) {
-        throw new RuntimeException('Unexpected source configuration.');
-    }
+    $sourceConfig = barCutoverReadSourceConfig($legacy);
     $sourceDb = $sourceConfig['db'];
     $GLOBALS['bar_cutover_prepare_stage'] = 'connections';
     $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_EMULATE_PREPARES => false,
@@ -138,7 +171,10 @@ function barCutoverPrepareMain(): void
         // Configuration, source rows and the credential hash must never reach an Actions log.
         fwrite(STDERR, json_encode(
             ['ok' => false, 'stage' => $GLOBALS['bar_cutover_prepare_stage'] ?? 'unknown',
-            'message' => $error instanceof InvalidArgumentException ? $error->getMessage() : 'bar_cutover_prepare_failed_without_database_writes'],
+            'source_configuration' => $GLOBALS['bar_source_config_meta'] ?? [],
+            'error_type' => get_debug_type($error), 'error_file' => basename($error->getFile()), 'error_line' => $error->getLine(),
+            'message' => ($GLOBALS['bar_cutover_prepare_stage'] ?? '') === 'source_catalog_and_images' && $error instanceof InvalidArgumentException
+                ? $error->getMessage() : 'bar_cutover_prepare_failed_without_database_writes'],
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE
         ) . PHP_EOL);
         exit(1);
