@@ -22,7 +22,7 @@ final class BarLegacyUrlTest extends TestCase
         }
         file_put_contents($this->root . '/includes/config.php', '<?php throw new RuntimeException("LOCALHOST bootstrap must never run");');
         file_put_contents($this->root . '/img/keep.bin', random_bytes(64));
-        foreach (['terminal/api.php', 'terminal/index.php', 'terminal/uzavrit.php', 'admin/faktury_api.php',
+        foreach (['terminal/api.php', 'terminal/index.php', 'terminal/sklad.php', 'terminal/uzavrit.php', 'admin/faktury_api.php',
             'admin/faktura_pdf.php', 'public/index.php', 'menu/index.php'] as $path) {
             file_put_contents($this->root . '/' . $path, '<?php throw new RuntimeException("LOCALHOST old writer must never run");');
         }
@@ -99,6 +99,7 @@ final class BarLegacyUrlTest extends TestCase
             }
             self::assertTrue($ready);
             foreach (['index.php' => '/bar/checkout.php', 'terminal/index.php' => '/bar/checkout.php',
+                'terminal/sklad.php' => '/bar/index.php',
                 'terminal/uzavrit.php' => '/bar/cashbox.php', 'admin/faktura_pdf.php' => '/bar/invoices.php',
                 'public/index.php' => '/bar/menu.php', 'menu/index.php' => '/bar/menu.php',
                 'terminal/api.php' => '/bar/checkout.php', 'admin/faktury_api.php' => '/bar/invoices.php'] as $path => $target) {

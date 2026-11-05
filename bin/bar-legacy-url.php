@@ -17,7 +17,7 @@ function barLegacyUrlTarget(string $path): string
     if (str_starts_with($path, 'public/') || str_starts_with($path, 'menu/')) {
         $target = '/bar/menu.php';
     } elseif ($path === 'terminal/sklad.php') {
-        $target = '/bar/catalog.php';
+        $target = '/bar/index.php';
     } elseif ($path === 'terminal/uzavrit.php') {
         $target = '/bar/cashbox.php';
     } elseif (str_starts_with($path, 'admin/')) {
