@@ -91,7 +91,7 @@ jobs:
           production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-bar-cutover-prepare.php'" > /tmp/kis-bar-transfer-$GITHUB_RUN_ID/prepare.json
           jq -e '.ok and .read_only_databases and .source_stable and .ready_for_rehearsal' /tmp/kis-bar-transfer-$GITHUB_RUN_ID/prepare.json >/dev/null
           cat /tmp/kis-bar-transfer-$GITHUB_RUN_ID/prepare.json
-          production_retry "${SSH[@]}" "umask 077; tar -czf '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz' -C '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID' bundle.json images"
+          production_retry "${SSH[@]}" "umask 077; tar -czf '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz' -C '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID' bundle.json source-image-map.json images"
           production_retry_capture "${SSH[@]}" "sha256sum '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz'" > /tmp/kis-bar-transfer-$GITHUB_RUN_ID/archive.sha256
           production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz" /tmp/kis-bar-transfer-$GITHUB_RUN_ID/package.tar.gz
           python3 - <<'PY'
@@ -107,7 +107,7 @@ jobs:
                   path = pathlib.PurePosixPath(member.name)
                   assert not path.is_absolute() and '..' not in path.parts and member.name not in seen
                   seen.add(member.name)
-                  assert (member.name == 'bundle.json' and member.isfile()) or (path.parts[0] == 'images' and len(path.parts) <= 2)
+                  assert (member.name in ('bundle.json', 'source-image-map.json') and member.isfile()) or (path.parts[0] == 'images' and len(path.parts) <= 2)
                   assert member.isfile() or member.isdir()
                   total += member.size
                   assert total <= 300 * 1024 * 1024
