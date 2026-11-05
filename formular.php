@@ -38,14 +38,16 @@ try {
 
 // Segmenty pro kolo_krouzek / kolo_silnice
 try {
-    $segmenty = $pdo->query("SELECT id, nazev, kategorie FROM segmenty WHERE aktivni = 1 ORDER BY poradi, nazev")->fetchAll(PDO::FETCH_ASSOC);
+    $segmenty = $pdo->query("SELECT id, nazev, kategorie FROM segmenty WHERE aktivni = 1 ORDER BY poradi, nazev")
+    ->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $segmenty = [];
 }
 
 // Sportoviště pro rezervaci (volitelná)
 try {
-    $sportovisteList = $pdo->query("SELECT id, nazev, max_kapacita FROM sportovist WHERE aktivni=1 ORDER BY poradi, nazev")->fetchAll(PDO::FETCH_ASSOC);
+    $sportovisteList = $pdo->query("SELECT id, nazev, max_kapacita FROM sportovist WHERE aktivni=1 ORDER BY poradi, nazev")
+    ->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $sportovisteList = [];
 }
@@ -57,14 +59,13 @@ $planMakeupParticipants = [];
 $planPrefillSubgroups = [];
 $selectedTeamIds = [];
 if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
-    $planOwnerSql = roleAtLeast('hlavni') ? '' : ' AND pt.trener_id = ?';
     $stPlan = $pdo->prepare("
         SELECT pt.*, sk.nazev AS skupina_nazev
         FROM planovane_treninky pt
         LEFT JOIN skupiny sk ON sk.id = pt.skupina_id
-        WHERE pt.id = ? AND pt.stav = 'planovany'{$planOwnerSql}
+        WHERE pt.id = ? AND pt.stav = 'planovany'
     ");
-    $stPlan->execute(roleAtLeast('hlavni') ? [(int)$_GET['plan_id']] : [(int)$_GET['plan_id'],$currentTrener]);
+    $stPlan->execute([(int)$_GET['plan_id']]);
     $planPrefill = $stPlan->fetch(PDO::FETCH_ASSOC) ?: null;
     if ($planPrefill === null) {
         // A plan URL must never silently fall back to an unrelated blank record.
@@ -79,7 +80,7 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
                 : 'Evidenci lze zadat pouze pro plánovaný trénink.'));
     }
     if ($planPrefill) {
-        coachScopeRequirePlan($pdo, (int)$planPrefill['id']);
+        coachScopeRequirePlan($pdo, (int)$planPrefill['id'], substitution: true);
         try {
             $subgroups = $pdo->prepare('SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=? ORDER BY podskupina_id');
             $subgroups->execute([(int)$planPrefill['id']]);
@@ -94,7 +95,7 @@ if (isset($_GET['plan_id']) && ctype_digit($_GET['plan_id'])) {
         $selectedTeamIds = trainingRosterBridgePlanTeamIds($pdo, (int)$planPrefill['id']);
         $planMakeupParticipants = clubMakeupReservationsForPlan($pdo, (int)$planPrefill['id']);
         foreach (array_merge($planExpectedParticipants, $planMakeupParticipants) as $participant) {
-            coachScopeRequirePerson($pdo, (int)($participant['sportovec_id'] ?? $participant['id'] ?? 0));
+            coachTrainingAssertPeople($pdo, [(int)($participant['sportovec_id'] ?? $participant['id'] ?? 0)]);
         }
     }
 }
@@ -152,7 +153,8 @@ if (isset($_GET['duplikat']) && ctype_digit($_GET['duplikat'])) {
 }
 
 try {
-    $submissionKey = trainingSubmissionIssue($_SESSION, $currentTrener, (int)($_GET['plan_id'] ?? 0), isset($_GET['submission_key']) ? (string)$_GET['submission_key'] : null);
+    $submissionKey = trainingSubmissionIssue($_SESSION, $currentTrener, (int)($_GET['plan_id'] ?? 0), isset($_GET['submission_key']) ? (string)$_GET['submission_key']
+    : null);
     if (!isset($_GET['submission_key'])) {
         header('Location: ' . trainingSubmissionFormUrl($submissionKey, $_GET), true, 303);
         exit;
@@ -290,7 +292,8 @@ function h($s)
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
                 <h1 class="fw-semibold fs-5 mb-0">
-                    <i class="bi bi-<?= $duplikat ? 'copy' : 'calendar-plus' ?> me-2 opacity-75"></i>
+                    <i class="bi bi-<?= $duplikat ? 'copy' : 'calendar-plus' ?> me-2 opacity-75">
+</i>
                     <?= $duplikat ? 'Duplikovat trénink' : 'Zadání tréninku' ?>
                 </h1>
                 <div class="opacity-75 small">
@@ -302,11 +305,13 @@ function h($s)
             <div class="d-flex gap-2 flex-wrap">
                 <?php if ($duplikat): ?>
                 <a href="duplikovat_trenink.php" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-arrow-left me-1"></i>Vybrat jiný
+                    <i class="bi bi-arrow-left me-1">
+</i>Vybrat jiný
                 </a>
                 <?php endif; ?>
                 <a href="index.php" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-house me-1"></i>Rozcestník
+                    <i class="bi bi-house me-1">
+</i>Rozcestník
                 </a>
             </div>
         </div>
@@ -314,22 +319,27 @@ function h($s)
 
     <?php if ($duplikat): ?>
     <div class="duplikat-banner mb-3 d-flex align-items-center gap-2">
-        <i class="bi bi-copy fs-5"></i>
+        <i class="bi bi-copy fs-5">
+</i>
         <span>Formulář byl předvyplněn ze vzorového tréninku — datum je nastaveno na <strong>dnes</strong>, účastníci a skupina jsou přeneseni.</span>
     </div>
     <?php endif; ?>
 
     <?php if ($flashError): ?>
     <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <i class="bi bi-exclamation-triangle-fill me-2">
+</i>
         <strong>Chyba:</strong> <?= h($flashError) ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
+</button>
     </div>
     <?php endif; ?>
     <?php if ($flashSuccess): ?>
     <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i><?= h($flashSuccess) ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <i class="bi bi-check-circle-fill me-2">
+</i><?= h($flashSuccess) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert">
+</button>
     </div>
     <?php endif; ?>
 
@@ -340,23 +350,28 @@ function h($s)
     <?php if ($planPrefill): ?>
     <!-- Info lišta — evidence z plánu -->
     <div class="alert alert-primary d-flex align-items-start gap-2 mb-3">
-        <i class="bi bi-calendar3-week fs-5 mt-1"></i>
+        <i class="bi bi-calendar3-week fs-5 mt-1">
+</i>
         <div>
             <strong>Zadáváte evidenci pro plánovaný trénink:</strong>
             <?= h($planPrefill['nazev']) ?>
             <span class="text-muted ms-2 small"><?= h($planPrefill['datum']) ?>
             <?php if ($planPrefill['cas_od']): ?>
-                <?= h(substr($planPrefill['cas_od'], 0, 5)) ?>–<?= h(substr($planPrefill['cas_do'] ?? '', 0, 5)) ?>
+                <?= h(substr($planPrefill['cas_od'], 0, 5)) ?>–<?= h(substr($planPrefill['cas_do'] ?? '', 0, 5))
+                ?>
             <?php endif; ?>
             <?php if ($planPrefill['skupina_nazev']): ?>
                 · <?= h($planPrefill['skupina_nazev']) ?>
             <?php endif; ?>
-            </span><br>
+            </span>
+<br>
             <span class="small text-muted">
                 Datum odpovídá plánu; ostatní údaje můžete upravit.
-                Ze snapshotu soupisek bylo předvybráno <?= count($planExpectedParticipants) ?> očekávaných účastníků; skutečnou docházku před uložením ručně opravte.</span>
+                Ze snapshotu soupisek bylo předvybráno <?= count($planExpectedParticipants)
+        ?> očekávaných účastníků; skutečnou docházku před uložením ručně opravte.</span>
             <?php if ($planMakeupParticipants !== []): ?>
-            <br><span class="small text-primary">
+            <br>
+<span class="small text-primary">
                 Přihlášení náhradníci: <?= count($planMakeupParticipants) ?>. Také u nich před uložením potvrďte skutečnou docházku.</span>
             <?php endif; ?>
         </div>
@@ -372,46 +387,56 @@ function h($s)
             <!-- Základní informace -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-primary text-white">
-                    <i class="bi bi-info-circle"></i>Základní informace
+                    <i class="bi bi-info-circle">
+</i>Základní informace
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label for="datum" class="form-label fw-semibold req">
-                                <i class="bi bi-calendar3 me-1 text-primary"></i>Datum
+                                <i class="bi bi-calendar3 me-1 text-primary">
+</i>Datum
                             </label>
                             <?php if ($isAdmin): ?>
-                                <input type="date" name="datum" id="datum" class="form-control" <?= $planPrefill ? 'readonly' : '' ?>
+                                <input type="date" name="datum" id="datum" class="form-control" <?=
+             $planPrefill ? 'readonly' : '' ?>
                                        value="<?= $duplikat ? h($dnesDate) : '' ?>" required>
                                 <div class="mini-muted mt-1">
-                                    <i class="bi bi-unlock me-1"></i>Lze zadat libovolné datum.
+                                    <i class="bi bi-unlock me-1">
+</i>Lze zadat libovolné datum.
                                 </div>
                             <?php else: ?>
                                 <select name="datum" id="datum" class="form-select" required>
                                     <?php foreach ($dateOptions as $opt): ?>
                                         <option value="<?= h($opt) ?>">
-                                            <?= h(fmtDateLabel($opt, $dnesDate, $vceraDate, $predvcirDate, $czDaysMap)) ?>
+                                            <?= h(fmtDateLabel($opt, $dnesDate, $vceraDate, $predvcirDate, $czDaysMap))
+                                        ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
                                 <?php if (count($dateOptions) > 3): ?>
                                 <div class="mini-muted mt-1">
-                                    <i class="bi bi-calendar-range me-1 text-success"></i>
-                                    Zadávání povoleno od <?= h(fmtCzDate($allowedFrom, $czDaysMap)) ?>.
+                                    <i class="bi bi-calendar-range me-1 text-success">
+</i>
+                                    Zadávání povoleno od <?= h(fmtCzDate($allowedFrom, $czDaysMap))
+                                    ?>.
                                 </div>
                                 <?php endif; ?>
                             <?php endif; ?>
                         </div>
                         <div class="col-md-4">
                             <label for="delka" class="form-label fw-semibold req">
-                                <i class="bi bi-clock me-1 text-primary"></i>Délka (h)
+                                <i class="bi bi-clock me-1 text-primary">
+</i>Délka (h)
                             </label>
                             <input type="number" step="0.25" name="delka" id="delka"
-                                   class="form-control" value="<?= h($duplikat ? ($duplikat['delka'] ?: '1') : '1') ?>" required>
+                                   class="form-control" value="<?= h($duplikat ? ($duplikat['delka'] ?: '1') : '1')
+?>" required>
                         </div>
                         <div class="col-md-4">
                             <label for="kategorie" class="form-label fw-semibold">
-                                <i class="bi bi-tag me-1 text-primary"></i>Kategorie
+                                <i class="bi bi-tag me-1 text-primary">
+</i>Kategorie
                             </label>
                             <select name="kategorie" id="kategorie" class="form-select">
                                 <option value="">— vyber —</option>
@@ -423,7 +448,8 @@ function h($s)
                                     'atletika' => 'Atletika',
                                     'cviceni' => 'Cvičení',
                                     'plavani' => 'Plavání'] as $value => $label): ?>
-                                    <option value="<?= h($value) ?>" <?= $duplikat && $duplikat['kategorie'] === $value ? 'selected' : '' ?>><?= h($label) ?></option>
+                                    <option value="<?= h($value) ?>" <?= $duplikat && $duplikat['kategorie'] === $value ? 'selected' : ''
+                                    ?>><?= h($label) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -434,11 +460,12 @@ function h($s)
             <!-- Cíl tréninku je stejný jako v plánovači; historické legacy vazby se pouze čtou. -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-info text-white">
-                    <i class="bi bi-diagram-3"></i>Skupina → soupiska
+                    <i class="bi bi-diagram-3">
+</i>Skupina → soupiska
                 </div>
                 <div class="card-body">
-                    <div data-roster-target-container>
-                        <?= rosterTargetSelectorHtml($pdo, (string)($planPrefill['datum'] ?? date('Y-m-d')), $selectedTeamIds) ?>
+                    <div data-roster-target-container data-roster-context="training">
+                        <?= rosterTargetSelectorHtml($pdo, (string)($planPrefill['datum'] ?? date('Y-m-d')), $selectedTeamIds, training: true) ?>
                     </div>
                     <div id="training-target-error" class="alert alert-danger mt-2 d-none" role="alert">Vyberte skupinu nebo soupisku pro trénink.</div>
                     <div class="mini-muted mt-1">Celá skupina zahrne všechny její soupisky. Skutečnou účast dále vybírá trenér.</div>
@@ -453,23 +480,28 @@ function h($s)
             <!-- Popis tréninku -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-warning text-dark">
-                    <i class="bi bi-journal-text"></i>Popis tréninku
+                    <i class="bi bi-journal-text">
+</i>Popis tréninku
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label for="napln" class="form-label fw-semibold req">
-                            <i class="bi bi-card-text me-1"></i>Náplň tréninku
+                            <i class="bi bi-card-text me-1">
+</i>Náplň tréninku
                         </label>
                         <textarea name="napln" id="napln" rows="3" class="form-control"
-                                  placeholder="Co bylo náplní tréninku?" required><?= h($duplikat['napln'] ?? '') ?></textarea>
+                                  placeholder="Co bylo náplní tréninku?" required><?= h($duplikat['napln'] ?? '')
+?></textarea>
                     </div>
                     <div class="mb-0">
                         <label for="poznamka" class="form-label fw-semibold">
-                            <i class="bi bi-chat-left-text me-1"></i>Poznámka
+                            <i class="bi bi-chat-left-text me-1">
+</i>Poznámka
                             <span class="badge bg-secondary fw-normal ms-1">neveřejné</span>
                         </label>
                         <textarea name="poznamka" id="poznamka" rows="2" class="form-control"
-                                  placeholder="Interní poznámka (sportovci ji neuvidí)"></textarea>
+                                  placeholder="Interní poznámka (sportovci ji neuvidí)">
+</textarea>
                     </div>
                 </div>
             </div>
@@ -477,33 +509,40 @@ function h($s)
             <!-- Měření -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-success text-white">
-                    <i class="bi bi-speedometer2"></i>Měření
+                    <i class="bi bi-speedometer2">
+</i>Měření
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
                         <div>
                             <div class="mini-muted mb-1">
-                                <i class="bi bi-info-circle me-1"></i>
+                                <i class="bi bi-info-circle me-1">
+</i>
                                 Každé měření patří jednomu sportovci. Vyberte sportovce ze seznamu (začněte psát jméno).
                             </div>
                             <div class="d-flex align-items-center gap-2 p-2 rounded"
                                  style="background:#e8f5e9; border:1px solid #c8e6c9;">
-                                <i class="bi bi-clock-history text-success"></i>
-                                <span class="small fw-semibold">Čas: <code>MM:SS(.mmm)</code> nebo <code>HH:MM:SS(.mmm)</code></span>
+                                <i class="bi bi-clock-history text-success">
+</i>
+                                <span class="small fw-semibold">Čas: <code>MM:SS(.mmm)</code> nebo <code>HH:MM:SS(.mmm)</code>
+</span>
                                 <span class="text-muted small">Vzdálenost vždy doplňte jednotkou m nebo km.</span>
                             </div>
                         </div>
                         <button type="button" class="btn btn-sm btn-outline-success" id="btnAddMereni">
-                            <i class="bi bi-plus-lg me-1"></i>Přidat řádek
+                            <i class="bi bi-plus-lg me-1">
+</i>Přidat řádek
                         </button>
                     </div>
 
                     <input type="hidden" name="mereni_json" id="mereni_json" value="[]">
-                    <div id="mereniRows"></div>
+                    <div id="mereniRows">
+</div>
                 </div>
             </div>
 
-        </div><!-- /col-lg-8 -->
+        </div>
+<!-- /col-lg-8 -->
 
         <!-- ═══════════ PRAVÝ SLOUPEC ═══════════ -->
         <div class="col-lg-4">
@@ -511,7 +550,8 @@ function h($s)
             <!-- 1. Účastníci -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-primary text-white">
-                    <i class="bi bi-people-fill"></i>Účastníci
+                    <i class="bi bi-people-fill">
+</i>Účastníci
                 </div>
                 <div class="card-body">
                     <div class="position-relative">
@@ -521,12 +561,15 @@ function h($s)
                         <input type="text" id="ucastnici_input" class="form-control"
                                placeholder="Min. 2 znaky pro hledání…" autocomplete="off">
                         <div id="ucastnici_suggestions"
-                             class="list-group position-absolute suggest-box"></div>
+                             class="list-group position-absolute suggest-box">
+</div>
                     </div>
-                    <div id="ucastnici_selected" class="mt-2 d-flex flex-wrap gap-1"></div>
+                    <div id="ucastnici_selected" class="mt-2 d-flex flex-wrap gap-1">
+</div>
                     <input type="hidden" name="ucastnici" id="ucastnici" value="">
                     <div class="mini-muted mt-2">
-                        <i class="bi bi-lightbulb me-1"></i>
+                        <i class="bi bi-lightbulb me-1">
+</i>
                         Vybraní sportovci se zobrazí i v poli Sportovec u měření.
                     </div>
                 </div>
@@ -535,7 +578,8 @@ function h($s)
             <!-- 2. Tagy -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-danger text-white">
-                    <i class="bi bi-tags"></i>Tagy
+                    <i class="bi bi-tags">
+</i>Tagy
                 </div>
                 <div class="card-body">
                     <div class="position-relative">
@@ -545,12 +589,15 @@ function h($s)
                         <input type="text" id="tag_input" class="form-control"
                                placeholder="Začni psát… (Enter = přidat)" autocomplete="off">
                         <div id="tag_suggestions"
-                             class="list-group position-absolute suggest-box"></div>
+                             class="list-group position-absolute suggest-box">
+</div>
                     </div>
-                    <div id="tag_selected" class="mt-2 d-flex flex-wrap gap-1"></div>
+                    <div id="tag_selected" class="mt-2 d-flex flex-wrap gap-1">
+</div>
                     <input type="hidden" name="tagy_json" id="tagy_json" value="[]">
                     <div class="mini-muted mt-2">
-                        <i class="bi bi-plus-circle me-1"></i>Nový tag stačí napsat a stisknout Enter.
+                        <i class="bi bi-plus-circle me-1">
+</i>Nový tag stačí napsat a stisknout Enter.
                     </div>
                 </div>
             </div>
@@ -558,7 +605,8 @@ function h($s)
             <!-- 3. Trenéři -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-secondary text-white">
-                    <i class="bi bi-person-badge"></i>Trenéři
+                    <i class="bi bi-person-badge">
+</i>Trenéři
                 </div>
                 <div class="card-body">
                     <?php foreach ($trenereList as $tr):
@@ -580,7 +628,8 @@ function h($s)
                     </div>
                     <?php endforeach; ?>
                     <div class="mini-muted mt-2">
-                        <i class="bi bi-lock me-1"></i>Přihlášený trenér bude vždy uložen.
+                        <i class="bi bi-lock me-1">
+</i>Přihlášený trenér bude vždy uložen.
                     </div>
                 </div>
             </div>
@@ -588,38 +637,48 @@ function h($s)
             <!-- 4. Fotografie -->
             <div class="card section-card mb-3">
                 <div class="card-header" style="background:#6f42c1;color:#fff;">
-                    <i class="bi bi-image"></i>Fotografie
+                    <i class="bi bi-image">
+</i>Fotografie
                 </div>
                 <div class="card-body">
                     <label for="training-images" class="form-label fw-semibold">Nahrát fotky (max. 5)</label>
                     <input type="file" id="training-images" name="obrazky[]" class="form-control"
                            accept="image/*" multiple>
                     <div class="mini-muted mt-1">
-                        <i class="bi bi-info-circle me-1"></i>Formáty: JPG, PNG, WEBP
+                        <i class="bi bi-info-circle me-1">
+</i>Formáty: JPG, PNG, WEBP
                     </div>
                 </div>
             </div>
 
-        </div><!-- /col-lg-4 -->
+        </div>
+<!-- /col-lg-4 -->
 
-    </div><!-- /row -->
+    </div>
+<!-- /row -->
 
     <!-- 5. Rezervace sportoviště (u plánu s místem a časem rovnou otevřená) -->
     <?php if (canAccess('rezervace_sportovist') && !empty($sportovisteList)): ?>
-    <?php $reservationFromPlan = $planPrefill && !empty($planPrefill['sportoviste_id']) && !empty($planPrefill['cas_od']) && !empty($planPrefill['cas_do']); ?>
+    <?php $reservationFromPlan = $planPrefill && !empty($planPrefill['sportoviste_id']) && !empty($planPrefill['cas_od'])
+    && !empty($planPrefill['cas_do']); ?>
     <div class="card section-card mb-3">
         <div class="card-header d-flex justify-content-between align-items-center"
              style="background:#0d6efd;color:#fff;cursor:pointer"
-             data-bs-toggle="collapse" data-bs-target="#kolapsRezerv" aria-expanded="<?= $reservationFromPlan ? 'true' : 'false' ?>">
-            <span><i class="bi bi-building-check me-2"></i>Rezervace sportoviště
+             data-bs-toggle="collapse" data-bs-target="#kolapsRezerv" aria-expanded="<?= $reservationFromPlan ? 'true' : 'false'
+        ?>">
+            <span>
+<i class="bi bi-building-check me-2">
+</i>Rezervace sportoviště
                 <span class="badge bg-white text-primary ms-2 fw-normal" style="font-size:.75em">Volitelné</span>
             </span>
-            <i class="bi bi-chevron-down"></i>
+            <i class="bi bi-chevron-down">
+</i>
         </div>
         <div class="collapse <?= $reservationFromPlan ? 'show' : '' ?>" id="kolapsRezerv">
             <div class="card-body">
                 <p class="text-muted small mb-3">
-                    <i class="bi bi-info-circle me-1"></i>Pokud trénink probíhá na konkrétním sportovišti, lze zde zablokovat kapacitu pro ostatní rezervace.
+                    <i class="bi bi-info-circle me-1">
+</i>Pokud trénink probíhá na konkrétním sportovišti, lze zde zablokovat kapacitu pro ostatní rezervace.
                 </p>
                 <div class="row g-3">
                     <div class="col-sm-5">
@@ -627,8 +686,10 @@ function h($s)
                         <select name="rez_sportoviste_id" id="rezSportovisteId" class="form-select">
                             <option value="">— nevybráno —</option>
                             <?php foreach ($sportovisteList as $sp): ?>
-                                <option value="<?= (int)$sp['id'] ?>" data-max="<?= (int)$sp['max_kapacita'] ?>">
-                                    <?= htmlspecialchars($sp['nazev'], ENT_QUOTES, 'UTF-8') ?>
+                                <option value="<?= (int)$sp['id'] ?>" data-max="<?= (int)$sp['max_kapacita']
+                                ?>">
+                                    <?= htmlspecialchars($sp['nazev'], ENT_QUOTES, 'UTF-8')
+                                ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -652,11 +713,13 @@ function h($s)
                     <div class="col-sm-1 d-flex align-items-end">
                         <button type="button" id="rezCheckBtn" class="btn btn-outline-secondary w-100"
                                 title="Zkontrolovat dostupnost">
-                            <i class="bi bi-search"></i>
+                            <i class="bi bi-search">
+</i>
                         </button>
                     </div>
                 </div>
-                <div id="rezDostupnost" class="mt-2 small"></div>
+                <div id="rezDostupnost" class="mt-2 small">
+</div>
             </div>
         </div>
     </div>
@@ -665,21 +728,25 @@ function h($s)
     <!-- Submit bar -->
     <div class="submit-bar d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div class="text-muted small">
-            <i class="bi bi-shield-check me-1 text-success"></i>
+            <i class="bi bi-shield-check me-1 text-success">
+</i>
             Trénink bude uložen pouze po úplném vyplnění povinných polí.
         </div>
         <div class="d-flex gap-2">
             <a href="index.php" class="btn btn-outline-secondary">
-                <i class="bi bi-x-lg me-1"></i>Zrušit
+                <i class="bi bi-x-lg me-1">
+</i>Zrušit
             </a>
             <button type="submit" class="btn btn-success px-4">
-                <i class="bi bi-floppy me-1"></i>Uložit trénink
+                <i class="bi bi-floppy me-1">
+</i>Uložit trénink
             </button>
         </div>
     </div>
 
     </form>
-</div><!-- /container -->
+</div>
+<!-- /container -->
 
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 // ── Globální předvyplnění z duplikat ─────────────────────────────────────
@@ -688,15 +755,15 @@ window.__duplikatPodskupiny = DUPLIKAT ? (DUPLIKAT.podskupiny || []) : [];
 
 // ── Předvyplnění z plánovaného tréninku ──────────────────────────────────
 const PLAN_PREFILL = <?= json_encode($planPrefill ? [
-    'skupina_id'    => (int)($planPrefill['skupina_id'] ?? 0),
-    'podskupiny'    => $planPrefillSubgroups,
-    'datum'         => $planPrefill['datum'] ?? '',
-    'kategorie'     => $planPrefill['kategorie'] ?? '',
-    'nazev'         => $planPrefill['nazev'] ?? '',
-    'sportoviste_id' => (int)($planPrefill['sportoviste_id'] ?? 0),
-    'cas_od'        => $planPrefill['cas_od'] ?? '',
-    'cas_do'        => $planPrefill['cas_do'] ?? '',
-] : null, JSON_UNESCAPED_UNICODE) ?>;
+                                    'skupina_id'    => (int)($planPrefill['skupina_id'] ?? 0),
+                                    'podskupiny'    => $planPrefillSubgroups,
+                                    'datum'         => $planPrefill['datum'] ?? '',
+                                    'kategorie'     => $planPrefill['kategorie'] ?? '',
+                                    'nazev'         => $planPrefill['nazev'] ?? '',
+                                    'sportoviste_id' => (int)($planPrefill['sportoviste_id'] ?? 0),
+                                    'cas_od'        => $planPrefill['cas_od'] ?? '',
+                                    'cas_do'        => $planPrefill['cas_do'] ?? '',
+                                ] : null, JSON_UNESCAPED_UNICODE) ?>;
 if (PLAN_PREFILL) {
     // Datum
     const datumSel = document.getElementById('datum') || document.querySelector('[name="datum"]');
@@ -750,7 +817,8 @@ if (PLAN_PREFILL) {
         window.__ucastniciSelected.forEach((p, idx) => {
             const chip = document.createElement('span');
             chip.className = 'chip';
-            chip.innerHTML = `${escapeHtml(p.label)} <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit"></button>`;
+            chip.innerHTML = `${escapeHtml(p.label)} <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit">
+</button>`;
             chip.querySelector('button').addEventListener('click', () => {
                 window.__ucastniciSelected.splice(idx, 1);
                 render(); syncHidden();
@@ -792,7 +860,8 @@ if (PLAN_PREFILL) {
 
     input.addEventListener('focus', () => {
         if (sug.innerHTML === '') {
-            hint('<i class="bi bi-search me-1"></i>Začněte psát jméno sportovce (min. 2 znaky)…');
+            hint('<i class="bi bi-search me-1">
+</i>Začněte psát jméno sportovce (min. 2 znaky)…');
         }
     });
 
@@ -809,18 +878,21 @@ if (PLAN_PREFILL) {
         lastQ = q;
         if (q.length < 1) { close(); return; }
         if (q.length < 2) {
-            hint('<i class="bi bi-search me-1"></i>Napište ještě 1 znak…');
+            hint('<i class="bi bi-search me-1">
+</i>Napište ještě 1 znak…');
             return;
         }
         if (abortCtrl) abortCtrl.abort();
         abortCtrl = new AbortController();
-        hint('<i class="bi bi-hourglass-split me-1"></i>Hledám…');
-        fetch('ajax_sportovci.php?q=' + encodeURIComponent(q), { signal: abortCtrl.signal })
+        hint('<i class="bi bi-hourglass-split me-1">
+</i>Hledám…');
+        fetch('ajax_sportovci.php?context=training&q=' + encodeURIComponent(q), { signal: abortCtrl.signal })
             .then(r => r.json())
             .then(data => {
                 if (input.value.trim() !== lastQ) return;
                 if (!Array.isArray(data) || data.length === 0) {
-                    hint('<i class="bi bi-exclamation-circle me-1"></i>Nikdo nenalezen.');
+                    hint('<i class="bi bi-exclamation-circle me-1">
+</i>Nikdo nenalezen.');
                     return;
                 }
                 const list = data.map(s => ({
@@ -831,7 +903,8 @@ if (PLAN_PREFILL) {
             })
             .catch(err => {
                 if (err && err.name === 'AbortError') return;
-                hint('<i class="bi bi-wifi-off me-1"></i>Chyba načítání — zkuste znovu.');
+                hint('<i class="bi bi-wifi-off me-1">
+</i>Chyba načítání — zkuste znovu.');
             });
     });
 
@@ -845,7 +918,8 @@ if (PLAN_PREFILL) {
     if (DUPLIKAT && DUPLIKAT.ucastnici) {
         DUPLIKAT.ucastnici.forEach(sp => addParticipant(sp.id, sp.label));
     }
-    const rosterExpected = <?= json_encode($planExpectedParticipants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const rosterExpected = <?= json_encode($planExpectedParticipants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP
+                                    | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     const makeupExpected = <?= json_encode(
         array_map(static fn (array $person): array => [
             'id' => (int)$person['sportovec_id'],
@@ -918,7 +992,9 @@ if (PLAN_PREFILL) {
                     <div class="input-group input-group-sm">
                         <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" aria-label="Vzdálenost" placeholder="Vzdálenost">
                         <select class="form-select js-distance-unit" aria-label="Jednotka vzdálenosti">
-                            <option value="">jednotka</option><option value="m">m</option><option value="km">km</option>
+                            <option value="">jednotka</option>
+<option value="m">m</option>
+<option value="km">km</option>
                         </select>
                     </div>
                     <div class="invalid-feedback">Vyplňte vzdálenost i jednotku m nebo km.</div>
@@ -935,11 +1011,13 @@ if (PLAN_PREFILL) {
                 </div>
                 ${type === 'kolo' ? `
                 <div class="col-md-3">
-                    <label class="form-label small mb-1">Převod <span class="text-muted fw-normal">(vol.)</span></label>
+                    <label class="form-label small mb-1">Převod <span class="text-muted fw-normal">(vol.)</span>
+</label>
                     <input type="text" class="form-control form-control-sm js-prevod" aria-label="Převod" placeholder="např. 50/15">
                 </div>` : ''}
                 <div class="${type === 'kolo' ? 'col-md-3' : 'col-md-6'}">
-                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
+                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span>
+</label>
                     <input type="text" class="form-control form-control-sm js-poznamka" aria-label="Poznámka k měření" placeholder="">
                 </div>
             `));
@@ -950,7 +1028,8 @@ if (PLAN_PREFILL) {
                     ${cvikySelectHtml()}
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label small mb-1">Váha <span class="text-muted fw-normal">kg</span></label>
+                    <label class="form-label small mb-1">Váha <span class="text-muted fw-normal">kg</span>
+</label>
                     <input type="number" step="0.5" class="form-control form-control-sm js-vaha" aria-label="Váha (kg)" placeholder="0">
                 </div>
                 <div class="col-md-2">
@@ -958,11 +1037,13 @@ if (PLAN_PREFILL) {
                     <input type="number" class="form-control form-control-sm js-opakovani" aria-label="Počet opakování" placeholder="10">
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label small mb-1">RPE <span class="text-muted fw-normal">1–10</span></label>
+                    <label class="form-label small mb-1">RPE <span class="text-muted fw-normal">1–10</span>
+</label>
                     <input type="number" step="0.5" min="1" max="10" class="form-control form-control-sm js-rpe" aria-label="RPE (1–10)" placeholder="7">
                 </div>
                 <div class="col-md-12">
-                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
+                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span>
+</label>
                     <input type="text" class="form-control form-control-sm js-poznamka" aria-label="Poznámka k měření" placeholder="">
                 </div>
             `));
@@ -983,7 +1064,8 @@ if (PLAN_PREFILL) {
                         title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
+                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span>
+</label>
                     <input type="text" class="form-control form-control-sm js-poznamka" aria-label="Poznámka k měření" placeholder="">
                 </div>
             `));
@@ -1035,7 +1117,8 @@ if (PLAN_PREFILL) {
                 .map(x => ({ id: x.id, label: x.label }))
                 .filter(it => !q || it.label.toLowerCase().includes(q));
             if (local.length) renderList(local);
-            else hint('<i class="bi bi-search me-1"></i>Napište 2+ znaky nebo vyberte z účastníků nahoře.');
+            else hint('<i class="bi bi-search me-1">
+</i>Napište 2+ znaky nebo vyberte z účastníků nahoře.');
         });
 
         inp.addEventListener('input', () => {
@@ -1050,7 +1133,8 @@ if (PLAN_PREFILL) {
             if (q.length < 2) {
                 if (local.length) { renderList(local); return; }
                 if (q.length < 1) { close(); return; }
-                hint('<i class="bi bi-search me-1"></i>Napište ještě 1 znak…');
+                hint('<i class="bi bi-search me-1">
+</i>Napište ještě 1 znak…');
                 return;
             }
 
@@ -1058,13 +1142,15 @@ if (PLAN_PREFILL) {
 
             if (abortCtrl) abortCtrl.abort();
             abortCtrl = new AbortController();
-            hint('<i class="bi bi-hourglass-split me-1"></i>Hledám…');
-            fetch('ajax_sportovci.php?q=' + encodeURIComponent(q), { signal: abortCtrl.signal })
+            hint('<i class="bi bi-hourglass-split me-1">
+</i>Hledám…');
+            fetch('ajax_sportovci.php?context=training&q=' + encodeURIComponent(q), { signal: abortCtrl.signal })
                 .then(r => r.json())
                 .then(data => {
                     if (inp.value.trim() !== lastQ) return;
                     if (!Array.isArray(data) || data.length === 0) {
-                        hint('<i class="bi bi-exclamation-circle me-1"></i>Nikdo nenalezen.');
+                        hint('<i class="bi bi-exclamation-circle me-1">
+</i>Nikdo nenalezen.');
                         return;
                     }
                     const list = data.map(s => ({
@@ -1075,7 +1161,8 @@ if (PLAN_PREFILL) {
                 })
                 .catch(err => {
                     if (err && err.name === 'AbortError') return;
-                    hint('<i class="bi bi-wifi-off me-1"></i>Chyba načítání — zkuste znovu.');
+                    hint('<i class="bi bi-wifi-off me-1">
+</i>Chyba načítání — zkuste znovu.');
                 });
         });
 
@@ -1103,7 +1190,8 @@ if (PLAN_PREFILL) {
                     <input type="text" class="form-control form-control-sm js-sp-name"
                            aria-label="Sportovec pro měření" placeholder="Jméno (klikněte nebo napište 2+ znaky)…" autocomplete="off">
                     <input type="hidden" class="js-sp-id" value="">
-                    <div class="list-group position-absolute js-sp-sug suggest-box"></div>
+                    <div class="list-group position-absolute js-sp-sug suggest-box">
+</div>
                 </div>
                 <div style="min-width:200px;">
                     <label class="form-label small mb-1 fw-semibold">Typ měření</label>
@@ -1120,11 +1208,13 @@ if (PLAN_PREFILL) {
                 <div>
                     <label class="form-label small mb-1">&nbsp;</label>
                     <button type="button" class="btn btn-sm btn-outline-danger js-del" aria-label="Odebrat měření">
-                        <i class="bi bi-trash"></i>
+                        <i class="bi bi-trash">
+</i>
                     </button>
                 </div>
             </div>
-            <div class="js-fields mt-2"></div>
+            <div class="js-fields mt-2">
+</div>
         `;
 
         rowsWrap.appendChild(row);
@@ -1253,7 +1343,8 @@ if (PLAN_PREFILL) {
         selected.forEach((t, idx) => {
             const chip = document.createElement('span');
             chip.className = 'chip';
-            chip.innerHTML = `${escapeHtml(t.name)} <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit"></button>`;
+            chip.innerHTML = `${escapeHtml(t.name)} <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit">
+</button>`;
             chip.querySelector('button').addEventListener('click', () => {
                 selected.splice(idx, 1); render(); sync();
             });
@@ -1376,7 +1467,9 @@ if (PLAN_PREFILL) {
             outEl.innerHTML = '<span class="text-muted">Vyplňte sportoviště, datum a časy.</span>';
             return;
         }
-        outEl.innerHTML = '<span class="text-muted"><i class="bi bi-hourglass-split me-1"></i>Kontroluji…</span>';
+        outEl.innerHTML = '<span class="text-muted">
+<i class="bi bi-hourglass-split me-1">
+</i>Kontroluji…</span>';
 
         try {
             const url = `ajax_dostupnost_sportovist.php?sportoviste_id=${encodeURIComponent(sportId)}`
@@ -1389,11 +1482,17 @@ if (PLAN_PREFILL) {
             const pozadovana = parseInt(kap, 10);
 
             if (volno <= 0) {
-                outEl.innerHTML = `<span class="text-danger"><i class="bi bi-x-circle me-1"></i>Sportoviště plně obsazeno (${obsazeno}/${maxKap})</span>`;
+                outEl.innerHTML = `<span class="text-danger">
+<i class="bi bi-x-circle me-1">
+</i>Sportoviště plně obsazeno (${obsazeno}/${maxKap})</span>`;
             } else if (pozadovana > volno) {
-                outEl.innerHTML = `<span class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>Požadovaná kapacita ${pozadovana} přesahuje volné (${volno}/${maxKap})</span>`;
+                outEl.innerHTML = `<span class="text-warning">
+<i class="bi bi-exclamation-triangle me-1">
+</i>Požadovaná kapacita ${pozadovana} přesahuje volné (${volno}/${maxKap})</span>`;
             } else {
-                outEl.innerHTML = `<span class="text-success"><i class="bi bi-check-circle me-1"></i>Dostupné — obsazeno ${obsazeno}/${maxKap}, zbývá ${volno} dílů</span>`;
+                outEl.innerHTML = `<span class="text-success">
+<i class="bi bi-check-circle me-1">
+</i>Dostupné — obsazeno ${obsazeno}/${maxKap}, zbývá ${volno} dílů</span>`;
             }
         } catch (e) {
             outEl.innerHTML = '<span class="text-warning">Nepodařilo se zkontrolovat dostupnost.</span>';
@@ -1404,6 +1503,7 @@ if (PLAN_PREFILL) {
     [sportSel, casOd, casDo, kapSel].forEach(el => el?.addEventListener('change', checkDostupnost));
 })();
 </script>
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js">
+</script>
 </body>
 </html>

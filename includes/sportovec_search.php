@@ -17,14 +17,14 @@ function sportovecSearchLabel(array $person): string
 }
 
 /** Bounded search within the current workspace; an empty query is opt-in. */
-function sportovecSearch(PDO $pdo, string $query, int $limit = 20, bool $browse = false): array
+function sportovecSearch(PDO $pdo, string $query, int $limit = 20, bool $browse = false, bool $training = false): array
 {
     $query = trim($query);
     if (($query === '' && !$browse) || ($query !== '' && mb_strlen($query, 'UTF-8') < 2)) {
         return [];
     }
     $limit = max(5, min(50, $limit));
-    $scope = coachScopePersonPredicate($pdo);
+    $scope = $training ? coachTrainingPersonPredicate($pdo) : coachScopePersonPredicate($pdo);
     $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
     $name = $mysql
         ? "CONVERT(CONCAT(COALESCE(s.jmeno, ''), ' ', COALESCE(s.prijmeni, '')) USING utf8mb4) COLLATE utf8mb4_general_ci"
@@ -38,11 +38,12 @@ function sportovecSearch(PDO $pdo, string $query, int $limit = 20, bool $browse 
         array_push($params, $like, $like);
     }
     $filter = $conditions ? ' AND ' . implode(' AND ', $conditions) : '';
+    $preferred = $training ? 'CASE WHEN (' . coachTrainingPreferredPersonPredicate($pdo) . ') THEN 0 ELSE 1 END,' : '';
     $stmt = $pdo->prepare("SELECT s.id, s.jmeno, s.prijmeni, s.uci AS uciid, s.narozeni
         FROM sportovci s WHERE ($scope) AND NOT EXISTS (
             SELECT 1 FROM sportovec_skupina ss JOIN skupiny sk ON sk.id = ss.skupina_id
             WHERE ss.sportovec_id = s.id AND LOWER(sk.nazev) = 'archiv'
-        ) $filter ORDER BY s.prijmeni, s.jmeno, s.id LIMIT $limit");
+        ) $filter ORDER BY $preferred s.prijmeni, s.jmeno, s.id LIMIT $limit");
     $stmt->execute($params);
     $results = [];
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {

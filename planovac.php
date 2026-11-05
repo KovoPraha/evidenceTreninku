@@ -413,19 +413,23 @@ try {
     <?php if ($flashSuccess): ?>
         <div class="alert alert-success alert-dismissible fade show">
             <?= h($flashSuccess) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert">
+</button>
         </div>
     <?php endif; ?>
     <?php if ($flashError): ?>
         <div class="alert alert-danger alert-dismissible fade show">
             <?= h($flashError) ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert">
+</button>
         </div>
     <?php endif; ?>
 
     <!-- Hlavička -->
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-        <h1 class="h5 mb-0 me-2"><i class="bi bi-calendar3-week me-2 text-primary"></i>Plánovač tréninků</h1>
+        <h1 class="h5 mb-0 me-2">
+<i class="bi bi-calendar3-week me-2 text-primary">
+</i>Plánovač tréninků</h1>
         <a class="btn btn-outline-primary btn-sm" href="training_closure_admin.php">Docházka a uzavření</a>
         <?php
         // Helper: sestaví URL s aktuálními filtry
@@ -435,9 +439,15 @@ try {
                   . (!$filterJenMoje && $filterTrener ? '&trener_id='.$filterTrener : '');
 ?>
         <div class="btn-group btn-group-sm">
-            <a href="?datum=<?= $prevWeek . $qFilters ?>" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i></a>
+            <a href="?datum=<?= $prevWeek . $qFilters ?>" class="btn btn-outline-secondary">
+<i class="bi bi-chevron-left">
+</i>
+</a>
             <a href="?datum=<?= $today    . $qFilters ?>" class="btn btn-outline-secondary">Dnes</a>
-            <a href="?datum=<?= $nextWeek . $qFilters ?>" class="btn btn-outline-secondary"><i class="bi bi-chevron-right"></i></a>
+            <a href="?datum=<?= $nextWeek . $qFilters ?>" class="btn btn-outline-secondary">
+<i class="bi bi-chevron-right">
+</i>
+</a>
         </div>
         <span class="text-muted small">
             <?= $monday->format('j. n.') ?> – <?= $sunday->format('j. n. Y') ?>
@@ -445,10 +455,12 @@ try {
         <div class="ms-auto d-flex gap-2">
             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modalKopirovat"
                     title="Zkopírovat tento týden o 7 dní dopředu">
-                <i class="bi bi-copy me-1"></i>Kopírovat týden
+                <i class="bi bi-copy me-1">
+</i>Kopírovat týden
             </button>
             <a href="planovany_trenink_form.php?datum=<?= $today ?>" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-lg me-1"></i>Nový trénink
+                <i class="bi bi-plus-lg me-1">
+</i>Nový trénink
             </a>
         </div>
     </div>
@@ -462,19 +474,22 @@ try {
             <input type="radio" class="btn-check" name="jen_moje" id="fMoje" value="1"
                    <?= $filterJenMoje ? 'checked' : '' ?> data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="toggleTrenerFilter();this.form.submit()">
             <label class="btn btn-outline-primary" for="fMoje">
-                <i class="bi bi-person-fill me-1"></i>Moje
+                <i class="bi bi-person-fill me-1">
+</i>Moje
             </label>
             <input type="radio" class="btn-check" name="jen_moje" id="fVse" value="0"
                    <?= !$filterJenMoje ? 'checked' : '' ?> data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="toggleTrenerFilter();this.form.submit()">
             <label class="btn btn-outline-secondary" for="fVse">
-                <i class="bi bi-people me-1"></i>Vše
+                <i class="bi bi-people me-1">
+</i>Vše
             </label>
         </div>
 
         <!-- Trenér select — viditelný jen při "Vše" -->
         <select name="trener_id" id="trenerSelect"
                 class="form-select form-select-sm <?= $filterJenMoje ? 'd-none' : '' ?>"
-                style="width:auto" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
+                style="width:auto" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>" onchange="this.form.submit()">
             <option value="">— všichni trenéři —</option>
             <?php foreach ($treneri as $tr): ?>
                 <option value="<?= $tr['id'] ?>"
@@ -486,23 +501,28 @@ try {
 
         <!-- Kanonická skupina / soupiska a oddělený historický filtr. -->
         <select name="team_id" class="form-select form-select-sm" style="width:auto"
-                data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
+                data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>" onchange="this.form.submit()">
             <?= rosterTargetFilterOptionsHtml($pdo, $today, $filterTeam) ?>
         </select>
         <select name="skupina_id" class="form-select form-select-sm" style="width:auto"
-                data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
+                data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>" onchange="this.form.submit()">
             <option value="">Původní skupiny (historie)</option>
             <?php foreach ($skupiny as $sk): ?>
-                <option value="<?= $sk['id'] ?>" <?= $filterSkupina == $sk['id'] ? 'selected' : '' ?>>
+                <option value="<?= $sk['id'] ?>" <?= $filterSkupina == $sk['id'] ? 'selected' : ''
+                ?>>
                     <?= h($sk['nazev']) ?>
                 </option>
             <?php endforeach; ?>
         </select>
 
         <?php if ($filterSkupina && !empty($skupinyIdx[$filterSkupina]['hash'])): ?>
-            <a href="program_skupiny.php?hash=<?= urlencode($skupinyIdx[$filterSkupina]['hash']) ?>"
+            <a href="program_skupiny.php?hash=<?= urlencode($skupinyIdx[$filterSkupina]['hash'])
+            ?>"
                target="_blank" class="btn btn-outline-info btn-sm" title="Veřejný program skupiny">
-                <i class="bi bi-box-arrow-up-right me-1"></i>Sdílet program
+                <i class="bi bi-box-arrow-up-right me-1">
+</i>Sdílet program
             </a>
         <?php endif; ?>
     </form>
@@ -512,7 +532,8 @@ try {
         <div class="card-header py-2 d-flex justify-content-between align-items-center"
              style="cursor:pointer" data-bs-toggle="collapse" data-bs-target="#nastenkaPannel">
             <span class="fw-semibold small">
-                <i class="bi bi-megaphone me-2 text-primary"></i>Nástěnka skupiny
+                <i class="bi bi-megaphone me-2 text-primary">
+</i>Nástěnka skupiny
                 <?php if (!empty($nastenkOznameni)): ?>
                     <span class="badge bg-primary ms-1"><?= count($nastenkOznameni) ?></span>
                 <?php endif; ?>
@@ -521,26 +542,31 @@ try {
                 <?php if (canAccess('oznameni')): ?>
                 <button type="button" class="btn btn-primary btn-sm py-0 px-2"
                         data-bs-toggle="modal" data-bs-target="#modalNoveOznameni"
-                        data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onclick="event.stopPropagation()"
+                        data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+                    ?>" onclick="event.stopPropagation()"
                         title="Nové oznámení skupině">
-                    <i class="bi bi-plus-lg me-1"></i>Nové
+                    <i class="bi bi-plus-lg me-1">
+</i>Nové
                 </button>
                 <?php endif; ?>
-                <i class="bi bi-chevron-down text-muted small"></i>
+                <i class="bi bi-chevron-down text-muted small">
+</i>
             </div>
         </div>
         <div class="collapse show" id="nastenkaPannel">
             <div class="card-body py-2 px-3">
                 <?php if (empty($nastenkOznameni)): ?>
                     <div class="text-muted small text-center py-2">
-                        <i class="bi bi-info-circle me-1"></i>Žádná oznámení pro tuto skupinu.
+                        <i class="bi bi-info-circle me-1">
+</i>Žádná oznámení pro tuto skupinu.
                     </div>
                 <?php else: ?>
                     <div class="d-flex flex-column gap-2">
                     <?php foreach ($nastenkOznameni as $oz): ?>
                         <div class="border-start border-primary ps-3 py-1">
                             <div class="d-flex justify-content-between align-items-start">
-                                <span class="fw-semibold small"><?= h($oz['nazev'] ?? 'Oznámení') ?></span>
+                                <span class="fw-semibold small"><?= h($oz['nazev'] ?? 'Oznámení')
+                        ?></span>
                                 <span class="text-muted" style="font-size:.72rem;white-space:nowrap">
                                     <?= h($oz['datum']) ?>
                                     <?php if ($oz['trener_jmeno']): ?>
@@ -549,7 +575,8 @@ try {
                                 </span>
                             </div>
                             <div class="text-muted small mt-1" style="font-size:.8rem">
-                                <?= h(trainingPlannerAnnouncementExcerpt((string)$oz['obsah_html'])) ?>
+                                <?= h(trainingPlannerAnnouncementExcerpt((string)$oz['obsah_html']))
+                        ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -562,7 +589,7 @@ try {
 
     <!-- Varování na nezaevidované minulé tréninky -->
     <?php
-    $wWhere  = ["pt.stav = 'planovany'", "pt.datum < ?"];
+                            $wWhere  = ["pt.stav = 'planovany'", "pt.datum < ?"];
 $wParams = [$today];
 if ($filterJenMoje) {
     $wWhere[] = 'pt.trener_id = ?';
@@ -587,13 +614,15 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
     <?php if ($pocetNezaevidovanych > 0): ?>
     <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 py-2">
         <div>
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            Počet minulých plánovaných lekcí bez zápisu: <strong><?= $pocetNezaevidovanych ?></strong>.
+            <i class="bi bi-exclamation-triangle-fill me-2">
+</i>
+            Počet minulých plánovaných lekcí bez zápisu: <strong><?= $pocetNezaevidovanych
+        ?></strong>.
             Ověřte, zda se uskutečnily, a doplňte evidenci nebo zrušení.
         </div>
         <div class="d-flex gap-2 flex-wrap">
             <a href="?datum=<?=
- h((string)$oldestPendingDate)
+         h((string)$oldestPendingDate)
         ?>&<?=
          h(http_build_query(['jen_moje' => $filterJenMoje ? 1 : 0,
              'trener_id' => $filterTrener,
@@ -601,13 +630,15 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
              'team_id' => $filterTeam]))
         ?>"
                class="btn btn-warning btn-sm">
-                <i class="bi bi-arrow-left me-1"></i>Zobrazit nejstarší nezapsanou lekci
+                <i class="bi bi-arrow-left me-1">
+</i>Zobrazit nejstarší nezapsanou lekci
             </a>
             <?php if (roleAtLeast('hlavni')): ?>
             <a href="#"
                class="btn btn-outline-warning btn-sm disabled" aria-disabled="true"
                title="Zašle upomínkové emaily trenérům">
-                <i class="bi bi-envelope me-1"></i>Zaslat upomínky
+                <i class="bi bi-envelope me-1">
+</i>Zaslat upomínky
             </a>
             <?php endif; ?>
         </div>
@@ -619,19 +650,25 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
         <div class="col-auto">
             <div class="card border-0 shadow-sm text-center px-4 py-2">
                 <div class="fs-4 fw-bold text-primary"><?= $statsCelkem ?></div>
-                <div class="text-muted small"><i class="bi bi-calendar3 me-1"></i>Celkem tento týden</div>
+                <div class="text-muted small">
+<i class="bi bi-calendar3 me-1">
+</i>Celkem tento týden</div>
             </div>
         </div>
         <div class="col-auto">
             <div class="card border-0 shadow-sm text-center px-4 py-2">
                 <div class="fs-4 fw-bold text-success"><?= $stats['evidovany'] ?></div>
-                <div class="text-muted small"><i class="bi bi-check-circle me-1"></i>Evidováno</div>
+                <div class="text-muted small">
+<i class="bi bi-check-circle me-1">
+</i>Evidováno</div>
             </div>
         </div>
         <div class="col-auto">
             <div class="card border-0 shadow-sm text-center px-4 py-2">
                 <div class="fs-4 fw-bold text-warning"><?= $stats['planovany'] ?></div>
-                <div class="text-muted small"><i class="bi bi-hourglass me-1"></i>Čeká na evidenci</div>
+                <div class="text-muted small">
+<i class="bi bi-hourglass me-1">
+</i>Čeká na evidenci</div>
             </div>
         </div>
     </div>
@@ -649,18 +686,23 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
         <div class="col-lg col-md-6 col-12 drop-zone" data-datum="<?= h($d) ?>">
             <div class="day-header <?= $headerCls ?>">
                 <?= $dayNames[$i] ?> <?= $dt->format('j. n.') ?>
-                <?php if ($isToday): ?><span class="badge bg-warning text-dark ms-1" style="font-size:.65rem">Dnes</span><?php endif; ?>
-                <span class="badge bg-secondary ms-1 day-count" style="font-size:.65rem;<?= empty($dne) ? 'display:none' : '' ?>"><?= count($dne) ?></span>
+                <?php if ($isToday): ?><span class="badge bg-warning text-dark ms-1" style="font-size:.65rem">Dnes</span><?php
+                endif; ?>
+                <span class="badge bg-secondary ms-1 day-count" style="font-size:.65rem;<?= empty($dne) ? 'display:none' : ''
+        ?>"><?= count($dne) ?></span>
             </div>
 
-                <div class="empty-day text-center py-3" style="font-size:.8rem;color:#d1d5db;border:2px dashed transparent;border-radius:.5rem;<?= empty($dne) ? '' : 'display:none' ?>">
-                    <i class="bi bi-dash d-block fs-4 mb-1"></i>Žádné tréninky
+                <div class="empty-day text-center py-3" style="font-size:.8rem;color:#d1d5db;border:2px dashed transparent;border-radius:.5rem;<?=
+             empty($dne) ? '' : 'display:none' ?>">
+                    <i class="bi bi-dash d-block fs-4 mb-1">
+</i>Žádné tréninky
                 </div>
 
             <?php foreach ($dne as $p): ?>
                 <?php
-                $isEvidovano = $p['stav'] === 'evidovany';
-                $rsvpSummary = $rsvpSummaries[(int)$p['id']] ?? ['expected' => 0,'going' => 0,'not_going' => 0,'pending' => 0];
+                        $isEvidovano = $p['stav'] === 'evidovany';
+                $rsvpSummary = $rsvpSummaries[(int)$p['id']] ?? ['expected' => 0,'going' => 0,'not_going' => 0,'pending'
+    => 0];
                 $meta = $kategorieMeta[$p['kategorie'] ?? ''] ?? null;
                 $cardCls = $isEvidovano ? 'evidovano' : 'planovano';
                 $canDrag = !$isEvidovano && ($p['trener_id'] == $trenerId || roleAtLeast('hlavni'));
@@ -672,7 +714,8 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
                     }
                 }
                 ?>
-                <div class="card plan-card <?= $cardCls ?> mb-2 shadow-sm<?= $canDrag ? ' draggable-card' : '' ?>"
+                <div class="card plan-card <?= $cardCls ?> mb-2 shadow-sm<?= $canDrag ? ' draggable-card' : ''
+                ?>"
                      <?= $canDrag ? 'draggable="true"' : '' ?>
                      data-plan-id="<?= (int)$p['id'] ?>"
                      data-datum="<?= h($p['datum']) ?>">
@@ -680,82 +723,108 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
                         <div class="d-flex justify-content-between align-items-start gap-1">
                             <?php if ($canDrag): ?>
                             <div class="text-muted d-flex align-items-center me-1 drag-handle" style="cursor:grab;font-size:.85rem" title="Přetáhni na jiný den">
-                                <i class="bi bi-grip-vertical"></i>
+                                <i class="bi bi-grip-vertical">
+</i>
                             </div>
                             <?php endif; ?>
                             <div class="flex-grow-1" style="min-width:0">
                                 <?php if ($meta): ?>
-                                    <span class="badge badge-<?= $meta['color'] ?> bg-<?= $meta['color'] ?> me-1" style="font-size:.65rem">
-                                        <i class="bi <?= $meta['icon'] ?> me-1"></i><?= $meta['label'] ?>
+                                    <span class="badge badge-<?= $meta['color'] ?> bg-<?= $meta['color']
+                                    ?> me-1" style="font-size:.65rem">
+                                        <i class="bi <?= $meta['icon'] ?> me-1">
+</i><?= $meta['label'] ?>
                                     </span>
                                 <?php endif; ?>
                                 <?php if ($isEvidovano): ?>
                                     <span class="badge bg-success" style="font-size:.65rem">
-                                        <i class="bi bi-check-lg me-1"></i>Evidováno
+                                        <i class="bi bi-check-lg me-1">
+</i>Evidováno
                                     </span>
                                 <?php endif; ?>
                                 <?php if (!empty($p['serie_id'])): ?>
                                     <span class="badge bg-light text-secondary border" style="font-size:.6rem" title="Součást opakující se série">
-                                        <i class="bi bi-arrow-repeat me-1"></i>Série
+                                        <i class="bi bi-arrow-repeat me-1">
+</i>Série
                                     </span>
                                 <?php endif; ?>
                                 <div class="fw-semibold mt-1 plan-nazev-wrap" style="font-size:.88rem">
-                                    <span class="plan-nazev" data-plan-id="<?= (int)$p['id'] ?>"
+                                    <span class="plan-nazev" data-plan-id="<?= (int)$p['id']
+                ?>"
                                           style="cursor:<?= $canDrag ? 'text' : 'default' ?>"
-                                          title="<?= $canDrag ? 'Dvojklik pro přejmenování' : '' ?>">
+                                          title="<?= $canDrag ? 'Dvojklik pro přejmenování' : ''
+                ?>">
                                         <?= h($p['nazev']) ?>
                                     </span>
                                 </div>
                                 <div class="text-muted" style="font-size:.78rem">
-                                    <i class="bi bi-people me-1"></i><?= h($canonicalPlanLabels[(int)$p['id']] ?? ($p['skupina_nazev'] ?? '—')) ?>
-                                    <?php if (!isset($canonicalPlanLabels[(int)$p['id']]) && !empty($p['podskupiny_nazvy'])): ?>
-                                        <span class="text-muted"> / <?= h($p['podskupiny_nazvy']) ?></span>
+                                    <i class="bi bi-people me-1">
+</i><?= h($canonicalPlanLabels[(int)$p['id']] ?? ($p['skupina_nazev'] ?? '—')) ?>
+                                    <?php if (!isset($canonicalPlanLabels[(int)$p['id']]) && !empty($p['podskupiny_nazvy'])):
+                                        ?>
+                                        <span class="text-muted"> / <?= h($p['podskupiny_nazvy'])
+                                        ?></span>
                                     <?php endif; ?>
                                 </div>
                                 <div class="text-muted" style="font-size:.76rem">
-                                    <?php if ($cas): ?><i class="bi bi-clock me-1"></i><?= h($cas) ?><?php endif; ?>
-                                    <?php if ($p['sportoviste_id'] && isset($sportIdx[$p['sportoviste_id']])): ?>
+                                    <?php if ($cas): ?><i class="bi bi-clock me-1">
+</i><?= h($cas) ?><?php endif; ?>
+                                    <?php if ($p['sportoviste_id'] && isset($sportIdx[$p['sportoviste_id']])):
+                                        ?>
                                         <?php if ($cas): ?> · <?php endif; ?>
-                                        <i class="bi bi-building me-1"></i><?= h($sportIdx[$p['sportoviste_id']]) ?>
+                                        <i class="bi bi-building me-1">
+</i><?= h($sportIdx[$p['sportoviste_id']]) ?>
                                     <?php endif; ?>
                                 </div>
                                 <div class="text-muted" style="font-size:.72rem">
-                                    <i class="bi bi-person me-1"></i><?= h($p['trener_jmeno']) ?>
+                                    <i class="bi bi-person me-1">
+</i><?= h($p['trener_jmeno']) ?>
                                 </div>
                                 <?php if ($rsvpSummary['expected'] > 0): ?>
                                     <div class="d-flex flex-wrap gap-1 mt-1" aria-label="Potvrzení účasti">
-                                        <span class="badge text-bg-success"><?= (int)$rsvpSummary['going'] ?> ano</span>
-                                        <span class="badge text-bg-secondary"><?= (int)$rsvpSummary['not_going'] ?> ne</span>
-                                        <span class="badge text-bg-warning"><?= (int)$rsvpSummary['pending'] ?> bez odpovědi</span>
+                                        <span class="badge text-bg-success"><?= (int)$rsvpSummary['going']
+                                    ?> ano</span>
+                                        <span class="badge text-bg-secondary"><?= (int)$rsvpSummary['not_going']
+                                    ?> ne</span>
+                                        <span class="badge text-bg-warning"><?= (int)$rsvpSummary['pending']
+                                    ?> bez odpovědi</span>
                                     </div>
                                 <?php endif; ?>
                             </div>
                         </div>
 
                         <!-- Akce -->
-                        <a class="btn btn-outline-primary btn-sm mt-2" href="training_closure_admin.php?plan_id=<?= (int)$p['id'] ?>#lesson-work">Lekce, omluvy a docházka</a>
+                        <a class="btn btn-outline-primary btn-sm mt-2" href="training_closure_admin.php?plan_id=<?=
+                                         (int)$p['id'] ?>#lesson-work">Lekce, omluvy a docházka</a>
                         <div class="d-flex gap-1 mt-2 flex-wrap">
-                            <?php if ($rsvpSummary['expected'] > 0 && (roleAtLeast('hlavni') || (int)$p['trener_id'] === $trenerId)): ?>
-                                <a href="training_rsvps_admin.php?plan_id=<?= (int)$p['id'] ?>"
+                            <?php if ($rsvpSummary['expected'] > 0 && (roleAtLeast('hlavni') || (int)$p['trener_id'] === $trenerId)):
+                                ?>
+                                <a href="training_rsvps_admin.php?plan_id=<?= (int)$p['id']
+                                ?>"
                                    class="btn btn-outline-info btn-sm py-0 px-2" style="font-size:.75rem">
-                                    <i class="bi bi-person-check me-1"></i>Příprava
+                                    <i class="bi bi-person-check me-1">
+</i>Příprava
                                 </a>
                             <?php endif; ?>
                             <?php if ($isEvidovano && $p['trenink_id']): ?>
                                 <a href="edit_trenink.php?id=<?= (int)$p['trenink_id'] ?>"
                                    class="btn btn-success btn-sm py-0 px-2" style="font-size:.75rem">
-                                    <i class="bi bi-eye me-1"></i>Detail evidence
+                                    <i class="bi bi-eye me-1">
+</i>Detail evidence
                                 </a>
                             <?php elseif (!$isEvidovano): ?>
-                                <?php if ((int)$p['trener_id'] === $trenerId || roleAtLeast('hlavni')): ?>
                                     <a href="formular.php?plan_id=<?= (int)$p['id'] ?>"
                                        class="btn btn-primary btn-sm py-0 px-2" style="font-size:.75rem">
-                                        <i class="bi bi-pencil-square me-1"></i>Zadat evidenci
+                                        <i class="bi bi-pencil-square me-1">
+</i>Zadat evidenci
                                     </a>
-                                    <a href="planovany_trenink_form.php?id=<?= (int)$p['id'] ?>"
+                                <?php if ((int)$p['trener_id'] === $trenerId || roleAtLeast('hlavni')):
+                                    ?>
+                                    <a href="planovany_trenink_form.php?id=<?= (int)$p['id']
+                                    ?>"
                                        class="btn btn-outline-secondary btn-sm py-0 px-2" style="font-size:.75rem"
                                        title="Upravit plán" aria-label="Upravit plán">
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="bi bi-pencil">
+</i>
                                     </a>
                                     <button type="button"
                                             class="btn btn-outline-primary btn-sm py-0 px-2 touch-move-btn"
@@ -763,22 +832,25 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
                                             data-plan-id="<?= (int)$p['id'] ?>"
                                             data-nazev="<?= h($p['nazev']) ?>"
                                             title="Přesunout na jiný den" aria-label="Přesunout na jiný den">
-                                        <i class="bi bi-arrows-move"></i>
+                                        <i class="bi bi-arrows-move">
+</i>
                                     </button>
                                     <form method="post" class="d-inline"
                                           data-confirm="Opravdu zrušit tento trénink?">
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="action" value="zrusit">
-                                        <input type="hidden" name="plan_id" value="<?= (int)$p['id'] ?>">
+                                        <input type="hidden" name="plan_id" value="<?= (int)$p['id']
+                                    ?>">
 <?php echo '                                        <input name="cancel_reason" required minlength="10" maxlengt'
- . 'h="1000" placeholder="Důvod zrušení lekce" aria-label="Důvod zrušení lekce" class="form-control form'
- . '-control-sm">
+                                     . 'h="1000" placeholder="Důvod zrušení lekce" aria-label="Důvod zrušení lekce" class="form-control form'
+                                     . '-control-sm">
 '; ?><?php echo '                                        <input type="number" min="1" name="replacement_plan_id" plac'
- . 'eholder="Číslo nového termínu při přesunu" aria-label="Číslo náhradní lekce" class="form-control for'
- . 'm-control-sm">
+                                     . 'eholder="Číslo nového termínu při přesunu" aria-label="Číslo náhradní lekce" class="form-control for'
+                                     . 'm-control-sm">
 '; ?>                                        <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2"
                                                 style="font-size:.75rem" title="Zrušit tento trénink">
-                                            <i class="bi bi-x"></i>
+                                            <i class="bi bi-x">
+</i>
                                         </button>
                                     </form>
                                     <?php if (!empty($p['serie_id'])): ?>
@@ -786,14 +858,18 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
                                           data-confirm="Zrušit CELOU sérii (všechny nadcházející tréninky v sérii)?">
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="action" value="zrusit">
-                                        <input type="hidden" name="plan_id" value="<?= (int)$p['id'] ?>">
+                                        <input type="hidden" name="plan_id" value="<?= (int)$p['id']
+                                        ?>">
                                         <input type="hidden" name="zrusit_serii" value="1">
 <?php echo '                                        <input name="cancel_reason" required minlength="10" maxlengt'
- . 'h="1000" placeholder="Důvod zrušení série" aria-label="Důvod zrušení série" class="form-control form'
- . '-control-sm">
+                                         . 'h="1000" placeholder="Důvod zrušení série" aria-label="Důvod zrušení série" class="form-control form'
+                                         . '-control-sm">
 '; ?>                                        <button type="submit" class="btn btn-outline-danger btn-sm py-0 px-2"
                                                 style="font-size:.75rem" title="Zrušit celou sérii">
-                                            <i class="bi bi-arrow-repeat"></i><i class="bi bi-x-sm"></i>
+                                            <i class="bi bi-arrow-repeat">
+</i>
+<i class="bi bi-x-sm">
+</i>
                                         </button>
                                     </form>
                                     <?php endif; ?>
@@ -808,7 +884,8 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
             <?php if (!$isPast): ?>
                 <a href="planovany_trenink_form.php?datum=<?= $d ?>"
                    class="btn btn-outline-secondary btn-sm w-100 mt-1" style="font-size:.75rem">
-                    <i class="bi bi-plus"></i> Přidat
+                    <i class="bi bi-plus">
+</i> Přidat
                 </a>
             <?php endif; ?>
         </div>
@@ -820,11 +897,17 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header py-2">
-                <h6 class="modal-title"><i class="bi bi-arrows-move me-2 text-primary"></i>Přesunout: <span id="presunNazev"></span></h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít"></button>
+                <h6 class="modal-title">
+<i class="bi bi-arrows-move me-2 text-primary">
+</i>Přesunout: <span id="presunNazev">
+</span>
+</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít">
+</button>
             </div>
             <div class="modal-body">
-                <div class="d-grid gap-2" id="presunDnyBtns"></div>
+                <div class="d-grid gap-2" id="presunDnyBtns">
+</div>
                 <hr class="my-3">
                 <label for="presunDatum" class="form-label small">Nebo jiné datum:</label>
                 <div class="input-group input-group-sm">
@@ -841,8 +924,11 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-megaphone me-2 text-primary"></i>Nové oznámení skupině</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">
+<i class="bi bi-megaphone me-2 text-primary">
+</i>Nové oznámení skupině</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+</button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -852,11 +938,13 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
                 <div class="mb-3">
                     <label class="form-label req">Text</label>
                     <textarea id="ozObsah" class="form-control" rows="4"
-                              placeholder="Text oznámení pro skupinu…"></textarea>
+                              placeholder="Text oznámení pro skupinu…">
+</textarea>
                 </div>
                 <div class="mb-3">
                     <label class="form-label req">Datum</label>
-                    <input type="date" id="ozDatum" class="form-control" value="<?= date('Y-m-d') ?>">
+                    <input type="date" id="ozDatum" class="form-control" value="<?= date('Y-m-d')
+?>">
                 </div>
                 <div class="mb-2">
                     <label class="form-label req">Skupiny</label>
@@ -877,7 +965,8 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Zrušit</button>
                 <button type="button" class="btn btn-primary" id="btnOdeslatOznameni">
-                    <i class="bi bi-send me-1"></i>Odeslat oznámení
+                    <i class="bi bi-send me-1">
+</i>Odeslat oznámení
                 </button>
             </div>
         </div>
@@ -889,25 +978,35 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-copy me-2 text-primary"></i>Kopírovat týden</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">
+<i class="bi bi-copy me-2 text-primary">
+</i>Kopírovat týden</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+</button>
             </div>
             <form method="post" id="formKopirovat">
                 <?= csrf_field() ?>
                 <input type="hidden" name="action" value="kopirovat_tyden">
-                <input type="hidden" name="kopirovat_od" value="<?= h($monday->format('Y-m-d')) ?>">
-                <input type="hidden" name="kopirovat_do" value="<?= h($sunday->format('Y-m-d')) ?>">
-                <input type="hidden" name="kopirovat_jen_moje" value="<?= $filterJenMoje ? '1' : '0' ?>">
+                <input type="hidden" name="kopirovat_od" value="<?= h($monday->format('Y-m-d'))
+?>">
+                <input type="hidden" name="kopirovat_do" value="<?= h($sunday->format('Y-m-d'))
+?>">
+                <input type="hidden" name="kopirovat_jen_moje" value="<?= $filterJenMoje ? '1' : '0'
+?>">
                 <input type="hidden" name="kopirovat_trener_id" value="<?= $filterTrener ?>">
-                <input type="hidden" name="kopirovat_skupina_id" value="<?= $filterSkupina ?>">
+                <input type="hidden" name="kopirovat_skupina_id" value="<?= $filterSkupina
+?>">
                 <input type="hidden" name="kopirovat_team_id" value="<?= $filterTeam ?>">
                 <div class="modal-body">
                     <div class="alert alert-info border-0 py-2 mb-3">
-                        <i class="bi bi-arrow-right me-1"></i>
+                        <i class="bi bi-arrow-right me-1">
+</i>
                         Zkopíruje tréninky z týdne
-                        <strong><?= $monday->format('j. n.') ?> – <?= $sunday->format('j. n. Y') ?></strong>
+                        <strong><?= $monday->format('j. n.') ?> – <?= $sunday->format('j. n. Y')
+?></strong>
                         → o 7 dní dopředu
-                        (<strong><?= (clone $monday)->modify('+7 days')->format('j. n.') ?> – <?= (clone $sunday)->modify('+7 days')->format('j. n. Y') ?></strong>).
+                        (<strong><?= (clone $monday)->modify('+7 days')->format('j. n.') ?> – <?=
+     (clone $sunday)->modify('+7 days')->format('j. n. Y') ?></strong>).
                     </div>
 
                     <div id="kopirovatStats" class="mb-3">
@@ -916,7 +1015,9 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
                             <span class="text-muted">plánovaných tréninků bude zkopírováno</span>
                         </div>
                         <?php if ($filterJenMoje): ?>
-                            <div class="text-muted small"><i class="bi bi-person me-1"></i>Pouze vaše tréninky</div>
+                            <div class="text-muted small">
+<i class="bi bi-person me-1">
+</i>Pouze vaše tréninky</div>
                         <?php elseif ($filterTrener): ?>
                             <?php $trJm = '';
                             foreach ($treneri as $tr) {
@@ -924,32 +1025,42 @@ $oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
                                     $trJm = $tr['jmeno'];
                                 }
                             } ?>
-                            <div class="text-muted small"><i class="bi bi-person me-1"></i>Trenér: <?= h($trJm) ?></div>
+                            <div class="text-muted small">
+<i class="bi bi-person me-1">
+</i>Trenér: <?= h($trJm) ?></div>
                         <?php else: ?>
-                            <div class="text-muted small"><i class="bi bi-people me-1"></i>Všichni trenéři</div>
+                            <div class="text-muted small">
+<i class="bi bi-people me-1">
+</i>Všichni trenéři</div>
                         <?php endif; ?>
                         <?php if ($filterSkupina && isset($skupinyIdx[$filterSkupina])): ?>
-                            <div class="text-muted small"><i class="bi bi-diagram-3 me-1"></i>Skupina: <?= h($skupinyIdx[$filterSkupina]['nazev']) ?></div>
+                            <div class="text-muted small">
+<i class="bi bi-diagram-3 me-1">
+</i>Skupina: <?= h($skupinyIdx[$filterSkupina]['nazev']) ?></div>
                         <?php endif; ?>
                     </div>
 
                     <?php if ($kCount === 0): ?>
                         <div class="alert alert-warning py-2">
-                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            <i class="bi bi-exclamation-triangle me-1">
+</i>
                             Tento týden nemá žádné plánované tréninky odpovídající aktuálnímu filtru.
                         </div>
                     <?php endif; ?>
 
                     <div class="form-text">
-                        <i class="bi bi-info-circle me-1"></i>
+                        <i class="bi bi-info-circle me-1">
+</i>
                         Zkopírované tréninky budou mít stav <strong>Plánovaný</strong>.
                         Rezervace sportovišť se nekopírují — je nutné je vytvořit zvlášť.
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Zrušit</button>
-                    <button type="submit" class="btn btn-primary" <?= $kCount === 0 ? 'disabled' : '' ?>>
-                        <i class="bi bi-copy me-1"></i>Zkopírovat <?= $kCount > 0 ? "({$kCount})" : '' ?>
+                    <button type="submit" class="btn btn-primary" <?= $kCount === 0 ? 'disabled' : ''
+?>>
+                        <i class="bi bi-copy me-1">
+</i>Zkopírovat <?= $kCount > 0 ? "({$kCount})" : '' ?>
                     </button>
                 </div>
             </form>
@@ -1171,7 +1282,8 @@ document.addEventListener('DOMContentLoaded', toggleTrenerFilter);
         if (!skupinyIds.length)  { showToast('Vyberte alespoň jednu skupinu.', 'warning'); return; }
 
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Odesílám…';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1">
+</span>Odesílám…';
 
         fetch('ajax_nova_oznameni.php', {
             method: 'POST',
@@ -1181,7 +1293,8 @@ document.addEventListener('DOMContentLoaded', toggleTrenerFilter);
         .then(r => r.json())
         .then(data => {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-send me-1"></i>Odeslat oznámení';
+            btn.innerHTML = '<i class="bi bi-send me-1">
+</i>Odeslat oznámení';
             if (data.ok) {
                 bootstrap.Modal.getInstance(document.getElementById('modalNoveOznameni')).hide();
                 showToast('Oznámení odesláno skupině.', 'success');
@@ -1193,7 +1306,8 @@ document.addEventListener('DOMContentLoaded', toggleTrenerFilter);
         })
         .catch(() => {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-send me-1"></i>Odeslat oznámení';
+            btn.innerHTML = '<i class="bi bi-send me-1">
+</i>Odeslat oznámení';
             showToast('Chyba sítě.', 'danger');
         });
     });

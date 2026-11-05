@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use PDO;
@@ -62,7 +64,7 @@ final class TrainingEditSafetyTest extends TestCase
     public function testLegacyWritersRecheckLiveAuthorizationInsideTransaction(): void
     {
         foreach (['update_trenink.php','smazat_trenink.php'] as $file) {
-            $source=file_get_contents(dirname(__DIR__,2).'/'.$file);
+            $source = file_get_contents(dirname(__DIR__, 2).'/'.$file);
             self::assertGreaterThan(strpos($source, '$pdo->beginTransaction()'), strpos($source, 'trainingClosureAssertTraining($pdo'), $file);
             self::assertLessThan(strpos($source, 'trainingClosureAssertLegacyMutable($pdo'), strpos($source, 'trainingClosureAssertTraining($pdo'), $file);
         }
@@ -70,7 +72,7 @@ final class TrainingEditSafetyTest extends TestCase
 
     public function testDeletingTrainingCompensatesPhotoRemovalOnRollback(): void
     {
-        $source=file_get_contents(dirname(__DIR__,2).'/smazat_trenink.php');
+        $source = file_get_contents(dirname(__DIR__, 2).'/smazat_trenink.php');
         self::assertStringContainsString('trainingEditOwnedImageRemovals($obrazky, $obrazky)', $source);
         self::assertStringContainsString('fileMutationRetire($fileMutations', $source);
         self::assertStringContainsString('fileMutationRollback($fileMutations)', $source);
@@ -80,32 +82,33 @@ final class TrainingEditSafetyTest extends TestCase
 
     public function testImageChangesUseTheLatestStoredSetNotTheEditorsOriginalSet(): void
     {
-        $pdo=$this->fixture();
+        $pdo = $this->fixture();
         // An earlier editor has added a photo since the second editor opened the page.
         $pdo->exec("UPDATE treninky SET obrazky='[\"nahrane_obrazky/old.jpg\",\"nahrane_obrazky/new.jpg\"]' WHERE id=1");
-        $stored=\trainingEditStoredImages($pdo,1);
-        $removed=\trainingEditOwnedImageRemovals($stored,['nahrane_obrazky/old.jpg']);
-        self::assertSame(['nahrane_obrazky/new.jpg'],array_values(array_diff($stored,$removed)));
-        $source=file_get_contents(dirname(__DIR__,2).'/update_trenink.php');
+        $stored = \trainingEditStoredImages($pdo, 1);
+        $removed = \trainingEditOwnedImageRemovals($stored, ['nahrane_obrazky/old.jpg']);
+        self::assertSame(['nahrane_obrazky/new.jpg'], array_values(array_diff($stored, $removed)));
+        $source = file_get_contents(dirname(__DIR__, 2).'/update_trenink.php');
         self::assertLessThan(strpos($source, 'trainingEditStoredImages($pdo'), strpos($source, 'trainingClosureAssertLegacyMutable($pdo'));
         self::assertLessThan(strpos($source, 'trainingEditOwnedImageRemovals($dbImg'), strpos($source, 'trainingEditStoredImages($pdo'));
     }
 
     public function testImageReadCannotHappenOutsideLockingTransaction(): void
     {
-        $pdo=$this->fixture();$pdo->rollBack();
+        $pdo = $this->fixture();
+        $pdo->rollBack();
         $this->expectException(\LogicException::class);
-        \trainingEditStoredImages($pdo,1);
+        \trainingEditStoredImages($pdo, 1);
     }
 
     public function testEditFormRendersConsumedFeedbackAndLinksToVersionedCorrection(): void
     {
-        $source=file_get_contents(dirname(__DIR__,2).'/edit_trenink.php');
-        $body=substr($source,strpos($source,'<body'));
-        self::assertStringContainsString('<?= h($flashError) ?>',$body);
-        self::assertStringContainsString('<?= h($flashSuccess) ?>',$body);
-        self::assertStringContainsString('class="alert alert-danger" role="alert"',$body);
-        self::assertStringContainsString('training_closure_admin.php?id=<?= $treninkId ?>',$body);
-        self::assertLessThan(strpos($body,'<form id="treninkForm"'),strpos($body,'<?= h($flashError) ?>'));
+        $source = file_get_contents(dirname(__DIR__, 2).'/edit_trenink.php');
+        $body = substr($source, strpos($source, '<body'));
+        self::assertStringContainsString('<?= h($flashError) ?>', $body);
+        self::assertStringContainsString('<?= h($flashSuccess) ?>', $body);
+        self::assertStringContainsString('class="alert alert-danger" role="alert"', $body);
+        self::assertStringContainsString('training_closure_admin.php?id=<?=$treninkId?>', preg_replace('/\s+/', '', $body));
+        self::assertLessThan(strpos($body, '<form id="treninkForm"'), strpos($body, '<?= h($flashError) ?>'));
     }
 }

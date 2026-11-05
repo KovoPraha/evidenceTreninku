@@ -19,7 +19,7 @@ if (!is_string($_GET['q'] ?? '') || mb_strlen($_GET['q'] ?? '', 'UTF-8') > 200) 
 $limit = isset($_GET['limit']) && is_string($_GET['limit']) && ctype_digit($_GET['limit'])
     ? (int)$_GET['limit'] : 20;
 try {
-    echo json_encode(sportovecSearch($pdo, $_GET['q'] ?? '', $limit, ($_GET['browse'] ?? '') === '1'), JSON_UNESCAPED_UNICODE);
+    echo json_encode(sportovecSearch($pdo, $_GET['q'] ?? '', $limit, ($_GET['browse'] ?? '') === '1', ($_GET['context'] ?? '') === 'training'), JSON_UNESCAPED_UNICODE);
 } catch (Throwable $exception) {
     error_log('ajax_sportovci: ' . $exception->getMessage());
     http_response_code(500);

@@ -10,6 +10,7 @@
             if (controller) controller.abort();
             controller = new AbortController();
             const query = new URLSearchParams({date});
+            if (container.dataset.rosterContext === 'training') query.set('context', 'training');
             selected.forEach(id => query.append('selected[]', id));
             try {
                 const response = await fetch('ajax_roster_target_selector.php?' + query, {signal: controller.signal});
