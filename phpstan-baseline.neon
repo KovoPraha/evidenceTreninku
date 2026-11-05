@@ -2555,12 +2555,6 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 21
-			path: shop_returns_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 5
 			path: shop_stock_document.php
 

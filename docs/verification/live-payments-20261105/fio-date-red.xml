@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\phpunit.xml.dist" tests="1" assertions="3" errors="0" failures="1" skipped="0" time="0.023363">
+    <testsuite name="integration" tests="1" assertions="3" errors="0" failures="1" skipped="0" time="0.023363">
+      <testsuite name="Tests\Integration\FioBankReconciliationTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Integration\FioBankReconciliationTest.php" tests="1" assertions="3" errors="0" failures="1" skipped="0" time="0.023363">
+        <testcase name="testOlderMovementCannotAutomaticallyPayANewerPayment" file="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Integration\FioBankReconciliationTest.php" line="73" class="Tests\Integration\FioBankReconciliationTest" classname="Tests.Integration.FioBankReconciliationTest" assertions="3" time="0.023363">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Integration\FioBankReconciliationTest::testOlderMovementCannotAutomaticallyPayANewerPayment&#13;
+Failed asserting that two arrays are identical.
+--- Expected
++++ Actual
+@@ @@
+ Array &amp;0 [
+-    'confirmed' =&gt; 0,
+-    'review' =&gt; 1,
++    'confirmed' =&gt; 1,
++    'review' =&gt; 0,
+ ]
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Integration\FioBankReconciliationTest.php:78</failure>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

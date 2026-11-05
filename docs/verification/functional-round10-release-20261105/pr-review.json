@@ -1,0 +1,252 @@
+{
+  "baseRefOid": "bf89952158cf5aa71594e03e6cecc5948f40093c",
+  "files": [
+    {
+      "path": "docs/CHANGELOG-PROVOZ.md",
+      "additions": 88,
+      "deletions": 0,
+      "changeType": "MODIFIED"
+    },
+    {
+      "path": "docs/CURRENT_STATE.md",
+      "additions": 3,
+      "deletions": 3,
+      "changeType": "MODIFIED"
+    },
+    {
+      "path": "docs/HANDOFF_CURRENT.md",
+      "additions": 2,
+      "deletions": 0,
+      "changeType": "MODIFIED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/PLAN.md",
+      "additions": 23,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/RESULTS.md",
+      "additions": 105,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/after-order-pagination.png",
+      "additions": 0,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/before-order-context.png",
+      "additions": 0,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/browser-persistence.json",
+      "additions": 328,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/browser-state.php.txt",
+      "additions": 9,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/browser.json",
+      "additions": 37,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/bulk-fixture.php.txt",
+      "additions": 26,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/checks.json",
+      "additions": 46,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/cleanup.json",
+      "additions": 13,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/context-before.json",
+      "additions": 6,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/context-fixture.json",
+      "additions": 144,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/context-fixture.php.txt",
+      "additions": 30,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/context-http.json",
+      "additions": 813,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/context-http.php.txt",
+      "additions": 80,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/context-red.xml",
+      "additions": 36,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/fulfillment-race.json",
+      "additions": 61,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/http-prefix.php.txt",
+      "additions": 80,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/returns-after.json",
+      "additions": 43,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/returns-baseline.php.txt",
+      "additions": 33,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/returns-before.json",
+      "additions": 43,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/returns-race.json",
+      "additions": 27,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "docs/verification/functional-uat-round10-20261105/source-sha256.json",
+      "additions": 9,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "includes/shop_return_admin_read.php",
+      "additions": 80,
+      "deletions": 0,
+      "changeType": "ADDED"
+    },
+    {
+      "path": "phpstan-baseline.neon",
+      "additions": 0,
+      "deletions": 6,
+      "changeType": "MODIFIED"
+    },
+    {
+      "path": "shop_returns_admin.php",
+      "additions": 620,
+      "deletions": 57,
+      "changeType": "MODIFIED"
+    },
+    {
+      "path": "tests/Unit/ShopReturnsOrderContextTest.php",
+      "additions": 180,
+      "deletions": 0,
+      "changeType": "ADDED"
+    }
+  ],
+  "headRefOid": "e2570eeed1c8da2f19bc2259d747dd80c4d08497",
+  "mergeStateStatus": "CLEAN",
+  "mergeable": "MERGEABLE",
+  "title": "Vratky: zachovat kontext objednávky a zpřístupnit celou historii",
+  "reviewed_head": "e2570eeed1c8da2f19bc2259d747dd80c4d08497",
+  "merged_sha": "bc627ab12c22ba16feb0ca6cba3340fb87de31a9",
+  "same_tree": true,
+  "tree": "78d1da25b883ad6eb4872bdab3fc4c42d7831622",
+  "blocking_findings": [],
+  "reviewed_boundaries": [
+    "Preserved role/CSRF/domain authorization",
+    "Explicit GET/POST order validation and source match before domain dispatch",
+    "Order fields and backlinks retained in all scoped forms",
+    "SQL order scope before pagination; complete count; older issues retained",
+    "Escaped order/case display; no migration or domain-service change"
+  ],
+  "targeted": {
+    "tests": 47,
+    "assertions": 617,
+    "skipped": 0
+  },
+  "checks": [
+    {
+      "name": "CodeQL",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "PHPStan level 5 and changed-file style",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "PHPUnit na PHP 8.2",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "MariaDB profily čtení (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "docs",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "MariaDB profily čtení (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "Analyze (actions)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "Analyze (javascript-typescript)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "Analyze (python)",
+      "state": "SUCCESS"
+    }
+  ]
+}

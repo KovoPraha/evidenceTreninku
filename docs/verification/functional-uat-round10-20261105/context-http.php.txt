@@ -1,0 +1,80 @@
+<?php
+declare(strict_types=1);
+require __DIR__.'/prefix.php';
+require_once $root.'/includes/shop_returns.php';
+$f=json_decode((string)file_get_contents(__DIR__.'/context-fixture.json'),true,512,JSON_THROW_ON_ERROR);
+$baseline=json_decode((string)file_get_contents(__DIR__.'/r23-returns-http.json'),true,512,JSON_THROW_ON_ERROR);
+$requests=0;
+function r10Request(array &$s,string $query='',?array $post=null):array{$GLOBALS['requests']++;return dwRequest($s,'shop_returns_admin.php'.$query,$post);}
+function r10Text(array $r):string{return trim((string)preg_replace('/\s+/u',' ',dwDom($r)->evaluate('string(//main)')));}
+function r10Snapshot(bool $includeReturns=true):array{
+ $out=[];$tables=$GLOBALS['pdo']->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
+ foreach($tables as $t){
+  if(!preg_match('~^(?:shop_(?:return|stock|fulfillment|delivery)|payments$|accounting_|financial_decisions$|club_roster_members$|family_weekly_|staff_user_positions$)~',$t))continue;
+  if(!$includeReturns&&(str_starts_with($t,'shop_return_')||$t==='accounting_ledger_mutex'))continue;
+  $rows=$GLOBALS['pdo']->query('SELECT * FROM `'.$t.'` ORDER BY 1')->fetchAll();
+  $out[$t]=['count'=>count($rows),'sha256'=>hash('sha256',json_encode($rows,JSON_THROW_ON_ERROR))];
+ }
+ return $out;
+}
+$sessions=['operator'=>dwSession($f['actor'])];
+foreach(['catalog_manager','finance_manager','coach']as$role){
+ $q=$pdo->prepare('SELECT t.id FROM treneri t JOIN staff_user_positions p ON p.trainer_id=t.id WHERE t.jmeno=? AND p.position_code=?');$q->execute([$baseline['run'].' '.$role,$role]);$id=(int)$q->fetchColumn();
+ if($id<1)throw new RuntimeException('Missing owned limited actor '.$role);
+ $sessions[$role]=dwSession($id);
+}
+$ops=&$sessions['operator'];$stock=&$sessions['catalog_manager'];$finance=&$sessions['finance_manager'];$coach=&$sessions['coach'];$anon=['cookie'=>'','csrf'=>''];
+$before=r10Snapshot();
+$initialC=(int)$pdo->query('SELECT COUNT(*) FROM shop_return_cases WHERE order_id='.(int)$f['order_c'])->fetchColumn();
+$initialAll=(int)$pdo->query('SELECT COUNT(*) FROM shop_return_cases')->fetchColumn();
+$pagesC=(int)ceil($initialC/25);$pagesAll=(int)ceil($initialAll/25);
+$a='?order_id='.$f['order_a'];$c='?order_id='.$f['order_c'];
+$r=r10Request($ops,$a);$x=dwDom($r);
+dwCheck($r['status']===200&&str_contains(r10Text($r),'Objednávka '.$f['order_a_code']),'GET: explicit order banner identifies order A');
+dwCheck($x->query('//article[@id="case-'.$f['case_b'].'"]')->length===0&&!str_contains(r10Text($r),'OTHER ORDER B'),'GET: other order cases excluded');
+dwCheck($x->query('//select[@name="issue_movement_id"]/option[@value="'.$f['issue_b'].'"]')->length===0,'GET: other order physical issue excluded from opening form');
+dwCheck($x->query('//main//form')->length===$x->query('//main//form/input[@name="order_id" and @value="'.$f['order_a'].'"]')->length,'GET: every action retains selected order in hidden input');
+dwCheck(str_contains($r['body'],'eshop_fulfillment_admin.php?order_id='.$f['order_a']),'GET: back link returns to same fulfillment');
+foreach(['stock'=>&$stock,'finance'=>&$finance]as$label=>&$s){$r=r10Request($s,$a);dwCheck($r['status']===200&&!str_contains(r10Text($r),'OTHER ORDER B'),'GET: '.$label.' sees only selected order');}unset($s);
+$r=r10Request($ops,$c);$x=dwDom($r);
+dwCheck(str_contains(r10Text($r),'Nalezeno: '.$initialC.' · strana 1 z '.$pagesC)&&$x->query('//article')->length===25,'GET: all genuine cases counted before 25-row pagination');
+$next=(string)$x->evaluate('string(//main//a[normalize-space(.)="Další"]/@href)');
+dwCheck(str_contains($next,'order_id='.$f['order_c'])&&str_contains($next,'return_page=2'),'GET: next link retains order and page');
+$r=r10Request($ops,$next);dwCheck(dwDom($r)->query('//article')->length===25&&str_contains(r10Text($r),'strana 2 z 6'),'GET: real second page request loads next 25 cases');
+$r=r10Request($ops,$c.'&return_page=999999');
+dwCheck(str_contains(r10Text($r),'strana '.$pagesC.' z '.$pagesC)&&dwDom($r)->query('//article')->length===$initialC-25*($pagesC-1)&&str_contains(r10Text($r),$f['tag'].' C-000'),'GET: last page reaches oldest case beyond prior 100-row cap');
+$r=r10Request($ops,'?return_page='.$pagesAll);dwCheck(str_contains(r10Text($r),'Nalezeno: '.$initialAll.' · strana '.$pagesAll.' z '.$pagesAll)&&dwDom($r)->query('//article')->length===$initialAll-25*($pagesAll-1),'GET: unfiltered workspace includes all cases');
+foreach(['0','','invalid','214748364799999999999','1%20OR%201=1']as$id){$r=r10Request($ops,'?order_id='.$id);dwCheck($r['status']===422&&!str_contains($r['body'],'OTHER ORDER B'),'GET: malformed selection rejected without fallback: '.$id);}
+$r=r10Request($ops,'?order_id%5B%5D='.$f['order_a']);dwCheck($r['status']===422,'GET: array selection rejected');
+$r=r10Request($ops,'?order_id=2147483647');dwCheck($r['status']===404,'GET: nonexistent order remains 404');
+$empty=(int)$pdo->query('SELECT id FROM shop_orders o WHERE NOT EXISTS(SELECT 1 FROM shop_return_cases c WHERE c.order_id=o.id) ORDER BY id LIMIT 1')->fetchColumn();
+if(!$empty)throw new RuntimeException('Missing synthetic empty order');
+$r=r10Request($ops,'?order_id='.$empty);dwCheck($r['status']===200&&dwDom($r)->query('//article')->length===0&&str_contains(r10Text($r),'Pro tuto objednávku není evidovaný žádný případ.'),'GET: existing empty order has explicit empty state');
+$r=r10Request($coach,$a);dwCheck($r['status']===403,'GET: unrelated coach workspace denied');
+$r=r10Request($anon,$a);dwCheck(in_array($r['status'],[302,303,403],true)&&!str_contains($r['body'],'OTHER ORDER B'),'GET: anonymous access denied');
+$case=shopReturnRow($pdo,$f['case_b']);
+$receive=['action'=>'receive','order_id'=>$f['order_a'],'case_id'=>$f['case_b'],'revision'=>$case['revision'],'ownership'=>'owned','occurred_on'=>date('Y-m-d'),'request_key'=>$f['tag'].'-wrong-case','reason'=>'LOCALHOST wrong context rejection','confirmed'=>'1'];
+$r=r10Request($ops,$a,$receive);dwCheck($r['status']===422&&str_contains(r10Text($r),'nepatří do vybrané objednávky'),'POST: valid CSRF cannot receive another order case');
+$r=r10Request($ops,$a,['order_id'=>$f['order_b']]+$receive);dwCheck($r['status']===422,'POST: conflicting query and form order rejected');
+$r=r10Request($ops,$a,['case_id'=>[$f['case_b']]]+$receive);dwCheck($r['status']===422,'POST: malformed case source rejected');
+$open=['action'=>'open','order_id'=>$f['order_c'],'issue_movement_id'=>$f['issue_c'],'quantity'=>1,'request_type'=>'claim','owner_trainer_id'=>$f['actor'],'next_due_on'=>date('Y-m-d',strtotime('+7 days')),'occurred_on'=>date('Y-m-d'),'contact_path'=>'LOCALHOST case contact','customer_request'=>'LOCALHOST '.$f['tag'].' HTTP-created case','policy_evidence'=>'LOCALHOST procedure','request_key'=>$f['tag'].'-http-'.bin2hex(random_bytes(3)),'reason'=>'LOCALHOST scoped return opening','confirmed'=>'1'];
+$r=r10Request($ops,$a,['order_id'=>$f['order_a'],'issue_movement_id'=>$f['issue_b']]+$open);dwCheck($r['status']===422&&str_contains(r10Text($r),'nepatří do vybrané objednávky'),'POST: cannot open from another order issue');
+$r=r10Request($ops,$c,['csrf_token'=>'forged']+$open);dwCheck($r['status']===403,'POST: forged CSRF still denied');
+$r=r10Request($ops,$c,['confirmed'=>'0']+$open);dwCheck($r['status']===422,'POST: explicit action confirmation still required');
+$r=r10Request($finance,$c,$open);dwCheck($r['status']===403,'POST: finance cannot open physical return case');
+$r=r10Request($stock,'?order_id='.$f['order_b'],['order_id'=>$f['order_b']]+$receive);dwCheck($r['status']===403,'POST: stock role cannot receive physical goods');
+$r=r10Request($coach,$c,$open);dwCheck($r['status']===403,'POST: unrelated role denied before mutation');
+$readOnlyAfter=r10Snapshot();
+dwCheck($before===$readOnlyAfter,'Persistence: all GET and rejected POST preserve every monitored domain table');
+$physicalBefore=r10Snapshot(false);$casesBefore=(int)$pdo->query('SELECT COUNT(*) FROM shop_return_cases')->fetchColumn();$eventsBefore=(int)$pdo->query('SELECT COUNT(*) FROM shop_return_events')->fetchColumn();
+$r=r10Request($ops,'',$open);
+dwCheck($r['status']===200&&str_contains(r10Text($r),'Objednávka '.$f['order_c_code']),'POST: hidden order context alone is retained on successful creation');
+$q=$pdo->prepare('SELECT * FROM shop_return_cases WHERE request_key=?');$q->execute([$open['request_key']]);$created=$q->fetch();
+dwCheck($created&&(int)$created['order_id']===$f['order_c']&&(int)$pdo->query('SELECT COUNT(*) FROM shop_return_cases')->fetchColumn()===$casesBefore+1,'Persistence: new case belongs to the correct order');
+$r=r10Request($ops,'',$open);dwCheck($r['status']===200&&(int)$pdo->query('SELECT COUNT(*) FROM shop_return_cases')->fetchColumn()===$casesBefore+1&&(int)$pdo->query('SELECT COUNT(*) FROM shop_return_events')->fetchColumn()===$eventsBefore+1,'POST: repeated scoped creation is idempotent');
+$r=r10Request($ops,'',['quantity'=>2]+$open);dwCheck($r['status']===422,'POST: changed idempotency replay rejected');
+$r=r10Request($ops,'',['quantity'=>4,'request_key'=>$f['tag'].'-overflow']+$open);dwCheck($r['status']===422,'POST: previously allocated returned quantity cannot be exceeded');
+dwCheck($physicalBefore===r10Snapshot(false),'Persistence: opening and rejected replay do not alter stock, money or unrelated domains');
+$report=['status'=>'PASS','checks'=>count($checks),'http_requests'=>$requests,'results'=>$checks,'fixture'=>$f,'created_case'=>(int)$created['id'],'initial_scoped_cases'=>$initialC,'initial_global_cases'=>$initialAll,'read_only_snapshot_tables'=>count($before),'read_only_before'=>$before,'read_only_after'=>$readOnlyAfter,'stock_finance_before'=>$physicalBefore,'stock_finance_after'=>r10Snapshot(false),'technical_lock_note'=>'accounting_ledger_mutex revisions intentionally change on accepted opening/replay; excluded only from the stock/financial domain comparison, retained in the read-only comparison.','production_mutations'=>false,'external_sends'=>0,'password_and_T07'=>'SKIPPED'];
+file_put_contents(__DIR__.'/context-http.json',json_encode($report,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR));
+echo json_encode(['status'=>'PASS','checks'=>count($checks),'http_requests'=>$requests,'snapshot_tables'=>count($before),'created_case'=>(int)$created['id']],JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR),"\n";

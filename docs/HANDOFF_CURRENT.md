@@ -110,6 +110,8 @@ opravné vydání zachová migrační soubor a ledger, bez mazání dat nebo zá
 
 [Devátý autonomní průchod](verification/functional-uat-round9-20261104/RESULTS.md) odhalil souběh generování s odhlášením či revokací vazby. [PR #300 je sloučený a nasazený](verification/functional-round9-release-20261105/RESULTS.md); přesné vydání a výsledky určuje CURRENT_STATE. Heslo/T07 dál vynechat; produkční přihlášené UAT této vlny bez relace NOT RUN.
 
+[Desátý průchod](verification/functional-uat-round10-20261105/RESULTS.md) opravil kontext objednávky a neúplný seznam vratek. [PR #305 je sloučený a nasazený](verification/functional-round10-release-20261105/RESULTS.md): skutečný přihlášený čtecí Chrome, HTTP a izolovaná obnova PASS; rozsah a omezení jsou v protokolu. Přesné živé vydání určuje CURRENT_STATE. Heslo a T07 dál vynechat.
+
 ## Nová stanice: čisté převzetí
 
 ```powershell

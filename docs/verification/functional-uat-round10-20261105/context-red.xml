@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\phpunit.xml.dist" tests="4" assertions="14" errors="0" failures="4" skipped="0" time="8.875467">
+    <testsuite name="unit" tests="4" assertions="14" errors="0" failures="4" skipped="0" time="8.875467">
+      <testsuite name="Tests\Unit\ShopReturnsOrderContextTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\tests\Unit\ShopReturnsOrderContextTest.php" tests="4" assertions="14" errors="0" failures="4" skipped="0" time="8.875467">
+        <testcase name="testOrderLinkShowsOnlyItsCasesAndItsOldIssue" file="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\tests\Unit\ShopReturnsOrderContextTest.php" line="75" class="Tests\Unit\ShopReturnsOrderContextTest" classname="Tests.Unit.ShopReturnsOrderContextTest" assertions="4" time="2.303408">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Unit\ShopReturnsOrderContextTest::testOrderLinkShowsOnlyItsCasesAndItsOldIssue&#13;
+Other order must not be listed.
+Failed asserting that true is false.
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\tests\Unit\ShopReturnsOrderContextTest.php:79</failure>
+        </testcase>
+        <testcase name="testOldestCasesRemainReachableAndPageLinksRetainOrder" file="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\tests\Unit\ShopReturnsOrderContextTest.php" line="89" class="Tests\Unit\ShopReturnsOrderContextTest" classname="Tests.Unit.ShopReturnsOrderContextTest" assertions="3" time="2.215864">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Unit\ShopReturnsOrderContextTest::testOldestCasesRemainReachableAndPageLinksRetainOrder&#13;
+All 120 scoped cases must be pageable.
+Failed asserting that false is true.
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\tests\Unit\ShopReturnsOrderContextTest.php:92</failure>
+        </testcase>
+        <testcase name="testInvalidAndMissingOrderCannotFallBackToAllCases" file="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\tests\Unit\ShopReturnsOrderContextTest.php" line="101" class="Tests\Unit\ShopReturnsOrderContextTest" classname="Tests.Unit.ShopReturnsOrderContextTest" assertions="3" time="2.152147">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Unit\ShopReturnsOrderContextTest::testInvalidAndMissingOrderCannotFallBackToAllCases&#13;
+Failed asserting that 200 is identical to 422.
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\tests\Unit\ShopReturnsOrderContextTest.php:105</failure>
+        </testcase>
+        <testcase name="testEmptyOrderAndRoleBoundary" file="C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\tests\Unit\ShopReturnsOrderContextTest.php" line="113" class="Tests\Unit\ShopReturnsOrderContextTest" classname="Tests.Unit.ShopReturnsOrderContextTest" assertions="4" time="2.204049">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Unit\ShopReturnsOrderContextTest::testEmptyOrderAndRoleBoundary&#13;
+Empty order must have a clear empty state.
+Failed asserting that false is true.
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-functional-uat-round10-20261105\tests\Unit\ShopReturnsOrderContextTest.php:117</failure>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

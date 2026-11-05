@@ -1,10 +1,10 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po vydání PR #300 a jeho technickém ověření.
+Aktualizováno 5. 11. 2026 (Europe/Prague), po vydání PR #305 a produkčním ověření.
+
+- **[PR #305 sloučený a nasazený](verification/functional-round10-release-20261105/RESULTS.md):** vratky zachovávají objednávku a stránkují úplnou historii. Linux i deploy 2009/38764, HTTP před/po 48/48 a izolovaná obnova PASS. Přihlášený čtecí Chrome PASS v dostupném rozsahu; heslo/T07 vynechané.
 
 - **[PR #300 sloučený a nasazený](verification/functional-round9-release-20261105/RESULTS.md):** souhrn se přeskočí při opt-out nebo změně rodinného oprávnění během sestavování. Nové CI a deploy 1997/38644; MariaDB 10.3/11.4 po 49 kontrolách, HTTP před/po 42/42 a izolovaná obnova PASS. Přihlášené produkční UAT bez relace NOT RUN; heslo/T07 vynechané.
-
-- **[PR #297/#298 sloučené a nasazené](verification/functional-round7-release-20261104/RESULTS.md):** úplný filtr úrovní zapojení a stránkování; nově hlášená dev závislost opravena bez oslabení gate. CI i deploy 1983/38433, HTTP před/po 37/37 a izolovaná obnova PASS. Přihlášené produkční UAT bez relace NOT RUN; heslo/T07 vynechané.
 
 - **[Osmý funkční průchod](verification/functional-uat-round8-20261104/RESULTS.md):** příprava období, hierarchie ke dni lekce, věkové návrhy a stránkování. Skutečný místní browser, 25 kontrol HTTP/model/persistence a cílené 21/190 PASS; všech 12 doménových snapshotů shodných. Bez nové chyby runtime.
 
@@ -46,20 +46,19 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po vydání PR #300 a jeho technick�
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `97cf47929e09fae420b2171c443b98289fa8a1b5`,
-  [deploy 41978905942](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41978905942) SUCCESS.
-  PR #300 změnil pouze generátor rodinného souhrnu; již nasazené TV programy #301 zachované.
-  [Protokol](verification/functional-round9-release-20261105/RESULTS.md),
-  [strojové porovnání](verification/functional-round9-release-20261105/release-comparison.json).
-  Živé SHA potvrdil audit 41979427383, změněný soubor log aktivace; nejde o úplnou hash inventuru.
-  Schválený datový převod zůstává zachovaný, při vydání se neopakoval.
-- **Ověření:** všech 11 kontrol aktualizovaného #300 PASS, sloučený strom shodný s ověřeným,
-  Linux i deploy 1997 testů / 38644 assertions; MariaDB 10.3/11.4, profily, PHPStan/styl a audit PASS.
-  Deploy ověřil dostupnost a ochranu klíče archivu; anonymní HTTP před/po 42/42 PASS.
-  Přihlášený produkční průchod v Chrome bez relace NOT RUN; místní průchod má samostatný protokol. Heslo/T07 vynechané.
+- **Živé vydání:** `bc627ab12c22ba16feb0ca6cba3340fb87de31a9`,
+  [deploy 41987993980](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41987993980) SUCCESS.
+  Oprava vratek #305 zachovává TV programy a schválený datový převod; převod se neopakoval.
+  [Protokol](verification/functional-round10-release-20261105/RESULTS.md), [porovnání](verification/functional-round10-release-20261105/release-comparison.json).
+  Živé SHA potvrdil audit 41988846624, oba změněné soubory log aktivace; nejde o úplnou hash inventuru.
+- **Ověření:** všech 11 kontrol #305 PASS, sloučený strom shodný s ověřeným.
+  Linux i deploy 2009 testů / 38764 assertions bez skipů; MariaDB 10.3/11.4, PHPStan/styl a audit PASS.
+  HTTP před/po 48/48; Chrome ověřil testovací objednávku, návrat, chyby a tři pracovní kontexty.
+  Trenérský kontext odmítnutý; bez skladových/finančních zápisů, původní TV kontext obnovený.
+  Produkce nemá vratkové případy; historii nad 100 a křížené zápisy dokládá místní sada/CI. Heslo/T07 vynechané.
 - **Záloha a schéma:** čerstvá záloha vydání, 347 tabulek / 2 triggery;
-  [izolovaná obnova 41979519304](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41979519304) PASS včetně počtů řádků všech tabulek.
-  SHA-256 `1f3a5ef83d62a57fce0f5e25a7e36dfc101c49591f2eea9587c64712295c513b`.
+  [izolovaná obnova 41988855944](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41988855944) PASS včetně počtů všech tabulek.
+  SHA-256 `3a45fc043fc25b8d9220fdc43a103dabb74431dce45d8143ee27e19f0cba3bbd`.
   Schéma current / pending [], migrační ledger 150; dosavadní variabilní symboly zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,

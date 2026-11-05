@@ -1,0 +1,42 @@
+{
+  "status": "PASS within observed read-only scope",
+  "browser": "Chrome connected profile; existing authenticated owner session",
+  "selected_existing_synthetic_order": 14,
+  "order_code": "KP2610218B7C69C006",
+  "before": {
+    "fulfillment_link_opened": true,
+    "selected_order_heading_present": false
+  },
+  "after": {
+    "actual_fulfillment_return_link": true,
+    "selected_order_heading_present": true,
+    "backlink_returns_same_order": true,
+    "scoped_empty_message": true,
+    "global_empty_message": true,
+    "main_forms": 1,
+    "order_field_present": true,
+    "issue_options": 1,
+    "order_field_value": "NOT VERIFIED through browser DOM: hidden values sanitized; direct equality against redacted value is not evidence of a product mismatch.",
+    "invalid_order_message": "Neplatné nebo rozdílné číslo objednávky.",
+    "missing_order_message": "Objednávka nebyla nalezena.",
+    "oversized_page": "Nalezeno: 0 · strana 1 z 1",
+    "catalog_manager_context": true,
+    "finance_manager_context": true,
+    "finance_open_case_form_absent": true,
+    "coach_context_denied": true
+  },
+  "domain_posts": 0,
+  "financial_or_stock_mutations": 0,
+  "credentials_or_permissions_changed": false,
+  "original_position_restored": "tv_operator",
+  "helper_tab": "closed; existing user tabs untouched",
+  "diagnostics": [
+    "Initial guessed workspace path returned 404; continued from the TV page visible link to pracovni_pozice.php.",
+    "One CDP screenshot timeout; fresh AX and documented getScreenshot recovered; saved screenshot visually inspected."
+  ],
+  "limitations": [
+    "No production return cases or eligible issue in selected order; history beyond 100 and cross-order dispatch tested locally and in CI, not fabricated in production.",
+    "Role checks use active contexts of an existing superadmin, not separate restricted accounts."
+  ],
+  "password_reset_and_T07": "SKIPPED"
+}

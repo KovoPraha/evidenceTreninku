@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\phpunit.xml.dist" tests="2" assertions="5" errors="0" failures="2" skipped="0" time="0.192064">
+    <testsuite name="unit" tests="2" assertions="5" errors="0" failures="2" skipped="0" time="0.192064">
+      <testsuite name="Tests\Unit\ConfigureProductionSumUpTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Unit\ConfigureProductionSumUpTest.php" tests="2" assertions="5" errors="0" failures="2" skipped="0" time="0.192064">
+        <testcase name="testLegacyConfigCanBeActivatedWithoutConstantWarnings" file="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Unit\ConfigureProductionSumUpTest.php" line="58" class="Tests\Unit\ConfigureProductionSumUpTest" classname="Tests.Unit.ConfigureProductionSumUpTest" assertions="4" time="0.143803">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Unit\ConfigureProductionSumUpTest::testLegacyConfigCanBeActivatedWithoutConstantWarnings&#13;
+Failed asserting that two strings are identical.
+--- Expected
++++ Actual
+@@ @@
+-''
++'PHP Warning:  Constant SUMUP_ENABLED already defined in C:\Users\Marek\AppData\Local\Temp\kis284C.tmp on line 8
++PHP Warning:  Constant SUMUP_API_KEY already defined in C:\Users\Marek\AppData\Local\Temp\kis284C.tmp on line 9
++PHP Warning:  Constant SUMUP_MERCHANT_CODE already defined in C:\Users\Marek\AppData\Local\Temp\kis284C.tmp on line 10
++'
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Unit\ConfigureProductionSumUpTest.php:74</failure>
+        </testcase>
+        <testcase name="testProductionBaseCannotContainCredentialsQueryOrFragment" file="C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Unit\ConfigureProductionSumUpTest.php" line="81" class="Tests\Unit\ConfigureProductionSumUpTest" classname="Tests.Unit.ConfigureProductionSumUpTest" assertions="1" time="0.048261">
+          <failure type="PHPUnit\Framework\ExpectationFailedException">Tests\Unit\ConfigureProductionSumUpTest::testProductionBaseCannotContainCredentialsQueryOrFragment&#13;
+Unexpected production base accepted: https://user@kis.kovopraha.cz
+Failed asserting that null is an instance of class RuntimeException.
+&#13;
+C:\Users\Marek\Documents\Codex\evidencePavel-live-payments-readiness-20261105\tests\Unit\ConfigureProductionSumUpTest.php:91</failure>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,9 @@
+{
+  "normalization": "LF",
+  "files": {
+    "shop_returns_admin.php": "3ca359bdcf9c324eef550dce880241b5b62ce656231e04201ea09f04f94b2e39",
+    "includes/shop_return_admin_read.php": "fb6880fdf7562c0474fb66d0c92edcd007010297a9acd9a952695e4d2fe7db59",
+    "tests/Unit/ShopReturnsOrderContextTest.php": "253549fc17e8def003f4b97169ed29d934f4f6c821b684b1b0d191031b26747a",
+    "phpstan-baseline.neon": "303310d443319d5550ee271a31b32a0394019773ea3528b3764671aa8127256c"
+  }
+}
