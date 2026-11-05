@@ -3882,3 +3882,7 @@ Původní vývojový kontext: [CLAUDE_HISTORY.md](CLAUDE_HISTORY.md).
   [izolovaná obnova 42020816687](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42020816687) PASS včetně počtů všech tabulek.
   SHA-256 `897e4bd44e37da88caa0fae427175ccb3d36e243a5db5c09f61a239a59d2c33e`.
   Schéma current / pending [], migrační ledger 150; dosavadní variabilní symboly zachované.
+
+## 5. 11. 2026 – schválené vydání BAR do KIS
+
+PR #306 sloučen a modul nasazen po výslovném souhlasu vlastníka. [Protokol](verification/bar-release-20261105/RESULTS.md) dokládá všech 11 kontrol, Linux 2203/41286, úplnou skutečnou obnovu 357 tabulek a 4341 souborů, HTTP 71/71 před a 77/77 po vydání a čtecí Chrome tří pracovních kontextů. Původní vydání ad09174e zachované ve společném základu, živý kód 76bf0370, deploy 42084130988; konfigurace/integrační flags beze změny, ledger 152 → 159. Skutečný katalog, fotografie a lucka dosud nepřevedené, starý BAR bez přesměrování, lidská a účetní přejímka otevřené.

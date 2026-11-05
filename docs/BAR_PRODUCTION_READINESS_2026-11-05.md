@@ -1,6 +1,6 @@
 # BAR → KIS: připravenost a budoucí postup B7
 
-Příprava po technické přejímce B6, 5. 11. 2026. **Tento dokument není souhlas k nasazení.** Větev i PR #306 zůstávají oddělené, skutečný zdroj ani produkční cíle se nemění.
+Plán vznikl po technické přejímce B6, 5. 11. 2026. Vlastník následně výslovně povolil vydání kódu; modul je [nasazený a technicky ověřený](verification/bar-release-20261105/RESULTS.md). Skutečný zdrojový katalog, fotografie a lucka ještě nebyly převedené, starý BAR není přesměrovaný. Tento plán sám neuděluje další souhlasy k importu nebo finanční automatizaci.
 
 ## Podklady před rozhodnutím o přechodu
 
@@ -26,3 +26,5 @@ Zastavit další zápisy a zachovat nové doklady/audit; neobnovovat starou zál
 ## Zahájené vydání po souhlasu vlastníka
 
 5. 11. 2026 vlastník v chatu výslovně povolil produkční nasazení („ok, tedy nasadit“). Následuje chráněné vydání modulu z ověřeného PR #306; není tím doložená lidská přejímka ani parita dosud nepřipraveného skutečného katalogového balíčku. Před vydáním se novou operací `vytvorit-uplnou-zalohu-a-obnovit` v chráněném `production-drills.yml` vytvoří čerstvá DB záloha a soukromý ZIP nynější aplikace včetně konfigurace a celého soukromého úložiště. ZIP se nepublikuje jako artefakt; na izolovaném runneru se obnoví každý soubor a porovná jeho velikost a SHA-256. SQL se obnoví do samostatné MariaDB včetně všech počtů a triggerů. Cílová aplikace ani zdrojový BAR se tím nemění. Skutečný import, přidělení konkrétních dalších účtů a přesměrování původního BAR se řídí samostatným konkrétním převodním podkladem, nevznikají automaticky při nasazení kódu.
+
+Vydání kódu je dokončené: [protokol](verification/bar-release-20261105/RESULTS.md) odděluje skutečnou produkční zálohu/obnovu a živé ověření od zbývajícího převodu dat a lidské přejímky. Přenos skutečného zdroje a přidělení konkrétních účtů se neprovádějí odhadem.

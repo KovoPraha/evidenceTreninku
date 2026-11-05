@@ -1,0 +1,40 @@
+{
+  "browser": "Actual authenticated Chrome",
+  "identity": "Existing superadmin; no account created",
+  "initial_context": "finance_manager",
+  "tested_contexts": [
+    "finance_manager",
+    "bar_admin",
+    "bar_operator"
+  ],
+  "pages_verified": [
+    "bar/accounting.php",
+    "bar/catalog.php",
+    "bar/stock.php",
+    "bar/invoices.php",
+    "bar/operations.php",
+    "bar/offers.php",
+    "bar/menu.php",
+    "bar/checkout.php",
+    "bar/cashbox.php",
+    "bar/consumption.php"
+  ],
+  "observations": [
+    "Both BAR positions visible in workspace selector",
+    "Catalogue and stock empty before source transfer",
+    "No cashboxes, sales or supplier invoices created by verification",
+    "Accounting report zero; no export created",
+    "Cashbox required before checkout",
+    "Own consumption refused without explicit grant",
+    "Public menu says offer is being prepared"
+  ],
+  "domain_writes_by_browser_verification": false,
+  "session_context_changes_only": true,
+  "original_context_restored": "finance_manager",
+  "screenshot": "output/playwright/bar-production-catalog-20261105.png",
+  "limitations": [
+    "Actual lucka account not transferred or tested on production",
+    "No production financial write/provider confirmation/human UAT performed",
+    "Technical role contexts on an existing superadmin; ordinary user matrix separately covered by CI/local tests"
+  ]
+}

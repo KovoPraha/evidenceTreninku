@@ -1,0 +1,39 @@
+{
+  "pre_audit_run": 42078460510,
+  "post_audit_run": 42084780630,
+  "read_only_before": true,
+  "read_only_after": true,
+  "before": {
+    "sha": "ad09174ea969505154f9a135dad3324dcf632867",
+    "run_id": "42076138376",
+    "deployed_at": "2026-11-05T17:38:14+00:00",
+    "uat_approved": false
+  },
+  "after": {
+    "sha": "76bf0370a06e0ab80bab5ee9af1815835ac24efc",
+    "run_id": "42084130988",
+    "deployed_at": "2026-11-05T18:28:35+00:00",
+    "uat_approved": false
+  },
+  "config_unchanged": true,
+  "integration_flags_unchanged": true,
+  "integration_flags": {
+    "FIO_IMPORT_ENABLED": true,
+    "FIO_AUTO_CONFIRM_ENABLED": true,
+    "SUMUP_ENABLED": true,
+    "STRIPE_ENABLED": false,
+    "VELOCOTA_INTEGRATION": false,
+    "PACKETA_ENABLED": null
+  },
+  "migration_ledger_before": 152,
+  "migration_ledger_after": 159,
+  "kis_canonical_write_enabled": false,
+  "domain_mutations_by_audit": false,
+  "historical_source_manifest_is_not_BAR_file_inventory": true,
+  "live": {
+    "sha": "76bf0370a06e0ab80bab5ee9af1815835ac24efc",
+    "run_id": "42084130988",
+    "deployed_at": "2026-11-05T18:28:35+00:00",
+    "uat_approved": false
+  }
+}

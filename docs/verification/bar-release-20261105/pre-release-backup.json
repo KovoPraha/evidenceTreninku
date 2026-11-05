@@ -1,0 +1,28 @@
+{
+  "run_id": 42080871410,
+  "results": [
+    {
+      "ok": true,
+      "backup": "evidence_2026-11-05_180540_2776742c.sql.gz",
+      "manifest": "evidence_2026-11-05_180540_2776742c.manifest.json",
+      "sha256": "24fecf4113e570533448321386e99b8de1c5b56c9230a38bdc4b53541fbe231b",
+      "tables": 357,
+      "triggers": 2,
+      "compressed_bytes": 6268916,
+      "location": "/home/www/kovopraha.cz/www/data/.kis-backups"
+    },
+    {
+      "ok": true,
+      "file": "kis-files-42080871410.zip",
+      "files": 4341,
+      "source_bytes": 657834269,
+      "archive_bytes": 613288913,
+      "sha256": "3102a91ab4ec5ed16b53612bb7b2fbe9262bdd963680aea29d2c00f2a7a63060"
+    },
+    {
+      "private_file_restore": "PASS",
+      "files": 4341,
+      "archive_sha256": "3102a91ab4ec5ed16b53612bb7b2fbe9262bdd963680aea29d2c00f2a7a63060"
+    }
+  ]
+}
