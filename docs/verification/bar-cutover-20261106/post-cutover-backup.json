@@ -1,0 +1,21 @@
+{
+  "run_id": "42131631615",
+  "conclusion": "success",
+  "production_database_restored": false,
+  "isolated_database_restore": "PASS",
+  "isolated_file_restore": "PASS",
+  "database": {
+    "file": "evidence_2026-11-05_234617_3002bde9.sql.gz",
+    "sha256": "b2a8ce9de8031eeb13ef933783dc434b095f30265a204984089723ae3bde027c",
+    "tables": 385,
+    "triggers": 2,
+    "compressed_bytes": 6285020
+  },
+  "files": {
+    "file": "kis-files-42131631615.zip",
+    "sha256": "80f8135fedb0be5405f2709216fb9fb1f557ad932b13621880839f8ca1a383c7",
+    "files": 4515,
+    "source_bytes": 766300947,
+    "archive_bytes": 720738853
+  }
+}
