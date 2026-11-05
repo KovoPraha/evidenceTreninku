@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Integration;
@@ -10,7 +11,10 @@ require_once dirname(__DIR__, 2) . '/includes/staff_workspaces.php';
 
 final class StaffWorkspaceMigrationTest extends TestCase
 {
-    protected function tearDown(): void { $_SESSION = []; }
+    protected function tearDown(): void
+    {
+        $_SESSION = [];
+    }
 
     public function testMigrationBackfillsLegacyAccountsWithoutMergingActiveWorkspace(): void
     {
@@ -32,11 +36,11 @@ final class StaffWorkspaceMigrationTest extends TestCase
         self::assertSame('sports_lead', (string)$pdo->query('SELECT position_code FROM staff_user_positions WHERE trainer_id=2 AND is_default=1')->fetchColumn());
         self::assertSame('system_admin', (string)$pdo->query('SELECT position_code FROM staff_user_positions WHERE trainer_id=3 AND is_default=1')->fetchColumn());
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM staff_superadmins WHERE trainer_id=3')->fetchColumn());
-        $_SESSION = ['trener_id'=>3,'role'=>'admin'];
+        $_SESSION = ['trener_id' => 3,'role' => 'admin'];
         \staffWorkspaceRefreshSession($pdo, 3);
         self::assertTrue(\staffIsSuperadmin());
         self::assertSame('system_admin', \staffActivePosition());
-        self::assertCount(8, \staffAvailablePositions());
+        self::assertCount(9, \staffAvailablePositions());
     }
 
     public function testEverySwitchIsAuditedAndNonSuperadminCannotEscapeAssignments(): void
@@ -48,7 +52,7 @@ final class StaffWorkspaceMigrationTest extends TestCase
         $pdo->exec("INSERT INTO treneri VALUES(1,'hlavni',1)");
         $migration = require dirname(__DIR__, 2) . '/migrations/20260821150000_staff_workspaces.php';
         $migration['up']($pdo);
-        $_SESSION = ['trener_id'=>1,'role'=>'hlavni'];
+        $_SESSION = ['trener_id' => 1,'role' => 'hlavni'];
         \staffWorkspaceRefreshSession($pdo, 1);
         self::assertSame('sports_lead', \staffActivePosition());
         \staffSwitchPosition($pdo, 1, 'registrar', 'Kontrola členské agendy');
@@ -72,7 +76,7 @@ final class StaffWorkspaceMigrationTest extends TestCase
         $pdo->exec('DELETE FROM staff_user_positions WHERE trainer_id=1');
 
         self::assertFalse($migration['verify']($pdo));
-        $_SESSION = ['trener_id'=>1,'role'=>'admin'];
+        $_SESSION = ['trener_id' => 1,'role' => 'admin'];
         \staffWorkspaceRefreshSession($pdo, 1);
         self::assertSame([], \staffAvailablePositions());
         self::assertSame('', \staffActivePosition());
