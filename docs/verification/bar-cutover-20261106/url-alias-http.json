@@ -1,0 +1,103 @@
+{
+  "at_utc": "2026-11-05T23:43:14.128281+00:00",
+  "read_only": true,
+  "ok": true,
+  "checks": [
+    {
+      "path": "/",
+      "method": "GET",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/checkout.php",
+      "ok": true
+    },
+    {
+      "path": "/",
+      "method": "HEAD",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/checkout.php",
+      "ok": true
+    },
+    {
+      "path": "/terminal/",
+      "method": "GET",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/checkout.php",
+      "ok": true
+    },
+    {
+      "path": "/terminal/",
+      "method": "HEAD",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/checkout.php",
+      "ok": true
+    },
+    {
+      "path": "/admin/",
+      "method": "GET",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/catalog.php",
+      "ok": true
+    },
+    {
+      "path": "/admin/",
+      "method": "HEAD",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/catalog.php",
+      "ok": true
+    },
+    {
+      "path": "/public/",
+      "method": "GET",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/menu.php",
+      "ok": true
+    },
+    {
+      "path": "/public/",
+      "method": "HEAD",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/menu.php",
+      "ok": true
+    },
+    {
+      "path": "/menu/",
+      "method": "GET",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/menu.php",
+      "ok": true
+    },
+    {
+      "path": "/menu/",
+      "method": "HEAD",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/menu.php",
+      "ok": true
+    },
+    {
+      "path": "/terminal/login.php",
+      "method": "GET",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/checkout.php",
+      "ok": true
+    },
+    {
+      "path": "/terminal/login.php",
+      "method": "HEAD",
+      "status": 302,
+      "location": "https://kis.kovopraha.cz/bar/checkout.php",
+      "ok": true
+    },
+    {
+      "path": "/terminal/api.php",
+      "method": "GET",
+      "status": 410,
+      "ok": true
+    },
+    {
+      "path": "/admin/faktury_api.php",
+      "method": "GET",
+      "status": 410,
+      "ok": true
+    }
+  ]
+}

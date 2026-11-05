@@ -1,0 +1,79 @@
+{
+  "at_utc": "2026-11-05T23:27:52.667144+00:00",
+  "read_only": true,
+  "ok": true,
+  "checks": [
+    {
+      "path": "bar/catalog.php",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/stock.php",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/checkout.php",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/cashbox.php",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/consumption.php",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/invoices.php",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/offers.php",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/operations.php",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/accounting.php",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/image.php?id=1",
+      "status": 302,
+      "location": "../login.php",
+      "ok": true
+    },
+    {
+      "path": "bar/menu-image.php?id=1",
+      "status": 404,
+      "location": "",
+      "ok": true
+    },
+    {
+      "path": "bar/menu.php",
+      "status": 200,
+      "location": "",
+      "ok": true
+    }
+  ]
+}

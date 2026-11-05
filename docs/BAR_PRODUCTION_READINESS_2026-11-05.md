@@ -1,6 +1,6 @@
-# BAR → KIS: připravenost a budoucí postup B7
+# BAR → KIS: postup a stav B7
 
-Plán vznikl po technické přejímce B6, 5. 11. 2026. Vlastník následně výslovně povolil nasazení a pokračování převodu; modul je [nasazený a technicky ověřený](verification/bar-release-20261105/RESULTS.md). **6. 11. je dokončený také [skutečný převod katalogu, fotografií, Lucky a schválených práv](verification/bar-cutover-20261106/RESULTS.md).** Starý BAR zatím není přesměrovaný. Tento plán sám neuděluje souhlas k finanční automatizaci; níže zachovává původní pořadí kontrol.
+Plán vznikl po technické přejímce B6, 5. 11. 2026. Vlastník následně výslovně povolil nasazení a pokračování převodu; modul je [nasazený a technicky ověřený](verification/bar-release-20261105/RESULTS.md). **6. 11. je dokončený také [skutečný převod katalogu, fotografií, Lucky, schválených práv a přesměrování starého BAR](verification/bar-cutover-20261106/RESULTS.md).** Tento plán sám neuděluje souhlas k finanční automatizaci; níže zachovává původní pořadí kontrol.
 
 ## Podklady před rozhodnutím o přechodu
 
@@ -36,3 +36,5 @@ Vydání kódu je dokončené: [protokol](verification/bar-release-20261105/RESU
 Následuje samostatné přepnutí URL podle `bar-legacy-url.yml`. `inspect` vyžaduje čerstvý úspěšný status převodu, prokáže webroot podle přesných bajtů podávaného service workeru, vytvoří úplný soukromý ZIP zdroje a skutečně obnoví každý soubor na runneru. `apply` musí odkazovat na tento úspěšný běh, ověří jeho otisk, čerstvost i nezměněné zdrojové PHP a teprve potom nahradí vstupní stránky pevnými obaly. Před zápisem pozastavit původní produkční deploy, správu testovacích/spotřebních účtů a redundantní staré zálohovací/monitorovací plány; zaznamenat původní stav pro případný řízený návrat. Samotný source ZIP neobsahuje databázi a žádná operace zde zdrojovou DB nemění ani nemaže.
 
 Přesměrování je dočasné a bez starých parametrů; staré API a každá zapisující metoda vrací 410. Tím se nezpracují fronty na starém původu jako nové prodeje. Následný `status` kontroluje všechny obaly a skutečné HTTP odpovědi pouze GET. Pokud cílový bar mezitím zahájí skutečný provoz, počáteční striktní status se nesmí vynucovat přepisem cen, skladu nebo historie; posoudit aktuální připravenost zvlášť.
+
+Přepnutí je dokončené: `inspect` 42130849719 skutečně obnovil všech 500 souborů původní aplikace, `apply` 42131182982 a samostatný `status` 42131378682 PASS (44/44 HTTP vstupů). Dalších 14 GET/HEAD kontrol aliasů a obou starých API PASS. Chrome ověřil přechod kořenové adresy na pokladnu KIS a `/menu/` na nové veřejné menu; to čeká na první zveřejnění nabídky. Původní deploy, oba účtové nástroje, záloha a monitor jsou pozastavené; testy a izolovaný restore drill zůstávají dostupné. Původní databáze i soukromý bod návratu jsou zachované. Další jsou lidské provozní kroky a samostatně schvalovaný účetní adaptér.

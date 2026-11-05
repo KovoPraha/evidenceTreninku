@@ -11,6 +11,7 @@
 | Čtecí kontrola produkčního cíle a konkrétního správce | [42127994924](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42127994924), [výsledek](inspect.json) |
 | Skutečný jednorázový import a auditovaná přístupová práva | [42128255522](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42128255522), [výsledek](apply.json) |
 | Samostatný následný čtecí status | [42128603361](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42128603361), [přesná parita](status.json) |
+| Závěrečná kontrola katalogu a práv po přepnutí URL | [42131627287](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42131627287), [výsledek](final-status.json) |
 
 Veškeré běhy SUCCESS z main v chráněném prostředí. Pomocníky #322, #324–#327 ověřilo vždy všech 11 kontrol před sloučením. Nemění nasazenou webovou aplikaci: živá verze zůstává stejná jako při [vydání modulu](../bar-release-20261105/RESULTS.md). Soukromý skutečný balíček ani zdrojové obrázky, konfigurace, SQL nebo přihlašovací hash nejsou součástí Gitu či veřejných artefaktů.
 
@@ -30,8 +31,26 @@ Skutečný Chrome pod existujícím vlastníkem ověřil naplněný katalog vče
 
 Přihlášení Lucky jejím heslem a lidská finanční přejímka dosud neproběhly. Testy hashe a oprávnění je nenahrazují. Neaktivovalo se nové účtování baru, bankovní párování ani poskytovatel; stávající Fio, SumUp a pošta členství se neměnily.
 
-## Následné přepnutí starých URL
+## Dokončené přepnutí starých URL
 
-Připravena samostatná chráněná operace `bar-legacy-url.yml`: vyžaduje úspěšný čerstvý status konkrétního převodu a úspěšný přípravný běh se stejným katalogovým otiskem. Před archivací i těsně před zápisem znovu pouze čtením porovná aktuální zdrojový katalog, účet a fotografie s přesným převedeným balíčkem; pozdější změna zdroje přepnutí zastaví. Prokáže skutečný webroot podle podávaného service workeru a vytvoří úplný soukromý archiv staré aplikace. Před přepnutím skutečně obnoví každý soubor do izolace. Staré nasazovací a účtové produkční workflow musí být před přepnutím pozastavené, aby nemohlo obnovit staré zapisující stránky.
+Samostatná chráněná operace `bar-legacy-url.yml` v [PR #328](https://github.com/KovoPraha/evidenceTreninku/pull/328) vyžaduje úspěšný čerstvý status konkrétního převodu a úspěšný přípravný běh se stejným katalogovým otiskem. Před archivací i těsně před zápisem znovu pouze čtením porovnala aktuální zdrojový katalog, účet a fotografie s přesným převedeným balíčkem. Prokázala skutečný webroot podle podávaného service workeru a vytvořila úplný soukromý archiv staré aplikace. Před přepnutím se skutečně obnovil každý soubor do izolace. Staré nasazovací a účtové produkční workflow byly před přepnutím pozastavené.
 
-GET/HEAD používají dočasné 302 na pevné adresy KIS bez starých parametrů a s `no-store`; API i ostatní metody končí 410 bez přeposlání požadavku. Obaly vůbec nenačítají původní konfiguraci/session/databázi. Původní databáze, includes i obrázky zůstávají zachované; každý měněný vstupní soubor má soukromý původní otisk a zálohu, kořenový index se přepíná poslední. Změna souboru od zálohy zastaví zápis. Neurčitý či částečný výsledek se čte přes status, nikdy se automaticky neopakuje writer. Přesměrování zatím nebylo provedeno.
+GET/HEAD používají dočasné 302 na pevné adresy KIS bez starých parametrů a s `no-store`; API i ostatní metody končí 410 bez přeposlání požadavku. Zachovaná HSTS a přidaná restriktivní CSP. Obaly vůbec nenačítají původní konfiguraci/session/databázi. Původní databáze, includes i obrázky zůstávají zachované; každý měněný vstupní soubor má soukromý původní otisk a zálohu, kořenový index se přepínal poslední. Změna souboru od zálohy zastaví zápis. Neurčitý či částečný výsledek se čte přes status, nikdy se automaticky neopakuje writer.
+
+| Operace | Skutečný výsledek |
+| --- | --- |
+| [Příprava a úplná obnova 42130849719](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42130849719) | [Souhrn](url-inspect.json), [obnova](url-source-restore.json): **500 souborů**, 145188973 zdrojových B / 143493474 B ZIP, SHA-256 `c8bfe07140937f12022065daf68ad2cecd2ebb7134fc894cbe70acf884f07415` |
+| [Přepnutí 42131182982](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42131182982) | [44 obalů a skutečné GET odpovědi 44/44 PASS](url-apply.json), aktuální zdrojový katalog stále shodný; bez DB zápisů |
+| [Samostatný čtecí status 42131378682](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42131378682) | [Přesné obsahy obalů a HTTP 44/44 PASS](url-status.json) |
+| [Další HTTP aliasy](url-alias-http.json) | **14/14 PASS**, GET i HEAD pro kořen, adresářové indexy a přihlášení; obě původní API GET 410 |
+| [Anonymní cílový KIS po importu](post-import-http.json) | **12/12 PASS**, pracovní cesty i fotografie vyžadují přihlášení, nenabízená veřejná fotografie 404, veřejné menu dostupné |
+
+Soukromý bod návratu staré aplikace je `data/.kis-backups/bar-url-42130849719/source.zip` s plánem původních otisků a dokladem obnovy vedle něj. Archiv obsahuje konfiguraci a případné staré souborové zálohy, nikoli novou SQL zálohu zdrojové DB; žádná operace zde zdrojovou DB nemění. Úklid zdroje ani smazání databáze se neprováděly. Při řízeném návratu obnovovat pouze konkrétní původní vstupy ze zálohy a jen po porovnání současných otisků; neobnovovat cílovou KIS databázi nebo už vzniklé nové finanční záznamy.
+
+Chrome skutečně otevřel `https://bar.kovopraha.cz/` v pozici Obsluha a skončil na pokladně KIS, která vyžaduje vlastní kasu; snímek `output/playwright/bar-root-redirect-20261106.png`. `/menu/` skončilo na veřejném menu KIS s textem „Nabídka se připravuje.“ Nová nabídka se musí poprvé zveřejnit; staré testovací lístky se nepřebíraly. Finance byly znovu obnovené jako původní pracovní kontext. Žádná kasa, prodej nebo odběr nevznikly.
+
+[Původní stav workflow](legacy-workflows-before.json) a [ověřený konečný stav](legacy-workflows-after.json): ručně pozastavené staré nasazování, oba nástroje účtů, stará denní záloha a monitor. Testy a pouze izolovaný restore drill zůstávají dostupné; při kontrole neběžel žádný původní produkční job. KIS zálohy a jeho dosavadní automatizace se nepřepínaly.
+
+Přesný head #328 `76abd888ed49618ff96d5a7d25494190d76d3262` prošel [všemi 11 kontrolami](url-ci.json). [Linux CI 42129857283](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42129857283): **2265 testů / 41954 assertions bez skipů**, samostatné unixové hranice 3/45, obě MariaDB matice PASS. Skutečné místní HTTP testy obalů ověřily GET/HEAD/POST/PUT/PATCH/DELETE/OPTIONS, zákaz přenosu starých parametrů, zachování konfigurace/obrázků a odmítnutí změněného zdroje; finální cílené 4/387 PASS. Nejde o test skutečného prodeje.
+
+Závěrečný bod obnovy nového KIS včetně již převedených fotografií a výsledek jeho úplné izolované obnovy vede [samostatný běh 42131631615](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42131631615). Je oddělený od předimportního bodu výše. Nové BAR tabulky i soukromé fotografie jsou součástí běžného zálohovacího kontraktu KIS.
