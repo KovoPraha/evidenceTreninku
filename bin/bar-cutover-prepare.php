@@ -52,6 +52,58 @@ function barCutoverReadSourceConfig(string $legacy): array
 }
 
 /** Private, read-only production export. No application bootstrap or writes to either DB. */
+function barCutoverPrepareSourceLucka(array $user, string $parent, string $run): array
+{
+    $name = $user['jmeno'] ?? null;
+    $hash = $user['heslo_hash'] ?? null;
+    $supported = is_string($hash) && strlen($hash) <= 100 && trainer_password_is_modern_hash($hash);
+    $GLOBALS['bar_source_account_meta'] = ['source_id' => (int)($user['id'] ?? 0),
+        'name_exact' => $name === 'lucka', 'name_casefold_matches' => is_string($name) && mb_strtolower(trim($name), 'UTF-8') === 'lucka',
+        'source_role' => in_array($user['role'] ?? null, ['admin', 'prodejce'], true) ? $user['role'] : 'unknown',
+        'approved' => (int)($user['schvalen'] ?? 0) === 1, 'source_password_supported' => $supported,
+        'password_replaced' => false, 'source_password_preserved' => $supported];
+    $meta = $GLOBALS['bar_source_account_meta'];
+    if (!$meta['name_casefold_matches'] || !$meta['approved'] || $meta['source_role'] === 'unknown' || $meta['source_id'] < 1) {
+        throw new InvalidArgumentException('Účet lucka není jednoznačný, schválený nebo nemá známou původní roli.');
+    }
+    // The owner retained only this identity as an operator; source administrator rights never cross.
+    $user['jmeno'] = 'lucka';
+    $user['role'] = 'prodejce';
+    if (!$supported) {
+        $state = $parent . '/bar-transfer-credential-' . $run . '.json';
+        $sourceFingerprint = hash('sha256', is_string($hash) ? $hash : json_encode($hash, JSON_THROW_ON_ERROR));
+        if (file_exists($state)) {
+            if (is_link($state) || !is_file($state) || filesize($state) > 16384) {
+                throw new RuntimeException('Invalid private credential state.');
+            }
+            $record = json_decode((string)file_get_contents($state), true, 8, JSON_THROW_ON_ERROR);
+            if (($record['source_id'] ?? null) !== $meta['source_id'] || ($record['source_fingerprint'] ?? null) !== $sourceFingerprint
+                || !is_string($record['heslo_hash'] ?? null) || !trainer_password_is_modern_hash($record['heslo_hash'])) {
+                throw new RuntimeException('Source credential changed after preparation.');
+            }
+            $user['heslo_hash'] = $record['heslo_hash'];
+        } else {
+            if (getenv('BAR_LUCKA_REPLACE_PASSWORD') !== '1') {
+                throw new InvalidArgumentException('Heslo lucky nemá podporovaný formát. Použijte výslovně povolenou přípravu nového hesla se šifrovaným předáním.');
+            }
+            $password = rtrim(strtr(base64_encode(random_bytes(24)), '+/', '-_'), '=');
+            $user['heslo_hash'] = trainer_password_hash($password);
+            barWritePrivateFile($parent . '/bar-transfer-credential-' . $run . '.delivery.json', json_encode([
+                'kind' => 'bar-lucka-transfer-v1', 'run_id' => $run, 'source_id' => $meta['source_id'], 'login' => 'lucka',
+                'email' => 'info1@kovopraha.cz', 'password' => $password], JSON_THROW_ON_ERROR));
+            barWritePrivateFile($state, json_encode(['source_id' => $meta['source_id'], 'source_fingerprint' => $sourceFingerprint,
+                'heslo_hash' => $user['heslo_hash']], JSON_THROW_ON_ERROR));
+            if (function_exists('sodium_memzero')) {
+                sodium_memzero($password);
+            }
+            unset($password);
+        }
+        $GLOBALS['bar_source_account_meta']['password_replaced'] = true;
+        $GLOBALS['bar_source_account_meta']['source_password_preserved'] = false;
+    }
+    return $user;
+}
+
 function barCutoverSnapshotImages(array $source, string $directory, string $snapshot): array
 {
     $root = realpath($directory);
@@ -186,6 +238,10 @@ function barCutoverPrepare(): array
     $GLOBALS['bar_cutover_prepare_stage'] = 'source_catalog_and_images';
     $snapshot = $parent . '/bar-transfer-images-' . $run;
     $prepared = barCutoverSnapshotImages(barReadLegacyTransferSource($source), $legacy . '/img', $snapshot);
+    $GLOBALS['bar_source_catalog_meta'] = ['categories' => count($prepared['source']['categories']),
+        'products' => count($prepared['source']['products']), 'recipes' => count($prepared['source']['recipes']),
+        'image_references' => count($prepared['map']), 'unique_images' => count(array_unique(array_column($prepared['map'], 'package_name')))];
+    $prepared['source']['lucka'] = barCutoverPrepareSourceLucka($prepared['source']['lucka'], $parent, $run);
     $bundle = barBuildTransferBundle($prepared['source'], $snapshot);
     if (array_sum(array_column($bundle['images'], 'byte_size')) > 256 * 1024 * 1024) {
         throw new RuntimeException('The package exceeds the reviewed size limit.');
@@ -203,6 +259,7 @@ function barCutoverPrepare(): array
     // Detect changes to rows or image bytes while the package was being copied.
     $GLOBALS['bar_cutover_prepare_stage'] = 'source_stability';
     $fresh = barCutoverSnapshotImages(barReadLegacyTransferSource($source), $legacy . '/img', $snapshot);
+    $fresh['source']['lucka'] = barCutoverPrepareSourceLucka($fresh['source']['lucka'], $parent, $run);
     if (barBuildTransferBundle($fresh['source'], $snapshot) !== $bundle || $fresh['map'] !== $prepared['map']) {
         throw new RuntimeException('Source changed during export; prepare a fresh snapshot.');
     }
@@ -243,7 +300,7 @@ function barCutoverPrepare(): array
         'products' => count($bundle['catalog']['products']),
         'categories' => count($bundle['catalog']['categories']), 'recipes' => count($bundle['catalog']['recipes']),
         'images' => count($bundle['images']), 'image_bytes' => array_sum(array_column($bundle['images'], 'byte_size')),
-        'lucka' => ['accounts' => 1, 'password_supported' => true, 'technical_email' => true, 'position' => 'bar_operator'],
+        'lucka' => ['accounts' => 1, 'password_supported' => true, 'technical_email' => true, 'position' => 'bar_operator'] + $GLOBALS['bar_source_account_meta'],
         'target_counts' => $counts, 'staff_collisions' => $staffCollisions, 'public_collisions' => $publicCollisions,
         'target_empty' => array_sum($counts) === 0, 'clock_contract' => $clock, 'ready_for_rehearsal' => true,
         'ready_for_import' => array_sum($counts) === 0 && $staffCollisions === 0 && $publicCollisions === 0 && $clock === 'utc-v1',
@@ -260,6 +317,7 @@ function barCutoverPrepareMain(): void
             ['ok' => false, 'stage' => $GLOBALS['bar_cutover_prepare_stage'] ?? 'unknown',
             'source_configuration' => $GLOBALS['bar_source_config_meta'] ?? [],
             'source_image' => $GLOBALS['bar_source_image_meta'] ?? [],
+            'source_account' => $GLOBALS['bar_source_account_meta'] ?? [], 'source_catalog' => $GLOBALS['bar_source_catalog_meta'] ?? [],
             'error_type' => get_debug_type($error), 'error_file' => basename($error->getFile()), 'error_line' => $error->getLine(),
             'message' => ($GLOBALS['bar_cutover_prepare_stage'] ?? '') === 'source_catalog_and_images' && $error instanceof InvalidArgumentException
                 ? $error->getMessage() : 'bar_cutover_prepare_failed_without_database_writes'],

@@ -7,6 +7,13 @@ on:
         description: 'Cte zdroj a cil; vytvori soukromy balicek a izolovany nacvik. Napiste PRIPRAVIT.'
         type: string
         required: true
+      nove_heslo:
+        description: 'Povolit nove heslo pouze pokud puvodni format nejde prevest; predani bude sifrovane'
+        type: boolean
+        default: false
+      verejny_klic:
+        description: 'Pouze k novemu heslu: base64 verejneho RSA-4096 SPKI klice. Nikdy soukromy klic.'
+        type: string
 
 permissions:
   contents: read
@@ -41,6 +48,12 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Overit verejny klic pro pripadne nove heslo
+        if: inputs.nove_heslo
+        env:
+          BAR_CREDENTIAL_PUBLIC_KEY_B64: ${{ inputs.verejny_klic }}
+        run: node tests/Support/BarCredentialEnvelope.cjs --check-key
+
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: '8.2'
@@ -71,6 +84,8 @@ jobs:
           echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
 
       - name: Pouze ctenim sestavit soukromy balicek a inventuru
+        env:
+          REPLACE_PASSWORD: ${{ inputs.nove_heslo && '1' || '0' }}
         run: |
           set -euo pipefail
           source .github/scripts/production-ssh-retry.sh
@@ -83,6 +98,7 @@ jobs:
           putenv('BAR_LEGACY_ROOT=bar.kovopraha.cz');
           putenv('BAR_PACKAGE_PARENT=' . dirname(__DIR__) . '/.kis-backups');
           putenv('BAR_PREPARE_RUN=$GITHUB_RUN_ID');
+          putenv('BAR_LUCKA_REPLACE_PASSWORD=$REPLACE_PASSWORD');
           require __DIR__ . '/bar-cutover-prepare.php';
           barCutoverPrepareMain();
           EOF
@@ -120,6 +136,25 @@ jobs:
                           while chunk := src.read(1024 * 1024): dst.write(chunk)
           PY
 
+      - name: Zasifrovat pripadne nove heslo bez vypisu nebo verejneho plaintextu
+        env:
+          BAR_CREDENTIAL_PUBLIC_KEY_B64: ${{ inputs.verejny_klic }}
+        run: |
+          set -euo pipefail
+          umask 077
+          TMP=/tmp/kis-bar-transfer-$GITHUB_RUN_ID
+          if jq -e '.lucka.password_replaced == true' "$TMP/prepare.json" >/dev/null; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BACKUP_DIR/bar-transfer-credential-$GITHUB_RUN_ID.delivery.json" "$TMP/credential-delivery.json"
+            export BAR_CREDENTIAL_RUN="$GITHUB_RUN_ID"
+            export BAR_CREDENTIAL_PLAIN_FILE="$TMP/credential-delivery.json"
+            export BAR_CREDENTIAL_ENVELOPE_FILE="$TMP/lucka-credential.enc"
+            export BAR_CREDENTIAL_REPORT_FILE="$TMP/prepare.json"
+            node tests/Support/BarCredentialEnvelope.cjs --seal
+            rm -f -- "$TMP/credential-delivery.json"
+          fi
+
       - name: Prevest skutecny balicek do izolovane prazdne MariaDB
         run: |
           set -euo pipefail
@@ -150,6 +185,7 @@ jobs:
           path: |
             /tmp/kis-bar-transfer-${{ github.run_id }}/prepare.json
             /tmp/kis-bar-transfer-${{ github.run_id }}/rehearsal.json
+            /tmp/kis-bar-transfer-${{ github.run_id }}/lucka-credential.enc
           if-no-files-found: error
           retention-days: 14
 
@@ -162,5 +198,5 @@ jobs:
           if [ -n "${SSH_HOST:-}" ]; then
             source .github/scripts/production-ssh-retry.sh
             production_ssh_init
-            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/bar-cutover-prepare.php' '$DEPLOY_BASE/run-bar-cutover-prepare.php'" || true
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/bar-cutover-prepare.php' '$DEPLOY_BASE/run-bar-cutover-prepare.php' '$BACKUP_DIR/bar-transfer-credential-$GITHUB_RUN_ID.delivery.json'" || true
           fi

@@ -115,7 +115,7 @@ final class BarTransferTest extends TestCase
         $verification = \barVerifyInitialTransfer($pdo, $bundle, $this->runtime . '/package/images');
         self::assertTrue($verification['catalog_exact']);
         self::assertTrue($verification['images_exact']);
-        self::assertTrue($verification['password_preserved']);
+        self::assertTrue($verification['credential_hash_matches_package']);
         self::assertTrue($verification['operator_only']);
         self::assertTrue($verification['zero_stock']);
         self::assertTrue($verification['zero_operational_history']);
