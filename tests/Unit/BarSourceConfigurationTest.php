@@ -50,6 +50,15 @@ final class BarSourceConfigurationTest extends TestCase
             ['throw new RuntimeException("LOCALHOST-private-error");']];
     }
 
+    public function testOmittedLocalFlagUsesTheLegacyApplicationsProductionDefault(): void
+    {
+        file_put_contents($this->root . '/includes/config.php', '<?php return ["db"=>["heslo"=>"LOCALHOST-only-secret"]];');
+        $value = \barCutoverReadSourceConfig($this->root);
+        self::assertArrayHasKey('db', $value);
+        self::assertTrue($GLOBALS['bar_source_config_meta']['production_mode']);
+        self::assertSame('null', $GLOBALS['bar_source_config_meta']['local_flag_type']);
+    }
+
     #[\PHPUnit\Framework\Attributes\DataProvider('invalidSource')]
     public function testInvalidConfigFailsWithoutLeakingOutputAndRestoresHost(string $body): void
     {

@@ -42,9 +42,10 @@ function barCutoverReadSourceConfig(string $legacy): array
     $GLOBALS['bar_source_config_meta'] += ['return_type' => get_debug_type($value),
         'has_database_array' => is_array($value) && is_array($value['db'] ?? null),
         'local_flag_type' => is_array($value) ? get_debug_type($value['lokalne'] ?? null) : 'missing',
-        'local_flag_false' => is_array($value) && ($value['lokalne'] ?? null) === false,
+        'production_mode' => is_array($value) && !(bool)($value['lokalne'] ?? false),
         'unexpected_output' => $output !== ''];
-    if ($output !== '' || !is_array($value) || ($value['lokalne'] ?? null) !== false || !is_array($value['db'] ?? null)) {
+    // Match the legacy application's je_lokalni_prostredi(): an omitted flag means production.
+    if ($output !== '' || !is_array($value) || (bool)($value['lokalne'] ?? false) || !is_array($value['db'] ?? null)) {
         throw new RuntimeException('Unexpected source configuration.');
     }
     return $value;
