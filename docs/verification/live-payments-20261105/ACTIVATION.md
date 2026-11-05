@@ -5,6 +5,9 @@ použití stávajícího KIS_SUMUP_API_KEY a kartu pro všech **223 aktivních p
 pro nové objednávky**. Změna hesla a T07 jsou nadále vynechané.
 Jde o ověřenou aktivaci a import; skutečná zaplacená úhrada se zde netvrdí.
 
+Toto je snapshot původní aktivace. Následné skutečné automatické běhy hostingu
+a posouzení všech 45 pohybů dokládá [navazující protokol](../fio-followup-20261105/RESULTS.md).
+
 ## Opravy, kontrola a vydání
 
 [PR #308](https://github.com/KovoPraha/evidenceTreninku/pull/308) ověřuje před
