@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/transfer_package.php';
+if (!function_exists('barValidateTransferBundle')) {
+    require_once __DIR__ . '/transfer_package.php';
+}
 
 /** Exact initial-state comparison; hashes and source rows never appear in the returned report. */
 function barVerifyInitialTransfer(PDO $pdo, array $bundle, string $imagesDirectory): array
@@ -87,9 +89,11 @@ function barVerifyInitialTransfer(PDO $pdo, array $bundle, string $imagesDirecto
     if ($history !== 0) {
         throw new RuntimeException('Initial operational history is not empty.');
     }
-    $query = $pdo->prepare('SELECT COUNT(*) FROM kis_bar_import_runs WHERE bundle_sha256=? AND trainer_id=?');
+    $query = $pdo->prepare('SELECT id FROM kis_bar_import_runs WHERE bundle_sha256=? AND trainer_id=?');
     $query->execute([$bundle['sha256'], $id]);
-    if ((int)$query->fetchColumn() !== 1 || (int)$pdo->query('SELECT COUNT(*) FROM kis_bar_import_runs')->fetchColumn() !== 1) {
+    $runId = (int)$query->fetchColumn();
+    if ($runId < 1 || (int)$pdo->query('SELECT COUNT(*) FROM kis_bar_import_runs')->fetchColumn() !== 1
+        || (int)$pdo->query('SELECT import_run_id FROM kis_bar_state WHERE id=1')->fetchColumn() !== $runId) {
         throw new RuntimeException('Transfer provenance differs.');
     }
     return ['ok' => true, 'catalog_exact' => true, 'images_exact' => true, 'password_preserved' => true,

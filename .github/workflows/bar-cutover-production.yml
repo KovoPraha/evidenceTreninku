@@ -1,0 +1,163 @@
+name: Provest overeny prevod BAR
+
+on:
+  workflow_dispatch:
+    inputs:
+      operace:
+        description: 'inspect pouze cte; apply prevadi katalog a schvalena prava; status overuje vysledek'
+        required: true
+        type: choice
+        options: [inspect, apply, status]
+      plan:
+        description: 'Konkretni JSON: prepare_run, bundle_sha256, release_sha, administrator_name, pripadne backup. Zadna hesla.'
+        required: true
+        type: string
+      potvrzeni:
+        description: 'OVERIT pro cteni; PREVEST_BAR pro zapis'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  BACKUP_DIR: data/.kis-backups
+
+jobs:
+  cutover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Overit konkretni nacvik a pri zapisu uplnou obnovu
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PLAN: ${{ inputs.plan }}
+          MODE: ${{ inputs.operace }}
+          CONFIRM: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]] && [[ "$REMOTE_DIR" != /* ]]
+          if [ "$MODE" = apply ]; then test "$CONFIRM" = PREVEST_BAR; else test "$CONFIRM" = OVERIT; fi
+          TMP=/tmp/kis-bar-cutover-$GITHUB_RUN_ID
+          install -d -m 700 "$TMP"
+          printf '%s\n' "$PLAN" > "$TMP/plan.json"
+          PREPARE=$(jq -er '.prepare_run | tostring | select(test("^[1-9][0-9]{0,19}$"))' "$TMP/plan.json")
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$PREPARE" > "$TMP/prepare-run.json"
+          jq -e '.conclusion == "success" and .head_branch == "main" and .event == "workflow_dispatch" and .path == ".github/workflows/bar-transfer-prepare.yml"' "$TMP/prepare-run.json" >/dev/null
+          gh run download "$PREPARE" --repo "$GITHUB_REPOSITORY" --name "bar-transfer-prepare-$PREPARE" --dir "$TMP/preparation"
+          HASH=$(jq -er '.bundle_sha256 | select(test("^[a-f0-9]{64}$"))' "$TMP/plan.json")
+          jq -e --arg hash "$HASH" '.ok and .source_stable and .bundle_sha256 == $hash' "$TMP/preparation/prepare.json" >/dev/null
+          jq -e '.ok and .isolated and .verification.ok and .verification.password_preserved and .verification.operator_only and .verification.zero_stock and .replay_preserves_changes' "$TMP/preparation/rehearsal.json" >/dev/null
+          if [ "$MODE" = apply ]; then
+            RESTORE=$(jq -er '.backup.restore_run | tostring | select(test("^[1-9][0-9]{0,19}$"))' "$TMP/plan.json")
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RESTORE" > "$TMP/restore-run.json"
+            jq -e '.conclusion == "success" and .head_branch == "main" and .event == "workflow_dispatch" and .path == ".github/workflows/production-drills.yml"' "$TMP/restore-run.json" >/dev/null
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RESTORE/jobs" > "$TMP/restore-jobs.json"
+            jq -e 'any(.jobs[].steps[]; .name == "Vytvorit novou DB a souborovou zalohu pred vydanim" and .conclusion == "success") and any(.jobs[].steps[]; .name == "Obnovit vybrane generace zaloh do izolovane MariaDB" and .conclusion == "success")' "$TMP/restore-jobs.json" >/dev/null
+            jq -e --arg filename "kis-files-$RESTORE.zip" '.backup.files_archive == $filename' "$TMP/plan.json" >/dev/null
+          fi
+
+      - name: Pripravit overene SSH spojeni
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for promenna in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!promenna}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Nahrat proverene pomocniky mimo webroot
+        env:
+          MODE: ${{ inputs.operace }}
+          CONFIRM: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          OP="$DEPLOY_BASE/bar-cutover-$GITHUB_RUN_ID"
+          production_retry "${SSH[@]}" "umask 077; mkdir -p '$OP'; chmod 700 '$OP'"
+          production_retry "${SCP[@]}" bin/bar-cutover-operation.php bin/bar-cutover-prepare.php "$SSH_USER@$SSH_HOST:$OP/"
+          production_retry "${SCP[@]}" includes/bar/transfer_verification.php "$SSH_USER@$SSH_HOST:$OP/bar-transfer-verification.php"
+          production_retry "${SCP[@]}" includes/bar/cutover_permissions.php "$SSH_USER@$SSH_HOST:$OP/bar-cutover-permissions.php"
+          production_retry "${SCP[@]}" /tmp/kis-bar-cutover-$GITHUB_RUN_ID/plan.json "$SSH_USER@$SSH_HOST:$OP/plan.json"
+          cat > /tmp/kis-bar-cutover-$GITHUB_RUN_ID/run.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('BAR_LEGACY_ROOT=bar.kovopraha.cz');
+          putenv('BAR_PACKAGE_PARENT=' . dirname(__DIR__, 2) . '/.kis-backups');
+          putenv('BAR_CUTOVER_PLAN=' . __DIR__ . '/plan.json');
+          putenv('BAR_CUTOVER_MODE=$MODE');
+          putenv('BAR_CUTOVER_CONFIRM=$CONFIRM');
+          require __DIR__ . '/bar-cutover-operation.php';
+          barCutoverOperationMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/kis-bar-cutover-$GITHUB_RUN_ID/run.php "$SSH_USER@$SSH_HOST:$OP/run.php"
+
+      - name: Provest jednou a nezopakovat neurcity zapis automaticky
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          # No retry around PHP: a lost SSH response requires the separate read-only status operation.
+          "${SSH[@]}" "php '$DEPLOY_BASE/bar-cutover-$GITHUB_RUN_ID/run.php'"
+
+      - name: Precist ulozeny vysledek
+        if: always()
+        run: |
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/bar-cutover-$GITHUB_RUN_ID/result.json" /tmp/kis-bar-cutover-$GITHUB_RUN_ID/result.json
+            cat /tmp/kis-bar-cutover-$GITHUB_RUN_ID/result.json
+          fi
+
+      - name: Uchovat pouze vysledek bez prihlasovacich udaju
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: bar-cutover-result-${{ github.run_id }}
+          path: /tmp/kis-bar-cutover-${{ github.run_id }}/result.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Uklid pomocniku, zachovat soukromy doklad vysledku
+        if: always()
+        run: |
+          rm -rf -- /tmp/kis-bar-cutover-$GITHUB_RUN_ID
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            OP="$DEPLOY_BASE/bar-cutover-$GITHUB_RUN_ID"
+            production_retry "${SSH[@]}" "rm -f -- '$OP/run.php' '$OP/plan.json' '$OP/bar-cutover-operation.php' '$OP/bar-cutover-prepare.php' '$OP/bar-transfer-verification.php' '$OP/bar-cutover-permissions.php'" || true
+          fi

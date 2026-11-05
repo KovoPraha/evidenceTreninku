@@ -84,6 +84,7 @@ final class BarTransferTest extends TestCase
             'image metadata' => ['UPDATE kis_bar_assets SET width_px=width_px+1'],
             'image content' => [null],
             'time contract' => ["UPDATE kis_bar_state SET clock_contract='legacy-local'"],
+            'provenance link' => ['UPDATE kis_bar_state SET import_run_id=NULL'],
         ];
     }
 
