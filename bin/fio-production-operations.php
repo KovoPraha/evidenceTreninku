@@ -88,7 +88,8 @@ function kisFioHostingStatus(array $paths, ?int $now = null): array
         'interval_seconds' => 600, 'state' => $state,
         'recent_hosting_tick' => $installed && $tick > 0 && $tick <= $now && $now - $tick <= 180,
         'recent_successful_import' => $installed && ($state['last_run']['ok'] ?? false) === true
-            && $completed > 0 && $completed <= $now && $now - $completed <= 900];
+            && $completed > 0 && $completed >= (int)($state['last_attempt_at'] ?? 0)
+            && $completed <= $now && $now - $completed <= 900];
 }
 
 /** Refuse existing foreign files, including same-named jobs. No directory is provisioned here. */

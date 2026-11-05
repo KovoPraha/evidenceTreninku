@@ -113,6 +113,24 @@ final class FioProductionOperationsTest extends TestCase
         }
     }
 
+    public function testInterruptedNewAttemptCannotReusePreviousSuccessAsCurrentHealth(): void
+    {
+        \kisFioHostingInstall($this->paths);
+        $now = time();
+        \kisFioHostingTick($this->paths, static fn (): array => ['duplicates' => 1], $now);
+        $state = \kisFioHostingRead($this->paths);
+        $state['last_attempt_at'] = $now + 600;
+        $state['last_tick_at'] = $now + 600;
+        $state['last_tick_outcome'] = 'running';
+        \kisFioHostingWrite($this->paths, $state);
+        self::assertTrue(\kisFioHostingStatus($this->paths, $now + 600)['recent_hosting_tick']);
+        self::assertFalse(\kisFioHostingStatus($this->paths, $now + 600)['recent_successful_import']);
+        \kisFioHostingTick($this->paths, static function (): array {
+            self::fail('Interrupted attempt retains the rate gate');
+        }, $now + 660);
+        self::assertFalse(\kisFioHostingStatus($this->paths, $now + 660)['recent_successful_import']);
+    }
+
     public function testForeignFilePreventsAnyPartialInstallation(): void
     {
         file_put_contents($this->paths['cron'], 'LOCAL foreign file');
