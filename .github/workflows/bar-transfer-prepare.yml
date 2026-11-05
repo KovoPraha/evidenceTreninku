@@ -14,6 +14,12 @@ on:
       verejny_klic:
         description: 'Pouze k novemu heslu: base64 verejneho RSA-4096 SPKI klice. Nikdy soukromy klic.'
         type: string
+      image_cache_run:
+        description: 'Volitelne cislo jiz vytvoreneho soukromeho balicku pro overena metadata fotografii'
+        type: string
+      image_cache_sha256:
+        description: 'Povinne s cache: presny bundle_sha256 predchoziho soukromeho balicku'
+        type: string
 
 permissions:
   contents: read
@@ -86,8 +92,16 @@ jobs:
       - name: Pouze ctenim sestavit soukromy balicek a inventuru
         env:
           REPLACE_PASSWORD: ${{ inputs.nove_heslo && '1' || '0' }}
+          CACHE_RUN: ${{ inputs.image_cache_run }}
+          CACHE_SHA: ${{ inputs.image_cache_sha256 }}
         run: |
           set -euo pipefail
+          if [ -n "$CACHE_RUN" ]; then
+            [[ "$CACHE_RUN" =~ ^[1-9][0-9]{0,19}$ ]]
+            [[ "$CACHE_SHA" =~ ^[a-f0-9]{64}$ ]]
+          else
+            test -z "$CACHE_SHA"
+          fi
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
           production_retry "${SCP[@]}" bin/bar-cutover-prepare.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/bar-cutover-prepare.php"
@@ -99,6 +113,9 @@ jobs:
           putenv('BAR_PACKAGE_PARENT=' . dirname(__DIR__) . '/.kis-backups');
           putenv('BAR_PREPARE_RUN=$GITHUB_RUN_ID');
           putenv('BAR_LUCKA_REPLACE_PASSWORD=$REPLACE_PASSWORD');
+          putenv('BAR_PROGRESS=1');
+          putenv('BAR_IMAGE_CACHE_RUN=$CACHE_RUN');
+          putenv('BAR_IMAGE_CACHE_SHA256=$CACHE_SHA');
           require __DIR__ . '/bar-cutover-prepare.php';
           barCutoverPrepareMain();
           EOF
@@ -108,7 +125,17 @@ jobs:
           jq -e '.ok and .read_only_databases and .source_stable and .ready_for_rehearsal' /tmp/kis-bar-transfer-$GITHUB_RUN_ID/prepare.json >/dev/null
           cat /tmp/kis-bar-transfer-$GITHUB_RUN_ID/prepare.json
           production_retry "${SSH[@]}" "umask 077; tar -czf '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz' -C '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID' bundle.json source-image-map.json images"
-          production_retry_capture "${SSH[@]}" "sha256sum '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz'" > /tmp/kis-bar-transfer-$GITHUB_RUN_ID/archive.sha256
+          cat > /tmp/run-bar-archive-digest.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('BAR_PACKAGE_PARENT=' . dirname(__DIR__) . '/.kis-backups');
+          putenv('BAR_PREPARE_RUN=$GITHUB_RUN_ID');
+          require __DIR__ . '/bar-cutover-prepare.php';
+          barCutoverArchiveDigestMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-bar-archive-digest.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-bar-archive-digest.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-bar-archive-digest.php'" > /tmp/kis-bar-transfer-$GITHUB_RUN_ID/archive.json
+          jq -er '.sha256 | select(test("^[a-f0-9]{64}$"))' /tmp/kis-bar-transfer-$GITHUB_RUN_ID/archive.json > /tmp/kis-bar-transfer-$GITHUB_RUN_ID/archive.sha256
           production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz" /tmp/kis-bar-transfer-$GITHUB_RUN_ID/package.tar.gz
           python3 - <<'PY'
           import hashlib, os, pathlib, tarfile
@@ -194,9 +221,9 @@ jobs:
         run: |
           docker rm -f kis-bar-rehearsal-$GITHUB_RUN_ID >/dev/null 2>&1 || true
           rm -rf -- /tmp/kis-bar-transfer-$GITHUB_RUN_ID
-          rm -f -- /tmp/run-bar-cutover-prepare.php
+          rm -f -- /tmp/run-bar-cutover-prepare.php /tmp/run-bar-archive-digest.php
           if [ -n "${SSH_HOST:-}" ]; then
             source .github/scripts/production-ssh-retry.sh
             production_ssh_init
-            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/bar-cutover-prepare.php' '$DEPLOY_BASE/run-bar-cutover-prepare.php' '$BACKUP_DIR/bar-transfer-credential-$GITHUB_RUN_ID.delivery.json'" || true
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/bar-cutover-prepare.php' '$DEPLOY_BASE/run-bar-cutover-prepare.php' '$DEPLOY_BASE/run-bar-archive-digest.php' '$BACKUP_DIR/bar-transfer-credential-$GITHUB_RUN_ID.delivery.json'" || true
           fi

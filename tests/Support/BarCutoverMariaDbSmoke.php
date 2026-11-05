@@ -13,7 +13,7 @@ $runtime = sys_get_temp_dir() . '/bar-cutover-native-' . bin2hex(random_bytes(6)
 $repository = dirname(__DIR__, 2);
 $port = (int)(getenv('BAR_SMOKE_DB_PORT') ?: 3306);
 $replacePassword = getenv('BAR_NATIVE_REPLACE_PASSWORD') === '1';
-foreach (['app/includes/bar', 'app/var', 'bar.kovopraha.cz/includes', 'bar.kovopraha.cz/img', 'backups/files', 'operation'] as $part) {
+foreach (['app/includes/bar', 'app/var', 'bar.kovopraha.cz/includes', 'bar.kovopraha.cz/img', 'data/.kis-backups/files', 'operation'] as $part) {
     mkdir($runtime . '/' . $part, 0700, true);
 }
 try {
@@ -54,7 +54,7 @@ try {
         copy($repository . '/' . $source, $runtime . '/operation/' . $target);
     }
     $environment = array_merge(getenv(), ['APP_HOST' => 'kis.kovopraha.cz', 'APP_ROOT' => $runtime . '/app',
-        'BAR_LEGACY_ROOT' => $runtime . '/bar.kovopraha.cz', 'BAR_PACKAGE_PARENT' => $runtime . '/backups', 'BAR_PREPARE_RUN' => '123',
+        'BAR_LEGACY_ROOT' => $runtime . '/bar.kovopraha.cz', 'BAR_PACKAGE_PARENT' => $runtime . '/data/.kis-backups', 'BAR_PREPARE_RUN' => '123',
         'BAR_LUCKA_REPLACE_PASSWORD' => $replacePassword ? '1' : '0',
         'APP_PRIVATE_STORAGE_ROOT' => $runtime . '/private', 'BAR_CUTOVER_PLAN' => $runtime . '/operation/plan.json']);
     $run = static function (string $code, array $env) use ($runtime): array {
@@ -81,9 +81,16 @@ try {
     if ($prepare['lucka']['password_replaced'] !== $replacePassword || $prepare['lucka']['source_password_preserved'] === $replacePassword) {
         throw new RuntimeException('Native credential-origin report differs.');
     }
+    if (!$replacePassword) {
+        $cached = $run('require __DIR__ . "/bar-cutover-prepare.php"; barCutoverPrepareMain();', array_merge($environment, [
+            'BAR_PREPARE_RUN' => '124', 'BAR_IMAGE_CACHE_RUN' => '123', 'BAR_IMAGE_CACHE_SHA256' => $prepare['bundle_sha256']]));
+        if ($cached['bundle_sha256'] !== $prepare['bundle_sha256'] || $cached['source_image_map_sha256'] !== $prepare['source_image_map_sha256']) {
+            throw new RuntimeException('Fresh export using pinned image metadata differs.');
+        }
+    }
     $replacement = null;
     if ($replacePassword) {
-        $delivery = $runtime . '/backups/bar-transfer-credential-123.delivery.json';
+        $delivery = $runtime . '/data/.kis-backups/bar-transfer-credential-123.delivery.json';
         $replacement = json_decode((string)file_get_contents($delivery), true, 8, JSON_THROW_ON_ERROR)['password'];
         // The real preparation deletes plaintext after encrypted delivery; future source checks need only the private hash state.
         unlink($delivery);
@@ -98,14 +105,14 @@ try {
     }
     // Only this synthetic backend test substitutes proof; the protected workflow verifies the real full restore run.
     $sql = 'evidence_2026-11-05_localhost.sql.gz';
-    file_put_contents($runtime . '/backups/' . $sql, gzencode('CREATE TABLE LOCALHOST_only(id INT);'));
+    file_put_contents($runtime . '/data/.kis-backups/' . $sql, gzencode('CREATE TABLE LOCALHOST_only(id INT);'));
     $zip = new ZipArchive();
-    $zip->open($runtime . '/backups/files/kis-files-123.zip', ZipArchive::CREATE | ZipArchive::EXCL);
+    $zip->open($runtime . '/data/.kis-backups/files/kis-files-123.zip', ZipArchive::CREATE | ZipArchive::EXCL);
     $zip->addFromString('manifest.json', '{}');
     $zip->close();
-    $backup = ['restore_run' => '123', 'sql_file' => $sql, 'sql_sha256' => hash_file('sha256', $runtime . '/backups/' . $sql),
-        'files_archive' => 'kis-files-123.zip', 'files_sha256' => hash_file('sha256', $runtime . '/backups/files/kis-files-123.zip')];
-    file_put_contents($runtime . '/backups/evidence_2026-11-05_localhost.manifest.json', json_encode(['application' => 'evidence',
+    $backup = ['restore_run' => '123', 'sql_file' => $sql, 'sql_sha256' => hash_file('sha256', $runtime . '/data/.kis-backups/' . $sql),
+        'files_archive' => 'kis-files-123.zip', 'files_sha256' => hash_file('sha256', $runtime . '/data/.kis-backups/files/kis-files-123.zip')];
+    file_put_contents($runtime . '/data/.kis-backups/evidence_2026-11-05_localhost.manifest.json', json_encode(['application' => 'evidence',
         'sql_file' => $sql, 'sha256' => $backup['sql_sha256'], 'tables' => ['kis_bar_products' => 0, 'kis_bar_import_runs' => 0]], JSON_THROW_ON_ERROR));
     $plan['backup'] = $backup;
     file_put_contents($runtime . '/operation/plan.json', json_encode($plan, JSON_THROW_ON_ERROR));
