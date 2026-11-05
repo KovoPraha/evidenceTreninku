@@ -5,11 +5,14 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/includes/init.php';
 require_once dirname(__DIR__) . '/includes/bar/web.php';
 require_once dirname(__DIR__) . '/includes/bar/management.php';
+require_once dirname(__DIR__) . '/includes/bar/photo_management.php';
 if (!isset($pdo) || !$pdo instanceof PDO) {
     throw new RuntimeException('Databázové připojení není dostupné.');
 }
 barRequireWebActor($pdo, 'catalog_manage');
 $error = '';
+$rejectedVersion = null;
+$version = null;
 $id = (int)filter_var($_POST['id'] ?? $_GET['id'] ?? 0, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     try {
@@ -25,9 +28,20 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $input[$key] = isset($_POST[$key]) ? 1 : 0;
             }
             $id = barSaveProduct($pdo, $id, $version, $input, $reason);
-        } elseif (($_POST['action'] ?? null) === 'recipe' && is_array($_POST['ingredients'] ?? null)) {
+        } elseif (in_array($_POST['action'] ?? null, ['photo', 'photo_remove'], true)) {
+            $path = null;
+            if ($_POST['action'] === 'photo') {
+                $file = $_FILES['photo'] ?? null;
+                if (!is_array($file) || ($file['error'] ?? null) !== UPLOAD_ERR_OK
+                    || !is_string($file['tmp_name'] ?? null) || !is_uploaded_file($file['tmp_name'])) {
+                    throw new InvalidArgumentException('Vyberte fotografii do 8 MB; ověřte také limit nahrávání na serveru.');
+                }
+                $path = $file['tmp_name'];
+            }
+            barSetProductImage($pdo, $id, $version, $path, $reason);
+        } elseif (($_POST['action'] ?? null) === 'recipe' && is_array($_POST['ingredients'] ?? [])) {
             $ingredients = [];
-            foreach ($_POST['ingredients'] as $ingredient => $quantity) {
+            foreach ($_POST['ingredients'] ?? [] as $ingredient => $quantity) {
                 $quantity = barSourceInteger($quantity);
                 if ($quantity > 0) {
                     $ingredients[] = ['id' => barSourceInteger($ingredient, 1, 2147483647), 'quantity' => $quantity];
@@ -42,6 +56,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     } catch (DomainException | InvalidArgumentException $exception) {
         http_response_code($exception instanceof BarConflictException ? 409 : 422);
         $error = $exception->getMessage();
+        if ($exception instanceof BarConflictException) {
+            $rejectedVersion = $version;
+        }
     }
 }
 $editor = null;
@@ -49,6 +66,9 @@ if ($id > 0 || isset($_GET['new']) || $error !== '') {
     $query = $pdo->prepare('SELECT * FROM kis_bar_products WHERE id=?');
     $query->execute([$id]);
     $product = $query->fetch(PDO::FETCH_ASSOC) ?: null;
+    if ($product !== null && $rejectedVersion !== null) {
+        $product['lock_version'] = $rejectedVersion;
+    }
     if ($id > 0 && $product === null) {
         http_response_code(404);
         exit('Produkt nebyl nalezen.');

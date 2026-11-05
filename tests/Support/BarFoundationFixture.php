@@ -19,6 +19,8 @@ function barTestDatabase(): PDO
     $transfer['up']($pdo);
     $stock = require dirname(__DIR__, 2) . '/migrations/20261105170000_bar_stock.php';
     $stock['up']($pdo);
+    $catalogManagement = require dirname(__DIR__, 2) . '/migrations/20261105180000_bar_catalog_management.php';
+    $catalogManagement['up']($pdo);
     $pdo->exec('DELETE FROM staff_user_positions');
     $pdo->exec("INSERT INTO staff_user_positions(trainer_id,position_code,is_default) VALUES"
         . "(1,'system_admin',1),(2,'bar_operator',1),(3,'bar_admin',1),(4,'coach',1)");

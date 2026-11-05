@@ -51,6 +51,23 @@ function barRenderProductEditor(array $editor): void
     </section>
     <?php if ($product !== null): ?>
     <section class="card card-body mb-4">
+        <h2 class="h4">Fotografie produktu</h2>
+        <p>JPEG, PNG nebo WebP do 8 MB. Nová fotografie nahradí pouze fotografii tohoto produktu.</p>
+        <form method="post" enctype="multipart/form-data">
+            <?= csrf_field() ?>
+            <input type="hidden" name="id" value="<?= (int)$product['id'] ?>">
+            <input type="hidden" name="version" value="<?= (int)$product['lock_version'] ?>">
+            <label class="form-label" for="bar-photo">Vybrat fotografii</label>
+            <input class="form-control mb-2" type="file" id="bar-photo" name="photo" accept="image/jpeg,image/png,image/webp">
+            <label class="form-label" for="bar-photo-reason">Důvod změny fotografie</label>
+            <input class="form-control mb-2" id="bar-photo-reason" name="reason" minlength="5" maxlength="1000" required>
+            <button class="btn btn-primary" name="action" value="photo">Uložit fotografii</button>
+            <?php if ($product['image_name'] !== null): ?>
+                <button class="btn btn-outline-danger" name="action" value="photo_remove">Odebrat fotografii</button>
+            <?php endif; ?>
+        </form>
+    </section>
+    <section class="card card-body mb-4">
         <h2 class="h4">Receptura</h2>
         <p>Vyberte počty surovin na jeden prodaný kus. Nula znamená, že se surovina nepoužije.</p>
         <form method="post">

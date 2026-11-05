@@ -411,6 +411,7 @@ function staffPositionDefinitions(): array
             'groups' => [
                 ['label' => 'Správa baru', 'icon' => 'shop', 'items' => [
                     ['route' => 'bar/catalog.php', 'label' => 'Katalog baru', 'description' => 'Produkty, ceny a obě skladová místa', 'icon' => 'boxes'],
+                    ['route' => 'bar/categories.php', 'label' => 'Kategorie baru', 'description' => 'Členění a pořadí nabídky', 'icon' => 'tags'],
                     ['route' => 'bar/stock.php', 'label' => 'Sklad baru', 'description' => 'Příjem, přesun a inventura', 'icon' => 'box-seam'],
                 ]],
             ],
@@ -493,7 +494,7 @@ function staffPositionPrimaryRoutes(): array
 
         'tv_operator' => ['tv_programs_admin.php'],
         'bar_operator' => ['bar/index.php'],
-        'bar_admin' => ['bar/catalog.php', 'bar/stock.php'],
+        'bar_admin' => ['bar/catalog.php', 'bar/stock.php', 'bar/categories.php'],
         'system_admin' => ['sprava_pracovnich_pozic.php','sprava_treneru.php'],
     ];
 }

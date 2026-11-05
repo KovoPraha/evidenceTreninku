@@ -46,6 +46,7 @@ function barRenderCatalog(PDO $pdo, array $rows, bool $administration, ?array $e
     <?php if ($administration): ?>
         <p><a href="<?= barH(appUiUrl('bar/index.php')) ?>">Zobrazit nabídku stánku</a> ·
             <a href="<?= barH(appUiUrl('bar/catalog.php?new=1')) ?>">Nový produkt</a> ·
+            <a href="<?= barH(appUiUrl('bar/categories.php')) ?>">Kategorie</a> ·
             <a href="<?= barH(appUiUrl('bar/stock.php')) ?>">Sklad</a></p>
     <?php endif; ?>
     <?php if ($editor !== null): barRenderProductEditor($editor); endif; ?>

@@ -8,6 +8,8 @@ if (PHP_SAPI !== 'cli') {
 }
 require_once dirname(__DIR__, 2) . '/includes/bar/transfer_package.php';
 require_once dirname(__DIR__, 2) . '/includes/bar/stock.php';
+require_once dirname(__DIR__, 2) . '/includes/bar/category_management.php';
+require_once dirname(__DIR__, 2) . '/includes/bar/photo_management.php';
 require_once dirname(__DIR__, 2) . '/includes/trainer_password_reset.php';
 $port = (int)(getenv('BAR_SMOKE_DB_PORT') ?: 3306);
 if ($port < 1024 || $port > 65535) {
@@ -29,7 +31,9 @@ try {
     $pdo->exec('CREATE TABLE treneri(id INT AUTO_INCREMENT PRIMARY KEY,jmeno VARCHAR(100),email VARCHAR(255),heslo VARCHAR(100),'
         . 'role VARCHAR(20),aktivni INT,session_version INT) ENGINE=InnoDB');
     $pdo->exec("INSERT INTO treneri(id,jmeno,role,aktivni,session_version) VALUES(1,'LOCALHOST System','trener',1,1),(3,'LOCALHOST Bar admin','trener',1,1)");
-    foreach (['20260821150000_staff_workspaces', '20261105150000_bar_foundation', '20261105160000_bar_transfer', '20261105170000_bar_stock'] as $id) {
+    $migrations = ['20260821150000_staff_workspaces', '20261105150000_bar_foundation', '20261105160000_bar_transfer',
+        '20261105170000_bar_stock', '20261105180000_bar_catalog_management'];
+    foreach ($migrations as $id) {
         $migration = require dirname(__DIR__, 2) . '/migrations/' . $id . '.php';
         $migration['up']($pdo);
         $migration['up']($pdo);
@@ -75,6 +79,19 @@ try {
     if ((int)$pdo->query('SELECT SUM(quantity_delta) FROM kis_bar_stock_movements')->fetchColumn() !== 10) {
         throw new RuntimeException('Transfer created or lost quantity.');
     }
+    $categoryId = barSaveCategory($pdo, 0, 0, ['name' => 'LOCALHOST New category', 'sort_order' => -1], 'LOCALHOST category create');
+    barSaveCategory($pdo, $categoryId, 1, ['name' => 'LOCALHOST Renamed category'], 'LOCALHOST category rename');
+    try {
+        barDeleteEmptyCategory($pdo, $categoryId, 1, 'LOCALHOST stale deletion');
+        throw new RuntimeException('Stale category deletion was allowed.');
+    } catch (BarConflictException $expected) {
+    }
+    barDeleteEmptyCategory($pdo, $categoryId, 2, 'LOCALHOST empty deletion');
+    barSetProductImage($pdo, $productId, 3, $runtime . '/source-images/tea.png', 'LOCALHOST photo change');
+    if (!str_starts_with((string)$pdo->query('SELECT image_name FROM kis_bar_products')->fetchColumn(), 'upload-')) {
+        throw new RuntimeException('Product photograph was not changed.');
+    }
+    barSetProductImage($pdo, $productId, 4, null, 'LOCALHOST photo removal');
     $_SESSION = ['trener_id' => 1, 'trener_session_version' => 1, 'staff_active_position' => 'system_admin'];
     if (!barImportTransfer($pdo, $bundle, $runtime . '/package/images')['repeated']
         || (int)$pdo->query('SELECT stock_office FROM kis_bar_products')->fetchColumn() !== 7) {
