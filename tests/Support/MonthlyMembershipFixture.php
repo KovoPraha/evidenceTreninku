@@ -22,7 +22,7 @@ final class MonthlyMembershipFixture
         $base = new \Tests\Integration\MemberFeePlanTest('testPreviewSkipsMissingPayerAndGenerationIsIdempotent');
         $p = (new ReflectionMethod($base, 'database'))->invoke($base);
         foreach (['20260922120000_member_fee_plans','20260922190000_member_fee_standing_orders','20261021120000_member_payer_variable_symbols'
-    ,'20261022221000_accounting_documents','20261105150000_monthly_memberships'] as $name) {
+    ,'20261022221000_accounting_documents','20261105150000_monthly_memberships','20261105200000_membership_catalog'] as $name) {
             $m = require dirname(__DIR__, 2).'/migrations/'.$name.'.php';
             $m['up']($p);
         }

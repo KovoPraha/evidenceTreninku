@@ -470,15 +470,15 @@ nám kontakt</a> a ozveme se vám s možností přihlášení.</div><?php endif;
                                             <?php endif; ?><?php endif; ?>
                                             <?php $monthlyTariff = monthlyMembershipTariffForVariant($pdo, (int)$variant['variant_id']);
                                 ?>
-                                            <?php if ($monthlyTariff !== null): ?><div class="small mb-2">Měsíční členství · <?=
+                                            <?php if ($monthlyTariff !== null): ?><div class="small mb-2">Členství v klubu · <?=
 
 
                                     shopProductMoney(
                                         (int)$monthlyTariff['amount_minor'],
                                         'CZK'
-                                    )?> / měsíc · trvalý příkaz</div>
+                                    )?> / <?=shopProductH(membershipIntervalLabel($monthlyTariff))?> · trvalý příkaz</div>
 <a class="btn btn-primary btn-sm" href="mesicni_clenstvi.php?variant_id=<?=(int)$variant['variant_id']
-                                                ?>">Sjednat měsíční členství</a>
+                                                ?>">Sjednat členství</a>
                                             <?php elseif ($isLoggedIn && (!$isProgram || $offer)):
                                                 ?><form method="post">
                                                 <?= csrf_field() ?>

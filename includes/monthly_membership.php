@@ -62,6 +62,9 @@ function monthlyMembershipConfigure(PDO $pdo, array $input): int
         $variantId = (int)($input['variant_id'] ?? 0);
         $teamId = (int)($input['team_id'] ?? 0);
         $day = (int)($input['due_day'] ?? 0);
+        $interval = membershipInterval($input);
+        $teams = membershipTeamIds((array)($input['team_ids'] ?? []));
+        membershipValidateTeams($pdo, $teamId, $teams, monthlyMembershipToday());
         $terms = trim((string)($input['terms_text'] ?? ''));
         $kind = (string)($input['document_kind'] ?? '');
         $issuer = (int)($input['issuer_id'] ?? 0);
@@ -113,6 +116,10 @@ function monthlyMembershipConfigure(PDO $pdo, array $input): int
             ->execute([$variantId,$teamId,(int)$v['amount_minor'],$day,$terms,hash('sha256', $terms),$issuer,$rule
     ,$kind,$actor]);
         $id = (int)$pdo->lastInsertId();
+        $pdo->prepare('UPDATE monthly_membership_tariffs SET billing_interval=? WHERE id=?')->execute([$interval, $id]);
+        foreach ($teams as $team) {
+            $pdo->prepare('INSERT INTO monthly_membership_tariff_teams(tariff_id,team_id) VALUES(?,?)')->execute([$id, $team]);
+        }
         monthlyMembershipEvent($pdo, null, 'trainer', $actor, 'tariff_approved', ['tariff_id' => $id,'variant_id'
     => $variantId,'terms_sha256' => hash(
         'sha256',
@@ -140,7 +147,8 @@ function monthlyMembershipSubscribe(
     string $termsHash,
     string $requestKey,
     bool $confirmed,
-    ?DateTimeImmutable $now = null
+    ?DateTimeImmutable $now = null,
+    array $selectedTeams = []
 ): int {
     if (!monthlyMembershipSalesEnabled()) {
         throw new DomainException('Sjednávání měsíčních členství je nyní pozastavené.');
@@ -150,13 +158,19 @@ function monthlyMembershipSubscribe(
         throw new InvalidArgumentException('Potvrďte měsíční závazek.');
     }
     $buyer = accountingDocumentParty($buyer);
-    return monthlyMembershipTransaction($pdo, static function () use ($pdo, $account, $person, $tariffId, $buyer, $termsHash, $requestKey, $today): int {
+    $selectedTeams = membershipTeamIds($selectedTeams);
+    return monthlyMembershipTransaction($pdo, static function () use ($pdo, $account, $person, $tariffId, $buyer, $termsHash, $requestKey, $today, $selectedTeams): int {
         monthlyMembershipPayer($pdo, $account, $person);
         $key = hash('sha256', $account.':'.$requestKey);
         $q = $pdo->prepare('SELECT * FROM monthly_memberships WHERE request_key=?');
         $q->execute([$key]);
         $old = $q->fetch(PDO::FETCH_ASSOC);
         if ($old) {
+            $q = $pdo->prepare('SELECT team_id FROM monthly_membership_team_grants WHERE membership_id=? ORDER BY team_id');
+            $q->execute([$old['id']]);
+            if (membershipTeamIds($q->fetchAll(PDO::FETCH_COLUMN)) !== $selectedTeams) {
+                throw new DomainException('Tento požadavek již potvrdil jiné disciplíny.');
+            }
             if ((int)$old['tariff_id'] !== $tariffId || (int)$old['sportovec_id'] !== $person || $old['buyer_json'] !== accountingDocumentJson($buyer)
     || $old['consent_sha256'] !== $termsHash) {
                 throw new DomainException('Tento požadavek již potvrdil jiné členství.');
@@ -187,6 +201,11 @@ function monthlyMembershipSubscribe(
         if ($q->fetchColumn()) {
             throw new DomainException('Sportovec již má měsíční členství v této soupisce.');
         }
+        $allowedTeams = membershipTeamIds(array_column(membershipTariffTeams($pdo, $tariffId), 'id'));
+        if (($allowedTeams !== [] && $selectedTeams === []) || array_diff($selectedTeams, $allowedTeams) !== []) {
+            throw new DomainException('Vyberte alespoň jednu disciplínu z nabídky tarifu.');
+        }
+        membershipValidateTeams($pdo, (int)$t['team_id'], $selectedTeams, $today);
         AccountingDocumentWorker::assertMandate($pdo, (int)$t['approved_by']);
         clubFinanceAssertCanRegister($pdo, $person);
         $bank = shopBankSettingsEffective($pdo);
@@ -199,21 +218,30 @@ function monthlyMembershipSubscribe(
             ->execute([$tariffId,$account,$person,$today,$vs,$bank['iban'],accountingDocumentJson($buyer),$termsHash
     ,$key]);
         $id = (int)$pdo->lastInsertId();
-        $grant = kisRosterGrantPeriod(
-            $pdo,
-            (int)$t['team_id'],
-            $person,
-            (int)$t['approved_by'],
-            'shop',
-            $today,
-            null,
-            'Automatické zařazení dle schváleného měsíčního tarifu #'.$tariffId.', souhlas plátce #'.$account.'.',
-            'monthly:'.$id
-        );
-        $pdo->prepare('UPDATE monthly_memberships SET roster_member_id=? WHERE id=?')->execute([$grant['id'],$id]);
-        monthlyMembershipEvent($pdo, $id, 'account', $account, 'subscribed', ['tariff_id' => $tariffId,'terms_sha256'
-    => $termsHash,'amount_minor'
-    => (int)$t['amount_minor'],'first_month' => 'full','termination' => 'month_end']);
+        foreach ($selectedTeams ?: [(int)$t['team_id']] as $teamId) {
+            $grant = kisRosterGrantPeriod(
+                $pdo,
+                $teamId,
+                $person,
+                (int)$t['approved_by'],
+                'shop',
+                $today,
+                null,
+                'Zařazení podle členského tarifu #'.$tariffId.', souhlas plátce #'.$account.'.',
+                'monthly:'.$id.($selectedTeams === [] ? '' : ':'.$teamId)
+            );
+            if ($selectedTeams === []) {
+                $pdo->prepare('UPDATE monthly_memberships SET roster_member_id=? WHERE id=?')->execute([$grant['id'], $id]);
+            } else {
+                $pdo->prepare('INSERT INTO monthly_membership_team_grants(membership_id,team_id,roster_member_id) VALUES(?,?,?)')
+                    ->execute([$id, $teamId, $grant['id']]);
+            }
+        }
+        monthlyMembershipEvent($pdo, $id, 'account', $account, 'subscribed', [
+            'tariff_id' => $tariffId, 'terms_sha256' => $termsHash, 'amount_minor' => (int)$t['amount_minor'],
+            'billing_interval' => membershipInterval($t), 'selected_teams' => $selectedTeams,
+            'first_period' => 'full', 'termination' => 'period_end',
+        ]);
         monthlyMembershipGenerateLocked($pdo, $id, $today);
         return $id;
     });
@@ -226,7 +254,7 @@ function monthlyMembershipCancel(PDO $pdo, int $account, int $id, bool $confirme
     }
     $today = monthlyMembershipToday($now);
     return monthlyMembershipTransaction($pdo, static function () use ($pdo, $account, $id, $today): string {
-        $q = $pdo->prepare('SELECT m.*,t.approved_by FROM monthly_memberships m JOIN monthly_membership_tariffs t ON t.id=m.tariff_id WHERE m.id=? AND m.payer_account_id=?');
+        $q = $pdo->prepare('SELECT m.*,t.approved_by,t.billing_interval FROM monthly_memberships m JOIN monthly_membership_tariffs t ON t.id=m.tariff_id WHERE m.id=? AND m.payer_account_id=?');
         $q->execute([$id,$account]);
         $m = $q->fetch(PDO::FETCH_ASSOC);
         if (!$m) {
@@ -236,11 +264,16 @@ function monthlyMembershipCancel(PDO $pdo, int $account, int $id, bool $confirme
         if ($m['ends_on'] !== null) {
             return $m['ends_on'];
         }
-        $end = (new DateTimeImmutable($today))->format('Y-m-t');
+        $end = membershipPeriodEnd($m['starts_on'], $today, membershipInterval($m));
         $pdo->prepare('UPDATE monthly_memberships SET ends_on=? WHERE id=?')->execute([$end,$id]);
         if ($m['roster_member_id'] !== null) {
             kisRosterEndPeriod($pdo, (int)$m['roster_member_id'], (int)$m['approved_by'], $end, 'Výpověď měsíčního členství plátcem #'
     .$account.'.');
+        }
+        $q = $pdo->prepare('SELECT roster_member_id FROM monthly_membership_team_grants WHERE membership_id=? ORDER BY team_id');
+        $q->execute([$id]);
+        foreach ($q->fetchAll(PDO::FETCH_COLUMN) as $grantId) {
+            kisRosterEndPeriod($pdo, (int)$grantId, (int)$m['approved_by'], $end, 'Ukončení členství plátcem #'.$account.'.');
         }
         monthlyMembershipEvent($pdo, $id, 'account', $account, 'cancelled', ['ends_on' => $end]);
         return $end;
@@ -253,7 +286,7 @@ function monthlyMembershipGenerateLocked(PDO $pdo, int $id, string $today): int
     if (!$pdo->inTransaction()) {
         throw new LogicException('Generování vyžaduje zámek.');
     }
-    $q = $pdo->prepare('SELECT m.*,t.amount_minor,t.due_day,t.variant_id FROM monthly_memberships m JOIN monthly_membership_tariffs t ON t.id=m.tariff_id WHERE m.id=?');
+    $q = $pdo->prepare('SELECT m.*,t.amount_minor,t.due_day,t.variant_id,t.billing_interval FROM monthly_memberships m JOIN monthly_membership_tariffs t ON t.id=m.tariff_id WHERE m.id=?');
     $q->execute([$id]);
     $m = $q->fetch(PDO::FETCH_ASSOC);
     if (!$m) {
@@ -266,7 +299,8 @@ function monthlyMembershipGenerateLocked(PDO $pdo, int $id, string $today): int
     if (fioNormalizeIban((string)$bank['iban']) !== fioNormalizeIban($m['iban_snapshot'])) {
         throw new DomainException('Změna bankovního účtu vyžaduje novou dohodu o trvalém příkazu.');
     }
-    for ($month = new DateTimeImmutable(substr($m['starts_on'], 0, 7).'-01'); $month->format('Y-m') <= substr($last, 0, 7); $month = $month->modify('+1 month')) {
+    $step = membershipInterval($m) === 'year' ? '+12 months' : '+1 month';
+    for ($month = new DateTimeImmutable(substr($m['starts_on'], 0, 7).'-01'); $month->format('Y-m') <= substr($last, 0, 7); $month = $month->modify($step)) {
         $period = $month->format('Y-m');
         $q = $pdo->prepare('SELECT id FROM monthly_membership_periods WHERE membership_id=? AND period_key=?');
         $q->execute([$id,$period]);
@@ -274,7 +308,7 @@ function monthlyMembershipGenerateLocked(PDO $pdo, int $id, string $today): int
             continue;
         }
         $from = max($month->format('Y-m-d'), $m['starts_on']);
-        $to = min($month->format('Y-m-t'), $m['ends_on'] ?? '9999-12-31');
+        $to = min($month->modify($step)->modify('-1 day')->format('Y-m-d'), $m['ends_on'] ?? '9999-12-31');
         if ($from > $to) {
             continue;
         }
@@ -289,7 +323,7 @@ function monthlyMembershipGenerateLocked(PDO $pdo, int $id, string $today): int
     .
     'urrency,due_on,status,source_system,source_external_id,source_import_run_id) ' .
     'VALUES(?,?,?,\'membership\',?,?,?,?, \'CZK\',?,\'pending\',\'monthly_membership\',?,NULL)'))
-            ->execute([$m['sportovec_id'],$m['payer_account_id'],$code,'Měsíční členství '.$period,$from,$to,$m['amount_minor']
+            ->execute([$m['sportovec_id'],$m['payer_account_id'],$code,(membershipInterval($m) === 'year' ? 'Roční členství ' : 'Měsíční členství ').$period,$from,$to,$m['amount_minor']
     ,$due,$external]);
         $charge = (int)$pdo->lastInsertId();
         memberChargeAdminInsertPayment(

@@ -115,6 +115,12 @@ try {
     if (!$migration['verify']($pdo)) {
         throw new RuntimeException('Migration verification failed.');
     }
+    $catalogMigration = require dirname(__DIR__, 2).'/migrations/20261105200000_membership_catalog.php';
+    $catalogMigration['up']($pdo);
+    $catalogMigration['up']($pdo);
+    if (!$catalogMigration['verify']($pdo)) {
+        throw new RuntimeException('Membership catalog migration verification failed.');
+    }
     $tariff = \Tests\Support\MonthlyMembershipFixture::tariff($pdo);
     $one = \Tests\Support\MonthlyMembershipFixture::subscribe($pdo, $tariff, 1);
     \Tests\Support\MonthlyMembershipFixture::subscribe($pdo, $tariff, 2);
