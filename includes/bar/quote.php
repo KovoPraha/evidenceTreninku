@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/cashbox.php';
+require_once __DIR__ . '/offers.php';
 
 function barNormalizeCart(array $cart): array
 {
@@ -91,10 +92,14 @@ function barSaleSnapshot(PDO $pdo, array $cart, int $discount, int $cups, bool $
     $deductions = [];
     $commercial = [];
     $gross = 0;
+    $offer = $consumption ? null : barActiveOffer($pdo);
     foreach ($cart as $row) {
         $id = $row['product_id'];
         $quantity = $row['quantity'];
         $product = $products[$id] ?? null;
+        if ($offer !== null && !in_array($id, $offer['products'], true)) {
+            throw new DomainException('Produkt není v aktuálně zveřejněné nabídce.');
+        }
         if (!$product || (int)$product['archived'] === 1 || (int)$product['sold_out'] === 1 || (!$allowHidden && (int)$product['on_terminal'] !== 1)) {
             throw new DomainException('Některý z vybraných produktů už není dostupný. Zkontrolujte nabídku.');
         }
@@ -127,7 +132,7 @@ function barSaleSnapshot(PDO $pdo, array $cart, int $discount, int $cups, bool $
     return ['lines' => barAllocateSaleNet($lines, $gross, $net), 'deductions' => $deductions, 'products' => $products,
         'goods_gross_minor' => $gross, 'discount_percent' => $discount, 'discount_minor' => $gross - $net, 'goods_net_minor' => $net,
         'cup_quantity' => $cups, 'cup_unit_minor' => $cupUnit, 'deposit_minor' => $deposit, 'total_minor' => barCheckMinor($net + $deposit),
-        'fingerprint' => hash('sha256', json_encode([$commercial, $discount, $cups, $cupUnit, $consumption], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE))];
+        'fingerprint' => hash('sha256', json_encode([$commercial, $discount, $cups, $cupUnit, $consumption, $offer['publication_id'] ?? null], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE))];
 }
 
 function barQuote(PDO $pdo, array $cart, int $discount = 0, int $cups = 0, bool $consumption = false): array

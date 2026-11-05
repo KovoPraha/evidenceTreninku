@@ -90,6 +90,10 @@ function barSaveProduct(PDO $pdo, int $id, int $version, array $input, string $r
             throw new DomainException('Nejprve odeberte surovinu z receptur.');
         }
         if ($id > 0) {
+            $oldCost = $before['purchase_minor'] === null ? null : (int)$before['purchase_minor'];
+            if ($oldCost !== $values['purchase_minor']) {
+                $pdo->prepare('UPDATE kis_bar_products SET purchase_version=purchase_version+1 WHERE id=?')->execute([$id]);
+            }
             $assignments = implode(',', array_map(static fn (string $key): string => $key . '=?', array_keys($values)));
             $pdo->prepare('UPDATE kis_bar_products SET ' . $assignments . ',lock_version=lock_version+1 WHERE id=?')
                 ->execute([...array_values($values), $id]);

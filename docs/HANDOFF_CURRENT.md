@@ -199,6 +199,9 @@ Pracuje v oddělené větvi `codex/bar-kis-integration-20261105`; produkční na
 není povolené. Zachovává se katalog a pouze účet lucka, provozní historie se
 nepřenáší. Dvě nové pozice doplňuje samostatné oprávnění vlastní spotřeby.
 Stav etap, ověření a další krok udržuje tento plán.
+Aktuálně je implementovaná [B5: faktury, nabídky a účetní rozhraní](verification/bar-documents-20261105/RESULTS.md),
+navazuje úplná přejímka B6. [Účetní kontrakt v1](BAR_ACCOUNTING_CONTRACT_V1.md) připravuje budoucí propojení;
+export zatím nic nezapisuje do peněžní evidence. Soukromé PDF a obrázky musí B6 obnovit spolu s DB.
 
 Navazující [komplexní refaktoring celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md)
 je sloučený v PR #219 a vlastník zahájil autonomní realizaci. Vlny 1–5 jsou

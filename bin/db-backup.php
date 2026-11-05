@@ -22,7 +22,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-05.4';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-05.5';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -41,6 +41,8 @@ const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-05.4';
 const EVIDENCE_OWNED_COLUMN_CONTRACT = [
     'treneri' => ['technical_email'],
     'kis_bar_categories' => ['lock_version'],
+    'kis_bar_products' => ['purchase_version'],
+    'kis_bar_state' => ['active_offer_publication_id'],
     'club_teams' => ['activity_kind'],
     'club_program_schedule_slots' => ['valid_from', 'valid_to'],
     'club_event_notifications' => ['system_template_key', 'system_template_version'],
@@ -168,6 +170,14 @@ function ownedColumnsPresentInSnapshot(array $columns): array
  * jidlo_*, bar_*, results_* and legacy/archive tables are not owned here.
  */
 const EVIDENCE_TABLES = [
+    'kis_bar_invoices',
+    'kis_bar_invoice_receipts',
+    'kis_bar_invoice_receipt_items',
+    'kis_bar_supplier_mappings',
+    'kis_bar_offers',
+    'kis_bar_offer_publications',
+    'kis_bar_accounting_exports',
+    'kis_bar_accounting_export_items',
     'kis_bar_assets',
     'kis_bar_settings',
     'kis_bar_requests',

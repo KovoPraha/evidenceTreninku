@@ -14,6 +14,7 @@ const PRIVATE_STORAGE_STOCK_DOCUMENTS = 'stock-documents';
 const PRIVATE_STORAGE_MEDICAL_DOCUMENTS = 'medical-documents';
 const PRIVATE_STORAGE_TV_IMAGES = 'tv-images';
 const PRIVATE_STORAGE_BAR_IMAGES = 'bar-images';
+const PRIVATE_STORAGE_BAR_INVOICES = 'bar-invoices';
 const PRIVATE_STORAGE_DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
 const PRIVATE_STORAGE_MAX_BATCH_FILES = 12;
 const PRIVATE_STORAGE_MAX_BATCH_BYTES = 30 * 1024 * 1024;
@@ -80,6 +81,7 @@ function privateStorageEnsureDirectory(string $category): string
         PRIVATE_STORAGE_MEDICAL_DOCUMENTS,
         PRIVATE_STORAGE_TV_IMAGES,
         PRIVATE_STORAGE_BAR_IMAGES,
+        PRIVATE_STORAGE_BAR_INVOICES,
     ], true)) {
         throw new InvalidArgumentException('Neplatna kategorie soukromeho souboru.');
     }

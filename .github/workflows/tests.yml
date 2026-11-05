@@ -287,6 +287,9 @@ jobs:
       - name: Ověřit pokladnu baru a skutečné souběhy prodeje, práv a uzávěrky
         run: php tests/Support/BarCheckoutMariaDbSmoke.php
 
+      - name: Ověřit příjem faktur a souběh účetních exportů
+        run: php tests/Support/BarDocumentsMariaDbSmoke.php
+
       - name: Ověřit rodinný kalendář a cílené historické členství
         env:
           EVIDENCE_CALENDAR_READ_MARIADB: '1'

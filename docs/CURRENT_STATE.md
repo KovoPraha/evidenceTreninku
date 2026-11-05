@@ -2,6 +2,8 @@
 
 Aktualizováno 5. 11. 2026 (Europe/Prague), po ověření hostingového Fio plánu a všech 45 čekajících pohybů.
 
+- **BAR → KIS pouze ve vývojové větvi, bez nasazení:** [B5 – faktury, nabídky a účetní podklady](verification/bar-documents-20261105/RESULTS.md) doplňuje hotové B0–B4 v draft PR #306. Příjem/storno, veřejné menu, tiskový lístek a neměnný export mají místní syntetické ověření; konkrétní CI stav je v PR. Automatické účetní zápisy ani bankovní propojení baru nejsou aktivované. Další etapou je B6 podle [plánu](BAR_INTEGRATION_PLAN_2026-11-05.md).
+
 - **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** karta pro 223 aktivních produktů / nové objednávky, 8 starých plateb zachováno.
   **[Fio hostingový plán ověřený](verification/fio-followup-20261105/RESULTS.md):** dva skutečné importy, všech 45 pohybů bez shodného VS. Žádné vynucené přiřazení; skutečná placená úhrada stále nedoložená.
 

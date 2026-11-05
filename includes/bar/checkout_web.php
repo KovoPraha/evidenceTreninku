@@ -14,9 +14,14 @@ function barCheckoutPageStart(PDO $pdo, string $title): void
 </head><body>
 <?php require dirname(__DIR__, 2) . '/hlavicka.php'; ?>
 <main class="container py-4"><h1><?= barH($title) ?></h1>
+    <?php if (in_array($_SESSION['staff_active_position'] ?? '', ['bar_operator', 'bar_admin'], true)): ?>
     <p><a href="<?= barH(appUiUrl('bar/checkout.php')) ?>">Pokladna</a> ·
         <a href="<?= barH(appUiUrl('bar/cashbox.php')) ?>">Moje kasa</a> ·
         <a href="<?= barH(appUiUrl('bar/consumption.php')) ?>">Vlastní spotřeba</a></p>
+    <?php else: ?>
+    <p><a href="<?= barH(appUiUrl('bar/invoices.php')) ?>">Faktury baru</a> ·
+        <a href="<?= barH(appUiUrl('bar/accounting.php')) ?>">Účetní podklady baru</a></p>
+    <?php endif; ?>
     <?php
 }
 
@@ -125,5 +130,5 @@ function barCheckoutProducts(PDO $pdo, bool $consumption, string $location): arr
         }
     }
     unset($row);
-    return $rows;
+    return $consumption ? $rows : barFilterPublishedProducts($pdo, $rows);
 }

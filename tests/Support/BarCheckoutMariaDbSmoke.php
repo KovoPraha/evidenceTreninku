@@ -76,7 +76,7 @@ try {
     $pdo->exec('CREATE TABLE treneri(id INT AUTO_INCREMENT PRIMARY KEY,jmeno VARCHAR(100),role VARCHAR(20),aktivni INT,session_version INT,email VARCHAR(255),heslo VARCHAR(100)) ENGINE=InnoDB');
     $pdo->exec("INSERT INTO treneri(id,jmeno,role,aktivni,session_version) VALUES(2,'LOCALHOST A','trener',1,1),(3,'LOCALHOST B','trener',1,1)");
     $migrationIds = ['20260821150000_staff_workspaces', '20261105150000_bar_foundation', '20261105160000_bar_transfer',
-        '20261105170000_bar_stock', '20261105180000_bar_catalog_management', '20261105190000_bar_checkout'];
+        '20261105170000_bar_stock', '20261105180000_bar_catalog_management', '20261105190000_bar_checkout', '20261105200000_bar_documents'];
     foreach ($migrationIds as $migrationId) {
         $migration = require dirname(__DIR__, 2) . '/migrations/' . $migrationId . '.php';
         $migration['up']($pdo);
