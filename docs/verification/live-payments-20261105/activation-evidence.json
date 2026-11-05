@@ -1,0 +1,263 @@
+{
+  "comparison": {
+    "pre_audit_run": 42005753311,
+    "post_audit_run": 42010713390,
+    "before_live": {
+      "sha": "bc627ab12c22ba16feb0ca6cba3340fb87de31a9",
+      "run_id": "41987993980",
+      "deployed_at": "2026-11-05T07:36:51+00:00",
+      "uat_approved": false
+    },
+    "live": {
+      "sha": "436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d",
+      "run_id": "42006918844",
+      "deployed_at": "2026-11-05T10:02:03+00:00",
+      "uat_approved": false
+    },
+    "authorized_configuration_change": {
+      "before": {
+        "FIO_IMPORT_ENABLED": true,
+        "FIO_AUTO_CONFIRM_ENABLED": false,
+        "SUMUP_ENABLED": false,
+        "STRIPE_ENABLED": false,
+        "VELOCOTA_INTEGRATION": false,
+        "PACKETA_ENABLED": null
+      },
+      "after": {
+        "FIO_IMPORT_ENABLED": true,
+        "FIO_AUTO_CONFIRM_ENABLED": true,
+        "SUMUP_ENABLED": true,
+        "STRIPE_ENABLED": false,
+        "VELOCOTA_INTEGRATION": false,
+        "PACKETA_ENABLED": null
+      }
+    },
+    "unchanged": {
+      "private_migration_candidates": true,
+      "kis_canonical_write_enabled": true,
+      "migration_ledger_count": true
+    },
+    "values_after": {
+      "config_sha256": "d77909b9ac5d4348e6583e0bfa958ca95a0a3ce7e4fc58e75aa76d1566c5bb3c",
+      "private_migration_candidates": {
+        "movable": 0,
+        "missing": 2,
+        "already_private": 0,
+        "invalid": 0
+      },
+      "kis_canonical_write_enabled": false,
+      "migration_ledger_count": 150
+    },
+    "manifest_limit": "old_source/new_source are historical fixed manifests; current activation is proven by deployment log and live metadata."
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-11-05_100121_958f366e.sql.gz",
+    "manifest": "evidence_2026-11-05_100121_958f366e.manifest.json",
+    "sha256": "3dfff45238ccd520a6ac798da071f94f5b5c00ae8f20e8639bdda8ab46fe92ea",
+    "tables": 347,
+    "triggers": 2,
+    "compressed_bytes": 6259853
+  },
+  "sumup_api": {
+    "ok": true,
+    "live_card_czk": true,
+    "transaction_read_access": true,
+    "checkout_created": false,
+    "payment_executed": false
+  },
+  "sumup_inventory": {
+    "ok": true,
+    "environment": "production",
+    "sumup_enabled": true,
+    "api_key_present": true,
+    "merchant_code": "MELE4XUL",
+    "merchant_code_ok": true,
+    "base_url_ok": true,
+    "policy_inventory_read_only": true,
+    "product_payment_policies": [
+      {
+        "payment_method_policy": "bank_transfer",
+        "catalog_status": "draft",
+        "products": 2
+      },
+      {
+        "payment_method_policy": "bank_transfer",
+        "catalog_status": "inactive",
+        "products": 67
+      },
+      {
+        "payment_method_policy": "bank_transfer_sumup",
+        "catalog_status": "active",
+        "products": 223
+      }
+    ],
+    "existing_payment_policies": [
+      {
+        "accepted_payment_methods": "bank_transfer",
+        "status": "cancelled",
+        "payments": 1
+      },
+      {
+        "accepted_payment_methods": "bank_transfer",
+        "status": "paid",
+        "payments": 1
+      },
+      {
+        "accepted_payment_methods": "bank_transfer",
+        "status": "pending",
+        "payments": 2
+      },
+      {
+        "accepted_payment_methods": "bank_transfer",
+        "status": "refund_required",
+        "payments": 3
+      },
+      {
+        "accepted_payment_methods": "bank_transfer",
+        "status": "refunded",
+        "payments": 1
+      }
+    ]
+  },
+  "product_policy_batch": {
+    "ok": true,
+    "products": 223,
+    "changed": 223,
+    "unchanged": 0,
+    "manifest_sha256": "4a7d75683fbaf6ae4b63f126f55740e8d87e8972529e35fbd7503f81d5c89b2b",
+    "existing_payment_policies_unchanged": true,
+    "existing_payments_checked": 8
+  },
+  "fio_history": {
+    "windows": 11,
+    "first_date": "2026-09-21",
+    "covered_through": "2026-11-05",
+    "caught_up": true,
+    "totals": {
+      "fetched": 75,
+      "inserted": 46,
+      "duplicates": 29,
+      "proposed": 0,
+      "review": 45,
+      "ignored": 1
+    },
+    "confirmed": 0,
+    "workflow_runs": [
+      "42001475122",
+      "42001937913",
+      "42002382802",
+      "42002525808",
+      "42002667218",
+      "42002804228",
+      "42002957895",
+      "42003114147",
+      "42003266048",
+      "42003428856",
+      "42003629408"
+    ]
+  },
+  "fio_worker": {
+    "run_id": 13,
+    "fetched": 4,
+    "inserted": 0,
+    "duplicates": 4,
+    "proposed": 0,
+    "review": 0,
+    "ignored": 0,
+    "period_from": "2026-11-03",
+    "period_to": "2026-11-05",
+    "caught_up": true,
+    "automatic": {
+      "confirmed": 0,
+      "review": 0
+    }
+  },
+  "http": {
+    "pre": {
+      "checks": 54,
+      "passed": 54,
+      "checked_at": "2026-11-05T09:58:16.522699+00:00"
+    },
+    "post": {
+      "checks": 54,
+      "passed": 54,
+      "checked_at": "2026-11-05T10:26:17.719520+00:00"
+    }
+  },
+  "operations_ci": {
+    "pr": 310,
+    "reviewed_head": "006664cc8dd79ee940642d4483586c57058f3120",
+    "merge": "ae129097eee31d1d709ab8f6eecdce6e478bc7f0",
+    "run": 42010440381,
+    "tests": 2019,
+    "assertions": 38901,
+    "checks": [
+      {
+        "name": "CodeQL",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "docs",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "PHPStan level 5 and changed-file style",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "PHPUnit na PHP 8.2",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "MariaDB integrační smoke (MariaDB 10.3)",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "MariaDB integrační smoke (MariaDB 11.4)",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "MariaDB profily čtení (MariaDB 10.3)",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "MariaDB profily čtení (MariaDB 11.4)",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "Analyze (javascript-typescript)",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "Analyze (actions)",
+        "state": "SUCCESS"
+      },
+      {
+        "name": "Analyze (python)",
+        "state": "SUCCESS"
+      }
+    ]
+  },
+  "schedule": {
+    "workflow": "fio-import-production.yml",
+    "state": "active",
+    "repository_variable": true,
+    "cron": "*/10 * * * *",
+    "first_natural_run_observed": false,
+    "last_observed_natural_run_before_activation": 41995203532,
+    "last_observed_conclusion": "skipped"
+  },
+  "workflow_runs": {
+    "deploy": 42006918844,
+    "isolated_restore": 42008819858,
+    "sumup_verify_before": 42006624742,
+    "sumup_enable": 42007599345,
+    "sumup_verify_after": 42010706578,
+    "fio_enable_auto": 42008096371,
+    "fio_worker_after_enable": 42008496784,
+    "product_preview": 42010374715,
+    "product_apply": 42010503021,
+    "final_read_only_audit": 42010713390
+  }
+}

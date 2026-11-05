@@ -5,6 +5,92 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 5. 11. 2026 — aktivace ostrého Fio a SumUp
+
+[Protokol](verification/live-payments-20261105/ACTIVATION.md) odděluje aktivaci, import a skutečné finanční E2E.
+
+<!-- archive {"source": "docs/CURRENT_STATE.md@2026-11-05-before-live-payments", "part": 0, "sha256": "e6514963caf11b94e666391a71f884ffddd2cecbdfb1dbf5a217c67cdf42871b"} -->
+# Aktuální stav projektu
+
+Aktualizováno 5. 11. 2026 (Europe/Prague), po vydání PR #305 a produkčním ověření.
+
+- **[PR #305 sloučený a nasazený](verification/functional-round10-release-20261105/RESULTS.md):** vratky zachovávají objednávku a stránkují úplnou historii. Linux i deploy 2009/38764, HTTP před/po 48/48 a izolovaná obnova PASS. Přihlášený čtecí Chrome PASS v dostupném rozsahu; heslo/T07 vynechané.
+
+- **[PR #300 sloučený a nasazený](verification/functional-round9-release-20261105/RESULTS.md):** souhrn se přeskočí při opt-out nebo změně rodinného oprávnění během sestavování. Nové CI a deploy 1997/38644; MariaDB 10.3/11.4 po 49 kontrolách, HTTP před/po 42/42 a izolovaná obnova PASS. Přihlášené produkční UAT bez relace NOT RUN; heslo/T07 vynechané.
+
+- **[Osmý funkční průchod](verification/functional-uat-round8-20261104/RESULTS.md):** příprava období, hierarchie ke dni lekce, věkové návrhy a stránkování. Skutečný místní browser, 25 kontrol HTTP/model/persistence a cílené 21/190 PASS; všech 12 doménových snapshotů shodných. Bez nové chyby runtime.
+
+- **[Pátý](verification/functional-uat-round5-20261104/RESULTS.md) a [šestý průchod](verification/functional-uat-round6-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob; následný skutečný Chrome a 16 kontrol persistence PASS. Bez další chyby runtime; výsledky jsou v nasazeném PR #295, heslo/T07 vynechané.
+
+- **[Třetí funkční vlna sloučena a nasazena](verification/functional-round3-release-20261104/RESULTS.md):** opravené náhledy členství a české časové stavy rodinného přehledu. Přihlášený produkční náhled PASS bez potvrzení změny; rodinná stránka načtena, účet nemá propojené sportovce pro ověření štítků. Místní matice 119/119 PASS; úplné UAT všech rolí není uzavřené. Heslo/T07 nadále odložené.
+
+- **Evidence členů bez sezon: aplikace nasazena a schválená data převedena.**
+  [Převod 41542954307](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41542954307)
+  potvrdil 435 výchozích zařazení od **2. 11. 2026**, odstranění 560 historických
+  intervalů a 560 importních událostí. Osoby, doklady a dosavadní trenérské rozsahy zachované.
+  [Schválená mapa](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md) je živá: sedm provozních
+  skupin / 41 soupisek a TEST / 3 soupisky. Rexonix závodní, KDC a Bikros samostatně `other`.
+  Čtecí inventura 41545932556 potvrdila počátky všech 435 intervalů i neaktivní technickou identitu bez oprávnění.
+  Běh skončil červeně až na HTTP timeoutu runneru po commitu; následné nezávislé
+  HTTP 40/40 a čtecí inventura všech 44 soupisek / 8 skupin PASS.
+  [Důkazy a meze](verification/member-evidence-cutover-20261102/RESULTS.md).
+  Jedna poslední synchronizace čeká na nový export, počáteční den se neposouvá.
+  Přihlášené UAT a E8 nejsou dokončené; převodní mapy a bod návratu zůstávají zachované.
+
+- [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
+
+- **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
+  odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
+  [Oddělený syntetický pilot](verification/trainer-pilot-20261101/RESULTS.md) je založen:
+  trenér 56, soupiska 77, dvě syntetické osoby, třetí mimo rozsah. Grant končí
+  15. 11. 2026 v 18:17:31 databázového času; obnova hesla způsobilá.
+  Audit 4. 11. potvrdil 30 aktivních pracovních účtů s pozicí trenéra, 29 bez rozsahu.
+  Historické počty způsobilosti k obnově určuje datovaná příprava pilotu.
+  [Provozní auditní identita](TRAINER_PILOT_OPERATIONAL_2026-11-01.md) je neaktivní a bez oprávnění;
+  veřejné účty se nepropojovaly ani nepovyšovaly. Úplné lidské UAT ještě neproběhlo.
+  Původní testovací e-mail transport přijal a příjemce 31. 10.
+  [potvrdil doručení](verification/trainer-recovery-20261031/mailbox-confirmation.json).
+  [Autonomní ověření 1. 11. 23:42](verification/trainer-recovery-autonomous-20261101-2341/RESULTS.md)
+  potvrdilo doručení nové žádosti ve webmailu, platný odkaz i anonymní/mobilní formulář;
+  produkční heslo nezměněno, skutečné spotřebování a T07 nadále nejsou ověřeny.
+  Hostingový minutový cron znovu ověřen
+  [1. 11. v 17:22:03 UTC](verification/trainer-pilot-20261101/trainer-readiness.json). Tři staré klubové zprávy nedotčeny.
+
+- **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
+  [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
+- **Živé vydání:** `bc627ab12c22ba16feb0ca6cba3340fb87de31a9`,
+  [deploy 41987993980](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41987993980) SUCCESS.
+  Oprava vratek #305 zachovává TV programy a schválený datový převod; převod se neopakoval.
+  [Protokol](verification/functional-round10-release-20261105/RESULTS.md), [porovnání](verification/functional-round10-release-20261105/release-comparison.json).
+  Živé SHA potvrdil audit 41988846624, oba změněné soubory log aktivace; nejde o úplnou hash inventuru.
+- **Ověření:** všech 11 kontrol #305 PASS, sloučený strom shodný s ověřeným.
+  Linux i deploy 2009 testů / 38764 assertions bez skipů; MariaDB 10.3/11.4, PHPStan/styl a audit PASS.
+  HTTP před/po 48/48; Chrome ověřil testovací objednávku, návrat, chyby a tři pracovní kontexty.
+  Trenérský kontext odmítnutý; bez skladových/finančních zápisů, původní TV kontext obnovený.
+  Produkce nemá vratkové případy; historii nad 100 a křížené zápisy dokládá místní sada/CI. Heslo/T07 vynechané.
+- **Záloha a schéma:** čerstvá záloha vydání, 347 tabulek / 2 triggery;
+  [izolovaná obnova 41988855944](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41988855944) PASS včetně počtů všech tabulek.
+  SHA-256 `3a45fc043fc25b8d9220fdc43a103dabb74431dce45d8143ee27e19f0cba3bbd`.
+  Schéma current / pending [], migrační ledger 150; dosavadní variabilní symboly zachované.
+- **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
+  byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
+  31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu.
+  Diskové temporary tables fungují. Příčina kolísání kapacity není definitivně určena.
+  Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
+  návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
+  [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).
+- **Konfigurace a flags:** čtecí audit po nasazení potvrdil Fio import/auto-confirm,
+  SumUp, Stripe a Velocota false; Packeta nedefinovaná, KIS canonical writes false.
+  UAT false, import false; žádné integrace nebyly aktivovány.
+- **Otevřené provozní převzetí:** lidská/účetní přejímka D12–D14, skutečná
+  inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
+  [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
+  Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
+
+[Převzetí](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
+
+<!-- /archive -->
+
 ## 5. 11. 2026 — PR #305 sloučený, nasazený a ověřený
 
 [Protokol](verification/functional-round10-release-20261105/RESULTS.md) dokládá review, chráněné vydání, přihlášené čtecí ověření a izolovanou obnovu.
