@@ -70,6 +70,17 @@ Zpráva s nejistým doručením po pádu nebo odmítnutí transportem se automat
 
 ## Nasazení a zapnutí
 
+Soukromý příznak automatizace spravuje `configure-memberships-production.yml`
+z `main` přes chráněné prostředí `production`. Režimy `probe` / `enable` /
+`disable` vyžadují potvrzení `OVERIT-CLENSTVI` / `ZAPNOUT-CLENSTVI` /
+`VYPNOUT-CLENSTVI`. Nástroj nejprve čtecím způsobem ověří prostředí, schéma,
+počty a poslední heartbeat. Změna má ověřenou soukromou zálohu configu,
+atomický zápis a kontrolu uložených příznaků v novém procesu. Poštu nezapíná.
+První zapnutí s prázdnou evidencí je schválené v
+[plánu aktivace](MEMBERSHIP_AUTOMATION_ACTIVATION_2026-11-05.md).
+`KIS_MONTHLY_MEMBERSHIP_SCHEDULE_ENABLED` musí být repozitářová proměnná,
+protože podmínka úlohy se vyhodnocuje před načtením prostředí `production`.
+
 1. Po samostatném schválení vydání použít standardní chráněný deploy a zálohu; nová migrace je `20261105150000_monthly_memberships.php`. Zálohovací kontrakt zahrnuje všech osm nových tabulek. Neměnit historické migrace.
 2. Ověřit soukromé ukládání PDF, účetní konfiguraci, produkt, soupisku, oprávnění schvalujícího pracovníka a doručování na určeném testovacím účtu. Připravit následující účetní rok před jeho začátkem.
 3. Na serveru lze nejprve spustit `APP_HOST=kis.kovopraha.cz php bin/monthly-memberships.php --dry-run`. Náhled nezapisuje; vykazuje počet členství, nikoli simulaci budoucích účetních dokladů.

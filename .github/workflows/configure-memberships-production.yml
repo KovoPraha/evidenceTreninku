@@ -1,0 +1,118 @@
+name: Nastavit automatizaci členství na produkci
+
+on:
+  workflow_dispatch:
+    inputs:
+      rezim:
+        description: Ověřit, zapnout nebo vypnout pravidelné zpracování (bez změny pošty)
+        required: true
+        type: choice
+        options: [probe, enable, disable]
+      potvrzeni:
+        description: OVERIT-CLENSTVI, ZAPNOUT-CLENSTVI nebo VYPNOUT-CLENSTVI
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  CONFIG_BACKUP_DIR: data/.kis-backups/config
+
+jobs:
+  nastavit:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    steps:
+      - name: Ověřit požadavek
+        env:
+          REZIM: ${{ inputs.rezim }}
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          case "$REZIM:$POTVRZENI" in
+            probe:OVERIT-CLENSTVI|enable:ZAPNOUT-CLENSTVI|disable:VYPNOUT-CLENSTVI) ;;
+            *) echo 'Neplatný režim nebo potvrzení.'; exit 1 ;;
+          esac
+
+      - name: Stáhnout konfigurační nástroj
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Připravit chráněné připojení
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for promenna in APP_HOST REMOTE_DIR SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do
+            [ -n "${!promenna}" ] || { echo "Chybí konfigurace: $promenna"; exit 1; }
+          done
+          [[ "$APP_HOST" == kis.kovopraha.cz ]] || exit 1
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] || exit 1
+          case "$REMOTE_DIR" in /*|*..*|*/./*|./*|*/.) exit 1 ;; esac
+          PORT="${SSH_PORT_SECRET:-22}"
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Ověřit, zálohovat a nastavit automatizaci
+        env:
+          REZIM: ${{ inputs.rezim }}
+        run: |
+          set -euo pipefail
+          umask 077
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SSH[@]}" "set -eu; umask 077; test -s '$REMOTE_DIR/config.php'; mkdir -p '$DEPLOY_BASE' '$CONFIG_BACKUP_DIR'"
+          production_retry "${SCP[@]}" bin/configure-production-memberships.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/configure-production-memberships.php"
+          cat > /tmp/run-memberships-config.php <<EOF
+          <?php
+          putenv('CONFIGURE_PRODUCTION_MEMBERSHIPS=1');
+          putenv('MEMBERSHIPS_CONFIG_ACTION=' . (\$argv[1] ?? 'probe'));
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('CONFIG_BACKUP_DIR=$CONFIG_BACKUP_DIR');
+          require __DIR__ . '/configure-production-memberships.php';
+          try { kisProductionMembershipsMain(); }
+          catch (Throwable \$exception) { fwrite(STDERR, "Membership configuration failed.\n"); exit(1); }
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-memberships-config.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-memberships-config.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-memberships-config.php' probe" | tee /tmp/memberships-before.json
+          jq -e '.ok and .environment == "production" and .inventory_read_only' /tmp/memberships-before.json > /dev/null
+          if [ "$REZIM" != probe ]; then
+            production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-memberships-config.php' '$REZIM'"
+            production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-memberships-config.php' probe" | tee /tmp/memberships-after.json
+            jq -e --arg mode "$REZIM" --slurpfile before /tmp/memberships-before.json \
+              '.ok and .environment == "production" and (.automation_enabled == ($mode == "enable")) and (.unchanged_flags == $before[0].unchanged_flags)' \
+              /tmp/memberships-after.json > /dev/null
+          fi
+
+      - name: Uklidit dočasný nástroj
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/run-memberships-config.php /tmp/memberships-before.json /tmp/memberships-after.json
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f '$DEPLOY_BASE/run-memberships-config.php' '$DEPLOY_BASE/configure-production-memberships.php'"
+          fi
