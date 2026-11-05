@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       rezim:
-        description: Ověřit, zapnout nebo vypnout pravidelné zpracování (bez změny pošty)
+        description: Ověřit nebo samostatně přepnout pravidelné zpracování či jeho poštu
         required: true
         type: choice
-        options: [probe, enable, disable]
+        options: [probe, enable, disable, mail-enable, mail-disable]
       potvrzeni:
-        description: OVERIT-CLENSTVI, ZAPNOUT-CLENSTVI nebo VYPNOUT-CLENSTVI
+        description: OVERIT-CLENSTVI, ZAPNOUT-CLENSTVI, VYPNOUT-CLENSTVI, ZAPNOUT-POSTU-CLENSTVI nebo VYPNOUT-POSTU-CLENSTVI
         required: true
         type: string
 
@@ -41,6 +41,7 @@ jobs:
           set -euo pipefail
           case "$REZIM:$POTVRZENI" in
             probe:OVERIT-CLENSTVI|enable:ZAPNOUT-CLENSTVI|disable:VYPNOUT-CLENSTVI) ;;
+            mail-enable:ZAPNOUT-POSTU-CLENSTVI|mail-disable:VYPNOUT-POSTU-CLENSTVI) ;;
             *) echo 'Neplatný režim nebo potvrzení.'; exit 1 ;;
           esac
 
@@ -101,9 +102,17 @@ jobs:
           if [ "$REZIM" != probe ]; then
             production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-memberships-config.php' '$REZIM'"
             production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-memberships-config.php' probe" | tee /tmp/memberships-after.json
-            jq -e --arg mode "$REZIM" --slurpfile before /tmp/memberships-before.json \
-              '.ok and .environment == "production" and (.automation_enabled == ($mode == "enable")) and (.unchanged_flags == $before[0].unchanged_flags)' \
-              /tmp/memberships-after.json > /dev/null
+            if [[ "$REZIM" == mail-* ]]; then
+              jq -e --arg mode "$REZIM" --slurpfile before /tmp/memberships-before.json \
+                '.ok and .environment == "production" and (.automation_enabled == $before[0].automation_enabled)
+                and (.unchanged_flags.MONTHLY_MEMBERSHIP_MAIL_ENABLED == ($mode == "mail-enable"))
+                and ((.unchanged_flags | del(.MONTHLY_MEMBERSHIP_MAIL_ENABLED)) == ($before[0].unchanged_flags | del(.MONTHLY_MEMBERSHIP_MAIL_ENABLED)))' \
+                /tmp/memberships-after.json > /dev/null
+            else
+              jq -e --arg mode "$REZIM" --slurpfile before /tmp/memberships-before.json \
+                '.ok and .environment == "production" and (.automation_enabled == ($mode == "enable")) and (.unchanged_flags == $before[0].unchanged_flags)' \
+                /tmp/memberships-after.json > /dev/null
+            fi
           fi
 
       - name: Uklidit dočasný nástroj
