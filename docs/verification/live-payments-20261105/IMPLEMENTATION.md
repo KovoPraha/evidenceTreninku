@@ -6,6 +6,9 @@ Vlastník požaduje produkci s ostrými daty, bez provider sandboxu; následně
 výslovně zvolil použití stávajícího KIS_SUMUP_API_KEY v production Environment.
 Hodnoty klíčů se nečtou do chatu ani neukládají do důkazů.
 
+Následné sloučení, nasazení a schválenou aktivaci dokládá samostatný
+[protokol aktivace](ACTIVATION.md); níže zůstává původní přípravný snapshot.
+
 ## Výchozí ověření a Fio
 
 Základ je main f7bf825d, živý aplikační release bc627ab1. Vlastní worktree

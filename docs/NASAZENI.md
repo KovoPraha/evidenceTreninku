@@ -95,6 +95,21 @@ import navíc vyžaduje produkční `FIO_IMPORT_ENABLED=true`. Automatické potv
 plateb řídí nezávislý `FIO_AUTO_CONFIRM_ENABLED` a spustí se až po dotažení
 historie. Běžný deploy žádný z těchto přepínačů nezapíná.
 
+Schválenou aktivaci 5. 11. 2026, importovanou historii, skutečně ověřené běhy
+a otevřené meze dokládá [protokol ostrých plateb](verification/live-payments-20261105/ACTIVATION.md).
+Aktuální flags jsou výhradně v [CURRENT_STATE](CURRENT_STATE.md).
+Při přejímce plánu ověřit event `schedule` a úspěšný job; ruční dispatch sám
+nepotvrzuje vykonání plánovače.
+
+SumUp spravuje chráněné `configure-sumup-production.yml`: `verify` s potvrzením
+`OVERIT-SUMUP-LIVE` čte kartu CZK, oprávnění API a platební režimy bez checkoutu
+či úhrady. Samotné globální zapnutí nestačí: nabídka musí mít povolenou kartu.
+Nové produkty vyžadují vlastní výslovné nastavení; staré objednávky používají
+uložený snapshot. Pro hromadné změny slouží `configure-payment-policies-production.yml`
+s čtecím `preview`, přesným počtem/manifestem a následným schváleným `apply`.
+Detaily v [pravidlech dávky](verification/live-payments-20261105/PRODUCT-POLICY-PLAN.md).
+Platební aktivace není schválení přihlášeného UAT ani důkaz skutečné úhrady.
+
 `DEPLOY_TOKEN` ani `PROD_CONFIG` se už nepoužívají. `config.php` musí být na
 serveru nahraný před prvním nasazením, například přes Total Commander. Workflow
 jej nikdy nevytváří ani nepřepisuje, protože před první ověřenou zálohou nesmí

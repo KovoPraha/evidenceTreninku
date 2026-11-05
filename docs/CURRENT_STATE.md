@@ -1,10 +1,10 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po vydání PR #305 a produkčním ověření.
+Aktualizováno 5. 11. 2026 (Europe/Prague), po aktivaci ostrých plateb Fio a SumUp.
+
+- **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** opravy #308 nasazené, bankovní historie do 5. 11. importovaná, automatické párování zapnuté. Karta povolená všem 223 aktivním produktům pro nové objednávky; 8 starých plateb zachováno. Živá úhrada a první přirozený běh plánu ještě nedoložené.
 
 - **[PR #305 sloučený a nasazený](verification/functional-round10-release-20261105/RESULTS.md):** vratky zachovávají objednávku a stránkují úplnou historii. Linux i deploy 2009/38764, HTTP před/po 48/48 a izolovaná obnova PASS. Přihlášený čtecí Chrome PASS v dostupném rozsahu; heslo/T07 vynechané.
-
-- **[PR #300 sloučený a nasazený](verification/functional-round9-release-20261105/RESULTS.md):** souhrn se přeskočí při opt-out nebo změně rodinného oprávnění během sestavování. Nové CI a deploy 1997/38644; MariaDB 10.3/11.4 po 49 kontrolách, HTTP před/po 42/42 a izolovaná obnova PASS. Přihlášené produkční UAT bez relace NOT RUN; heslo/T07 vynechané.
 
 - **[Osmý funkční průchod](verification/functional-uat-round8-20261104/RESULTS.md):** příprava období, hierarchie ke dni lekce, věkové návrhy a stránkování. Skutečný místní browser, 25 kontrol HTTP/model/persistence a cílené 21/190 PASS; všech 12 doménových snapshotů shodných. Bez nové chyby runtime.
 
@@ -46,19 +46,18 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po vydání PR #305 a produkčním o
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `bc627ab12c22ba16feb0ca6cba3340fb87de31a9`,
-  [deploy 41987993980](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41987993980) SUCCESS.
-  Oprava vratek #305 zachovává TV programy a schválený datový převod; převod se neopakoval.
-  [Protokol](verification/functional-round10-release-20261105/RESULTS.md), [porovnání](verification/functional-round10-release-20261105/release-comparison.json).
-  Živé SHA potvrdil audit 41988846624, oba změněné soubory log aktivace; nejde o úplnou hash inventuru.
-- **Ověření:** všech 11 kontrol #305 PASS, sloučený strom shodný s ověřeným.
-  Linux i deploy 2009 testů / 38764 assertions bez skipů; MariaDB 10.3/11.4, PHPStan/styl a audit PASS.
-  HTTP před/po 48/48; Chrome ověřil testovací objednávku, návrat, chyby a tři pracovní kontexty.
-  Trenérský kontext odmítnutý; bez skladových/finančních zápisů, původní TV kontext obnovený.
-  Produkce nemá vratkové případy; historii nad 100 a křížené zápisy dokládá místní sada/CI. Heslo/T07 vynechané.
+- **Živé vydání:** `436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d`,
+  [deploy 42006918844](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42006918844) SUCCESS.
+  Opravy #308 ověřují autoritativní detail SumUp a odmítají Fio pohyb starší než platba.
+  [Protokol](verification/live-payments-20261105/ACTIVATION.md), [porovnání](verification/live-payments-20261105/release-comparison.json); audit 42010713390 potvrdil živé SHA/flags.
+  Log aktivace dokládá změněné soubory; nejde o úplnou hash inventuru. Provozní #309/#310 nevyžadují deploy aplikace.
+- **Ověření:** všech 11 kontrol #308 PASS, sloučený strom shodný s ověřeným.
+  Linux i deploy 2014 testů / 38866 assertions bez skipů; MariaDB 10.3/11.4, PHPStan/styl PASS.
+  Cílené 57/413 a provozní 5/35 PASS, HTTP před/po 54/54; živá karta CZK a čtecí API PASS.
+  Chrome přesměroval na login; přihlášené platební UAT a skutečná úhrada NOT RUN. Heslo/T07 vynechané.
 - **Záloha a schéma:** čerstvá záloha vydání, 347 tabulek / 2 triggery;
-  [izolovaná obnova 41988855944](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41988855944) PASS včetně počtů všech tabulek.
-  SHA-256 `3a45fc043fc25b8d9220fdc43a103dabb74431dce45d8143ee27e19f0cba3bbd`.
+  [izolovaná obnova 42008819858](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42008819858) PASS včetně počtů všech tabulek.
+  SHA-256 `3dfff45238ccd520a6ac798da071f94f5b5c00ae8f20e8639bdda8ab46fe92ea`.
   Schéma current / pending [], migrační ledger 150; dosavadní variabilní symboly zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
@@ -67,9 +66,9 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po vydání PR #305 a produkčním o
   Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
   návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
   [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).
-- **Konfigurace a flags:** čtecí audit po nasazení potvrdil Fio import/auto-confirm,
-  SumUp, Stripe a Velocota false; Packeta nedefinovaná, KIS canonical writes false.
-  UAT false, import false; žádné integrace nebyly aktivovány.
+- **Konfigurace a flags:** Fio import/auto-confirm a SumUp true; desetiminutový GitHub plán povolený.
+  Ruční živý worker PASS; první přirozený plánovaný běh se zatím nepozoroval.
+  Stripe/Velocota false, Packeta nedefinovaná, KIS canonical writes false; UAT/import false.
 - **Otevřené provozní převzetí:** lidská/účetní přejímka D12–D14, skutečná
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
