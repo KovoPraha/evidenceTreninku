@@ -1,8 +1,9 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po aktivaci ostrých plateb Fio a SumUp.
+Aktualizováno 5. 11. 2026 (Europe/Prague), po ověření hostingového Fio plánu a všech 45 čekajících pohybů.
 
-- **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** opravy #308 nasazené, bankovní historie do 5. 11. importovaná, automatické párování zapnuté. Karta povolená všem 223 aktivním produktům pro nové objednávky; 8 starých plateb zachováno. Živá úhrada a první přirozený běh plánu ještě nedoložené.
+- **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** karta pro 223 aktivních produktů / nové objednávky, 8 starých plateb zachováno.
+  **[Fio hostingový plán ověřený](verification/fio-followup-20261105/RESULTS.md):** dva skutečné importy, všech 45 pohybů bez shodného VS. Žádné vynucené přiřazení; skutečná placená úhrada stále nedoložená.
 
 - **[PR #305 sloučený a nasazený](verification/functional-round10-release-20261105/RESULTS.md):** vratky zachovávají objednávku a stránkují úplnou historii. Linux i deploy 2009/38764, HTTP před/po 48/48 a izolovaná obnova PASS. Přihlášený čtecí Chrome PASS v dostupném rozsahu; heslo/T07 vynechané.
 
@@ -46,18 +47,18 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po aktivaci ostrých plateb Fio a Su
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d`,
-  [deploy 42006918844](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42006918844) SUCCESS.
-  Opravy #308 ověřují autoritativní detail SumUp a odmítají Fio pohyb starší než platba.
-  [Protokol](verification/live-payments-20261105/ACTIVATION.md), [porovnání](verification/live-payments-20261105/release-comparison.json); audit 42010713390 potvrdil živé SHA/flags.
-  Log aktivace dokládá změněné soubory; nejde o úplnou hash inventuru. Provozní #309/#310 nevyžadují deploy aplikace.
-- **Ověření:** všech 11 kontrol #308 PASS, sloučený strom shodný s ověřeným.
-  Linux i deploy 2014 testů / 38866 assertions bez skipů; MariaDB 10.3/11.4, PHPStan/styl PASS.
-  Cílené 57/413 a provozní 5/35 PASS, HTTP před/po 54/54; živá karta CZK a čtecí API PASS.
-  Chrome přesměroval na login; přihlášené platební UAT a skutečná úhrada NOT RUN. Heslo/T07 vynechané.
+- **Živé vydání:** `504fd69a415488bbd4c4039e78311978a44f888c`,
+  [deploy 42019877235](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42019877235) SUCCESS.
+  Vydání #312 zachovává opravy #308; samostatný hostingový spouštěč používá kanonický Fio import.
+  [Protokol](verification/fio-followup-20261105/RESULTS.md), [porovnání](verification/fio-followup-20261105/release-comparison.json); audit 42021224333 potvrdil živé SHA/flags.
+  Log aktivace dokládá nový CLI soubor; vlastní cron/worker je mimo webroot. Nejde o úplnou hash inventuru.
+- **Ověření:** všech 11 kontrol #312 PASS, sloučený strom shodný s ověřeným.
+  Linux i deploy 2029 testů / 38953 assertions bez skipů; MariaDB 10.3/11.4, PHPStan/styl PASS.
+  Cílené Fio 35/233 PASS, HTTP před/po 57/57; ruční status nevytvářel heartbeat. Karta CZK ověřená při aktivaci.
+  Přihlášené platební UI UAT a skutečná úhrada NOT RUN v této vlně; heslo/T07 vynechané.
 - **Záloha a schéma:** čerstvá záloha vydání, 347 tabulek / 2 triggery;
-  [izolovaná obnova 42008819858](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42008819858) PASS včetně počtů všech tabulek.
-  SHA-256 `3dfff45238ccd520a6ac798da071f94f5b5c00ae8f20e8639bdda8ab46fe92ea`.
+  [izolovaná obnova 42020816687](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42020816687) PASS včetně počtů všech tabulek.
+  SHA-256 `897e4bd44e37da88caa0fae427175ccb3d36e243a5db5c09f61a239a59d2c33e`.
   Schéma current / pending [], migrační ledger 150; dosavadní variabilní symboly zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
@@ -66,8 +67,8 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po aktivaci ostrých plateb Fio a Su
   Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
   návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
   [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).
-- **Konfigurace a flags:** Fio import/auto-confirm a SumUp true; desetiminutový GitHub plán povolený.
-  Ruční živý worker PASS; první přirozený plánovaný běh se zatím nepozoroval.
+- **Konfigurace a flags:** Fio import/auto-confirm a SumUp true; vlastní hostingový cron s minimálním odstupem 600 s.
+  Dva skutečné importy PASS; redundantní GitHub plán vypnutý repozitářovou proměnnou, ruční spuštění zachované.
   Stripe/Velocota false, Packeta nedefinovaná, KIS canonical writes false; UAT/import false.
 - **Otevřené provozní převzetí:** lidská/účetní přejímka D12–D14, skutečná
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
