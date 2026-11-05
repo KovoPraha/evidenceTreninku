@@ -80,3 +80,32 @@ Před nasazením použijte standardní CI, databázovou a souborovou zálohu,
 verzované migrace a samostatný produkční deploy. Před provozním převzetím
 ověřte čitelnost a fullscreen na fyzické TV; test v desktopovém prohlížeči
 nenahrazuje tento krok.
+
+## Samostatný produkční funkční test
+
+Ruční chráněný workflow **Produkcni provozni drill**, operace
+`overit-tv-programy`, má fáze `prepare` a `cleanup`. Příprava vytvoří novou
+jednoznačnou technickou identitu pouze s pozicí Obsluha TV. Nikdy nepoužije
+ani neobnovuje heslo existujícího účtu. Vyžaduje veřejný RSA-4096 SPKI klíč
+v base64. Přístup se předá výhradně v RSA-OAEP/SHA-256 šifrovaném artefaktu;
+soukromý klíč zůstává na počítači, kde poběží prohlížečový test.
+
+`tests/Support/TvProductionBrowserUat.cjs` provede běžné přihlášení,
+vytvoření jediného programu `TEST TV <číslo běhu>`, skutečné uploady dvou
+PNG, uložení a načtení textů/rozložení, zveřejnění, carousel a převzetí změn
+v již otevřené stránce. Nakonec program archivuje. Nesahá na jiné programy.
+Prohlížeč běží ze sítě, která má běžný přístup k produkci; test nemění síťová
+pravidla ani nepoužívá tunel k obcházení omezení GitHub runneru.
+
+Po každé přípravě je nutné spustit `cleanup` se stejným původním číslem běhu,
+i když prohlížečový test selže. Úklid znovu ověří původ identity, archivuje
+výhradně její testovací programy, deaktivuje technický i propojený zákaznický
+účet, odebere TV pozici a zneplatní relace. Ověří skutečné soubory JPEG proti
+databázovým otiskům a nezměněné původní programy. Teprve poté odstraní
+soukromé provozní soubory. Historie a obrázky archivovaného testu se zachovají
+pro audit; veřejně se nevydávají.
+
+Prohlížečový přepínač `--post-cleanup` ověří odmítnutí staré relace a HTTP 404
+u archivovaného vysílání a obou obrázků. Přihlašovací údaje, soukromý klíč
+a cookies nepatří do výsledků ani do Gitu. Výsledky a snímky testovacího
+obsahu se ukládají do `output/playwright/`.

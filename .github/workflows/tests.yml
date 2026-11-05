@@ -49,6 +49,9 @@ jobs:
       - name: Ověřit TV přehrávač a přebírání zveřejněných změn
         run: node --test tests/Support/TvPlayerSmoke.cjs
 
+      - name: Ověřit šifrovaný přenos vyhrazeného TV testovacího přístupu
+        run: node --test tests/Support/TvUatEnvelopeSmoke.cjs
+
       - name: Ověřit unixové hranice soukromého úložiště bez přeskočení
         run: |
           php -r 'if (PHP_OS_FAMILY !== "Linux") { exit(1); }'
