@@ -22,3 +22,7 @@ Příprava po technické přejímce B6, 5. 11. 2026. **Tento dokument není souh
 ## Při problému
 
 Zastavit další zápisy a zachovat nové doklady/audit; neobnovovat starou zálohu přes mezitím vzniklou skutečnou kasu bez odsouhlasení dopadů. Před první skutečnou operací lze použít připravený bod návratu. Po jejím vzniku je nutné určit osud nových finančních dat a souborů před rozhodnutím o návratu. DB a přílohy se posuzují jako jeden celek; chybějící nebo poškozený soubor znamená neúplnou obnovu.
+
+## Zahájené vydání po souhlasu vlastníka
+
+5. 11. 2026 vlastník v chatu výslovně povolil produkční nasazení („ok, tedy nasadit“). Následuje chráněné vydání modulu z ověřeného PR #306; není tím doložená lidská přejímka ani parita dosud nepřipraveného skutečného katalogového balíčku. Před vydáním se novou operací `vytvorit-uplnou-zalohu-a-obnovit` v chráněném `production-drills.yml` vytvoří čerstvá DB záloha a soukromý ZIP nynější aplikace včetně konfigurace a celého soukromého úložiště. ZIP se nepublikuje jako artefakt; na izolovaném runneru se obnoví každý soubor a porovná jeho velikost a SHA-256. SQL se obnoví do samostatné MariaDB včetně všech počtů a triggerů. Cílová aplikace ani zdrojový BAR se tím nemění. Skutečný import, přidělení konkrétních dalších účtů a přesměrování původního BAR se řídí samostatným konkrétním převodním podkladem, nevznikají automaticky při nasazení kódu.
