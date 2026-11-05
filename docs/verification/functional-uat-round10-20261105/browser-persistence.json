@@ -1,0 +1,328 @@
+{
+    "status": "PASS",
+    "tables": 40,
+    "before": {
+        "accounting_accounts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_adjustment_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_allocations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_classifications": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_series": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_batches": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_mutex": {
+            "count": 1,
+            "sha256": "bb41eeeedb7789a3482cc74a1ac8d84effb2a508b753948130e3958c39004120"
+        },
+        "accounting_issuer_versions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_ledger_mutex": {
+            "count": 1,
+            "sha256": "c5ef1394aa9ceafd6d4d780fb5edb882b4a8668c0097a455417f7b59976f5958"
+        },
+        "accounting_movement_sources": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_movements": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_reconciliations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_rules": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "family_weekly_summaries": {
+            "count": 78,
+            "sha256": "b98725ae0a01889c21957b041fe40d827552a71659a0ba89680dffbf31c4be06"
+        },
+        "family_weekly_summary_events": {
+            "count": 74,
+            "sha256": "325b511cfa7925a41ea64b089a8262193a9bf59da8a72c1266a4b87578d3ed5d"
+        },
+        "family_weekly_summary_preferences": {
+            "count": 2,
+            "sha256": "10bc04b2a19635ab00e6d324a7b181ae91bcd18bcff8bd01ec2e2baec2194f26"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_delivery_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillment_items": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_return_cases": {
+            "count": 137,
+            "sha256": "738be9e995c26da7c10617c9099cf2acec3415cca8efa37c76ddb03ffb34b2b7"
+        },
+        "shop_return_events": {
+            "count": 159,
+            "sha256": "c054961a884325d830c65d66ad13746f0af0a03e7e996f239c898fb9227195be"
+        },
+        "shop_return_finance_links": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_balances": {
+            "count": 6,
+            "sha256": "9915c4a021d804a8ed6b45e3442ac258afbed1ef4bd06998c531ee31eab6aa82"
+        },
+        "shop_stock_cost_revisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_counts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_lot_uses": {
+            "count": 6,
+            "sha256": "39dd96986e39667ab2e599c277919473e2bfe158d10183c823b453eddab183a2"
+        },
+        "shop_stock_lots": {
+            "count": 10,
+            "sha256": "4729c10ef04db478fe4ab4d330026ac1c3c37b0a64e5f5448f571df64f1605cb"
+        },
+        "shop_stock_movements": {
+            "count": 24,
+            "sha256": "82c08650c696bc194bb892b89fb750e6843ce567d7732ab9b3ae267844fa1eb4"
+        },
+        "shop_stock_policy": {
+            "count": 1,
+            "sha256": "5b8f8af64df3641959dcad05dea89049ae08c5f2a361e364e7f24528373a9ffd"
+        },
+        "shop_stock_reservations": {
+            "count": 6,
+            "sha256": "6e41f4c0cf557aaccea4a21404a555bac5d695afc9734b5e6fb8d15f6c7a130c"
+        },
+        "staff_user_positions": {
+            "count": 51,
+            "sha256": "80038e21f5a086de3e1622792db71931e7ae5ceabb42ed6057d5d576bde821c6"
+        }
+    },
+    "after": {
+        "accounting_accounts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_adjustment_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_allocations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_classifications": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_series": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_batches": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_mutex": {
+            "count": 1,
+            "sha256": "bb41eeeedb7789a3482cc74a1ac8d84effb2a508b753948130e3958c39004120"
+        },
+        "accounting_issuer_versions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_ledger_mutex": {
+            "count": 1,
+            "sha256": "c5ef1394aa9ceafd6d4d780fb5edb882b4a8668c0097a455417f7b59976f5958"
+        },
+        "accounting_movement_sources": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_movements": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_reconciliations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_rules": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "family_weekly_summaries": {
+            "count": 78,
+            "sha256": "b98725ae0a01889c21957b041fe40d827552a71659a0ba89680dffbf31c4be06"
+        },
+        "family_weekly_summary_events": {
+            "count": 74,
+            "sha256": "325b511cfa7925a41ea64b089a8262193a9bf59da8a72c1266a4b87578d3ed5d"
+        },
+        "family_weekly_summary_preferences": {
+            "count": 2,
+            "sha256": "10bc04b2a19635ab00e6d324a7b181ae91bcd18bcff8bd01ec2e2baec2194f26"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_delivery_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillment_items": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_return_cases": {
+            "count": 137,
+            "sha256": "738be9e995c26da7c10617c9099cf2acec3415cca8efa37c76ddb03ffb34b2b7"
+        },
+        "shop_return_events": {
+            "count": 159,
+            "sha256": "c054961a884325d830c65d66ad13746f0af0a03e7e996f239c898fb9227195be"
+        },
+        "shop_return_finance_links": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_balances": {
+            "count": 6,
+            "sha256": "9915c4a021d804a8ed6b45e3442ac258afbed1ef4bd06998c531ee31eab6aa82"
+        },
+        "shop_stock_cost_revisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_counts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_lot_uses": {
+            "count": 6,
+            "sha256": "39dd96986e39667ab2e599c277919473e2bfe158d10183c823b453eddab183a2"
+        },
+        "shop_stock_lots": {
+            "count": 10,
+            "sha256": "4729c10ef04db478fe4ab4d330026ac1c3c37b0a64e5f5448f571df64f1605cb"
+        },
+        "shop_stock_movements": {
+            "count": 24,
+            "sha256": "82c08650c696bc194bb892b89fb750e6843ce567d7732ab9b3ae267844fa1eb4"
+        },
+        "shop_stock_policy": {
+            "count": 1,
+            "sha256": "5b8f8af64df3641959dcad05dea89049ae08c5f2a361e364e7f24528373a9ffd"
+        },
+        "shop_stock_reservations": {
+            "count": 6,
+            "sha256": "6e41f4c0cf557aaccea4a21404a555bac5d695afc9734b5e6fb8d15f6c7a130c"
+        },
+        "staff_user_positions": {
+            "count": 51,
+            "sha256": "80038e21f5a086de3e1622792db71931e7ae5ceabb42ed6057d5d576bde821c6"
+        }
+    }
+}

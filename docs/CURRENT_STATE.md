@@ -1,10 +1,10 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po vydání PR #300 a jeho technickém ověření.
+Aktualizováno 5. 11. 2026 (Europe/Prague), po desátém funkčním průchodu; nová oprava zatím nenasazená.
+
+- **[Desátý funkční průchod](verification/functional-uat-round10-20261105/RESULTS.md):** F10 opravená místně: vratky zachovají objednávku a úplný přehled se stránkuje. Původní HTTP 33 před/po, nová sada 38 kontrol, souběhy MariaDB 19+6 a skutečný Chrome PASS. Oprava **nenasazená**; heslo/T07 vynechané.
 
 - **[PR #300 sloučený a nasazený](verification/functional-round9-release-20261105/RESULTS.md):** souhrn se přeskočí při opt-out nebo změně rodinného oprávnění během sestavování. Nové CI a deploy 1997/38644; MariaDB 10.3/11.4 po 49 kontrolách, HTTP před/po 42/42 a izolovaná obnova PASS. Přihlášené produkční UAT bez relace NOT RUN; heslo/T07 vynechané.
-
-- **[PR #297/#298 sloučené a nasazené](verification/functional-round7-release-20261104/RESULTS.md):** úplný filtr úrovní zapojení a stránkování; nově hlášená dev závislost opravena bez oslabení gate. CI i deploy 1983/38433, HTTP před/po 37/37 a izolovaná obnova PASS. Přihlášené produkční UAT bez relace NOT RUN; heslo/T07 vynechané.
 
 - **[Osmý funkční průchod](verification/functional-uat-round8-20261104/RESULTS.md):** příprava období, hierarchie ke dni lekce, věkové návrhy a stránkování. Skutečný místní browser, 25 kontrol HTTP/model/persistence a cílené 21/190 PASS; všech 12 doménových snapshotů shodných. Bez nové chyby runtime.
 
