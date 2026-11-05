@@ -210,6 +210,8 @@ function barLegacyUrlMain(): void
         $result['phase'] = 'complete';
     } catch (Throwable $error) {
         $result['error_type'] = get_debug_type($error);
+        $result['error_file'] = basename($error->getFile());
+        $result['error_line'] = $error->getLine();
         $result['message'] = 'bar_url_failed_inspect_before_retry';
     }
     $json = json_encode($result, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
