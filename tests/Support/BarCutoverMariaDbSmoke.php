@@ -12,6 +12,7 @@ $harness = new BarNativeHarness(__FILE__);
 $runtime = sys_get_temp_dir() . '/bar-cutover-native-' . bin2hex(random_bytes(6));
 $repository = dirname(__DIR__, 2);
 $port = (int)(getenv('BAR_SMOKE_DB_PORT') ?: 3306);
+$replacePassword = getenv('BAR_NATIVE_REPLACE_PASSWORD') === '1';
 foreach (['app/includes/bar', 'app/var', 'bar.kovopraha.cz/includes', 'bar.kovopraha.cz/img', 'backups/files', 'operation'] as $part) {
     mkdir($runtime . '/' . $part, 0700, true);
 }
@@ -32,7 +33,8 @@ try {
         ->execute(['img/Čaj 1 (malý).png']);
     $pdo->exec('CREATE TABLE jidlo_produkty_slozeni(produkt_id INT,slozka_id INT,mnozstvi INT) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE bar_uzivatele(id INT PRIMARY KEY,jmeno VARCHAR(100),heslo_hash VARCHAR(255),role VARCHAR(20),schvalen INT) ENGINE=InnoDB');
-    $pdo->prepare("INSERT INTO bar_uzivatele VALUES(77,'lucka',?,'prodejce',1)")->execute([password_hash('LOCALHOST-Lucka-Only', PASSWORD_DEFAULT)]);
+    $originalHash = $replacePassword ? 'LOCALHOST-unsupported-legacy' : password_hash('LOCALHOST-Lucka-Only', PASSWORD_DEFAULT);
+    $pdo->prepare("INSERT INTO bar_uzivatele VALUES(77,'LuCkA',?,'admin',1)")->execute([$originalHash]);
     $image = imagecreatetruecolor(8, 4);
     imagepng($image, $runtime . '/bar.kovopraha.cz/img/Čaj 1 (malý).png');
     imagedestroy($image);
@@ -53,6 +55,7 @@ try {
     }
     $environment = array_merge(getenv(), ['APP_HOST' => 'kis.kovopraha.cz', 'APP_ROOT' => $runtime . '/app',
         'BAR_LEGACY_ROOT' => $runtime . '/bar.kovopraha.cz', 'BAR_PACKAGE_PARENT' => $runtime . '/backups', 'BAR_PREPARE_RUN' => '123',
+        'BAR_LUCKA_REPLACE_PASSWORD' => $replacePassword ? '1' : '0',
         'APP_PRIVATE_STORAGE_ROOT' => $runtime . '/private', 'BAR_CUTOVER_PLAN' => $runtime . '/operation/plan.json']);
     $run = static function (string $code, array $env) use ($runtime): array {
         file_put_contents($runtime . '/operation/run.php', '<?php ' . $code);
@@ -74,6 +77,16 @@ try {
     $prepare = $run('require __DIR__ . "/bar-cutover-prepare.php"; barCutoverPrepareMain();', $environment);
     if (!$prepare['ready_for_import'] || !$prepare['shared_database'] || $prepare['products'] !== 1 || $prepare['images'] !== 1) {
         throw new RuntimeException('Native preparation or shared-database source handling failed.');
+    }
+    if ($prepare['lucka']['password_replaced'] !== $replacePassword || $prepare['lucka']['source_password_preserved'] === $replacePassword) {
+        throw new RuntimeException('Native credential-origin report differs.');
+    }
+    $replacement = null;
+    if ($replacePassword) {
+        $delivery = $runtime . '/backups/bar-transfer-credential-123.delivery.json';
+        $replacement = json_decode((string)file_get_contents($delivery), true, 8, JSON_THROW_ON_ERROR)['password'];
+        // The real preparation deletes plaintext after encrypted delivery; future source checks need only the private hash state.
+        unlink($delivery);
     }
     $plan = ['prepare_run' => '123', 'bundle_sha256' => $prepare['bundle_sha256'], 'release_sha' => str_repeat('a', 40),
         'administrator_name' => 'LOCALHOST Cutover Owner'];
@@ -103,6 +116,12 @@ try {
         || (int)$pdo->query('SELECT sklad+predsklad FROM jidlo_produkty')->fetchColumn() !== 70) {
         throw new RuntimeException('Applied cutover, permission scope or source immutability differs.');
     }
+    $targetHash = (string)$pdo->query("SELECT heslo FROM treneri WHERE jmeno='lucka'")->fetchColumn();
+    if (($replacePassword && !password_verify((string)$replacement, $targetHash))
+        || (!$replacePassword && $targetHash !== $originalHash)
+        || $pdo->query('SELECT heslo_hash FROM bar_uzivatele WHERE id=77')->fetchColumn() !== $originalHash) {
+        throw new RuntimeException('Credential preservation/replacement or source immutability failed.');
+    }
     $repeat = $run($operation, array_merge($environment, ['BAR_CUTOVER_MODE' => 'apply', 'BAR_CUTOVER_CONFIRM' => 'PREVEST_BAR']));
     if (!$repeat['import']['repeated'] || $repeat['permissions']['admin_added'] || $repeat['permissions']['consumption_added']) {
         throw new RuntimeException('Repeated cutover duplicated catalogue or permissions.');
@@ -110,7 +129,7 @@ try {
     echo json_encode(['ok' => true, 'source' => 'synthetic', 'shared_database' => true, 'unicode_image_reference' => true,
         'inspect_without_database_writes' => true, 'catalog_exact' => true, 'zero_stock' => true,
         'operator_only' => true, 'audited_admin_and_consumption' => true, 'repeated_without_duplicates' => true,
-        'production_mutations' => false], JSON_THROW_ON_ERROR) . PHP_EOL;
+        'password_replacement' => $replacePassword, 'source_credentials_unchanged' => true, 'production_mutations' => false], JSON_THROW_ON_ERROR) . PHP_EOL;
 } finally {
     $harness->close();
     $children = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($runtime, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST);

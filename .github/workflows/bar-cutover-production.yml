@@ -63,7 +63,7 @@ jobs:
           gh run download "$PREPARE" --repo "$GITHUB_REPOSITORY" --name "bar-transfer-prepare-$PREPARE" --dir "$TMP/preparation"
           HASH=$(jq -er '.bundle_sha256 | select(test("^[a-f0-9]{64}$"))' "$TMP/plan.json")
           jq -e --arg hash "$HASH" '.ok and .source_stable and .bundle_sha256 == $hash' "$TMP/preparation/prepare.json" >/dev/null
-          jq -e '.ok and .isolated and .verification.ok and .verification.password_preserved and .verification.operator_only and .verification.zero_stock and .replay_preserves_changes' "$TMP/preparation/rehearsal.json" >/dev/null
+          jq -e '.ok and .isolated and .verification.ok and .verification.credential_hash_matches_package and .verification.operator_only and .verification.zero_stock and .replay_preserves_changes' "$TMP/preparation/rehearsal.json" >/dev/null
           if [ "$MODE" = apply ]; then
             RESTORE=$(jq -er '.backup.restore_run | tostring | select(test("^[1-9][0-9]{0,19}$"))' "$TMP/plan.json")
             gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RESTORE" > "$TMP/restore-run.json"

@@ -96,7 +96,7 @@ function barVerifyInitialTransfer(PDO $pdo, array $bundle, string $imagesDirecto
         || (int)$pdo->query('SELECT import_run_id FROM kis_bar_state WHERE id=1')->fetchColumn() !== $runId) {
         throw new RuntimeException('Transfer provenance differs.');
     }
-    return ['ok' => true, 'catalog_exact' => true, 'images_exact' => true, 'password_preserved' => true,
+    return ['ok' => true, 'catalog_exact' => true, 'images_exact' => true, 'credential_hash_matches_package' => true,
         'operator_only' => true, 'technical_email' => true, 'zero_stock' => true, 'zero_operational_history' => true,
         'trainer_id' => $id, 'products' => count($products), 'categories' => count($categories),
         'recipes' => count($source['recipes']), 'images' => count($assets)];

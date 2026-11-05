@@ -55,6 +55,9 @@ jobs:
       - name: Ověřit šifrovaný přenos vyhrazeného TV testovacího přístupu
         run: node --test tests/Support/TvUatEnvelopeSmoke.cjs
 
+      - name: Ověřit šifrované předání případného nového hesla jediné barové obsluhy
+        run: node --test tests/Support/BarCredentialEnvelopeSmoke.cjs
+
       - name: Ověřit unixové hranice soukromého úložiště bez přeskočení
         run: |
           php -r 'if (PHP_OS_FAMILY !== "Linux") { exit(1); }'
@@ -300,7 +303,9 @@ jobs:
         run: php tests/Support/BarRecoveryMariaDbSmoke.php
 
       - name: Ověřit chráněný převod baru, původní fotografie a přidělení práv
-        run: php tests/Support/BarCutoverMariaDbSmoke.php
+        run: |
+          php tests/Support/BarCutoverMariaDbSmoke.php
+          BAR_NATIVE_REPLACE_PASSWORD=1 php tests/Support/BarCutoverMariaDbSmoke.php
 
       - name: Ověřit rodinný kalendář a cílené historické členství
         env:
