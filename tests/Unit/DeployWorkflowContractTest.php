@@ -362,14 +362,23 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('production_retry()', $retryScript);
         self::assertStringContainsString('production_retry_capture()', $retryScript);
         self::assertStringContainsString('ConnectionAttempts=3', $retryScript);
-        self::assertStringNotContainsString('upload-artifact', $workflow);
+        $tvArtifactStart = strpos($workflow, '      - name: Uchovat pouze bezpecne vysledky TV UAT');
+        $tvArtifactEnd = strpos($workflow, '      - name: Uklid docasnych dat drillu', $tvArtifactStart);
+        self::assertNotFalse($tvArtifactStart);
+        self::assertNotFalse($tvArtifactEnd);
+        $tvArtifact = substr($workflow, $tvArtifactStart, $tvArtifactEnd - $tvArtifactStart);
+        self::assertStringContainsString("if: always() && inputs.operace == 'overit-tv-programy'", $tvArtifact);
+        self::assertStringContainsString('output/playwright/tv-production-', $tvArtifact);
+        self::assertStringNotContainsString('credentials.json', $tvArtifact);
+        self::assertStringNotContainsString('browser-auth.json', $tvArtifact);
+        self::assertStringNotContainsString('upload-artifact', str_replace($tvArtifact, '', $workflow));
         self::assertStringNotContainsString('rsync', $workflow);
 
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $cleanup);
         self::assertStringContainsString("KIS_TEST_CLEANUP_CONFIRM", $cleanup);
         self::assertStringContainsString('secrets.KIS_TEST_ADMIN_PASSWORD', $workflow);
         self::assertStringContainsString('provision-production-test-admin.php', $workflow);
-        self::assertStringContainsString('.positions == 8 and .superadmin == true', $workflow);
+        self::assertStringContainsString('.positions == 9 and .superadmin == true', $workflow);
         self::assertStringNotContainsString('email REGEXP', $cleanup);
         self::assertStringContainsString("'tester.karel@velocota.com', 'tester.petra@velocota.com'", $cleanup);
         self::assertStringContainsString("'tester.spravce@velocota.com'", $cleanup);

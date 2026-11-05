@@ -14,6 +14,7 @@ on:
           - overit-ucetni-vazby
           - overit-uat-pripravenost
           - overit-dopad-kluboveho-vydani
+          - overit-tv-programy
           - pripravit-uat-ucty-a-data
           - obnovit-uat-test-hesla
           - deaktivovat-testovaci-ucty
@@ -21,6 +22,17 @@ on:
       potvrzeni:
         description: 'Pro spusteni napiste presne PROVEST'
         required: true
+        type: string
+      tv_uat_phase:
+        description: 'Pouze TV test: pripravit docasny pristup nebo uklidit vlastni test'
+        type: choice
+        default: prepare
+        options: [prepare, cleanup]
+      tv_uat_run_id:
+        description: 'Pouze TV cleanup: cislo puvodniho pripravneho behu'
+        type: string
+      tv_uat_public_key:
+        description: 'Pouze TV prepare: base64 verejneho RSA-4096 SPKI klice; nikdy soukromy klic'
         type: string
 
 permissions:
@@ -326,7 +338,7 @@ jobs:
           EOF
           production_retry "${SCP[@]}" /tmp/run-provision-production-test-admin.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-provision-production-test-admin.php"
           production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-provision-production-test-admin.php'" | tee /tmp/kis-test-admin-result.json
-          jq -e '.ok == true and .email == "tester.spravce@velocota.com" and .role == "admin" and .active == true and .password_verified == true and .positions == 8 and .superadmin == true' /tmp/kis-test-admin-result.json > /dev/null
+          jq -e '.ok == true and .email == "tester.spravce@velocota.com" and .role == "admin" and .active == true and .password_verified == true and .positions == 9 and .superadmin == true' /tmp/kis-test-admin-result.json > /dev/null
           echo 'KIS testovaci superadministrator byl vytvoren a overen.'
 
       - name: Precist dopad kluboveho vydani bez zmeny dat
@@ -360,6 +372,81 @@ jobs:
             production_ssh_init
             production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/club-release-impact.php' '$DEPLOY_BASE/run-club-release-impact.php'"
           fi
+
+      - name: Vytvorit vyhrazeny sifrovany TV pristup
+        if: inputs.operace == 'overit-tv-programy' && inputs.tv_uat_phase == 'prepare'
+        env:
+          TV_UAT_PUBLIC_KEY_B64: ${{ inputs.tv_uat_public_key }}
+        run: |
+          set -euo pipefail
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          test "$REMOTE_DIR" = 'kis.kovopraha.cz'
+          [[ "$GITHUB_RUN_ID" =~ ^[0-9]{8,20}$ ]]
+          test -n "$TV_UAT_PUBLIC_KEY_B64"
+          TV_TMP="$RUNNER_TEMP/kis-tv-uat-$GITHUB_RUN_ID"
+          install -d -m 700 "$TV_TMP"
+          TV_OUTPUT="$GITHUB_WORKSPACE/output/playwright/tv-production-$GITHUB_RUN_ID"
+          mkdir -p "$TV_OUTPUT"
+          echo "TV_UAT_PRIVATE_DIR=$TV_TMP" >> "$GITHUB_ENV"
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          TV_REMOTE="$DEPLOY_BASE/tv-uat-$GITHUB_RUN_ID"
+          production_retry "${SSH[@]}" "umask 077; mkdir -p '$TV_REMOTE'; chmod 700 '$TV_REMOTE'"
+          production_retry "${SCP[@]}" bin/tv-production-uat.php "$SSH_USER@$SSH_HOST:$TV_REMOTE/tv-production-uat.php"
+          for TV_ACTION in prepare cleanup; do
+            cat > "$TV_TMP/run-$TV_ACTION.php" <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('TV_UAT_CONFIRM=OVERIT-TV-PRODUKCI');
+          putenv('TV_UAT_RUN_ID=$GITHUB_RUN_ID');
+          putenv('TV_UAT_ACTION=$TV_ACTION');
+          require __DIR__ . '/tv-production-uat.php';
+          try { exit(tvUatMain()); } catch (Throwable \$e) { fwrite(STDERR, 'TV UAT operation failed: ' . get_class(\$e) . PHP_EOL); exit(1); }
+          EOF
+            production_retry "${SCP[@]}" "$TV_TMP/run-$TV_ACTION.php" "$SSH_USER@$SSH_HOST:$TV_REMOTE/run-$TV_ACTION.php"
+          done
+          production_retry_capture "${SSH[@]}" "php '$TV_REMOTE/run-prepare.php'" > "$TV_OUTPUT/prepare.json"
+          jq -e '.ok == true and .prepared == true' "$TV_OUTPUT/prepare.json" >/dev/null
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$TV_REMOTE/credentials.json" "$TV_TMP/credentials.json"
+          chmod 600 "$TV_TMP/credentials.json"
+          TV_UAT_EXPECTED_RUN_ID="$GITHUB_RUN_ID" TV_UAT_CREDENTIALS_FILE="$TV_TMP/credentials.json" TV_UAT_ENVELOPE_FILE="$TV_OUTPUT/credentials.enc" node tests/Support/TvUatCredentialEnvelope.cjs --seal
+
+      - name: Archivovat pouze vlastni TV test a zneplatnit pristup
+        if: inputs.operace == 'overit-tv-programy' && inputs.tv_uat_phase == 'cleanup'
+        env:
+          TV_UAT_TARGET_RUN: ${{ inputs.tv_uat_run_id }}
+        run: |
+          set -euo pipefail
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          test "$REMOTE_DIR" = 'kis.kovopraha.cz'
+          [[ "$TV_UAT_TARGET_RUN" =~ ^[0-9]{8,20}$ ]]
+          TV_OUTPUT="$GITHUB_WORKSPACE/output/playwright/tv-production-$GITHUB_RUN_ID"
+          mkdir -p "$TV_OUTPUT"
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          TV_REMOTE="$DEPLOY_BASE/tv-uat-$TV_UAT_TARGET_RUN"
+          production_retry_capture "${SSH[@]}" "php '$TV_REMOTE/run-cleanup.php'" > "$TV_OUTPUT/cleanup.json"
+          jq -e '.ok == true' "$TV_OUTPUT/cleanup.json" >/dev/null
+          production_retry "${SSH[@]}" "rm -f -- '$TV_REMOTE/credentials.json' '$TV_REMOTE/tv-production-uat.php' '$TV_REMOTE/run-prepare.php' '$TV_REMOTE/run-cleanup.php'; rmdir '$TV_REMOTE'"
+
+      - name: Odstranit docasne nesifrovane TV udaje z runneru
+        if: always() && inputs.operace == 'overit-tv-programy'
+        run: |
+          if [ -n "${TV_UAT_PRIVATE_DIR:-}" ]; then
+            rm -f -- "$TV_UAT_PRIVATE_DIR/credentials.json"
+          fi
+
+      - name: Uchovat pouze bezpecne vysledky TV UAT
+        if: always() && inputs.operace == 'overit-tv-programy'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: tv-production-uat-${{ github.run_id }}
+          path: |
+            output/playwright/tv-production-${{ github.run_id }}/prepare.json
+            output/playwright/tv-production-${{ github.run_id }}/cleanup.json
+            output/playwright/tv-production-${{ github.run_id }}/credentials.enc
+          retention-days: 14
 
       - name: Uklid docasnych dat drillu
         if: always()
