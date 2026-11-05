@@ -1,0 +1,166 @@
+name: Pripravit skutecny prevod BAR
+
+on:
+  workflow_dispatch:
+    inputs:
+      potvrzeni:
+        description: 'Cte zdroj a cil; vytvori soukromy balicek a izolovany nacvik. Napiste PRIPRAVIT.'
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  BACKUP_DIR: data/.kis-backups
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - name: Overit rozsah
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/main'
+          test "$POTVRZENI" = 'PRIPRAVIT'
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          test -n "$REMOTE_DIR"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql, mbstring, gd
+          coverage: none
+
+      - name: Pripravit overene SSH spojeni
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for promenna in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!promenna}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = '22' ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Pouze ctenim sestavit soukromy balicek a inventuru
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/bar-cutover-prepare.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/bar-cutover-prepare.php"
+          cat > /tmp/run-bar-cutover-prepare.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('BAR_LEGACY_ROOT=bar.kovopraha.cz');
+          putenv('BAR_PACKAGE_PARENT=' . dirname(__DIR__) . '/.kis-backups');
+          putenv('BAR_PREPARE_RUN=$GITHUB_RUN_ID');
+          require __DIR__ . '/bar-cutover-prepare.php';
+          barCutoverPrepareMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-bar-cutover-prepare.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-bar-cutover-prepare.php"
+          install -d -m 700 /tmp/kis-bar-transfer-$GITHUB_RUN_ID
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-bar-cutover-prepare.php'" > /tmp/kis-bar-transfer-$GITHUB_RUN_ID/prepare.json
+          jq -e '.ok and .read_only_databases and .source_stable and .ready_for_rehearsal' /tmp/kis-bar-transfer-$GITHUB_RUN_ID/prepare.json >/dev/null
+          cat /tmp/kis-bar-transfer-$GITHUB_RUN_ID/prepare.json
+          production_retry "${SSH[@]}" "umask 077; tar -czf '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz' -C '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID' bundle.json images"
+          production_retry_capture "${SSH[@]}" "sha256sum '$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz'" > /tmp/kis-bar-transfer-$GITHUB_RUN_ID/archive.sha256
+          production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$BACKUP_DIR/bar-transfer-$GITHUB_RUN_ID.tar.gz" /tmp/kis-bar-transfer-$GITHUB_RUN_ID/package.tar.gz
+          python3 - <<'PY'
+          import hashlib, os, pathlib, tarfile
+          root = pathlib.Path('/tmp/kis-bar-transfer-' + os.environ['GITHUB_RUN_ID'])
+          archive = root / 'package.tar.gz'
+          assert archive.stat().st_size < 512 * 1024 * 1024
+          assert hashlib.file_digest(archive.open('rb'), 'sha256').hexdigest() == (root / 'archive.sha256').read_text().split()[0]
+          seen = set()
+          total = 0
+          with tarfile.open(archive, 'r:gz') as tar:
+              for member in tar:
+                  path = pathlib.PurePosixPath(member.name)
+                  assert not path.is_absolute() and '..' not in path.parts and member.name not in seen
+                  seen.add(member.name)
+                  assert (member.name == 'bundle.json' and member.isfile()) or (path.parts[0] == 'images' and len(path.parts) <= 2)
+                  assert member.isfile() or member.isdir()
+                  total += member.size
+                  assert total <= 300 * 1024 * 1024
+                  target = root / 'package' / path
+                  if member.isdir(): target.mkdir(parents=True, exist_ok=True, mode=0o700)
+                  else:
+                      target.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+                      with target.open('xb') as dst, tar.extractfile(member) as src:
+                          os.chmod(target, 0o600)
+                          while chunk := src.read(1024 * 1024): dst.write(chunk)
+          PY
+
+      - name: Prevest skutecny balicek do izolovane prazdne MariaDB
+        run: |
+          set -euo pipefail
+          if ! command -v mariadb >/dev/null; then sudo apt-get update -qq; sudo apt-get install -y -qq mariadb-client; fi
+          PASSWORD=$(openssl rand -hex 24)
+          echo "::add-mask::$PASSWORD"
+          echo "BAR_REHEARSAL_PASSWORD=$PASSWORD" >> "$GITHUB_ENV"
+          docker run -d --name kis-bar-rehearsal-$GITHUB_RUN_ID -p 127.0.0.1:13317:3306 -e MARIADB_ROOT_PASSWORD="$PASSWORD" mariadb:11.4 >/dev/null
+          READY=0
+          for i in $(seq 1 60); do
+            if docker exec kis-bar-rehearsal-$GITHUB_RUN_ID mariadb -uroot -p"$PASSWORD" -Nse 'SELECT 1' >/dev/null 2>&1; then READY=1; break; fi
+            sleep 1
+          done
+          test "$READY" = 1
+          docker exec kis-bar-rehearsal-$GITHUB_RUN_ID mariadb -uroot -p"$PASSWORD" -e 'CREATE DATABASE evidence_bar_test_cutover CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+          export BAR_TARGET_DSN='mysql:host=127.0.0.1;port=13317;dbname=evidence_bar_test_cutover;charset=utf8mb4'
+          export BAR_TARGET_USER=root BAR_TARGET_PASSWORD="$PASSWORD" BAR_REHEARSAL_PORT=13317
+          export BAR_REHEARSAL_PACKAGE=/tmp/kis-bar-transfer-$GITHUB_RUN_ID/package
+          export APP_PRIVATE_STORAGE_ROOT=/tmp/kis-bar-transfer-$GITHUB_RUN_ID/private
+          php bin/bar-transfer-rehearsal.php > /tmp/kis-bar-transfer-$GITHUB_RUN_ID/rehearsal.json
+          jq -e '.ok and .isolated and .verification.ok and .replay_preserves_changes' /tmp/kis-bar-transfer-$GITHUB_RUN_ID/rehearsal.json >/dev/null
+          cat /tmp/kis-bar-transfer-$GITHUB_RUN_ID/rehearsal.json
+
+      - name: Uchovat pouze necitlive vysledky
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: bar-transfer-prepare-${{ github.run_id }}
+          path: |
+            /tmp/kis-bar-transfer-${{ github.run_id }}/prepare.json
+            /tmp/kis-bar-transfer-${{ github.run_id }}/rehearsal.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Odstranit docasne citlive soubory runneru
+        if: always()
+        run: |
+          docker rm -f kis-bar-rehearsal-$GITHUB_RUN_ID >/dev/null 2>&1 || true
+          rm -rf -- /tmp/kis-bar-transfer-$GITHUB_RUN_ID
+          rm -f -- /tmp/run-bar-cutover-prepare.php
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/bar-cutover-prepare.php' '$DEPLOY_BASE/run-bar-cutover-prepare.php'" || true
+          fi

@@ -83,3 +83,12 @@ Vlastník schválil pokračování bez nasazení. Práce zůstává ve stejné v
 Dokončení místní B6: [výsledky přejímky](verification/bar-acceptance-20261105/RESULTS.md) dokládají obnovu naplněné DB a souborů, skutečný výpadek a ztracenou odpověď, nouzové vypořádání a UTC/DST bez změny sdíleného PDO. Navazuje [příprava B7](BAR_PRODUCTION_READINESS_2026-11-05.md) a [návrh účetního adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md). Linux CI přesného headu zůstává samostatnou branou v PR; produkční přechod vyžaduje nový výslovný souhlas.
 
 Produkční vydání kódu po novém souhlasu vlastníka: [protokol B7](verification/bar-release-20261105/RESULTS.md). Nezaměňovat nasazený modul s dosud neprovedeným převodem skutečného katalogu a lucky nebo s lidskou provozní přejímkou.
+
+## B7: skutečný katalog a lucka po nasazení modulu
+
+Vlastník schválil nasazení a navazující pokračování. Další práce je oddělená ve větvi `codex/bar-cutover-20261105`, z aktuálního `main`; původní rozpracovaný BAR se nemění.
+
+1. Chráněné ruční workflow z `main` načte na hostingu pouze katalog, receptury a lucku ze zdrojové aplikace `bar.kovopraha.cz`. Obě databáze se pouze čtou. Podporovaný hash hesla i fotografie uloží do soukromého balíčku mimo oba webrooty, nikoli do Gitu nebo veřejného artefaktu. Dvojí snímek kontroluje změny během kopírování.
+2. Čtecí inventura cíle doloží prázdný bar, kolize jména/e-mailu a skutečné počty zdroje. Balíček se přenese jen na dočasný runner a importuje do oddělené MariaDB s plným syntetickým schématem KIS. Porovnají se všechna pole, receptury, soubory a omezení účtu; opakování musí zachovat pozdější cenu a zásoby. Výstup obsahuje pouze souhrn kontrol, nikoli zdrojové řádky ani přihlašovací hash.
+3. Až po úspěšném skutečném nácviku naváže samostatný řízený produkční import konkrétního otisku, s čerstvou zálohou, existujícím oprávněným aktorem, ochranou před kolizemi a opakováním. Lokální CLI si zachovává zákaz připojení k produkčnímu cíli. Zásoby a provozní historie začínají nulou; nepřidávají se zákaznické vazby, pošta, bankovní nebo účetní automatizace.
+4. Následuje čtecí porovnání skutečného cíle a přihlášený průchod katalogu/fotografií. Přihlášení lucky vyžaduje její známé heslo nebo samostatně vyřešenou změnu; nepředstírat ho testem hashe. Přidělení správy baru a spotřeby existujícím lidem vyžaduje jednoznačná ID. Přesměrování staré domény naváže až na ověřený převod a přístup; původní zdroj se nemaže.
