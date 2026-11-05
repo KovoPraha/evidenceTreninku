@@ -111,6 +111,7 @@ function barCutoverPrepare(): array
         $q = $target->prepare('SELECT COUNT(*) FROM verejni_uzivatele WHERE LOWER(TRIM(email))=?');
         $q->execute(['info1@kovopraha.cz']);
         $publicCollisions = (int)$q->fetchColumn();
+        $clock = (string)$target->query('SELECT clock_contract FROM kis_bar_state WHERE id=1')->fetchColumn();
         $target->commit();
     } catch (Throwable $error) {
         if ($target->inTransaction()) {
@@ -124,8 +125,8 @@ function barCutoverPrepare(): array
         'images' => count($bundle['images']), 'image_bytes' => array_sum(array_column($bundle['images'], 'byte_size')),
         'lucka' => ['accounts' => 1, 'password_supported' => true, 'technical_email' => true, 'position' => 'bar_operator'],
         'target_counts' => $counts, 'staff_collisions' => $staffCollisions, 'public_collisions' => $publicCollisions,
-        'target_empty' => array_sum($counts) === 0, 'ready_for_rehearsal' => true,
-        'ready_for_import' => array_sum($counts) === 0 && $staffCollisions === 0 && $publicCollisions === 0,
+        'target_empty' => array_sum($counts) === 0, 'clock_contract' => $clock, 'ready_for_rehearsal' => true,
+        'ready_for_import' => array_sum($counts) === 0 && $staffCollisions === 0 && $publicCollisions === 0 && $clock === 'utc-v1',
         'source_stable' => true, 'source_writes' => false, 'target_writes' => false];
 }
 

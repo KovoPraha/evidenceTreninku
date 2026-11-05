@@ -83,6 +83,7 @@ final class BarTransferTest extends TestCase
             'position' => ["UPDATE staff_user_positions SET position_code='bar_admin' WHERE trainer_id=(SELECT id FROM treneri WHERE jmeno='lucka')"],
             'image metadata' => ['UPDATE kis_bar_assets SET width_px=width_px+1'],
             'image content' => [null],
+            'time contract' => ["UPDATE kis_bar_state SET clock_contract='legacy-local'"],
         ];
     }
 

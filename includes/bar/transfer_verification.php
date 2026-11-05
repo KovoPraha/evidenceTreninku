@@ -8,6 +8,9 @@ require_once __DIR__ . '/transfer_package.php';
 function barVerifyInitialTransfer(PDO $pdo, array $bundle, string $imagesDirectory): array
 {
     $bundle = barValidateTransferBundle($bundle, $imagesDirectory);
+    if ($pdo->query('SELECT clock_contract FROM kis_bar_state WHERE id=1')->fetchColumn() !== 'utc-v1') {
+        throw new RuntimeException('Initial time contract differs.');
+    }
     $source = ['categories' => [], 'products' => [], 'recipes' => []];
     $categories = [];
     foreach ($pdo->query('SELECT * FROM kis_bar_categories ORDER BY source_id')->fetchAll(PDO::FETCH_ASSOC) as $row) {
