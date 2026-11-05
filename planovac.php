@@ -1282,8 +1282,7 @@ document.addEventListener('DOMContentLoaded', toggleTrenerFilter);
         if (!skupinyIds.length)  { showToast('Vyberte alespoň jednu skupinu.', 'warning'); return; }
 
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1">
-</span>Odesílám…';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Odesílám…';
 
         fetch('ajax_nova_oznameni.php', {
             method: 'POST',
@@ -1293,8 +1292,7 @@ document.addEventListener('DOMContentLoaded', toggleTrenerFilter);
         .then(r => r.json())
         .then(data => {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-send me-1">
-</i>Odeslat oznámení';
+            btn.innerHTML = '<i class="bi bi-send me-1"></i>Odeslat oznámení';
             if (data.ok) {
                 bootstrap.Modal.getInstance(document.getElementById('modalNoveOznameni')).hide();
                 showToast('Oznámení odesláno skupině.', 'success');
@@ -1306,8 +1304,7 @@ document.addEventListener('DOMContentLoaded', toggleTrenerFilter);
         })
         .catch(() => {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-send me-1">
-</i>Odeslat oznámení';
+            btn.innerHTML = '<i class="bi bi-send me-1"></i>Odeslat oznámení';
             showToast('Chyba sítě.', 'danger');
         });
     });

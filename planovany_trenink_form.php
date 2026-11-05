@@ -599,7 +599,6 @@ nevyberete, stará vazba zůstane zachována.</div>
     updateUI();
 })();
 </script>
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js">
-</script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script>
 </body>
 </html>

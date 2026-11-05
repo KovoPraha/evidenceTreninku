@@ -649,8 +649,7 @@ foreach ($opts as $k => $lbl):
    TAGY: chipy + hidden JSON
 ---------------------------- */
 (function(){
-    const TAGS = <?= json_encode($tagyAll, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
-?>;
+    const TAGS = <?= json_encode($tagyAll, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     const input = document.getElementById('tag_input');
     const sug   = document.getElementById('tag_suggestions');
     const wrap  = document.getElementById('tag_selected');
@@ -761,10 +760,8 @@ foreach ($opts as $k => $lbl):
    MĚŘENÍ: render řádků z hidden JSON + možnost přidat řádek
 ---------------------------- */
 (function(){
-    const CVIKY = <?= json_encode($cviky, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
-?>;
-    const SEGMENTY = <?= json_encode($segmenty, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)
-?>;
+    const CVIKY = <?= json_encode($cviky, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const SEGMENTY = <?= json_encode($segmenty, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
     const form = document.getElementById('treninkForm');
     const btnAdd = document.getElementById('btnAddMereni');
@@ -783,8 +780,7 @@ foreach ($opts as $k => $lbl):
             const sel = (String(c.id) === String(selectedId)) ? 'selected' : '';
             return `<option value="${escapeHtml(c.id)}" ${sel}>${escapeHtml(c.nazev)}</option>`;
         }).join('');
-        return `<select class="form-select js-cvik_id" aria-label="Cvik">
-<option value="">— vyber cvik —</option>${opts}</select>`;
+        return `<select class="form-select js-cvik_id" aria-label="Cvik"><option value="">— vyber cvik —</option>${opts}</select>`;
     }
 
     function buildSegmentSelect(selectedId, kategorie) {
@@ -796,8 +792,7 @@ foreach ($opts as $k => $lbl):
             const sel = (String(s.id) === String(selectedId)) ? 'selected' : '';
             return `<option value="${escapeHtml(s.id)}" ${sel}>${escapeHtml(s.nazev)}</option>`;
         }).join('');
-        return `<select class="form-select js-segment_id" aria-label="Segment">
-<option value="">— vyber segment —</option>${opts}</select>`;
+        return `<select class="form-select js-segment_id" aria-label="Segment"><option value="">— vyber segment —</option>${opts}</select>`;
     }
 
     function renderFields(row) {
@@ -815,9 +810,7 @@ foreach ($opts as $k => $lbl):
                         <div class="input-group">
                             <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" aria-label="Vzdálenost" placeholder="Vzdálenost">
                             <select class="form-select js-distance-unit" aria-label="Jednotka vzdálenosti">
-                                <option value="">jednotka</option>
-<option value="m">m</option>
-<option value="km">km</option>
+                                <option value="">jednotka</option><option value="m">m</option><option value="km">km</option>
                             </select>
                         </div>
                         <div class="invalid-feedback">Vyplňte vzdálenost i jednotku m nebo km.</div>
@@ -909,8 +902,7 @@ foreach ($opts as $k => $lbl):
                     <label class="form-label mb-1">Sportovec</label>
                     <input type="text" class="form-control js-sp-name" aria-label="Sportovec pro měření" placeholder="Začni psát jméno…" autocomplete="off">
                     <input type="hidden" class="js-sp-id" value="">
-                    <div class="list-group position-absolute suggest-box js-sp-sug">
-</div>
+                    <div class="list-group position-absolute suggest-box js-sp-sug"></div>
                 </div>
 
                 <div class="col-md-3 text-end">
@@ -918,8 +910,7 @@ foreach ($opts as $k => $lbl):
                 </div>
             </div>
 
-            <div class="mt-2 js-fields">
-</div>
+            <div class="mt-2 js-fields"></div>
         `;
 
         const typSel = row.querySelector('.js-typ');
@@ -1135,7 +1126,6 @@ foreach ($opts as $k => $lbl):
 })();
 </script>
 
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js">
-</script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script>
 </body>
 </html>

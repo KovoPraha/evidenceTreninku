@@ -755,15 +755,15 @@ window.__duplikatPodskupiny = DUPLIKAT ? (DUPLIKAT.podskupiny || []) : [];
 
 // ── Předvyplnění z plánovaného tréninku ──────────────────────────────────
 const PLAN_PREFILL = <?= json_encode($planPrefill ? [
-                                    'skupina_id'    => (int)($planPrefill['skupina_id'] ?? 0),
-                                    'podskupiny'    => $planPrefillSubgroups,
-                                    'datum'         => $planPrefill['datum'] ?? '',
-                                    'kategorie'     => $planPrefill['kategorie'] ?? '',
-                                    'nazev'         => $planPrefill['nazev'] ?? '',
-                                    'sportoviste_id' => (int)($planPrefill['sportoviste_id'] ?? 0),
-                                    'cas_od'        => $planPrefill['cas_od'] ?? '',
-                                    'cas_do'        => $planPrefill['cas_do'] ?? '',
-                                ] : null, JSON_UNESCAPED_UNICODE) ?>;
+    'skupina_id'    => (int)($planPrefill['skupina_id'] ?? 0),
+    'podskupiny'    => $planPrefillSubgroups,
+    'datum'         => $planPrefill['datum'] ?? '',
+    'kategorie'     => $planPrefill['kategorie'] ?? '',
+    'nazev'         => $planPrefill['nazev'] ?? '',
+    'sportoviste_id' => (int)($planPrefill['sportoviste_id'] ?? 0),
+    'cas_od'        => $planPrefill['cas_od'] ?? '',
+    'cas_do'        => $planPrefill['cas_do'] ?? '',
+] : null, JSON_UNESCAPED_UNICODE) ?>;
 if (PLAN_PREFILL) {
     // Datum
     const datumSel = document.getElementById('datum') || document.querySelector('[name="datum"]');
@@ -817,8 +817,7 @@ if (PLAN_PREFILL) {
         window.__ucastniciSelected.forEach((p, idx) => {
             const chip = document.createElement('span');
             chip.className = 'chip';
-            chip.innerHTML = `${escapeHtml(p.label)} <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit">
-</button>`;
+            chip.innerHTML = `${escapeHtml(p.label)} <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit"></button>`;
             chip.querySelector('button').addEventListener('click', () => {
                 window.__ucastniciSelected.splice(idx, 1);
                 render(); syncHidden();
@@ -860,8 +859,7 @@ if (PLAN_PREFILL) {
 
     input.addEventListener('focus', () => {
         if (sug.innerHTML === '') {
-            hint('<i class="bi bi-search me-1">
-</i>Začněte psát jméno sportovce (min. 2 znaky)…');
+            hint('<i class="bi bi-search me-1"></i>Začněte psát jméno sportovce (min. 2 znaky)…');
         }
     });
 
@@ -878,21 +876,18 @@ if (PLAN_PREFILL) {
         lastQ = q;
         if (q.length < 1) { close(); return; }
         if (q.length < 2) {
-            hint('<i class="bi bi-search me-1">
-</i>Napište ještě 1 znak…');
+            hint('<i class="bi bi-search me-1"></i>Napište ještě 1 znak…');
             return;
         }
         if (abortCtrl) abortCtrl.abort();
         abortCtrl = new AbortController();
-        hint('<i class="bi bi-hourglass-split me-1">
-</i>Hledám…');
+        hint('<i class="bi bi-hourglass-split me-1"></i>Hledám…');
         fetch('ajax_sportovci.php?context=training&q=' + encodeURIComponent(q), { signal: abortCtrl.signal })
             .then(r => r.json())
             .then(data => {
                 if (input.value.trim() !== lastQ) return;
                 if (!Array.isArray(data) || data.length === 0) {
-                    hint('<i class="bi bi-exclamation-circle me-1">
-</i>Nikdo nenalezen.');
+                    hint('<i class="bi bi-exclamation-circle me-1"></i>Nikdo nenalezen.');
                     return;
                 }
                 const list = data.map(s => ({
@@ -903,8 +898,7 @@ if (PLAN_PREFILL) {
             })
             .catch(err => {
                 if (err && err.name === 'AbortError') return;
-                hint('<i class="bi bi-wifi-off me-1">
-</i>Chyba načítání — zkuste znovu.');
+                hint('<i class="bi bi-wifi-off me-1"></i>Chyba načítání — zkuste znovu.');
             });
     });
 
@@ -918,8 +912,7 @@ if (PLAN_PREFILL) {
     if (DUPLIKAT && DUPLIKAT.ucastnici) {
         DUPLIKAT.ucastnici.forEach(sp => addParticipant(sp.id, sp.label));
     }
-    const rosterExpected = <?= json_encode($planExpectedParticipants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP
-                                    | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const rosterExpected = <?= json_encode($planExpectedParticipants, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     const makeupExpected = <?= json_encode(
         array_map(static fn (array $person): array => [
             'id' => (int)$person['sportovec_id'],
@@ -992,9 +985,7 @@ if (PLAN_PREFILL) {
                     <div class="input-group input-group-sm">
                         <input type="number" min="0.01" step="0.01" class="form-control js-vzdalenost" aria-label="Vzdálenost" placeholder="Vzdálenost">
                         <select class="form-select js-distance-unit" aria-label="Jednotka vzdálenosti">
-                            <option value="">jednotka</option>
-<option value="m">m</option>
-<option value="km">km</option>
+                            <option value="">jednotka</option><option value="m">m</option><option value="km">km</option>
                         </select>
                     </div>
                     <div class="invalid-feedback">Vyplňte vzdálenost i jednotku m nebo km.</div>
@@ -1011,13 +1002,11 @@ if (PLAN_PREFILL) {
                 </div>
                 ${type === 'kolo' ? `
                 <div class="col-md-3">
-                    <label class="form-label small mb-1">Převod <span class="text-muted fw-normal">(vol.)</span>
-</label>
+                    <label class="form-label small mb-1">Převod <span class="text-muted fw-normal">(vol.)</span></label>
                     <input type="text" class="form-control form-control-sm js-prevod" aria-label="Převod" placeholder="např. 50/15">
                 </div>` : ''}
                 <div class="${type === 'kolo' ? 'col-md-3' : 'col-md-6'}">
-                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span>
-</label>
+                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
                     <input type="text" class="form-control form-control-sm js-poznamka" aria-label="Poznámka k měření" placeholder="">
                 </div>
             `));
@@ -1028,8 +1017,7 @@ if (PLAN_PREFILL) {
                     ${cvikySelectHtml()}
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label small mb-1">Váha <span class="text-muted fw-normal">kg</span>
-</label>
+                    <label class="form-label small mb-1">Váha <span class="text-muted fw-normal">kg</span></label>
                     <input type="number" step="0.5" class="form-control form-control-sm js-vaha" aria-label="Váha (kg)" placeholder="0">
                 </div>
                 <div class="col-md-2">
@@ -1037,13 +1025,11 @@ if (PLAN_PREFILL) {
                     <input type="number" class="form-control form-control-sm js-opakovani" aria-label="Počet opakování" placeholder="10">
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label small mb-1">RPE <span class="text-muted fw-normal">1–10</span>
-</label>
+                    <label class="form-label small mb-1">RPE <span class="text-muted fw-normal">1–10</span></label>
                     <input type="number" step="0.5" min="1" max="10" class="form-control form-control-sm js-rpe" aria-label="RPE (1–10)" placeholder="7">
                 </div>
                 <div class="col-md-12">
-                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span>
-</label>
+                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
                     <input type="text" class="form-control form-control-sm js-poznamka" aria-label="Poznámka k měření" placeholder="">
                 </div>
             `));
@@ -1064,8 +1050,7 @@ if (PLAN_PREFILL) {
                         title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span>
-</label>
+                    <label class="form-label small mb-1">Poznámka <span class="text-muted fw-normal">(vol.)</span></label>
                     <input type="text" class="form-control form-control-sm js-poznamka" aria-label="Poznámka k měření" placeholder="">
                 </div>
             `));
@@ -1117,8 +1102,7 @@ if (PLAN_PREFILL) {
                 .map(x => ({ id: x.id, label: x.label }))
                 .filter(it => !q || it.label.toLowerCase().includes(q));
             if (local.length) renderList(local);
-            else hint('<i class="bi bi-search me-1">
-</i>Napište 2+ znaky nebo vyberte z účastníků nahoře.');
+            else hint('<i class="bi bi-search me-1"></i>Napište 2+ znaky nebo vyberte z účastníků nahoře.');
         });
 
         inp.addEventListener('input', () => {
@@ -1133,8 +1117,7 @@ if (PLAN_PREFILL) {
             if (q.length < 2) {
                 if (local.length) { renderList(local); return; }
                 if (q.length < 1) { close(); return; }
-                hint('<i class="bi bi-search me-1">
-</i>Napište ještě 1 znak…');
+                hint('<i class="bi bi-search me-1"></i>Napište ještě 1 znak…');
                 return;
             }
 
@@ -1142,15 +1125,13 @@ if (PLAN_PREFILL) {
 
             if (abortCtrl) abortCtrl.abort();
             abortCtrl = new AbortController();
-            hint('<i class="bi bi-hourglass-split me-1">
-</i>Hledám…');
+            hint('<i class="bi bi-hourglass-split me-1"></i>Hledám…');
             fetch('ajax_sportovci.php?context=training&q=' + encodeURIComponent(q), { signal: abortCtrl.signal })
                 .then(r => r.json())
                 .then(data => {
                     if (inp.value.trim() !== lastQ) return;
                     if (!Array.isArray(data) || data.length === 0) {
-                        hint('<i class="bi bi-exclamation-circle me-1">
-</i>Nikdo nenalezen.');
+                        hint('<i class="bi bi-exclamation-circle me-1"></i>Nikdo nenalezen.');
                         return;
                     }
                     const list = data.map(s => ({
@@ -1161,8 +1142,7 @@ if (PLAN_PREFILL) {
                 })
                 .catch(err => {
                     if (err && err.name === 'AbortError') return;
-                    hint('<i class="bi bi-wifi-off me-1">
-</i>Chyba načítání — zkuste znovu.');
+                    hint('<i class="bi bi-wifi-off me-1"></i>Chyba načítání — zkuste znovu.');
                 });
         });
 
@@ -1190,8 +1170,7 @@ if (PLAN_PREFILL) {
                     <input type="text" class="form-control form-control-sm js-sp-name"
                            aria-label="Sportovec pro měření" placeholder="Jméno (klikněte nebo napište 2+ znaky)…" autocomplete="off">
                     <input type="hidden" class="js-sp-id" value="">
-                    <div class="list-group position-absolute js-sp-sug suggest-box">
-</div>
+                    <div class="list-group position-absolute js-sp-sug suggest-box"></div>
                 </div>
                 <div style="min-width:200px;">
                     <label class="form-label small mb-1 fw-semibold">Typ měření</label>
@@ -1208,13 +1187,11 @@ if (PLAN_PREFILL) {
                 <div>
                     <label class="form-label small mb-1">&nbsp;</label>
                     <button type="button" class="btn btn-sm btn-outline-danger js-del" aria-label="Odebrat měření">
-                        <i class="bi bi-trash">
-</i>
+                        <i class="bi bi-trash"></i>
                     </button>
                 </div>
             </div>
-            <div class="js-fields mt-2">
-</div>
+            <div class="js-fields mt-2"></div>
         `;
 
         rowsWrap.appendChild(row);
@@ -1343,8 +1320,7 @@ if (PLAN_PREFILL) {
         selected.forEach((t, idx) => {
             const chip = document.createElement('span');
             chip.className = 'chip';
-            chip.innerHTML = `${escapeHtml(t.name)} <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit">
-</button>`;
+            chip.innerHTML = `${escapeHtml(t.name)} <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit"></button>`;
             chip.querySelector('button').addEventListener('click', () => {
                 selected.splice(idx, 1); render(); sync();
             });
@@ -1467,9 +1443,7 @@ if (PLAN_PREFILL) {
             outEl.innerHTML = '<span class="text-muted">Vyplňte sportoviště, datum a časy.</span>';
             return;
         }
-        outEl.innerHTML = '<span class="text-muted">
-<i class="bi bi-hourglass-split me-1">
-</i>Kontroluji…</span>';
+        outEl.innerHTML = '<span class="text-muted"><i class="bi bi-hourglass-split me-1"></i>Kontroluji…</span>';
 
         try {
             const url = `ajax_dostupnost_sportovist.php?sportoviste_id=${encodeURIComponent(sportId)}`
@@ -1482,17 +1456,11 @@ if (PLAN_PREFILL) {
             const pozadovana = parseInt(kap, 10);
 
             if (volno <= 0) {
-                outEl.innerHTML = `<span class="text-danger">
-<i class="bi bi-x-circle me-1">
-</i>Sportoviště plně obsazeno (${obsazeno}/${maxKap})</span>`;
+                outEl.innerHTML = `<span class="text-danger"><i class="bi bi-x-circle me-1"></i>Sportoviště plně obsazeno (${obsazeno}/${maxKap})</span>`;
             } else if (pozadovana > volno) {
-                outEl.innerHTML = `<span class="text-warning">
-<i class="bi bi-exclamation-triangle me-1">
-</i>Požadovaná kapacita ${pozadovana} přesahuje volné (${volno}/${maxKap})</span>`;
+                outEl.innerHTML = `<span class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>Požadovaná kapacita ${pozadovana} přesahuje volné (${volno}/${maxKap})</span>`;
             } else {
-                outEl.innerHTML = `<span class="text-success">
-<i class="bi bi-check-circle me-1">
-</i>Dostupné — obsazeno ${obsazeno}/${maxKap}, zbývá ${volno} dílů</span>`;
+                outEl.innerHTML = `<span class="text-success"><i class="bi bi-check-circle me-1"></i>Dostupné — obsazeno ${obsazeno}/${maxKap}, zbývá ${volno} dílů</span>`;
             }
         } catch (e) {
             outEl.innerHTML = '<span class="text-warning">Nepodařilo se zkontrolovat dostupnost.</span>';
@@ -1503,7 +1471,6 @@ if (PLAN_PREFILL) {
     [sportSel, casOd, casDo, kapSel].forEach(el => el?.addEventListener('change', checkDostupnost));
 })();
 </script>
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js">
-</script>
+<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script>
 </body>
 </html>
