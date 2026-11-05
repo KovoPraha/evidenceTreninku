@@ -52,8 +52,7 @@ function familyPageEventType(string $type): string
 
 function familyPageEventStatus(string $status): string
 {
-    return ['confirmed' => 'Potvrzeno', 'payment_pending' => 'Čeká na platbu', 'waitlisted' => 'Na čekací listině'
-    ,
+    return ['confirmed' => 'Potvrzeno', 'payment_pending' => 'Čeká na platbu', 'waitlisted' => 'Na čekací listině',
 
 
      'cancelled' => 'Zrušeno'][$status] ?? $status;
@@ -144,8 +143,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $saved = familyWeeklyDeliverySavePreference($pdo, $accountId, $enabled);
                 $_SESSION['family_weekly_delivery_message'] = $enabled
                     ? 'Týdenní rodinný souhrn je zapnutý. První zpráva vznikne při nejbližším pondělním zpracování.'
-                    : 'Týdenní rodinný souhrn je vypnutý. Zrušené neodeslané zprávy: ' . (int)$saved['cancelled']
-    .
+                    : 'Týdenní rodinný souhrn je vypnutý. Zrušené neodeslané zprávy: ' . (int)$saved['cancelled'] .
 
 
      '.';
@@ -340,9 +338,7 @@ try {
 
     ?>
 <main class="container py-4" style="max-width:1100px">
-    <h1 class="h4 mb-1">
-<i class="bi bi-person-vcard me-2 text-primary">
-</i>Sportovní přehled</h1>
+    <h1 class="h4 mb-1"><i class="bi bi-person-vcard me-2 text-primary"></i>Sportovní přehled</h1>
     <p class="text-muted">Nejdůležitější úkoly rodiny, společný program a detail každého schváleného profilu.</p>
     <?php
 if ($pendingFamilyClaims === null):
@@ -354,8 +350,7 @@ if ($pendingFamilyClaims === null):
 
     ?><?php elseif ($pendingFamilyClaims > 0):
 
-        ?><div class="alert alert-info">
-<strong>Čeká na ověření klubem: <?=
+        ?><div class="alert alert-info"><strong>Čeká na ověření klubem: <?=
 
                 $pendingFamilyClaims
 
@@ -422,8 +417,7 @@ if ($loadError !== ''):
 
                         $unansweredTrainings
 
-            ?></strong>
-<span class="small"><?=
+            ?></strong><span class="small"><?=
 
                          $unansweredTrainings === 1 ? 'trénink' : ($unansweredTrainings >= 2 && $unansweredTrainings <= 4 ? 'tréninky'
                 : 'tréninků')
@@ -438,8 +432,7 @@ if ($loadError !== ''):
 
                         count($familyAgenda)
 
-            ?></strong>
-<span class="small"><?=
+            ?></strong><span class="small"><?=
 
                          count($familyAgenda) === 1 ? 'položka programu' : (count($familyAgenda) >= 2 && count($familyAgenda) <= 4 ? 'položky programu'
                 : 'položek programu')
@@ -454,8 +447,7 @@ if ($loadError !== ''):
 
                         count($overview)
 
-            ?></strong>
-<span class="small"><?=
+            ?></strong><span class="small"><?=
 
                         count($overview) === 1 ? 'schválený profil' : (count($overview) < 5 ? 'schválené profily' : 'schválených profilů')
 
@@ -473,8 +465,7 @@ if ($loadError !== ''):
 
                         $pendingCharges
 
-            ?></strong>
-<span class="small"><?=
+            ?></strong><span class="small"><?=
 
                          $pendingCharges === 1 ? 'členský předpis' : ($pendingCharges >= 2 && $pendingCharges <= 4 ? 'členské předpisy'
                 : 'členských předpisů')
@@ -547,8 +538,7 @@ if ($trainingCalendarMonth > trainingRsvpCalendarMonth('')):
 
     ?>#potvrzeni-treninku">Předchozí měsíc</a><?php else:
 
-        ?><span>
-</span><?php
+        ?><span></span><?php
     endif;
 
     ?>
@@ -566,8 +556,7 @@ if ($trainingCalendarMonth < trainingRsvpCalendarMonth('9999-12')):
 
     ?>#potvrzeni-treninku">Další měsíc</a><?php else:
 
-        ?><span>
-</span><?php
+        ?><span></span><?php
     endif;
 
     ?>
@@ -589,15 +578,11 @@ foreach ($trainingRsvps as $training): $response = (string)($training['response'
 
          (int)$training['sportovec_id']
 
-    ?>">
-<div class="d-flex flex-wrap justify-content-between gap-3">
-<div>
-<strong><?=
+    ?>"><div class="d-flex flex-wrap justify-content-between gap-3"><div><strong><?=
 
          familyPageH($training['nazev'])
 
-    ?></strong>
-<div class="small text-muted"><?=
+    ?></strong><div class="small text-muted"><?=
 
          familyPageH($training['jmeno'].' '.$training['prijmeni'])
 
@@ -627,9 +612,7 @@ if (trim((string)$training['popis']) !== ''):
     ?></div><?php
 endif;
 
-    ?></div>
-<div>
-<span class="badge <?=
+    ?></div><div><span class="badge <?=
 
          $response === 'going' ? 'text-bg-success' : ($response === 'not_going' ? 'text-bg-secondary' : 'text-bg-warning')
 
@@ -637,23 +620,19 @@ endif;
 
          familyPageH(trainingRsvpLabel($response))
 
-    ?></span>
-<form method="post"><?=
+    ?></span><form method="post"><?=
 
          csrf_field()
 
-    ?><input type="hidden" name="action" value="training_rsvp_save">
-<input type="hidden" name="plan_id" value="<?=
+    ?><input type="hidden" name="action" value="training_rsvp_save"><input type="hidden" name="plan_id" value="<?=
 
          (int)$training['plan_id']
 
-    ?>">
-<input type="hidden" name="profile_id" value="<?=
+    ?>"><input type="hidden" name="profile_id" value="<?=
 
          (int)$training['sportovec_id']
 
-    ?>">
-<label class="form-label small" for="training-note-<?=
+    ?>"><label class="form-label small" for="training-note-<?=
 
          (int)$training['plan_id']
 
@@ -661,8 +640,7 @@ endif;
 
          (int)$training['sportovec_id']
 
-    ?>">Zpráva pro trenéra (nepovinná)</label>
-<textarea class="form-control form-control-sm mb-2" id="training-note-<?=
+    ?>">Zpráva pro trenéra (nepovinná)</label><textarea class="form-control form-control-sm mb-2" id="training-note-<?=
 
          (int)$training['plan_id']
 
@@ -672,28 +650,17 @@ endif;
 
     ?>" name="member_note" maxlength="500" rows="2" placeholder="Např. přijdu o 5 minut později"><?=
 
-
-
-
          familyPageH($training['member_note'] ?? '')
 
-    ?></textarea>
-<div class="d-flex flex-wrap gap-2">
-<button class="btn btn-sm <?=
+    ?></textarea><div class="d-flex flex-wrap gap-2"><button class="btn btn-sm <?=
 
          $response === 'going' ? 'btn-success' : 'btn-outline-success'
 
-    ?>" name="response" value="going">Zúčastním se</button>
-<button class="btn btn-sm <?=
+    ?>" name="response" value="going">Zúčastním se</button><button class="btn btn-sm <?=
 
          $response === 'not_going' ? 'btn-secondary' : 'btn-outline-secondary'
 
-    ?>" name="response" value="not_going">Nezúčastním se</button>
-</div>
-</form>
-</div>
-</div>
-</div>
+    ?>" name="response" value="not_going">Nezúčastním se</button></div></form></div></div></div>
             <?php
 endforeach;
 
@@ -756,17 +723,14 @@ foreach ($familyAgenda as $item):
 
          familyPageH($item['category'])
 
-    ?></span>
-<strong><?=
+    ?></span><strong><?=
 
          familyPageH($item['summary'])
 
     ?></strong><?php
 if ($item['location'] !== ''):
 
-    ?><div class="small text-muted mt-1">
-<i class="bi bi-geo-alt me-1">
-</i><?=
+    ?><div class="small text-muted mt-1"><i class="bi bi-geo-alt me-1"></i><?=
 
          familyPageH($item['location'])
 
@@ -783,21 +747,15 @@ if ($item['description'] !== ''):
     ?></div><?php
 endif;
 
-    ?></div>
-<div class="text-md-end">
-<strong><?=
+    ?></div><div class="text-md-end"><strong><?=
 
          familyPageH($item['date_label'])
 
-    ?></strong>
-<div class="small text-muted"><?=
+    ?></strong><div class="small text-muted"><?=
 
          familyPageH($item['time_label'])
 
-    ?></div>
-</div>
-</div>
-</div>
+    ?></div></div></div></div>
                 <?php
 endforeach;
 
@@ -843,8 +801,7 @@ if ($weeklySummary !== null):
     ?></span><?php
 endif;
 
-    ?></span>
-</summary>
+    ?></span></summary>
         <div class="card-body">
             <?php
 if ($weeklyDeliveryMessage !== ''):
@@ -928,54 +885,38 @@ if ($weeklyError !== ''):
             <?php elseif ($weeklySummary !== null):
 
                 ?>
-                <div class="d-flex justify-content-between gap-2 mb-3">
-<a class="btn btn-sm btn-outline-secondary" href="?week=<?=
+                <div class="d-flex justify-content-between gap-2 mb-3"><a class="btn btn-sm btn-outline-secondary" href="?week=<?=
 
                                  urlencode($weeklyPrevious)
 
-                ?>#tydenni-souhrn">← Předchozí týden</a>
-<a class="btn btn-sm btn-outline-secondary" href="?week=<?=
+                ?>#tydenni-souhrn">← Předchozí týden</a><a class="btn btn-sm btn-outline-secondary" href="?week=<?=
 
                                  urlencode($weeklyNext)
 
-                ?>#tydenni-souhrn">Další týden →</a>
-</div>
-                <div class="d-flex flex-wrap gap-2 mb-3">
-<span class="badge text-bg-primary">Tréninky <?=
+                ?>#tydenni-souhrn">Další týden →</a></div>
+                <div class="d-flex flex-wrap gap-2 mb-3"><span class="badge text-bg-primary">Tréninky <?=
 
                                  (int)$weeklySummary['counts']['training']
 
-                ?></span>
-<span class="badge text-bg-success">Akce <?=
+                ?></span><span class="badge text-bg-success">Akce <?=
 
                                  (int)$weeklySummary['counts']['event']
 
-                ?></span>
-<span class="badge text-bg-success">Rezervace <?=
+                ?></span><span class="badge text-bg-success">Rezervace <?=
 
                                  (int)$weeklySummary['counts']['reservation']
 
-                ?></span>
-<span class="badge text-bg-warning">Splatnosti <?=
+                ?></span><span class="badge text-bg-warning">Splatnosti <?=
 
                                  (int)$weeklySummary['counts']['charge']
 
-                ?></span>
-</div>
-                <dl class="row small">
-<dt class="col-sm-2">Předmět</dt>
-<dd class="col-sm-10">
-<strong><?=
+                ?></span></div>
+                <dl class="row small"><dt class="col-sm-2">Předmět</dt><dd class="col-sm-10"><strong><?=
 
                                  familyPageH($weeklySummary['subject'])
 
-                ?></strong>
-</dd>
-</dl>
+                ?></strong></dd></dl>
                 <pre class="bg-light border rounded p-3 mb-0" style="white-space:pre-wrap"><?=
-
-
-
 
                                  familyPageH($weeklySummary['body'])
 
@@ -993,9 +934,7 @@ if ($weeklyError !== ''):
 
     ?>>
         <summary class="card-header bg-success-subtle d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <strong>
-<i class="bi bi-receipt me-2">
-</i>Roční přehled uhrazených klubových služeb</strong>
+            <strong><i class="bi bi-receipt me-2"></i>Roční přehled uhrazených klubových služeb</strong>
             <?php
 if ($annualPaidOverview !== null):
 
@@ -1070,8 +1009,7 @@ endif;
 
          familyPageH(familyAnnualPaidOverviewTotalsLabel($annualPaidOverview['totals']['member_charges']))
 
-    ?></span>
-</div>
+    ?></span></div>
                             <?php
 if ($annualPaidOverview['member_charges'] === []):
 
@@ -1080,8 +1018,7 @@ if ($annualPaidOverview['member_charges'] === []):
 
                                 ?><?php
                                 echo '<div class="table-responsive"><table class="table table-sm align-middle mb-0"><t'
-                                                                    .
-    'head><tr><th>Profil a předpis</th><th>Uhrazeno</th><th class="text-end">Částka</'
+                                                                    . 'head><tr><th>Profil a předpis</th><th>Uhrazeno</th><th class="text-end">Částka</'
                                                                     . 'th></tr></thead><tbody>
                             ';
 
@@ -1093,8 +1030,7 @@ foreach ($annualPaidOverview['member_charges'] as $item):
 
          familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name'])
 
-    ?><div class="small">
-<strong><?=
+    ?><div class="small"><strong><?=
 
          familyPageH($item['title_snapshot'])
 
@@ -1102,9 +1038,7 @@ foreach ($annualPaidOverview['member_charges'] as $item):
 
          familyPageH($item['public_code'])
 
-    ?></code>
-</div>
-</td>
+    ?></code></div></td>
                                 <td><?=
 
          familyPageH(substr((string)$item['paid_at'], 0, 10))
@@ -1118,9 +1052,7 @@ foreach ($annualPaidOverview['member_charges'] as $item):
                             </tr><?php
 endforeach;
 
-                                ?></tbody>
-</table>
-</div><?php
+                                ?></tbody></table></div><?php
                             endif;
 
     ?>
@@ -1128,14 +1060,11 @@ endforeach;
                     </div>
                     <div class="col-lg-6">
                         <div class="border rounded h-100">
-                            <div class="p-3 border-bottom d-flex justify-content-between gap-2">
-<strong>E-shopové položky</strong>
-<span><?=
+                            <div class="p-3 border-bottom d-flex justify-content-between gap-2"><strong>E-shopové položky</strong><span><?=
 
          familyPageH(familyAnnualPaidOverviewTotalsLabel($annualPaidOverview['totals']['shop_items']))
 
-    ?></span>
-</div>
+    ?></span></div>
                             <?php
 if ($annualPaidOverview['shop_items'] === []):
 
@@ -1144,8 +1073,7 @@ if ($annualPaidOverview['shop_items'] === []):
 
                                 ?><?php
                                 echo '<div class="table-responsive"><table class="table table-sm align-middle mb-0"><t'
-                                                                    .
-    'head><tr><th>Profil a položka</th><th>Uhrazeno</th><th class="text-end">Částka</'
+                                                                    . 'head><tr><th>Profil a položka</th><th>Uhrazeno</th><th class="text-end">Částka</'
                                                                     . 'th></tr></thead><tbody>
                             ';
 
@@ -1157,8 +1085,7 @@ foreach ($annualPaidOverview['shop_items'] as $item):
 
          familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name'])
 
-    ?><div class="small">
-<strong><?=
+    ?><div class="small"><strong><?=
 
          familyPageH($item['product_name_snapshot'])
 
@@ -1176,9 +1103,7 @@ endif;
 
          familyPageH($item['public_code'])
 
-    ?></code>
-</div>
-</td>
+    ?></code></div></td>
                                 <td><?=
 
          familyPageH(substr((string)$item['paid_at'], 0, 10))
@@ -1192,9 +1117,7 @@ endif;
                             </tr><?php
 endforeach;
 
-    ?></tbody>
-</table>
-</div><?php
+    ?></tbody></table></div><?php
         endif;
 
     ?>
@@ -1268,9 +1191,6 @@ if ($calendarUrl !== ''):
                     <label for="family-calendar-url" class="visually-hidden">Soukromý odkaz kalendáře</label>
                     <input id="family-calendar-url" class="form-control mt-2" type="text" readonly value="<?=
 
-
-
-
          familyPageH($calendarUrl)
 
     ?>" data-app-csp-handler="<?=
@@ -1291,8 +1211,7 @@ if ($calendarState !== null && (int)$calendarState['active'] === 1):
 
          familyPageH($calendarState['token_hint'])
 
-    ?></code>
-</p>
+    ?></code></p>
                 <div class="d-flex gap-2 flex-wrap">
                     <form method="post"><?=
 
@@ -1326,9 +1245,7 @@ if ($calendarState !== null && (int)$calendarState['active'] === 1):
 
                  csrf_field()
 
-        ?><input type="hidden" name="action" value="family_calendar_issue">
-<button class="btn btn-primary">Vytvořit soukromý odkaz</button>
-</form>
+        ?><input type="hidden" name="action" value="family_calendar_issue"><button class="btn btn-primary">Vytvořit soukromý odkaz</button></form>
             <?php
     endif;
 
@@ -1433,9 +1350,7 @@ endforeach;
     ?>
                     </select>
                 </div>
-                <div class="col-sm-3">
-<button class="btn btn-outline-primary w-100">Uložit nastavení</button>
-</div>
+                <div class="col-sm-3"><button class="btn btn-outline-primary w-100">Uložit nastavení</button></div>
             </form>
             <?php
 if ($reminderSummary['pending'] + $reminderSummary['processing'] + $reminderSummary['sent'] + $reminderSummary['failed'] >
@@ -1474,8 +1389,7 @@ endif;
 
     </div>
 
-    <div id="profily">
-</div>
+    <div id="profily"></div>
     <?php
 foreach ($overview as $profileIndex => $profile): $person = $profile['person'];
     $makeupSummary = $makeupProfileSummaries[(int)$person['sportovec_id']] ?? null;
@@ -1491,8 +1405,7 @@ foreach ($overview as $profileIndex => $profile): $person = $profile['person'];
 
     ?>>
             <summary class="card-header bg-white d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div>
-<strong class="fs-5"><?=
+                <div><strong class="fs-5"><?=
 
          familyPageH($person['jmeno'] . ' ' . $person['prijmeni'])
 
@@ -1504,10 +1417,8 @@ foreach ($overview as $profileIndex => $profile): $person = $profile['person'];
 
          familyPageH($person['narozeni'] ? substr((string)$person['narozeni'], 0, 4) : 'neuveden')
 
-    ?></div>
-</div>
-                <div class="d-flex align-items-center gap-2">
-<span class="small text-muted">Rozbalit detail</span><?php
+    ?></div></div>
+                <div class="d-flex align-items-center gap-2"><span class="small text-muted">Rozbalit detail</span><?php
 foreach ($person['relation_roles'] as $role):
 
     ?><span class="badge text-bg-primary ms-1"><?=
@@ -1523,8 +1434,7 @@ endforeach;
                 <?php
 if (isset($profile['sports_summary'])):$actual = $profile['sports_summary'];
 
-    ?><p class="alert alert-light border">
-<strong>Ověřená činnost letos:</strong> <?=
+    ?><p class="alert alert-light border"><strong>Ověřená činnost letos:</strong> <?=
 
         (int)$actual['training_count']
 
@@ -1549,12 +1459,10 @@ if (familyPortalTableExists($pdo, 'medical_clearance_watches')):$medicalRows = m
 );
     if ($medicalRows):
 
-        ?><section class="border rounded p-3 mb-3">
-<h2 class="h6">Platnost podkladů dnes</h2><?php
+        ?><section class="border rounded p-3 mb-3"><h2 class="h6">Platnost podkladů dnes</h2><?php
 foreach ($medicalRows as $medical):
 
-    ?><p class="mb-1">
-<strong><?=
+    ?><p class="mb-1"><strong><?=
 
         familyPageH($medical['purpose'])
 
@@ -1587,8 +1495,7 @@ endforeach;
 
                 $financeBalance['overdue_minor'] > 0 ? 'alert-warning' : 'alert-light'
 
-        ?> border">
-<strong>Saldo klubových služeb:</strong> <?=
+        ?> border"><strong>Saldo klubových služeb:</strong> <?=
 
                 familyPageH(number_format($financeBalance['open_minor'] / 100, 2, ',', ' '))
 
@@ -1608,13 +1515,9 @@ endif;
 
         ?><div class="small mt-1">Včetně platných objednávek e-shopu přiřazených tomuto sportovci. Stav k <?=
 
-
-
-
                 familyPageH(uiFormatDateTime((string)$financeBalance['as_of']))
 
-        ?>.</div>
-</div><?php
+        ?>.</div></div><?php
     endif;
 
     ?>
@@ -1630,28 +1533,23 @@ if ($makeupSummary !== null):
 
          (int)$makeupSummary['pending']
 
-    ?></span>
-<span class="badge text-bg-success">K využití <?=
+    ?></span><span class="badge text-bg-success">K využití <?=
 
          (int)$makeupSummary['available']
 
-    ?></span>
-<span class="badge text-bg-secondary">Převedené uzamčené <?=
+    ?></span><span class="badge text-bg-secondary">Převedené uzamčené <?=
 
          (int)$makeupSummary['locked']
 
-    ?></span>
-<span class="badge text-bg-primary">Rezervované <?=
+    ?></span><span class="badge text-bg-primary">Rezervované <?=
 
          (int)$makeupSummary['reserved']
 
-    ?></span>
-<a class="btn btn-sm btn-outline-primary ms-auto" href="nahrady.php?person_id=<?=
+    ?></span><a class="btn btn-sm btn-outline-primary ms-auto" href="nahrady.php?person_id=<?=
 
          (int)$person['sportovec_id']
 
-    ?>">Zobrazit náhrady</a>
-</div><?php
+    ?>">Zobrazit náhrady</a></div><?php
 endif;
 
     ?>
@@ -1672,20 +1570,15 @@ if ($profile['rosters'] === []):
 foreach ($profile['rosters'] as $roster):
     $rosterDisplay = familyPortalRosterDisplayStatus($roster, $rosterStatusDate);
 
-    ?><tr>
-<td>
-<strong><?=
+    ?><tr><td><strong><?=
 
          familyPageH($roster['team_name'])
 
-    ?></strong>
-<div class="small text-muted"><?=
+    ?></strong><div class="small text-muted"><?=
 
          familyPageH(trim($roster['discipline'] . ' ' . $roster['age_label']))
 
-    ?></div>
-</td>
-<td><?=
+    ?></div></td><td><?=
 
          familyPageH(uiFormatDate((string)$roster['valid_from']))
 
@@ -1693,9 +1586,7 @@ foreach ($profile['rosters'] as $roster):
 
          familyPageH($roster['valid_to'] ? uiFormatDate((string)$roster['valid_to']) : 'dosud')
 
-    ?></td>
-<td>
-<span class="badge <?=
+    ?></td><td><span class="badge <?=
 
          familyPageH($rosterDisplay['class'])
 
@@ -1703,15 +1594,11 @@ foreach ($profile['rosters'] as $roster):
 
          familyPageH($rosterDisplay['label'])
 
-    ?></span>
-</td>
-</tr><?php
+    ?></span></td></tr><?php
 endforeach;
 
         ?>
-                </tbody>
-</table>
-</div><?php
+                </tbody></table></div><?php
     endif;
 
     ?>
@@ -1732,42 +1619,33 @@ if ($profile['events'] === []):
         ?><?php
 foreach ($profile['events'] as $event):
 
-    ?><tr>
-<td><?=
+    ?><tr><td><?=
 
          familyPageH($event['event_name'])
 
-    ?></td>
-<td><?=
+    ?></td><td><?=
 
          familyPageH(familyPageEventType((string)$event['event_type']))
 
-    ?></td>
-<td><?=
+    ?></td><td><?=
 
          familyPageH(uiFormatDateTime((string)$event['registered_at']))
 
-    ?></td>
-<td><?=
+    ?></td><td><?=
 
          familyPageH(familyPageEventStatus((string)$event['status']))
 
-    ?></td>
-</tr><?php
+    ?></td></tr><?php
 endforeach;
 
         ?>
-                </tbody>
-</table>
-</div><?php
+                </tbody></table></div><?php
     endif;
 
     ?>
 
                 <h2 class="h6">Členské předpisy</h2>
-<p>
-<a href="mesicni_clenstvi.php">Měsíční členství, doklady a trvalé platby</a>
-</p>
+                <p><a href="mesicni_clenstvi.php">Měsíční členství, doklady a trvalé platby</a></p>
                 <?php
 if ($profile['member_charges'] === []):
 
@@ -1793,19 +1671,15 @@ if ($profile['member_charges'] === []):
 foreach ($profile['member_charges'] as $charge):
 
     ?><tr>
-                    <td>
-<strong><?=
+                    <td><strong><?=
 
          familyPageH($charge['title_snapshot'])
 
-    ?></strong>
-<div class="small text-muted">
-<code><?=
+    ?></strong><div class="small text-muted"><code><?=
 
          familyPageH($charge['public_code'])
 
-    ?></code>
-</div><?php
+    ?></code></div><?php
 if ($charge['status'] === 'pending' && (int)($charge['payer_account_id'] ?? 0) === $accountId):
 
     ?><a class="small" href="platba_predpisu.php?id=<?=
@@ -1837,8 +1711,7 @@ endif;
          familyPageH($charge['due_on'] ? uiFormatDate((string)$charge['due_on']) : 'neuvedeno')
 
     ?></td>
-                    <td>
-<span class="badge <?=
+                    <td><span class="badge <?=
 
          $charge['status'] === 'paid' ? 'text-bg-success' : ($charge['status'] === 'pending' ? 'text-bg-warning' : 'text-bg-secondary')
 
@@ -1861,22 +1734,16 @@ endif;
 endforeach;
 
     ?>
-                </tbody>
-</table>
-</div><?php
+                </tbody></table></div><?php
         endif;
 
     ?>
 
                 <h2 class="h6">Docházka na tréninky <a class="small fw-normal ms-2" href="soupiskove_treninky.php?sportovec_id=<?=
 
-
-
-
          (int)$person['sportovec_id']
 
-    ?>">Všechny tréninky ze soupisek</a>
-</h2>
+    ?>">Všechny tréninky ze soupisek</a></h2>
                 <?php
 if ($profile['trainings'] === []):
 
@@ -1892,13 +1759,11 @@ if ($profile['trainings'] === []):
         ?><?php
 foreach ($profile['trainings'] as $training):
 
-    ?><tr>
-<td><?=
+    ?><tr><td><?=
 
          familyPageH(uiFormatDate((string)$training['datum']))
 
-    ?></td>
-<td><?=
+    ?></td><td><?=
 
          familyPageH($training['napln'])
 
@@ -1906,25 +1771,19 @@ foreach ($profile['trainings'] as $training):
 
         !empty($training['attendance_confirmed']) ? 'Účast potvrzena' : 'Historický záznam — účast zatím neověřena'
 
-    ?></div>
-</td>
-<td><?=
+    ?></div></td><td><?=
 
          familyPageH($training['kategorie'])
 
-    ?></td>
-<td><?=
+    ?></td><td><?=
 
          familyPageH($training['delka'])
 
-    ?> h</td>
-</tr><?php
+    ?> h</td></tr><?php
 endforeach;
 
         ?>
-                </tbody>
-</table>
-</div><?php
+                </tbody></table></div><?php
     endif;
 
     ?>
@@ -1936,9 +1795,7 @@ endforeach;
     ?>
 
     <section class="card border-0 shadow-sm mb-4">
-        <div class="card-header bg-white">
-<strong>Rodinné platby za klubové služby</strong>
-</div>
+        <div class="card-header bg-white"><strong>Rodinné platby za klubové služby</strong></div>
         <div class="card-body p-0">
             <?php
 if ($familyOrderItems === []):
@@ -1952,28 +1809,17 @@ if ($familyOrderItems === []):
     ?><?php else:
 
         ?>
-                <div class="table-responsive">
-<table class="table table-sm align-middle mb-0">
-                    <thead>
-<tr>
-<th>Objednávka</th>
-<th>Příjemce</th>
-<th>Položka</th>
-<th>Částka</th>
-<th>Platba</th>
-</tr>
-</thead>
+                <div class="table-responsive"><table class="table table-sm align-middle mb-0">
+                    <thead><tr><th>Objednávka</th><th>Příjemce</th><th>Položka</th><th>Částka</th><th>Platba</th></tr></thead>
                     <tbody><?php
 foreach ($familyOrderItems as $item):
 
     ?><tr>
-                        <td>
-<code><?=
+                        <td><code><?=
 
          familyPageH($item['public_code'])
 
-    ?></code>
-</td>
+    ?></code></td>
                         <td><?=
 
          familyPageH($item['beneficiary_first_name'] . ' ' . $item['beneficiary_last_name'])
@@ -1998,8 +1844,7 @@ foreach ($familyOrderItems as $item):
 endforeach;
 
         ?></tbody>
-                </table>
-</div>
+                </table></div>
             <?php
     endif;
 
