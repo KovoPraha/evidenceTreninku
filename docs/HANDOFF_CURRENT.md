@@ -11,13 +11,13 @@ nemění cenu. Vlastník doplní fakturační údaje přes `accounting_settings_
 vystavovatel, účetní pravidlo a tarif ještě nejsou schválené. Nezakládat koncept
 ručně znovu, použít existující. Prodej čeká na schválení/publikaci.
 [Pravidelné zpracování je zapnuté](verification/membership-automation-20261105/RESULTS.md):
-automatizace a denní plán/zápis true, pošta false. První apply i následný
-heartbeat PASS (0 členství a předpisů), cron 05:23 UTC. Pošta vyžaduje samostatný pokyn.
+automatizace, denní plán/zápis i [pošta jsou true](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
+První apply --send i následný heartbeat PASS (0 členství a zpráv), cron 05:23 UTC. Skutečné doručení ještě neověřené.
 Podporované roční tarify nemají zadanou skutečnou cenu a žádný roční produkt nevznikl.
 
 [Měsíční členství a zastupování trenérů #314](verification/monthly-coach-release-20261105/RESULTS.md) jsou sloučené a nasazené.
 Trenérské přiřazení nově určuje pořadí výběru, ne možnost vypsat/zapsat trénink za kolegu.
-Měsíční automatizace a plán následně zapnuté v #318, pošta nadále vypnutá; před ostrým sjednáním je třeba schválit konkrétní tarif podle [runbooku](MONTHLY_MEMBERSHIP_RUNBOOK.md).
+Měsíční automatizace a plán následně zapnuté v #318, pošta zapnutá v #321; před ostrým sjednáním je třeba schválit konkrétní tarif podle [runbooku](MONTHLY_MEMBERSHIP_RUNBOOK.md).
 Produkční apply i uložený heartbeat PASS (0 členství), skutečná měsíční platba/PDF/doručení ještě neověřené.
 
 Ostré platby mají [protokol aktivace Fio a SumUp](verification/live-payments-20261105/ACTIVATION.md).
