@@ -66,7 +66,8 @@ try {
 
 // segmenty pro kolo_krouzek / kolo_silnice
 try {
-    $segmenty = $pdo->query("SELECT id, nazev, kategorie FROM segmenty WHERE aktivni = 1 ORDER BY poradi, nazev")->fetchAll(PDO::FETCH_ASSOC);
+    $segmenty = $pdo->query("SELECT id, nazev, kategorie FROM segmenty WHERE aktivni = 1 ORDER BY poradi, nazev")
+    ->fetchAll(PDO::FETCH_ASSOC);
 } catch (Exception $e) {
     $segmenty = [];
 }
@@ -183,7 +184,8 @@ unset($_SESSION['flash_success']);
 $dupDatumStr = '';
 if (!empty($trenink['datum'])) {
     $dtObj = new DateTime($trenink['datum']);
-    $czDays2 = ['Monday' => 'Po','Tuesday' => 'Út','Wednesday' => 'St','Thursday' => 'Čt','Friday' => 'Pá','Saturday' => 'So','Sunday' => 'Ne'];
+    $czDays2 = ['Monday' => 'Po','Tuesday' => 'Út','Wednesday' => 'St','Thursday' => 'Čt','Friday' => 'Pá','Saturday'
+    => 'So','Sunday' => 'Ne'];
     $dupDatumStr = ($czDays2[$dtObj->format('l')] ?? '') . ' ' . $dtObj->format('j.n.Y');
 }
 ?>
@@ -213,11 +215,17 @@ if (!empty($trenink['datum'])) {
         <div class="card-body py-3 px-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div>
-                    <h1 class="fw-semibold fs-5 mb-0"><i class="bi bi-pencil-square me-2"></i>Úprava tréninku #<?= (int)$trenink['id'] ?></h1>
-                    <div class="opacity-75 small"><i class="bi bi-calendar3 me-1"></i><?= h($dupDatumStr) ?></div>
+                    <h1 class="fw-semibold fs-5 mb-0">
+<i class="bi bi-pencil-square me-2">
+</i>Úprava tréninku #<?= (int)$trenink['id'] ?></h1>
+                    <div class="opacity-75 small">
+<i class="bi bi-calendar3 me-1">
+</i><?= h($dupDatumStr) ?></div>
                 </div>
-                <a href="<?= staffActivePositionIs('sports_lead') ? 'sprava_vsech_treninku.php' : 'moje_treninky.php' ?>" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-arrow-left me-1"></i>Zpět na tréninky
+                <a href="<?= staffActivePositionIs('sports_lead') ? 'sprava_vsech_treninku.php' : 'moje_treninky.php'
+?>" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left me-1">
+</i>Zpět na tréninky
                 </a>
             </div>
         </div>
@@ -226,7 +234,8 @@ if (!empty($trenink['datum'])) {
     <?php if ($flashError): ?>
         <div class="alert alert-danger" role="alert">
             <?= h($flashError) ?>
-            <a class="alert-link d-block mt-2" href="training_closure_admin.php?id=<?= $treninkId ?>">Docházka a uzavření — verzovaná oprava tréninku</a>
+            <a class="alert-link d-block mt-2" href="training_closure_admin.php?id=<?= $treninkId
+        ?>">Docházka a uzavření — verzovaná oprava tréninku</a>
         </div>
     <?php endif; ?>
     <?php if ($flashSuccess): ?>
@@ -236,7 +245,8 @@ if (!empty($trenink['datum'])) {
     <form id="treninkForm" method="POST" action="update_trenink.php" enctype="multipart/form-data">
         <?= csrf_field() ?>
         <input type="hidden" name="id" value="<?= (int)$trenink['id'] ?>">
-        <input type="hidden" name="existing_obrazky" id="existing_obrazky" value="<?= h($existingImagesJson) ?>">
+        <input type="hidden" name="existing_obrazky" id="existing_obrazky" value="<?= h($existingImagesJson)
+?>">
 
     <div class="row g-3">
 
@@ -246,31 +256,38 @@ if (!empty($trenink['datum'])) {
             <!-- Základní informace -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-primary text-white">
-                    <i class="bi bi-info-circle me-1"></i>Základní informace
+                    <i class="bi bi-info-circle me-1">
+</i>Základní informace
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label for="datum" class="form-label fw-semibold">
-                                <i class="bi bi-calendar3 me-1 text-primary"></i>Datum
-                                <i class="bi bi-lock-fill ms-1 text-muted" style="font-size:.75rem;" title="Datum nelze měnit"></i>
+                                <i class="bi bi-calendar3 me-1 text-primary">
+</i>Datum
+                                <i class="bi bi-lock-fill ms-1 text-muted" style="font-size:.75rem;" title="Datum nelze měnit">
+</i>
                             </label>
                             <input type="date" name="datum" id="datum" class="form-control bg-light"
                                    value="<?= h($trenink['datum'] ?? '') ?>" readonly>
                             <div class="mini-muted mt-1">
-                                <i class="bi bi-lock me-1"></i>Datum tréninku nelze měnit.
+                                <i class="bi bi-lock me-1">
+</i>Datum tréninku nelze měnit.
                             </div>
                         </div>
                         <div class="col-md-4">
                             <label for="delka" class="form-label fw-semibold req">
-                                <i class="bi bi-clock me-1 text-primary"></i>Délka (h)
+                                <i class="bi bi-clock me-1 text-primary">
+</i>Délka (h)
                             </label>
                             <input type="number" step="0.25" name="delka" id="delka"
-                                   class="form-control" value="<?= h($trenink['delka'] ?? '') ?>" required>
+                                   class="form-control" value="<?= h($trenink['delka'] ?? '')
+?>" required>
                         </div>
                         <div class="col-md-4">
                             <label for="kategorie" class="form-label fw-semibold">
-                                <i class="bi bi-tag me-1 text-primary"></i>Kategorie
+                                <i class="bi bi-tag me-1 text-primary">
+</i>Kategorie
                             </label>
                             <select name="kategorie" id="kategorie" class="form-select">
                                 <option value="">— vyber —</option>
@@ -297,11 +314,13 @@ foreach ($opts as $k => $lbl):
             <!-- Jeden kanonický cíl; historické vazby se při běžné editaci zachovávají. -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-info text-white">
-                    <i class="bi bi-diagram-3 me-1"></i>Skupina → soupiska
+                    <i class="bi bi-diagram-3 me-1">
+</i>Skupina → soupiska
                 </div>
                 <div class="card-body">
-                    <div data-roster-target-container>
-                        <?= rosterTargetSelectorHtml($pdo, (string)$trenink['datum'], $selectedTeamIds) ?>
+                    <div data-roster-target-container data-roster-context="training">
+                        <?= rosterTargetSelectorHtml($pdo, (string)$trenink['datum'], $selectedTeamIds, training: true)
+?>
                     </div>
                     <?php if ($selectedTeamIds === [] && $skupinaId > 0): ?>
                         <div class="alert alert-warning mt-2 mb-0">Historický trénink patří do původní skupiny. Bez nového výběru ji editace zachová.</div>
@@ -312,23 +331,28 @@ foreach ($opts as $k => $lbl):
             <!-- Popis tréninku -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-warning text-dark">
-                    <i class="bi bi-journal-text me-1"></i>Popis tréninku
+                    <i class="bi bi-journal-text me-1">
+</i>Popis tréninku
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label for="napln" class="form-label fw-semibold req">
-                            <i class="bi bi-card-text me-1"></i>Náplň tréninku
+                            <i class="bi bi-card-text me-1">
+</i>Náplň tréninku
                         </label>
                         <textarea name="napln" id="napln" rows="3" class="form-control"
-                                  placeholder="Co bylo náplní tréninku?" required><?= h($trenink['napln'] ?? '') ?></textarea>
+                                  placeholder="Co bylo náplní tréninku?" required><?= h($trenink['napln'] ?? '')
+?></textarea>
                     </div>
                     <div class="mb-0">
                         <label for="poznamka" class="form-label fw-semibold">
-                            <i class="bi bi-chat-left-text me-1"></i>Poznámka
+                            <i class="bi bi-chat-left-text me-1">
+</i>Poznámka
                             <span class="badge bg-secondary fw-normal ms-1">neveřejné</span>
                         </label>
                         <textarea name="poznamka" id="poznamka" rows="2" class="form-control"
-                                  placeholder="Interní poznámka (sportovci ji neuvidí)"><?= h($trenink['poznamka'] ?? '') ?></textarea>
+                                  placeholder="Interní poznámka (sportovci ji neuvidí)"><?= h($trenink['poznamka'] ?? '')
+?></textarea>
                     </div>
                 </div>
             </div>
@@ -336,28 +360,34 @@ foreach ($opts as $k => $lbl):
             <!-- Měření -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-success text-white">
-                    <i class="bi bi-speedometer2 me-1"></i>Měření
+                    <i class="bi bi-speedometer2 me-1">
+</i>Měření
                 </div>
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
                         <div>
                             <div class="mini-muted mb-1">
-                                <i class="bi bi-info-circle me-1"></i>
+                                <i class="bi bi-info-circle me-1">
+</i>
                                 Každé měření patří jednomu sportovci. Vyberte sportovce ze seznamu.
                             </div>
                             <div class="d-flex align-items-center gap-2 p-2 rounded"
                                  style="background:#e8f5e9; border:1px solid #c8e6c9;">
-                                <i class="bi bi-clock-history text-success"></i>
-                                <span class="small fw-semibold">Čas: <code>MM:SS(.mmm)</code> nebo <code>HH:MM:SS(.mmm)</code></span>
+                                <i class="bi bi-clock-history text-success">
+</i>
+                                <span class="small fw-semibold">Čas: <code>MM:SS(.mmm)</code> nebo <code>HH:MM:SS(.mmm)</code>
+</span>
                                 <span class="text-muted small">Starší vzdálenost při úpravě potvrďte výběrem m nebo km.</span>
                             </div>
                         </div>
                         <button type="button" class="btn btn-sm btn-outline-success" id="btnAddMereni">
-                            <i class="bi bi-plus-lg me-1"></i>Přidat řádek
+                            <i class="bi bi-plus-lg me-1">
+</i>Přidat řádek
                         </button>
                     </div>
 
-                    <input type="hidden" name="mereni_json" id="mereni_json" value="<?= h($mereniHiddenJson) ?>">
+                    <input type="hidden" name="mereni_json" id="mereni_json" value="<?= h($mereniHiddenJson)
+?>">
                     <div id="mereniRows">
                         <?php if (empty($mereniRows)): ?>
                             <div class="alert alert-secondary mb-0">V tomto tréninku nejsou žádná měření.</div>
@@ -366,7 +396,8 @@ foreach ($opts as $k => $lbl):
                 </div>
             </div>
 
-        </div><!-- /col-lg-8 -->
+        </div>
+<!-- /col-lg-8 -->
 
         <!-- ═══════════ PRAVÝ SLOUPEC ═══════════ -->
         <div class="col-lg-4">
@@ -374,50 +405,59 @@ foreach ($opts as $k => $lbl):
             <!-- 1. Účastníci -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-primary text-white">
-                    <i class="bi bi-people-fill me-1"></i>Účastníci
+                    <i class="bi bi-people-fill me-1">
+</i>Účastníci
                 </div>
                 <div class="card-body">
                     <div class="position-relative">
                         <label for="ucastnici_input" class="form-label fw-semibold">Hledat sportovce</label>
                         <input type="text" id="ucastnici_input" class="form-control"
                                placeholder="Min. 2 znaky pro hledání…" autocomplete="off">
-                        <div id="ucastnici_suggestions" class="list-group position-absolute suggest-box"></div>
+                        <div id="ucastnici_suggestions" class="list-group position-absolute suggest-box">
+</div>
                     </div>
                     <div id="ucastnici_selected" class="mt-2 d-flex flex-wrap gap-1">
                         <?php foreach ($ucastniciSelected as $u): ?>
                             <span class="chip" data-id="<?= (int)$u['id'] ?>">
                                 <?= h($u['label']) ?>
-                                <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit"></button>
+                                <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit">
+</button>
                             </span>
                         <?php endforeach; ?>
                     </div>
-                    <input type="hidden" name="ucastnici" id="ucastnici" value="<?= h($ucastniciHidden) ?>">
+                    <input type="hidden" name="ucastnici" id="ucastnici" value="<?= h($ucastniciHidden)
+?>">
                 </div>
             </div>
 
             <!-- 2. Tagy -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-danger text-white">
-                    <i class="bi bi-tags me-1"></i>Tagy
+                    <i class="bi bi-tags me-1">
+</i>Tagy
                 </div>
                 <div class="card-body">
                     <div class="position-relative">
                         <label for="tag_input" class="form-label fw-semibold">Přidat tag</label>
                         <input type="text" id="tag_input" class="form-control"
                                placeholder="Začni psát… (Enter = přidat)" autocomplete="off">
-                        <div id="tag_suggestions" class="list-group position-absolute suggest-box"></div>
+                        <div id="tag_suggestions" class="list-group position-absolute suggest-box">
+</div>
                     </div>
                     <div id="tag_selected" class="mt-2 d-flex flex-wrap gap-1">
                         <?php foreach ($tagySelected as $tg): ?>
                             <span class="chip" data-id="<?= (int)$tg['id'] ?>">
                                 <?= h($tg['name']) ?>
-                                <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit"></button>
+                                <button type="button" class="btn-close btn-close-white btn-sm ms-2" aria-label="Odstranit">
+</button>
                             </span>
                         <?php endforeach; ?>
                     </div>
-                    <input type="hidden" name="tagy_json" id="tagy_json" value="<?= h($tagyHiddenJson) ?>">
+                    <input type="hidden" name="tagy_json" id="tagy_json" value="<?= h($tagyHiddenJson)
+?>">
                     <div class="mini-muted mt-2">
-                        <i class="bi bi-plus-circle me-1"></i>Nový tag stačí napsat a stisknout Enter.
+                        <i class="bi bi-plus-circle me-1">
+</i>Nový tag stačí napsat a stisknout Enter.
                     </div>
                 </div>
             </div>
@@ -425,7 +465,8 @@ foreach ($opts as $k => $lbl):
             <!-- 3. Trenéři -->
             <div class="card section-card mb-3">
                 <div class="card-header bg-secondary text-white">
-                    <i class="bi bi-person-badge me-1"></i>Trenéři
+                    <i class="bi bi-person-badge me-1">
+</i>Trenéři
                 </div>
                 <div class="card-body">
                     <?php foreach ($trenereList as $tr):
@@ -435,7 +476,8 @@ foreach ($opts as $k => $lbl):
                         $disabled = (!$isAdmin && !$isCurrent) ? 'disabled' : '';
                         ?>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="trenere[]" value="<?= $tid ?>"
+                        <input class="form-check-input" type="checkbox" name="trenere[]" value="<?=
+     $tid ?>"
                                id="tr_<?= $tid ?>" <?= $checked ?> <?= $disabled ?>>
                         <label class="form-check-label" for="tr_<?= $tid ?>">
                             <?= h($tr['jmeno']) ?>
@@ -446,7 +488,8 @@ foreach ($opts as $k => $lbl):
                     </div>
                     <?php endforeach; ?>
                     <div class="mini-muted mt-2">
-                        <i class="bi bi-lock me-1"></i>Přihlášený trenér bude vždy uložen.
+                        <i class="bi bi-lock me-1">
+</i>Přihlášený trenér bude vždy uložen.
                     </div>
                 </div>
             </div>
@@ -454,7 +497,8 @@ foreach ($opts as $k => $lbl):
             <!-- 4. Fotografie -->
             <div class="card section-card mb-3">
                 <div class="card-header" style="background:#6f42c1;color:#fff;">
-                    <i class="bi bi-image me-1"></i>Fotografie
+                    <i class="bi bi-image me-1">
+</i>Fotografie
                 </div>
                 <div class="card-body">
                     <?php if (!empty($existingImages)): ?>
@@ -468,8 +512,10 @@ foreach ($opts as $k => $lbl):
                                         </a>
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="remove_obrazky[]"
-                                                   value="<?= h($p) ?>" id="rm_<?= md5((string)$p) ?>">
-                                            <label class="form-check-label small text-danger" for="rm_<?= md5((string)$p) ?>">odebrat</label>
+                                                   value="<?= h($p) ?>" id="rm_<?= md5((string)$p)
+                                    ?>">
+                                            <label class="form-check-label small text-danger" for="rm_<?=
+                                         md5((string)$p) ?>">odebrat</label>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -479,27 +525,34 @@ foreach ($opts as $k => $lbl):
                     <label class="form-label fw-semibold">Nahrát fotky (max. 5)</label>
                     <input type="file" name="obrazky[]" class="form-control" accept="image/*" multiple>
                     <div class="mini-muted mt-1">
-                        <i class="bi bi-info-circle me-1"></i>Formáty: JPG, PNG, WEBP
+                        <i class="bi bi-info-circle me-1">
+</i>Formáty: JPG, PNG, WEBP
                     </div>
                 </div>
             </div>
 
-        </div><!-- /col-lg-4 -->
+        </div>
+<!-- /col-lg-4 -->
 
-    </div><!-- /row -->
+    </div>
+<!-- /row -->
 
     <!-- Submit bar -->
     <div class="submit-bar d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div class="text-muted small">
-            <i class="bi bi-pencil-square me-1 text-primary"></i>
+            <i class="bi bi-pencil-square me-1 text-primary">
+</i>
             Upravujete trénink ze dne <strong><?= h($dupDatumStr) ?></strong>
         </div>
         <div class="d-flex gap-2">
-            <a href="<?= staffActivePositionIs('sports_lead') ? 'sprava_vsech_treninku.php' : 'moje_treninky.php' ?>" class="btn btn-outline-secondary">
-                <i class="bi bi-x-lg me-1"></i>Zrušit
+            <a href="<?= staffActivePositionIs('sports_lead') ? 'sprava_vsech_treninku.php' : 'moje_treninky.php'
+?>" class="btn btn-outline-secondary">
+                <i class="bi bi-x-lg me-1">
+</i>Zrušit
             </a>
             <button type="submit" class="btn btn-success px-4">
-                <i class="bi bi-floppy me-1"></i>Uložit změny
+                <i class="bi bi-floppy me-1">
+</i>Uložit změny
             </button>
         </div>
     </div>
@@ -546,7 +599,7 @@ foreach ($opts as $k => $lbl):
         aborter = new AbortController();
 
         // POZOR: ajax_sportovci.php musí vracet [{id, jmeno}]
-        fetch('ajax_sportovci.php?q=' + encodeURIComponent(q), {signal: aborter.signal})
+        fetch('ajax_sportovci.php?context=training&q=' + encodeURIComponent(q), {signal: aborter.signal})
             .then(r => r.json())
             .then(items => {
                 sug.innerHTML = '';
@@ -884,7 +937,7 @@ foreach ($opts as $k => $lbl):
             if (aborter) aborter.abort();
             aborter = new AbortController();
 
-            fetch('ajax_sportovci.php?q=' + encodeURIComponent(q), {signal: aborter.signal})
+            fetch('ajax_sportovci.php?context=training&q=' + encodeURIComponent(q), {signal: aborter.signal})
                 .then(r => r.json())
                 .then(items => {
                     spSug.innerHTML = '';

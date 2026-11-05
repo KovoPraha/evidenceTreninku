@@ -79,6 +79,33 @@ final class SportovecSearchTest extends TestCase
         self::assertSame([], sportovecSearch($pdo, 'Anna'));
     }
 
+    public function testTrainingSearchWorksWithoutRosterGrantAndRechecksLiveEmployment(): void
+    {
+        $pdo = $this->database();
+        $_SESSION['staff_active_position'] = 'coach';
+        $pdo->exec('DELETE FROM coach_scope_grants');
+        self::assertSame([], sportovecSearch($pdo, 'Anna'));
+        self::assertSame([1,4], array_column(sportovecSearch($pdo, 'Anna', training: true), 'id'));
+        self::assertSame([], sportovecSearch($pdo, 'Archivovana', training: true));
+        $pdo->exec('DELETE FROM staff_user_positions');
+        self::assertSame([], sportovecSearch($pdo, 'Anna', training: true));
+        $pdo->exec("INSERT INTO staff_user_positions VALUES(7,'coach')");
+        $pdo->exec('UPDATE treneri SET aktivni=0 WHERE id=7');
+        self::assertSame([], sportovecSearch($pdo, 'Anna', training: true));
+    }
+
+    public function testTrainingSearchPlacesOwnPeopleBeforeAlphabeticallyEarlierSubstitutes(): void
+    {
+        $pdo = $this->database();
+        $_SESSION['staff_active_position'] = 'coach';
+        $pdo->exec("UPDATE sportovci SET prijmeni='ZZZ vlastní' WHERE id=1");
+        $ids = array_column(sportovecSearch($pdo, '', 20, true, training: true), 'id');
+        self::assertSame(1, $ids[0]);
+        self::assertContains(2, $ids);
+        self::assertContains(4, $ids);
+        self::assertNotContains(3, $ids);
+    }
+
     public function testSportsLeadCanOpenFormSaveAndLegacyRoutesAndFindMenuEntry(): void
     {
         foreach (['zatezovy_test_form.php','ulozit_zatezovy_test.php',

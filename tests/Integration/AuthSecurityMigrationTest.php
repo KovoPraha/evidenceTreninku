@@ -176,6 +176,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261102174000_member_evidence_cutover_runs',
                 '20261104180000_tv_programs',
                 '20261105150000_bar_foundation',
+                '20261105150000_monthly_memberships',
                 '20261105160000_bar_transfer',
                 '20261105170000_bar_stock',
                 '20261105180000_bar_catalog_management',
@@ -219,9 +220,11 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->tableExists($pdo, 'shop_product_interest_events'));
         self::assertSame(
             11,
-            (int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration'")->fetchColumn()
+            (int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration'")
+    ->fetchColumn()
         );
-        self::assertSame(2, (int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration' AND terms_version LIKE '%-vzor'")->fetchColumn());
+        self::assertSame(2, (int)$pdo->query("SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type='athlete_registration' AND terms_version LIKE '%-vzor'")
+    ->fetchColumn());
         self::assertSame(1, (int)$pdo->query(('SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type=\'athlete_registration\' AND consent_pu'
  . 'rpose=\'csc_birth_number_sharing\' AND terms_version=\'csc-birth-number-sharing-2026-10-20-v1\''))->fetchColumn());
         self::assertTrue($this->tableExists($pdo, 'password_reset_tokens'));
@@ -267,7 +270,8 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->columnExists($pdo, 'club_program_enrollments', 'active_token'));
         self::assertTrue($this->columnExists($pdo, 'verejni_uzivatele', 'trener_id'));
         self::assertTrue($this->columnExists($pdo, 'planovane_treninky', 'je_verejny'));
-        self::assertTrue(\trainer_password_is_modern_hash((string)$pdo->query('SELECT heslo FROM treneri WHERE id=1')->fetchColumn()));
+        self::assertTrue(\trainer_password_is_modern_hash((string)$pdo->query('SELECT heslo FROM treneri WHERE id=1')
+    ->fetchColumn()));
         self::assertTrue($this->indexExists($pdo, 'idx_auth_login_limits_blocked'));
         self::assertTrue($this->indexExists($pdo, 'uq_verejni_uzivatele_trener'));
         self::assertTrue($this->indexExists($pdo, 'idx_planovane_treninky_verejne'));

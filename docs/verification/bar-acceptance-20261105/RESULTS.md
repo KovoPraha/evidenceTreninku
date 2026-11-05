@@ -18,14 +18,14 @@ B6 současně opravila skutečně nalezené překrytí nativních vlastností fo
 
 | Oblast | Výsledek |
 | --- | --- |
-| Celé PHPUnit | **2167 testů / 40833 assertions**, PASS; 3 unixové symlink testy přeskočené pouze na Windows |
+| Celé PHPUnit | **2192 testů / 41117 assertions**, PASS; 3 unixové symlink testy přeskočené pouze na Windows |
 | Nová integrační přejímka | 22 testů / 143 assertions; matice všech 11 pozic, vlastní spotřeba, nouzová kasa, soukromí stavového endpointu, UTC a oba přechody času |
 | JavaScript | **19/19** BAR recovery + ochrana odeslání + názvy polí; 14 scénářů samotné obnovy včetně uchování výsledku přes reload |
 | PHPStan | Celý projekt bez chyb |
 | Styl | 103 změněných PHP souborů, nula chyb |
-| Anonymní HTTP | 256 chráněných / 36 veřejných / 2 CLI; nula chyb |
+| Anonymní HTTP | 258 chráněných / 36 veřejných / 2 CLI; nula chyb |
 | Nativní MariaDB 10.4.32 | B4 pokladna, B5 dokumenty, převod/sklad i nová B6 obnova PASS |
-| Úplná obnova | **327 tabulek**, včetně porovnání naplněných 28 tabulek BAR a **3 privátních souborů** |
+| Úplná obnova | **335 tabulek**, včetně porovnání naplněných 28 tabulek BAR a **3 privátních souborů** |
 
 Nový nativní test prokazuje ztracenou odpověď po skutečném commitu a skutečné `KILL` spojení před commitem po provedení všech zápisů. Druhý případ používá testovací trigger s čekáním: neúplný zápis se celý vrátí zpět a stejný token po připojení vytvoří právě jeden výsledek. UTC je ověřeno při nezměněném sdíleném offsetu +09:00. Dále prokazuje reaktivaci vlastníka a odvolání administrátora během skutečného čekání na zámek i jediného vítěze dvou souběžných nouzových uzávěrek.
 
@@ -50,3 +50,5 @@ Místní screenshoty `output/playwright/bar-b6-lost-response-fixed.png` a `bar-b
 - Finanční provoz vyžaduje dostupnou DB. Ruční obnova nepřetrvá smazání úložiště prohlížeče nebo zavření jeho karty; v takovém případě obsluha nejdřív zkontroluje poslední doklady a skutečnou kasu. Idempotence platí pouze se stejným původním tokenem a obsahem, nikoli jako deduplikace dvou nových prodejů.
 - Není podporovaný hromadný přesun cizí kasy, odhadované potvrzování plateb, částečné storno faktury, OCR, dobropisy ani zálohové faktury.
 - Další je příprava lidské přejímky a schválený [postup B7](../../BAR_PRODUCTION_READINESS_2026-11-05.md). Sloučení, skutečný import, přepnutí domény, produkční nasazení i finanční aktivace zůstávají nepovolené.
+
+Před uzavřením B6 začleněn aktuální main `9ffe964b` (měsíční členství a zastupování): zachované obě migrační sady i vlastněné tabulky, společný zálohovací kontrakt **2026-11-05.7**. Nad společným stromem znovu PHPUnit **2192/41117**, PHPStan a anonymní HTTP **258/36/2, 0 chyb** PASS; naplněná DB a přílohy znovu obnovené, nyní **335 tabulek**. Browser doklady výše byly pořízené před přidáním main; barové browser služby tím nebyly změněné, společný strom má novou testovací/CI bránu.

@@ -209,7 +209,7 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-11-05.6') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-11-05.7') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
@@ -225,10 +225,12 @@ try {
         'club_event_term_versions' => ['status', 'archived_at', 'archived_by_trainer_id', 'title_plain',
 
      'custom_required', 'custom_visible'],
-        'athlete_registration_text_drafts' => ['title_plain', 'custom_consent_id', 'custom_required', 'custom_visible'],
+        'athlete_registration_text_drafts' => ['title_plain', 'custom_consent_id', 'custom_required', 'custom_visible']
+    ,
 
 
-        'club_program_enrollments' => ['account_id', 'terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id'],
+        'club_program_enrollments' => ['account_id', 'terms_snapshot_json', 'terms_accepted_at', 'terms_accepted_by_account_id']
+    ,
 
 
         'club_program_admissions' => ['payer_account_id', 'payer_name_snapshot', 'payer_relation_snapshot'],
@@ -246,7 +248,8 @@ try {
             'ppl_access_point_address', 'ppl_tracking_number', 'ppl_dispatched_at', 'packeta_point_id',
 
 
-            'packeta_point_name', 'packeta_point_address', 'packeta_tracking_number', 'packeta_consignment_code',
+            'packeta_point_name', 'packeta_point_address', 'packeta_tracking_number', 'packeta_consignment_code'
+    ,
 
 
             'packeta_deposited_at',
@@ -258,7 +261,8 @@ try {
         'shop_variants' => ['source_candidate_id', 'origin', 'created_by_trainer_id'],
         'shop_coupons' => ['archived_at'],
         'staff_user_positions' => ['position_code', 'is_default', 'assigned_by_trainer_id'],
-        'club_events' => ['activity_kind', 'planning_status', 'visibility', 'participant_fee_minor', 'legacy_race_id'],
+        'club_events' => ['activity_kind', 'planning_status', 'visibility', 'participant_fee_minor', 'legacy_race_id']
+    ,
 
 
         'training_rsvps' => ['makeup_excused_at', 'makeup_source_enrollment_id', 'makeup_cutoff_hours'],
@@ -280,7 +284,8 @@ try {
         )->fetchAll(PDO::FETCH_COLUMN);
         foreach ($contractColumns as $contractColumn) {
             if (!in_array($contractColumn, $actualColumns, true)) {
-                throw new RuntimeException('Manifest reported a column absent from the snapshot: ' . $contractTable .
+                throw new RuntimeException('Manifest reported a column absent from the snapshot: ' . $contractTable
+    .
 
      '.' . $contractColumn);
             }
@@ -303,10 +308,12 @@ try {
         'member_charge_reminder_events', 'member_charge_reminder_preferences', 'member_charge_reminders',
 
 
-        'kis_import_charge_promotion_events', 'kis_import_charge_promotion_items', 'kis_import_charge_promotions',
+        'kis_import_charge_promotion_events', 'kis_import_charge_promotion_items', 'kis_import_charge_promotions'
+    ,
 
 
-        'kis_import_payment_rows', 'kis_import_sandbox_events', 'kis_import_sandbox_items', 'kis_import_sandbox_promotions',
+        'kis_import_payment_rows', 'kis_import_sandbox_events', 'kis_import_sandbox_items', 'kis_import_sandbox_promotions'
+    ,
 
 
         'shop_member_category_rules', 'shop_member_price_events', 'shop_member_product_prices',
@@ -314,7 +321,8 @@ try {
         'athlete_registration_request_details', 'osoba_citlive_pristupy', 'osoba_citlive_udaje',
         'club_event_links', 'club_event_people', 'club_event_planned_participants',
         'club_event_vehicle_reservations',
-        'club_finance_allocations', 'club_finance_receipts', 'club_finance_setting_events', 'club_finance_settings',
+        'club_finance_allocations', 'club_finance_receipts', 'club_finance_setting_events', 'club_finance_settings'
+    ,
 
 
         // Complete club release addition, independently pinned from the backup implementation.
@@ -406,7 +414,8 @@ try {
     }
 
     foreach ($manifest['tables'] as $table => $expectedRows) {
-        $restoredRows = (int)$restore->query('SELECT COUNT(*) FROM `' . str_replace('`', '``', (string)$table) .
+        $restoredRows = (int)$restore->query('SELECT COUNT(*) FROM `' . str_replace('`', '``', (string)$table)
+    .
 
      '`')->fetchColumn();
         if ($restoredRows !== (int)$expectedRows) {

@@ -149,6 +149,9 @@ jobs:
       - name: Ověřit skutečnou Evidence zálohu na MariaDB
         run: php tests/Support/DatabaseBackupMariaDbSmoke.php
 
+      - name: Ověřit měsíční členství, trvalou platbu a soukromý PDF doklad
+        run: php tests/Support/MonthlyMembershipMariaDbSmoke.php
+
       - name: Ověřit převod členství bez sezon a opakování operací
         run: php tests/Support/MemberEvidenceMariaDbSmoke.php
 

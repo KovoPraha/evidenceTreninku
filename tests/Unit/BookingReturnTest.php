@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -30,6 +31,17 @@ final class BookingReturnTest extends TestCase
             'klubovy_kalendar.php?zobrazeni=register#akce-12', 'eshop.php#kosik',
             'eshop.php?kategorie=Krou%C5%BEky&q=D%C4%9Btsk%C3%A9+kolo'] as $destination) {
             self::assertSame($destination, \bookingReturnDestination($destination));
+        }
+    }
+
+    public function testMonthlyMembershipSurvivesLoginAndPersonApprovalReturn(): void
+    {
+        $purchase = 'mesicni_clenstvi.php?variant_id=671';
+        self::assertSame($purchase, \bookingPurchaseReturn($purchase));
+        foreach ([$purchase, 'moje_osoby.php?return=' . rawurlencode($purchase),
+            'registrace_sportovce.php?return=' . rawurlencode($purchase)] as $destination) {
+            self::assertSame($destination, \publicLoginDestination($destination, false));
+            self::assertSame($destination, \bookingRegistrationDestination($destination, 'rodina'));
         }
     }
 

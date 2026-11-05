@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__.'/includes/coach_scope.php';
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
@@ -8,6 +9,9 @@ if (!isset($_SESSION['trener_id'])) {
     exit;
 }
 require_once __DIR__ . '/db.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Databázové připojení není dostupné.');
+}
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/funkce.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
@@ -24,7 +28,10 @@ if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     die('Neplatný CSRF token.');
 }
 
-function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s)
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 
 // --------------------
 // Vstupy
@@ -56,13 +63,16 @@ try {
         header('Location: ' . $submission['redirect'], true, 303);
         exit;
     }
-    if ($submission['state'] !== 'issued') throw new RuntimeException('Předchozí odeslání se právě ukládá nebo má nejistý výsledek. Zápis se neopakuje; ověřte přehled tréninků.');
+    if ($submission['state'] !== 'issued') {
+        throw new RuntimeException('Předchozí odeslání se právě ukládá nebo má nejistý výsledek. Zápis se neopakuje; ověřte přehled tréninků.');
+    }
 } catch (RuntimeException $exception) {
     $_SESSION['flash_error'] = $exception->getMessage();
     header('Location: moje_treninky.php', true, 303);
     exit;
 }
-$retryUrl = 'formular.php?' . http_build_query(['submission_key' => $submissionKey] + ($planId > 0 ? ['plan_id' => $planId] : []));
+$retryUrl = 'formular.php?' . http_build_query(['submission_key' => $submissionKey] + ($planId > 0 ? ['plan_id'
+    => $planId] : []));
 $submissionStarted = false;
 $commitAttempted = false;
 
@@ -83,28 +93,37 @@ try {
 // Obrázky
 // --------------------
 $imagePaths = [];
-try { coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows)); coachScopeAssertTeams($pdo, $teamIds); }
-catch (RuntimeException $e) { http_response_code(403); exit($e->getMessage()); }
+try {
+    coachTrainingAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
+    coachTrainingAssertTeams($pdo, $teamIds);
+} catch (RuntimeException $e) {
+    http_response_code(403);
+    exit($e->getMessage());
+}
 $fileMutations = fileMutationBegin();
 try {
-if (!empty($_FILES['obrazky']['name'][0])) {
-    $uploadDir = __DIR__ . '/nahrane_obrazky/';
-    if (!is_dir($uploadDir)) @mkdir($uploadDir, 0755, true);
+    if (!empty($_FILES['obrazky']['name'][0])) {
+        $uploadDir = __DIR__ . '/nahrane_obrazky/';
+        if (!is_dir($uploadDir)) {
+            @mkdir($uploadDir, 0755, true);
+        }
 
-    secureUploadAssertFileCount((array)$_FILES['obrazky']['name']);
-    foreach ($_FILES['obrazky']['tmp_name'] as $i => $tmp) {
-        if ($_FILES['obrazky']['error'][$i] !== UPLOAD_ERR_OK) continue;
-        $prepared = secureUploadPrepareImage((string)$tmp);
-        $name = 'trenink_' . time() . '_' . bin2hex(random_bytes(8)) . '.jpg';
-        $dest = $uploadDir . $name;
-        if (fileMutationStage($fileMutations, $prepared['path'], $dest, false)) {
-            $imagePaths[] = 'nahrane_obrazky/' . $name;
-        } else {
-            @unlink($prepared['path']);
-            throw new SecureUploadException('Obrázek se nepodařilo připravit k uložení.');
+        secureUploadAssertFileCount((array)$_FILES['obrazky']['name']);
+        foreach ($_FILES['obrazky']['tmp_name'] as $i => $tmp) {
+            if ($_FILES['obrazky']['error'][$i] !== UPLOAD_ERR_OK) {
+                continue;
+            }
+            $prepared = secureUploadPrepareImage((string)$tmp);
+            $name = 'trenink_' . time() . '_' . bin2hex(random_bytes(8)) . '.jpg';
+            $dest = $uploadDir . $name;
+            if (fileMutationStage($fileMutations, $prepared['path'], $dest, false)) {
+                $imagePaths[] = 'nahrane_obrazky/' . $name;
+            } else {
+                @unlink($prepared['path']);
+                throw new SecureUploadException('Obrázek se nepodařilo připravit k uložení.');
+            }
         }
     }
-}
 } catch (Throwable $exception) {
     fileMutationRollback($fileMutations);
     $_SESSION['flash_error'] = $exception instanceof SecureUploadException
@@ -119,9 +138,15 @@ $obrazky = !empty($imagePaths) ? json_encode($imagePaths, JSON_UNESCAPED_UNICODE
 // Uložení
 // --------------------
 try {
-    if ($datum === '') throw new Exception('Chybí datum.');
-    if ($delka < 0) throw new Exception('Neplatná délka.');
-    if ($planId === 0 && $teamIds === []) throw new Exception('Vyberte skupinu nebo soupisku pro trénink.');
+    if ($datum === '') {
+        throw new Exception('Chybí datum.');
+    }
+    if ($delka < 0) {
+        throw new Exception('Neplatná délka.');
+    }
+    if ($planId === 0 && $teamIds === []) {
+        throw new Exception('Vyberte skupinu nebo soupisku pro trénink.');
+    }
 
     // Validace: měření musí mít vybraného sportovce
     foreach ($mereniRows as $i => $row) {
@@ -135,25 +160,34 @@ try {
     $submissionStarted = true;
     $pdo->beginTransaction();
     trainingClosureAssertActor($pdo, $trenerId);
-    coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
-    coachScopeAssertTeams($pdo, $teamIds, $datum);
+    coachTrainingAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
+    coachTrainingAssertTeams($pdo, $teamIds, $datum);
 
-    $planRow=null;
-    if($planId>0){
-        coachScopeAssertPlan($pdo,$planId);
-        $planSql='SELECT id,trener_id,datum,stav,skupina_id,podskupina_id FROM planovane_treninky WHERE id=?';
-        if((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME)==='mysql')$planSql.=' FOR UPDATE';
-        $planStatement=$pdo->prepare($planSql);$planStatement->execute([$planId]);$planRow=$planStatement->fetch(PDO::FETCH_ASSOC);
-        if(!$planRow||(string)$planRow['stav']!=='planovany')throw new TrainingRosterBridgeException('Plánovaný trénink už není dostupný pro zápis evidence.');
-        if((int)$planRow['trener_id']!==$trenerId&&!roleAtLeast('hlavni'))throw new TrainingRosterBridgeException('Cizí plánovaný trénink nemůžete zaevidovat.');
-        if((string)$planRow['datum']!==$datum)throw new TrainingRosterBridgeException('Datum evidence musí odpovídat datu plánovaného tréninku.');
+    $planRow = null;
+    if ($planId > 0) {
+        coachScopeAssertPlan($pdo, $planId, substitution: true);
+        $planSql = 'SELECT id,trener_id,datum,stav,skupina_id,podskupina_id FROM planovane_treninky WHERE id=?';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $planSql .= ' FOR UPDATE';
+        }
+        $planStatement = $pdo->prepare($planSql);
+        $planStatement->execute([$planId]);
+        $planRow = $planStatement->fetch(PDO::FETCH_ASSOC);
+        if (!$planRow || (string)$planRow['stav'] !== 'planovany') {
+            throw new TrainingRosterBridgeException('Plánovaný trénink už není dostupný pro zápis evidence.');
+        }
+        if ((string)$planRow['datum'] !== $datum) {
+            throw new TrainingRosterBridgeException('Datum evidence musí odpovídat datu plánovaného tréninku.');
+        }
         if (trainingRosterBridgePlanTeamIds($pdo, $planId) === []) {
             // A historical plan has only legacy targets. Keep its meaning when recorded.
             $skupinaId = $planRow['skupina_id'];
             $legacySubs = $pdo->prepare('SELECT podskupina_id FROM planovane_treninky_podskupiny WHERE plan_id=?');
             $legacySubs->execute([$planId]);
             $podskupiny = $legacySubs->fetchAll(PDO::FETCH_COLUMN);
-            if ($podskupiny === [] && $planRow['podskupina_id'] !== null) $podskupiny = [$planRow['podskupina_id']];
+            if ($podskupiny === [] && $planRow['podskupina_id'] !== null) {
+                $podskupiny = [$planRow['podskupina_id']];
+            }
         }
     }
 
@@ -215,29 +249,36 @@ try {
     // 2) Vazba na skupinu
     $pdo->prepare('DELETE FROM trenink_skupina WHERE trenink_id = ?')->execute([$treninkId]);
     if ($skupinaId && ctype_digit((string)$skupinaId)) {
-        $pdo->prepare('INSERT INTO trenink_skupina (trenink_id, skupina_id) VALUES (?, ?)')->execute([$treninkId, (int)$skupinaId]);
+        $pdo->prepare('INSERT INTO trenink_skupina (trenink_id, skupina_id) VALUES (?, ?)')->execute([$treninkId
+    , (int)$skupinaId]);
     }
 
     // 3) Vazba na podskupiny
     $pdo->prepare('DELETE FROM trenink_podskupina WHERE trenink_id = ?')->execute([$treninkId]);
-    if (is_array($podskupiny)) {
-        $stmtPs = $pdo->prepare('INSERT INTO trenink_podskupina (trenink_id, podskupina_id) VALUES (?, ?)');
-        foreach ($podskupiny as $psid) {
-            if (!ctype_digit((string)$psid)) continue;
-            $stmtPs->execute([$treninkId, (int)$psid]);
+    $stmtPs = $pdo->prepare('INSERT INTO trenink_podskupina (trenink_id, podskupina_id) VALUES (?, ?)');
+    foreach ($podskupiny as $psid) {
+        if (!ctype_digit((string)$psid)) {
+            continue;
         }
+        $stmtPs->execute([$treninkId, (int)$psid]);
     }
 
     // 4) Vazba na trenéry (vždy přidej i přihlášeného)
     $pdo->prepare('DELETE FROM trenink_trener WHERE trenink_id = ?')->execute([$treninkId]);
-    if (!is_array($trenere)) $trenere = [];
+    if (!is_array($trenere)) {
+        $trenere = [];
+    }
     $trenere = array_map('intval', $trenere);
-    if (!in_array($trenerId, $trenere, true)) array_unshift($trenere, $trenerId);
+    if (!in_array($trenerId, $trenere, true)) {
+        array_unshift($trenere, $trenerId);
+    }
     $trenere = array_values(array_unique($trenere));
 
     $stmtT = $pdo->prepare('INSERT INTO trenink_trener (trenink_id, trener_id) VALUES (?, ?)');
     foreach ($trenere as $trid) {
-        if ($trid <= 0) continue;
+        if ($trid <= 0) {
+            continue;
+        }
         $stmtT->execute([$treninkId, (int)$trid]);
     }
 
@@ -248,7 +289,9 @@ try {
         foreach (array_filter(array_map('trim', explode(',', $ucastnici))) as $participant) {
             if (preg_match('/^(\d+):(.+)$/', $participant, $m)) {
                 $sid = (int)$m[1];
-                if ($sid > 0) $stmtLinkSp->execute([$treninkId, $sid]);
+                if ($sid > 0) {
+                    $stmtLinkSp->execute([$treninkId, $sid]);
+                }
             }
         }
     }
@@ -286,7 +329,9 @@ try {
         $decoded = json_decode((string)$_POST['tagy_json'], true);
         if (is_array($decoded)) {
             foreach ($decoded as $t) {
-                if (!is_array($t)) continue;
+                if (!is_array($t)) {
+                    continue;
+                }
 
                 $tid = $t['id'] ?? null;
                 $name = isset($t['name']) ? trim((string)$t['name']) : '';
@@ -295,14 +340,17 @@ try {
                     $tagIds[] = (int)$tid;
                     continue;
                 }
-                if ($name === '') continue;
+                if ($name === '') {
+                    continue;
+                }
 
                 $stmtFindTag = $pdo->prepare('SELECT id FROM tagy WHERE nazev = ? LIMIT 1');
                 $stmtFindTag->execute([$name]);
                 $ex = (int)($stmtFindTag->fetchColumn() ?: 0);
 
-                if ($ex > 0) $tagIds[] = $ex;
-                else {
+                if ($ex > 0) {
+                    $tagIds[] = $ex;
+                } else {
                     $stmtInsTag = $pdo->prepare('INSERT INTO tagy (nazev) VALUES (?)');
                     $stmtInsTag->execute([$name]);
                     $tagIds[] = (int)$pdo->lastInsertId();
@@ -314,7 +362,9 @@ try {
     $tagIds = array_values(array_unique(array_filter($tagIds)));
     if (!empty($tagIds)) {
         $stmtLinkTag = $pdo->prepare('INSERT INTO trenink_tag (trenink_id, tag_id) VALUES (?, ?)');
-        foreach ($tagIds as $tid) $stmtLinkTag->execute([$treninkId, $tid]);
+        foreach ($tagIds as $tid) {
+            $stmtLinkTag->execute([$treninkId, $tid]);
+        }
     }
 
     // 8) Rezervace sportoviště (volitelná — pokud trenér vyplnil panel)
@@ -341,7 +391,7 @@ try {
 
     // 9) Propojení s plánovaným tréninkem (pokud byl formulář otevřen z plánovače)
     if ($planId > 0) {
-        trainingRosterBridgeCopyPlanToTraining($pdo,$planId,$treninkId,$trenerId);
+        trainingRosterBridgeCopyPlanToTraining($pdo, $planId, $treninkId, $trenerId);
         $pdo->prepare("
             UPDATE planovane_treninky
             SET trenink_id = ?, stav = 'evidovany'
@@ -349,6 +399,12 @@ try {
         ")->execute([$treninkId, $planId]);
         clubMakeupFinalizeSource($pdo, $planId, $treninkId, $trenerId);
         clubMakeupFinalizeTarget($pdo, $planId, $treninkId, $trenerId);
+        if ((int)$planRow['trener_id'] !== $trenerId) {
+            $pdo->prepare('INSERT INTO training_schedule_events(plan_id,action,reason,before_json,actor_id) VALUES(?,?,?,?,?)')
+                ->execute([$planId, 'recorded_by_substitute', 'Zápis skutečného tréninku zastupujícím trenérem.'
+    ,
+                    json_encode(['planned_trainer_id' => (int)$planRow['trener_id'], 'training_id' => $treninkId], JSON_THROW_ON_ERROR), $trenerId]);
+        }
     } else {
         trainingRosterBridgeReplaceTrainingTeams($pdo, $treninkId, $teamIds, $trenerId);
     }
@@ -363,11 +419,19 @@ try {
     exit;
 
 } catch (Throwable $e) {
-    if ($pdo->inTransaction()) $pdo->rollBack();
-    if (!$commitAttempted) fileMutationRollback($fileMutations);
-    if ($submissionStarted && !$commitAttempted) trainingSubmissionRetryAfterRollback($_SESSION, $submissionKey);
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    if (!$commitAttempted) {
+        fileMutationRollback($fileMutations);
+    }
+    if ($submissionStarted && !$commitAttempted) {
+        trainingSubmissionRetryAfterRollback($_SESSION, $submissionKey);
+    }
     $_SESSION['flash_error'] = 'Chyba při ukládání: ' . $e->getMessage();
-    if ($commitAttempted) $_SESSION['flash_error'] = 'Výsledek ukládání je nejistý. Zápis se neopakuje; před novým zadáním ověřte přehled tréninků.';
+    if ($commitAttempted) {
+        $_SESSION['flash_error'] = 'Výsledek ukládání je nejistý. Zápis se neopakuje; před novým zadáním ověřte přehled tréninků.';
+    }
     header('Location: ' . ($commitAttempted ? 'moje_treninky.php' : $retryUrl), true, 303);
     exit;
 }

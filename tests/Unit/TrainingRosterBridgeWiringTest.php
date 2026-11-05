@@ -28,7 +28,8 @@ final class TrainingRosterBridgeWiringTest extends TestCase
         $guide = (string)file_get_contents($root . '/kis_training_a07_admin.php');
         $service = (string)file_get_contents($root . '/includes/training_roster_bridge.php');
         self::assertStringContainsString('trainingRosterBridgeExpectedForPlan', $form);
-        self::assertStringContainsString('pt.trener_id = ?', $form);
+        self::assertStringContainsString('coachScopeRequirePlan', $form);
+        self::assertStringContainsString('substitution: true', $form);
         self::assertStringContainsString('rosterExpected.forEach', $form);
         self::assertStringContainsString('trainingRosterBridgeCopyPlanToTraining', $save);
         self::assertStringContainsString('http_response_code(410)', $guide);

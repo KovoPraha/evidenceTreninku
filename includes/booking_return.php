@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -15,7 +16,7 @@ function bookingReturnDestination(mixed $value, string $fallback = ''): string
         'sportovni_prehled.php', 'moje_programy.php', 'moje_objednavky.php', 'objednavka.php',
         'moje_rezervace.php', 'verejny_profil.php', 'kalendar.php', 'klubovy_kalendar.php',
         'krouzky.php', 'cyklisticke_krouzky.php', 'velodrom.php', 'rezervovat.php',
-        'nahrady.php', 'treninky.php'];
+        'nahrady.php', 'treninky.php', 'mesicni_clenstvi.php'];
     if (!in_array($parts[1], $pages, true)) {
         return $fallback;
     }
@@ -43,7 +44,7 @@ function bookingReturnDestination(mixed $value, string $fallback = ''): string
 function bookingPurchaseReturn(mixed $value): string
 {
     return is_string($value)
-        && preg_match('~^(?:eshop\.php(?:#kosik)?|produkt\.php\?id=[1-9][0-9]*(?:&variant_id=[1-9][0-9]*)?(?:#varianta-[1-9][0-9]*)?)$~D', $value) === 1
+        && preg_match('~^(?:mesicni_clenstvi\.php\?variant_id=[1-9][0-9]*|eshop\.php(?:#kosik)?|produkt\.php\?id=[1-9][0-9]*(?:&variant_id=[1-9][0-9]*)?(?:#varianta-[1-9][0-9]*)?)$~D', $value) === 1
         ? $value : '';
 }
 
