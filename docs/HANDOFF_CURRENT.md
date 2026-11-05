@@ -4,6 +4,11 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
+[Měsíční členství a zastupování trenérů #314](verification/monthly-coach-release-20261105/RESULTS.md) jsou sloučené a nasazené.
+Trenérské přiřazení nově určuje pořadí výběru, ne možnost vypsat/zapsat trénink za kolegu.
+Nové měsíční automatizace, plán a pošta nebyly zapnuté; před ostrým sjednáním je třeba schválit konkrétní tarif a aktivaci podle [runbooku](MONTHLY_MEMBERSHIP_RUNBOOK.md).
+Čtecí produkční náhled PASS (0 členství), skutečná měsíční platba/PDF/doručení ještě neověřené.
+
 Ostré platby mají [protokol aktivace Fio a SumUp](verification/live-payments-20261105/ACTIVATION.md).
 Vlastník schválil stávající SumUp klíč a kartu pro všech 223 aktivních produktů
 pro nové objednávky. Historické platby zachovávají uložený režim. Fio historii

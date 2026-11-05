@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-05",
+  "surface": "Authenticated Chrome, existing owner session; no impersonation",
+  "before": {
+    "coach_without_roster_selection": "Pro vybrané datum nejsou dostupné skupiny ani soupisky."
+  },
+  "after": {
+    "create_training": "all active groups and rosters available in coach context",
+    "date_change": "2026-11-06 retains roster selection after AJAX refresh",
+    "participant_search": "TEST returns synthetic people including the outside-scope sentinel",
+    "plan_training": "all targets available; date changed to 2026-11-06",
+    "monthly_finance_admin": "tariff form and error queues load",
+    "original_sports_lead_context_restored": true
+  },
+  "writes": "Only session workspace switching; no training, tariff, membership, payment or mail created",
+  "not_run": [
+    "ordinary coach login",
+    "production substitute POST",
+    "monthly customer subscription POST",
+    "real bank payment",
+    "production PDF issue",
+    "reminder delivery"
+  ],
+  "note": "Final AX timeout; tab inventory confirmed restored sports-lead dashboard."
+}

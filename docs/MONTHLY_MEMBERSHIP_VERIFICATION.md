@@ -1,5 +1,7 @@
 # Ověření měsíčních členství — 5. 11. 2026
 
+**Navazující vydání:** obě změny jsou sloučené a technicky nasazené v PR #314. Aktuální stav a důkazy určuje [produkční protokol](verification/monthly-coach-release-20261105/RESULTS.md); níže je zachovaný místní důkaz před nasazením. Aktivace měsíčního zpracování a pošty neproběhla.
+
 Lokální implementace na základu `97b85bb5`; produkční nasazení ani aktivace neproběhly.
 
 - Celá regresní sada: **2 046 testů, 39 141 assertions, bez selhání, 3 přeskočené testy prostředí**.

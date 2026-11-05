@@ -3865,3 +3865,20 @@ stavem, pokud jsou v rozporu s výše uvedenými autoritami.
 
 
 Původní vývojový kontext: [CLAUDE_HISTORY.md](CLAUDE_HISTORY.md).
+
+
+## Stav před vydáním #314 — 5. 11. 2026
+
+- **Živé vydání:** `504fd69a415488bbd4c4039e78311978a44f888c`,
+  [deploy 42019877235](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42019877235) SUCCESS.
+  Vydání #312 zachovává opravy #308; samostatný hostingový spouštěč používá kanonický Fio import.
+  [Protokol](verification/fio-followup-20261105/RESULTS.md), [porovnání](verification/fio-followup-20261105/release-comparison.json); audit 42021224333 potvrdil živé SHA/flags.
+  Log aktivace dokládá nový CLI soubor; vlastní cron/worker je mimo webroot. Nejde o úplnou hash inventuru.
+- **Ověření:** všech 11 kontrol #312 PASS, sloučený strom shodný s ověřeným.
+  Linux i deploy 2029 testů / 38953 assertions bez skipů; MariaDB 10.3/11.4, PHPStan/styl PASS.
+  Cílené Fio 35/233 PASS, HTTP před/po 57/57; ruční status nevytvářel heartbeat. Karta CZK ověřená při aktivaci.
+  Přihlášené platební UI UAT a skutečná úhrada NOT RUN v této vlně; heslo/T07 vynechané.
+- **Záloha a schéma:** čerstvá záloha vydání, 347 tabulek / 2 triggery;
+  [izolovaná obnova 42020816687](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42020816687) PASS včetně počtů všech tabulek.
+  SHA-256 `897e4bd44e37da88caa0fae427175ccb3d36e243a5db5c09f61a239a59d2c33e`.
+  Schéma current / pending [], migrační ledger 150; dosavadní variabilní symboly zachované.

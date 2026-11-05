@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po ověření hostingového Fio plánu a všech 45 čekajících pohybů.
+Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení měsíčního členství a zastupování trenérů (PR #314).
 
 - **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** karta pro 223 aktivních produktů / nové objednávky, 8 starých plateb zachováno.
   **[Fio hostingový plán ověřený](verification/fio-followup-20261105/RESULTS.md):** dva skutečné importy, všech 45 pohybů bez shodného VS. Žádné vynucené přiřazení; skutečná placená úhrada stále nedoložená.
@@ -47,19 +47,14 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po ověření hostingového Fio plá
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `504fd69a415488bbd4c4039e78311978a44f888c`,
-  [deploy 42019877235](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42019877235) SUCCESS.
-  Vydání #312 zachovává opravy #308; samostatný hostingový spouštěč používá kanonický Fio import.
-  [Protokol](verification/fio-followup-20261105/RESULTS.md), [porovnání](verification/fio-followup-20261105/release-comparison.json); audit 42021224333 potvrdil živé SHA/flags.
-  Log aktivace dokládá nový CLI soubor; vlastní cron/worker je mimo webroot. Nejde o úplnou hash inventuru.
-- **Ověření:** všech 11 kontrol #312 PASS, sloučený strom shodný s ověřeným.
-  Linux i deploy 2029 testů / 38953 assertions bez skipů; MariaDB 10.3/11.4, PHPStan/styl PASS.
-  Cílené Fio 35/233 PASS, HTTP před/po 57/57; ruční status nevytvářel heartbeat. Karta CZK ověřená při aktivaci.
-  Přihlášené platební UI UAT a skutečná úhrada NOT RUN v této vlně; heslo/T07 vynechané.
-- **Záloha a schéma:** čerstvá záloha vydání, 347 tabulek / 2 triggery;
-  [izolovaná obnova 42020816687](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42020816687) PASS včetně počtů všech tabulek.
-  SHA-256 `897e4bd44e37da88caa0fae427175ccb3d36e243a5db5c09f61a239a59d2c33e`.
-  Schéma current / pending [], migrační ledger 150; dosavadní variabilní symboly zachované.
+- **Živé vydání:** `9b0dec083a650df933b09ecd4545d782069daa62`, [deploy 42064630068](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42064630068) SUCCESS.
+  **[PR #314: trenéři i měsíční členství nasazeny](verification/monthly-coach-release-20261105/RESULTS.md).** Vlastní soupisky první, zastupování bez grantu; měsíční předpisy, VS, doklady a upomínky implementované. Jednorázový nákup zachován.
+  Nové měsíční automatizace/pošta neaktivovány, plán nemá zapínací proměnné. Produkční dry-run PASS (0 členství), tarif dosud neschválen.
+- **Ověření:** 11 kontrol PR PASS, shodný sloučený strom; CI main i deploy SUCCESS, Linux 2054/39237 bez skipů, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
+  HTTP před 48/48, po 54/54; přihlášený trenérský výběr/data/TEST hledání a měsíční správa PASS. Ostrý zápis, platba, nové PDF a upomínka NOT RUN.
+  Čtecí audit potvrdil živé SHA, shodný hash konfigurace a dosavadní integrační flags; úplná hash inventura se netvrdí.
+- **Záloha a schéma:** čerstvá záloha před migrací, 347 tabulek / 2 triggery; [izolovaná obnova 42065531972](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42065531972) PASS včetně všech počtů.
+  SHA-256 `568ff63f469f70911efa757d98c82374466a85562392f9e4527cf3b427a17947`. Schéma current / pending [], ledger 151, dosavadní VS zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
   31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu.

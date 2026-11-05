@@ -1,5 +1,7 @@
 # Měsíční členství: obsluha a aktivace
 
+**Vydání 5. 11. 2026:** implementace a migrace jsou [nasazené a technicky ověřené](verification/monthly-coach-release-20261105/RESULTS.md), včetně produkčního dry-run. Ostrý prodej, nové účtování a pošta zatím neaktivované. Následující postup aktivace zůstává platný.
+
 Stav 5. 11. 2026: implementace ve větvi `codex/monthly-membership-flow-20261105`, základ `97b85bb5`. Tento dokument neoznačuje funkci za nasazenou ani aktivovanou. Plán a obchodní pravidla jsou v [plánu](MONTHLY_MEMBERSHIP_PLAN.md).
 
 ## Co zákazník udělá
