@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . '/includes/init.php';
+require_once dirname(__DIR__) . '/includes/bar/bootstrap.php';
+$pdo = barBootstrap();
 require_once dirname(__DIR__) . '/includes/bar/web.php';
 require_once dirname(__DIR__) . '/includes/bar/category_management.php';
-if (!isset($pdo) || !$pdo instanceof PDO) {
-    throw new RuntimeException('Databázové připojení není dostupné.');
-}
 barRequireWebActor($pdo, 'catalog_manage');
 $error = '';
 $rejectedVersion = null;
@@ -72,6 +70,7 @@ if ($error !== '') {
 <body>
 <?php require dirname(__DIR__) . '/hlavicka.php'; ?>
 <main class="container py-4">
+    <?php barRenderRequestRecoveryMount(); ?>
     <h1>Kategorie baru</h1>
     <p><a href="<?= barH(appUiUrl('bar/catalog.php')) ?>">Katalog produktů</a> · <a href="<?= barH(appUiUrl('bar/categories.php')) ?>">Nová kategorie</a></p>
     <?php if ($error !== ''): ?><div class="alert alert-danger" role="alert"><?= barH($error) ?></div><?php endif; ?>

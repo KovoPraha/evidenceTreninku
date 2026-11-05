@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . '/includes/init.php';
+require_once dirname(__DIR__) . '/includes/bar/bootstrap.php';
+$pdo = barBootstrap();
 require_once dirname(__DIR__) . '/includes/bar/checkout_web.php';
 require_once dirname(__DIR__) . '/includes/bar/cashbox_view.php';
-if (!isset($pdo) || !$pdo instanceof PDO) {
-    throw new RuntimeException('Databázové připojení není dostupné.');
-}
 barRequireWebActor($pdo, 'sell');
 $error = '';
-$retry = false;
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     try {
         barPostCsrf();
@@ -69,8 +66,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         http_response_code($exception instanceof BarConflictException ? 409 : 422);
         $error = $exception->getMessage();
     } catch (PDOException $exception) {
-        http_response_code(503);
-        $retry = true;
+        barRenderDatabaseUnavailable($_POST);
+        exit;
     }
 }
 $selectedId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -84,9 +81,5 @@ barCheckoutPageStart($pdo, 'Moje kasa');
 if ($error !== '') {
     echo '<div class="alert alert-danger" role="alert">' . barH($error) . '</div>';
 }
-if ($retry) {
-    barRenderRequestRetry($_POST);
-} else {
-    barRenderCashbox($data);
-}
+barRenderCashbox($data);
 barCheckoutPageEnd();

@@ -8,7 +8,6 @@ function barRenderCheckoutPage(PDO $pdo, bool $consumption): void
 {
     $actor = barRequireWebActor($pdo, 'sell');
     $error = '';
-    $retry = false;
     $quote = null;
     $cart = [];
     $discount = 0;
@@ -48,9 +47,8 @@ function barRenderCheckoutPage(PDO $pdo, bool $consumption): void
             http_response_code($exception instanceof BarConflictException ? 409 : 422);
             $error = $exception->getMessage();
         } catch (PDOException $exception) {
-            http_response_code(503);
-            $retry = ($_POST['action'] ?? null) === 'commit';
-            $error = $retry ? '' : 'Náhled nelze načíst. Zkuste to znovu.';
+            barRenderDatabaseUnavailable($_POST);
+            return;
         }
     }
     $box = barOwnOpenCashbox($pdo);
@@ -66,21 +64,19 @@ function barRenderCheckoutPage(PDO $pdo, bool $consumption): void
     if ($error !== '') {
         echo '<div class="alert alert-danger" role="alert">' . barH($error) . '</div>';
     }
-    if ($retry) {
-        barRenderRequestRetry($_POST);
-    } elseif (!$consumption && $box === null) {
+    if (!$consumption && $box === null) {
         echo '<p>Před prodejem <a href="' . barH(appUiUrl('bar/cashbox.php')) . '">otevřete vlastní kasu</a>.</p>';
     } elseif ($quote !== null) {
         barRenderQuoteConfirmation($quote, $consumption, $box, $location, $reason);
     }
-    if (!$retry && ($consumption || $box !== null) && $products !== []) {
+    if (($consumption || $box !== null) && $products !== []) {
         barRenderCartForm($products, $cart, $consumption, $actor['position'] === 'bar_admin', $location, $discount, $cups, $reason);
     }
     if ($consumption && $history !== []) {
         echo '<h2 class="h4 mt-4">Moje odběry</h2><ul>';
         foreach ($history as $row) {
             echo '<li><a href="' . barH(appUiUrl('bar/receipt.php?id=' . (int)$row['id'])) . '">Odběr #' . (int)$row['id'] . '</a> · '
-                . barH($row['created_at']) . ($row['void_id'] !== null ? ' · stornovaný' : '') . '</li>';
+                . barH(barDisplayTime($row['created_at'])) . ($row['void_id'] !== null ? ' · stornovaný' : '') . '</li>';
         }
         echo '</ul>';
     }

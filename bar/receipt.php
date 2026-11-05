@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . '/includes/init.php';
+require_once dirname(__DIR__) . '/includes/bar/bootstrap.php';
+$pdo = barBootstrap();
 require_once dirname(__DIR__) . '/includes/bar/checkout_web.php';
 require_once dirname(__DIR__) . '/includes/bar/cashbox_view.php';
-if (!isset($pdo) || !$pdo instanceof PDO) {
-    throw new RuntimeException('Databázové připojení není dostupné.');
-}
 barRequireWebActor($pdo, 'sell');
 try {
     $id = barSourceInteger($_GET['id'] ?? null, 1, 2147483647);
@@ -28,7 +26,7 @@ if ($paid && $payment['method'] !== 'cash') {
 }
 barCheckoutPageStart($pdo, ($consumption ? 'Vlastní spotřeba #' : 'Prodejní doklad #') . $id);
 ?>
-<p>Vytvořeno: <?= barH($sale['created_at']) ?><?= $sale['cashbox_id'] !== null ? ' · Kasa #' . (int)$sale['cashbox_id'] : '' ?></p>
+<p>Vytvořeno: <?= barH(barDisplayTime($sale['created_at'])) ?><?= $sale['cashbox_id'] !== null ? ' · Kasa #' . (int)$sale['cashbox_id'] : '' ?></p>
 <div class="table-responsive"><table class="table"><thead><tr><th>Produkt</th><th>Počet</th><th>Jednotková cena</th><th>Po slevě</th></tr></thead><tbody>
 <?php foreach ($receipt['lines'] as $line): ?>
     <tr><td><?= barH($line['product_name']) ?><div class="small"><?= nl2br(barH($line['description'])) ?></div></td><td><?= (int)$line['quantity'] ?></td>
@@ -39,13 +37,13 @@ barCheckoutPageStart($pdo, ($consumption ? 'Vlastní spotřeba #' : 'Prodejní d
 <p class="fs-4">Celkem: <strong><?= barH(barFormatMoney((int)$sale['total_minor'])) ?></strong></p>
 <p><?= barH(barPaymentLabel($payment)) ?></p>
 <?php if ($payment !== null && $payment['verification_kind'] === 'manual'): ?>
-    <p>Podklad ručního potvrzení: <?= barH($payment['confirmation_reference']) ?> · <?= barH($payment['confirmed_at']) ?></p>
+    <p>Podklad ručního potvrzení: <?= barH($payment['confirmation_reference']) ?> · <?= barH(barDisplayTime($payment['confirmed_at'])) ?></p>
 <?php endif; ?>
 <?php if ($consumption): ?><p>Důvod: <?= barH($sale['reason']) ?></p><?php endif; ?>
 <?php if ($receipt['returned_cups']['quantity'] > 0): ?><p>Vrácené kelímky: <?= $receipt['returned_cups']['quantity'] ?> ks,
     vyplaceno <?= barH(barFormatMoney($receipt['returned_cups']['amount_minor'])) ?>.</p><?php endif; ?>
 <?php if ($receipt['void'] !== null): ?>
-    <div class="alert alert-warning">Stornováno <?= barH($receipt['void']['created_at']) ?> · <?= barH($receipt['void']['reason']) ?>
+    <div class="alert alert-warning">Stornováno <?= barH(barDisplayTime($receipt['void']['created_at'])) ?> · <?= barH($receipt['void']['reason']) ?>
         <br>Vrácená platba: <?= barH(barFormatMoney((int)$receipt['void']['refunded_minor'])) ?>
         <?php if ($receipt['void']['refund_reference'] !== null): ?><br>Podklad vratky: <?= barH($receipt['void']['refund_reference']) ?><?php endif; ?>
     </div>

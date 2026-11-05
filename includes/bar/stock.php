@@ -47,7 +47,7 @@ function barStockOperation(PDO $pdo, int $productId, int $version, string $kind,
         if (min($newStall, $newOffice) < 0 || max($newStall, $newOffice) > 1000000) {
             throw new DomainException('Ve zdrojovém místě není dost zásoby nebo by byl překročen skladový limit.');
         }
-        $pdo->prepare('INSERT INTO kis_bar_stock_operations(token,request_sha256,product_id,actor_id,kind,reason) VALUES(?,?,?,?,?,?)')
+        $pdo->prepare('INSERT INTO kis_bar_stock_operations(token,request_sha256,product_id,actor_id,kind,reason,created_at) VALUES(?,?,?,?,?,?,' . barSqlUtcNow($pdo) . ')')
             ->execute([$token, $requestHash, $productId, $actor['id'], $kind, $reason]);
         $id = (int)$pdo->lastInsertId();
         $insert = $pdo->prepare('INSERT INTO kis_bar_stock_movements(operation_id,product_id,location_code,quantity_delta,quantity_after,purchase_minor,product_name) '

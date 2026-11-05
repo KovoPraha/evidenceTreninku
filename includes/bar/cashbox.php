@@ -41,7 +41,7 @@ function barAppendCash(PDO $pdo, array $actor, int $cashboxId, int $amount, stri
         throw new DomainException('V kase není dost hotovosti pro tuto operaci.');
     }
     barCheckMinor($balance);
-    $pdo->prepare('INSERT INTO kis_bar_cash_movements(cashbox_id,actor_id,kind,amount_minor,source_type,source_id,reason) VALUES(?,?,?,?,?,?,?)')
+    $pdo->prepare('INSERT INTO kis_bar_cash_movements(cashbox_id,actor_id,kind,amount_minor,source_type,source_id,reason,created_at) VALUES(?,?,?,?,?,?,?,' . barSqlUtcNow($pdo) . ')')
         ->execute([$cashboxId, $actor['id'], $kind, $amount, $source, $sourceId, $reason]);
     $id = (int)$pdo->lastInsertId();
     $pdo->prepare('UPDATE kis_bar_cashboxes SET lock_version=lock_version+1 WHERE id=?')->execute([$cashboxId]);
@@ -58,7 +58,7 @@ function barOpenCashbox(PDO $pdo, int $openingMinor, string $reason, string $tok
         if ($query->fetchColumn()) {
             throw new BarConflictException('Už máte otevřenou kasu. Nejprve ji uzavřete.');
         }
-        $pdo->prepare('INSERT INTO kis_bar_cashboxes(owner_id,active_owner_id,opening_minor,opening_reason) VALUES(?,?,?,?)')
+        $pdo->prepare('INSERT INTO kis_bar_cashboxes(owner_id,active_owner_id,opening_minor,opening_reason,opened_at) VALUES(?,?,?,?,' . barSqlUtcNow($pdo) . ')')
             ->execute([$actor['id'], $actor['id'], $openingMinor, $reason]);
         $id = (int)$pdo->lastInsertId();
         barAppendCash($pdo, $actor, $id, $openingMinor, 'opening', 'cashbox_open', $id, $reason);
@@ -115,17 +115,7 @@ function barCloseCashbox(PDO $pdo, int $id, int $version, int $countedMinor, str
         if ((int)$box['lock_version'] !== $version) {
             throw new BarConflictException('V kase přibyla operace. Obnovte přehled a před uzávěrkou hotovost znovu zkontrolujte.');
         }
-        $totals = barCashboxTotals($pdo, $id);
-        if ($totals['pending_count'] !== 0) {
-            throw new DomainException('Nejprve potvrďte nebo stornujte všechny čekající platby této kasy.');
-        }
-        $difference = $countedMinor - $totals['expected_minor'];
-        $pdo->prepare('UPDATE kis_bar_cashboxes SET active_owner_id=NULL,closed_at=CURRENT_TIMESTAMP,lock_version=lock_version+1,'
-            . 'expected_minor=?,counted_minor=?,difference_minor=?,closing_reason=?,closing_snapshot_json=? WHERE id=?')
-            ->execute([$totals['expected_minor'], $countedMinor, $difference, $reason, json_encode($totals, JSON_THROW_ON_ERROR), $id]);
-        barEvent($pdo, $actor['id'], 'cashbox', $id, 'closed', ['expected_minor' => $totals['expected_minor'], 'counted_minor' => $countedMinor,
-            'difference_minor' => $difference, 'reason' => $reason]);
-        return ['cashbox_id' => $id, 'expected_minor' => $totals['expected_minor'], 'counted_minor' => $countedMinor, 'difference_minor' => $difference];
+        return barCloseCashboxLocked($pdo, $actor, $box, $countedMinor, $reason, 'owner');
     });
 }
 
@@ -142,4 +132,26 @@ function barSetCupDeposit(PDO $pdo, int $minor, int $version, string $reason, st
         barEvent($pdo, $actor['id'], 'settings', 1, 'cup_deposit_changed', ['before_minor' => (int)$old['cup_deposit_minor'], 'after_minor' => $minor, 'reason' => $reason]);
         return ['cup_deposit_minor' => $minor];
     }, 'catalog_manage');
+}
+
+/** Caller has locked the box, validated its version and authorized its owner or the recovery administrator. */
+function barCloseCashboxLocked(PDO $pdo, array $actor, array $box, int $countedMinor, string $reason, string $kind): array
+{
+    if (!$pdo->inTransaction() || !in_array($kind, ['owner', 'recovery'], true)) {
+        throw new LogicException('Uzávěrka vyžaduje ověřenou transakci.');
+    }
+    $id = (int)$box['id'];
+    $totals = barCashboxTotals($pdo, $id);
+    if ($totals['pending_count'] !== 0) {
+        throw new DomainException('Nejprve potvrďte nebo stornujte všechny čekající platby této kasy.');
+    }
+    $difference = $countedMinor - $totals['expected_minor'];
+    $pdo->prepare('UPDATE kis_bar_cashboxes SET active_owner_id=NULL,closed_at=' . barSqlUtcNow($pdo) . ',lock_version=lock_version+1,'
+        . 'expected_minor=?,counted_minor=?,difference_minor=?,closing_reason=?,closing_snapshot_json=?,closed_by=?,closure_kind=? WHERE id=?')
+        ->execute([$totals['expected_minor'], $countedMinor, $difference, $reason,
+            json_encode($totals + ['closed_by' => $actor['id'], 'closure_kind' => $kind, 'owner_id' => (int)$box['owner_id']], JSON_THROW_ON_ERROR),
+            $actor['id'], $kind, $id]);
+    barEvent($pdo, $actor['id'], 'cashbox', $id, $kind === 'owner' ? 'closed' : 'recovery_closed', ['expected_minor' => $totals['expected_minor'], 'counted_minor' => $countedMinor,
+        'difference_minor' => $difference, 'reason' => $reason]);
+    return ['cashbox_id' => $id, 'expected_minor' => $totals['expected_minor'], 'counted_minor' => $countedMinor, 'difference_minor' => $difference];
 }

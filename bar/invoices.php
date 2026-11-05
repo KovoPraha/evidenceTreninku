@@ -1,11 +1,9 @@
 <?php
 declare(strict_types=1);
-require_once dirname(__DIR__) . '/includes/init.php';
+require_once dirname(__DIR__) . '/includes/bar/bootstrap.php';
+$pdo = barBootstrap();
 require_once dirname(__DIR__) . '/includes/bar/checkout_web.php';
 require_once dirname(__DIR__) . '/includes/bar/invoices.php';
-if (!isset($pdo) || !$pdo instanceof PDO) {
-    throw new RuntimeException('Databázové připojení není dostupné.');
-}
 $actor = barRequireWebActor($pdo, 'invoice_read');
 $manage = $actor['position'] === 'bar_admin';
 $id = max(0, (int)($_GET['id'] ?? 0));
@@ -229,7 +227,7 @@ value="">Rozhodněte po kontrole originálu</option><option value="apply" <?= ($
         ?>"><input type="hidden" name="token" value="<?= bin2hex(random_bytes(32)) ?>">
         <?php if ($invoice['status'] === 'draft'): ?>
             <input type="hidden" name="action" value="receive"><label>Datum skutečného převzetí<input class="form-control" type="date"
-name="received_on" value="<?= date('Y-m-d') ?>" required></label>
+name="received_on" value="<?= barBusinessToday()->format('Y-m-d') ?>" required></label>
             <label><input type="checkbox" name="goods_confirmed" value="1" required> Zboží bylo skutečně převzato a odpovídá uložené
 kontrole faktury</label>
         <?php else: ?><input type="hidden" name="action" value="reverse"><p>Příjem #<?= (int)$invoice['current_receipt_id']

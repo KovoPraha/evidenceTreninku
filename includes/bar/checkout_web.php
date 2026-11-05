@@ -14,6 +14,7 @@ function barCheckoutPageStart(PDO $pdo, string $title): void
 </head><body>
 <?php require dirname(__DIR__, 2) . '/hlavicka.php'; ?>
 <main class="container py-4"><h1><?= barH($title) ?></h1>
+    <?php barRenderRequestRecoveryMount(); ?>
     <?php if (in_array($_SESSION['staff_active_position'] ?? '', ['bar_operator', 'bar_admin'], true)): ?>
     <p><a href="<?= barH(appUiUrl('bar/checkout.php')) ?>">Pokladna</a> ·
         <a href="<?= barH(appUiUrl('bar/cashbox.php')) ?>">Moje kasa</a> ·
@@ -76,27 +77,6 @@ function barPaymentLabel(?array $payment): string
         'pending' => ' – čeká na potvrzení', 'cancelled' => ' – zrušená',
         default => ($payment['verification_kind'] ?? null) === 'manual' ? ' – ručně potvrzená' : ' – potvrzená',
     };
-}
-
-/** Keep the original token and body on an uncertain DB outcome. Never generate a replacement sale. */
-function barRenderRequestRetry(array $payload): void
-{
-    $fields = ['action', 'token', 'cashbox_id', 'sale_id', 'version', 'discount', 'cups', 'fingerprint', 'method', 'location', 'reason',
-        'opening', 'counted', 'amount', 'direction', 'reference', 'quantity', 'goods_returned', 'expected_refund_minor'];
-    ?>
-    <div class="alert alert-warning" role="alert">Výsledek operace se nepodařilo ověřit. Zopakujte stejný požadavek; již uložená operace se neprovede podruhé.</div>
-    <form method="post" class="mb-4"><?= csrf_field() ?>
-        <?php foreach ($fields as $field): if (is_string($payload[$field] ?? null)): ?>
-            <input type="hidden" name="<?= $field ?>" value="<?= barH($payload[$field]) ?>">
-        <?php endif; endforeach; ?>
-        <?php foreach (is_array($payload['quantities'] ?? null) ? $payload['quantities'] : [] as $id => $quantity): ?>
-            <?php if (ctype_digit((string)$id) && is_string($quantity)): ?>
-                <input type="hidden" name="quantities[<?= barH($id) ?>]" value="<?= barH($quantity) ?>">
-            <?php endif; ?>
-        <?php endforeach; ?>
-        <button class="btn btn-primary">Zopakovat stejný požadavek</button>
-    </form>
-    <?php
 }
 
 function barCheckoutProducts(PDO $pdo, bool $consumption, string $location): array

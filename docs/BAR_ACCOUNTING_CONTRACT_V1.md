@@ -36,10 +36,18 @@ Peněžní hodnoty jsou celá čísla v haléřích, nikoli desetinné floaty. `
 
 U prodeje je `tax_breakdown=null`: rozdělení DPH se z dosavadního katalogu nesmí vymýšlet. `estimated_cost_minor=null` znamená neznámý náklad, nikoli nulu nebo bezplatné pořízení. Prodejní náklad vychází z původních cenových/surovinových snímků; nejde o FIFO ocenění zásob. Příjem uchovává přesné částky originálu. Zaokrouhlená jednotková cena z částky s DPH slouží jako katalogový odhad; neřeší nárok na odpočet DPH. Rozhodnutí `keep` může záměrně ponechat jinou katalogovou cenu.
 
-Čas události odpovídá uloženému databázovému DATETIME. Dávka uvádí `database_timezone` a obchodní zónu `Europe/Prague`; `generated_at` je UTC s offsetem. Příjem má zvlášť skutečné datum `received_on` a datum faktury ve snímku. Před produkčním účetním propojením musí B6 ověřit časovou zónu serveru a hranice účetních období. Provozní přehled filtruje podle času potvrzení platby nebo provedení vratky a zahrnuje i již exportované podklady.
+B6 stanovuje `kis_bar_state.clock_contract=utc-v1`: nové finanční události mají DATETIME v UTC a dávka výslovně uvádí `source_timezone=UTC`. `database_timezone` je pouze diagnostika sdíleného spojení, neurčuje zónu událostí. Aplikace zapisuje přes `UTC_TIMESTAMP()` a nemění časovou zónu společného PDO. `generated_at` je UTC s offsetem. CSV přidává sloupec `source_timezone`; u staršího manifestu bez této informace zůstane prázdný, původní JSON ani jeho otisk se nepřepisují.
+
+Období zadané kalendářními dny v `Europe/Prague` je polouzavřený UTC interval od místní půlnoci do půlnoci po posledním dni; při změně času má den 23 nebo 25 hodin. Zobrazení používá Europe/Prague včetně CET/CEST. Příjem má zvlášť skutečné datum `received_on` a datum faktury ve snímku, bez časové konverze. Provozní přehled filtruje podle potvrzení platby nebo vratky a zahrnuje již exportované podklady.
+
+Migrace B6 označí existující finanční historii bez doloženého režimu jako `legacy-local`; nepřevede ji odhadem ani ji neoznačí jako UTC. V takovém stavu zablokuje nové finanční zápisy a nový účetní export, původní export lze dál stáhnout. Schválený produkční začátek BAR má nulovou historii, proto se při budoucím B7 musí režim ověřit před otevřením první kasy. Nácvik B6 prokázal UTC i při sdíleném spojení s offsetem +09:00 a nezměněné nastavení PDO.
+
+Nouzová uzávěrka opuštěné kasy uchovává `owner_id`, skutečného `closed_by` a `closure_kind=recovery` také v neměnném uzávěrkovém snímku a zdroji `cashbox_closure`. Nejde o převod vlastnictví ani o další příjem. Zrušení čekající a neuhrazené objednávky má nulovou vratku; zdroj pro potvrzenou úhradu nevznikne.
 
 ## Navazující účetní propojení
 
 Budoucí adaptér musí zachovat jedinečnou vazbu na `source_key`, ověřit celistvost dávky a vyřešit návaznosti na původní exporty včetně nákladových storen. Musí určit účty a pravidla DPH se správcem účetnictví, doplnit chybějící ocenění a oddělit pohyb zásob od dodavatelské úhrady.
 
 Kartu/QR je nutné propojit s konkrétním existujícím bankovním/terminálovým pohybem, nikoli znovu založit peníze podle barového potvrzení. Ruční podklad platby není ověření poskytovatelem a shoda částky sama o sobě není důkaz. Poplatky, souhrnné vypořádání terminálu a časové rozdíly vyžadují vlastní odsouhlasení. Dokud tato pravidla nejsou schválená a otestovaná, BAR do hlavní peněžní evidence automaticky nezapisuje.
+
+Konkrétní návrh adaptéru a zbývající rozhodnutí obsahuje [návrh návaznosti](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md). Tento dokument neaktivuje zaúčtování.

@@ -13,13 +13,8 @@ function barAccountingJson(array $value): string
 function barAccountingReport(PDO $pdo, string $from, string $to): array
 {
     barActor($pdo, 'accounting');
-    $first = DateTimeImmutable::createFromFormat('!Y-m-d', $from);
-    $last = DateTimeImmutable::createFromFormat('!Y-m-d', $to);
-    if (!$first || !$last || $first->format('Y-m-d') !== $from || $last->format('Y-m-d') !== $to
-        || $last < $first || $first->diff($last)->days > 366) {
-        throw new InvalidArgumentException('Vyberte platné období nejvýše 367 dní.');
-    }
-    $bounds = [$from . ' 00:00:00', $last->modify('+1 day')->format('Y-m-d') . ' 00:00:00'];
+    barRequireUtcClock($pdo);
+    $bounds = barUtcPeriod($from, $to);
     $query = $pdo->prepare("SELECT COALESCE(SUM(s.goods_net_minor),0) AS goods,COALESCE(SUM(s.deposit_minor),0) AS deposits,
         COALESCE(SUM(CASE WHEN p.method='cash' THEN p.amount_minor ELSE 0 END),0) AS cash,
         COALESCE(SUM(CASE WHEN p.method='card' THEN p.amount_minor ELSE 0 END),0) AS card,
@@ -56,6 +51,7 @@ function barAccountingReport(PDO $pdo, string $from, string $to): array
 function barAccountingSources(PDO $pdo): array
 {
     barActor($pdo, 'accounting');
+    barRequireUtcClock($pdo);
     $concat = static fn (string $prefix, string $column): string => $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql'
         ? "CONCAT('" . $prefix . "'," . $column . ")" : "('" . $prefix . "' || " . $column . ")";
     $events = [];
@@ -161,6 +157,7 @@ function barAccountingSources(PDO $pdo): array
         AND NOT EXISTS(SELECT 1 FROM kis_bar_accounting_export_items e WHERE e.source_key=" . $concat('bar:closure:', 'b.id')
     . ") ORDER BY b.id LIMIT 501")->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $add('bar:closure:' . $row['id'], 'cashbox_closure', $row['closed_at'], ['cashbox_id' => (int)$row['id'],
+            'owner_id' => (int)$row['owner_id'], 'closed_by' => $row['closed_by'] === null ? null : (int)$row['closed_by'], 'closure_kind' => $row['closure_kind'],
             'expected_minor' => (int)$row['expected_minor'], 'counted_minor' => (int)$row['counted_minor'], 'difference_minor'
     => (int)$row['difference_minor'],
             'snapshot' => json_decode($row['closing_snapshot_json'], true, 32, JSON_THROW_ON_ERROR), 'goods_including_tax_minor'
@@ -199,7 +196,7 @@ function barCreateAccountingExport(PDO $pdo, array $selection, string $reason, s
             }
             $events[] = $available[$key]['event'];
         }
-        $manifest = ['schema' => 'kis.bar.accounting.v1', 'status' => 'review_required', 'currency' => 'CZK',
+        $manifest = ['schema' => 'kis.bar.accounting.v1', 'status' => 'review_required', 'currency' => 'CZK', 'source_timezone' => 'UTC',
             'database_timezone' => $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? (string)$pdo->query('SELECT @@session.time_zone')->fetchColumn()
     : 'test-sqlite',
             'business_timezone' => 'Europe/Prague', 'generated_at' => gmdate('c'), 'generated_by' => $actor['id'], 'reason'
@@ -212,7 +209,7 @@ function barCreateAccountingExport(PDO $pdo, array $selection, string $reason, s
     => $events];
         $json = barAccountingJson($manifest);
         $sha = hash('sha256', $json);
-        $pdo->prepare('INSERT INTO kis_bar_accounting_exports(actor_id,manifest_json,sha256) VALUES(?,?,?)')->execute([$actor['id'],
+        $pdo->prepare('INSERT INTO kis_bar_accounting_exports(actor_id,manifest_json,sha256,created_at) VALUES(?,?,?,' . barSqlUtcNow($pdo) . ')')->execute([$actor['id'],
      $json, $sha]);
         $id = (int)$pdo->lastInsertId();
         $insert = $pdo->prepare('INSERT INTO kis_bar_accounting_export_items(source_key,export_id,event_sha256) VALUES(?,?,?)');
@@ -237,14 +234,14 @@ function barAccountingExport(PDO $pdo, int $id): array
     return $row;
 }
 
-function barAccountingCsv(array $events): string
+function barAccountingCsv(array $events, string $sourceTimezone = ''): string
 {
     $stream = fopen('php://temp', 'w+b');
     if ($stream === false) {
         throw new RuntimeException('Export nelze vytvořit.');
     }
     fputcsv($stream, ['source_key', 'kind', 'occurred_at', 'goods_including_tax_minor', 'deposit_liability_minor', 'payment_minor',
-     'payment_method', 'payment_reference'], ';', '"', '');
+     'payment_method', 'payment_reference', 'source_timezone'], ';', '"', '');
     foreach ($events as $event) {
         $row = [];
         foreach (['source_key', 'kind', 'occurred_at', 'goods_including_tax_minor', 'deposit_liability_minor', 'payment_minor',
@@ -252,6 +249,7 @@ function barAccountingCsv(array $events): string
             $value = $event[$key] ?? '';
             $row[] = is_string($value) && preg_match('/^\s*[=+@-]/u', $value) ? "'" . $value : $value;
         }
+        $row[] = $sourceTimezone === 'UTC' ? 'UTC' : '';
         fputcsv($stream, $row, ';', '"', '');
     }
     rewind($stream);

@@ -415,6 +415,7 @@ function staffPositionDefinitions(): array
             'groups' => [
                 ['label' => 'Správa baru', 'icon' => 'shop', 'items' => [
                     ['route' => 'bar/invoices.php', 'label' => 'Faktury baru', 'description' => 'Kontrola PDF a příjem zboží', 'icon' => 'file-earmark-pdf'],
+                    ['route' => 'bar/operations.php', 'label' => 'Vypořádání kas', 'description' => 'Kontrola a nouzová uzávěrka opuštěné kasy', 'icon' => 'clipboard-check'],
                     ['route' => 'bar/offers.php', 'label' => 'Nabídky baru', 'description' => 'Pracovní návrhy a zveřejněná obrazovka', 'icon' => 'display'],
                     ['route' => 'bar/catalog.php', 'label' => 'Katalog baru', 'description' => 'Produkty, ceny a obě skladová místa', 'icon' => 'boxes'],
                     ['route' => 'bar/categories.php', 'label' => 'Kategorie baru', 'description' => 'Členění a pořadí nabídky', 'icon' => 'tags'],
@@ -528,7 +529,7 @@ function staffRouteOwners(): array
     }
 
     $additional = [
-        'bar_operator' => ['bar/image.php', 'bar/receipt.php'],
+        'bar_operator' => ['bar/image.php', 'bar/receipt.php', 'bar/request-status.php'],
         'bar_admin' => ['bar/invoice-file.php', 'bar/menu-pdf.php'],
         'coach' => [
             'ajax_denny_rozvrh.php','ajax_dostupnost_sportovist.php','ajax_nova_oznameni.php',
@@ -628,6 +629,7 @@ function staffRouteDelegates(): array
         'bar/invoice-file.php' => ['finance_manager'],
         'bar/accounting.php' => ['bar_admin'],
         'bar/image.php' => ['bar_admin'],
+        'bar/request-status.php' => ['bar_admin', 'finance_manager'],
         'bar/checkout.php' => ['bar_admin'],
         'bar/cashbox.php' => ['bar_admin'],
         'bar/consumption.php' => ['bar_admin'],

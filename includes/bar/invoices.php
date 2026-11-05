@@ -189,7 +189,7 @@ function barReceiveInvoice(PDO $pdo, int $id, int $version, string $receivedOn, 
         }
         $snapshot = ['invoice_id' => $id, 'pdf_sha256' => $invoice['pdf_sha256'], 'document' => $draft, 'received_on' => $receivedOn,
      'reason' => $reason, 'costs' => []];
-        $pdo->prepare('INSERT INTO kis_bar_invoice_receipts(invoice_id,actor_id,received_on,snapshot_json) VALUES(?,?,?,?)')
+        $pdo->prepare('INSERT INTO kis_bar_invoice_receipts(invoice_id,actor_id,received_on,snapshot_json,created_at) VALUES(?,?,?,?,' . barSqlUtcNow($pdo) . ')')
             ->execute([$id, $actor['id'], $receivedOn, '{}']);
         $receiptId = (int)$pdo->lastInsertId();
         foreach ($groups as $pid => $group) {
@@ -269,7 +269,7 @@ function barReverseInvoice(PDO $pdo, int $id, int $version, string $reason, stri
         }
         $draft = $invoice['draft'];
         $draft['verified'] = 0;
-        $pdo->prepare("UPDATE kis_bar_invoice_receipts SET status='reversed',reversed_at=CURRENT_TIMESTAMP,reversed_by=?,reversal_reason=? WHERE id=? AND status='received'")
+        $pdo->prepare("UPDATE kis_bar_invoice_receipts SET status='reversed',reversed_at=" . barSqlUtcNow($pdo) . ",reversed_by=?,reversal_reason=? WHERE id=? AND status='received'")
             ->execute([$actor['id'], $reason, $receipt]);
         $pdo->prepare("UPDATE kis_bar_invoices SET status='draft',current_receipt_id=NULL,draft_json=?,lock_version=lock_version+1 WHERE id=?")
             ->execute([json_encode($draft, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE), $id]);

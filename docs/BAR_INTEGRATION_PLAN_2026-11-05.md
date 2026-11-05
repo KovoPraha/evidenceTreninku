@@ -30,7 +30,7 @@ Ze zdroje `KovoPraha/bar.kovopraha.cz` se přebírají obchodní pravidla a vhod
 | B3 | Katalog a sklad | Administrace produktů, cen a receptur, dvě skladová místa, příjem/přesun/inventura, historické nákladové snímky; obsluha nedostává předsklad ani nákupní ceny | Implementováno včetně kategorií a fotografií; místní testy a browser PASS |
 | B4 | Pokladna a vlastní spotřeba | Prodej, hotovost/karta/QR, kelímky, storno, vlastní a uzavíraná kasa, zásoby a audit v jedné transakci; opakování i souběh bezpečné | Implementace a místní přejímka hotové; samostatná Linux CI brána, nasazení zakázané |
 | B5 | Faktury, nabídky a účetní rozhraní | Příjem PDF, obrazovky/menu, přehledy, oddělené účetní zdroje a exportní kontrakt bez zdvojení tržeb | Implementováno, místní přejímka PASS; CI v PR #306 |
-| B6 | Integrační přejímka | Anonymní HTTP, matice rolí, skutečný místní browser, pokladní/skladové souběhy, ztráta spojení, fotografie a izolovaná obnova DB i souborů; zelené CI přesného headu | Čeká |
+| B6 | Integrační přejímka | Anonymní HTTP, matice rolí, skutečný místní browser, pokladní/skladové souběhy, ztráta spojení, fotografie a izolovaná obnova DB i souborů; zelené CI přesného headu | Místní technická přejímka PASS; konečný Linux CI stav přesného headu v PR #306 |
 | B7 | Produkční přechod | Nový výslovný souhlas vlastníka; katalogový manifest, nulový počátek, přidělení účtů, doména a provozní UAT | Zakázáno do schválení |
 
 ## Ověření
@@ -69,3 +69,15 @@ Vlastník výslovně schválil implementaci B4 bez nasazení. Práce pokračuje 
 Na výslovné pokračování vlastníka navazuje [implementace a ověření B5](verification/bar-documents-20261105/RESULTS.md): soukromé PDF faktury, kontrolovaný příjem balení do předskladu a jeho kompenzační storno, samostatné cenové verze, pracovní a zveřejněné nabídky, veřejná obrazovka s aktuálními cenami, chráněný tiskový PDF lístek, provozní přehled a neměnný účetní export. [Kontrakt v1](BAR_ACCOUNTING_CONTRACT_V1.md) odděluje prodej, vratné zálohy, vlastní spotřebu, skladový příjem, pohyby kasy a uzávěrku. Ruční potvrzení QR/karty není druhým bankovním pohybem a nevytváří automatické zaúčtování.
 
 B6 zůstává další etapou: úplná přejímka rolí a návazností, soukromé soubory spolu s DB při obnově, ztráta spojení, opuštěná kasa, časová zóna a hranice účetních období, konkrétní účetní propojení po schválení pravidel. OCR, dobropisy a zálohové faktury nejsou podporované tímto příjmem. Skutečné produkty, fotografie a lucka ještě nebyly převedené; produkční přechod zůstává zakázaný.
+
+## Konkrétní pokračování B6
+
+Vlastník schválil pokračování bez nasazení. Práce zůstává ve stejné větvi a draft PR #306, zdrojový BAR a ostatní rozpracované kopie se nemění.
+
+1. Projít oprávnění a webové cesty všech pracovních pozic, vlastnictví kas a samostatnou vlastní spotřebu. Opuštěnou kasu účtu bez přístupu do baru smí administrátor auditovaně vypořádat; historii nepřevádí na sebe. Před uzávěrkou se každá čekající platba výslovně doloží, nebo se s potvrzeným vrácením zboží stornuje. Běžné aktivní kase zůstává její vlastník.
+2. Ověřit skutečně ztracenou odpověď po commitu a přerušení databázového spojení před commitem. Opakování původního požadavku musí vrátit jediný výsledek bez dalšího odpisu či peněžního pohybu. Chybová stránka musí umožnit bezpečné opakování také při nedostupné databázi.
+3. Naplnit syntetická data napříč katalogem, soukromými fotografiemi/PDF, prodejem, fakturou, uzávěrkou a exportem. Zálohu skutečně obnovit do oddělené databáze a odděleného soukromého úložiště; porovnat data i otisky souborů a ověřit další práci/opakování požadavku po obnově. Chybějící nebo změněná příloha nesmí být prohlášena za úplnou obnovu.
+4. U finančních událostí sjednotit nové časové údaje v UTC, období přehledu vymezovat v Europe/Prague včetně změn času a neměnit časovou zónu sdíleného připojení KIS. Pro budoucí ostrý začátek zachovat požadavek nulové barové historie. Připravit konkrétní pravidla návazného účetního adaptéru; skutečné zaúčtování, pravidla DPH a aktivace banky vyžadují samostatné rozhodnutí.
+5. Provést skutečný místní browser, nativní souběhy a čerstvé Linux CI přesného headu. Výsledky odlišují technickou přejímku od budoucí lidské přejímky a schválení B7. Produkční import ani nasazení se nespouštějí.
+
+Dokončení místní B6: [výsledky přejímky](verification/bar-acceptance-20261105/RESULTS.md) dokládají obnovu naplněné DB a souborů, skutečný výpadek a ztracenou odpověď, nouzové vypořádání a UTC/DST bez změny sdíleného PDO. Navazuje [příprava B7](BAR_PRODUCTION_READINESS_2026-11-05.md) a [návrh účetního adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md). Linux CI přesného headu zůstává samostatnou branou v PR; produkční přechod vyžaduje nový výslovný souhlas.

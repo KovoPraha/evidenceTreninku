@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/catalog.php';
 require_once __DIR__ . '/editor_view.php';
+require_once __DIR__ . '/request_recovery_view.php';
 
 function barH(mixed $value): string
 {
@@ -42,6 +43,7 @@ function barRenderCatalog(PDO $pdo, array $rows, bool $administration, ?array $e
 <body>
 <?php require dirname(__DIR__, 2) . '/hlavicka.php'; ?>
 <main class="container py-4">
+    <?php barRenderRequestRecoveryMount(); ?>
     <h1><?= $administration ? 'Katalog baru' : 'Nabídka stánku' ?></h1>
     <?php if ($administration): ?>
         <p><a href="<?= barH(appUiUrl('bar/index.php')) ?>">Zobrazit nabídku stánku</a> ·

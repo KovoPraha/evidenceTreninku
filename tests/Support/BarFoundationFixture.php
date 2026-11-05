@@ -25,6 +25,8 @@ function barTestDatabase(): PDO
     $checkout['up']($pdo);
     $documents = require dirname(__DIR__, 2) . '/migrations/20261105200000_bar_documents.php';
     $documents['up']($pdo);
+    $recovery = require dirname(__DIR__, 2) . '/migrations/20261105210000_bar_recovery.php';
+    $recovery['up']($pdo);
     $pdo->exec('DELETE FROM staff_user_positions');
     $pdo->exec("INSERT INTO staff_user_positions(trainer_id,position_code,is_default) VALUES"
         . "(1,'system_admin',1),(2,'bar_operator',1),(3,'bar_admin',1),(4,'coach',1)");

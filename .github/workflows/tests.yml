@@ -46,6 +46,9 @@ jobs:
       - name: Spustit testy
         run: composer test
 
+      - name: Ověřit ruční obnovu barového potvrzení po ztrátě odpovědi
+        run: node --test tests/Support/BarRequestRecoveryJavascriptSmoke.cjs
+
       - name: Ověřit TV přehrávač a přebírání zveřejněných změn
         run: node --test tests/Support/TvPlayerSmoke.cjs
 
@@ -289,6 +292,9 @@ jobs:
 
       - name: Ověřit příjem faktur a souběh účetních exportů
         run: php tests/Support/BarDocumentsMariaDbSmoke.php
+
+      - name: Ověřit obnovu spojení a nouzové vypořádání kas
+        run: php tests/Support/BarRecoveryMariaDbSmoke.php
 
       - name: Ověřit rodinný kalendář a cílené historické členství
         env:

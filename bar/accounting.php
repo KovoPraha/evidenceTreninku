@@ -1,11 +1,9 @@
 <?php
 declare(strict_types=1);
-require_once dirname(__DIR__) . '/includes/init.php';
+require_once dirname(__DIR__) . '/includes/bar/bootstrap.php';
+$pdo = barBootstrap();
 require_once dirname(__DIR__) . '/includes/bar/checkout_web.php';
 require_once dirname(__DIR__) . '/includes/bar/accounting.php';
-if (!isset($pdo) || !$pdo instanceof PDO) {
-    throw new RuntimeException('Databázové připojení není dostupné.');
-}
 barRequireWebActor($pdo, 'accounting');
 $error = '';
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
@@ -27,16 +25,19 @@ if (isset($_GET['download'])) {
     header('X-Content-Type-Options: nosniff');
     header('Content-Disposition: attachment; filename="bar-accounting-' . (int)$export['id'] . ($csv ? '.csv' : '.json') .
     '"');
-    echo $csv ? barAccountingCsv(json_decode($export['manifest_json'], true, 64, JSON_THROW_ON_ERROR)['events']) : $export['manifest_json'];
+    $manifest = json_decode($export['manifest_json'], true, 64, JSON_THROW_ON_ERROR);
+    echo $csv ? barAccountingCsv($manifest['events'], $manifest['source_timezone'] ?? '') : $export['manifest_json'];
     exit;
 }
-$sources = barAccountingSources($pdo);
-$from = is_string($_GET['from'] ?? null) ? $_GET['from'] : date('Y-m-01');
-$to = is_string($_GET['to'] ?? null) ? $_GET['to'] : date('Y-m-d');
+$sources = [];
+$from = is_string($_GET['from'] ?? null) ? $_GET['from'] : barBusinessToday()->format('Y-m-01');
+$to = is_string($_GET['to'] ?? null) ? $_GET['to'] : barBusinessToday()->format('Y-m-d');
 $report = null;
 try {
+    $sources = barAccountingSources($pdo);
     $report = barAccountingReport($pdo, $from, $to);
-} catch (InvalidArgumentException $exception) {
+} catch (InvalidArgumentException | DomainException $exception) {
+    http_response_code(422);
     $error = $exception->getMessage();
 }
 $labels = ['sale_settlement' => 'Potvrzený prodej', 'own_consumption' => 'Vlastní spotřeba', 'own_consumption_reversal' =>
@@ -62,7 +63,7 @@ Neznámá cena se nepovažuje za nulu. Vklady, výběry a uzávěrky jsou kontro
     <button class="btn btn-outline-primary">Zobrazit období</button>
 </form>
 <?php if ($report !== null): ?>
-<p>Potvrzené prodeje po slevách a stornech, včetně již exportovaných podkladů. Datum odpovídá času evidence platby nebo vratky.</p>
+<p>Potvrzené prodeje po slevách a stornech, včetně již exportovaných podkladů. Období se vymezuje v pražském čase podle potvrzení platby nebo provedení vratky.</p>
 <table class="table"><tbody>
 <?php foreach (['goods' => 'Zboží včetně daně', 'deposits' => 'Změna závazku ze záloh', 'cash' => 'Hotovost po vratkách',
     'card' => 'Karta po vratkách', 'qr' => 'QR po vratkách', 'payments' => 'Úhrady celkem po vratkách'] as $key => $label): ?>
@@ -76,7 +77,7 @@ daně</th><th>Zálohy</th><th>Úhrada</th><th>Kontrola</th></tr></thead><tbody>
 <?php foreach ($sources as $key => $source): $event = $source['event']; ?>
 <tr><td><input type="checkbox" name="sources[<?= barH($key) ?>]" value="<?= $source['sha256'] ?>" aria-label="<?= barH($key)
     ?>"></td>
-<td><?= barH($labels[$event['kind']] ?? $event['kind']) ?><div class="small"><?= barH($key) ?></div></td><td><?= barH($event['occurred_at'])
+<td><?= barH($labels[$event['kind']] ?? $event['kind']) ?><div class="small"><?= barH($key) ?></div></td><td><?= barH(barDisplayTime($event['occurred_at']))
     ?></td>
 <?php foreach (['goods_including_tax_minor', 'deposit_liability_minor', 'payment_minor'] as $field): ?><td><?= isset($event[$field])
     ? barH(barFormatMoney((int)$event[$field])) : '—' ?></td><?php endforeach; ?>
@@ -93,7 +94,7 @@ required></label><button class="btn btn-primary my-3">Vytvořit neměnný export
 <p>Opakované stažení vrací stejné podklady. Jeden zdroj může patřit pouze do jednoho exportu. CSV je stručný přehled; úplný strojový
 podklad včetně faktur a návazností obsahuje JSON.</p>
 <ul><?php foreach ($pdo->query('SELECT id,created_at,sha256 FROM kis_bar_accounting_exports ORDER BY id DESC LIMIT 100')->fetchAll(PDO::FETCH_ASSOC) as $row): ?>
-<li>#<?= (int)$row['id'] ?> · <?= barH($row['created_at']) ?> · <a href="?export=<?= (int)$row['id'] ?>&amp;download=json">Úplné
+<li>#<?= (int)$row['id'] ?> · <?= barH(barDisplayTime($row['created_at'])) ?> · <a href="?export=<?= (int)$row['id'] ?>&amp;download=json">Úplné
 podklady JSON</a> · <a href="?export=<?= (int)$row['id'] ?>&amp;download=csv">Přehled CSV</a></li>
 <?php endforeach; ?></ul>
 <?php barCheckoutPageEnd();

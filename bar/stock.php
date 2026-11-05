@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . '/includes/init.php';
+require_once dirname(__DIR__) . '/includes/bar/bootstrap.php';
+$pdo = barBootstrap();
 require_once dirname(__DIR__) . '/includes/bar/web.php';
 require_once dirname(__DIR__) . '/includes/bar/stock.php';
-if (!isset($pdo) || !$pdo instanceof PDO) {
-    throw new RuntimeException('Databázové připojení není dostupné.');
-}
 barRequireWebActor($pdo, 'stock_manage');
 $error = '';
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
@@ -53,6 +51,7 @@ $kinds += ['sale' => 'Prodej', 'consumption' => 'Vlastní spotřeba', 'sale_void
 <body>
 <?php require dirname(__DIR__) . '/hlavicka.php'; ?>
 <main class="container py-4">
+    <?php barRenderRequestRecoveryMount(); ?>
     <h1>Sklad baru</h1>
     <p>Zásoba uvádí volné kusy. Čekající objednávky již zboží rezervují; před inventurou takové položky nejprve vyřešte jejich platby.</p>
     <?php if ($error !== ''): ?><div class="alert alert-danger" role="alert"><?= barH($error) ?></div><?php endif; ?>
@@ -86,7 +85,7 @@ $kinds += ['sale' => 'Prodej', 'consumption' => 'Vlastní spotřeba', 'sale_void
     <h2 class="h4">Poslední pohyby</h2>
     <div class="table-responsive"><table class="table"><thead><tr><th>Čas</th><th>Produkt</th><th>Operace</th><th>Místo</th><th>Změna</th><th>Po operaci</th><th>Podklad</th></tr></thead><tbody>
     <?php foreach ($history as $row): ?>
-        <tr><td><?= barH($row['created_at']) ?></td><td><?= barH($row['name']) ?></td><td><?= barH($kinds[$row['kind']] ?? $row['kind']) ?></td>
+        <tr><td><?= barH(barDisplayTime($row['created_at'])) ?></td><td><?= barH($row['name']) ?></td><td><?= barH($kinds[$row['kind']] ?? $row['kind']) ?></td>
             <td><?= $row['location_code'] === 'stall' ? 'Stánek' : 'Předsklad' ?></td><td><?= (int)$row['quantity_delta'] ?></td>
             <td><?= (int)$row['quantity_after'] ?></td><td><?= barH($row['reason']) ?></td></tr>
     <?php endforeach; ?>

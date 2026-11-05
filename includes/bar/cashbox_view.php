@@ -27,14 +27,14 @@ function barRenderCashbox(array $data): void
         </section>
     <?php else: ?>
         <section class="card card-body mb-4"><h2 class="h4">Kasa #<?= (int)$box['id'] ?> · <?= $box['closed_at'] === null ? 'otevřená' : 'uzavřená' ?></h2>
-            <p>Otevření: <?= barH($box['opened_at']) ?> · Počáteční hotovost: <?= barH(barFormatMoney((int)$box['opening_minor'])) ?></p>
+            <p>Otevření: <?= barH(barDisplayTime($box['opened_at'])) ?> · Počáteční hotovost: <?= barH(barFormatMoney((int)$box['opening_minor'])) ?></p>
             <p class="fs-4">Očekávaná hotovost: <strong><?= barH(barFormatMoney($totals['expected_minor'])) ?></strong></p>
             <p>Přijaté platby: hotovost <?= barH(barFormatMoney($totals['cash'])) ?> · karta <?= barH(barFormatMoney($totals['card'])) ?> · QR <?= barH(barFormatMoney($totals['qr'])) ?></p>
             <p>Vratky kelímků hotově: <?= barH(barFormatMoney($totals['cup_refunds_minor'])) ?>
                 <?php foreach ($totals['refunds'] as $refund): ?> · Storna <?= barH(['cash' => 'hotově', 'card' => 'kartou', 'qr' => 'převodem'][$refund['refund_method']] ?? '') ?>:
                     <?= barH(barFormatMoney((int)$refund['amount'])) ?><?php endforeach; ?></p>
             <?php if ($box['closed_at'] !== null): ?>
-                <p>Uzavření: <?= barH($box['closed_at']) ?> · Napočítáno: <?= barH(barFormatMoney((int)$box['counted_minor'])) ?>
+                <p>Uzavření: <?= barH(barDisplayTime($box['closed_at'])) ?> · Napočítáno: <?= barH(barFormatMoney((int)$box['counted_minor'])) ?>
                     · Rozdíl: <?= barH(barFormatMoney((int)$box['difference_minor'])) ?></p>
                 <p><?= barH($box['closing_reason']) ?></p>
                 <p><a href="<?= barH(appUiUrl('bar/cashbox.php')) ?>">Přejít na aktuální kasu nebo otevřít novou</a></p>
@@ -47,7 +47,7 @@ function barRenderCashbox(array $data): void
         <h2 class="h4">Pohyby hotovosti</h2>
         <div class="table-responsive"><table class="table"><thead><tr><th>Čas</th><th>Pohyb</th><th>Částka</th><th>Podklad</th></tr></thead><tbody>
         <?php foreach ($data['movements'] as $row): ?>
-            <tr><td><?= barH($row['created_at']) ?></td><td><?= barH(['opening' => 'Počáteční hotovost', 'cash_in' => 'Vklad', 'cash_out' => 'Výběr',
+            <tr><td><?= barH(barDisplayTime($row['created_at'])) ?></td><td><?= barH(['opening' => 'Počáteční hotovost', 'cash_in' => 'Vklad', 'cash_out' => 'Výběr',
                 'sale' => 'Prodej', 'sale_refund' => 'Storno', 'cup_refund' => 'Vrácení kelímků'][$row['kind']] ?? 'Pohyb') ?></td>
                 <td><?= barH(barFormatMoney((int)$row['amount_minor'])) ?></td><td><?= barH($row['reason']) ?></td></tr>
         <?php endforeach; ?></tbody></table></div>
@@ -56,12 +56,12 @@ function barRenderCashbox(array $data): void
     <div class="table-responsive"><table class="table"><thead><tr><th>Doklad</th><th>Kasa</th><th>Čas</th><th>Celkem</th><th>Platba</th></tr></thead><tbody>
     <?php foreach ($data['sales'] as $sale): ?>
         <tr><td><a href="<?= barH(appUiUrl('bar/receipt.php?id=' . (int)$sale['id'])) ?>">#<?= (int)$sale['id'] ?></a><?= $sale['void_id'] !== null ? ' · storno' : '' ?></td>
-            <td><?= (int)$sale['cashbox_id'] ?></td><td><?= barH($sale['created_at']) ?></td><td><?= barH(barFormatMoney((int)$sale['total_minor'])) ?></td>
+            <td><?= (int)$sale['cashbox_id'] ?></td><td><?= barH(barDisplayTime($sale['created_at'])) ?></td><td><?= barH(barFormatMoney((int)$sale['total_minor'])) ?></td>
             <td><?= barH(barPaymentLabel($sale)) ?></td></tr>
     <?php endforeach; ?></tbody></table></div>
     <h2 class="h4 mt-4">Moje kasy</h2><ul><?php foreach ($data['history'] as $history): ?>
         <li><a href="<?= barH(appUiUrl('bar/cashbox.php?id=' . (int)$history['id'])) ?>">Kasa #<?= (int)$history['id'] ?></a>
-            · <?= barH($history['opened_at']) ?> · <?= $history['closed_at'] === null ? 'otevřená' : 'uzavřená' ?></li>
+            · <?= barH(barDisplayTime($history['opened_at'])) ?> · <?= $history['closed_at'] === null ? 'otevřená' : 'uzavřená' ?></li>
     <?php endforeach; ?></ul>
     <?php
 }

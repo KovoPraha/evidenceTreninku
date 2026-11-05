@@ -16,6 +16,7 @@ final class BarCatalogViewTest extends TestCase
         mkdir($runtime . '/includes', 0700);
         mkdir($runtime . '/includes/bar', 0700);
         copy($root . '/includes/bar/web.php', $runtime . '/includes/bar/web.php');
+        copy($root . '/includes/bar/request_recovery_view.php', $runtime . '/includes/bar/request_recovery_view.php');
         copy($root . '/includes/bar/editor_view.php', $runtime . '/includes/bar/editor_view.php');
         file_put_contents($runtime . '/includes/bar/catalog.php', '<?php require_once ' . var_export($root . '/includes/bar/catalog.php', true) . ';');
         file_put_contents($runtime . '/hlavicka.php', '<?php if (!isset($pdo) || !$pdo instanceof PDO) { throw new RuntimeException("Header lost PDO"); } echo "<nav>SHARED HEADER</nav>";');
@@ -41,7 +42,7 @@ final class BarCatalogViewTest extends TestCase
             self::assertStringNotContainsString('Předsklad', $html);
             self::assertStringNotContainsString('987654', $html);
         } finally {
-            foreach (['render.php', 'hlavicka.php', 'includes/bar/web.php', 'includes/bar/editor_view.php', 'includes/bar/catalog.php'] as $path) {
+            foreach (['render.php', 'hlavicka.php', 'includes/bar/web.php', 'includes/bar/editor_view.php', 'includes/bar/catalog.php', 'includes/bar/request_recovery_view.php'] as $path) {
                 unlink($runtime . '/' . $path);
             }
             rmdir($runtime . '/includes/bar');

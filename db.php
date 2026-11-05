@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/includes/session_security.php';
 app_session_send_security_headers();
 
@@ -30,6 +31,9 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     error_log('Database connection failed: '.$e->getMessage());
+    if (defined('BAR_DATABASE_FAILURE_EXCEPTION') && BAR_DATABASE_FAILURE_EXCEPTION === true) {
+        throw $e;
+    }
     http_response_code(503);
     die('Databázové připojení momentálně není dostupné.');
 }
@@ -58,7 +62,9 @@ staffEnforceCurrentRoute(__DIR__);
 // Feature flag musí zůstat false bez nového explicitního rozhodnutí a review.
 if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {
     require_once __DIR__ . '/auth/sso_bridge.php';
-    if (session_status() === PHP_SESSION_NONE) app_session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        app_session_start();
+    }
     if (!velocotaSsoBridge($pdo)) {
         if (!headers_sent()) {
             app_session_send_auth_no_store_headers();
@@ -67,4 +73,3 @@ if (defined('VELOCOTA_INTEGRATION') && VELOCOTA_INTEGRATION) {
         exit;
     }
 }
-?>

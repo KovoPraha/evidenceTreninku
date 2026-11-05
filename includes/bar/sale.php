@@ -16,7 +16,7 @@ function barRecordPhysicalMovement(PDO $pdo, array $actor, array $product, int $
     }
     $reason = $kind . ' #' . $sourceId;
     $key = hash('sha256', json_encode(['kis_bar', $kind, $sourceId, (int)$product['id'], $location], JSON_THROW_ON_ERROR));
-    $pdo->prepare('INSERT INTO kis_bar_stock_operations(token,request_sha256,product_id,actor_id,kind,reason) VALUES(?,?,?,?,?,?)')
+    $pdo->prepare('INSERT INTO kis_bar_stock_operations(token,request_sha256,product_id,actor_id,kind,reason,created_at) VALUES(?,?,?,?,?,?,' . barSqlUtcNow($pdo) . ')')
         ->execute([$key, hash('sha256', $key . ':' . $delta), $product['id'], $actor['id'], $kind, $reason]);
     $id = (int)$pdo->lastInsertId();
     $pdo->prepare('INSERT INTO kis_bar_stock_movements(operation_id,product_id,location_code,quantity_delta,quantity_after,purchase_minor,product_name) VALUES(?,?,?,?,?,?,?)')
@@ -46,7 +46,7 @@ function barSubmitSale(PDO $pdo, int $cashboxId, array $cart, int $discount, int
             $id = barInsertSaleSnapshot($pdo, $actor, $cashboxId, $snapshot, 'sale', 'stall', 'Prodej v pokladně');
             $confirmed = $method === 'cash';
             $pdo->prepare('INSERT INTO kis_bar_sale_payments(sale_id,method,status,amount_minor,verification_kind,confirmed_by,confirmed_at) '
-                . 'VALUES(?,?,?,?,?,?,CASE WHEN ? IS NOT NULL THEN CURRENT_TIMESTAMP ELSE NULL END)')
+                . 'VALUES(?,?,?,?,?,?,CASE WHEN ? IS NOT NULL THEN ' . barSqlUtcNow($pdo) . ' ELSE NULL END)')
                     ->execute([$id, $method, $confirmed ? 'confirmed' : 'pending', $snapshot['total_minor'],
                         $confirmed ? ($snapshot['total_minor'] === 0 ? 'zero_amount' : 'cash') : null,
                     $confirmed ? $actor['id'] : null, $confirmed ? $actor['id'] : null]);
@@ -99,8 +99,8 @@ function barSubmitConsumption(PDO $pdo, array $cart, string $location, string $f
 function barInsertSaleSnapshot(PDO $pdo, array $actor, ?int $cashboxId, array $snapshot, string $kind, string $location, string $reason): int
 {
     $columns = ['goods_gross_minor', 'discount_percent', 'discount_minor', 'goods_net_minor', 'cup_quantity', 'cup_unit_minor', 'deposit_minor', 'total_minor'];
-    $pdo->prepare('INSERT INTO kis_bar_sales(cashbox_id,actor_id,kind,currency,' . implode(',', $columns) . ',reason) VALUES('
-        . implode(',', array_fill(0, 13, '?')) . ')')->execute([$cashboxId, $actor['id'], $kind, 'CZK',
+    $pdo->prepare('INSERT INTO kis_bar_sales(cashbox_id,actor_id,kind,currency,' . implode(',', $columns) . ',reason,created_at) VALUES('
+        . implode(',', array_fill(0, 13, '?')) . ',' . barSqlUtcNow($pdo) . ')')->execute([$cashboxId, $actor['id'], $kind, 'CZK',
             ...array_map(static fn (string $key): int => $snapshot[$key], $columns), $reason]);
     $id = (int)$pdo->lastInsertId();
     $lineInsert = $pdo->prepare('INSERT INTO kis_bar_sale_lines(sale_id,product_id,product_name,description,quantity,unit_price_minor,gross_minor,net_minor,purchase_unit_minor) '
@@ -128,21 +128,7 @@ function barConfirmPayment(PDO $pdo, int $saleId, string $reference, string $tok
     return barRunRequest($pdo, 'payment_confirm', $token, [$saleId, $reference], function (array $actor, string $suffix) use ($pdo, $saleId, $reference): array {
         $sale = barOwnedSale($pdo, $saleId, $actor['id'], $suffix);
         barOwnedCashbox($pdo, (int)$sale['cashbox_id'], $actor['id'], true, $suffix);
-        barRequireUnvoidedSale($pdo, $saleId);
-        $payment = barSalePayment($pdo, $saleId, $suffix);
-        if (!$payment || $payment['status'] !== 'pending' || !in_array($payment['method'], ['card', 'qr'], true)) {
-            throw new DomainException('Platba už nečeká na potvrzení.');
-        }
-        $used = $pdo->prepare('SELECT sale_id FROM kis_bar_sale_payments WHERE method=? AND confirmation_reference=?' . $suffix);
-        $used->execute([$payment['method'], $reference]);
-        if ($used->fetchColumn()) {
-            throw new DomainException('Tento podklad platby už byl použit pro jiný doklad.');
-        }
-        $pdo->prepare("UPDATE kis_bar_sale_payments SET status='confirmed',verification_kind='manual',confirmation_reference=?,confirmed_by=?,confirmed_at=CURRENT_TIMESTAMP WHERE sale_id=?")
-            ->execute([$reference, $actor['id'], $saleId]);
-        $pdo->prepare('UPDATE kis_bar_cashboxes SET lock_version=lock_version+1 WHERE id=?')->execute([$sale['cashbox_id']]);
-        barEvent($pdo, $actor['id'], 'sale', $saleId, 'payment_manually_confirmed', ['method' => $payment['method'], 'reference' => $reference]);
-        return ['sale_id' => $saleId, 'payment_status' => 'confirmed', 'verification_kind' => 'manual'];
+        return barConfirmSalePaymentLocked($pdo, $actor, $sale, $reference, $suffix);
     });
 }
 
@@ -167,4 +153,28 @@ function barSalePayment(PDO $pdo, int $id, string $suffix = ''): ?array
     $query = $pdo->prepare('SELECT * FROM kis_bar_sale_payments WHERE sale_id=?' . $suffix);
     $query->execute([$id]);
     return $query->fetch(PDO::FETCH_ASSOC) ?: null;
+}
+
+/** Shared manual confirmation after the caller has authorized and locked the appropriate cashbox. */
+function barConfirmSalePaymentLocked(PDO $pdo, array $actor, array $sale, string $reference, string $suffix): array
+{
+    if (!$pdo->inTransaction()) {
+        throw new LogicException('Potvrzení platby vyžaduje transakci.');
+    }
+    $saleId = (int)$sale['id'];
+    barRequireUnvoidedSale($pdo, $saleId);
+    $payment = barSalePayment($pdo, $saleId, $suffix);
+    if (!$payment || $payment['status'] !== 'pending' || !in_array($payment['method'], ['card', 'qr'], true)) {
+        throw new DomainException('Platba už nečeká na potvrzení.');
+    }
+    $used = $pdo->prepare('SELECT sale_id FROM kis_bar_sale_payments WHERE method=? AND confirmation_reference=?' . $suffix);
+    $used->execute([$payment['method'], $reference]);
+    if ($used->fetchColumn()) {
+        throw new DomainException('Tento podklad platby už byl použit pro jiný doklad.');
+    }
+    $pdo->prepare("UPDATE kis_bar_sale_payments SET status='confirmed',verification_kind='manual',confirmation_reference=?,confirmed_by=?,confirmed_at=" . barSqlUtcNow($pdo) . " WHERE sale_id=?")
+        ->execute([$reference, $actor['id'], $saleId]);
+    $pdo->prepare('UPDATE kis_bar_cashboxes SET lock_version=lock_version+1 WHERE id=?')->execute([$sale['cashbox_id']]);
+    barEvent($pdo, $actor['id'], 'sale', $saleId, 'payment_manually_confirmed', ['method' => $payment['method'], 'reference' => $reference]);
+    return ['sale_id' => $saleId, 'payment_status' => 'confirmed', 'verification_kind' => 'manual'];
 }

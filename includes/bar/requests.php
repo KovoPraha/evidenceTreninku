@@ -15,7 +15,7 @@ function barCheckMinor(int $minor): int
 }
 
 /** The module lock precedes all actor locks, including while waiting for a competing writer. */
-function barRunRequest(PDO $pdo, string $operation, string $token, array $request, callable $write, string $capability = 'sell'): array
+function barRunRequest(PDO $pdo, string $operation, string $token, array $request, callable $write, string $capability = 'sell', array $relatedActorIds = []): array
 {
     if (!preg_match('/^[a-f0-9]{64}$/D', $token)) {
         throw new InvalidArgumentException('Formulář nemá platný identifikátor. Načtěte stránku znovu.');
@@ -27,6 +27,14 @@ function barRunRequest(PDO $pdo, string $operation, string $token, array $reques
     $pdo->beginTransaction();
     try {
         $suffix = barLockState($pdo);
+        // Recovery locks the absent owner together with the acting administrator in grant-compatible order.
+        $ids = array_unique([...$relatedActorIds, (int)($_SESSION['trener_id'] ?? 0)]);
+        sort($ids, SORT_NUMERIC);
+        $lock = $pdo->prepare('SELECT id FROM treneri WHERE id=?' . $suffix);
+        foreach ($ids as $id) {
+            $lock->execute([$id]);
+            $lock->fetchColumn();
+        }
         $actor = barActor($pdo, $capability, true);
         $query = $pdo->prepare('SELECT * FROM kis_bar_requests WHERE token=?' . $suffix);
         $query->execute([$token]);
@@ -39,8 +47,9 @@ function barRunRequest(PDO $pdo, string $operation, string $token, array $reques
             $pdo->commit();
             return $result + ['repeated' => true];
         }
+        barRequireUtcClock($pdo);
         $result = $write($actor, $suffix);
-        $pdo->prepare('INSERT INTO kis_bar_requests(token,actor_id,operation,request_sha256,result_json) VALUES(?,?,?,?,?)')
+        $pdo->prepare('INSERT INTO kis_bar_requests(token,actor_id,operation,request_sha256,result_json,created_at) VALUES(?,?,?,?,?,' . barSqlUtcNow($pdo) . ')')
             ->execute([$token, $actor['id'], $operation, $hash, json_encode($result, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE)]);
         $pdo->commit();
         return $result + ['repeated' => false];

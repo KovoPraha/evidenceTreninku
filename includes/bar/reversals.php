@@ -39,7 +39,7 @@ function barReturnCups(PDO $pdo, int $saleId, int $cashboxId, int $quantity, str
                 throw new DomainException('Tolik nevrácených kelímků na dokladu nezbývá.');
             }
             $amount = barCheckMinor($quantity * (int)$sale['cup_unit_minor']);
-            $pdo->prepare('INSERT INTO kis_bar_cup_returns(sale_id,cashbox_id,actor_id,quantity,unit_minor,total_minor,reason) VALUES(?,?,?,?,?,?,?)')
+            $pdo->prepare('INSERT INTO kis_bar_cup_returns(sale_id,cashbox_id,actor_id,quantity,unit_minor,total_minor,reason,created_at) VALUES(?,?,?,?,?,?,?,' . barSqlUtcNow($pdo) . ')')
                 ->execute([$saleId, $cashboxId, $actor['id'], $quantity, $sale['cup_unit_minor'], $amount, $reason]);
             $id = (int)$pdo->lastInsertId();
             barAppendCash($pdo, $actor, $cashboxId, -$amount, 'cup_refund', 'cup_return', $id, $reason);
@@ -100,32 +100,11 @@ function barVoidSale(PDO $pdo, int $saleId, ?int $refundCashboxId, string $refer
                 }
             }
             $pdo->prepare('INSERT INTO kis_bar_voids(sale_id,actor_id,refund_cashbox_id,goods_minor,deposit_minor,cup_quantity,reversed_minor,'
-                . 'refunded_minor,refund_method,refund_reference,reason) VALUES(?,?,?,?,?,?,?,?,?,?,?)')
+                . 'refunded_minor,refund_method,refund_reference,reason,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,' . barSqlUtcNow($pdo) . ')')
                 ->execute([$saleId, $actor['id'], $paid ? $refundCashboxId : null, $sale['goods_net_minor'], $remainingDeposit, $remainingCups, $reversed,
                     $paid ? $reversed : 0, $method, $paid && $method !== 'cash' ? $reference : null, $reason]);
             $voidId = (int)$pdo->lastInsertId();
-            $query = $pdo->prepare('SELECT * FROM kis_bar_sale_components WHERE sale_id=? ORDER BY product_id');
-            $query->execute([$saleId]);
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $component) {
-                $productQuery = $pdo->prepare('SELECT * FROM kis_bar_products WHERE id=?' . $suffix);
-                $productQuery->execute([$component['product_id']]);
-                $product = $productQuery->fetch(PDO::FETCH_ASSOC);
-                if (!$product) {
-                    throw new DomainException('Původní surovina už neexistuje.');
-                }
-                $cost = $component['purchase_unit_minor'] === null ? null : (int)$component['purchase_unit_minor'];
-                barRecordPhysicalMovement(
-                    $pdo,
-                    $actor,
-                    $product,
-                    (int)$component['quantity'],
-                    $component['location_code'],
-                    $consumption ? 'consumption_void' : 'sale_void',
-                    $voidId,
-                    $cost,
-                    $component['product_name']
-                );
-            }
+            barRestoreSaleComponents($pdo, $actor, $saleId, $voidId, $consumption, $suffix);
             if ($paid && $method === 'cash') {
                 barAppendCash($pdo, $actor, $refundCashboxId, -$reversed, 'sale_refund', 'void', $voidId, $reason);
             } elseif ($paid) {
@@ -147,4 +126,34 @@ function barVoidSale(PDO $pdo, int $saleId, ?int $refundCashboxId, string $refer
             return ['void_id' => $voidId, 'sale_id' => $saleId, 'refunded_minor' => $paid ? $reversed : 0];
         }
     );
+}
+
+/** Compensates immutable components; current recipes and purchase prices never rewrite the original withdrawal. */
+function barRestoreSaleComponents(PDO $pdo, array $actor, int $saleId, int $voidId, bool $consumption, string $suffix): void
+{
+    if (!$pdo->inTransaction()) {
+        throw new LogicException('Vrácení zásob vyžaduje transakci.');
+    }
+    $query = $pdo->prepare('SELECT * FROM kis_bar_sale_components WHERE sale_id=? ORDER BY product_id');
+    $query->execute([$saleId]);
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $component) {
+        $productQuery = $pdo->prepare('SELECT * FROM kis_bar_products WHERE id=?' . $suffix);
+        $productQuery->execute([$component['product_id']]);
+        $product = $productQuery->fetch(PDO::FETCH_ASSOC);
+        if (!$product) {
+            throw new DomainException('Původní surovina už neexistuje.');
+        }
+        $cost = $component['purchase_unit_minor'] === null ? null : (int)$component['purchase_unit_minor'];
+        barRecordPhysicalMovement(
+            $pdo,
+            $actor,
+            $product,
+            (int)$component['quantity'],
+            $component['location_code'],
+            $consumption ? 'consumption_void' : 'sale_void',
+            $voidId,
+            $cost,
+            $component['product_name']
+        );
+    }
 }

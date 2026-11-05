@@ -22,7 +22,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-05.5';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-05.6';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -42,7 +42,8 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
     'treneri' => ['technical_email'],
     'kis_bar_categories' => ['lock_version'],
     'kis_bar_products' => ['purchase_version'],
-    'kis_bar_state' => ['active_offer_publication_id'],
+    'kis_bar_state' => ['active_offer_publication_id', 'clock_contract'],
+    'kis_bar_cashboxes' => ['closed_by', 'closure_kind'],
     'club_teams' => ['activity_kind'],
     'club_program_schedule_slots' => ['valid_from', 'valid_to'],
     'club_event_notifications' => ['system_template_key', 'system_template_version'],

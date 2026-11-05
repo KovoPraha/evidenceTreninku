@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/staff_workspaces.php';
+require_once __DIR__ . '/time.php';
 
 /** Actor snapshots are never authorization credentials: each service rechecks the live DB. */
 function barActor(PDO $pdo, string $capability, bool $lock = false): array
@@ -14,6 +15,8 @@ function barActor(PDO $pdo, string $capability, bool $lock = false): array
         'stock_manage' => ['bar_admin'],
         'invoice_read', 'accounting' => ['bar_admin', 'finance_manager'],
         'invoice_manage', 'offers_manage' => ['bar_admin'],
+        'cash_recovery' => ['bar_admin'],
+        'request_status' => ['bar_operator', 'bar_admin', 'finance_manager'],
         default => throw new DomainException('Neznámé oprávnění baru.'),
     };
     $id = (int)($_SESSION['trener_id'] ?? 0);
@@ -61,7 +64,7 @@ function barEvent(PDO $pdo, int $actorId, string $entity, int $entityId, string 
     if (!$pdo->inTransaction()) {
         throw new LogicException('Audit musí vzniknout ve stejné transakci jako změna.');
     }
-    $pdo->prepare('INSERT INTO kis_bar_events(actor_id,entity_type,entity_id,action,detail_json) VALUES(?,?,?,?,?)')
+    $pdo->prepare('INSERT INTO kis_bar_events(actor_id,entity_type,entity_id,action,detail_json,created_at) VALUES(?,?,?,?,?,' . barSqlUtcNow($pdo) . ')')
         ->execute([$actorId, $entity, $entityId, $action, json_encode($detail, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE)]);
 }
 
