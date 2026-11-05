@@ -1,13 +1,13 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení BAR (#306) a samostatné aktivaci členství (#318).
+Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení BAR (#306) a samostatné aktivaci členství (#318) i jeho pošty (#321).
 
-- **[Pravidelné zpracování členství zapnuté](verification/membership-automation-20261105/RESULTS.md):** automatizace a plán/zápis aktivní, denně 05:23 UTC, pošta vypnutá. První apply `42086490294` PASS (0 členství/předpisů/dokladů/zpráv, žádná chyba), kontrola `42086602560` potvrdila úspěšný heartbeat v 18:40:45 UTC. Bez nového deploy webu; Závodní tým zůstává konceptem.
+- **[Pravidelné zpracování členství i pošta zapnuté](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md):** automatizace, plán/zápis a pošta aktivní, denně 05:23 UTC. Ostrý apply --send `42108711699` PASS (0 členství/předpisů/dokladů/zpráv, žádná chyba), kontrola `42108836694` potvrdila úspěšný heartbeat v 21:01:18 UTC. Skutečné doručení při prázdné frontě neověřené. Závodní tým zůstává konceptem.
 
 - **[Klubové tarify #316 nasazené](verification/membership-catalog-release-20261105/RESULTS.md):** více disciplín za jednu cenu, měsíční/roční interval a formulář fakturačních údajů.
   Produkční **koncept Závodní tým / 2200 Kč měsíčně**, varianta 951, kategorie Členství v klubu; skupina 86 → MTB 87 / Silnice 88 / Dráha 89. Přihlášený zápis a kontrola UI PASS.
   **Prodej zatím neaktivovaný:** chybí skutečné údaje a schválení vystavovatele, tarifu a publikace.
-  Linux 2064/39368, obě MariaDB matice a všech 11 kontrol PASS. Live `ad09174e`, deploy `42076138376` SUCCESS. Stávající platby/VS a Fio/SumUp zachované; nová automatizace následně zapnuta podle záznamu výše, pošta vypnutá.
+  Linux 2064/39368, obě MariaDB matice a všech 11 kontrol PASS. Live `ad09174e`, deploy `42076138376` SUCCESS. Stávající platby/VS a Fio/SumUp zachované; nová automatizace i pošta následně zapnuty podle záznamu výše.
 
 - **BAR → KIS nasazený jako modul:** [Vydání a živá přejímka](verification/bar-release-20261105/RESULTS.md), B0–B6 sloučené v PR #306. Pokladna, katalog/sklad, faktury/nabídky, účetní podklady a obnova jsou připravené. Skutečné produkty, fotografie a lucka zatím nepřevedené; cílový katalog je prázdný a starý BAR není přesměrovaný. Automatické účtování BAR se nezapínalo. [Další část B7](BAR_PRODUCTION_READINESS_2026-11-05.md) zahrnuje konkrétní převod, přístupy a lidskou přejímku.
 
