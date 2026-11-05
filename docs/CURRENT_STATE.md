@@ -1,6 +1,13 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení měsíčního členství a zastupování trenérů (PR #314).
+Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení klubových tarifů a přípravě Závodního týmu (PR #316).
+
+- **[Klubové tarify #316 nasazené](verification/membership-catalog-release-20261105/RESULTS.md):** více disciplín za jednu cenu, měsíční/roční interval a formulář fakturačních údajů.
+  Založen produkční **koncept Závodní tým / 2200 Kč měsíčně**, varianta 951, kategorie Členství v klubu;
+  skupina 86 se soupiskami MTB 87 / Silnice 88 / Dráha 89. Přihlášený zápis a kontrola UI PASS.
+  **Prodej zatím neaktivovaný:** chybí skutečné údaje a schválení vystavovatele, tarifu a publikace.
+  Linux 2064/39368, obě MariaDB matice a všech 11 kontrol PASS. Live `ad09174e`, deploy `42076138376` SUCCESS.
+  Stávající platby/VS a Fio/SumUp zachované, nová automatizace a pošta se nezapínaly.
 
 - **BAR → KIS pouze ve vývojové větvi, bez nasazení:** [B6 – integrační přejímka](verification/bar-acceptance-20261105/RESULTS.md) doplňuje B0–B5 v draft PR #306. Místní role/browser, ztráta spojení, nouzová kasa, UTC/DST a naplněná obnova 335 tabulek s přílohami PASS; konečný Linux CI stav přesného headu je v PR. Skutečný katalog, fotografie a lucka zatím nepřevedené. Automatické účetní zápisy ani bankovní propojení baru nejsou aktivované. [B7](BAR_PRODUCTION_READINESS_2026-11-05.md) vyžaduje lidskou přejímku a nový výslovný souhlas; produkční přechod je nadále zakázaný.
 
