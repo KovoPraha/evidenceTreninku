@@ -1,0 +1,105 @@
+"""Read-only anonymous production smoke; no cookies, POSTs or saved HTML."""
+import datetime
+import html
+import json
+import re
+import time
+import sys
+import urllib.error
+import urllib.request
+from pathlib import Path
+
+BASE = "https://kis.kovopraha.cz"
+
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+opener = urllib.request.build_opener(NoRedirect())
+results = []
+phase = sys.argv[1] if len(sys.argv) == 2 else "post"
+if phase not in ("pre", "post"):
+    raise SystemExit("Expected pre or post")
+
+
+def check(path, expected, content=None):
+    start = time.monotonic()
+    req = urllib.request.Request(BASE + path, headers={"User-Agent": "KIS-release-readonly-smoke/20261028"})
+    try:
+        response = opener.open(req, timeout=45)
+    except urllib.error.HTTPError as error:
+        response = error
+    with response:
+        body = response.read().decode("utf-8", errors="replace")
+        status = response.code
+        item = {"path": path, "expected": expected, "status": status,
+                "elapsed_ms": round((time.monotonic() - start) * 1000),
+                "ok": status in expected}
+        if content:
+            item["content_present"] = content in body
+            item["ok"] = item["ok"] and item["content_present"]
+        if status in (302, 303):
+            item["location"] = response.headers.get("Location", "")
+            item["ok"] = item["ok"] and any(x in item["location"] for x in ("login", "prihlaseni"))
+        results.append(item)
+    return body
+
+
+check("/index.php", [200])
+catalog = check("/booking/eshop.php", [200], "produkt.php?id=")
+check("/booking/prihlaseni.php", [200])
+check("/booking/moje_objednavky.php", [302, 303])
+check("/eshop_orders_admin.php", [302, 303])
+check("/kis_roster_hierarchy_admin.php", [302, 303])
+for path in ("/booking/sportovni_prehled.php", "/booking/moje_osoby.php",
+             "/booking/nahrady.php", "/booking/soupiskove_treninky.php"):
+    check(path, [302, 303])
+ids = list(dict.fromkeys(re.findall(r"produkt\.php\?id=(\d+)", html.unescape(catalog))))[:3]
+if phase == "post":
+    prior = json.loads(Path(__file__).with_name("pre-http.json").read_text(encoding="utf-8"))
+    ids = prior["product_ids"]
+for product_id in ids:
+    check("/booking/produkt.php?id=" + product_id, [200])
+check("/booking/produkt.php?id=2147483647", [404])
+for path in ("/includes/shop_storefront_read.php", "/var/deployment.json",
+             "/includes/family_roster_status.php", "/includes/member_roster_preview.php", "/includes/member_roster_view.php",
+             "/tests/Support/StorefrontReadMariaDbSmoke.php", "/composer.lock",
+             "/var/private/kis-person-import.php"):
+    check(path, [403, 404])
+# Three sequential observations per route; indicative latency, not a load test.
+for _ in range(2):
+    check("/booking/eshop.php", [200], "produkt.php?id=")
+    for product_id in ids:
+        check("/booking/produkt.php?id=" + product_id, [200])
+check('/training_closure_admin.php', [302, 303])
+for path in ('/registration_texts_admin.php', '/paper_registrations_admin.php', '/person_lifecycle_admin.php'):
+    check(path, [403])
+check('/includes/training_closure_form.php', [403, 404])
+check('/member_engagement_admin.php', [302, 303])
+check('/season_preparation_admin.php', [403])
+check('/family_weekly_summaries_admin.php', [302, 303])
+check('/club_communication_admin.php', [403])
+check('/includes/family_weekly_delivery.php', [403, 404])
+check('/tv.php?id=2147483647&format=json', [404])
+check('/tv_programs_admin.php', [302, 303])
+check('/shop_returns_admin.php', [302, 303])
+check('/shop_returns_admin.php?order_id=1', [302, 303])
+check('/shop_returns_admin.php?order_id=0', [302, 303])
+check('/shop_returns_admin.php?return_page=999999', [302, 303])
+check('/eshop_fulfillment_admin.php?order_id=1', [302, 303])
+check('/includes/shop_return_admin_read.php', [403, 404])
+if phase == "post":
+    check('/monthly_memberships_admin.php', [302, 303, 403])
+    check('/booking/mesicni_clenstvi.php', [302, 303])
+    check('/booking/mesicni_clenstvi.php?download=1', [302, 303])
+    check('/bin/monthly-memberships.php', [403, 404])
+    check('/includes/monthly_membership.php', [403, 404])
+    check('/includes/coach_training_access.php', [403, 404])
+report = {"phase": phase, "product_ids": ids, "checked_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+          "base_url": BASE, "method": "GET only; anonymous; no cookies or redirects",
+          "checks": len(results), "passed": sum(x["ok"] for x in results), "results": results}
+Path(__file__).with_name(phase + "-http.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+print(json.dumps(report, indent=2))
+raise SystemExit(0 if all(x["ok"] for x in results) and ids else 1)

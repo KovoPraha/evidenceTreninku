@@ -1,0 +1,40 @@
+{
+  "pre_audit_run": 42062455736,
+  "post_audit_run": 42066015612,
+  "read_only_before": true,
+  "read_only_after": true,
+  "before": {
+    "sha": "504fd69a415488bbd4c4039e78311978a44f888c",
+    "run_id": "42019877235",
+    "deployed_at": "2026-11-05T11:35:50+00:00",
+    "uat_approved": false
+  },
+  "after": {
+    "sha": "9b0dec083a650df933b09ecd4545d782069daa62",
+    "run_id": "42064630068",
+    "deployed_at": "2026-11-05T16:30:37+00:00",
+    "uat_approved": false
+  },
+  "config_unchanged": true,
+  "integration_flags_unchanged": true,
+  "integration_flags": {
+    "FIO_IMPORT_ENABLED": true,
+    "FIO_AUTO_CONFIRM_ENABLED": true,
+    "SUMUP_ENABLED": true,
+    "STRIPE_ENABLED": false,
+    "VELOCOTA_INTEGRATION": false,
+    "PACKETA_ENABLED": null
+  },
+  "migration_ledger_before": 150,
+  "migration_ledger_after": 151,
+  "kis_canonical_write_enabled": false,
+  "monthly_workflow_variables_present": false,
+  "monthly_activation_performed": false,
+  "historical_source_manifests_are_not_release_file_inventory": true,
+  "live": {
+    "sha": "9b0dec083a650df933b09ecd4545d782069daa62",
+    "run_id": "42064630068",
+    "deployed_at": "2026-11-05T16:30:37+00:00",
+    "uat_approved": false
+  }
+}

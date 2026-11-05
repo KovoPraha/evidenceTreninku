@@ -1,5 +1,7 @@
 # Tréninky a zastupování bez povinného přiřazení k soupisce
 
+**Navazující vydání:** obě změny jsou sloučené a technicky nasazené v PR #314. Aktuální stav a důkazy určuje [produkční protokol](verification/monthly-coach-release-20261105/RESULTS.md); níže je zachovaný místní důkaz před nasazením. Aktivace měsíčního zpracování a pošty neproběhla.
+
 ## Rozhodnutí vlastníka z 5. 11. 2026
 
 Každý aktivní trenér může vypsat trénink a zadat skutečně proběhlý trénink i pro jiné než přidělené soupisky. Vlastní svěřenci a soupisky mají při výběru přednost. Přiřazení slouží v tréninkovém toku k řazení, nikoli jako podmínka zastupování.
