@@ -7,6 +7,8 @@ function anonymousPublicRoutes(): array
 {
     return [
         'index.php' => 'Public landing page.',
+        'tv.php' => 'Public TV playback and JSON expose the current published revision only.',
+        'tv_image.php' => 'Public images require a current published reference; previews require the TV operator position.',
         'login.php' => 'Staff sign-in.',
         'sitemap.php' => 'Public search-engine sitemap.',
         'pub.php' => 'Legacy redirect to the published training schedule.',

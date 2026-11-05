@@ -374,6 +374,20 @@ function staffPositionDefinitions(): array
                 ]],
             ],
         ],
+        'tv_operator' => [
+            'label' => 'Obsluha TV',
+            'short_label' => 'TV programy',
+            'description' => 'Obrázky, texty, programy a zveřejnění vysílání na televizích.',
+            'icon' => 'tv',
+            'legacy_role' => 'trener',
+            'sort' => 75,
+            'groups' => [
+                ['label' => 'TV vysílání', 'icon' => 'tv', 'items' => [
+                    ['route' => 'tv_programs_admin.php', 'label' => 'TV programy',
+                        'description' => 'Programy, editor snímků a zveřejnění', 'icon' => 'collection-play'],
+                ]],
+            ],
+        ],
         'system_admin' => [
             'label' => 'Správce systému',
             'short_label' => 'Systém',
@@ -448,6 +462,7 @@ function staffPositionPrimaryRoutes(): array
         'finance_manager' => ['eshop_payments_admin.php','member_charges_admin.php','member_fee_plans_admin.php'],
 
 
+        'tv_operator' => ['tv_programs_admin.php'],
         'system_admin' => ['sprava_pracovnich_pozic.php','sprava_treneru.php'],
     ];
 }

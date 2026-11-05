@@ -1,0 +1,41 @@
+.tv-viewport { position: relative; overflow: hidden; background: #000; }
+.tv-stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; overflow: hidden; transform-origin: center; font-family: Arial, Helvetica, sans-serif; }
+.tv-background { position: absolute; inset: 0; width: 100%; height: 100%; user-select: none; }
+.tv-text { position: absolute; box-sizing: border-box; padding: 16px; line-height: 1.2; white-space: pre-wrap; overflow-wrap: anywhere; }
+.tv-empty { position: absolute; inset: 0; display: grid; place-items: center; font-size: 90px; font-weight: 700; color: #f8fafc; }
+.tv-player { margin: 0; background: #000; overflow: hidden; }
+.tv-player .tv-viewport { width: 100vw; height: 100vh; }
+.tv-fullscreen { position: fixed; right: 20px; bottom: 20px; padding: 12px 18px; border: 1px solid #ffffff60; border-radius: 8px; background: #111827dc; color: white; font: 16px Arial, sans-serif; cursor: pointer; opacity: 0; transition: opacity .2s; }
+.tv-controls-visible .tv-fullscreen, .tv-fullscreen:focus-visible { opacity: 1; }
+.tv-fullscreen-message { position: fixed; bottom: 80px; right: 20px; max-width: 80vw; color: white; font: 16px Arial, sans-serif; background: #111827; }
+.tv-editor-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr) 300px; gap: 18px; align-items: start; }
+.tv-editor-layout > * { min-width: 0; }
+.tv-slide-list { display: grid; gap: 8px; }
+.tv-slide-row { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; }
+.tv-slide-row[aria-current="true"] { border: 2px solid #0d6efd; background: #eff6ff; }
+.tv-slide-row.drag-over { outline: 3px solid #60a5fa; }
+.tv-slide-select { display: block; width: 100%; background: transparent; border: 0; text-align: left; font-weight: 600; overflow-wrap: anywhere; }
+.tv-slide-meta { color: #64748b; font-size: .8rem; margin: 4px 0; }
+.tv-slide-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+.tv-editor-viewport { width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; }
+.tv-editor-viewport .tv-text { cursor: move; touch-action: none; }
+.tv-editor-viewport .tv-text:focus-visible { outline: 6px solid #fbbf24; }
+.tv-editor-viewport .tv-text.tv-selected { outline: 4px dashed #fbbf24; }
+.tv-resize-handle { position: absolute; right: -6px; top: 50%; width: 26px; height: 60px; transform: translateY(-50%); border: 3px solid #fff; background: #0d6efd; cursor: ew-resize; touch-action: none; }
+.tv-editor-empty { padding: 30px 10px; text-align: center; color: #64748b; }
+.tv-properties label { display: block; font-size: .85rem; margin-bottom: 4px; }
+.tv-properties .form-control, .tv-properties .form-select { margin-bottom: 10px; }
+.tv-inline-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tv-block-select { width: 100%; margin-bottom: 10px; }
+.tv-upload-label { display: inline-block; cursor: pointer; }
+.tv-preview-dialog { border: 0; padding: 0; width: min(96vw, 1500px); max-width: 96vw; background: #000; color: white; }
+.tv-preview-dialog::backdrop { background: #000d; }
+.tv-preview-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #111827; }
+.tv-preview-dialog .tv-viewport { width: 100%; aspect-ratio: 16 / 9; }
+.tv-overflow-warning { color: #9a3412; background: #fff7ed; padding: 10px; margin-top: 10px; border-radius: 6px; }
+.tv-editor-toolbar { position: sticky; top: 0; z-index: 20; background: #fff; padding: 12px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px; }
+.tv-program-link { overflow-wrap: anywhere; }
+.tv-status { min-height: 1.5em; }
+@media (min-width: 1251px) { .tv-properties { position: sticky; top: 150px; max-height: calc(100vh - 180px); overflow-y: auto; } .tv-editor-layout > section:nth-child(2) { position: sticky; top: 150px; } }
+@media (max-width: 1250px) { .tv-editor-layout { grid-template-columns: 190px minmax(0, 1fr); } .tv-properties { grid-column: 1 / -1; } .tv-properties-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } }
+@media (max-width: 700px) { .tv-editor-layout { grid-template-columns: 1fr; } .tv-properties-fields { display: block; } .tv-slide-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

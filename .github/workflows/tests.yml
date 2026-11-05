@@ -46,6 +46,9 @@ jobs:
       - name: Spustit testy
         run: composer test
 
+      - name: Ověřit TV přehrávač a přebírání zveřejněných změn
+        run: node --test tests/Support/TvPlayerSmoke.cjs
+
       - name: Ověřit unixové hranice soukromého úložiště bez přeskočení
         run: |
           php -r 'if (PHP_OS_FAMILY !== "Linux") { exit(1); }'
@@ -268,6 +271,9 @@ jobs:
 
       - name: Ověřit zveřejnění registračních textů a souběh na MariaDB
         run: php tests/Support/RegistrationTextsMariaDbSmoke.php
+
+      - name: Ověřit migraci a zveřejnění TV programů na MariaDB
+        run: php tests/Support/TvProgramsMariaDbSmoke.php
 
       - name: Ověřit rodinný kalendář a cílené historické členství
         env:

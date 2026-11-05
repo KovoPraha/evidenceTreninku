@@ -48,11 +48,11 @@ final class SharedUiShellTest extends TestCase
             if (preg_match('#^(vendor|tests|migrations|scripts)/#', $relative) === 1) {
                 continue;
             }
-            // This is the standalone, self-contained HTML input to the PDF renderer,
-            // not an application page. The guarded admin page uses appUiAssets.
+            // PDF inputs and fullscreen TV playback have their own isolated layouts.
+            // Their guarded administration pages still use appUiAssets.
             if (in_array(
                 $relative,
-                ['includes/accounting_documents.php','includes/shop_stock_documents.php'],
+                ['includes/accounting_documents.php','includes/shop_stock_documents.php','tv.php'],
                 true
             )) {
                 continue;
