@@ -108,7 +108,7 @@ Stav nasazení ověřte v CURRENT_STATE; samotný lokální PASS není release.
 Skutečné účetní UAT zůstává oddělené. Po nové migraci nevracet starý katalog;
 opravné vydání zachová migrační soubor a ledger, bez mazání dat nebo záloh.
 
-[Devátý autonomní průchod](verification/functional-uat-round9-20261104/RESULTS.md) ověřil rodinné souhrny a opravil souběh generování s odhlášením či revokací vazby. Oprava je místní, vyžaduje samostatný review a vydání. Heslo/T07 dál vynechat; produkční přihlášené UAT této vlny bez relace NOT RUN.
+[Devátý autonomní průchod](verification/functional-uat-round9-20261104/RESULTS.md) odhalil souběh generování s odhlášením či revokací vazby. [PR #300 je sloučený a nasazený](verification/functional-round9-release-20261105/RESULTS.md); přesné vydání a výsledky určuje CURRENT_STATE. Heslo/T07 dál vynechat; produkční přihlášené UAT této vlny bez relace NOT RUN.
 
 ## Nová stanice: čisté převzetí
 

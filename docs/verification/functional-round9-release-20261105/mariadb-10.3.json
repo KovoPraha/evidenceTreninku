@@ -1,0 +1,17 @@
+{
+    "checks": 49,
+    "two_process_claim": "pass",
+    "single_initial_local_outbox_artifact": true,
+    "unknown_delivery_held": true,
+    "process_exit_before_and_after_transport": "pass",
+    "known_rejection_backoff": "pass",
+    "weekly_preview_interleavings": [
+        "opt_out",
+        "revoked_family",
+        "changed_email",
+        "inactive_account",
+        "unverified_email"
+    ],
+    "weekly_preview_change_checks": 28,
+    "schema": "full catalog, FK enabled, random localhost database, cleanup on exit"
+}

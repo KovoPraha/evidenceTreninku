@@ -1,5 +1,7 @@
 # Devátý autonomní funkční průchod — 4. 11. 2026
 
+Následné [sloučení PR #300 a nasazení 5. 11.](../functional-round9-release-20261105/RESULTS.md) mají samostatný protokol. Níže je zachovaný původní stav před vydáním.
+
 **F09 opravena místně: souhrn nesmí vzniknout z obsahu sestaveného před změnou rodinného oprávnění ani po odhlášení odběru.**
 37 funkčních kontrol / 23 HTTP požadavků PASS před opravou i po ní; tyto běžné
 scénáře samy souběh nepokrývaly. Dva nové regresní testy nejprve FAIL a po opravě PASS.

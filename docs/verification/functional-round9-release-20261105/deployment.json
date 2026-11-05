@@ -1,0 +1,35 @@
+{
+  "run_id": 41978905942,
+  "source_sha": "97cf47929e09fae420b2171c443b98289fa8a1b5",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-11-05_061452_d2e17b4b.sql.gz",
+    "manifest": "evidence_2026-11-05_061452_d2e17b4b.manifest.json",
+    "sha256": "1f3a5ef83d62a57fce0f5e25a7e36dfc101c49591f2eea9587c64712295c513b",
+    "tables": 347,
+    "triggers": 2,
+    "compressed_bytes": 6255274
+  },
+  "tests": {
+    "tests": 1997,
+    "assertions": 38644,
+    "skipped": 0
+  },
+  "dependency_audit": "clean",
+  "migrations": {
+    "status": "current",
+    "pending": [],
+    "ledger_count": 150
+  },
+  "variable_symbols_unchanged": true,
+  "activation_log_lines": [
+    ">f.st...... includes/family_weekly_delivery.php"
+  ],
+  "evidence_limit": "Live release metadata plus activation log for the changed runtime file; not a full live hash inventory."
+}
