@@ -161,6 +161,21 @@ function barLegacyUrlMain(): void
             || str_starts_with($private . '/', $root . '/')) {
             throw new RuntimeException('Unexpected private paths.');
         }
+        $catalogRun = (string)getenv('BAR_PREPARE_RUN');
+        $catalogHash = (string)getenv('BAR_EXPECTED_BUNDLE_SHA256');
+        if (!preg_match('/^[1-9][0-9]{0,19}$/D', $catalogRun) || !preg_match('/^[a-f0-9]{64}$/D', $catalogHash)) {
+            throw new RuntimeException('Missing exact catalog provenance.');
+        }
+        if ($mode !== 'status') {
+            $result['phase'] = 'fresh_source_catalog';
+            require_once __DIR__ . '/bar-cutover-prepare.php';
+            putenv('BAR_PACKAGE_PARENT=' . dirname($private));
+            $fresh = barCutoverPrepare();
+            if (!$fresh['source_stable'] || !hash_equals($catalogHash, $fresh['bundle_sha256'])) {
+                throw new RuntimeException('Legacy catalog changed after the target transfer.');
+            }
+            $result['source_catalog_matches'] = true;
+        }
         if ($mode === 'prepare') {
             $result['phase'] = 'webroot';
             $context = stream_context_create(['http' => ['timeout' => 30, 'follow_location' => 0, 'ignore_errors' => true],
@@ -177,10 +192,14 @@ function barLegacyUrlMain(): void
             if (barLegacyUrlInventory($root) !== $files) {
                 throw new RuntimeException('Legacy entry points changed while archiving.');
             }
-            file_put_contents($private . '/plan.json', json_encode(['files' => $files, 'backup' => $backup], JSON_THROW_ON_ERROR));
+            file_put_contents($private . '/plan.json', json_encode(['files' => $files, 'backup' => $backup,
+                'catalog_prepare_run' => $catalogRun, 'bundle_sha256' => $catalogHash], JSON_THROW_ON_ERROR));
             $result['backup'] = $backup;
         } else {
             $plan = json_decode((string)file_get_contents($private . '/plan.json'), true, 32, JSON_THROW_ON_ERROR);
+            if ($plan['catalog_prepare_run'] !== $catalogRun || $plan['bundle_sha256'] !== $catalogHash) {
+                throw new RuntimeException('Source backup belongs to another catalog transfer.');
+            }
             if ($mode === 'apply') {
                 $result['phase'] = 'restore_proof';
                 $proof = json_decode((string)file_get_contents($private . '/restored.json'), true, 8, JSON_THROW_ON_ERROR);
@@ -204,7 +223,7 @@ function barLegacyUrlMain(): void
             }
             $result['http'] = barLegacyUrlVerifyHttp(array_keys($files));
         }
-        $result += ['mode' => $mode, 'entry_points' => count($files), 'no_request_replay' => true,
+        $result += ['mode' => $mode, 'bundle_sha256' => $catalogHash, 'entry_points' => count($files), 'no_request_replay' => true,
             'query_parameters_discarded' => true, 'temporary_redirects' => true];
         $result['ok'] = true;
         $result['phase'] = 'complete';

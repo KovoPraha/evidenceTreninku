@@ -12,6 +12,10 @@ on:
         description: 'Uspesny cerstvy status skutecneho prevodu katalogu a opravneni'
         required: true
         type: string
+      catalog_prepare_run:
+        description: 'Uspesna priprava konkretniho katalogu uvedeneho v target status'
+        required: true
+        type: string
       source_prepare_run:
         description: 'Uspesny inspect tohoto workflow, povinny pro apply/status'
         required: false
@@ -31,6 +35,7 @@ concurrency:
 
 env:
   APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
   DEPLOY_BASE: data/.kis-deploy
   BACKUP_DIR: data/.kis-backups
 
@@ -50,13 +55,16 @@ jobs:
           MODE: ${{ inputs.operace }}
           CONFIRM: ${{ inputs.potvrzeni }}
           TARGET_RUN: ${{ inputs.target_status_run }}
+          CATALOG_RUN: ${{ inputs.catalog_prepare_run }}
           PREPARE_RUN: ${{ inputs.source_prepare_run }}
         run: |
           set -euo pipefail
           umask 077
           test "$GITHUB_REF" = refs/heads/main
           test "$APP_HOST" = kis.kovopraha.cz
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]] && [[ "$REMOTE_DIR" != /* ]]
           [[ "$TARGET_RUN" =~ ^[1-9][0-9]{0,19}$ ]]
+          [[ "$CATALOG_RUN" =~ ^[1-9][0-9]{0,19}$ ]]
           if [ "$MODE" = apply ]; then test "$CONFIRM" = PREPNOUT_BAR; else test "$CONFIRM" = OVERIT; fi
           TMP=/tmp/kis-bar-url-$GITHUB_RUN_ID
           install -d -m 700 "$TMP"
@@ -67,16 +75,24 @@ jobs:
           fi
           gh run download "$TARGET_RUN" --repo "$GITHUB_REPOSITORY" --name "bar-cutover-result-$TARGET_RUN" --dir "$TMP/target"
           jq -e '.ok and .mode == "status" and .catalog_committed and .permissions_committed and .verification.ok and .verification.catalog_exact and .verification.images_exact and .verification.operator_only and .verification.zero_stock and .verification.zero_operational_history and all(.permission_state[]; . == true)' "$TMP/target/result.json" >/dev/null
+          HASH=$(jq -er '.bundle_sha256 | select(test("^[a-f0-9]{64}$"))' "$TMP/target/result.json")
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CATALOG_RUN" > "$TMP/catalog-run.json"
+          jq -e '.conclusion == "success" and .head_branch == "main" and .event == "workflow_dispatch" and .path == ".github/workflows/bar-transfer-prepare.yml"' "$TMP/catalog-run.json" >/dev/null
+          gh run download "$CATALOG_RUN" --repo "$GITHUB_REPOSITORY" --name "bar-transfer-prepare-$CATALOG_RUN" --dir "$TMP/catalog"
+          jq -e --arg hash "$HASH" '.ok and .source_stable and .bundle_sha256 == $hash' "$TMP/catalog/prepare.json" >/dev/null
           if [ "$MODE" = inspect ]; then PREPARE_RUN=$GITHUB_RUN_ID; else
             [[ "$PREPARE_RUN" =~ ^[1-9][0-9]{0,19}$ ]]
             gh api "repos/$GITHUB_REPOSITORY/actions/runs/$PREPARE_RUN" > "$TMP/source-run.json"
             jq -e '.conclusion == "success" and .head_branch == "main" and .event == "workflow_dispatch" and .path == ".github/workflows/bar-legacy-url.yml"' "$TMP/source-run.json" >/dev/null
             gh run download "$PREPARE_RUN" --repo "$GITHUB_REPOSITORY" --name "bar-url-result-$PREPARE_RUN" --dir "$TMP/source"
             jq -e '.ok and .mode == "prepare" and .backup.files > 0' "$TMP/source/result.json" >/dev/null
+            jq -e --arg hash "$HASH" '.bundle_sha256 == $hash' "$TMP/source/result.json" >/dev/null
             jq -e '.ok and .files > 0' "$TMP/source/restored.json" >/dev/null
             test "$(jq -r '.backup.sha256' "$TMP/source/result.json")" = "$(jq -r '.sha256' "$TMP/source/restored.json")"
           fi
           echo "SOURCE_PREPARE_RUN=$PREPARE_RUN" >> "$GITHUB_ENV"
+          echo "CATALOG_PREPARE_RUN=$CATALOG_RUN" >> "$GITHUB_ENV"
+          echo "CATALOG_SHA256=$HASH" >> "$GITHUB_ENV"
 
       - name: Pripravit overene SSH spojeni
         env:
@@ -112,12 +128,15 @@ jobs:
           OP="$DEPLOY_BASE/bar-url-$GITHUB_RUN_ID"
           PRIVATE="$BACKUP_DIR/bar-url-$SOURCE_PREPARE_RUN"
           production_retry "${SSH[@]}" "umask 077; mkdir -p '$OP' '$PRIVATE'; chmod 700 '$OP' '$PRIVATE'"
-          production_retry "${SCP[@]}" bin/bar-legacy-url.php bin/production-file-backup.php "$SSH_USER@$SSH_HOST:$OP/"
+          production_retry "${SCP[@]}" bin/bar-legacy-url.php bin/bar-cutover-prepare.php bin/production-file-backup.php "$SSH_USER@$SSH_HOST:$OP/"
           if [ "$MODE" = inspect ]; then MODE=prepare; fi
           cat > /tmp/kis-bar-url-$GITHUB_RUN_ID/run.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
           putenv('BAR_LEGACY_ROOT=bar.kovopraha.cz');
+          putenv('BAR_PREPARE_RUN=$CATALOG_PREPARE_RUN');
+          putenv('BAR_EXPECTED_BUNDLE_SHA256=$CATALOG_SHA256');
           putenv('BAR_URL_PRIVATE=' . dirname(__DIR__, 2) . '/.kis-backups/bar-url-$SOURCE_PREPARE_RUN');
           putenv('BAR_URL_MODE=$MODE');
           putenv('BAR_URL_CONFIRM=$CONFIRM');
@@ -200,5 +219,5 @@ jobs:
             source .github/scripts/production-ssh-retry.sh
             production_ssh_init
             OP="$DEPLOY_BASE/bar-url-$GITHUB_RUN_ID"
-            production_retry "${SSH[@]}" "rm -f -- '$OP/run.php' '$OP/bar-legacy-url.php' '$OP/production-file-backup.php'" || true
+            production_retry "${SSH[@]}" "rm -f -- '$OP/run.php' '$OP/bar-legacy-url.php' '$OP/bar-cutover-prepare.php' '$OP/production-file-backup.php'" || true
           fi
