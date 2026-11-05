@@ -32,13 +32,17 @@ function kisProductionMembershipsMergeConfig(string $config, string $block): str
     if (!is_string($merged) || $count !== 1) {
         throw new RuntimeException('Managed Memberships block could not be inserted safely.');
     }
-    token_get_all($merged, TOKEN_PARSE);
+    if (token_get_all($merged, TOKEN_PARSE) === []) {
+        throw new RuntimeException('Merged production config is empty.');
+    }
     return $merged;
 }
 
 function kisProductionMembershipsWriteConfig(string $configPath, string $newConfig, string $backupDir): bool
 {
-    token_get_all($newConfig, TOKEN_PARSE);
+    if (token_get_all($newConfig, TOKEN_PARSE) === []) {
+        throw new RuntimeException('New production config is empty.');
+    }
     $oldConfig = (string)file_get_contents($configPath);
     $changed = !hash_equals(hash('sha256', $oldConfig), hash('sha256', $newConfig));
     if (!$changed) {
