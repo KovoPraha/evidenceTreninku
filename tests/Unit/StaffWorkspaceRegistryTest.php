@@ -18,10 +18,10 @@ final class StaffWorkspaceRegistryTest extends TestCase
     public function testNonOverlappingPositionsOwnEveryMenuDestination(): void
     {
         $definitions = \staffPositionDefinitions();
-        self::assertCount(9, $definitions);
+        self::assertCount(11, $definitions);
         self::assertSame([
             'coach','sports_lead','registrar','program_coordinator',
-            'catalog_manager','order_operator','finance_manager','tv_operator','system_admin',
+            'catalog_manager','order_operator','finance_manager','tv_operator','bar_operator','bar_admin','system_admin',
         ], \staffPositionCodes());
         $seen = [];
         foreach ($definitions as $code => $definition) {

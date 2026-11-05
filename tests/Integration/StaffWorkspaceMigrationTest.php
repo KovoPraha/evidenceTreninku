@@ -40,7 +40,7 @@ final class StaffWorkspaceMigrationTest extends TestCase
         \staffWorkspaceRefreshSession($pdo, 3);
         self::assertTrue(\staffIsSuperadmin());
         self::assertSame('system_admin', \staffActivePosition());
-        self::assertCount(9, \staffAvailablePositions());
+        self::assertCount(11, \staffAvailablePositions());
     }
 
     public function testEverySwitchIsAuditedAndNonSuperadminCannotEscapeAssignments(): void

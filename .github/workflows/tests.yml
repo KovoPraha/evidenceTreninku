@@ -278,6 +278,9 @@ jobs:
       - name: Ověřit migraci a zveřejnění TV programů na MariaDB
         run: php tests/Support/TvProgramsMariaDbSmoke.php
 
+      - name: Ověřit barové role a odvolání vlastní spotřeby v aktuální transakci
+        run: php tests/Support/BarFoundationMariaDbSmoke.php
+
       - name: Ověřit rodinný kalendář a cílené historické členství
         env:
           EVIDENCE_CALENDAR_READ_MARIADB: '1'

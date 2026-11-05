@@ -388,6 +388,32 @@ function staffPositionDefinitions(): array
                 ]],
             ],
         ],
+        'bar_operator' => [
+            'label' => 'Obsluha baru',
+            'short_label' => 'Bar',
+            'description' => 'Nabídka a zásoba stánku.',
+            'icon' => 'cup-straw',
+            'legacy_role' => 'trener',
+            'sort' => 76,
+            'groups' => [
+                ['label' => 'Bar', 'icon' => 'cup-straw', 'items' => [
+                    ['route' => 'bar/index.php', 'label' => 'Nabídka stánku', 'description' => 'Produkty, ceny a zásoba stánku', 'icon' => 'cup-straw'],
+                ]],
+            ],
+        ],
+        'bar_admin' => [
+            'label' => 'Administrátor baru',
+            'short_label' => 'Správa baru',
+            'description' => 'Katalog a skladové údaje baru.',
+            'icon' => 'shop',
+            'legacy_role' => 'trener',
+            'sort' => 77,
+            'groups' => [
+                ['label' => 'Správa baru', 'icon' => 'shop', 'items' => [
+                    ['route' => 'bar/catalog.php', 'label' => 'Katalog baru', 'description' => 'Produkty, ceny a obě skladová místa', 'icon' => 'boxes'],
+                ]],
+            ],
+        ],
         'system_admin' => [
             'label' => 'Správce systému',
             'short_label' => 'Systém',
@@ -399,6 +425,8 @@ function staffPositionDefinitions(): array
                 ['label' => 'Účty a přístupy', 'icon' => 'person-gear', 'items' => [
                     ['route' => 'sprava_pracovnich_pozic.php', 'label' => 'Pracovní pozice', 'description'
     => 'Přiřazení pozic a superadminů', 'icon' => 'person-workspace'],
+                    ['route' => 'bar/permissions.php', 'label' => 'Vlastní spotřeba baru',
+                        'description' => 'Přidělení a odebrání zvláštního oprávnění', 'icon' => 'key'],
                     ['route' => 'sprava_treneru.php', 'label' => 'Pracovní účty', 'description' => 'Účty, hesla a aktivace',
 
      'icon' => 'person-gear'],
@@ -463,6 +491,8 @@ function staffPositionPrimaryRoutes(): array
 
 
         'tv_operator' => ['tv_programs_admin.php'],
+        'bar_operator' => ['bar/index.php'],
+        'bar_admin' => ['bar/catalog.php'],
         'system_admin' => ['sprava_pracovnich_pozic.php','sprava_treneru.php'],
     ];
 }
@@ -582,6 +612,7 @@ function staffSharedRoutes(): array
 function staffRouteDelegates(): array
 {
     return [
+        'bar/index.php' => ['bar_admin'],
         'season_preparation_admin.php' => ['sports_lead'],
         'club_communication_admin.php' => ['registrar','order_operator'],
         'club_rewards_admin.php' => ['coach','sports_lead'],
@@ -950,11 +981,12 @@ function staffEnforceCurrentRoute(string $appRoot): void
     }
     header('Content-Type: text/html; charset=utf-8');
     $label = htmlspecialchars((string)$definition['label'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $backUrl = htmlspecialchars(appUiUrl('pracovni_pozice.php'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     echo '<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
         . '<title>Přístup odepřen</title><body style="font-family:system-ui;max-width:760px;margin:4rem auto;padding:1rem">'
         . '<h1>Tato stránka patří do jiné pracovní pozice</h1><p>Vlastník agendy: <strong>' . $label .
 
      '</strong>.</p>'
-        . '<p><a href="pracovni_pozice.php">Zpět na aktivní rozcestník</a></p></body></html>';
+        . '<p><a href="' . $backUrl . '">Zpět na aktivní rozcestník</a></p></body></html>';
     exit;
 }
