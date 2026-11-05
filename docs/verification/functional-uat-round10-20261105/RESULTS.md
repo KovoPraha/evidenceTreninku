@@ -1,5 +1,7 @@
 # Desátý autonomní funkční průchod — 5. 11. 2026
 
+Následné [sloučení PR #305 a produkční nasazení](../functional-round10-release-20261105/RESULTS.md) mají samostatný protokol. Níže je zachovaný původní místní stav před vydáním.
+
 **F10 reprodukována a opravena místně: vratky zachovávají objednávku a celý přehled je dostupný po stránkách.**
 Před opravou čtyři regresní testy FAIL; závěrečná rozšířená sada stránky **5/65 PASS**, související sada
 **47/617 PASS**. Původní vratkový průchod **33 kontrol PASS před i po**,
