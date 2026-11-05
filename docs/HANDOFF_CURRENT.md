@@ -4,6 +4,13 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
+Ostré platby mají [protokol aktivace Fio a SumUp](verification/live-payments-20261105/ACTIVATION.md).
+Vlastník schválil stávající SumUp klíč a kartu pro všech 223 aktivních produktů
+pro nové objednávky. Historické platby zachovávají uložený režim. Fio historii
+neimportovat znovu od začátku; nejednoznačné pohyby čekají na účetní posouzení.
+Konfigurace a čtecí provider API jsou ověřené; skutečná placená úhrada, přihlášené
+platební UAT a první přirozený běh plánu nejsou doložené. Heslo/T07 dál vynechat.
+
 Pro následující práci na členství platí [pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md)
 z 2. 11. 2026. Vlastník potvrdil trvalé skupiny/soupisky a časové členství;
 historie před přechodem zůstane v původním KIS. Plán obsahuje inventář stránek,

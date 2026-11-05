@@ -1,0 +1,116 @@
+name: Nastavit kartu aktivním produktům
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Čtecí náhled nebo schválená změna přesného seznamu aktivních produktů'
+        required: true
+        type: choice
+        options: [preview, apply]
+      operator_email:
+        description: 'E-mail aktivního hospodáře nebo superadmina pro audit; žádné nové oprávnění se nevytváří'
+        required: true
+        type: string
+      manifest_sha256:
+        description: 'Pro apply přesný otisk z preview'
+        type: string
+      expected_count:
+        description: 'Pro apply přesný počet z preview'
+        type: string
+        default: '223'
+      potvrzeni:
+        description: 'OVERIT-PLATEBNI-METODY nebo POVOLIT-KARTU-AKTIVNI-PRODUKTY'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  policies:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Ověřit volbu a připravit neveřejné podklady
+        env:
+          ACTION: ${{ inputs.action }}
+          OPERATOR_EMAIL: ${{ inputs.operator_email }}
+          MANIFEST_SHA: ${{ inputs.manifest_sha256 }}
+          EXPECTED_COUNT: ${{ inputs.expected_count }}
+          POTVRZENI: ${{ inputs.potvrzeni }}
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]] && [[ "$REMOTE_DIR" != /* ]]
+          case "$ACTION" in
+            preview) test "$POTVRZENI" = 'OVERIT-PLATEBNI-METODY' ;;
+            apply) test "$POTVRZENI" = 'POVOLIT-KARTU-AKTIVNI-PRODUKTY'; [[ "$MANIFEST_SHA" =~ ^[a-f0-9]{64}$ ]]; [[ "$EXPECTED_COUNT" =~ ^[0-9]{1,4}$ ]] ;;
+            *) exit 64 ;;
+          esac
+          for key in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!key}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+          umask 077
+          php -r '$v=["action"=>getenv("ACTION"),"operator_email"=>getenv("OPERATOR_EMAIL"),"manifest_sha256"=>getenv("MANIFEST_SHA"),"expected_count"=>(int)getenv("EXPECTED_COUNT"),"confirmed"=>getenv("ACTION")==="apply","run_id"=>getenv("GITHUB_RUN_ID")];file_put_contents("/tmp/payment-policy-settings.json",json_encode($v,JSON_THROW_ON_ERROR),LOCK_EX);'
+
+      - name: Spustit vyhrazený náhled nebo auditované nastavení
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/configure-production-payment-policies.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/payment-policies-$GITHUB_RUN_ID.php"
+          production_retry "${SCP[@]}" /tmp/payment-policy-settings.json "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/payment-policies-$GITHUB_RUN_ID.json"
+          cat > /tmp/run-payment-policies.php <<EOF
+          <?php
+          putenv('KIS_PAYMENT_POLICY_OPERATION=1');
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('POLICY_SETTINGS_FILE=$DEPLOY_BASE/payment-policies-$GITHUB_RUN_ID.json');
+          require __DIR__ . '/payment-policies-$GITHUB_RUN_ID.php';
+          kisProductionPaymentPolicyMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-payment-policies.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-payment-policies-$GITHUB_RUN_ID.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-payment-policies-$GITHUB_RUN_ID.php'" | tee /tmp/payment-policy-result.json
+          jq -e '.ok == true and (.manifest_sha256 | length) == 64 and .products > 0' /tmp/payment-policy-result.json >/dev/null
+
+      - name: Uklidit pouze podklady tohoto běhu
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/payment-policy-settings.json /tmp/run-payment-policies.php /tmp/payment-policy-result.json
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/payment-policies-$GITHUB_RUN_ID.php' '$DEPLOY_BASE/payment-policies-$GITHUB_RUN_ID.json' '$DEPLOY_BASE/run-payment-policies-$GITHUB_RUN_ID.php'"
+          fi

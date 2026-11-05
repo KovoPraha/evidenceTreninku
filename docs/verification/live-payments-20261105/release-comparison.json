@@ -1,0 +1,51 @@
+{
+  "pre_audit_run": 42005753311,
+  "post_audit_run": 42010713390,
+  "before_live": {
+    "sha": "bc627ab12c22ba16feb0ca6cba3340fb87de31a9",
+    "run_id": "41987993980",
+    "deployed_at": "2026-11-05T07:36:51+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d",
+    "run_id": "42006918844",
+    "deployed_at": "2026-11-05T10:02:03+00:00",
+    "uat_approved": false
+  },
+  "authorized_configuration_change": {
+    "before": {
+      "FIO_IMPORT_ENABLED": true,
+      "FIO_AUTO_CONFIRM_ENABLED": false,
+      "SUMUP_ENABLED": false,
+      "STRIPE_ENABLED": false,
+      "VELOCOTA_INTEGRATION": false,
+      "PACKETA_ENABLED": null
+    },
+    "after": {
+      "FIO_IMPORT_ENABLED": true,
+      "FIO_AUTO_CONFIRM_ENABLED": true,
+      "SUMUP_ENABLED": true,
+      "STRIPE_ENABLED": false,
+      "VELOCOTA_INTEGRATION": false,
+      "PACKETA_ENABLED": null
+    }
+  },
+  "unchanged": {
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "migration_ledger_count": true
+  },
+  "values_after": {
+    "config_sha256": "d77909b9ac5d4348e6583e0bfa958ca95a0a3ce7e4fc58e75aa76d1566c5bb3c",
+    "private_migration_candidates": {
+      "movable": 0,
+      "missing": 2,
+      "already_private": 0,
+      "invalid": 0
+    },
+    "kis_canonical_write_enabled": false,
+    "migration_ledger_count": 150
+  },
+  "manifest_limit": "old_source/new_source are historical fixed manifests; current activation is proven by deployment log and live metadata."
+}
