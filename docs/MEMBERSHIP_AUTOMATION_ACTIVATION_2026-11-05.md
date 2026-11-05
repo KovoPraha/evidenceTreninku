@@ -1,7 +1,7 @@
 # Aktivace pravidelného zpracování členství
 
 Uživatel 5. 11. 2026 výslovně požádal zapnout pravidelnou práci systému,
-i když dosud nemá žádná členství ke zpracování. Pošta zůstává vypnutá.
+i když dosud nemá žádná členství ke zpracování. Při tomto kroku pošta zůstala vypnutá.
 Produkt Závodní tým zůstává konceptem; tento krok neschvaluje jeho prodej.
 
 ## Postup
@@ -30,4 +30,5 @@ Záloha configu je soukromá; nepřepisovat z ní pozdější změny jiných int
 
 Dokončeno: [PR #318, produkční aktivace a první ostrý běh](verification/membership-automation-20261105/RESULTS.md)
 ověřeny. Denní plán a zápis zapnuté; první apply 0 členství, 0 předpisů,
-0 zpráv, žádná chyba. Následně ověřen úspěšný uložený heartbeat. Pošta vypnutá.
+0 zpráv, žádná chyba. Následně ověřen úspěšný uložený heartbeat. Pošta při tomto kroku vypnutá.
+Její pozdější samostatně schválené zapnutí dokládá [aktivace pošty](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
