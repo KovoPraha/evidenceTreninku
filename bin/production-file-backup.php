@@ -75,11 +75,12 @@ function productionFileBackupMain(): void
     try {
         require $root . '/config.php';
         ob_end_clean();
-        if (!defined('JE_LOKALNE') || JE_LOKALNE !== false || !defined('APP_BASE_URL') || APP_BASE_URL !== 'https://kis.kovopraha.cz'
-            || !defined('APP_PRIVATE_STORAGE_ROOT')) {
+        $configuration = get_defined_constants();
+        if (($configuration['JE_LOKALNE'] ?? null) !== false || ($configuration['APP_BASE_URL'] ?? null) !== 'https://kis.kovopraha.cz'
+            || !is_string($configuration['APP_PRIVATE_STORAGE_ROOT'] ?? null) || $configuration['APP_PRIVATE_STORAGE_ROOT'] === '') {
             throw new RuntimeException('Target mismatch.');
         }
-        $result = productionFileBackup(['app' => $root, 'private' => APP_PRIVATE_STORAGE_ROOT], (string)getenv('KIS_FILE_BACKUP_PATH'));
+        $result = productionFileBackup(['app' => $root, 'private' => $configuration['APP_PRIVATE_STORAGE_ROOT']], (string)getenv('KIS_FILE_BACKUP_PATH'));
         echo json_encode(['ok' => true] + $result, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES), "\n";
     } catch (Throwable $error) {
         if (ob_get_level() > 0) {
