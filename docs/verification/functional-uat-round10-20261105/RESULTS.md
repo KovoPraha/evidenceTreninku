@@ -96,3 +96,10 @@ za plný Linux PASS; rozhoduje také CI konkrétního předaného headu.
 Konečná úplná analýza PHPStan PASS: stránka nově výslovně ověří existenci PDO
 připojení a původní baseline výjimka pro nedefinované PDO byla odstraněná.
 Produkční UAT touto místní vlnou neproběhlo. Nový merge/deploy vyžaduje samostatné rozhodnutí.
+
+## Aktuální základ před předáním
+
+Po místních průchodech byl bez konfliktů připojen main `bf899521` (nezávislé TV změny
+PR #303 a #304). Původní místní výsledky výše patří uvedenému výchozímu základu;
+závěrečná cílená sada včetně dokumentace prošla 49 testy / 631 assertions.
+Úplné CI PR ověřuje společný předaný head včetně TV změn.
