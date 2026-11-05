@@ -308,6 +308,10 @@ function staffPositionDefinitions(): array
                     ['route' => 'accounting_ledger_admin.php','label' => 'Peněžní evidence a pokladna',
 
     'description' => 'Skutečné pohyby, příděly a odsouhlasení zůstatků','icon' => 'journal-text'],
+                    ['route' => 'accounting_settings_admin.php', 'label' => 'Fakturační údaje klubu',
+                        'description' => 'Vystavovatel a výchozí doklady členství', 'icon' => 'building'],
+                    ['route' => 'monthly_memberships_admin.php', 'label' => 'Členství v klubu',
+                        'description' => 'Měsíční a roční tarify, disciplíny a doklady', 'icon' => 'people'],
                     ['route' => 'accounting_documents_admin.php','label' => 'Účetní doklady','description'
     => 'Vystavovatel, dokladové řady, náhled a vydání PDF','icon' => 'file-earmark-pdf'],
                     ['route' => 'accounting_adjustments_admin.php','label' => 'Opravy a částečné vratky',

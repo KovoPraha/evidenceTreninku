@@ -667,7 +667,8 @@ endif;
     '') .
      shopPublicMoney((int)$product['min_amount_minor'], (string)$product['currency']))
     ?><?php if (array_filter($product['variants'], static fn (array $v): bool => isset($v['monthly_tariff_id'])) !== []):
-        ?> / měsíc<?php endif; ?></strong
+        ?> / <?=htmlspecialchars(count(array_unique(array_column($product['variants'], 'billing_interval'))) === 1
+            ? membershipIntervalLabel($product['variants'][0]) : 'období dle tarifu', ENT_QUOTES, 'UTF-8')?><?php endif; ?></strong
 >
             <?php
 if ($product['has_member_price'] && !$product['interest_only_course']):

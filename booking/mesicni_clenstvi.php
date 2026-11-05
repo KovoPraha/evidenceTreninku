@@ -28,7 +28,7 @@ $account = (int)$_SESSION['verejny_uzivatel_id'];
 $error = '';
 if (!monthlyMembershipTable($pdo, 'monthly_memberships')) {
     http_response_code(503);
-    exit('Měsíční členství se připravuje.');
+    exit('Členství v klubu se připravuje.');
 }
 if (isset($_GET['download'])) {
     try {
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (($_POST['action'] ?? '') === 'subscribe') {
             monthlyMembershipSubscribe($pdo, $account, (int)($_POST['sportovec_id'] ?? 0), (int)($_POST['tariff_id'] ?? 0), ['name' => (string)($_POST['buyer_name']
     ?? ''),'address' => (string)($_POST['buyer_address'] ?? ''),'registration_id' => ''], (string)($_POST['terms_sha256'] ?? ''), (string)($_POST['request_key']
-    ?? ''), isset($_POST['confirmed']));
+    ?? ''), isset($_POST['confirmed']), null, (array)($_POST['team_ids'] ?? []));
         } elseif (($_POST['action'] ?? '') === 'cancel') {
             monthlyMembershipCancel($pdo, $account, (int)($_POST['membership_id'] ?? 0), isset($_POST['confirmed']));
         } else {
@@ -71,7 +71,7 @@ $product = null;
 $tariff = $variantId ? monthlyMembershipTariffForVariant($pdo, $variantId) : null;
 if ($tariff !== null && !monthlyMembershipSalesEnabled()) {
     $tariff = null;
-    $error = 'Sjednávání měsíčních členství je nyní pozastavené.';
+    $error = 'Sjednávání členství v klubu je nyní pozastavené.';
 }
 if ($tariff) {
     $q = $pdo->prepare(('SELECT p.id,pub.public_name,v.sku FROM shop_variants v JOIN shop_products p ON p.id=v.product_id JOIN '
@@ -85,7 +85,7 @@ if ($tariff) {
         $tariff = null;
     }
 }
-$q = $pdo->prepare(('SELECT m.*,t.amount_minor,t.terms_text,s.jmeno,s.prijmeni FROM monthly_memberships m JOIN monthly_membership_tariffs t ON '
+$q = $pdo->prepare(('SELECT m.*,t.amount_minor,t.terms_text,t.billing_interval,s.jmeno,s.prijmeni FROM monthly_memberships m JOIN monthly_membership_tariffs t ON '
     .
     't.id=m.tariff_id JOIN sportovci s ON s.id=m.sportovec_id WHERE m.payer_account_id=? ORDER BY m.id DESC'));
 $q->execute([$account]);
@@ -96,9 +96,9 @@ $memberships = array_values(array_filter($q->fetchAll(PDO::FETCH_ASSOC), static 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Měsíční členství — KOVO Praha</title><?php appUiAssets(); ?></head>
+<title>Členství v klubu — KOVO Praha</title><?php appUiAssets(); ?></head>
 <body class="bg-light"><?php publicShellNav(); ?><main class="container py-4" style="max-width:1000px">
-<h1 class="h3">Měsíční členství</h1>
+<h1 class="h3">Členství v klubu</h1>
 <p>
 <a href="sportovni_prehled.php">Sportovní přehled</a> · <a href="eshop.php">E-shop</a>
 </p>
@@ -106,12 +106,12 @@ $memberships = array_values(array_filter($q->fetchAll(PDO::FETCH_ASSOC), static 
 ?>
 <?php if ($tariff): ?><section class="card card-body mb-4">
 <h2 class="h4"><?=mmH($product['public_name'])?></h2>
-<p class="fw-semibold"><?=mmMoney((int)$tariff['amount_minor'])?> za kalendářní měsíc, splatnost <?=
-
-
-    mmH($tariff['due_day'])?>. den měsíce.</p>
-<p>Platíte bankovním trvalým příkazem. První měsíc se účtuje v plné výši; na jeho úhradu máte nejméně 7 dní od sjednání.
-Členství můžete ukončit ke konci kalendářního měsíce. Nejde o opakované strhávání karty.</p>
+<p class="fw-semibold"><?=mmMoney((int)$tariff['amount_minor'])?> / <?=mmH(membershipIntervalLabel($tariff))?>,
+splatnost <?=mmH($tariff['due_day'])?>. den prvního měsíce období.</p>
+<p>Platíte bankovním trvalým příkazem. První období se účtuje v plné výši; na jeho úhradu máte nejméně 7 dní od sjednání.
+<?php if (membershipInterval($tariff) === 'year'): ?>
+Roční období má 12 kalendářních měsíců od měsíce sjednání; členství lze ukončit na jeho konci. Trvalý příkaz nastavte jednou ročně.
+<?php else: ?>Členství můžete ukončit ke konci kalendářního měsíce. Trvalý příkaz nastavte jednou měsíčně.<?php endif; ?></p>
 <div class="border rounded p-3 mb-3"><?=nl2br(mmH($tariff['terms_text']))?></div>
 <?php
  if ($people === []):
@@ -129,23 +129,30 @@ propojte sportovce v Mých osobách</a>. Propojení ověřuje klub.</p><?php els
 <option value="">Vyberte</option><?php foreach ($people as $person): ?><option value="<?=(int)$person['sportovec_id']
     ?>"><?=mmH($person['jmeno'].' '.$person['prijmeni'])?></option><?php endforeach;
     ?></select>
+<?php $options = membershipTariffTeams($pdo, (int)$tariff['id']);
+    if ($options !== []): ?>
+<fieldset class="mb-3"><legend class="h6">Disciplíny</legend>
+<p>Vyberte alespoň jednu. Můžete zvolit více disciplín za stejnou cenu; každá vás zařadí do příslušné soupisky.</p>
+<?php foreach ($options as $option): ?><label class="d-block mb-2">
+<input type="checkbox" name="team_ids[]" value="<?=(int)$option['id']?>"> <?=mmH($option['name'])?></label><?php endforeach; ?>
+</fieldset><?php endif; ?>
 <label class="form-label" for="mm-name">Jméno odběratele dokladu</label>
 <input class="form-control mb-3" id="mm-name" name="buyer_name" maxlength="200" required>
 <label class="form-label" for="mm-address">Úplná adresa odběratele dokladu</label>
 <input class="form-control mb-3" id="mm-address" name="buyer_address" maxlength="500" required>
 <label class="d-block mb-3">
-<input type="checkbox" name="confirmed" required> Souhlasím s uvedenými podmínkami a měsíční platební povinností. Jsem plátcem za vybraného
+<input type="checkbox" name="confirmed" required> Souhlasím s uvedenými podmínkami a opakovanou platební povinností v uvedeném intervalu. Jsem plátcem za vybraného
 sportovce. Doklady a zprávy o neuhrazených předpisech obdržím elektronicky.</label>
 <button class="btn btn-primary">Závazně sjednat za <?=mmMoney((int)$tariff['amount_minor'])
-    ?> měsíčně</button>
+?> / <?=mmH(membershipIntervalLabel($tariff))?></button>
 </form><?php endif; ?></section><?php endif; ?>
-<?php if ($memberships === []): ?><p>Zatím nemáte sjednané měsíční členství. Vyberte je v katalogu.</p><?php
+<?php if ($memberships === []): ?><p>Zatím nemáte sjednané členství v klubu. Vyberte je v katalogu.</p><?php
 
 
 endif; ?>
 <?php foreach ($memberships as $m): ?><section class="card card-body mb-4">
 <h2 class="h5"><?=mmH($m['jmeno'].' '.$m['prijmeni'])?></h2>
-<p><?=mmMoney((int)$m['amount_minor'])?> / měsíc · od <?=mmH($m['starts_on'])?><?=$m['ends_on'] !== null ? ' do '
+<p><?=mmMoney((int)$m['amount_minor'])?> / <?=mmH(membershipIntervalLabel($m))?> · od <?=mmH($m['starts_on'])?><?=$m['ends_on'] !== null ? ' do '
 .mmH($m['ends_on']) : ' na dobu neurčitou'?></p>
 <dl class="row">
 <dt class="col-sm-4">Stálý variabilní symbol plátce</dt>
@@ -157,9 +164,14 @@ endif; ?>
 <code><?=mmH($m['iban_snapshot'])?></code>
 </dd>
 </dl>
-<p class="small">Stejný VS může zahrnovat více vašich dětí a období. Platby se přidělují nejstarším měsíčním předpisům.
-Jednorázové nákupy mají vlastní platební údaje. Částku trvalého příkazu nastavte podle součtu aktivních členství.</p>
-<?php $q = $pdo->prepare(('SELECT p.*,c.title_snapshot,c.amount_minor,c.status,c.due_on,d.number,d.status AS document_status FROM '
+<?php $q = $pdo->prepare('SELECT t.name FROM monthly_membership_team_grants g JOIN club_teams t ON t.id=g.team_id WHERE g.membership_id=? ORDER BY t.name');
+    $q->execute([$m['id']]);
+    $disciplines = $q->fetchAll(PDO::FETCH_COLUMN);
+    if ($disciplines !== []): ?>
+<p>Disciplíny: <?=mmH(implode(', ', $disciplines))?></p><?php endif; ?>
+<p class="small">Stejný VS může zahrnovat více vašich dětí a období. Platby se přidělují nejstarším členským předpisům.
+Jednorázové nákupy mají vlastní platební údaje. Částku trvalého příkazu nastavte podle součtu aktivních členství se stejným intervalem. Roční členství se hradí jednou ročně.</p>
+<?php $q = $pdo->prepare(('SELECT p.*,c.title_snapshot,c.period_from,c.period_to,c.amount_minor,c.status,c.due_on,d.number,d.status AS document_status FROM '
 .
 'monthly_membership_periods p JOIN club_member_charges c ON c.id=p.charge_id LEFT JOIN accounting_documents d ON '
 .
@@ -168,7 +180,7 @@ Jednorázové nákupy mají vlastní platební údaje. Částku trvalého přík
 <?php foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $period): ?>
 <article class="list-group-item">
 <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
-<strong>Období <?=mmH((new DateTimeImmutable($period['period_key'].'-01'))->format('m/Y'))?></strong>
+<strong>Období <?=mmH($period['period_from'].' – '.$period['period_to'])?></strong>
 <span><?=mmH(['pending' => 'Čeká na úhradu','paid' => 'Uhrazeno','cancelled' => 'Zrušeno'][$period['status']] ?? 'Řeší klub')
     ?></span>
 </div>
@@ -193,10 +205,11 @@ Jednorázové nákupy mají vlastní platební údaje. Částku trvalého přík
 <?php if ($m['ends_on'] === null): ?><form method="post"><?=csrf_field()?><input type="hidden" name="action" value="cancel">
 <input type="hidden" name="membership_id" value="<?=(int)$m['id']?>">
 <label class="d-block mb-2">
-<input type="checkbox" name="confirmed" required> Chci ukončit členství ke konci tohoto měsíce; dosavadní předpisy tím nezanikají.</label>
-<button class="btn btn-outline-danger">Ukončit měsíční členství</button>
+<input type="checkbox" name="confirmed" required> Chci ukončit členství k <?=mmH(membershipPeriodEnd($m['starts_on'], monthlyMembershipToday(), membershipInterval($m)))?>;
+dosavadní předpisy tím nezanikají.</label>
+<button class="btn btn-outline-danger">Ukončit členství v klubu</button>
 </form><?php endif; ?></section><?php endforeach; ?>
-<?php if ($memberships !== []): ?><p>Evidovaný nepřidělený přeplatek měsíčních členství: <strong><?=
+<?php if ($memberships !== []): ?><p>Evidovaný nepřidělený přeplatek členství v klubu: <strong><?=
 
 
             mmMoney(monthlyMembershipCredit($pdo, $account))?></strong>. Použije se na další předpisy. Po ukončení kontaktujte klub kvůli vyrovnání; peníze se automaticky nevracejí.</p><?php
