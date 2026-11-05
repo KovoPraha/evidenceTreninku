@@ -76,6 +76,14 @@ z `main` přes chráněné prostředí `production`. Režimy `probe` / `enable` 
 `VYPNOUT-CLENSTVI`. Nástroj nejprve čtecím způsobem ověří prostředí, schéma,
 počty a poslední heartbeat. Změna má ověřenou soukromou zálohu configu,
 atomický zápis a kontrolu uložených příznaků v novém procesu. Poštu nezapíná.
+Pošta má vlastní režimy `mail-enable` / `mail-disable` a potvrzení
+`ZAPNOUT-POSTU-CLENSTVI` / `VYPNOUT-POSTU-CLENSTVI`. Ty mění pouze soukromý
+mailový příznak, nikoli automatizaci nebo ostatní integrace. Zapnutí vyžaduje
+aktivní automatizaci a dostupnou PHP funkci `mail`; workflow proměnná
+`KIS_MONTHLY_MEMBERSHIP_MAIL_ENABLED=true` následně přidá `--send` do denního běhu.
+Náhled uvádí souhrn fronty podle stavů bez adres či obsahu zpráv. Dostupná mail
+funkce ani prázdný běh samy o sobě nedokazují doručení do schránky.
+Výslovné pověření a postup viz [aktivace pošty](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
 První zapnutí s prázdnou evidencí je schválené v
 [plánu aktivace](MEMBERSHIP_AUTOMATION_ACTIVATION_2026-11-05.md).
 `KIS_MONTHLY_MEMBERSHIP_SCHEDULE_ENABLED` musí být repozitářová proměnná,

@@ -72,6 +72,7 @@ jobs:
           if [ "$mode" = --apply ] && [ "$APPLY_ENABLED" != true ]; then echo 'Apply is disabled by production variable.'; exit 78; fi
           send=''
           if [ "$mode" = --apply ] && [ "$MAIL_ENABLED" = true ]; then send=--send; fi
+          printf 'Membership processing arguments: %s %s\n' "$mode" "$send"
           cat > /tmp/run-monthly-memberships.php <<EOF
           <?php
           putenv('APP_HOST=$APP_HOST');
