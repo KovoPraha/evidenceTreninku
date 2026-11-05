@@ -96,6 +96,27 @@ function kisProductionSumUpProbe(string $appRoot, string $appHost): array
     require $appRoot.'/config.php';
     require_once $appRoot.'/includes/sumup_gateway.php';
     $settings = sumupSettingsFromConfig();
+    foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS'] as $name) {
+        if (!defined($name)) {
+            throw new RuntimeException('Production database configuration is incomplete.');
+        }
+    }
+    $readPdo = new PDO(
+        'mysql:host='.(string)constant('DB_HOST').';dbname='.(string)constant('DB_NAME').';charset=utf8mb4',
+        (string)constant('DB_USER'),
+        (string)constant('DB_PASS'),
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
+    );
+    $readPdo->exec('SET SESSION TRANSACTION READ ONLY');
+    $readPdo->beginTransaction();
+    try {
+        $productPolicies = $readPdo->query('SELECT payment_method_policy,catalog_status,COUNT(*) AS products '
+            .'FROM shop_products GROUP BY payment_method_policy,catalog_status')->fetchAll();
+        $paymentPolicies = $readPdo->query('SELECT accepted_payment_methods,status,COUNT(*) AS payments '
+            .'FROM payments GROUP BY accepted_payment_methods,status')->fetchAll();
+    } finally {
+        $readPdo->rollBack();
+    }
     return [
         'ok' => true,
         'environment' => defined('JE_LOKALNE') && JE_LOKALNE === false ? 'production' : 'invalid',
@@ -104,6 +125,9 @@ function kisProductionSumUpProbe(string $appRoot, string $appHost): array
         'merchant_code' => (string)$settings['merchant_code'],
         'merchant_code_ok' => preg_match('/^[A-Z0-9]{8}$/D', (string)$settings['merchant_code']) === 1,
         'base_url_ok' => $settings['base_url'] === 'https://'.$appHost,
+        'policy_inventory_read_only' => true,
+        'product_payment_policies' => $productPolicies,
+        'existing_payment_policies' => $paymentPolicies,
     ];
 }
 

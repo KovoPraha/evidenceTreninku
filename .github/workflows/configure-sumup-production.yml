@@ -102,6 +102,26 @@ jobs:
           jq -e '(.items | type) == "array"' /tmp/sumup-history.json > /dev/null
           echo '{"ok":true,"live_card_czk":true,"transaction_read_access":true,"checkout_created":false,"payment_executed":false}'
 
+      - name: Přečíst současný stav a platební režimy bez změny konfigurace
+        if: inputs.rezim == 'verify'
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/configure-production-sumup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/configure-production-sumup.php"
+          cat > /tmp/run-sumup-probe.php <<EOF
+          <?php
+          putenv('CONFIGURE_PRODUCTION_SUMUP=1');
+          putenv('SUMUP_CONFIG_ACTION=probe');
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          require __DIR__ . '/configure-production-sumup.php';
+          kisProductionSumUpMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-sumup-probe.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-sumup-probe.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-sumup-probe.php'" | tee /tmp/probe-result.json
+          jq -e '.ok and .environment == "production" and .policy_inventory_read_only' /tmp/probe-result.json > /dev/null
+
       - name: Zálohovat a nastavit SumUp
         if: inputs.rezim != 'verify'
         env:
