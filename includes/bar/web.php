@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/catalog.php';
+require_once __DIR__ . '/editor_view.php';
 
 function barH(mixed $value): string
 {
@@ -27,7 +28,7 @@ function barRequireWebActor(PDO $pdo, string $capability): array
     }
 }
 
-function barRenderCatalog(array $rows, bool $administration): void
+function barRenderCatalog(PDO $pdo, array $rows, bool $administration, ?array $editor = null): void
 {
     ?>
 <!doctype html>
@@ -43,8 +44,11 @@ function barRenderCatalog(array $rows, bool $administration): void
 <main class="container py-4">
     <h1><?= $administration ? 'Katalog baru' : 'Nabídka stánku' ?></h1>
     <?php if ($administration): ?>
-        <p><a href="<?= barH(appUiUrl('bar/index.php')) ?>">Zobrazit nabídku stánku</a></p>
+        <p><a href="<?= barH(appUiUrl('bar/index.php')) ?>">Zobrazit nabídku stánku</a> ·
+            <a href="<?= barH(appUiUrl('bar/catalog.php?new=1')) ?>">Nový produkt</a> ·
+            <a href="<?= barH(appUiUrl('bar/stock.php')) ?>">Sklad</a></p>
     <?php endif; ?>
+    <?php if ($editor !== null): barRenderProductEditor($editor); endif; ?>
     <?php if ($rows === []): ?>
         <p>V katalogu nejsou žádné produkty.</p>
     <?php else: ?>
@@ -55,7 +59,13 @@ function barRenderCatalog(array $rows, bool $administration): void
         <tbody>
         <?php foreach ($rows as $row): ?>
             <tr>
-                <td><strong><?= barH($row['name']) ?></strong><div><?= nl2br(barH($row['description'])) ?></div></td>
+                <td>
+                    <?php if ($row['image_id'] !== null): ?>
+                        <img src="<?= barH(appUiUrl('bar/image.php?id=' . (int)$row['image_id'])) ?>" alt="" width="80" loading="lazy">
+                    <?php endif; ?>
+                    <strong><?= barH($row['name']) ?></strong><div><?= nl2br(barH($row['description'])) ?></div>
+                    <?php if ($administration): ?><a href="<?= barH(appUiUrl('bar/catalog.php?id=' . (int)$row['id'])) ?>">Upravit</a><?php endif; ?>
+                </td>
                 <td><?= barH($row['category']) ?></td>
                 <td><?= barH(barFormatMoney((int)$row['price_minor'])) ?></td>
                 <td><?= (int)$row['is_composite'] === 1 ? 'Receptura' : ($row['stock_mode'] === 'sledovat' ? (int)$row['stock_stall'] : 'Nesledováno') ?>

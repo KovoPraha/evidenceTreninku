@@ -8,4 +8,4 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
     throw new RuntimeException('Databázové připojení není dostupné.');
 }
 barRequireWebActor($pdo, 'catalog_read');
-barRenderCatalog(barCatalog($pdo), false);
+barRenderCatalog($pdo, barCatalog($pdo), false);

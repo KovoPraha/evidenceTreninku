@@ -411,6 +411,7 @@ function staffPositionDefinitions(): array
             'groups' => [
                 ['label' => 'Správa baru', 'icon' => 'shop', 'items' => [
                     ['route' => 'bar/catalog.php', 'label' => 'Katalog baru', 'description' => 'Produkty, ceny a obě skladová místa', 'icon' => 'boxes'],
+                    ['route' => 'bar/stock.php', 'label' => 'Sklad baru', 'description' => 'Příjem, přesun a inventura', 'icon' => 'box-seam'],
                 ]],
             ],
         ],
@@ -492,7 +493,7 @@ function staffPositionPrimaryRoutes(): array
 
         'tv_operator' => ['tv_programs_admin.php'],
         'bar_operator' => ['bar/index.php'],
-        'bar_admin' => ['bar/catalog.php'],
+        'bar_admin' => ['bar/catalog.php', 'bar/stock.php'],
         'system_admin' => ['sprava_pracovnich_pozic.php','sprava_treneru.php'],
     ];
 }
@@ -519,6 +520,7 @@ function staffRouteOwners(): array
     }
 
     $additional = [
+        'bar_operator' => ['bar/image.php'],
         'coach' => [
             'ajax_denny_rozvrh.php','ajax_dostupnost_sportovist.php','ajax_nova_oznameni.php',
             'ajax_podskupiny.php','ajax_roster_target_selector.php','ajax_sportovci.php','ajax_treninky.php',
@@ -613,6 +615,7 @@ function staffRouteDelegates(): array
 {
     return [
         'bar/index.php' => ['bar_admin'],
+        'bar/image.php' => ['bar_admin'],
         'season_preparation_admin.php' => ['sports_lead'],
         'club_communication_admin.php' => ['registrar','order_operator'],
         'club_rewards_admin.php' => ['coach','sports_lead'],

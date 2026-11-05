@@ -176,6 +176,8 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261102174000_member_evidence_cutover_runs',
                 '20261104180000_tv_programs',
                 '20261105150000_bar_foundation',
+                '20261105160000_bar_transfer',
+                '20261105170000_bar_stock',
 
             ],
             array_keys($catalog)

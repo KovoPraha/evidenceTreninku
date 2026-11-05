@@ -1,9 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/password_security.php';
+require_once __DIR__ . '/staff_email_policy.php';
 
-final class UnifiedAccountException extends RuntimeException {}
+final class UnifiedAccountException extends RuntimeException
+{
+}
 
 /** @return array<string,mixed> */
 function unifiedAccountEnsureTrainerCustomer(PDO $pdo, array $trainer): array
@@ -19,8 +23,13 @@ function unifiedAccountEnsureTrainerCustomer(PDO $pdo, array $trainer): array
     }
 
     $ownTransaction = !$pdo->inTransaction();
-    if ($ownTransaction) $pdo->beginTransaction();
+    if ($ownTransaction) {
+        $pdo->beginTransaction();
+    }
     try {
+        if (staffAccountHasTechnicalEmail($pdo, $trainerId, true)) {
+            throw new UnifiedAccountException('Technická adresa se nepoužívá pro zákaznický účet.');
+        }
         $byTrainer = $pdo->prepare('SELECT * FROM verejni_uzivatele WHERE trener_id=? LIMIT 1');
         $byTrainer->execute([$trainerId]);
         $account = $byTrainer->fetch(PDO::FETCH_ASSOC);
@@ -50,12 +59,20 @@ function unifiedAccountEnsureTrainerCustomer(PDO $pdo, array $trainer): array
         }
         $byTrainer->execute([$trainerId]);
         $account = $byTrainer->fetch(PDO::FETCH_ASSOC);
-        if (!$account) throw new UnifiedAccountException('Zákaznickou část společného účtu se nepodařilo připravit.');
-        if ($ownTransaction) $pdo->commit();
+        if (!$account) {
+            throw new UnifiedAccountException('Zákaznickou část společného účtu se nepodařilo připravit.');
+        }
+        if ($ownTransaction) {
+            $pdo->commit();
+        }
         return $account;
     } catch (Throwable $exception) {
-        if ($ownTransaction && $pdo->inTransaction()) $pdo->rollBack();
-        if ($exception instanceof UnifiedAccountException) throw $exception;
+        if ($ownTransaction && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        if ($exception instanceof UnifiedAccountException) {
+            throw $exception;
+        }
         throw new UnifiedAccountException('Společný účet se nepodařilo připravit bez částečného zápisu.', 0, $exception);
     }
 }
@@ -64,7 +81,9 @@ function unifiedAccountEnsureTrainerCustomer(PDO $pdo, array $trainer): array
 function unifiedAccountAuthenticate(PDO $pdo, string $email, string $password): ?array
 {
     $email = strtolower(trim($email));
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $password === '') return null;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $password === '') {
+        return null;
+    }
 
     $publicStatement = $pdo->prepare('SELECT * FROM verejni_uzivatele WHERE LOWER(email)=? AND aktivni=1 LIMIT 1');
     $publicStatement->execute([$email]);
@@ -83,7 +102,12 @@ function unifiedAccountAuthenticate(PDO $pdo, string $email, string $password): 
     );
     $trainerStatement->execute([$email]);
     $trainer = $trainerStatement->fetch(PDO::FETCH_ASSOC);
-    if (!$trainer || !trainer_password_verify($password, (string)$trainer['heslo'])) return null;
+    if (!$trainer || !trainer_password_verify($password, (string)$trainer['heslo'])) {
+        return null;
+    }
+    if (staffAccountHasTechnicalEmail($pdo, (int)$trainer['id'])) {
+        return null;
+    }
     if (trainer_password_needs_rehash((string)$trainer['heslo'])) {
         $newHash = trainer_password_hash($password);
         $pdo->prepare('UPDATE treneri SET heslo=? WHERE id=? AND heslo=?')

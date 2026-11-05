@@ -10,7 +10,8 @@ function barActor(PDO $pdo, string $capability, bool $lock = false): array
     $positions = match ($capability) {
         'catalog_read', 'sell', 'own_consumption' => ['bar_operator', 'bar_admin'],
         'catalog_manage' => ['bar_admin'],
-        'manage_permissions' => ['system_admin'],
+        'manage_permissions', 'transfer' => ['system_admin'],
+        'stock_manage' => ['bar_admin'],
         default => throw new DomainException('Neznámé oprávnění baru.'),
     };
     $id = (int)($_SESSION['trener_id'] ?? 0);

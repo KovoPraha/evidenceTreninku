@@ -11,6 +11,14 @@ function barSourceMoney(mixed $value): int
     return (int)$match[1] * 100 + (int)str_pad($match[2] ?? '', 2, '0');
 }
 
+function barMinorDecimal(int $minor): string
+{
+    if ($minor < 0 || $minor > 9999999999) {
+        throw new InvalidArgumentException('Cena je mimo rozsah.');
+    }
+    return intdiv($minor, 100) . '.' . str_pad((string)($minor % 100), 2, '0', STR_PAD_LEFT);
+}
+
 function barSourceInteger(mixed $value, int $minimum = 0, int $maximum = 1000000): int
 {
     if ((!is_string($value) && !is_int($value)) || !preg_match('/^-?(?:0|[1-9][0-9]*)$/D', (string)$value)

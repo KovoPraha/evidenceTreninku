@@ -24,6 +24,8 @@
 # Lokální konfigurace a cache PHPUnit
 /phpunit.xml
 /.phpunit.cache/
+/.playwright-cli/
+/output/playwright/
 
 # Lokalni importy a prilohy z pracovnich vlaken
 /var/imports/
