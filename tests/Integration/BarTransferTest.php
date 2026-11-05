@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__) . '/Support/BarFoundationFixture.php';
 require_once dirname(__DIR__, 2) . '/includes/bar/transfer_package.php';
+require_once dirname(__DIR__, 2) . '/includes/bar/transfer_verification.php';
 require_once dirname(__DIR__, 2) . '/includes/unified_account.php';
 require_once dirname(__DIR__, 2) . '/includes/trainer_password_reset.php';
 require_once dirname(__DIR__, 2) . '/includes/password_reset.php';
@@ -71,6 +72,37 @@ final class BarTransferTest extends TestCase
         return \barBuildTransferBundle($this->source, $this->runtime . '/source-images');
     }
 
+    public static function transferDrift(): array
+    {
+        return [
+            'price' => ['UPDATE kis_bar_products SET price_minor=price_minor+1'],
+            'stock' => ['UPDATE kis_bar_products SET stock_stall=1'],
+            'name' => ["UPDATE kis_bar_products SET name='unexpected'"],
+            'email marker' => ["UPDATE treneri SET technical_email=0 WHERE jmeno='lucka'"],
+            'password' => ["UPDATE treneri SET heslo='unsupported' WHERE jmeno='lucka'"],
+            'position' => ["UPDATE staff_user_positions SET position_code='bar_admin' WHERE trainer_id=(SELECT id FROM treneri WHERE jmeno='lucka')"],
+            'image metadata' => ['UPDATE kis_bar_assets SET width_px=width_px+1'],
+            'image content' => [null],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('transferDrift')]
+    public function testInitialVerificationRejectsDrift(?string $mutation): void
+    {
+        $bundle = $this->bundle();
+        $pdo = $this->target();
+        \barImportTransfer($pdo, $bundle, $this->runtime . '/source-images');
+        self::assertTrue(\barVerifyInitialTransfer($pdo, $bundle, $this->runtime . '/source-images')['ok']);
+        if ($mutation !== null) {
+            $pdo->exec($mutation);
+        } else {
+            $asset = $pdo->query('SELECT * FROM kis_bar_assets')->fetch(PDO::FETCH_ASSOC);
+            file_put_contents(\barTransferAssetPath($asset), 'invalid');
+        }
+        $this->expectException(\RuntimeException::class);
+        \barVerifyInitialTransfer($pdo, $bundle, $this->runtime . '/source-images');
+    }
+
     public function testPackageAndImportPreserveProductsPhotosAndOnlyLuckaWithZeroStock(): void
     {
         $bundle = $this->bundle();
@@ -78,6 +110,13 @@ final class BarTransferTest extends TestCase
         $pdo = $this->target();
         $result = \barImportTransfer($pdo, $bundle, $this->runtime . '/package/images');
         self::assertFalse($result['repeated']);
+        $verification = \barVerifyInitialTransfer($pdo, $bundle, $this->runtime . '/package/images');
+        self::assertTrue($verification['catalog_exact']);
+        self::assertTrue($verification['images_exact']);
+        self::assertTrue($verification['password_preserved']);
+        self::assertTrue($verification['operator_only']);
+        self::assertTrue($verification['zero_stock']);
+        self::assertTrue($verification['zero_operational_history']);
         $product = $pdo->query('SELECT * FROM kis_bar_products')->fetch(PDO::FETCH_ASSOC);
         self::assertSame(91, (int)$product['source_id']);
         self::assertSame(3500, (int)$product['price_minor']);
