@@ -112,6 +112,7 @@ final class BarLegacyUrlTest extends TestCase
                     self::assertStringContainsString($gone ? '410' : '302', $headers[0], $path . ' ' . $method);
                     self::assertContains('Cache-Control: no-store', $headers);
                     self::assertContains('Referrer-Policy: no-referrer', $headers);
+                    self::assertContains('Strict-Transport-Security: max-age=31536000', $headers);
                     if (!$gone) {
                         self::assertContains('Location: https://kis.kovopraha.cz' . $target, $headers);
                     } elseif ($method !== 'HEAD') {

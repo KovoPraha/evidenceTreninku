@@ -45,6 +45,8 @@ function barLegacyUrlWrapper(string $path): string
     return "<?php\ndeclare(strict_types=1);\n"
         . "// KIS BAR cutover: no legacy bootstrap, sessions, database access or request replay.\n"
         . "header('Cache-Control: no-store');\nheader('Referrer-Policy: no-referrer');\n"
+        . "header('Strict-Transport-Security: max-age=31536000');\n"
+        . "header(\"Content-Security-Policy: default-src 'none'; frame-ancestors 'none'\");\n"
         . "header('X-Content-Type-Options: nosniff');\n"
         . "\$target = $target;\n"
         . "if ($api || !in_array(\$_SERVER['REQUEST_METHOD'] ?? '', ['GET', 'HEAD'], true)) {\n"
