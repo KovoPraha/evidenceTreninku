@@ -22,6 +22,13 @@ zálohovala config a zapnula import, auto-confirm zůstal false. První
 Historie navazuje od stávajícího 21. 9. po omezených oknech s překryvem a deduplikací.
 Dokončení historie, automatika a plán mají vlastní následné ověření.
 
+Historie už následně dosáhla 5. 11. (caught_up=true), bez jediné automaticky
+potvrzené platby. Před zapnutím automatiky byl potvrzen také nález, kdy starší
+pohyb uhradil později vytvořenou platbu: [červený test](fio-date-red.xml).
+Doménová kontrola nyní pod stávajícími zámky vyžaduje, aby datum zaúčtování
+nepředcházelo dni vzniku platby. Neznámý/neplatný den a starší pohyby zůstanou
+v review_auto_conflict; ruční, zdůvodněné rozhodnutí je zachované.
+
 Nejde o odesílání peněz z Fio. Používá se pouze periods GET, bez posunu bankovní
 zarážky nebo platebních příkazů. Token má vlastní KIS Secret. Minimální rozestup
 dotazů a správnou volbu periods potvrzuje aktuální
@@ -63,7 +70,7 @@ Stejná kontrola předchází enable; rollback nadále používá disable a zál
 
 - Výchozí související sada: 52 testů / 319 assertions PASS.
 - Nálezy: transakční detail 2/4 FAIL; konfigurace 2/5 FAIL.
-- Závěrečná cílená sada: **56 testů / 406 assertions PASS**.
+- Závěrečná cílená sada včetně Fio časové hranice: **57 testů / 413 assertions PASS**.
 - Testy ověřují také refund/chargeback, dvě podoby eventů, nesprávné identity,
   částky, měny a merchant, výpadek API, rollback fronty/auditu i bezpečné opakování.
 - Změněné PHP soubory prošly syntaxí a povinným stylem, git diff --check PASS.
