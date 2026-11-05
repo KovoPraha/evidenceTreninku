@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       rezim:
-        description: 'Zapnout nebo nouzově vypnout SumUp'
+        description: 'Ověřit živý přístup, zapnout nebo nouzově vypnout SumUp'
         required: true
         type: choice
-        options: [enable, disable]
+        options: [verify, enable, disable]
       potvrzeni:
-        description: 'ZAPNOUT-SUMUP-LIVE nebo VYPNOUT-SUMUP'
+        description: 'OVERIT-SUMUP-LIVE, ZAPNOUT-SUMUP-LIVE nebo VYPNOUT-SUMUP'
         required: true
         type: string
 
@@ -39,6 +39,7 @@ jobs:
           REZIM: ${{ inputs.rezim }}
           POTVRZENI: ${{ inputs.potvrzeni }}
         run: |
+          if [ "$REZIM" = verify ] && [ "$POTVRZENI" != 'OVERIT-SUMUP-LIVE' ]; then echo '❌ Chybí potvrzení čtecího ověření SumUp.'; exit 1; fi
           if [ "$REZIM" = enable ] && [ "$POTVRZENI" != 'ZAPNOUT-SUMUP-LIVE' ]; then echo '❌ Chybí potvrzení zapnutí SumUp live.'; exit 1; fi
           if [ "$REZIM" = disable ] && [ "$POTVRZENI" != 'VYPNOUT-SUMUP' ]; then echo '❌ Chybí potvrzení vypnutí SumUp.'; exit 1; fi
 
@@ -62,7 +63,7 @@ jobs:
           [[ "$APP_HOST" =~ ^[a-z0-9.-]+$ ]] && [[ "$APP_HOST" != .* ]] && [[ "$APP_HOST" != *. ]] || { echo '❌ KIS_APP_HOST nemá bezpečný formát hostitele.'; exit 1; }
           [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] || { echo '❌ KIS_REMOTE_DIR obsahuje nepovolené znaky.'; exit 1; }
           case "$REMOTE_DIR" in /*|*..*|*/./*|./*|*/.) echo '❌ KIS_REMOTE_DIR musí být relativní cesta bez . a .. segmentů'; exit 1 ;; esac
-          if [ "$REZIM" = enable ]; then
+          if [ "$REZIM" != disable ]; then
             [ -n "$SUMUP_API_KEY_VALUE" ] && [ -n "$SUMUP_MERCHANT_CODE_VALUE" ] || { echo '❌ Chybí SumUp produkční klíč nebo merchant code.'; exit 1; }
             [[ "$SUMUP_API_KEY_VALUE" =~ ^sup_sk_[A-Za-z0-9._-]+$ ]] || { echo '❌ SumUp API klíč nemá platný formát.'; exit 1; }
             [[ "$SUMUP_MERCHANT_CODE_VALUE" =~ ^[A-Z0-9]{8}$ ]] || { echo '❌ SumUp merchant code nemá platný formát.'; exit 1; }
@@ -84,18 +85,45 @@ jobs:
           fi
 
       - name: Ověřit živý profil SumUp bez vytvoření platby
-        if: inputs.rezim == 'enable'
+        if: inputs.rezim != 'disable'
         env:
           SUMUP_API_KEY_VALUE: ${{ secrets.KIS_SUMUP_API_KEY }}
           SUMUP_MERCHANT_CODE_VALUE: ${{ vars.KIS_SUMUP_MERCHANT_CODE }}
         run: |
+          set -euo pipefail
+          umask 077
           curl --fail-with-body --silent --show-error --max-time 20 --proto '=https' \
             -H "Authorization: Bearer $SUMUP_API_KEY_VALUE" -H 'Accept: application/json' \
             "https://api.sumup.com/v0.1/merchants/$SUMUP_MERCHANT_CODE_VALUE/payment-methods?amount=1&currency=CZK" > /tmp/sumup-methods.json
           jq -e '.available_payment_methods | map(.id) | index("card") != null' /tmp/sumup-methods.json > /dev/null
-          echo '✅ Živý profil SumUp přijímá online kartu v CZK.'
+          curl --fail-with-body --silent --show-error --max-time 20 --proto '=https' \
+            -H "Authorization: Bearer $SUMUP_API_KEY_VALUE" -H 'Accept: application/json' \
+            "https://api.sumup.com/v2.1/merchants/$SUMUP_MERCHANT_CODE_VALUE/transactions/history?limit=1" > /tmp/sumup-history.json
+          jq -e '(.items | type) == "array"' /tmp/sumup-history.json > /dev/null
+          echo '{"ok":true,"live_card_czk":true,"transaction_read_access":true,"checkout_created":false,"payment_executed":false}'
+
+      - name: Přečíst současný stav a platební režimy bez změny konfigurace
+        if: inputs.rezim == 'verify'
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/configure-production-sumup.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/configure-production-sumup.php"
+          cat > /tmp/run-sumup-probe.php <<EOF
+          <?php
+          putenv('CONFIGURE_PRODUCTION_SUMUP=1');
+          putenv('SUMUP_CONFIG_ACTION=probe');
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          require __DIR__ . '/configure-production-sumup.php';
+          kisProductionSumUpMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-sumup-probe.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-sumup-probe.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-sumup-probe.php'" | tee /tmp/probe-result.json
+          jq -e '.ok and .environment == "production" and .policy_inventory_read_only' /tmp/probe-result.json > /dev/null
 
       - name: Zálohovat a nastavit SumUp
+        if: inputs.rezim != 'verify'
         env:
           REZIM: ${{ inputs.rezim }}
         run: |
@@ -135,7 +163,7 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          rm -f /tmp/sumup-secrets.json /tmp/sumup-methods.json /tmp/run-sumup-config.php /tmp/run-sumup-probe.php
+          rm -f /tmp/sumup-secrets.json /tmp/sumup-methods.json /tmp/sumup-history.json /tmp/run-sumup-config.php /tmp/run-sumup-probe.php
           if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_PORT:-}" ] && [ -n "${SSH_USER:-}" ]; then
             ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST" \
               "rm -f '$DEPLOY_BASE/sumup-secrets.json' '$DEPLOY_BASE/run-sumup-config.php' '$DEPLOY_BASE/run-sumup-probe.php' '$DEPLOY_BASE/configure-production-sumup.php'"
