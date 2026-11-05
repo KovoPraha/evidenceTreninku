@@ -26,7 +26,34 @@ final class ConfigureProductionMembershipsTest extends TestCase
         }
     }
 
-    private function assertRuntimeFlags(string $config, bool $enabled): void
+    public function testMailSwitchIsIndependentIdempotentAndSurvivesAutomationChanges(): void
+    {
+        $other = "define('FIO_IMPORT_ENABLED', true);\ndefine('DB_PASS', 'synthetic-unit-value');\n";
+        $config = "<?php\ndeclare(strict_types=1);\ndefine('MONTHLY_MEMBERSHIP_MAIL_ENABLED', false);\n".$other;
+        $config = \kisProductionMembershipsMergeConfig($config, \kisProductionMembershipsManagedBlock(true));
+        foreach ([true, false, true] as $mail) {
+            $block = \kisProductionMembershipsManagedMailBlock($mail);
+            $config = \kisProductionMembershipsMergeConfig($config, $block, true);
+            self::assertSame($config, \kisProductionMembershipsMergeConfig($config, $block, true));
+            self::assertStringContainsString($other, $config);
+            foreach ([false, true] as $automation) {
+                $config = \kisProductionMembershipsMergeConfig($config, \kisProductionMembershipsManagedBlock($automation));
+                self::assertSame(1, substr_count($config, \KIS_MEMBERSHIPS_MAIL_BLOCK_BEGIN));
+                self::assertSame(1, substr_count($config, \KIS_MEMBERSHIPS_BLOCK_BEGIN));
+                $this->assertRuntimeFlags($config, $automation, $mail);
+            }
+        }
+    }
+
+    public function testMailCanBeAddedWhenPrivateFlagIsMissing(): void
+    {
+        $config = "<?php\ndefine('MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED', true);\ndefine('FIO_IMPORT_ENABLED', true);\n";
+        $merged = \kisProductionMembershipsMergeConfig($config, \kisProductionMembershipsManagedMailBlock(true), true);
+        self::assertStringNotContainsString(\KIS_MEMBERSHIPS_BLOCK_BEGIN, $merged);
+        $this->assertRuntimeFlags($merged, true, true);
+    }
+
+    private function assertRuntimeFlags(string $config, bool $enabled, bool $mail = false): void
     {
         $file = tempnam(sys_get_temp_dir(), 'kis-memberships-test-');
         self::assertIsString($file);
@@ -41,7 +68,7 @@ final class ConfigureProductionMembershipsTest extends TestCase
             fclose($pipes[2]);
             self::assertSame(0, proc_close($process));
             self::assertSame('', $errors);
-            self::assertSame([$enabled, false, true], json_decode($body, true, flags: JSON_THROW_ON_ERROR));
+            self::assertSame([$enabled, $mail, true], json_decode($body, true, flags: JSON_THROW_ON_ERROR));
         } finally {
             unlink($file);
         }
@@ -108,6 +135,11 @@ final class ConfigureProductionMembershipsTest extends TestCase
             }
         }
         self::assertStringNotContainsString('MONTHLY_MEMBERSHIP_MAIL_ENABLED', \kisProductionMembershipsManagedBlock(true));
+        self::assertStringNotContainsString('MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED', \kisProductionMembershipsManagedMailBlock(true));
+        self::assertStringContainsString('mail-enable:ZAPNOUT-POSTU-CLENSTVI', $workflow);
+        self::assertStringContainsString('mail-disable:VYPNOUT-POSTU-CLENSTVI', $workflow);
+        self::assertStringContainsString('(.automation_enabled == $before[0].automation_enabled)', $workflow);
+        self::assertStringContainsString('del(.MONTHLY_MEMBERSHIP_MAIL_ENABLED)', $workflow);
         self::assertStringNotContainsString('set -x', $workflow);
     }
 }

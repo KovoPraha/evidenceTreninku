@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 const KIS_MEMBERSHIPS_BLOCK_BEGIN = '// BEGIN KIS MANAGED MEMBERSHIPS PRODUCTION';
 const KIS_MEMBERSHIPS_BLOCK_END = '// END KIS MANAGED MEMBERSHIPS PRODUCTION';
+const KIS_MEMBERSHIPS_MAIL_BLOCK_BEGIN = '// BEGIN KIS MANAGED MEMBERSHIPS MAIL PRODUCTION';
+const KIS_MEMBERSHIPS_MAIL_BLOCK_END = '// END KIS MANAGED MEMBERSHIPS MAIL PRODUCTION';
 
 function kisProductionMembershipsManagedBlock(bool $enabled): string
 {
@@ -12,23 +14,33 @@ function kisProductionMembershipsManagedBlock(bool $enabled): string
         . ($enabled ? 'true' : 'false') . ");\n" . KIS_MEMBERSHIPS_BLOCK_END;
 }
 
-function kisProductionMembershipsMergeConfig(string $config, string $block): string
+function kisProductionMembershipsManagedMailBlock(bool $enabled): string
+{
+    return KIS_MEMBERSHIPS_MAIL_BLOCK_BEGIN . "\n"
+        . "defined('MONTHLY_MEMBERSHIP_MAIL_ENABLED') || define('MONTHLY_MEMBERSHIP_MAIL_ENABLED', "
+        . ($enabled ? 'true' : 'false') . ");\n" . KIS_MEMBERSHIPS_MAIL_BLOCK_END;
+}
+
+function kisProductionMembershipsMergeConfig(string $config, string $block, bool $mail = false): string
 {
     if (!str_starts_with(ltrim($config), '<?php')) {
         throw new RuntimeException('Production config.php is not a PHP file.');
     }
-    $pattern = '/\R*'.preg_quote(KIS_MEMBERSHIPS_BLOCK_BEGIN, '/').'.*?'.preg_quote(KIS_MEMBERSHIPS_BLOCK_END, '/').'\R*/s';
+    $begin = $mail ? KIS_MEMBERSHIPS_MAIL_BLOCK_BEGIN : KIS_MEMBERSHIPS_BLOCK_BEGIN;
+    $end = $mail ? KIS_MEMBERSHIPS_MAIL_BLOCK_END : KIS_MEMBERSHIPS_BLOCK_END;
+    $flag = $mail ? 'MONTHLY_MEMBERSHIP_MAIL_ENABLED' : 'MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED';
+    $pattern = '/\R*'.preg_quote($begin, '/').'.*?'.preg_quote($end, '/').'\R*/s';
     $without = preg_replace($pattern, "\n", $config);
     if (!is_string($without)) {
         throw new RuntimeException('Managed Memberships block could not be replaced.');
     }
-    $legacy = '/^([ \t]*)(define\s*\(\s*[\'\"](MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED)[\'\"]\s*,[^\r\n]*\);)([ \t]*)$/m';
+    $legacy = '/^([ \t]*)(define\s*\(\s*[\'\"]('.$flag.')[\'\"]\s*,[^\r\n]*\);)([ \t]*)$/m';
     $without = preg_replace_callback($legacy, static fn (array $match): string => $match[1]."defined('".$match[3]."') || ".$match[2].$match[4], $without);
     if (!is_string($without)) {
         throw new RuntimeException('Legacy Memberships configuration could not be guarded.');
     }
-    $opening = '/\A(<\?php(?:\s*declare\s*\(\s*strict_types\s*=\s*1\s*\)\s*;)?)/';
-    $merged = preg_replace($opening, "$1\n\n".$block, $without, 1, $count);
+    $opening = '/\A(<\?php(?:\s*declare\s*\(\s*strict_types\s*=\s*1\s*\)\s*;)?)[\r\n]*/';
+    $merged = preg_replace($opening, "$1\n\n".$block."\n", $without, 1, $count);
     if (!is_string($merged) || $count !== 1) {
         throw new RuntimeException('Managed Memberships block could not be inserted safely.');
     }
@@ -109,6 +121,7 @@ function kisProductionMembershipsProbe(string $appRoot, string $appHost): array
         }
         $heartbeat = $pdo->query("SELECT started_at,finished_at,status,summary_code FROM operational_job_runs "
             ."WHERE job_key='monthly_memberships' ORDER BY id DESC LIMIT 1")->fetch();
+        $messages = $pdo->query('SELECT status,COUNT(*) AS messages FROM monthly_membership_messages GROUP BY status ORDER BY status')->fetchAll();
     } finally {
         $pdo->rollBack();
     }
@@ -120,6 +133,7 @@ function kisProductionMembershipsProbe(string $appRoot, string $appHost): array
     return ['ok' => true, 'environment' => 'production', 'inventory_read_only' => true,
         'automation_enabled' => defined('MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED') && MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED === true,
         'unchanged_flags' => $flags, 'counts' => $counts, 'last_run' => $heartbeat ?: null,
+        'mail_function_available' => function_exists('mail'), 'message_statuses' => $messages,
         'config_sha256' => hash_file('sha256', $appRoot.'/config.php')];
 }
 
@@ -135,7 +149,7 @@ function kisProductionMembershipsMain(): void
     $action = (string)getenv('MEMBERSHIPS_CONFIG_ACTION');
     $appRoot = rtrim(trim((string)getenv('APP_ROOT')), '/\\');
     $appHost = strtolower(trim((string)getenv('APP_HOST')));
-    if (!in_array($action, ['probe', 'enable', 'disable'], true) || $appHost !== 'kis.kovopraha.cz'
+    if (!in_array($action, ['probe', 'enable', 'disable', 'mail-enable', 'mail-disable'], true) || $appHost !== 'kis.kovopraha.cz'
         || $appRoot === '' || !is_file($appRoot.'/config.php')) {
         throw new RuntimeException('Invalid action or production location.');
     }
@@ -144,12 +158,17 @@ function kisProductionMembershipsMain(): void
         echo json_encode($state, JSON_THROW_ON_ERROR).PHP_EOL;
         return;
     }
+    if ($action === 'mail-enable' && (!$state['automation_enabled'] || !$state['mail_function_available'])) {
+        throw new RuntimeException('Mail requires enabled membership processing and an available mail function.');
+    }
     $backupDir = trim((string)getenv('CONFIG_BACKUP_DIR'));
     if ($backupDir === '') {
         throw new RuntimeException('Private config backup directory is required.');
     }
     $configPath = $appRoot.'/config.php';
-    $newConfig = kisProductionMembershipsMergeConfig((string)file_get_contents($configPath), kisProductionMembershipsManagedBlock($action === 'enable'));
+    $mail = in_array($action, ['mail-enable', 'mail-disable'], true);
+    $block = $mail ? kisProductionMembershipsManagedMailBlock($action === 'mail-enable') : kisProductionMembershipsManagedBlock($action === 'enable');
+    $newConfig = kisProductionMembershipsMergeConfig((string)file_get_contents($configPath), $block, $mail);
     $changed = kisProductionMembershipsWriteConfig($configPath, $newConfig, $backupDir);
     echo json_encode(['ok' => true, 'changed' => $changed, 'requested_mode' => $action,
         'config_sha256' => hash_file('sha256', $configPath)], JSON_THROW_ON_ERROR).PHP_EOL;
