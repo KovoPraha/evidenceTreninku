@@ -1,0 +1,26 @@
+<?php
+declare(strict_types=1);
+require __DIR__.'/prefix.php';
+require_once $root.'/includes/shop_returns.php';
+$f=json_decode((string)file_get_contents(__DIR__.'/context-fixture.json'),true,512,JSON_THROW_ON_ERROR);
+$actor=$f['actor'];$tag=$f['tag'];
+if($pdo->query('SELECT COUNT(*) FROM shop_return_cases WHERE request_key LIKE '.$pdo->quote($tag.'-bulk-%'))->fetchColumn()>0)throw new RuntimeException('Fixture already exists');
+foreach(['catalog_manager','finance_manager']as$p)dwInsert('staff_user_positions',['trainer_id'=>$actor,'position_code'=>$p,'is_default'=>0]);
+try{
+ $account=(int)$pdo->query('SELECT account_id FROM shop_orders WHERE id='.(int)$f['order_a'])->fetchColumn();
+ $cart=dwInsert('shop_carts',['cart_key'=>bin2hex(random_bytes(16)),'account_id'=>$account,'status'=>'converted','currency'=>'CZK']);
+ $order=dwInsert('shop_orders',['public_code'=>'LOCAL-'.$tag.'-C','account_id'=>$account,'source_cart_id'=>$cart,'idempotency_key_hash'=>bin2hex(random_bytes(32)),'status'=>'completed','payment_status'=>'paid','fulfillment_method'=>'pickup','customer_name_snapshot'=>'LOCALHOST '.$tag.' C','customer_email_snapshot'=>strtolower($tag).'@example.invalid','subtotal_minor'=>650000,'total_minor'=>650000,'currency'=>'CZK','placed_at'=>date('Y-m-d H:i:s')]);
+ $product=dwInsert('shop_products',['external_product_key'=>$tag.'-C','name'=>'LOCALHOST '.$tag.' PAGING C','offer_type'=>'goods','catalog_status'=>'published']);
+ $variant=dwInsert('shop_variants',['product_id'=>$product,'sku'=>$tag.'-C','attributes_json'=>'{}','price_mode'=>'fixed','amount_minor'=>5000,'currency'=>'CZK','unit_code'=>'piece','catalog_status'=>'published']);
+ $item=dwInsert('shop_order_items',['order_id'=>$order,'product_id'=>$product,'variant_id'=>$variant,'product_name_snapshot'=>'LOCALHOST '.$tag.' PAGING C','sku_snapshot'=>$tag.'-C','attributes_json_snapshot'=>'{}','quantity'=>130,'unit_amount_minor'=>5000,'line_amount_minor'=>650000,'currency'=>'CZK']);
+ shopInventoryOpen($pdo,$actor,$variant,['physical_quantity'=>130,'unit_cost_minor'=>2000,'effective_on'=>date('Y-m-d'),'evidence'=>'LOCALHOST '.$tag],'LOCALHOST '.$tag.' opening only',true,$tag.'-C-open');
+ $issue=shopInventoryTransaction($pdo,static function()use($pdo,$variant,$order,$item,$actor,$tag){shopInventoryReserveInTransaction($pdo,$variant,$order,$item,130,$tag.'-C-reserve',$actor);return shopInventoryIssueInTransaction($pdo,$item,130,$tag.'-C-issue',$actor,'LOCALHOST '.$tag.' synthetic issue',['effective_on'=>date('Y-m-d')]);});
+ $caseIds=[];
+ for($i=0;$i<126;$i++){
+  $c=shopReturnOpen($pdo,['issue_movement_id'=>(int)$issue['id'],'quantity'=>1,'request_type'=>'claim','owner_trainer_id'=>$actor,'next_due_on'=>date('Y-m-d',strtotime('+7 days')),'occurred_on'=>date('Y-m-d'),'contact_path'=>'LOCALHOST '.$tag.' contact','customer_request'=>'LOCALHOST '.$tag.' C-'.str_pad((string)$i,3,'0',STR_PAD_LEFT),'policy_evidence'=>'LOCALHOST test procedure','request_key'=>$tag.'-bulk-'.$i],$actor,'LOCALHOST '.$tag.' request evidence',true);
+  $caseIds[]=(int)$c['id'];
+ }
+ $f+=['order_c'=>$order,'order_c_code'=>'LOCAL-'.$tag.'-C','issue_c'=>(int)$issue['id'],'variant_c'=>$variant,'cases_c'=>$caseIds];
+ file_put_contents(__DIR__.'/context-fixture.json',json_encode($f,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR));
+ echo json_encode(['order_c'=>$order,'case_count'=>count($caseIds),'issued_quantity'=>130,'oldest_case'=>$caseIds[0]],JSON_THROW_ON_ERROR),"\n";
+}finally{$pdo->prepare("DELETE FROM staff_user_positions WHERE trainer_id=? AND position_code<>'order_operator'")->execute([$actor]);}

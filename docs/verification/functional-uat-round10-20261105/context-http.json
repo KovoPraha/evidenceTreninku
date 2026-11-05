@@ -1,0 +1,813 @@
+{
+    "status": "PASS",
+    "checks": 38,
+    "http_requests": 30,
+    "results": [
+        "GET: explicit order banner identifies order A",
+        "GET: other order cases excluded",
+        "GET: other order physical issue excluded from opening form",
+        "GET: every action retains selected order in hidden input",
+        "GET: back link returns to same fulfillment",
+        "GET: stock sees only selected order",
+        "GET: finance sees only selected order",
+        "GET: all genuine cases counted before 25-row pagination",
+        "GET: next link retains order and page",
+        "GET: real second page request loads next 25 cases",
+        "GET: last page reaches oldest case beyond prior 100-row cap",
+        "GET: unfiltered workspace includes all cases",
+        "GET: malformed selection rejected without fallback: 0",
+        "GET: malformed selection rejected without fallback: ",
+        "GET: malformed selection rejected without fallback: invalid",
+        "GET: malformed selection rejected without fallback: 214748364799999999999",
+        "GET: malformed selection rejected without fallback: 1%20OR%201=1",
+        "GET: array selection rejected",
+        "GET: nonexistent order remains 404",
+        "GET: existing empty order has explicit empty state",
+        "GET: unrelated coach workspace denied",
+        "GET: anonymous access denied",
+        "POST: valid CSRF cannot receive another order case",
+        "POST: conflicting query and form order rejected",
+        "POST: malformed case source rejected",
+        "POST: cannot open from another order issue",
+        "POST: forged CSRF still denied",
+        "POST: explicit action confirmation still required",
+        "POST: finance cannot open physical return case",
+        "POST: stock role cannot receive physical goods",
+        "POST: unrelated role denied before mutation",
+        "Persistence: all GET and rejected POST preserve every monitored domain table",
+        "POST: hidden order context alone is retained on successful creation",
+        "Persistence: new case belongs to the correct order",
+        "POST: repeated scoped creation is idempotent",
+        "POST: changed idempotency replay rejected",
+        "POST: previously allocated returned quantity cannot be exceeded",
+        "Persistence: opening and rejected replay do not alter stock, money or unrelated domains"
+    ],
+    "fixture": {
+        "tag": "R10-bda0e3",
+        "actor": 48,
+        "actor_name": "round10-operator-R10-bda0e3",
+        "order_a": 5,
+        "order_a_code": "R23689fe9d2e18342",
+        "order_b": 6,
+        "order_b_code": "LOCAL-R10-bda0e3-B",
+        "case_b": 5,
+        "issue_b": 12,
+        "variant_b": 12,
+        "order_c": 7,
+        "order_c_code": "LOCAL-R10-bda0e3-C",
+        "issue_c": 15,
+        "variant_c": 13,
+        "cases_c": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62,
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78,
+            79,
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87,
+            88,
+            89,
+            90,
+            91,
+            92,
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            100,
+            101,
+            102,
+            103,
+            104,
+            105,
+            106,
+            107,
+            108,
+            109,
+            110,
+            111,
+            112,
+            113,
+            114,
+            115,
+            116,
+            117,
+            118,
+            119,
+            120,
+            121,
+            122,
+            123,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+            130,
+            131
+        ]
+    },
+    "created_case": 133,
+    "initial_scoped_cases": 127,
+    "initial_global_cases": 132,
+    "read_only_snapshot_tables": 40,
+    "read_only_before": {
+        "accounting_accounts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_adjustment_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_allocations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_classifications": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_series": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_batches": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_mutex": {
+            "count": 1,
+            "sha256": "bb41eeeedb7789a3482cc74a1ac8d84effb2a508b753948130e3958c39004120"
+        },
+        "accounting_issuer_versions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_ledger_mutex": {
+            "count": 1,
+            "sha256": "0c526d3644d0895b6234157fed244187b7448eb559ccccefeb1cc6c63654e433"
+        },
+        "accounting_movement_sources": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_movements": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_reconciliations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_rules": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "family_weekly_summaries": {
+            "count": 78,
+            "sha256": "b98725ae0a01889c21957b041fe40d827552a71659a0ba89680dffbf31c4be06"
+        },
+        "family_weekly_summary_events": {
+            "count": 74,
+            "sha256": "325b511cfa7925a41ea64b089a8262193a9bf59da8a72c1266a4b87578d3ed5d"
+        },
+        "family_weekly_summary_preferences": {
+            "count": 2,
+            "sha256": "10bc04b2a19635ab00e6d324a7b181ae91bcd18bcff8bd01ec2e2baec2194f26"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_delivery_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillment_items": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_return_cases": {
+            "count": 132,
+            "sha256": "146e87527c7a2d996703c8b73644c4952d3fec7e521a351605e355b61ccd6741"
+        },
+        "shop_return_events": {
+            "count": 143,
+            "sha256": "f8d6a6ae2bf4603f5ade77b3a34bf04caefd3f7b227dbe0c59e05261ae77e0e5"
+        },
+        "shop_return_finance_links": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_balances": {
+            "count": 4,
+            "sha256": "1bb2ace04191e4fe0d9180b33d6c14eaaafcf17deb68ccd0f557a205517086f4"
+        },
+        "shop_stock_cost_revisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_counts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_lot_uses": {
+            "count": 4,
+            "sha256": "56972eb1e978f5c1abeda525990a3986042c5f0ba9726c5cba3d6ca5550fcfd3"
+        },
+        "shop_stock_lots": {
+            "count": 6,
+            "sha256": "6b480e417f88c62f13a17d009de86dcd0759caba5bad1317c6638f9d098a2b92"
+        },
+        "shop_stock_movements": {
+            "count": 15,
+            "sha256": "922d0f738fd35b98d03f715e70dd2faff35e3f191eee27739887ecfee57a34d5"
+        },
+        "shop_stock_policy": {
+            "count": 1,
+            "sha256": "5b8f8af64df3641959dcad05dea89049ae08c5f2a361e364e7f24528373a9ffd"
+        },
+        "shop_stock_reservations": {
+            "count": 4,
+            "sha256": "eca4f752462d094e12b9ed3c64f528ab0a757faf01f3b2a512d580e6530acc10"
+        },
+        "staff_user_positions": {
+            "count": 48,
+            "sha256": "65d312be51784766c66b38a23c80ad5caa84949aa555993b103ee4ff3d7fa5ba"
+        }
+    },
+    "read_only_after": {
+        "accounting_accounts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_adjustment_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_allocations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_classifications": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_series": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_batches": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_mutex": {
+            "count": 1,
+            "sha256": "bb41eeeedb7789a3482cc74a1ac8d84effb2a508b753948130e3958c39004120"
+        },
+        "accounting_issuer_versions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_ledger_mutex": {
+            "count": 1,
+            "sha256": "0c526d3644d0895b6234157fed244187b7448eb559ccccefeb1cc6c63654e433"
+        },
+        "accounting_movement_sources": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_movements": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_reconciliations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_rules": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "family_weekly_summaries": {
+            "count": 78,
+            "sha256": "b98725ae0a01889c21957b041fe40d827552a71659a0ba89680dffbf31c4be06"
+        },
+        "family_weekly_summary_events": {
+            "count": 74,
+            "sha256": "325b511cfa7925a41ea64b089a8262193a9bf59da8a72c1266a4b87578d3ed5d"
+        },
+        "family_weekly_summary_preferences": {
+            "count": 2,
+            "sha256": "10bc04b2a19635ab00e6d324a7b181ae91bcd18bcff8bd01ec2e2baec2194f26"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_delivery_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillment_items": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_return_cases": {
+            "count": 132,
+            "sha256": "146e87527c7a2d996703c8b73644c4952d3fec7e521a351605e355b61ccd6741"
+        },
+        "shop_return_events": {
+            "count": 143,
+            "sha256": "f8d6a6ae2bf4603f5ade77b3a34bf04caefd3f7b227dbe0c59e05261ae77e0e5"
+        },
+        "shop_return_finance_links": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_balances": {
+            "count": 4,
+            "sha256": "1bb2ace04191e4fe0d9180b33d6c14eaaafcf17deb68ccd0f557a205517086f4"
+        },
+        "shop_stock_cost_revisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_counts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_lot_uses": {
+            "count": 4,
+            "sha256": "56972eb1e978f5c1abeda525990a3986042c5f0ba9726c5cba3d6ca5550fcfd3"
+        },
+        "shop_stock_lots": {
+            "count": 6,
+            "sha256": "6b480e417f88c62f13a17d009de86dcd0759caba5bad1317c6638f9d098a2b92"
+        },
+        "shop_stock_movements": {
+            "count": 15,
+            "sha256": "922d0f738fd35b98d03f715e70dd2faff35e3f191eee27739887ecfee57a34d5"
+        },
+        "shop_stock_policy": {
+            "count": 1,
+            "sha256": "5b8f8af64df3641959dcad05dea89049ae08c5f2a361e364e7f24528373a9ffd"
+        },
+        "shop_stock_reservations": {
+            "count": 4,
+            "sha256": "eca4f752462d094e12b9ed3c64f528ab0a757faf01f3b2a512d580e6530acc10"
+        },
+        "staff_user_positions": {
+            "count": 48,
+            "sha256": "65d312be51784766c66b38a23c80ad5caa84949aa555993b103ee4ff3d7fa5ba"
+        }
+    },
+    "stock_finance_before": {
+        "accounting_accounts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_adjustment_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_allocations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_classifications": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_series": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_batches": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_mutex": {
+            "count": 1,
+            "sha256": "bb41eeeedb7789a3482cc74a1ac8d84effb2a508b753948130e3958c39004120"
+        },
+        "accounting_issuer_versions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_movement_sources": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_movements": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_reconciliations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_rules": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "family_weekly_summaries": {
+            "count": 78,
+            "sha256": "b98725ae0a01889c21957b041fe40d827552a71659a0ba89680dffbf31c4be06"
+        },
+        "family_weekly_summary_events": {
+            "count": 74,
+            "sha256": "325b511cfa7925a41ea64b089a8262193a9bf59da8a72c1266a4b87578d3ed5d"
+        },
+        "family_weekly_summary_preferences": {
+            "count": 2,
+            "sha256": "10bc04b2a19635ab00e6d324a7b181ae91bcd18bcff8bd01ec2e2baec2194f26"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_delivery_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillment_items": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_balances": {
+            "count": 4,
+            "sha256": "1bb2ace04191e4fe0d9180b33d6c14eaaafcf17deb68ccd0f557a205517086f4"
+        },
+        "shop_stock_cost_revisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_counts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_lot_uses": {
+            "count": 4,
+            "sha256": "56972eb1e978f5c1abeda525990a3986042c5f0ba9726c5cba3d6ca5550fcfd3"
+        },
+        "shop_stock_lots": {
+            "count": 6,
+            "sha256": "6b480e417f88c62f13a17d009de86dcd0759caba5bad1317c6638f9d098a2b92"
+        },
+        "shop_stock_movements": {
+            "count": 15,
+            "sha256": "922d0f738fd35b98d03f715e70dd2faff35e3f191eee27739887ecfee57a34d5"
+        },
+        "shop_stock_policy": {
+            "count": 1,
+            "sha256": "5b8f8af64df3641959dcad05dea89049ae08c5f2a361e364e7f24528373a9ffd"
+        },
+        "shop_stock_reservations": {
+            "count": 4,
+            "sha256": "eca4f752462d094e12b9ed3c64f528ab0a757faf01f3b2a512d580e6530acc10"
+        },
+        "staff_user_positions": {
+            "count": 48,
+            "sha256": "65d312be51784766c66b38a23c80ad5caa84949aa555993b103ee4ff3d7fa5ba"
+        }
+    },
+    "stock_finance_after": {
+        "accounting_accounts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_adjustment_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_allocations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_classifications": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_document_series": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_batches": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_export_mutex": {
+            "count": 1,
+            "sha256": "bb41eeeedb7789a3482cc74a1ac8d84effb2a508b753948130e3958c39004120"
+        },
+        "accounting_issuer_versions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_movement_sources": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_movements": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_reconciliations": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_refund_payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "accounting_rules": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "club_roster_members": {
+            "count": 46,
+            "sha256": "a146e86a9292a633c67d214d432413a72fb7d1b859fd6577b1fe985b2e2635d6"
+        },
+        "family_weekly_summaries": {
+            "count": 78,
+            "sha256": "b98725ae0a01889c21957b041fe40d827552a71659a0ba89680dffbf31c4be06"
+        },
+        "family_weekly_summary_events": {
+            "count": 74,
+            "sha256": "325b511cfa7925a41ea64b089a8262193a9bf59da8a72c1266a4b87578d3ed5d"
+        },
+        "family_weekly_summary_preferences": {
+            "count": 2,
+            "sha256": "10bc04b2a19635ab00e6d324a7b181ae91bcd18bcff8bd01ec2e2baec2194f26"
+        },
+        "financial_decisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "payments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_delivery_events": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillment_items": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_fulfillments": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_balances": {
+            "count": 4,
+            "sha256": "1bb2ace04191e4fe0d9180b33d6c14eaaafcf17deb68ccd0f557a205517086f4"
+        },
+        "shop_stock_cost_revisions": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_counts": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_documents": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "shop_stock_lot_uses": {
+            "count": 4,
+            "sha256": "56972eb1e978f5c1abeda525990a3986042c5f0ba9726c5cba3d6ca5550fcfd3"
+        },
+        "shop_stock_lots": {
+            "count": 6,
+            "sha256": "6b480e417f88c62f13a17d009de86dcd0759caba5bad1317c6638f9d098a2b92"
+        },
+        "shop_stock_movements": {
+            "count": 15,
+            "sha256": "922d0f738fd35b98d03f715e70dd2faff35e3f191eee27739887ecfee57a34d5"
+        },
+        "shop_stock_policy": {
+            "count": 1,
+            "sha256": "5b8f8af64df3641959dcad05dea89049ae08c5f2a361e364e7f24528373a9ffd"
+        },
+        "shop_stock_reservations": {
+            "count": 4,
+            "sha256": "eca4f752462d094e12b9ed3c64f528ab0a757faf01f3b2a512d580e6530acc10"
+        },
+        "staff_user_positions": {
+            "count": 48,
+            "sha256": "65d312be51784766c66b38a23c80ad5caa84949aa555993b103ee4ff3d7fa5ba"
+        }
+    },
+    "technical_lock_note": "accounting_ledger_mutex revisions intentionally change on accepted opening\/replay; excluded only from the stock\/financial domain comparison, retained in the read-only comparison.",
+    "production_mutations": false,
+    "external_sends": 0,
+    "password_and_T07": "SKIPPED"
+}

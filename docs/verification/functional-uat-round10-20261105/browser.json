@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "browser": "Chrome connected profile",
+  "local_actor": "round10-operator-R10-bda0e3",
+  "position": "order_operator",
+  "superadmin": false,
+  "before": {
+    "requested_order": 5,
+    "actual_other_order_case": 5,
+    "wrong_order_issue_selectable": 12
+  },
+  "after": {
+    "order_a_case_count": 4,
+    "other_order_case_visible": false,
+    "order_c": 7,
+    "case_count": 128,
+    "pages": [
+      "Nalezeno: 128 · strana 2 z 6",
+      "Nalezeno: 128 · strana 3 z 6",
+      "Nalezeno: 128 · strana 4 z 6",
+      "Nalezeno: 128 · strana 5 z 6",
+      "Nalezeno: 128 · strana 6 z 6"
+    ],
+    "last_page": 6,
+    "oldest_request": "R10-bda0e3 C-000",
+    "oldest_visible": true
+  },
+  "actions": [
+    "Actual fulfillment -> return link reproduced wrong order before fix",
+    "Reload final source: correct order banner and scoped cases",
+    "Actual fulfillment C -> return link retained context",
+    "Five real Next clicks reached all six pages and oldest case"
+  ],
+  "writes_in_browser": false,
+  "production_uat": "NOT RUN: local wave only",
+  "password_and_T07": "SKIPPED"
+}

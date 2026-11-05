@@ -1,0 +1,9 @@
+<?php
+require __DIR__.'/prefix.php';
+$snapshot=[];
+foreach($pdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN)as$table){
+ if(!preg_match('~^(?:shop_(?:return|stock|fulfillment|delivery)|payments$|accounting_|financial_decisions$|club_roster_members$|family_weekly_|staff_user_positions$)~',$table))continue;
+ $rows=$pdo->query('SELECT * FROM `'.$table.'` ORDER BY 1')->fetchAll();$snapshot[$table]=['count'=>count($rows),'sha256'=>hash('sha256',json_encode($rows,JSON_THROW_ON_ERROR))];
+}
+if(($argv[1]??'')==='before'){file_put_contents(__DIR__.'/browser-state-before.json',json_encode($snapshot,JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR));echo 'Baseline: '.count($snapshot).' tables',"\n";}
+else{$before=json_decode((string)file_get_contents(__DIR__.'/browser-state-before.json'),true,512,JSON_THROW_ON_ERROR);$ok=$before===$snapshot;file_put_contents(__DIR__.'/browser-persistence.json',json_encode(['status'=>$ok?'PASS':'FAIL','tables'=>count($snapshot),'before'=>$before,'after'=>$snapshot],JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR));echo $ok?'PASS: '.count($snapshot).' tables unchanged':'FAIL',"\n";exit($ok?0:1);}

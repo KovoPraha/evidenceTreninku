@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "initial_regression": {
+    "tests": 4,
+    "assertions": 14,
+    "failures": 4,
+    "errors": 0,
+    "skipped": 0
+  },
+  "final_targeted": {
+    "tests": 47,
+    "assertions": 617,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "final_page_regression": {
+    "tests": 5,
+    "assertions": 65,
+    "failures": 0
+  },
+  "full_local_before_additional_post_regression": {
+    "tests": 2001,
+    "assertions": 38666,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "final_full_suite_note": "The additional valid-CSRF cross-order dispatch test passed in the final targeted suite; PR CI evaluates the complete final head.",
+  "returns_http_before": 33,
+  "returns_http_after": 33,
+  "context_checks": 38,
+  "context_http_requests": 30,
+  "mariadb_returns_race": 19,
+  "mariadb_fulfillment_race": 6,
+  "read_only_browser_tables_unchanged": 40,
+  "phpstan": "PASS with isolated cache; explicit PDO bootstrap guard added and obsolete undefined-PDO baseline removed",
+  "style": "PASS",
+  "composer_validate": "PASS",
+  "syntax": "PASS",
+  "git_diff_check": "PASS",
+  "production_mutations": false,
+  "production_uat": "NOT RUN",
+  "external_sends": 0,
+  "password_and_T07": "SKIPPED"
+}
