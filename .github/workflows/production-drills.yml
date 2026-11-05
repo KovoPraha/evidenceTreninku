@@ -34,6 +34,9 @@ on:
       tv_uat_public_key:
         description: 'Pouze TV prepare: base64 verejneho RSA-4096 SPKI klice; nikdy soukromy klic'
         type: string
+      tv_uat_keep_program_id:
+        description: 'Pouze TV cleanup: explicitni ID vlastniho zverejneneho programu, ktery ma zustat pro fyzickou TV; jinak prazdne'
+        type: string
 
 permissions:
   contents: read
@@ -401,6 +404,7 @@ jobs:
           putenv('TV_UAT_CONFIRM=OVERIT-TV-PRODUKCI');
           putenv('TV_UAT_RUN_ID=$GITHUB_RUN_ID');
           putenv('TV_UAT_ACTION=$TV_ACTION');
+          putenv('TV_UAT_KEEP_PROGRAM_ID=' . (\$argv[1] ?? '0'));
           require __DIR__ . '/tv-production-uat.php';
           try { exit(tvUatMain()); } catch (Throwable \$e) { fwrite(STDERR, 'TV UAT operation failed: ' . get_class(\$e) . PHP_EOL); exit(1); }
           EOF
@@ -416,17 +420,20 @@ jobs:
         if: inputs.operace == 'overit-tv-programy' && inputs.tv_uat_phase == 'cleanup'
         env:
           TV_UAT_TARGET_RUN: ${{ inputs.tv_uat_run_id }}
+          TV_UAT_KEEP_PROGRAM_ID: ${{ inputs.tv_uat_keep_program_id }}
         run: |
           set -euo pipefail
           test "$APP_HOST" = 'kis.kovopraha.cz'
           test "$REMOTE_DIR" = 'kis.kovopraha.cz'
           [[ "$TV_UAT_TARGET_RUN" =~ ^[0-9]{8,20}$ ]]
+          TV_UAT_KEEP_PROGRAM_ID="${TV_UAT_KEEP_PROGRAM_ID:-0}"
+          [[ "$TV_UAT_KEEP_PROGRAM_ID" =~ ^(0|[1-9][0-9]{0,9})$ ]]
           TV_OUTPUT="$GITHUB_WORKSPACE/output/playwright/tv-production-$GITHUB_RUN_ID"
           mkdir -p "$TV_OUTPUT"
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
           TV_REMOTE="$DEPLOY_BASE/tv-uat-$TV_UAT_TARGET_RUN"
-          production_retry_capture "${SSH[@]}" "php '$TV_REMOTE/run-cleanup.php'" > "$TV_OUTPUT/cleanup.json"
+          production_retry_capture "${SSH[@]}" "php '$TV_REMOTE/run-cleanup.php' '$TV_UAT_KEEP_PROGRAM_ID'" > "$TV_OUTPUT/cleanup.json"
           jq -e '.ok == true' "$TV_OUTPUT/cleanup.json" >/dev/null
           production_retry "${SSH[@]}" "rm -f -- '$TV_REMOTE/credentials.json' '$TV_REMOTE/tv-production-uat.php' '$TV_REMOTE/run-prepare.php' '$TV_REMOTE/run-cleanup.php'; rmdir '$TV_REMOTE'"
 

@@ -78,6 +78,42 @@ final class TvProductionUatTest extends TestCase
         self::assertTrue(\tvUatCleanup($this->pdo, '41999999999', $this->state)['ok']);
     }
 
+    public function testExplicitPublishedDemoRemainsPublicWhileIdentityIsRevoked(): void
+    {
+        $prepared = \tvUatPrepare($this->pdo, '41999999999', $this->state);
+        $id = $prepared['actor_id'];
+        $program = \tvCreateProgram($this->pdo, 'TEST TV 41999999999 – ukázka', $id);
+        \tvMutateProgram($this->pdo, $program, 1, $id, 'publish', ['name' => 'TEST TV 41999999999 – ukázka', 'slides' => []]);
+        $other = \tvCreateProgram($this->pdo, 'TEST TV 41999999999 – koncept', $id);
+        $before = \tvPublicProgram($this->pdo, $program);
+        $report = \tvUatCleanup($this->pdo, '41999999999', $this->state, $program);
+        self::assertTrue($report['ok']);
+        self::assertSame($program, $report['retained_program_id']);
+        self::assertFalse($report['programs_archived']);
+        self::assertSame($before, \tvPublicProgram($this->pdo, $program));
+        self::assertSame(1, (int)\tvProgram($this->pdo, $other)['archived']);
+        self::assertSame(0, (int)$this->pdo->query('SELECT aktivni FROM treneri WHERE id=' . (int)$id)->fetchColumn());
+        self::assertSame(0, (int)$this->pdo->query('SELECT COUNT(*) FROM staff_user_positions')->fetchColumn());
+    }
+
+    public function testCannotRetainAnotherActorsProgramOrAnUnpublishedDraft(): void
+    {
+        $other = \tvCreateProgram($this->pdo, 'Existing public program', 1);
+        \tvMutateProgram($this->pdo, $other, 1, 1, 'publish', ['name' => 'Existing public program', 'slides' => []]);
+        $prepared = \tvUatPrepare($this->pdo, '41999999999', $this->state);
+        $draft = \tvCreateProgram($this->pdo, 'TEST TV 41999999999', $prepared['actor_id']);
+        $before = \tvUatProgramFingerprints($this->pdo);
+        foreach ([$other, $draft, -1] as $invalidId) {
+            try {
+                \tvUatCleanup($this->pdo, '41999999999', $this->state, $invalidId);
+                self::fail('Invalid retention must fail.');
+            } catch (\RuntimeException $exception) {
+                self::assertSame($before, \tvUatProgramFingerprints($this->pdo));
+                self::assertSame(1, (int)$this->pdo->query('SELECT aktivni FROM treneri WHERE id=' . (int)$prepared['actor_id'])->fetchColumn());
+            }
+        }
+    }
+
     public function testCollisionNeverResetsExistingCredentials(): void
     {
         $this->pdo->exec("UPDATE treneri SET email='tv-uat-41999999999@example.invalid' WHERE id=1");
