@@ -1,0 +1,36 @@
+{
+  "run_id": 41987993980,
+  "source_sha": "bc627ab12c22ba16feb0ca6cba3340fb87de31a9",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-11-05_073529_c66ea14d.sql.gz",
+    "manifest": "evidence_2026-11-05_073529_c66ea14d.manifest.json",
+    "sha256": "3a45fc043fc25b8d9220fdc43a103dabb74431dce45d8143ee27e19f0cba3bbd",
+    "tables": 347,
+    "triggers": 2,
+    "compressed_bytes": 6257659
+  },
+  "tests": {
+    "tests": 2009,
+    "assertions": 38764,
+    "skipped": 0
+  },
+  "dependency_audit": "clean",
+  "migrations": {
+    "status": "current",
+    "pending": [],
+    "ledger_count": 150
+  },
+  "variable_symbols_unchanged": true,
+  "activation_log_lines": [
+    ">f.st...... shop_returns_admin.php",
+    ">f+++++++++ includes/shop_return_admin_read.php"
+  ],
+  "evidence_limit": "Exact live release metadata plus activation log, not a full live file hash inventory."
+}
