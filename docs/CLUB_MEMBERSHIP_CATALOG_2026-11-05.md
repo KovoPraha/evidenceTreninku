@@ -37,5 +37,7 @@ Zadání vlastníka 5. 11. 2026. Navazuje na nasazené PR #314.
 
 ## Stav
 
-Rozpracováno v izolované větvi `codex/club-membership-catalog-20261105`.
-Žádné nové produkční údaje ani aktivace tímto plánem zatím nevznikly.
+Dokončeno, sloučeno a nasazeno v PR #316. Produkční koncept a tři soupisky
+jsou založené; vydávání a prodej čekají na skutečné údaje vystavovatele,
+schválení tarifu a oddělenou aktivaci. Důkazy a hranice jsou v
+[protokolu vydání](verification/membership-catalog-release-20261105/RESULTS.md).

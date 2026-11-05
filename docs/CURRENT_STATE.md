@@ -1,6 +1,13 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení měsíčního členství a zastupování trenérů (PR #314).
+Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení klubových tarifů a přípravě Závodního týmu (PR #316).
+
+- **[Klubové tarify #316 nasazené](verification/membership-catalog-release-20261105/RESULTS.md):** více disciplín za jednu cenu, měsíční/roční interval a formulář fakturačních údajů.
+  Založen produkční **koncept Závodní tým / 2200 Kč měsíčně**, varianta 951, kategorie Členství v klubu;
+  skupina 86 se soupiskami MTB 87 / Silnice 88 / Dráha 89. Přihlášený zápis a kontrola UI PASS.
+  **Prodej zatím neaktivovaný:** chybí skutečné údaje a schválení vystavovatele, tarifu a publikace.
+  Linux 2064/39368, obě MariaDB matice a všech 11 kontrol PASS. Live `ad09174e`, deploy `42076138376` SUCCESS.
+  Stávající platby/VS a Fio/SumUp zachované, nová automatizace a pošta se nezapínaly.
 
 - **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** karta pro 223 aktivních produktů / nové objednávky, 8 starých plateb zachováno.
   **[Fio hostingový plán ověřený](verification/fio-followup-20261105/RESULTS.md):** dva skutečné importy, všech 45 pohybů bez shodného VS. Žádné vynucené přiřazení; skutečná placená úhrada stále nedoložená.
