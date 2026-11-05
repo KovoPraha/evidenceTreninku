@@ -39,8 +39,8 @@ function kisProductionMembershipsMergeConfig(string $config, string $block, bool
     if (!is_string($without)) {
         throw new RuntimeException('Legacy Memberships configuration could not be guarded.');
     }
-    $opening = '/\A(<\?php(?:\s*declare\s*\(\s*strict_types\s*=\s*1\s*\)\s*;)?)/';
-    $merged = preg_replace($opening, "$1\n\n".$block, $without, 1, $count);
+    $opening = '/\A(<\?php(?:\s*declare\s*\(\s*strict_types\s*=\s*1\s*\)\s*;)?)[\r\n]*/';
+    $merged = preg_replace($opening, "$1\n\n".$block."\n", $without, 1, $count);
     if (!is_string($merged) || $count !== 1) {
         throw new RuntimeException('Managed Memberships block could not be inserted safely.');
     }
