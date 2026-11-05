@@ -12,6 +12,38 @@ require_once dirname(__DIR__, 2).'/bin/configure-production-payment-policies.php
 
 final class ProductionPaymentPoliciesTest extends TestCase
 {
+    public function testExistingFinanceOperatorCanApplyWithoutSuperadminGrant(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("DELETE FROM staff_superadmins; INSERT INTO staff_user_positions VALUES(7,'finance_manager')");
+        $preview = \kisPaymentPolicyInventory($pdo, 'owner@example.invalid');
+        $result = \kisPaymentPolicyApply($pdo, 'owner@example.invalid', $preview['manifest_sha256'], 2, 'LOCAL explicit card approval', true);
+        self::assertSame(2, $result['changed']);
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM staff_superadmins')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM staff_user_positions')->fetchColumn());
+    }
+
+    public function testOtherWorkspacesAndInactiveFinanceOperatorAreRejected(): void
+    {
+        foreach (['coach', 'catalog_manager', 'inactive_finance'] as $case) {
+            $pdo = $this->database();
+            $pdo->exec('DELETE FROM staff_superadmins');
+            $q = $pdo->prepare('INSERT INTO staff_user_positions VALUES(7,?)');
+            $q->execute([$case === 'inactive_finance' ? 'finance_manager' : $case]);
+            if ($case === 'inactive_finance') {
+                $pdo->exec('UPDATE treneri SET aktivni=0');
+            }
+            $error = null;
+            try {
+                \kisPaymentPolicyInventory($pdo, 'owner@example.invalid');
+            } catch (\RuntimeException $caught) {
+                $error = $caught;
+            }
+            self::assertInstanceOf(\RuntimeException::class, $error, $case);
+            self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_catalog_admin_events')->fetchColumn());
+        }
+    }
+
     public function testOnlyApprovedActiveProductsChangeAndReplayKeepsAuditAndOldPayments(): void
     {
         $pdo = $this->database();
@@ -84,6 +116,7 @@ final class ProductionPaymentPoliciesTest extends TestCase
         $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
         $pdo->exec('CREATE TABLE treneri(id INTEGER PRIMARY KEY,email TEXT,aktivni INT); CREATE TABLE staff_superadmins(trainer_id INT);'
             ."INSERT INTO treneri VALUES(7,'owner@example.invalid',1); INSERT INTO staff_superadmins VALUES(7)");
+        $pdo->exec('CREATE TABLE staff_user_positions(trainer_id INT,position_code TEXT)');
         $pdo->exec('CREATE TABLE shop_products(id INTEGER PRIMARY KEY,name TEXT,offer_type TEXT,payment_method_policy TEXT,'
             .'catalog_status TEXT,price_minor INT,updated_at TEXT)');
         $pdo->exec("INSERT INTO shop_products VALUES(1,'LOCAL A','goods','bank_transfer','active',100,NULL),"

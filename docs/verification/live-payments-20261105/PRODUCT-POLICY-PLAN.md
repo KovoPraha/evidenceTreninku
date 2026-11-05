@@ -6,8 +6,8 @@ objednávky. Vlastník následně výslovně zvolil **povolit kartu všem 223 ak
 produktům pro nové objednávky**. Dosavadní uložené platební režimy se nepřepisují.
 
 Připravený chráněný nástroj umí nejprve jen čtecí preview. Vyžaduje existující
-jednoznačnou aktivní superadmin identitu, nic nezakládá ani nepovyšuje.
-Po případném schválení použije přesný počet a SHA-256 otisk cílových produktů.
+jednoznačnou aktivní identitu s existující pozicí Hospodář a platby nebo
+superadmina, nic nezakládá ani nepovyšuje. Použije přesný počet a SHA-256 otisk cílových produktů.
 Cena, zveřejnění, neaktivní produkty a uložené platební režimy dosavadních plateb
 se nemění. Jednotlivé změny používají stávající kanonickou službu a její audit.
 
@@ -20,3 +20,10 @@ disable SumUp; uložené starší objednávky tím neztrácejí svůj bankovní 
 Offline testy ověřují vymezený rozsah, nezměněné ceny a staré platby,
 idempotenci, odmítnutí změněného otisku/počtu/oprávnění a skutečné přerušení
 uprostřed dávky s následným pokračováním bez duplicitního auditu.
+
+První produkční preview 42009711338 skončilo bez zápisu, protože původní
+pomocník vyžadoval výhradně superadmina. Skutečná stránka nastavení plateb
+patří pozici finance_manager (Hospodář a platby). Pomocník nyní kontroluje
+stejné existující oprávnění; trenér, samotný správce katalogu a neaktivní
+hospodář zůstávají odmítnutí. Regresní test nejprve prokázal původní odmítnutí
+oprávněného hospodáře. Nemění se uživatelské role ani runtime aplikace.

@@ -9,7 +9,7 @@ on:
         type: choice
         options: [preview, apply]
       operator_email:
-        description: 'E-mail existujícího aktivního superadmina pro audit; žádné nové oprávnění se nevytváří'
+        description: 'E-mail aktivního hospodáře nebo superadmina pro audit; žádné nové oprávnění se nevytváří'
         required: true
         type: string
       manifest_sha256:

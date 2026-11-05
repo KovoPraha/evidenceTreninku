@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/** An active owner approves an exact set; policy is excluded from the digest to allow safe replay. */
+/** An active finance operator approves an exact set; policy is excluded from the digest to allow safe replay. */
 function kisPaymentPolicyInventory(PDO $pdo, string $email): array
 {
     if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
@@ -15,10 +15,12 @@ function kisPaymentPolicyInventory(PDO $pdo, string $email): array
         throw new RuntimeException('The operator must be one active staff identity.');
     }
     $actorId = (int)$actors[0];
-    $q = $pdo->prepare('SELECT 1 FROM staff_superadmins WHERE trainer_id=?');
-    $q->execute([$actorId]);
+    // The payment-methods page belongs to finance_manager; superadmin may use every workspace.
+    $q = $pdo->prepare("SELECT 1 FROM staff_superadmins WHERE trainer_id=? UNION ALL "
+        ."SELECT 1 FROM staff_user_positions WHERE trainer_id=? AND position_code='finance_manager'");
+    $q->execute([$actorId, $actorId]);
     if (!$q->fetchColumn()) {
-        throw new RuntimeException('This production batch requires an existing superadmin.');
+        throw new RuntimeException('This production batch requires existing finance or superadmin permission.');
     }
     $products = $pdo->query("SELECT id,name,offer_type,payment_method_policy FROM shop_products WHERE catalog_status='active' ORDER BY id")
         ->fetchAll(PDO::FETCH_ASSOC);
