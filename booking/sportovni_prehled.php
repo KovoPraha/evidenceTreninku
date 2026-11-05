@@ -1645,6 +1645,7 @@ endforeach;
     ?>
 
                 <h2 class="h6">Členské předpisy</h2>
+                <p><a href="mesicni_clenstvi.php">Měsíční členství, doklady a trvalé platby</a></p>
                 <?php
 if ($profile['member_charges'] === []):
 

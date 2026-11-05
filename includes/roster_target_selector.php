@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/roster_hierarchy.php';
@@ -11,7 +12,7 @@ require_once __DIR__ . '/coach_scope.php';
  *
  * @param list<int> $selectedIds
  */
-function rosterTargetSelectorHtml(PDO $pdo, string $date, array $selectedIds = [], string $fieldName = 'team_ids[]'): string
+function rosterTargetSelectorHtml(PDO $pdo, string $date, array $selectedIds = [], string $fieldName = 'team_ids[]', bool $training = false): string
 {
     static $instance = 0;
     ++$instance;
@@ -21,20 +22,34 @@ function rosterTargetSelectorHtml(PDO $pdo, string $date, array $selectedIds = [
         return '<div class="alert alert-warning mb-0">Nejprve zadejte platné datum tréninku nebo akce.</div>';
     }
     $selected = array_fill_keys(array_map('intval', $selectedIds), true);
-    $scopeAllowed=null;
-    if(staffActivePositionIs('coach')){
-        $scopeAllowed=[];
-        foreach(array_unique(array_merge(array_column($rows,'id'),$selectedIds)) as $id){
-            try{coachScopeAssertTeams($pdo,[(int)$id],$date);$scopeAllowed[(int)$id]=true;}catch(RuntimeException){}
+    $scopeAllowed = null;
+    if ($training) {
+        if (!coachTrainingActorAllowed($pdo)) {
+            $rows = [];
+            $selected = [];
         }
-        $rows=array_values(array_filter($rows,static fn(array $row):bool=>isset($scopeAllowed[(int)$row['id']])));
-        $selected=array_intersect_key($selected,$scopeAllowed);
+    } elseif (staffActivePositionIs('coach')) {
+        $scopeAllowed = [];
+        foreach (array_unique(array_merge(array_column($rows, 'id'), $selectedIds)) as $id) {
+            try {
+                coachScopeAssertTeams($pdo, [(int)$id], $date);
+                $scopeAllowed[(int)$id] = true;
+            } catch (RuntimeException) {
+            }
+        }
+        $rows = array_values(array_filter($rows, static fn (array $row): bool => isset($scopeAllowed[(int)$row['id']])));
+        $selected = array_intersect_key($selected, $scopeAllowed);
     }
     $nameIds = [];
-    foreach ($rows as $row) $nameIds[(string)$row['name']][(int)$row['id']] = true;
+    foreach ($rows as $row) {
+        $nameIds[(string)$row['name']][(int)$row['id']] = true;
+    }
     $labelFor = static function (int $id, string $name) use ($nameIds): string {
         return count($nameIds[$name] ?? []) > 1 ? $name . ' (#' . $id . ')' : $name;
     };
+    if ($training) {
+        return rosterTrainingTargetSelectorHtml($pdo, $date, $rows, $selected, $fieldName, $instance);
+    }
     $groups = [];
     $unassigned = [];
     foreach ($rows as $row) {
@@ -52,8 +67,10 @@ function rosterTargetSelectorHtml(PDO $pdo, string $date, array $selectedIds = [
         }
     }
     $visibleIds = [];
-    foreach ($rows as $row) $visibleIds[(int)$row['id']] = true;
-    $escape = static fn(string $value): string => htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    foreach ($rows as $row) {
+        $visibleIds[(int)$row['id']] = true;
+    }
+    $escape = static fn (string $value): string => htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $name = $escape($fieldName);
     $html = '<div class="roster-target-selector border rounded p-2 bg-white" role="group" aria-label="Skupiny a soupisky">';
     foreach ($groups as $groupId => $group) {
@@ -62,13 +79,14 @@ function rosterTargetSelectorHtml(PDO $pdo, string $date, array $selectedIds = [
             . $escape($labelFor($groupId, $group['name'])) . '</legend>';
         $html .= '<div class="form-check"><input class="form-check-input" type="checkbox" name="' . $name
             . '" value="' . $groupId . '" id="' . $inputId . '"' . (isset($selected[$groupId]) ? ' checked' : '')
-            . ($scopeAllowed!==null&&!isset($scopeAllowed[$groupId]) ? ' disabled' : '')
+            . ($scopeAllowed !== null && !isset($scopeAllowed[$groupId]) ? ' disabled' : '')
             . '><label class="form-check-label fw-semibold" for="' . $inputId . '">Celá skupina</label></div>';
         foreach ($group['children'] as $childId => $childName) {
             $childInputId = 'roster-target-' . $instance . '-' . $groupId . '-' . $childId;
             $html .= '<div class="form-check ms-3"><input class="form-check-input" type="checkbox" name="' . $name
                 . '" value="' . $childId . '" id="' . $childInputId . '"' . (isset($selected[$childId]) ? ' checked' : '')
-                . '><label class="form-check-label" for="' . $childInputId . '">' . $escape($labelFor($childId, $childName)) . '</label></div>';
+                . '><label class="form-check-label" for="' . $childInputId . '">' . $escape($labelFor($childId, $childName))
+    . '</label></div>';
         }
         $html .= '</fieldset>';
     }
@@ -78,7 +96,8 @@ function rosterTargetSelectorHtml(PDO $pdo, string $date, array $selectedIds = [
             $inputId = 'roster-target-' . $instance . '-unassigned-' . $id;
             $html .= '<div class="form-check"><input class="form-check-input" type="checkbox" name="' . $name
                 . '" value="' . $id . '" id="' . $inputId . '"' . (isset($selected[$id]) ? ' checked' : '')
-                . '><label class="form-check-label" for="' . $inputId . '">' . $escape($labelFor($id, $label)) . '</label></div>';
+                . '><label class="form-check-label" for="' . $inputId . '">' . $escape($labelFor($id, $label))
+    . '</label></div>';
         }
         $html .= '</fieldset>';
     }
@@ -106,10 +125,61 @@ function rosterTargetSelectorHtml(PDO $pdo, string $date, array $selectedIds = [
     return $html . '</div>';
 }
 
+/** One checkbox per target; assigned teams come first while every active target stays available. */
+function rosterTrainingTargetSelectorHtml(PDO $pdo, string $date, array $rows, array $selected, string $fieldName, int $instance): string
+{
+    $preferred = coachTrainingPreferredTeams($pdo, $date);
+    $targets = [];
+    foreach ($rows as $row) {
+        $id = (int)$row['id'];
+        $targets[$id] ??= ['name' => (string)$row['name'], 'group' => !empty($row['is_group']), 'parents' => []];
+        if (empty($row['is_group']) && !empty($row['group_name'])) {
+            $targets[$id]['parents'][(string)$row['group_name']] = true;
+        }
+    }
+    $labelCounts = [];
+    foreach ($targets as &$target) {
+        $parent = implode(' / ', array_keys($target['parents']));
+        $target['label'] = ($parent !== '' ? $parent . ' → ' : '') . $target['name']
+            . ($target['group'] ? ' (celá skupina)' : '');
+        $labelCounts[$target['label']] = ($labelCounts[$target['label']] ?? 0) + 1;
+    }
+    unset($target);
+    foreach ($targets as $id => &$target) {
+        if ($labelCounts[$target['label']] > 1) {
+            $target['label'] .= ' (#' . $id . ')';
+        }
+    }
+    unset($target);
+    uasort($targets, static fn (array $a, array $b): int => strnatcasecmp($a['label'], $b['label']));
+    $escape = static fn (string $v): string => htmlspecialchars($v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $html = '<div class="roster-target-selector border rounded p-2 bg-white" role="group" aria-label="Skupiny a soupisky">';
+    foreach ([true => 'Moje skupiny a soupisky', false => 'Další skupiny a soupisky'] as $own => $heading) {
+        $section = '';
+        foreach ($targets as $id => $target) {
+            if (isset($preferred[$id]) !== (bool)$own) {
+                continue;
+            }
+            $input = 'training-roster-' . $instance . '-' . $id;
+            $section .= '<div class="form-check"><input class="form-check-input" type="checkbox" name="' . $escape($fieldName)
+                . '" value="' . $id . '" id="' . $input . '"' . (isset($selected[$id]) ? ' checked' : '') . '>'
+                . '<label class="form-check-label" for="' . $input . '">' . $escape($target['label']) . '</label></div>';
+        }
+        if ($section !== '') {
+            $html .= '<fieldset class="mb-2"><legend class="float-none w-auto fs-6 fw-semibold">' . $heading . '</legend>'
+    . $section . '</fieldset>';
+        }
+    }
+    if ($targets === []) {
+        $html .= '<span class="text-muted small">Pro vybrané datum nejsou dostupné skupiny ani soupisky.</span>';
+    }
+    return $html . '<div class="form-text">Vlastní přiřazení určuje pořadí. Pro zastupování můžete vybrat i ostatní soupisky.</div></div>';
+}
+
 /** HTML options for a single group or roster filter. */
 function rosterTargetFilterOptionsHtml(PDO $pdo, string $date, int $selectedId = 0): string
 {
-    $escape = static fn(string $value): string => htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $escape = static fn (string $value): string => htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $html = '<option value="">— všechny skupiny a soupisky —</option>';
     $seen = [];
     try {
@@ -118,20 +188,30 @@ function rosterTargetFilterOptionsHtml(PDO $pdo, string $date, int $selectedId =
         return $html;
     }
     $nameIds = [];
-    foreach ($rows as $row) $nameIds[(string)$row['name']][(int)$row['id']] = true;
+    foreach ($rows as $row) {
+        $nameIds[(string)$row['name']][(int)$row['id']] = true;
+    }
     foreach ($rows as $row) {
         $id = (int)$row['id'];
-        if (isset($seen[$id])) continue;
+        if (isset($seen[$id])) {
+            continue;
+        }
         $seen[$id] = true;
         $label = !empty($row['is_group']) ? 'Skupina: ' . (string)$row['name'] : 'Soupiska: ' . (string)$row['name'];
-        if (count($nameIds[(string)$row['name']]) > 1) $label .= ' (#' . $id . ')';
-        $html .= '<option value="' . $id . '"' . ($selectedId === $id ? ' selected' : '') . '>' . $escape($label) . '</option>';
+        if (count($nameIds[(string)$row['name']]) > 1) {
+            $label .= ' (#' . $id . ')';
+        }
+        $html .= '<option value="' . $id . '"' . ($selectedId === $id ? ' selected' : '') . '>' . $escape($label)
+    . '</option>';
     }
     if ($selectedId > 0 && !isset($seen[$selectedId])) {
         $stmt = $pdo->prepare('SELECT name FROM club_teams WHERE id=?');
         $stmt->execute([$selectedId]);
         $name = $stmt->fetchColumn();
-        if (is_string($name)) $html .= '<option value="' . $selectedId . '" selected>Historický cíl: ' . $escape($name) . ' (#' . $selectedId . ')</option>';
+        if (is_string($name)) {
+            $html .= '<option value="' . $selectedId . '" selected>Historický cíl: ' . $escape($name) . ' (#' . $selectedId
+    . ')</option>';
+        }
     }
     return $html;
 }

@@ -41,7 +41,8 @@ function shopStorefrontReadRows(
     $sortOrder = isset($columns['sort_order']) ? 'p.sort_order' : '0';
     $origin = isset($columns['origin']) ? 'p.origin' : 'NULL';
     $externalKey = isset($columns['external_product_key']) ? 'p.external_product_key' : 'NULL';
-    $paymentPolicy = isset($columns['payment_method_policy']) ? 'p.payment_method_policy' : "'" . SHOP_PAYMENT_POLICY_BANK_ONLY . "'";
+    $paymentPolicy = isset($columns['payment_method_policy']) ? 'p.payment_method_policy' : "'" . SHOP_PAYMENT_POLICY_BANK_ONLY
+    . "'";
     $sql = 'SELECT p.id AS product_id,p.offer_type,' . $origin . ' AS origin,' . $externalKey . ' AS external_product_key,'
         . 'p.catalog_status AS product_status,'
         . ($navigation ? '' : $paymentPolicy . ' AS payment_method_policy,')
@@ -60,9 +61,15 @@ function shopStorefrontReadRows(
     $statement = $pdo->prepare($sql);
     $statement->execute($productId === null ? [] : [$productId]);
     $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+    $monthlyTariffs = [];
+    if (monthlyMembershipTable($pdo, 'monthly_membership_tariffs')) {
+        foreach ($pdo->query('SELECT variant_id,id,status,amount_minor FROM monthly_membership_tariffs')->fetchAll(PDO::FETCH_ASSOC) as $tariff) {
+            $monthlyTariffs[(int)$tariff['variant_id']] = $tariff;
+        }
+    }
     $programVariantIds = [];
     foreach ($rows as $row) {
-        if ($row['offer_type'] === 'program' && shopVariantIsStructurallySaleable($row)) {
+        if ($row['offer_type'] === 'program' && !isset($monthlyTariffs[(int)$row['variant_id']]) && shopVariantIsStructurallySaleable($row)) {
             $programVariantIds[] = (int) $row['variant_id'];
         }
     }
@@ -74,7 +81,13 @@ function shopStorefrontReadRows(
         if (!shopVariantIsStructurallySaleable($row)) {
             continue;
         }
-        if ($row['offer_type'] === 'goods') {
+        $monthlyTariff = $monthlyTariffs[(int)$row['variant_id']] ?? null;
+        if ($monthlyTariff !== null) {
+            if (!monthlyMembershipSalesEnabled() || $monthlyTariff['status'] !== 'active' || (int)$monthlyTariff['amount_minor'] !== (int)$row['amount_minor']) {
+                continue;
+            }
+            $row['monthly_tariff_id'] = (int)$monthlyTariff['id'];
+        } elseif ($row['offer_type'] === 'goods') {
             $inventoryAvailable ??= shopInventoryTable($pdo);
             if ($inventoryAvailable && $row['stock_quantity_decimal'] === null) {
                 continue;

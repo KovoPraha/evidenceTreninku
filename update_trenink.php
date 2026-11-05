@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__.'/includes/coach_scope.php';
 require_once __DIR__ . '/includes/session_security.php';
 app_session_start();
@@ -21,14 +22,19 @@ if (!csrf_verify($_POST['csrf_token'] ?? '')) {
     die('Neplatný CSRF token.');
 }
 
-function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s)
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 
 
 // --------------------
 // Vstupy
 // --------------------
 $treninkId = $_POST['id'] ?? null;
-if (!$treninkId || !ctype_digit((string)$treninkId)) die('Neplatn� ID tr�ninku.');
+if (!$treninkId || !ctype_digit((string)$treninkId)) {
+    die('Neplatn� ID tr�ninku.');
+}
 $treninkId = (int)$treninkId;
 coachScopeRequireTraining($pdo, $treninkId);
 
@@ -63,15 +69,26 @@ try {
 if (!$isAdmin) {
     $stmtAuth = $pdo->prepare('SELECT 1 FROM trenink_trener WHERE trenink_id = :tid AND trener_id = :uid LIMIT 1');
     $stmtAuth->execute([':tid' => $treninkId, ':uid' => $currentTrener]);
-    if (!$stmtAuth->fetchColumn()) die('Nem�te opr�vn�n� tento tr�nink upravit.');
+    if (!$stmtAuth->fetchColumn()) {
+        die('Nem�te opr�vn�n� tento tr�nink upravit.');
+    }
 }
 
-try { coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows)); coachScopeAssertTeams($pdo, $teamIds); }
-catch (RuntimeException $e) { http_response_code(403); exit($e->getMessage()); }
+try {
+    coachTrainingAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
+    coachTrainingAssertTeams($pdo, $teamIds);
+} catch (RuntimeException $e) {
+    http_response_code(403);
+    exit($e->getMessage());
+}
 $fileMutations = fileMutationBegin();
 try {
-    if ($datum === '') throw new Exception('Chyb� datum.');
-    if ($delka < 0) throw new Exception('Neplatn� d�lka.');
+    if ($datum === '') {
+        throw new Exception('Chyb� datum.');
+    }
+    if ($delka < 0) {
+        throw new Exception('Neplatn� d�lka.');
+    }
 
     // Validace: m��en� mus� m� t vybran�ho sportovce
     foreach ($mereniRows as $i => $row) {
@@ -93,7 +110,9 @@ try {
     $dbImg = trainingEditStoredImages($pdo, $treninkId);
 
     $remove = $_POST['remove_obrazky'] ?? [];
-    if (!is_array($remove)) $remove = [];
+    if (!is_array($remove)) {
+        $remove = [];
+    }
     $remove = array_map('strval', $remove);
 
     $safeRel = function ($p): ?string {
@@ -104,8 +123,12 @@ try {
     // Zůstávající = DB obrázky mimo odebrané (a jen validní cesty)
     $existing = [];
     foreach ($dbImg as $p) {
-        if (in_array((string)$p, $remove, true)) continue;
-        if ($safeRel($p) !== null) $existing[] = (string)$p;
+        if (in_array((string)$p, $remove, true)) {
+            continue;
+        }
+        if ($safeRel($p) !== null) {
+            $existing[] = (string)$p;
+        }
     }
     // Odebrane soubory se retire az uvnitr DB transakce, aby je rollback vratil.
     $retireImagePaths = [];
@@ -113,18 +136,24 @@ try {
         $rel = $safeRel($p);
         if ($rel !== null) {
             $path = __DIR__ . '/' . $rel;
-            if (is_file($path)) $retireImagePaths[] = $path;
+            if (is_file($path)) {
+                $retireImagePaths[] = $path;
+            }
         }
     }
 
     $newPaths = [];
     if (!empty($_FILES['obrazky']['name'][0])) {
         $uploadDir = __DIR__ . '/nahrane_obrazky/';
-        if (!is_dir($uploadDir)) @mkdir($uploadDir, 0755, true);
+        if (!is_dir($uploadDir)) {
+            @mkdir($uploadDir, 0755, true);
+        }
 
         secureUploadAssertFileCount((array)$_FILES['obrazky']['name']);
         foreach ($_FILES['obrazky']['tmp_name'] as $i => $tmp) {
-            if (!isset($_FILES['obrazky']['error'][$i]) || $_FILES['obrazky']['error'][$i] !== UPLOAD_ERR_OK) continue;
+            if (!isset($_FILES['obrazky']['error'][$i]) || $_FILES['obrazky']['error'][$i] !== UPLOAD_ERR_OK) {
+                continue;
+            }
             $prepared = secureUploadPrepareImage((string)$tmp);
             $name = 'trenink_' . time() . '_' . bin2hex(random_bytes(8)) . '.jpg';
             $dest = $uploadDir . $name;
@@ -143,12 +172,14 @@ try {
     // --------------------
     // Ulo�en�
     // --------------------
-    coachScopeAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
-    coachScopeAssertTeams($pdo, $teamIds, $datum);
+    coachTrainingAssertPeople($pdo, coachScopeParticipantIds($ucastnici, $mereniRows));
+    coachTrainingAssertTeams($pdo, $teamIds, $datum);
     $oldDateStmt = $pdo->prepare('SELECT datum FROM treninky WHERE id=?');
     $oldDateStmt->execute([$treninkId]);
     $oldDate = $oldDateStmt->fetchColumn();
-    if ($oldDate === false) throw new RuntimeException('Trénink nebyl nalezen.');
+    if ($oldDate === false) {
+        throw new RuntimeException('Trénink nebyl nalezen.');
+    }
     $oldTeamIds = trainingRosterBridgeTrainingTeamIds($pdo, $treninkId);
     $plannedStmt = $pdo->prepare('SELECT 1 FROM planovane_treninky WHERE trenink_id=? LIMIT 1');
     $plannedStmt->execute([$treninkId]);
@@ -158,7 +189,9 @@ try {
     if ($fromPlan && ($oldTeamIds !== $teamIds || $oldDate !== $datum)) {
         throw new RuntimeException('Cíl nebo datum tréninku převzatého z plánu nelze změnit bez úpravy plánu a kontroly odpovědí.');
     }
-    if ($teamIds === [] && $oldTeamIds !== []) throw new RuntimeException('Vyberte skupinu nebo soupisku.');
+    if ($teamIds === [] && $oldTeamIds !== []) {
+        throw new RuntimeException('Vyberte skupinu nebo soupisku.');
+    }
     foreach ($retireImagePaths as $path) {
         fileMutationRetire($fileMutations, $path);
     }
@@ -205,17 +238,24 @@ try {
     }
 
     // skupina
-    if ($teamIds !== []) $pdo->prepare('DELETE FROM trenink_skupina WHERE trenink_id = ?')->execute([$treninkId]);
+    if ($teamIds !== []) {
+        $pdo->prepare('DELETE FROM trenink_skupina WHERE trenink_id = ?')->execute([$treninkId]);
+    }
     if ($skupinaId && ctype_digit((string)$skupinaId)) {
-        $pdo->prepare('INSERT INTO trenink_skupina (trenink_id, skupina_id) VALUES (?, ?)')->execute([$treninkId, (int)$skupinaId]);
+        $pdo->prepare('INSERT INTO trenink_skupina (trenink_id, skupina_id) VALUES (?, ?)')->execute([$treninkId
+    , (int)$skupinaId]);
     }
 
     // podskupiny
-    if ($teamIds !== []) $pdo->prepare('DELETE FROM trenink_podskupina WHERE trenink_id = ?')->execute([$treninkId]);
+    if ($teamIds !== []) {
+        $pdo->prepare('DELETE FROM trenink_podskupina WHERE trenink_id = ?')->execute([$treninkId]);
+    }
     if (is_array($podskupiny)) {
         $stmtPs = $pdo->prepare('INSERT INTO trenink_podskupina (trenink_id, podskupina_id) VALUES (?, ?)');
         foreach ($podskupiny as $psid) {
-            if (!ctype_digit((string)$psid)) continue;
+            if (!ctype_digit((string)$psid)) {
+                continue;
+            }
             $stmtPs->execute([$treninkId, (int)$psid]);
         }
     }
@@ -224,13 +264,17 @@ try {
     }
 
     // tren��i (v�dy aktu�ln�; ne-admin nesm� m�nit ciz�)
-    if (!is_array($trenere)) $trenere = [];
+    if (!is_array($trenere)) {
+        $trenere = [];
+    }
     $trenere = trainingEditCoachIds($pdo, $treninkId, $currentTrener, $isAdmin, $trenere);
     $pdo->prepare('DELETE FROM trenink_trener WHERE trenink_id = ?')->execute([$treninkId]);
 
     $stmtT = $pdo->prepare('INSERT INTO trenink_trener (trenink_id, trener_id) VALUES (?, ?)');
     foreach ($trenere as $tid) {
-        if ($tid <= 0) continue;
+        if ($tid <= 0) {
+            continue;
+        }
         $stmtT->execute([$treninkId, (int)$tid]);
     }
 
@@ -242,7 +286,9 @@ try {
         foreach (array_filter(array_map('trim', explode(',', $ucastnici))) as $participant) {
             if (preg_match('/^(\d+):(.+)$/', $participant, $m)) {
                 $sid = (int)$m[1];
-                if ($sid > 0) $stmtLinkSp->execute([$treninkId, $sid]);
+                if ($sid > 0) {
+                    $stmtLinkSp->execute([$treninkId, $sid]);
+                }
             }
         }
     }
@@ -288,7 +334,9 @@ try {
         $decoded = json_decode((string)$_POST['tagy_json'], true);
         if (is_array($decoded)) {
             foreach ($decoded as $t) {
-                if (!is_array($t)) continue;
+                if (!is_array($t)) {
+                    continue;
+                }
 
                 $tid = $t['id'] ?? null;
                 $name = isset($t['name']) ? trim((string)$t['name']) : '';
@@ -298,7 +346,9 @@ try {
                     continue;
                 }
 
-                if ($name === '') continue;
+                if ($name === '') {
+                    continue;
+                }
 
                 $stmtFindTag = $pdo->prepare('SELECT id FROM tagy WHERE nazev = ? LIMIT 1');
                 $stmtFindTag->execute([$name]);
@@ -318,7 +368,9 @@ try {
     $tagIds = array_values(array_unique(array_filter($tagIds)));
     if (!empty($tagIds)) {
         $stmtLinkTag = $pdo->prepare('INSERT INTO trenink_tag (trenink_id, tag_id) VALUES (?, ?)');
-        foreach ($tagIds as $tid) $stmtLinkTag->execute([$treninkId, $tid]);
+        foreach ($tagIds as $tid) {
+            $stmtLinkTag->execute([$treninkId, $tid]);
+        }
     }
 
     require_once __DIR__ . '/includes/club_makeup.php';
@@ -331,7 +383,9 @@ try {
     exit;
 
 } catch (Throwable $e) {
-    if ($pdo->inTransaction()) $pdo->rollBack();
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     fileMutationRollback($fileMutations);
     $_SESSION['flash_error'] = 'Chyba při aktualizaci: ' . $e->getMessage();
     header('Location: edit_trenink.php?id=' . $treninkId);

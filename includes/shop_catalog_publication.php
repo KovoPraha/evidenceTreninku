@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/club_program.php';
@@ -90,10 +91,10 @@ function shopCatalogPublicationReadiness(PDO $pdo, int $productId): array
         return ['ready' => false, 'blockers' => ['Produkt nebyl nalezen.'], 'visible_variants' => 0];
     }
     $blockers = shopCatalogPublicationAccountingBlockers($pdo, $productId, (string)$product['offer_type']);
-    if ((string)$product['offer_type'] === 'program') {
+    if ((string)$product['offer_type'] === 'program' && !monthlyMembershipProductConfigured($pdo, $productId)) {
         if (!clubProgramProductHasOfferLink($pdo, $productId)) {
             $blockers[] = 'Program nemá navázanou žádnou nabídku.';
-        } elseif(clubProgramTermsRegistryAvailable($pdo)&&!clubProgramProductHasEffectiveTerms($pdo,$productId)) {
+        } elseif (clubProgramTermsRegistryAvailable($pdo) && !clubProgramProductHasEffectiveTerms($pdo, $productId)) {
             $blockers[] = 'Žádná nabídka programu nemá zveřejněné platné storno podmínky a souhlas.';
         }
     } elseif (in_array((string)$product['offer_type'], ['club_event','camp'], true)) {
@@ -111,7 +112,7 @@ function shopCatalogPublicationReadiness(PDO $pdo, int $productId): array
             $linkedEvent->execute([$productId,(string)$product['offer_type']]);
         }
         if (isset($linkedEvent) && !$linkedEvent->fetchColumn()) {
-            $expected=(string)$product['offer_type']==='camp'?'Tábor / soustředění':'Klubová akce';
+            $expected = (string)$product['offer_type'] === 'camp' ? 'Tábor / soustředění' : 'Klubová akce';
             $blockers[] = 'Položku nejprve propojte s pracovní akcí typu '.$expected.' v agendě Klubové akce.';
         }
     } elseif ((string)$product['offer_type'] !== 'goods') {
@@ -182,7 +183,13 @@ function shopCatalogPublicationActivate(
     $pdo->beginTransaction();
     try {
         $result = shopCatalogPublicationActivateInTransaction(
-            $pdo,$productId,$actorTrainerId,$publicName,$publicSummary,$note,$confirmed
+            $pdo,
+            $productId,
+            $actorTrainerId,
+            $publicName,
+            $publicSummary,
+            $note,
+            $confirmed
         );
         $pdo->commit();
         return $result;
@@ -207,35 +214,61 @@ function shopCatalogPublicationActivateInTransaction(
     string $note,
     bool $confirmed
 ): array {
-    if (!$pdo->inTransaction()) throw new LogicException('Aktivace katalogu vyžaduje otevřenou transakci.');
-    [$publicName,$publicSummary,$note]=shopCatalogPublicationValidateDecision(
-        $productId,$actorTrainerId,$publicName,$publicSummary,$note,$confirmed
+    if (!$pdo->inTransaction()) {
+        throw new LogicException('Aktivace katalogu vyžaduje otevřenou transakci.');
+    }
+    [$publicName,$publicSummary,$note] = shopCatalogPublicationValidateDecision(
+        $productId,
+        $actorTrainerId,
+        $publicName,
+        $publicSummary,
+        $note,
+        $confirmed
     );
-    $product=shopCatalogPublicationLockProduct($pdo,$productId);
-    if(!$product)throw new ShopCatalogPublicationException('Produkt nebyl nalezen.');
-    $readiness=shopCatalogPublicationReadiness($pdo,$productId);
-    if(!$readiness['ready'])throw new ShopCatalogPublicationException('Aktivace je blokovaná: '.implode(' ',$readiness['blockers']));
-    $existing=$pdo->prepare('SELECT * FROM shop_product_publications WHERE product_id=?');
-    $existing->execute([$productId]);$publication=$existing->fetch(PDO::FETCH_ASSOC);
-    if($product['catalog_status']==='active'&&$publication&&$publication['status']==='active'){
-        if($publication['public_name']===$publicName&&$publication['public_summary']===$publicSummary)return[
-            'product_id'=>$productId,'status'=>'active','changed'=>false,'visible_variants'=>$readiness['visible_variants'],
-        ];
+    $product = shopCatalogPublicationLockProduct($pdo, $productId);
+    if (!$product) {
+        throw new ShopCatalogPublicationException('Produkt nebyl nalezen.');
+    }
+    $readiness = shopCatalogPublicationReadiness($pdo, $productId);
+    if (!$readiness['ready']) {
+        throw new ShopCatalogPublicationException('Aktivace je blokovaná: '.implode(' ', $readiness['blockers']));
+    }
+    $existing = $pdo->prepare('SELECT * FROM shop_product_publications WHERE product_id=?');
+    $existing->execute([$productId]);
+    $publication = $existing->fetch(PDO::FETCH_ASSOC);
+    if ($product['catalog_status'] === 'active' && $publication && $publication['status'] === 'active') {
+        if ($publication['public_name'] === $publicName && $publication['public_summary'] === $publicSummary) {
+            return[
+                'product_id' => $productId,'status' => 'active','changed' => false,'visible_variants' => $readiness['visible_variants']
+    ,
+            ];
+        }
         throw new ShopCatalogPublicationException('Aktivní veřejný text nelze tiše přepsat. Produkt nejprve deaktivujte.');
     }
-    if($publication){
-        $pdo->prepare("UPDATE shop_product_publications SET status='active',public_name=?,public_summary=?,decision_note=?,activated_by_trainer_id=?,activated_at=CURRENT_TIMESTAMP,deactivated_at=NULL,updated_at=CURRENT_TIMESTAMP WHERE product_id=?")
+    if ($publication) {
+        $pdo->prepare(('UPDATE shop_product_publications SET ' .
+    'status=\'active\',public_name=?,public_summary=?,decision_note=?,activated_by_trainer_id=?,activated_at=CURRENT_TIMESTAMP,deact'
+    .
+    'ivated_at=NULL,updated_at=CURRENT_TIMESTAMP ' .
+    'WHERE product_id=?'))
             ->execute([$publicName,$publicSummary,$note,$actorTrainerId,$productId]);
-        $action='reactivate';$fromStatus=(string)$publication['status'];
-    }else{
-        $pdo->prepare("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary,decision_note,activated_by_trainer_id,activated_at) VALUES(?,'active',?,?,?,?,CURRENT_TIMESTAMP)")
+        $action = 'reactivate';
+        $fromStatus = (string)$publication['status'];
+    } else {
+        $pdo->prepare(('INSERT INTO ' .
+    'shop_product_publications(product_id,status,public_name,public_summary,decision_note,activated_by_trainer_id,activated_at) '
+    .
+    'VALUES(?,\'active\',?,?,?,?,CURRENT_TIMESTAMP)'))
             ->execute([$productId,$publicName,$publicSummary,$note,$actorTrainerId]);
-        $action='activate';$fromStatus=null;
+        $action = 'activate';
+        $fromStatus = null;
     }
     $pdo->prepare("UPDATE shop_products SET catalog_status='active',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$productId]);
-    $pdo->prepare("UPDATE shop_variants SET catalog_status=CASE WHEN visible=1 OR visible IS NULL THEN 'active' ELSE 'inactive' END,updated_at=CURRENT_TIMESTAMP WHERE product_id=?")->execute([$productId]);
-    shopCatalogPublicationEvent($pdo,$productId,$actorTrainerId,$action,$fromStatus,'active',$publicName,$publicSummary,$note);
-    return['product_id'=>$productId,'status'=>'active','changed'=>true,'visible_variants'=>$readiness['visible_variants']];
+    $pdo->prepare(('UPDATE shop_variants SET catalog_status=CASE WHEN visible=1 OR visible IS NULL THEN \'active\' ELSE \'inactive\' '
+    .
+    'END,updated_at=CURRENT_TIMESTAMP WHERE product_id=?'))->execute([$productId]);
+    shopCatalogPublicationEvent($pdo, $productId, $actorTrainerId, $action, $fromStatus, 'active', $publicName, $publicSummary, $note);
+    return['product_id' => $productId,'status' => 'active','changed' => true,'visible_variants' => $readiness['visible_variants']];
 }
 
 /** @return array{product_id:int,status:string,changed:bool} */
@@ -250,7 +283,7 @@ function shopCatalogPublicationDeactivate(PDO $pdo, int $productId, int $actorTr
     }
     $pdo->beginTransaction();
     try {
-        $result=shopCatalogPublicationDeactivateInTransaction($pdo,$productId,$actorTrainerId,$note);
+        $result = shopCatalogPublicationDeactivateInTransaction($pdo, $productId, $actorTrainerId, $note);
         $pdo->commit();
         return$result;
     } catch (Throwable $exception) {
@@ -265,22 +298,48 @@ function shopCatalogPublicationDeactivate(PDO $pdo, int $productId, int $actorTr
 }
 
 /** @return array{product_id:int,status:string,changed:bool} */
-function shopCatalogPublicationDeactivateInTransaction(PDO$pdo,int$productId,int$actorTrainerId,string$note):array
+function shopCatalogPublicationDeactivateInTransaction(PDO$pdo, int$productId, int$actorTrainerId, string$note): array
 {
-    if(!$pdo->inTransaction())throw new LogicException('Deaktivace katalogu vyžaduje otevřenou transakci.');
-    $note=trim($note);
-    if($productId<1||$actorTrainerId<1||$note===''||mb_strlen($note,'UTF-8')>1000)throw new InvalidArgumentException('Deaktivace vyžaduje produkt, administrátora a důvod do 1000 znaků.');
-    $product=shopCatalogPublicationLockProduct($pdo,$productId);if(!$product)throw new ShopCatalogPublicationException('Produkt nebyl nalezen.');
-    $statement=$pdo->prepare('SELECT * FROM shop_product_publications WHERE product_id=?');$statement->execute([$productId]);$publication=$statement->fetch(PDO::FETCH_ASSOC);
-    if($product['catalog_status']!=='active'||!$publication||$publication['status']!=='active'){
-        if($publication&&$publication['status']==='inactive')return['product_id'=>$productId,'status'=>'inactive','changed'=>false];
+    if (!$pdo->inTransaction()) {
+        throw new LogicException('Deaktivace katalogu vyžaduje otevřenou transakci.');
+    }
+    $note = trim($note);
+    if ($productId < 1 || $actorTrainerId < 1 || $note === '' || mb_strlen($note, 'UTF-8') > 1000) {
+        throw new InvalidArgumentException('Deaktivace vyžaduje produkt, administrátora a důvod do 1000 znaků.');
+    }
+    $product = shopCatalogPublicationLockProduct($pdo, $productId);
+    if (!$product) {
+        throw new ShopCatalogPublicationException('Produkt nebyl nalezen.');
+    }
+    $statement = $pdo->prepare('SELECT * FROM shop_product_publications WHERE product_id=?');
+    $statement->execute([$productId]);
+    $publication = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($product['catalog_status'] !== 'active' || !$publication || $publication['status'] !== 'active') {
+        if ($publication && $publication['status'] === 'inactive') {
+            return['product_id' => $productId,'status' => 'inactive','changed' => false];
+        }
         throw new ShopCatalogPublicationException('Deaktivovat lze pouze aktivní produkt.');
     }
-    $pdo->prepare("UPDATE shop_product_publications SET status='inactive',decision_note=?,activated_by_trainer_id=?,deactivated_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE product_id=?")->execute([$note,$actorTrainerId,$productId]);
-    $pdo->prepare("UPDATE shop_products SET catalog_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE id=?")->execute([$productId]);
-    $pdo->prepare("UPDATE shop_variants SET catalog_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE product_id=?")->execute([$productId]);
-    shopCatalogPublicationEvent($pdo,$productId,$actorTrainerId,'deactivate','active','inactive',(string)$publication['public_name'],(string)$publication['public_summary'],$note);
-    return['product_id'=>$productId,'status'=>'inactive','changed'=>true];
+    $pdo->prepare(('UPDATE shop_product_publications SET ' .
+    'status=\'inactive\',decision_note=?,activated_by_trainer_id=?,deactivated_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP '
+    .
+    'WHERE product_id=?'))->execute([$note,$actorTrainerId,$productId]);
+    $pdo->prepare("UPDATE shop_products SET catalog_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE id=?")
+    ->execute([$productId]);
+    $pdo->prepare("UPDATE shop_variants SET catalog_status='inactive',updated_at=CURRENT_TIMESTAMP WHERE product_id=?")
+    ->execute([$productId]);
+    shopCatalogPublicationEvent(
+        $pdo,
+        $productId,
+        $actorTrainerId,
+        'deactivate',
+        'active',
+        'inactive',
+        (string)$publication['public_name'],
+        (string)$publication['public_summary'],
+        $note
+    );
+    return['product_id' => $productId,'status' => 'inactive','changed' => true];
 }
 
 /** @return array<string,mixed>|false */

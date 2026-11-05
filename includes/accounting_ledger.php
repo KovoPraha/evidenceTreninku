@@ -474,7 +474,8 @@ function accountingLedgerAllocate(
     $reason = accountingLedgerAudit($actor, $reason, $confirmed);
     $requestKey = accountingLedgerText($requestKey, 100);
     $caseType = accountingLedgerText($caseType, 40);
-    if ($caseId < 1 || $amountMinor === 0 || abs($amountMinor) > 1000000000000 || mb_strlen($classificationCode) > 60 || mb_strlen($activityCode) > 60) {
+    if ($caseId < 1 || $amountMinor === 0 || abs($amountMinor) > 1000000000000 || mb_strlen($classificationCode) > 60
+    || mb_strlen($activityCode) > 60) {
         throw new AccountingLedgerException('Neplatné rozdělení pohybu.');
     }
     $effectiveOn = accountingLedgerDate($effectiveOn ?? (new DateTimeImmutable(
@@ -747,8 +748,9 @@ function accountingLedgerPaymentDerived(PDO $pdo, array $payment): bool
 {
     $type = $payment['payable_type'] ?? '';
     $id = (int)($payment['payable_id'] ?? 0);
-    $tables = $type === 'shop_order' ? ['club_finance_allocations' => 'order_id'] : ($type === 'member_charge' ? ['club_finance_allocations' => 'charge_id',
-    'member_payer_receipt_allocations' => 'charge_id'] : []);
+    $tables = $type === 'shop_order' ? ['club_finance_allocations' => 'order_id'] : ($type === 'member_charge' ? ['club_finance_allocations'
+    => 'charge_id',
+    'member_payer_receipt_allocations' => 'charge_id', 'monthly_membership_allocations' => 'charge_id'] : []);
     foreach ($tables as $table => $column) {
         if (accountingLedgerTable($pdo, $table)) {
             $q = $pdo->prepare('SELECT COUNT(*) FROM '.$table.' WHERE '.$column.'=?');
@@ -823,7 +825,8 @@ function accountingLedgerReconcileSource(
         }
         if ($prior === null) {
             $input = ['account_id' => $accountId,
-    'kind' => $source['amount_minor'] > 0 ? 'income' : ($sourceType === 'legacy_refund' ? 'refund' : 'expense'),
+    'kind' => $source['amount_minor'] > 0 ? 'income' : ($sourceType === 'legacy_refund' ? 'refund' : 'expense')
+    ,
 
     'amount_minor' => $source['amount_minor'],
     'currency' => $source['currency'],
@@ -1027,7 +1030,8 @@ function accountingLedgerAttachSource(PDO $pdo, int $movementId, array $source):
                 throw new AccountingLedgerException('Stejný zdroj nesmí být vykázán dvakrát.');
             }continue;
         }
-        $pdo->prepare('INSERT INTO accounting_movement_sources(movement_id,source_type,source_id,snapshot_json) VALUES(?,?,?,?)')->execute([$movementId,
+        $pdo->prepare('INSERT INTO accounting_movement_sources(movement_id,source_type,source_id,snapshot_json) VALUES(?,?,?,?)')
+    ->execute([$movementId,
 
     $alias['source_type'],
     $alias['source_id'],

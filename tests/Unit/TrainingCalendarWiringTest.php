@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -36,8 +37,8 @@ final class TrainingCalendarWiringTest extends TestCase
 
         $save = (string)file_get_contents($root . '/ulozit_trenink.php');
         self::assertStringContainsString('venueCalendarCreateTrainingReservation', $save);
-        self::assertStringContainsString("['plan_id' => \$planId]", $save);
-        self::assertStringContainsString("['submission_key' => \$submissionKey]", $save);
+        self::assertMatchesRegularExpression('/\[\s*\x27plan_id\x27\s*=>\s*\$planId\s*\]/', $save);
+        self::assertMatchesRegularExpression('/\[\s*\x27submission_key\x27\s*=>\s*\$submissionKey\s*\]/', $save);
     }
 
     public function testGroupOnlyCalendarAndWeekCopyVisibilityAreWired(): void

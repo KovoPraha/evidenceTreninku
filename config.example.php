@@ -1,4 +1,5 @@
 <?php
+
 /**
  * config.example.php
  * Vzor konfigurace. Zkopírujte jako config.php a doplňte skutečné údaje.
@@ -112,10 +113,18 @@ $shopBankIban = getenv('SHOP_BANK_IBAN');
 $shopBankBic = getenv('SHOP_BANK_BIC');
 $shopBankAccountLabel = getenv('SHOP_BANK_ACCOUNT_LABEL');
 $shopBankDueDays = getenv('SHOP_BANK_DUE_DAYS');
-if (is_string($shopBankIban) && $shopBankIban !== '') define('SHOP_BANK_IBAN', $shopBankIban);
-if (is_string($shopBankBic) && $shopBankBic !== '') define('SHOP_BANK_BIC', $shopBankBic);
-if (is_string($shopBankAccountLabel) && $shopBankAccountLabel !== '') define('SHOP_BANK_ACCOUNT_LABEL', $shopBankAccountLabel);
-if (is_string($shopBankDueDays) && preg_match('/^[0-9]{1,2}$/D', $shopBankDueDays) === 1) define('SHOP_BANK_DUE_DAYS', (int)$shopBankDueDays);
+if (is_string($shopBankIban) && $shopBankIban !== '') {
+    define('SHOP_BANK_IBAN', $shopBankIban);
+}
+if (is_string($shopBankBic) && $shopBankBic !== '') {
+    define('SHOP_BANK_BIC', $shopBankBic);
+}
+if (is_string($shopBankAccountLabel) && $shopBankAccountLabel !== '') {
+    define('SHOP_BANK_ACCOUNT_LABEL', $shopBankAccountLabel);
+}
+if (is_string($shopBankDueDays) && preg_match('/^[0-9]{1,2}$/D', $shopBankDueDays) === 1) {
+    define('SHOP_BANK_DUE_DAYS', (int)$shopBankDueDays);
+}
 
 // Bezpečné localhost demo. Bankovní kód 9999 nepatří skutečné bance.
 if (JE_LOKALNE) {
@@ -139,7 +148,9 @@ $fioStartDate = getenv('FIO_IMPORT_START_DATE');
 if (is_string($fioStartDate) && $fioStartDate !== '') {
     defined('FIO_IMPORT_START_DATE') || define('FIO_IMPORT_START_DATE', $fioStartDate);
 }
-if (!defined('FIO_API_TOKEN') && is_string($fioApiToken) && $fioApiToken !== '') define('FIO_API_TOKEN', $fioApiToken);
+if (!defined('FIO_API_TOKEN') && is_string($fioApiToken) && $fioApiToken !== '') {
+    define('FIO_API_TOKEN', $fioApiToken);
+}
 if (is_string($fioImportLookbackDays) && preg_match('/^(?:[1-9]|[12][0-9]|30)$/D', $fioImportLookbackDays) === 1) {
     defined('FIO_IMPORT_LOOKBACK_DAYS') || define('FIO_IMPORT_LOOKBACK_DAYS', (int)$fioImportLookbackDays);
 }
@@ -154,9 +165,15 @@ $stripePublishableKey = getenv('STRIPE_PUBLISHABLE_KEY');
 $stripeWebhookSecret = getenv('STRIPE_WEBHOOK_SECRET');
 
 defined('STRIPE_ENABLED') || define('STRIPE_ENABLED', is_string($stripeEnabled) && $stripeEnabled === '1');
-if (!defined('STRIPE_SECRET_KEY') && is_string($stripeSecretKey) && $stripeSecretKey !== '') define('STRIPE_SECRET_KEY', $stripeSecretKey);
-if (!defined('STRIPE_PUBLISHABLE_KEY') && is_string($stripePublishableKey) && $stripePublishableKey !== '') define('STRIPE_PUBLISHABLE_KEY', $stripePublishableKey);
-if (!defined('STRIPE_WEBHOOK_SECRET') && is_string($stripeWebhookSecret) && $stripeWebhookSecret !== '') define('STRIPE_WEBHOOK_SECRET', $stripeWebhookSecret);
+if (!defined('STRIPE_SECRET_KEY') && is_string($stripeSecretKey) && $stripeSecretKey !== '') {
+    define('STRIPE_SECRET_KEY', $stripeSecretKey);
+}
+if (!defined('STRIPE_PUBLISHABLE_KEY') && is_string($stripePublishableKey) && $stripePublishableKey !== '') {
+    define('STRIPE_PUBLISHABLE_KEY', $stripePublishableKey);
+}
+if (!defined('STRIPE_WEBHOOK_SECRET') && is_string($stripeWebhookSecret) && $stripeWebhookSecret !== '') {
+    define('STRIPE_WEBHOOK_SECRET', $stripeWebhookSecret);
+}
 
 // ── SumUp Hosted Checkout (výchozí stav: vypnuto) ──────────────────────────
 // Tajný API klíč patří pouze do prostředí nebo do ignorovaného config.php.
@@ -166,8 +183,12 @@ $sumupApiKey = getenv('SUMUP_API_KEY');
 $sumupMerchantCode = getenv('SUMUP_MERCHANT_CODE');
 
 defined('SUMUP_ENABLED') || define('SUMUP_ENABLED', is_string($sumupEnabled) && $sumupEnabled === '1');
-if (!defined('SUMUP_API_KEY') && is_string($sumupApiKey) && $sumupApiKey !== '') define('SUMUP_API_KEY', $sumupApiKey);
-if (!defined('SUMUP_MERCHANT_CODE') && is_string($sumupMerchantCode) && $sumupMerchantCode !== '') define('SUMUP_MERCHANT_CODE', $sumupMerchantCode);
+if (!defined('SUMUP_API_KEY') && is_string($sumupApiKey) && $sumupApiKey !== '') {
+    define('SUMUP_API_KEY', $sumupApiKey);
+}
+if (!defined('SUMUP_MERCHANT_CODE') && is_string($sumupMerchantCode) && $sumupMerchantCode !== '') {
+    define('SUMUP_MERCHANT_CODE', $sumupMerchantCode);
+}
 
 // ── Brána produkčního uživatelského testu ─────────────────────────────────
 // Neobsahuje žádná hesla, tokeny ani čísla účtů. Příznaky pouze potvrzují, že
@@ -177,6 +198,16 @@ $uatBankReady = getenv('KIS_UAT_BANK_RECONCILIATION_READY');
 $uatOwner = getenv('KIS_UAT_OWNER');
 $uatWindowEnd = getenv('KIS_UAT_WINDOW_END');
 defined('KIS_UAT_INBOX_READY') || define('KIS_UAT_INBOX_READY', is_string($uatInboxReady) && $uatInboxReady === '1');
-defined('KIS_UAT_BANK_RECONCILIATION_READY') || define('KIS_UAT_BANK_RECONCILIATION_READY', is_string($uatBankReady) && $uatBankReady === '1');
-if (!defined('KIS_UAT_OWNER') && is_string($uatOwner) && trim($uatOwner) !== '') define('KIS_UAT_OWNER', trim($uatOwner));
-if (!defined('KIS_UAT_WINDOW_END') && is_string($uatWindowEnd) && trim($uatWindowEnd) !== '') define('KIS_UAT_WINDOW_END', trim($uatWindowEnd));
+defined('KIS_UAT_BANK_RECONCILIATION_READY') || define('KIS_UAT_BANK_RECONCILIATION_READY', is_string($uatBankReady)
+    && $uatBankReady === '1');
+if (!defined('KIS_UAT_OWNER') && is_string($uatOwner) && trim($uatOwner) !== '') {
+    define('KIS_UAT_OWNER', trim($uatOwner));
+}
+if (!defined('KIS_UAT_WINDOW_END') && is_string($uatWindowEnd) && trim($uatWindowEnd) !== '') {
+    define('KIS_UAT_WINDOW_END', trim($uatWindowEnd));
+}
+
+// Měsíční členství: samostatné provozní schválení před automatickým účtováním a rozesílkou.
+defined('MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED') || define('MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED', getenv('MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED')
+    === '1');
+defined('MONTHLY_MEMBERSHIP_MAIL_ENABLED') || define('MONTHLY_MEMBERSHIP_MAIL_ENABLED', getenv('MONTHLY_MEMBERSHIP_MAIL_ENABLED') === '1');

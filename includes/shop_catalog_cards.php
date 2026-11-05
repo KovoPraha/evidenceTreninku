@@ -26,6 +26,9 @@ function shopPublicCatalogCards(PDO $pdo): array
         $product['program_offers'] = [];
         if ($isProgram) {
             foreach ($product['variants'] as $variant) {
+                if (isset($variant['monthly_tariff_id'])) {
+                    continue;
+                }
                 $offer = $readContext->offer((int) $variant['variant_id']);
                 if ($offer) {
                     $label = clubProgramBirthYearLabel($offer);

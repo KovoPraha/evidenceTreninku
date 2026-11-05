@@ -634,12 +634,6 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 1
-			path: booking/platba_predpisu.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 3
 			path: booking/potvrdit.php
 
@@ -665,12 +659,6 @@ parameters:
 			message: '#^Ternary operator condition is always true\.$#'
 			identifier: ternary.alwaysTrue
 			count: 3
-			path: booking/produkt.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 19
 			path: booking/produkt.php
 
 		-
@@ -2801,12 +2789,6 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 16
-			path: training_closure_admin.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 21
 			path: training_rsvps_admin.php
 
@@ -2892,12 +2874,6 @@ parameters:
 			message: '#^Strict comparison using \=\=\= between null and '''' will always evaluate to false\.$#'
 			identifier: identical.alwaysFalse
 			count: 3
-			path: ulozit_trenink.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 42
 			path: ulozit_trenink.php
 
 		-

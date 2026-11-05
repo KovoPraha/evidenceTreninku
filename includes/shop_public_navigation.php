@@ -47,6 +47,9 @@ function shopPublicFilterSaleableProducts(PDO $pdo, array $catalog, ?ClubProgram
         $isProgram = shopProductRequiresAthleteFromData($product, $product['categories']);
         $product['variants'] = array_values(array_filter($product['variants'], static function (array $variant) use ($readContext, $hasProgramOffer, $isProgram, $links): bool {
             $variantId = (int) $variant['variant_id'];
+            if (isset($variant['monthly_tariff_id'])) {
+                return true;
+            }
             if ($hasProgramOffer) {
                 return $readContext->saleState($variantId)['saleable'];
             }
