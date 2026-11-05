@@ -13,6 +13,8 @@ const PRIVATE_STORAGE_ACCOUNTING_EXPORTS = 'accounting-exports';
 const PRIVATE_STORAGE_STOCK_DOCUMENTS = 'stock-documents';
 const PRIVATE_STORAGE_MEDICAL_DOCUMENTS = 'medical-documents';
 const PRIVATE_STORAGE_TV_IMAGES = 'tv-images';
+const PRIVATE_STORAGE_BAR_IMAGES = 'bar-images';
+const PRIVATE_STORAGE_BAR_INVOICES = 'bar-invoices';
 const PRIVATE_STORAGE_DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
 const PRIVATE_STORAGE_MAX_BATCH_FILES = 12;
 const PRIVATE_STORAGE_MAX_BATCH_BYTES = 30 * 1024 * 1024;
@@ -78,6 +80,8 @@ function privateStorageEnsureDirectory(string $category): string
         PRIVATE_STORAGE_STOCK_DOCUMENTS,
         PRIVATE_STORAGE_MEDICAL_DOCUMENTS,
         PRIVATE_STORAGE_TV_IMAGES,
+        PRIVATE_STORAGE_BAR_IMAGES,
+        PRIVATE_STORAGE_BAR_INVOICES,
     ], true)) {
         throw new InvalidArgumentException('Neplatna kategorie soukromeho souboru.');
     }
@@ -153,6 +157,7 @@ function privateStorageResolve(string $key): ?string
     if (preg_match($documentPattern, $key, $match) !== 1
         && preg_match('~^private://(accounting-exports)/([a-f0-9]{32}\.zip)$~D', $key, $match) !== 1
         && preg_match('~^private://(uci-temp)/([a-f0-9]{32}\.xlsx)$~D', $key, $match) !== 1
+        && preg_match('~^private://(bar-images)/([a-f0-9]{64}\.(?:jpg|png|webp))$~D', $key, $match) !== 1
     ) {
         return null;
     }

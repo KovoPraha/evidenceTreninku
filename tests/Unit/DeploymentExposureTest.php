@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -27,7 +28,7 @@ final class DeploymentExposureTest extends TestCase
 
     // These directories intentionally contain public application entry points/assets.
     private const PUBLIC_DIRECTORIES = [
-        'assets', 'auth', 'booking', 'icons', 'templates',
+        'assets', 'auth', 'bar', 'booking', 'icons', 'templates',
         'auditlog', 'jizdy', 'servis', 'uctenky', 'udalosti', 'vozidla', 'zatezove_testy',
     ];
 
@@ -72,5 +73,22 @@ final class DeploymentExposureTest extends TestCase
             }
         }
         self::assertStringContainsString('^(?:outputs|tools)(?:/|$) - [F,L,NC]', $htaccess);
+    }
+
+    public function testBarDirectoryHasProtectedOwnersAndOnlyReviewedPublicMenuRoutes(): void
+    {
+        require_once dirname(__DIR__, 2) . '/includes/staff_workspaces.php';
+        require_once dirname(__DIR__) . '/Support/AnonymousRouteInventory.php';
+        $routes = array_values(array_filter(\anonymousTrackedPhpFiles(dirname(__DIR__, 2)), static fn (string $path): bool => str_starts_with($path, 'bar/')));
+        self::assertNotEmpty($routes);
+        foreach ($routes as $route) {
+            if (in_array($route, ['bar/menu.php', 'bar/menu-image.php'], true)) {
+                self::assertNull(\staffRouteOwner($route), $route);
+                self::assertArrayHasKey($route, \anonymousPublicRoutes());
+                continue;
+            }
+            self::assertNotNull(\staffRouteOwner($route), $route);
+            self::assertArrayNotHasKey($route, \anonymousPublicRoutes(), $route);
+        }
     }
 }

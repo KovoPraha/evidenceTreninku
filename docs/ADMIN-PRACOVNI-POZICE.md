@@ -1,8 +1,8 @@
 # Pracovní pozice administrace
 
-Stav k 22. 8. 2026.
+Stav pracovní větve k 5. 11. 2026. Dvě barové pozice jsou součástí rozpracovaného začlenění; nejsou nasazené. Rozsah a další etapy určuje [plán začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md).
 
-Administrace je rozdělena na osm nepřekrývajících se pracovních pozic. Každá pozice má vlastní rozcestník a v navigaci vidí jen svoje funkce. Účet může mít přiřazeno více pozic, ale v jednu chvíli pracuje vždy právě v jedné z nich.
+Administrace je rozdělena na jedenáct pracovních pozic. Každá pozice má vlastní rozcestník a v navigaci vidí jen svoje funkce. Účet může mít přiřazeno více pozic, ale v jednu chvíli pracuje vždy právě v jedné z nich.
 
 ## Pozice a odpovědnosti
 
@@ -15,15 +15,18 @@ Administrace je rozdělena na osm nepřekrývajících se pracovních pozic. Ka�
 | Správce katalogu e-shopu | Produkty, kategorie, nabídky, obrázky, sklad a import katalogu |
 | Zákaznická péče a objednávky | Objednávky, expedice, předání, storna a zákaznická komunikace |
 | Hospodář a platby | Bankovní účet, párování plateb, potvrzení úhrad, vratky a členské platby |
+| Obsluha TV | Příprava a zveřejnění TV programů |
+| Obsluha baru | Nabídka a zásoba stánku; pokladna navazuje v další etapě |
+| Administrátor baru | Přehled katalogu, nákupních cen a obou skladových míst; zápisové služby navazují v dalších etapách |
 | Správce systému | Uživatelské účty, oprávnění, pracovní pozice, audit a technické nastavení |
 
-Součet osmi rozcestníků pokrývá všechny odkazy určené přihlášenému personálu. Vlastnictví jednotlivých vstupních stránek je vedeno v jednom registru `includes/staff_workspaces.php`; stejný registr používá rozcestník, navigace, kontrola přístupu i automatické testy.
+Součet pracovních rozcestníků pokrývá všechny odkazy určené přihlášenému personálu. Vlastnictví jednotlivých vstupních stránek je vedeno v jednom registru `includes/staff_workspaces.php`; stejný registr používá rozcestník, navigace, kontrola přístupu i automatické testy.
 
 Podpůrný editor může mít jednoho vlastníka a výslovně uvedenou další pozici, která ho smí použít v navazujícím pracovním postupu. Taková delegace nepřidá cizí menu ani celou cizí agendu. Lokální diagnostické stránky jsou v registru označeny jako lokální a na produkčním rozcestníku ani v navigaci se nezobrazí.
 
 ## Superadministrátor
 
-Superadministrátor není devátá pracovní pozice. Je to příznak účtu, který umožní přepínat mezi všemi osmi pozicemi. Po přepnutí se stránka i navigace chovají stejně jako u běžného držitele dané pozice; oprávnění se nesčítají.
+Superadministrátor není pracovní pozice. Je to příznak účtu, který umožní přepínat mezi všemi dostupnými pozicemi. Po přepnutí se stránka i navigace chovají stejně jako u běžného držitele dané pozice; oprávnění se nesčítají. Vlastní spotřeba baru vyžaduje samostatné výslovné přidělení i u superadministrátora.
 
 Každé přepnutí se zapisuje do `staff_position_switch_events`. Změny přiřazených pozic a superadministrátorského příznaku se zapisují do `staff_position_assignment_events` s povinným důvodem. Systém nedovolí odebrat posledního superadministrátora.
 
@@ -31,7 +34,7 @@ Každé přepnutí se zapisuje do `staff_position_switch_events`. Změny přiřa
 
 - Po přihlášení se personál dostane na `pracovni_pozice.php`.
 - Běžný účet může přepínat jen mezi přiřazenými pozicemi.
-- Superadministrátor může přepnout na kteroukoli z osmi pozic.
+- Superadministrátor může přepnout na kteroukoli dostupnou pozici.
 - Přiřazení spravuje pozice Správce systému na `sprava_pracovnich_pozic.php`.
 - Nový účet trenéra automaticky dostane pozici Trenér.
 - Původní aktivní účty jsou při migraci převedeny podle staré role; dosavadní administrátoři získají všech osm pozic a příznak superadministrátora, aby nasazení nezablokovalo správu.
@@ -57,4 +60,4 @@ Každé přepnutí se zapisuje do `staff_position_switch_events`. Změny přiřa
 
 ## Testovací kontrakt
 
-Automatické testy ověřují přesně osm pozic, jediné vlastnictví každého vstupního bodu, výslovné delegace podpůrných editorů, produkční skrytí lokálních nástrojů, úplné pokrytí personálních stránek, oddělení peněžních operací, přepínání superadministrátora a opakovatelnost migrace. Databázová migrace se v CI spouští také proti MariaDB 10.3 a 11.4.
+Automatické testy ověřují jedenáct pozic, jediné vlastnictví každého vstupního bodu, výslovné delegace podpůrných editorů, produkční skrytí lokálních nástrojů, úplné pokrytí personálních stránek, oddělení peněžních operací, přepínání superadministrátora a opakovatelnost migrace. Barové testy navíc ověřují samostatné oprávnění vlastní spotřeby, ochranu nákupních cen a předskladu a aktuální zamykající čtení po odvolání práv. Databázové migrace se v CI spouštějí také proti MariaDB 10.3 a 11.4.

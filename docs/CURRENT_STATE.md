@@ -9,6 +9,8 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení klubových tarifů a p�
   Linux 2064/39368, obě MariaDB matice a všech 11 kontrol PASS. Live `ad09174e`, deploy `42076138376` SUCCESS.
   Stávající platby/VS a Fio/SumUp zachované, nová automatizace a pošta se nezapínaly.
 
+- **BAR → KIS pouze ve vývojové větvi, bez nasazení:** [B6 – integrační přejímka](verification/bar-acceptance-20261105/RESULTS.md) doplňuje B0–B5 v draft PR #306. Místní role/browser, ztráta spojení, nouzová kasa, UTC/DST a naplněná obnova 335 tabulek s přílohami PASS; konečný Linux CI stav přesného headu je v PR. Skutečný katalog, fotografie a lucka zatím nepřevedené. Automatické účetní zápisy ani bankovní propojení baru nejsou aktivované. [B7](BAR_PRODUCTION_READINESS_2026-11-05.md) vyžaduje lidskou přejímku a nový výslovný souhlas; produkční přechod je nadále zakázaný.
+
 - **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** karta pro 223 aktivních produktů / nové objednávky, 8 starých plateb zachováno.
   **[Fio hostingový plán ověřený](verification/fio-followup-20261105/RESULTS.md):** dva skutečné importy, všech 45 pohybů bez shodného VS. Žádné vynucené přiřazení; skutečná placená úhrada stále nedoložená.
 
@@ -64,9 +66,7 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení klubových tarifů a p�
   SHA-256 `568ff63f469f70911efa757d98c82374466a85562392f9e4527cf3b427a17947`. Schéma current / pending [], ledger 151, dosavadní VS zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
-  31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu.
-  Diskové temporary tables fungují. Příčina kolísání kapacity není definitivně určena.
-  Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
+  31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu. Diskové temporary tables fungují. Příčina kolísání kapacity není definitivně určena. Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
   návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
   [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).
 - **Konfigurace a flags:** Fio import/auto-confirm a SumUp true; vlastní hostingový cron s minimálním odstupem 600 s.

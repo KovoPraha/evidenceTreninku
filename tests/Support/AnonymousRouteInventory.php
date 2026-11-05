@@ -6,6 +6,8 @@ declare(strict_types=1);
 function anonymousPublicRoutes(): array
 {
     return [
+        'bar/menu.php' => 'Only the current published public menu projection; no drafts, costs or stock quantities.',
+        'bar/menu-image.php' => 'Hash-checked photos referenced by the current public menu only.',
         'index.php' => 'Public landing page.',
         'tv.php' => 'Public TV playback and JSON expose the current published revision only.',
         'tv_image.php' => 'Public images require a current published reference; previews require the TV operator position.',

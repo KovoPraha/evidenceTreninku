@@ -5,6 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/one_time_token.php';
 require_once __DIR__ . '/child_access.php';
 require_once __DIR__ . '/auth_mail_outbox.php';
+require_once __DIR__ . '/staff_email_policy.php';
 
 final class PasswordResetException extends RuntimeException
 {
@@ -105,11 +106,14 @@ function passwordResetResolveTarget(PDO $pdo, string $identifier): ?array
     $email = strtolower(trim($identifier));
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $account = $pdo->prepare(
-            'SELECT id,email FROM verejni_uzivatele '
+            'SELECT * FROM verejni_uzivatele '
             . 'WHERE email=? AND aktivni=1 AND email_overeno=1 LIMIT 1'
         );
         $account->execute([$email]);
         $row = $account->fetch(PDO::FETCH_ASSOC);
+        if ($row && (int)($row['trener_id'] ?? 0) > 0 && staffAccountHasTechnicalEmail($pdo, (int)$row['trener_id'])) {
+            return null;
+        }
         if ($row) {
             return [
                 'type' => 'public',
@@ -246,11 +250,12 @@ function passwordResetTargetStillAuthorized(PDO $pdo, array $reset): bool
 {
     if ((string)$reset['target_type'] === 'public') {
         $statement = $pdo->prepare(
-            'SELECT 1 FROM verejni_uzivatele '
+            'SELECT * FROM verejni_uzivatele '
             . 'WHERE id=? AND id=? AND aktivni=1 AND email_overeno=1 LIMIT 1'
         );
         $statement->execute([(int)$reset['target_id'], (int)$reset['delivery_account_id']]);
-        return (bool)$statement->fetchColumn();
+        $account = $statement->fetch(PDO::FETCH_ASSOC);
+        return $account && ((int)($account['trener_id'] ?? 0) < 1 || !staffAccountHasTechnicalEmail($pdo, (int)$account['trener_id'], $pdo->inTransaction()));
     }
     if ((string)$reset['target_type'] !== 'child') {
         return false;

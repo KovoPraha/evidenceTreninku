@@ -27,6 +27,8 @@ $quotedRestoreDatabase = '`' . str_replace('`', '``', $restoreDatabase) . '`';
 $temporaryRoot = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'evidence-backup-smoke-' . bin2hex(random_bytes(6));
 $appRoot = $temporaryRoot . DIRECTORY_SEPARATOR . 'app';
 $backupRoot = $temporaryRoot . DIRECTORY_SEPARATOR . 'backups';
+$barOldStorage = getenv('APP_PRIVATE_STORAGE_ROOT');
+$barOldSession = $_SESSION ?? [];
 
 $removeTree = static function (string $path) use (&$removeTree, $temporaryRoot): void {
     if (!str_starts_with($path, $temporaryRoot)) {
@@ -162,6 +164,16 @@ try {
     if (!mkdir($appRoot, 0700, true) || !mkdir($backupRoot, 0700, true)) {
         throw new RuntimeException('Cannot create backup smoke directories.');
     }
+    require_once __DIR__ . '/BarAcceptanceSeed.php';
+    putenv('APP_PRIVATE_STORAGE_ROOT=' . $temporaryRoot . '/private-source');
+    $barCanonicalMoneyBefore = (int)$pdo->query('SELECT COUNT(*) FROM accounting_movements')->fetchColumn();
+    $barSeed = barAcceptanceSeed($pdo, $temporaryRoot);
+    if ((int)$pdo->query('SELECT COUNT(*) FROM accounting_movements')->fetchColumn() !== $barCanonicalMoneyBefore) {
+        throw new RuntimeException('BAR acceptance seed posted into the canonical financial ledger.');
+    }
+    $barSnapshot = barAcceptanceDatabaseSnapshot($pdo);
+    $barExportJson = barAccountingExport($pdo, $barSeed['export_id'])['manifest_json'];
+    barAcceptanceCopyPrivateFiles($barSeed['private_manifest'], $temporaryRoot . '/private-bundle');
     $config = "<?php\n"
         . "define('DB_HOST', " . var_export($hostAndPort, true) . ");\n"
         . "define('DB_NAME', " . var_export($database, true) . ");\n"
@@ -197,10 +209,15 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-11-05.2') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-11-05.8') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
+        'treneri' => ['technical_email'],
+        'kis_bar_categories' => ['lock_version'],
+        'kis_bar_products' => ['purchase_version'],
+        'kis_bar_state' => ['active_offer_publication_id', 'clock_contract'],
+    'kis_bar_cashboxes' => ['closed_by', 'closure_kind'],
         'club_teams' => ['activity_kind'],
         'club_program_schedule_slots' => ['valid_from', 'valid_to'],
         'club_event_notifications' => ['system_template_key', 'system_template_version'],
@@ -413,8 +430,43 @@ try {
     if ($restoredTriggers !== $expectedTriggers) {
         throw new RuntimeException('Database restore trigger list does not match the backup manifest.');
     }
+    if ($barSnapshot !== barAcceptanceDatabaseSnapshot($restore)) {
+        throw new RuntimeException('Nonempty BAR restore differs from the original data snapshot.');
+    }
+    putenv('APP_PRIVATE_STORAGE_ROOT=' . $temporaryRoot . '/private-restored');
+    try {
+        barVerifyPrivateFileManifest($restore, $barSeed['private_manifest']);
+        throw new LogicException('Missing BAR attachments were accepted as a complete restore.');
+    } catch (RuntimeException $expectedMissing) {
+    }
+    // The check may create empty category directories; copy into a distinct, new restore root.
+    barAcceptanceCopyPrivateFiles($barSeed['private_manifest'], $temporaryRoot . '/private-restored-complete', $temporaryRoot . '/private-bundle');
+    putenv('APP_PRIVATE_STORAGE_ROOT=' . $temporaryRoot . '/private-restored-complete');
+    barVerifyPrivateFileManifest($restore, $barSeed['private_manifest']);
+    $barFirstFile = $barSeed['private_manifest']['files'][0];
+    $barFirstPath = barPrivateManifestFilePath($barFirstFile);
+    file_put_contents($barFirstPath, 'LOCALHOST deliberate corrupt attachment');
+    try {
+        barVerifyPrivateFileManifest($restore, $barSeed['private_manifest']);
+        throw new LogicException('Corrupt BAR attachment was accepted as complete.');
+    } catch (RuntimeException $expectedCorrupt) {
+    }
+    copy($temporaryRoot . '/private-bundle/' . substr($barFirstFile['key'], strlen('private://')), $barFirstPath);
+    barVerifyPrivateFileManifest($restore, $barSeed['private_manifest']);
+    if ($barExportJson !== barAccountingExport($restore, $barSeed['export_id'])['manifest_json']) {
+        throw new RuntimeException('Restored accounting evidence changed bytes.');
+    }
+    $_SESSION = ['trener_id' => 97002, 'trener_session_version' => 1, 'staff_active_position' => 'bar_operator'];
+    $barReplay = barSubmitSale($restore, ...$barSeed['sale_request']);
+    if (!$barReplay['repeated'] || $barReplay['sale_id'] !== $barSeed['sale_id'] || $barSnapshot !== barAcceptanceDatabaseSnapshot($restore)) {
+        throw new RuntimeException('Request replay after restore changed cash, stock, audit or ownership.');
+    }
+    echo 'BAR populated database + private files restore PASS (' . count($barSnapshot) . ' tables, '
+        . count($barSeed['private_manifest']['files']) . " files; missing/corrupt detection, immutable export and replay)\n";
     echo 'MariaDB database backup and restore smoke OK (' . count($manifest['tables']) . " tables)\n";
 } finally {
+    putenv($barOldStorage === false ? 'APP_PRIVATE_STORAGE_ROOT' : 'APP_PRIVATE_STORAGE_ROOT=' . $barOldStorage);
+    $_SESSION = $barOldSession;
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedRestoreDatabase);
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);
     if (file_exists($temporaryRoot)) {

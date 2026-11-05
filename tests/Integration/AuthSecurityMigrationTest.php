@@ -175,8 +175,13 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261102173000_member_roster_age_rules',
                 '20261102174000_member_evidence_cutover_runs',
                 '20261104180000_tv_programs',
+                '20261105150000_bar_foundation',
                 '20261105150000_monthly_memberships',
-                '20261105200000_membership_catalog',
+                '20261105160000_bar_transfer',
+                '20261105170000_bar_stock',
+                '20261105180000_bar_catalog_management',
+                '20261105190000_bar_checkout', '20261105200000_bar_documents',
+                '20261105200000_membership_catalog', '20261105210000_bar_recovery',
 
             ],
             array_keys($catalog)

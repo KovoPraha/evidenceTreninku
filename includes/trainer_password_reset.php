@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/password_security.php';
 require_once __DIR__ . '/auth_mail_outbox.php';
+require_once __DIR__ . '/staff_email_policy.php';
 
 const TRAINER_PASSWORD_RESET_PURPOSE = 'trainer-password-reset-v1';
 
@@ -22,6 +23,9 @@ function trainerPasswordResetTarget(PDO $pdo, string $email, bool $lock = false)
         return null;
     }
     $trainer = $trainers[0];
+    if (staffAccountHasTechnicalEmail($pdo, (int)$trainer['id'], $lock)) {
+        return null;
+    }
     $linked = $pdo->prepare('SELECT id,email,aktivni,email_overeno,session_version FROM verejni_uzivatele WHERE trener_id=? ORDER BY id LIMIT 2' . $suffix);
     $linked->execute([(int)$trainer['id']]);
     $accounts = $linked->fetchAll(PDO::FETCH_ASSOC);

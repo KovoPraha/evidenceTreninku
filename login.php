@@ -23,6 +23,9 @@ require_once __DIR__ . '/includes/password_security.php';
 require_once __DIR__ . '/includes/auth_rate_limit.php';
 require_once __DIR__ . '/includes/unified_account.php';
 require_once __DIR__ . '/includes/staff_workspaces.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Databázové připojení není dostupné.');
+}
 
 function h($s): string
 {
@@ -74,7 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($authenticated) {
                     auth_rate_limit_record_success($pdo, $rateScope, $login, $clientIp);
-                    $customerAccount = unifiedAccountEnsureTrainerCustomer($pdo, $uzivatel);
+                    $customerAccount = staffAccountHasTechnicalEmail($pdo, (int)$uzivatel['id'])
+                        ? null : unifiedAccountEnsureTrainerCustomer($pdo, $uzivatel);
                     // Nová autentizace rotuje session ID, CSRF token a nastaví časové limity.
                     app_session_mark_authenticated();
 
@@ -82,14 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         (int)$uzivatel['id'],
                         (int)$uzivatel['session_version']
                     );
-                    auth_session_bind_public_user(
-                        (int)$customerAccount['id'],
-                        (int)$customerAccount['session_version']
-                    );
+                    if ($customerAccount !== null) {
+                        auth_session_bind_public_user((int)$customerAccount['id'], (int)$customerAccount['session_version']);
+                        $_SESSION['verejny_uzivatel_jmeno'] = trim((string)$customerAccount['jmeno'] . ' ' . (string)$customerAccount['prijmeni']);
+                    } else {
+                        auth_session_clear_identity('public');
+                    }
                     $_SESSION['trener_jmeno'] = $uzivatel['jmeno'];
-                    $_SESSION['verejny_uzivatel_jmeno'] = trim(
-                        (string)$customerAccount['jmeno'] . ' ' . (string)$customerAccount['prijmeni']
-                    );
                     $_SESSION['role']        = $uzivatel['role'];
                     $_SESSION['login_time']  = time();
 

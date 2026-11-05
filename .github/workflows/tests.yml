@@ -46,6 +46,9 @@ jobs:
       - name: Spustit testy
         run: composer test
 
+      - name: Ověřit ruční obnovu barového potvrzení po ztrátě odpovědi
+        run: node --test tests/Support/BarRequestRecoveryJavascriptSmoke.cjs
+
       - name: Ověřit TV přehrávač a přebírání zveřejněných změn
         run: node --test tests/Support/TvPlayerSmoke.cjs
 
@@ -280,6 +283,21 @@ jobs:
 
       - name: Ověřit migraci a zveřejnění TV programů na MariaDB
         run: php tests/Support/TvProgramsMariaDbSmoke.php
+
+      - name: Ověřit barové role a odvolání vlastní spotřeby v aktuální transakci
+        run: php tests/Support/BarFoundationMariaDbSmoke.php
+
+      - name: Ověřit převod baru, soukromé fotografie, technický účet a sklad
+        run: php tests/Support/BarTransferMariaDbSmoke.php
+
+      - name: Ověřit pokladnu baru a skutečné souběhy prodeje, práv a uzávěrky
+        run: php tests/Support/BarCheckoutMariaDbSmoke.php
+
+      - name: Ověřit příjem faktur a souběh účetních exportů
+        run: php tests/Support/BarDocumentsMariaDbSmoke.php
+
+      - name: Ověřit obnovu spojení a nouzové vypořádání kas
+        run: php tests/Support/BarRecoveryMariaDbSmoke.php
 
       - name: Ověřit rodinný kalendář a cílené historické členství
         env:

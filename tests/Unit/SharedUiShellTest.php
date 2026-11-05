@@ -52,7 +52,7 @@ final class SharedUiShellTest extends TestCase
             // Their guarded administration pages still use appUiAssets.
             if (in_array(
                 $relative,
-                ['includes/accounting_documents.php','includes/shop_stock_documents.php','tv.php'],
+                ['includes/accounting_documents.php','includes/shop_stock_documents.php','includes/bar/menu_view.php','tv.php'],
                 true
             )) {
                 continue;

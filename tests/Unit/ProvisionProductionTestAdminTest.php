@@ -79,9 +79,9 @@ final class ProvisionProductionTestAdminTest extends TestCase
         self::assertSame(2, (int)$row['session_version']);
         self::assertTrue(password_verify('Another-Test-456!', (string)$row['heslo']));
         self::assertFalse(password_verify('Strong-Test-123!', (string)$row['heslo']));
-        self::assertSame(9, $second['positions']);
+        self::assertSame(11, $second['positions']);
         self::assertTrue($second['superadmin']);
-        self::assertSame(9, (int)$pdo->query('SELECT COUNT(*) FROM staff_user_positions WHERE trainer_id=' . (int)$first['id'])->fetchColumn());
+        self::assertSame(11, (int)$pdo->query('SELECT COUNT(*) FROM staff_user_positions WHERE trainer_id=' . (int)$first['id'])->fetchColumn());
         self::assertSame('system_admin', (string)$pdo->query('SELECT position_code FROM staff_user_positions WHERE trainer_id=' . (int)$first['id'] . ' AND is_default=1')->fetchColumn());
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM staff_superadmins WHERE trainer_id=' . (int)$first['id'])->fetchColumn());
         self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM staff_position_assignment_events WHERE action='provision_test_superadmin'")->fetchColumn());

@@ -207,6 +207,19 @@ Merge a produkční deploy jsou samostatná rozhodnutí vlastníka podle
 
 ## Průběžný plán
 
+Začlenění baru řídí [plán z 5. 11. 2026](BAR_INTEGRATION_PLAN_2026-11-05.md).
+Pracuje v oddělené větvi `codex/bar-kis-integration-20261105`; produkční nasazení
+není povolené. Zachovává se katalog a pouze účet lucka, provozní historie se
+nepřenáší. Dvě nové pozice doplňuje samostatné oprávnění vlastní spotřeby.
+Stav etap, ověření a další krok udržuje tento plán.
+Aktuálně je hotová [místní technická B6 přejímka](verification/bar-acceptance-20261105/RESULTS.md):
+role, skutečný browser, ztracená odpověď/spojení, opuštěná kasa, UTC/DST a obnova
+naplněných 335 tabulek i soukromých fotografií/PDF. Konečné Linux CI přesného headu
+ověřit v PR #306, nepřebírat historický výsledek B5. [Účetní kontrakt v1](BAR_ACCOUNTING_CONTRACT_V1.md)
+a [návrh adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md) nepovolují finanční zápisy.
+Další je [příprava a lidská přejímka B7](BAR_PRODUCTION_READINESS_2026-11-05.md), skutečný
+katalog/lucka zatím nepřevedené. Nasazení a přepnutí URL vyžadují nový výslovný souhlas.
+
 Navazující [komplexní refaktoring celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md)
 je sloučený v PR #219 a vlastník zahájil autonomní realizaci. Vlny 1–5 jsou
 dokončené; [první K0/W6.1 balík](REFACTORING_K0_W6_2026-10-29.md) je sloučený

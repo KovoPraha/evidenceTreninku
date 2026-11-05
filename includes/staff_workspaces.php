@@ -305,6 +305,7 @@ function staffPositionDefinitions(): array
             'sort' => 70,
             'groups' => [
                 ['label' => 'Platby', 'icon' => 'bank', 'items' => [
+                    ['route' => 'bar/accounting.php', 'label' => 'Účetní podklady baru', 'description' => 'Kontrola a neměnný export podkladů', 'icon' => 'journal-text'],
                     ['route' => 'accounting_ledger_admin.php','label' => 'Peněžní evidence a pokladna',
 
     'description' => 'Skutečné pohyby, příděly a odsouhlasení zůstatků','icon' => 'journal-text'],
@@ -392,6 +393,41 @@ function staffPositionDefinitions(): array
                 ]],
             ],
         ],
+        'bar_operator' => [
+            'label' => 'Obsluha baru',
+            'short_label' => 'Bar',
+            'description' => 'Pokladna, vlastní kasa a nabídka stánku.',
+            'icon' => 'cup-straw',
+            'legacy_role' => 'trener',
+            'sort' => 76,
+            'groups' => [
+                ['label' => 'Bar', 'icon' => 'cup-straw', 'items' => [
+                    ['route' => 'bar/checkout.php', 'label' => 'Pokladna', 'description' => 'Prodej a potvrzení objednávky', 'icon' => 'cart-check'],
+                    ['route' => 'bar/cashbox.php', 'label' => 'Moje kasa', 'description' => 'Hotovost a uzávěrka vlastní kasy', 'icon' => 'cash-stack'],
+                    ['route' => 'bar/consumption.php', 'label' => 'Vlastní spotřeba', 'description' => 'Odběr s výslovně přiděleným oprávněním', 'icon' => 'cup-hot'],
+                    ['route' => 'bar/index.php', 'label' => 'Nabídka stánku', 'description' => 'Produkty, ceny a zásoba stánku', 'icon' => 'cup-straw'],
+                ]],
+            ],
+        ],
+        'bar_admin' => [
+            'label' => 'Administrátor baru',
+            'short_label' => 'Správa baru',
+            'description' => 'Katalog a skladové údaje baru.',
+            'icon' => 'shop',
+            'legacy_role' => 'trener',
+            'sort' => 77,
+            'groups' => [
+                ['label' => 'Správa baru', 'icon' => 'shop', 'items' => [
+                    ['route' => 'bar/invoices.php', 'label' => 'Faktury baru', 'description' => 'Kontrola PDF a příjem zboží', 'icon' => 'file-earmark-pdf'],
+                    ['route' => 'bar/operations.php', 'label' => 'Vypořádání kas', 'description' => 'Kontrola a nouzová uzávěrka opuštěné kasy', 'icon' => 'clipboard-check'],
+                    ['route' => 'bar/offers.php', 'label' => 'Nabídky baru', 'description' => 'Pracovní návrhy a zveřejněná obrazovka', 'icon' => 'display'],
+                    ['route' => 'bar/catalog.php', 'label' => 'Katalog baru', 'description' => 'Produkty, ceny a obě skladová místa', 'icon' => 'boxes'],
+                    ['route' => 'bar/categories.php', 'label' => 'Kategorie baru', 'description' => 'Členění a pořadí nabídky', 'icon' => 'tags'],
+                    ['route' => 'bar/stock.php', 'label' => 'Sklad baru', 'description' => 'Příjem, přesun a inventura', 'icon' => 'box-seam'],
+                    ['route' => 'bar/settings.php', 'label' => 'Nastavení baru', 'description' => 'Záloha za vratný kelímek', 'icon' => 'gear'],
+                ]],
+            ],
+        ],
         'system_admin' => [
             'label' => 'Správce systému',
             'short_label' => 'Systém',
@@ -403,6 +439,8 @@ function staffPositionDefinitions(): array
                 ['label' => 'Účty a přístupy', 'icon' => 'person-gear', 'items' => [
                     ['route' => 'sprava_pracovnich_pozic.php', 'label' => 'Pracovní pozice', 'description'
     => 'Přiřazení pozic a superadminů', 'icon' => 'person-workspace'],
+                    ['route' => 'bar/permissions.php', 'label' => 'Vlastní spotřeba baru',
+                        'description' => 'Přidělení a odebrání zvláštního oprávnění', 'icon' => 'key'],
                     ['route' => 'sprava_treneru.php', 'label' => 'Pracovní účty', 'description' => 'Účty, hesla a aktivace',
 
      'icon' => 'person-gear'],
@@ -467,6 +505,8 @@ function staffPositionPrimaryRoutes(): array
 
 
         'tv_operator' => ['tv_programs_admin.php'],
+        'bar_operator' => ['bar/checkout.php', 'bar/cashbox.php', 'bar/consumption.php'],
+        'bar_admin' => ['bar/catalog.php', 'bar/stock.php', 'bar/invoices.php'],
         'system_admin' => ['sprava_pracovnich_pozic.php','sprava_treneru.php'],
     ];
 }
@@ -493,6 +533,8 @@ function staffRouteOwners(): array
     }
 
     $additional = [
+        'bar_operator' => ['bar/image.php', 'bar/receipt.php', 'bar/request-status.php'],
+        'bar_admin' => ['bar/invoice-file.php', 'bar/menu-pdf.php'],
         'coach' => [
             'ajax_denny_rozvrh.php','ajax_dostupnost_sportovist.php','ajax_nova_oznameni.php',
             'ajax_podskupiny.php','ajax_roster_target_selector.php','ajax_sportovci.php','ajax_treninky.php',
@@ -586,6 +628,16 @@ function staffSharedRoutes(): array
 function staffRouteDelegates(): array
 {
     return [
+        'bar/index.php' => ['bar_admin'],
+        'bar/invoices.php' => ['finance_manager'],
+        'bar/invoice-file.php' => ['finance_manager'],
+        'bar/accounting.php' => ['bar_admin'],
+        'bar/image.php' => ['bar_admin'],
+        'bar/request-status.php' => ['bar_admin', 'finance_manager'],
+        'bar/checkout.php' => ['bar_admin'],
+        'bar/cashbox.php' => ['bar_admin'],
+        'bar/consumption.php' => ['bar_admin'],
+        'bar/receipt.php' => ['bar_admin'],
         'season_preparation_admin.php' => ['sports_lead'],
         'club_communication_admin.php' => ['registrar','order_operator'],
         'club_rewards_admin.php' => ['coach','sports_lead'],
@@ -667,7 +719,8 @@ function staffPositionMenuGroups(string $position, bool $isLocal): array
 
      'zatezovy_test_form.php'],
         'catalog_manager' => ['shop_returns_admin.php'],
-        'finance_manager' => ['eshop_inventory_admin.php', 'shop_returns_admin.php'],
+        'finance_manager' => ['eshop_inventory_admin.php', 'shop_returns_admin.php', 'bar/invoices.php'],
+        'bar_admin' => ['bar/checkout.php', 'bar/cashbox.php', 'bar/consumption.php', 'bar/accounting.php'],
     ][$position] ?? [];
     $workflowItems = [];
     foreach (staffPositionDefinitions() as $ownerDefinition) {
@@ -954,11 +1007,12 @@ function staffEnforceCurrentRoute(string $appRoot): void
     }
     header('Content-Type: text/html; charset=utf-8');
     $label = htmlspecialchars((string)$definition['label'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    $backUrl = htmlspecialchars(appUiUrl('pracovni_pozice.php'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     echo '<!doctype html><html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
         . '<title>Přístup odepřen</title><body style="font-family:system-ui;max-width:760px;margin:4rem auto;padding:1rem">'
         . '<h1>Tato stránka patří do jiné pracovní pozice</h1><p>Vlastník agendy: <strong>' . $label .
 
      '</strong>.</p>'
-        . '<p><a href="pracovni_pozice.php">Zpět na aktivní rozcestník</a></p></body></html>';
+        . '<p><a href="' . $backUrl . '">Zpět na aktivní rozcestník</a></p></body></html>';
     exit;
 }

@@ -124,9 +124,9 @@
 
     document.addEventListener('submit', function (event) {
         var form = event.target;
-        if (!(form instanceof HTMLFormElement) || String(form.method).toLowerCase() !== 'post') return;
+        if (!(form instanceof HTMLFormElement) || String(form.getAttribute('method') || 'get').toLowerCase() !== 'post') return;
         // Attachment responses do not navigate, so no pageshow will clear the lock.
-        if (form.dataset.noLock !== undefined || form.target === '_blank') return;
+        if (form.dataset.noLock !== undefined || String(form.getAttribute('target') || '').toLowerCase() === '_blank') return;
         if (form.dataset.appSubmitting) {
             event.preventDefault();
             return;
