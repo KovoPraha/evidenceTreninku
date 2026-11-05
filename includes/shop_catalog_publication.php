@@ -115,7 +115,7 @@ function shopCatalogPublicationReadiness(PDO $pdo, int $productId): array
             $expected = (string)$product['offer_type'] === 'camp' ? 'Tábor / soustředění' : 'Klubová akce';
             $blockers[] = 'Položku nejprve propojte s pracovní akcí typu '.$expected.' v agendě Klubové akce.';
         }
-    } elseif ((string)$product['offer_type'] !== 'goods') {
+    } elseif (!in_array((string)$product['offer_type'], ['goods', 'program'], true)) {
         $blockers[] = 'Typ ' . $product['offer_type'] . ' zatím nemá podporovaný prodejní postup.';
     }
     if (trim((string)$product['name']) === '') {

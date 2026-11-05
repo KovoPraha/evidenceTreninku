@@ -72,6 +72,19 @@ final class MembershipCatalogTest extends TestCase
         $this->subscribe($tariff, [102]);
     }
 
+    public function testApprovedRecurringProgramCanPassPublicationWithoutOneTimeOffer(): void
+    {
+        require_once dirname(__DIR__).'/Support/ShopAccountingPublicationFixture.php';
+        \shopAccountingPublicationFixture($this->pdo);
+        $this->pdo->exec("ALTER TABLE shop_products ADD COLUMN visibility TEXT DEFAULT 'visible'");
+        self::assertFalse(\shopCatalogPublicationReadiness($this->pdo, 1)['ready']);
+        $this->configure();
+        $ready = \shopCatalogPublicationReadiness($this->pdo, 1);
+        self::assertTrue($ready['ready'], implode(' ', $ready['blockers']));
+        $this->pdo->exec("UPDATE monthly_membership_tariffs SET status='inactive'");
+        self::assertFalse(\shopCatalogPublicationReadiness($this->pdo, 1)['ready']);
+    }
+
     public function testSelectionOutsideTariffOrEmptyCannotCreateDebt(): void
     {
         $tariff = $this->configure();
