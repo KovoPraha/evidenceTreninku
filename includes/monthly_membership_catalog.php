@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__.'/membership_options.php';
+
 function monthlyMembershipTable(PDO $pdo, string $table): bool
 {
     if (!preg_match('/^monthly_membership[a-z_]*$/D', $table)) {

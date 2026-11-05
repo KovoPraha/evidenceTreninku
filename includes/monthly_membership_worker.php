@@ -33,7 +33,7 @@ function monthlyMembershipMessage(PDO $pdo, int $messageId, ?DateTimeImmutable $
         if ($doc['status'] !== 'issued') {
             return null;
         }
-        $subject = 'Doklad k měsíčnímu členství';
+        $subject = 'Doklad k členství v klubu';
         $body = 'Byl vystaven doklad '.$doc['number'].'.';
     } else {
         $days = (int)(new DateTimeImmutable($row['due_on']))->diff(new DateTimeImmutable(monthlyMembershipToday($now)))
@@ -42,7 +42,7 @@ function monthlyMembershipMessage(PDO $pdo, int $messageId, ?DateTimeImmutable $
         if ($row['charge_status'] !== 'pending' || $remaining < 1 || !in_array($stage, [3,7,14], true) || $days < $stage) {
             return null;
         }
-        $subject = 'Neuhrazené měsíční členství po splatnosti';
+        $subject = 'Neuhrazené členství po splatnosti';
         $body = 'Evidujeme neuhrazený zůstatek předpisu „'.$row['title_snapshot'].'“ se splatností '.$row['due_on']
     .'.';
     }

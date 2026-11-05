@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__.'/includes/init.php';
 require_once __DIR__.'/csrf_helper.php';
 require_once __DIR__.'/includes/monthly_membership_worker.php';
+require_once __DIR__.'/includes/membership_setup.php';
 if (!isset($pdo) || !$pdo instanceof PDO) {
     throw new RuntimeException('Databázové připojení není dostupné.');
 }
@@ -27,7 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
             throw new DomainException('Formulář vypršel.');
         }
-        if (($_POST['action'] ?? '') === 'configure') {
+        if (($_POST['action'] ?? '') === 'prepare_racing') {
+            if (($_POST['confirmed'] ?? '') !== '1') {
+                throw new DomainException('Potvrďte založení konceptu a soupisek.');
+            }
+            membershipPrepareRacingTeam($pdo);
+            $success = 'Koncept Závodní tým a skupina se soupiskami jsou připravené. Doplňte vystavovatele a schvalte tarif.';
+        } elseif (($_POST['action'] ?? '') === 'configure') {
             monthlyMembershipConfigure($pdo, $_POST);
             $success = 'Měsíční tarif byl schválen. Stávající jednorázové varianty se nemění.';
         } elseif (($_POST['action'] ?? '') === 'pause') {
@@ -71,7 +78,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $variants = $pdo->query(('SELECT v.id,v.sku,p.name,v.amount_minor FROM shop_variants v JOIN shop_products p ON p.id=v.product_id WHERE '
     .
     'p.offer_type=\'program\' ORDER BY p.name,v.id'))->fetchAll(PDO::FETCH_ASSOC);
-$teams = $pdo->query("SELECT id,name FROM club_teams WHERE status='active' ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+$teams = $pdo->query("SELECT id,name,team_kind,standing_code FROM club_teams WHERE status='active' ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+$options = $pdo->query("SELECT t.id,t.name,e.parent_team_id FROM club_teams t JOIN club_team_edges e ON e.child_team_id=t.id "
+    . "WHERE t.status='active' AND t.team_kind='roster' AND e.valid_from<=CURRENT_DATE "
+    . "AND (e.valid_to IS NULL OR e.valid_to>=CURRENT_DATE) ORDER BY t.name,t.id")->fetchAll(PDO::FETCH_ASSOC);
 $issuers = $pdo->query('SELECT id,snapshot_json FROM accounting_issuer_versions ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
 $rules = $pdo->query("SELECT id,title,document_kind FROM accounting_rules WHERE source_type='member_charge' ORDER BY id DESC")
     ->fetchAll(PDO::FETCH_ASSOC);
@@ -87,36 +97,51 @@ $messages = $pdo->query("SELECT id,kind,last_error FROM monthly_membership_messa
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Měsíční členství</title><?php appUiAssets(); ?></head>
+<title>Členství v klubu</title><?php appUiAssets(); ?></head>
 <body class="bg-light"><?php require __DIR__.'/hlavicka.php'; ?><main class="container py-4">
-<h1 class="h3">Měsíční členství přes e-shop</h1>
+<h1 class="h3">Členství v klubu přes e-shop</h1>
 <p>
+<a href="accounting_settings_admin.php">Fakturační údaje klubu</a> ·
 <a href="member_fee_plans_admin.php">Dosavadní měsíční plány</a> · <a href="accounting_documents_admin.php">Doklady a účetní nastavení</a>
 </p>
-<p>Nejdříve založte samostatný neskladový produkt typu program a jeho variantu s měsíční cenou. Tady schválíte měsíční režim. Varianta
+<p><a href="eshop_produkt_novy_admin.php">Založit další produkt</a> · <a href="eshop_catalog_publication_admin.php">Zveřejnění produktů</a></p>
+<p>Nejdříve založte samostatný neskladový produkt typu program a jeho variantu s cenou za měsíc nebo rok. Tady schválíte opakovaný režim. Varianta
 pak nepůjde do jednorázového košíku. Změna ceny nebo podmínek vyžaduje novou variantu; sjednaná členství se nepřepisují.</p>
 <?php if ($error): ?><div class="alert alert-danger"><?=mmaH($error)?></div><?php endif; ?><?php
 
 
 if ($success): ?><div class="alert alert-success"><?=mmaH($success)?></div><?php endif;
 ?>
+<form method="post" class="card card-body mb-4">
+<?=csrf_field()?><input type="hidden" name="action" value="prepare_racing">
+<h2 class="h5">Připravit Závodní tým</h2>
+<p>2 200 Kč měsíčně · Členství v klubu · více disciplín MTB / Silnice / Dráha za stejnou cenu.</p>
+<label class="mb-3"><input type="checkbox" name="confirmed" value="1" required>
+Založit neveřejný koncept a skupinu se třemi soupiskami. Existující odpovídající záznamy použít bez duplikování.</label>
+<button class="btn btn-outline-primary">Připravit produkt a soupisky</button></form>
 <form method="post" class="card card-body mb-4"><?=csrf_field()?><input type="hidden" name="action" value="configure">
-<h2 class="h5">Schválit měsíční tarif</h2>
+<h2 class="h5">Schválit členský tarif</h2>
 <label>Varianta<select class="form-select mb-3" name="variant_id" required><?php foreach ($variants as $v):
-    ?><option value="<?=(int)$v['id']?>"><?=mmaH($v['name'].' · '.$v['sku'].' · '.number_format((int)$v['amount_minor']
-    / 100, 2, ',', ' ').' Kč / měsíc')?></option><?php endforeach; ?></select>
+    ?><option value="<?=(int)$v['id']?>" <?=$v['sku'] === shopCatalogManualSkuPrefix().'CLEN-ZAVODNI-MESIC' ? 'selected' : ''?>>
+<?=mmaH($v['name'].' · '.$v['sku'].' · '.number_format((int)$v['amount_minor']
+    / 100, 2, ',', ' ').' Kč za období')?></option><?php endforeach; ?></select>
 </label>
-<label>Cílová soupiska<select class="form-select mb-3" name="team_id" required><?php foreach ($teams as $team):
-    ?><option value="<?=(int)$team['id']?>"><?=mmaH($team['name'])?></option><?php endforeach;
+<label>Cílová skupina nebo soupiska<select id="membership-team" class="form-select mb-3" name="team_id" required><?php foreach ($teams as $team):
+    ?><option value="<?=(int)$team['id']?>" <?=$team['standing_code'] === 'CLEN-ZAVODNI' ? 'selected' : ''?>><?=mmaH($team['name'])?></option><?php endforeach;
 ?></select>
 </label>
+<fieldset class="mb-3"><legend class="h6">Nabídka disciplín pod vybranou skupinou</legend>
+<p>Zaškrtněte soupisky, ze kterých si člen vybere jednu či více bez příplatku. Samostatná soupiska nemá další výběr.</p>
+<?php foreach ($options as $option): ?><label class="d-block" data-membership-parent="<?=(int)$option['parent_team_id']?>">
+<input type="checkbox" name="team_ids[]" value="<?=(int)$option['id']?>"> <?=mmaH($option['name'])?></label><?php endforeach; ?></fieldset>
+<label>Interval platby<select class="form-select mb-3" name="billing_interval">
+<option value="month">Měsíčně</option><option value="year">Ročně (12 kalendářních měsíců)</option></select></label>
 <label>Den splatnosti v měsíci<input class="form-control mb-3" name="due_day" type="number" min="1" max="28" value="15" required>
 </label>
-<label>Schválené podmínky členství<textarea class="form-control mb-3" name="terms_text" rows="5" minlength="20" maxlength="10000" required>
-</textarea>
+<label>Schválené podmínky členství<textarea class="form-control mb-3" name="terms_text" rows="5" minlength="20" maxlength="10000" required><?=mmaH(membershipRacingTerms())?></textarea>
 </label>
 <p>První měsíc v plné ceně, ukončení ke konci měsíce. První splatnost nejdříve 7 dní po sjednání. Zařazení na soupisku vzniká
-sjednáním; pravidla případného omezení při dluhu jsou samostatná.</p>
+sjednáním. Roční tarif má 12 kalendářních měsíců od měsíce sjednání a končí na konci tohoto období. Upravte podmínky podle intervalu a ceny; pravidla případného omezení při dluhu jsou samostatná.</p>
 <label>Vystavovatel<select class="form-select mb-3" name="issuer_id" required><?php foreach ($issuers as $issuer): $party = json_decode($issuer['snapshot_json'],
     true); ?><option value="<?=(int)$issuer['id']?>"><?=mmaH($party['name'])?></option><?php endforeach;
 ?></select>
@@ -133,11 +158,11 @@ sjednáním; pravidla případného omezení při dluhu jsou samostatná.</p>
 </label>
 <label class="mb-3">
 <input type="checkbox" name="confirmed" value="1" required> Schvaluji cenu, podmínky a automatické vydávání podle vybrané metodiky a číselné řady.</label>
-<button class="btn btn-primary">Schválit měsíční tarif</button>
+<button class="btn btn-primary">Schválit členský tarif</button>
 </form>
 <h2 class="h5">Schválené tarify</h2><?php foreach ($tariffs as $t): ?><div class="card card-body mb-2">
 <strong><?=mmaH($t['sku'].' · '.$t['status'])?></strong>
-<p><?=mmaH(number_format((int)$t['amount_minor'] / 100, 2, ',', ' '))?> Kč / měsíc</p>
+<p><?=mmaH(number_format((int)$t['amount_minor'] / 100, 2, ',', ' '))?> Kč / <?=mmaH(membershipIntervalLabel($t))?></p>
 <a href="booking/mesicni_clenstvi.php?variant_id=<?=(int)$t['variant_id']?>">Zákaznická nabídka</a><?php
 
 
@@ -160,5 +185,25 @@ sjednáním; pravidla případného omezení při dluhu jsou samostatná.</p>
 <input type="checkbox" name="confirmed" required> Ověřil jsem, že předchozí zpráva nebyla doručena a má se odeslat znovu.</label>
 <button class="btn btn-outline-primary">Povolit nové odeslání</button>
 </form><?php endforeach; ?></main>
-</body>
+<script nonce="<?=mmaH(app_csp_nonce())?>">
+const membershipTeam = document.getElementById('membership-team');
+function showMembershipTeams() {
+    document.querySelectorAll('[data-membership-parent]').forEach(label => {
+        const enabled = label.dataset.membershipParent === membershipTeam.value;
+        label.classList.toggle('d-none', !enabled);
+        const input = label.querySelector('input');
+        input.disabled = !enabled;
+        input.checked = enabled;
+    });
+}
+membershipTeam.addEventListener('change', showMembershipTeams);
+showMembershipTeams();
+const membershipForm = membershipTeam.closest('form');
+['variant_id', 'billing_interval'].forEach(name => {
+    membershipForm.elements[name].addEventListener('change', () => {
+        membershipForm.elements.terms_text.value = '';
+        membershipForm.elements.terms_text.placeholder = 'Doplňte podmínky, cenu a interval vybraného tarifu.';
+    });
+});
+</script></body>
 </html>

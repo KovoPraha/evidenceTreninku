@@ -22,7 +22,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-05.7';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-05.8';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -343,6 +343,8 @@ const EVIDENCE_TABLES = [
     'monthly_membership_allocations',
     'monthly_membership_messages',
     'monthly_membership_events',
+    'monthly_membership_tariff_teams',
+    'monthly_membership_team_grants',
     'member_fee_standing_orders',
     'member_payer_variable_symbols',
     'member_payer_receipts',

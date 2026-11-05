@@ -2,7 +2,40 @@
 
 **Vydání 5. 11. 2026:** implementace a migrace jsou [nasazené a technicky ověřené](verification/monthly-coach-release-20261105/RESULTS.md), včetně produkčního dry-run. Ostrý prodej, nové účtování a pošta zatím neaktivované. Následující postup aktivace zůstává platný.
 
-Stav 5. 11. 2026: implementace ve větvi `codex/monthly-membership-flow-20261105`, základ `97b85bb5`. Tento dokument neoznačuje funkci za nasazenou ani aktivovanou. Plán a obchodní pravidla jsou v [plánu](MONTHLY_MEMBERSHIP_PLAN.md).
+Plán původního měsíčního toku je v [plánu](MONTHLY_MEMBERSHIP_PLAN.md).
+Rozšíření o roční tarify, disciplíny a fakturační údaje popisuje
+[navazující plán](CLUB_MEMBERSHIP_CATALOG_2026-11-05.md). Stav konkrétního vydání
+určuje CURRENT_STATE; dostupný kód sám o sobě neznamená aktivovaný prodej.
+
+## Příprava klubového katalogu
+
+V pozici **Hospodář a platby → Členství v klubu** lze připravit koncept
+„Závodní tým“ za 2 200 Kč měsíčně v kategorii „Členství v klubu“. Tlačítko
+založí stálou skupinu a soupisky MTB, Silnice, Dráha. Opakování nevytvoří
+kopie; neodpovídající existující kódy odmítne. Žádného sportovce tím nezařadí.
+
+V **Fakturačních údajích klubu** doplňte skutečnou adresu, IČ, případně účet
+pro doklady a podklad schválení. Název je předvyplněný, ostatní údaje se
+neodhadují. Potvrzení vyžaduje skutečný režim neplátce DPH, který současný
+modul podporuje. Uložení vytvoří novou verzi vystavovatele, výchozí členění
+CLEN / KLUB a chybějící řady CLEN pro letošní a příští rok. Existující řady
+se neresetují. Platební IBAN nastavujte zvlášť v Bankovním účtu e-shopu.
+
+Při schválení tarifu zvolte skupinu, nabízené disciplíny, měsíční nebo roční
+interval a odpovídající úplné podmínky. Každý tarif má samostatnou variantu
+a schválenou cenu. Roční období tvoří dvanáct kalendářních měsíců od měsíce
+sjednání; první období je za plnou cenu a ukončuje se na jeho konci.
+Roční varianta vyžaduje vlastní cenu, nevzniká automatickým násobením měsíční.
+
+Člen volí jednu či více nabízených disciplín bez příplatku. Vzniká jeden
+předpis a samostatné zařazení do každé vybrané soupisky. Skupina své členy
+odvozuje ze soupisek. Ukončení uzavře pouze zařazení z konkrétního členství.
+Změna výběru disciplín po sjednání není samoobslužnou součástí této verze.
+
+Po schválení tarifu lze produkt zveřejnit standardní publikací katalogu.
+Prodej vyžaduje samostatnou aktivaci automatizace uvedenou níže. Pro roční
+varianty se používají stejné provozní přepínače a worker; interní názvy
+`monthly_membership_*` a zákaznická URL zůstávají kvůli kompatibilitě.
 
 ## Co zákazník udělá
 

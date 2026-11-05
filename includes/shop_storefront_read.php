@@ -63,7 +63,7 @@ function shopStorefrontReadRows(
     $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
     $monthlyTariffs = [];
     if (monthlyMembershipTable($pdo, 'monthly_membership_tariffs')) {
-        foreach ($pdo->query('SELECT variant_id,id,status,amount_minor FROM monthly_membership_tariffs')->fetchAll(PDO::FETCH_ASSOC) as $tariff) {
+        foreach ($pdo->query('SELECT * FROM monthly_membership_tariffs')->fetchAll(PDO::FETCH_ASSOC) as $tariff) {
             $monthlyTariffs[(int)$tariff['variant_id']] = $tariff;
         }
     }
@@ -87,6 +87,7 @@ function shopStorefrontReadRows(
                 continue;
             }
             $row['monthly_tariff_id'] = (int)$monthlyTariff['id'];
+            $row['billing_interval'] = membershipInterval($monthlyTariff);
         } elseif ($row['offer_type'] === 'goods') {
             $inventoryAvailable ??= shopInventoryTable($pdo);
             if ($inventoryAvailable && $row['stock_quantity_decimal'] === null) {
