@@ -66,9 +66,7 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení klubových tarifů a p�
   SHA-256 `568ff63f469f70911efa757d98c82374466a85562392f9e4527cf3b427a17947`. Schéma current / pending [], ledger 151, dosavadní VS zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
-  31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu.
-  Diskové temporary tables fungují. Příčina kolísání kapacity není definitivně určena.
-  Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
+  31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu. Diskové temporary tables fungují. Příčina kolísání kapacity není definitivně určena. Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
   návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
   [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).
 - **Konfigurace a flags:** Fio import/auto-confirm a SumUp true; vlastní hostingový cron s minimálním odstupem 600 s.
