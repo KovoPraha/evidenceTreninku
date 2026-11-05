@@ -299,6 +299,9 @@ jobs:
       - name: Ověřit obnovu spojení a nouzové vypořádání kas
         run: php tests/Support/BarRecoveryMariaDbSmoke.php
 
+      - name: Ověřit chráněný převod baru, původní fotografie a přidělení práv
+        run: php tests/Support/BarCutoverMariaDbSmoke.php
+
       - name: Ověřit rodinný kalendář a cílené historické členství
         env:
           EVIDENCE_CALENDAR_READ_MARIADB: '1'

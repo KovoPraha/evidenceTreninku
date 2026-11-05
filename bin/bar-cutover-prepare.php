@@ -52,6 +52,80 @@ function barCutoverReadSourceConfig(string $legacy): array
 }
 
 /** Private, read-only production export. No application bootstrap or writes to either DB. */
+function barCutoverSnapshotImages(array $source, string $directory, string $snapshot): array
+{
+    $root = realpath($directory);
+    if ($root === false || !is_dir($root) || is_link($directory)) {
+        throw new RuntimeException('Invalid source image directory.');
+    }
+    if (!is_dir($snapshot) && !mkdir($snapshot, 0700)) {
+        throw new RuntimeException('Cannot create private image snapshot.');
+    }
+    if (is_link($snapshot)) {
+        throw new RuntimeException('A snapshot cannot be a symlink.');
+    }
+    $map = [];
+    $GLOBALS['bar_source_image_meta'] = [];
+    foreach ($source['products'] as &$product) {
+        $reference = $product['obrazek'] ?? null;
+        if ($reference === null || $reference === '' || (is_string($reference) && trim($reference) === '')) {
+            $product['obrazek'] = null;
+            continue;
+        }
+        $name = is_string($reference) ? trim($reference) : '';
+        $shape = str_contains($name, '://') ? 'url' : (str_contains($name, '/') || str_contains($name, '\\') ? 'path' : 'basename');
+        $GLOBALS['bar_source_image_meta'] = ['product_source_id' => (int)$product['id'], 'reference_shape' => $shape,
+            'reference_type' => get_debug_type($reference), 'reference_bytes' => strlen($name)];
+        if ($shape === 'url') {
+            $url = parse_url($name);
+            if (!is_array($url) || !in_array($url['scheme'] ?? '', ['http', 'https'], true)
+                || ($url['host'] ?? '') !== 'bar.kovopraha.cz' || isset($url['user']) || isset($url['pass'])
+                || isset($url['query']) || isset($url['fragment']) || isset($url['port'])) {
+                throw new InvalidArgumentException('Fotografie odkazuje mimo ověřený místní zdroj.');
+            }
+            $name = rawurldecode((string)($url['path'] ?? ''));
+        }
+        foreach (['../img/', './img/', '/img/', 'img/'] as $prefix) {
+            if (str_starts_with($name, $prefix)) {
+                $name = substr($name, strlen($prefix));
+                break;
+            }
+        }
+        if ($name === '' || !mb_check_encoding($name, 'UTF-8') || strlen($name) > 255
+            || preg_match('~[\x00-\x1f\x7f/\\\\:<>|"?*]~', $name)
+            || !preg_match('/\.(?:jpg|jpeg|png|webp)$/iD', $name)) {
+            throw new InvalidArgumentException('Zdrojová fotografie nemá bezpečně převoditelný místní název.');
+        }
+        $path = $root . DIRECTORY_SEPARATOR . $name;
+        $resolved = realpath($path);
+        $GLOBALS['bar_source_image_meta']['basename'] = $name;
+        if ($resolved === false || dirname($resolved) !== $root || !is_file($path) || is_link($path)) {
+            throw new InvalidArgumentException('Zdrojová fotografie chybí nebo není běžný soubor v img.');
+        }
+        $image = barReadImage($resolved);
+        $extension = match ($image['meta']['mime_type']) {
+            'image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp',
+            default => throw new InvalidArgumentException('Nepodporovaná zdrojová fotografie.'),
+        };
+        $canonical = 'source-' . $image['meta']['sha256'] . '.' . $extension;
+        $destination = $snapshot . '/' . $canonical;
+        if (file_exists($destination)) {
+            if (is_link($destination) || !is_file($destination) || hash_file('sha256', $destination) !== $image['meta']['sha256']) {
+                throw new RuntimeException('Private image snapshot differs.');
+            }
+        } else {
+            barWritePrivateFile($destination, $image['bytes']);
+        }
+        $map[] = ['product_source_id' => (int)$product['id'], 'source_reference' => $reference,
+            'source_basename' => $name, 'package_name' => $canonical, 'sha256' => $image['meta']['sha256']];
+        $product['obrazek'] = $canonical;
+    }
+    unset($product);
+    $GLOBALS['bar_source_image_meta'] = [];
+    return ['source' => $source, 'map' => $map];
+}
+
+/** Private, read-only production export. No application bootstrap or writes to either DB. */
 function barCutoverPrepare(): array
 {
     umask(0077);
@@ -73,7 +147,7 @@ function barCutoverPrepare(): array
     $GLOBALS['bar_cutover_prepare_stage'] = 'target_configuration';
     ob_start();
     try {
-        require $root . '/config.php';
+        require_once $root . '/config.php';
     } finally {
         $output = ob_get_clean();
     }
@@ -110,7 +184,9 @@ function barCutoverPrepare(): array
         throw new RuntimeException('A transactional source snapshot is required.');
     }
     $GLOBALS['bar_cutover_prepare_stage'] = 'source_catalog_and_images';
-    $bundle = barBuildTransferBundle(barReadLegacyTransferSource($source), $legacy . '/img');
+    $snapshot = $parent . '/bar-transfer-images-' . $run;
+    $prepared = barCutoverSnapshotImages(barReadLegacyTransferSource($source), $legacy . '/img', $snapshot);
+    $bundle = barBuildTransferBundle($prepared['source'], $snapshot);
     if (array_sum(array_column($bundle['images'], 'byte_size')) > 256 * 1024 * 1024) {
         throw new RuntimeException('The package exceeds the reviewed size limit.');
     }
@@ -122,12 +198,22 @@ function barCutoverPrepare(): array
             throw new RuntimeException('An existing package differs or is incomplete.');
         }
     } else {
-        barWriteTransferPackage($bundle, $legacy . '/img', $directory);
+        barWriteTransferPackage($bundle, $snapshot, $directory);
     }
     // Detect changes to rows or image bytes while the package was being copied.
     $GLOBALS['bar_cutover_prepare_stage'] = 'source_stability';
-    if (barBuildTransferBundle(barReadLegacyTransferSource($source), $legacy . '/img') !== $bundle) {
+    $fresh = barCutoverSnapshotImages(barReadLegacyTransferSource($source), $legacy . '/img', $snapshot);
+    if (barBuildTransferBundle($fresh['source'], $snapshot) !== $bundle || $fresh['map'] !== $prepared['map']) {
         throw new RuntimeException('Source changed during export; prepare a fresh snapshot.');
+    }
+    $mapJson = json_encode($prepared['map'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    $mapPath = $directory . '/source-image-map.json';
+    if (file_exists($mapPath)) {
+        if (is_link($mapPath) || file_get_contents($mapPath) !== $mapJson) {
+            throw new RuntimeException('Source image provenance differs.');
+        }
+    } else {
+        barWritePrivateFile($mapPath, $mapJson);
     }
     $target->exec('START TRANSACTION READ ONLY');
     $GLOBALS['bar_cutover_prepare_stage'] = 'target_inventory';
@@ -153,7 +239,8 @@ function barCutoverPrepare(): array
         throw $error;
     }
     return ['ok' => true, 'read_only_databases' => true, 'shared_database' => $sharedDatabase, 'prepare_run' => $run, 'bundle_sha256' => $bundle['sha256'],
-        'catalog_sha256' => $bundle['catalog']['sha256'], 'products' => count($bundle['catalog']['products']),
+        'catalog_sha256' => $bundle['catalog']['sha256'], 'source_image_map_sha256' => hash('sha256', $mapJson),
+        'products' => count($bundle['catalog']['products']),
         'categories' => count($bundle['catalog']['categories']), 'recipes' => count($bundle['catalog']['recipes']),
         'images' => count($bundle['images']), 'image_bytes' => array_sum(array_column($bundle['images'], 'byte_size')),
         'lucka' => ['accounts' => 1, 'password_supported' => true, 'technical_email' => true, 'position' => 'bar_operator'],
@@ -172,6 +259,7 @@ function barCutoverPrepareMain(): void
         fwrite(STDERR, json_encode(
             ['ok' => false, 'stage' => $GLOBALS['bar_cutover_prepare_stage'] ?? 'unknown',
             'source_configuration' => $GLOBALS['bar_source_config_meta'] ?? [],
+            'source_image' => $GLOBALS['bar_source_image_meta'] ?? [],
             'error_type' => get_debug_type($error), 'error_file' => basename($error->getFile()), 'error_line' => $error->getLine(),
             'message' => ($GLOBALS['bar_cutover_prepare_stage'] ?? '') === 'source_catalog_and_images' && $error instanceof InvalidArgumentException
                 ? $error->getMessage() : 'bar_cutover_prepare_failed_without_database_writes'],
