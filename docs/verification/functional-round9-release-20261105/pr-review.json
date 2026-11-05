@@ -1,0 +1,86 @@
+{
+  "pr": 300,
+  "reviewed_head": "f2b4f9b5a8d4d8a6a56a866a99e4b0d801828b9f",
+  "merged_sha": "97cf47929e09fae420b2171c443b98289fa8a1b5",
+  "reviewed_and_merged_tree": "61fd03eab838a913092397da379158f302600757",
+  "same_tree": true,
+  "current_base": "3a3893fd4d604da63e40659f07834510bc567879",
+  "prior_production_deploy": 41977082925,
+  "runtime_change": [
+    "includes/family_weekly_delivery.php"
+  ],
+  "review": "No blocking findings. Rechecked transaction rollback, opt-out lock ordering, pre-preview fingerprint binding and existing pre-send validation.",
+  "checks": [
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/runs/127081402447",
+      "name": "CodeQL",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977992189/job/127081256112",
+      "name": "docs",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977992291/job/127081256804",
+      "name": "PHPStan level 5 and changed-file style",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977992138/job/127081255858",
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977992138/job/127081255959",
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977992138/job/127081255891",
+      "name": "MariaDB profily čtení (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977992138/job/127081255580",
+      "name": "PHPUnit na PHP 8.2",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977992138/job/127081255924",
+      "name": "MariaDB profily čtení (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977986306/job/127081241215",
+      "name": "Analyze (actions)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977986306/job/127081240935",
+      "name": "Analyze (javascript-typescript)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/41977986306/job/127081241469",
+      "name": "Analyze (python)",
+      "state": "SUCCESS"
+    }
+  ],
+  "ci_tests": {
+    "tests": 1997,
+    "assertions": 38644,
+    "skipped": 0
+  },
+  "local_targeted": {
+    "tests": 34,
+    "assertions": 365,
+    "failures": 0
+  },
+  "mariadb_notification_contract_checks": {
+    "10.3": 49,
+    "11.4": 49
+  },
+  "source_file_sha256_lf": "78b183b25d75b0fc4febd21c8afff3601577d38f3e378da65828080bc8f593ee",
+  "password_and_T07": "SKIPPED"
+}

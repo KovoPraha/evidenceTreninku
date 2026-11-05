@@ -1,0 +1,11 @@
+{
+  "browser": "Chrome, connected user profile",
+  "checked_at": "2026-11-05T06:07:54.989Z",
+  "requested_url": "https://kis.kovopraha.cz/pracovni_pozice.php",
+  "observed_url": "https://kis.kovopraha.cz/login.php",
+  "authenticated_uat": "NOT RUN",
+  "reason": "No active authenticated production session in the connected profile; login form visible.",
+  "domain_mutations": false,
+  "password_and_T07": "SKIPPED",
+  "existing_user_tabs": "untouched"
+}
