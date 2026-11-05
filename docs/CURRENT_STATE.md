@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po aktivaci pravidelného zpracování členství (PR #318).
+Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení BAR (#306) a samostatné aktivaci členství (#318).
 
 - **[Pravidelné zpracování členství zapnuté](verification/membership-automation-20261105/RESULTS.md):** automatizace a plán/zápis aktivní, denně 05:23 UTC, pošta vypnutá. První apply `42086490294` PASS (0 členství/předpisů/dokladů/zpráv, žádná chyba), kontrola `42086602560` potvrdila úspěšný heartbeat v 18:40:45 UTC. Bez nového deploy webu; Závodní tým zůstává konceptem.
 
@@ -9,7 +9,7 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po aktivaci pravidelného zpracován
   **Prodej zatím neaktivovaný:** chybí skutečné údaje a schválení vystavovatele, tarifu a publikace.
   Linux 2064/39368, obě MariaDB matice a všech 11 kontrol PASS. Live `ad09174e`, deploy `42076138376` SUCCESS. Stávající platby/VS a Fio/SumUp zachované; nová automatizace následně zapnuta podle záznamu výše, pošta vypnutá.
 
-- **BAR → KIS pouze ve vývojové větvi, bez nasazení:** [B6 – integrační přejímka](verification/bar-acceptance-20261105/RESULTS.md) doplňuje B0–B5 v draft PR #306. Místní role/browser, ztráta spojení, nouzová kasa, UTC/DST a naplněná obnova 335 tabulek s přílohami PASS; konečný Linux CI stav přesného headu je v PR. Skutečný katalog, fotografie a lucka zatím nepřevedené. Automatické účetní zápisy ani bankovní propojení baru nejsou aktivované. [B7](BAR_PRODUCTION_READINESS_2026-11-05.md) vyžaduje lidskou přejímku a nový výslovný souhlas; produkční přechod je nadále zakázaný.
+- **BAR → KIS nasazený jako modul:** [Vydání a živá přejímka](verification/bar-release-20261105/RESULTS.md), B0–B6 sloučené v PR #306. Pokladna, katalog/sklad, faktury/nabídky, účetní podklady a obnova jsou připravené. Skutečné produkty, fotografie a lucka zatím nepřevedené; cílový katalog je prázdný a starý BAR není přesměrovaný. Automatické účtování BAR se nezapínalo. [Další část B7](BAR_PRODUCTION_READINESS_2026-11-05.md) zahrnuje konkrétní převod, přístupy a lidskou přejímku.
 
 - **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** karta pro 223 aktivních produktů / nové objednávky, 8 starých plateb zachováno.
   **[Fio hostingový plán ověřený](verification/fio-followup-20261105/RESULTS.md):** dva skutečné importy, všech 45 pohybů bez shodného VS. Žádné vynucené přiřazení; skutečná placená úhrada stále nedoložená.
@@ -56,14 +56,13 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po aktivaci pravidelného zpracován
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `9b0dec083a650df933b09ecd4545d782069daa62`, [deploy 42064630068](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42064630068) SUCCESS.
-  **[PR #314: trenéři i měsíční členství nasazeny](verification/monthly-coach-release-20261105/RESULTS.md).** Vlastní soupisky první, zastupování bez grantu; měsíční předpisy, VS, doklady a upomínky implementované. Jednorázový nákup zachován.
-  Automatizace a denní plán následně aktivovány v #318 (viz výše), pošta vypnutá. Produkční apply PASS (0 členství), tarif dosud neschválen.
-- **Ověření:** 11 kontrol PR PASS, shodný sloučený strom; CI main i deploy SUCCESS, Linux 2054/39237 bez skipů, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
-  HTTP před 48/48, po 54/54; přihlášený trenérský výběr/data/TEST hledání a měsíční správa PASS. Prázdný ostrý běh následně PASS; skutečná platba, nové PDF a doručená upomínka NOT RUN.
-  [Čtecí porovnání](verification/monthly-coach-release-20261105/release-comparison.json) potvrdilo živé SHA, shodný hash konfigurace a dosavadní integrační flags; úplná hash inventura se netvrdí.
-- **Záloha a schéma:** čerstvá záloha před migrací, 347 tabulek / 2 triggery; [izolovaná obnova 42065531972](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42065531972) PASS včetně všech počtů.
-  SHA-256 `568ff63f469f70911efa757d98c82374466a85562392f9e4527cf3b427a17947`. Schéma current / pending [], ledger 151, dosavadní VS zachované.
+- **Živé vydání:** `76bf0370a06e0ab80bab5ee9af1815835ac24efc`, [deploy 42084130988](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42084130988) SUCCESS.
+  [BAR protokol](verification/bar-release-20261105/RESULTS.md): otestovaný a sloučený strom shodný; předchozí členství #316 a předání #317 zachované.
+- **Ověření:** všech 11 kontrol PR, CI main i deploy PASS; Linux 2203/41286 bez skipů, samostatné unixové hranice 3/45, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
+  HTTP před 71/71, po 77/77; přihlášený Chrome Finance/Správa baru/Obsluha PASS, bez doménových zápisů. Běžná lucka a skutečná barová platba NOT RUN.
+  [Čtecí porovnání](verification/bar-release-20261105/release-comparison.json): živé SHA a shodná konfigurace/flags v okamžiku BAR vydání; pozdější samostatná aktivace členství viz výše. Historický manifest není úplnou inventurou BAR.
+- **Záloha a schéma:** [úplná izolovaná obnova 42080871410](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42080871410) PASS: 357 tabulek / 2 triggery a 4341 existujících souborů včetně konfigurace a příloh.
+  [Nejnovější DB záloha](verification/bar-release-20261105/deploy-database.json) vznikla před migracemi; [obnova 42085710492](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42085710492) PASS. Schema current / pending [], ledger 159 a VS zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
   31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu. Diskové temporary tables fungují. Příčina kolísání kapacity není definitivně určena. Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;

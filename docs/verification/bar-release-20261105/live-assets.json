@@ -1,0 +1,14 @@
+[
+  {
+    "path": "assets/bar-requests.js",
+    "status": 200,
+    "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+    "matches_release": true
+  },
+  {
+    "path": "assets/app-ui.js",
+    "status": 200,
+    "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+    "matches_release": true
+  }
+]

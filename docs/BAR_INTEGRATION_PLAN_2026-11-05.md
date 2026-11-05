@@ -31,7 +31,7 @@ Ze zdroje `KovoPraha/bar.kovopraha.cz` se přebírají obchodní pravidla a vhod
 | B4 | Pokladna a vlastní spotřeba | Prodej, hotovost/karta/QR, kelímky, storno, vlastní a uzavíraná kasa, zásoby a audit v jedné transakci; opakování i souběh bezpečné | Implementace a místní přejímka hotové; samostatná Linux CI brána, nasazení zakázané |
 | B5 | Faktury, nabídky a účetní rozhraní | Příjem PDF, obrazovky/menu, přehledy, oddělené účetní zdroje a exportní kontrakt bez zdvojení tržeb | Implementováno, místní přejímka PASS; CI v PR #306 |
 | B6 | Integrační přejímka | Anonymní HTTP, matice rolí, skutečný místní browser, pokladní/skladové souběhy, ztráta spojení, fotografie a izolovaná obnova DB i souborů; zelené CI přesného headu | Místní technická přejímka PASS; konečný Linux CI stav přesného headu v PR #306 |
-| B7 | Produkční přechod | Nový výslovný souhlas vlastníka; katalogový manifest, nulový počátek, přidělení účtů, doména a provozní UAT | Zakázáno do schválení |
+| B7 | Produkční přechod | Nový výslovný souhlas vlastníka; katalogový manifest, nulový počátek, přidělení účtů, doména a provozní UAT | Kód nasazen po souhlasu; skutečný převod a lidská přejímka zbývají |
 
 ## Ověření
 
@@ -81,3 +81,5 @@ Vlastník schválil pokračování bez nasazení. Práce zůstává ve stejné v
 5. Provést skutečný místní browser, nativní souběhy a čerstvé Linux CI přesného headu. Výsledky odlišují technickou přejímku od budoucí lidské přejímky a schválení B7. Produkční import ani nasazení se nespouštějí.
 
 Dokončení místní B6: [výsledky přejímky](verification/bar-acceptance-20261105/RESULTS.md) dokládají obnovu naplněné DB a souborů, skutečný výpadek a ztracenou odpověď, nouzové vypořádání a UTC/DST bez změny sdíleného PDO. Navazuje [příprava B7](BAR_PRODUCTION_READINESS_2026-11-05.md) a [návrh účetního adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md). Linux CI přesného headu zůstává samostatnou branou v PR; produkční přechod vyžaduje nový výslovný souhlas.
+
+Produkční vydání kódu po novém souhlasu vlastníka: [protokol B7](verification/bar-release-20261105/RESULTS.md). Nezaměňovat nasazený modul s dosud neprovedeným převodem skutečného katalogu a lucky nebo s lidskou provozní přejímkou.

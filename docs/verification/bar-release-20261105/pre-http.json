@@ -1,0 +1,722 @@
+{
+  "phase": "pre",
+  "product_ids": [
+    "247",
+    "218",
+    "221"
+  ],
+  "checked_at": "2026-11-05T17:50:21.331260+00:00",
+  "base_url": "https://kis.kovopraha.cz",
+  "method": "GET only; anonymous; no cookies or redirects",
+  "checks": 71,
+  "passed": 71,
+  "results": [
+    {
+      "path": "/index.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 162,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 499,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/prihlaseni.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 122,
+      "ok": true
+    },
+    {
+      "path": "/booking/moje_objednavky.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 121,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=moje_objednavky.php"
+    },
+    {
+      "path": "/eshop_orders_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 141,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/kis_roster_hierarchy_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 141,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/booking/sportovni_prehled.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 146,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=sportovni_prehled.php"
+    },
+    {
+      "path": "/booking/moje_osoby.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 169,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=moje_osoby.php"
+    },
+    {
+      "path": "/booking/nahrady.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 122,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=nahrady.php"
+    },
+    {
+      "path": "/booking/soupiskove_treninky.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 303,
+      "elapsed_ms": 158,
+      "ok": true,
+      "location": "prihlaseni.php?redirect=soupiskove_treninky.php"
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 661,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 288,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 415,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=2147483647",
+      "expected": [
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 341,
+      "ok": true
+    },
+    {
+      "path": "/includes/shop_storefront_read.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 119,
+      "ok": true
+    },
+    {
+      "path": "/var/deployment.json",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 185,
+      "ok": true
+    },
+    {
+      "path": "/includes/family_roster_status.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 101,
+      "ok": true
+    },
+    {
+      "path": "/includes/member_roster_preview.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 108,
+      "ok": true
+    },
+    {
+      "path": "/includes/member_roster_view.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 104,
+      "ok": true
+    },
+    {
+      "path": "/tests/Support/StorefrontReadMariaDbSmoke.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 110,
+      "ok": true
+    },
+    {
+      "path": "/composer.lock",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 129,
+      "ok": true
+    },
+    {
+      "path": "/var/private/kis-person-import.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 105,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 371,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 535,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 351,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 278,
+      "ok": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 371,
+      "ok": true,
+      "content_present": true
+    },
+    {
+      "path": "/booking/produkt.php?id=247",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 384,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=218",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 428,
+      "ok": true
+    },
+    {
+      "path": "/booking/produkt.php?id=221",
+      "expected": [
+        200
+      ],
+      "status": 200,
+      "elapsed_ms": 367,
+      "ok": true
+    },
+    {
+      "path": "/training_closure_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 146,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/registration_texts_admin.php",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "elapsed_ms": 130,
+      "ok": true
+    },
+    {
+      "path": "/paper_registrations_admin.php",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "elapsed_ms": 144,
+      "ok": true
+    },
+    {
+      "path": "/person_lifecycle_admin.php",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "elapsed_ms": 177,
+      "ok": true
+    },
+    {
+      "path": "/includes/training_closure_form.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 163,
+      "ok": true
+    },
+    {
+      "path": "/member_engagement_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 131,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/season_preparation_admin.php",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "elapsed_ms": 120,
+      "ok": true
+    },
+    {
+      "path": "/family_weekly_summaries_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 159,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/club_communication_admin.php",
+      "expected": [
+        403
+      ],
+      "status": 403,
+      "elapsed_ms": 150,
+      "ok": true
+    },
+    {
+      "path": "/includes/family_weekly_delivery.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 171,
+      "ok": true
+    },
+    {
+      "path": "/tv.php?id=2147483647&format=json",
+      "expected": [
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 146,
+      "ok": true
+    },
+    {
+      "path": "/tv_programs_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 147,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/shop_returns_admin.php",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 135,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/shop_returns_admin.php?order_id=1",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 123,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/shop_returns_admin.php?order_id=0",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 152,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/shop_returns_admin.php?return_page=999999",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 117,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/eshop_fulfillment_admin.php?order_id=1",
+      "expected": [
+        302,
+        303
+      ],
+      "status": 302,
+      "elapsed_ms": 108,
+      "ok": true,
+      "location": "login.php"
+    },
+    {
+      "path": "/includes/shop_return_admin_read.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 166,
+      "ok": true
+    },
+    {
+      "path": "/bar/index.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 162,
+      "ok": true
+    },
+    {
+      "path": "/bar/catalog.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 99,
+      "ok": true
+    },
+    {
+      "path": "/bar/categories.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 91,
+      "ok": true
+    },
+    {
+      "path": "/bar/stock.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 111,
+      "ok": true
+    },
+    {
+      "path": "/bar/checkout.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 106,
+      "ok": true
+    },
+    {
+      "path": "/bar/cashbox.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 124,
+      "ok": true
+    },
+    {
+      "path": "/bar/consumption.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 99,
+      "ok": true
+    },
+    {
+      "path": "/bar/settings.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 118,
+      "ok": true
+    },
+    {
+      "path": "/bar/permissions.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 96,
+      "ok": true
+    },
+    {
+      "path": "/bar/receipt.php?id=1",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 105,
+      "ok": true
+    },
+    {
+      "path": "/bar/image.php?id=1",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 93,
+      "ok": true
+    },
+    {
+      "path": "/bar/invoices.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 115,
+      "ok": true
+    },
+    {
+      "path": "/bar/invoice-file.php?id=1",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 157,
+      "ok": true
+    },
+    {
+      "path": "/bar/offers.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 126,
+      "ok": true
+    },
+    {
+      "path": "/bar/menu-pdf.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 156,
+      "ok": true
+    },
+    {
+      "path": "/bar/operations.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 127,
+      "ok": true
+    },
+    {
+      "path": "/bar/accounting.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 114,
+      "ok": true
+    },
+    {
+      "path": "/bar/request-status.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 122,
+      "ok": true
+    },
+    {
+      "path": "/bar/menu.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 130,
+      "ok": true
+    },
+    {
+      "path": "/bar/menu-image.php?id=2147483647",
+      "expected": [
+        404
+      ],
+      "status": 404,
+      "elapsed_ms": 182,
+      "ok": true
+    },
+    {
+      "path": "/bin/production-file-backup.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 122,
+      "ok": true
+    },
+    {
+      "path": "/bin/bar-transfer.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 136,
+      "ok": true
+    },
+    {
+      "path": "/includes/bar/recovery.php",
+      "expected": [
+        403,
+        404
+      ],
+      "status": 403,
+      "elapsed_ms": 135,
+      "ok": true
+    }
+  ]
+}

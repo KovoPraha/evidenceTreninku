@@ -215,13 +215,13 @@ Pracuje v oddělené větvi `codex/bar-kis-integration-20261105`; produkční na
 není povolené. Zachovává se katalog a pouze účet lucka, provozní historie se
 nepřenáší. Dvě nové pozice doplňuje samostatné oprávnění vlastní spotřeby.
 Stav etap, ověření a další krok udržuje tento plán.
-Aktuálně je hotová [místní technická B6 přejímka](verification/bar-acceptance-20261105/RESULTS.md):
-role, skutečný browser, ztracená odpověď/spojení, opuštěná kasa, UTC/DST a obnova
-naplněných 335 tabulek i soukromých fotografií/PDF. Konečné Linux CI přesného headu
-ověřit v PR #306, nepřebírat historický výsledek B5. [Účetní kontrakt v1](BAR_ACCOUNTING_CONTRACT_V1.md)
-a [návrh adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md) nepovolují finanční zápisy.
-Další je [příprava a lidská přejímka B7](BAR_PRODUCTION_READINESS_2026-11-05.md), skutečný
-katalog/lucka zatím nepřevedené. Nasazení a přepnutí URL vyžadují nový výslovný souhlas.
+B0–B6 jsou po výslovném souhlasu vlastníka sloučené a [nasazené do KIS](verification/bar-release-20261105/RESULTS.md).
+Úplná skutečná obnova DB i 4341 souborů před vydáním a čtecí přihlášený Chrome PASS;
+aktuální živé SHA, CI a migrace určuje výhradně CURRENT_STATE. Skutečný katalog,
+fotografie a lucka zatím nepřevedené; starý BAR zůstává bez přesměrování.
+Další je konkrétní balíček/nácvik převodu a lidská přejímka podle [B7](BAR_PRODUCTION_READINESS_2026-11-05.md).
+[Účetní kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md) a [návrh adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md)
+neaktivují skutečné zaúčtování ani nové bankovní párování.
 
 Navazující [komplexní refaktoring celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md)
 je sloučený v PR #219 a vlastník zahájil autonomní realizaci. Vlny 1–5 jsou
