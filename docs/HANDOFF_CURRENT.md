@@ -9,13 +9,16 @@ Produkční koncept Závodní tým 2200 Kč/měsíc (varianta 951) a skupina 86 
 Silnice 88, Dráha 89 jsou založené. Výběr více disciplín pouze zařazuje na soupisky,
 nemění cenu. Vlastník doplní fakturační údaje přes `accounting_settings_admin.php`;
 vystavovatel, účetní pravidlo a tarif ještě nejsou schválené. Nezakládat koncept
-ručně znovu, použít existující. Nový prodej/účtování a pošta zůstávají neaktivované.
+ručně znovu, použít existující. Prodej čeká na schválení/publikaci.
+[Pravidelné zpracování je zapnuté](verification/membership-automation-20261105/RESULTS.md):
+automatizace a denní plán/zápis true, pošta false. První apply i následný
+heartbeat PASS (0 členství a předpisů), cron 05:23 UTC. Pošta vyžaduje samostatný pokyn.
 Podporované roční tarify nemají zadanou skutečnou cenu a žádný roční produkt nevznikl.
 
 [Měsíční členství a zastupování trenérů #314](verification/monthly-coach-release-20261105/RESULTS.md) jsou sloučené a nasazené.
 Trenérské přiřazení nově určuje pořadí výběru, ne možnost vypsat/zapsat trénink za kolegu.
-Nové měsíční automatizace, plán a pošta nebyly zapnuté; před ostrým sjednáním je třeba schválit konkrétní tarif a aktivaci podle [runbooku](MONTHLY_MEMBERSHIP_RUNBOOK.md).
-Čtecí produkční náhled PASS (0 členství), skutečná měsíční platba/PDF/doručení ještě neověřené.
+Měsíční automatizace a plán následně zapnuté v #318, pošta nadále vypnutá; před ostrým sjednáním je třeba schválit konkrétní tarif podle [runbooku](MONTHLY_MEMBERSHIP_RUNBOOK.md).
+Produkční apply i uložený heartbeat PASS (0 členství), skutečná měsíční platba/PDF/doručení ještě neověřené.
 
 Ostré platby mají [protokol aktivace Fio a SumUp](verification/live-payments-20261105/ACTIVATION.md).
 Vlastník schválil stávající SumUp klíč a kartu pro všech 223 aktivních produktů

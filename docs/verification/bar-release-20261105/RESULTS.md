@@ -32,7 +32,7 @@ Nasazovací workflow ještě těsně před migracemi vytvořilo novou [DB záloh
 
 [Anonymní HTTP před](pre-http.json) **71/71**, [po](post-http.json) **77/77 PASS**. Zachovaná dostupnost katalogu e-shopu a stejných tří veřejných produktů. Všechny nové chráněné BAR cesty odmítají anonymní přístup přesměrováním k přihlášení, veřejné menu funguje a neplatná fotografie je 404. Interní PHP, CLI a archivní klíč jsou nedostupné. Jde pouze o GET, bez session a finančních POSTů. [Obě skutečně podávaná JavaScriptová aktiva](live-assets.json) mají přesný obsah přezkoušeného release.
 
-[Čtecí audit před/po](release-comparison.json) potvrdil přesné živé SHA a běh, stejný hash konfigurace a stejné integrační flags: Fio import/auto-confirm a SumUp true, Stripe/Velocota false, Packeta nedefinovaná. KIS canonical writes false. Historický source manifest tohoto auditního nástroje není úplnou hash inventurou BAR souborů.
+[Čtecí audit před/po](release-comparison.json) potvrdil přesné živé SHA a běh, stejný hash konfigurace a stejné integrační flags: Fio import/auto-confirm a SumUp true, Stripe/Velocota false, Packeta nedefinovaná. KIS canonical writes false. Jde o srovnání v okamžiku vydání BAR; [pozdější samostatně schválená aktivace členství](../membership-automation-20261105/RESULTS.md) změnila vlastní zapínací konfiguraci a nemá být vydávána za součást BAR nasazení. Historický source manifest tohoto auditního nástroje není úplnou hash inventurou BAR souborů.
 
 [Skutečný přihlášený Chrome](browser.json) ověřil existujícího superadmina v kontextech Finance, Administrátor baru a Obsluha baru:
 
