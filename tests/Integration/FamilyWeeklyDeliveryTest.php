@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Integration;
@@ -70,8 +71,12 @@ final class FamilyWeeklyDeliveryTest extends TestCase
             $payload = json_decode((string)file_get_contents($files[0]), true, 512, JSON_THROW_ON_ERROR);
             self::assertSame('family-weekly-summary-local-outbox-v1', $payload['schema']);
         } finally {
-            foreach (glob($directory . DIRECTORY_SEPARATOR . '*') ?: [] as $file) unlink($file);
-            if (is_dir($directory)) rmdir($directory);
+            foreach (glob($directory . DIRECTORY_SEPARATOR . '*') ?: [] as $file) {
+                unlink($file);
+            }
+            if (is_dir($directory)) {
+                rmdir($directory);
+            }
         }
 
         $this->expectException(\FamilyWeeklyDeliveryException::class);
@@ -98,14 +103,82 @@ final class FamilyWeeklyDeliveryTest extends TestCase
     public function testRevokedFamilyOrChangedAddressBlocksFrozenSummary(): void
     {
         foreach (["UPDATE account_person_roles SET status='revoked'", "UPDATE verejni_uzivatele SET email='other@example.test' WHERE id=1"] as $change) {
-            $pdo=$this->database();
+            $pdo = $this->database();
             $pdo->exec("INSERT INTO account_person_roles VALUES(1,12,'approved','guardian','2020-01-01',NULL)");
-            \familyWeeklyDeliverySavePreference($pdo,1,true);
-            \familyWeeklyDeliveryGenerate($pdo,$this->today(),true,$this->previewFactory());
-            $pdo->exec($change);$calls=0;
-            self::assertFalse(\familyWeeklyDeliveryProcessOne($pdo,static function()use(&$calls){$calls++;return true;}));
-            self::assertSame(0,$calls);
-            self::assertSame('failed',$pdo->query('SELECT status FROM family_weekly_summaries')->fetchColumn());
+            \familyWeeklyDeliverySavePreference($pdo, 1, true);
+            \familyWeeklyDeliveryGenerate($pdo, $this->today(), true, $this->previewFactory());
+            $pdo->exec($change);
+            $calls = 0;
+            self::assertFalse(\familyWeeklyDeliveryProcessOne($pdo, static function () use (&$calls) {
+                $calls++;
+                return true;
+            }));
+            self::assertSame(0, $calls);
+            self::assertSame('failed', $pdo->query('SELECT status FROM family_weekly_summaries')->fetchColumn());
+        }
+    }
+
+    public function testOptOutDuringPreviewDoesNotLeaveANewPendingSummary(): void
+    {
+        $pdo = $this->database();
+        \familyWeeklyDeliverySavePreference($pdo, 1, true);
+        $factory = $this->previewFactory();
+        $result = \familyWeeklyDeliveryGenerate($pdo, $this->today(), true, static function (PDO $database, int $id, string $from) use ($factory): array {
+            $preview = $factory($database, $id, $from);
+            \familyWeeklyDeliverySavePreference($database, $id, false);
+            return $preview;
+        });
+
+        self::assertSame(0, $result['queued']);
+        self::assertSame(1, $result['skipped']);
+        self::assertSame(0, (int) $pdo->query('SELECT COUNT(*) FROM family_weekly_summaries')->fetchColumn());
+        self::assertSame(0, (int) $pdo->query('SELECT COUNT(*) FROM notification_authorization_snapshots')->fetchColumn());
+    }
+
+    public function testFamilyRevocationDuringPreviewCannotAuthorizeOldContent(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("INSERT INTO account_person_roles VALUES(1,12,'approved','guardian','2020-01-01',NULL)");
+        \familyWeeklyDeliverySavePreference($pdo, 1, true);
+        $factory = $this->previewFactory();
+        $result = \familyWeeklyDeliveryGenerate($pdo, $this->today(), true, static function (PDO $database, int $id, string $from) use ($factory): array {
+            $preview = $factory($database, $id, $from);
+            $database->exec("UPDATE account_person_roles SET status='revoked' WHERE account_id=1");
+            return $preview;
+        });
+
+        $calls = 0;
+        \familyWeeklyDeliveryProcessOne($pdo, static function () use (&$calls): bool {
+            $calls++;
+            return true;
+        });
+        self::assertSame(0, $calls, 'Content composed before revocation must never reach the sender.');
+        self::assertSame(0, $result['queued']);
+        self::assertSame(1, $result['skipped']);
+        self::assertSame(0, (int) $pdo->query('SELECT COUNT(*) FROM family_weekly_summaries')->fetchColumn());
+
+        $pdo->exec("UPDATE account_person_roles SET status='approved' WHERE account_id=1");
+        $fresh = \familyWeeklyDeliveryGenerate($pdo, $this->today(), true, $factory);
+        self::assertSame(1, $fresh['queued'], 'A fresh preview after restoring access can still be queued.');
+        self::assertTrue(\familyWeeklyDeliveryProcessOne($pdo, static fn (): bool => true));
+    }
+
+    public function testRecipientChangesDuringPreviewAreSkipped(): void
+    {
+        foreach (["email='changed@example.test'", 'aktivni=0', 'email_overeno=0'] as $change) {
+            $pdo = $this->database();
+            \familyWeeklyDeliverySavePreference($pdo, 1, true);
+            $factory = $this->previewFactory();
+            $result = \familyWeeklyDeliveryGenerate($pdo, $this->today(), true, static function (PDO $database, int $id, string $from) use ($factory, $change): array {
+                $preview = $factory($database, $id, $from);
+                $database->exec('UPDATE verejni_uzivatele SET ' . $change . ' WHERE id=1');
+                return $preview;
+            });
+
+            self::assertSame(0, $result['queued']);
+            self::assertSame(1, $result['skipped']);
+            self::assertSame(0, (int) $pdo->query('SELECT COUNT(*) FROM family_weekly_summaries')->fetchColumn());
+            self::assertSame(0, (int) $pdo->query('SELECT COUNT(*) FROM notification_authorization_snapshots')->fetchColumn());
         }
     }
 
@@ -130,7 +203,8 @@ final class FamilyWeeklyDeliveryTest extends TestCase
         $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
         $pdo->exec('PRAGMA foreign_keys=ON');
         $pdo->exec('CREATE TABLE account_person_roles(account_id INTEGER,sportovec_id INTEGER,status TEXT,relation_role TEXT,valid_from TEXT,valid_to TEXT)');
-        $migration=require dirname(__DIR__,2).'/migrations/20261022212000_operational_delivery.php';$migration['up']($pdo);
+        $migration = require dirname(__DIR__, 2).'/migrations/20261022212000_operational_delivery.php';
+        $migration['up']($pdo);
         $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,email TEXT,jmeno TEXT,prijmeni TEXT,aktivni INTEGER,email_overeno INTEGER)');
         $migration = require dirname(__DIR__, 2) . '/migrations/20260805040000_family_weekly_summaries.php';
         $migration['up']($pdo);

@@ -1,0 +1,33 @@
+<?php
+declare(strict_types=1);
+require __DIR__.'/prefix.php';
+require_once $root.'/includes/family_weekly_delivery.php';
+$f=json_decode((string)file_get_contents(__DIR__.'/fixture.json'),true,512,JSON_THROW_ON_ERROR);
+$other=new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',DB_USER,DB_PASS,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+if((int)$other->query('SELECT @@port')->fetchColumn()!==3322)throw new RuntimeException('Wrong second DB connection');
+$observations=[];
+familyWeeklyDeliverySavePreference($pdo,$f['account'],true);
+familyWeeklyDeliverySavePreference($pdo,$f['account'],false);
+foreach(['opt_out','revoke'] as $case){
+    familyWeeklyDeliverySavePreference($pdo,$f['account'],true);
+    $day=($argv[1]==='red'?'2033':'2034').($case==='opt_out'?'-01-06':'-02-03');
+    $r=familyWeeklyDeliveryGenerate($pdo,new DateTimeImmutable($day,new DateTimeZone('Europe/Prague')),true,static function(PDO $database,int $account,string $from)use($other,$f,$case):array{
+        $preview=['to'=>(new DateTimeImmutable($from))->modify('+6 days')->format('Y-m-d'),'subject'=>'LOCALHOST R9 race','body'=>'LOCALHOST content composed before authorization change','counts'=>['total'=>1]];
+        if($case==='opt_out')familyWeeklyDeliverySavePreference($other,$account,false);
+        else $other->prepare("UPDATE account_person_roles SET status='revoked' WHERE id=?")->execute([$f['relation']]);
+        return $preview;
+    });
+    $calls=0;$process=familyWeeklyDeliveryProcessOne($pdo,static function()use(&$calls):bool{$calls++;return true;});
+    $q=$pdo->prepare('SELECT id,status FROM family_weekly_summaries WHERE account_id=? AND period_from=?');$q->execute([$f['account'],$day]);
+    $observations[$case]=['generation'=>$r,'sender_calls'=>$calls,'worker_result'=>$process,'queue_row'=>$q->fetch()?:null];
+    familyWeeklyDeliverySavePreference($pdo,$f['account'],true);
+    familyWeeklyDeliverySavePreference($pdo,$f['account'],false);
+    $other->prepare("UPDATE account_person_roles SET status='approved' WHERE id=?")->execute([$f['relation']]);
+}
+$valid=$argv[1]==='red'
+    ? $observations['opt_out']['generation']['queued']===1&&$observations['revoke']['sender_calls']===1
+    : $observations['opt_out']['generation']['queued']===0&&$observations['opt_out']['generation']['skipped']===1&&$observations['revoke']['generation']['queued']===0&&$observations['revoke']['generation']['skipped']===1&&$observations['revoke']['sender_calls']===0;
+$result=['expected_phase'=>$argv[1],'expected_behavior_observed'=>$valid,'two_independent_mariadb_connections'=>true,'external_sends'=>0,'observations'=>$observations];
+file_put_contents(__DIR__.'/race-'.$argv[1].'.json',json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR));
+echo json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),"\n";
+exit($valid?0:1);

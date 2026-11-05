@@ -1,0 +1,7 @@
+<?php
+require __DIR__.'/prefix.php';
+$tables=['family_weekly_summaries','family_weekly_summary_preferences','family_weekly_summary_events','notification_authorization_snapshots','club_roster_members','payments','shop_orders','shop_order_items','club_program_admissions','training_closures','training_rsvps','club_member_charges','club_paper_records','medical_clearance_records','financial_decisions','accounting_documents'];
+$snapshot=[];
+foreach($tables as $table){$rows=$pdo->query('SELECT * FROM '.$table.' ORDER BY 1,2')->fetchAll();$snapshot[$table]=['count'=>count($rows),'sha256'=>hash('sha256',json_encode($rows,JSON_THROW_ON_ERROR))];}
+if(($argv[1]??'')==='before'){file_put_contents(__DIR__.'/browser-state-before.json',json_encode($snapshot,JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR));echo 'Saved 16-table browser baseline',"\n";}
+else{$before=json_decode((string)file_get_contents(__DIR__.'/browser-state-before.json'),true,512,JSON_THROW_ON_ERROR);$ok=$before===$snapshot;file_put_contents(__DIR__.'/browser-persistence.json',json_encode(['status'=>$ok?'PASS':'FAIL','tables'=>count($tables),'before'=>$before,'after'=>$snapshot],JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR));echo $ok?'PASS: 16 tables unchanged':'FAIL',"\n";exit($ok?0:1);}

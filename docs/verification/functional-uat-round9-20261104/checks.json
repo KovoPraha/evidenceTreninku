@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "full_local": {
+    "tests": 1986,
+    "assertions": 38417,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3,
+    "skipped_cases": [
+      "Tests.Unit.PrivateStorageProbeTest::testCanonicalPublicSymlinkFailsBeforeWriting",
+      "Tests.Unit.PrivateStorageProbeTest::testCleanupDoesNotFollowOrDeleteReplacementSymlink",
+      "Tests.Unit.ProductionPrivateStorageProvisionTest::testRefusesSymlinkedDataBeforeChanges"
+    ]
+  },
+  "targeted": {
+    "tests": 34,
+    "assertions": 365,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "skipped_cases": []
+  },
+  "regression_before_fix": {
+    "tests": 2,
+    "assertions": 4,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "skipped_cases": []
+  },
+  "mariadb_10_4_contract_checks": 49,
+  "new_mariadb_preview_checks": 28,
+  "http_checks_before_and_after": 37,
+  "http_requests_per_run": 23,
+  "browser_persistence_tables": 16,
+  "phpstan": "PASS",
+  "style": "PASS",
+  "composer_validate": "PASS",
+  "syntax": "PASS",
+  "git_diff_check": "PASS",
+  "ci": "See exact PR head checks; local Windows skips are not Linux proof.",
+  "production_authenticated_uat": "NOT RUN",
+  "password_and_T07": "SKIPPED",
+  "production_mutations": false,
+  "external_sends": 0
+}
