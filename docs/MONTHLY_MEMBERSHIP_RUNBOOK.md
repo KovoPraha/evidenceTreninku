@@ -1,6 +1,6 @@
 # Měsíční členství: obsluha a aktivace
 
-**Vydání 5. 11. 2026:** implementace a migrace jsou [nasazené a technicky ověřené](verification/monthly-coach-release-20261105/RESULTS.md), včetně produkčního dry-run. Ostrý prodej, nové účtování a pošta zatím neaktivované. Následující postup aktivace zůstává platný.
+**Vydání 5. 11. 2026:** implementace a migrace jsou [nasazené a technicky ověřené](verification/monthly-coach-release-20261105/RESULTS.md), včetně produkčního dry-run. [Automatizace a denní plán jsou následně zapnuté](verification/membership-automation-20261105/RESULTS.md), první prázdný apply a heartbeat PASS. Prodej čeká na schválený tarif a publikaci; pošta zůstává vypnutá. Následující postup popisuje ovládání a zbývající přípravu.
 
 Plán původního měsíčního toku je v [plánu](MONTHLY_MEMBERSHIP_PLAN.md).
 Rozšíření o roční tarify, disciplíny a fakturační údaje popisuje
@@ -95,4 +95,4 @@ Pro pozastavení pošty vypnout workflow proměnnou `KIS_MONTHLY_MEMBERSHIP_MAIL
 
 Integrační testy jsou v `tests/Integration/MonthlyMembershipTest.php`. MariaDB nácvik `tests/Support/MonthlyMembershipMariaDbSmoke.php` vytváří a nakonec ruší pouze novou izolovanou databázi `evidence_monthly_smoke_test_*`; testuje skutečnou novou migraci, částečnou rodinnou platbu, souběžný příjem a souběžné generování, opakování, PDF a ukončení. CI jej spouští v existující matici MariaDB 10.3/11.4. Místně byl ověřen na MariaDB 10.4.32. Samostatný nácvik všech migrací, zálohy a obnovy prošel pro 307 tabulek.
 
-Mobilní i desktopový vzhled byl ověřen na synteticky vyrenderovaných skutečných PHP stránkách. Zápisové kroky ověřují služby v integračních testech; nejde o důkaz přihlášeného produkčního průchodu v prohlížeči. Skutečné bankovní převody, doručení této nové rozesílky, produkční vystavení dokladů a běh nového plánovače zatím ověřeny nejsou.
+Mobilní i desktopový vzhled byl ověřen na synteticky vyrenderovaných skutečných PHP stránkách. Zápisové kroky ověřují služby v integračních testech; nejde o důkaz přihlášeného produkčního průchodu v prohlížeči. Skutečné bankovní převody, doručení této nové rozesílky a produkční vystavení dokladů zatím ověřeny nejsou. První prázdný apply běh a uložený heartbeat jsou ověřené; denní plán je zapnutý, první budoucí automatický start zatím není doložen.

@@ -1,13 +1,19 @@
 # Aktuální stav projektu
 
-Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení klubových tarifů a přípravě Závodního týmu (PR #316).
+Aktualizováno 5. 11. 2026 (Europe/Prague), po aktivaci pravidelného zpracování členství (PR #318).
+
+- **[Pravidelné zpracování členství zapnuté](verification/membership-automation-20261105/RESULTS.md):**
+  soukromá automatizace a plán/zápis workflow aktivní, denně 05:23 UTC. Pošta vypnutá.
+  První ostrý běh `42086490294` PASS (0 členství, 0 předpisů/dokladů/zpráv, žádná chyba),
+  čtecí kontrola `42086602560` potvrdila úspěšný heartbeat v 18:40:45 UTC.
+  Závodní tým je stále koncept; tarif a vystavovatel nejsou schválené. Žádný nový deploy webu.
 
 - **[Klubové tarify #316 nasazené](verification/membership-catalog-release-20261105/RESULTS.md):** více disciplín za jednu cenu, měsíční/roční interval a formulář fakturačních údajů.
   Založen produkční **koncept Závodní tým / 2200 Kč měsíčně**, varianta 951, kategorie Členství v klubu;
   skupina 86 se soupiskami MTB 87 / Silnice 88 / Dráha 89. Přihlášený zápis a kontrola UI PASS.
   **Prodej zatím neaktivovaný:** chybí skutečné údaje a schválení vystavovatele, tarifu a publikace.
   Linux 2064/39368, obě MariaDB matice a všech 11 kontrol PASS. Live `ad09174e`, deploy `42076138376` SUCCESS.
-  Stávající platby/VS a Fio/SumUp zachované, nová automatizace a pošta se nezapínaly.
+  Stávající platby/VS a Fio/SumUp zachované. Automatizace následně zapnuta podle záznamu výše; pošta vypnutá.
 
 - **BAR → KIS pouze ve vývojové větvi, bez nasazení:** [B6 – integrační přejímka](verification/bar-acceptance-20261105/RESULTS.md) doplňuje B0–B5 v draft PR #306. Místní role/browser, ztráta spojení, nouzová kasa, UTC/DST a naplněná obnova 335 tabulek s přílohami PASS; konečný Linux CI stav přesného headu je v PR. Skutečný katalog, fotografie a lucka zatím nepřevedené. Automatické účetní zápisy ani bankovní propojení baru nejsou aktivované. [B7](BAR_PRODUCTION_READINESS_2026-11-05.md) vyžaduje lidskou přejímku a nový výslovný souhlas; produkční přechod je nadále zakázaný.
 
@@ -58,9 +64,9 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po nasazení klubových tarifů a p�
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
 - **Živé vydání:** `9b0dec083a650df933b09ecd4545d782069daa62`, [deploy 42064630068](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42064630068) SUCCESS.
   **[PR #314: trenéři i měsíční členství nasazeny](verification/monthly-coach-release-20261105/RESULTS.md).** Vlastní soupisky první, zastupování bez grantu; měsíční předpisy, VS, doklady a upomínky implementované. Jednorázový nákup zachován.
-  Nové měsíční automatizace/pošta neaktivovány, plán nemá zapínací proměnné. Produkční dry-run PASS (0 členství), tarif dosud neschválen.
+  Automatizace a denní plán následně aktivovány v #318 (viz výše), pošta vypnutá. Produkční apply PASS (0 členství), tarif dosud neschválen.
 - **Ověření:** 11 kontrol PR PASS, shodný sloučený strom; CI main i deploy SUCCESS, Linux 2054/39237 bez skipů, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
-  HTTP před 48/48, po 54/54; přihlášený trenérský výběr/data/TEST hledání a měsíční správa PASS. Ostrý zápis, platba, nové PDF a upomínka NOT RUN.
+  HTTP před 48/48, po 54/54; přihlášený trenérský výběr/data/TEST hledání a měsíční správa PASS. Prázdný ostrý běh následně PASS; skutečná platba, nové PDF a doručená upomínka NOT RUN.
   [Čtecí porovnání](verification/monthly-coach-release-20261105/release-comparison.json) potvrdilo živé SHA, shodný hash konfigurace a dosavadní integrační flags; úplná hash inventura se netvrdí.
 - **Záloha a schéma:** čerstvá záloha před migrací, 347 tabulek / 2 triggery; [izolovaná obnova 42065531972](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42065531972) PASS včetně všech počtů.
   SHA-256 `568ff63f469f70911efa757d98c82374466a85562392f9e4527cf3b427a17947`. Schéma current / pending [], ledger 151, dosavadní VS zachované.
