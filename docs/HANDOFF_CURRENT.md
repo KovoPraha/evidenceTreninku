@@ -8,8 +8,10 @@ Ostré platby mají [protokol aktivace Fio a SumUp](verification/live-payments-2
 Vlastník schválil stávající SumUp klíč a kartu pro všech 223 aktivních produktů
 pro nové objednávky. Historické platby zachovávají uložený režim. Fio historii
 neimportovat znovu od začátku; nejednoznačné pohyby čekají na účetní posouzení.
-Konfigurace a čtecí provider API jsou ověřené; skutečná placená úhrada, přihlášené
-platební UAT a první přirozený běh plánu nejsou doložené. Heslo/T07 dál vynechat.
+[Hostingový Fio plán a 45 pohybů](verification/fio-followup-20261105/RESULTS.md) jsou nově ověřené.
+Všech 45 zůstává bez odpovídajícího VS; tři shody částky nejsou dostatečný důkaz.
+Status číst přes fio-operations-production.yml; skutečná placená úhrada a přihlášené
+platební UAT nejsou doložené. Redundantní GitHub plán je vypnutý. Heslo/T07 dál vynechat.
 
 Pro následující práci na členství platí [pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md)
 z 2. 11. 2026. Vlastník potvrdil trvalé skupiny/soupisky a časové členství;

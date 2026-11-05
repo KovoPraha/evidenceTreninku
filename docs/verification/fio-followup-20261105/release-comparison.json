@@ -1,0 +1,47 @@
+{
+  "pre_audit_run": 42010713390,
+  "post_audit_run": 42021224333,
+  "before_live": {
+    "sha": "436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d",
+    "run_id": "42006918844",
+    "deployed_at": "2026-11-05T10:02:03+00:00",
+    "uat_approved": false
+  },
+  "live": {
+    "sha": "504fd69a415488bbd4c4039e78311978a44f888c",
+    "run_id": "42019877235",
+    "deployed_at": "2026-11-05T11:35:50+00:00",
+    "uat_approved": false
+  },
+  "unchanged": {
+    "config_sha256": true,
+    "private_migration_candidates": true,
+    "kis_canonical_write_enabled": true,
+    "migration_ledger_count": true,
+    "integration_flags": true
+  },
+  "values_after": {
+    "config_sha256": "d77909b9ac5d4348e6583e0bfa958ca95a0a3ce7e4fc58e75aa76d1566c5bb3c",
+    "private_migration_candidates": {
+      "movable": 0,
+      "missing": 2,
+      "already_private": 0,
+      "invalid": 0
+    },
+    "kis_canonical_write_enabled": false,
+    "migration_ledger_count": 150,
+    "integration_flags": {
+      "FIO_IMPORT_ENABLED": true,
+      "FIO_AUTO_CONFIRM_ENABLED": true,
+      "SUMUP_ENABLED": true,
+      "STRIPE_ENABLED": false,
+      "VELOCOTA_INTEGRATION": false,
+      "PACKETA_ENABLED": null
+    }
+  },
+  "separate_scheduler_change": {
+    "KIS_FIO_SCHEDULE_ENABLED": false,
+    "hosting_cron_enabled": true
+  },
+  "manifest_limit": "Historical old_source/new_source are not a full hash inventory of this release."
+}

@@ -15,6 +15,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | Aplikační E1–E5 sloučeny, čtecí inventura a technický nácvik E6 prošly; konkrétní cleanup a E7/E8 otevřené |
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
+| [Hostingový Fio plán a 45 pohybů](verification/fio-followup-20261105/RESULTS.md) | Skutečné automatické importy, heartbeat a úplné čtecí posouzení čekajících pohybů |
 | [Ostré Fio a SumUp](verification/live-payments-20261105/ACTIVATION.md) | Aktivace, rozsah 223 produktů, import historie a doložené meze finančního ověření |
 | [Nasazení druhé funkční vlny PR #274](verification/functional-round2-release-20261102/RESULTS.md) | Sloučení, chráněný deploy, záloha, čtecí porovnání a produkční HTTP/browser ověření |
 | [Druhý funkční průchod 2. 11.](verification/functional-uat-round2-20261102/RESULTS.md) | 35 místních kontrol, kupóny/sklad/akce/velodrom, simulovaná úhrada a vratka; oprava odděleného demo zboží a programu |

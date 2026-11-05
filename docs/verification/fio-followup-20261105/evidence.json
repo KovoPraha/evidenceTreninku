@@ -1,0 +1,965 @@
+{
+  "ci": {
+    "conclusion": "success",
+    "databaseId": 42018987204,
+    "headSha": "9cc0652a4ef5463ebb7c5dde47c9eae058889fb8",
+    "status": "completed",
+    "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42018987204",
+    "phpunit": {
+      "tests": 2029,
+      "assertions": 38953
+    }
+  },
+  "checks": [
+    {
+      "name": "CodeQL",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "MariaDB profily čtení (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "docs",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "PHPStan level 5 and changed-file style",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "PHPUnit na PHP 8.2",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "MariaDB profily čtení (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "Analyze (actions)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "Analyze (javascript-typescript)",
+      "state": "SUCCESS"
+    },
+    {
+      "name": "Analyze (python)",
+      "state": "SUCCESS"
+    }
+  ],
+  "deploy": {
+    "conclusion": "success",
+    "databaseId": 42019877235,
+    "headSha": "504fd69a415488bbd4c4039e78311978a44f888c",
+    "status": "completed",
+    "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42019877235"
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-11-05_113522_e27fc12c.sql.gz",
+    "manifest": "evidence_2026-11-05_113522_e27fc12c.manifest.json",
+    "sha256": "897e4bd44e37da88caa0fae427175ccb3d36e243a5db5c09f61a239a59d2c33e",
+    "tables": 347,
+    "triggers": 2,
+    "compressed_bytes": 6264633
+  },
+  "restore": {
+    "conclusion": "success",
+    "databaseId": 42020816687,
+    "headSha": "504fd69a415488bbd4c4039e78311978a44f888c",
+    "status": "completed",
+    "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42020816687"
+  },
+  "worker_source_sha256": "f055ed3ce47aae3c8a2ca5bb128cb2cf0033e53dcb87cc35aad8364734d2db2b",
+  "first": {
+    "installed_expected_source": true,
+    "hosting_directory_available": true,
+    "interval_seconds": 600,
+    "state": {
+      "version": 1,
+      "trigger": "hosting_cron",
+      "last_tick_at": 1793878863,
+      "ticks": 2,
+      "last_attempt_at": 1793878807,
+      "last_tick_outcome": "not_due",
+      "last_run": {
+        "ok": true,
+        "completed_at": 1793878808,
+        "result": {
+          "run_id": 14,
+          "fetched": 4,
+          "inserted": 0,
+          "duplicates": 4,
+          "proposed": 0,
+          "review": 0,
+          "ignored": 0,
+          "period_from": "2026-11-03",
+          "period_to": "2026-11-05",
+          "caught_up": true,
+          "automatic": {
+            "confirmed": 0,
+            "review": 0
+          }
+        }
+      }
+    },
+    "recent_hosting_tick": true,
+    "recent_successful_import": true
+  },
+  "second": {
+    "installed_expected_source": true,
+    "hosting_directory_available": true,
+    "interval_seconds": 600,
+    "state": {
+      "version": 1,
+      "trigger": "hosting_cron",
+      "last_tick_at": 1793879463,
+      "ticks": 12,
+      "last_attempt_at": 1793879463,
+      "last_tick_outcome": "imported",
+      "last_run": {
+        "ok": true,
+        "completed_at": 1793879463,
+        "result": {
+          "run_id": 15,
+          "fetched": 4,
+          "inserted": 0,
+          "duplicates": 4,
+          "proposed": 0,
+          "review": 0,
+          "ignored": 0,
+          "period_from": "2026-11-03",
+          "period_to": "2026-11-05",
+          "caught_up": true,
+          "automatic": {
+            "confirmed": 0,
+            "review": 0
+          }
+        }
+      }
+    },
+    "recent_hosting_tick": true,
+    "recent_successful_import": true
+  },
+  "import_gap_seconds": 656,
+  "review_before": {
+    "read_only": true,
+    "reviewed": 45,
+    "classifications": {
+      "review_unknown_vs": 45
+    },
+    "items": [
+      {
+        "movement_id": 1,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 2,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 3,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 4,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 5,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 6,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 7,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 8,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 9,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 10,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 11,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 1,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 12,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 13,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 14,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 15,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 16,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 1,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 17,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 18,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 19,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 20,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 21,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 23,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 24,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 25,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 26,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 27,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 1,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 28,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 29,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 30,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 31,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 32,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 33,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 34,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 35,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 36,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 37,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 38,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 39,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 40,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 41,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 42,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 43,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 44,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 45,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 46,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      }
+    ],
+    "payments": [
+      {
+        "status": "cancelled",
+        "count": 1
+      },
+      {
+        "status": "paid",
+        "count": 1
+      },
+      {
+        "status": "pending",
+        "count": 2
+      },
+      {
+        "status": "refund_required",
+        "count": 3
+      },
+      {
+        "status": "refunded",
+        "count": 1
+      }
+    ]
+  },
+  "review_after": {
+    "read_only": true,
+    "reviewed": 45,
+    "classifications": {
+      "review_unknown_vs": 45
+    },
+    "items": [
+      {
+        "movement_id": 1,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 2,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 3,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 4,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 5,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 6,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 7,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 8,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 9,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 10,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 11,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 1,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 12,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 13,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 14,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 15,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 16,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 1,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 17,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 18,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 19,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 20,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 21,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 23,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 24,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 25,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 26,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 27,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 1,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 28,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 29,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 30,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 31,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 32,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 33,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 1
+      },
+      {
+        "movement_id": 34,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 35,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 36,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 37,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 38,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 39,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 40,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 41,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 42,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 43,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 44,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 45,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      },
+      {
+        "movement_id": 46,
+        "stored_status": "review_unknown_vs",
+        "current_status": "review_unknown_vs",
+        "vs_payment_count": 0,
+        "same_amount_pending_count": 0,
+        "pending_created_after_booking_day": 0
+      }
+    ],
+    "payments": [
+      {
+        "status": "cancelled",
+        "count": 1
+      },
+      {
+        "status": "paid",
+        "count": 1
+      },
+      {
+        "status": "pending",
+        "count": 2
+      },
+      {
+        "status": "refund_required",
+        "count": 3
+      },
+      {
+        "status": "refunded",
+        "count": 1
+      }
+    ]
+  },
+  "matching_by_amount_only_movement_ids": [
+    11,
+    16,
+    27
+  ],
+  "review_unchanged": true,
+  "github_schedule_enabled": false,
+  "workflow_runs": {
+    "ci": 42018987204,
+    "deploy": 42019877235,
+    "review_before": 42019910210,
+    "install": 42020650727,
+    "restore": 42020816687,
+    "status_first": 42020937481,
+    "final_audit": 42021224333,
+    "review_after": 42022348440
+  },
+  "http": {
+    "pre": {
+      "checks": 57,
+      "passed": 57,
+      "checked_at": "2026-11-05T11:37:28.248157+00:00"
+    },
+    "post": {
+      "checks": 57,
+      "passed": 57,
+      "checked_at": "2026-11-05T11:50:32.468828+00:00"
+    }
+  }
+}

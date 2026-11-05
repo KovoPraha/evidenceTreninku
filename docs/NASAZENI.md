@@ -88,6 +88,12 @@ běh [`37606107788`](https://github.com/KovoPraha/evidenceTreninku/actions/runs/
 
 ## Fio synchronizace
 
+Současný ověřený pravidelný provoz zajišťuje samostatný hostingový spouštěč
+v existujícím CRON.1minuta, s minimálním odstupem importů 600 sekund.
+[Dva skutečné importy a provozní kontrola](verification/fio-followup-20261105/RESULTS.md).
+Status se čte přes fio-operations-production.yml z main; samotná instalace
+nepotvrzuje vykonání. Redundantní GitHub plán je nyní vypnutý repo proměnnou.
+
 Workflow `.github/workflows/fio-import-production.yml` podporuje ruční běh a
 desetiminutový plán. Plán spustí produkční job pouze při repozitářové proměnné
 `KIS_FIO_SCHEDULE_ENABLED=true`; jinak se naplánovaný job přeskočí. Samotný
@@ -98,7 +104,7 @@ historie. Běžný deploy žádný z těchto přepínačů nezapíná.
 Schválenou aktivaci 5. 11. 2026, importovanou historii, skutečně ověřené běhy
 a otevřené meze dokládá [protokol ostrých plateb](verification/live-payments-20261105/ACTIVATION.md).
 Aktuální flags jsou výhradně v [CURRENT_STATE](CURRENT_STATE.md).
-Při přejímce plánu ověřit event `schedule` a úspěšný job; ruční dispatch sám
+Při přejímce GitHub plánu ověřit event `schedule` a úspěšný job; ruční dispatch sám
 nepotvrzuje vykonání plánovače.
 
 SumUp spravuje chráněné `configure-sumup-production.yml`: `verify` s potvrzením
