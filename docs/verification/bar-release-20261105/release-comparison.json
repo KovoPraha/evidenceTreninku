@@ -35,5 +35,8 @@
     "run_id": "42084130988",
     "deployed_at": "2026-11-05T18:28:35+00:00",
     "uat_approved": false
-  }
+  },
+  "legacy_missing_attachment_count_before": 2,
+  "legacy_missing_attachment_count_after": 2,
+  "legacy_missing_attachments_preexist_BAR_release": true
 }

@@ -24,6 +24,8 @@ Toto je vydání kódu B0–B6, nikoli dokončený převod skutečného baru. Sk
 
 [Metadata a otisky](pre-release-backup.json), [běh](pre-release-backup-run.json). Archiv zahrnuje tehdejší aplikaci včetně konfigurace a celé soukromé úložiště. Konfigurace, SQL a přílohy nebyly zveřejněné jako GitHub artefakty ani vložené do Gitu; po nácviku se privátní pracovní kopie runneru uklidily. Zálohy zůstávají soukromě na hostingu.
 
+Dvě starší přílohy původní Evidence chyběly už před tímto vydáním a čtecí audit po něm hlásí stejný počet 2. Archiv a jeho obnova prokazují zachování všech **fyzicky existujících** 4341 souborů; neprokazují obnovení těchto dříve chybějících podkladů. Nejde o ztrátu při nasazení nebo import BAR fotografií, který se dosud neprováděl. Tento známý rozdíl zůstává v otevřeném provozním převzetí.
+
 Nasazovací workflow ještě těsně před migracemi vytvořilo novou [DB zálohu](deploy-database.json) `evidence_2026-11-05_182807_acb1e566.sql.gz`, **357 tabulek / 2 triggery**, SHA-256 `4a4e0f5f0ef6024a79eb0a29fd73fc9dc6976d2c66f2b92c36ad7c360f2ca6dc`. Následný samostatný drill této nejnovější zálohy: [42085710492](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42085710492) **PASS**, stejný konkrétní soubor a checksum, všech 357 tabulek / 2 triggery. Produkční DB se neobnovovala.
 
 ## Živá přejímka

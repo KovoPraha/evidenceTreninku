@@ -61,7 +61,7 @@ Aktualizováno 5. 11. 2026 (Europe/Prague), po schváleném nasazení modulu BAR
 - **Ověření:** všech 11 kontrol PR, CI main i deploy PASS; Linux 2203/41286 bez skipů, samostatné unixové hranice 3/45, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
   HTTP před 71/71, po 77/77; přihlášený Chrome Finance/Správa baru/Obsluha PASS, bez doménových zápisů. Běžná lucka a skutečná barová platba NOT RUN.
   [Čtecí porovnání](verification/bar-release-20261105/release-comparison.json): živé SHA a konfigurace/flags stejné; historický source manifest není úplnou inventurou BAR.
-- **Záloha a schéma:** [úplná izolovaná obnova 42080871410](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42080871410) PASS: 357 tabulek / 2 triggery a všech 4341 souborů včetně konfigurace a příloh.
+- **Záloha a schéma:** [úplná izolovaná obnova 42080871410](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42080871410) PASS: 357 tabulek / 2 triggery a 4341 existujících souborů včetně konfigurace a příloh.
   [Nejnovější DB záloha](verification/bar-release-20261105/deploy-database.json) vznikla před migracemi; [obnova 42085710492](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42085710492) PASS. Schema current / pending [], ledger 159 a VS zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
