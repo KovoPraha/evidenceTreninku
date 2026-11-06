@@ -4,7 +4,17 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Nejnovější návaznost: P11 optimalizace zdravotního přehledu
+## Rozpracovaná návaznost: P11 optimalizace plánovače
+
+Vlastník zadal optimalizaci R05 podle měření se zachováním chování a WIP,
+bez produkčních změn. Větev `codex/planner-read-performance-20261106`, kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-planner-performance-20261106`.
+[Plán a průběžné výsledky](verification/planner-read-performance-20261106/RESULTS.md).
+Postup: dávkové souhrny RSVP, explicitní čtecí metadata a agregované historiové
+upozornění bez filtru soupisky. Transakce a POST zachovat. Implementace a nové
+ověření zatím NOT RUN; produkční operace nejsou součástí zadání.
+
+## Předchozí návaznost: P11 optimalizace zdravotního přehledu
 
 Vlastník zadal navázat optimalizací R13 bez produkčních změn a zachovat WIP.
 [Plán, stav a důkazy](verification/medical-read-performance-20261106/RESULTS.md).

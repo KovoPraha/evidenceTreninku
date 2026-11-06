@@ -204,6 +204,12 @@ chráněný PR a skutečný preflight publikace. Náhrada ověřená přes #348,
 
 ## P11 — autonomní syntetické měření 6. 11. 2026
 
+**Aktivní R05:** vlastník zadal autonomní optimalizaci plánovače, porovnání
+stejných syntetických dat a zachování chování/WIP bez změn produkce.
+Větev `codex/planner-read-performance-20261106`;
+[rozsah, metoda a výsledky](verification/planner-read-performance-20261106/RESULTS.md).
+Implementace a nové ověření zatím NOT RUN. R13 #352 ani další funkce nenasazovat.
+
 **Navazující optimalizace R13 implementovaná a ověřená:** vlastník zadal implementaci a
 porovnání stejných syntetických dat bez produkčních změn. Vlastní větev
 `codex/medical-read-performance-20261106`; [rozsah, metoda a stav](verification/medical-read-performance-20261106/RESULTS.md).
