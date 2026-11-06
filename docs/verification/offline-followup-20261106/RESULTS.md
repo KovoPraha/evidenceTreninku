@@ -100,4 +100,5 @@ odkazů, 106 zachovaných archivních bloků, 0 chyb. Kontrola 284 místních
 odkazů sedmi dotčených Markdown souborů PASS;
 po aktualizaci handoffu znovu dokumentační kontrakt **2 testy / 14 assertions PASS**.
 `git diff --check` PASS. Původní WIP má stále shodný výše uvedený SHA256.
-Finální kontrola a souborové PR budou doplněné podle skutečného výsledku.
+Finální místní kontrola PASS, [souborové předání PR #345](https://github.com/KovoPraha/evidenceTreninku/pull/345).
+Stav povinného CI/merge je přímo u PR; jeho začlenění nevyžaduje deploy.
