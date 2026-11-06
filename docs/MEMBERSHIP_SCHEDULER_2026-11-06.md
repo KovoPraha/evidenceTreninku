@@ -9,7 +9,7 @@ Větev `codex/membership-hosting-scheduler-20261106`, kopie
 `C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106`.
 Plán: otestovat UTC hranici, opakování/souběh, výpadek, čerstvost heartbeat,
 bezpečnou instalaci a zachování přepínačů. Sdílený DB zámek s ručním CLI,
-nejvýše jedno úspěšné denní zpracování, odložený retry po chybě. Při přechodu
+nejvýše jedno úspěšné automatické denní zpracování, odložený retry po chybě. Při přechodu
 respektovat již úspěšný denní běh z provozního ledgeru, nepřehrávat dnešek.
 Status nic nezpracovává ani neposílá. Instalace nevolá skutečnou platbu,
 nevytváří testovací členství ani neimportuje export. Stávající povolený worker
@@ -20,7 +20,7 @@ po přirozeném hostingovém ticku, vypnout redundantní GitHub schedule. Změnu
 ranního času neprovádět kvůli okamžitému testu. Skutečný další ranní billing
 nelze dokazovat simulací; testy času a skutečný heartbeat uvádět odděleně.
 
-## Implementace a průběžné ověření
+## Průběžný záznam implementace (před nasazením)
 
 Hotové: izolovaný spouštěč, status/install workflow s ověřením nasazených SHA,
 atomický soukromý stav, denní UTC brána, catch-up a 10min retry, souborový zámek
@@ -43,3 +43,14 @@ MariaDB lock testů. Před merge přibylo předání #342: konflikt pouze na kon
 registru sloučen zachováním obou záznamů, nové důkazy nasazení #340 zachované.
 Runtime/testy/workflow proti ověřenému headu shodné; nové kontroly dokumentačního
 merge musí zůstat zelené. Produkční nasazení scheduleru zatím neprovedeno.
+
+Aktuální merge, nasazení a provozní přechod vede [výsledkový protokol](verification/membership-scheduler-20261106/RESULTS.md).
+
+## Dokončeno
+
+#341 sloučené a nasazené, hostingový spouštěč instalovaný a přirozené tiky
+ověřené. GitHub schedule vypnuté až po důkazu hostingu; soukromé přepínače a
+config zachované. [Výsledky a meze](verification/membership-scheduler-20261106/RESULTS.md),
+[session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md).
+Skutečné P05/P07 a export P06 zůstávají odložené. Budoucí ranní běh se dnes
+neprohlašuje za proběhlý, časová brána a změny letního času prošly testy.

@@ -1,5 +1,12 @@
 # Zapnutí pošty členství — 5. 11. 2026
 
+Historický protokol aktivace z 5. 11. Aktuální časování od 6. 11. převzal
+[hostingový plán](verification/membership-scheduler-20261106/RESULTS.md):
+05:23 UTC denně, redundantní GitHub schedule false; soukromá automatizace
+i pošta zachované true. Pro zastavení použít soukromé příznaky podle
+[runbooku](MONTHLY_MEMBERSHIP_RUNBOOK.md#hostingový-denní-plán), samotná GitHub
+proměnná hosting nezastaví. Skutečné P05/P07 a export P06 zůstávají odložené.
+
 Vlastník výslovně schválil zapnout e-maily k dokladům a upomínkám. Denní
 zpracování už běží; požadavek nyní zahrnuje i skutečný poštovní transport.
 

@@ -23,6 +23,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Session handoff BAR](SESSION_HANDOFF_BAR_2026-11-06.md) | Dokončená publikace a pořadí přihlášení Lucky, zásob, kasy a účetního propojení |
 | [Pravidla souborové dokumentace](WORK_DOCUMENTATION_POLICY.md) | Průběžné záznamy rozpracované, dokončené a plánované práce v souborech |
 | [Pracovní balíček pro testerku](testing/chatgpt-tester-20261105/README.md) | Zachované datované instrukce a 20 scénářů; před sdílením aktualizovat, propojení GitHubu není doložené |
+| [Spolehlivé denní členství](MEMBERSHIP_SCHEDULER_2026-11-06.md) | Hostingový plán 05:23 UTC, skutečné minutové tiky a ochrana proti souběhu; [výsledky](verification/membership-scheduler-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md) |
 | [Měsíční členství přes e-shop](MONTHLY_MEMBERSHIP_RUNBOOK.md) | Nový tok, platby, doklady, upomínky, samostatná aktivace a hranice ověření; [plán](MONTHLY_MEMBERSHIP_PLAN.md) |
 | [Tréninky a zastupování bez povinné soupisky](COACH_TRAINING_ACCESS_2026-11-05.md) | Vlastní cíle první, ostatní dostupné; nové pravidlo, přiřazení a hranice ověření |
 | [Pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | Aplikace nasazená a převod provedený; poslední sync, přihlášené UAT a E8 otevřené |

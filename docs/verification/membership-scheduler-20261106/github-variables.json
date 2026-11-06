@@ -1,0 +1,14 @@
+[
+  {
+    "name": "KIS_MONTHLY_MEMBERSHIP_APPLY_ENABLED",
+    "value": "true"
+  },
+  {
+    "name": "KIS_MONTHLY_MEMBERSHIP_MAIL_ENABLED",
+    "value": "true"
+  },
+  {
+    "name": "KIS_MONTHLY_MEMBERSHIP_SCHEDULE_ENABLED",
+    "value": "false"
+  }
+]

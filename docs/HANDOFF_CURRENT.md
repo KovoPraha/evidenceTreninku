@@ -77,12 +77,13 @@ Produkt 297 / varianta 951 stojí 2200 Kč/měsíc; výběr více disciplín nem
 Fakturační údaje TJ KOVO jsou uložené. Neopakovat založení, schválení ani publikaci.
 Zákazník musí mít klubem ověřeného sportovce; použitý účet jej nemá, proto úplné
 sjednání/úhrada/PDF zůstávají neověřené. Starý protokol konceptu popisuje jen minulý stav.
-[Pravidelné zpracování je zapnuté](verification/membership-automation-20261105/RESULTS.md):
-automatizace, denní plán/zápis i [pošta jsou true](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
-Ruční apply --send i heartbeat PASS (0 členství a zpráv), plán 05:23 UTC.
-Automatický start 6. 11. už [doložený](verification/autonomous-p01-p14-20261106/RESULTS.md),
-ale opožděný oproti 05:23 UTC. Skutečné sjednání/platba/PDF/doručení členství
-zůstávají odložené vlastníkem; nejde o doručení pracovního upozornění P01.
+[Pravidelné zpracování i pošta jsou zapnuté](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
+[Denní časování je opravené a hostingový plán ověřený](verification/membership-scheduler-20261106/RESULTS.md):
+05:23 UTC, přirozené minutové tiky, GitHub schedule false, APPLY/MAIL true.
+Soukromá automatizace i pošta zůstaly true; dnešní úspěšné zpracování se
+neopakovalo. Další ranní běh je budoucí důkaz, nezaměňovat jej s testem hodin.
+Skutečné sjednání/platba/PDF/doručení členství zůstávají odložené vlastníkem;
+nejde o doručení pracovního upozornění P01. Export P06 také odložený.
 Podporované roční tarify nemají zadanou skutečnou cenu a žádný roční produkt nevznikl.
 
 [Měsíční členství a zastupování trenérů #314](verification/monthly-coach-release-20261105/RESULTS.md) jsou sloučené a nasazené.
@@ -395,16 +396,15 @@ produkční invarianty 16/16, kapacitní profil a syntetický tisk BAR PASS.
 Chybějící skutečné podklady a lidská rozhodnutí vede tentýž protokol.
 
 
-## Aktivní relace: časování členství 6. 11. 2026
+## Časování členství — dokončená technická oprava 6. 11. 2026
 
-Zadání vlastníka: opravit opožděný automatický běh a zachovat odložené skutečné
-P05/P07 i export P06. [Plán a důkazy](MEMBERSHIP_SCHEDULER_2026-11-06.md),
-[provozní postup](MONTHLY_MEMBERSHIP_RUNBOOK.md#hostingový-denní-plán).
-Větev `codex/membership-hosting-scheduler-20261106`, izolovaná kopie
-`C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106`.
-Implementována UTC denní brána nad existujícím minutovým cronem, sdílený
-MariaDB zámek a oddělený skutečný heartbeat. Cílené testy PASS; místní MariaDB
-nedostupná, souběh se ověřuje v CI 10.3/11.4. Zbývá zelené CI, merge, chráněný
-deploy, status/install a přirozený tick; teprve potom vypnout redundantní GitHub
-schedule a doplnit skutečné důkazy. Stávající platby ani exporty se kvůli testu
-nezakládají. Původní WIP `kis_rosters_admin.php` mimo tuto větev zachovaný.
+[Session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md),
+[plán](MEMBERSHIP_SCHEDULER_2026-11-06.md),
+[provozní důkazy](verification/membership-scheduler-20261106/RESULTS.md).
+#341 sloučené a chráněně nasazené; hosting instalovaný, přirozené tiky a
+zachování konfigurace ověřené. Redundantní GitHub schedule false, ruční
+workflow zachované. Skutečné P05/P07 a export P06 dále odložené vlastníkem.
+Dnešní zpracování se neopakovalo, čas se kvůli testu neposouval.
+Příští denní start je 7. 11. v 05:23 UTC; do jeho skutečného průběhu jej
+neoznačovat za provozně ověřený. Při kontrole použít čtecí status z runbooku,
+nikoli ruční apply. Původní WIP zachovaný; přesný rozsah je v protokolu.
