@@ -138,6 +138,7 @@ function membershipMorningStatus(array $paths): array
 
 function membershipMorningRemoveOwnCron(array $paths): void
 {
+    clearstatcache(true, $paths['audit_cron']);
     if (!membershipMorningOwnCron($paths) || !unlink($paths['audit_cron'])) {
         throw new RuntimeException('membership_audit_self_cleanup');
     }

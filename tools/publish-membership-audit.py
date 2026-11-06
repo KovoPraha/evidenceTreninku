@@ -79,10 +79,16 @@ def generate(root, mode, data, flags, run):
         title = "Ranní audit členství 7. 11. 2026 — " + report["verdict"]
         actual = report.get("actual_attempt_utc") or "nedoloženo"
         if actual != "nedoloženo":
-            timestamp(actual)
+            actual_cet = timestamp(actual).astimezone(dt.timezone(dt.timedelta(hours=1))).isoformat()
+        else:
+            actual_cet = actual
+        delay = report.get("start_delay_seconds")
+        delay_text = str(delay) if isinstance(delay, int) else "nedoloženo"
+        failures = ", ".join(k for k, value in report.get("checks", {}).items() if value is not True) or "žádné"
         detail = ("Zachyceno hostingem: " + report["captured_at_utc"] + ".\n"
-                  "Denní pokus UTC: " + actual + "; odchylka " + str(report.get("start_delay_seconds")) + " s.\n"
-                  "Očekávaný start 05:23 UTC (06:23 CET). Úspěch UTC: " + str(report.get("last_success_utc")) + ".\n"
+                  "Poslední denní pokus UTC: " + actual + "; CET: " + actual_cet + "; odchylka " + delay_text + " s.\n"
+                  "Očekávaný start 05:23 UTC (06:23 CET). Úspěch UTC: " + (report.get("last_success_utc") or "nedoloženo") + ".\n"
+                  "Nesplněné kontroly: " + failures + ".\n"
                   "Případné retry/omezení prvního pokusu: " + str(report.get("first_attempt_limitation")) + ".")
         link_label = "Ranní serverový výsledek " + report["verdict"]
     report["publication_run"] = int(run)
@@ -113,13 +119,16 @@ def generate(root, mode, data, flags, run):
         phrase = "příští ranní běh zatím nelze doložit."
         if phrase not in state:
             raise ValueError("Current-state morning marker changed; preserve for review")
-        updates["docs/CURRENT_STATE.md"] = state.replace(phrase, line, 1)
+        local = checked.astimezone(dt.timezone(dt.timedelta(hours=1)))
+        updated = re.sub(r"Aktualizováno \d+\. \d+\. \d{4}",
+                         f"Aktualizováno {local.day}. {local.month}. {local.year}", state, count=1)
+        updates["docs/CURRENT_STATE.md"] = updated.replace(phrase, line, 1)
         updates["docs/CHANGELOG-PROVOZ.md"] = history
     for name, content in updates.items():
         if name not in ALLOWED:
             raise ValueError("Unexpected output path")
         path = root/name
-        if any(p.is_symlink() for p in [path, *path.parents] if p != root.parent):
+        if any(p.is_symlink() for p in [path, *path.parents]):
             raise ValueError("Symlink publication path")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8", newline="\n")
