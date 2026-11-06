@@ -67,6 +67,18 @@ class PublicationTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             audit.generate(self.root, 'publish', data, FLAGS, '123')
 
+    def test_timely_capture_publishes_pass_and_cet_start(self):
+        report = {'version': 1, 'target_day': '2026-11-07', 'trigger': 'hosting_cron', 'verdict': 'PASS',
+                  'captured_at_utc': '2026-11-07T05:30:02+00:00', 'actual_attempt_utc': '2026-11-07T05:23:02+00:00',
+                  'actual_start_utc': '2026-11-07T05:23:03+00:00', 'start_delay_seconds': 3,
+                  'last_success_utc': '2026-11-07T05:23:04+00:00', 'first_attempt_limitation': False,
+                  'checks': {str(n): True for n in range(13)}}
+        data = {'ok': True, 'checked_at_utc': '2026-11-07T06:00:00+00:00', 'report': report}
+        self.assertEqual('PASS', audit.generate(self.root, 'publish', data, FLAGS, '123'))
+        note = (self.root/(audit.OUTPUTS['publish']+'/RESULTS.md')).read_text(encoding='utf-8')
+        self.assertIn('06:23:03+01:00', note)
+        self.assertIn('odchylka 3 s', note)
+
 
 if __name__ == '__main__':
     unittest.main()
