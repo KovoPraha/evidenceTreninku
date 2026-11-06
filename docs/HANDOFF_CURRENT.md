@@ -4,6 +4,17 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
+## Předání této relace a evidence další práce
+
+Čti [průběžný plán](WORK_PLAN_CURRENT.md) a [produkční protokol upozornění](verification/staff-notifications-release-20261106/RESULTS.md).
+Každé zadání, rozpracovanost, rozhodnutí a další krok zapisuj přímo do souborů
+v repozitáři a propoj odkazy. Chat ani externí Page nejsou jediným záznamem.
+Na začátku práce aktualizuj příslušný plán, během práce doplňuj výsledky a před
+předáním zapiš zbývající kroky, důkazy, větev a pracovní kopii. Pravidla viz [CLAUDE.md](../CLAUDE.md).
+Pracovní upozornění kontroluj přes `staff-notifications-production.yml` / `action=status` /
+`OVERIT-UPOZORNENI`; čtecí status nic neposílá. Instalaci ani první rozesílku neopakovat.
+Přečtení není vyřízení zdrojové žádosti. Stav aktivace určuje CURRENT_STATE.
+
 Omluvenky a náhrady nepovažovat za čekající nasazení podle existence starých větví.
 Aktuální stav a [kontrola z 6. 11.](verification/makeup-audit-20261106/RESULTS.md)
 dokládají již nasazenou funkčnost: 22 testů / 139 assertions, 23 HTTP scénářů
@@ -15,8 +26,10 @@ nasazení. Zápisy byly pouze syntetické; přihlášené produkční UAT tím n
 Produkční koncept Závodní tým 2200 Kč/měsíc (varianta 951) a skupina 86 → MTB 87,
 Silnice 88, Dráha 89 jsou založené. Výběr více disciplín pouze zařazuje na soupisky,
 nemění cenu. Vlastník doplní fakturační údaje přes `accounting_settings_admin.php`;
-vystavovatel, účetní pravidlo a tarif ještě nejsou schválené. Nezakládat koncept
-ručně znovu, použít existující. Prodej čeká na schválení/publikaci.
+původní protokol ještě zachycuje koncept. Vlastník následně schválil vyplnění údajů,
+schválení tarifu i zveřejnění; současný doklad dokončení chybí v repozitáři.
+Ověřit existující variantu podle [plánu](WORK_PLAN_CURRENT.md), než se cokoli opakuje.
+Nezakládat druhý produkt a nevyžadovat znovu již udělený souhlas.
 [Pravidelné zpracování je zapnuté](verification/membership-automation-20261105/RESULTS.md):
 automatizace, denní plán/zápis i [pošta jsou true](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
 První apply --send i následný heartbeat PASS (0 členství a zpráv), cron 05:23 UTC. Skutečné doručení ještě neověřené.
