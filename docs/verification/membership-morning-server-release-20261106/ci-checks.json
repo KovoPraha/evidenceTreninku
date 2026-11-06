@@ -1,0 +1,57 @@
+[
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/runs/128050798724",
+    "name": "CodeQL",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263870819/job/128050539349",
+    "name": "PHPUnit na PHP 8.2",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263870819/job/128050539384",
+    "name": "MariaDB profily čtení (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263870856/job/128050540665",
+    "name": "docs",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263870714/job/128050539338",
+    "name": "PHPStan level 5 and changed-file style",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263870819/job/128050539258",
+    "name": "MariaDB integrační smoke (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263870819/job/128050538944",
+    "name": "MariaDB integrační smoke (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263870819/job/128050539704",
+    "name": "MariaDB profily čtení (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263861993/job/128050516700",
+    "name": "Analyze (actions)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263861993/job/128050516832",
+    "name": "Analyze (javascript-typescript)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42263861993/job/128050517084",
+    "name": "Analyze (python)",
+    "state": "SUCCESS"
+  }
+]

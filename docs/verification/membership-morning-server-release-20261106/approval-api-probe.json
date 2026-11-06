@@ -1,0 +1,11 @@
+{
+  "id": 128066407694,
+  "run_id": 42268437771,
+  "head_sha": "e5dffa6c92487d9681a50200ad6a7e7da0ee60ea",
+  "name": "membership-approval-probe",
+  "status": "completed",
+  "conclusion": "success",
+  "started_at": "2026-11-06T18:11:37Z",
+  "completed_at": "2026-11-06T18:11:45Z",
+  "html_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42268437771/job/128066407694"
+}

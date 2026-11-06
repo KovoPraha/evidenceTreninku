@@ -2,6 +2,14 @@
 
 ## Aktuální vstup od 6. 11. 2026
 
+### Ranní kontrola 7. 11. bez počítače vlastníka
+
+[Serverové předání](../SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md):
+pozorovatel instalovaný, čekající tick a serverový CI/merge přenos #348
+ověřené. Místní úloha PAUSED. Skutečný stav přejímky vede
+[aktuální plán](../MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
+P05/P07 a export P06 dál odložené, nevyrábět důkaz ručním apply.
+
 ### Aktuální doplnění: denní členství na hostingu
 
 [Session handoff 6. 11.](../SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md):
