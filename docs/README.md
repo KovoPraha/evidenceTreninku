@@ -1,6 +1,6 @@
 # Dokumentace EvidencePavel / KIS
 
-Aktualizováno: 5. 11. 2026, Europe/Prague
+Aktualizováno: 6. 11. 2026, Europe/Prague
 
 Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
 webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
@@ -10,8 +10,10 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 | Dokument | Účel |
 |---|---|
+| [Průběžný plán a rozpracovanost](WORK_PLAN_CURRENT.md) | Otevřené kroky, rozhodnutí, odpovědnost a odkazy na tematické plány a důkazy |
+| [Pracovní upozornění](STAFF_NOTIFICATIONS_2026-11-06.md) | Zvoneček, registráři, e-mail; [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | [TV programy](TV-PROGRAMY.md) | Obsluha TV, editor obrázků a textů, veřejné adresy a zveřejňování carouselů |
-| [Začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md) | Schválený rozsah, role, katalog, etapy a stav implementace bez produkčního nasazení |
+| [Začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md) | Rozsah, role, katalog a etapy; aktuální vydání a převod viz CURRENT_STATE |
 | [Měsíční členství přes e-shop](MONTHLY_MEMBERSHIP_RUNBOOK.md) | Nový tok, platby, doklady, upomínky, samostatná aktivace a hranice ověření; [plán](MONTHLY_MEMBERSHIP_PLAN.md) |
 | [Tréninky a zastupování bez povinné soupisky](COACH_TRAINING_ACCESS_2026-11-05.md) | Vlastní cíle první, ostatní dostupné; nové pravidlo, přiřazení a hranice ověření |
 | [Pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | Aplikační E1–E5 sloučeny, čtecí inventura a technický nácvik E6 prošly; konkrétní cleanup a E7/E8 otevřené |
@@ -29,7 +31,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Checklist pro trenéry](TRAINER_UAT_CHECKLIST_2026-11-01.md) | Krátký text připravený k přeposlání účastníkům |
 | [Browser UAT pro jiné vlákno](TRAINER_UAT_BROWSER_2026-11-01.md) | Stejné scénáře, přesný rozsah automatizace, důkazy a asistované kroky s heslem |
 | [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | Aktuální dispozice W6–W15, přijaté změny a důvody nepřijatých kandidátů |
-| [Závěrečná technická přejímka refaktoringu](REFACTORING_CLOSURE_2026-10-30.md) | W6–W15 sloučeno a CI PASS; finální nasazení blokuje DB disk full, živé vydání v CURRENT_STATE |
+| [Závěrečná technická přejímka refaktoringu](REFACTORING_CLOSURE_2026-10-30.md) | W6–W15 dokončeno a nasazeno; historické meze přejímky, živé vydání v CURRENT_STATE |
 | [Finální CI a provozní incident](verification/refactoring-final-release-20261030/RESULTS.md) | Záloha odmítla nasazení před migrací/aktivací, aktuální HTTP dopad a podklady pro hosting |
 | [Registr hlavních cest K0.1](REFACTORING_ROUTE_REGISTER_2026-10-29.md) | 16 kritických cest: oprávnění, služby, hlavní tabulky, vedlejší účinky, testy a otevřená měření |
 | [W6.2 — výpočet kapacity](REFACTORING_WAVE6_2026-10-29.md) | Dokončená čistá extrakce, přímé porovnání s původním kódem a ověřené produkční vydání |
