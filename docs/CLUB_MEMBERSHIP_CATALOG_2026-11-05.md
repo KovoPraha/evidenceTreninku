@@ -37,7 +37,5 @@ Zadání vlastníka 5. 11. 2026. Navazuje na nasazené PR #314.
 
 ## Stav
 
-Dokončeno, sloučeno a nasazeno v PR #316. Produkční koncept a tři soupisky
-jsou založené; vydávání a prodej čekají na skutečné údaje vystavovatele,
-schválení tarifu a oddělenou aktivaci. Důkazy a hranice jsou v
-[protokolu vydání](verification/membership-catalog-release-20261105/RESULTS.md).
+Dokončeno, sloučeno a nasazeno v PR #316; [původní protokol](verification/membership-catalog-release-20261105/RESULTS.md) zachycuje založení konceptu.
+[Produkční kontrola 6. 11.](verification/racing-team-status-20261106/RESULTS.md) již potvrzuje aktivní schválený tarif Závodní tým za 2200 Kč/měsíc, uložené údaje vystavovatele a zveřejnění. Sjednání vyžaduje ověřeného sportovce; skutečná úhrada/PDF tím nejsou doložené. Aktuální provozní přepínače určuje CURRENT_STATE.

@@ -10,6 +10,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 | Dokument | Účel |
 |---|---|
+| [Závodní tým – aktuální ověření](verification/racing-team-status-20261106/RESULTS.md) | Schválení, fakturační údaje, nabídka 2200 Kč/měsíc a podmínka ověřeného sportovce |
 | [Průběžný plán a rozpracovanost](WORK_PLAN_CURRENT.md) | Otevřené kroky, rozhodnutí, odpovědnost a odkazy na tematické plány a důkazy |
 | [Pracovní upozornění](STAFF_NOTIFICATIONS_2026-11-06.md) | Zvoneček, registráři, e-mail; [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | [TV programy](TV-PROGRAMY.md) | Obsluha TV, editor obrázků a textů, veřejné adresy a zveřejňování carouselů |
