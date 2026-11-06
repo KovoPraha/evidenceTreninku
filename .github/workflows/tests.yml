@@ -46,6 +46,9 @@ jobs:
       - name: Spustit testy
         run: composer test
 
+      - name: Ověřit serverové předání ranní kontroly členství
+        run: python3 tests/Support/test_membership_audit_publication.py
+
       - name: Ověřit ruční obnovu barového potvrzení po ztrátě odpovědi
         run: node --test tests/Support/BarRequestRecoveryJavascriptSmoke.cjs
 
