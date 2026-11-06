@@ -134,6 +134,7 @@ v eshop_payments_admin.php: pozice finance_manager, důvod a výslovné potvrzen
 - Každé zadání, plánovanou i rozpracovanou práci, rozhodnutí a výsledky zapisuj přímo do souborů v repozitáři; chat ani externí Page nejsou jediným zdrojem.
 - Udržuj [průběžný plán](docs/WORK_PLAN_CURRENT.md), konkrétní tematický plán a vzájemné odkazy. Zápis obsahuje stav, rozsah oprávnění, důkazy, zbývající kroky a pracovní větev/kopii. Aktualizuj jej při zahájení, změně rozsahu i před předáním/kompaktací.
 - Stav release patří do CURRENT_STATE, postup převzetí do HANDOFF_CURRENT, minulý stav do CHANGELOG-PROVOZ a podrobné výsledky do docs/verification/. Nezaměňuj schválený záměr, implementaci, nasazení a skutečné ověření.
+- Podrobný postup souborového zápisu a session handoffu určují [pravidla dokumentace](docs/WORK_DOCUMENTATION_POLICY.md) a [AGENTS.md](AGENTS.md).
 - Základní ověření: composer validate --strict, dotčené testy, composer test,
   syntaxe změněných PHP a git diff --check. Windows omezení POSIX/symlink testů
   neoznačuj za plný PASS; rozhodující je čisté Linux CI.
