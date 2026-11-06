@@ -1,0 +1,3 @@
+2026-11-06T15:04:52.1232755Z {"ok":true,"database":"evidence_monthly_smoke_test_dada088e4b","server":"11.4.13-MariaDB-ubu2404","checks":["migration_idempotent","two_children","partial_allocation","movement_replay","next_month","private_pdf","termination","concurrent_receipt","concurrent_period","worker_exclusion","worker_lock_release"]}
+2026-11-06T15:05:29.5242000Z OK (2290 tests, 42246 assertions)
+2026-11-06T15:05:01.9676784Z {"ok":true,"database":"evidence_monthly_smoke_test_82ed25a807","server":"10.3.39-MariaDB-1:10.3.39+maria~ubu2004","checks":["migration_idempotent","two_children","partial_allocation","movement_replay","next_month","private_pdf","termination","concurrent_receipt","concurrent_period","worker_exclusion","worker_lock_release"]}

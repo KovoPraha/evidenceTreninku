@@ -1,5 +1,12 @@
 # Aktivace pravidelného zpracování členství
 
+Historický protokol aktivace z 5. 11. Aktuální časování od 6. 11. převzal
+[hostingový plán](verification/membership-scheduler-20261106/RESULTS.md):
+05:23 UTC denně, redundantní GitHub schedule false; soukromá automatizace
+i pošta zachované true. Pro zastavení použít soukromé příznaky podle
+[runbooku](MONTHLY_MEMBERSHIP_RUNBOOK.md#hostingový-denní-plán), samotná GitHub
+proměnná hosting nezastaví. Skutečné P05/P07 a export P06 zůstávají odložené.
+
 Uživatel 5. 11. 2026 výslovně požádal zapnout pravidelnou práci systému,
 i když dosud nemá žádná členství ke zpracování. Při tomto kroku pošta zůstala vypnutá.
 Produkt Závodní tým zůstává konceptem; tento krok neschvaluje jeho prodej.

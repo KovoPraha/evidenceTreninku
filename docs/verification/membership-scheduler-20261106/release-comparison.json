@@ -1,0 +1,50 @@
+{
+  "live": {
+    "sha": "c55b1615885c9e8753bb334d95f06119022963cd",
+    "run_id": "42240723957",
+    "deployed_at": "2026-11-06T15:14:09+00:00",
+    "uat_approved": false
+  },
+  "previous_live": {
+    "sha": "7d8a62ba772f5d47fd0fa8af82f97cf63dcd1f55",
+    "run_id": "42236370197",
+    "deployed_at": "2026-11-06T14:45:50+00:00",
+    "uat_approved": false
+  },
+  "reviewed_head": "023922e2f3cdedac135055cd02fe81e56ade00b5",
+  "reviewed_tree_equals_merged_tree": true,
+  "pre_audit_run": 42240286470,
+  "post_audit_run": 42241933037,
+  "config_sha256_equal": true,
+  "integration_flags_equal": true,
+  "integration_flags": {
+    "FIO_IMPORT_ENABLED": true,
+    "FIO_AUTO_CONFIRM_ENABLED": true,
+    "SUMUP_ENABLED": true,
+    "STRIPE_ENABLED": false,
+    "VELOCOTA_INTEGRATION": false,
+    "PACKETA_ENABLED": null
+  },
+  "migration_ledger_equal": true,
+  "migration_ledger_count": 160,
+  "kis_canonical_write_equal": true,
+  "cron_install_run": 42241457565,
+  "status_runs": [
+    42241346665,
+    42241540735,
+    42241711707,
+    42242051266,
+    42242268347
+  ],
+  "observed_final_tick_interval_seconds": 58,
+  "last_daily_success_unchanged": true,
+  "processing_not_replayed_on_install": true,
+  "automation_and_mail_unchanged": true,
+  "github_schedule_enabled": false,
+  "next_utc_daily_due": "2026-11-07T05:23:00+00:00",
+  "next_morning_actual_run": "NOT YET OBSERVABLE",
+  "deferred": [
+    "P05/P07 real membership/payment",
+    "P06 export"
+  ]
+}

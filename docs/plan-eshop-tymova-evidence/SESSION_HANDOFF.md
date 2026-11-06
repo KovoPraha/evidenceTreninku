@@ -2,7 +2,16 @@
 
 ## Aktuální vstup od 6. 11. 2026
 
-### Navazující kontrola a sjednocení předání
+### Aktuální doplnění: denní členství na hostingu
+
+[Session handoff 6. 11.](../SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md):
+oprava #341 nasazená, minutový cron instalovaný a přirozené tiky ověřené.
+Denně 05:23 UTC, GitHub schedule false; soukromé povolení automatizace/pošty
+zachované. Skutečné P05/P07 a export P06 odložené vlastníkem. Aktuální vydání
+určuje [CURRENT_STATE](../CURRENT_STATE.md), [registr](../WORK_PLAN_CURRENT.md)
+a [výsledky](../verification/membership-scheduler-20261106/RESULTS.md).
+
+### Historická dokumentační relace před opravou časování
 
 Na pokyn vlastníka sjednocené podklady #333 a #334: [protokol a kontroly](../verification/documentation-reconcile-20261106/RESULTS.md).
 Aktuální zadání pouze dokumentační; nic nového na produkci nezapínat.

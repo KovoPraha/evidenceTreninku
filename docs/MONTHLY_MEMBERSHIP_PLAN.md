@@ -2,6 +2,9 @@
 
 Základ implementace: `97b85bb5`, 5. 11. 2026. Implementace a syntetické ověření jsou oddělené od produkčního nasazení a aktivace plánovače.
 
+Aktuální denní časování a přejímku určuje [hostingový plán z 6. 11.](MEMBERSHIP_SCHEDULER_2026-11-06.md),
+provozní zastavení a čtecí status jsou v [runbooku](MONTHLY_MEMBERSHIP_RUNBOOK.md#hostingový-denní-plán).
+
 ## Kontrakt
 
 - Jednorázový košík, platby za zboží a období kroužků zachovají stávající životní cyklus.
