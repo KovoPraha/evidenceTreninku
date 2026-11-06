@@ -10,6 +10,11 @@ Stav 5. 11. 2026, B6. Tento návrh je podklad další samostatné etapy; žádn�
 4. Nabídnout účetní náhled s konkrétními doklady a součty zboží, záloh, nákladů, příjmů a peněz. Teprve po schválení pravidel a konkrétní dávky uložit účetní doklady a vazby v jedné transakci s aktuální autorizací, uzávěrou období a auditem. Opakování ani souběh nesmějí založit další doklad.
 5. Opravu provádět novým navázaným dokladem; nepřepisovat původní export, zaúčtovaný zdroj ani uzavřené období. Storno již používaného zdroje vyžaduje kontrolu zbývajících záloh i původního ocenění.
 
+Po převodu a [zveřejnění první nabídky](verification/bar-menu-publication-20261106/RESULTS.md)
+zůstává skutečné účetní propojení samostatnou plánovanou etapou podle tohoto dokumentu.
+[Session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) vede jeho závislosti na skutečných provozních podkladech;
+publikace nabídky neaktivuje účetní zápisy ani poskytovatele plateb.
+
 ## Rozdělení zdrojů
 
 | Zdroj | Budoucí účetní význam | Kontrola před zápisem |

@@ -13,7 +13,10 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Průběžný plán a rozpracovanost](WORK_PLAN_CURRENT.md) | Otevřené kroky, rozhodnutí, odpovědnost a odkazy na tematické plány a důkazy |
 | [Pracovní upozornění](STAFF_NOTIFICATIONS_2026-11-06.md) | Zvoneček, registráři, e-mail; [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | [TV programy](TV-PROGRAMY.md) | Obsluha TV, editor obrázků a textů, veřejné adresy a zveřejňování carouselů |
-| [Začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md) | Rozsah, role, katalog a etapy; aktuální vydání a převod viz CURRENT_STATE |
+| [Pravidla souborové dokumentace](WORK_DOCUMENTATION_POLICY.md) | Trvalý pokyn vlastníka: průběžná práce, plánované etapy a session handoff přímo v repozitáři s odkazy |
+| [Začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md) | Nasazený modul, převedený katalog a role, doména, technická přejímka a otevřené provozní kroky |
+| [Zveřejnění nabídky BAR](BAR_MENU_PUBLICATION_2026-11-06.md) | Nabídka 1, vydání 1, 45 produktů s fotografiemi; [živé důkazy](verification/bar-menu-publication-20261106/RESULTS.md) |
+| [Session handoff BAR](SESSION_HANDOFF_BAR_2026-11-06.md) | Dokončená práce, návazné dokumenty a pořadí zbývajícího přihlášení Lucky, zásob, kasy a účetního propojení |
 | [Měsíční členství přes e-shop](MONTHLY_MEMBERSHIP_RUNBOOK.md) | Nový tok, platby, doklady, upomínky, samostatná aktivace a hranice ověření; [plán](MONTHLY_MEMBERSHIP_PLAN.md) |
 | [Tréninky a zastupování bez povinné soupisky](COACH_TRAINING_ACCESS_2026-11-05.md) | Vlastní cíle první, ostatní dostupné; nové pravidlo, přiřazení a hranice ověření |
 | [Pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | Aplikační E1–E5 sloučeny, čtecí inventura a technický nácvik E6 prošly; konkrétní cleanup a E7/E8 otevřené |

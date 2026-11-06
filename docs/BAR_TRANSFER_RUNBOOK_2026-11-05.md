@@ -76,6 +76,13 @@ Hostovací zapisovač přijímá pouze nový adresář dávky v soukromém `data
 
 Na hostingu se každá nová fotografie dekóduje jednou. Další čtení ověří obsahový SHA-256 a velikost; změněný obsah musí projít novým dekódováním. Volitelné `image_cache_run` + `image_cache_sha256` umožní použít metadata již vytvořeného soukromého snímku s přesným otiskem. Aktuální zdrojové řádky, odkazy a všechny obrazové bajty se čtou znovu; nejde o převzetí starého katalogu. Nová dávka má vlastní manifest a skutečný runner následně všechny fotografie znovu nezávisle dekóduje při validaci a nácviku. Před produkčním zápisem je nutný úspěch právě této nové přípravy. Při kontrole stejné existující dávky se ověřují shodná zdrojová data i každý uložený soubor; pozdější změna zdroje nikdy nepřepíše hotový balíček.
 
+## Následný provoz a zveřejnění nabídky
+
+Po dokončení převodu následovala [technická provozní přejímka](verification/bar-acceptance-20261106/RESULTS.md)
+a [zveřejnění nabídky 1 / vydání 1](verification/bar-menu-publication-20261106/RESULTS.md), 45 produktů s fotografiemi.
+Jde o legitimní nová data KIS; počáteční nulový status se nesmí vynucovat mazáním nabídky nebo nové historie.
+Převod se znovu nespouští. Zbývající postup je v [session handoffu](SESSION_HANDOFF_BAR_2026-11-06.md).
+
 ## Dokončený skutečný převod
 
 6. 11. 2026: nová příprava/nácvik `42127720339`, čtecí kontrola `42127994924`, jednorázový import `42128255522` a následný samostatný status `42128603361` SUCCESS. [Protokol a necitlivé doklady](verification/bar-cutover-20261106/RESULTS.md): přesně 68 produktů / 5 kategorií / 51 fotografií, podporované původní heslo Lucky, pouze obsluha; vlastník dostal schválenou správu a vlastní spotřebu. Před zápisem úplná skutečná obnova `42126301391` PASS. Import znovu nespouštět jako běžný provozní postup; následné skutečné změny cíle se zachovávají.

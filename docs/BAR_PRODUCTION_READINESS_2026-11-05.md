@@ -2,6 +2,8 @@
 
 Plán vznikl po technické přejímce B6, 5. 11. 2026. Vlastník následně výslovně povolil nasazení a pokračování převodu; modul je [nasazený a technicky ověřený](verification/bar-release-20261105/RESULTS.md). **6. 11. je dokončený také [skutečný převod katalogu, fotografií, Lucky, schválených práv a přesměrování starého BAR](verification/bar-cutover-20261106/RESULTS.md).** Tento plán sám neuděluje souhlas k finanční automatizaci; níže zachovává původní pořadí kontrol.
 
+Následná [technická provozní přejímka](verification/bar-acceptance-20261106/RESULTS.md) a [publikace první nabídky](verification/bar-menu-publication-20261106/RESULTS.md) jsou dokončené. Zveřejněno 45 produktů s fotografiemi; [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) vede zbývající skutečný login Lucky, fyzické zásoby, vlastní kasu a lidskou finanční přejímku. Níže je zachovaný průběh původního převodu.
+
 ## Podklady před rozhodnutím o přechodu
 
 1. Zelené kontroly přesného headu PR včetně MariaDB 10.3/11.4 a naplněné obnovy. Zkontrolovat nové změny main a při rozdílu zopakovat dotčené brány; nepoužít staré CI.
@@ -37,4 +39,4 @@ Následuje samostatné přepnutí URL podle `bar-legacy-url.yml`. `inspect` vyž
 
 Přesměrování je dočasné a bez starých parametrů; staré API a každá zapisující metoda vrací 410. Tím se nezpracují fronty na starém původu jako nové prodeje. Následný `status` kontroluje všechny obaly a skutečné HTTP odpovědi pouze GET. Pokud cílový bar mezitím zahájí skutečný provoz, počáteční striktní status se nesmí vynucovat přepisem cen, skladu nebo historie; posoudit aktuální připravenost zvlášť.
 
-Přepnutí je dokončené: `inspect` 42130849719 skutečně obnovil všech 500 souborů původní aplikace, `apply` 42131182982 a samostatný `status` 42131378682 PASS (44/44 HTTP vstupů). Dalších 14 GET/HEAD kontrol aliasů a obou starých API PASS. Chrome ověřil přechod kořenové adresy na pokladnu KIS a `/menu/` na nové veřejné menu; to čeká na první zveřejnění nabídky. Původní deploy, oba účtové nástroje, záloha a monitor jsou pozastavené; testy a izolovaný restore drill zůstávají dostupné. Původní databáze i soukromý bod návratu jsou zachované. Další jsou lidské provozní kroky a samostatně schvalovaný účetní adaptér.
+Přepnutí je dokončené: `inspect` 42130849719 skutečně obnovil všech 500 souborů původní aplikace, `apply` 42131182982 a samostatný `status` 42131378682 PASS (44/44 HTTP vstupů). Dalších 14 GET/HEAD kontrol aliasů a obou starých API PASS. Chrome ověřil přechod kořenové adresy na pokladnu KIS a `/menu/` na nové veřejné menu; jeho následné první zveřejnění dokládá [publikační protokol](verification/bar-menu-publication-20261106/RESULTS.md). Původní deploy, oba účtové nástroje, záloha a monitor jsou pozastavené; testy a izolovaný restore drill zůstávají dostupné. Původní databáze i soukromý bod návratu jsou zachované. Další jsou lidské provozní kroky a samostatně schvalovaný účetní adaptér.
