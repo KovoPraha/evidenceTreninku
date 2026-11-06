@@ -219,8 +219,10 @@ B0–B6 jsou po výslovném souhlasu vlastníka sloučené a [nasazené do KIS](
 aktuální živé SHA, CI a migrace určuje výhradně CURRENT_STATE. [Skutečný převod B7](verification/bar-cutover-20261106/RESULTS.md)
 je ověřený: 68 produktů / 51 fotografií, pouze lucka jako obsluha s původním heslem,
 schválená správa a vlastní spotřeba přidělené pouze existujícímu vlastníkovi. Import
-neopakovat ani neobnovovat starou DB přes nové operace. Starý BAR zatím bez přesměrování;
-navazuje ověřené přepnutí URL se samostatnou souborovou zálohou a lidská přejímka.
+neopakovat ani neobnovovat starou DB přes nové operace. Starý BAR je přesměrovaný:
+44 vstupů a samostatný status PASS, úplná obnova 500 původních souborů ověřená.
+Pět původních produkčních workflow je pozastavených, zdrojová DB zachovaná.
+Zbývá přihlášení Lucky, lidská finanční přejímka, první zásoby/kasa a zveřejnění nové nabídky.
 [Účetní kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md) a [návrh adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md)
 neaktivují skutečné zaúčtování ani nové bankovní párování.
 

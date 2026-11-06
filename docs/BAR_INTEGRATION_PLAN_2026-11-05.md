@@ -1,6 +1,6 @@
 # Začlenění baru do KIS
 
-Schváleno vlastníkem 5. 11. 2026: připravit plán a zahájit implementaci včetně potřebného refaktoringu. Produkční nasazení není povolené. Vývoj probíhá ve větvi `codex/bar-kis-integration-20261105`, v pracovní kopii `C:\Users\Marek\Documents\Codex\evidencePavel-bar-integration-20261105`, od `0ced6664`. Samostatný sedmietapový refaktoring baru nahrazuje tento plán.
+Výchozí schválení vlastníka 5. 11. 2026: připravit plán a zahájit implementaci včetně potřebného refaktoringu, tehdy bez produkčního nasazení. Vlastník následně výslovně povolil nasazení a pokračování převodu; [6. 11. je dokončený katalog, schválené přístupy i přepnutí domény](verification/bar-cutover-20261106/RESULTS.md). Původní větev `codex/bar-kis-integration-20261105` vznikla od `0ced6664`, práce pokračuje ve stejném izolovaném worktree. Samostatný sedmietapový refaktoring baru nahrazuje tento plán.
 
 ## Schválený rozsah
 
@@ -11,7 +11,7 @@ Schváleno vlastníkem 5. 11. 2026: připravit plán a zahájit implementaci vč
 - Ze samostatných účtů baru se převede pouze `lucka`, s technickým e-mailem `info1@kovopraha.cz` a výhradně pozicí Obsluha baru. Zachová se platný hash hesla; případná neplatnost nebo kolize zastaví převod. Technický e-mail neslouží obnově hesla ani automatické komunikaci a není dokladem ověřené identity. Ostatní barová oprávnění se přidělí konkrétním existujícím účtům KIS; vazbu účtu `trebe` nelze odhadnout podle jména.
 - Zachovat produkty, kategorie, názvy, popisy, fotografie, nákupní i prodejní ceny, receptury a nastavení katalogu. Zachovat i archivaci a příznaky nabídky. Zkušební zásoby stánku a předskladu se nepřebírají; výchozí množství jsou nula.
 - Nepřevádět historické prodeje, kasy, pohyby, inventury, vlastní spotřebu, faktury, původní účty kromě lucky ani staré zálohy. Starý systém se při přípravě nemaže. Nová data patří do běžných záloh KIS.
-- Přesměrování staré domény a nový počátek provozu jsou součástí budoucího samostatně schváleného nasazení. Staré offline fronty se na novém původu nikdy automaticky nepřehrávají.
+- Přesměrování staré domény a nový počátek provozu patří schválenému produkčnímu přechodu B7. Staré offline fronty se na novém původu nikdy automaticky nepřehrávají.
 - Příprava účetního propojení od začátku: peníze v celých haléřích, oddělené platby, zboží, vratné zálohy, storna, skladové náklady a vlastní spotřeba; stabilní zdrojové ID a idempotence. Aktivace integrací ani skutečné účetní zápisy nejsou součástí přípravy.
 
 ## Architektura a refaktoring
@@ -25,13 +25,13 @@ Ze zdroje `KovoPraha/bar.kovopraha.cz` se přebírají obchodní pravidla a vhod
 | Etapa | Výsledek | Podmínka dokončení | Stav |
 | --- | --- | --- | --- |
 | B0 | Rozsah, plán a oddělená větev | Zaznamenaná rozhodnutí vlastníka, bez produkčního zásahu | Hotovo |
-| B1 | Oprávnění a základ katalogu | Dvě pozice, oddělená spotřeba, aktuální DB autorizace, audit práv, idempotentní migrace, zálohovací kontrakt; normalizace zdrojového katalogu bez zásob | Implementováno a lokálně ověřeno |
+| B1 | Oprávnění a základ katalogu | Dvě pozice, oddělená spotřeba, aktuální DB autorizace, audit práv, idempotentní migrace, zálohovací kontrakt; normalizace zdrojového katalogu bez zásob | Nasazeno, schválené skutečné přístupy ověřené |
 | B2 | Převod katalogu a lucky | Čtecí inventura zdroje, kontrolní manifest fotografií, transakční a opakovatelný převod, ochrana před kolizí jména/e-mailu, technický účet bez obnovy e-mailem; syntetický nácvik | Skutečný převod 68 produktů / 51 fotografií i nezávislý status PASS 6. 11. |
-| B3 | Katalog a sklad | Administrace produktů, cen a receptur, dvě skladová místa, příjem/přesun/inventura, historické nákladové snímky; obsluha nedostává předsklad ani nákupní ceny | Implementováno včetně kategorií a fotografií; místní testy a browser PASS |
-| B4 | Pokladna a vlastní spotřeba | Prodej, hotovost/karta/QR, kelímky, storno, vlastní a uzavíraná kasa, zásoby a audit v jedné transakci; opakování i souběh bezpečné | Implementace a místní přejímka hotové; samostatná Linux CI brána, nasazení zakázané |
-| B5 | Faktury, nabídky a účetní rozhraní | Příjem PDF, obrazovky/menu, přehledy, oddělené účetní zdroje a exportní kontrakt bez zdvojení tržeb | Implementováno, místní přejímka PASS; CI v PR #306 |
-| B6 | Integrační přejímka | Anonymní HTTP, matice rolí, skutečný místní browser, pokladní/skladové souběhy, ztráta spojení, fotografie a izolovaná obnova DB i souborů; zelené CI přesného headu | Místní technická přejímka PASS; konečný Linux CI stav přesného headu v PR #306 |
-| B7 | Produkční přechod | Nový výslovný souhlas vlastníka; katalogový manifest, nulový počátek, přidělení účtů, doména a provozní UAT | Kód, skutečný katalog a schválené role v KIS; přepnutí URL připravené, lidská finanční přejímka otevřená |
+| B3 | Katalog a sklad | Administrace produktů, cen a receptur, dvě skladová místa, příjem/přesun/inventura, historické nákladové snímky; obsluha nedostává předsklad ani nákupní ceny | Nasazeno, skutečný katalog/fotografie a nulové zásoby ověřené |
+| B4 | Pokladna a vlastní spotřeba | Prodej, hotovost/karta/QR, kelímky, storno, vlastní a uzavíraná kasa, zásoby a audit v jedné transakci; opakování i souběh bezpečné | Nasazeno, izolované souběhy i přihlášené čtecí UI PASS; skutečný provozní prodej dosud neověřen |
+| B5 | Faktury, nabídky a účetní rozhraní | Příjem PDF, obrazovky/menu, přehledy, oddělené účetní zdroje a exportní kontrakt bez zdvojení tržeb | Nasazeno; historie a nabídky prázdné, skutečné účtování neaktivované |
+| B6 | Integrační přejímka | Anonymní HTTP, matice rolí, skutečný místní browser, pokladní/skladové souběhy, ztráta spojení, fotografie a izolovaná obnova DB i souborů; zelené CI přesného headu | Technická přejímka a Linux CI PASS; běžné přihlášení Lucky a skutečná platba dosud neověřeny |
+| B7 | Produkční přechod | Nový výslovný souhlas vlastníka; katalogový manifest, nulový počátek, přidělení účtů, doména a provozní UAT | Katalog, účty a doména převedené, původní produkční workflow pozastavená; lidská finanční přejímka otevřená |
 
 ## Ověření
 
