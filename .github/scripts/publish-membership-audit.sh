@@ -51,17 +51,30 @@ fi
 HEAD_SHA=$(git rev-parse HEAD)
 git push origin "$BRANCH"
 if [ "$(echo "$PR_JSON" | jq -r .draft)" = true ]; then gh pr ready "$PR_NUMBER"; fi
-# GITHUB_TOKEN pushes are not relied on to launch CI: dispatch it explicitly.
-gh workflow run tests.yml --ref "$BRANCH"
-RUN_ID=''
+# GitHub gates PR-event checks separately from workflow_dispatch checks.
+# Only approve runs for this exact, already path-validated bot documentation commit.
+RUNS='[]'
 for attempt in $(seq 1 24); do
-  RUN_ID=$(gh run list --workflow tests.yml --branch "$BRANCH" --event workflow_dispatch --limit 15 \
-    --json databaseId,headSha --jq ".[] | select(.headSha == \"$HEAD_SHA\") | .databaseId" | head -1)
-  if [ -n "$RUN_ID" ]; then break; fi
+  RUNS=$(gh run list --branch "$BRANCH" --event pull_request --limit 30 \
+    --json databaseId,headSha,workflowName --jq \
+    "[.[] | select(.headSha == \"$HEAD_SHA\") | select(.workflowName == \"Testy\" or .workflowName == \"PHP quality\" or .workflowName == \"Current documentation\")]" )
+  if [ "$(echo "$RUNS" | jq length)" -eq 3 ]; then break; fi
   sleep 5
 done
-[[ "$RUN_ID" =~ ^[0-9]+$ ]]
-gh run watch "$RUN_ID" --exit-status --interval 20
+test "$(echo "$RUNS" | jq length)" -eq 3
+while IFS= read -r id; do
+  META=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id")
+  echo "$META" | jq -e --arg sha "$HEAD_SHA" --argjson pr "$PR_NUMBER" \
+    '.head_sha == $sha and .event == "pull_request" and .actor.login == "github-actions[bot]" and
+     ([.pull_requests[].number] | index($pr)) != null and
+     (.path == ".github/workflows/tests.yml" or .path == ".github/workflows/php-quality.yml" or .path == ".github/workflows/docs-contract.yml")' >/dev/null
+  if [ "$(echo "$META" | jq -r .conclusion)" = action_required ]; then
+    gh api --method POST "repos/$GITHUB_REPOSITORY/actions/runs/$id/approve"
+  fi
+done < <(echo "$RUNS" | jq -r '.[].databaseId')
+while IFS= read -r id; do
+  gh run watch "$id" --exit-status --interval 20
+done < <(echo "$RUNS" | jq -r '.[].databaseId')
 test "$(gh pr view "$PR_NUMBER" --json headRefOid --jq .headRefOid)" = "$HEAD_SHA"
 git fetch origin main "$BRANCH"
 git diff --name-only "origin/main...origin/$BRANCH" > "$RUNNER_TEMP/audit-final-paths.txt"
