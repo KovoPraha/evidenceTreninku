@@ -8,8 +8,9 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.
 Jde o jediný průběžný seznam práce; [WORK_REGISTER](WORK_REGISTER.md)
 odkazuje sem. Sjednocení #333/#334 dokládá [protokol](verification/documentation-reconcile-20261106/RESULTS.md).
-Aktuální zadání této relace je pouze dokumentační: nic na produkci nezapínat,
-nepublikovat a neodesílat. Další kroky níže nejsou příkazem k jejich provedení.
+Následné zadání vlastníka 6. 11.: pokračovat plně autonomně přes P01–P14.
+Aktivní průchod a bezpečně doložené výsledky vede [protokol](verification/autonomous-p01-p14-20261106/RESULTS.md).
+Dřívější dokumentační rozsah je historický; chybějící skutečné podklady se nedoplňují odhadem.
 
 ## Aktivní návaznosti
 
@@ -19,16 +20,16 @@ nepublikovat a neodesílat. Další kroky níže nejsou příkazem k jejich prov
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | HOTOVO: nabídka BAR 1 / vydání 1 zveřejněná, 45 produktů a fotografií; novější doklad #335 nahrazuje původní koncept | Publikaci neopakovat a nezakládat další návrh. Úpravy nabídky až podle dalšího zadání; zásoby/kasa a skutečný prodej zůstávají P02. Přihlášené vytvoření tiskového PDF zatím NOT RUN. | Správce baru; [publikace](verification/bar-menu-publication-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) |
 | P04 | BAR má účetní export/kontrakt a návrh adaptéru; zápis do hlavního účetnictví dosud není dokončený | Odsouhlasit účetní pravidla, implementovat a převzít adaptér bez zdvojení peněz. Není to pouze čekání na deploy nebo přepínač. Skutečná bezhotovostní úhrada/vratka také nedoložená. | Vlastník/účetní, vývoj; [kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md), [plán adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md) |
-| P05 | Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. Zbývá první skutečné sjednání/platba/PDF/doručení a doklad automatického časového startu. Roční cena neurčená; textová oprava členských popisků je připravená, dosud nenasazená (viz doplňující relace níže). | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
-| P06 | Evidence členů bez sezon nasazená, 435 zařazení převedeno | Vyčkat na poslední nový export, provést schválený rozdílový sync a role/UAT. E8 odstranění legacy schématu až po přejímce a bezpečné obnově. Počáteční datum ani import neopakovat. | Vlastník dodá export; [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [provoz](MEMBER_EVIDENCE_OPERATION_2026-11-02.md), [převod](verification/member-evidence-cutover-20261102/RESULTS.md) |
-| P07 | Fio import/automatika a SumUp zapnuté; skutečný hostingový plán ověřený | Doložit skutečnou zaplacenou úhradu a přihlášený průchod. 45 pohybů bez odpovídajícího VS ponechat ručnímu posouzení, nepárovat jen částkou. | Vlastník/hospodář; [aktivace](verification/live-payments-20261105/ACTIVATION.md), [45 pohybů](verification/fio-followup-20261105/RESULTS.md) |
+| P05 | Skutečný tok ODLOŽENO vlastníkem; schedule 42222661557 SUCCESS, ale opožděný.  Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. Zbývá první skutečné sjednání/platba/PDF/doručení a dlouhodobá časová spolehlivost plánu; automatický start již doložený. Roční cena neurčená; textová oprava členských popisků připravená, dosud nenasazená (viz doplňující relace níže). | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
+| P06 | Export/sync ODLOŽENO vlastníkem.  Evidence členů bez sezon nasazená, 435 zařazení převedeno | Vyčkat na poslední nový export, provést schválený rozdílový sync a role/UAT. E8 odstranění legacy schématu až po přejímce a bezpečné obnově. Počáteční datum ani import neopakovat. | Vlastník dodá export; [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [provoz](MEMBER_EVIDENCE_OPERATION_2026-11-02.md), [převod](verification/member-evidence-cutover-20261102/RESULTS.md) |
+| P07 | Skutečná platba ODLOŽENO vlastníkem.  Fio import/automatika a SumUp zapnuté; skutečný hostingový plán ověřený | Doložit skutečnou zaplacenou úhradu a přihlášený průchod. 45 pohybů bez odpovídajícího VS ponechat ručnímu posouzení, nepárovat jen částkou. | Vlastník/hospodář; [aktivace](verification/live-payments-20261105/ACTIVATION.md), [45 pohybů](verification/fio-followup-20261105/RESULTS.md) |
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | Dokončit asistované UAT a lidské převzetí; heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
 | P09 | Technický refaktoring W6–W15 uzavřený; provozní přejímka není kompletní | Lidská/účetní D12–D14, vazby, dohody a skutečné ocenění; dořešit dvě známé chybějící přílohy původní Evidence. | Vlastník/účetní; [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md), [rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot D12–D14](CLUB_PILOT_D12_D14.md), [obnova/přílohy](verification/bar-cutover-20261106/RESULTS.md) |
 | P10 | Lokální pracovní zbytky a staré větve nejsou frontou nasazení | Posoudit popisky legacy soupisek a staré dokumentační WIP proti main, archivovat už začleněné větve až po potvrzení zachování práce. Neprovádět plošný merge/reset/clean. | Vývoj/vlastník WIP; [inventura](verification/operations-inventory-20261106/RESULTS.md) |
 | P11 | Další optimalizace jsou kandidáti, nikoli slíbená nová vlna | Plošné měření K0.2 a případné dávkování kapacit zvažovat jen podle měření a samostatného rozsahu. | Vývoj/vlastník; [komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md), [uzavření](REFACTORING_CLOSURE_2026-10-30.md) |
 | P12 | Datovaný pracovní balíček pro testerku z 5. 11. zachovaný v repozitáři; není důkaz sdílení projektu | Před použitím aktualizovat instrukce, průvodce, 20 scénářů a hlášení proti main. Ověřit aktuální možnosti sdílení ChatGPT a přístup testerky ke GitHubu. Tato relace externí projekt nezakládá ani nepřipojuje. | Vlastník/testerka; [balíček a hranice](testing/chatgpt-tester-20261105/README.md), [uživatelské testování](PRODUKCNI-UZIVATELSKE-TESTOVANI.md) |
 | P13 | Další pracovní upozornění jsou záměr, konkrétní typy nejsou vybrané | Určit události, příjemce, vznik/ukončení úkolu, bezpečný odkaz, deduplikaci a testy. Push a eskalace nejsou součástí dokončené první verze. | Vlastník/vývoj; [registr typů a hranice](STAFF_NOTIFICATIONS_2026-11-06.md) |
-| P14 | Při dnešním nasazení ověřená záloha 385 tabulek / 2 triggery; její samostatná obnova nebyla provedena | Při další schválené technické přejímce doložit obnovu konkrétní dnešní zálohy v izolaci. Historické úspěšné obnovy jiných záloh za ni nevydávat; produkci neobnovovat. | Vývoj/provoz; [doklad dnešního vydání](verification/staff-notifications-release-20261106/RESULTS.md), [historická obnova BAR](verification/bar-cutover-20261106/RESULTS.md) |
+| P14 | HOTOVO: konkrétní dnešní záloha i dvě předchozí generace obnovené, běh 42224275796.  Při dnešním nasazení ověřená záloha 385 tabulek / 2 triggery nyní skutečně obnovená v izolaci | [Přesná obnova doložená](verification/autonomous-p01-p14-20261106/restore-evidence.txt). Historické úspěšné obnovy jiných záloh za ni nevydávat; produkci neobnovovat. | Vývoj/provoz; [doklad dnešního vydání](verification/staff-notifications-release-20261106/RESULTS.md), [historická obnova BAR](verification/bar-cutover-20261106/RESULTS.md) |
 
 ## Dokončené položky, které znovu neotvírat podle názvu větve
 
@@ -98,6 +99,9 @@ začlenění nevyžaduje deploy; stav CI/merge ověřit u PR. Původní větve z
 
 ## Doporučené pořadí dokončení a rozdělení práce — 6. 11. 2026
 
+Následující pořadí vzniklo před autonomní vlnou #339. P01 a P14 jsou již hotové
+a automatický start P05 doložený; aktuální stavy určuje první registr a navazující protokoly.
+
 Zadání: projít P01–P14, určit pořadí podle závislostí a oddělit autonomní
 technickou práci od chybějících skutečných údajů/rozhodnutí. Tato session
 pouze připravuje přehled; nepovoluje nové platby, rozesílání nebo produkční zápisy.
@@ -126,6 +130,13 @@ P12/checklistů P02. P01 je následným potvrzením vlastníka splněné. Poté 
 členství P05 s platbou P07 v jediném scénáři; BAR P02 je nezávislá provozní větev.
 P04 vyžaduje účetní specifikaci, P06 export a E8 zůstává až za přejímkou.
 Nevyžadovat znovu souhlas s již zveřejněným BAR ani tarifem 2200 Kč/měsíc.
+
+## Autonomní vlna přes všechny P
+
+[Výsledky a meze](verification/autonomous-p01-p14-20261106/RESULTS.md),
+[účetní a provozní podklady](verification/autonomous-p01-p14-20261106/READINESS.md).
+P01/P14 hotové, P05 automatický běh doložený; skutečné P05/P07 a export P06
+odložené vlastníkem. Účetní adaptér ani plošné K0.2 se neoznačují za hotové.
 
 ## Doplňující relace: členské popisky a místní WIP — 6. 11. 2026
 

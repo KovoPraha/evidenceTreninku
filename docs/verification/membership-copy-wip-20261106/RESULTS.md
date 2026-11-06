@@ -90,3 +90,18 @@ Závěrečná místní dokumentační kontrola po doplnění potvrzení P01:
 navíc **283 místních odkazů dotčených Markdown souborů bez chyby**.
 Předání probíhá přes větev `codex/membership-copy-and-wip-audit-20261106`;
 stav CI/merge se ověřuje u souvisejícího PR. Merge sám neznamená nasazení.
+
+Souborové předání: [PR #340](https://github.com/KovoPraha/evidenceTreninku/pull/340).
+Hlavní technické výsledky ostatních P vede nezávislý [PR #339](https://github.com/KovoPraha/evidenceTreninku/pull/339);
+před začleněním se zachová jeho aktuální stav a důkazy. Tato doplňující oprava
+nevyžaduje novou publikaci členství ani další potvrzovací e-mail. Bez produkčního
+nasazení zůstává změna popisků připravenou změnou kódu, nikoli živým výsledkem.
+
+Před konečným předáním zachován mezitím sloučený main `3522883e` / #339.
+Jeho výsledky P14 (tři obnovené generace včetně konkrétní zálohy), automatický
+schedule P05, podklady testerky a výslovné odložení skutečných P05/P07/P06
+zůstaly zachované. Konflikty dokumentace byly sjednocené podle novějších důkazů;
+pouhé nápisy P01 „doručeno“ nejsou důvod k další rozesílce.
+Kontrola po tomto sloučení: **80 řádků / 881 odkazů / 105 archivních bloků,
+0 chyb**, dokumentační testy **2 / 14 PASS**, diff check PASS. Změněný aplikační
+kód zůstává stejný jako v ověřených 34 testech; nové příchozí změny jsou dokumentační.

@@ -1,0 +1,7 @@
+evidence_2026-11-06_060929_014837d4.sql.gz: OK
+Generace 1 obnovena: 385 tabulek, 2 triggeru.
+evidence_2026-11-05_234617_3002bde9.sql.gz: OK
+Generace 2 obnovena: 385 tabulek, 2 triggeru.
+evidence_2026-11-05_230139_0993efbf.sql.gz: OK
+Generace 3 obnovena: 385 tabulek, 2 triggeru.
+Izolovana obnova overena pro 3 generaci zaloh.

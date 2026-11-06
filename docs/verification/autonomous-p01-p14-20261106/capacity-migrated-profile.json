@@ -1,0 +1,2424 @@
+{
+    "synthetic_only": true,
+    "schema": "minimal legacy bootstrap plus full repository migration catalog; FK enabled",
+    "database_version": "10.4.32-MariaDB",
+    "php_version": "8.2.12",
+    "migration_count": 159,
+    "baseline": "frozen 9da70c97 pre-extraction reader; W6.2 proved identical SQL\/results",
+    "warmups_per_mode": 3,
+    "samples_per_mode": 15,
+    "pdo_mysql_buffered": true,
+    "memory_guard": "10000 items: median incremental PHP peak <= 4 MiB and <= 60% of baseline",
+    "optimizer_statistics": "ANALYZE TABLE on the six profiled tables after loading each scenario",
+    "measurement": "plain PDO timings and PHP peak; separate query instrumentation; fetched rows are not rows examined",
+    "table_definitions": {
+        "club_program_offers": "CREATE TABLE `club_program_offers` (\n  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n  `program_id` bigint(20) unsigned NOT NULL,\n  `season_id` bigint(20) unsigned DEFAULT NULL,\n  `team_id` bigint(20) unsigned NOT NULL,\n  `product_id` bigint(20) unsigned NOT NULL,\n  `variant_id` bigint(20) unsigned NOT NULL,\n  `recurrence_source_offer_id` bigint(20) unsigned DEFAULT NULL,\n  `code` varchar(64) NOT NULL,\n  `name` varchar(180) NOT NULL,\n  `starts_on` date NOT NULL,\n  `ends_on` date NOT NULL,\n  `sales_open_at` datetime DEFAULT NULL,\n  `sales_close_at` datetime DEFAULT NULL,\n  `capacity` int(10) unsigned DEFAULT NULL,\n  `birth_year_from` smallint(6) DEFAULT NULL,\n  `birth_year_to` smallint(6) DEFAULT NULL,\n  `purchase_option` varchar(24) NOT NULL DEFAULT 'custom',\n  `is_featured` tinyint(1) NOT NULL DEFAULT 0,\n  `status` varchar(24) NOT NULL DEFAULT 'draft',\n  `created_by_trainer_id` int(11) NOT NULL,\n  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_club_program_offer_code` (`code`),\n  UNIQUE KEY `uq_club_program_offer_variant` (`variant_id`),\n  KEY `idx_club_program_offer_program_dates` (`program_id`,`starts_on`,`ends_on`),\n  KEY `idx_club_program_offer_status_sales` (`status`,`sales_open_at`,`sales_close_at`),\n  KEY `fk_club_program_offer_season` (`season_id`),\n  KEY `fk_club_program_offer_team` (`team_id`),\n  KEY `fk_club_program_offer_product` (`product_id`),\n  KEY `fk_club_program_offer_creator` (`created_by_trainer_id`),\n  KEY `idx_club_program_recurrence_source` (`recurrence_source_offer_id`),\n  CONSTRAINT `fk_club_program_offer_creator` FOREIGN KEY (`created_by_trainer_id`) REFERENCES `treneri` (`id`),\n  CONSTRAINT `fk_club_program_offer_product` FOREIGN KEY (`product_id`) REFERENCES `shop_products` (`id`),\n  CONSTRAINT `fk_club_program_offer_program` FOREIGN KEY (`program_id`) REFERENCES `club_programs` (`id`),\n  CONSTRAINT `fk_club_program_offer_season` FOREIGN KEY (`season_id`) REFERENCES `club_seasons` (`id`),\n  CONSTRAINT `fk_club_program_offer_team` FOREIGN KEY (`team_id`) REFERENCES `club_teams` (`id`),\n  CONSTRAINT `fk_club_program_offer_variant` FOREIGN KEY (`variant_id`) REFERENCES `shop_variants` (`id`),\n  CONSTRAINT `fk_club_program_recurrence_source` FOREIGN KEY (`recurrence_source_offer_id`) REFERENCES `club_program_offers` (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "club_program_enrollments": "CREATE TABLE `club_program_enrollments` (\n  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n  `offer_id` bigint(20) unsigned NOT NULL,\n  `sportovec_id` int(11) NOT NULL,\n  `account_id` int(11) DEFAULT NULL,\n  `source_order_item_id` bigint(20) unsigned NOT NULL,\n  `status` varchar(24) NOT NULL DEFAULT 'active',\n  `active_token` varchar(16) DEFAULT 'active',\n  `valid_from` date NOT NULL,\n  `valid_to` date NOT NULL,\n  `activated_at` datetime NOT NULL,\n  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),\n  `ended_at` datetime DEFAULT NULL,\n  `ended_reason` varchar(1000) DEFAULT NULL,\n  `ended_by_trainer_id` int(11) DEFAULT NULL,\n  `terms_snapshot_json` longtext DEFAULT NULL,\n  `terms_accepted_at` datetime DEFAULT NULL,\n  `terms_accepted_by_account_id` int(11) DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_club_program_enrollment_order_item` (`source_order_item_id`),\n  UNIQUE KEY `uq_club_program_enrollment_active_person` (`offer_id`,`sportovec_id`,`active_token`),\n  KEY `idx_club_program_enrollment_person` (`sportovec_id`,`status`,`valid_to`),\n  KEY `fk_club_program_enrollment_account` (`account_id`),\n  KEY `idx_club_program_enrollment_order_status` (`source_order_item_id`,`status`),\n  KEY `fk_club_program_enrollment_ender` (`ended_by_trainer_id`),\n  KEY `idx_club_program_enrollment_offer` (`offer_id`),\n  KEY `fk_program_enrollment_terms_account` (`terms_accepted_by_account_id`),\n  CONSTRAINT `fk_club_program_enrollment_account` FOREIGN KEY (`account_id`) REFERENCES `verejni_uzivatele` (`id`),\n  CONSTRAINT `fk_club_program_enrollment_ender` FOREIGN KEY (`ended_by_trainer_id`) REFERENCES `treneri` (`id`),\n  CONSTRAINT `fk_club_program_enrollment_offer` FOREIGN KEY (`offer_id`) REFERENCES `club_program_offers` (`id`),\n  CONSTRAINT `fk_club_program_enrollment_order_item` FOREIGN KEY (`source_order_item_id`) REFERENCES `shop_order_items` (`id`),\n  CONSTRAINT `fk_club_program_enrollment_person` FOREIGN KEY (`sportovec_id`) REFERENCES `sportovci` (`id`),\n  CONSTRAINT `fk_program_enrollment_terms_account` FOREIGN KEY (`terms_accepted_by_account_id`) REFERENCES `verejni_uzivatele` (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "club_program_physical_teams": "CREATE TABLE `club_program_physical_teams` (\n  `program_id` bigint(20) unsigned NOT NULL,\n  `team_id` bigint(20) unsigned NOT NULL,\n  PRIMARY KEY (`program_id`,`team_id`),\n  KEY `idx_club_program_physical_team` (`team_id`,`program_id`),\n  CONSTRAINT `fk_club_program_physical_program` FOREIGN KEY (`program_id`) REFERENCES `club_programs` (`id`),\n  CONSTRAINT `fk_club_program_physical_team` FOREIGN KEY (`team_id`) REFERENCES `club_teams` (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "shop_orders": "CREATE TABLE `shop_orders` (\n  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n  `public_code` char(18) NOT NULL,\n  `account_id` int(11) DEFAULT NULL,\n  `source_cart_id` bigint(20) unsigned DEFAULT NULL,\n  `checkout_mode` varchar(24) NOT NULL DEFAULT 'account',\n  `guest_access_token_hash` char(64) DEFAULT NULL,\n  `idempotency_key_hash` char(64) NOT NULL,\n  `status` varchar(24) NOT NULL,\n  `payment_status` varchar(24) NOT NULL,\n  `fulfillment_method` varchar(32) NOT NULL,\n  `customer_name_snapshot` varchar(255) NOT NULL,\n  `customer_email_snapshot` varchar(254) NOT NULL,\n  `customer_phone_snapshot` varchar(50) DEFAULT NULL,\n  `address_street_snapshot` varchar(200) DEFAULT NULL,\n  `address_city_snapshot` varchar(100) DEFAULT NULL,\n  `address_postcode_snapshot` varchar(20) DEFAULT NULL,\n  `subtotal_minor` bigint(20) unsigned NOT NULL,\n  `discount_minor` bigint(20) unsigned NOT NULL DEFAULT 0,\n  `total_minor` bigint(20) unsigned NOT NULL,\n  `currency` char(3) NOT NULL,\n  `placed_at` datetime NOT NULL,\n  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),\n  `cancelled_at` datetime DEFAULT NULL,\n  `ready_at` datetime DEFAULT NULL,\n  `completed_at` datetime DEFAULT NULL,\n  `payment_expires_at` datetime DEFAULT NULL,\n  `expired_at` datetime DEFAULT NULL,\n  `customer_status_id` bigint(20) unsigned DEFAULT NULL,\n  `finance_sportovec_id` int(11) DEFAULT NULL,\n  `shipping_amount_minor` bigint(20) unsigned NOT NULL DEFAULT 0,\n  `ppl_access_point_code` varchar(24) DEFAULT NULL,\n  `ppl_access_point_name` varchar(255) DEFAULT NULL,\n  `ppl_access_point_address` varchar(500) DEFAULT NULL,\n  `ppl_tracking_number` varchar(64) DEFAULT NULL,\n  `ppl_dispatched_at` datetime DEFAULT NULL,\n  `packeta_point_id` varchar(32) DEFAULT NULL,\n  `packeta_point_name` varchar(255) DEFAULT NULL,\n  `packeta_point_address` varchar(500) DEFAULT NULL,\n  `packeta_tracking_number` varchar(64) DEFAULT NULL,\n  `packeta_consignment_code` char(9) DEFAULT NULL,\n  `packeta_deposited_at` datetime DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_shop_order_public_code` (`public_code`),\n  UNIQUE KEY `uq_shop_order_idempotency` (`idempotency_key_hash`),\n  UNIQUE KEY `uq_shop_order_guest_token` (`guest_access_token_hash`),\n  KEY `idx_shop_order_account` (`account_id`,`created_at`,`id`),\n  KEY `idx_shop_order_expiration` (`status`,`payment_status`,`payment_expires_at`,`id`),\n  KEY `fk_shop_order_cart` (`source_cart_id`),\n  KEY `idx_shop_order_customer_status` (`customer_status_id`),\n  KEY `idx_shop_order_finance_athlete` (`finance_sportovec_id`,`payment_status`,`id`),\n  CONSTRAINT `fk_shop_order_account` FOREIGN KEY (`account_id`) REFERENCES `verejni_uzivatele` (`id`),\n  CONSTRAINT `fk_shop_order_cart` FOREIGN KEY (`source_cart_id`) REFERENCES `shop_carts` (`id`),\n  CONSTRAINT `fk_shop_order_customer_status` FOREIGN KEY (`customer_status_id`) REFERENCES `shop_order_status_definitions` (`id`),\n  CONSTRAINT `fk_shop_order_finance_athlete` FOREIGN KEY (`finance_sportovec_id`) REFERENCES `sportovci` (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "shop_order_items": "CREATE TABLE `shop_order_items` (\n  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n  `order_id` bigint(20) unsigned NOT NULL,\n  `product_id` bigint(20) unsigned NOT NULL,\n  `variant_id` bigint(20) unsigned NOT NULL,\n  `club_program_offer_id` bigint(20) unsigned DEFAULT NULL,\n  `product_name_snapshot` varchar(255) NOT NULL,\n  `sku_snapshot` varchar(64) NOT NULL,\n  `attributes_json_snapshot` longtext NOT NULL,\n  `quantity` int(10) unsigned NOT NULL,\n  `unit_amount_minor` bigint(20) unsigned NOT NULL,\n  `line_amount_minor` bigint(20) unsigned NOT NULL,\n  `currency` char(3) NOT NULL,\n  `includes_vat_snapshot` tinyint(1) DEFAULT NULL,\n  `vat_rate_basis_points_snapshot` int(11) DEFAULT NULL,\n  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n  `beneficiary_sportovec_id` int(11) DEFAULT NULL,\n  `program_terms_snapshot_json` longtext DEFAULT NULL,\n  `program_terms_accepted_at` datetime DEFAULT NULL,\n  `program_terms_accepted_by_account_id` int(11) DEFAULT NULL,\n  `athlete_registration_request_id` bigint(20) unsigned DEFAULT NULL,\n  `participant_key` int(11) NOT NULL DEFAULT 0,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_shop_order_participant` (`order_id`,`variant_id`,`participant_key`),\n  KEY `fk_shop_order_item_product` (`product_id`),\n  KEY `fk_shop_order_item_variant` (`variant_id`),\n  KEY `idx_shop_order_item_beneficiary` (`beneficiary_sportovec_id`),\n  KEY `fk_shop_order_item_terms_account` (`program_terms_accepted_by_account_id`),\n  KEY `idx_shop_order_item_athlete_request` (`athlete_registration_request_id`),\n  KEY `idx_shop_order_program_offer` (`club_program_offer_id`),\n  CONSTRAINT `fk_shop_order_item_athlete_request` FOREIGN KEY (`athlete_registration_request_id`) REFERENCES `account_person_claim_requests` (`id`),\n  CONSTRAINT `fk_shop_order_item_beneficiary` FOREIGN KEY (`beneficiary_sportovec_id`) REFERENCES `sportovci` (`id`),\n  CONSTRAINT `fk_shop_order_item_order` FOREIGN KEY (`order_id`) REFERENCES `shop_orders` (`id`),\n  CONSTRAINT `fk_shop_order_item_product` FOREIGN KEY (`product_id`) REFERENCES `shop_products` (`id`),\n  CONSTRAINT `fk_shop_order_item_terms_account` FOREIGN KEY (`program_terms_accepted_by_account_id`) REFERENCES `verejni_uzivatele` (`id`),\n  CONSTRAINT `fk_shop_order_item_variant` FOREIGN KEY (`variant_id`) REFERENCES `shop_variants` (`id`),\n  CONSTRAINT `fk_shop_order_program_offer` FOREIGN KEY (`club_program_offer_id`) REFERENCES `club_program_offers` (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "account_person_claim_requests": "CREATE TABLE `account_person_claim_requests` (\n  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n  `account_id` int(11) NOT NULL,\n  `requested_role` varchar(24) NOT NULL,\n  `request_kind` varchar(32) NOT NULL DEFAULT 'person_link',\n  `contract_version` varchar(64) DEFAULT NULL,\n  `claimed_jmeno` varchar(100) NOT NULL,\n  `claimed_prijmeni` varchar(100) NOT NULL,\n  `claimed_narozeni` date NOT NULL,\n  `requester_message` text NOT NULL,\n  `status` varchar(24) NOT NULL DEFAULT 'pending',\n  `active_fingerprint` char(64) DEFAULT NULL,\n  `matched_sportovec_id` int(11) DEFAULT NULL,\n  `decided_by_trainer_id` int(11) DEFAULT NULL,\n  `decision_note` text DEFAULT NULL,\n  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),\n  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),\n  `decided_at` datetime DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `uq_account_claim_pending` (`account_id`,`active_fingerprint`),\n  KEY `idx_account_claim_status` (`status`,`created_at`),\n  KEY `idx_account_claim_account` (`account_id`,`created_at`),\n  KEY `fk_account_claim_person` (`matched_sportovec_id`),\n  KEY `fk_account_claim_decider` (`decided_by_trainer_id`),\n  KEY `idx_account_claim_kind_status` (`request_kind`,`status`,`created_at`),\n  CONSTRAINT `fk_account_claim_account` FOREIGN KEY (`account_id`) REFERENCES `verejni_uzivatele` (`id`),\n  CONSTRAINT `fk_account_claim_decider` FOREIGN KEY (`decided_by_trainer_id`) REFERENCES `treneri` (`id`),\n  CONSTRAINT `fk_account_claim_person` FOREIGN KEY (`matched_sportovec_id`) REFERENCES `sportovci` (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+    },
+    "results": [
+        {
+            "scenario": "empty",
+            "items": 0,
+            "state": {
+                "active_enrollment_count": 0,
+                "held_order_count": 0,
+                "occupied_count": 0,
+                "available_count": 20000
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 43.8169,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 44.4156,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 59.2172,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 31.4596,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 29.9504,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 66.5476,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 48.1693,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 50.4859,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 43.1774,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 41.3758,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 42.24,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 44.6466,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 45.5327,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 135.8437,
+                        "incremental_peak_bytes": 101792
+                    },
+                    {
+                        "service_ms": 56.6658,
+                        "incremental_peak_bytes": 101792
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 41.6442,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 41.9641,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 104.7502,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 87.1786,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 38.5244,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 48.8326,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 80.5951,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 63.478,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 44.5056,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 43.488,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 44.1207,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 46.9437,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 59.8743,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 104.1139,
+                        "incremental_peak_bytes": 102200
+                    },
+                    {
+                        "service_ms": 47.1028,
+                        "incremental_peak_bytes": 102200
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 44.6466,
+                "current": 47.1028
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 101792,
+                "current": 102200
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.496,
+                        "fetch_ms": 1.9269,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.4904,
+                        "fetch_ms": 0.0115,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 9.6375,
+                        "fetch_ms": 0.0275,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 0.7261,
+                        "fetch_ms": 0.0081,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 8.8916,
+                        "fetch_ms": 0.0294,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 25.9427,
+                        "fetch_ms": 0.0443,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 21.7888,
+                        "fetch_ms": 0.0257,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 1.1035,
+                        "fetch_ms": 0.0061,
+                        "fetched_rows": 0
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.3603,
+                        "fetch_ms": 0.0067,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.4015,
+                        "fetch_ms": 0.0051,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 7.756,
+                        "fetch_ms": 0.0259,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 0.579,
+                        "fetch_ms": 0.0064,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 8.6844,
+                        "fetch_ms": 0.0253,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 8.915,
+                        "fetch_ms": 0.0428,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 22.8239,
+                        "fetch_ms": 0.0266,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 1.2592,
+                        "fetch_ms": 0.0085,
+                        "fetched_rows": 0
+                    }
+                ]
+            },
+            "explain": [
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ALL",
+                            "possible_keys": "uq_club_program_enrollment_active_person,idx_club_program_enrollment_offer",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,fk_club_program_offer_team",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.e.offer_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "pt",
+                            "type": "unique_subquery",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "PRIMARY",
+                            "key_len": "16",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ALL",
+                            "possible_keys": "uq_shop_order_participant,fk_shop_order_item_product,fk_shop_order_item_variant,idx_shop_order_item_beneficiary,idx_shop_order_item_athlete_request,idx_shop_order_program_offer",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,idx_shop_order_expiration",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.oi.order_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,uq_club_program_offer_variant,fk_club_program_offer_team,fk_club_program_offer_product",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.oi.club_program_offer_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "e",
+                            "type": "unique_subquery",
+                            "possible_keys": "uq_club_program_enrollment_order_item,idx_club_program_enrollment_person,idx_club_program_enrollment_order_status",
+                            "key": "uq_club_program_enrollment_order_item",
+                            "key_len": "8",
+                            "ref": "func",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "r",
+                            "type": "unique_subquery",
+                            "possible_keys": "PRIMARY,idx_account_claim_status",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "func",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "pt",
+                            "type": "unique_subquery",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "PRIMARY",
+                            "key_len": "16",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "small",
+            "items": 10,
+            "state": {
+                "active_enrollment_count": 1,
+                "held_order_count": 9,
+                "occupied_count": 10,
+                "available_count": 19990
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 96.4786,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 131.5901,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 110.5205,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 67.7892,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 62.9239,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 71.1453,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 69.1948,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 125.1692,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 118.7371,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 165.9901,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 137.2691,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 94.4779,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 143.6766,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 77.0021,
+                        "incremental_peak_bytes": 106904
+                    },
+                    {
+                        "service_ms": 158.004,
+                        "incremental_peak_bytes": 106904
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 91.7323,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 128.1123,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 143.9871,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 117.7456,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 113.3876,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 104.5868,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 137.6495,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 191.606,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 131.574,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 134.0777,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 116.8377,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 100.1557,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 101.8943,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 154.8364,
+                        "incremental_peak_bytes": 104512
+                    },
+                    {
+                        "service_ms": 124.4954,
+                        "incremental_peak_bytes": 104512
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 110.5205,
+                "current": 124.4954
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 106904,
+                "current": 104512
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 1.0695,
+                        "fetch_ms": 0.0106,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 4.6378,
+                        "fetch_ms": 0.011,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 27.52,
+                        "fetch_ms": 0.029,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 0.7582,
+                        "fetch_ms": 0.0095,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 19.5559,
+                        "fetch_ms": 0.0317,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 22.4047,
+                        "fetch_ms": 0.0484,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 15.0274,
+                        "fetch_ms": 0.0287,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 1.7748,
+                        "fetch_ms": 0.0327,
+                        "fetched_rows": 9
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.562,
+                        "fetch_ms": 0.0097,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.4801,
+                        "fetch_ms": 0.009,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 13.1588,
+                        "fetch_ms": 0.0273,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 0.9052,
+                        "fetch_ms": 0.0104,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 32.0338,
+                        "fetch_ms": 0.031,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 34.0196,
+                        "fetch_ms": 0.0434,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 12.3916,
+                        "fetch_ms": 0.0282,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 1.8182,
+                        "fetch_ms": 0.04039999999999999,
+                        "fetched_rows": 9
+                    }
+                ]
+            },
+            "explain": [
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ALL",
+                            "possible_keys": "uq_club_program_enrollment_active_person,idx_club_program_enrollment_offer",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,fk_club_program_offer_team",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.e.offer_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "pt",
+                            "type": "unique_subquery",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "PRIMARY",
+                            "key_len": "16",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ALL",
+                            "possible_keys": "uq_shop_order_participant,fk_shop_order_item_product,fk_shop_order_item_variant,idx_shop_order_item_beneficiary,idx_shop_order_item_athlete_request,idx_shop_order_program_offer",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "10",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,idx_shop_order_expiration",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.oi.order_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,uq_club_program_offer_variant,fk_club_program_offer_team,fk_club_program_offer_product",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "2",
+                            "Extra": "Using where; Using join buffer (flat, BNL join)"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "MATERIALIZED",
+                            "table": "e",
+                            "type": "index",
+                            "possible_keys": "uq_club_program_enrollment_order_item,idx_club_program_enrollment_person,idx_club_program_enrollment_order_status",
+                            "key": "idx_club_program_enrollment_order_status",
+                            "key_len": "106",
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "MATERIALIZED",
+                            "table": "r",
+                            "type": "index",
+                            "possible_keys": "PRIMARY,idx_account_claim_status",
+                            "key": "idx_account_claim_status",
+                            "key_len": "102",
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "idx_club_program_physical_team",
+                            "key_len": "8",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "dense",
+            "items": 10000,
+            "state": {
+                "active_enrollment_count": 1000,
+                "held_order_count": 9000,
+                "occupied_count": 10000,
+                "available_count": 10000
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 177.7272,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 252.9302,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 283.3161,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 265.6982,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 250.7062,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 253.8367,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 245.4988,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 214.919,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 185.6818,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 214.1526,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 251.6218,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 371.6774,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 305.6395,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 315.9454,
+                        "incremental_peak_bytes": 5480168
+                    },
+                    {
+                        "service_ms": 264.2667,
+                        "incremental_peak_bytes": 5480168
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 196.0663,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 289.3873,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 205.0873,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 245.7756,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 233.6863,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 245.6122,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 217.4342,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 203.3344,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 188.4881,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 279.409,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 226.8331,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 266.5636,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 253.6741,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 250.5795,
+                        "incremental_peak_bytes": 1831240
+                    },
+                    {
+                        "service_ms": 254.0924,
+                        "incremental_peak_bytes": 1831240
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 252.9302,
+                "current": 245.6122
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 5480168,
+                "current": 1831240
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5509,
+                        "fetch_ms": 0.0098,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.4785,
+                        "fetch_ms": 0.0079,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 10.2409,
+                        "fetch_ms": 0.0297,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 5.5241,
+                        "fetch_ms": 0.6539,
+                        "fetched_rows": 1000
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 11.7073,
+                        "fetch_ms": 0.0305,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 11.7998,
+                        "fetch_ms": 0.0459,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 9.8384,
+                        "fetch_ms": 0.0271,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 124.4384,
+                        "fetch_ms": 18.302,
+                        "fetched_rows": 9000
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5825,
+                        "fetch_ms": 0.0103,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.4626,
+                        "fetch_ms": 0.0097,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 25.4814,
+                        "fetch_ms": 0.0294,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 5.873,
+                        "fetch_ms": 0.6283,
+                        "fetched_rows": 1000
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 9.9321,
+                        "fetch_ms": 0.0318,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 30.0407,
+                        "fetch_ms": 0.0464,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 11.2626,
+                        "fetch_ms": 0.0274,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 152.9192,
+                        "fetch_ms": 25.258399999999796,
+                        "fetched_rows": 9000
+                    }
+                ]
+            },
+            "explain": [
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,fk_club_program_offer_team",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "2",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ref",
+                            "possible_keys": "uq_club_program_enrollment_active_person,idx_club_program_enrollment_offer",
+                            "key": "uq_club_program_enrollment_active_person",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.x.id",
+                            "rows": "500",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "idx_club_program_physical_team",
+                            "key_len": "8",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "range",
+                            "possible_keys": "PRIMARY,idx_shop_order_expiration",
+                            "key": "idx_shop_order_expiration",
+                            "key_len": "202",
+                            "ref": null,
+                            "rows": "4944",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ref",
+                            "possible_keys": "uq_shop_order_participant,fk_shop_order_item_product,fk_shop_order_item_variant,idx_shop_order_item_beneficiary,idx_shop_order_item_athlete_request,idx_shop_order_program_offer",
+                            "key": "uq_shop_order_participant",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.o.id",
+                            "rows": "1",
+                            "Extra": "Using index condition; Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,uq_club_program_offer_variant,fk_club_program_offer_team,fk_club_program_offer_product",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "2",
+                            "Extra": "Using where; Using join buffer (flat, BNL join)"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "MATERIALIZED",
+                            "table": "e",
+                            "type": "index",
+                            "possible_keys": "uq_club_program_enrollment_order_item,idx_club_program_enrollment_person,idx_club_program_enrollment_order_status",
+                            "key": "idx_club_program_enrollment_order_status",
+                            "key_len": "106",
+                            "ref": null,
+                            "rows": "1000",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "MATERIALIZED",
+                            "table": "r",
+                            "type": "index",
+                            "possible_keys": "PRIMARY,idx_account_claim_status",
+                            "key": "idx_account_claim_status",
+                            "key_len": "102",
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "idx_club_program_physical_team",
+                            "key_len": "8",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "duplicates",
+            "items": 10000,
+            "state": {
+                "active_enrollment_count": 0,
+                "held_order_count": 1,
+                "occupied_count": 1,
+                "available_count": 19999
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 184.9593,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 219.5961,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 184.4881,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 302.4271,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 252.0298,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 201.7248,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 146.7982,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 183.2672,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 188.4743,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 255.0144,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 421.5078,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 216.1802,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 290.5711,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 287.6692,
+                        "incremental_peak_bytes": 4537600
+                    },
+                    {
+                        "service_ms": 274.4676,
+                        "incremental_peak_bytes": 4537600
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 185.6731,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 237.6213,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 257.0352,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 240.2201,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 220.281,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 176.5279,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 172.8294,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 265.9519,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 194.0362,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 351.0745,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 267.9489,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 237.8769,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 241.1564,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 256.1125,
+                        "incremental_peak_bytes": 515024
+                    },
+                    {
+                        "service_ms": 271.7093,
+                        "incremental_peak_bytes": 515024
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 219.5961,
+                "current": 240.2201
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 4537600,
+                "current": 515024
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.6225,
+                        "fetch_ms": 0.0095,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.5212,
+                        "fetch_ms": 0.0082,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 10.3555,
+                        "fetch_ms": 0.029,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 0.7533,
+                        "fetch_ms": 0.0089,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 9.3711,
+                        "fetch_ms": 0.0318,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 9.1265,
+                        "fetch_ms": 0.0466,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 10.352,
+                        "fetch_ms": 0.0299,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 147.6566,
+                        "fetch_ms": 16.0806,
+                        "fetched_rows": 10000
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.6981,
+                        "fetch_ms": 0.0105,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.5911,
+                        "fetch_ms": 0.01,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 9.7097,
+                        "fetch_ms": 0.0285,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 0.7603,
+                        "fetch_ms": 0.0087,
+                        "fetched_rows": 0
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 12.1443,
+                        "fetch_ms": 0.0318,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 8.6072,
+                        "fetch_ms": 0.0653,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 8.2753,
+                        "fetch_ms": 0.0275,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 122.9468,
+                        "fetch_ms": 29.010399999999088,
+                        "fetched_rows": 10000
+                    }
+                ]
+            },
+            "explain": [
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ALL",
+                            "possible_keys": "uq_club_program_enrollment_active_person,idx_club_program_enrollment_offer",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,fk_club_program_offer_team",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.e.offer_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "DEPENDENT SUBQUERY",
+                            "table": "pt",
+                            "type": "unique_subquery",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "PRIMARY",
+                            "key_len": "16",
+                            "ref": "func,const",
+                            "rows": "1",
+                            "Extra": "Using index; Using where"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "range",
+                            "possible_keys": "PRIMARY,idx_shop_order_expiration",
+                            "key": "idx_shop_order_expiration",
+                            "key_len": "202",
+                            "ref": null,
+                            "rows": "4944",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ref",
+                            "possible_keys": "uq_shop_order_participant,fk_shop_order_item_product,fk_shop_order_item_variant,idx_shop_order_item_beneficiary,idx_shop_order_item_athlete_request,idx_shop_order_program_offer",
+                            "key": "uq_shop_order_participant",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.o.id",
+                            "rows": "1",
+                            "Extra": "Using index condition; Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,uq_club_program_offer_variant,fk_club_program_offer_team,fk_club_program_offer_product",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "2",
+                            "Extra": "Using where; Using join buffer (flat, BNL join)"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "MATERIALIZED",
+                            "table": "e",
+                            "type": "index",
+                            "possible_keys": "uq_club_program_enrollment_order_item,idx_club_program_enrollment_person,idx_club_program_enrollment_order_status",
+                            "key": "idx_club_program_enrollment_order_status",
+                            "key_len": "106",
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "MATERIALIZED",
+                            "table": "r",
+                            "type": "index",
+                            "possible_keys": "PRIMARY,idx_account_claim_status",
+                            "key": "idx_account_claim_status",
+                            "key_len": "102",
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "idx_club_program_physical_team",
+                            "key_len": "8",
+                            "ref": "const",
+                            "rows": "1",
+                            "Extra": "Using index"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "scenario": "fanout",
+            "items": 1000,
+            "state": {
+                "active_enrollment_count": 100,
+                "held_order_count": 900,
+                "occupied_count": 1000,
+                "available_count": 19000,
+                "physical_team_states": {
+                    "1": {
+                        "active_enrollment_count": 100,
+                        "held_order_count": 900,
+                        "occupied_count": 1000,
+                        "available_count": 19000
+                    },
+                    "2": {
+                        "active_enrollment_count": 100,
+                        "held_order_count": 900,
+                        "occupied_count": 1000,
+                        "available_count": 19000
+                    }
+                }
+            },
+            "samples": {
+                "baseline": [
+                    {
+                        "service_ms": 77.6285,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 108.6014,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 87.2889,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 87.348,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 80.0562,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 140.7179,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 86.079,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 94.5874,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 84.9777,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 88.8842,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 86.0817,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 126.704,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 121.7938,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 93.6954,
+                        "incremental_peak_bytes": 585560
+                    },
+                    {
+                        "service_ms": 95.5009,
+                        "incremental_peak_bytes": 585560
+                    }
+                ],
+                "current": [
+                    {
+                        "service_ms": 90.1551,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 121.4643,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 83.9195,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 123.9815,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 162.5007,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 136.8446,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 108.3217,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 93.2482,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 79.409,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 85.6855,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 83.8439,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 117.6395,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 101.5939,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 91.5077,
+                        "incremental_peak_bytes": 227992
+                    },
+                    {
+                        "service_ms": 85.9265,
+                        "incremental_peak_bytes": 227992
+                    }
+                ]
+            },
+            "median_ms": {
+                "baseline": 88.8842,
+                "current": 93.2482
+            },
+            "median_incremental_peak_bytes": {
+                "baseline": 585560,
+                "current": 227992
+            },
+            "queries": {
+                "baseline": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5801,
+                        "fetch_ms": 0.0093,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.4967,
+                        "fetch_ms": 0.0136,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 12.8414,
+                        "fetch_ms": 0.0331,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 1.5449,
+                        "fetch_ms": 0.075,
+                        "fetched_rows": 100
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 17.4361,
+                        "fetch_ms": 0.0334,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 13.0021,
+                        "fetch_ms": 0.0547,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 12.292,
+                        "fetch_ms": 0.0323,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 15.872,
+                        "fetch_ms": 2.142,
+                        "fetched_rows": 900
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            2,
+                            2,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 3.6119,
+                        "fetch_ms": 0.0814,
+                        "fetched_rows": 100
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            2,
+                            2,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 14.8112,
+                        "fetch_ms": 1.9794,
+                        "fetched_rows": 900
+                    }
+                ],
+                "current": [
+                    {
+                        "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_physical_teams"
+                        ],
+                        "execute_ms": 0.5358,
+                        "fetch_ms": 0.0079,
+                        "fetched_rows": 1
+                    },
+                    {
+                        "sql": "SELECT program_id,team_id FROM club_program_physical_teams WHERE program_id IN (?) ORDER BY team_id",
+                        "parameters": [
+                            1
+                        ],
+                        "execute_ms": 0.451,
+                        "fetch_ms": 0.013,
+                        "fetched_rows": 2
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "club_program_enrollments"
+                        ],
+                        "execute_ms": 11.3016,
+                        "fetch_ms": 0.0323,
+                        "fetched_rows": 18
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 1.9256,
+                        "fetch_ms": 0.0833,
+                        "fetched_rows": 100
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_order_items"
+                        ],
+                        "execute_ms": 16.4496,
+                        "fetch_ms": 0.0348,
+                        "fetched_rows": 21
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "shop_orders"
+                        ],
+                        "execute_ms": 13.3024,
+                        "fetch_ms": 0.0666,
+                        "fetched_rows": 42
+                    },
+                    {
+                        "sql": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                        "parameters": [
+                            "account_person_claim_requests"
+                        ],
+                        "execute_ms": 24.5528,
+                        "fetch_ms": 0.0323,
+                        "fetched_rows": 17
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            1,
+                            1,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 12.5493,
+                        "fetch_ms": 2.9773000000000205,
+                        "fetched_rows": 900
+                    },
+                    {
+                        "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                        "parameters": [
+                            2,
+                            2,
+                            "2027-12-31",
+                            "2026-01-01"
+                        ],
+                        "execute_ms": 1.5729,
+                        "fetch_ms": 0.0844,
+                        "fetched_rows": 100
+                    },
+                    {
+                        "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                        "parameters": [
+                            2,
+                            2,
+                            "2027-12-31",
+                            "2026-01-01",
+                            "2026-10-29 12:00:00"
+                        ],
+                        "execute_ms": 8.6516,
+                        "fetch_ms": 2.94840000000001,
+                        "fetched_rows": 900
+                    }
+                ]
+            },
+            "explain": [
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,fk_club_program_offer_team",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "2",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ref",
+                            "possible_keys": "uq_club_program_enrollment_active_person,idx_club_program_enrollment_offer",
+                            "key": "uq_club_program_enrollment_active_person",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.x.id",
+                            "rows": "50",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "idx_club_program_physical_team",
+                            "key_len": "8",
+                            "ref": "const",
+                            "rows": "2",
+                            "Extra": "Using index"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        1,
+                        1,
+                        "2027-12-31",
+                        "2026-01-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,uq_club_program_offer_variant,fk_club_program_offer_team,fk_club_program_offer_product",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "2",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ref",
+                            "possible_keys": "uq_shop_order_participant,fk_shop_order_item_product,fk_shop_order_item_variant,idx_shop_order_item_beneficiary,idx_shop_order_item_athlete_request,idx_shop_order_program_offer",
+                            "key": "fk_shop_order_item_variant",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.x.variant_id",
+                            "rows": "250",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,idx_shop_order_expiration",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.oi.order_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "MATERIALIZED",
+                            "table": "e",
+                            "type": "index",
+                            "possible_keys": "uq_club_program_enrollment_order_item,idx_club_program_enrollment_person,idx_club_program_enrollment_order_status",
+                            "key": "idx_club_program_enrollment_order_status",
+                            "key_len": "106",
+                            "ref": null,
+                            "rows": "100",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "MATERIALIZED",
+                            "table": "r",
+                            "type": "index",
+                            "possible_keys": "PRIMARY,idx_account_claim_status",
+                            "key": "idx_account_claim_status",
+                            "key_len": "102",
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "idx_club_program_physical_team",
+                            "key_len": "8",
+                            "ref": "const",
+                            "rows": "2",
+                            "Extra": "Using index"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT e.sportovec_id FROM club_program_enrollments e JOIN club_program_offers x ON x.id=e.offer_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND e.status='active'",
+                    "parameters": [
+                        2,
+                        2,
+                        "2027-12-31",
+                        "2026-01-01"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,fk_club_program_offer_team",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "2",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "e",
+                            "type": "ref",
+                            "possible_keys": "uq_club_program_enrollment_active_person,idx_club_program_enrollment_offer",
+                            "key": "uq_club_program_enrollment_active_person",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.x.id",
+                            "rows": "50",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "idx_club_program_physical_team",
+                            "key_len": "8",
+                            "ref": "const",
+                            "rows": "2",
+                            "Extra": "Using index"
+                        }
+                    ]
+                },
+                {
+                    "sql": "SELECT oi.id,oi.quantity,oi.beneficiary_sportovec_id,oi.athlete_registration_request_id FROM shop_order_items oi JOIN shop_orders o ON o.id=oi.order_id JOIN club_program_offers x ON x.id=oi.club_program_offer_id AND x.product_id=oi.product_id AND x.variant_id=oi.variant_id WHERE (x.team_id=? OR EXISTS(SELECT 1 FROM club_program_physical_teams pt WHERE pt.program_id=x.program_id AND pt.team_id=?)) AND x.starts_on<=? AND x.ends_on>=? AND ((o.status='placed' AND o.payment_status='pending' AND o.payment_expires_at IS NOT NULL AND o.payment_expires_at>=?) OR (o.status IN ('processing','ready','completed') AND o.payment_status='paid' AND oi.beneficiary_sportovec_id IS NULL AND oi.athlete_registration_request_id>0)) AND NOT EXISTS(SELECT 1 FROM account_person_claim_requests r WHERE r.id=oi.athlete_registration_request_id AND r.status IN ('rejected','cancelled')) AND NOT EXISTS(SELECT 1 FROM club_program_enrollments e WHERE e.source_order_item_id=oi.id AND e.status='active') ",
+                    "parameters": [
+                        2,
+                        2,
+                        "2027-12-31",
+                        "2026-01-01",
+                        "2026-10-29 12:00:00"
+                    ],
+                    "plan": [
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "x",
+                            "type": "ALL",
+                            "possible_keys": "PRIMARY,uq_club_program_offer_variant,fk_club_program_offer_team,fk_club_program_offer_product",
+                            "key": null,
+                            "key_len": null,
+                            "ref": null,
+                            "rows": "2",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "oi",
+                            "type": "ref",
+                            "possible_keys": "uq_shop_order_participant,fk_shop_order_item_product,fk_shop_order_item_variant,idx_shop_order_item_beneficiary,idx_shop_order_item_athlete_request,idx_shop_order_program_offer",
+                            "key": "fk_shop_order_item_variant",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.x.variant_id",
+                            "rows": "250",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 1,
+                            "select_type": "PRIMARY",
+                            "table": "o",
+                            "type": "eq_ref",
+                            "possible_keys": "PRIMARY,idx_shop_order_expiration",
+                            "key": "PRIMARY",
+                            "key_len": "8",
+                            "ref": "w63_profile_17b8f5e1e9c6b6c5.oi.order_id",
+                            "rows": "1",
+                            "Extra": "Using where"
+                        },
+                        {
+                            "id": 4,
+                            "select_type": "MATERIALIZED",
+                            "table": "e",
+                            "type": "index",
+                            "possible_keys": "uq_club_program_enrollment_order_item,idx_club_program_enrollment_person,idx_club_program_enrollment_order_status",
+                            "key": "idx_club_program_enrollment_order_status",
+                            "key_len": "106",
+                            "ref": null,
+                            "rows": "100",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 3,
+                            "select_type": "MATERIALIZED",
+                            "table": "r",
+                            "type": "index",
+                            "possible_keys": "PRIMARY,idx_account_claim_status",
+                            "key": "idx_account_claim_status",
+                            "key_len": "102",
+                            "ref": null,
+                            "rows": "1",
+                            "Extra": "Using where; Using index"
+                        },
+                        {
+                            "id": 2,
+                            "select_type": "MATERIALIZED",
+                            "table": "pt",
+                            "type": "ref",
+                            "possible_keys": "PRIMARY,idx_club_program_physical_team",
+                            "key": "idx_club_program_physical_team",
+                            "key_len": "8",
+                            "ref": "const",
+                            "rows": "2",
+                            "Extra": "Using index"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
