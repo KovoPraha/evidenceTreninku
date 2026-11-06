@@ -91,7 +91,6 @@ Aktualizováno 6. 11. 2026 (Europe/Prague), po nasazení a aktivaci pracovních 
 
 [Převzetí](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
 <!-- /archive -->
-
 ## 6. 11. 2026 — zveřejnění základní nabídky BAR a souborový handoff
 
 Po [přípravě neveřejného návrhu a technické přejímce](verification/bar-acceptance-20261106/RESULTS.md)

@@ -1,5 +1,34 @@
 # Session handoff
 
+## Aktuální vstup od 6. 11. 2026
+
+### Navazující kontrola a sjednocení předání
+
+Na pokyn vlastníka sjednocené podklady #333 a #334: [protokol a kontroly](../verification/documentation-reconcile-20261106/RESULTS.md).
+Aktuální zadání pouze dokumentační; nic nového na produkci nezapínat.
+Upozornění už jsou nasazená a přihlášený zvoneček i odkaz doložené; zbývá
+potvrzení schránky. Novější [čtecí doklad #336](../verification/racing-team-status-20261106/RESULTS.md)
+potvrzuje schválené a zveřejněné členství Závodní tým 2200 Kč/měsíc;
+schválení ani publikaci neopakovat. První skutečné sjednání/platba/PDF/doručení
+a automatický denní start také nedoložené.
+BAR je převedený a novější [doklad #335](../verification/bar-menu-publication-20261106/RESULTS.md)
+potvrzuje zveřejněnou nabídku 1 / vydání 1, 45 produktů a fotografií.
+Tato relace ji pouze načetla, nic nepublikovala. Reálný provoz,
+zásoby/kasa a účetní adaptér zbývají. Podrobnosti a odpovědnost vede jediný
+[registr P01–P14](../WORK_PLAN_CURRENT.md); [WORK_REGISTER](../WORK_REGISTER.md)
+odkazuje na stejný seznam. Původní pracovní kopie a souběžné větve zachované.
+
+Pro novou práci použít [aktuální stav](../CURRENT_STATE.md),
+[aktuální předání](../HANDOFF_CURRENT.md) a [registr práce](../WORK_REGISTER.md).
+Zdejší starší záznamy včetně SHA, flags a oprávnění jsou datované historické
+podklady; nepřebírat je jako dnešní stav. Nové kroky a plány zapisovat do
+propojených tematických souborů a registru průběžně, výsledky do `docs/verification/`.
+[Provozní inventura 6. 11.](../verification/operations-inventory-20261106/RESULTS.md)
+spojuje poslední přehled větví s mezitím dokončeným nasazením #330; následný
+produkční browser dokládá [protokol upozornění](../verification/staff-notifications-release-20261106/RESULTS.md).
+
+## Historické session záznamy
+
 ## Produkční účetní kontrola publikace — 22. 10. 2026
 
 Schválený push, PR a deploy dokončeny: [PR #164](https://github.com/KovoPraha/evidenceTreninku/pull/164),

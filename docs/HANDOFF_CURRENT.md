@@ -4,16 +4,37 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Předání této relace a evidence další práce
+## Povinné průběžné předání
 
-Čti [průběžný plán](WORK_PLAN_CURRENT.md) a [produkční protokol upozornění](verification/staff-notifications-release-20261106/RESULTS.md).
-Každé zadání, rozpracovanost, rozhodnutí a další krok zapisuj přímo do souborů
-v repozitáři a propoj odkazy. Chat ani externí Page nejsou jediným záznamem.
-Na začátku práce aktualizuj příslušný plán, během práce doplňuj výsledky a před
-předáním zapiš zbývající kroky, důkazy, větev a pracovní kopii. Pravidla viz [CLAUDE.md](../CLAUDE.md).
-Pracovní upozornění kontroluj přes `staff-notifications-production.yml` / `action=status` /
-`OVERIT-UPOZORNENI`; čtecí status nic neposílá. Instalaci ani první rozesílku neopakovat.
-Přečtení není vyřízení zdrojové žádosti. Stav aktivace určuje CURRENT_STATE.
+Tato dokumentační relace pouze sjednocuje předání; nic nového na produkci
+nezapíná. [Záznam sjednocení a kontroly](verification/documentation-reconcile-20261106/RESULTS.md)
+uvádí původ souběžných změn #333/#334. Jediný seznam další práce je
+[WORK_PLAN_CURRENT](WORK_PLAN_CURRENT.md); [WORK_REGISTER](WORK_REGISTER.md)
+zůstává kompatibilním rozcestníkem na tentýž registr, nikoli druhou frontou úkolů.
+Novější souběžné předání #335 dokládá již zveřejněnou nabídku BAR;
+[session handoff baru](SESSION_HANDOFF_BAR_2026-11-06.md) a [pravidla dokumentace](WORK_DOCUMENTATION_POLICY.md)
+jsou zachované. Tato relace stav pouze načetla a popsala, publikaci neprováděla.
+
+Vlastník 6. 11. výslovně požaduje zapisovat rozpracovanou i plánovanou práci
+přímo do verzovaných souborů, nikoli ponechat její jediný záznam v chatu.
+Před prací číst a během práce aktualizovat [WORK_PLAN_CURRENT](WORK_PLAN_CURRENT.md):
+ID, stav, další krok, závislosti, větev/worktree a odkazy na tematický plán/důkazy.
+Release a flags nadále určuje pouze CURRENT_STATE; plán nenahrazuje provozní souhlas.
+Před ukončením session aktualizovat související soubory a uvést stav PR/merge/deploy.
+Starší [session handoff](plan-eshop-tymova-evidence/SESSION_HANDOFF.md) je historická
+kompatibilní cesta s odkazem sem, nikoli zdroj dnešního SHA nebo přepínačů.
+
+[Provozní inventura z 6. 11.](verification/operations-inventory-20261106/RESULTS.md)
+opravuje mezitím zastaralý přehled: #330 už je sloučený a nasazený,
+minutový worker běží a fronta má doložené přijetí zpráv transportem.
+[Produkční protokol upozornění](verification/staff-notifications-release-20261106/RESULTS.md)
+dokládá také přihlášený zvoneček, přesný odkaz a změnu přečtení. P01 už nečeká
+na opakování této kontroly; zbývá potvrzení schránky. Kontrolní workflow
+`staff-notifications-production.yml` / `action=status` / `OVERIT-UPOZORNENI`
+nic neposílá. Instalaci ani první rozesílku neopakovat; přečtení není vyřízení.
+P02–P14 vedou BAR, členství, poslední synchronizaci, platby, lidskou přejímku,
+lokální WIP, další typy upozornění, podklady testerky a ověření aktuální zálohy.
+
 
 Podrobnosti zápisu určuje [trvalé pravidlo](WORK_DOCUMENTATION_POLICY.md). Aktuální [session handoff BAR](SESSION_HANDOFF_BAR_2026-11-06.md) obsahuje dokončenou publikaci i pořadí zbývajících kroků.
 
@@ -32,7 +53,8 @@ Zákazník musí mít klubem ověřeného sportovce; použitý účet jej nemá,
 sjednání/úhrada/PDF zůstávají neověřené. Starý protokol konceptu popisuje jen minulý stav.
 [Pravidelné zpracování je zapnuté](verification/membership-automation-20261105/RESULTS.md):
 automatizace, denní plán/zápis i [pošta jsou true](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
-První apply --send i následný heartbeat PASS (0 členství a zpráv), cron 05:23 UTC. Skutečné doručení ještě neověřené.
+Ruční apply --send i heartbeat PASS (0 členství a zpráv), plán 05:23 UTC.
+První automatický časový start, skutečná platba/PDF/doručení zatím nedoložené.
 Podporované roční tarify nemají zadanou skutečnou cenu a žádný roční produkt nevznikl.
 
 [Měsíční členství a zastupování trenérů #314](verification/monthly-coach-release-20261105/RESULTS.md) jsou sloučené a nasazené.

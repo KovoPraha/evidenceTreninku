@@ -1,6 +1,6 @@
 # Tréninky a zastupování bez povinného přiřazení k soupisce
 
-**Navazující vydání:** obě změny jsou sloučené a technicky nasazené v PR #314. Aktuální stav a důkazy určuje [produkční protokol](verification/monthly-coach-release-20261105/RESULTS.md); níže je zachovaný místní důkaz před nasazením. Aktivace měsíčního zpracování a pošty neproběhla.
+**Navazující vydání:** obě změny jsou sloučené a technicky nasazené v PR #314. [Produkční protokol](verification/monthly-coach-release-20261105/RESULTS.md) doložil jejich vydání; níže je zachovaný místní důkaz před nasazením. V okamžiku vydání byla automatizace členství vypnutá, následnou samostatnou aktivaci dokládají [zpracování](MEMBERSHIP_AUTOMATION_ACTIVATION_2026-11-05.md) a [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md). Dnešní stav určuje [CURRENT_STATE](CURRENT_STATE.md).
 
 ## Rozhodnutí vlastníka z 5. 11. 2026
 

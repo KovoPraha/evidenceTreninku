@@ -1,0 +1,187 @@
+KIS — mapa funkcí a implementace
+
+Zdrojová verze: 65969bb8c7d27c71861758214abbc35edae61b3c; datum 5. 11. 2026.
+Repozitář: https://github.com/KovoPraha/evidenceTreninku
+
+Jak číst mapu: každý odkaz vede na pevný commit. Soukromý repozitář vyžaduje oprávnění. U funkce je ověřen její skutečný počáteční řádek; u stránky odkaz vede na soubor. Testovací soubor je vodítko pro vývojáře, nikoli potvrzení nového spuštění testů. Uživatelský výklad stojí na revizi uvedených vstupů a služeb; před novým technickým závěrem načíst celé relevantní tělo funkce.
+
+S01 Veřejné obrazovky
+Veřejná nabídka a kalendáře; přihlášení na konkrétní službu se posuzuje zvlášť.
+• booking/eshop.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/eshop.php
+• booking/produkt.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/produkt.php
+• booking/treninky.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/treninky.php
+• booking/velodrom.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/velodrom.php
+
+S02 Přihlášení a sportovní přístup
+Jednotná zákaznická/trenérská autentizace a samostatný omezený přístup sportovce.
+• booking/prihlaseni.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/prihlaseni.php
+• includes/unified_account.php — unifiedAccountAuthenticate, řádek 64
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/unified_account.php#L64
+• booking/sportovec_prihlaseni.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/sportovec_prihlaseni.php
+• includes/child_access.php — childAccessIdentity, řádek 301
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/child_access.php#L301
+• booking/muj_sport.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/muj_sport.php
+• tests/Integration/UnifiedAccountTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/UnifiedAccountTest.php
+• tests/Integration/ChildAccessTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/ChildAccessTest.php
+
+S03 Moje osoby a schvalované propojení
+Žádost má stavy pending/approved/rejected/cancelled. UI při existující žádosti nevyžaduje její opakování. Přístup k osobě vychází z oprávněné vazby.
+• booking/moje_osoby.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/moje_osoby.php
+• includes/account_person_claim.php — accountPersonClaimSubmit, řádek 12
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/account_person_claim.php#L12
+• includes/account_person_claim.php — accountPersonClaimCancel, řádek 114
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/account_person_claim.php#L114
+• includes/family_portal.php — familyPortalAuthorizedPeople, řádek 58
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/family_portal.php#L58
+• includes/family_portal.php — familyPortalCanViewPerson, řádek 130
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/family_portal.php#L130
+• tests/Integration/AccountPersonClaimTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/AccountPersonClaimTest.php
+
+S04 Rodinný přehled a odpovědi na trénink
+Odpověď going/not_going se váže k osobě a plánu. Před zápisem se kontroluje oprávnění, budoucí plán a cílení. Poznámka je nejvýše 500 znaků; běžná změna RSVP nezapisuje skutečnou docházku.
+• booking/sportovni_prehled.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/sportovni_prehled.php
+• includes/training_rsvp.php — trainingRsvpUpcomingForPeople, řádek 50
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_rsvp.php#L50
+• includes/training_rsvp.php — trainingRsvpSave, řádek 168
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_rsvp.php#L168
+• includes/training_rsvp.php — trainingRsvpSavedMessage, řádek 285
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_rsvp.php#L285
+• tests/Integration/TrainingRsvpTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/TrainingRsvpTest.php
+
+S05 Trenérský rozsah a přehled odpovědí
+Přístup k přehledu plánu podléhá oprávnění plánovače, vlastnictví/roli a kontrole rozsahu. Není univerzálně otevřen všem trenérům.
+• training_rsvps_admin.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/training_rsvps_admin.php
+• includes/coach_scope.php — coachScopeCanViewPerson, řádek 29
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/coach_scope.php#L29
+• includes/coach_scope.php — coachScopeRequirePlan, řádek 108
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/coach_scope.php#L108
+• planovac.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/planovac.php
+• tests/Integration/CoachScopeTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/CoachScopeTest.php
+
+S06 Plán, soupisky a skutečná docházka
+Bridge počítá očekávání z cílených soupisek ke dni plánu; skutečná docházka se porovnává s evidencí. Existence očekávání není evidence účasti.
+• planovany_trenink_form.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/planovany_trenink_form.php
+• formular.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/formular.php
+• includes/training_roster_bridge.php — trainingRosterBridgeExpectedForPlan, řádek 121
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_roster_bridge.php#L121
+• includes/training_roster_bridge.php — trainingRosterBridgeCopyPlanToTraining, řádek 151
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_roster_bridge.php#L151
+• includes/training_roster_bridge.php — trainingRosterBridgePlanAttendanceComparison, řádek 224
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_roster_bridge.php#L224
+• tests/Integration/TrainingRosterBridgeTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/TrainingRosterBridgeTest.php
+
+S07 Náhradní lekce
+Pravidla zahrnují povolení náhrad, placenou účast, lhůtu omluvy a skutečnou nepřítomnost. Nárok a rezervace jsou samostatné kroky. Nabídka může být prázdná; přenesený nárok může být zamknutý do zaplacení navazujícího období.
+• booking/nahrady.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/nahrady.php
+• includes/club_makeup.php — clubMakeupExcuseEntitlement, řádek 364
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/club_makeup.php#L364
+• includes/club_makeup.php — clubMakeupExcuseFailureReason, řádek 395
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/club_makeup.php#L395
+• includes/club_makeup.php — clubMakeupFinalizeSource, řádek 470
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/club_makeup.php#L470
+• club_makeup_policies_admin.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/club_makeup_policies_admin.php
+• tests/Integration/ClubMakeupTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/ClubMakeupTest.php
+• tests/Support/MakeupJourneyHttpAcceptance.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Support/MakeupJourneyHttpAcceptance.php
+
+S08 Objednávka, úhrada, storno a vratka
+Veřejný detail respektuje vlastníka nebo oprávněný hostovský přístup. Obnova stránky ani návrat z brány nejsou důkaz úhrady. Přepnutí platby a následné účinky se řeší službou, storno a dokončení vratky se rozlišují.
+• booking/objednavka.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/objednavka.php
+• booking/moje_objednavky.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/moje_objednavky.php
+• includes/shop_checkout.php — shopOrderConfirmPaymentInTransaction, řádek 1359
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_checkout.php#L1359
+• includes/shop_checkout.php — shopOrderAdminCancel, řádek 1503
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_checkout.php#L1503
+• includes/shop_checkout.php — shopOrderAdminConfirmRefund, řádek 1665
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_checkout.php#L1665
+• tests/Integration/ShopCheckoutTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/ShopCheckoutTest.php
+
+S09 Podmínky nabídky karty
+Souhrnná platební politika vyžaduje souhlas všech položek. Aktuální detail nabídne SumUp pouze přihlášené způsobilé čekající objednávce při zapnuté bráně; starší platby zachovávají snapshot.
+• includes/shop_payment_policy.php — shopPaymentPolicyForItemGroups, řádek 76
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_payment_policy.php#L76
+• includes/shop_payment_policy.php — shopPaymentPolicyAllowsSumUp, řádek 89
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_payment_policy.php#L89
+• booking/objednavka.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/objednavka.php
+• tests/Integration/ShopPaymentPolicyTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/ShopPaymentPolicyTest.php
+• docs/verification/live-payments-20261105/ACTIVATION.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/verification/live-payments-20261105/ACTIVATION.md
+
+S10 Klubové akce a programy
+Kalendář odlišuje prohlížení a registraci, placená akce odkazuje do nákupní cesty. Moje kroužky zobrazují zakoupená období a historii účastí.
+• booking/klubovy_kalendar.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/klubovy_kalendar.php
+• booking/krouzky.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/krouzky.php
+• booking/moje_programy.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/moje_programy.php
+• includes/club_event_shop.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/club_event_shop.php
+• docs/shop-program-payment-verification.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/shop-program-payment-verification.md
+
+S11 Evidence členů bez sezon
+Aktuální vstup je Skupiny a soupisky. Původní current-rosters vstup GET přesměruje na hierarchii a původní zapisovací požadavky odmítá. Legacy sezony v databázi nejsou návod k roční obnově současného členství.
+• kis_roster_hierarchy_admin.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/kis_roster_hierarchy_admin.php
+• kis_current_rosters_admin.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/kis_current_rosters_admin.php
+• includes/member_evidence_groups.php — memberEvidenceGroupsPreview, řádek 6
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/member_evidence_groups.php#L6
+• docs/MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md
+• docs/MEMBER_EVIDENCE_OPERATION_2026-11-02.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/MEMBER_EVIDENCE_OPERATION_2026-11-02.md
+• tests/Integration/MemberEvidenceCutoverTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/MemberEvidenceCutoverTest.php
+
+S12 Stavy lékařských podkladů
+Rodinný přehled čte oprávněné stavové informace a další krok, včetně platnosti k datu. Tento balíček nepředepisuje nahrávání skutečných zdravotních příloh.
+• booking/sportovni_prehled.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/sportovni_prehled.php
+• includes/medical_clearance.php — medicalClearanceView, řádek 138
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/medical_clearance.php#L138
+• includes/medical_clearance.php — medicalClearanceStatusFromRecords, řádek 101
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/medical_clearance.php#L101
+• tests/Integration/MedicalClearanceTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/MedicalClearanceTest.php
+
+S13 Místní akceptační rozcestník
+testovaci_scenare.php je striktně localhost-only; není to sdílený produkční portál. Katalog zdejšího balíčku R/W má vlastní označení a nezaměňuje se s A/B/T z historických sad.
+• testovaci_scenare.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/testovaci_scenare.php
+• includes/localhost_acceptance_hub.php — localhostAcceptanceRequestIsAllowed, řádek 44
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/localhost_acceptance_hub.php#L44
+• docs/localhost-acceptance-hub.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/localhost-acceptance-hub.md
+
+Aktuální provozní rozcestník
+https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/CURRENT_STATE.md
+V protokolech jsou podrobnější důkazy; pro testerku má přednost srozumitelný scénář. Datované provozní záznamy nenahrazují kontrolu aktuální konfigurace při konkrétním běhu.

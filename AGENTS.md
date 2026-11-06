@@ -1,18 +1,24 @@
-# Pokyny pro práci v repozitáři
+# Projektové instrukce pro agenty
 
-Před prací přečti [vývojový kontext](CLAUDE.md), [aktuální stav](docs/CURRENT_STATE.md),
-[session handoff](docs/HANDOFF_CURRENT.md), [společný průběžný plán](docs/WORK_PLAN_CURRENT.md)
-a [pravidla souborové dokumentace](docs/WORK_DOCUMENTATION_POLICY.md).
+Před prací čti [vývojový kontext](CLAUDE.md), [aktuální stav](docs/CURRENT_STATE.md),
+[handoff](docs/HANDOFF_CURRENT.md) a [registr práce](docs/WORK_PLAN_CURRENT.md).
+Podrobný postup obsahují [pravidla souborové dokumentace](docs/WORK_DOCUMENTATION_POLICY.md).
 
-Vlastník 6. 11. 2026 výslovně požaduje průběžný zápis přímo do souborů repozitáře.
-Každá rozpracovaná, dokončená i plánovaná práce musí mít dohledatelný záznam a odkazy
-na související dokumenty. Udržuj příslušný plán, datovaný session handoff a důkazy;
-při drobné změně aktualizuj existující záznam. Samotná zpráva v chatu nestačí.
+## Průběžné souborové záznamy
 
-Před předáním nebo ukončením session zapiš výsledek, skutečné ověření, otevřené kroky,
-závislosti a další konkrétní postup. Zachovej historické protokoly a odkaž z nich na novější stav.
-Aktuální nasazení a provozní přepínače mají jediný kanonický souhrn v CURRENT_STATE.
+Výslovný požadavek vlastníka z 6. 11. 2026: vše, na čem se pracuje nebo co je
+v plánu udělat nebo už dokončené, musí být průběžně zapsané ve verzovaných souborech repozitáře,
+s odkazy na související dokumenty. Chat nesmí být jediný záznam.
 
-Chraň cizí rozpracované změny a přidávej jen vlastní konkrétní cesty. Do repozitáře
-nepatří hesla, konfigurace, osobní údaje, session, databázové dumpy ani soukromé přílohy;
-zaznamenej pouze bezpečné souhrny, kontrolní výsledky a odkazy na řízené postupy.
+- Při zahájení/pokračování doplň registr a související tematický plán: rozsah,
+  oprávnění, větev/worktree, stav, další krok a závislosti. Nerozepisuj duplicitní
+  plán, když už existuje; odkazuj na něj.
+- Výsledky, testy a omezení ulož do `docs/verification/` nebo existujícího
+  tematického dokumentu. Aktualizuj handoff před ukončením/předáním session.
+- Implementaci, merge, nasazení a provozní ověření eviduj odděleně. Aktuální
+  release/flags s důkazy patří do CURRENT_STATE; historické protokoly nepřepisuj
+  jako dnešní stav. Plán není souhlas s produkční změnou.
+- Zachovej cizí WIP, používej vlastní větev/worktree a stage pouze vlastní soubory.
+  Do Gitu nedávej konfiguraci s tajemstvími, hesla, session, dumpy ani osobní přílohy.
+- Dokumentační změny ověř `php tools/check-current-docs.php` a `git diff --check`;
+  CURRENT_STATE zachovej do 80 řádků. Ověř také odkazy v nových souborech.
