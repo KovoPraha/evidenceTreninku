@@ -347,7 +347,7 @@ if (ctype_digit($personSearch) || mb_strlen($personSearch, 'UTF-8') >= 2) {
 }
 $relations = accountPersonRoleList($pdo);
 $events = accountPersonRoleEvents($pdo);
-$claims = accountPersonClaimListForAdmin($pdo);
+$claims = accountPersonClaimListForAdmin($pdo, 200, max(0, (int)($_GET['request_id'] ?? $_POST['request_id'] ?? 0)));
 $pendingClaims = array_values(array_filter($claims, static fn (array $claim): bool => $claim['status'] === 'pending'));
 $closedClaims = array_values(array_filter($claims, static fn (array $claim): bool => $claim['status'] !== 'pending'));
 

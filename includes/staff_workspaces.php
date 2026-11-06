@@ -616,6 +616,7 @@ function staffSharedRoutes(): array
     return [
         'index.php','login.php','logout.php','pracovni_pozice.php','prepnout_pracovni_pozici.php',
         'private_download.php','push_subscribe.php','program_skupiny.php',
+        'staff_notifications.php',
     ];
 }
 

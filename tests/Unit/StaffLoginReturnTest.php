@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
@@ -10,7 +12,7 @@ final class StaffLoginReturnTest extends TestCase
 {
     public function testOnlyKnownReadRoutesAndTypedParametersSurvive(): void
     {
-        foreach (['zavod_vysledky.php?id=17', 'kis_review_admin.php?run_id=3&plan_id=4',
+        foreach (['staff_notifications.php?notice=42', 'staff_notifications.php', 'zavod_vysledky.php?id=17', 'kis_review_admin.php?run_id=3&plan_id=4',
             'kis_review_admin.php?run_id=3&fingerprint=' . str_repeat('a', 64)] as $target) {
             self::assertSame($target, \staffLoginReturnTarget($target));
         }
@@ -18,7 +20,7 @@ final class StaffLoginReturnTest extends TestCase
 
     public function testExternalUrlsHeaderInjectionAndActionParametersFallBack(): void
     {
-        foreach ([null, [], 'https://example.org', '//example.org', '/\\example.org',
+        foreach ([null, [], 'staff_notifications.php?notice[]=1', 'staff_notifications.php?notice=1&action=open', 'https://example.org', '//example.org', '/\\example.org',
             '../logout.php', 'logout.php', "zavod_vysledky.php?id=1\r\nX-Test: yes",
             'zavod_vysledky.php?id=1%0d%0aX-Test:yes', 'zavod_vysledky.php?id[]=1',
             'zavod_vysledky.php?id=1&action=delete', 'zavod_vysledky.php?id=-1',

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/auth_mail_outbox.php';
@@ -64,10 +65,15 @@ function transactionalNotificationStatus(
         $keys = personSensitiveConfig($keyConfig);
         if (($queues['auth_mail_outbox']['available'] ?? false) === true) {
             $missingKeyVersions = 0;
-            foreach ($pdo->query("SELECT DISTINCT key_version FROM auth_mail_outbox WHERE status IN ('pending','processing','failed') AND body_ciphertext IS NOT NULL")->fetchAll(PDO::FETCH_COLUMN) as $version) {
-                if (!isset($keys['keys'][(string)$version])) $missingKeyVersions++;
+            $versions = $pdo->query("SELECT DISTINCT key_version FROM auth_mail_outbox WHERE status IN ('pending','processing','failed') AND body_ciphertext IS NOT NULL");
+            foreach ($versions->fetchAll(PDO::FETCH_COLUMN) as $version) {
+                if (!isset($keys['keys'][(string)$version])) {
+                    $missingKeyVersions++;
+                }
             }
-            if ($missingKeyVersions > 0) $issues[] = 'queued_encryption_keys_unavailable';
+            if ($missingKeyVersions > 0) {
+                $issues[] = 'queued_encryption_keys_unavailable';
+            }
         }
     } catch (PersonSensitiveException) {
         $issues[] = 'encryption_configuration_unavailable';
@@ -76,14 +82,20 @@ function transactionalNotificationStatus(
     }
     if ($transport === 'local-outbox') {
         $host = strtolower((string)preg_replace('/:\d+$/D', '', trim($appHost)));
-        if (!in_array($host, ['localhost', '127.0.0.1'], true)) $issues[] = 'local_outbox_requires_localhost';
+        if (!in_array($host, ['localhost', '127.0.0.1'], true)) {
+            $issues[] = 'local_outbox_requires_localhost';
+        }
         // Check an existing ancestor without creating the directory or a probe file.
         $directory = $outboxDirectory ?? '';
         if ($directory === '') {
             $issues[] = 'outbox_directory_unavailable';
         } else {
-            while (!file_exists($directory) && dirname($directory) !== $directory) $directory = dirname($directory);
-            if (!is_dir($directory) || !is_writable($directory)) $issues[] = 'outbox_directory_unavailable';
+            while (!file_exists($directory) && dirname($directory) !== $directory) {
+                $directory = dirname($directory);
+            }
+            if (!is_dir($directory) || !is_writable($directory)) {
+                $issues[] = 'outbox_directory_unavailable';
+            }
         }
     } elseif ($transport !== 'mail' || !function_exists('mail')) {
         $issues[] = 'transport_unavailable';
@@ -104,22 +116,28 @@ function transactionalNotificationStatus(
 /** @param callable(string,string,string):bool $sender */
 function transactionalNotificationDrain(PDO $pdo, callable $sender, int $limit, ?array $keyConfig = null): array
 {
-    if ($limit < 1 || $limit > 99) throw new InvalidArgumentException('Limit workeru musí být 1 až 99.');
+    if ($limit < 1 || $limit > 99) {
+        throw new InvalidArgumentException('Limit workeru musí být 1 až 99.');
+    }
     transactionalNotificationAssertQueues($pdo);
     $result = ['processed' => 0, 'sent' => 0, 'failed' => 0, 'cancelled' => 0, 'auth_processed' => 0, 'event_processed' => 0];
     while ($result['processed'] < $limit) {
         $authFirst = ($result['processed'] % 2) === 0;
         $auth = $authFirst ? authMailProcessOne($pdo, $sender, $keyConfig) : null;
         $event = $auth === null ? clubEventNotificationProcessOne($pdo, $sender) : null;
-        if ($auth === null && $event === null && !$authFirst) $auth = authMailProcessOne($pdo, $sender, $keyConfig);
-        if ($auth === null && $event === null) break;
+        if ($auth === null && $event === null && !$authFirst) {
+            $auth = authMailProcessOne($pdo, $sender, $keyConfig);
+        }
+        if ($auth === null && $event === null) {
+            break;
+        }
         $result['processed']++;
         if ($auth !== null) {
             $result['auth_processed']++;
             $result[in_array($auth, ['sent', 'cancelled'], true) ? $auth : 'failed']++;
         } else {
             $result['event_processed']++;
-            $result[$event ? 'sent' : 'failed']++;
+            $result[$event === 'cancelled' ? 'cancelled' : ($event ? 'sent' : 'failed')]++;
         }
     }
     return $result;

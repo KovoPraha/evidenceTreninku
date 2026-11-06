@@ -575,6 +575,13 @@ body { font-family: Arial, Helvetica, sans-serif; font-size: .9rem; }
 .nav-tabs .nav-link.active { border-top: 3px solid var(--app-save); padding-top: calc(.5rem - 2px); }
 .btn-success, .app-btn-save { --bs-btn-color:#fff; --bs-btn-bg:var(--app-save); --bs-btn-border-color:var(--app-save); --bs-btn-hover-color:#fff; --bs-btn-hover-bg:var(--app-save-hover); --bs-btn-hover-border-color:var(--app-save-hover); --bs-btn-active-bg:var(--app-save-hover); --bs-btn-active-color:#fff; }
 .app-admin-shell .app-staff-topbar { min-height:64px; position:sticky; top:0; z-index:1030; }
+.staff-notification-bell { margin-left:.5rem; order:3; }
+.staff-notification-menu { width:340px; max-width:calc(100vw - 24px); max-height:75vh; overflow-y:auto; }
+.staff-notification-bell .btn { min-width:44px; min-height:44px; }
+@media (max-width: 767.98px) {
+    .staff-notification-bell { order:1; margin-left:auto; }
+    .app-admin-shell #navbarNav { order:2; }
+}
 .app-admin-shell .app-staff-topbar .navbar-brand { margin-right:1rem; }
 .app-admin-shell #navbarNav > .navbar-nav.me-auto { display:none !important; }
 .app-admin-shell #navbarNav { display:flex !important; flex:1; justify-content:flex-end; gap:.6rem; }

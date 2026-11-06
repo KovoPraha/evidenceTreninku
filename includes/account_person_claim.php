@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/account_person_role.php';
 require_once __DIR__ . '/parent_journey_notification.php';
+require_once __DIR__ . '/staff_notifications.php';
 
 final class AccountPersonClaimException extends RuntimeException
 {
@@ -96,18 +98,21 @@ function accountPersonClaimListForAccount(PDO $pdo, int $accountId): array
 }
 
 /** @return list<array<string,mixed>> */
-function accountPersonClaimListForAdmin(PDO $pdo, int $limit = 200): array
+function accountPersonClaimListForAdmin(PDO $pdo, int $limit = 200, int $requestId = 0): array
 {
     $limit = max(1, min(500, $limit));
-    return $pdo->query(
+    $statement = $pdo->prepare(
         'SELECT c.*, vu.jmeno AS account_jmeno, vu.prijmeni AS account_prijmeni, vu.email AS account_email, '
         . 's.jmeno AS matched_jmeno, s.prijmeni AS matched_prijmeni, t.jmeno AS decider_name '
         . 'FROM account_person_claim_requests c '
         . 'JOIN verejni_uzivatele vu ON vu.id=c.account_id '
         . 'LEFT JOIN sportovci s ON s.id=c.matched_sportovec_id '
         . 'LEFT JOIN treneri t ON t.id=c.decided_by_trainer_id '
+        . ($requestId > 0 ? 'WHERE c.id=? ' : '')
         . "ORDER BY CASE c.status WHEN 'pending' THEN 0 ELSE 1 END, c.created_at, c.id LIMIT " . $limit
-    )->fetchAll(PDO::FETCH_ASSOC);
+    );
+    $statement->execute($requestId > 0 ? [$requestId] : []);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /** @return array{id:int,status:string,changed:bool} */
@@ -320,4 +325,9 @@ function accountPersonClaimEvent(
         . 'VALUES (?, ?, ?, ?, ?, ?, ?)'
     );
     $statement->execute([$requestId, $actorType, $actorId, $action, $fromStatus, $toStatus, $note]);
+    if ($action === 'submit' && $toStatus === 'pending') {
+        staffNotificationRecord($pdo, 'person_claim', $requestId);
+    } elseif (in_array($toStatus, ['approved', 'rejected', 'cancelled'], true)) {
+        staffNotificationResolve($pdo, 'person_claim', $requestId);
+    }
 }
