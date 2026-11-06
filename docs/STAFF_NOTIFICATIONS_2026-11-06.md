@@ -40,7 +40,7 @@ Při následném schváleném nasazení:
 3. První běh doplní také dosavadní čekající žádosti, nejvýše 500 chybějících událostí za běh. Připraví upozornění všem aktuálně oprávněným příjemcům; případné skutečné rozesílání je nutné zahrnout do oprávnění k uvedení do provozu.
 4. V přihlášené produkční administraci ověřit skutečné příjemce, zvoneček, přesný odkaz, vyřízení a stav dalšího běhu. Reálné doručení do schránky se potvrzuje zvlášť, stav fronty `sent` sám nezaručuje doručení.
 
-V rámci této implementace nebyla odeslána žádná skutečná zpráva ani změněn produkční plánovač.
+V první implementační fázi nebyla odeslána žádná skutečná zpráva ani změněn produkční plánovač. Následné schválené uvedení do provozu dokládá [produkční protokol](verification/staff-notifications-release-20261106/RESULTS.md); aktuální stav určuje CURRENT_STATE a další kroky [průběžný plán](WORK_PLAN_CURRENT.md).
 
 ## Schválené uvedení do provozu 6. 11. 2026
 
@@ -50,13 +50,10 @@ Postup: dokončit CI po připojení aktuálního main, sloučit #330, spustit ch
 
 Přejímka: použít existující čekající žádosti, porovnat počet událostí, osobních upozornění a přijatých e-mailů před/po běhu, zkontrolovat další běh bez duplikace a skutečnou produkční hlavičku i odkaz do žádosti. Zdrojové žádosti neschvalovat pouze kvůli testu. Doručení do schránky odlišovat od přijetí poštovním transportem.
 
-## Navazující doložený stav 6. 11. 2026
+## Souhrnná evidence další práce
 
-PR #330 je sloučený a [nasazení 42172409868](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42172409868)
-SUCCESS. [Samostatný status](verification/operations-inventory-20261106/staff-status.json)
-dokládá skutečný minutový běh a 18 zpráv ve stavu sent bez čekajících/chybných.
-Předchozí seznam „při následném nasazení“ je postup, nikoli tvrzení o dnešním
-nenasazení. [Provozní inventura](verification/operations-inventory-20261106/RESULTS.md)
-uvádí meze tohoto důkazu. Další kroky vede P01 v [registru práce](WORK_REGISTER.md),
-živý release vždy CURRENT_STATE. Samostatné potvrzení cílové schránky a
-přihlášeného produkčního průchodu nelze nahradit zeleným workflow.
+Dokončené nasazení, skutečný minutový běh a přihlášenou produkční přejímku
+vede [protokol](verification/staff-notifications-release-20261106/RESULTS.md).
+Nezávislé potvrzení schránky zůstává P01 v [registru práce](WORK_PLAN_CURRENT.md),
+rozšíření o další typy P13. Původní návod nasazení není tvrzení o dnešním
+nenasazení; živý stav vždy určuje CURRENT_STATE.

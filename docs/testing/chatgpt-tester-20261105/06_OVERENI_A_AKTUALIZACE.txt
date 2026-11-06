@@ -1,0 +1,42 @@
+KIS — ověření podkladů a jejich údržba
+
+VERZE A ROZSAH
+Datum přípravy: 5. 11. 2026, Europe/Prague.
+Repozitář: KovoPraha/evidenceTreninku.
+Po git fetch --prune origin je načtený main: 65969bb8c7d27c71861758214abbc35edae61b3c.
+Zdejší pracovní větev: codex/fio-auto-reconciliation-recovery, HEAD d1221f3594a965096d98da5e86a27097f66cd380; obsahuje i cizí rozpracovanou změnu kis_rosters_admin.php. Do této změny se nezasahovalo. Podklady pro funkce byly čteny přímo z origin/main pomocí git show, nikoli ze staré lokální kopie.
+
+CO BYLO OVĚŘENO PŘI PŘÍPRAVĚ
+Statická revize relevantních vstupních stránek, autorizace a doménových funkcí: rodičovský a sportovní přístup, žádosti o propojení, rozsah trenéra, RSVP, očekávání a skutečná docházka, pravidla náhrad, objednávky a vratky, platební politika, klubový kalendář, evidence členů a stav lékařských podkladů. Konkrétní soubory, symboly a pevné řádkové odkazy jsou v 05_MAPA_FUNKCI_A_ZDROJU.
+Kontrola existence všech souborů a symbolů uvedených v mapě proti přesnému SHA. Kontrola odkazů scénářů na mapu, počtu scénářů, UTF-8 souborů a shody obsahu ZIP se soubory balíčku.
+Přečteny aktuální docs/CURRENT_STATE.md a datovaný protokol docs/verification/live-payments-20261105/ACTIVATION.md z origin/main. Pro popis provozních mezí jde o tvrzení těchto doložených protokolů, nikoli o novou živou kontrolu produkce v tomto chatu.
+
+CO TATO PŘÍPRAVA NEPROKAZUJE
+Neproběhl nový přihlášený browser test, žádný z katalogu scénářů se nespouštěl, žádná platba, objednávka, import ani produkční zápis se neprovedl. Neprováděla se nová kompletní automatická testovací sada. Existence testovacích souborů v mapě není tvrzení o jejich dnešním spuštění.
+Balíček nevytváří účty, data, oprávnění ani sdílený ChatGPT projekt. Nelze z něj odvodit, že konkrétní testerka má přístup ke GitHubu, všem funkcím aplikace nebo sdílení ve svém tarifu.
+
+AKTUÁLNÍ PROVOZNÍ PODKLAD K 5. 11. 2026
+CURRENT_STATE uvádí živé aplikační vydání 436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d. Není totožné s dokumentačním HEAD hlavní větve. Při pozdějším testování je nutné zjistit skutečnou verzi znovu.
+Protokol aktivace uvádí Fio import a automatické potvrzování zapnuté, SumUp zapnutý a kartu povolenou 223 aktivním produktům pro nové způsobilé přihlášené objednávky. Osm dosavadních plateb zachovalo bankovní snapshot; hosté, samostatné členské předpisy a samostatné termíny velodromu nejsou automaticky pokryty produktovou dávkou. Smíšený košík musí splnit politiku všech položek.
+Protokol výslovně nedokládá skutečnou kartovou úhradu včetně webhooku a vypořádání ani živé jednoznačné Fio E2E párování. První přirozeně spuštěný naplánovaný běh po aktivaci v něm také ještě není pozorován. Tyto meze nepřepisovat tvrzením „všechny platby otestovány“.
+Současné členství je vedeno bez sezon. Část legacy schématu a historických funkcí zůstává v kódu; z jejich existence nelze odvodit, že běžný uživatel má provádět původní roční rollover. Skupiny/soupisky a intervaly platnosti jsou důležité pro očekávání k datu tréninku.
+Obnova/změna produkčního hesla a původní T07 zůstávaly podle CURRENT_STATE mimo doloženou přejímku. Nepřidávat je potichu do obecného testování.
+
+PŘED PRVNÍM ZAPISOVACÍM TESTEM DODÁ MAREK
+• Přesnou adresu prostředí a jeho verzi.
+• Účty pro skutečně testované role, platnost oprávnění a rozsah trenéra.
+• Syntetické osoby, jejich propojení a očekávaná zařazení ke konkrétním datům.
+• Konkrétní testovací nabídky, ceny, kapacity, pravidla náhrad a termíny.
+• Povolené scénáře a způsob úklidu vytvořených záznamů.
+• Pro finanční test zvlášť úhradu, případnou vratku a osobu oprávněnou je provést.
+Bez těchto podkladů lze používat vysvětlení a prohlížecí scénáře; závislé testy zůstávají BLOKOVÁNO.
+
+POSTUP AKTUALIZACE PRO VÝVOJÁŘE
+1. Načti aktuální main a zaznamenej SHA i datum. Nezaměňuj main s nasazením.
+2. Porovnej změny souborů ze zdrojové mapy od 65969bb8c7d27c71861758214abbc35edae61b3c; přečti i nové související vstupy a testy.
+3. Oprav uživatelská očekávání, předpoklady a odkazy. Samostatně ověř konfiguraci/provoz, pokud ovlivňuje scénář.
+4. Aktualizuj instrukce, mapu, tento dokument i spojený podklad. Znovu vytvoř ZIP a ověř shodu.
+5. V ChatGPT nahraď staré zdroje, uprav instrukce a zopakuj kontrolní otázky z 00. Staré výsledky uchovej s původní verzí; nezařazuj je jako nové PASS.
+
+VNITŘNÍ ULOŽENÍ
+Výstup je v output/chatgpt-testovani-2026-11-05. Není commitnutý, pushnutý ani nasazený. Zdroje neobsahují hesla, konfiguraci ani kopie skutečných osobních či zdravotních údajů. Kontaktní a testovací parametry musí doplnit vlastník.

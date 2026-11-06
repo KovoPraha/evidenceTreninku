@@ -1,0 +1,69 @@
+KIS — šablona hlášení a souhrnu testování
+
+JEDEN PROBLÉM
+ID: KIS-RRRRMMDD-01 (lokální označení; není to číslo GitHub issue)
+Název: [stránka / funkce] Co se stane při jakém úkonu
+Typ: chyba / nejasné ovládání / dotaz / návrh vylepšení
+Scénář: R… / W… / jiný
+Datum a čas: … Europe/Prague
+Prostředí a adresa: … (bez tajných parametrů)
+Verze aplikace: … / NEZJIŠTĚNO
+Verze podkladů: 5. 11. 2026; zdrojový main 65969bb8c7d27c71861758214abbc35edae61b3c
+Role a označení účtu: … (bez hesla a osobních údajů)
+Zařízení, systém, prohlížeč: …
+Předpoklady a data: např. TEST dítě A, schválené propojení, aktivní zařazení, datum tréninku, stav objednávky
+Povolený rozsah testu: pouze prohlížení / dohodnutý zápis …
+
+Postup zopakování:
+1. Otevřít …
+2. Vybrat …
+3. Kliknout …
+
+Očekávaný výsledek: …
+Podklad očekávání: scénář / konkrétní dokument nebo zdroj / pouze očekávání testerky
+Skutečný výsledek: …
+Přesný text chyby: … / žádný / NEZJIŠTĚNO
+Opakovatelnost: … pokusů z … / neopakováno kvůli riziku dalšího zápisu
+Stav po obnovení stránky: … / NEZJIŠTĚNO
+Dopad: koho to omezuje a co kvůli tomu nejde dokončit
+Navržená závažnost: kritická / vysoká / běžná / nízká; důvod …
+Důkazy: názvy příloh a co přesně ukazují
+Provedené zápisy: co vzniklo nebo se změnilo; identifikátor testovacího záznamu bez tajných odkazů
+Úklid: hotovo … / čeká na Marka … / nebylo co uklízet
+Technické vodítko: cesta a funkce z mapy zdrojů; hypotézu výslovně označit
+Chybějící informace pro vývojáře: …
+Stav předání: koncept / předáno konkrétní cestou … (uvést jen pokud skutečně předáno)
+
+ZÁVAŽNOST
+Kritická: únik cizích údajů, chybný finanční zápis nebo ztráta dat. Ukončit test a kontaktovat Marka.
+Vysoká: hlavní běžný postup nelze dokončit a není přiměřená náhrada.
+Běžná: omezení části funkce, existuje přiměřený náhradní postup.
+Nízká: vzhled nebo text bez podstatné ztráty funkčnosti.
+Konečnou prioritu určí vývojář; neodvozovat ji jen od barvy chybové zprávy.
+
+SOUHRN BĚHU
+Běh, datum, testerka, prostředí, role, verze aplikace:
+Povolený rozsah:
+
+Scénář | Výsledek | Důkaz / stručné pozorování | ID hlášení
+… | PROŠLO / ČÁSTEČNĚ / CHYBA / BLOKOVÁNO / NETESTOVÁNO | … | …
+
+PROŠLO = všechny kroky i očekávaný výsledek skutečně ověřeny.
+ČÁSTEČNĚ = část ověřena; vypsat, které kroky zůstaly neověřené.
+CHYBA = doložená odchylka od podloženého očekávání při splněných předpokladech.
+BLOKOVÁNO = chybí předpoklad nebo povolení.
+NETESTOVÁNO = scénář se vůbec nespustil.
+
+Chyby k řešení:
+Nejasnosti a dotazy:
+Návrhy na zlepšení:
+Vytvořené záznamy a úklid:
+Další doporučený krok:
+
+PŘÍKLAD VYPLNĚNÍ — FIKTIVNÍ, NEJDE O NALEZENOU CHYBU
+Název: Sportovní přehled — uložená odpověď se po obnovení nezobrazuje.
+Předpoklady: připravený testovací rodič, TEST dítě A, budoucí trénink v jeho soupisce; povolené RSVP.
+Postup: otevřít přehled, u daného dítěte a tréninku zvolit Zúčastním se, po potvrzení obnovit stránku.
+Očekáváno: odpověď zůstává u stejného dítěte a stejného tréninku.
+Pozorováno: po obnově je uvedeno Bez odpovědi. Přesný text a počet pokusů doplnit.
+Vodítko: includes/training_rsvp.php, trainingRsvpSave; jde o místo ke kontrole, nikoli dokázanou příčinu.

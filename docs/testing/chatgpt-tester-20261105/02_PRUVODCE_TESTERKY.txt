@@ -1,0 +1,36 @@
+KIS — průvodce testerky
+
+K ČEMU PROJEKT SLOUŽÍ
+Zde se můžeš běžnou češtinou ptát na fungování aplikace a nechat se provést testováním. Nemusíš umět programovat ani používat GitHub. Když něco nefunguje, asistent ti pomůže doplnit informace a vytvořit hlášení pro Marka. Asistent sám nevidí tvůj prohlížeč ani účet, pokud mu výslovně neposkytneš takový nástroj; obvykle potřebuje popis nebo snímek.
+
+JAK ZAČÍT
+Napiš například: „Chci ověřit rodičovský sportovní přehled. Jsem na adrese …, mám rodičovský účet a dnes mohu pouze prohlížet. Veď mě po jednom kroku.“
+Pro konkrétní problém: „Na stránce … po kliknutí na … vidím …, ale čekala jsem … . Pomoz mi zjistit, zda je to chyba, a připrav hlášení.“
+Pro vysvětlení: „Jaký je rozdíl mezi odpovědí na trénink a docházkou?“ nebo „Proč nevidím dítě / možnost platby kartou / náhradní lekci?“
+Pro předání: „Z dnešního testování vytvoř souhrn pro Marka. Odděl chyby, nejasnosti a návrhy na zlepšení.“
+
+CO SI PŘIPRAVIT
+Marek ti dodá adresu prostředí, účet, roli, testovací osoby a povolené úkony. Přihlašovací heslo do chatu neposílej. U každého běhu si poznamenej datum, zařízení a prohlížeč. Pro různé role používej oddělené profily nebo anonymní okna, aby nebylo nejasné, pod kým pracuješ.
+Na produkční adrese kis.kovopraha.cz jsou skutečná data a mohou být dostupné ostré platby. Bez výslovného zadání neodesílej testovací objednávky, platby ani hromadné zprávy. Testovací jméno samo o sobě z ostrého prostředí nedělá testovací prostředí.
+
+ZÁKLADNÍ ORIENTACE
+Veřejná část: katalog, produkty, rozvrh tréninků, klubový kalendář a velodrom. Prohlížení nabídky není přihlášení na akci.
+Rodičovská/zákaznická část: přihlášení, Moje osoby, Sportovní přehled, Moje kroužky, objednávky, přihlášky a náhrady podle oprávnění a dat.
+Samostatný sportovní přístup: Můj sport, údaje jednoho přiděleného sportovce a jeho dostupné akce. Nezaměňovat za rodičovský účet spravující více osob.
+Trenérská část: plánovač, odpovědi účastníků, evidence skutečných tréninků a docházky. Seznamy respektují přidělený rozsah. Registrář, finance a další pracovní pozice poskytují další konkrétní oprávnění; samotné obecné označení „správce“ nestačí k odvození všeho přístupu.
+
+DŮLEŽITÉ ROZDÍLY
+Účet je přihlášení; osoba je sportovec v klubové evidenci. K existující osobě se žádá o propojení a administrátor jej ověřuje. Nevytvářej druhou osobu jen proto, že ji zatím ve svém účtu nevidíš.
+Skupina a soupiska určují zařazení členů. Současná evidence členů používá skupiny a soupisky bez každoroční obnovy členství přes sezonu. Období placeného kroužku a platnost konkrétního zařazení mají nadále význam.
+Plánovaný trénink říká, co se má konat. Odpověď „Zúčastním se / Nezúčastním se“ sděluje úmysl trenérovi. Skutečnou účast zapíše trenér do evidence.
+Náhrada může vzniknout za včas omluvený, zaplacený a skutečně vynechaný trénink kroužku, pokud klub náhrady povolil. Nejprve se uzavírá docházka. Nabídka náhrad závisí také na termínu, kapacitě a vhodnosti pro sportovce.
+Objednávka čekající na platbu není zaplacená. Návrat z platební brány sám úhradu nepotvrzuje. Zrušená zaplacená objednávka a dokončená vratka jsou dva různé stavy.
+Platba kartou není zaručená pro každou cestu: host používá bankovní platbu; nová přihlášená objednávka může nabídnout SumUp, pokud to dovolují všechny položky i nastavení. Starší platba si může zachovat původní režim.
+
+KDYŽ SE NĚCO NESHODUJE
+Nejprve popiš stránku, roli, vybrané datum/filtr, co jsi udělala a co vidíš. Zkopíruj přesný text chyby. Uveď, zda po obnovení stránky stav zůstává a zda problém jde zopakovat. Pokud by opakování vytvořilo další objednávku nebo jiný zápis, neopakuj jej bez domluvy.
+Pořiď snímek s označeným problémem. Zakryj údaje cizích osob, adresy, zdravotní údaje a platební údaje. Neposílej celé odkazy obsahující přístupové tokeny. Používej označení „TEST dítě A“, nikoli skutečné osobní údaje.
+Když test nemůže pokračovat kvůli nepřipravenému účtu, datům nebo oprávnění, výsledek je BLOKOVÁNO. Nedostatek podmínek sám o sobě nepotvrzuje chybu aplikace.
+
+JAK PŘEDAT VÝSLEDKY
+Založ v projektu nový chat pro jednu oblast nebo jeden testovací běh, například „Rodič — 5. listopadu“. Na závěr požádej o hlášení podle šablony a souhrn výsledků. Finální hlášení pošli Markovi dohodnutou cestou; text vytvořený v chatu není automaticky založený úkol v GitHubu.

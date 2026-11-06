@@ -42,3 +42,12 @@ bez posouzení vlastníka souborů; úklid nemá přednost před zachováním WI
 Pouze dokumentační aktualizace a čtení existujících dokladů. Žádná nová instalace,
 rozesílka, publikace, produkční zápis ani nasazení aplikace. Budoucí kroky,
 závislosti a meze oprávnění jsou zapsané v propojeném registru práce.
+
+## Následně doplněný důkaz
+
+Souběžný [PR #333](https://github.com/KovoPraha/evidenceTreninku/pull/333)
+uložil [úplnou produkční přejímku upozornění](../staff-notifications-release-20261106/RESULTS.md)
+včetně skutečného zvonečku, přesného odkazu a přepnutí přečtení/nepřečtení.
+Tato část je dokončená; zbývá potvrzení koncové schránky. Novější schválení
+vystavovatele/tarifu vlastníkem je zachované v P05 kanonického registru.
+Datovaný čtecí snímek výše se zpětně nepřepisuje.

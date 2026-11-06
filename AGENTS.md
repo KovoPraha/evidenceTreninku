@@ -1,7 +1,7 @@
 # Projektové instrukce pro agenty
 
 Před prací čti [vývojový kontext](CLAUDE.md), [aktuální stav](docs/CURRENT_STATE.md),
-[handoff](docs/HANDOFF_CURRENT.md) a [registr práce](docs/WORK_REGISTER.md).
+[handoff](docs/HANDOFF_CURRENT.md) a [registr práce](docs/WORK_PLAN_CURRENT.md).
 
 ## Průběžné souborové záznamy
 

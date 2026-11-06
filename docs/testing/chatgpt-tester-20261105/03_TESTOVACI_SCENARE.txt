@@ -1,0 +1,145 @@
+KIS — scénáře vedeného testování
+
+Tento katalog určuje postup a očekávání. Žádný scénář tímto dokumentem není označen jako PROŠLO. Základ: main 65969bb8c7d27c71861758214abbc35edae61b3c, 5. 11. 2026. Kódy zdrojů S01–S13 jsou v mapě implementace.
+R = bez odeslání změnového formuláře; přihlášení přiděleným účtem je možné. W = zapisuje a vyžaduje předem dohodnutý testovací rozsah. Nedostupná testovací data znamenají BLOKOVÁNO. Pro W použít oddělené testovací prostředí; případná produkční výjimka musí jmenovat scénář, data a povolené úkony.
+U každého výsledku zaznamenej roli, prostředí, datum, skutečný výsledek a důkaz. Přesné názvy tlačítek ověř na obrazovce. Schválené testovací identity a hesla nejsou součástí balíčku.
+
+PRVNÍ KRÁTKÝ BĚH
+Začni R01, R02, R03 a R06; přibližně 20–30 minut podle dostupnosti účtů. Zapisovací část plánovat samostatně. Výsledek mobilního testu zapisovat zvlášť.
+
+R01 Veřejná orientace [S01, S10]
+Role: nepřihlášená návštěvnice. Data: zveřejněný produkt a alespoň jedna zveřejněná událost nebo trénink; nejsou-li, ověř pouze prázdný stav.
+1. Otevři hlavní stránku, E-shop, rozvrh tréninků, Akce a klubový kalendář, velodrom.
+2. Otevři detail veřejného produktu; vyzkoušej hledání a datum/filtr tam, kde se nabízí.
+3. Zapiš stránky, které nejdou otevřít, a zda se rozumí jejich účelu.
+Očekávání: veřejné nabídky jsou čitelné bez přihlášení, chybějící nabídka má srozumitelný stav. Přihlášení pro další konkrétní úkon není samo chyba. Nic neobjednávat.
+
+R02 Přihlášení a hranice účtu [S02, S03]
+Role: přidělený rodičovský účet.
+1. Přihlas se přes zákaznické přihlášení; heslo zadávej pouze aplikaci.
+2. Otevři Sportovní přehled a Moje osoby; porovnej s vývojářovým seznamem testovacích osob.
+3. Odhlas se standardním tlačítkem a znovu otevři soukromou stránku. Nezkoušej odkazy na cizí osoby.
+Očekávání: chráněná stránka po odhlášení vyžaduje přihlášení; před odhlášením jsou dostupné pouze oprávněné osoby. Nepřítomné propojení není důvod založit duplikát.
+
+R03 Rodinný přehled a správná osoba [S03, S04, S12]
+Data: rodič propojený se dvěma TEST osobami s různými tréninky či povinnostmi.
+1. Najdi obě osoby a jejich zařazení.
+2. U každé ověř příslušný trénink, platbu či událost podle připraveného očekávání.
+3. Změň měsíc v odpovědích na tréninky; vrať se na aktuální měsíc.
+Očekávání: položky patří správné osobě; prázdný měsíc se nezaměňuje za ztrátu zařazení. Neodesílat odpověď. Zdravotní stav číst jen pro testovací osobu, bez otevírání cizích příloh.
+
+R04 Samostatný sportovní přístup [S02, S04]
+Data: aktivní přístup TEST sportovce připravený Markem. Oddělené okno od rodiče.
+1. Přihlas se přes Sportovec / Můj sport.
+2. Ověř totožnost testovací osoby a její dostupné tréninky a přehledy.
+Očekávání: přístup odpovídá jedné přidělené osobě; není to rodičovská správa dalších osob. Bez připraveného přístupu BLOKOVÁNO.
+
+R05 Trenérský rozsah a plán [S05, S06]
+Data: trenér s platným rozsahem na TEST soupisku; známý vlastní plán a testovací osoba mimo rozsah.
+1. V trenérské části otevři plánovač a vlastní připravený plán.
+2. Zkontroluj soupisku a odpovědi účastníků.
+3. V běžném našeptávači zkus přesné jméno připravené testovací osoby mimo rozsah, bez volby a uložení.
+Očekávání: oprávněná data jsou dostupná, cizí testovací osoba mimo rozsah se nenabízí. Prázdné seznamy při nepřiděleném rozsahu jsou BLOKOVÁNO. Práva hlavního trenéra/správce mohou být širší; ověř přesný účet.
+
+R06 Mobilní použitelnost [S01–S05]
+Data: telefon nebo úzké okno, role z předchozího scénáře.
+1. Zopakuj jeho prohlížecí kroky.
+2. Ověř menu, čitelnost polí, dostupnost tlačítek a chybových textů.
+Očekávání: klíčový úkon nezmizí mimo obrazovku; případnou potřebu posunu tabulky popiš konkrétně. Hodnoť zvlášť funkčnost a srozumitelnost.
+
+W01 Propojení existující osoby [S03]
+Data: syntetický zákazník a předem existující TEST osoba bez jeho vazby; registrář pro vyřízení.
+1. Moje osoby → Propojit existujícího sportovce. Vyplň dohodnuté jméno, datum narození a vztah.
+2. Odešli jednu žádost; ověř čekající stav.
+3. Registrář podle svého povoleného postupu schválí vazbu; obnov Moje osoby.
+Očekávání: před schválením nevznikne přístup k údajům osoby; po schválení je dostupná správná osoba. Nezakládat nového sportovce místo žádosti. Úklid vazby zajistí Marek.
+
+W02 Odpověď rodiče na trénink [S04]
+Data: budoucí plán pro aktivní TEST soupisku a oprávněné dítě.
+1. V přehledu u správného dítěte a tréninku zvol Zúčastním se, případně přidej neosobní poznámku.
+2. Obnov stránku, ověř uloženou odpověď.
+3. Změň na Nezúčastním se; trenér zkontroluje odpověď a poznámku v odpovědích plánu.
+Očekávání: poslední odpověď zůstane u stejné dvojice osoba/trénink a nezmění jinou osobu. Skutečná docházka se tím nevyplňuje. U omluvy zaznamenej přesné vysvětlení nároku na náhradu; nárok nemusí vzniknout. Po testu obnov dohodnutou odpověď.
+
+W03 Odpověď sportovce [S02, S04]
+Data: aktivní sportovní přístup z R04 a jeho budoucí plán.
+1. V odděleném okně u plánu ulož Zúčastním se.
+2. Obnov stránku; trenér nebo oprávněný rodič porovná poslední odpověď.
+Očekávání: odpověď patří stejné osobě a plánu; nevzniká druhá účast. Rodič i sportovec mohou upravovat odpověď, nejde o oddělené hlasy. Obnov dohodnutý stav.
+
+W04 Plán a skutečná docházka [S05, S06]
+Data: oprávněný trenér, TEST soupiska se dvěma očekávanými osobami, plán a termín povolený nastavením zadávání.
+1. Otevři připravený plán a zapiš očekávané osoby a odpovědi.
+2. Přes standardní Zadat evidenci založ skutečný trénink; jako skutečně přítomnou označ jen jednu ze dvou osob.
+3. Zkontroluj vazbu plánu na evidovaný trénink a porovnání očekávání se skutečností.
+Očekávání: druhá osoba není automaticky vedena jako přítomná kvůli soupisce nebo RSVP. Očekávání a skutečná účast jsou rozlišeny. Úklid historie provede Marek dohodnutým postupem.
+
+W05 Náhrada za včasnou omluvu [S07]
+Data musí připravit Marek: placená aktivní účast v kroužku, povolené náhrady, konkrétní lhůta omluvy, budoucí zdrojový plán, věkově vhodný cílový termín s kapacitou a trenér pro následnou docházku. Bez těchto podmínek BLOKOVÁNO.
+1. Před lhůtou zvol Nezúčastním se a zaznamenej potvrzení.
+2. Otevři Náhradní lekce. Před uzavřením docházky očekávej čekající omluvu, nikoli automaticky použitelný nárok.
+3. Až po skutečném konci zdrojového testovacího tréninku trenér standardně uzavře docházku s danou osobou nepřítomnou. Čas na produkci neposouvat.
+4. Obnov náhrady; při splněných pravidlech vyber jedno vhodné volné místo, rezervuj a obnov stránku.
+Očekávání: jeden zdrojový nárok, jedna rezervace; zobrazený stav a zbývající kapacita odpovídají zápisu. Není-li vhodný termín, prázdná nabídka sama není chyba. Pokud je podle obrazovky ještě možné storno s vrácením nároku, lze je samostatně dohodnout a ověřit. Úklid zajistí Marek.
+
+W06 Pozdní omluva [S07]
+Data: jiný TEST trénink s aktivní placenou účastí a povolenými náhradami; prokazatelně už po hranici omluvy, ale před začátkem. Zapsat čas začátku a nastavenou lhůtu.
+1. Ulož Nezúčastním se a přečti zprávu.
+2. Ověř přehled omluv a trenérskou odpověď.
+Očekávání: omluva se uloží, ale hlášení vysvětlí, proč pro náhradu nesplňuje podmínky. Pozdní omluva není automaticky chyba ukládání RSVP. Úklid podle dohody.
+
+W07 Bankovní objednávka bez úhrady [S08]
+Data: syntetický zákazník, povolená testovací nabídka, cena, měna, osoba/příjemce a kapacita; povoleno vytvořit a následně zrušit objednávku, nikoli platit.
+1. Otevři produkt, zvol variantu a počet; u programové nabídky správnou osobu.
+2. Před odesláním zkontroluj souhrn; objednávku odešli právě jednou.
+3. Zapiš veřejné číslo objednávky, částku, měnu, čekající stav a přítomnost platebních údajů; obnov stránku.
+Očekávání: uložená objednávka zůstane čekající, obnova nevytvoří další objednávku. QR chyba může mít náhradní textové údaje. Neprovádět převod a nefotit celé platební údaje. Kapacita/sklad mohou být rezervovány; Marek provede dohodnuté storno.
+
+W08 Dostupnost karty a smíšený košík [S08, S09]
+Data: připravená nová přihlášená testovací objednávka s povoleným SumUp, objednávka hosta, starší bankovní objednávka a případně smíšený košík; každou vytvořit jen při samostatně povoleném zápisu. Existující záznamy lze pouze prohlédnout.
+1. Porovnej detail těchto objednávek podle předem určeného očekávání.
+2. Neotevírej ani nedokončuj ostrou platební bránu.
+Očekávání: přihlášená způsobilá čekající objednávka může nabídnout SumUp; host bankovní platbu; starší bankovní snapshot se dodatečně nemění. Položka s bankovním omezením zúží celý košík na převod. Dostupnost karty závisí i na konfiguraci a stavu platby. Zobrazené tlačítko nedokládá úspěšnou úhradu.
+
+W09 Platba a navázání účasti [S08–S10; pouze oddělený výslovně sjednaný test]
+Data: jasně dohodnutý způsob úhrady, prostředí, částka, nabídka, příjemce, kapacita, finančně oprávněná osoba a postup úklidu. Syntetické potvrzení platby pouze v izolovaném testu; na produkci jen skutečná úhrada a její oprávněné ověření.
+1. Zapiš čekající objednávku a stav programové účasti.
+2. Proveď právě dohodnutou cestu úhrady; návrat z brány není důkaz zaplacení.
+3. Vyčkej na autoritativně potvrzený stav a ověř objednávku i účast v kroužku, pokud jde o programovou nabídku.
+Očekávání: při splněných kapacitních a dalších podmínkách se úhrada a příslušná účast navážou bez duplicit. Zboží ani jiný typ nabídky nemusí vytvářet programovou účast. U Fio uvést čas a VS; neslibovat okamžité ani přesně desetiminutové potvrzení. Nulové párování bez odpovídajícího pohybu není chyba.
+
+W10 Storno a vratka [S08; samostatně povolený finanční scénář]
+Data: testovací zaplacená objednávka, oprávněný pracovní účet a domluvený postup reálné či testovací vratky.
+1. Oprávněná osoba standardně zruší objednávku s důvodem.
+2. Ověř stav objednávky, případnou ukončenou programovou účast a požadavek vratky.
+3. Dokončení vratky zaznamená oprávněná osoba až podle skutečného stavu; ověř historii konkrétní objednávky.
+Očekávání: storno není důkaz odeslání peněz; čekání na vratku a její dokončení se rozlišují. Uchovat kontext objednávky. Nemaž finanční historii kvůli úklidu.
+
+W11 Nový plán ze soupisek [S05, S06]
+Data: oprávněný trenér s TEST soupiskou, členové platní ke dni plánu; volný dohodnutý termín.
+1. Vytvoř plán se soupiskou, datem a názvem TEST; ověř očekávané účastníky.
+2. Ulož a znovu otevři; ověř vazby a očekávání.
+3. Pokud je povoleno kopírování týdne, zkopíruj do dohodnutého týdne a ověř vazbu kopií na soupisku.
+Očekávání: plán vychází z oprávněných soupisek a zařazení ke konkrétnímu datu. Případný interní plán bez účastníků se zadává výslovně; nevydává se za trénink se soupiskou. Rezervaci sportoviště nekonstruuj automaticky z existence plánu. Marek zajistí zrušení testovacích plánů.
+
+W12 Klubová akce [S10]
+Data: zveřejněná TEST akce, oprávněná osoba a dostupná kapacita; Marek určí, zda je zdarma nebo placená.
+1. V Akcích a klubovém kalendáři najdi připravenou akci.
+2. Zkontroluj oprávněnou osobu a přihlášení podle typu nabídky.
+3. Bezplatnou přihlášku odešli pouze při povolení; placenou cestu testuj podle W07/W09.
+Očekávání: veřejné prohlížení nezakládá přihlášku; placená akce vede na příslušnou nákupní cestu. Stejnou osobu nenahlašovat opakovaně jen kvůli nejistému výsledku. Čekací listinu ověřovat pouze na předem připravené akci s danou konfigurací. Úklid přes dohodnuté storno.
+
+R07 Evidence členů a platnost zařazení [S11; jen pro oprávněného registráře]
+Data: TEST skupina a soupiska; očekávaná zařazení k přesným datům připravená Markem.
+1. Otevři Skupiny a soupisky, najdi dohodnutou skupinu a soupisku.
+2. Porovnej dostupná data zařazení s očekáváním, případně použij nabízené datum náhledu.
+Očekávání: současné členství nevyžaduje starý roční rollover. Platnost intervalu a datum tréninku jsou přesto podstatné. Staré přehledy sezon mohou pouze přesměrovat. Nic nepřevádět, nearchivovat a nespouštět import.
+
+R08 Stav lékařského podkladu [S12]
+Data: rodičovský účet a TEST osoba s připraveným syntetickým stavem podkladu, nikoli skutečným zdravotním dokumentem.
+1. Ve Sportovním přehledu najdi informaci o příslušném podkladu.
+2. Porovnej stav, období platnosti a další doporučený krok s očekáváním od Marka.
+Očekávání: stav rozlišuje platnost podle data; nepřítomnost záznamu není totéž co schválení. V tomto scénáři nic nenahrávat ani neotevírat citlivou přílohu. Pokud se dané sledování osoby netýká, BLOKOVÁNO nebo NETESTOVÁNO s důvodem.
+
+CO NEZAHRNOVAT DO VÝCHOZÍHO BĚHU
+Obnovu či změnu produkčního hesla, skutečné úhrady a vratky, změny oprávnění a pracovních pozic, reálné importy členů, dávkové převody a rozesílky. Localhost stránka testovaci_scenare.php není vzdálený testovací portál a produkčně se nemá zpřístupňovat [S13]. Tyto oblasti potřebují vlastní konkrétní scénář a podmínky.

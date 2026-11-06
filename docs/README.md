@@ -10,9 +10,9 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 | Dokument | Účel |
 |---|---|
-| [Registr rozpracované a plánované práce](WORK_REGISTER.md) | Průběžné položky P01–P11, další kroky, závislosti a odkazy na plány a důkazy |
+| [Registr rozpracované a plánované práce](WORK_PLAN_CURRENT.md) | Průběžné položky P01–P13, další kroky, závislosti a odkazy na plány a důkazy |
 | [Provozní inventura 6. 11.](verification/operations-inventory-20261106/RESULTS.md) | Stav větví, mezitím nasazené #330 a doložený běh upozornění |
-| [Pracovní upozornění](STAFF_NOTIFICATIONS_2026-11-06.md) | Zvoneček, osobní přehled, e-maily, provozní worker a hranice doručení; stav v CURRENT_STATE |
+| [Pracovní upozornění](STAFF_NOTIFICATIONS_2026-11-06.md) | Zvoneček, osobní přehled, e-maily; [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md), samostatná mez doručení |
 | [Omluvenky a náhrady – ověření](verification/makeup-audit-20261106/RESULTS.md) | Již nasazené, 22 testů / 139 assertions, 23 HTTP scénářů a syntetický browser PASS |
 | [TV programy](TV-PROGRAMY.md) | Obsluha TV, editor obrázků a textů, veřejné adresy a zveřejňování carouselů |
 | [Začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md) | Nasazený modul, role, převod katalogu/domény a zbývající provozní přejímka |

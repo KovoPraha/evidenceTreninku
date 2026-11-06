@@ -1,0 +1,511 @@
+KIS — podklady pro sdílený projekt ChatGPT
+Verze 5. 11. 2026
+
+
+============================================================
+02_PRUVODCE_TESTERKY.txt
+============================================================
+
+KIS — průvodce testerky
+
+K ČEMU PROJEKT SLOUŽÍ
+Zde se můžeš běžnou češtinou ptát na fungování aplikace a nechat se provést testováním. Nemusíš umět programovat ani používat GitHub. Když něco nefunguje, asistent ti pomůže doplnit informace a vytvořit hlášení pro Marka. Asistent sám nevidí tvůj prohlížeč ani účet, pokud mu výslovně neposkytneš takový nástroj; obvykle potřebuje popis nebo snímek.
+
+JAK ZAČÍT
+Napiš například: „Chci ověřit rodičovský sportovní přehled. Jsem na adrese …, mám rodičovský účet a dnes mohu pouze prohlížet. Veď mě po jednom kroku.“
+Pro konkrétní problém: „Na stránce … po kliknutí na … vidím …, ale čekala jsem … . Pomoz mi zjistit, zda je to chyba, a připrav hlášení.“
+Pro vysvětlení: „Jaký je rozdíl mezi odpovědí na trénink a docházkou?“ nebo „Proč nevidím dítě / možnost platby kartou / náhradní lekci?“
+Pro předání: „Z dnešního testování vytvoř souhrn pro Marka. Odděl chyby, nejasnosti a návrhy na zlepšení.“
+
+CO SI PŘIPRAVIT
+Marek ti dodá adresu prostředí, účet, roli, testovací osoby a povolené úkony. Přihlašovací heslo do chatu neposílej. U každého běhu si poznamenej datum, zařízení a prohlížeč. Pro různé role používej oddělené profily nebo anonymní okna, aby nebylo nejasné, pod kým pracuješ.
+Na produkční adrese kis.kovopraha.cz jsou skutečná data a mohou být dostupné ostré platby. Bez výslovného zadání neodesílej testovací objednávky, platby ani hromadné zprávy. Testovací jméno samo o sobě z ostrého prostředí nedělá testovací prostředí.
+
+ZÁKLADNÍ ORIENTACE
+Veřejná část: katalog, produkty, rozvrh tréninků, klubový kalendář a velodrom. Prohlížení nabídky není přihlášení na akci.
+Rodičovská/zákaznická část: přihlášení, Moje osoby, Sportovní přehled, Moje kroužky, objednávky, přihlášky a náhrady podle oprávnění a dat.
+Samostatný sportovní přístup: Můj sport, údaje jednoho přiděleného sportovce a jeho dostupné akce. Nezaměňovat za rodičovský účet spravující více osob.
+Trenérská část: plánovač, odpovědi účastníků, evidence skutečných tréninků a docházky. Seznamy respektují přidělený rozsah. Registrář, finance a další pracovní pozice poskytují další konkrétní oprávnění; samotné obecné označení „správce“ nestačí k odvození všeho přístupu.
+
+DŮLEŽITÉ ROZDÍLY
+Účet je přihlášení; osoba je sportovec v klubové evidenci. K existující osobě se žádá o propojení a administrátor jej ověřuje. Nevytvářej druhou osobu jen proto, že ji zatím ve svém účtu nevidíš.
+Skupina a soupiska určují zařazení členů. Současná evidence členů používá skupiny a soupisky bez každoroční obnovy členství přes sezonu. Období placeného kroužku a platnost konkrétního zařazení mají nadále význam.
+Plánovaný trénink říká, co se má konat. Odpověď „Zúčastním se / Nezúčastním se“ sděluje úmysl trenérovi. Skutečnou účast zapíše trenér do evidence.
+Náhrada může vzniknout za včas omluvený, zaplacený a skutečně vynechaný trénink kroužku, pokud klub náhrady povolil. Nejprve se uzavírá docházka. Nabídka náhrad závisí také na termínu, kapacitě a vhodnosti pro sportovce.
+Objednávka čekající na platbu není zaplacená. Návrat z platební brány sám úhradu nepotvrzuje. Zrušená zaplacená objednávka a dokončená vratka jsou dva různé stavy.
+Platba kartou není zaručená pro každou cestu: host používá bankovní platbu; nová přihlášená objednávka může nabídnout SumUp, pokud to dovolují všechny položky i nastavení. Starší platba si může zachovat původní režim.
+
+KDYŽ SE NĚCO NESHODUJE
+Nejprve popiš stránku, roli, vybrané datum/filtr, co jsi udělala a co vidíš. Zkopíruj přesný text chyby. Uveď, zda po obnovení stránky stav zůstává a zda problém jde zopakovat. Pokud by opakování vytvořilo další objednávku nebo jiný zápis, neopakuj jej bez domluvy.
+Pořiď snímek s označeným problémem. Zakryj údaje cizích osob, adresy, zdravotní údaje a platební údaje. Neposílej celé odkazy obsahující přístupové tokeny. Používej označení „TEST dítě A“, nikoli skutečné osobní údaje.
+Když test nemůže pokračovat kvůli nepřipravenému účtu, datům nebo oprávnění, výsledek je BLOKOVÁNO. Nedostatek podmínek sám o sobě nepotvrzuje chybu aplikace.
+
+JAK PŘEDAT VÝSLEDKY
+Založ v projektu nový chat pro jednu oblast nebo jeden testovací běh, například „Rodič — 5. listopadu“. Na závěr požádej o hlášení podle šablony a souhrn výsledků. Finální hlášení pošli Markovi dohodnutou cestou; text vytvořený v chatu není automaticky založený úkol v GitHubu.
+
+
+============================================================
+03_TESTOVACI_SCENARE.txt
+============================================================
+
+KIS — scénáře vedeného testování
+
+Tento katalog určuje postup a očekávání. Žádný scénář tímto dokumentem není označen jako PROŠLO. Základ: main 65969bb8c7d27c71861758214abbc35edae61b3c, 5. 11. 2026. Kódy zdrojů S01–S13 jsou v mapě implementace.
+R = bez odeslání změnového formuláře; přihlášení přiděleným účtem je možné. W = zapisuje a vyžaduje předem dohodnutý testovací rozsah. Nedostupná testovací data znamenají BLOKOVÁNO. Pro W použít oddělené testovací prostředí; případná produkční výjimka musí jmenovat scénář, data a povolené úkony.
+U každého výsledku zaznamenej roli, prostředí, datum, skutečný výsledek a důkaz. Přesné názvy tlačítek ověř na obrazovce. Schválené testovací identity a hesla nejsou součástí balíčku.
+
+PRVNÍ KRÁTKÝ BĚH
+Začni R01, R02, R03 a R06; přibližně 20–30 minut podle dostupnosti účtů. Zapisovací část plánovat samostatně. Výsledek mobilního testu zapisovat zvlášť.
+
+R01 Veřejná orientace [S01, S10]
+Role: nepřihlášená návštěvnice. Data: zveřejněný produkt a alespoň jedna zveřejněná událost nebo trénink; nejsou-li, ověř pouze prázdný stav.
+1. Otevři hlavní stránku, E-shop, rozvrh tréninků, Akce a klubový kalendář, velodrom.
+2. Otevři detail veřejného produktu; vyzkoušej hledání a datum/filtr tam, kde se nabízí.
+3. Zapiš stránky, které nejdou otevřít, a zda se rozumí jejich účelu.
+Očekávání: veřejné nabídky jsou čitelné bez přihlášení, chybějící nabídka má srozumitelný stav. Přihlášení pro další konkrétní úkon není samo chyba. Nic neobjednávat.
+
+R02 Přihlášení a hranice účtu [S02, S03]
+Role: přidělený rodičovský účet.
+1. Přihlas se přes zákaznické přihlášení; heslo zadávej pouze aplikaci.
+2. Otevři Sportovní přehled a Moje osoby; porovnej s vývojářovým seznamem testovacích osob.
+3. Odhlas se standardním tlačítkem a znovu otevři soukromou stránku. Nezkoušej odkazy na cizí osoby.
+Očekávání: chráněná stránka po odhlášení vyžaduje přihlášení; před odhlášením jsou dostupné pouze oprávněné osoby. Nepřítomné propojení není důvod založit duplikát.
+
+R03 Rodinný přehled a správná osoba [S03, S04, S12]
+Data: rodič propojený se dvěma TEST osobami s různými tréninky či povinnostmi.
+1. Najdi obě osoby a jejich zařazení.
+2. U každé ověř příslušný trénink, platbu či událost podle připraveného očekávání.
+3. Změň měsíc v odpovědích na tréninky; vrať se na aktuální měsíc.
+Očekávání: položky patří správné osobě; prázdný měsíc se nezaměňuje za ztrátu zařazení. Neodesílat odpověď. Zdravotní stav číst jen pro testovací osobu, bez otevírání cizích příloh.
+
+R04 Samostatný sportovní přístup [S02, S04]
+Data: aktivní přístup TEST sportovce připravený Markem. Oddělené okno od rodiče.
+1. Přihlas se přes Sportovec / Můj sport.
+2. Ověř totožnost testovací osoby a její dostupné tréninky a přehledy.
+Očekávání: přístup odpovídá jedné přidělené osobě; není to rodičovská správa dalších osob. Bez připraveného přístupu BLOKOVÁNO.
+
+R05 Trenérský rozsah a plán [S05, S06]
+Data: trenér s platným rozsahem na TEST soupisku; známý vlastní plán a testovací osoba mimo rozsah.
+1. V trenérské části otevři plánovač a vlastní připravený plán.
+2. Zkontroluj soupisku a odpovědi účastníků.
+3. V běžném našeptávači zkus přesné jméno připravené testovací osoby mimo rozsah, bez volby a uložení.
+Očekávání: oprávněná data jsou dostupná, cizí testovací osoba mimo rozsah se nenabízí. Prázdné seznamy při nepřiděleném rozsahu jsou BLOKOVÁNO. Práva hlavního trenéra/správce mohou být širší; ověř přesný účet.
+
+R06 Mobilní použitelnost [S01–S05]
+Data: telefon nebo úzké okno, role z předchozího scénáře.
+1. Zopakuj jeho prohlížecí kroky.
+2. Ověř menu, čitelnost polí, dostupnost tlačítek a chybových textů.
+Očekávání: klíčový úkon nezmizí mimo obrazovku; případnou potřebu posunu tabulky popiš konkrétně. Hodnoť zvlášť funkčnost a srozumitelnost.
+
+W01 Propojení existující osoby [S03]
+Data: syntetický zákazník a předem existující TEST osoba bez jeho vazby; registrář pro vyřízení.
+1. Moje osoby → Propojit existujícího sportovce. Vyplň dohodnuté jméno, datum narození a vztah.
+2. Odešli jednu žádost; ověř čekající stav.
+3. Registrář podle svého povoleného postupu schválí vazbu; obnov Moje osoby.
+Očekávání: před schválením nevznikne přístup k údajům osoby; po schválení je dostupná správná osoba. Nezakládat nového sportovce místo žádosti. Úklid vazby zajistí Marek.
+
+W02 Odpověď rodiče na trénink [S04]
+Data: budoucí plán pro aktivní TEST soupisku a oprávněné dítě.
+1. V přehledu u správného dítěte a tréninku zvol Zúčastním se, případně přidej neosobní poznámku.
+2. Obnov stránku, ověř uloženou odpověď.
+3. Změň na Nezúčastním se; trenér zkontroluje odpověď a poznámku v odpovědích plánu.
+Očekávání: poslední odpověď zůstane u stejné dvojice osoba/trénink a nezmění jinou osobu. Skutečná docházka se tím nevyplňuje. U omluvy zaznamenej přesné vysvětlení nároku na náhradu; nárok nemusí vzniknout. Po testu obnov dohodnutou odpověď.
+
+W03 Odpověď sportovce [S02, S04]
+Data: aktivní sportovní přístup z R04 a jeho budoucí plán.
+1. V odděleném okně u plánu ulož Zúčastním se.
+2. Obnov stránku; trenér nebo oprávněný rodič porovná poslední odpověď.
+Očekávání: odpověď patří stejné osobě a plánu; nevzniká druhá účast. Rodič i sportovec mohou upravovat odpověď, nejde o oddělené hlasy. Obnov dohodnutý stav.
+
+W04 Plán a skutečná docházka [S05, S06]
+Data: oprávněný trenér, TEST soupiska se dvěma očekávanými osobami, plán a termín povolený nastavením zadávání.
+1. Otevři připravený plán a zapiš očekávané osoby a odpovědi.
+2. Přes standardní Zadat evidenci založ skutečný trénink; jako skutečně přítomnou označ jen jednu ze dvou osob.
+3. Zkontroluj vazbu plánu na evidovaný trénink a porovnání očekávání se skutečností.
+Očekávání: druhá osoba není automaticky vedena jako přítomná kvůli soupisce nebo RSVP. Očekávání a skutečná účast jsou rozlišeny. Úklid historie provede Marek dohodnutým postupem.
+
+W05 Náhrada za včasnou omluvu [S07]
+Data musí připravit Marek: placená aktivní účast v kroužku, povolené náhrady, konkrétní lhůta omluvy, budoucí zdrojový plán, věkově vhodný cílový termín s kapacitou a trenér pro následnou docházku. Bez těchto podmínek BLOKOVÁNO.
+1. Před lhůtou zvol Nezúčastním se a zaznamenej potvrzení.
+2. Otevři Náhradní lekce. Před uzavřením docházky očekávej čekající omluvu, nikoli automaticky použitelný nárok.
+3. Až po skutečném konci zdrojového testovacího tréninku trenér standardně uzavře docházku s danou osobou nepřítomnou. Čas na produkci neposouvat.
+4. Obnov náhrady; při splněných pravidlech vyber jedno vhodné volné místo, rezervuj a obnov stránku.
+Očekávání: jeden zdrojový nárok, jedna rezervace; zobrazený stav a zbývající kapacita odpovídají zápisu. Není-li vhodný termín, prázdná nabídka sama není chyba. Pokud je podle obrazovky ještě možné storno s vrácením nároku, lze je samostatně dohodnout a ověřit. Úklid zajistí Marek.
+
+W06 Pozdní omluva [S07]
+Data: jiný TEST trénink s aktivní placenou účastí a povolenými náhradami; prokazatelně už po hranici omluvy, ale před začátkem. Zapsat čas začátku a nastavenou lhůtu.
+1. Ulož Nezúčastním se a přečti zprávu.
+2. Ověř přehled omluv a trenérskou odpověď.
+Očekávání: omluva se uloží, ale hlášení vysvětlí, proč pro náhradu nesplňuje podmínky. Pozdní omluva není automaticky chyba ukládání RSVP. Úklid podle dohody.
+
+W07 Bankovní objednávka bez úhrady [S08]
+Data: syntetický zákazník, povolená testovací nabídka, cena, měna, osoba/příjemce a kapacita; povoleno vytvořit a následně zrušit objednávku, nikoli platit.
+1. Otevři produkt, zvol variantu a počet; u programové nabídky správnou osobu.
+2. Před odesláním zkontroluj souhrn; objednávku odešli právě jednou.
+3. Zapiš veřejné číslo objednávky, částku, měnu, čekající stav a přítomnost platebních údajů; obnov stránku.
+Očekávání: uložená objednávka zůstane čekající, obnova nevytvoří další objednávku. QR chyba může mít náhradní textové údaje. Neprovádět převod a nefotit celé platební údaje. Kapacita/sklad mohou být rezervovány; Marek provede dohodnuté storno.
+
+W08 Dostupnost karty a smíšený košík [S08, S09]
+Data: připravená nová přihlášená testovací objednávka s povoleným SumUp, objednávka hosta, starší bankovní objednávka a případně smíšený košík; každou vytvořit jen při samostatně povoleném zápisu. Existující záznamy lze pouze prohlédnout.
+1. Porovnej detail těchto objednávek podle předem určeného očekávání.
+2. Neotevírej ani nedokončuj ostrou platební bránu.
+Očekávání: přihlášená způsobilá čekající objednávka může nabídnout SumUp; host bankovní platbu; starší bankovní snapshot se dodatečně nemění. Položka s bankovním omezením zúží celý košík na převod. Dostupnost karty závisí i na konfiguraci a stavu platby. Zobrazené tlačítko nedokládá úspěšnou úhradu.
+
+W09 Platba a navázání účasti [S08–S10; pouze oddělený výslovně sjednaný test]
+Data: jasně dohodnutý způsob úhrady, prostředí, částka, nabídka, příjemce, kapacita, finančně oprávněná osoba a postup úklidu. Syntetické potvrzení platby pouze v izolovaném testu; na produkci jen skutečná úhrada a její oprávněné ověření.
+1. Zapiš čekající objednávku a stav programové účasti.
+2. Proveď právě dohodnutou cestu úhrady; návrat z brány není důkaz zaplacení.
+3. Vyčkej na autoritativně potvrzený stav a ověř objednávku i účast v kroužku, pokud jde o programovou nabídku.
+Očekávání: při splněných kapacitních a dalších podmínkách se úhrada a příslušná účast navážou bez duplicit. Zboží ani jiný typ nabídky nemusí vytvářet programovou účast. U Fio uvést čas a VS; neslibovat okamžité ani přesně desetiminutové potvrzení. Nulové párování bez odpovídajícího pohybu není chyba.
+
+W10 Storno a vratka [S08; samostatně povolený finanční scénář]
+Data: testovací zaplacená objednávka, oprávněný pracovní účet a domluvený postup reálné či testovací vratky.
+1. Oprávněná osoba standardně zruší objednávku s důvodem.
+2. Ověř stav objednávky, případnou ukončenou programovou účast a požadavek vratky.
+3. Dokončení vratky zaznamená oprávněná osoba až podle skutečného stavu; ověř historii konkrétní objednávky.
+Očekávání: storno není důkaz odeslání peněz; čekání na vratku a její dokončení se rozlišují. Uchovat kontext objednávky. Nemaž finanční historii kvůli úklidu.
+
+W11 Nový plán ze soupisek [S05, S06]
+Data: oprávněný trenér s TEST soupiskou, členové platní ke dni plánu; volný dohodnutý termín.
+1. Vytvoř plán se soupiskou, datem a názvem TEST; ověř očekávané účastníky.
+2. Ulož a znovu otevři; ověř vazby a očekávání.
+3. Pokud je povoleno kopírování týdne, zkopíruj do dohodnutého týdne a ověř vazbu kopií na soupisku.
+Očekávání: plán vychází z oprávněných soupisek a zařazení ke konkrétnímu datu. Případný interní plán bez účastníků se zadává výslovně; nevydává se za trénink se soupiskou. Rezervaci sportoviště nekonstruuj automaticky z existence plánu. Marek zajistí zrušení testovacích plánů.
+
+W12 Klubová akce [S10]
+Data: zveřejněná TEST akce, oprávněná osoba a dostupná kapacita; Marek určí, zda je zdarma nebo placená.
+1. V Akcích a klubovém kalendáři najdi připravenou akci.
+2. Zkontroluj oprávněnou osobu a přihlášení podle typu nabídky.
+3. Bezplatnou přihlášku odešli pouze při povolení; placenou cestu testuj podle W07/W09.
+Očekávání: veřejné prohlížení nezakládá přihlášku; placená akce vede na příslušnou nákupní cestu. Stejnou osobu nenahlašovat opakovaně jen kvůli nejistému výsledku. Čekací listinu ověřovat pouze na předem připravené akci s danou konfigurací. Úklid přes dohodnuté storno.
+
+R07 Evidence členů a platnost zařazení [S11; jen pro oprávněného registráře]
+Data: TEST skupina a soupiska; očekávaná zařazení k přesným datům připravená Markem.
+1. Otevři Skupiny a soupisky, najdi dohodnutou skupinu a soupisku.
+2. Porovnej dostupná data zařazení s očekáváním, případně použij nabízené datum náhledu.
+Očekávání: současné členství nevyžaduje starý roční rollover. Platnost intervalu a datum tréninku jsou přesto podstatné. Staré přehledy sezon mohou pouze přesměrovat. Nic nepřevádět, nearchivovat a nespouštět import.
+
+R08 Stav lékařského podkladu [S12]
+Data: rodičovský účet a TEST osoba s připraveným syntetickým stavem podkladu, nikoli skutečným zdravotním dokumentem.
+1. Ve Sportovním přehledu najdi informaci o příslušném podkladu.
+2. Porovnej stav, období platnosti a další doporučený krok s očekáváním od Marka.
+Očekávání: stav rozlišuje platnost podle data; nepřítomnost záznamu není totéž co schválení. V tomto scénáři nic nenahrávat ani neotevírat citlivou přílohu. Pokud se dané sledování osoby netýká, BLOKOVÁNO nebo NETESTOVÁNO s důvodem.
+
+CO NEZAHRNOVAT DO VÝCHOZÍHO BĚHU
+Obnovu či změnu produkčního hesla, skutečné úhrady a vratky, změny oprávnění a pracovních pozic, reálné importy členů, dávkové převody a rozesílky. Localhost stránka testovaci_scenare.php není vzdálený testovací portál a produkčně se nemá zpřístupňovat [S13]. Tyto oblasti potřebují vlastní konkrétní scénář a podmínky.
+
+
+============================================================
+04_SABLONA_HLASENI.txt
+============================================================
+
+KIS — šablona hlášení a souhrnu testování
+
+JEDEN PROBLÉM
+ID: KIS-RRRRMMDD-01 (lokální označení; není to číslo GitHub issue)
+Název: [stránka / funkce] Co se stane při jakém úkonu
+Typ: chyba / nejasné ovládání / dotaz / návrh vylepšení
+Scénář: R… / W… / jiný
+Datum a čas: … Europe/Prague
+Prostředí a adresa: … (bez tajných parametrů)
+Verze aplikace: … / NEZJIŠTĚNO
+Verze podkladů: 5. 11. 2026; zdrojový main 65969bb8c7d27c71861758214abbc35edae61b3c
+Role a označení účtu: … (bez hesla a osobních údajů)
+Zařízení, systém, prohlížeč: …
+Předpoklady a data: např. TEST dítě A, schválené propojení, aktivní zařazení, datum tréninku, stav objednávky
+Povolený rozsah testu: pouze prohlížení / dohodnutý zápis …
+
+Postup zopakování:
+1. Otevřít …
+2. Vybrat …
+3. Kliknout …
+
+Očekávaný výsledek: …
+Podklad očekávání: scénář / konkrétní dokument nebo zdroj / pouze očekávání testerky
+Skutečný výsledek: …
+Přesný text chyby: … / žádný / NEZJIŠTĚNO
+Opakovatelnost: … pokusů z … / neopakováno kvůli riziku dalšího zápisu
+Stav po obnovení stránky: … / NEZJIŠTĚNO
+Dopad: koho to omezuje a co kvůli tomu nejde dokončit
+Navržená závažnost: kritická / vysoká / běžná / nízká; důvod …
+Důkazy: názvy příloh a co přesně ukazují
+Provedené zápisy: co vzniklo nebo se změnilo; identifikátor testovacího záznamu bez tajných odkazů
+Úklid: hotovo … / čeká na Marka … / nebylo co uklízet
+Technické vodítko: cesta a funkce z mapy zdrojů; hypotézu výslovně označit
+Chybějící informace pro vývojáře: …
+Stav předání: koncept / předáno konkrétní cestou … (uvést jen pokud skutečně předáno)
+
+ZÁVAŽNOST
+Kritická: únik cizích údajů, chybný finanční zápis nebo ztráta dat. Ukončit test a kontaktovat Marka.
+Vysoká: hlavní běžný postup nelze dokončit a není přiměřená náhrada.
+Běžná: omezení části funkce, existuje přiměřený náhradní postup.
+Nízká: vzhled nebo text bez podstatné ztráty funkčnosti.
+Konečnou prioritu určí vývojář; neodvozovat ji jen od barvy chybové zprávy.
+
+SOUHRN BĚHU
+Běh, datum, testerka, prostředí, role, verze aplikace:
+Povolený rozsah:
+
+Scénář | Výsledek | Důkaz / stručné pozorování | ID hlášení
+… | PROŠLO / ČÁSTEČNĚ / CHYBA / BLOKOVÁNO / NETESTOVÁNO | … | …
+
+PROŠLO = všechny kroky i očekávaný výsledek skutečně ověřeny.
+ČÁSTEČNĚ = část ověřena; vypsat, které kroky zůstaly neověřené.
+CHYBA = doložená odchylka od podloženého očekávání při splněných předpokladech.
+BLOKOVÁNO = chybí předpoklad nebo povolení.
+NETESTOVÁNO = scénář se vůbec nespustil.
+
+Chyby k řešení:
+Nejasnosti a dotazy:
+Návrhy na zlepšení:
+Vytvořené záznamy a úklid:
+Další doporučený krok:
+
+PŘÍKLAD VYPLNĚNÍ — FIKTIVNÍ, NEJDE O NALEZENOU CHYBU
+Název: Sportovní přehled — uložená odpověď se po obnovení nezobrazuje.
+Předpoklady: připravený testovací rodič, TEST dítě A, budoucí trénink v jeho soupisce; povolené RSVP.
+Postup: otevřít přehled, u daného dítěte a tréninku zvolit Zúčastním se, po potvrzení obnovit stránku.
+Očekáváno: odpověď zůstává u stejného dítěte a stejného tréninku.
+Pozorováno: po obnově je uvedeno Bez odpovědi. Přesný text a počet pokusů doplnit.
+Vodítko: includes/training_rsvp.php, trainingRsvpSave; jde o místo ke kontrole, nikoli dokázanou příčinu.
+
+
+============================================================
+05_MAPA_FUNKCI_A_ZDROJU.txt
+============================================================
+
+KIS — mapa funkcí a implementace
+
+Zdrojová verze: 65969bb8c7d27c71861758214abbc35edae61b3c; datum 5. 11. 2026.
+Repozitář: https://github.com/KovoPraha/evidenceTreninku
+
+Jak číst mapu: každý odkaz vede na pevný commit. Soukromý repozitář vyžaduje oprávnění. U funkce je ověřen její skutečný počáteční řádek; u stránky odkaz vede na soubor. Testovací soubor je vodítko pro vývojáře, nikoli potvrzení nového spuštění testů. Uživatelský výklad stojí na revizi uvedených vstupů a služeb; před novým technickým závěrem načíst celé relevantní tělo funkce.
+
+S01 Veřejné obrazovky
+Veřejná nabídka a kalendáře; přihlášení na konkrétní službu se posuzuje zvlášť.
+• booking/eshop.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/eshop.php
+• booking/produkt.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/produkt.php
+• booking/treninky.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/treninky.php
+• booking/velodrom.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/velodrom.php
+
+S02 Přihlášení a sportovní přístup
+Jednotná zákaznická/trenérská autentizace a samostatný omezený přístup sportovce.
+• booking/prihlaseni.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/prihlaseni.php
+• includes/unified_account.php — unifiedAccountAuthenticate, řádek 64
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/unified_account.php#L64
+• booking/sportovec_prihlaseni.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/sportovec_prihlaseni.php
+• includes/child_access.php — childAccessIdentity, řádek 301
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/child_access.php#L301
+• booking/muj_sport.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/muj_sport.php
+• tests/Integration/UnifiedAccountTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/UnifiedAccountTest.php
+• tests/Integration/ChildAccessTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/ChildAccessTest.php
+
+S03 Moje osoby a schvalované propojení
+Žádost má stavy pending/approved/rejected/cancelled. UI při existující žádosti nevyžaduje její opakování. Přístup k osobě vychází z oprávněné vazby.
+• booking/moje_osoby.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/moje_osoby.php
+• includes/account_person_claim.php — accountPersonClaimSubmit, řádek 12
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/account_person_claim.php#L12
+• includes/account_person_claim.php — accountPersonClaimCancel, řádek 114
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/account_person_claim.php#L114
+• includes/family_portal.php — familyPortalAuthorizedPeople, řádek 58
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/family_portal.php#L58
+• includes/family_portal.php — familyPortalCanViewPerson, řádek 130
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/family_portal.php#L130
+• tests/Integration/AccountPersonClaimTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/AccountPersonClaimTest.php
+
+S04 Rodinný přehled a odpovědi na trénink
+Odpověď going/not_going se váže k osobě a plánu. Před zápisem se kontroluje oprávnění, budoucí plán a cílení. Poznámka je nejvýše 500 znaků; běžná změna RSVP nezapisuje skutečnou docházku.
+• booking/sportovni_prehled.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/sportovni_prehled.php
+• includes/training_rsvp.php — trainingRsvpUpcomingForPeople, řádek 50
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_rsvp.php#L50
+• includes/training_rsvp.php — trainingRsvpSave, řádek 168
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_rsvp.php#L168
+• includes/training_rsvp.php — trainingRsvpSavedMessage, řádek 285
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_rsvp.php#L285
+• tests/Integration/TrainingRsvpTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/TrainingRsvpTest.php
+
+S05 Trenérský rozsah a přehled odpovědí
+Přístup k přehledu plánu podléhá oprávnění plánovače, vlastnictví/roli a kontrole rozsahu. Není univerzálně otevřen všem trenérům.
+• training_rsvps_admin.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/training_rsvps_admin.php
+• includes/coach_scope.php — coachScopeCanViewPerson, řádek 29
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/coach_scope.php#L29
+• includes/coach_scope.php — coachScopeRequirePlan, řádek 108
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/coach_scope.php#L108
+• planovac.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/planovac.php
+• tests/Integration/CoachScopeTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/CoachScopeTest.php
+
+S06 Plán, soupisky a skutečná docházka
+Bridge počítá očekávání z cílených soupisek ke dni plánu; skutečná docházka se porovnává s evidencí. Existence očekávání není evidence účasti.
+• planovany_trenink_form.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/planovany_trenink_form.php
+• formular.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/formular.php
+• includes/training_roster_bridge.php — trainingRosterBridgeExpectedForPlan, řádek 121
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_roster_bridge.php#L121
+• includes/training_roster_bridge.php — trainingRosterBridgeCopyPlanToTraining, řádek 151
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_roster_bridge.php#L151
+• includes/training_roster_bridge.php — trainingRosterBridgePlanAttendanceComparison, řádek 224
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/training_roster_bridge.php#L224
+• tests/Integration/TrainingRosterBridgeTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/TrainingRosterBridgeTest.php
+
+S07 Náhradní lekce
+Pravidla zahrnují povolení náhrad, placenou účast, lhůtu omluvy a skutečnou nepřítomnost. Nárok a rezervace jsou samostatné kroky. Nabídka může být prázdná; přenesený nárok může být zamknutý do zaplacení navazujícího období.
+• booking/nahrady.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/nahrady.php
+• includes/club_makeup.php — clubMakeupExcuseEntitlement, řádek 364
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/club_makeup.php#L364
+• includes/club_makeup.php — clubMakeupExcuseFailureReason, řádek 395
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/club_makeup.php#L395
+• includes/club_makeup.php — clubMakeupFinalizeSource, řádek 470
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/club_makeup.php#L470
+• club_makeup_policies_admin.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/club_makeup_policies_admin.php
+• tests/Integration/ClubMakeupTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/ClubMakeupTest.php
+• tests/Support/MakeupJourneyHttpAcceptance.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Support/MakeupJourneyHttpAcceptance.php
+
+S08 Objednávka, úhrada, storno a vratka
+Veřejný detail respektuje vlastníka nebo oprávněný hostovský přístup. Obnova stránky ani návrat z brány nejsou důkaz úhrady. Přepnutí platby a následné účinky se řeší službou, storno a dokončení vratky se rozlišují.
+• booking/objednavka.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/objednavka.php
+• booking/moje_objednavky.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/moje_objednavky.php
+• includes/shop_checkout.php — shopOrderConfirmPaymentInTransaction, řádek 1359
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_checkout.php#L1359
+• includes/shop_checkout.php — shopOrderAdminCancel, řádek 1503
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_checkout.php#L1503
+• includes/shop_checkout.php — shopOrderAdminConfirmRefund, řádek 1665
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_checkout.php#L1665
+• tests/Integration/ShopCheckoutTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/ShopCheckoutTest.php
+
+S09 Podmínky nabídky karty
+Souhrnná platební politika vyžaduje souhlas všech položek. Aktuální detail nabídne SumUp pouze přihlášené způsobilé čekající objednávce při zapnuté bráně; starší platby zachovávají snapshot.
+• includes/shop_payment_policy.php — shopPaymentPolicyForItemGroups, řádek 76
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_payment_policy.php#L76
+• includes/shop_payment_policy.php — shopPaymentPolicyAllowsSumUp, řádek 89
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/shop_payment_policy.php#L89
+• booking/objednavka.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/objednavka.php
+• tests/Integration/ShopPaymentPolicyTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/ShopPaymentPolicyTest.php
+• docs/verification/live-payments-20261105/ACTIVATION.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/verification/live-payments-20261105/ACTIVATION.md
+
+S10 Klubové akce a programy
+Kalendář odlišuje prohlížení a registraci, placená akce odkazuje do nákupní cesty. Moje kroužky zobrazují zakoupená období a historii účastí.
+• booking/klubovy_kalendar.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/klubovy_kalendar.php
+• booking/krouzky.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/krouzky.php
+• booking/moje_programy.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/moje_programy.php
+• includes/club_event_shop.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/club_event_shop.php
+• docs/shop-program-payment-verification.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/shop-program-payment-verification.md
+
+S11 Evidence členů bez sezon
+Aktuální vstup je Skupiny a soupisky. Původní current-rosters vstup GET přesměruje na hierarchii a původní zapisovací požadavky odmítá. Legacy sezony v databázi nejsou návod k roční obnově současného členství.
+• kis_roster_hierarchy_admin.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/kis_roster_hierarchy_admin.php
+• kis_current_rosters_admin.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/kis_current_rosters_admin.php
+• includes/member_evidence_groups.php — memberEvidenceGroupsPreview, řádek 6
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/member_evidence_groups.php#L6
+• docs/MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md
+• docs/MEMBER_EVIDENCE_OPERATION_2026-11-02.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/MEMBER_EVIDENCE_OPERATION_2026-11-02.md
+• tests/Integration/MemberEvidenceCutoverTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/MemberEvidenceCutoverTest.php
+
+S12 Stavy lékařských podkladů
+Rodinný přehled čte oprávněné stavové informace a další krok, včetně platnosti k datu. Tento balíček nepředepisuje nahrávání skutečných zdravotních příloh.
+• booking/sportovni_prehled.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/booking/sportovni_prehled.php
+• includes/medical_clearance.php — medicalClearanceView, řádek 138
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/medical_clearance.php#L138
+• includes/medical_clearance.php — medicalClearanceStatusFromRecords, řádek 101
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/medical_clearance.php#L101
+• tests/Integration/MedicalClearanceTest.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/tests/Integration/MedicalClearanceTest.php
+
+S13 Místní akceptační rozcestník
+testovaci_scenare.php je striktně localhost-only; není to sdílený produkční portál. Katalog zdejšího balíčku R/W má vlastní označení a nezaměňuje se s A/B/T z historických sad.
+• testovaci_scenare.php
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/testovaci_scenare.php
+• includes/localhost_acceptance_hub.php — localhostAcceptanceRequestIsAllowed, řádek 44
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/includes/localhost_acceptance_hub.php#L44
+• docs/localhost-acceptance-hub.md
+  https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/localhost-acceptance-hub.md
+
+Aktuální provozní rozcestník
+https://github.com/KovoPraha/evidenceTreninku/blob/65969bb8c7d27c71861758214abbc35edae61b3c/docs/CURRENT_STATE.md
+V protokolech jsou podrobnější důkazy; pro testerku má přednost srozumitelný scénář. Datované provozní záznamy nenahrazují kontrolu aktuální konfigurace při konkrétním běhu.
+
+
+============================================================
+06_OVERENI_A_AKTUALIZACE.txt
+============================================================
+
+KIS — ověření podkladů a jejich údržba
+
+VERZE A ROZSAH
+Datum přípravy: 5. 11. 2026, Europe/Prague.
+Repozitář: KovoPraha/evidenceTreninku.
+Po git fetch --prune origin je načtený main: 65969bb8c7d27c71861758214abbc35edae61b3c.
+Zdejší pracovní větev: codex/fio-auto-reconciliation-recovery, HEAD d1221f3594a965096d98da5e86a27097f66cd380; obsahuje i cizí rozpracovanou změnu kis_rosters_admin.php. Do této změny se nezasahovalo. Podklady pro funkce byly čteny přímo z origin/main pomocí git show, nikoli ze staré lokální kopie.
+
+CO BYLO OVĚŘENO PŘI PŘÍPRAVĚ
+Statická revize relevantních vstupních stránek, autorizace a doménových funkcí: rodičovský a sportovní přístup, žádosti o propojení, rozsah trenéra, RSVP, očekávání a skutečná docházka, pravidla náhrad, objednávky a vratky, platební politika, klubový kalendář, evidence členů a stav lékařských podkladů. Konkrétní soubory, symboly a pevné řádkové odkazy jsou v 05_MAPA_FUNKCI_A_ZDROJU.
+Kontrola existence všech souborů a symbolů uvedených v mapě proti přesnému SHA. Kontrola odkazů scénářů na mapu, počtu scénářů, UTF-8 souborů a shody obsahu ZIP se soubory balíčku.
+Přečteny aktuální docs/CURRENT_STATE.md a datovaný protokol docs/verification/live-payments-20261105/ACTIVATION.md z origin/main. Pro popis provozních mezí jde o tvrzení těchto doložených protokolů, nikoli o novou živou kontrolu produkce v tomto chatu.
+
+CO TATO PŘÍPRAVA NEPROKAZUJE
+Neproběhl nový přihlášený browser test, žádný z katalogu scénářů se nespouštěl, žádná platba, objednávka, import ani produkční zápis se neprovedl. Neprováděla se nová kompletní automatická testovací sada. Existence testovacích souborů v mapě není tvrzení o jejich dnešním spuštění.
+Balíček nevytváří účty, data, oprávnění ani sdílený ChatGPT projekt. Nelze z něj odvodit, že konkrétní testerka má přístup ke GitHubu, všem funkcím aplikace nebo sdílení ve svém tarifu.
+
+AKTUÁLNÍ PROVOZNÍ PODKLAD K 5. 11. 2026
+CURRENT_STATE uvádí živé aplikační vydání 436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d. Není totožné s dokumentačním HEAD hlavní větve. Při pozdějším testování je nutné zjistit skutečnou verzi znovu.
+Protokol aktivace uvádí Fio import a automatické potvrzování zapnuté, SumUp zapnutý a kartu povolenou 223 aktivním produktům pro nové způsobilé přihlášené objednávky. Osm dosavadních plateb zachovalo bankovní snapshot; hosté, samostatné členské předpisy a samostatné termíny velodromu nejsou automaticky pokryty produktovou dávkou. Smíšený košík musí splnit politiku všech položek.
+Protokol výslovně nedokládá skutečnou kartovou úhradu včetně webhooku a vypořádání ani živé jednoznačné Fio E2E párování. První přirozeně spuštěný naplánovaný běh po aktivaci v něm také ještě není pozorován. Tyto meze nepřepisovat tvrzením „všechny platby otestovány“.
+Současné členství je vedeno bez sezon. Část legacy schématu a historických funkcí zůstává v kódu; z jejich existence nelze odvodit, že běžný uživatel má provádět původní roční rollover. Skupiny/soupisky a intervaly platnosti jsou důležité pro očekávání k datu tréninku.
+Obnova/změna produkčního hesla a původní T07 zůstávaly podle CURRENT_STATE mimo doloženou přejímku. Nepřidávat je potichu do obecného testování.
+
+PŘED PRVNÍM ZAPISOVACÍM TESTEM DODÁ MAREK
+• Přesnou adresu prostředí a jeho verzi.
+• Účty pro skutečně testované role, platnost oprávnění a rozsah trenéra.
+• Syntetické osoby, jejich propojení a očekávaná zařazení ke konkrétním datům.
+• Konkrétní testovací nabídky, ceny, kapacity, pravidla náhrad a termíny.
+• Povolené scénáře a způsob úklidu vytvořených záznamů.
+• Pro finanční test zvlášť úhradu, případnou vratku a osobu oprávněnou je provést.
+Bez těchto podkladů lze používat vysvětlení a prohlížecí scénáře; závislé testy zůstávají BLOKOVÁNO.
+
+POSTUP AKTUALIZACE PRO VÝVOJÁŘE
+1. Načti aktuální main a zaznamenej SHA i datum. Nezaměňuj main s nasazením.
+2. Porovnej změny souborů ze zdrojové mapy od 65969bb8c7d27c71861758214abbc35edae61b3c; přečti i nové související vstupy a testy.
+3. Oprav uživatelská očekávání, předpoklady a odkazy. Samostatně ověř konfiguraci/provoz, pokud ovlivňuje scénář.
+4. Aktualizuj instrukce, mapu, tento dokument i spojený podklad. Znovu vytvoř ZIP a ověř shodu.
+5. V ChatGPT nahraď staré zdroje, uprav instrukce a zopakuj kontrolní otázky z 00. Staré výsledky uchovej s původní verzí; nezařazuj je jako nové PASS.
+
+VNITŘNÍ ULOŽENÍ
+Výstup je v output/chatgpt-testovani-2026-11-05. Není commitnutý, pushnutý ani nasazený. Zdroje neobsahují hesla, konfiguraci ani kopie skutečných osobních či zdravotních údajů. Kontaktní a testovací parametry musí doplnit vlastník.
