@@ -54,3 +54,7 @@ Datovaný čtecí snímek výše se zpětně nepřepisuje.
 
 Souběžný PR #335 následně doložil [zveřejnění nabídky BAR](../bar-menu-publication-20261106/RESULTS.md).
 P03 je dokončená; předchozí popis neveřejného návrhu výše platí k době původní inventury.
+
+Následný PR #336 doložil [Závodní tým a vystavovatele](../racing-team-status-20261106/RESULTS.md);
+původní čekání na schválení z přehledu větví je historické. Aktualizované P05 a P14
+oddělují hotovou nabídku od prvního celého platebního toku a kandidáta textové úpravy.

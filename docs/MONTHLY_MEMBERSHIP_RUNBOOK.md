@@ -1,6 +1,6 @@
 # Měsíční členství: obsluha a aktivace
 
-**Vydání 5. 11. 2026:** implementace a migrace jsou [nasazené a technicky ověřené](verification/monthly-coach-release-20261105/RESULTS.md), včetně produkčního dry-run. [Automatizace a denní plán jsou následně zapnuté](verification/membership-automation-20261105/RESULTS.md), první prázdný apply a heartbeat PASS. Prodej čeká na schválený tarif a publikaci; [pošta je následně zapnutá](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), prázdný apply --send a heartbeat PASS. Následující postup popisuje ovládání a zbývající přípravu.
+**Vydání 5. 11. 2026:** implementace a migrace jsou [nasazené a technicky ověřené](verification/monthly-coach-release-20261105/RESULTS.md), včetně produkčního dry-run. [Automatizace a denní plán jsou následně zapnuté](verification/membership-automation-20261105/RESULTS.md), první prázdný apply a heartbeat PASS. [Závodní tým je podle produkční kontroly 6. 11. schválený a zveřejněný](verification/racing-team-status-20261106/RESULTS.md); sjednání vyžaduje ověřenou vazbu na sportovce. [Pošta je následně zapnutá](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), prázdný apply --send a heartbeat PASS. Následující postup popisuje ovládání a přípravu dalších tarifů.
 
 Plán původního měsíčního toku je v [plánu](MONTHLY_MEMBERSHIP_PLAN.md).
 Rozšíření o roční tarify, disciplíny a fakturační údaje popisuje

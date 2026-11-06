@@ -15,7 +15,7 @@ Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | BAR nabídka 1 / Bar KOVO – základní nabídka zveřejněná, vydání 1, 45 produktů a fotografií; dokončeno v #335 | Publikaci neopakovat kvůli testu a nezakládat duplicitní návrh. Provozní zahájení zásob/kasy je stále P02. | [Publikační plán](BAR_MENU_PUBLICATION_2026-11-06.md), [živé důkazy](verification/bar-menu-publication-20261106/RESULTS.md), [session BAR](SESSION_HANDOFF_BAR_2026-11-06.md) |
 | P04 | BAR účetní kontrakt a návrh adaptéru připravené, skutečné účtování neaktivované | Odsouhlasit finanční pravidla a dokončit schválený adaptér/přejímku bez zdvojení tržeb; skutečná bezhotovostní platba/vratka není doložená. | Vlastník/účetní, vývoj; [kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md), [plán adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md) |
-| P05 | Měsíční členství a zastupování trenérů nasazené; plán i pošta zapnuté | Vlastník už schválil vyplnění údajů TJ KOVO, tarif 2200 Kč/měsíc a publikaci. Ověřit současný stav varianty 951 a doplnit doklad provedení; nevytvářet další produkt ani znovu nežádat stejný souhlas. Doložit skutečné sjednání, předpis/PDF, příchozí platbu se shodným VS, přiřazení a doručení. Plná cena i během měsíce, konec ke konci měsíce, disciplíny bez příplatku; roční cena neurčená. | Vlastník/účetní; [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [tarify](verification/membership-catalog-release-20261105/RESULTS.md) |
+| P05 | Měsíční členství nasazené; plán/pošta aktivní. Závodní tým 2200 Kč/měsíc, vystavovatel TJ KOVO a veřejný produkt 297 / varianta 951 schválené a ověřené v #336 | Znovu nezakládat/nepublikovat. Doložit první skutečné sjednání, předpis/PDF, příchozí platbu se shodným VS, přiřazení a doručení. Sjednání vyžaduje ověřeného sportovce; plná cena i během měsíce, konec ke konci měsíce, disciplíny bez příplatku; roční cena neurčená. | [Aktuální doklad](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md) |
 | P06 | Evidence členů bez sezon nasazená, 435 zařazení převedeno | Vyčkat na poslední nový export, provést schválený rozdílový sync a role/UAT. E8 odstranění legacy schématu až po přejímce a bezpečné obnově. Počáteční datum ani import neopakovat. | Vlastník dodá export; [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [provoz](MEMBER_EVIDENCE_OPERATION_2026-11-02.md), [převod](verification/member-evidence-cutover-20261102/RESULTS.md) |
 | P07 | Fio import/automatika a SumUp zapnuté; skutečný hostingový plán ověřený | Doložit skutečnou zaplacenou úhradu a přihlášený průchod. 45 pohybů bez odpovídajícího VS ponechat ručnímu posouzení, nepárovat jen částkou. | Vlastník/hospodář; [aktivace](verification/live-payments-20261105/ACTIVATION.md), [45 pohybů](verification/fio-followup-20261105/RESULTS.md) |
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | Dokončit asistované UAT a lidské převzetí; heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
@@ -25,6 +25,8 @@ Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z
 
 | P12 | Sdílený asistent pro testerku: pracovní balíček z 5. 11. je zachovaný v repozitáři | Před skutečným sdílením aktualizovat scénáře proti main a ověřit aktuální možnosti ChatGPT a přístup testerky ke GitHubu. Balíček není důkaz dokončeného sdílení ani živého připojení. | Vlastník/testerka; [balíček a hranice](testing/chatgpt-tester-20261105/README.md), [produkční testování](PRODUKCNI-UZIVATELSKE-TESTOVANI.md) |
 | P13 | Další typy pracovních upozornění jsou záměr, nikoli vybraný rozsah | Před rozšířením určit typ, vlastníka, příjemce, bezpečný odkaz, vznik/ukončení, deduplikaci a testy. Push/eskalace nejsou součástí první verze. | Vlastník/vývoj; [registr a hranice](STAFF_NOTIFICATIONS_2026-11-06.md) |
+
+| P14 | Texty nabídky členství: kandidát zpřesnění, nikoli blokace prodeje | Při samostatné úpravě nahradit obecné „kroužek“, „Detail a zájem“ a blok o termínu texty pro členství; před změnou ověřit rozsah a UI. | Vývoj/vlastník; [nález a snímky](verification/racing-team-status-20261106/RESULTS.md) |
 
 ## Dokončené položky, které znovu neotvírat podle názvu větve
 
@@ -85,3 +87,12 @@ nabídka zveřejněná bez nového aplikačního deploye. Větev
 `C:/Users/Marek/Documents/Codex/evidencePavel-bar-integration-20261105`.
 [Předání](SESSION_HANDOFF_BAR_2026-11-06.md) zachovává pořadí navazujících kroků.
 P03 je nyní dokončená; předchozí datované doklady neveřejného návrhu jsou historie.
+
+## Následné ověření Závodního týmu
+
+[PR #336](https://github.com/KovoPraha/evidenceTreninku/pull/336) sloučený:
+[čtecí přejímka](verification/racing-team-status-20261106/RESULTS.md) doložila
+schválený aktivní tarif, vystavovatele a nabídku; P05 nepožaduje opakovaný souhlas.
+Větev `codex/racing-team-status-20261106`, kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-staff-notifications-20261106`.
+P14 zachovává samostatný kandidát textových úprav, nikoli runtime opravu z této relace.

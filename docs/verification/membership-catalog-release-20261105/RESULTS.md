@@ -1,5 +1,7 @@
 # Klubové členství: katalog, disciplíny a vystavovatel
 
+> Historický záznam k 5. 11. 2026. [Následná kontrola 6. 11.](../racing-team-status-20261106/RESULTS.md) již potvrzuje schválený a zveřejněný Závodní tým a uloženého vystavovatele. Níže uvedené kroky k aktivaci neopakovat bez kontroly aktuálního stavu.
+
 ## Vydání a ověření
 
 - [PR #316](https://github.com/KovoPraha/evidenceTreninku/pull/316) sloučen 5. 11. 2026.
