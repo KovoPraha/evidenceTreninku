@@ -2,6 +2,7 @@
 
 Aktualizováno 6. 11. 2026 (Europe/Prague), po skutečném převodu katalogu BAR a schválených přístupů; dřívější nasazení a aktivace zachované.
 
+- **[Omluvenky a náhrady již nasazené a znovu ověřené](verification/makeup-audit-20261106/RESULTS.md):** 6. 11. prošlo 22 testů / 139 assertions, 23 HTTP scénářů a skutečný místní browser (omluva, čekání na docházku, rezervace a storno s vrácením nároku). Mobilní zobrazení a uložená historie PASS. Bez nové chyby či opravy, není potřeba další nasazení. Zápisy pouze na oddělených syntetických datech; přihlášené produkční UAT se nyní neprovádělo.
 - **[Pravidelné zpracování členství i pošta zapnuté](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md):** automatizace, plán/zápis a pošta aktivní, denně 05:23 UTC. Ostrý apply --send `42108711699` PASS (0 členství/předpisů/dokladů/zpráv, žádná chyba), kontrola `42108836694` potvrdila úspěšný heartbeat v 21:01:18 UTC. Skutečné doručení při prázdné frontě neověřené. Závodní tým zůstává konceptem.
 
 - **[Klubové tarify #316 nasazené](verification/membership-catalog-release-20261105/RESULTS.md):** více disciplín za jednu cenu, měsíční/roční interval a formulář fakturačních údajů.

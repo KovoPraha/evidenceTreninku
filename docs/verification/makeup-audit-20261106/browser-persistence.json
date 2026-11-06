@@ -1,0 +1,17 @@
+{
+    "status": "PASS",
+    "date": "2026-11-06T05:00:32+01:00",
+    "revision": "89e73d5a570631a42a113f563011c49a37809a68",
+    "synthetic_only": true,
+    "production_writes": false,
+    "browser": {
+        "self_excuse": "not_going",
+        "credit_after_cancel": "available",
+        "reservation_history": [
+            "cancelled"
+        ]
+    },
+    "unit_tests": 22,
+    "assertions": 139,
+    "http_scenarios": 23
+}

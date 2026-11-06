@@ -4,6 +4,13 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
+Omluvenky a náhrady nepovažovat za čekající nasazení podle existence starých větví.
+Aktuální stav a [kontrola z 6. 11.](verification/makeup-audit-20261106/RESULTS.md)
+dokládají již nasazenou funkčnost: 22 testů / 139 assertions, 23 HTTP scénářů
+a místní browser omluvy, rezervace a storna PASS. Nárok vzniká až po ověření
+skutečné docházky; samotná omluva nestačí. Kontrola nevyžádala opravu ani nové
+nasazení. Zápisy byly pouze syntetické; přihlášené produkční UAT tím není uzavřené.
+
 [Klubové tarify #316](verification/membership-catalog-release-20261105/RESULTS.md) jsou nasazené.
 Produkční koncept Závodní tým 2200 Kč/měsíc (varianta 951) a skupina 86 → MTB 87,
 Silnice 88, Dráha 89 jsou založené. Výběr více disciplín pouze zařazuje na soupisky,
