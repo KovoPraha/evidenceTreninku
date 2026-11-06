@@ -172,4 +172,3 @@ zůstávají odložené vlastníkem; tato textová oprava je neuzavírá.
 Aktuální zadání: [hostingový plán](MEMBERSHIP_SCHEDULER_2026-11-06.md).
 P05/P07 se skutečnou platbou a export P06 nadále odložené; řeší se pouze
 spolehlivost již povoleného plánovače a její důkazy.
-
