@@ -104,6 +104,22 @@ function monthlyMembershipSendOne(PDO $pdo, callable $sender, ?DateTimeImmutable
 
 function monthlyMembershipRun(PDO $pdo, bool $apply, bool $send, callable $sender, int $limit = 100, ?DateTimeImmutable $now = null): array
 {
+    $locked = $apply && $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+    if ($locked && (int)$pdo->query("SELECT GET_LOCK('evidence:monthly-memberships',0)")->fetchColumn() !== 1) {
+        throw new RuntimeException('membership_worker_already_running');
+    }
+    try {
+        return monthlyMembershipRunUnlocked($pdo, $apply, $send, $sender, $limit, $now);
+    } finally {
+        if ($locked) {
+            $pdo->query("SELECT RELEASE_LOCK('evidence:monthly-memberships')");
+        }
+    }
+}
+
+/** Called only by the public worker while holding the shared processing lock. */
+function monthlyMembershipRunUnlocked(PDO $pdo, bool $apply, bool $send, callable $sender, int $limit = 100, ?DateTimeImmutable $now = null): array
+{
     $today = monthlyMembershipToday($now);
     $result = ['apply' => $apply,'memberships' => 0,'charges' => 0,'documents' => 0,'queued' => 0,'sent' => 0,'errors'
     => []];
