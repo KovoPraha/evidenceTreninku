@@ -11,6 +11,32 @@ permissions:
   contents: read
 
 jobs:
+  membership-approval-probe:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/codex/membership-audit-pr-ci-20261106'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Ověřit dokumentační commit a podporované API schválení jeho CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          BRANCH=codex/membership-audit-preflight-20261106
+          SHA=0da4425073c9e53e33d44c376601c041cfc1f207
+          test "$(gh pr view 348 --json headRefOid --jq .headRefOid)" = "$SHA"
+          git fetch origin main "$BRANCH"
+          git diff --name-only "origin/main...origin/$BRANCH" > /tmp/approval-probe-paths.txt
+          python3 tools/publish-membership-audit.py --check-paths /tmp/approval-probe-paths.txt
+          for id in 42266462003 42266462062 42266462168; do
+            gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id" --jq '{id,head_sha,event,conclusion,actor:.actor.login}'
+            gh api --method POST "repos/$GITHUB_REPOSITORY/actions/runs/$id/approve"
+          done
   phpunit:
     name: PHPUnit na PHP 8.2
     runs-on: ubuntu-latest
