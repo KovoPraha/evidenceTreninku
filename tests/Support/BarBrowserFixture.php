@@ -61,7 +61,8 @@ $bundle = barBuildTransferBundle($source, $runtime . '/images');
 barWriteTransferPackage($bundle, $runtime . '/images', $runtime . '/package');
 $_SESSION = ['trener_id' => 7001, 'trener_session_version' => 1, 'staff_active_position' => 'system_admin'];
 $result = barImportTransfer($pdo, $bundle, $runtime . '/package/images');
-if (getenv('BAR_BROWSER_CHECKOUT_DEMO') === '1') {
+$operationalDemo = getenv('BAR_BROWSER_OPERATIONAL_DEMO') === '1';
+if (getenv('BAR_BROWSER_CHECKOUT_DEMO') === '1' || $operationalDemo) {
     require_once $root . '/includes/bar/reversals.php';
     require_once $root . '/includes/bar/stock.php';
     $_SESSION = ['trener_id' => 7003, 'trener_session_version' => 1, 'staff_active_position' => 'bar_admin'];
@@ -69,7 +70,7 @@ if (getenv('BAR_BROWSER_CHECKOUT_DEMO') === '1') {
     barStockOperation($pdo, $productId, 1, 'receive_stall', 20, bin2hex(random_bytes(32)), 'LOCALHOST checkout demo initial stock');
     barSetCupDeposit($pdo, 2000, 1, 'LOCALHOST checkout demo deposit', bin2hex(random_bytes(32)));
     $_SESSION = ['trener_id' => 7001, 'trener_session_version' => 1, 'staff_active_position' => 'system_admin'];
-    barSetConsumptionPermission($pdo, $result['trainer_id'], true, 'LOCALHOST checkout demo explicit grant');
+    barSetConsumptionPermission($pdo, $operationalDemo ? 7003 : $result['trainer_id'], true, 'LOCALHOST checkout demo explicit grant');
 }
 $config = ['DB_HOST' => '127.0.0.1;port=' . $port, 'DB_NAME' => $database, 'DB_USER' => 'root', 'DB_PASS' => '',
     'APP_BASE_URL' => 'http://127.0.0.1:8895', 'JE_LOKALNE' => true, 'VELOCOTA_INTEGRATION' => false,
@@ -80,4 +81,5 @@ foreach ($config as $key => $value) {
 }
 barWritePrivateFile($root . '/config.php', $configPhp);
 barWritePrivateFile($runtime . '/fixture.json', json_encode(['database' => $database, 'port' => $port, 'lucka_id' => $result['trainer_id']], JSON_THROW_ON_ERROR));
-echo json_encode(['ok' => true, 'database' => $database, 'runtime' => $runtime, 'source' => 'synthetic', 'production_mutations' => false], JSON_THROW_ON_ERROR) . PHP_EOL;
+echo json_encode(['ok' => true, 'database' => $database, 'runtime' => $runtime, 'source' => 'synthetic',
+    'operational_demo' => $operationalDemo, 'production_mutations' => false], JSON_THROW_ON_ERROR) . PHP_EOL;

@@ -1,0 +1,28 @@
+id	stock_stall	stock_office
+1	19	0
+id	owner_id	opening_minor	expected_minor	counted_minor	difference_minor	closed_at	closure_kind
+1	7004	100000	103500	103000	-500	2026-11-06 05:30:29	owner
+id	cashbox_id	actor_id	kind	total_minor
+1	1	7004	sale	11000
+2	1	7004	sale	3500
+3	1	7004	sale	3500
+4	1	7004	sale	3500
+5	NULL	7003	consumption	0
+sale_id	method	status	verification_kind
+1	cash	confirmed	cash
+2	cash	confirmed	cash
+3	qr	cancelled	NULL
+4	card	confirmed	manual
+sale_id	refunded_minor	refund_method	cup_quantity
+1	9000	cash	1
+3	0	none	0
+4	3500	card	0
+5	0	none	0
+sale_id	quantity	total_minor
+1	1	2000
+cashbox_id	cash_balance_minor
+1	103500
+main_accounting_movements
+0
+trainer_id	permission_code
+7003	own_consumption
