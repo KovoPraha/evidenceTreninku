@@ -205,6 +205,12 @@ náhrady. Skutečné P05/P07 i export P06 zůstávají odložené.
 
 ## P11 — autonomní syntetické měření 6. 11. 2026
 
+**Navazující optimalizace R13 rozpracovaná:** vlastník zadal implementaci a
+porovnání stejných syntetických dat bez produkčních změn. Vlastní větev
+`codex/medical-read-performance-20261106`; [rozsah, metoda a stav](verification/medical-read-performance-20261106/RESULTS.md).
+Zachovat filtry/stavy/oprávnění i dostupnost osob; implementace a nové ověření
+zatím NOT RUN. R05/R06, plné HTTP měření a provozní přejímky zůstávají otevřené.
+
 Vlastník zadal měření bez produkčních změn a bez zásahu do WIP. Větev
 `codex/synthetic-performance-20261106`, vlastní kopie
 `C:/Users/Marek/Documents/Codex/evidencePavel-performance-20261106`.

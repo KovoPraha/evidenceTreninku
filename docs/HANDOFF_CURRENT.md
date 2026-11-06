@@ -4,7 +4,18 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Nejnovější návaznost: P11 syntetické měření výkonu
+## Rozpracovaná návaznost: P11 optimalizace zdravotního přehledu
+
+Vlastník zadal navázat optimalizací R13 bez produkčních změn a zachovat WIP.
+[Plán, stav a důkazy](verification/medical-read-performance-20261106/RESULTS.md).
+Vlastní větev `codex/medical-read-performance-20261106`, kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-medical-performance-20261106`.
+Postup: stránkovat před načtením metadat, stavové filtry vyhodnocovat stejnou
+logikou v dávkách, omezit výběr osob při zachování jejich dostupnosti, porovnat
+stejnou syntetickou matici před/po. Implementace a ověření zatím rozpracované;
+žádný deploy ani aktivace. Původní rozpracované soubory se nepřepisují.
+
+## Předchozí návaznost: P11 syntetické měření výkonu
 
 Vlastník zadal měření bez produkčních změn se zachováním WIP. Místně dokončeno
 21 případů R05/R06/R13, 630 časových vzorků, samostatné SQL/řádky/paměť/EXPLAIN.

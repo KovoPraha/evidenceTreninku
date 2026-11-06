@@ -64,7 +64,7 @@ function p11Source(string $route): string
 {
     $root = dirname(__DIR__, 2);
     $files = ['R05' => 'planovac.php', 'R06' => 'training_closure_admin.php', 'R13' => 'medical_clearance_admin.php'];
-    $markers = ['R05' => '$datumParam =', 'R06' => '$current = null;', 'R13' => '$policies='];
+    $markers = ['R05' => '$datumParam =', 'R06' => '$current = null;', 'R13' => '$policies ='];
     $source = (string)file_get_contents($root . '/' . $files[$route]);
     $helper = ['R05' => 'h', 'R06' => 'tcH', 'R13' => 'medicalH'][$route];
     p11Assert(preg_match('/function ' . $helper . '\([^\{]+\{[^}]+\}/', $source, $match) === 1, 'Escaping helper changed.');
@@ -74,9 +74,20 @@ function p11Source(string $route): string
     p11Assert(substr_count($source, $markers[$route]) === 1, 'GET boundary changed.');
     $source = substr($source, (int)strpos($source, $markers[$route]));
     $source = str_replace($match[0], '', $source);
+    if ($route === 'R13') {
+        $viewInclude = "require __DIR__ . '/includes/medical_clearance_admin_view.php';";
+        p11Assert(substr_count($source, $viewInclude) === 1, 'Medical view boundary changed.');
+        $view = (string)file_get_contents($root . '/includes/medical_clearance_admin_view.php');
+        $navigation = "include dirname(__DIR__) . '/hlavicka.php';";
+        p11Assert(substr_count($view, $navigation) === 1, 'Medical navigation boundary changed.');
+        $view = str_replace($navigation, '', $view);
+        $view = preg_replace('/\A<\?php\s*declare\(strict_types=1\);/', '<?php ', $view, 1, $replaced);
+        p11Assert($replaced === 1, 'Medical view preamble changed.');
+        $source = str_replace($viewInclude, '?>' . $view, $source);
+    }
     $navigation = ['R05' => "include 'hlavicka.php';", 'R06' => "require __DIR__.'/hlavicka.php';",
         'R13' => "include __DIR__.'/hlavicka.php';"][$route];
-    p11Assert(substr_count($source, $navigation) === 1, 'Navigation boundary changed.');
+    p11Assert(substr_count($source, $navigation) === ($route === 'R13' ? 0 : 1), 'Navigation boundary changed.');
     $source = str_replace($navigation, '', $source);
     $source = str_replace('appUiAssets();', '', $source);
     $allowedView = "require __DIR__.'/includes/training_day_view.php';";
@@ -341,11 +352,16 @@ function p11Negative(PDO $pdo): array
     return $checks;
 }
 
+if (($argv[1] ?? '') === '--library') {
+    return;
+}
 if (($argv[1] ?? '') === '--worker') {
     p11Worker(array_slice($argv, 2));
     exit;
 }
 p11Assert(($argv[1] ?? '') === '--run' && isset($argv[2]), 'Usage: --run OUTPUT_DIRECTORY');
+$onlyRoute = $argv[4] ?? null;
+p11Assert(!isset($argv[3]) || ($argv[3] === '--route' && in_array($onlyRoute, ['R05', 'R06', 'R13'], true)), 'Invalid route selection.');
 $output = $argv[2];
 p11Assert(is_dir($output), 'Output directory must exist.');
 $git = proc_open(['git', 'rev-parse', 'HEAD'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $gitPipes, dirname(__DIR__, 2));
@@ -364,7 +380,9 @@ $report = ['complete' => false, 'source_sha' => $revision,
     'schema' => $schema, 'server' => $admin->query('SELECT VERSION() version,@@port port')->fetch(PDO::FETCH_ASSOC),
     'php' => PHP_VERSION, 'warmups' => 5, 'timing_samples' => 30, 'cases' => []];
 $report['source_files_sha256'] = [];
-foreach (['planovac.php', 'training_closure_admin.php', 'medical_clearance_admin.php', 'includes/training_day_view.php'] as $file) {
+foreach (['planovac.php', 'training_closure_admin.php', 'medical_clearance_admin.php', 'includes/training_day_view.php',
+    'includes/medical_clearance_admin_view.php', 'includes/medical_clearance.php', 'includes/medical_clearance_read.php',
+    'assets/js/medical-person-picker.js'] as $file) {
     $report['source_files_sha256'][$file] = hash('sha256', str_replace("\r\n", "\n", (string)file_get_contents(dirname(__DIR__, 2) . '/' . $file)));
 }
 try {
@@ -388,6 +406,9 @@ try {
         foreach (['all', 'person'] as $mode) {
             $cases[] = ['route' => 'R13', 'role' => 'registrar', 'mode' => $mode, 'people' => $people];
         }
+    }
+    if ($onlyRoute !== null) {
+        $cases = array_values(array_filter($cases, static fn (array $case): bool => $case['route'] === $onlyRoute));
     }
     foreach ($cases as $index => $case) {
         p11Session('registrar');
