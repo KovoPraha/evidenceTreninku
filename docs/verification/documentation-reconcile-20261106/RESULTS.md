@@ -103,6 +103,9 @@ Po posledním souběžném dokladu členství #336: **80 řádků / 871 odkazů 
 kontrola **1222 místních odkazů ve 29 Markdown souborech bez chyby**,
 `git diff --check` PASS. Nový archivní blok pochází ze zachovaného předání #336;
 původní bloky se nepřepisují.
+Před předáním zachován také mezitím sloučený main `d8215ba7` (#335), jehož
+strom byl shodný s již připojeným zdrojovým předáním; konflikty souběžné
+dokumentace vyřešené bez vypuštění jeho změn.
 
 Souborové předání je v [PR #337](https://github.com/KovoPraha/evidenceTreninku/pull/337),
 které sjednocuje #333/#334/#335/#336. Aktuální CI a stav sloučení určuje PR.

@@ -36,6 +36,8 @@ P02–P14 vedou BAR, členství, poslední synchronizaci, platby, lidskou přej�
 lokální WIP, další typy upozornění, podklady testerky a ověření aktuální zálohy.
 
 
+Podrobnosti zápisu určuje [trvalé pravidlo](WORK_DOCUMENTATION_POLICY.md). Aktuální [session handoff BAR](SESSION_HANDOFF_BAR_2026-11-06.md) obsahuje dokončenou publikaci i pořadí zbývajících kroků.
+
 Omluvenky a náhrady nepovažovat za čekající nasazení podle existence starých větví.
 Aktuální stav a [kontrola z 6. 11.](verification/makeup-audit-20261106/RESULTS.md)
 dokládají již nasazenou funkčnost: 22 testů / 139 assertions, 23 HTTP scénářů
