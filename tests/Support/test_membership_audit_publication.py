@@ -78,6 +78,9 @@ class PublicationTest(unittest.TestCase):
         note = (self.root/(audit.OUTPUTS['publish']+'/RESULTS.md')).read_text(encoding='utf-8')
         self.assertIn('06:23:03+01:00', note)
         self.assertIn('odchylka 3 s', note)
+        self.assertEqual('PASS', audit.generate(self.root, 'publish', data, FLAGS, '124'))
+        history = (self.root/'docs/CHANGELOG-PROVOZ.md').read_text(encoding='utf-8')
+        self.assertEqual(1, history.count('<!-- archive '))
 
 
 if __name__ == '__main__':

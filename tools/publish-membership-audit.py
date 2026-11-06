@@ -117,12 +117,17 @@ def generate(root, mode, data, flags, run):
             history += "\n\n<!-- archive " + json.dumps(meta) + " -->\n" + old + "\n<!-- /archive -->\n"
         line = "Ranní serverový audit 7. 11.: [" + report["verdict"] + "](" + out.removeprefix("docs/") + "/RESULTS.md)."
         phrase = "příští ranní běh zatím nelze doložit."
-        if phrase not in state:
-            raise ValueError("Current-state morning marker changed; preserve for review")
+        if phrase in state:
+            state = state.replace(phrase, line, 1)
+        else:
+            pattern = r"Ranní serverový audit 7\. 11\.: \[(?:PASS|LATE|FAIL|BLOCKED)\]\(" + re.escape(out.removeprefix("docs/") + "/RESULTS.md") + r"\)\."
+            if re.search(pattern, state) is None:
+                raise ValueError("Current-state morning marker changed; preserve for review")
+            state = re.sub(pattern, lambda _: line, state, count=1)
         local = checked.astimezone(dt.timezone(dt.timedelta(hours=1)))
         updated = re.sub(r"Aktualizováno \d+\. \d+\. \d{4}",
                          f"Aktualizováno {local.day}. {local.month}. {local.year}", state, count=1)
-        updates["docs/CURRENT_STATE.md"] = updated.replace(phrase, line, 1)
+        updates["docs/CURRENT_STATE.md"] = updated
         updates["docs/CHANGELOG-PROVOZ.md"] = history
     for name, content in updates.items():
         if name not in ALLOWED:

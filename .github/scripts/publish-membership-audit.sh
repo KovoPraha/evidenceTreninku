@@ -43,9 +43,11 @@ for name in sorted(module.ALLOWED):
         print(name)
 PY
 )
-git diff --cached --name-only > "$RUNNER_TEMP/audit-after-paths.txt"
-python3 tools/publish-membership-audit.py --check-paths "$RUNNER_TEMP/audit-after-paths.txt"
-git commit -m "docs: server membership audit $MODE"
+if ! git diff --cached --quiet; then
+  git diff --cached --name-only > "$RUNNER_TEMP/audit-after-paths.txt"
+  python3 tools/publish-membership-audit.py --check-paths "$RUNNER_TEMP/audit-after-paths.txt"
+  git commit -m "docs: server membership audit $MODE"
+fi
 HEAD_SHA=$(git rev-parse HEAD)
 git push origin "$BRANCH"
 if [ "$(echo "$PR_JSON" | jq -r .draft)" = true ]; then gh pr ready "$PR_NUMBER"; fi
