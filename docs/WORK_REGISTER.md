@@ -45,3 +45,15 @@ nikdy neodvozovat nasazení z merge nebo zeleného CI. Výsledky ukládat do
 Plán není souhlas s publikací, reálnou platbou, rozesílkou nebo datovým převodem.
 Tajemství, hesla, session, produkční dumpy a osobní přílohy do Gitu nepatří;
 uvést jen bezpečnou referenci a způsob ověření soukromého podkladu.
+
+## Session: sjednocení dokumentace 6. 11. 2026
+
+Rozsah: souborový registr, provozní stav, handoffy, rozcestníky a projektové
+instrukce na výslovný pokyn vlastníka; bez nové provozní aktivace.
+Větev `codex/operations-handoff-register-20261106`, pracovní kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106`,
+[PR #334](https://github.com/KovoPraha/evidenceTreninku/pull/334).
+Soubory aktualizované; místní kontrola dokumentace, archivních bloků a odkazů PASS.
+Stav povinného CI a sloučení ověřit u PR; dokumentační merge nevyžaduje deploy.
+Následující session pokračuje věcnými položkami P01–P11 podle nového zadání,
+nevytváří novou provozní operaci jen kvůli aktualizaci dokumentace.
