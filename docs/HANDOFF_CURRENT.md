@@ -349,3 +349,11 @@ W9.1 skladový přehled je [nasazen z PR #244](verification/refactoring-w91-rele
 1844 testů / 36778 assertions, HTTP 26/26, živé SHA a flags ověřené.
 Součástí jsou i testovací/CI kontrakty W8.5. Navazující W9.2 / W10.1 mají
 vlastní [release důkazy](verification/refactoring-w92-release-20261030/RESULTS.md).
+
+## Navazující pořadí práce 6. 11. 2026
+
+[Registr P01–P14](WORK_PLAN_CURRENT.md) nyní obsahuje také doporučené pořadí
+a rozdělení autonomních kroků oproti vstupům vlastníka. Nejprve P14 a čtecí
+důkaz automatického plánu P05, souběžně P01/P12 a příprava BAR P02; potom
+skutečný tok P05/P07, účetní specifikace P04 a rozdílový sync P06 po exportu.
+Tato plánovací session nové produkční operace neprovedla ani nepovolila.

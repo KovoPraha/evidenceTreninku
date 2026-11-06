@@ -95,3 +95,34 @@ Přesné kontroly, stav PR/merge a důkazní hranice vede
 Vzdálené předání: [PR #337](https://github.com/KovoPraha/evidenceTreninku/pull/337),
 včetně novějších dokladů publikace BAR #335 a členství #336. Dokumentační
 začlenění nevyžaduje deploy; stav CI/merge ověřit u PR. Původní větve zůstávají zachované.
+
+## Doporučené pořadí dokončení a rozdělení práce — 6. 11. 2026
+
+Zadání: projít P01–P14, určit pořadí podle závislostí a oddělit autonomní
+technickou práci od chybějících skutečných údajů/rozhodnutí. Tato session
+pouze připravuje přehled; nepovoluje nové platby, rozesílání nebo produkční zápisy.
+Větev `codex/completion-priorities-20261106`, kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106`.
+
+| Pořadí | ID | Samostatně při navázání práce | Potřebný vstup vlastníka / podmínka uzavření |
+| --- | --- | --- | --- |
+| 1 | P14 | Ověřit metadata konkrétní zálohy a provést izolovanou obnovu chráněným postupem, porovnat tabulky/triggery a zapsat důkaz. Nikdy neobnovovat produkci. | Obvykle bez nového věcného rozhodnutí; potřebné existující technické přístupy a dostupná záloha. |
+| 1, souběžně | P01 | Připravit stručné ověření příjemcem a po potvrzení doplnit protokol, zkontrolovat čtecí stav bez nové zprávy. | Příjemce potvrdí přijetí některé z již odeslaných zpráv, případně spam. Kvůli testu znovu neposílat. |
+| 2 | P05 — plán | Z historie spouštěče a heartbeat doložit skutečný automatický start; případnou technickou chybu reprodukovat a opravit. Samotný prázdný běh není selhání. | Bez nové ceny, publikace či schválení tarifu; tyto kroky jsou hotové. Nevyvolávat skutečné předpisy/poštu jen kvůli dokazování plánu. |
+| 2 | P12 | Aktualizovat dokumenty, 20 scénářů a hlášení proti main; ověřit aktuální možnosti sdílení při konkrétní realizaci. | Určit testerku, její roli/prostředí a povolené scénáře; připojení jejího účtu a přístup ke GitHubu dokončí oprávněná osoba. |
+| 3 | P05 + P07 — skutečný tok | Připravit scénář, sledovat objednávku/závazek, VS, párování, PDF a technický výsledek doručení; bez duplicitních úhrad. | Určit konkrétní skutečné sjednání, ověřenou osobu/plátce a provést skutečnou platbu. Bankovní přístup ani účetní shodu neodhadovat; 45 nejasných pohybů posuzuje hospodář. |
+| 3, souběžně | P02 | Připravit krokový checklist Lucky, zásob, vlastní kasy, prodeje, kelímků, storna a uzávěrky; porovnat uložené výsledky. | Lucka se přihlásí sama; dodat fyzicky spočtené zásoby, skutečný počáteční vklad a obsluhu první reálné směny. Heslo nevyžadovat v chatu. |
+| 4 | P04 | Zkontrolovat kontrakt/export, připravit technický návrh, syntetické dávky a testy opakování/souběhu; po specifikaci implementovat adaptér. | Vlastník/účetní určí cílové doklady, řady, účty/středisko, daňová pravidla, ocenění, zálohy/spotřebu, poplatky, vratky a uzávěry. Schválení konkrétních finančních zápisů je samostatné. |
+| 4, po exportu | P06 | Připravit a ověřit rozdílový náhled nad dodaným exportem, role/UAT a důkazy obnovy. | Nový export a potvrzení konkrétního rozdílu při skutečné změně dat; E8 až po přejímce. Převod 435 osob nezačínat znovu. |
+| 4, souběžně | P08 | Dokončit nezávislé technické a syntetické scénáře a checklist dostupných rolí. | Účast vlastníka/trenéra v lidské přejímce. Změna hesla a T07 zůstávají odložené, dokud vlastník tento pokyn nezmění; pilot neprodlužovat automaticky. |
+| 5 | P09 | Připravit přejímací matici D12–D14, dohledat dvě chybějící přílohy v dostupných řízených podkladech a sepsat rozpory. | Klub/účetní dodá skutečné dohody, částky, ocenění, vazby/kompetence a přijme výsledek. Chybějící přílohy nebo identity nevyrábět. |
+| Průběžně | P10 | Porovnat staré větve/WIP s main, určit už převzaté změny a připravit seznam bezpečného úklidu. | Před odstraněním nezachované rozpracovanosti potřebujeme stanovisko jejího vlastníka; analýza není důvod k plošnému resetu či mazání. |
+| Poté | P11 | Změřit K0.2 a kapacity na syntetických datech, navrhnout jen prokazatelně přínosné úpravy. | Vlastník určí prioritu případné další vlny; není to podmínka běžného provozu již dokončených funkcí. |
+| Poté | P13 | Připravit varianty rozšíření a technickou specifikaci registrované události. | Vybrat konkrétní události, příjemce, okamžik upozornění a požadovaný kanál; samotný obecný záměr není zadání všech typů. |
+| Hotovo | P03 | Publikaci neprovádět znovu. Lze doplnit přihlášený průchod tiskového PDF bez změny nabídky. | Žádný další údaj pro současnou publikaci; změna obsahu nebo ceny vyžaduje konkrétní nové zadání. |
+
+Začít samostatnou technickou vlnou P14, čtecím ověřením plánu P05 a přípravou
+P12/checklistů P02. Potvrzení P01 může přijít souběžně. Poté spojit skutečné
+členství P05 s platbou P07 v jediném scénáři; BAR P02 je nezávislá provozní větev.
+P04 vyžaduje účetní specifikaci, P06 export a E8 zůstává až za přejímkou.
+Nevyžadovat znovu souhlas s již zveřejněným BAR ani tarifem 2200 Kč/měsíc.
