@@ -1,0 +1,401 @@
+{
+  "verified_at_utc": "2026-11-06T10:53:48.496439+00:00",
+  "authentication": "anonymous HTTP requests; no browser cookies or credentials",
+  "offer_id": 1,
+  "publication_version_observed_in_ui": 1,
+  "title": "Bar KOVO – základní nabídka",
+  "menu": {
+    "url": "https://kis.kovopraha.cz/bar/menu.php",
+    "status": 200,
+    "products": 45,
+    "photos": 45,
+    "cache_control": "no-store",
+    "robots": "noindex, nofollow",
+    "sha256": "8a2fc8ff2746c685ad7cb346419e23ef5fffb6f5d5e52798921d51c85e4f9843"
+  },
+  "images": [
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=24",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2247726,
+      "sha256": "827729001b565c44e7562651d36754b9b85bf1e7f00cdc0f68fff1d0ced90628",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=45",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2035230,
+      "sha256": "e856cc15128f536c046697be9fc25a3937c0021298165083c1a2444b6f0abd75",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=25",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2381660,
+      "sha256": "83906113ddc13745246f3e8a233e0c4608a5208ad763e4756daeb490bdcc8dbb",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=51",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2585938,
+      "sha256": "ffbdaf60960691490760f01a513802ae01c8fd6f56807cab941ae4e8d4161e19",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=1",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2617058,
+      "sha256": "124e1a03be4a3b264c7fa447823c8e47421d08a4cb696d358e9ce34a7ef3a222",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=33",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2488132,
+      "sha256": "ab576feffdae063c8eba40c1cf5c6cfb2a105adb16af3f4ae810027143320b94",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=38",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2622889,
+      "sha256": "c4433c380c15d9a00971983b1cb52d209d26dfbaf8c146017eecc249dcbb00cb",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=38",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2622889,
+      "sha256": "c4433c380c15d9a00971983b1cb52d209d26dfbaf8c146017eecc249dcbb00cb",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=33",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2488132,
+      "sha256": "ab576feffdae063c8eba40c1cf5c6cfb2a105adb16af3f4ae810027143320b94",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=38",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2622889,
+      "sha256": "c4433c380c15d9a00971983b1cb52d209d26dfbaf8c146017eecc249dcbb00cb",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=34",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 1970980,
+      "sha256": "af36716f704eb6d2d7652bba6945c168c9d2454b26ffab8ad51f0c272b71f55f",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=36",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2475775,
+      "sha256": "bcbae8317d12425db9df8c80198bd9f052860933a66da935ef2b54ea0693972f",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=31",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2321519,
+      "sha256": "a2d090ec041dfe558c7b7895c3d7e4cd95ff38296ea4780440bd0118970633c0",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=37",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2095867,
+      "sha256": "bd087e43eeb4835fd5c5877bf279b4b5fcf92632c96a6edb22d1adcf86439a9b",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=14",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 1843406,
+      "sha256": "5a21d4d96e72b899d40b6b98ceddb10d13e157be5d097bde21572cc0263b9dcf",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=39",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2560628,
+      "sha256": "c57afee357f80e7d5259999118711a4d5f9b000dcda8e72ab35c3c4bd9d3fe17",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=21",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2855065,
+      "sha256": "755bc8c0283beca35aa6c82c86d57b6137a6367edd91a6d76bbb908859a33e17",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=6",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2485232,
+      "sha256": "2cad0ff63cb28207feb67e1394e049483a828e7b706c129c353179d2a61433b9",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=10",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2782088,
+      "sha256": "492efa0c67929ddc939392d7a55333acf1188edbe646419ae38450ecc6ccdec8",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=44",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2221578,
+      "sha256": "e13494b32cd8c7eec63a03003f6d6d185ff2ae8973591b850f84064f0d0e736b",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=18",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2292951,
+      "sha256": "6b049fef20bd2fed5e8a6c19911d754c4c283e374b3e6060f96bdd98d29f95fa",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=7",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2277606,
+      "sha256": "39d024900eb707f068636bbf26459cd27e9c35878292cdeb2d0b1c252f29aa8a",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=15",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 503630,
+      "sha256": "5b88d0b33d7959a10c971f88040ef78fab897a5cd982c73bd610eea1f6c33199",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=46",
+      "status": 200,
+      "content_type": "image/png",
+      "bytes": 479217,
+      "sha256": "eca18f66c35e7a3473da4db142acce6053358f010519e49066b8a0f264e4cc12",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=20",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2104938,
+      "sha256": "6ec9bfbc8c1fb5d12c91f03f903850532b3d5ebf62e1dc0b4d8e8b5000632633",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=3",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2085595,
+      "sha256": "24a917bf70f49edb094a8a3e320442a6dc8a31007e234c9b41edc200d7ab0317",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=4",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2071326,
+      "sha256": "26f2a6e8f16f79be57dcee4e97d1efd37c7a18e7c1061343fa123988ae77ff9a",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=43",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 1717676,
+      "sha256": "dc7deaec3f8bd7046263c107885db3b802db450db03dc7dedfd202132932468f",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=35",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2376741,
+      "sha256": "babf0afe15ae523046b97506a993442686e96b9ed3c14b8eeca47e2b80955a08",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=9",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2037058,
+      "sha256": "3fbd7ce28631fc5338ba6479f7c114900b2f8b0883bc096d7d57cc41dab8fd83",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=5",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2332214,
+      "sha256": "2a75c4c20b54317a0ab8885cb55a1e7ab8c285e5f03f4fcf613ab7b1fd8cc2aa",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=32",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2509405,
+      "sha256": "a45f9674d838ed6a4a21c92c021546a22f2cb3c23c78cb28517f8bba399b0638",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=13",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2377524,
+      "sha256": "58ee7d552a8454a0408f833960c55d6f30c8e9452d6a1220969ac968bd059edf",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=29",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2010160,
+      "sha256": "a004401400fe3515a2278ccb35686443a9e629f2a085569cf153c9c2eeecdbdb",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=19",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 1967535,
+      "sha256": "6bda15640f6915dc5ed34492fc1ecb40717a6f07800338332412722de1ca376b",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=40",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2302448,
+      "sha256": "c70248badbd7a16945b3128678bb116dde5f3b31907e8ec23774da1af468f424",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=20",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2104938,
+      "sha256": "6ec9bfbc8c1fb5d12c91f03f903850532b3d5ebf62e1dc0b4d8e8b5000632633",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=12",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2053190,
+      "sha256": "53bcaa91016a8f55fe0d774d5ceaec4ef6e5e5b7e72d6424f0d465f1f21f5838",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=49",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2269779,
+      "sha256": "f24736bc4e3e4f5951b4d1a4750905ba984644ec12bc43c4cd7a51b3ddfa271c",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=27",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2017576,
+      "sha256": "8b52a54c6468a63a1484a8a28ba3a48926330ad1d0241f5c309823ac263a955b",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=17",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2401073,
+      "sha256": "5f359058938a124fc4451ee7c621fc75e5c450ae221d5cf72fe6f9af47f82c2e",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=28",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2330097,
+      "sha256": "9ab50b72529e7d874ea46ed391c1a21f5ee7987a792e88c8bd6f5b2be438ea31",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=16",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2443193,
+      "sha256": "5f00c30efd6dc6a3125040b6496d49b2d31ea3bd1eb5b3dbac639745ff49421c",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=23",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2472875,
+      "sha256": "7b9697e247a5b9b504d752fda3e8212df4392d6abf757500437e7c9756b5bd18",
+      "ok": true
+    },
+    {
+      "url": "https://kis.kovopraha.cz/bar/menu-image.php?id=48",
+      "status": 200,
+      "content_type": "image/jpeg",
+      "bytes": 2560540,
+      "sha256": "f17d7c3b0a522ccf8867a6acd7b552c9ad9b52e1ff40f002eb5c6b2015c0594b",
+      "ok": true
+    }
+  ],
+  "legacy_menu": {
+    "status": 200,
+    "final_url": "https://kis.kovopraha.cz/bar/menu.php",
+    "title_present": true
+  },
+  "protected_routes": [
+    {
+      "path": "offers.php?id=1",
+      "status": 302,
+      "location": "../login.php"
+    },
+    {
+      "path": "menu-pdf.php",
+      "status": 302,
+      "location": "../login.php"
+    },
+    {
+      "path": "checkout.php",
+      "status": 302,
+      "location": "../login.php"
+    }
+  ],
+  "ok": true
+}

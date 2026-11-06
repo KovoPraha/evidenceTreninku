@@ -51,3 +51,6 @@ včetně skutečného zvonečku, přesného odkazu a přepnutí přečtení/nep�
 Tato část je dokončená; zbývá potvrzení koncové schránky. Novější schválení
 vystavovatele/tarifu vlastníkem je zachované v P05 kanonického registru.
 Datovaný čtecí snímek výše se zpětně nepřepisuje.
+
+Souběžný PR #335 následně doložil [zveřejnění nabídky BAR](../bar-menu-publication-20261106/RESULTS.md).
+P03 je dokončená; předchozí popis neveřejného návrhu výše platí k době původní inventury.

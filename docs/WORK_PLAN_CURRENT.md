@@ -13,7 +13,7 @@ Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z
 | --- | --- | --- | --- |
 | P01 | Pracovní upozornění #330 nasazená; minutový běh, 18 sent a přihlášený produkční zvoneček/přesný odkaz/přečtení doložené | Získat nezávislé potvrzení schránky; příjem transportem není doručení. Neposílat další kopie kvůli potvrzení. Zdrojové žádosti neschvalovat kvůli testu. | Navazující práce upozornění; [postup](STAFF_NOTIFICATIONS_2026-11-06.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
-| P03 | BAR nabídka 1 / Bar KOVO – základní nabídka je neveřejný návrh, 45 produktů | Potvrdit výběr a samostatně publikovat existující návrh. Nezakládat duplicitní a nevydávat návrh za veřejnou nabídku. | Vlastník/správce baru; [přejímka nabídky](verification/bar-acceptance-20261106/RESULTS.md) |
+| P03 | BAR nabídka 1 / Bar KOVO – základní nabídka zveřejněná, vydání 1, 45 produktů a fotografií; dokončeno v #335 | Publikaci neopakovat kvůli testu a nezakládat duplicitní návrh. Provozní zahájení zásob/kasy je stále P02. | [Publikační plán](BAR_MENU_PUBLICATION_2026-11-06.md), [živé důkazy](verification/bar-menu-publication-20261106/RESULTS.md), [session BAR](SESSION_HANDOFF_BAR_2026-11-06.md) |
 | P04 | BAR účetní kontrakt a návrh adaptéru připravené, skutečné účtování neaktivované | Odsouhlasit finanční pravidla a dokončit schválený adaptér/přejímku bez zdvojení tržeb; skutečná bezhotovostní platba/vratka není doložená. | Vlastník/účetní, vývoj; [kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md), [plán adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md) |
 | P05 | Měsíční členství a zastupování trenérů nasazené; plán i pošta zapnuté | Vlastník už schválil vyplnění údajů TJ KOVO, tarif 2200 Kč/měsíc a publikaci. Ověřit současný stav varianty 951 a doplnit doklad provedení; nevytvářet další produkt ani znovu nežádat stejný souhlas. Doložit skutečné sjednání, předpis/PDF, příchozí platbu se shodným VS, přiřazení a doručení. Plná cena i během měsíce, konec ke konci měsíce, disciplíny bez příplatku; roční cena neurčená. | Vlastník/účetní; [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [tarify](verification/membership-catalog-release-20261105/RESULTS.md) |
 | P06 | Evidence členů bez sezon nasazená, 435 zařazení převedeno | Vyčkat na poslední nový export, provést schválený rozdílový sync a role/UAT. E8 odstranění legacy schématu až po přejímce a bezpečné obnově. Počáteční datum ani import neopakovat. | Vlastník dodá export; [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [provoz](MEMBER_EVIDENCE_OPERATION_2026-11-02.md), [převod](verification/member-evidence-cutover-20261102/RESULTS.md) |
@@ -36,6 +36,8 @@ Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z
 - BAR B0–B6, převod B7 a aliasy: [vydání](verification/bar-release-20261105/RESULTS.md),
   [převod](verification/bar-cutover-20261106/RESULTS.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md).
   Import/striktní nulový počátek neopakovat přes vzniklé legitimní záznamy.
+
+Průběžnou dokumentaci závazně upravují [pravidla souborového zápisu](WORK_DOCUMENTATION_POLICY.md).
 
 ## Povinný záznam při každé další práci
 
@@ -74,3 +76,12 @@ s výslovným rozlišením od nového nasazení; bez změny testovacího kontrak
 - Otevřená mez ověření: příjemce zatím nepotvrdil doručení do schránky. Transport přijal 18 skutečných zpráv; kvůli potvrzení neposílat další kopie. Případné potvrzení připsat do protokolu.
 - Dokumentační práce této relace: souborový provozní stav, historie, pravidlo v CLAUDE, handoff a tento rozcestník. Pracovní větev `codex/staff-notifications-release-20261106`, izolovaná kopie `C:\Users\Marek\Documents\Codex\evidencePavel-staff-notifications-20261106`. Původní `C:\xampp\htdocs\evidencePavel` obsahuje nesouvisející rozpracovanost; nepřepisovat ji.
 - Předání této dokumentace: [PR #333](https://github.com/KovoPraha/evidenceTreninku/pull/333). Kontrola 80 řádků / 814 odkazů / 104 archivních bloků bez chyby, dalších 111 místních odkazů bez chyby, dokumentační testy 2/14 PASS. PR #333 je nyní sloučený; původní průběh kontrol určuje odkazovaný PR. Dokumentační commit nevyžaduje další produkční deploy a nemění živé SHA.
+
+## Následně začleněná relace BAR
+
+[PR #335](https://github.com/KovoPraha/evidenceTreninku/pull/335) sloučený:
+nabídka zveřejněná bez nového aplikačního deploye. Větev
+`codex/bar-menu-publication-20261106`, kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-bar-integration-20261105`.
+[Předání](SESSION_HANDOFF_BAR_2026-11-06.md) zachovává pořadí navazujících kroků.
+P03 je nyní dokončená; předchozí datované doklady neveřejného návrhu jsou historie.
