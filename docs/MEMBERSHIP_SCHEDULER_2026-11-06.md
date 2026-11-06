@@ -62,3 +62,12 @@ Na výslovný pokyn vlastníka je aktivní [ranní audit](MEMBERSHIP_SCHEDULER_M
 Porovná skutečný ranní pokus s 05:23 UTC, bez ručního spuštění nebo změny
 produkce, a zapíše výsledek do protokolu, registru a handoffu. Výsledek zatím
 NOT RUN. Skutečné P05/P07 a export P06 dále odložené.
+
+<!-- membership-morning-preflight:start -->
+## Serverový preflight
+
+[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:end -->

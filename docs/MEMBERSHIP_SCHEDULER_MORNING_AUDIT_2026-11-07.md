@@ -101,3 +101,12 @@ Pozorovatel má read-only SQL transakce, před termínem neotvírá DB a při ch
 příležitosti 7. 11. (05:35, 06:35, 12:35 UTC) a po publikaci se vypne.
 Ranní capture se neopakuje a případné LATE/FAIL se mají také zapsat, nikoli
 vyrobit úspěch ručním spuštěním členství.
+
+<!-- membership-morning-preflight:start -->
+## Serverový preflight
+
+[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:end -->

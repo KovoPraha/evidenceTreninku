@@ -202,3 +202,12 @@ Vlastník požádal odstranit závislost na zapnutém PC. [Aktuální serverový
 jednorázový hostingový pozorovatel, neměnný důkaz, automatická dokumentace přes
 chráněný PR a skutečný preflight publikace. Místní úlohu vypnout až po ověření
 náhrady. Skutečné P05/P07 i export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:start -->
+## Serverový preflight
+
+[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:end -->
