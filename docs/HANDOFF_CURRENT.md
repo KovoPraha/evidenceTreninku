@@ -4,7 +4,30 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Nejnovější návaznost: P12 a syntetické přejímací podklady bez produkčních změn
+## Nejnovější návaznost: P11 syntetické měření výkonu
+
+Vlastník zadal měření bez produkčních změn se zachováním WIP. Místně dokončeno
+21 případů R05/R06/R13, 630 časových vzorků, samostatné SQL/řádky/paměť/EXPLAIN.
+[Výsledek, metoda a priority](verification/synthetic-performance-20261106/RESULTS.md).
+Hlavní kandidát je zdravotní přehled: při 10k sledováních načte přes 50k řádků
+pro stránku 25 položek; i filtr osoby stále načítá celý seznam osob. Následují
+metadata/RSVP plánovače a dávkové ověření účastníků docházky. Runtime se nyní
+neoptimalizoval a žádná změna se nenasazuje. Datová/HTML parita měřicích režimů
+a čtyři negativní autorizační případy PASS. Testovací CI doplňuje stejnou metodu
+na MariaDB 10.3/11.4: obě verze PASS, shodné SQL/řádky ve všech 21 případech;
+[trvalé CI důkazy](verification/synthetic-performance-20261106/CI-VERIFICATION.md).
+Aktuální hlavu ověřit u PR. Úplné HTTP/bootstrap/nav a další role,
+včetně plánem propojené docházky, jsou dosud samostatné úkoly.
+Větev `codex/synthetic-performance-20261106`, vlastní kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-performance-20261106`.
+Původní `kis_rosters_admin.php` má shodný otisk; žádná rozpracovanost se nemazala.
+Vlastní databázová schémata odstraněná a server zastavený. Automatická kontrola
+odmítla smazání dočasného adresáře pouze jako „blocked by policy“; adresář
+`C:/xampp/tmp/kis-perf-20261106-f39c6d1a` zůstává jako nepovinný místní úklid.
+Produkční stav/flags nadále pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
+P05/P07, export P06, heslo/T07 a ranní audit jiné relace se nemění.
+
+## Předchozí návaznost: P12 a syntetické přejímací podklady bez produkčních změn
 
 Vlastník zadal pokračovat samostatně bez jeho podkladů a bez změn produkce.
 P12 technicky hotové: všech sedm textů, 20 scénářů a spojený podklad sjednocené

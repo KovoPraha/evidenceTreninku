@@ -22,6 +22,15 @@ určuje CURRENT_STATE; samotná tabulka není tvrzení o nasazení ani úplném 
 Následující inventura a doplňky jsou historický postup od výchozího K0.1;
 jejich „dosud nezměřeno“ popisuje tehdejší stav, ne současné otevřené úkoly.
 
+## Nové čtecí měření P11 — 6. 11. 2026
+
+[21 případů R05/R06/R13](verification/synthetic-performance-20261106/RESULTS.md)
+doplňuje skutečné GET datové části a šablony bez bootstrapu/nav. Pět zahřátí,
+30 časových vzorků na případ, oddělený SQL/EXPLAIN profil a autorizační negativa.
+Prioritami jsou objem načítání R13, opakované metadata/RSVP R05 a ověření osob R06.
+Lokální čísla nejsou HTTP SLA, uzavření celé K0.2 nebo nová implementace.
+[Průběžné priority a zbývající rozsah](WORK_PLAN_CURRENT.md) jsou zachované.
+
 ## Historický základ K0.1
 
 Zdroj: `3cc60fb6d7fad4bc6430724529295ef025d75178`, ověřeno 29. 10. 2026.
