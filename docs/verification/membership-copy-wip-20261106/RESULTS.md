@@ -1,5 +1,9 @@
 # Členské popisky a nezávislé posouzení WIP — 6. 11. 2026
 
+**Následné vydání:** po samostatném výslovném NASADIT vlastníka bylo #340
+6. 11. nasazeno a ověřeno; [aktuální výsledek](../membership-copy-release-20261106/RESULTS.md).
+Níže zůstává původní protokol přípravy bez produkčního nasazení.
+
 ## Zadání a rozdělení práce
 
 Vlastník požádal pokračovat plně autonomně a upozornil na souběžné vlákno

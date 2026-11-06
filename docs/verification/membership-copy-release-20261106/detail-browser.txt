@@ -1,0 +1,89 @@
+Browser tab: 2033027124, Title: "Závodní tým – e-shop KOVO Praha", URL: "https://kis.kovopraha.cz/booking/produkt.php?id=297".
+1 AXWebArea Závodní tým – e-shop KOVO Praha, URL: kis.kovopraha.cz/booking/produkt.php?id=297
+	2 container Klubový portál
+		3 link Description: KOVO Praha – úvodní stránka, Value: kis.kovopraha.cz/index.php
+		4 container appPublicNav
+			5 content list
+				6 link Description: Domů, Value: kis.kovopraha.cz/index.php
+				7 link Description: Kroužky, Value: kis.kovopraha.cz/booking/cyklisticke_krouzky.php
+				8 link Description: E-shop, Value: kis.kovopraha.cz/booking/eshop.php
+				9 link Description: Tréninky, Value: kis.kovopraha.cz/booking/treninky.php
+				10 link Description: Akce a kalendář, Value: kis.kovopraha.cz/booking/klubovy_kalendar.php
+				11 link Description: Individuální lekce, Value: kis.kovopraha.cz/booking/kalendar.php
+				12 link Description: Velodrom, Value: kis.kovopraha.cz/booking/velodrom.php
+			13 link Description: Můj přehled, Value: kis.kovopraha.cz/booking/sportovni_prehled.php
+			14 button (collapsed) Můj účet, Secondary Actions: Expand
+				87 text 
+				16 text Můj účet
+			17 link Description: Evidence, Value: kis.kovopraha.cz/index.php
+			18 button Odhlásit
+	19 container Navigace e-shopu
+		20 link Description: E-shop – domů, Value: kis.kovopraha.cz/booking/eshop.php
+		21 container Kategorie produktů
+			22 button (collapsed) CYKLISTICKÉ OBLEČENÍ, ID: shop-category-15a3f6df93, Secondary Actions: Expand
+				23 text CYKLISTICKÉ OBLEČENÍ
+			24 button (collapsed) Doplňky, ID: shop-category-da77839cab, Secondary Actions: Expand
+				25 text Doplňky
+			26 link Description: Knihy, Value: kis.kovopraha.cz/booking/eshop.php?kategorie=Knihy
+			27 button (collapsed) Kroužky, ID: shop-category-df6276936e, Secondary Actions: Expand
+				28 text Kroužky
+			29 link Description: Přednášky a školení, Value: kis.kovopraha.cz/booking/eshop.php?kategorie=P%C5%99edn%C3%A1%C5%A1ky%20a%20%C5%A1kolen%C3%AD
+			30 link Description: Příměstské tábory, Value: kis.kovopraha.cz/booking/eshop.php?kategorie=P%C5%99%C3%ADm%C4%9Bstsk%C3%A9%20t%C3%A1bory
+			31 link Description: Půjčovna kol - ODM 2026, Value: kis.kovopraha.cz/booking/eshop.php?kategorie=P%C5%AFj%C4%8Dovna%20kol%20-%20ODM%202026
+			32 link Description: TRÉNINKY A ZÁŽITKY, Value: kis.kovopraha.cz/booking/eshop.php?kategorie=TR%C3%89NINKY%20A%20Z%C3%81%C5%BDITKY
+			33 button (collapsed) Volnočasové oblečení, ID: shop-category-242450ecd0, Secondary Actions: Expand
+				34 text Volnočasové oblečení
+			35 button (collapsed) V Ý P R O D E J, ID: shop-category-00c4da4045, Secondary Actions: Expand
+				36 text V Ý P R O D E J
+			37 link Description: Zátěžové testování, Value: kis.kovopraha.cz/booking/eshop.php?kategorie=Z%C3%A1t%C4%9B%C5%BEov%C3%A9%20testov%C3%A1n%C3%AD
+			38 link Description: Členství v klubu, Value: kis.kovopraha.cz/booking/eshop.php?kategorie=%C4%8Clenstv%C3%AD%20v%20klubu
+	39 container
+		40 container Drobečková navigace
+			41 content list
+				42 link Description: E-shop, Value: kis.kovopraha.cz/booking/eshop.php
+				43 container
+					88 text /
+					45 link Description: Členství v klubu, Value: kis.kovopraha.cz/booking/eshop.php?kategorie=%C4%8Clenstv%C3%AD%20v%20klubu
+				46 container
+					89 text / Závodní tým
+		48 container Fotografie produktu zatím není k dispozici
+		49 text členství v klubu
+		50 heading Závodní tým, Value: 1
+			51 text Závodní tým
+		52 text Členství v závodním týmu KOVO Praha za 2 200 Kč měsíčně. Vyberte si jednu nebo více disciplín MTB, silnice a dráha bez příplatku; výběr vás zařadí do příslušných soupisek. První měsíc se hradí v plné výši, členství lze ukončit ke konci kalendářního měsíce. Platba trvalým příkazem pod stálým variabilním symbolem.
+		53 heading Tarif a sjednání členství, Value: 2
+			54 text Tarif a sjednání členství
+		55 container varianta-951
+			56 text Tarif: Měsíční členství
+			57 text SKU KP-CLEN-ZAVODNI-MESIC
+			58 text Členství v klubu · 2 200,00 Kč / měsíc · trvalý příkaz
+			59 link Description: Sjednat členství, Value: kis.kovopraha.cz/booking/mesicni_clenstvi.php?variant_id=951
+		60 text Před sjednáním znovu ověříme platný tarif a propojení sportovce.
+		61 container mam-zajem
+			62 heading Zajímají vás jiné možnosti členství?, Value: 2
+				63 text Zajímají vás jiné možnosti členství?
+			64 text Zanechte nám e-mail. Ozveme se k dalším možnostem členství v klubu.
+			65 container
+				66 text E-mail
+				67 text field (settable) E-mail
+				68 text Tarif / varianta  (nepovinné)
+				69 pop up button (collapsed, settable) Tarif / varianta (nepovinné), Value: Obecný zájem o členství, ID: interest-variant, Secondary Actions: Expand
+					70 menu
+						71 (selected) Obecný zájem o členství
+						72 Tarif: Měsíční členství
+				73 checkbox (settable, integer) Description: Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce., Value: 0, ID: contact-consent
+				74 text Souhlasím, aby mě KOVO Praha kontaktovalo k této konkrétní nabídce.
+				75 button Chci informace o členství
+	76 container
+		77 text Klubový portál Kovopraha
+		78 link Description: Domů, Value: kis.kovopraha.cz/index.php
+		79 text  · 
+		80 link Description: Kroužky, Value: kis.kovopraha.cz/booking/cyklisticke_krouzky.php
+		81 text  · 
+		82 link Description: Individuální lekce, Value: kis.kovopraha.cz/booking/kalendar.php
+		83 text  · 
+		84 link Description: Veřejné tréninky, Value: kis.kovopraha.cz/booking/treninky.php
+		85 text  · 
+		86 link Description: E-shop, Value: kis.kovopraha.cz/booking/eshop.php
+
+The focused UI element is 1 AXWebArea Závodní tým – e-shop KOVO Praha, URL: kis.kovopraha.cz/booking/produkt.php?id=297

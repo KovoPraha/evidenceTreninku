@@ -1,0 +1,45 @@
+[
+  {
+    "url": "https://kis.kovopraha.cz/booking/produkt.php?id=297",
+    "http": 200,
+    "checks": {
+      "Tarif a sjednání členství": true,
+      "Před sjednáním znovu ověříme platný tarif a propojení sportovce.": true,
+      "Zajímají vás jiné možnosti členství?": true,
+      "Tarif / varianta": true,
+      "Obecný zájem o členství": true,
+      "Chci informace o členství": true,
+      "2 200,00 Kč / měsíc": true,
+      "Sjednat členství": true,
+      "old_heading_absent": true,
+      "old_contact_absent": true
+    }
+  },
+  {
+    "url": "https://kis.kovopraha.cz/booking/produkt.php?id=247",
+    "http": 200,
+    "checks": {
+      "visible_text_unchanged": true,
+      "membership_heading_absent": true
+    }
+  },
+  {
+    "url": "https://kis.kovopraha.cz/booking/produkt.php?id=218",
+    "http": 200,
+    "checks": {
+      "visible_text_unchanged": true,
+      "membership_heading_absent": true
+    }
+  },
+  {
+    "url": "https://kis.kovopraha.cz/booking/eshop.php?kategorie=%C4%8Clenstv%C3%AD%20v%20klubu",
+    "http": 200,
+    "checks": {
+      "členství v klubu": true,
+      "1 tarif": true,
+      "Detail členství": true,
+      "2 200,00 Kč / měsíc": true,
+      "old_button_absent": true
+    }
+  }
+]
