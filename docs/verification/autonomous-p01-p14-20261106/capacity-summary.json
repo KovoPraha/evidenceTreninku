@@ -1,0 +1,68 @@
+{
+  "synthetic_only": true,
+  "database_version": "10.4.32-MariaDB",
+  "migration_count": 159,
+  "memory_guard": "10000 items: median incremental PHP peak <= 4 MiB and <= 60% of baseline",
+  "results": [
+    {
+      "scenario": "empty",
+      "items": 0,
+      "median_ms": {
+        "baseline": 44.6466,
+        "current": 47.1028
+      },
+      "median_incremental_peak_bytes": {
+        "baseline": 101792,
+        "current": 102200
+      }
+    },
+    {
+      "scenario": "small",
+      "items": 10,
+      "median_ms": {
+        "baseline": 110.5205,
+        "current": 124.4954
+      },
+      "median_incremental_peak_bytes": {
+        "baseline": 106904,
+        "current": 104512
+      }
+    },
+    {
+      "scenario": "dense",
+      "items": 10000,
+      "median_ms": {
+        "baseline": 252.9302,
+        "current": 245.6122
+      },
+      "median_incremental_peak_bytes": {
+        "baseline": 5480168,
+        "current": 1831240
+      }
+    },
+    {
+      "scenario": "duplicates",
+      "items": 10000,
+      "median_ms": {
+        "baseline": 219.5961,
+        "current": 240.2201
+      },
+      "median_incremental_peak_bytes": {
+        "baseline": 4537600,
+        "current": 515024
+      }
+    },
+    {
+      "scenario": "fanout",
+      "items": 1000,
+      "median_ms": {
+        "baseline": 88.8842,
+        "current": 93.2482
+      },
+      "median_incremental_peak_bytes": {
+        "baseline": 585560,
+        "current": 227992
+      }
+    }
+  ]
+}

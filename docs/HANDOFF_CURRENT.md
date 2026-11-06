@@ -357,3 +357,11 @@ a rozdělení autonomních kroků oproti vstupům vlastníka. Nejprve P14 a čte
 důkaz automatického plánu P05, souběžně P01/P12 a příprava BAR P02; potom
 skutečný tok P05/P07, účetní specifikace P04 a rozdílový sync P06 po exportu.
 Tato plánovací session nové produkční operace neprovedla ani nepovolila.
+
+## Autonomní průchod přes P01–P14
+
+[Protokol](verification/autonomous-p01-p14-20261106/RESULTS.md): P01 potvrzené
+vlastníkem, konkrétní obnova P14 PASS, schedule P05 PASS s časovou odchylkou.
+Skutečné P05/P07 a export P06 vlastník odložil. Cílené testy 136/753 PASS,
+produkční invarianty 16/16, kapacitní profil a syntetický tisk BAR PASS.
+Chybějící skutečné podklady a lidská rozhodnutí vede tentýž protokol.

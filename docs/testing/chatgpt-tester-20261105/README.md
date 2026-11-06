@@ -21,3 +21,6 @@ Balíček neopravňuje k testům se skutečnými platbami, daty nebo změnou hes
 - [05_MAPA_FUNKCI_A_ZDROJU.txt](05_MAPA_FUNKCI_A_ZDROJU.txt)
 - [06_OVERENI_A_AKTUALIZACE.txt](06_OVERENI_A_AKTUALIZACE.txt)
 - [KIS_PODKLADY_SPOJENE.txt](KIS_PODKLADY_SPOJENE.txt)
+
+Před použitím načíst [aktuální doplnění z 6. 11.](CURRENT_OVERLAY_20261106.md),
+zejména odložení P05/P07/P06 a pravidlo trenérského zastupování.
