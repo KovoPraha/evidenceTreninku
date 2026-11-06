@@ -550,6 +550,7 @@ $filteredProductCount === 1 ? 'výsledek' : ($filteredProductCount >= 2 && $filt
 <?php
 foreach ($products as $product): $variantCount = count($product['variants']);
     $imageUrl = shopStorefrontPrimaryImageUrl($product['images']);
+    $hasMonthlyOffer = array_filter($product['variants'], static fn (array $v): bool => isset($v['monthly_tariff_id'])) !== [];
     ?>
 <div
  class="col-md-6">
@@ -579,7 +580,7 @@ foreach ($products as $product): $variantCount = count($product['variants']);
 ><?php
 if ($product['is_program']):
     ?><span
- class="badge text-bg-primary align-self-start">kroužek</span
+ class="badge text-bg-primary align-self-start"><?= $hasMonthlyOffer ? 'členství v klubu' : 'kroužek' ?></span
 ><?php
 endif;
     ?></div
@@ -652,8 +653,9 @@ endif;
  class="small text-muted"><?=
     $variantCount
     ?> <?=
-    $product['is_program'] ? ($variantCount === 1 ? 'termín' : 'termíny') : ($variantCount === 1 ? 'varianta' : ($variantCount <= 4 ? 'varianty' :
-    'variant'))
+    $hasMonthlyOffer ? ($variantCount === 1 ? 'tarif' : ($variantCount <= 4 ? 'tarify' : 'tarifů')) :
+        ($product['is_program'] ? ($variantCount === 1 ? 'termín' : 'termíny') : ($variantCount === 1 ? 'varianta' : ($variantCount <= 4 ? 'varianty' :
+    'variant')))
     ?></div
 >
         <?php
@@ -666,7 +668,7 @@ endif;
      $product['interest_only_course'] ? 'Cena kurzu na dotaz' : (((int)$product['min_amount_minor'] !== (int)$product['max_amount_minor'] ? 'od ' :
     '') .
      shopPublicMoney((int)$product['min_amount_minor'], (string)$product['currency']))
-    ?><?php if (array_filter($product['variants'], static fn (array $v): bool => isset($v['monthly_tariff_id'])) !== []):
+    ?><?php if ($hasMonthlyOffer):
         ?> / <?=htmlspecialchars(count(array_unique(array_column($product['variants'], 'billing_interval'))) === 1
             ? membershipIntervalLabel($product['variants'][0]) : 'období dle tarifu', ENT_QUOTES, 'UTF-8')?><?php endif; ?></strong
 >
@@ -681,9 +683,9 @@ endif;
  class="btn btn-sm btn-primary" href="produkt.php?id=<?=
     (int)$product['product_id']
     ?>"><?=
-    $product['interest_only_course'] ? 'Zeptat se na kurz'
+    $hasMonthlyOffer ? 'Detail členství' : ($product['interest_only_course'] ? 'Zeptat se na kurz'
         : ($product['is_program'] ? ($product['program_offers'] !== [] ? 'Detail a přihlášení' : 'Detail a zájem') : ($product['in_stock'] ? 'Detail a varianty'
-                : 'Zobrazit detail'))
+                : 'Zobrazit detail')))
     ?></a
 >
         </div

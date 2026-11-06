@@ -1,5 +1,11 @@
 # Pracovní upozornění – produkční vydání 6. 11. 2026
 
+**Navazující potvrzení 6. 11.:** vlastník [potvrdil přijetí již odeslané zprávy
+do schránky](../membership-copy-wip-20261106/RESULTS.md). P01 je tím splněné
+v tomto rozsahu; další zpráva se neposílala. Níže zůstává původní technická
+přejímka včetně tehdejšího nepotvrzeného stavu schránky. Nejde o potvrzení
+doručení všech 18 zpráv všem příjemcům.
+
 Vlastník výslovně schválil sloučení, nasazení, pravidelné zpracování a ověření zvonečku i odesílání e-mailů. Použity existující čekající žádosti; žádná žádost nebyla kvůli testu schválena ani zamítnuta.
 
 ## Vydání a kontroly
