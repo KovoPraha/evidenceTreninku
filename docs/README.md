@@ -10,10 +10,10 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 | Dokument | Účel |
 |---|---|
-| [Registr rozpracované a plánované práce](WORK_REGISTER.md) | Jediný seznam P01–P14: doložený stav, další kroky, závislosti a odpovědnost |
+| [Registr rozpracované a plánované práce](WORK_PLAN_CURRENT.md) | Jediný seznam P01–P14: doložený stav, další kroky, závislosti a odpovědnost |
 | [Závodní tým – aktuální ověření](verification/racing-team-status-20261106/RESULTS.md) | Schválený a zveřejněný tarif 2200 Kč/měsíc, cesta ke sjednání a podmínka ověřeného sportovce |
 | [Sjednocení dokumentace 6. 11.](verification/documentation-reconcile-20261106/RESULTS.md) | Sloučení souběžného předání #333/#334, opravené rozpory a hranice ověření; bez produkčních změn |
-| [Průběžný plán – kompatibilní rozcestník](WORK_PLAN_CURRENT.md) | Odkazuje na stejný registr; nevytváří druhý seznam úkolů |
+| [Průběžný plán – kompatibilní rozcestník](WORK_REGISTER.md) | Odkazuje na stejný registr; nevytváří druhý seznam úkolů |
 | [Provozní inventura 6. 11.](verification/operations-inventory-20261106/RESULTS.md) | Stav větví, mezitím nasazené #330 a doložený běh upozornění |
 | [Pracovní upozornění](STAFF_NOTIFICATIONS_2026-11-06.md) | Nasazený zvoneček i přesný odkaz ověřené; [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md), potvrzení schránky zbývá |
 | [Omluvenky a náhrady – ověření](verification/makeup-audit-20261106/RESULTS.md) | Již nasazené, 22 testů / 139 assertions, 23 HTTP scénářů a syntetický browser PASS |
@@ -22,6 +22,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Zveřejnění nabídky BAR](BAR_MENU_PUBLICATION_2026-11-06.md) | Nabídka 1, vydání 1, 45 produktů s fotografiemi; [živé důkazy](verification/bar-menu-publication-20261106/RESULTS.md) |
 | [Session handoff BAR](SESSION_HANDOFF_BAR_2026-11-06.md) | Dokončená publikace a pořadí přihlášení Lucky, zásob, kasy a účetního propojení |
 | [Pravidla souborové dokumentace](WORK_DOCUMENTATION_POLICY.md) | Průběžné záznamy rozpracované, dokončené a plánované práce v souborech |
+| [Pracovní balíček pro testerku](testing/chatgpt-tester-20261105/README.md) | Zachované datované instrukce a 20 scénářů; před sdílením aktualizovat, propojení GitHubu není doložené |
 | [Měsíční členství přes e-shop](MONTHLY_MEMBERSHIP_RUNBOOK.md) | Nový tok, platby, doklady, upomínky, samostatná aktivace a hranice ověření; [plán](MONTHLY_MEMBERSHIP_PLAN.md) |
 | [Tréninky a zastupování bez povinné soupisky](COACH_TRAINING_ACCESS_2026-11-05.md) | Vlastní cíle první, ostatní dostupné; nové pravidlo, přiřazení a hranice ověření |
 | [Pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | Aplikace nasazená a převod provedený; poslední sync, přihlášené UAT a E8 otevřené |

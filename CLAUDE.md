@@ -125,7 +125,7 @@ v eshop_payments_admin.php: pozice finance_manager, důvod a výslovné potvrzen
 
 - Výslovný požadavek vlastníka z 6. 11. 2026: veškerou rozpracovanou a plánovanou
   práci, rozhodnutí a výsledky zapisovat průběžně přímo do verzovaných souborů.
-  Při zahájení/pokračování aktualizovat [registr práce](docs/WORK_REGISTER.md)
+  Při zahájení/pokračování aktualizovat [registr práce](docs/WORK_PLAN_CURRENT.md)
   a propojený tematický plán (ID, rozsah, oprávnění, větev/worktree, stav, další
   krok a závislosti); při předání [handoff](docs/HANDOFF_CURRENT.md).
   Release/flags s důkazy patří pouze do CURRENT_STATE. Samotný chat nebo lokální
@@ -140,7 +140,7 @@ v eshop_payments_admin.php: pozice finance_manager, důvod a výslovné potvrzen
   nic nenasazuje. Integrace, importy a rozesílky mají samostatné oprávnění.
 - Již aplikované migrace se nemění. Nová migrace aktualizuje zálohovací ownership
   kontrakt, pokud přidává vlastněnou tabulku. Viz [pravidla migrací](migrations/README.md).
-- [WORK_PLAN_CURRENT](docs/WORK_PLAN_CURRENT.md) je kompatibilní rozcestník na
+- [WORK_REGISTER](docs/WORK_REGISTER.md) je kompatibilní rozcestník na
   jediný registr, nikoli další seznam práce. Při sjednocování předání zachovej
   udělená rozhodnutí i důkazy; schválený záměr není doklad provedení.
 - Podrobný postup souborového zápisu a session handoffu určí

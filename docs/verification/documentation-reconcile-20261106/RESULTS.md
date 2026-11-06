@@ -42,9 +42,9 @@ Závodního týmu. Také tento výsledek a podklady se přebírají bez produkč
 | Dnešní záloha | Před nasazením ověřena záloha 385 tabulek / 2 triggery; historické jiné obnovy PASS. | Izolovaná obnova právě této zálohy zatím neprovedená. P14. |
 
 Původní obsah plánu #333 je zachovaný jako [historický vstup](WORK_PLAN_SOURCE_333.md).
-Jeho jedinečné otevřené body nejsou ztracené: další pracovní události P12,
-balíček pro testerku P13, dřívější souhlas u členství P05. WORK_PLAN_CURRENT
-je kompatibilní odkaz na jediný WORK_REGISTER, nikoli druhá sada stavů.
+Jeho jedinečné otevřené body nejsou ztracené: balíček pro testerku P12,
+další pracovní události P13, dřívější souhlas u členství P05. WORK_REGISTER
+je kompatibilní odkaz na jediný WORK_PLAN_CURRENT, nikoli druhá sada stavů.
 Při práci dorazily novější doklady #335 a #336. Předchozí přehled pouze konceptů
 baru a členství je tak překonaný; oba stavy jsou nyní výslovně aktualizované,
 zatímco původní protokoly a rozhodnutí zůstávají historicky zachované.
@@ -103,6 +103,16 @@ Po posledním souběžném dokladu členství #336: **80 řádků / 871 odkazů 
 kontrola **1222 místních odkazů ve 29 Markdown souborech bez chyby**,
 `git diff --check` PASS. Nový archivní blok pochází ze zachovaného předání #336;
 původní bloky se nepřepisují.
+Pozdější #334 `85698b0b` přineslo také zachovaný pracovní balíček testerky.
+Všechny jeho soubory jsou převzaté; nejde o důkaz sdílení projektu či připojení.
+Kanonický seznam zůstává v již používaném WORK_PLAN_CURRENT, WORK_REGISTER
+je kompatibilní odkaz. Aktuální výsledky P01–P14 zůstaly zachované; starší
+řádky konceptu z nového dokumentačního merge nepřepsaly novější #335/#336.
+Závěrečná místní kontrola po převzetí balíčku a sjednocení kanonické cesty:
+**80 řádků / 873 odkazů / 105 archivních bloků / 0 chyb**, dokumentační testy
+**2 / 14 PASS**, **1152 místních odkazů ve 21 Markdown souborech rozdílu proti
+tehdejšímu main bez chyby**. Rozsah rozdílu se zmenšil po souběžných dokumentačních
+merge do main; původní WIP má nadále shodný hash.
 Před předáním zachován také mezitím sloučený main `d8215ba7` (#335), jehož
 strom byl shodný s již připojeným zdrojovým předáním; konflikty souběžné
 dokumentace vyřešené bez vypuštění jeho změn.
@@ -111,7 +121,7 @@ Souborové předání je v [PR #337](https://github.com/KovoPraha/evidenceTrenin
 které sjednocuje #333/#334/#335/#336. Aktuální CI a stav sloučení určuje PR.
 Po zelených kontrolách lze začlenit pouze tuto dokumentaci; produkční deploy
 ani změna přepínačů nejsou součástí předání. Při další session číst aktuální main,
-CURRENT_STATE, HANDOFF_CURRENT a jediný WORK_REGISTER, nikoli znovu slučovat
+CURRENT_STATE, HANDOFF_CURRENT a jediný WORK_PLAN_CURRENT, nikoli znovu slučovat
 historické pracovní větve podle jejich názvu.
 
 ## Důkazní hranice

@@ -9,7 +9,7 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 Tato dokumentační relace pouze sjednocuje předání; nic nového na produkci
 nezapíná. [Záznam sjednocení a kontroly](verification/documentation-reconcile-20261106/RESULTS.md)
 uvádí původ souběžných změn #333/#334. Jediný seznam další práce je
-[WORK_REGISTER](WORK_REGISTER.md); [WORK_PLAN_CURRENT](WORK_PLAN_CURRENT.md)
+[WORK_PLAN_CURRENT](WORK_PLAN_CURRENT.md); [WORK_REGISTER](WORK_REGISTER.md)
 zůstává kompatibilním rozcestníkem na tentýž registr, nikoli druhou frontou úkolů.
 Novější souběžné předání #335 dokládá již zveřejněnou nabídku BAR;
 [session handoff baru](SESSION_HANDOFF_BAR_2026-11-06.md) a [pravidla dokumentace](WORK_DOCUMENTATION_POLICY.md)
@@ -17,7 +17,7 @@ jsou zachované. Tato relace stav pouze načetla a popsala, publikaci neprovád�
 
 Vlastník 6. 11. výslovně požaduje zapisovat rozpracovanou i plánovanou práci
 přímo do verzovaných souborů, nikoli ponechat její jediný záznam v chatu.
-Před prací číst a během práce aktualizovat [WORK_REGISTER](WORK_REGISTER.md):
+Před prací číst a během práce aktualizovat [WORK_PLAN_CURRENT](WORK_PLAN_CURRENT.md):
 ID, stav, další krok, závislosti, větev/worktree a odkazy na tematický plán/důkazy.
 Release a flags nadále určuje pouze CURRENT_STATE; plán nenahrazuje provozní souhlas.
 Před ukončením session aktualizovat související soubory a uvést stav PR/merge/deploy.

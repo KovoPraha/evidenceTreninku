@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 6. 11. 2026 (Europe/Prague), podle doloženého nasazení a provozu. Další kroky vede jediný [registr práce](WORK_REGISTER.md); [sjednocení předání](verification/documentation-reconcile-20261106/RESULTS.md) neprovádí produkční změny.
+Aktualizováno 6. 11. 2026 (Europe/Prague), podle doloženého nasazení a provozu. Další kroky vede jediný [registr práce](WORK_PLAN_CURRENT.md); [sjednocení předání](verification/documentation-reconcile-20261106/RESULTS.md) neprovádí produkční změny.
 
 - **[Pracovní upozornění nasazená a minutový běh aktivní](verification/staff-notifications-release-20261106/RESULTS.md):** PR #330, produkční zvoneček, přesný odkaz a přečtení/nepřečtení ověřeny. Tři žádosti × šest účtů = 18 upozornění a 18 e-mailů přijatých transportem; další hostingové běhy bez duplikace či chyb. Doručení do schránky zatím nepotvrzené. Čtecí dohled: staff-notifications-production.yml / status.
 - **[Omluvenky a náhrady již nasazené a znovu ověřené](verification/makeup-audit-20261106/RESULTS.md):** 6. 11. prošlo 22 testů / 139 assertions, 23 HTTP scénářů a skutečný místní browser (omluva, čekání na docházku, rezervace a storno s vrácením nároku). Mobilní zobrazení a uložená historie PASS. Bez nové chyby či opravy, není potřeba další nasazení. Zápisy pouze na oddělených syntetických datech; přihlášené produkční UAT se nyní neprovádělo.

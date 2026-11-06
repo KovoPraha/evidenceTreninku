@@ -40,7 +40,7 @@ Při následném schváleném nasazení:
 3. První běh doplní také dosavadní čekající žádosti, nejvýše 500 chybějících událostí za běh. Připraví upozornění všem aktuálně oprávněným příjemcům; případné skutečné rozesílání je nutné zahrnout do oprávnění k uvedení do provozu.
 4. V přihlášené produkční administraci ověřit skutečné příjemce, zvoneček, přesný odkaz, vyřízení a stav dalšího běhu. Reálné doručení do schránky se potvrzuje zvlášť, stav fronty `sent` sám nezaručuje doručení.
 
-V první implementační fázi nebyla odeslána žádná skutečná zpráva ani změněn produkční plánovač. Následné schválené uvedení do provozu dokládá [produkční protokol](verification/staff-notifications-release-20261106/RESULTS.md); aktuální stav určuje CURRENT_STATE a další kroky [průběžný plán](WORK_PLAN_CURRENT.md).
+V první implementační fázi nebyla odeslána žádná skutečná zpráva ani změněn produkční plánovač. Následné schválené uvedení do provozu dokládá [produkční protokol](verification/staff-notifications-release-20261106/RESULTS.md); aktuální stav určuje CURRENT_STATE a další kroky [průběžný plán](WORK_REGISTER.md).
 
 ## Schválené uvedení do provozu 6. 11. 2026
 
@@ -57,7 +57,7 @@ SUCCESS. [Samostatný status](verification/operations-inventory-20261106/staff-s
 dokládá skutečný minutový běh a 18 zpráv ve stavu sent bez čekajících/chybných.
 Předchozí seznam „při následném nasazení“ je postup, nikoli tvrzení o dnešním
 nenasazení. [Provozní inventura](verification/operations-inventory-20261106/RESULTS.md)
-uvádí meze tohoto důkazu. Další kroky vede P01 v [registru práce](WORK_REGISTER.md),
+uvádí meze tohoto důkazu. Další kroky vede P01 v [registru práce](WORK_PLAN_CURRENT.md),
 živý release vždy CURRENT_STATE. [Produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md)
 dokládá skutečný přihlášený zvoneček, přesný odkaz do žádosti, osobní přečtení
 a návrat do původního kontextu. Tyto kroky již nejsou neprovedené.

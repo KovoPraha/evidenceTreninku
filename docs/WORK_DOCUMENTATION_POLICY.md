@@ -11,7 +11,7 @@ Pokyn je dostupný také v kořenovém [AGENTS.md](../AGENTS.md) a [CLAUDE.md](.
 | --- | --- |
 | Současné nasazení, aktivace, ověřený provozní stav a jeho meze | [CURRENT_STATE.md](CURRENT_STATE.md), stručně s odkazy na důkazy |
 | Převzetí další session a rozcestník k aktuálním plánům | [HANDOFF_CURRENT.md](HANDOFF_CURRENT.md) |
-| Společná rozpracovanost a další práce celého projektu | Jediný [WORK_REGISTER.md](WORK_REGISTER.md), položky P01–P14; [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) zůstává kompatibilním rozcestníkem; podrobnosti v tematických plánech |
+| Společná rozpracovanost a další práce celého projektu | Jediný [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md), položky P01–P14; [WORK_REGISTER.md](WORK_REGISTER.md) zůstává kompatibilním rozcestníkem; podrobnosti v tematických plánech |
 | Rozsah konkrétní práce, etapy, rozpracované i budoucí úkoly | Příslušný plán v `docs/`; při nové větší práci vytvořit datovaný plán |
 | Konkrétní předání dokončené nebo přerušené session | Datovaný handoff v `docs/`, propojený s hlavním handoffem a plánem |
 | Výsledky, PASS/FAIL/NOT RUN, snímky a bezpečné strojové souhrny | Tematický protokol v `docs/verification/` |

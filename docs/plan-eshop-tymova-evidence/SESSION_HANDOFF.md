@@ -15,7 +15,7 @@ BAR je převedený a novější [doklad #335](../verification/bar-menu-publicati
 potvrzuje zveřejněnou nabídku 1 / vydání 1, 45 produktů a fotografií.
 Tato relace ji pouze načetla, nic nepublikovala. Reálný provoz,
 zásoby/kasa a účetní adaptér zbývají. Podrobnosti a odpovědnost vede jediný
-[registr P01–P14](../WORK_REGISTER.md); [WORK_PLAN_CURRENT](../WORK_PLAN_CURRENT.md)
+[registr P01–P14](../WORK_PLAN_CURRENT.md); [WORK_REGISTER](../WORK_REGISTER.md)
 odkazuje na stejný seznam. Původní pracovní kopie a souběžné větve zachované.
 
 Pro novou práci použít [aktuální stav](../CURRENT_STATE.md),
