@@ -31,6 +31,11 @@ Prioritami jsou objem načítání R13, opakované metadata/RSVP R05 a ověřen�
 Lokální čísla nejsou HTTP SLA, uzavření celé K0.2 nebo nová implementace.
 [Průběžné priority a zbývající rozsah](WORK_PLAN_CURRENT.md) jsou zachované.
 
+Navazující [optimalizace R13](verification/medical-read-performance-20261106/RESULTS.md)
+implementuje stránku před metadaty, cílený výběr osob a postupný výpočet stavů.
+Parita, místní browser i párové měření před/po v CI 10.3/11.4 PASS; stav vede
+[předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md). Bez nasazení.
+
 ## Historický základ K0.1
 
 Zdroj: `3cc60fb6d7fad4bc6430724529295ef025d75178`, ověřeno 29. 10. 2026.

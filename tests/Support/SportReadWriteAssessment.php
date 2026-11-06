@@ -100,8 +100,11 @@ try {
         $again = medicalClearanceList($plain, []);
         $elapsed = (hrtime(true) - $start) / 1e6;
         $peak = memory_get_peak_usage() - $memory;
-        if ($sql !== 2 || $value !== $again || $again['total'] !== $size || count($again['rows']) !== min(25, $size)
-            || str_contains(json_encode($again, JSON_THROW_ON_ERROR), 'PRIVATE_SENTINEL') || $peak > 16 * 1024 * 1024) {
+        $expectedSql = $size === 0 ? 2 : 3; // Count, page and (only for a nonempty page) its record metadata.
+        $expectedFetched = 1 + 2 * min(25, $size); // One count plus this fixture's one record per displayed watch.
+        if ($sql !== $expectedSql || $fetched !== $expectedFetched || $value !== $again || $again['total'] !== $size
+            || count($again['rows']) !== min(25, $size)
+            || str_contains(json_encode($again, JSON_THROW_ON_ERROR), 'PRIVATE_SENTINEL') || $peak > 1024 * 1024) {
             throw new RuntimeException('Medical list budget/privacy failed.');
         }
         $medical[] = ['watches' => $size, 'sql' => $sql, 'fetched_rows' => $fetched, 'returned' => count($again['rows']),

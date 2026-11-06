@@ -1,0 +1,18 @@
+{
+  "server_stopped": true,
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "browser_closed": true,
+  "local_config_removed": true,
+  "production_mutations": false,
+  "original_performance_runtime_untouched": true,
+  "database": "10.4.32-MariaDB",
+  "http_server_stopped": true,
+  "php_memory_limit": "512M",
+  "buffer_pool_bytes": 134217728,
+  "original_wip_unchanged": true,
+  "port": 33447,
+  "synthetic_only": true,
+  "datadir": "C:/xampp/tmp/kis-medperf-20261106-b81a2d90/data",
+  "php": "8.2.12",
+  "owned_runtime_retained": true
+}

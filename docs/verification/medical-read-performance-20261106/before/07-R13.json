@@ -1,0 +1,546 @@
+{
+    "case": {
+        "route": "R13",
+        "role": "registrar",
+        "mode": "all",
+        "people": 10000,
+        "sql": {
+            "count": 6,
+            "fetched_rows": 50224,
+            "execute_ms": 213.3272,
+            "fetch_ms": 77.98519999999999
+        },
+        "median_ms": 368.4166,
+        "p95_ms": 605.4251,
+        "peak_increment_bytes": 44871464,
+        "process_peak_bytes": 52428800,
+        "result": {
+            "data": {
+                "watch_ids": [
+                    3301,
+                    3302,
+                    3303,
+                    3304,
+                    3305,
+                    3306,
+                    3307,
+                    3308,
+                    3309,
+                    3310,
+                    3311,
+                    3312,
+                    3313,
+                    3314,
+                    3315,
+                    3316,
+                    3317,
+                    3318,
+                    3319,
+                    3320,
+                    3321,
+                    3322,
+                    3323,
+                    3324,
+                    3325
+                ],
+                "statuses": [
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid"
+                ],
+                "total": 10000,
+                "available_people": 10221,
+                "policies": 1
+            },
+            "html_bytes": 682280,
+            "data_sha256": "60f24b50c2fbe7be6eb83f45fbde6b68f12f2a6603eeb0e7d9f324521a1224fe",
+            "html_sha256": "c26df8d82e9e975868c95bdb39e8d71fb7f2e717b5889e4f3f1eee0b9721c05b",
+            "result_sha256": "22d8e6e67d0f20dee1a464471ea42e8170932a65d053719ee0895032cd5e6432"
+        }
+    },
+    "sql_detail": {
+        "route": "R13",
+        "role": "registrar",
+        "mode": "all",
+        "measurement": "sql",
+        "warmups": 5,
+        "read_only_session": true,
+        "samples": [
+            {
+                "ms": 367.9899,
+                "peak_increment_bytes": 44874624,
+                "process_peak_bytes": 52428800
+            }
+        ],
+        "result": {
+            "data": {
+                "watch_ids": [
+                    3301,
+                    3302,
+                    3303,
+                    3304,
+                    3305,
+                    3306,
+                    3307,
+                    3308,
+                    3309,
+                    3310,
+                    3311,
+                    3312,
+                    3313,
+                    3314,
+                    3315,
+                    3316,
+                    3317,
+                    3318,
+                    3319,
+                    3320,
+                    3321,
+                    3322,
+                    3323,
+                    3324,
+                    3325
+                ],
+                "statuses": [
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid"
+                ],
+                "total": 10000,
+                "available_people": 10221,
+                "policies": 1
+            },
+            "html_bytes": 682280,
+            "data_sha256": "60f24b50c2fbe7be6eb83f45fbde6b68f12f2a6603eeb0e7d9f324521a1224fe",
+            "html_sha256": "c26df8d82e9e975868c95bdb39e8d71fb7f2e717b5889e4f3f1eee0b9721c05b",
+            "result_sha256": "22d8e6e67d0f20dee1a464471ea42e8170932a65d053719ee0895032cd5e6432"
+        },
+        "sql": {
+            "count": 6,
+            "fetched_rows": 50224,
+            "execute_ms": 213.3272,
+            "fetch_ms": 77.98519999999999
+        },
+        "queries": [
+            {
+                "sql": "SELECT id FROM treneri WHERE id=? AND aktivni=1",
+                "count": 1,
+                "fetched_rows": 1,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "treneri",
+                        "type": "const",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?",
+                "count": 1,
+                "fetched_rows": 1,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "staff_user_positions",
+                        "type": "const",
+                        "possible_keys": "PRIMARY,idx_staff_user_positions_default,fk_staff_user_positions_position",
+                        "key": "PRIMARY",
+                        "key_len": "262",
+                        "ref": "const,const",
+                        "rows": "1",
+                        "Extra": "Using index"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT * FROM medical_clearance_policies ORDER BY id DESC",
+                "count": 1,
+                "fetched_rows": 1,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "medical_clearance_policies",
+                        "type": "index",
+                        "possible_keys": null,
+                        "key": "PRIMARY",
+                        "key_len": "8",
+                        "ref": null,
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT id,jmeno,prijmeni FROM sportovci ORDER BY prijmeni,jmeno,id",
+                "count": 1,
+                "fetched_rows": 10221,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "sportovci",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "10175",
+                        "Extra": "Using filesort"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT w.*,s.jmeno,s.prijmeni FROM medical_clearance_watches w JOIN sportovci s ON s.id=w.sportovec_id WHERE 1=1 ORDER BY w.next_review_on,w.id",
+                "count": 1,
+                "fetched_rows": 10000,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "w",
+                        "type": "ALL",
+                        "possible_keys": "sportovec_id",
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "9910",
+                        "Extra": "Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "p11_read_325e0d3db260f5af.w.sportovec_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT r.id,r.watch_id,r.state,r.issued_on,r.valid_until,r.replaces_id FROM medical_clearance_records r JOIN medical_clearance_watches w ON w.id=r.watch_id JOIN sportovci s ON s.id=w.sportovec_id WHERE 1=1 ORDER BY r.id DESC",
+                "count": 1,
+                "fetched_rows": 30000,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "w",
+                        "type": "index",
+                        "possible_keys": "PRIMARY,sportovec_id",
+                        "key": "sportovec_id",
+                        "key_len": "406",
+                        "ref": null,
+                        "rows": "9910",
+                        "Extra": "Using index; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "s",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "p11_read_325e0d3db260f5af.w.sportovec_id",
+                        "rows": "1",
+                        "Extra": "Using index"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "ref",
+                        "possible_keys": "watch_id",
+                        "key": "watch_id",
+                        "key_len": "8",
+                        "ref": "p11_read_325e0d3db260f5af.w.id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            }
+        ]
+    },
+    "timing": {
+        "route": "R13",
+        "role": "registrar",
+        "mode": "all",
+        "measurement": "timing",
+        "warmups": 5,
+        "read_only_session": true,
+        "samples": [
+            {
+                "ms": 396.8315,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 521.2987,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 326.621,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 324.6466,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 342.3579,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 498.4646,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 340.7618,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 316.7966,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 419.4021,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 345.4412,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 378.2913,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 459.8563,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 351.4336,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 334.2069,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 327.9071,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 355.8606,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 439.4895,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 367.6203,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 280.1813,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 279.9745,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 378.8039,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 369.2129,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 520.9654,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 397.409,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 358.446,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 296.8775,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 414.8395,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 376.6327,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 605.4251,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            },
+            {
+                "ms": 950.8116,
+                "peak_increment_bytes": 44871464,
+                "process_peak_bytes": 52428800
+            }
+        ],
+        "result": {
+            "data": {
+                "watch_ids": [
+                    3301,
+                    3302,
+                    3303,
+                    3304,
+                    3305,
+                    3306,
+                    3307,
+                    3308,
+                    3309,
+                    3310,
+                    3311,
+                    3312,
+                    3313,
+                    3314,
+                    3315,
+                    3316,
+                    3317,
+                    3318,
+                    3319,
+                    3320,
+                    3321,
+                    3322,
+                    3323,
+                    3324,
+                    3325
+                ],
+                "statuses": [
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid",
+                    "valid"
+                ],
+                "total": 10000,
+                "available_people": 10221,
+                "policies": 1
+            },
+            "html_bytes": 682280,
+            "data_sha256": "60f24b50c2fbe7be6eb83f45fbde6b68f12f2a6603eeb0e7d9f324521a1224fe",
+            "html_sha256": "c26df8d82e9e975868c95bdb39e8d71fb7f2e717b5889e4f3f1eee0b9721c05b",
+            "result_sha256": "22d8e6e67d0f20dee1a464471ea42e8170932a65d053719ee0895032cd5e6432"
+        }
+    }
+}

@@ -386,3 +386,9 @@ testovací workflow doplňuje 10.3/11.4. Nález R13 je především neomezené n
 před stránkováním a výběr všech osob; R05 opakuje metadata a RSVP po plánech,
 R06 ověřuje osoby jednotlivě. Návrhy optimalizace a přesné dosud neměřené hranice
 jsou v protokolu; nepředstírat dokončení celého K0.2 nebo produkční SLA.
+
+Na dalším výslovném zadání navazuje [implementace optimalizace R13](verification/medical-read-performance-20261106/RESULTS.md):
+omezené načítání stránky a osob, stream minimálních metadat pro kanonický
+stavový filtr. Parita, místní browser i párové CI 10.3/11.4 PASS; finální CI/merge ověřit u PR.
+[Session handoff](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md)
+vede další postup; produkce se touto relací nemění a ostatní P11 úkoly zůstávají otevřené.

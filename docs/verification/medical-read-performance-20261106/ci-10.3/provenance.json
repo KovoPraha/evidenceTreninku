@@ -1,0 +1,64 @@
+{
+  "run_id": 42278997750,
+  "pr_head": "940cbcd121a01ab25ed732660936e7e1ae9d99ae",
+  "whole_run": "failure: old SportReadWriteAssessment expected two list SQL queries; paired profile jobs passed",
+  "paired_profile_job": "success",
+  "before": {
+    "complete": true,
+    "source_sha": "fbdf622e0acadebeaf5525fb168869795a7faca2",
+    "harness_sha256": "60d1d6cdbe7e9af433acc014992a764d30f9f6af97ec5d43f3ae2937eb5e699a",
+    "php": "8.2.35",
+    "server": {
+      "version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+      "port": 3306
+    },
+    "fixture_tables": 347,
+    "migration_ledger_count": 160,
+    "negative_checks": {
+      "foreign_training": "denied",
+      "revoked_role": "denied",
+      "medical_wrong_role": "denied",
+      "foreign_family_medical": "denied"
+    }
+  },
+  "after": {
+    "complete": true,
+    "source_sha": "73718ca8ce7a4de5869a0cf79d498bd49ce673d7",
+    "harness_sha256": "047688cbf009eebd01cc1e449586dc20c28ac30e077a2917d09b289acf234708",
+    "php": "8.2.35",
+    "server": {
+      "version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+      "port": 3306
+    },
+    "fixture_tables": 347,
+    "migration_ledger_count": 160,
+    "negative_checks": {
+      "foreign_training": "denied",
+      "revoked_role": "denied",
+      "medical_wrong_role": "denied",
+      "foreign_family_medical": "denied"
+    },
+    "source_files_sha256": {
+      "planovac.php": "e5ee63516fa909635b96f593761e4a0d7c6e4d0029b502948537e91e74d9101a",
+      "training_closure_admin.php": "8e06216dd1cf94aaadcc67a21fb84a2a2fd207a25f925aa95be045393337ae61",
+      "medical_clearance_admin.php": "50b54860b65b59b5a45b8708ba1f52eaa78a16ec30b172970a0b474309214984",
+      "includes/training_day_view.php": "624f64a4fb947ba425a8bf79644a22d8e3967a4692bf33b13e91f47e7c183422",
+      "includes/medical_clearance_admin_view.php": "8b58828fb56ea5103e028660509e14ccb7c578d7d28860e54c1f4cf6728d2632",
+      "includes/medical_clearance.php": "fbc840eca59c5181d5e8da7fa5d362366bc3086f9c5778173cb9c17a5ff23b3b",
+      "includes/medical_clearance_read.php": "72e87e42a03337a0de2b6f5c322413f8915d49d481a9e188fc4bddb94b608b0f",
+      "assets/js/medical-person-picker.js": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56"
+    }
+  },
+  "before_cases": 9,
+  "after_cases": 24,
+  "schema_cleanup": {
+    "before": {
+      "schema": "p11_read_5ed0cabd30ac4b70",
+      "removed": true
+    },
+    "after": {
+      "schema": "p11_read_13633015b87a12a1",
+      "removed": true
+    }
+  }
+}

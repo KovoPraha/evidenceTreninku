@@ -4,7 +4,24 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Nejnovější návaznost: P11 syntetické měření výkonu
+## Nejnovější návaznost: P11 optimalizace zdravotního přehledu
+
+Vlastník zadal navázat optimalizací R13 bez produkčních změn a zachovat WIP.
+[Plán, stav a důkazy](verification/medical-read-performance-20261106/RESULTS.md).
+Vlastní větev `codex/medical-read-performance-20261106`, kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-medical-performance-20261106`.
+Implementace hotová: stránka před načtením historie, minimální stream metadat
+pro stavové filtry, omezený výběr osob při zachování jejich dostupnosti.
+32 testů / 14 132 assertions a MariaDB parita 36 kombinací PASS, skutečný
+místní browser výběru a původního formuláře PASS. Devět srovnávacích R13
+scénářů před/po i párové CI 10.3/11.4 PASS. Úplný stav CI/merge určuje PR.
+Při 10k: 50 224 → 132 řádků pro běžnou stránku, paměť asi 43 → 0,18 MiB.
+Vlastní schémata uklizená, obě localhost služby zastavené, původní WIP otisk shodný.
+[Datované předání a zbývající práce](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md),
+[PR #352](https://github.com/KovoPraha/evidenceTreninku/pull/352).
+Žádný deploy ani aktivace. Původní rozpracované soubory se nepřepisují.
+
+## Předchozí návaznost: P11 syntetické měření výkonu
 
 Vlastník zadal měření bez produkčních změn se zachováním WIP. Místně dokončeno
 21 případů R05/R06/R13, 630 časových vzorků, samostatné SQL/řádky/paměť/EXPLAIN.
