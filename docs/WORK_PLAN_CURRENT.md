@@ -20,7 +20,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | HOTOVO: nabídka BAR 1 / vydání 1 zveřejněná, 45 produktů a fotografií; novější doklad #335 nahrazuje původní koncept | Publikaci neopakovat a nezakládat další návrh. Úpravy nabídky až podle dalšího zadání; zásoby/kasa a skutečný prodej zůstávají P02. Přihlášené vytvoření tiskového PDF zatím NOT RUN. | Správce baru; [publikace](verification/bar-menu-publication-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) |
 | P04 | BAR má účetní export/kontrakt a návrh adaptéru; zápis do hlavního účetnictví dosud není dokončený | Odsouhlasit účetní pravidla, implementovat a převzít adaptér bez zdvojení peněz. Není to pouze čekání na deploy nebo přepínač. Skutečná bezhotovostní úhrada/vratka také nedoložená. | Vlastník/účetní, vývoj; [kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md), [plán adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md) |
-| P05 | Skutečný tok ODLOŽENO vlastníkem; [hostingový plán #341 nasazený a přirozené minutové tiky ověřené](verification/membership-scheduler-20261106/RESULTS.md), denně 05:23 UTC; redundantní GitHub schedule vypnutý.  Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. První skutečné sjednání/platba/PDF/doručení zůstávají odložené. Technická oprava časování hotová; příští ranní start a dlouhodobý provoz zatím nejsou dnešním tickem prokázané. Roční cena neurčená; textová oprava členských popisků #340 nasazena a ověřena (viz autorizované vydání níže). | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
+| P05 | Skutečný tok ODLOŽENO vlastníkem; [hostingový plán #341 nasazený a přirozené minutové tiky ověřené](verification/membership-scheduler-20261106/RESULTS.md), denně 05:23 UTC; redundantní GitHub schedule vypnutý.  Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. První skutečné sjednání/platba/PDF/doručení zůstávají odložené. Technická oprava časování hotová; časovou přejímku 7. 11. vede serverový plán níže, dlouhodobý provoz jediný audit neuzavírá. Roční cena neurčená; textová oprava členských popisků #340 nasazena a ověřena (viz autorizované vydání níže). | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
 | P06 | Export/sync ODLOŽENO vlastníkem.  Evidence členů bez sezon nasazená, 435 zařazení převedeno | Vyčkat na poslední nový export, provést schválený rozdílový sync a role/UAT. E8 odstranění legacy schématu až po přejímce a bezpečné obnově. Počáteční datum ani import neopakovat. | Vlastník dodá export; [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [provoz](MEMBER_EVIDENCE_OPERATION_2026-11-02.md), [převod](verification/member-evidence-cutover-20261102/RESULTS.md) |
 | P07 | Skutečná platba ODLOŽENO vlastníkem.  Fio import/automatika a SumUp zapnuté; skutečný hostingový plán ověřený | Doložit skutečnou zaplacenou úhradu a přihlášený průchod. 45 pohybů bez odpovídajícího VS ponechat ručnímu posouzení, nepárovat jen částkou. | Vlastník/hospodář; [aktivace](verification/live-payments-20261105/ACTIVATION.md), [45 pohybů](verification/fio-followup-20261105/RESULTS.md) |
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | [Navazující syntetická regrese 6. 11. PASS](verification/offline-followup-20261106/RESULTS.md); dokončit asistované UAT a lidské převzetí. Heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
@@ -174,10 +174,10 @@ P05/P07 se skutečnou platbou a export P06 nadále odložené; řeší se pouze
 spolehlivost již povoleného plánovače a její důkazy. Hotovo: #341 sloučené a nasazené, hosting instalovaný, přirozené tiky a zachování konfigurace PASS; [výsledek](verification/membership-scheduler-20261106/RESULTS.md). Budoucí ranní běh nepřehrávat kvůli testu.
 
 
-### Naplánovaný audit prvního rána
+### Původní plán prvního rána (před serverovou náhradou)
 
 [Ranní audit 7. 11.](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md),
-06:30 CET / 05:30 UTC, aktivní jednorázová navazující úloha
+06:30 CET / 05:30 UTC, původní místní úloha, nyní PAUSED a nahrazená serverem,
 `rann-audit-lenstv-7-11`. Pověření: ověřit skutečný start vůči 05:23 UTC a
 zapsat výsledek přímo do dokumentace/handoffu. Výsledek zatím NOT RUN;
 žádný nový apply, konfigurace, skutečné P05/P07 ani export P06.
@@ -196,12 +196,11 @@ a meze přejímky aktualizované. Následuje souborové předání přes CI/PR;
 Ranní ověření P05 vede souběžná relace, neprovádět duplicitně.
 
 
-## Převod ranní kontroly na server — rozpracováno
+## Převod ranní kontroly na server — dokončená příprava
 
-Vlastník požádal odstranit závislost na zapnutém PC. [Aktuální serverový postup](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md#změna-zadání-kontrola-bez-zapnutého-počítače):
+Vlastník požádal odstranit závislost na zapnutém PC. [Aktuální serverový postup](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md#automatický-postup-bez-pc):
 jednorázový hostingový pozorovatel, neměnný důkaz, automatická dokumentace přes
-chráněný PR a skutečný preflight publikace. Místní úlohu vypnout až po ověření
-náhrady. Skutečné P05/P07 i export P06 zůstávají odložené.
+chráněný PR a skutečný preflight publikace. Náhrada ověřená přes #348, místní úloha PAUSED. Skutečné P05/P07 i export P06 zůstávají odložené.
 
 ## P11 — autonomní syntetické měření 6. 11. 2026
 
@@ -226,3 +225,14 @@ Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
 Skutečné P05/P07 a export P06 zůstávají odložené.
 
 <!-- membership-morning-preflight:end -->
+
+
+<!-- membership-morning-publish:start -->
+## Ranní audit 7. 11. — čeká na skutečný termín
+
+Ranní výsledek **NOT RUN**. Hosting jej zachytí od 05:30 UTC (06:30 CET),
+serverový přenos doplní protokol a tento handoff přes připravený
+[výsledkový PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347).
+PC ani místní Codex nejsou potřeba. [Přesný postup a stav](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
+Skutečné P05/P07 a export P06 zůstávají odložené.
+<!-- membership-morning-publish:end -->

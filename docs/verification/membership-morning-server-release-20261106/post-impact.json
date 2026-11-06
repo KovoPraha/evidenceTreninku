@@ -1,0 +1,24 @@
+{
+  "run_id": 42266770816,
+  "ok": true,
+  "read_only": true,
+  "read_only_session": true,
+  "live": {
+    "sha": "acb511cc5338911f141bc49334d515c0b21034fa",
+    "run_id": "42265034726",
+    "deployed_at": "2026-11-06T17:51:38+00:00",
+    "uat_approved": false
+  },
+  "config_sha256": "fb28f95a4fcfa08046add5d1247616e6b0be93833ba0d13c09d8a7ca66ab6e9e",
+  "integration_flags": {
+    "FIO_IMPORT_ENABLED": true,
+    "FIO_AUTO_CONFIRM_ENABLED": true,
+    "SUMUP_ENABLED": true,
+    "STRIPE_ENABLED": false,
+    "VELOCOTA_INTEGRATION": false,
+    "PACKETA_ENABLED": null
+  },
+  "kis_canonical_write_enabled": false,
+  "migration_ledger_count": 160,
+  "domain_mutations": false
+}

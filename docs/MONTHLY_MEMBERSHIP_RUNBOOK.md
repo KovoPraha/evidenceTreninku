@@ -107,6 +107,31 @@ jako záložní plán, jehož doba startu není přesná. Při návratu nejdří
 pouze ověřený vlastní spouštěč z CRON.1minuta, zachovat soukromý stav a ověřit
 absenci spouštěče; potom povolit repo schedule. Cizí crony a data neodstraňovat.
 
+### Jednorázová serverová kontrola 7. 11.
+
+[Přejímka](verification/membership-morning-server-release-20261106/RESULTS.md) a
+[plán](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md) nahrazují místní úlohu
+(PAUSED). Hosting zachytí první výsledek od 05:30 UTC bez apply/send, SQL READ
+ONLY. JSON a odvozený protokol/handoff jsou v data/.kis-deploy; vlastní
+pozorovací cron se po zápisu odstraní, hlavní účtování dál běží.
+
+membership-morning-audit-production.yml z main / production:
+
+- mode=status: čtení zdroje, heartbeat, hlavního plánu a případného reportu.
+  Nevytváří heartbeat ani účetní zápis.
+- mode=install, potvrzení ZAPNOUT-RANNI-AUDIT: jen vlastní pozorovací soubor;
+  po hotovém reportu se znovu neaktivuje. Dnešní instalace je hotová.
+- mode=preflight: jednorázové doložení čekajícího ticku a přenosu do #348.
+  Celý postup už prošel i automatickým merge.
+- mode=publish: vyzvednutí skutečného neměnného reportu od termínu. Připravený
+  PR #347, repo KIS_MEMBERSHIP_AUDIT_REPORT_PR=347 a preflight=348. Workflow
+  povoluje jen PR CI vlastního ověřeného dokumentačního SHA, vyčká na skutečné
+  kontroly a slučuje bez admin bypassu. Po publikaci se vypne.
+
+Přenosy 7. 11. v 05:35/06:35/12:35 UTC neopakují audit ani účtování. Při závadě
+číst report a Action výsledek, znovu nepouštět worker. Případné FAIL/LATE má
+být zdokumentované, P05/P07 a P06 zůstávají odložené.
+
 ### Soukromé příznaky a ruční workflow
 
 Soukromý příznak automatizace spravuje `configure-memberships-production.yml`
