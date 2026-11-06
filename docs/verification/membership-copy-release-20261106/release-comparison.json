@@ -1,0 +1,39 @@
+{
+  "evidence_scope": "Protected exact-SHA deployment, fresh read-only before/after config and integration flags, live browser and anonymous HTTP label checks; no checkout/payment",
+  "live": {
+    "sha": "7d8a62ba772f5d47fd0fa8af82f97cf63dcd1f55",
+    "run_id": "42236370197",
+    "deployed_at": "2026-11-06T14:45:50+00:00",
+    "uat_approved": false
+  },
+  "previous_live": {
+    "sha": "9c543ff9ef7870d3503ec7f38fc05f2b376d0a82",
+    "run_id": "42172409868",
+    "deployed_at": "2026-11-06T06:11:01+00:00",
+    "uat_approved": false
+  },
+  "pre_audit_run": 42235961200,
+  "post_audit_run": 42236997752,
+  "config_sha256_equal": true,
+  "integration_flags_equal": true,
+  "integration_flags": {
+    "FIO_IMPORT_ENABLED": true,
+    "FIO_AUTO_CONFIRM_ENABLED": true,
+    "SUMUP_ENABLED": true,
+    "STRIPE_ENABLED": false,
+    "VELOCOTA_INTEGRATION": false,
+    "PACKETA_ENABLED": null
+  },
+  "kis_canonical_write_equal": true,
+  "kis_canonical_write_enabled": false,
+  "domain_checks_equal": true,
+  "migration_ledger_equal": true,
+  "migration_ledger_count": 160,
+  "runtime_changed_files": [
+    "booking/eshop.php",
+    "booking/produkt.php"
+  ],
+  "merge_tree_equal": true,
+  "application_migrations_changed": false,
+  "wip_preserved_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5"
+}

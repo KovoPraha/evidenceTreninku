@@ -20,7 +20,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | HOTOVO: nabídka BAR 1 / vydání 1 zveřejněná, 45 produktů a fotografií; novější doklad #335 nahrazuje původní koncept | Publikaci neopakovat a nezakládat další návrh. Úpravy nabídky až podle dalšího zadání; zásoby/kasa a skutečný prodej zůstávají P02. Přihlášené vytvoření tiskového PDF zatím NOT RUN. | Správce baru; [publikace](verification/bar-menu-publication-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) |
 | P04 | BAR má účetní export/kontrakt a návrh adaptéru; zápis do hlavního účetnictví dosud není dokončený | Odsouhlasit účetní pravidla, implementovat a převzít adaptér bez zdvojení peněz. Není to pouze čekání na deploy nebo přepínač. Skutečná bezhotovostní úhrada/vratka také nedoložená. | Vlastník/účetní, vývoj; [kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md), [plán adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md) |
-| P05 | Skutečný tok ODLOŽENO vlastníkem; schedule 42222661557 SUCCESS, ale opožděný.  Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. Zbývá první skutečné sjednání/platba/PDF/doručení a dlouhodobá časová spolehlivost plánu; automatický start již doložený. Roční cena neurčená; textová oprava členských popisků připravená, dosud nenasazená (viz doplňující relace níže). | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
+| P05 | Skutečný tok ODLOŽENO vlastníkem; schedule 42222661557 SUCCESS, ale opožděný.  Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. Zbývá první skutečné sjednání/platba/PDF/doručení a dlouhodobá časová spolehlivost plánu; automatický start již doložený. Roční cena neurčená; textová oprava členských popisků #340 nasazena a ověřena (viz autorizované vydání níže). | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
 | P06 | Export/sync ODLOŽENO vlastníkem.  Evidence členů bez sezon nasazená, 435 zařazení převedeno | Vyčkat na poslední nový export, provést schválený rozdílový sync a role/UAT. E8 odstranění legacy schématu až po přejímce a bezpečné obnově. Počáteční datum ani import neopakovat. | Vlastník dodá export; [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [provoz](MEMBER_EVIDENCE_OPERATION_2026-11-02.md), [převod](verification/member-evidence-cutover-20261102/RESULTS.md) |
 | P07 | Skutečná platba ODLOŽENO vlastníkem.  Fio import/automatika a SumUp zapnuté; skutečný hostingový plán ověřený | Doložit skutečnou zaplacenou úhradu a přihlášený průchod. 45 pohybů bez odpovídajícího VS ponechat ručnímu posouzení, nepárovat jen částkou. | Vlastník/hospodář; [aktivace](verification/live-payments-20261105/ACTIVATION.md), [45 pohybů](verification/fio-followup-20261105/RESULTS.md) |
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | Dokončit asistované UAT a lidské převzetí; heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
@@ -151,10 +151,25 @@ Doplňující větev `codex/membership-copy-and-wip-audit-20261106`, kopie
 135 kopií posouzeno pouze čtením, žádný úklid/reset. Členské šablony mají
 připravené správné popisky místo „kroužek/termín“; tato relace nic nenasazuje.
 34 testů / 206 assertions a 8 případů / 62 kontrol výrazů šablon PASS.
-Další krok: dokončit automatické kontroly a předat opravu pro budoucí vydání.
+Tento krok následně dokončen: #340 prošlo kontrolami, bylo sloučeno a po výslovném NASADIT nasazeno; viz následující záznam.
+
+## Autorizované vydání členských popisků #340 — 6. 11. 2026
+
+Vlastník výslovně zadal NASADIT pouze připravenou opravu #340 a ověřit ji na
+produkci. Žádná další aktivace; WIP zachovat. Větev
+`codex/membership-copy-release-20261106`, pracovní kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-membership-copy-release-20261106`.
+[Přesný rozsah, průběh a výsledky](verification/membership-copy-release-20261106/RESULTS.md).
+Hotovo: chráněný deploy 42236370197 SUCCESS na přesném commitu sloučeného #340,
+UAT/import false. Čtecí audit před/po, konfigurace/flags, živý Chrome katalog/detail
+a anonymní HTTP 4 stránky / 19 kontrol PASS; cena zachovaná a WIP nedotčené.
+Záloha 387 tabulek / 2 triggery ověřena, schéma current bez nových migrací.
+Žádná další aktivace. Zbývající skutečné sjednání/platba/PDF a podklady P05/P07
+zůstávají odložené vlastníkem; tato textová oprava je neuzavírá.
 
 ## Spolehlivé denní spouštění členství
 
 Aktuální zadání: [hostingový plán](MEMBERSHIP_SCHEDULER_2026-11-06.md).
 P05/P07 se skutečnou platbou a export P06 nadále odložené; řeší se pouze
 spolehlivost již povoleného plánovače a její důkazy.
+

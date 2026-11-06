@@ -1,0 +1,96 @@
+{
+  "run_id": 42236370197,
+  "sha": "7d8a62ba772f5d47fd0fa8af82f97cf63dcd1f55",
+  "conclusion": "success",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "backup": {
+    "ok": true,
+    "backup": "evidence_2026-11-06_144520_7cf0efec.sql.gz",
+    "manifest": "evidence_2026-11-06_144520_7cf0efec.manifest.json",
+    "sha256": "81a9b6378b77ca1d07cd48b207aedbca350b310b7904712b809816f659bc4ace",
+    "tables": 387,
+    "triggers": 2,
+    "compressed_bytes": 6294496
+  },
+  "migrations": [
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 159,
+      "pending": []
+    },
+    {
+      "ok": true,
+      "current": true,
+      "reason": "current",
+      "legacy_version": "2.20.2",
+      "legacy_target": "2.20.2",
+      "legacy_state": "current",
+      "ledger_exists": true,
+      "catalog_count": 159,
+      "pending": []
+    }
+  ],
+  "variable_symbols": {
+    "ok": true,
+    "target": "kis.kovopraha.cz",
+    "unchanged": true,
+    "snapshot": {
+      "format": 1,
+      "bounds": {
+        "payments": 15,
+        "member_fee_standing_orders": 0,
+        "member_payer_variable_symbols": 0
+      },
+      "tables": {
+        "payments": {
+          "count": 8,
+          "sha256": "cf005f028f34611540fe72e8881d18261b79aef1a6e137619409970778e11e9b"
+        },
+        "member_fee_standing_orders": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "member_payer_variable_symbols": {
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  },
+  "tests": [
+    "OK (2280 tests, 42180 assertions)"
+  ],
+  "cleanup": {
+    "ok": true,
+    "removed": [],
+    "missing": [
+      "admin_panel.php",
+      "index-backup.php",
+      "index3.php",
+      "sync.php",
+      "test.php",
+      "analyze_excel.php",
+      "analyze_uci_form.php",
+      "jizdy/vypis_vykazu (4) - kopie.php",
+      "servis/vypis_vykazu (4) - kopie.php",
+      "uctenky/vypis_vykazu (4) - kopie.php",
+      "udalosti/vypis_vykazu (4) - kopie.php",
+      "vozidla/vypis_vykazu (3) - kopie.php",
+      "vozidla/vypis_vykazu (4) - kopie.php"
+    ]
+  },
+  "private_files_summary": [
+    "APPLY summary: candidates=0, already_private=0, missing=2, errors=0"
+  ],
+  "http": 200
+}

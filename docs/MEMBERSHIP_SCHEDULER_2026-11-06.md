@@ -37,3 +37,9 @@ jinak odvozuje URL z místního bootstrapu. Cílená analýza všech tří změn
 runtime souborů PASS; plán/identita 10 testů / 55 assertions, 1 Windows skip
 unixových symlinků. Celý místní Composer test i analýza překročily jeho výchozí
 300s limit; nenahrazují úplný Linux CI důkaz. Obě MariaDB matice jsou povinné.
+
+První úplné CI na headu `f7a08f9e` prošlo všemi 11 kontrolami, včetně obou
+MariaDB lock testů. Před merge přibylo předání #342: konflikt pouze na konci
+registru sloučen zachováním obou záznamů, nové důkazy nasazení #340 zachované.
+Runtime/testy/workflow proti ověřenému headu shodné; nové kontroly dokumentačního
+merge musí zůstat zelené. Produkční nasazení scheduleru zatím neprovedeno.
