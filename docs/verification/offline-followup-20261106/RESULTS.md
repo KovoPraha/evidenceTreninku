@@ -102,3 +102,9 @@ po aktualizaci handoffu znovu dokumentační kontrakt **2 testy / 14 assertions 
 `git diff --check` PASS. Původní WIP má stále shodný výše uvedený SHA256.
 Finální místní kontrola PASS, [souborové předání PR #345](https://github.com/KovoPraha/evidenceTreninku/pull/345).
 Stav povinného CI/merge je přímo u PR; jeho začlenění nevyžaduje deploy.
+
+
+Při předání začleněn novější main `ba4c9758` / #344. Zachovaný plán jednorázového
+ranního auditu 7. 11. 06:30 CET i jeho session handoff; společný registr/handoff
+sjednocený s výsledky P12, bez opakování nebo změny naplánované úlohy. Novější
+změna je pouze dokumentační; zdrojový kód balíčku zůstává shodný s ověřenou revizí.

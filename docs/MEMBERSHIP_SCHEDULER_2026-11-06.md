@@ -54,3 +54,11 @@ config zachované. [Výsledky a meze](verification/membership-scheduler-20261106
 [session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md).
 Skutečné P05/P07 a export P06 zůstávají odložené. Budoucí ranní běh se dnes
 neprohlašuje za proběhlý, časová brána a změny letního času prošly testy.
+
+## Navazující jednorázová kontrola 7. 11.
+
+Na výslovný pokyn vlastníka je aktivní [ranní audit](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md)
+7. 11. v 06:30 CET, automatizace `rann-audit-lenstv-7-11`, právě jedno vyvolání.
+Porovná skutečný ranní pokus s 05:23 UTC, bez ručního spuštění nebo změny
+produkce, a zapíše výsledek do protokolu, registru a handoffu. Výsledek zatím
+NOT RUN. Skutečné P05/P07 a export P06 dále odložené.
