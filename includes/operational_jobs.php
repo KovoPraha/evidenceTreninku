@@ -6,6 +6,8 @@ declare(strict_types=1);
 function operationalJobsCatalog(): array
 {
     return [
+        'staff_notifications' => ['label' => 'Pracovní upozornění', 'owner' => 'Správce systému', 'interval_seconds' => 60,
+            'command' => 'bin/staff-notification-operations.php'],
         'transactional_notifications' => ['label' => 'Transakční oznámení','owner' => 'Správce systému','interval_seconds'
     => 300,'command' => 'bin/club-event-notifications.php'],
         'training_reminders' => ['label' => 'Nezaevidované tréninky','owner' => 'Vedoucí trenér','interval_seconds'

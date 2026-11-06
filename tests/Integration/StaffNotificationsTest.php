@@ -10,6 +10,7 @@ use Tests\Support\ParentJourneyNotificationFixture;
 
 require_once dirname(__DIR__, 2) . '/includes/account_person_claim.php';
 require_once dirname(__DIR__, 2) . '/includes/club_event_notification.php';
+require_once dirname(__DIR__, 2) . '/includes/staff_notification_worker.php';
 
 final class StaffNotificationsTest extends TestCase
 {
@@ -85,6 +86,30 @@ final class StaffNotificationsTest extends TestCase
             self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM account_person_claim_requests')->fetchColumn());
             self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM account_person_claim_events')->fetchColumn());
         }
+    }
+
+    public function testStaffWorkerDoesNotDrainOrExpireUnrelatedQueueAndCountsReadCancellation(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("INSERT INTO club_event_notifications(notification_type,recipient_email,recipient_name,subject_plain,body_plain,status,claimed_at)
+            VALUES('unrelated','outside@example.test','','LOCALHOST','NEPLATIT','pending',NULL),
+            ('unrelated','outside@example.test','','LOCALHOST','NEPLATIT','processing','2020-01-01 00:00:00')");
+        $this->submit($pdo);
+        \staffNotificationSync($pdo);
+        $notice = \staffNotificationInbox($pdo, 1)['items'][0];
+        \staffNotificationRead($pdo, 1, (int)$notice['id'], true);
+        $sent = [];
+        $result = \staffNotificationDrain($pdo, static function ($email) use (&$sent): bool {
+            $sent[] = $email;
+            return true;
+        });
+        self::assertSame(2, $result['processed']);
+        self::assertSame(1, $result['sent']);
+        self::assertSame(1, $result['cancelled']);
+        self::assertSame(['second@example.test'], $sent);
+        self::assertSame(['pending', 'processing'], $pdo->query("SELECT status FROM club_event_notifications WHERE notification_type='unrelated' ORDER BY id")->fetchAll(PDO::FETCH_COLUMN));
+        self::assertSame(0, \staffNotificationDrain($pdo, static fn (): bool => true)['processed']);
+        self::assertSame(1, \staffNotificationWorkerStatus($pdo)['queue']['sent']);
     }
 
     public function testReadIsPersonalAndDoesNotResolveSource(): void

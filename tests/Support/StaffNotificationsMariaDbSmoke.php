@@ -40,11 +40,15 @@ try {
         throw new RuntimeException('Native prepared statements or deduplication failed.');
     }
     $pdo->exec("UPDATE account_person_claim_requests SET status='approved' WHERE id=7");
+    $pdo->exec("INSERT INTO club_event_notifications(notification_type,status,claimed_at) VALUES('unrelated','processing','2020-01-01 00:00:00')");
     $result = clubEventNotificationProcessOne($pdo, static function (): bool {
         throw new RuntimeException('Transport must not be called.');
-    });
+    }, true);
     if ($result !== 'cancelled' || $pdo->query('SELECT status FROM club_event_notifications')->fetchColumn() !== 'cancelled') {
         throw new RuntimeException('Obsolete notification must be cancelled without mail.');
+    }
+    if ($pdo->query("SELECT status FROM club_event_notifications WHERE notification_type='unrelated'")->fetchColumn() !== 'processing') {
+        throw new RuntimeException('Staff worker must preserve unrelated claims.');
     }
     echo "MariaDB staff notifications PASS: migration twice, native queries, dedupe, inbox, obsolete mail cancellation.\n";
 } finally {

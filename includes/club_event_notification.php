@@ -61,13 +61,13 @@ function clubEventNotificationEnqueuePromotion(PDO $pdo, int $registrationId, in
 }
 
 /** @return array<string,mixed>|null */
-function clubEventNotificationClaim(PDO $pdo): ?array
+function clubEventNotificationClaim(PDO $pdo, bool $staffOnly = false): ?array
 {
     require_once __DIR__ . "/notification_claim_retry.php";
-    return notificationClaimWithRetry($pdo, static fn (): ?array => clubEventNotificationClaimAttempt($pdo));
+    return notificationClaimWithRetry($pdo, static fn (): ?array => clubEventNotificationClaimAttempt($pdo, $staffOnly));
 }
 
-function clubEventNotificationClaimAttempt(PDO $pdo): ?array
+function clubEventNotificationClaimAttempt(PDO $pdo, bool $staffOnly = false): ?array
 {
     $pdo->beginTransaction();
     try {
@@ -75,11 +75,12 @@ function clubEventNotificationClaimAttempt(PDO $pdo): ?array
         $staleExpression = $mysql
             ? 'CURRENT_TIMESTAMP - INTERVAL 15 MINUTE'
             : "datetime('now','-15 minutes')";
+        $scope = $staffOnly ? " AND notification_type='staff_action'" : '';
         // An abandoned claim may already have reached the transport. Never resend it automatically.
         $pdo->exec(('UPDATE club_event_notifications SET status=\'failed\',claim_token=NULL,last_error=\'delivery_unknown: s'
  . 'právce musí ověřit doručení před ručním opakováním.\',updated_at=CURRENT_TIMESTAMP WHERE status=\'proc'
- . 'essing\' AND claimed_at<').$staleExpression);
-        $sql = "SELECT * FROM club_event_notifications WHERE status='pending' AND available_at<=CURRENT_TIMESTAMP ORDER BY id LIMIT 1";
+ . 'essing\' AND claimed_at<').$staleExpression . $scope);
+        $sql = "SELECT * FROM club_event_notifications WHERE status='pending' AND available_at<=CURRENT_TIMESTAMP" . $scope . ' ORDER BY id LIMIT 1';
         if ($mysql) {
             $sql .= ' FOR UPDATE';
         }
@@ -139,9 +140,9 @@ function clubEventNotificationComplete(PDO $pdo, int $id, string $token, bool $s
 }
 
 /** @param callable(string,string,string):bool $sender */
-function clubEventNotificationProcessOne(PDO $pdo, callable $sender): bool|string|null
+function clubEventNotificationProcessOne(PDO $pdo, callable $sender, bool $staffOnly = false): bool|string|null
 {
-    $notification = clubEventNotificationClaim($pdo);
+    $notification = clubEventNotificationClaim($pdo, $staffOnly);
     if ($notification === null) {
         return null;
     }

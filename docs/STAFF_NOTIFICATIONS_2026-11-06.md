@@ -41,3 +41,11 @@ Při následném schváleném nasazení:
 4. V přihlášené produkční administraci ověřit skutečné příjemce, zvoneček, přesný odkaz, vyřízení a stav dalšího běhu. Reálné doručení do schránky se potvrzuje zvlášť, stav fronty `sent` sám nezaručuje doručení.
 
 V rámci této implementace nebyla odeslána žádná skutečná zpráva ani změněn produkční plánovač.
+
+## Schválené uvedení do provozu 6. 11. 2026
+
+Vlastník následně výslovně schválil sloučení, nasazení, pravidelné zpracování a ověření zvonečku i e-mailů. Rozšíření provozní části mění bod 2 výše: nasadit a instalovat samostatný minutový worker `bin/staff-notification-operations.php`, který používá stejnou frontu a validaci, ale vybírá výhradně `staff_action`. Starší nesouvisející klubové zprávy ani obnovu účtů nezačne rozesílat. Obecný worker zůstává kompatibilní.
+
+Postup: dokončit CI po připojení aktuálního main, sloučit #330, spustit chráněné `deploy-production.yml`, poté `staff-notifications-production.yml` nejprve `status`, následně `install` a nezávislé `status` po skutečném minutovém běhu. Instalace je idempotentní, cizí soubor odmítne přepsat, pracovní zámek brání souběhu, pouze hostingový běh zapisuje heartbeat. Samotný status nic neposílá ani nevyrábí důkaz běhu. Výsledky fronty se zapisují také do provozního dohledu pod `staff_notifications`.
+
+Přejímka: použít existující čekající žádosti, porovnat počet událostí, osobních upozornění a přijatých e-mailů před/po běhu, zkontrolovat další běh bez duplikace a skutečnou produkční hlavičku i odkaz do žádosti. Zdrojové žádosti neschvalovat pouze kvůli testu. Doručení do schránky odlišovat od přijetí poštovním transportem.
