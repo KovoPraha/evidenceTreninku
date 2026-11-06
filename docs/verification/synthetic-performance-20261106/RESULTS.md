@@ -109,7 +109,8 @@ metadat; profily zároveň ukazují opakované čtení RSVP pro jednotlivé plá
 [Zmrazená přesně provedená místní metoda](local-harness.php.txt) odpovídá SHA
 v místním summary. [Aktivní přenositelný CLI profil](../../../tests/Support/SyntheticReadPagesProfile.php)
 se liší pouze povinným deklarováním localhost portu/datadiru a nastavením
-časové zóny session před měřením. Všechna měřicí, seedovací a úklidová těla
+časové zóny session před měřením a záznamem skutečné revize checkoutu/otisků
+zdrojů mimo měřené tělo. Všechna měřicí, seedovací a úklidová těla
 jsou bajtově ověřená jako shodná (manifest obsahuje jejich SHA256).
 Odmítnutý chybný datadir a chybějící potvrzení byly ověřeny před tvorbou schématu.
 
@@ -172,3 +173,8 @@ soubory a produkční workflow jsou beze změny. Composer dle existujícího loc
 Kontrola CURRENT_STATE: 80 řádků / 934 místních odkazů / 106 zachovaných
 archivních bloků / 0 chyb. Finální místní odkazy a diff check ověřené před
 předáním; aktuální povinné CI a stav merge budou doložené u souvisejícího PR.
+
+
+Souborové předání: [PR #349](https://github.com/KovoPraha/evidenceTreninku/pull/349).
+CI ověřuje přenositelnou variantu v izolovaných MariaDB 10.3/11.4; skutečné
+výsledky a artifacty jsou přímo u tohoto PR. Žádný produkční deploy se nevytváří.

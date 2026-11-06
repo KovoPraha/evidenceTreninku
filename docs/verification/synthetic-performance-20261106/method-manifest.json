@@ -1,9 +1,9 @@
 {
   "local_executed_harness_sha256": "4e026ae4493e77b50524b79b8840f064fea15b0bf19be8bfcbd4b5fe879ce44b",
   "local_archived_method": "local-harness.php.txt",
-  "portable_harness_sha256": "a123def631b48b2159407afd662a5778b50f8ecad11f404b255901a3d1f501ab",
+  "portable_harness_sha256": "0b553b102b8808c4eaf6af7c1d5b016897d13c1dd9db2c629937691f8cbd37bc",
   "measurement_body_unchanged": true,
-  "portable_changes": "mandatory declared localhost port/datadir instead of the fixed Windows runtime; session timezone aligned before measurement",
+  "portable_changes": "mandatory declared localhost port/datadir, session timezone aligned before measurement; actual checkout SHA/source hashes recorded outside measured body",
   "cases": 21,
   "timing_samples": 630,
   "sql_samples": 21,
@@ -19,6 +19,6 @@
     "p11SeedPlanner": "9869d1f8786dc5e76a7b789c154d69bfb2867fa4c4485351e07e74cf4a7bbcb8",
     "p11SeedClosure": "5447062929b66a782fbefab122725cb16d1747bdb6d51fec7356cf6504287022",
     "p11SeedMedical": "df89eadab9c37c66fd711d285df4288907a0163b071c1e34b304b456412e5e8a",
-    "p11Negative": "dda544359bd1633735946ae7ba650c6614384b85ac6634bf3a97efbe7102a3f2"
+    "p11Negative": "0388fe1c8e512398fc17e95408db1f7132a652915823c13e1fe32d3cde0d382b"
   }
 }

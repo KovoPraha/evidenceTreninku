@@ -348,13 +348,25 @@ if (($argv[1] ?? '') === '--worker') {
 p11Assert(($argv[1] ?? '') === '--run' && isset($argv[2]), 'Usage: --run OUTPUT_DIRECTORY');
 $output = $argv[2];
 p11Assert(is_dir($output), 'Output directory must exist.');
+$git = proc_open(['git', 'rev-parse', 'HEAD'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $gitPipes, dirname(__DIR__, 2));
+p11Assert(is_resource($git), 'Cannot identify measured checkout.');
+$revision = trim((string)stream_get_contents($gitPipes[1]));
+$gitError = stream_get_contents($gitPipes[2]);
+fclose($gitPipes[1]);
+fclose($gitPipes[2]);
+p11Assert(proc_close($git) === 0 && preg_match('/^[a-f0-9]{40}$/D', $revision) === 1, 'Invalid checkout identity: ' . $gitError);
 $admin = p11Connection();
 $schema = 'p11_read_' . bin2hex(random_bytes(8));
 $admin->exec('CREATE DATABASE `' . $schema . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
-$report = ['complete' => false, 'source_sha' => '1d0e974798cb199344cbfb595f4805509582a788',
+$report = ['complete' => false, 'source_sha' => $revision,
+    'baseline_application_sha' => '1d0e974798cb199344cbfb595f4805509582a788',
     'harness_sha256' => hash_file('sha256', __FILE__),
     'schema' => $schema, 'server' => $admin->query('SELECT VERSION() version,@@port port')->fetch(PDO::FETCH_ASSOC),
     'php' => PHP_VERSION, 'warmups' => 5, 'timing_samples' => 30, 'cases' => []];
+$report['source_files_sha256'] = [];
+foreach (['planovac.php', 'training_closure_admin.php', 'medical_clearance_admin.php', 'includes/training_day_view.php'] as $file) {
+    $report['source_files_sha256'][$file] = hash('sha256', str_replace("\r\n", "\n", (string)file_get_contents(dirname(__DIR__, 2) . '/' . $file)));
+}
 try {
     $pdo = p11Connection($schema);
     w72Seed($pdo);
