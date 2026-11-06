@@ -44,6 +44,16 @@ final class MonthlyMembershipSchedulerTest extends TestCase
         }
     }
 
+    public function testOnlyExplicitProductionIdentityIsAccepted(): void
+    {
+        self::assertTrue(\membershipSchedulerIdentity('https://kis.kovopraha.cz/', false));
+        foreach ([null, '', 'http://kis.kovopraha.cz', 'https://kis.kovopraha.cz.evil', 'http://localhost/evidencePavel'] as $url) {
+            self::assertFalse(\membershipSchedulerIdentity($url, false));
+        }
+        self::assertFalse(\membershipSchedulerIdentity('https://kis.kovopraha.cz', true));
+        self::assertFalse(\membershipSchedulerIdentity('https://kis.kovopraha.cz', null));
+    }
+
     public function testFutureSuccessIsRejected(): void
     {
         $this->expectException(\RuntimeException::class);

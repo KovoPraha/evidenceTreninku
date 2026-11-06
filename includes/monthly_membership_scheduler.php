@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+function membershipSchedulerIdentity(mixed $baseUrl, mixed $local): bool
+{
+    return $local === false && is_string($baseUrl) && rtrim($baseUrl, '/') === 'https://kis.kovopraha.cz';
+}
+
 /** Fixed UTC time preserves the existing 05:23 UTC contract across DST. */
 function membershipSchedulerDue(array $state, int $now, ?int $success): bool
 {
@@ -94,6 +99,7 @@ function membershipSchedulerStatus(array $paths, ?int $success, ?int $now = null
 /** Never provision a cron directory or overwrite foreign files. */
 function membershipSchedulerInstall(array $paths): array
 {
+    membershipSchedulerRead($paths);
     if (!is_dir(dirname($paths['cron'])) || is_link(dirname($paths['cron'])) || !is_writable(dirname($paths['cron']))) {
         throw new RuntimeException('membership_scheduler_directory');
     }

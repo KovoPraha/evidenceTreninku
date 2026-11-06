@@ -18,8 +18,7 @@ try {
     require $root . '/includes/monthly_membership_scheduler.php';
     require $root . '/includes/monthly_membership_worker.php';
     require_once $root . '/includes/operational_jobs.php';
-    if (!defined('JE_LOKALNE') || JE_LOKALNE !== false || !defined('APP_BASE_URL')
-        || rtrim(APP_BASE_URL, '/') !== 'https://kis.kovopraha.cz') {
+    if (!membershipSchedulerIdentity(defined('APP_BASE_URL') ? APP_BASE_URL : null, defined('JE_LOKALNE') ? JE_LOKALNE : null)) {
         throw new RuntimeException('membership_scheduler_target');
     }
     $paths = membershipSchedulerPaths($root, (string)getenv('MEMBERSHIP_SCHEDULER_DIR'));
