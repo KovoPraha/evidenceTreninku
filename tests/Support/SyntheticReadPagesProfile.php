@@ -182,6 +182,7 @@ function p11Worker(array $arguments): void
         $result = ['data' => $rendered['data'], 'html_bytes' => strlen($rendered['html']),
             'data_sha256' => hash('sha256', json_encode($rendered['data'], JSON_THROW_ON_ERROR)),
             'html_sha256' => hash('sha256', $rendered['html']),
+            'html_lf_sha256' => hash('sha256', str_replace("\r\n", "\n", $rendered['html'])),
             'result_sha256' => hash('sha256', json_encode([$rendered['data'], $rendered['html']], JSON_THROW_ON_ERROR))];
         unset($rendered);
         $reference ??= $result['result_sha256'];
@@ -385,7 +386,8 @@ $report = ['complete' => false, 'source_sha' => $revision,
 $report['source_files_sha256'] = [];
 foreach (['planovac.php', 'training_closure_admin.php', 'medical_clearance_admin.php', 'includes/training_day_view.php',
     'includes/medical_clearance_admin_view.php', 'includes/medical_clearance.php', 'includes/medical_clearance_read.php',
-    'assets/js/medical-person-picker.js'] as $file) {
+    'assets/js/medical-person-picker.js', 'includes/training_planner_read.php', 'includes/training_planner_rsvp_read.php',
+    'includes/training_planner_view.php', 'includes/family_schema_read_scope.php'] as $file) {
     $report['source_files_sha256'][$file] = hash('sha256', str_replace("\r\n", "\n", (string)file_get_contents(dirname(__DIR__, 2) . '/' . $file)));
 }
 try {

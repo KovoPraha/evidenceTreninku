@@ -55,7 +55,7 @@ final class TesterFeedbackWiringTest extends TestCase
         self::assertStringNotContainsString('no-roster-confirm-wrap', $form);
         $planner = (string)file_get_contents($root . '/planovac.php');
         self::assertStringContainsString('trainingRosterBridgePlanTeamIds', $planner);
-        self::assertStringContainsString('trainingRsvpPlanSummaries', $planner);
+        self::assertStringContainsString('trainingPlannerRsvpSummaries', $planner);
         self::assertStringContainsString('training_rsvps_admin.php', $planner);
         foreach (['booking/sportovni_prehled.php', 'booking/muj_sport.php'] as $path) {
             $source = (string)file_get_contents($root . '/' . $path);

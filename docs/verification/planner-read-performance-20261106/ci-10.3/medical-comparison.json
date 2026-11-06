@@ -1,0 +1,232 @@
+{
+    "complete": true,
+    "before_source_sha": "fbdf622e0acadebeaf5525fb168869795a7faca2",
+    "after_source_sha": "5e93ab532d567f700162ef89a1f311229e9bd931",
+    "server": {
+        "version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+        "port": 3306
+    },
+    "php": "8.2.35",
+    "cases": [
+        {
+            "people": 100,
+            "mode": "all",
+            "before": {
+                "sql": 6,
+                "rows": 724,
+                "median_ms": 1.7836295,
+                "p95_ms": 1.800925,
+                "peak_increment_bytes": 645656,
+                "html_bytes": 28804,
+                "person_choices": 321
+            },
+            "after": {
+                "sql": 10,
+                "rows": 132,
+                "median_ms": 2.1347709999999998,
+                "p95_ms": 2.206338,
+                "peak_increment_bytes": 190720,
+                "html_bytes": 10479,
+                "person_choices": 25
+            },
+            "row_reduction_percent": 81.768,
+            "median_speedup": 0.84
+        },
+        {
+            "people": 100,
+            "mode": "person",
+            "before": {
+                "sql": 6,
+                "rows": 328,
+                "median_ms": 1.4296975,
+                "p95_ms": 1.725071,
+                "peak_increment_bytes": 267824,
+                "html_bytes": 25668,
+                "person_choices": 321
+            },
+            "after": {
+                "sql": 10,
+                "rows": 36,
+                "median_ms": 1.8667384999999999,
+                "p95_ms": 1.933704,
+                "peak_increment_bytes": 154272,
+                "html_bytes": 7136,
+                "person_choices": 25
+            },
+            "row_reduction_percent": 89.024,
+            "median_speedup": 0.77
+        },
+        {
+            "people": 100,
+            "mode": "valid",
+            "before": {
+                "sql": 6,
+                "rows": 724,
+                "median_ms": 1.7742395000000002,
+                "p95_ms": 1.848997,
+                "peak_increment_bytes": 645656,
+                "html_bytes": 28851,
+                "person_choices": 321
+            },
+            "after": {
+                "sql": 9,
+                "rows": 356,
+                "median_ms": 2.3092875,
+                "p95_ms": 2.407986,
+                "peak_increment_bytes": 180856,
+                "html_bytes": 10536,
+                "person_choices": 25
+            },
+            "row_reduction_percent": 50.829,
+            "median_speedup": 0.77
+        },
+        {
+            "people": 1000,
+            "mode": "all",
+            "before": {
+                "sql": 6,
+                "rows": 5224,
+                "median_ms": 5.7660395,
+                "p95_ms": 6.343997,
+                "peak_increment_bytes": 4739288,
+                "html_bytes": 88240,
+                "person_choices": 1221
+            },
+            "after": {
+                "sql": 10,
+                "rows": 132,
+                "median_ms": 2.1203589999999997,
+                "p95_ms": 2.413354,
+                "peak_increment_bytes": 191008,
+                "html_bytes": 10516,
+                "person_choices": 25
+            },
+            "row_reduction_percent": 97.473,
+            "median_speedup": 2.72
+        },
+        {
+            "people": 1000,
+            "mode": "person",
+            "before": {
+                "sql": 6,
+                "rows": 1228,
+                "median_ms": 1.9637245,
+                "p95_ms": 2.046033,
+                "peak_increment_bytes": 812544,
+                "html_bytes": 85069,
+                "person_choices": 1221
+            },
+            "after": {
+                "sql": 10,
+                "rows": 36,
+                "median_ms": 1.999393,
+                "p95_ms": 2.06486,
+                "peak_increment_bytes": 154272,
+                "html_bytes": 7138,
+                "person_choices": 25
+            },
+            "row_reduction_percent": 97.068,
+            "median_speedup": 0.98
+        },
+        {
+            "people": 1000,
+            "mode": "valid",
+            "before": {
+                "sql": 6,
+                "rows": 5224,
+                "median_ms": 5.4675460000000005,
+                "p95_ms": 6.667433,
+                "peak_increment_bytes": 4739288,
+                "html_bytes": 88278,
+                "person_choices": 1221
+            },
+            "after": {
+                "sql": 9,
+                "rows": 3056,
+                "median_ms": 5.9108065,
+                "p95_ms": 6.014081,
+                "peak_increment_bytes": 180856,
+                "html_bytes": 10564,
+                "person_choices": 25
+            },
+            "row_reduction_percent": 41.501,
+            "median_speedup": 0.93
+        },
+        {
+            "people": 10000,
+            "mode": "all",
+            "before": {
+                "sql": 6,
+                "rows": 50224,
+                "median_ms": 152.0232305,
+                "p95_ms": 165.745954,
+                "peak_increment_bytes": 46070872,
+                "html_bytes": 682267,
+                "person_choices": 10221
+            },
+            "after": {
+                "sql": 10,
+                "rows": 132,
+                "median_ms": 2.0904245,
+                "p95_ms": 2.198486,
+                "peak_increment_bytes": 191008,
+                "html_bytes": 10545,
+                "person_choices": 25
+            },
+            "row_reduction_percent": 99.737,
+            "median_speedup": 72.72
+        },
+        {
+            "people": 10000,
+            "mode": "person",
+            "before": {
+                "sql": 6,
+                "rows": 10228,
+                "median_ms": 27.734344,
+                "p95_ms": 28.588495,
+                "peak_increment_bytes": 6545664,
+                "html_bytes": 679070,
+                "person_choices": 10221
+            },
+            "after": {
+                "sql": 10,
+                "rows": 36,
+                "median_ms": 1.9653109999999998,
+                "p95_ms": 2.043473,
+                "peak_increment_bytes": 154272,
+                "html_bytes": 7141,
+                "person_choices": 25
+            },
+            "row_reduction_percent": 99.648,
+            "median_speedup": 14.11
+        },
+        {
+            "people": 10000,
+            "mode": "valid",
+            "before": {
+                "sql": 6,
+                "rows": 50224,
+                "median_ms": 155.858898,
+                "p95_ms": 200.724692,
+                "peak_increment_bytes": 46070872,
+                "html_bytes": 682305,
+                "person_choices": 10221
+            },
+            "after": {
+                "sql": 9,
+                "rows": 30056,
+                "median_ms": 73.624007,
+                "p95_ms": 75.002377,
+                "peak_increment_bytes": 180856,
+                "html_bytes": 10593,
+                "person_choices": 25
+            },
+            "row_reduction_percent": 40.156,
+            "median_speedup": 2.12
+        }
+    ],
+    "domain_results_equal": true,
+    "html_change": "bounded searchable person picker and template whitespace",
+    "timing_samples_per_phase": 270,
+    "sql_samples_per_phase": 9
+}

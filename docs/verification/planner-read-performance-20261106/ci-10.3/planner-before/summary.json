@@ -1,0 +1,691 @@
+{
+    "complete": true,
+    "source_sha": "84f5c7a270d2bcedd9c1bd6c627f485d4ade7c6a",
+    "baseline_application_sha": "1d0e974798cb199344cbfb595f4805509582a788",
+    "harness_sha256": "fb4e20677b36124429392b104e13a29b6280e8bd1937c6c0ce304029da9c50a9",
+    "schema": "p11_read_9286a131abd45f4e",
+    "server": {
+        "version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+        "port": 3306
+    },
+    "php": "8.2.35",
+    "warmups": 5,
+    "timing_samples": 30,
+    "cases": [
+        {
+            "route": "R05",
+            "role": "coach",
+            "mode": "all",
+            "weeks": 1,
+            "sql": {
+                "count": 112,
+                "fetched_rows": 414,
+                "execute_ms": 12.107841000000002,
+                "fetch_ms": 0.23749300000000004
+            },
+            "median_ms": 26.466324999999998,
+            "p95_ms": 27.288463,
+            "peak_increment_bytes": 389192,
+            "process_peak_bytes": 4194304,
+            "result": {
+                "data": {
+                    "plans": [
+                        50000,
+                        50002,
+                        50004,
+                        50006,
+                        50008,
+                        50010,
+                        50012
+                    ],
+                    "stats": {
+                        "planovany": 7,
+                        "evidovany": 0
+                    },
+                    "warnings": 4,
+                    "oldest_pending": "2026-11-02",
+                    "copy_count": 7,
+                    "rsvp": {
+                        "50000": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50002": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50004": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50006": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50008": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50010": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50012": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        }
+                    }
+                },
+                "html_bytes": 76359,
+                "data_sha256": "af4d567f98c85ffc89e8afd2607e4bf9f01270fb2adbac08821753b27fed183c",
+                "html_sha256": "b432b1479f3ad8a4082df4c01898ba81f2b2da6d082156cb98754de72fd5ec51",
+                "html_lf_sha256": "b432b1479f3ad8a4082df4c01898ba81f2b2da6d082156cb98754de72fd5ec51",
+                "result_sha256": "330f8a45f0deb38c2bb28faa6ef9336d51f8d39f9fbbfc58a858806a813dd86f"
+            }
+        },
+        {
+            "route": "R05",
+            "role": "sports_lead",
+            "mode": "all",
+            "weeks": 1,
+            "sql": {
+                "count": 203,
+                "fetched_rows": 782,
+                "execute_ms": 21.600697999999998,
+                "fetch_ms": 0.328162
+            },
+            "median_ms": 45.7037565,
+            "p95_ms": 50.118139,
+            "peak_increment_bytes": 466736,
+            "process_peak_bytes": 4194304,
+            "result": {
+                "data": {
+                    "plans": [
+                        50000,
+                        50001,
+                        50002,
+                        50003,
+                        50004,
+                        50005,
+                        50006,
+                        50007,
+                        50008,
+                        50009,
+                        50010,
+                        50011,
+                        50012,
+                        50013
+                    ],
+                    "stats": {
+                        "planovany": 14,
+                        "evidovany": 0
+                    },
+                    "warnings": 8,
+                    "oldest_pending": "2026-11-02",
+                    "copy_count": 14,
+                    "rsvp": {
+                        "50000": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50001": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50002": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50003": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50004": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50005": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50006": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50007": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50008": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50009": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50010": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50011": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50012": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50013": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        }
+                    }
+                },
+                "html_bytes": 121620,
+                "data_sha256": "fdb4c0e916999568854224c5c1ee588c19e5dcab10d10364169baae3f0617ccb",
+                "html_sha256": "05ef4df57a3df5066958c49b27fb5a7bb3112b95c9a380ba7fc1917361d193f6",
+                "html_lf_sha256": "05ef4df57a3df5066958c49b27fb5a7bb3112b95c9a380ba7fc1917361d193f6",
+                "result_sha256": "d306fa535c5b0536098a78291d1984ca716da737410052da3bf63158ac912ba0"
+            }
+        },
+        {
+            "route": "R05",
+            "role": "coach",
+            "mode": "all",
+            "weeks": 12,
+            "sql": {
+                "count": 112,
+                "fetched_rows": 491,
+                "execute_ms": 11.476343,
+                "fetch_ms": 0.20101200000000002
+            },
+            "median_ms": 26.311141499999998,
+            "p95_ms": 27.600426,
+            "peak_increment_bytes": 391880,
+            "process_peak_bytes": 4194304,
+            "result": {
+                "data": {
+                    "plans": [
+                        50000,
+                        50002,
+                        50004,
+                        50006,
+                        50008,
+                        50010,
+                        50012
+                    ],
+                    "stats": {
+                        "planovany": 7,
+                        "evidovany": 0
+                    },
+                    "warnings": 81,
+                    "oldest_pending": "2026-08-17",
+                    "copy_count": 7,
+                    "rsvp": {
+                        "50000": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50002": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50004": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50006": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50008": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50010": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50012": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        }
+                    }
+                },
+                "html_bytes": 76360,
+                "data_sha256": "a2dbd6b43fd1f52ee9a8557b28ccb9364bb3ab15fe5b0d1a6932002ad95170b0",
+                "html_sha256": "10860f90bf935c0e99727d42d349fb2596d48e6ad35389cb6aab08cab1716147",
+                "html_lf_sha256": "10860f90bf935c0e99727d42d349fb2596d48e6ad35389cb6aab08cab1716147",
+                "result_sha256": "27b24fca9bd443b94c4b8c0e6cc71f3e5996d19805b7cc7435fcc5e05942d6bf"
+            }
+        },
+        {
+            "route": "R05",
+            "role": "sports_lead",
+            "mode": "all",
+            "weeks": 12,
+            "sql": {
+                "count": 203,
+                "fetched_rows": 936,
+                "execute_ms": 20.604709000000017,
+                "fetch_ms": 0.36527999999999977
+            },
+            "median_ms": 45.7750855,
+            "p95_ms": 46.937601,
+            "peak_increment_bytes": 543008,
+            "process_peak_bytes": 4194304,
+            "result": {
+                "data": {
+                    "plans": [
+                        50000,
+                        50001,
+                        50002,
+                        50003,
+                        50004,
+                        50005,
+                        50006,
+                        50007,
+                        50008,
+                        50009,
+                        50010,
+                        50011,
+                        50012,
+                        50013
+                    ],
+                    "stats": {
+                        "planovany": 14,
+                        "evidovany": 0
+                    },
+                    "warnings": 162,
+                    "oldest_pending": "2026-08-17",
+                    "copy_count": 14,
+                    "rsvp": {
+                        "50000": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50001": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50002": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50003": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50004": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50005": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50006": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50007": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50008": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50009": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50010": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50011": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50012": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50013": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        }
+                    }
+                },
+                "html_bytes": 121622,
+                "data_sha256": "1197cb29b98e2989a92c23ba2ead1db023e16d4da3bd4368a0892a42c818c560",
+                "html_sha256": "d7cd955de5a610959a0a17f73c4ffefcac4f843436581ea8e84e9eaab29a392b",
+                "html_lf_sha256": "d7cd955de5a610959a0a17f73c4ffefcac4f843436581ea8e84e9eaab29a392b",
+                "result_sha256": "78d5fb70642c3333e3b2d46dfbb74457bdb9dfe6f18d196bc0195eb972512a9f"
+            }
+        },
+        {
+            "route": "R05",
+            "role": "coach",
+            "mode": "all",
+            "weeks": 52,
+            "sql": {
+                "count": 112,
+                "fetched_rows": 771,
+                "execute_ms": 12.787293999999992,
+                "fetch_ms": 0.31683200000000006
+            },
+            "median_ms": 26.5151075,
+            "p95_ms": 27.126153,
+            "peak_increment_bytes": 526984,
+            "process_peak_bytes": 4194304,
+            "result": {
+                "data": {
+                    "plans": [
+                        50000,
+                        50002,
+                        50004,
+                        50006,
+                        50008,
+                        50010,
+                        50012
+                    ],
+                    "stats": {
+                        "planovany": 7,
+                        "evidovany": 0
+                    },
+                    "warnings": 361,
+                    "oldest_pending": "2025-11-10",
+                    "copy_count": 7,
+                    "rsvp": {
+                        "50000": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50002": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50004": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50006": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50008": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50010": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50012": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        }
+                    }
+                },
+                "html_bytes": 76361,
+                "data_sha256": "319cab459c1b523aeea1b173a4707fc6d52e9d59ada573a375de8c743a169514",
+                "html_sha256": "7b4a40a60a8fd6c321e780527d4f7f600f823c6687167c38026c76cba28f93ec",
+                "html_lf_sha256": "7b4a40a60a8fd6c321e780527d4f7f600f823c6687167c38026c76cba28f93ec",
+                "result_sha256": "0e12dd767c788652c0c10e008e72516563f674f13b488daa4dab1ac882f49026"
+            }
+        },
+        {
+            "route": "R05",
+            "role": "sports_lead",
+            "mode": "all",
+            "weeks": 52,
+            "sql": {
+                "count": 203,
+                "fetched_rows": 1496,
+                "execute_ms": 20.356005000000007,
+                "fetch_ms": 0.49417099999999997
+            },
+            "median_ms": 47.157501499999995,
+            "p95_ms": 52.023944,
+            "peak_increment_bytes": 801952,
+            "process_peak_bytes": 6291456,
+            "result": {
+                "data": {
+                    "plans": [
+                        50000,
+                        50001,
+                        50002,
+                        50003,
+                        50004,
+                        50005,
+                        50006,
+                        50007,
+                        50008,
+                        50009,
+                        50010,
+                        50011,
+                        50012,
+                        50013
+                    ],
+                    "stats": {
+                        "planovany": 14,
+                        "evidovany": 0
+                    },
+                    "warnings": 722,
+                    "oldest_pending": "2025-11-10",
+                    "copy_count": 14,
+                    "rsvp": {
+                        "50000": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50001": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50002": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50003": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50004": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50005": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50006": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50007": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50008": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50009": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50010": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50011": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50012": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        },
+                        "50013": {
+                            "expected": 20,
+                            "going": 0,
+                            "not_going": 0,
+                            "pending": 20
+                        }
+                    }
+                },
+                "html_bytes": 121622,
+                "data_sha256": "e538549a8b3534ddf4298a7a7e81ca6ca7bf6888fcb28053bda1f0816adbbe1c",
+                "html_sha256": "8511893e55d1e9964e263a8c7915bedb2544743895cb1ad1c80d20cd5d76a710",
+                "html_lf_sha256": "8511893e55d1e9964e263a8c7915bedb2544743895cb1ad1c80d20cd5d76a710",
+                "result_sha256": "acfb70099f2cfc30c3a193b7ad46901ec12d8153bb6a582c45ae600cd5453a3e"
+            }
+        }
+    ],
+    "source_files_sha256": {
+        "planovac.php": "e5ee63516fa909635b96f593761e4a0d7c6e4d0029b502948537e91e74d9101a",
+        "training_closure_admin.php": "8e06216dd1cf94aaadcc67a21fb84a2a2fd207a25f925aa95be045393337ae61",
+        "medical_clearance_admin.php": "50b54860b65b59b5a45b8708ba1f52eaa78a16ec30b172970a0b474309214984",
+        "includes/training_day_view.php": "624f64a4fb947ba425a8bf79644a22d8e3967a4692bf33b13e91f47e7c183422",
+        "includes/medical_clearance_admin_view.php": "8b58828fb56ea5103e028660509e14ccb7c578d7d28860e54c1f4cf6728d2632",
+        "includes/medical_clearance.php": "fbc840eca59c5181d5e8da7fa5d362366bc3086f9c5778173cb9c17a5ff23b3b",
+        "includes/medical_clearance_read.php": "72e87e42a03337a0de2b6f5c322413f8915d49d481a9e188fc4bddb94b608b0f",
+        "assets/js/medical-person-picker.js": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56"
+    },
+    "migration_ledger_count": 160,
+    "fixture_tables": 347,
+    "negative_checks": {
+        "foreign_training": "denied",
+        "revoked_role": "denied",
+        "medical_wrong_role": "denied",
+        "foreign_family_medical": "denied"
+    }
+}

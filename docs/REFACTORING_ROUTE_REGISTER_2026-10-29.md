@@ -36,6 +36,13 @@ implementuje stránku před metadaty, cílený výběr osob a postupný výpoče
 Parita, místní browser i párové měření před/po v CI 10.3/11.4 PASS; stav vede
 [předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md). Bez nasazení.
 
+Navazující [optimalizace R05](verification/planner-read-performance-20261106/RESULTS.md)
+čte RSVP v dávkách a historické upozornění bez soupiskového filtru agregací.
+Párová MariaDB 10.3/11.4: 112/203 → 28 SQL, stejná data i HTML,
+medián měřené části 3,32–6,07× rychlejší. Čerstvost a transakční zámky PASS.
+[Předání R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md),
+PR #353; bez nasazení. R06, plné HTTP a hierarchické filtry zůstávají otevřené.
+
 ## Historický základ K0.1
 
 Zdroj: `3cc60fb6d7fad4bc6430724529295ef025d75178`, ověřeno 29. 10. 2026.

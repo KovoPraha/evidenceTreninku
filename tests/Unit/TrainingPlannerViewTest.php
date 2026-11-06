@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -35,6 +36,6 @@ final class TrainingPlannerViewTest extends TestCase
         self::assertStringNotContainsString('<img', htmlspecialchars($excerpt, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'));
         $page = (string)file_get_contents(dirname(__DIR__, 2) . '/planovac.php');
         self::assertStringContainsString('h(trainingPlannerAnnouncementExcerpt(', $page);
-        self::assertStringContainsString('trainingPlannerOldestPendingDate($warningPlans)', $page);
+        self::assertStringContainsString('trainingPlannerPendingSummary(', $page);
     }
 }

@@ -392,3 +392,11 @@ omezené načítání stránky a osob, stream minimálních metadat pro kanonick
 stavový filtr. Parita, místní browser i párové CI 10.3/11.4 PASS; finální CI/merge ověřit u PR.
 [Session handoff](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md)
 vede další postup; produkce se touto relací nemění a ostatní P11 úkoly zůstávají otevřené.
+
+Následující výslovné zadání dokončilo [optimalizaci R05 plánovače](verification/planner-read-performance-20261106/RESULTS.md):
+dávkové RSVP a agregované historické upozornění bez filtru soupisky.
+Stejné syntetické případy 1/12/52 týdnů × trenér/vedoucí na MariaDB 10.3/11.4
+potvrdily celá data i HTML, 112/203 → 28 SQL a medián měřené části
+3,32–6,07× rychlejší. READ ONLY, čerstvost a transakční zámky zachované.
+[Předání R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md) vede
+stav PR #353 a zbývající R06, plné HTTP i hierarchické filtry. Bez nasazení.
