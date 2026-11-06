@@ -212,7 +212,8 @@ Vlastník zadal měření bez produkčních změn a bez zásahu do WIP. Větev
 vede profil čtecích cest R05/R06/R13, metodu, izolaci a další úkoly.
 Místní profil 21 případů dokončený: samostatné čtecí SQL měření a 30 časových
 vzorků po pěti zahřátích; čtyři negativní případy a shoda dat/HTML PASS.
-Výsledek a priority jsou v protokolu; testovací CI doplňuje MariaDB 10.3/11.4.
+Výsledek a priority jsou v protokolu; testovací CI MariaDB 10.3/11.4 PASS,
+[trvalé důkazy](verification/synthetic-performance-20261106/CI-VERIFICATION.md).
 Vlastní schémata uklizená, server zastavený. Adresář serveru ponechaný po
 automatickém odmítnutí jeho smazání; nepovinný místní úklid, WIP nedotčené.
 Žádný deploy, změna produkčních dat/konfigurace nebo transport do poskytovatele.

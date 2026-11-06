@@ -14,7 +14,9 @@ pro stránku 25 položek; i filtr osoby stále načítá celý seznam osob. Nás
 metadata/RSVP plánovače a dávkové ověření účastníků docházky. Runtime se nyní
 neoptimalizoval a žádná změna se nenasazuje. Datová/HTML parita měřicích režimů
 a čtyři negativní autorizační případy PASS. Testovací CI doplňuje stejnou metodu
-na MariaDB 10.3/11.4; stav ověřit u PR. Úplné HTTP/bootstrap/nav a další role,
+na MariaDB 10.3/11.4: obě verze PASS, shodné SQL/řádky ve všech 21 případech;
+[trvalé CI důkazy](verification/synthetic-performance-20261106/CI-VERIFICATION.md).
+Aktuální hlavu ověřit u PR. Úplné HTTP/bootstrap/nav a další role,
 včetně plánem propojené docházky, jsou dosud samostatné úkoly.
 Větev `codex/synthetic-performance-20261106`, vlastní kopie
 `C:/Users/Marek/Documents/Codex/evidencePavel-performance-20261106`.

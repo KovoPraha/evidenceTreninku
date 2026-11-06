@@ -132,6 +132,8 @@ schéma `p11_read_<nonce>` a v finally vrací transakci před jeho odstraněním
 Testovací workflow `tests.yml` doplňuje stejný profil do existující izolované
 matice MariaDB **10.3 / 11.4** (žádné produkční workflow). Každá verze musí
 vrátit complete=true, všech 21 případů, čtyři negativní kontroly a úklid.
+Obě verze úspěšně dokončené v běhu 42265527246; [trvalé výsledky a původ](CI-VERIFICATION.md).
+Počty SQL i načtených řádků shodné ve všech 21 případech s místním měřením.
 Nezavádí se časový SLA práh závislý na runneru. CI ukládá JSON/EXPLAIN jako
 `synthetic-read-pages-mariadb-<verze>`; skutečný výsledek určuje odkazované PR/CI,
 nikoli tato příprava. Přesná lokální čísla se za Linux CI čísla nevydávají.
