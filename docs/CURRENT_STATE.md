@@ -2,6 +2,8 @@
 
 Aktualizováno 6. 11. 2026 (Europe/Prague), po skutečném převodu katalogu BAR a schválených přístupů; dřívější nasazení a aktivace zachované.
 
+- **Pracovní upozornění připravená, zatím nenasazená:** [PR #330](https://github.com/KovoPraha/evidenceTreninku/pull/330) přidává zvoneček, osobní přehled a e-mail pro registráře při žádosti o propojení či registraci sportovce. Přečtení není vyřízení. [Rozsah, přejímka a postup](STAFF_NOTIFICATIONS_2026-11-06.md). Aktuální automatické kontroly jsou u PR; před uvedením do provozu ověřit plánování obecného workeru, příjemce a skutečné doručení. První běh zahrne i starší čekající žádosti. Produkční plánovač ani rozesílání nebyly touto prací změněny.
+
 - **[Pravidelné zpracování členství i pošta zapnuté](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md):** automatizace, plán/zápis a pošta aktivní, denně 05:23 UTC. Ostrý apply --send `42108711699` PASS (0 členství/předpisů/dokladů/zpráv, žádná chyba), kontrola `42108836694` potvrdila úspěšný heartbeat v 21:01:18 UTC. Skutečné doručení při prázdné frontě neověřené. Závodní tým zůstává konceptem.
 
 - **[Klubové tarify #316 nasazené](verification/membership-catalog-release-20261105/RESULTS.md):** více disciplín za jednu cenu, měsíční/roční interval a formulář fakturačních údajů.
