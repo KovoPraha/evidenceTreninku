@@ -57,7 +57,7 @@ function medicalClearanceStatePage(PDO $pdo, string $base, array $params, array 
         if ($mysql) {
             $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
         }
-        $q = $pdo->prepare('SELECT w.*,s.jmeno,s.prijmeni,' . $select . ' ' . $joined . ' ORDER BY w.next_review_on,w.id,r.id DESC');
+        $q = $pdo->prepare('SELECT w.id,' . $select . ' ' . $joined . ' ORDER BY w.next_review_on,w.id,r.id DESC');
         $q->execute($params);
         $watch = null;
         $records = [];
@@ -66,10 +66,7 @@ function medicalClearanceStatePage(PDO $pdo, string $base, array $params, array 
                 if ($watch !== null) {
                     $consume($watch, $records);
                 }
-                $watch = $row;
-                foreach ($columns as $column) {
-                    unset($watch['medical_record_' . $column]);
-                }
+                $watch = ['id' => $row['id']];
                 $records = [];
             }
             if ($row['medical_record_id'] !== null) {
@@ -96,8 +93,21 @@ function medicalClearanceStatePage(PDO $pdo, string $base, array $params, array 
     }
     $pages = max(1, (int)ceil($total / 25));
     $page = min($filters['page'], $pages);
-    return ['rows' => $page === $filters['page'] ? $requested : $lastPage,
-        'total' => $total, 'page' => $page, 'pages' => $pages];
+    $selected = $page === $filters['page'] ? $requested : $lastPage;
+    $rows = [];
+    if ($selected !== []) {
+        $ids = array_column($selected, 'id');
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $q = $pdo->prepare('SELECT w.*,s.jmeno,s.prijmeni FROM medical_clearance_watches w JOIN sportovci s ON s.id=w.sportovec_id
+            WHERE w.id IN (' . $placeholders . ') ORDER BY w.next_review_on,w.id');
+        $q->execute($ids);
+        $statuses = array_column($selected, 'evaluated_status', 'id');
+        foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $row['evaluated_status'] = $statuses[$row['id']];
+            $rows[] = $row;
+        }
+    }
+    return ['rows' => $rows, 'total' => $total, 'page' => $page, 'pages' => $pages];
 }
 
 function medicalClearanceList(PDO $pdo, array $input): array

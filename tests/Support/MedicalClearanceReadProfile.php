@@ -68,8 +68,9 @@ try {
     }
     $report['buffering_restored'] = true;
     $report['state_read'] = $pdo->profile;
-    if (count($report['state_read']) !== 1 || $report['state_read'][0]['fetched_rows'] > 431 * 3) {
-        throw new RuntimeException('State filter did not use one streamed metadata query.');
+    if (count($report['state_read']) !== 2 || $report['state_read'][0]['fetched_rows'] > 431 * 3
+        || $report['state_read'][1]['fetched_rows'] > 25) {
+        throw new RuntimeException('State filter did not stream metadata and hydrate only its result page.');
     }
     $report['read_only_session'] = true;
     $report['complete'] = true;

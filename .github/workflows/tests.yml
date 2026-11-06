@@ -546,17 +546,25 @@ jobs:
           EVIDENCE_MARIADB_SMOKE_PORT: '3306'
           EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
         run: |
-          mkdir -p synthetic-read-pages
+          mkdir -p synthetic-read-pages/before synthetic-read-pages/after
+          before_tree="$RUNNER_TEMP/medical-before"
+          git fetch --no-tags origin fbdf622e0acadebeaf5525fb168869795a7faca2
+          git worktree add --detach "$before_tree" fbdf622e0acadebeaf5525fb168869795a7faca2
+          ln -s "$GITHUB_WORKSPACE/vendor" "$before_tree/vendor"
+          cp docs/verification/medical-read-performance-20261106/before-harness.php.txt "$before_tree/tests/Support/MedicalReadBefore20261106.php"
+          (cd "$before_tree" && php -d memory_limit=512M tests/Support/MedicalReadBefore20261106.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/before")
           php tests/Support/MedicalClearanceReadProfile.php > synthetic-read-pages/medical-read-parity.json
-          php -d memory_limit=512M tests/Support/SyntheticReadPagesProfile.php --run synthetic-read-pages
-          jq -e '.complete == true and (.cases | length) == 24 and (.negative_checks | length) == 4' synthetic-read-pages/summary.json >/dev/null
-          jq -e '.removed == true' synthetic-read-pages/cleanup.json >/dev/null
+          php -d memory_limit=512M tests/Support/SyntheticReadPagesProfile.php --run synthetic-read-pages/after
+          php tests/Support/CompareMedicalReadMeasurements.php synthetic-read-pages/before synthetic-read-pages/after > synthetic-read-pages/medical-comparison.json
+          jq -e '.complete == true and (.cases | length) == 24 and (.negative_checks | length) == 4' synthetic-read-pages/after/summary.json >/dev/null
+          jq -e '.removed == true' synthetic-read-pages/after/cleanup.json >/dev/null
+          jq -e '.complete == true and .domain_results_equal == true and (.cases | length) == 9' synthetic-read-pages/medical-comparison.json >/dev/null
 
       - name: Preserve synthetic GET path measurements
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: synthetic-read-pages-mariadb-${{ matrix.mariadb-version }}
-          path: synthetic-read-pages/*.json
+          path: synthetic-read-pages/
           if-no-files-found: error
           retention-days: 14

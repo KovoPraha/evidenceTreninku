@@ -14,7 +14,12 @@ foreach (array_slice($argv, 1) as $directory) {
     $reports[] = json_decode((string)file_get_contents($directory . '/summary.json'), true, 512, JSON_THROW_ON_ERROR);
 }
 [$before, $after] = $reports;
-if (!$before['complete'] || !$after['complete'] || count($before['cases']) !== 9 || count($after['cases']) !== 9
+$oldCases = array_filter($before['cases'], static fn (array $case): bool => $case['route'] === 'R13');
+$newCases = array_filter($after['cases'], static fn (array $case): bool => $case['route'] === 'R13');
+$caseIndexes = [1 => array_keys($oldCases), 2 => array_keys($newCases)];
+$oldCases = array_values($oldCases);
+$newCases = array_values($newCases);
+if (!$before['complete'] || !$after['complete'] || count($oldCases) !== 9 || count($newCases) !== 9
     || $before['server'] !== $after['server'] || $before['php'] !== $after['php']
     || $before['fixture_tables'] !== $after['fixture_tables'] || $before['migration_ledger_count'] !== $after['migration_ledger_count']
     || $before['warmups'] !== 5 || $after['warmups'] !== 5 || $before['timing_samples'] !== 30 || $after['timing_samples'] !== 30) {
@@ -31,8 +36,8 @@ $result = ['complete' => false, 'before_source_sha' => $before['source_sha'], 'a
     'server' => $before['server'], 'php' => $before['php'], 'cases' => [],
     'domain_results_equal' => true, 'html_change' => 'bounded searchable person picker and template whitespace',
     'timing_samples_per_phase' => 270, 'sql_samples_per_phase' => 9];
-foreach ($before['cases'] as $index => $old) {
-    $new = $after['cases'][$index];
+foreach ($oldCases as $index => $old) {
+    $new = $newCases[$index];
     foreach (['route', 'role', 'mode', 'people'] as $key) {
         if ($old[$key] !== $new[$key]) {
             throw new RuntimeException('Different case matrix.');
@@ -45,7 +50,8 @@ foreach ($before['cases'] as $index => $old) {
         throw new RuntimeException('Changed domain result or unbounded person picker.');
     }
     foreach ([1, 2] as $phase) {
-        $detail = json_decode((string)file_get_contents($argv[$phase] . '/' . sprintf('%02d-R13.json', $index + 1)), true, 512, JSON_THROW_ON_ERROR);
+        $file = $argv[$phase] . '/' . sprintf('%02d-R13.json', $caseIndexes[$phase][$index] + 1);
+        $detail = json_decode((string)file_get_contents($file), true, 512, JSON_THROW_ON_ERROR);
         if (count($detail['timing']['samples']) !== 30 || count($detail['sql_detail']['samples']) !== 1
             || !$detail['timing']['read_only_session'] || !$detail['sql_detail']['read_only_session']
             || $detail['timing']['result']['result_sha256'] !== $detail['sql_detail']['result']['result_sha256']) {

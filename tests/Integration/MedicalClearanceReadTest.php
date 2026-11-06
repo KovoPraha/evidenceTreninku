@@ -49,7 +49,7 @@ final class MedicalClearanceReadTest extends TestCase
         self::assertLessThanOrEqual(75, $pdo->profile[2]['fetched_rows']);
         $pdo->profile = [];
         medicalClearanceList($pdo, ['medical_state' => 'valid']);
-        self::assertCount(1, $pdo->profile);
+        self::assertCount(2, $pdo->profile);
         foreach ($pdo->profile as $query) {
             self::assertStringStartsWith('SELECT', $query['sql']);
             self::assertLessThanOrEqual(431 * 3, $query['fetched_rows']);
