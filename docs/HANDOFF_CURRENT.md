@@ -471,3 +471,12 @@ Dnešní zpracování se neopakovalo, čas se kvůli testu neposouval.
 Příští denní start je 7. 11. v 05:23 UTC; do jeho skutečného průběhu jej
 neoznačovat za provozně ověřený. Při kontrole použít čtecí status z runbooku,
 nikoli ruční apply. Původní WIP zachovaný; přesný rozsah je v protokolu.
+
+<!-- membership-morning-preflight:start -->
+## Serverový preflight
+
+[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:end -->

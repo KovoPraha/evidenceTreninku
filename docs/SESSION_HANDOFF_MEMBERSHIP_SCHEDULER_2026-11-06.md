@@ -45,3 +45,12 @@ aplikace musí pro toto naplánované vyvolání běžet.
 je rozpracovaná. Má pouze pozorovat a automaticky doložit výsledek, bez nového
 účtování, pošty, platby nebo exportu. Konkrétní rollout vede tematický plán;
 před vypnutím místní úlohy doložit přirozený tick a serverové publikování.
+
+<!-- membership-morning-preflight:start -->
+## Serverový preflight
+
+[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:end -->

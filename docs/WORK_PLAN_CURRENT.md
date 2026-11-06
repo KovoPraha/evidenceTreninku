@@ -217,3 +217,12 @@ Výsledek a priority jsou v protokolu; testovací CI MariaDB 10.3/11.4 PASS,
 Vlastní schémata uklizená, server zastavený. Adresář serveru ponechaný po
 automatickém odmítnutí jeho smazání; nepovinný místní úklid, WIP nedotčené.
 Žádný deploy, změna produkčních dat/konfigurace nebo transport do poskytovatele.
+
+<!-- membership-morning-preflight:start -->
+## Serverový preflight
+
+[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:end -->
