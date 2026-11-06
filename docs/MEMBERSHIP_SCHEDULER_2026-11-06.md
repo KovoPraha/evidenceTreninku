@@ -55,10 +55,19 @@ config zachované. [Výsledky a meze](verification/membership-scheduler-20261106
 Skutečné P05/P07 a export P06 zůstávají odložené. Budoucí ranní běh se dnes
 neprohlašuje za proběhlý, časová brána a změny letního času prošly testy.
 
-## Navazující jednorázová kontrola 7. 11.
+## Navazující kontrola 7. 11. na serveru
 
-Na výslovný pokyn vlastníka je aktivní [ranní audit](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md)
-7. 11. v 06:30 CET, automatizace `rann-audit-lenstv-7-11`, právě jedno vyvolání.
-Porovná skutečný ranní pokus s 05:23 UTC, bez ručního spuštění nebo změny
-produkce, a zapíše výsledek do protokolu, registru a handoffu. Výsledek zatím
-NOT RUN. Skutečné P05/P07 a export P06 dále odložené.
+[Ranní serverový audit](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md) je
+připravený: hosting od 05:30 UTC uchová skutečný stav a GitHub zapíše výsledek
+po povinném CI do dokumentace i handoffu. Celá cesta #348 serverově ověřená,
+místní úloha PAUSED. [Předání a důkazy](verification/membership-morning-server-release-20261106/RESULTS.md).
+Skutečné P05/P07 a export P06 dál odložené.
+
+<!-- membership-morning-preflight:start -->
+## Serverový preflight
+
+[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:end -->

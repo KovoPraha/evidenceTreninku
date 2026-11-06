@@ -1,0 +1,46 @@
+{
+  "live": {
+    "sha": "acb511cc5338911f141bc49334d515c0b21034fa",
+    "run_id": "42265034726",
+    "deployed_at": "2026-11-06T17:51:38+00:00",
+    "uat_approved": false
+  },
+  "previous_live": {
+    "sha": "c55b1615885c9e8753bb334d95f06119022963cd",
+    "run_id": "42240723957",
+    "deployed_at": "2026-11-06T15:14:09+00:00",
+    "uat_approved": false
+  },
+  "implementation_pr": 346,
+  "implementation_deploy_run": 42265034726,
+  "pre_audit_run": 42264116168,
+  "post_audit_run": 42266770816,
+  "config_sha256_equal": true,
+  "integration_flags_equal": true,
+  "integration_flags": {
+    "FIO_IMPORT_ENABLED": true,
+    "FIO_AUTO_CONFIRM_ENABLED": true,
+    "SUMUP_ENABLED": true,
+    "STRIPE_ENABLED": false,
+    "VELOCOTA_INTEGRATION": false,
+    "PACKETA_ENABLED": null
+  },
+  "migration_ledger_equal": true,
+  "migration_ledger_count": 160,
+  "kis_canonical_write_equal": true,
+  "observer_install_run": 42265954709,
+  "natural_waiting_status_run": 42266360997,
+  "publication_fix_pr": 350,
+  "automatic_preflight_run": 42270407584,
+  "automatic_preflight_pr": {
+    "number": 348,
+    "head_sha": "ed68dede745e48ed3c69ed232b5e4bbd2fa1d4e1",
+    "merge_sha": "462b3bb56608a723d8e3295eb2833ed11ad1ae89",
+    "merged_at": "2026-11-06T18:32:17Z",
+    "merged_by": "github-actions[bot]",
+    "url": "https://github.com/KovoPraha/evidenceTreninku/pull/348"
+  },
+  "local_automation_status": "PAUSED",
+  "future_result_pr": 347,
+  "morning_result": "NOT RUN"
+}

@@ -23,6 +23,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Session handoff BAR](SESSION_HANDOFF_BAR_2026-11-06.md) | Dokončená publikace a pořadí přihlášení Lucky, zásob, kasy a účetního propojení |
 | [Pravidla souborové dokumentace](WORK_DOCUMENTATION_POLICY.md) | Průběžné záznamy rozpracované, dokončené a plánované práce v souborech |
 | [Pracovní balíček pro testerku](testing/chatgpt-tester-20261105/README.md) | Sjednoceno 6. 11.: instrukce, 20 scénářů, zdrojová mapa a přenosový balíček ověřené; skutečná testerka/přístup a lidské UAT ještě neurčené |
+| [Ranní kontrola 7. 11. bez PC](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md) | Pozorovatel na hostingu a automatické předání; [důkazy](verification/membership-morning-server-release-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md) |
 | [Spolehlivé denní členství](MEMBERSHIP_SCHEDULER_2026-11-06.md) | Hostingový plán 05:23 UTC, skutečné minutové tiky a ochrana proti souběhu; [výsledky](verification/membership-scheduler-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md) |
 | [Měsíční členství přes e-shop](MONTHLY_MEMBERSHIP_RUNBOOK.md) | Nový tok, platby, doklady, upomínky, samostatná aktivace a hranice ověření; [plán](MONTHLY_MEMBERSHIP_PLAN.md) |
 | [Tréninky a zastupování bez povinné soupisky](COACH_TRAINING_ACCESS_2026-11-05.md) | Vlastní cíle první, ostatní dostupné; nové pravidlo, přiřazení a hranice ověření |

@@ -59,25 +59,31 @@ Původní WIP zachované; žádný deploy ani jiné produkční workflow této r
 Současný release/flags určuje [CURRENT_STATE.md](CURRENT_STATE.md); starší
 oddíly níže jsou datovaná předání, nikoli tvrzení o posledním vydání.
 
-## Aktivní práce: převod ranní kontroly na server
+## Serverová ranní kontrola členství — připraveno bez PC
 
-Vlastník požádal kontrolu bez zapnutého PC. [Serverový postup](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md#změna-zadání-kontrola-bez-zapnutého-počítače)
-je rozpracovaný: jednorázový pozorovatel na hostingu v 05:30 UTC, neměnný
-výsledek a automatické dokumentační předání přes předem založený PR s CI.
-Cílené PHP/Python a statická kontrola PASS; zbývá CI, nasazení, přirozený
-čekající tick a skutečný preflight zápisu do repozitáře. Místní úlohu vypnout
-teprve po ověření náhrady. Skutečné P05/P07 i export P06 stále odložené.
+[Serverové předání](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md),
+[důkazy](verification/membership-morning-server-release-20261106/RESULTS.md),
+[plán](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
+#346 nasazené, pozorovatel přirozeně čeká, #350 opravilo předání PR CI.
+Server sám sloučil preflight #348 po všech 11 kontrolách. Místní úloha PAUSED;
+hosting i GitHub pracují bez počítače vlastníka. Skutečné P05/P07 a export P06
+dál odložené. Nový deploy kvůli tomuto souborovému předání nedělat.
 
-## Navazující úloha: ranní kontrola členství 7. 11.
+<!-- membership-morning-publish:start -->
+## Ranní audit 7. 11. — čeká na skutečný termín
 
-Vlastník požádal po ranním běhu ověřit skutečný čas a uložit výsledek přímo do
-souborů. [Jednorázový audit](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md)
-je aktivní na **7. 11. v 06:30 CET / 05:30 UTC**, navazující úloha
-`rann-audit-lenstv-7-11` v souběžném chatu „Zkontrolovat stav vývoje a nasazení“. [Session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md).
-Výsledek zatím NOT RUN; v auditovaném běhu číst skutečný denní pokus a
-úspěch, nikoli jen minutový heartbeat. Produkci kvůli přejímce nespouštět
-ručně. Skutečné P05/P07 a export P06 zůstávají odložené vlastníkem.
+Ranní výsledek **NOT RUN**. Hosting jej zachytí od 05:30 UTC (06:30 CET),
+serverový přenos doplní protokol a tento handoff přes připravený
+[výsledkový PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347).
+PC ani místní Codex nejsou potřeba. [Přesný postup a stav](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
+Skutečné P05/P07 a export P06 zůstávají odložené.
+<!-- membership-morning-publish:end -->
+## Původní místní úloha je pozastavená
 
+Původní navazující úloha rann-audit-lenstv-7-11 z #344 má stav PAUSED. Nahradila
+ji serverová kontrola podle plánu výše, počítač není podmínkou auditu ani
+zápisu výsledků. Kvůli přejímce ručně nespouštět účtování. P05/P07 a P06 dál
+odložené vlastníkem.
 ## Předchozí relace: autorizované vydání členských popisků #340
 
 Vlastník zadal výslovné NASADIT pouze #340. Chráněný deploy 42236370197 SUCCESS,
@@ -479,6 +485,14 @@ Chybějící skutečné podklady a lidská rozhodnutí vede tentýž protokol.
 zachování konfigurace ověřené. Redundantní GitHub schedule false, ruční
 workflow zachované. Skutečné P05/P07 a export P06 dále odložené vlastníkem.
 Dnešní zpracování se neopakovalo, čas se kvůli testu neposouval.
-Příští denní start je 7. 11. v 05:23 UTC; do jeho skutečného průběhu jej
-neoznačovat za provozně ověřený. Při kontrole použít čtecí status z runbooku,
-nikoli ruční apply. Původní WIP zachovaný; přesný rozsah je v protokolu.
+Navazující časovou přejímku a její skutečný stav vede serverový plán výše.
+Při diagnostice použít čtecí status, nikoli ruční apply. Původní WIP zachovaný; přesný rozsah je v protokolu.
+
+<!-- membership-morning-preflight:start -->
+## Serverový preflight
+
+[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:end -->
