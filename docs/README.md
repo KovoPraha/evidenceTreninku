@@ -10,9 +10,11 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 | Dokument | Účel |
 |---|---|
-| [Registr rozpracované a plánované práce](WORK_REGISTER.md) | Průběžné položky P01–P11, další kroky, závislosti a odkazy na plány a důkazy |
+| [Registr rozpracované a plánované práce](WORK_REGISTER.md) | Jediný seznam P01–P14: doložený stav, další kroky, závislosti a odpovědnost |
+| [Sjednocení dokumentace 6. 11.](verification/documentation-reconcile-20261106/RESULTS.md) | Sloučení souběžného předání #333/#334, opravené rozpory a hranice ověření; bez produkčních změn |
+| [Průběžný plán – kompatibilní rozcestník](WORK_PLAN_CURRENT.md) | Odkazuje na stejný registr; nevytváří druhý seznam úkolů |
 | [Provozní inventura 6. 11.](verification/operations-inventory-20261106/RESULTS.md) | Stav větví, mezitím nasazené #330 a doložený běh upozornění |
-| [Pracovní upozornění](STAFF_NOTIFICATIONS_2026-11-06.md) | Zvoneček, osobní přehled, e-maily, provozní worker a hranice doručení; stav v CURRENT_STATE |
+| [Pracovní upozornění](STAFF_NOTIFICATIONS_2026-11-06.md) | Nasazený zvoneček i přesný odkaz ověřené; [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md), potvrzení schránky zbývá |
 | [Omluvenky a náhrady – ověření](verification/makeup-audit-20261106/RESULTS.md) | Již nasazené, 22 testů / 139 assertions, 23 HTTP scénářů a syntetický browser PASS |
 | [TV programy](TV-PROGRAMY.md) | Obsluha TV, editor obrázků a textů, veřejné adresy a zveřejňování carouselů |
 | [Začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md) | Nasazený modul, role, převod katalogu/domény a zbývající provozní přejímka |

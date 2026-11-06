@@ -3,6 +3,11 @@
 Tento záznam je datovaný snímek. Živý stav patří do [CURRENT_STATE](../../CURRENT_STATE.md),
 rozpracovaná a plánovaná práce do [WORK_REGISTER](../../WORK_REGISTER.md).
 
+**Navazující sjednocení téhož dne:** [produkční protokol upozornění](../staff-notifications-release-20261106/RESULTS.md)
+doplnil přihlášený zvoneček, přesný odkaz a změnu přečtení. P01 již nečeká
+na tyto kroky; zbývá potvrzení schránky. [Kontrola souběžného předání](../documentation-reconcile-20261106/RESULTS.md)
+zachovala původní datovaný snímek níže a sjednotila další práci v registru.
+
 ## Ověřené změny proti předchozímu přehledu
 
 - PR #330 je sloučený jako `9c543ff9ef7870d3503ec7f38fc05f2b376d0a82`.

@@ -6,6 +6,12 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 
 ## Povinné průběžné předání
 
+Tato dokumentační relace pouze sjednocuje předání; nic nového na produkci
+nezapíná. [Záznam sjednocení a kontroly](verification/documentation-reconcile-20261106/RESULTS.md)
+uvádí původ souběžných změn #333/#334. Jediný seznam další práce je
+[WORK_REGISTER](WORK_REGISTER.md); [WORK_PLAN_CURRENT](WORK_PLAN_CURRENT.md)
+zůstává kompatibilním rozcestníkem na tentýž registr, nikoli druhou frontou úkolů.
+
 Vlastník 6. 11. výslovně požaduje zapisovat rozpracovanou i plánovanou práci
 přímo do verzovaných souborů, nikoli ponechat její jediný záznam v chatu.
 Před prací číst a během práce aktualizovat [WORK_REGISTER](WORK_REGISTER.md):
@@ -18,8 +24,13 @@ kompatibilní cesta s odkazem sem, nikoli zdroj dnešního SHA nebo přepínač�
 [Provozní inventura z 6. 11.](verification/operations-inventory-20261106/RESULTS.md)
 opravuje mezitím zastaralý přehled: #330 už je sloučený a nasazený,
 minutový worker běží a fronta má doložené přijetí zpráv transportem.
-P01 v registru vede oddělené přihlášené UAT/doručení; nevydávat sent za schránku.
-P02–P11 vedou BAR, členství, poslední synchronizaci, platby, přejímku a lokální WIP.
+[Produkční protokol upozornění](verification/staff-notifications-release-20261106/RESULTS.md)
+dokládá také přihlášený zvoneček, přesný odkaz a změnu přečtení. P01 už nečeká
+na opakování této kontroly; zbývá potvrzení schránky. Kontrolní workflow
+`staff-notifications-production.yml` / `action=status` / `OVERIT-UPOZORNENI`
+nic neposílá. Instalaci ani první rozesílku neopakovat; přečtení není vyřízení.
+P02–P14 vedou BAR, členství, poslední synchronizaci, platby, lidskou přejímku,
+lokální WIP, další typy upozornění, podklady testerky a ověření aktuální zálohy.
 
 
 Omluvenky a náhrady nepovažovat za čekající nasazení podle existence starých větví.
@@ -30,14 +41,17 @@ skutečné docházky; samotná omluva nestačí. Kontrola nevyžádala opravu an
 nasazení. Zápisy byly pouze syntetické; přihlášené produkční UAT tím není uzavřené.
 
 [Klubové tarify #316](verification/membership-catalog-release-20261105/RESULTS.md) jsou nasazené.
-Produkční koncept Závodní tým 2200 Kč/měsíc (varianta 951) a skupina 86 → MTB 87,
+Založení konceptu Závodní tým 2200 Kč/měsíc (varianta 951) a skupiny 86 → MTB 87,
 Silnice 88, Dráha 89 jsou založené. Výběr více disciplín pouze zařazuje na soupisky,
-nemění cenu. Vlastník doplní fakturační údaje přes `accounting_settings_admin.php`;
-vystavovatel, účetní pravidlo a tarif ještě nejsou schválené. Nezakládat koncept
-ručně znovu, použít existující. Prodej čeká na schválení/publikaci.
+nemění cenu. Původní protokol zachycuje koncept; souběžné předání #333
+zaznamenává již schválené doplnění údajů TJ KOVO, tarif i zveřejnění.
+Doklad dokončení chybí. P05 v registru nejprve ověří existující variantu,
+vystavovatele, účetní pravidlo a publikaci. Nezakládat druhý produkt ani
+znovu vyžadovat doložený stejný souhlas. V této relaci nic nepublikovat.
 [Pravidelné zpracování je zapnuté](verification/membership-automation-20261105/RESULTS.md):
 automatizace, denní plán/zápis i [pošta jsou true](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
-První apply --send i následný heartbeat PASS (0 členství a zpráv), cron 05:23 UTC. Skutečné doručení ještě neověřené.
+Ruční apply --send i heartbeat PASS (0 členství a zpráv), plán 05:23 UTC.
+První automatický časový start, skutečná platba/PDF/doručení zatím nedoložené.
 Podporované roční tarify nemají zadanou skutečnou cenu a žádný roční produkt nevznikl.
 
 [Měsíční členství a zastupování trenérů #314](verification/monthly-coach-release-20261105/RESULTS.md) jsou sloučené a nasazené.

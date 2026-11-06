@@ -1,14 +1,14 @@
 # Aktuální stav projektu
 
-Aktualizováno 6. 11. 2026 (Europe/Prague), po nasazení pracovních upozornění; rozpracované a plánované kroky vede [registr práce](WORK_REGISTER.md).
+Aktualizováno 6. 11. 2026 (Europe/Prague), podle doloženého nasazení a provozu. Další kroky vede jediný [registr práce](WORK_REGISTER.md); [sjednocení předání](verification/documentation-reconcile-20261106/RESULTS.md) neprovádí produkční změny.
 
-- **Pracovní upozornění #330 sloučená a nasazená:** [deploy 42172409868](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42172409868) SUCCESS, samostatný minutový worker doložený skutečným hostingovým během. [Status v 07:21:36](verification/operations-inventory-20261106/staff-status.json): 3 události / 18 osobních upozornění, 18 sent / 0 pending / 0 failed; transport není potvrzení schránky. Přihlášená přejímka a doručení mají samostatný další krok P01 v registru. [Postup](STAFF_NOTIFICATIONS_2026-11-06.md), [provozní doklady](verification/operations-inventory-20261106/RESULTS.md).
+- **[Pracovní upozornění nasazená a minutový běh aktivní](verification/staff-notifications-release-20261106/RESULTS.md):** PR #330, produkční zvoneček, přesný odkaz a přečtení/nepřečtení ověřeny. Tři žádosti × šest účtů = 18 upozornění a 18 e-mailů přijatých transportem; další hostingové běhy bez duplikace či chyb. Doručení do schránky zatím nepotvrzené. Čtecí dohled: staff-notifications-production.yml / status.
 - **[Omluvenky a náhrady již nasazené a znovu ověřené](verification/makeup-audit-20261106/RESULTS.md):** 6. 11. prošlo 22 testů / 139 assertions, 23 HTTP scénářů a skutečný místní browser (omluva, čekání na docházku, rezervace a storno s vrácením nároku). Mobilní zobrazení a uložená historie PASS. Bez nové chyby či opravy, není potřeba další nasazení. Zápisy pouze na oddělených syntetických datech; přihlášené produkční UAT se nyní neprovádělo.
-- **[Pravidelné zpracování členství i pošta zapnuté](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md):** automatizace, plán/zápis a pošta aktivní, denně 05:23 UTC. Ostrý apply --send `42108711699` PASS (0 členství/předpisů/dokladů/zpráv, žádná chyba), kontrola `42108836694` potvrdila úspěšný heartbeat v 21:01:18 UTC. Skutečné doručení při prázdné frontě neověřené. Závodní tým zůstává konceptem.
+- **[Členství: zpracování a pošta povolené](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md):** plán nastaven denně 05:23 UTC (06:23 CET / 07:23 CEST), proměnné plánu/zápisu/pošty true. Doložen ruční apply --send `42108711699` PASS (0 členství/předpisů/dokladů/zpráv), heartbeat `42108836694` v 21:01:18 UTC. První automatický časový start ani doručení nejsou v dostupných bězích doložené; netvrdit selhání plánovače bez dalšího ověření. Tarif viz další bod.
 - **[Klubové tarify #316 nasazené](verification/membership-catalog-release-20261105/RESULTS.md):** více disciplín za jednu cenu, měsíční/roční interval a formulář fakturačních údajů.
-  Produkční **koncept Závodní tým / 2200 Kč měsíčně**, varianta 951, kategorie Členství v klubu; skupina 86 → MTB 87 / Silnice 88 / Dráha 89. Přihlášený zápis a kontrola UI PASS.
-  **Prodej zatím neaktivovaný:** chybí skutečné údaje a schválení vystavovatele, tarifu a publikace.
-  Linux 2064/39368, obě MariaDB matice a všech 11 kontrol PASS. Live `ad09174e`, deploy `42076138376` SUCCESS. Stávající platby/VS a Fio/SumUp zachované; nová automatizace i pošta následně zapnuty podle záznamu výše.
+  Původní záznam založení: **koncept Závodní tým / 2200 Kč měsíčně**, varianta 951, kategorie Členství v klubu; skupina 86 → MTB 87 / Silnice 88 / Dráha 89. Přihlášený zápis a kontrola UI PASS.
+  **Dokončení publikace neověřené:** předání #333 zaznamenává již udělený souhlas s údaji TJ KOVO, tarifem a publikací; doklad provedení chybí. Nejprve ověřit variantu 951 podle P05 v [registru](WORK_REGISTER.md), nic nezakládat znovu. Tato dokumentační relace publikaci neprovádí.
+  Historické vydání #316 `ad09174e`, deploy `42076138376` SUCCESS; Linux 2064/39368, obě MariaDB matice a 11 kontrol PASS. Platby/VS a Fio/SumUp zachované; automatizace a pošta zapnuty následně.
 
 - **BAR → KIS: katalog, přístupy i doména převedené:** [Protokol B7](verification/bar-cutover-20261106/RESULTS.md), import `42128255522` a nezávislý status `42128603361` PASS. Přesně 68 produktů / 5 kategorií / 51 fotografií, při převodu zásoby a historie nula. Pouze lucka jako obsluha s původním heslem; jediný schválený správce má explicitní vlastní spotřebu. Úplná obnova KIS `42126301391` a 500 původních BAR souborů `42130849719` PASS. Přepnutí `42131182982` a status `42131378682`: 44 HTTP kontrol; aliasy 14/14 i přihlášený Chrome PASS. Pět původních produkčních workflow pozastaveno. [Technická provozní přejímka](verification/bar-acceptance-20261106/RESULTS.md) v prohlížeči nad syntetickou DB PASS: prodeje, čekající platby, kelímky, storna, uzávěrka −5 Kč a vlastní spotřeba podle grantu. Produkční nabídka **1 / Bar KOVO – základní nabídka**, 45 produktů, fotografie, je uložená jako **neveřejný návrh**; veřejná obrazovka stále čeká. Skutečný login Lucky, první zásoby/kasa, lidská finanční přejímka, publikace a účtování BAR zbývají.
 
@@ -43,7 +43,7 @@ Aktualizováno 6. 11. 2026 (Europe/Prague), po nasazení pracovních upozorněn�
   [Oddělený syntetický pilot](verification/trainer-pilot-20261101/RESULTS.md) je založen:
   trenér 56, soupiska 77, dvě syntetické osoby, třetí mimo rozsah. Grant končí
   15. 11. 2026 v 18:17:31 databázového času; obnova hesla způsobilá.
-  Audit 4. 11. potvrdil 30 aktivních pracovních účtů s pozicí trenéra, 29 bez rozsahu.
+  Audit 4. 11. zaznamenal 30 aktivních trenérských účtů, 29 bez rozsahu; po nasazeném #314 to neblokuje zápis ani zastupování. Soukromé profily mají samostatná práva.
   Historické počty způsobilosti k obnově určuje datovaná příprava pilotu.
   [Provozní auditní identita](TRAINER_PILOT_OPERATIONAL_2026-11-01.md) je neaktivní a bez oprávnění;
   veřejné účty se nepropojovaly ani nepovyšovaly. Úplné lidské UAT ještě neproběhlo.
@@ -57,19 +57,19 @@ Aktualizováno 6. 11. 2026 (Europe/Prague), po nasazení pracovních upozorněn�
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Poslední doložené nasazení:** `9c543ff9ef7870d3503ec7f38fc05f2b376d0a82`, [deploy 42172409868](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42172409868) SUCCESS; čtecí [provozní status](verification/operations-inventory-20261106/staff-status.json) potvrzuje běh workeru, nikoli úplnou hash inventuru webrootu.
-  Historické BAR vydání `76bf0370a06e0ab80bab5ee9af1815835ac24efc`, deploy `42084130988`: [protokol](verification/bar-release-20261105/RESULTS.md), otestovaný a sloučený strom shodný; předchozí členství #316 a předání #317 zachované.
-- **Historické ověření BAR vydání:** všech 11 kontrol PR, CI main i deploy PASS; Linux 2203/41286 bez skipů, samostatné unixové hranice 3/45, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
+- **Poslední doložené nasazení:** `9c543ff9ef7870d3503ec7f38fc05f2b376d0a82`, [deploy 42172409868](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42172409868) SUCCESS, 6. 11. kolem 07:12 CET; [přejímka upozornění](verification/staff-notifications-release-20261106/RESULTS.md). Dokumentační merge toto vydání nemění.
+  Historické BAR vydání `76bf0370a06e0ab80bab5ee9af1815835ac24efc`, deploy `42084130988`: [protokol](verification/bar-release-20261105/RESULTS.md), shoda otestovaného a sloučeného stromu; členství #316 a předání #317 zachované.
+- **Ověření aktuálního vydání:** všech 11 kontrol PASS; Linux 2280/42176, unixové hranice 3/45, MariaDB 10.3/11.4, PHPStan/styl/CodeQL a HTTP deploy PASS. Následující BAR důkazy popisují předchozí vydání.
   HTTP vydání před 71/71, po 77/77; přihlášený Chrome Finance/Správa baru/Obsluha i následný skutečný katalog PASS. Přihlášení lucky a skutečná barová platba NOT RUN.
-  [Čtecí porovnání](verification/bar-release-20261105/release-comparison.json): živé SHA a shodná konfigurace/flags v okamžiku BAR vydání; pozdější samostatná aktivace členství viz výše. Historický manifest není úplnou inventurou BAR.
-- **Historická záloha BAR vydání a schéma:** [úplná izolovaná obnova 42080871410](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42080871410) PASS: 357 tabulek / 2 triggery a 4341 existujících souborů včetně konfigurace a příloh.
-  [Nejnovější DB záloha](verification/bar-release-20261105/deploy-database.json) vznikla před migracemi; [obnova 42085710492](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42085710492) PASS. Schema current / pending [], ledger 159 a VS zachované.
+  [Doklad aktuálního vydání](verification/staff-notifications-release-20261106/release-comparison.json) vychází z úspěšného deploye, shody stromů a nezávislých provozních kontrol; úplný nový audit všech flags se neprováděl. [Historické BAR porovnání](verification/bar-release-20261105/RESULTS.md) platí k tehdejšímu vydání.
+- **Záloha a schéma:** [úplná izolovaná obnova 42080871410](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42080871410) PASS: 357 tabulek / 2 triggery a 4341 existujících souborů včetně konfigurace a příloh.
+  [Aktuální DB záloha](verification/staff-notifications-release-20261106/RESULTS.md): 385 tabulek / 2 triggery, hash ověřen před aktivací; samostatná obnova této zálohy neproběhla. Schéma current / pending [], dosavadní VS zachované. [Předchozí obnova 42085710492](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42085710492) PASS.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
   31. 10. v 09:34 CET přibližně 4,64 GB volných na systémovém oddílu. Diskové temporary tables fungují. Příčina kolísání kapacity není definitivně určena. Globální hledání Velocoty a jeho cron zůstávají dočasně vypnuté;
   návrat vyžaduje trvalou kapacitu nebo ověřený úspornější index.
   [Předání Velocoty](https://github.com/velocota/velocota-docs/pull/93).
-- **Konfigurace a flags:** Fio import/auto-confirm a SumUp true; vlastní hostingový cron s minimálním odstupem 600 s.
+- **Poslední doložená konfigurace integrací:** Fio import/auto-confirm a SumUp true; vlastní hostingový cron s minimálním odstupem 600 s. Úplný nový audit všech produkčních přepínačů v této relaci neproběhl.
   Dva skutečné importy PASS; redundantní GitHub plán vypnutý repozitářovou proměnnou, ruční spuštění zachované.
   Stripe/Velocota false, Packeta nedefinovaná, KIS canonical writes false; UAT/import false.
 - **Otevřené provozní převzetí:** lidská/účetní přejímka D12–D14, skutečná

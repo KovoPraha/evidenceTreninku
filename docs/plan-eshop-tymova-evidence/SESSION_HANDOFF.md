@@ -2,13 +2,27 @@
 
 ## Aktuální vstup od 6. 11. 2026
 
+### Navazující kontrola a sjednocení předání
+
+Na pokyn vlastníka sjednocené podklady #333 a #334: [protokol a kontroly](../verification/documentation-reconcile-20261106/RESULTS.md).
+Aktuální zadání pouze dokumentační; nic nového na produkci nezapínat.
+Upozornění už jsou nasazená a přihlášený zvoneček i odkaz doložené; zbývá
+potvrzení schránky. U členství je doložené založení konceptu a v #333
+zaznamenaný další souhlas, ale doklad dokončení publikace chybí: nejprve
+ověřit existující produkt. První automatický denní start také nedoložený.
+BAR je převedený, nabídka naposledy doložená jako návrh; reálný provoz,
+zásoby/kasa a účetní adaptér zbývají. Podrobnosti a odpovědnost vede jediný
+[registr P01–P14](../WORK_REGISTER.md); [WORK_PLAN_CURRENT](../WORK_PLAN_CURRENT.md)
+odkazuje na stejný seznam. Původní pracovní kopie a souběžné větve zachované.
+
 Pro novou práci použít [aktuální stav](../CURRENT_STATE.md),
 [aktuální předání](../HANDOFF_CURRENT.md) a [registr práce](../WORK_REGISTER.md).
 Zdejší starší záznamy včetně SHA, flags a oprávnění jsou datované historické
 podklady; nepřebírat je jako dnešní stav. Nové kroky a plány zapisovat do
 propojených tematických souborů a registru průběžně, výsledky do `docs/verification/`.
 [Provozní inventura 6. 11.](../verification/operations-inventory-20261106/RESULTS.md)
-spojuje poslední přehled větví s mezitím dokončeným nasazením #330.
+spojuje poslední přehled větví s mezitím dokončeným nasazením #330; následný
+produkční browser dokládá [protokol upozornění](../verification/staff-notifications-release-20261106/RESULTS.md).
 
 ## Historické session záznamy
 

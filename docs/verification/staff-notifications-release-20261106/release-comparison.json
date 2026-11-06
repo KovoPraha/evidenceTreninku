@@ -1,0 +1,17 @@
+{
+  "evidence_scope": "Successful protected deployment and notification-only operational checks; no fresh full integration-flags audit",
+  "live": {
+    "sha": "9c543ff9ef7870d3503ec7f38fc05f2b376d0a82",
+    "run_id": "42172409868"
+  },
+  "tested_head": "01bafd053b5e18f1945b6fe006b93fc91bbabf67",
+  "merge_tree_equal": true,
+  "status_runs": [
+    42172975579,
+    42173255204,
+    42173897241
+  ],
+  "install_run": 42173094848,
+  "mail_transport_accepted": 18,
+  "mailbox_delivery_confirmed": false
+}
