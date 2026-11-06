@@ -77,13 +77,13 @@ Browser tab: 2033027124, Title: "Závodní tým – e-shop KOVO Praha", URL: "ht
 	76 container
 		77 text Klubový portál Kovopraha
 		78 link Description: Domů, Value: kis.kovopraha.cz/index.php
-		79 text  · 
+		79 text  ·
 		80 link Description: Kroužky, Value: kis.kovopraha.cz/booking/cyklisticke_krouzky.php
-		81 text  · 
+		81 text  ·
 		82 link Description: Individuální lekce, Value: kis.kovopraha.cz/booking/kalendar.php
-		83 text  · 
+		83 text  ·
 		84 link Description: Veřejné tréninky, Value: kis.kovopraha.cz/booking/treninky.php
-		85 text  · 
+		85 text  ·
 		86 link Description: E-shop, Value: kis.kovopraha.cz/booking/eshop.php
 
 The focused UI element is 1 AXWebArea Závodní tým – e-shop KOVO Praha, URL: kis.kovopraha.cz/booking/produkt.php?id=297

@@ -84,7 +84,9 @@ obchodní tok P05/P07, export P06 a další podklady vlastníka zůstávají ve
 [společném plánu](../../WORK_PLAN_CURRENT.md); nic se kvůli tomuto vydání znovu
 nepublikuje, nezapíná ani neodesílá. [Aktuální stav](../../CURRENT_STATE.md)
 a [handoff](../../HANDOFF_CURRENT.md) nyní rozlišují historickou přípravu od
-provedeného nasazení. Dokumentační předání bude připojené po založení PR.
+provedeného nasazení. Dokumentační předání: [PR #342](https://github.com/KovoPraha/evidenceTreninku/pull/342).
+Výsledky povinného CI a stav merge jsou dohledatelné přímo u PR; toto PR mění
+pouze dokumentaci/důkazy a nevyvolává další deploy.
 
 Místní kontrola dokumentace **PASS**: CURRENT_STATE 80 řádků, 883 odkazů,
 105 zachovaných archivních bloků, 0 chyb; 217 místních odkazů dotčených Markdown
