@@ -375,3 +375,14 @@ W10.2 je [nasazená a ověřená](verification/refactoring-w102-release-20261030
 2204 → 1207 SQL, metadata 1002 → 5, stejné výsledky a čerstvé write kontroly.
 Po přijetí a nasazení navazuje [W11](REFACTORING_W11_2026-10-30.md);
 úplné technické scénáře/obnova a browser přejímka zůstávají W12–W15.
+
+
+## Navazující syntetické měření P11 — 6. 11. 2026
+
+Na výslovné zadání vlastníka doplněno [21 čtecích případů R05/R06/R13](verification/synthetic-performance-20261106/RESULTS.md),
+bez produkčních změn a bez nové runtime optimalizace. Pět zahřátí / 30 časových
+vzorků, samostatné SQL/EXPLAIN, paměť a shodné výsledky; místní MariaDB 10.4.32,
+testovací workflow doplňuje 10.3/11.4. Nález R13 je především neomezené načítání
+před stránkováním a výběr všech osob; R05 opakuje metadata a RSVP po plánech,
+R06 ověřuje osoby jednotlivě. Návrhy optimalizace a přesné dosud neměřené hranice
+jsou v protokolu; nepředstírat dokončení celého K0.2 nebo produkční SLA.

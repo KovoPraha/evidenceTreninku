@@ -26,7 +26,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | [Navazující syntetická regrese 6. 11. PASS](verification/offline-followup-20261106/RESULTS.md); dokončit asistované UAT a lidské převzetí. Heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
 | P09 | Technický refaktoring W6–W15 uzavřený; provozní přejímka není kompletní | Lidská/účetní D12–D14, vazby, dohody a skutečné ocenění; dořešit dvě známé chybějící přílohy původní Evidence. | Vlastník/účetní; [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md), [rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot D12–D14](CLUB_PILOT_D12_D14.md), [obnova/přílohy](verification/bar-cutover-20261106/RESULTS.md) |
 | P10 | Lokální pracovní zbytky a staré větve nejsou frontou nasazení | Posoudit popisky legacy soupisek a staré dokumentační WIP proti main, archivovat už začleněné větve až po potvrzení zachování práce. Neprovádět plošný merge/reset/clean. | Vývoj/vlastník WIP; [inventura](verification/operations-inventory-20261106/RESULTS.md) |
-| P11 | Další optimalizace jsou kandidáti, nikoli slíbená nová vlna | Plošné měření K0.2 a případné dávkování kapacit zvažovat jen podle měření a samostatného rozsahu. | Vývoj/vlastník; [komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md), [uzavření](REFACTORING_CLOSURE_2026-10-30.md) |
+| P11 | [Nové syntetické měření R05/R06/R13](verification/synthetic-performance-20261106/RESULTS.md): 21 případů / 630 časových vzorků, SQL/řádky/paměť a EXPLAIN. Místně hotové, celé K0.2 tím neuzavřené | Priorita: skutečné omezení načítání zdravotního přehledu a výběru osob; poté metadata/RSVP plánovače a dávkové ověření účastníků docházky. Následuje návrh samostatné optimalizace s paritou a nové měření; žádná produkční změna. Úplný HTTP/bootstrap a další role zůstávají samostatné. | Vývoj/vlastník; [komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md), [uzavření](REFACTORING_CLOSURE_2026-10-30.md) |
 | P12 | Technická příprava HOTOVO: soubory 00–06, 20 scénářů, hlášení, mapa a spojený podklad sjednocené 6. 11. proti 3ff0fd13; přenosový ZIP ověřený. [Důkazy](verification/offline-followup-20261106/RESULTS.md). Není to provedené lidské UAT ani sdílení projektu | Vlastník určí testerku, roli/prostředí a konkrétní scénáře; oprávněná osoba dokončí pozvánku/přístup a kontrolní otázky v jejím účtu. Nové ověření hlavní verze před použitím; žádné opakování technické aktualizace bez změny podkladů. | Vlastník/testerka; [balíček a hranice](testing/chatgpt-tester-20261105/README.md), [uživatelské testování](PRODUKCNI-UZIVATELSKE-TESTOVANI.md) |
 | P13 | Další pracovní upozornění jsou záměr, konkrétní typy nejsou vybrané | Určit události, příjemce, vznik/ukončení úkolu, bezpečný odkaz, deduplikaci a testy. Push a eskalace nejsou součástí dokončené první verze. | Vlastník/vývoj; [registr typů a hranice](STAFF_NOTIFICATIONS_2026-11-06.md) |
 | P14 | HOTOVO pro tři konkrétní generace v běhu 42224275796, včetně zálohy evidence_2026-11-06_060929_014837d4.sql.gz (385 tabulek / 2 triggery). Pozdější záloha vydání #341 má 387 tabulek / 2 triggery, její hash ověřen, konkrétní obnova NOT RUN | [Přesná obnova doložená](verification/autonomous-p01-p14-20261106/restore-evidence.txt). Historické úspěšné obnovy jiných záloh za ni nevydávat; produkci neobnovovat. | Vývoj/provoz; [obnovované starší vydání](verification/staff-notifications-release-20261106/RESULTS.md), [novější záloha #341](verification/membership-scheduler-20261106/deploy-summary.json), [historická obnova BAR](verification/bar-cutover-20261106/RESULTS.md) |
@@ -194,3 +194,17 @@ regrese souvisejících práv a chování 97 testů / 527 assertions PASS. Hando
 a meze přejímky aktualizované. Následuje souborové předání přes CI/PR;
 žádný deploy, import, pošta nebo provozní aktivace.
 Ranní ověření P05 vede souběžná relace, neprovádět duplicitně.
+
+## P11 — autonomní syntetické měření 6. 11. 2026
+
+Vlastník zadal měření bez produkčních změn a bez zásahu do WIP. Větev
+`codex/synthetic-performance-20261106`, vlastní kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-performance-20261106`.
+[Průběžný protokol](verification/synthetic-performance-20261106/RESULTS.md)
+vede profil čtecích cest R05/R06/R13, metodu, izolaci a další úkoly.
+Místní profil 21 případů dokončený: samostatné čtecí SQL měření a 30 časových
+vzorků po pěti zahřátích; čtyři negativní případy a shoda dat/HTML PASS.
+Výsledek a priority jsou v protokolu; testovací CI doplňuje MariaDB 10.3/11.4.
+Vlastní schémata uklizená, server zastavený. Adresář serveru ponechaný po
+automatickém odmítnutí jeho smazání; nepovinný místní úklid, WIP nedotčené.
+Žádný deploy, změna produkčních dat/konfigurace nebo transport do poskytovatele.

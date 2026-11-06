@@ -536,3 +536,23 @@ jobs:
             export-snapshot.json
             backup-restore-profile.json
           retention-days: 14
+
+      - name: Measure synthetic planner, closure and medical GET paths
+        env:
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: |
+          mkdir -p synthetic-read-pages
+          php -d memory_limit=512M tests/Support/SyntheticReadPagesProfile.php --run synthetic-read-pages
+          jq -e '.complete == true and (.cases | length) == 21 and (.negative_checks | length) == 4' synthetic-read-pages/summary.json >/dev/null
+          jq -e '.removed == true' synthetic-read-pages/cleanup.json >/dev/null
+
+      - name: Preserve synthetic GET path measurements
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: synthetic-read-pages-mariadb-${{ matrix.mariadb-version }}
+          path: synthetic-read-pages/*.json
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,24 @@
+{
+  "local_executed_harness_sha256": "4e026ae4493e77b50524b79b8840f064fea15b0bf19be8bfcbd4b5fe879ce44b",
+  "local_archived_method": "local-harness.php.txt",
+  "portable_harness_sha256": "a123def631b48b2159407afd662a5778b50f8ecad11f404b255901a3d1f501ab",
+  "measurement_body_unchanged": true,
+  "portable_changes": "mandatory declared localhost port/datadir instead of the fixed Windows runtime; session timezone aligned before measurement",
+  "cases": 21,
+  "timing_samples": 630,
+  "sql_samples": 21,
+  "output_equality": true,
+  "unchanged_function_sha256": {
+    "p11Session": "356dd74a3f8f52a1a8ba2e2f661cea5e3b3bd731408fec96183aa65d8a4b2ce2",
+    "p11Assert": "4dff63de1a7cf582d9e3f1b543ab64bce6ee2b8c6d96bc06346a256599267863",
+    "p11Source": "c4449b1857b248d8e540b3bf424bccef1859acba3659d6b34115e63e6e85863e",
+    "p11Render": "860419fb20416f1a67d19a731851cfc5c53cd7719f4240b5a4df3e7fe55dd4fd",
+    "p11Worker": "07b526c3c32eb0e6f8732cd85639fabf3f654ed8689a5ea68775e98f3ef59f62",
+    "p11RunWorker": "89bed34fb1daf4ffca314265a4e101de3164da0c6e388d8db0e4f1964a25282a",
+    "p11Prepare": "e5612e750e6c0c469c658a124da686043d27a8c2b2adfb43816740cc84689256",
+    "p11SeedPlanner": "9869d1f8786dc5e76a7b789c154d69bfb2867fa4c4485351e07e74cf4a7bbcb8",
+    "p11SeedClosure": "5447062929b66a782fbefab122725cb16d1747bdb6d51fec7356cf6504287022",
+    "p11SeedMedical": "df89eadab9c37c66fd711d285df4288907a0163b071c1e34b304b456412e5e8a",
+    "p11Negative": "dda544359bd1633735946ae7ba650c6614384b85ac6634bf3a97efbe7102a3f2"
+  }
+}
