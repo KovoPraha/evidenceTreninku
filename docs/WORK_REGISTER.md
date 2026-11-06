@@ -57,3 +57,7 @@ Soubory aktualizované; místní kontrola dokumentace, archivních bloků a odka
 Stav povinného CI a sloučení ověřit u PR; dokumentační merge nevyžaduje deploy.
 Následující session pokračuje věcnými položkami P01–P11 podle nového zadání,
 nevytváří novou provozní operaci jen kvůli aktualizaci dokumentace.
+
+CI při dokumentační aktualizaci zachytilo vypuštěnou identitu staršího BAR vydání
+vedle zachovaného historického srovnání. Doplněny zpět historické SHA/run ID
+s výslovným rozlišením od nového nasazení; bez změny testovacího kontraktu.

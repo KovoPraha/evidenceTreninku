@@ -58,7 +58,7 @@ Aktualizováno 6. 11. 2026 (Europe/Prague), po nasazení pracovních upozorněn�
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
 - **Poslední doložené nasazení:** `9c543ff9ef7870d3503ec7f38fc05f2b376d0a82`, [deploy 42172409868](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42172409868) SUCCESS; čtecí [provozní status](verification/operations-inventory-20261106/staff-status.json) potvrzuje běh workeru, nikoli úplnou hash inventuru webrootu.
-  [BAR protokol](verification/bar-release-20261105/RESULTS.md): otestovaný a sloučený strom shodný; předchozí členství #316 a předání #317 zachované.
+  Historické BAR vydání `76bf0370a06e0ab80bab5ee9af1815835ac24efc`, deploy `42084130988`: [protokol](verification/bar-release-20261105/RESULTS.md), otestovaný a sloučený strom shodný; předchozí členství #316 a předání #317 zachované.
 - **Historické ověření BAR vydání:** všech 11 kontrol PR, CI main i deploy PASS; Linux 2203/41286 bez skipů, samostatné unixové hranice 3/45, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
   HTTP vydání před 71/71, po 77/77; přihlášený Chrome Finance/Správa baru/Obsluha i následný skutečný katalog PASS. Přihlášení lucky a skutečná barová platba NOT RUN.
   [Čtecí porovnání](verification/bar-release-20261105/release-comparison.json): živé SHA a shodná konfigurace/flags v okamžiku BAR vydání; pozdější samostatná aktivace členství viz výše. Historický manifest není úplnou inventurou BAR.
