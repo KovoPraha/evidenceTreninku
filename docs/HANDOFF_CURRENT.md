@@ -4,6 +4,23 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
+## Nejnovější session: autorizované vydání členských popisků #340
+
+Vlastník zadal výslovné NASADIT pouze #340. Chráněný deploy 42236370197 SUCCESS,
+6. 11. v 15:46 CET; přesnou identitu vydání vede [CURRENT_STATE.md](CURRENT_STATE.md).
+Katalog a detail nyní používají členství/tarif; živý Chrome i anonymní HTTP PASS.
+Cena 2200 Kč/měsíc a běžné nečlenské nabídky zachované. Konfigurace a kontrolované
+integrační přepínače před/po shodné, import/UAT false; žádná další aktivace.
+[Úplný výsledek, důkazy a meze](verification/membership-copy-release-20261106/RESULTS.md).
+Větev `codex/membership-copy-release-20261106`, izolovaná kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-membership-copy-release-20261106`;
+původní WIP v `C:/xampp/htdocs/evidencePavel` zachovaný včetně kontrolního otisku.
+Záloha před aktivací má 387 tabulek / 2 triggery; její hash ověřen, nová izolovaná
+obnova NOT RUN. Historická obnova P14 zůstává platná pro předchozí generace.
+Skutečné sjednání/platba/PDF P05/P07 i export P06 nadále odložené vlastníkem.
+Následující záznamy o připravené opravě bez nasazení popisují předchozí relaci.
+Dokumentační předání nevyžaduje další deploy; aktuální stav PR/CI je v protokolu.
+
 ## Povinné průběžné předání
 
 Autonomní návaznost 6. 11.: vlastník potvrdil doručení P01, ostatní skutečné

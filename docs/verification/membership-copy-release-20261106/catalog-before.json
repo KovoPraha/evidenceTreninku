@@ -1,0 +1,53 @@
+{
+  "http": 200,
+  "links": [
+    {
+      "href": "produkt.php?id=247",
+      "text": "Detail a přihlášení"
+    },
+    {
+      "href": "produkt.php?id=218",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=221",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=219",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=220",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=217",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=216",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=93",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=67",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=85",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=124",
+      "text": "Detail a varianty"
+    },
+    {
+      "href": "produkt.php?id=104",
+      "text": "Detail a varianty"
+    }
+  ]
+}
