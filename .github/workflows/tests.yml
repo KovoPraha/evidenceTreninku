@@ -549,7 +549,7 @@ jobs:
           mkdir -p synthetic-read-pages
           php tests/Support/MedicalClearanceReadProfile.php > synthetic-read-pages/medical-read-parity.json
           php -d memory_limit=512M tests/Support/SyntheticReadPagesProfile.php --run synthetic-read-pages
-          jq -e '.complete == true and (.cases | length) == 21 and (.negative_checks | length) == 4' synthetic-read-pages/summary.json >/dev/null
+          jq -e '.complete == true and (.cases | length) == 24 and (.negative_checks | length) == 4' synthetic-read-pages/summary.json >/dev/null
           jq -e '.removed == true' synthetic-read-pages/cleanup.json >/dev/null
 
       - name: Preserve synthetic GET path measurements

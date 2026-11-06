@@ -105,6 +105,9 @@ function p11Render(PDO $pdo, string $source, string $route, string $role, string
     if ($route === 'R13' && $mode === 'person') {
         $_GET = ['person_id' => 10001];
     }
+    if ($route === 'R13' && $mode === 'valid') {
+        $_GET = ['medical_state' => 'valid'];
+    }
     $_POST = [];
     $actor = $trenerId = 7;
     $error = $success = '';
@@ -149,7 +152,7 @@ function p11Worker(array $arguments): void
     [$schema, $route, $role, $mode, $instrument] = $arguments;
     p11Assert(in_array($route, ['R05', 'R06', 'R13'], true)
         && in_array($role, ['coach', 'sports_lead', 'registrar'], true)
-        && in_array($mode, ['all', 'person'], true) && in_array($instrument, ['sql', 'timing'], true), 'Invalid worker.');
+        && in_array($mode, ['all', 'person', 'valid'], true) && in_array($instrument, ['sql', 'timing'], true), 'Invalid worker.');
     $pdo = p11Connection($schema, $instrument === 'sql');
     $pdo->exec('SET SESSION TRANSACTION READ ONLY');
     $readOnly = (bool)$pdo->query('SELECT @@tx_read_only')->fetchColumn();
@@ -403,7 +406,7 @@ try {
         }
     }
     foreach ([100, 1000, 10000] as $people) {
-        foreach (['all', 'person'] as $mode) {
+        foreach (['all', 'person', 'valid'] as $mode) {
             $cases[] = ['route' => 'R13', 'role' => 'registrar', 'mode' => $mode, 'people' => $people];
         }
     }
