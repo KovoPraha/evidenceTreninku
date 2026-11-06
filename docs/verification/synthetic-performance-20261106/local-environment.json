@@ -1,0 +1,24 @@
+{
+  "php": "8.2.12",
+  "os": "Windows",
+  "memory_limit": "512M",
+  "server_version": "10.4.32-MariaDB",
+  "port": 33446,
+  "buffer_pool_bytes": 134217728,
+  "fixture_only": true,
+  "config_loaded": false,
+  "transport_called": false,
+  "extra_debug_schemas_removed": [
+    "p11_read_ec9528f7c2e503ae"
+  ],
+  "remaining_owned_schemas": [],
+  "portable_guards": {
+    "wrong_datadir": "rejected before schema creation",
+    "missing_confirmation": "rejected before connection"
+  },
+  "server_stopped": true,
+  "owned_runtime_removed": false,
+  "runtime_retention_reason": "Automatic approval rejected recursive removal: blocked by policy; no bypass attempted",
+  "owned_runtime_path": "C:/xampp/tmp/kis-perf-20261106-f39c6d1a",
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5"
+}

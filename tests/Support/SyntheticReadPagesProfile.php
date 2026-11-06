@@ -1,0 +1,441 @@
+<?php
+
+declare(strict_types=1);
+
+// Explicitly opted-in, owned localhost fixtures. No application bootstrap/config or transport.
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
+$fixturePort = (string)getenv('EVIDENCE_MARIADB_SMOKE_PORT');
+if (getenv('EVIDENCE_PERFORMANCE_CONFIRM') !== 'SYNTHETIC-ONLY'
+    || !ctype_digit($fixturePort) || (int)$fixturePort < 1 || (int)$fixturePort > 65535
+    || trim((string)getenv('EVIDENCE_PERFORMANCE_DATADIR')) === '') {
+    throw new RuntimeException('Explicit localhost fixture port, datadir and confirmation are required.');
+}
+require_once __DIR__ . '/FamilyOverviewPageFixture.php';
+require_once dirname(__DIR__, 2) . '/includes/funkce.php';
+require_once dirname(__DIR__, 2) . '/includes/roster_target_selector.php';
+require_once dirname(__DIR__, 2) . '/includes/training_rsvp.php';
+require_once dirname(__DIR__, 2) . '/includes/club_makeup.php';
+require_once dirname(__DIR__, 2) . '/includes/training_day.php';
+require_once dirname(__DIR__, 2) . '/includes/training_closure_form.php';
+require_once dirname(__DIR__, 2) . '/includes/training_planner_view.php';
+require_once dirname(__DIR__, 2) . '/includes/training_planner_read.php';
+require_once dirname(__DIR__, 2) . '/includes/medical_clearance.php';
+require_once dirname(__DIR__, 2) . '/includes/ui_shell.php';
+
+define('APP_BASE_URL', 'http://localhost');
+date_default_timezone_set('Europe/Prague');
+$_SERVER = array_merge($_SERVER, ['REQUEST_METHOD' => 'GET', 'HTTP_HOST' => 'localhost', 'SERVER_NAME' => 'localhost']);
+
+function p11Session(string $role, int $actor = 7): void
+{
+    $_SESSION = ['trener_id' => $actor, 'role' => $role === 'coach' ? 'trener' : 'hlavni',
+        'staff_positions' => [$role], 'staff_active_position' => $role,
+        'opravneni' => ['planovac' => 'trener', 'oznameni' => 'hlavni'], 'csrf_token' => str_repeat('a', 64)];
+}
+
+function p11Assert(bool $condition, string $message): void
+{
+    if (!$condition) {
+        throw new RuntimeException($message);
+    }
+}
+
+function p11Connection(string $schema = '', bool $profile = false): PDO
+{
+    p11Assert($schema === '' || preg_match('/^p11_read_[a-f0-9]{16}$/D', $schema) === 1, 'Unexpected schema.');
+    $pdo = w72Connection($schema, $profile);
+    $identity = $pdo->query('SELECT @@port port,@@datadir directory')->fetch(PDO::FETCH_ASSOC);
+    $directory = rtrim(str_replace('\\', '/', $identity['directory']), '/');
+    $expected = rtrim(str_replace('\\', '/', (string)getenv('EVIDENCE_PERFORMANCE_DATADIR')), '/');
+    if (PHP_OS_FAMILY === 'Windows') {
+        $directory = strtolower($directory);
+        $expected = strtolower($expected);
+    }
+    p11Assert((int)$identity['port'] === (int)getenv('EVIDENCE_MARIADB_SMOKE_PORT') && $directory === $expected, 'Wrong owned server.');
+    $pdo->exec("SET time_zone='" . date('P') . "'");
+    return $pdo;
+}
+
+/** Actual GET data/template, with only synthetic bootstrap and shared navigation/assets omitted. */
+function p11Source(string $route): string
+{
+    $root = dirname(__DIR__, 2);
+    $files = ['R05' => 'planovac.php', 'R06' => 'training_closure_admin.php', 'R13' => 'medical_clearance_admin.php'];
+    $markers = ['R05' => '$datumParam =', 'R06' => '$current = null;', 'R13' => '$policies='];
+    $source = (string)file_get_contents($root . '/' . $files[$route]);
+    $helper = ['R05' => 'h', 'R06' => 'tcH', 'R13' => 'medicalH'][$route];
+    p11Assert(preg_match('/function ' . $helper . '\([^\{]+\{[^}]+\}/', $source, $match) === 1, 'Escaping helper changed.');
+    if (!function_exists($helper)) {
+        eval($match[0]);
+    }
+    p11Assert(substr_count($source, $markers[$route]) === 1, 'GET boundary changed.');
+    $source = substr($source, (int)strpos($source, $markers[$route]));
+    $source = str_replace($match[0], '', $source);
+    $navigation = ['R05' => "include 'hlavicka.php';", 'R06' => "require __DIR__.'/hlavicka.php';",
+        'R13' => "include __DIR__.'/hlavicka.php';"][$route];
+    p11Assert(substr_count($source, $navigation) === 1, 'Navigation boundary changed.');
+    $source = str_replace($navigation, '', $source);
+    $source = str_replace('appUiAssets();', '', $source);
+    $allowedView = "require __DIR__.'/includes/training_day_view.php';";
+    p11Assert($route !== 'R06' || substr_count($source, $allowedView) === 1, 'Lesson view boundary changed.');
+    $checked = $route === 'R06' ? str_replace($allowedView, '', $source) : $source;
+    p11Assert(!preg_match('/\b(?:require|include)(?:_once)?\b/', preg_replace('/<script\b.*?<\/script>/s', '', $checked)), 'Unexpected nested bootstrap.');
+    $source = str_replace('__DIR__', var_export($root, true), $source);
+    return $source;
+}
+
+function p11Render(PDO $pdo, string $source, string $route, string $role, string $mode): array
+{
+    p11Session($role);
+    $_GET = $route === 'R05' ? ['datum' => date('Y-m-d'), 'jen_moje' => $role === 'coach' ? '1' : '0'] : [];
+    if ($route === 'R13' && $mode === 'person') {
+        $_GET = ['person_id' => 10001];
+    }
+    $_POST = [];
+    $actor = $trenerId = 7;
+    $error = $success = '';
+    $id = 0;
+    $trainingId = 101;
+    $contextPlan = null;
+    if ($route === 'R05') {
+        coachTrainingRequireActor($pdo);
+        p11Assert(canAccess('planovac'), 'Planner role rejected.');
+    } elseif ($route === 'R06') {
+        trainingClosureAssertActor($pdo, $actor);
+    } else {
+        medicalClearanceRegistrar($pdo);
+    }
+    ob_start();
+    try {
+        eval($source);
+        $html = (string)ob_get_contents();
+    } finally {
+        ob_end_clean();
+    }
+    // Nonces differ by worker, including data-app-csp-handler attributes; business output must match exactly.
+    $html = str_replace(app_csp_nonce(), 'SYNTHETIC', $html);
+    if ($route === 'R05') {
+        $data = ['plans' => array_column($plany, 'id'), 'stats' => $stats, 'warnings' => $pocetNezaevidovanych,
+            'oldest_pending' => $oldestPendingDate, 'copy_count' => $kCount, 'rsvp' => $rsvpSummaries];
+    } elseif ($route === 'R06') {
+        p11Assert($form['record_source'] === 'paper', 'Paper provenance changed.');
+        $data = ['participants' => $selectedPeople, 'coaches' => $selectedCoaches,
+            'revision_count' => count($history), 'current_version' => $current['version'],
+            'source' => $form['record_source'], 'available_people' => count($people), 'choices' => count($lessonChoices)];
+    } else {
+        p11Assert(count($watches) <= 25, 'List pagination changed.');
+        $data = ['watch_ids' => array_column($watches, 'id'), 'statuses' => array_column(array_column($watches, 'evaluated_status'), 'status'),
+            'total' => $medicalList['total'], 'available_people' => count($people), 'policies' => count($policies)];
+    }
+    return ['data' => $data, 'html' => $html];
+}
+
+function p11Worker(array $arguments): void
+{
+    [$schema, $route, $role, $mode, $instrument] = $arguments;
+    p11Assert(in_array($route, ['R05', 'R06', 'R13'], true)
+        && in_array($role, ['coach', 'sports_lead', 'registrar'], true)
+        && in_array($mode, ['all', 'person'], true) && in_array($instrument, ['sql', 'timing'], true), 'Invalid worker.');
+    $pdo = p11Connection($schema, $instrument === 'sql');
+    $pdo->exec('SET SESSION TRANSACTION READ ONLY');
+    $readOnly = (bool)$pdo->query('SELECT @@tx_read_only')->fetchColumn();
+    $source = p11Source($route);
+    set_error_handler(static function (int $severity, string $message, string $file, int $line): never {
+        throw new ErrorException($message, 0, $severity, $file, $line);
+    });
+    for ($i = 0; $i < 5; $i++) {
+        p11Render($pdo, $source, $route, $role, $mode);
+    }
+    $samples = [];
+    $reference = null;
+    $iterations = $instrument === 'sql' ? 1 : 30;
+    if ($instrument === 'sql') {
+        $pdo->profile = [];
+        $pdo->profiling = true;
+    }
+    for ($i = 0; $i < $iterations; $i++) {
+        gc_collect_cycles();
+        memory_reset_peak_usage();
+        $memory = memory_get_usage();
+        $start = hrtime(true);
+        $rendered = p11Render($pdo, $source, $route, $role, $mode);
+        $samples[] = ['ms' => (hrtime(true) - $start) / 1e6,
+            'peak_increment_bytes' => memory_get_peak_usage() - $memory, 'process_peak_bytes' => memory_get_peak_usage(true)];
+        // Verification/serialization is deliberately outside the measured time and memory interval.
+        $result = ['data' => $rendered['data'], 'html_bytes' => strlen($rendered['html']),
+            'data_sha256' => hash('sha256', json_encode($rendered['data'], JSON_THROW_ON_ERROR)),
+            'html_sha256' => hash('sha256', $rendered['html']),
+            'result_sha256' => hash('sha256', json_encode([$rendered['data'], $rendered['html']], JSON_THROW_ON_ERROR))];
+        unset($rendered);
+        $reference ??= $result['result_sha256'];
+        p11Assert($reference === $result['result_sha256'], 'Result changed between samples.');
+    }
+    restore_error_handler();
+    $report = ['route' => $route, 'role' => $role, 'mode' => $mode, 'measurement' => $instrument, 'warmups' => 5,
+        'read_only_session' => $readOnly,
+        'samples' => $samples, 'result' => $result];
+    if ($instrument === 'sql') {
+        $pdo->profiling = false;
+        $report['sql'] = ['count' => count($pdo->profile), 'fetched_rows' => array_sum(array_column($pdo->profile, 'fetched_rows')),
+            'execute_ms' => array_sum(array_column($pdo->profile, 'execute_ms')), 'fetch_ms' => array_sum(array_column($pdo->profile, 'fetch_ms'))];
+        $queries = [];
+        foreach ($pdo->profile as $entry) {
+            p11Assert(preg_match('/^\s*(?:SELECT|SHOW)\b/i', $entry['sql']) === 1, 'GET attempted a write.');
+            $key = (string)preg_replace('/\s+/', ' ', trim($entry['sql']));
+            $queries[$key] ??= ['sql' => $key, 'count' => 0, 'fetched_rows' => 0];
+            $queries[$key]['count']++;
+            $queries[$key]['fetched_rows'] += $entry['fetched_rows'];
+            if (!isset($queries[$key]['explain']) && preg_match('/^SELECT\b/i', $key)
+                && !str_contains($key, 'information_schema')) {
+                $q = $pdo->prepare('EXPLAIN ' . $entry['sql']);
+                $q->execute($entry['parameters']);
+                $queries[$key]['explain'] = $q->fetchAll(PDO::FETCH_ASSOC);
+            }
+        }
+        $report['queries'] = array_values($queries);
+    }
+    echo json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
+}
+
+function p11RunWorker(string $schema, array $case, string $instrument): array
+{
+    $process = proc_open(
+        [PHP_BINARY, __FILE__, '--worker', $schema, $case['route'], $case['role'], $case['mode'], $instrument],
+        [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+        $pipes
+    );
+    p11Assert(is_resource($process), 'Cannot start measurement worker.');
+    fclose($pipes[0]);
+    $stdout = stream_get_contents($pipes[1]);
+    $stderr = stream_get_contents($pipes[2]);
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    $code = proc_close($process);
+    p11Assert($code === 0, 'Measurement failed: ' . $stderr . $stdout);
+    return json_decode($stdout, true, 512, JSON_THROW_ON_ERROR);
+}
+
+function p11Prepare(PDO $pdo): void
+{
+    foreach ([
+        'skupiny(id INT PRIMARY KEY,nazev VARCHAR(100),hash VARCHAR(64))',
+        'podskupiny(id INT PRIMARY KEY,skupina_id INT,nazev VARCHAR(100),poradi INT)',
+        'planovane_treninky_podskupiny(plan_id INT,podskupina_id INT)',
+        'oznameni(id INT PRIMARY KEY,nazev VARCHAR(100),obsah_html TEXT,datum DATE,vlozil_trener_id INT)',
+        'oznameni_targets(oznameni_id INT,target_type VARCHAR(30),target_id INT)',
+        'trenink_trener(trenink_id INT,trener_id INT,PRIMARY KEY(trenink_id,trener_id))',
+    ] as $definition) {
+        $pdo->exec('CREATE TABLE IF NOT EXISTS ' . $definition . ' ENGINE=InnoDB');
+    }
+    w72LegacyColumns($pdo, 'sportovist', ['aktivni' => 'INT DEFAULT 1']);
+    w72LegacyColumns($pdo, 'planovane_treninky', ['skupina_id' => 'INT DEFAULT 1', 'podskupina_id' => 'INT NULL',
+        'sportoviste_id' => 'INT NULL', 'kategorie' => "VARCHAR(30) DEFAULT 'mtb'"]);
+    $pdo->exec("INSERT INTO skupiny VALUES(1,'Synthetic group','synthetic')");
+    $pdo->exec("INSERT IGNORE INTO treneri(id,jmeno,email,heslo,role,aktivni) VALUES(8,'Synthetic other','other@example.invalid','not-a-password','trener',1),"
+        . "(9,'Synthetic revoked','revoked@example.invalid','not-a-password','trener',1)");
+    foreach (['coach', 'sports_lead', 'registrar'] as $position) {
+        $pdo->prepare('INSERT IGNORE INTO staff_user_positions(trainer_id,position_code) VALUES(7,?)')->execute([$position]);
+    }
+    $pdo->exec("INSERT IGNORE INTO staff_user_positions(trainer_id,position_code) VALUES(8,'coach')");
+    $pdo->exec("INSERT INTO treninky(id,datum,napln,delka,kategorie) VALUES(102,CURRENT_DATE,'Synthetic other',1,'mtb')");
+    $pdo->exec('INSERT INTO trenink_trener VALUES(101,7),(102,8)');
+    $pdo->exec('DELETE FROM training_roster_links WHERE plan_id=100');
+    $pdo->exec('DELETE FROM planovane_treninky WHERE id=100');
+    $q = $pdo->prepare("INSERT INTO sportovci(id,jmeno,prijmeni,narozeni) VALUES(?,'Synthetic participant','Synthetic','2017-01-01')");
+    for ($i = 1001; $i <= 1200; $i++) {
+        $q->execute([$i]);
+    }
+}
+
+function p11SeedPlanner(PDO $pdo, int $weeks): void
+{
+    $pdo->exec('DELETE FROM training_roster_links WHERE plan_id>=50000');
+    $pdo->exec('DELETE FROM planovane_treninky WHERE id>=50000');
+    $q = $pdo->prepare("INSERT INTO planovane_treninky(id,datum,nazev,cas_od,cas_do,trener_id,skupina_id,kategorie) VALUES(?,?,'Synthetic plan','16:00','17:00',?,1,'mtb')");
+    $link = $pdo->prepare("INSERT INTO training_roster_links(plan_id,team_id,target_date,team_code_snapshot,team_name_snapshot,created_by_trainer_id) VALUES(?,1,?,'SYN','Synthetic roster',7)");
+    $monday = new DateTimeImmutable('monday this week');
+    $pdo->beginTransaction();
+    for ($week = 0; $week < $weeks; $week++) {
+        for ($day = 0; $day < 7; $day++) {
+            foreach ([7, 8] as $trainer) {
+                $id = 50000 + $week * 14 + $day * 2 + $trainer - 7;
+                $date = $monday->modify('-' . ($week * 7) . ' days')->modify('+' . $day . ' days')->format('Y-m-d');
+                $q->execute([$id, $date, $trainer]);
+                $link->execute([$id, $date]);
+            }
+        }
+    }
+    $pdo->commit();
+    $pdo->query('ANALYZE TABLE planovane_treninky,training_roster_links')->fetchAll();
+}
+
+function p11SeedClosure(PDO $pdo, int $participants, int $revisions): void
+{
+    $pdo->exec('DELETE FROM training_closures WHERE training_id=101');
+    $pdo->exec('DELETE FROM training_closure_revisions WHERE training_id=101');
+    $pdo->exec('DELETE FROM trenink_sportovec WHERE trenink_id=101');
+    $ids = range(1001, 1000 + $participants);
+    $q = $pdo->prepare('INSERT INTO trenink_sportovec VALUES(101,?)');
+    foreach ($ids as $id) {
+        $q->execute([$id]);
+    }
+    $snapshot = json_encode(['record_source' => 'paper', 'participant_ids' => $ids, 'coach_ids' => [7]], JSON_THROW_ON_ERROR);
+    $q = $pdo->prepare("INSERT INTO training_closure_revisions(training_id,version,status,actual_date,actual_started_at,actual_ended_at,"
+        . "duration_minutes,snapshot_json,reason,closed_by) VALUES(101,?,'closed',CURRENT_DATE,CONCAT(CURRENT_DATE,' 16:00:00'),"
+        . "CONCAT(CURRENT_DATE,' 17:00:00'),60,?,'Synthetic revision',7)");
+    for ($i = 1; $i <= $revisions; $i++) {
+        $q->execute([$i, $snapshot]);
+    }
+    $pdo->prepare("INSERT INTO training_closures VALUES(101,?,?,'closed')")->execute([(int)$pdo->lastInsertId(), $revisions]);
+    $pdo->query('ANALYZE TABLE training_closures,training_closure_revisions,trenink_sportovec')->fetchAll();
+}
+
+function p11SeedMedical(PDO $pdo, int $people): void
+{
+    $pdo->exec('DELETE FROM medical_clearance_records');
+    $pdo->exec('DELETE FROM medical_clearance_watches');
+    $pdo->exec('DELETE FROM medical_clearance_policies');
+    $pdo->exec('DELETE FROM sportovci WHERE id>=10001');
+    $policy = medicalClearancePolicyCreate($pdo, ['purpose' => 'synthetic-purpose', 'legal_basis' => 'Synthetic fixture only',
+        'retention_rule' => 'Remove owned fixture after profiling', 'activity_rule' => 'Synthetic profile, no medical decision',
+        'reminder_days' => 10, 'confirmed' => '1']);
+    $person = $pdo->prepare("INSERT INTO sportovci(id,jmeno,prijmeni,narozeni) VALUES(?,'Synthetic medical','Synthetic','2017-01-01')");
+    $watch = $pdo->prepare("INSERT INTO medical_clearance_watches(sportovec_id,purpose,policy_id,next_review_on,created_by) VALUES(?,'synthetic-purpose',?,CURRENT_DATE,7)");
+    $record = $pdo->prepare("INSERT INTO medical_clearance_records(watch_id,issued_on,valid_until,original_location,state,revision,recorded_by,verified_by,verified_at) "
+        . "VALUES(?,DATE_SUB(CURRENT_DATE,INTERVAL 30 DAY),DATE_ADD(CURRENT_DATE,INTERVAL 30 DAY),'Synthetic fixture, no document',?,1,7,"
+        . "IF(?='pending',NULL,7),IF(?='pending',NULL,CURRENT_TIMESTAMP))");
+    $pdo->beginTransaction();
+    for ($i = 0; $i < $people; $i++) {
+        $person->execute([10001 + $i]);
+        $watch->execute([10001 + $i, $policy]);
+        $watchId = (int)$pdo->lastInsertId();
+        foreach (['superseded', 'pending', 'verified'] as $state) {
+            $record->execute([$watchId, $state, $state, $state]);
+        }
+    }
+    $pdo->commit();
+    $pdo->query('ANALYZE TABLE medical_clearance_watches,medical_clearance_records,sportovci')->fetchAll();
+}
+
+function p11Negative(PDO $pdo): array
+{
+    $checks = [];
+    foreach (['foreign_training', 'revoked_role', 'medical_wrong_role', 'foreign_family_medical'] as $kind) {
+        p11Session('coach', $kind === 'revoked_role' ? 9 : 7);
+        try {
+            match ($kind) {
+                'foreign_training' => trainingClosureAssertTraining($pdo, 102, 7),
+                'revoked_role' => trainingClosureAssertActor($pdo, 9),
+                'medical_wrong_role' => medicalClearanceRegistrar($pdo),
+                'foreign_family_medical' => medicalClearanceView($pdo, 999, date('Y-m-d'), 10),
+            };
+            throw new LogicException('Unexpected authorization: ' . $kind);
+        } catch (RuntimeException|DomainException $exception) {
+            $checks[$kind] = 'denied';
+        }
+    }
+    p11Session('registrar');
+    return $checks;
+}
+
+if (($argv[1] ?? '') === '--worker') {
+    p11Worker(array_slice($argv, 2));
+    exit;
+}
+p11Assert(($argv[1] ?? '') === '--run' && isset($argv[2]), 'Usage: --run OUTPUT_DIRECTORY');
+$output = $argv[2];
+p11Assert(is_dir($output), 'Output directory must exist.');
+$git = proc_open(['git', 'rev-parse', 'HEAD'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $gitPipes, dirname(__DIR__, 2));
+p11Assert(is_resource($git), 'Cannot identify measured checkout.');
+$revision = trim((string)stream_get_contents($gitPipes[1]));
+$gitError = stream_get_contents($gitPipes[2]);
+fclose($gitPipes[1]);
+fclose($gitPipes[2]);
+p11Assert(proc_close($git) === 0 && preg_match('/^[a-f0-9]{40}$/D', $revision) === 1, 'Invalid checkout identity: ' . $gitError);
+$admin = p11Connection();
+$schema = 'p11_read_' . bin2hex(random_bytes(8));
+$admin->exec('CREATE DATABASE `' . $schema . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+$report = ['complete' => false, 'source_sha' => $revision,
+    'baseline_application_sha' => '1d0e974798cb199344cbfb595f4805509582a788',
+    'harness_sha256' => hash_file('sha256', __FILE__),
+    'schema' => $schema, 'server' => $admin->query('SELECT VERSION() version,@@port port')->fetch(PDO::FETCH_ASSOC),
+    'php' => PHP_VERSION, 'warmups' => 5, 'timing_samples' => 30, 'cases' => []];
+$report['source_files_sha256'] = [];
+foreach (['planovac.php', 'training_closure_admin.php', 'medical_clearance_admin.php', 'includes/training_day_view.php'] as $file) {
+    $report['source_files_sha256'][$file] = hash('sha256', str_replace("\r\n", "\n", (string)file_get_contents(dirname(__DIR__, 2) . '/' . $file)));
+}
+try {
+    $pdo = p11Connection($schema);
+    w72Seed($pdo);
+    p11Prepare($pdo);
+    $report['migration_ledger_count'] = (int)$pdo->query('SELECT COUNT(*) FROM evidence_schema_migrations')->fetchColumn();
+    $report['fixture_tables'] = (int)$pdo->query('SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE()')->fetchColumn();
+    $report['negative_checks'] = p11Negative($pdo);
+    $cases = [];
+    foreach ([1, 12, 52] as $weeks) {
+        $cases[] = ['route' => 'R05', 'role' => 'coach', 'mode' => 'all', 'weeks' => $weeks];
+        $cases[] = ['route' => 'R05', 'role' => 'sports_lead', 'mode' => 'all', 'weeks' => $weeks];
+    }
+    foreach ([10, 50, 200] as $participants) {
+        foreach ([1, 12, 52] as $revisions) {
+            $cases[] = ['route' => 'R06', 'role' => 'coach', 'mode' => 'all', 'participants' => $participants, 'revisions' => $revisions];
+        }
+    }
+    foreach ([100, 1000, 10000] as $people) {
+        foreach (['all', 'person'] as $mode) {
+            $cases[] = ['route' => 'R13', 'role' => 'registrar', 'mode' => $mode, 'people' => $people];
+        }
+    }
+    foreach ($cases as $index => $case) {
+        p11Session('registrar');
+        match ($case['route']) {
+            'R05' => p11SeedPlanner($pdo, $case['weeks']),
+            'R06' => p11SeedClosure($pdo, $case['participants'], $case['revisions']),
+            'R13' => p11SeedMedical($pdo, $case['people']),
+        };
+        $sql = p11RunWorker($schema, $case, 'sql');
+        $timing = p11RunWorker($schema, $case, 'timing');
+        p11Assert($sql['read_only_session'] && $timing['read_only_session'], 'Readonly measurement session lost.');
+        if ($sql['result']['result_sha256'] !== $timing['result']['result_sha256']) {
+            file_put_contents($output . '/instrumentation-mismatch.json', json_encode(['sql' => $sql['result'], 'timing' => $timing['result']], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
+        }
+        p11Assert($sql['result']['result_sha256'] === $timing['result']['result_sha256'], 'Instrumentation changed output.');
+        $data = $timing['result']['data'];
+        if ($case['route'] === 'R05') {
+            p11Assert(count($data['plans']) === ($case['role'] === 'coach' ? 7 : 14), 'Weekly plan selection changed.');
+        } elseif ($case['route'] === 'R06') {
+            p11Assert(count($data['participants']) === $case['participants'] && $data['revision_count'] === $case['revisions'], 'Closure fixture differs.');
+        } else {
+            p11Assert($data['total'] === ($case['mode'] === 'person' ? 1 : $case['people']), 'Medical filter differs.');
+            p11Assert(count(array_filter($data['statuses'], static fn (string $s): bool => $s !== 'valid')) === 0, 'Synthetic medical status changed.');
+        }
+        $ms = array_column($timing['samples'], 'ms');
+        sort($ms);
+        $case['sql'] = $sql['sql'];
+        $case['median_ms'] = ($ms[14] + $ms[15]) / 2;
+        $case['p95_ms'] = $ms[28];
+        $case['peak_increment_bytes'] = max(array_column($timing['samples'], 'peak_increment_bytes'));
+        $case['process_peak_bytes'] = max(array_column($timing['samples'], 'process_peak_bytes'));
+        $case['result'] = $timing['result'];
+        $name = sprintf('%02d-%s', $index + 1, $case['route']);
+        file_put_contents(
+            $output . '/' . $name . '.json',
+            json_encode(['case' => $case, 'sql_detail' => $sql, 'timing' => $timing], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n"
+        );
+        $report['cases'][] = $case;
+        file_put_contents($output . '/summary.json', json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
+        echo $name . ': ' . round($case['median_ms'], 2) . ' ms, SQL ' . $case['sql']['count'] . ', rows ' . $case['sql']['fetched_rows'] . "\n";
+        flush();
+    }
+    $report['complete'] = true;
+    file_put_contents($output . '/summary.json', json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
+} finally {
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    $admin->exec('DROP DATABASE `' . $schema . '`');
+    file_put_contents($output . '/cleanup.json', json_encode(['schema' => $schema, 'removed' => true], JSON_THROW_ON_ERROR) . "\n");
+}

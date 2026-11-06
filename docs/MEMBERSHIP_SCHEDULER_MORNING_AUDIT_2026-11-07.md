@@ -102,11 +102,17 @@ příležitosti 7. 11. (05:35, 06:35, 12:35 UTC) a po publikaci se vypne.
 Ranní capture se neopakuje a případné LATE/FAIL se mají také zapsat, nikoli
 vyrobit úspěch ručním spuštěním členství.
 
-<!-- membership-morning-preflight:start -->
-## Serverový preflight
+### Ověřená oprava předání CI
 
-[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
-Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
-Skutečné P05/P07 a export P06 zůstávají odložené.
+První skutečný preflight 42266360997 vytvořil dokumentační commit a explicitní
+CI 42266455451 úspěšně dokončilo všech pět jobů. Merge byl přesto blokovaný:
+GitHub požaduje zvlášť schválení běhů události PR, které vyvolal GITHUB_TOKEN.
+Nejde o selhání hostovacího pozorovatele nebo o potřebu jiného časovače.
 
-<!-- membership-morning-preflight:end -->
+Podporované Actions API pro schválení těchto běhů bylo skutečně ověřené
+jobem membership-approval-probe v 42268437771. Je dovoleno tokenem s actions:write;
+pravidla main ani schvalování PR review se nemění. Publikace smí takto povolit
+pouze vlastní botem zapsaný dokumentační SHA, se stejným PR/repozitářem a
+přesně třemi známými workflow, až po ověření povolených cest. Potom vyčká na
+skutečné PR testy a slučuje bez admin bypassu. Do úspěšného zopakování plného
+preflightu zůstává místní úloha jako záloha.

@@ -1,0 +1,152 @@
+{
+    "sql": {
+        "data": {
+            "plans": [
+                50000,
+                50002,
+                50004,
+                50006,
+                50008,
+                50010,
+                50012,
+                100
+            ],
+            "stats": {
+                "planovany": 8,
+                "evidovany": 0
+            },
+            "warnings": 4,
+            "oldest_pending": "2026-11-02",
+            "copy_count": 8,
+            "rsvp": {
+                "50000": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50002": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50004": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50006": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50008": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50010": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50012": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "100": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                }
+            }
+        },
+        "html_bytes": 84106,
+        "data_sha256": "c6a4fc74c1865d6b8169ed51c0c6de848955321a7d603c5a03bb7a555da86b5a",
+        "html_sha256": "30bd389c9c23792e7d88a69498e4b05ba2f8bf88a36b6946840dc64012fb4b71",
+        "result_sha256": "da85069e0d7bdbadae4b5b3f7d7a3f54eb00b01ed77cb6ebf3321e4d9e876f26"
+    },
+    "timing": {
+        "data": {
+            "plans": [
+                50000,
+                50002,
+                50004,
+                50006,
+                50008,
+                50010,
+                50012,
+                100
+            ],
+            "stats": {
+                "planovany": 8,
+                "evidovany": 0
+            },
+            "warnings": 4,
+            "oldest_pending": "2026-11-02",
+            "copy_count": 8,
+            "rsvp": {
+                "50000": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50002": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50004": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50006": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50008": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50010": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "50012": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                },
+                "100": {
+                    "expected": 20,
+                    "going": 0,
+                    "not_going": 0,
+                    "pending": 20
+                }
+            }
+        },
+        "html_bytes": 84106,
+        "data_sha256": "c6a4fc74c1865d6b8169ed51c0c6de848955321a7d603c5a03bb7a555da86b5a",
+        "html_sha256": "b12b3c76cd94e71d773949e588d64ec18e1e6c0a42cb69895d3808cf1728bc42",
+        "result_sha256": "10ad163439e1028ddeb68d341c00a8a2a495e9c8d0918affc51640e0897a42de"
+    }
+}
