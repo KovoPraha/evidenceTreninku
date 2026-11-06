@@ -229,7 +229,12 @@ schválená správa a vlastní spotřeba přidělené pouze existujícímu vlast
 neopakovat ani neobnovovat starou DB přes nové operace. Starý BAR je přesměrovaný:
 44 vstupů a samostatný status PASS, úplná obnova 500 původních souborů ověřená.
 Pět původních produkčních workflow je pozastavených, zdrojová DB zachovaná.
-Zbývá přihlášení Lucky, lidská finanční přejímka, první zásoby/kasa a zveřejnění nové nabídky.
+[Technická provozní přejímka](verification/bar-acceptance-20261106/RESULTS.md) nad novou syntetickou DB
+v prohlížeči PASS: hotovost, čekající QR/karta, vratky kelímků, storna, uzávěrka se schodkem a vlastní spotřeba podle grantu.
+V produkci je již uložený neveřejný návrh **1 / Bar KOVO – základní nabídka**, 45 prodejních produktů,
+zobrazení fotografie. Nezakládat znovu. Veřejná obrazovka stále hlásí „Nabídka se připravuje.“
+Původní kontext vlastníka Správce systému obnoven. Zbývá skutečné přihlášení Lucky,
+lidská finanční přejímka, první skutečné zásoby/kasa a schválené zveřejnění existující nabídky.
 [Účetní kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md) a [návrh adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md)
 neaktivují skutečné zaúčtování ani nové bankovní párování.
 
