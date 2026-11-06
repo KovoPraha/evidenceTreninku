@@ -1,6 +1,6 @@
 # Ranní audit členství 7. 11. 2026
 
-Stav: **NAPLÁNOVÁNO**, výsledek zatím **NOT RUN**. Vlastník 6. 11. výslovně
+Stav: **PŘEVOD NA SERVER ROZPRACOVANÝ**, ranní výsledek zatím **NOT RUN**. Vlastník 6. 11. výslovně
 požádal po ranním běhu ověřit dochvilnost a uložit výsledek do dokumentace i
 handoffu. Skutečné P05/P07 a export P06 nadále výslovně odložil.
 
@@ -59,3 +59,45 @@ upozornit v chatu, nepřehrávat běh kvůli vytvoření důkazu.
 
 Příprava: větev `codex/membership-morning-audit-plan-20261106`, kopie
 `C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106`.
+
+
+## Změna zadání: kontrola bez zapnutého počítače
+
+Vlastník výslovně požádal přenést kontrolu na server. Starší popis místní úlohy
+výše je výchozí stav, nikoli cílové řešení. Větev
+`codex/membership-server-morning-audit-20261106`, izolovaná kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106`.
+
+Plán provedení:
+
+1. Přidat samostatný jednorázový pozorovací cron na hostingu. Dne 7. 11. od
+   05:30 UTC pouze přečte stav členství a provozní ledger, atomicky uchová
+   neměnný JSON a souborový protokol/handoff mimo webroot a odstraní jen svůj
+   přesně ověřený spouštěč. Nikdy nevolá worker, apply/send nebo skutečnou platbu.
+2. Otestovat čekání do termínu, skutečný denní pokus oproti heartbeat, pozdní/
+   chybějící/chybný běh, retry, souběh, symlinky, neměnnost a vlastní úklid.
+3. Po CI sloučit a chráněně nasadit, instalovat pozorovatele a doložit jeho
+   přirozený čekající tick. Čas kontroly se kvůli dnešnímu testu neposouvá.
+4. Serverový GitHub workflow vyzvedne již zachycený výsledek a aktualizuje
+   dokumentaci/handoff přes předem založený dokumentační PR. Bot nemá vytvářet
+   nové PR ani obcházet ochrany main; pro svůj commit výslovně vyvolá povinné CI
+   a sloučí až při shodě SHA a zelených kontrolách. Přenos se může opozdit,
+   ale časový důkaz zůstane uložený na hostingu.
+5. Stejnou publikaci nejprve skutečně ověřit na dnešním čtecím preflightu,
+   nikoli na předstíraném ranním výsledku. Potom pozastavit místní úlohu
+   `rann-audit-lenstv-7-11` a aktualizovat všechny navazující odkazy/stavy.
+
+P05/P07 se skutečnou platbou a export P06 dál výslovně odložené. Výsledek
+ranního auditu před skutečným termínem zůstává NOT RUN. Stávající čas účtování
+05:23 UTC i soukromé příznaky automatizace/pošty se nemění.
+
+### Průběžné ověření implementace
+
+PHP plánovač/pozorovatel/dokumentační kontrakt: 21 testů / 104 assertions PASS,
+2 místní Windows skipy unixových hranic; Python publikace 4 testy PASS.
+Cílený PHPStan, syntax PHP a pěti Bash bloků PASS. Runtime účtování se nemění.
+Pozorovatel má read-only SQL transakce, před termínem neotvírá DB a při chybě
+čtecího kontextu uchová FAIL; doklad se znovu nepřepisuje. Přenos má tři
+příležitosti 7. 11. (05:35, 06:35, 12:35 UTC) a po publikaci se vypne.
+Ranní capture se neopakuje a případné LATE/FAIL se mají také zapsat, nikoli
+vyrobit úspěch ručním spuštěním členství.

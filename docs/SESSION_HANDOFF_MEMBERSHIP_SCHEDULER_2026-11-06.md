@@ -38,3 +38,10 @@ vyžadují čtecí status a skutečný čas denního pokusu, nikoli pouze heartb
 Výsledek zatím NOT RUN. Po kontrole uložit důkazy a aktualizovat související
 souborové předání; P05/P07 a export P06 nadále odložené. Místní počítač a
 aplikace musí pro toto naplánované vyvolání běžet.
+
+## Změna pověření: bez zapnutého PC
+
+[Serverová náhrada](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md#změna-zadání-kontrola-bez-zapnutého-počítače)
+je rozpracovaná. Má pouze pozorovat a automaticky doložit výsledek, bez nového
+účtování, pošty, platby nebo exportu. Konkrétní rollout vede tematický plán;
+před vypnutím místní úlohy doložit přirozený tick a serverové publikování.

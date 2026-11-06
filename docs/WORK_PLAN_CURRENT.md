@@ -195,6 +195,14 @@ a meze přejímky aktualizované. Následuje souborové předání přes CI/PR;
 žádný deploy, import, pošta nebo provozní aktivace.
 Ranní ověření P05 vede souběžná relace, neprovádět duplicitně.
 
+
+## Převod ranní kontroly na server — rozpracováno
+
+Vlastník požádal odstranit závislost na zapnutém PC. [Aktuální serverový postup](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md#změna-zadání-kontrola-bez-zapnutého-počítače):
+jednorázový hostingový pozorovatel, neměnný důkaz, automatická dokumentace přes
+chráněný PR a skutečný preflight publikace. Místní úlohu vypnout až po ověření
+náhrady. Skutečné P05/P07 i export P06 zůstávají odložené.
+
 ## P11 — autonomní syntetické měření 6. 11. 2026
 
 Vlastník zadal měření bez produkčních změn a bez zásahu do WIP. Větev

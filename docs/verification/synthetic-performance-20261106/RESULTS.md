@@ -178,3 +178,9 @@ předáním; aktuální povinné CI a stav merge budou doložené u souvisejíc�
 Souborové předání: [PR #349](https://github.com/KovoPraha/evidenceTreninku/pull/349).
 CI ověřuje přenositelnou variantu v izolovaných MariaDB 10.3/11.4; skutečné
 výsledky a artifacty jsou přímo u tohoto PR. Žádný produkční deploy se nevytváří.
+
+
+Při předání zachován novější main `acb511cc` / #346 a jeho serverové předání
+ranního auditu. Sloučeny obě testovací návaznosti a oba záznamy ve společném
+plánu/handoffu. Měřené stránky, jejich služby a migrační katalog se příchozí
+změnou nemění. Nová produkční operace jiné relace se zde nespouští ani neopakuje.

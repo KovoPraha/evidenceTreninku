@@ -1,0 +1,165 @@
+name: Ranní členství – serverový audit a dokumentace
+
+on:
+  schedule:
+    - cron: '35 5,6,12 7 11 *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Stav, instalace pozorovatele, dnešní preflight nebo zveřejnění skutečného výsledku'
+        type: choice
+        required: true
+        default: status
+        options: [status, install, preflight, publish]
+      potvrzeni:
+        description: 'Instalace vyžaduje ZAPNOUT-RANNI-AUDIT'
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+
+jobs:
+  collect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    concurrency:
+      group: produkce-kis
+      cancel-in-progress: false
+    outputs:
+      mode: ${{ steps.plan.outputs.mode }}
+      run: ${{ steps.plan.outputs.run }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - id: plan
+        name: Zvolit pouze povolenou operaci
+        env:
+          REQUESTED: ${{ inputs.mode }}
+          CONFIRM: ${{ inputs.potvrzeni }}
+        run: |
+          set -euo pipefail
+          MODE="${REQUESTED:-publish}"
+          case "$MODE" in status|install|preflight|publish) ;; *) exit 64 ;; esac
+          if [ "$GITHUB_EVENT_NAME" = schedule ] && [ "$(date -u +%Y)" != 2026 ]; then
+            echo 'run=false' >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if [ "$MODE" = publish ]; then test "$(date -u +%s)" -ge 1794029400; fi
+          if [ "$MODE" = install ]; then test "$CONFIRM" = ZAPNOUT-RANNI-AUDIT; fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          echo 'run=true' >> "$GITHUB_OUTPUT"
+      - name: Připravit ověřené SSH spojení
+        if: steps.plan.outputs.run == 'true'
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          test "$APP_HOST" = kis.kovopraha.cz
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]] && [[ "$REMOTE_DIR" != /* ]]
+          for key in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do test -n "${!key}"; done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null
+          if [ "$PORT" = 22 ]; then LOOKUP="$SSH_HOST_SECRET"; else LOOKUP="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$LOOKUP" -f ~/.ssh/known_hosts >/dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+      - name: Číst server nebo instalovat jediný pozorovací cron
+        if: steps.plan.outputs.run == 'true'
+        env:
+          MODE: ${{ steps.plan.outputs.mode }}
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          ACTION=status
+          if [ "$MODE" = install ]; then ACTION=install; fi
+          WORKER_SHA=$(sha256sum bin/membership-morning-audit.php | cut -d' ' -f1)
+          AUDIT_SHA=$(sha256sum includes/membership_morning_audit.php | cut -d' ' -f1)
+          SCHEDULER_SHA=$(sha256sum includes/monthly_membership_scheduler.php | cut -d' ' -f1)
+          cat > /tmp/run-morning-audit.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('MEMBERSHIP_AUDIT_ACTION=$ACTION');
+          putenv('MEMBERSHIP_AUDIT_DIR=' . __DIR__);
+          putenv('MEMBERSHIP_AUDIT_CONFIRM=ZAPNOUT-RANNI-AUDIT');
+          foreach (['bin/membership-morning-audit.php'=>'$WORKER_SHA','includes/membership_morning_audit.php'=>'$AUDIT_SHA','includes/monthly_membership_scheduler.php'=>'$SCHEDULER_SHA'] as \$file=>\$hash) {
+              if (!hash_equals(\$hash, (string)hash_file('sha256', '$REMOTE_DIR/' . \$file))) { throw new RuntimeException('Deploy reviewed audit first.'); }
+          }
+          require '$REMOTE_DIR/bin/membership-morning-audit.php';
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-morning-audit.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-morning-audit-$GITHUB_RUN_ID.php"
+          production_retry "${SSH[@]}" "php '$DEPLOY_BASE/run-morning-audit-$GITHUB_RUN_ID.php'" | tee /tmp/morning-audit-result.json
+          jq -e '.ok == true' /tmp/morning-audit-result.json >/dev/null
+      - name: Uchovat bezpečný serverový výsledek
+        if: always() && steps.plan.outputs.run == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: membership-morning-server-result
+          path: /tmp/morning-audit-result.json
+          retention-days: 90
+      - name: Uklidit pouze bootstrap tohoto běhu
+        if: always()
+        continue-on-error: true
+        run: |
+          rm -f /tmp/run-morning-audit.php /tmp/morning-audit-result.json
+          if [ -n "${SSH_HOST:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-morning-audit-$GITHUB_RUN_ID.php'"
+          fi
+
+  publish:
+    needs: collect
+    if: needs.collect.outputs.run == 'true' && contains(fromJSON('["preflight","publish"]'), needs.collect.outputs.mode)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    concurrency:
+      group: membership-audit-documentation
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.2'
+          coverage: none
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: membership-morning-server-result
+          path: ${{ runner.temp }}/membership-audit
+      - id: result
+        name: Zapsat dokumentaci a sloučit po povinných CI kontrolách
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MODE: ${{ needs.collect.outputs.mode }}
+          PR_NUMBER: ${{ needs.collect.outputs.mode == 'preflight' && vars.KIS_MEMBERSHIP_AUDIT_PREFLIGHT_PR || vars.KIS_MEMBERSHIP_AUDIT_REPORT_PR }}
+          AUDIT_INPUT: ${{ runner.temp }}/membership-audit/morning-audit-result.json
+          SCHEDULE_FLAG: ${{ vars.KIS_MONTHLY_MEMBERSHIP_SCHEDULE_ENABLED }}
+          APPLY_FLAG: ${{ vars.KIS_MONTHLY_MEMBERSHIP_APPLY_ENABLED }}
+          MAIL_FLAG: ${{ vars.KIS_MONTHLY_MEMBERSHIP_MAIL_ENABLED }}
+        run: bash .github/scripts/publish-membership-audit.sh
+      - name: Označit neúspěšný audit po uložení výsledků
+        if: needs.collect.outputs.mode == 'publish' && steps.result.outputs.verdict != 'PASS'
+        run: exit 1

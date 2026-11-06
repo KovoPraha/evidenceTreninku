@@ -46,6 +46,15 @@ Původní WIP zachované; žádný deploy ani jiné produkční workflow této r
 Současný release/flags určuje [CURRENT_STATE.md](CURRENT_STATE.md); starší
 oddíly níže jsou datovaná předání, nikoli tvrzení o posledním vydání.
 
+## Aktivní práce: převod ranní kontroly na server
+
+Vlastník požádal kontrolu bez zapnutého PC. [Serverový postup](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md#změna-zadání-kontrola-bez-zapnutého-počítače)
+je rozpracovaný: jednorázový pozorovatel na hostingu v 05:30 UTC, neměnný
+výsledek a automatické dokumentační předání přes předem založený PR s CI.
+Cílené PHP/Python a statická kontrola PASS; zbývá CI, nasazení, přirozený
+čekající tick a skutečný preflight zápisu do repozitáře. Místní úlohu vypnout
+teprve po ověření náhrady. Skutečné P05/P07 i export P06 stále odložené.
+
 ## Navazující úloha: ranní kontrola členství 7. 11.
 
 Vlastník požádal po ranním běhu ověřit skutečný čas a uložit výsledek přímo do
