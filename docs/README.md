@@ -18,6 +18,9 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Omluvenky a náhrady – ověření](verification/makeup-audit-20261106/RESULTS.md) | Již nasazené, 22 testů / 139 assertions, 23 HTTP scénářů a syntetický browser PASS |
 | [TV programy](TV-PROGRAMY.md) | Obsluha TV, editor obrázků a textů, veřejné adresy a zveřejňování carouselů |
 | [Začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md) | Nasazený modul, role, převod katalogu/domény a zbývající provozní přejímka |
+| [Zveřejnění nabídky BAR](BAR_MENU_PUBLICATION_2026-11-06.md) | Nabídka 1, vydání 1, 45 produktů s fotografiemi; [živé důkazy](verification/bar-menu-publication-20261106/RESULTS.md) |
+| [Session handoff BAR](SESSION_HANDOFF_BAR_2026-11-06.md) | Dokončená publikace a pořadí přihlášení Lucky, zásob, kasy a účetního propojení |
+| [Pravidla souborové dokumentace](WORK_DOCUMENTATION_POLICY.md) | Průběžné záznamy rozpracované, dokončené a plánované práce v souborech |
 | [Měsíční členství přes e-shop](MONTHLY_MEMBERSHIP_RUNBOOK.md) | Nový tok, platby, doklady, upomínky, samostatná aktivace a hranice ověření; [plán](MONTHLY_MEMBERSHIP_PLAN.md) |
 | [Tréninky a zastupování bez povinné soupisky](COACH_TRAINING_ACCESS_2026-11-05.md) | Vlastní cíle první, ostatní dostupné; nové pravidlo, přiřazení a hranice ověření |
 | [Pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | Aplikace nasazená a převod provedený; poslední sync, přihlášené UAT a E8 otevřené |

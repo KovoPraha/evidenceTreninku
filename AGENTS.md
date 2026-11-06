@@ -2,11 +2,12 @@
 
 Před prací čti [vývojový kontext](CLAUDE.md), [aktuální stav](docs/CURRENT_STATE.md),
 [handoff](docs/HANDOFF_CURRENT.md) a [registr práce](docs/WORK_REGISTER.md).
+Podrobný postup obsahují [pravidla souborové dokumentace](docs/WORK_DOCUMENTATION_POLICY.md).
 
 ## Průběžné souborové záznamy
 
 Výslovný požadavek vlastníka z 6. 11. 2026: vše, na čem se pracuje nebo co je
-v plánu udělat, musí být průběžně zapsané ve verzovaných souborech repozitáře,
+v plánu udělat nebo už dokončené, musí být průběžně zapsané ve verzovaných souborech repozitáře,
 s odkazy na související dokumenty. Chat nesmí být jediný záznam.
 
 - Při zahájení/pokračování doplň registr a související tematický plán: rozsah,

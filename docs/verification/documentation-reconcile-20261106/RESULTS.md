@@ -11,6 +11,9 @@ Pracovní větev `codex/documentation-reconcile-20261106`, izolovaná kopie
 `C:/Users/Marek/Documents/Codex/evidencePavel-documentation-reconcile-20261106`.
 Výchozí main `9c543ff9`; dokumentační vstupy #334 `8c6537e2` a #333 `7f3ccc6f`.
 Původní pracovní kopie a obě existující dokumentační větve se nepřepisují.
+Při práci mezitím #333 vstoupilo do main jako `0f3ac591`. Novější souběžný
+vstup #335 `a561ed51` doložil publikaci nabídky BAR; také jeho dokumentace
+a bezpečné důkazy jsou zachované. Tato relace publikaci neprovedla.
 
 ## Postup a stav
 
@@ -18,8 +21,8 @@ Původní pracovní kopie a obě existující dokumentační větve se nepřepis
    souběžný plán a produkční protokoly; porovnány s kódem a GitHub Actions.
 2. Dokončeno: sjednocení dokumentačních větví #333 a #334, jeden registr další práce,
    oddělení nasazení od publikace a od uživatelského/účetního převzetí.
-3. Probíhá: kontrola odkazů, historických bloků, dokumentačního kontraktu a rozdílu
-   proti main; přesný výsledek kontrol a stav předání budou doplněné níže.
+3. Dokončeno: kontrola odkazů, historických bloků, dokumentačního kontraktu a rozdílu
+   proti main; přesný místní výsledek níže. Stav vzdáleného předání se doplní po vytvoření PR.
 
 ## Opravené rozpory a zachované otevřené body
 
@@ -28,7 +31,7 @@ Původní pracovní kopie a obě existující dokumentační větve se nepřepis
 | Upozornění | #330 nasazené, minutový hostingový běh a 18 přijetí transportem. Produkční browser doložil zvoneček, přesný odkaz a změnu přečtení. | Potvrzení cílové schránky; instalaci/rozesílku ani již doloženou kontrolu neopakovat. P01. |
 | Členství – publikace | Původní protokol dokládá koncept varianty 951; #333 zaznamenává následný souhlas s údaji TJ KOVO, tarifem a publikací. | Doklad dokončení chybí. Nejprve pouze ověřit stav; netvrdit ani jistou nepublikaci, ani dokončený prodej. P05. |
 | Členství – automatika | Plán/zápis/pošta povolené, čas 05:23 UTC, doložený ruční prázdný apply --send. | První automatický časový start a skutečná platba/PDF/doručení nejsou doložené. To samo nedokazuje poruchu. P05. |
-| BAR | Katalog/přístupy/doména převedené, syntetická provozní přejímka PASS, poslední doklad nabídky 1 je neveřejný návrh. | Skutečný login obsluhy, zásoby/kasa, první prodej, publikace a finanční přejímka. P02–P03. |
+| BAR | Katalog/přístupy/doména převedené, syntetická provozní přejímka PASS. Novější souběžné #335 dokládá již zveřejněnou nabídku 1 / vydání 1; vlastní anonymní čtení potvrdilo 45 fotografií a žádné hlášení přípravy. | Publikace P03 hotová; zbývá skutečný login obsluhy, zásoby/kasa, první prodej a finanční přejímka P02. Tato relace nic nepublikovala. |
 | BAR účetnictví | Kód poskytuje provozní účetní podklady/export, ne zápisy do hlavního účetnictví. Kontrakt a plán adaptéru existují. | Účetní pravidla, implementace adaptéru a přejímka; nejde jen o nezapnutý hotový přepínač. P04. |
 | Trenéři | #314 povoluje zastupování i bez přiřazení soupisky; vlastní cíle pouze řadí první. | Rozsahy soukromých profilů jsou samostatné; historických 29 účtů bez rozsahu není důkaz blokace tréninku. |
 | Náhrady | Již nasazené, kontrola 6. 11. bez nové chyby. | Přihlášené produkční UAT není uzavřené; není čekající oprava/deploy. |
@@ -52,6 +55,9 @@ je kompatibilní odkaz na jediný WORK_REGISTER, nikoli druhá sada stavů.
   [náhrady](../makeup-audit-20261106/RESULTS.md),
   [měsíční vydání](../monthly-coach-release-20261105/RESULTS.md),
   [aktivace pošty](../../MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
+- Novější [publikace BAR z #335](../bar-menu-publication-20261106/RESULTS.md)
+  opravuje dřívější údaj o neveřejném návrhu. Vlastní [anonymní čtecí kontrola](public-menu-check.json)
+  dokládá veřejnou nabídku bez přihlášení, publikace či dalšího produkčního zápisu.
 - Čtecí GitHub kontrola: main `9c543ff9`, otevřené #333/#334; poslední běhy
   `monthly-memberships-production.yml` byly ruční, workflow active, tři
   `KIS_MONTHLY_MEMBERSHIP_*` proměnné true. Nový workflow nebyl spuštěn.
@@ -59,6 +65,29 @@ je kompatibilní odkaz na jediný WORK_REGISTER, nikoli druhá sada stavů.
   `bin/staff-notification-operations.php`, `includes/club_makeup.php`,
   `includes/coach_training_access.php`, `includes/monthly_membership_worker.php`,
   `includes/bar/accounting.php` a denní členský workflow.
+
+## Zachování práce
+
+Původní `C:/xampp/htdocs/evidencePavel` zůstává na své větvi se změnou
+`kis_rosters_admin.php` a netrackovanými výstupy. Soubor při kontrole má SHA-256
+`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`;
+nebyl přepisován ani zahrnut do commitu. Stávající dokumentační worktrees
+a vzdálené větve #333/#334/#335 se touto relací nemění ani nemažou.
+
+## Ověření a předání
+
+První místní ověření: `php tools/check-current-docs.php` PASS,
+80 řádků CURRENT_STATE / 820 odkazů / 104 historických bloků, 0 chyb;
+`CurrentDocumentationContractTest` **2 testy / 14 assertions PASS**;
+371 místních odkazů ve 14 Markdown souborech bez chyby, `git diff --check` PASS.
+Po zapracování novějšího BAR předání: `check-current-docs` PASS,
+**80 řádků / 833 místních odkazů / 104 zachovaných archivních bloků / 0 chyb**.
+Dokumentační testy znovu **2 / 14 PASS**. Rozšířená kontrola všech 25 změněných
+Markdown souborů: **1160 místních odkazů, 0 chyb**, žádné konfliktní značky.
+`git diff --check` PASS a kontrolní hash původního WIP beze změny.
+Rozdíl tvoří pouze dokumentace, projektové instrukce a bezpečné důkazy;
+aplikační PHP/JS, migrace, workflow ani produkční konfigurace se nemění.
+Nejde o nový test runtime, plateb či přihlášeného produkčního UI.
 
 ## Důkazní hranice
 

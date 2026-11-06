@@ -10,7 +10,9 @@ Upozornění už jsou nasazená a přihlášený zvoneček i odkaz doložené; z
 potvrzení schránky. U členství je doložené založení konceptu a v #333
 zaznamenaný další souhlas, ale doklad dokončení publikace chybí: nejprve
 ověřit existující produkt. První automatický denní start také nedoložený.
-BAR je převedený, nabídka naposledy doložená jako návrh; reálný provoz,
+BAR je převedený a novější [doklad #335](../verification/bar-menu-publication-20261106/RESULTS.md)
+potvrzuje zveřejněnou nabídku 1 / vydání 1, 45 produktů a fotografií.
+Tato relace ji pouze načetla, nic nepublikovala. Reálný provoz,
 zásoby/kasa a účetní adaptér zbývají. Podrobnosti a odpovědnost vede jediný
 [registr P01–P14](../WORK_REGISTER.md); [WORK_PLAN_CURRENT](../WORK_PLAN_CURRENT.md)
 odkazuje na stejný seznam. Původní pracovní kopie a souběžné větve zachované.

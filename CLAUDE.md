@@ -143,6 +143,8 @@ v eshop_payments_admin.php: pozice finance_manager, důvod a výslovné potvrzen
 - [WORK_PLAN_CURRENT](docs/WORK_PLAN_CURRENT.md) je kompatibilní rozcestník na
   jediný registr, nikoli další seznam práce. Při sjednocování předání zachovej
   udělená rozhodnutí i důkazy; schválený záměr není doklad provedení.
+- Podrobný postup souborového zápisu a session handoffu určí
+  [pravidla dokumentace](docs/WORK_DOCUMENTATION_POLICY.md) a [AGENTS.md](AGENTS.md).
 - Základní ověření: composer validate --strict, dotčené testy, composer test,
   syntaxe změněných PHP a git diff --check. Windows omezení POSIX/symlink testů
   neoznačuj za plný PASS; rozhodující je čisté Linux CI.

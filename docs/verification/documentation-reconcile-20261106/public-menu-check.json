@@ -1,0 +1,11 @@
+{
+  "checked_at_utc": "2026-11-06T11:05:52.277451+00:00",
+  "method": "anonymous GET without cookies",
+  "url": "https://kis.kovopraha.cz/bar/menu.php",
+  "status": 200,
+  "contains_preparing": false,
+  "contains_offer_name": true,
+  "product_articles": 45,
+  "images": 45,
+  "mutations": false
+}

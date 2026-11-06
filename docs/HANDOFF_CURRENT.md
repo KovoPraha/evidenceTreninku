@@ -11,6 +11,9 @@ nezapíná. [Záznam sjednocení a kontroly](verification/documentation-reconcil
 uvádí původ souběžných změn #333/#334. Jediný seznam další práce je
 [WORK_REGISTER](WORK_REGISTER.md); [WORK_PLAN_CURRENT](WORK_PLAN_CURRENT.md)
 zůstává kompatibilním rozcestníkem na tentýž registr, nikoli druhou frontou úkolů.
+Novější souběžné předání #335 dokládá již zveřejněnou nabídku BAR;
+[session handoff baru](SESSION_HANDOFF_BAR_2026-11-06.md) a [pravidla dokumentace](WORK_DOCUMENTATION_POLICY.md)
+jsou zachované. Tato relace stav pouze načetla a popsala, publikaci neprováděla.
 
 Vlastník 6. 11. výslovně požaduje zapisovat rozpracovanou i plánovanou práci
 přímo do verzovaných souborů, nikoli ponechat její jediný záznam v chatu.
@@ -41,8 +44,8 @@ skutečné docházky; samotná omluva nestačí. Kontrola nevyžádala opravu an
 nasazení. Zápisy byly pouze syntetické; přihlášené produkční UAT tím není uzavřené.
 
 [Klubové tarify #316](verification/membership-catalog-release-20261105/RESULTS.md) jsou nasazené.
-Založení konceptu Závodní tým 2200 Kč/měsíc (varianta 951) a skupiny 86 → MTB 87,
-Silnice 88, Dráha 89 jsou založené. Výběr více disciplín pouze zařazuje na soupisky,
+Protokol dokládá založení konceptu Závodní tým 2200 Kč/měsíc (varianta 951)
+a skupiny 86 → MTB 87, Silnice 88, Dráha 89. Výběr více disciplín pouze zařazuje na soupisky,
 nemění cenu. Původní protokol zachycuje koncept; souběžné předání #333
 zaznamenává již schválené doplnění údajů TJ KOVO, tarif i zveřejnění.
 Doklad dokončení chybí. P05 v registru nejprve ověří existující variantu,
@@ -263,10 +266,10 @@ neopakovat ani neobnovovat starou DB přes nové operace. Starý BAR je přesmě
 Pět původních produkčních workflow je pozastavených, zdrojová DB zachovaná.
 [Technická provozní přejímka](verification/bar-acceptance-20261106/RESULTS.md) nad novou syntetickou DB
 v prohlížeči PASS: hotovost, čekající QR/karta, vratky kelímků, storna, uzávěrka se schodkem a vlastní spotřeba podle grantu.
-V produkci je již uložený neveřejný návrh **1 / Bar KOVO – základní nabídka**, 45 prodejních produktů,
-zobrazení fotografie. Nezakládat znovu. Veřejná obrazovka stále hlásí „Nabídka se připravuje.“
-Původní kontext vlastníka Správce systému obnoven. Zbývá skutečné přihlášení Lucky,
-lidská finanční přejímka, první skutečné zásoby/kasa a schválené zveřejnění existující nabídky.
+Na výslovný pokyn vlastníka je **[nabídka 1 / Bar KOVO – základní nabídka zveřejněná jako vydání 1](verification/bar-menu-publication-20261106/RESULTS.md)**:
+45 produktů, 45 fotografií a staré menu → KIS anonymně ověřené. Nabídku znovu nezakládat ani bez důvodu znovu nepublikovat.
+Kasa ani zásoby publikací nevznikly. Skutečné přihlášení Lucky, lidská finanční přejímka,
+první skutečné zásoby/kasa a účetní propojení mají další postup v [session handoffu](SESSION_HANDOFF_BAR_2026-11-06.md).
 [Účetní kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md) a [návrh adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md)
 neaktivují skutečné zaúčtování ani nové bankovní párování.
 
@@ -307,6 +310,7 @@ prošlo 1839 testy / 36699 assertions a produkčními čtecími kontrolami.
 Před větší implementací ulož konkrétní plán do docs/; zaznamenej rozsah
 oprávnění, větev, pracovní kopii, dokončené kroky, testy a další krok.
 Před předáním/kompaktací jej obnov a při pokračování znovu přečti.
+Průběžné změny a další etapy patří přímo do příslušných souborů podle [pravidel zápisu](WORK_DOCUMENTATION_POLICY.md), včetně vzájemných odkazů; chat není jediným předáním.
 Aktuální práce dozoru: [pět balíků a jejich hranice](DOZOR_2026-10-25.md).
 Navazující opravy a důkazy: [F1–F3 po nezávislé přejímce](DOZOR_F1_F3_2026-10-26.md).
 

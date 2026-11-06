@@ -2,6 +2,8 @@
 
 Výchozí schválení vlastníka 5. 11. 2026: připravit plán a zahájit implementaci včetně potřebného refaktoringu, tehdy bez produkčního nasazení. Vlastník následně výslovně povolil nasazení a pokračování převodu; [6. 11. je dokončený katalog, schválené přístupy i přepnutí domény](verification/bar-cutover-20261106/RESULTS.md). Původní větev `codex/bar-kis-integration-20261105` vznikla od `0ced6664`, práce pokračuje ve stejném izolovaném worktree. Samostatný sedmietapový refaktoring baru nahrazuje tento plán.
 
+Aktuální pokračování: [technická provozní přejímka](verification/bar-acceptance-20261106/RESULTS.md) a [zveřejnění nabídky 1 / vydání 1](verification/bar-menu-publication-20261106/RESULTS.md) dokončené. [Session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) vede zbývající skutečné provozní kroky a účetní propojení; [pravidlo souborového zápisu](WORK_DOCUMENTATION_POLICY.md) platí i pro další etapy. Datované odstavce průběhu níže zachovávají historické pořadí a oprávnění, nikoli dnešní neprovedené úkoly.
+
 ## Schválený rozsah
 
 - Jedna aplikace KIS, společné přihlášení, session, pracovní pozice, audit a nasazování. Modul pod `/bar/` na `kis.kovopraha.cz`.
@@ -29,9 +31,9 @@ Ze zdroje `KovoPraha/bar.kovopraha.cz` se přebírají obchodní pravidla a vhod
 | B2 | Převod katalogu a lucky | Čtecí inventura zdroje, kontrolní manifest fotografií, transakční a opakovatelný převod, ochrana před kolizí jména/e-mailu, technický účet bez obnovy e-mailem; syntetický nácvik | Skutečný převod 68 produktů / 51 fotografií i nezávislý status PASS 6. 11. |
 | B3 | Katalog a sklad | Administrace produktů, cen a receptur, dvě skladová místa, příjem/přesun/inventura, historické nákladové snímky; obsluha nedostává předsklad ani nákupní ceny | Nasazeno, skutečný katalog/fotografie a nulové zásoby ověřené |
 | B4 | Pokladna a vlastní spotřeba | Prodej, hotovost/karta/QR, kelímky, storno, vlastní a uzavíraná kasa, zásoby a audit v jedné transakci; opakování i souběh bezpečné | Nasazeno, izolované souběhy i přihlášené čtecí UI PASS; skutečný provozní prodej dosud neověřen |
-| B5 | Faktury, nabídky a účetní rozhraní | Příjem PDF, obrazovky/menu, přehledy, oddělené účetní zdroje a exportní kontrakt bez zdvojení tržeb | Nasazeno; historie a nabídky prázdné, skutečné účtování neaktivované |
+| B5 | Faktury, nabídky a účetní rozhraní | Příjem PDF, obrazovky/menu, přehledy, oddělené účetní zdroje a exportní kontrakt bez zdvojení tržeb | Nasazeno; nabídka 1 / vydání 1 zveřejněná, 45 produktů a fotografií PASS; skutečné účtování neaktivované |
 | B6 | Integrační přejímka | Anonymní HTTP, matice rolí, skutečný místní browser, pokladní/skladové souběhy, ztráta spojení, fotografie a izolovaná obnova DB i souborů; zelené CI přesného headu | Technická přejímka a Linux CI PASS; běžné přihlášení Lucky a skutečná platba dosud neověřeny |
-| B7 | Produkční přechod | Nový výslovný souhlas vlastníka; katalogový manifest, nulový počátek, přidělení účtů, doména a provozní UAT | Katalog, účty a doména převedené, původní produkční workflow pozastavená; lidská finanční přejímka otevřená |
+| B7 | Produkční přechod | Nový výslovný souhlas vlastníka; katalogový manifest, nulový počátek, přidělení účtů, doména a provozní UAT | Katalog, účty, doména i první nabídka dokončené, původní produkční workflow pozastavená; skutečné zásoby/kasa, login Lucky a lidská finanční přejímka otevřené |
 
 ## Ověření
 
