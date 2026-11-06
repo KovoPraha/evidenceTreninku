@@ -25,7 +25,6 @@ Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z
 
 | P12 | Sdílený asistent pro testerku: pracovní balíček z 5. 11. je zachovaný v repozitáři | Před skutečným sdílením aktualizovat scénáře proti main a ověřit aktuální možnosti ChatGPT a přístup testerky ke GitHubu. Balíček není důkaz dokončeného sdílení ani živého připojení. | Vlastník/testerka; [balíček a hranice](testing/chatgpt-tester-20261105/README.md), [produkční testování](PRODUKCNI-UZIVATELSKE-TESTOVANI.md) |
 | P13 | Další typy pracovních upozornění jsou záměr, nikoli vybraný rozsah | Před rozšířením určit typ, vlastníka, příjemce, bezpečný odkaz, vznik/ukončení, deduplikaci a testy. Push/eskalace nejsou součástí první verze. | Vlastník/vývoj; [registr a hranice](STAFF_NOTIFICATIONS_2026-11-06.md) |
-
 | P14 | Texty nabídky členství: kandidát zpřesnění, nikoli blokace prodeje | Při samostatné úpravě nahradit obecné „kroužek“, „Detail a zájem“ a blok o termínu texty pro členství; před změnou ověřit rozsah a UI. | Vývoj/vlastník; [nález a snímky](verification/racing-team-status-20261106/RESULTS.md) |
 
 ## Dokončené položky, které znovu neotvírat podle názvu větve
