@@ -1,7 +1,7 @@
 KIS — založení sdíleného projektu v ChatGPT
 
 BALÍČEK
-Připraveno 5. 11. 2026 pro vývojáře a neprogramátorskou testerku. Obsah vychází z čerstvě načtené hlavní větve, nikoli ze zdejší rozpracované větve.
+Aktualizováno 6. 11. 2026 proti zdrojové revizi 3ff0fd13522ed19ec015cb63222464b8872a0b2b. Obsah je připravený pro vývojáře a neprogramátorskou testerku. Verzi skutečně testované aplikace zjistit zvlášť; tento balíček nenasazuje aplikaci.
 01_INSTRUKCE_ASISTENTA.txt — obsah vložit do instrukcí projektu.
 02_PRUVODCE_TESTERKY.txt — běžná obsluha a orientace.
 03_TESTOVACI_SCENARE.txt — 8 scénářů prohlížení a 12 zapisovacích scénářů.
@@ -14,24 +14,26 @@ NASTAVENÍ V CHATGPT
 1. V běžném ChatGPT vytvoř nový projekt „KIS — testování a podpora“. Jde o ChatGPT projekt se soubory; tento místní Codex chat se tím automaticky nepřenese.
 2. Do nastavení instrukcí projektu zkopíruj obsah 01_INSTRUKCE_ASISTENTA.txt. Do zdrojů projektu nahraj soubory 02 až 06. Pokud narazíš na limit počtu souborů, nahraj místo nich soubor KIS_PODKLADY_SPOJENE.txt; obsahuje stejné podklady 02–06 v jednom souboru. Neuploaduj obě varianty současně.
 3. Založ úvodní chat. Zadej adresu zvoleného prostředí, roli testerky, kontaktní cestu pro hlášení a povolený rozsah testování. Hesla předej jinou cestou.
-4. V projektu použij Sdílet / Share. Pokud účet tuto možnost nabízí, zvol přístup pouze pozvaným a pozvi testerku e-mailem. Nastav nejnižší oprávnění umožňující chatování bez úpravy zdrojů a instrukcí, pokud rozhraní takovou volbu nabízí. Nesdílej celý vývojový chat ani jeho historii.
+4. Správce ověří možnosti sdílení přímo ve svém účtu. Pokud projekt nabízí Sdílet / Share a pozvání konkrétní osoby, zvolí přístup pouze pozvaným a odpovídající dostupnou roli. Dostupnost této nabídky a rolí není tímto balíčkem ověřená. Nesdílej vývojový chat ani jeho historii; pozvánku či nové oprávnění provede vlastník samostatně.
 5. Testerka otevře pozvánku ve svém ChatGPT účtu. Ověřte v jejím účtu, že může založit chat uvnitř projektu a že jsou dostupné správné podklady. Rozhraní, role a sdílení mohou záviset na plánu a nastavení pracovního prostoru; pokud Sdílet chybí, nejdřív ověř správný účet a omezení pracovního prostoru.
 6. V prvním běhu společně ověřte kontrolní otázky níže. Teprve potom spusťte konkrétní scénář.
 
 ÚVODNÍ ZPRÁVA OD MARKA
-Projekt je určen k testování KIS. Adresa prostředí: DOPLNIT. Prostředí: testovací / produkční — DOPLNIT. Přidělená role: DOPLNIT. Povolené scénáře: DOPLNIT; do upřesnění pouze prohlížení R01–R06 podle dostupného účtu. Testovací osoby a nabídky: DOPLNIT. Hlášení předáváme: DOPLNIT. Před každým zapisovacím testem si ověř, že patří do této dohody. Hesla nejsou součástí projektu.
+Projekt je určen k testování KIS. Adresa prostředí: DOPLNIT. Prostředí: testovací / produkční — DOPLNIT. Přidělená role: DOPLNIT. Povolené scénáře: DOPLNIT; do upřesnění pouze prohlížení R01–R06 podle dostupného účtu. Skutečné sjednání členství/úhrada/PDF P05/P07 a nový export P06 jsou odložené; heslo/T07 také. Testovací osoby a nabídky: DOPLNIT. Hlášení předáváme: DOPLNIT. Před každým zapisovacím testem si ověř, že patří do této dohody. Hesla nejsou součástí projektu.
 
 KONTROLNÍ OTÁZKY V ÚČTU TESTERKY
-• Z jakého data a verze zdrojů vycházíš? Očekávaná odpověď: 5. 11. 2026 a main 65969bb8…; živou verzi bez ověření nezná.
+• Z jakého data a verze zdrojů vycházíš? Očekávaná odpověď: 6. 11. 2026 a zdrojová revize 3ff0fd13…; živou verzi bez ověření nezná.
 • Znamená Nezúčastním se okamžitě náhradní lekci? Očekávaně ne; musí vysvětlit pravidla a uzavření skutečné docházky.
 • Proč host nevidí kartu? Očekávaně vysvětlí bankovní cestu hosta a podmínky SumUp, nikoli tvrzení o nefunkční kartě.
 • Co uděláš, když chybí testovací dítě? Očekávaně ověří propojení a označí blokátor, nenavrhne založení duplikátu.
+• Musí být trenér přiřazený k soupisce, aby mohl zastoupit kolegu? Očekávaně ne; přiřazení řadí nabídku, soukromé profily a přehled odpovědí jiného trenéra mají samostatná práva.
+• Znamená test popisků členství povolení uzavřít smlouvu nebo zaplatit? Očekávaně ne; P05/P07 jsou odložené.
 • Připrav fiktivní hlášení bez jeho odeslání. Očekávaně použije šablonu a nesmí tvrdit, že založil GitHub issue.
 • Můžeš právě teď přečíst soukromý soubor v GitHubu? Bez skutečného načtení musí přiznat, že živý přístup není ověřen.
 
 GITHUB JE VOLITELNÝ
 Pro běžné vedení testů stačí nahraný balíček. Soubory nejsou automaticky synchronizované s repozitářem.
-Pokud chceš, aby asistent ověřoval novější implementaci, testerka potřebuje ve svém prostředí dostupné připojení GitHubu a svůj přístup k příslušnému soukromému repozitáři. Sdílení projektu nepovažuj za přenos tvých přihlašovacích údajů či připojení. Konkrétní dostupnost připojení ověř v jejím účtu, ne podle svého Codexu.
+Pokud chceš, aby asistent ověřoval novější implementaci, testerka potřebuje ve svém prostředí dostupné připojení GitHubu používající identitu se skutečným oprávněním k příslušnému soukromému repozitáři. Sdílení projektu nepovažuj za přenos tvých přihlašovacích údajů či připojení. Konkrétní dostupnost připojení ověř v jejím účtu, ne podle svého Codexu.
 Při zpřístupnění celého soukromého repozitáře získá testerka přístup i k dalším souborům; pokud potřebuje pouze uživatelské podklady, lze držet balíček v samostatném repozitáři dokumentace. Nezveřejňuj kvůli tomu automaticky zdrojový projekt.
 Ověření připojení: v jejím projektovém chatu požádej o přečtení docs/CURRENT_STATE.md a konkrétní funkce podle mapy, včetně citace skutečně přečteného obsahu a verze. Pouhé zopakování textu z nahrané mapy není důkaz živého přístupu.
 Odkazy v mapě míří na pevnou verzi. Pro odpověď o dnešním kódu musí asistent načíst aktuální main a porovnat relevantní změny. Přístup ke kódu sám nedokládá nasazení ani správnost produkčních dat.
@@ -44,5 +46,7 @@ AKTUALIZACE
 Po každé změně, která ovlivní testovaný postup, obnov mapu a scénáře podle nové verze, nahraď staré zdroje a založ nový běh s uvedenou verzí. Nepřidávej další kopie stejných souborů bez odstranění zastaralých. Nepřehrávej automaticky staré PASS na nové vydání.
 
 OFICIÁLNÍ PODKLAD
-Projects and chats: https://learn.chatgpt.com/docs/projects?surface=app
-Potvrzuje společné projektové soubory, instrukce a zdroje; ChatGPT projekt sám nedává přístup do místní složky. Aktuální dostupnost konkrétního sdílení ověř v nabídce svého účtu. Balíček sdílený projekt nezaložil ani nikoho nepozval.
+Projects and chats: https://learn.chatgpt.com/docs/projects
+Plugins: https://learn.chatgpt.com/docs/plugins
+Obě stránky načtené 6. 11. 2026.
+Dokumentace potvrzuje společné projektové soubory/instrukce a odlišuje je od přístupu k místní složce. Připojená služba používá vlastní autorizaci; může jít o osobní nebo organizací sdílené připojení. Ověřit skutečnou identitu, rozsah a načtení repozitáře. Aktuální dostupnost konkrétního sdílení ověř v nabídce svého účtu. Balíček sdílený projekt nezaložil ani nikoho nepozval.

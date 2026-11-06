@@ -1,0 +1,145 @@
+{
+  "source_sha": "3ff0fd13522ed19ec015cb63222464b8872a0b2b",
+  "verified": [
+    {
+      "file": "includes/unified_account.php",
+      "function": "unifiedAccountAuthenticate",
+      "line": 81
+    },
+    {
+      "file": "includes/child_access.php",
+      "function": "childAccessIdentity",
+      "line": 301
+    },
+    {
+      "file": "includes/account_person_claim.php",
+      "function": "accountPersonClaimSubmit",
+      "line": 14
+    },
+    {
+      "file": "includes/account_person_claim.php",
+      "function": "accountPersonClaimCancel",
+      "line": 119
+    },
+    {
+      "file": "includes/family_portal.php",
+      "function": "familyPortalAuthorizedPeople",
+      "line": 58
+    },
+    {
+      "file": "includes/family_portal.php",
+      "function": "familyPortalCanViewPerson",
+      "line": 130
+    },
+    {
+      "file": "includes/training_rsvp.php",
+      "function": "trainingRsvpUpcomingForPeople",
+      "line": 50
+    },
+    {
+      "file": "includes/training_rsvp.php",
+      "function": "trainingRsvpSave",
+      "line": 168
+    },
+    {
+      "file": "includes/training_rsvp.php",
+      "function": "trainingRsvpSavedMessage",
+      "line": 285
+    },
+    {
+      "file": "includes/coach_scope.php",
+      "function": "coachScopeCanViewPerson",
+      "line": 52
+    },
+    {
+      "file": "includes/coach_scope.php",
+      "function": "coachScopeRequirePlan",
+      "line": 132
+    },
+    {
+      "file": "includes/coach_training_access.php",
+      "function": "coachTrainingPersonPredicate",
+      "line": 43
+    },
+    {
+      "file": "includes/coach_training_access.php",
+      "function": "coachTrainingPreferredTeams",
+      "line": 75
+    },
+    {
+      "file": "includes/training_roster_bridge.php",
+      "function": "trainingRosterBridgeExpectedForPlan",
+      "line": 121
+    },
+    {
+      "file": "includes/training_roster_bridge.php",
+      "function": "trainingRosterBridgeCopyPlanToTraining",
+      "line": 151
+    },
+    {
+      "file": "includes/training_roster_bridge.php",
+      "function": "trainingRosterBridgePlanAttendanceComparison",
+      "line": 224
+    },
+    {
+      "file": "includes/club_makeup.php",
+      "function": "clubMakeupExcuseEntitlement",
+      "line": 364
+    },
+    {
+      "file": "includes/club_makeup.php",
+      "function": "clubMakeupExcuseFailureReason",
+      "line": 395
+    },
+    {
+      "file": "includes/club_makeup.php",
+      "function": "clubMakeupFinalizeSource",
+      "line": 470
+    },
+    {
+      "file": "includes/shop_checkout.php",
+      "function": "shopOrderConfirmPaymentInTransaction",
+      "line": 1407
+    },
+    {
+      "file": "includes/shop_checkout.php",
+      "function": "shopOrderAdminCancel",
+      "line": 1556
+    },
+    {
+      "file": "includes/shop_checkout.php",
+      "function": "shopOrderAdminConfirmRefund",
+      "line": 1723
+    },
+    {
+      "file": "includes/shop_payment_policy.php",
+      "function": "shopPaymentPolicyForItemGroups",
+      "line": 76
+    },
+    {
+      "file": "includes/shop_payment_policy.php",
+      "function": "shopPaymentPolicyAllowsSumUp",
+      "line": 89
+    },
+    {
+      "file": "includes/member_evidence_groups.php",
+      "function": "memberEvidenceGroupsPreview",
+      "line": 6
+    },
+    {
+      "file": "includes/medical_clearance.php",
+      "function": "medicalClearanceView",
+      "line": 138
+    },
+    {
+      "file": "includes/medical_clearance.php",
+      "function": "medicalClearanceStatusFromRecords",
+      "line": 101
+    },
+    {
+      "file": "includes/localhost_acceptance_hub.php",
+      "function": "localhostAcceptanceRequestIsAllowed",
+      "line": 44
+    }
+  ]
+}

@@ -1,5 +1,17 @@
 # Produkční uživatelské testování
 
+## Současné navázání — 6. 11. 2026
+
+Aktuální vstup pro neprogramátorskou testerku je [sjednocený balíček](testing/chatgpt-tester-20261105/README.md)
+s 20 scénáři a [protokolem revize](verification/offline-followup-20261106/RESULTS.md).
+Nasazenou verzi a provozní přepínače určuje [CURRENT_STATE.md](CURRENT_STATE.md),
+nikoli níže uvedená historická verze, testovací účet nebo minulé UAT okno.
+Vlastník zatím odložil skutečné sjednání/platbu/PDF P05/P07, export P06 a heslo/T07.
+Nové lidské UAT ani přístupy testerky tímto nevznikly. Výchozí běh je čtecí;
+zápis potřebuje konkrétní platné zadání, připravená data a prostředí.
+Starší manuály a protokoly níže zachovávají svůj původní rozsah a datum;
+žádné oprávnění z ukončeného testovacího okna se tím neprodlužuje.
+
 ## Regresní průchody po UX úpravách 16. 10. 2026
 
 Tyto scénáře popisují očekávání pro další nasazení. Samotná lokální změna a

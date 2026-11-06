@@ -1,4 +1,5 @@
 KIS — průvodce testerky
+Aktualizováno 6. 11. 2026; zdrojová revize 3ff0fd13.
 
 K ČEMU PROJEKT SLOUŽÍ
 Zde se můžeš běžnou češtinou ptát na fungování aplikace a nechat se provést testováním. Nemusíš umět programovat ani používat GitHub. Když něco nefunguje, asistent ti pomůže doplnit informace a vytvořit hlášení pro Marka. Asistent sám nevidí tvůj prohlížeč ani účet, pokud mu výslovně neposkytneš takový nástroj; obvykle potřebuje popis nebo snímek.
@@ -17,7 +18,7 @@ ZÁKLADNÍ ORIENTACE
 Veřejná část: katalog, produkty, rozvrh tréninků, klubový kalendář a velodrom. Prohlížení nabídky není přihlášení na akci.
 Rodičovská/zákaznická část: přihlášení, Moje osoby, Sportovní přehled, Moje kroužky, objednávky, přihlášky a náhrady podle oprávnění a dat.
 Samostatný sportovní přístup: Můj sport, údaje jednoho přiděleného sportovce a jeho dostupné akce. Nezaměňovat za rodičovský účet spravující více osob.
-Trenérská část: plánovač, odpovědi účastníků, evidence skutečných tréninků a docházky. Seznamy respektují přidělený rozsah. Registrář, finance a další pracovní pozice poskytují další konkrétní oprávnění; samotné obecné označení „správce“ nestačí k odvození všeho přístupu.
+Trenérská část: plánovač, odpovědi účastníků, evidence skutečných tréninků a docházky. Pro plán a zápis tréninku lze zastupovat i jinou aktivní soupisku; vlastní přiřazení pouze řadí nabídku. To neotevírá soukromý profil jiné osoby ani všechny plány kolegů. Registrář, finance a další pracovní pozice poskytují další konkrétní oprávnění; samotné obecné označení „správce“ nestačí k odvození všeho přístupu.
 
 DŮLEŽITÉ ROZDÍLY
 Účet je přihlášení; osoba je sportovec v klubové evidenci. K existující osobě se žádá o propojení a administrátor jej ověřuje. Nevytvářej druhou osobu jen proto, že ji zatím ve svém účtu nevidíš.
@@ -26,6 +27,10 @@ Plánovaný trénink říká, co se má konat. Odpověď „Zúčastním se / Ne
 Náhrada může vzniknout za včas omluvený, zaplacený a skutečně vynechaný trénink kroužku, pokud klub náhrady povolil. Nejprve se uzavírá docházka. Nabídka náhrad závisí také na termínu, kapacitě a vhodnosti pro sportovce.
 Objednávka čekající na platbu není zaplacená. Návrat z platební brány sám úhradu nepotvrzuje. Zrušená zaplacená objednávka a dokončená vratka jsou dva různé stavy.
 Platba kartou není zaručená pro každou cestu: host používá bankovní platbu; nová přihlášená objednávka může nabídnout SumUp, pokud to dovolují všechny položky i nastavení. Starší platba si může zachovat původní režim.
+
+Členství v klubu je pravidelný tarif, nikoli termín kroužku. Závodní tým má podle posledního doloženého vydání cenu 2200 Kč/měsíc a více disciplín bez příplatku. Ke sjednání je potřebná klubem ověřená vazba na sportovce. Chybějící vazba není důvod zakládat druhou osobu. V této fázi pouze čti katalog a detail; skutečné sjednání, úhrada a PDF P05/P07 i export P06 zůstávají odložené.
+Pracovní zvoneček upozorňuje na úkol; označení jako přečtené není vyřízení žádosti. Otevření souvisejícího odkazu může měnit přečtení, proto je neprováděj jako test bez dohodnutého zápisu.
+Veřejná nabídka BAR je zveřejněná. Zobrazení nabídky neprokazuje fyzické zásoby, otevřenou kasu ani uskutečněný prodej. Skutečnou první směnu potvrzuje obsluha samostatně.
 
 KDYŽ SE NĚCO NESHODUJE
 Nejprve popiš stránku, roli, vybrané datum/filtr, co jsi udělala a co vidíš. Zkopíruj přesný text chyby. Uveď, zda po obnovení stránky stav zůstává a zda problém jde zopakovat. Pokud by opakování vytvořilo další objednávku nebo jiný zápis, neopakuj jej bez domluvy.

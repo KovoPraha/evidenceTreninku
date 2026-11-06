@@ -1,0 +1,94 @@
+{
+  "source_sha": "3ff0fd13522ed19ec015cb63222464b8872a0b2b",
+  "scenario_count": 20,
+  "scenario_ids": [
+    "R01",
+    "R02",
+    "R03",
+    "R04",
+    "R05",
+    "R06",
+    "W01",
+    "W02",
+    "W03",
+    "W04",
+    "W05",
+    "W06",
+    "W07",
+    "W08",
+    "W09",
+    "W10",
+    "W11",
+    "W12",
+    "R07",
+    "R08"
+  ],
+  "source_sections": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08",
+    "S09",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "S14",
+    "S15",
+    "S16"
+  ],
+  "pinned_links_checked": 86,
+  "source_function_anchors_checked": 28,
+  "combined_exact": true,
+  "utf8_checked": true,
+  "zip_integrity": true,
+  "zip_path": "output/chatgpt-testovani-2026-11-06/KIS_TESTERKA_20261106.zip",
+  "zip_sha256": "c858e6ebf6e1c929d6042b2f307a57e85b145d50fc4f3aa4e05c533c892d0fd4",
+  "zip_bytes": 42850,
+  "files": [
+    {
+      "name": "00_ZALOZENI_A_SDILENI.txt",
+      "bytes": 6911,
+      "sha256": "2d3d7db7cbc7565b2de5fd80fd440c0163113ff806e6e2bfbd6b8f8b0f5dba5e"
+    },
+    {
+      "name": "01_INSTRUKCE_ASISTENTA.txt",
+      "bytes": 4976,
+      "sha256": "9875c23667a5cd8e7fecc01d628240e7da4b87ed2c7de34455a1a71a4f23ebb5"
+    },
+    {
+      "name": "02_PRUVODCE_TESTERKY.txt",
+      "bytes": 5994,
+      "sha256": "74744038aee036979ddd597bc1e1a4404a38ef55a5d73aa0a82900706eae440e"
+    },
+    {
+      "name": "03_TESTOVACI_SCENARE.txt",
+      "bytes": 15997,
+      "sha256": "d39c97065d6c3e3a1b1041c7d9b993006d2819d799e5bb8404f0fd70da919635"
+    },
+    {
+      "name": "04_SABLONA_HLASENI.txt",
+      "bytes": 3742,
+      "sha256": "79e6211d140dac63e8c26f49b530d30fa952970232a9b1c8e63dcc2aa9d1e9d7"
+    },
+    {
+      "name": "05_MAPA_FUNKCI_A_ZDROJU.txt",
+      "bytes": 20306,
+      "sha256": "0ecb5aa62b49425d7139a1915163b7e47232a7356080b3c0c210b05e5b30a25f"
+    },
+    {
+      "name": "06_OVERENI_A_AKTUALIZACE.txt",
+      "bytes": 6323,
+      "sha256": "f9344c26e15da838632a52e7168d1266fd6071f2230455a9d24db411e5f86b52"
+    },
+    {
+      "name": "KIS_PODKLADY_SPOJENE.txt",
+      "bytes": 53241,
+      "sha256": "07c65c4b0288189ab067d78d21586f9d8d5cb833b183686266f84d1448eb0f72"
+    }
+  ]
+}
