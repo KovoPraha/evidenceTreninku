@@ -44,13 +44,11 @@ skutečné docházky; samotná omluva nestačí. Kontrola nevyžádala opravu an
 nasazení. Zápisy byly pouze syntetické; přihlášené produkční UAT tím není uzavřené.
 
 [Klubové tarify #316](verification/membership-catalog-release-20261105/RESULTS.md) jsou nasazené.
-Protokol dokládá založení konceptu Závodní tým 2200 Kč/měsíc (varianta 951)
-a skupiny 86 → MTB 87, Silnice 88, Dráha 89. Výběr více disciplín pouze zařazuje na soupisky,
-nemění cenu. Původní protokol zachycuje koncept; souběžné předání #333
-zaznamenává již schválené doplnění údajů TJ KOVO, tarif i zveřejnění.
-Doklad dokončení chybí. P05 v registru nejprve ověří existující variantu,
-vystavovatele, účetní pravidlo a publikaci. Nezakládat druhý produkt ani
-znovu vyžadovat doložený stejný souhlas. V této relaci nic nepublikovat.
+[Závodní tým je podle produkční kontroly 6. 11. schválený a zveřejněný](verification/racing-team-status-20261106/RESULTS.md).
+Produkt 297 / varianta 951 stojí 2200 Kč/měsíc; výběr více disciplín nemění cenu.
+Fakturační údaje TJ KOVO jsou uložené. Neopakovat založení, schválení ani publikaci.
+Zákazník musí mít klubem ověřeného sportovce; použitý účet jej nemá, proto úplné
+sjednání/úhrada/PDF zůstávají neověřené. Starý protokol konceptu popisuje jen minulý stav.
 [Pravidelné zpracování je zapnuté](verification/membership-automation-20261105/RESULTS.md):
 automatizace, denní plán/zápis i [pošta jsou true](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md).
 Ruční apply --send i heartbeat PASS (0 členství a zpráv), plán 05:23 UTC.

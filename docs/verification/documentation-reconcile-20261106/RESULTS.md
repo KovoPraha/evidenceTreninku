@@ -14,6 +14,8 @@ Původní pracovní kopie a obě existující dokumentační větve se nepřepis
 Při práci mezitím #333 vstoupilo do main jako `0f3ac591`. Novější souběžný
 vstup #335 `a561ed51` doložil publikaci nabídky BAR; také jeho dokumentace
 a bezpečné důkazy jsou zachované. Tato relace publikaci neprovedla.
+Následně #336 `36500d01` doplnilo chybějící čtecí doklad schváleného a zveřejněného
+Závodního týmu. Také tento výsledek a podklady se přebírají bez produkčního zápisu.
 
 ## Postup a stav
 
@@ -22,14 +24,14 @@ a bezpečné důkazy jsou zachované. Tato relace publikaci neprovedla.
 2. Dokončeno: sjednocení dokumentačních větví #333 a #334, jeden registr další práce,
    oddělení nasazení od publikace a od uživatelského/účetního převzetí.
 3. Dokončeno: kontrola odkazů, historických bloků, dokumentačního kontraktu a rozdílu
-   proti main; přesný místní výsledek níže. Stav vzdáleného předání se doplní po vytvoření PR.
+   proti main; přesný místní výsledek a vzdálené předání níže.
 
 ## Opravené rozpory a zachované otevřené body
 
 | Oblast | Doložená skutečnost | Zbývající krok |
 | --- | --- | --- |
 | Upozornění | #330 nasazené, minutový hostingový běh a 18 přijetí transportem. Produkční browser doložil zvoneček, přesný odkaz a změnu přečtení. | Potvrzení cílové schránky; instalaci/rozesílku ani již doloženou kontrolu neopakovat. P01. |
-| Členství – publikace | Původní protokol dokládá koncept varianty 951; #333 zaznamenává následný souhlas s údaji TJ KOVO, tarifem a publikací. | Doklad dokončení chybí. Nejprve pouze ověřit stav; netvrdit ani jistou nepublikaci, ani dokončený prodej. P05. |
+| Členství – publikace | Původní doklad konceptu i následný souhlas z #333 překonal čtecí průchod #336: aktivní schválený tarif, uložený vystavovatel a zveřejněný produkt 297 / varianta 951, 2200 Kč/měsíc. | Publikaci ani schválení neopakovat. Zbývá skutečné sjednání s klubem ověřeným sportovcem a první platba/PDF/doručení. P05. |
 | Členství – automatika | Plán/zápis/pošta povolené, čas 05:23 UTC, doložený ruční prázdný apply --send. | První automatický časový start a skutečná platba/PDF/doručení nejsou doložené. To samo nedokazuje poruchu. P05. |
 | BAR | Katalog/přístupy/doména převedené, syntetická provozní přejímka PASS. Novější souběžné #335 dokládá již zveřejněnou nabídku 1 / vydání 1; vlastní anonymní čtení potvrdilo 45 fotografií a žádné hlášení přípravy. | Publikace P03 hotová; zbývá skutečný login obsluhy, zásoby/kasa, první prodej a finanční přejímka P02. Tato relace nic nepublikovala. |
 | BAR účetnictví | Kód poskytuje provozní účetní podklady/export, ne zápisy do hlavního účetnictví. Kontrakt a plán adaptéru existují. | Účetní pravidla, implementace adaptéru a přejímka; nejde jen o nezapnutý hotový přepínač. P04. |
@@ -43,6 +45,9 @@ Původní obsah plánu #333 je zachovaný jako [historický vstup](WORK_PLAN_SOU
 Jeho jedinečné otevřené body nejsou ztracené: další pracovní události P12,
 balíček pro testerku P13, dřívější souhlas u členství P05. WORK_PLAN_CURRENT
 je kompatibilní odkaz na jediný WORK_REGISTER, nikoli druhá sada stavů.
+Při práci dorazily novější doklady #335 a #336. Předchozí přehled pouze konceptů
+baru a členství je tak překonaný; oba stavy jsou nyní výslovně aktualizované,
+zatímco původní protokoly a rozhodnutí zůstávají historicky zachované.
 
 ## Použité důkazy
 
@@ -58,6 +63,10 @@ je kompatibilní odkaz na jediný WORK_REGISTER, nikoli druhá sada stavů.
 - Novější [publikace BAR z #335](../bar-menu-publication-20261106/RESULTS.md)
   opravuje dřívější údaj o neveřejném návrhu. Vlastní [anonymní čtecí kontrola](public-menu-check.json)
   dokládá veřejnou nabídku bez přihlášení, publikace či dalšího produkčního zápisu.
+- [Čtecí produkční přejímka Závodního týmu #336](../racing-team-status-20261106/RESULTS.md)
+  ze 6. 11. kolem 12:00–12:03 CET: aktivní schválený tarif, uložený vystavovatel,
+  zveřejněná nabídka a cesta ke sjednání. Použitý účet bez ověřeného sportovce;
+  nevznikl skutečný závazek/platba. Tato relace přebírá protokol, neprovádí jeho zápisy.
 - Čtecí GitHub kontrola: main `9c543ff9`, otevřené #333/#334; poslední běhy
   `monthly-memberships-production.yml` byly ruční, workflow active, tři
   `KIS_MONTHLY_MEMBERSHIP_*` proměnné true. Nový workflow nebyl spuštěn.
@@ -72,7 +81,7 @@ Původní `C:/xampp/htdocs/evidencePavel` zůstává na své větvi se změnou
 `kis_rosters_admin.php` a netrackovanými výstupy. Soubor při kontrole má SHA-256
 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`;
 nebyl přepisován ani zahrnut do commitu. Stávající dokumentační worktrees
-a vzdálené větve #333/#334/#335 se touto relací nemění ani nemažou.
+a vzdálené větve #333/#334/#335/#336 se touto relací nemění ani nemažou.
 
 ## Ověření a předání
 
@@ -88,6 +97,19 @@ Markdown souborů: **1160 místních odkazů, 0 chyb**, žádné konfliktní zna
 Rozdíl tvoří pouze dokumentace, projektové instrukce a bezpečné důkazy;
 aplikační PHP/JS, migrace, workflow ani produkční konfigurace se nemění.
 Nejde o nový test runtime, plateb či přihlášeného produkčního UI.
+
+Po posledním souběžném dokladu členství #336: **80 řádků / 871 odkazů /
+105 zachovaných archivních bloků / 0 chyb**. Dokumentační kontrakt **2 / 14 PASS**,
+kontrola **1222 místních odkazů ve 29 Markdown souborech bez chyby**,
+`git diff --check` PASS. Nový archivní blok pochází ze zachovaného předání #336;
+původní bloky se nepřepisují.
+
+Souborové předání je v [PR #337](https://github.com/KovoPraha/evidenceTreninku/pull/337),
+které sjednocuje #333/#334/#335/#336. Aktuální CI a stav sloučení určuje PR.
+Po zelených kontrolách lze začlenit pouze tuto dokumentaci; produkční deploy
+ani změna přepínačů nejsou součástí předání. Při další session číst aktuální main,
+CURRENT_STATE, HANDOFF_CURRENT a jediný WORK_REGISTER, nikoli znovu slučovat
+historické pracovní větve podle jejich názvu.
 
 ## Důkazní hranice
 

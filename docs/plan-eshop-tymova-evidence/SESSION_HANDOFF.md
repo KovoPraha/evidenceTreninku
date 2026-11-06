@@ -7,9 +7,10 @@
 Na pokyn vlastníka sjednocené podklady #333 a #334: [protokol a kontroly](../verification/documentation-reconcile-20261106/RESULTS.md).
 Aktuální zadání pouze dokumentační; nic nového na produkci nezapínat.
 Upozornění už jsou nasazená a přihlášený zvoneček i odkaz doložené; zbývá
-potvrzení schránky. U členství je doložené založení konceptu a v #333
-zaznamenaný další souhlas, ale doklad dokončení publikace chybí: nejprve
-ověřit existující produkt. První automatický denní start také nedoložený.
+potvrzení schránky. Novější [čtecí doklad #336](../verification/racing-team-status-20261106/RESULTS.md)
+potvrzuje schválené a zveřejněné členství Závodní tým 2200 Kč/měsíc;
+schválení ani publikaci neopakovat. První skutečné sjednání/platba/PDF/doručení
+a automatický denní start také nedoložené.
 BAR je převedený a novější [doklad #335](../verification/bar-menu-publication-20261106/RESULTS.md)
 potvrzuje zveřejněnou nabídku 1 / vydání 1, 45 produktů a fotografií.
 Tato relace ji pouze načetla, nic nepublikovala. Reálný provoz,

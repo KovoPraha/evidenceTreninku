@@ -11,6 +11,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | Dokument | Účel |
 |---|---|
 | [Registr rozpracované a plánované práce](WORK_REGISTER.md) | Jediný seznam P01–P14: doložený stav, další kroky, závislosti a odpovědnost |
+| [Závodní tým – aktuální ověření](verification/racing-team-status-20261106/RESULTS.md) | Schválený a zveřejněný tarif 2200 Kč/měsíc, cesta ke sjednání a podmínka ověřeného sportovce |
 | [Sjednocení dokumentace 6. 11.](verification/documentation-reconcile-20261106/RESULTS.md) | Sloučení souběžného předání #333/#334, opravené rozpory a hranice ověření; bez produkčních změn |
 | [Průběžný plán – kompatibilní rozcestník](WORK_PLAN_CURRENT.md) | Odkazuje na stejný registr; nevytváří druhý seznam úkolů |
 | [Provozní inventura 6. 11.](verification/operations-inventory-20261106/RESULTS.md) | Stav větví, mezitím nasazené #330 a doložený běh upozornění |

@@ -15,6 +15,7 @@ zapisovat přímo do registru a souvisejícího tematického plánu, nikoli para
 Původní úkoly z #333 jsou převzaté: upozornění P01, členství P05, další typy
 upozornění P12, trenérské zastupování v dokončených položkách, balíček testerky P13,
 BAR P02–P04, evidence členů P06, trenérský pilot P08 a účetní převzetí P09.
-Zaznamenaný souhlas se zveřejněním členství se zachovává; doklad dokončení chybí.
-Nejprve ověřit existující produkt. Aktuální dokumentační zadání nic na produkci
+Novější [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md)
+potvrzuje schválené a zveřejněné členství; P05 už nečeká na publikaci.
+První skutečné sjednání/platba/PDF/doručení zbývají. Aktuální zadání nic na produkci
 nezapíná ani nepublikuje. Schválení, implementaci, nasazení a přejímku rozlišovat.
