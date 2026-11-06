@@ -116,3 +116,12 @@ pouze vlastní botem zapsaný dokumentační SHA, se stejným PR/repozitářem a
 přesně třemi známými workflow, až po ověření povolených cest. Potom vyčká na
 skutečné PR testy a slučuje bez admin bypassu. Do úspěšného zopakování plného
 preflightu zůstává místní úloha jako záloha.
+
+<!-- membership-morning-preflight:start -->
+## Serverový preflight
+
+[Serverový preflight](verification/membership-morning-server-20261106/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-preflight:end -->

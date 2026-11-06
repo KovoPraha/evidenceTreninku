@@ -2,8 +2,8 @@
   "version": 1,
   "mode": "preflight",
   "verdict": "PASS",
-  "checked_at_utc": "2026-11-06T17:57:57+00:00",
-  "observer_tick_utc": "2026-11-06T17:57:03+00:00",
+  "checked_at_utc": "2026-11-06T18:24:44+00:00",
+  "observer_tick_utc": "2026-11-06T18:24:03+00:00",
   "phase": "waiting",
   "morning_result": "NOT RUN",
   "repository_flags": {
@@ -11,7 +11,7 @@
     "apply": "true",
     "mail": "true"
   },
-  "publication_run": 42266360997,
+  "publication_run": 42270407584,
   "deferred": [
     "P05/P07 actual membership/payment",
     "P06 export"
