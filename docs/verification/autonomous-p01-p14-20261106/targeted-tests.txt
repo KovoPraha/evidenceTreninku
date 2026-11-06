@@ -1,0 +1,12 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\Users\Marek\Documents\Codex\evidencePavel-operations-handoff-20261106\phpunit.xml.dist
+
+...............................................................  63 / 136 ( 46%)
+............................................................... 126 / 136 ( 92%)
+..........                                                      136 / 136 (100%)
+
+Time: 00:14.474, Memory: 44.00 MB
+
+OK (136 tests, 753 assertions)

@@ -1,0 +1,38 @@
+[
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-06T13:05:18Z",
+    "databaseId": 42222661557,
+    "event": "schedule",
+    "headSha": "388a91cec8b1747fe8a5680df59631cd7ad63f16",
+    "status": "completed",
+    "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42222661557"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-06T13:17:15Z",
+    "databaseId": 42224275796,
+    "event": "workflow_dispatch",
+    "headSha": "646d9c7f78daa2869029c67423299e36e08c802b",
+    "status": "completed",
+    "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42224275796"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-06T13:17:21Z",
+    "databaseId": 42224288772,
+    "event": "workflow_dispatch",
+    "headSha": "646d9c7f78daa2869029c67423299e36e08c802b",
+    "status": "completed",
+    "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42224288772"
+  },
+  {
+    "conclusion": "success",
+    "createdAt": "2026-11-06T13:21:59Z",
+    "databaseId": 42224909992,
+    "event": "workflow_dispatch",
+    "headSha": "646d9c7f78daa2869029c67423299e36e08c802b",
+    "status": "completed",
+    "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42224909992"
+  }
+]

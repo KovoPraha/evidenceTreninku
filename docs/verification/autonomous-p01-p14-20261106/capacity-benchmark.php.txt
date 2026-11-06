@@ -1,0 +1,9 @@
+<?php
+declare(strict_types=1);
+require dirname(__DIR__, 3).'/includes/club_program_capacity.php';
+$n=(int)($argv[1]??0);
+if(!in_array($n,[3000,30000,300000],true))throw new RuntimeException('Synthetic size required');
+$rows=(static function()use($n):Generator{for($i=0;$i<$n;$i++)yield ['id'=>$i+1,'beneficiary_sportovec_id'=>($i%1000)+1,'quantity'=>($i%3)+1];})();
+$start=hrtime(true);$r=clubProgramCapacityFromRows([],$rows,true,0,5000);$ms=(hrtime(true)-$start)/1e6;
+if($r['occupied_count']!==3000||$r['available_count']!==2000)throw new RuntimeException('Capacity mismatch');
+echo json_encode(['rows'=>$n,'unique_people'=>1000,'elapsed_ms'=>round($ms,3),'peak_bytes'=>memory_get_peak_usage(true),'result'=>$r,'scope'=>'synthetic pure evaluator, no database or HTTP']).PHP_EOL;

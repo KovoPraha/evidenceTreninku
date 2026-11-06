@@ -1,0 +1,6 @@
+<?php
+require dirname(__DIR__,2).'/vendor/autoload.php';
+require dirname(__DIR__,2).'/includes/bar/menu_view.php';
+$products=[];for($i=1;$i<=45;$i++)$products[]=['name'=>'LOCALHOST produkt '.str_pad((string)$i,2,'0',STR_PAD_LEFT),'description'=>'Syntetická položka, nikoli skutečná nabídka.','category'=>'TEST','price_minor'=>3500,'sold_out'=>0,'image_id'=>null];
+$o=new Dompdf\Options();$o->setIsRemoteEnabled(false);$o->setIsPhpEnabled(false);$o->setIsJavascriptEnabled(false);
+$p=new Dompdf\Dompdf($o);$p->loadHtml(barMenuHtml(['offer'=>['title'=>'LOCALHOST TEST NEPLATIT','subtitle'=>'Technický test 45 položek','layout'=>'photos'],'products'=>$products],true),'UTF-8');$p->setPaper('A4');$p->render();file_put_contents(__DIR__.'/bar-menu-synthetic.pdf',$p->output());echo 'PDF pages: '.$p->getCanvas()->get_page_count().PHP_EOL;
