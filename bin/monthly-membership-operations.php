@@ -59,6 +59,7 @@ try {
                 $job = null;
                 return $result;
             } catch (Throwable $error) {
+                error_log('membership-scheduler worker: ' . $error->getMessage());
                 if ($job !== null) {
                     operationalJobFinish($pdo, $job, false, 'worker_exception');
                 }

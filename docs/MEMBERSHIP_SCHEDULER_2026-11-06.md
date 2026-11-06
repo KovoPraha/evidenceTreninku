@@ -30,3 +30,10 @@ dokumentace: 10/61 PASS. Přidán unixový test symlinků a MariaDB ověření o
 souběhu a uvolnění zámku po výjimce; místní MariaDB neběží, důkaz musí dodat CI.
 Nasazení a skutečný přirozený tick zatím NOT RUN. Plný test a statické kontroly
 probíhají. Viz [handoff](HANDOFF_CURRENT.md) a [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md).
+
+[PR #341](https://github.com/KovoPraha/evidenceTreninku/pull/341). Kontrola
+produkční identity je samostatná testovaná funkce, stejně jako u Fio: PHPStan
+jinak odvozuje URL z místního bootstrapu. Cílená analýza všech tří změněných
+runtime souborů PASS; plán/identita 10 testů / 55 assertions, 1 Windows skip
+unixových symlinků. Celý místní Composer test i analýza překročily jeho výchozí
+300s limit; nenahrazují úplný Linux CI důkaz. Obě MariaDB matice jsou povinné.

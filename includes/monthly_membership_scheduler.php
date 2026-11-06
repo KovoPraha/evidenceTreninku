@@ -89,7 +89,7 @@ function membershipSchedulerStatus(array $paths, ?int $success, ?int $now = null
         && hash_equals(hash('sha256', membershipSchedulerSource($paths)), (string)hash_file('sha256', $paths['cron']));
     $state = membershipSchedulerRead($paths);
     $tick = (int)($state['last_tick_at'] ?? 0);
-    return ['schedule_utc' => '05:23', 'poll_seconds' => 60,
+    return ['checked_at_utc' => gmdate(DATE_ATOM, $now), 'schedule_utc' => '05:23', 'poll_seconds' => 60,
         'installed_expected_source' => $installed, 'last_success_utc' => $success === null ? null : gmdate(DATE_ATOM, $success),
         'recent_hosting_tick' => $installed && $tick > 0 && $tick <= $now && $now - $tick <= 180,
         'daily_due' => membershipSchedulerDue([], $now, $success),
