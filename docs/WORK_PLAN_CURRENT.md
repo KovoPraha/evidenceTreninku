@@ -172,3 +172,12 @@ zůstávají odložené vlastníkem; tato textová oprava je neuzavírá.
 Aktuální zadání: [hostingový plán](MEMBERSHIP_SCHEDULER_2026-11-06.md).
 P05/P07 se skutečnou platbou a export P06 nadále odložené; řeší se pouze
 spolehlivost již povoleného plánovače a její důkazy. Hotovo: #341 sloučené a nasazené, hosting instalovaný, přirozené tiky a zachování konfigurace PASS; [výsledek](verification/membership-scheduler-20261106/RESULTS.md). Budoucí ranní běh nepřehrávat kvůli testu.
+
+
+### Naplánovaný audit prvního rána
+
+[Ranní audit 7. 11.](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md),
+06:30 CET / 05:30 UTC, aktivní jednorázová navazující úloha
+`rann-audit-lenstv-7-11`. Pověření: ověřit skutečný start vůči 05:23 UTC a
+zapsat výsledek přímo do dokumentace/handoffu. Výsledek zatím NOT RUN;
+žádný nový apply, konfigurace, skutečné P05/P07 ani export P06.

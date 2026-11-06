@@ -4,7 +4,17 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Nejnovější session: autorizované vydání členských popisků #340
+## Navazující úloha: ranní kontrola členství 7. 11.
+
+Vlastník požádal po ranním běhu ověřit skutečný čas a uložit výsledek přímo do
+souborů. [Jednorázový audit](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md)
+je aktivní na **7. 11. v 06:30 CET / 05:30 UTC**, navazující úloha
+`rann-audit-lenstv-7-11` v tomto chatu. [Session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md).
+Výsledek zatím NOT RUN; v auditovaném běhu číst skutečný denní pokus a
+úspěch, nikoli jen minutový heartbeat. Produkci kvůli přejímce nespouštět
+ručně. Skutečné P05/P07 a export P06 zůstávají odložené vlastníkem.
+
+## Předchozí relace: autorizované vydání členských popisků #340
 
 Vlastník zadal výslovné NASADIT pouze #340. Chráněný deploy 42236370197 SUCCESS,
 6. 11. v 15:46 CET; přesnou identitu vydání vede [CURRENT_STATE.md](CURRENT_STATE.md).

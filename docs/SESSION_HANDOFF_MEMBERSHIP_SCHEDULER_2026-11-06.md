@@ -29,3 +29,12 @@ předání `codex/membership-scheduler-release-20261106`, izolovaná kopie
 `C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106`.
 Původní `C:/xampp/htdocs/evidencePavel` a jeho WIP `kis_rosters_admin.php`
 zachované; žádný reset nebo úklid cizích kopií.
+
+## Navazující pověření vlastníka: ranní audit
+
+Aktivní jednorázová kontrola `rann-audit-lenstv-7-11` je naplánovaná na
+**7. 11. v 06:30 CET (05:30 UTC)**. [Přesný postup a kritéria](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md)
+vyžadují čtecí status a skutečný čas denního pokusu, nikoli pouze heartbeat.
+Výsledek zatím NOT RUN. Po kontrole uložit důkazy a aktualizovat související
+souborové předání; P05/P07 a export P06 nadále odložené. Místní počítač a
+aplikace musí pro toto naplánované vyvolání běžet.
