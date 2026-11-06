@@ -10,14 +10,20 @@ Původní `kis_rosters_admin.php` SHA256 při převzetí
 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
 
 **Implementace v pracovní kopii hotová:** stránka načítá jen vlastní metadata,
-stavový filtr pracuje po 200 kandidátech, výběr osob má hledání a stránkování.
+stavový filtr postupně zpracovává historii jedné osoby bez načtení celé sady
+do PHP paměti, výběr osob má hledání a stránkování.
 První místní profil dokončený (50 224 → 132 načtených řádků u 10k sledování),
 finální opakování po kontrole UI a přesné zdrojové identity ještě zbývá.
 Regrese **32 testů / 14 143 assertions PASS**, MariaDB 10.4 parita **36 kombinací
 filtrů/stránek PASS** proti původnímu algoritmu. Styl a PHPStan PASS.
 Skutečný místní browser otevřel stránku s navigací, našel osobu #10100 a zachoval
-ji po změně hledání mimo první stránku nabídek. Kontrola další stránky a
-finální měření ještě běží; CI zatím NOT RUN. Produkce se nemění.
+ji po změně hledání i na další stránce nabídek; původní formulář vrátil 303 na
+správný detail. Dodatečný profil stavu odhalil zpomalení první varianty
+s dávkami po 200 položkách (1045 ms vs původních 366 ms při 10k sledováních).
+Ta byla nahrazena jedním nebufferovaným čtecím průchodem, zachovávajícím
+kanonický výpočet a původní nastavení PDO. Parita 36 případů znovu PASS.
+Finální opakování nového průchodu ještě zbývá; CI zatím NOT RUN.
+Produkce se nemění.
 [Výchozí měření a přesná metoda](../synthetic-performance-20261106/RESULTS.md),
 [registr práce](../../WORK_PLAN_CURRENT.md).
 
@@ -26,9 +32,10 @@ finální měření ještě běží; CI zatím NOT RUN. Produkce se nemění.
 1. Bez stavového filtru nejprve počítat celkový počet a vybrat stránku 25
    sledování, potom načíst pouze jejich stavová metadata. Zachovat pořadí,
    vyhledávání, datum, osobu, počty, prázdný výsledek i ořez příliš vysoké stránky.
-2. Stavový filtr dál používat stejný kanonický PHP výpočet, včetně řetězců
-   nahrazení a odvolání. Kandidáty zpracovávat po omezených dávkách; zachovat
-   úplný počet a správnou poslední stránku bez držení celého výsledku v paměti.
+2. Stavový filtr dál používá stejný kanonický PHP výpočet, včetně řetězců
+   nahrazení a odvolání. Jedním čtecím průchodem drží historii právě jednoho
+   sledování, požadovanou a poslední stránku; zachovává úplný počet a správný
+   ořez stránky. MySQL buffering se po dočtení obnoví i při výjimce.
 3. Výběr osoby omezit vyhledáváním a stránkováním; zachovat možnost vybrat
    libovolnou existující osobu včetně archivních i osobu z předaného kontextu.
    POST, ověřování dokumentů, oprávnění a soukromé stahování neměnit.

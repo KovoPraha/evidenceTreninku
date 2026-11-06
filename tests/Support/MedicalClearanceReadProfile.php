@@ -61,12 +61,15 @@ try {
     medicalClearanceList($pdo, []);
     $report['page_read'] = $pdo->profile;
     $pdo->profile = [];
+    $bufferedBefore = $pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY);
     medicalClearanceList($pdo, ['medical_state' => 'valid']);
+    if ($pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY) !== $bufferedBefore) {
+        throw new RuntimeException('PDO buffering state not restored.');
+    }
+    $report['buffering_restored'] = true;
     $report['state_read'] = $pdo->profile;
-    foreach ($report['state_read'] as $query) {
-        if ($query['fetched_rows'] > (str_contains($query['sql'], 'medical_clearance_records') ? 600 : 200)) {
-            throw new RuntimeException('Candidate batch exceeded its fixture budget.');
-        }
+    if (count($report['state_read']) !== 1 || $report['state_read'][0]['fetched_rows'] > 431 * 3) {
+        throw new RuntimeException('State filter did not use one streamed metadata query.');
     }
     $report['read_only_session'] = true;
     $report['complete'] = true;

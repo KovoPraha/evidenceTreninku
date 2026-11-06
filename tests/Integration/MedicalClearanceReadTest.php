@@ -38,7 +38,7 @@ final class MedicalClearanceReadTest extends TestCase
         self::assertSame($changes, $pdo->query('SELECT total_changes()')->fetchColumn());
     }
 
-    public function testPageReadsOnlyItsRecordsAndStateScanUsesBoundedCandidateBatches(): void
+    public function testPageReadsOnlyItsRecordsAndStateScanStreamsHistories(): void
     {
         $pdo = $this->database();
         $pdo->profiling = true;
@@ -49,9 +49,10 @@ final class MedicalClearanceReadTest extends TestCase
         self::assertLessThanOrEqual(75, $pdo->profile[2]['fetched_rows']);
         $pdo->profile = [];
         medicalClearanceList($pdo, ['medical_state' => 'valid']);
+        self::assertCount(1, $pdo->profile);
         foreach ($pdo->profile as $query) {
             self::assertStringStartsWith('SELECT', $query['sql']);
-            self::assertLessThanOrEqual(str_contains($query['sql'], 'medical_clearance_records') ? 600 : 200, $query['fetched_rows']);
+            self::assertLessThanOrEqual(431 * 3, $query['fetched_rows']);
         }
     }
 

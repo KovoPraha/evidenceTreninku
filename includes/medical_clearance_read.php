@@ -26,35 +26,74 @@ function medicalClearanceListStatuses(PDO $pdo, array $rows, string $on): array
     return $rows;
 }
 
-/** Filtered totals remain exact; only one candidate batch and two result pages are retained. */
+/** Stream one watch's complete history at a time; retain only the requested and last result page. */
 function medicalClearanceStatePage(PDO $pdo, string $base, array $params, array $filters, string $on): array
 {
     $total = 0;
     $requested = [];
     $lastPage = [];
     $offset = ($filters['page'] - 1) * 25;
-    $cursor = null;
-    do {
-        $after = $cursor === null ? '' : ' AND (w.next_review_on>? OR (w.next_review_on=? AND w.id>?))';
-        $q = $pdo->prepare('SELECT w.*,s.jmeno,s.prijmeni ' . $base . $after . ' ORDER BY w.next_review_on,w.id LIMIT 200');
-        $q->execute($cursor === null ? $params : [...$params, $cursor['next_review_on'], $cursor['next_review_on'], $cursor['id']]);
-        $rows = $q->fetchAll(PDO::FETCH_ASSOC);
-        $batchCount = count($rows);
-        $cursor = $rows === [] ? null : $rows[array_key_last($rows)];
-        foreach (medicalClearanceListStatuses($pdo, $rows, $on) as $row) {
-            if ($row['evaluated_status']['status'] !== $filters['state']) {
-                continue;
-            }
-            if ($total % 25 === 0) {
-                $lastPage = [];
-            }
-            $lastPage[] = $row;
-            if ($total >= $offset && $total < $offset + 25) {
-                $requested[] = $row;
-            }
-            $total++;
+    $consume = static function (array $watch, array $records) use (&$total, &$requested, &$lastPage, $offset, $filters, $on): void {
+        $watch['evaluated_status'] = medicalClearanceStatusFromRecords($records, $on);
+        if ($watch['evaluated_status']['status'] !== $filters['state']) {
+            return;
         }
-    } while ($batchCount === 200);
+        if ($total % 25 === 0) {
+            $lastPage = [];
+        }
+        $lastPage[] = $watch;
+        if ($total >= $offset && $total < $offset + 25) {
+            $requested[] = $watch;
+        }
+        $total++;
+    };
+    $columns = ['id', 'state', 'issued_on', 'valid_until', 'replaces_id'];
+    $select = implode(',', array_map(static fn (string $column): string => 'r.' . $column . ' AS medical_record_' . $column, $columns));
+    $joined = str_replace(' WHERE ', ' LEFT JOIN medical_clearance_records r ON r.watch_id=w.id WHERE ', $base);
+    $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+    $buffered = $mysql ? $pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY) : null;
+    $q = null;
+    try {
+        if ($mysql) {
+            $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+        }
+        $q = $pdo->prepare('SELECT w.*,s.jmeno,s.prijmeni,' . $select . ' ' . $joined . ' ORDER BY w.next_review_on,w.id,r.id DESC');
+        $q->execute($params);
+        $watch = null;
+        $records = [];
+        while ($row = $q->fetch(PDO::FETCH_ASSOC)) {
+            if ($watch === null || $watch['id'] !== $row['id']) {
+                if ($watch !== null) {
+                    $consume($watch, $records);
+                }
+                $watch = $row;
+                foreach ($columns as $column) {
+                    unset($watch['medical_record_' . $column]);
+                }
+                $records = [];
+            }
+            if ($row['medical_record_id'] !== null) {
+                $record = [];
+                foreach ($columns as $column) {
+                    $record[$column] = $row['medical_record_' . $column];
+                }
+                $records[] = $record;
+            }
+        }
+        if ($watch !== null) {
+            $consume($watch, $records);
+        }
+    } finally {
+        try {
+            if ($q !== null) {
+                $q->closeCursor();
+            }
+        } finally {
+            if ($mysql) {
+                $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, $buffered);
+            }
+        }
+    }
     $pages = max(1, (int)ceil($total / 25));
     $page = min($filters['page'], $pages);
     return ['rows' => $page === $filters['page'] ? $requested : $lastPage,
