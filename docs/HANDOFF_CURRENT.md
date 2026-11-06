@@ -4,12 +4,33 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
+## Nejnovější návaznost: P12 a syntetické přejímací podklady bez produkčních změn
+
+Vlastník zadal pokračovat samostatně bez jeho podkladů a bez změn produkce.
+P12 technicky hotové: všech sedm textů, 20 scénářů a spojený podklad sjednocené
+proti revizi `3ff0fd13`, ověřené pevné zdroje a přenosový ZIP. R05/W11 nyní
+rozlišují zastupování trenérů od soukromých profilů a cizího přehledu odpovědí;
+členské popisky #340 i následný hostingový plán #341 zůstávají zohledněné.
+[Sjednocený balíček](testing/chatgpt-tester-20261105/README.md),
+[výsledky a meze](verification/offline-followup-20261106/RESULTS.md).
+Existující syntetické regrese 97 testů / 527 assertions PASS; nebylo provedeno
+nové produkční/mobilní/lidské UAT. P08/P09 zůstávají otevřené pro lidské převzetí.
+P12 potřebuje už jen konkrétní testerku, roli/prostředí a skutečné předání přístupů;
+žádná pozvánka, účet či oprávnění nebyly založené. Skutečné P05/P07, export P06
+a heslo/T07 jsou nadále odložené. Ranní kontrolu členství vede souběžná relace,
+neopakovat její běhy. P14 platí pro jmenované starší zálohy, nikoli novou zálohu #341.
+Větev `codex/autonomous-offline-followup-20261106`, vlastní kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-offline-followup-20261106`.
+Původní WIP zachované; žádný deploy ani jiné produkční workflow této relace.
+Současný release/flags určuje [CURRENT_STATE.md](CURRENT_STATE.md); starší
+oddíly níže jsou datovaná předání, nikoli tvrzení o posledním vydání.
+
 ## Navazující úloha: ranní kontrola členství 7. 11.
 
 Vlastník požádal po ranním běhu ověřit skutečný čas a uložit výsledek přímo do
 souborů. [Jednorázový audit](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md)
 je aktivní na **7. 11. v 06:30 CET / 05:30 UTC**, navazující úloha
-`rann-audit-lenstv-7-11` v tomto chatu. [Session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md).
+`rann-audit-lenstv-7-11` v souběžném chatu „Zkontrolovat stav vývoje a nasazení“. [Session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md).
 Výsledek zatím NOT RUN; v auditovaném běhu číst skutečný denní pokus a
 úspěch, nikoli jen minutový heartbeat. Produkci kvůli přejímce nespouštět
 ručně. Skutečné P05/P07 a export P06 zůstávají odložené vlastníkem.

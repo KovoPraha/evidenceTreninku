@@ -1,17 +1,18 @@
 KIS — scénáře vedeného testování
 
-Tento katalog určuje postup a očekávání. Žádný scénář tímto dokumentem není označen jako PROŠLO. Základ: main 65969bb8c7d27c71861758214abbc35edae61b3c, 5. 11. 2026. Kódy zdrojů S01–S13 jsou v mapě implementace.
+Tento katalog určuje postup a očekávání. Žádný scénář tímto dokumentem není označen jako PROŠLO. Aktualizace: zdrojová revize 3ff0fd13522ed19ec015cb63222464b8872a0b2b, 6. 11. 2026. Kódy zdrojů S01–S16 jsou v mapě implementace.
 R = bez odeslání změnového formuláře; přihlášení přiděleným účtem je možné. W = zapisuje a vyžaduje předem dohodnutý testovací rozsah. Nedostupná testovací data znamenají BLOKOVÁNO. Pro W použít oddělené testovací prostředí; případná produkční výjimka musí jmenovat scénář, data a povolené úkony.
 U každého výsledku zaznamenej roli, prostředí, datum, skutečný výsledek a důkaz. Přesné názvy tlačítek ověř na obrazovce. Schválené testovací identity a hesla nejsou součástí balíčku.
 
 PRVNÍ KRÁTKÝ BĚH
 Začni R01, R02, R03 a R06; přibližně 20–30 minut podle dostupnosti účtů. Zapisovací část plánovat samostatně. Výsledek mobilního testu zapisovat zvlášť.
 
-R01 Veřejná orientace [S01, S10]
+R01 Veřejná orientace a popisky členství [S01, S10, S14]
 Role: nepřihlášená návštěvnice. Data: zveřejněný produkt a alespoň jedna zveřejněná událost nebo trénink; nejsou-li, ověř pouze prázdný stav.
 1. Otevři hlavní stránku, E-shop, rozvrh tréninků, Akce a klubový kalendář, velodrom.
 2. Otevři detail veřejného produktu; vyzkoušej hledání a datum/filtr tam, kde se nabízí.
-3. Zapiš stránky, které nejdou otevřít, a zda se rozumí jejich účelu.
+3. U zveřejněného Závodního týmu pouze prohlédni katalog a detail: „členství v klubu“, „tarif“, „Detail členství“ a „Tarif a sjednání členství“. Cena podle doložené nabídky je 2200 Kč/měsíc. Neodesílej zájem ani sjednání.
+4. Zapiš stránky, které nejdou otevřít, a zda se rozumí jejich účelu.
 Očekávání: veřejné nabídky jsou čitelné bez přihlášení, chybějící nabídka má srozumitelný stav. Přihlášení pro další konkrétní úkon není samo chyba. Nic neobjednávat.
 
 R02 Přihlášení a hranice účtu [S02, S03]
@@ -34,12 +35,12 @@ Data: aktivní přístup TEST sportovce připravený Markem. Oddělené okno od 
 2. Ověř totožnost testovací osoby a její dostupné tréninky a přehledy.
 Očekávání: přístup odpovídá jedné přidělené osobě; není to rodičovská správa dalších osob. Bez připraveného přístupu BLOKOVÁNO.
 
-R05 Trenérský rozsah a plán [S05, S06]
-Data: trenér s platným rozsahem na TEST soupisku; známý vlastní plán a testovací osoba mimo rozsah.
-1. V trenérské části otevři plánovač a vlastní připravený plán.
-2. Zkontroluj soupisku a odpovědi účastníků.
-3. V běžném našeptávači zkus přesné jméno připravené testovací osoby mimo rozsah, bez volby a uložení.
-Očekávání: oprávněná data jsou dostupná, cizí testovací osoba mimo rozsah se nenabízí. Prázdné seznamy při nepřiděleném rozsahu jsou BLOKOVÁNO. Práva hlavního trenéra/správce mohou být širší; ověř přesný účet.
+R05 Trenérské zastupování a samostatná práva [S05, S06]
+Data: aktivní trenér, jeho vlastní připravený TEST plán, aktivní TEST soupiska bez jeho přiřazení a předem určená syntetická osoba bez oprávnění k soukromému profilu.
+1. Otevři vlastní plán a jeho přehled odpovědí. Chybějící připravený plán znamená BLOKOVÁNO pro tuto část.
+2. V novém formuláři plánu pouze zobraz výběr soupisek. Vlastní přiřazení může být nahoře; nepřiřazená aktivní soupiska se má také nabízet pro zastupování. Formulář neukládej.
+3. V základním výběru účastníků může být dostupná i jiná TEST osoba. To samo není únik soukromého profilu. Soukromý profil zkoušej pouze předem připraveným odkazem a se známým očekáváním přístupu; žádné cizí skutečné osoby ani hádání URL.
+Očekávání: nepřiřazená soupiska nebo osoba nesmí blokovat běžný trénink jen kvůli přiřazení. Soukromá karta nadále vyžaduje vlastní oprávnění. Přehled odpovědí cizího plánu se tím automaticky neotevírá. Chybějící aktivní trenérská role je blokátor; chybějící přiřazení soupisek není obecný zákaz zastupování.
 
 R06 Mobilní použitelnost [S01–S05]
 Data: telefon nebo úzké okno, role z předchozího scénáře.
@@ -116,11 +117,11 @@ Data: testovací zaplacená objednávka, oprávněný pracovní účet a domluve
 Očekávání: storno není důkaz odeslání peněz; čekání na vratku a její dokončení se rozlišují. Uchovat kontext objednávky. Nemaž finanční historii kvůli úklidu.
 
 W11 Nový plán ze soupisek [S05, S06]
-Data: oprávněný trenér s TEST soupiskou, členové platní ke dni plánu; volný dohodnutý termín.
+Data: aktivní trenérská role, aktivní TEST soupiska (může být bez osobního přiřazení trenérovi), členové platní ke dni plánu; volný dohodnutý termín.
 1. Vytvoř plán se soupiskou, datem a názvem TEST; ověř očekávané účastníky.
 2. Ulož a znovu otevři; ověř vazby a očekávání.
 3. Pokud je povoleno kopírování týdne, zkopíruj do dohodnutého týdne a ověř vazbu kopií na soupisku.
-Očekávání: plán vychází z oprávněných soupisek a zařazení ke konkrétnímu datu. Případný interní plán bez účastníků se zadává výslovně; nevydává se za trénink se soupiskou. Rezervaci sportoviště nekonstruuj automaticky z existence plánu. Marek zajistí zrušení testovacích plánů.
+Očekávání: plán vychází z aktivních soupisek a zařazení ke konkrétnímu datu. Vlastní přiřazení není podmínka zastupování a neuděluje přístup k soukromému profilu. Případný interní plán bez účastníků se zadává výslovně; nevydává se za trénink se soupiskou. Rezervaci sportoviště nekonstruuj automaticky z existence plánu. Marek zajistí zrušení testovacích plánů.
 
 W12 Klubová akce [S10]
 Data: zveřejněná TEST akce, oprávněná osoba a dostupná kapacita; Marek určí, zda je zdarma nebo placená.
@@ -140,6 +141,10 @@ Data: rodičovský účet a TEST osoba s připraveným syntetickým stavem podkl
 1. Ve Sportovním přehledu najdi informaci o příslušném podkladu.
 2. Porovnej stav, období platnosti a další doporučený krok s očekáváním od Marka.
 Očekávání: stav rozlišuje platnost podle data; nepřítomnost záznamu není totéž co schválení. V tomto scénáři nic nenahrávat ani neotevírat citlivou přílohu. Pokud se dané sledování osoby netýká, BLOKOVÁNO nebo NETESTOVÁNO s důvodem.
+
+AKTUÁLNÍ OMEZENÍ A POKRYTÍ
+Skutečné sjednání členství/platba/PDF P05/P07 a nový export P06 jsou odložené vlastníkem. W07–W10 slouží jen jako návrhy oddělených syntetických zkoušek; nepovolují skutečnou platbu ani vratku. Heslo/T07 také odložené.
+Těchto 20 scénářů nepokrývá celou aplikaci. BAR první směna, účetní D12–D14 a kompletní přejímka pracovních upozornění mají vlastní protokoly; prohlédnutí nabídky nebo zvonečku je nenahrazuje.
 
 CO NEZAHRNOVAT DO VÝCHOZÍHO BĚHU
 Obnovu či změnu produkčního hesla, skutečné úhrady a vratky, změny oprávnění a pracovních pozic, reálné importy členů, dávkové převody a rozesílky. Localhost stránka testovaci_scenare.php není vzdálený testovací portál a produkčně se nemá zpřístupňovat [S13]. Tyto oblasti potřebují vlastní konkrétní scénář a podmínky.

@@ -1,0 +1,435 @@
+{
+  "source_sha": "3ff0fd13522ed19ec015cb63222464b8872a0b2b",
+  "checked": [
+    {
+      "file": "booking/eshop.php",
+      "line": null,
+      "sha256": "fde4f80476dc08d5368c7a4019919971c72b1b62c7c5919e0f8fda3e5373daaa"
+    },
+    {
+      "file": "booking/produkt.php",
+      "line": null,
+      "sha256": "f7ae8be867684da18652b31f35580c65ac43d7bd64736d7dabfc84e577c394bb"
+    },
+    {
+      "file": "booking/treninky.php",
+      "line": null,
+      "sha256": "0ceed2c62bce27ead1878866ff3659079b310c4cea00427588df02509c0b7081"
+    },
+    {
+      "file": "booking/velodrom.php",
+      "line": null,
+      "sha256": "6f6fd6aee596b59d5aa53b39fa95166e611f7afc9613f35c0059c902a6130e8c"
+    },
+    {
+      "file": "booking/prihlaseni.php",
+      "line": null,
+      "sha256": "3fa6f20dd986c404b77d388e9bbcdcccc90b8785ec91d1b2500ca88d3dfc5886"
+    },
+    {
+      "file": "includes/unified_account.php",
+      "line": 81,
+      "sha256": "e7492f728793cb2dcfe5e6d3fd2d348dbbc5d8d97222a8cc0cdf58b2b4dbbf5b"
+    },
+    {
+      "file": "booking/sportovec_prihlaseni.php",
+      "line": null,
+      "sha256": "c864a25a887e24e3c159d0682d6a7b8f945673a7e85404433d7c75d545841ea7"
+    },
+    {
+      "file": "includes/child_access.php",
+      "line": 301,
+      "sha256": "474c9f5873c25b35f2559774d7be996d0ed3ec16e1049658b9a2454c60dec8a5"
+    },
+    {
+      "file": "booking/muj_sport.php",
+      "line": null,
+      "sha256": "c2cfba89b78de5b090359913663dff788d54355c6be775c88dc6bd5be23b55e7"
+    },
+    {
+      "file": "tests/Integration/UnifiedAccountTest.php",
+      "line": null,
+      "sha256": "fa671c6a488e4f4c1f09a0f4ed44b9fa00904613cefc28b45e11c73b2e380a58"
+    },
+    {
+      "file": "tests/Integration/ChildAccessTest.php",
+      "line": null,
+      "sha256": "77396cb90136496f5a5494f4382d9a18e6bee4f58f66cbbdf05fb4ed0eff2219"
+    },
+    {
+      "file": "booking/moje_osoby.php",
+      "line": null,
+      "sha256": "8e191e2bfb68dc1c69113370cb3b16ae818580c67ba2368c2704cdabb08a5d89"
+    },
+    {
+      "file": "includes/account_person_claim.php",
+      "line": 14,
+      "sha256": "02e840f568f99c0ea03e969fe6350e08e606e6714d098165ce83319aae3d4cde"
+    },
+    {
+      "file": "includes/account_person_claim.php",
+      "line": 119,
+      "sha256": "02e840f568f99c0ea03e969fe6350e08e606e6714d098165ce83319aae3d4cde"
+    },
+    {
+      "file": "includes/family_portal.php",
+      "line": 58,
+      "sha256": "c2f3dfbf4c865d3704c01b3f2dbae57da936887d721d0a8b2db1a73e5e9eb243"
+    },
+    {
+      "file": "includes/family_portal.php",
+      "line": 130,
+      "sha256": "c2f3dfbf4c865d3704c01b3f2dbae57da936887d721d0a8b2db1a73e5e9eb243"
+    },
+    {
+      "file": "tests/Integration/AccountPersonClaimTest.php",
+      "line": null,
+      "sha256": "ce6cc59eb6af84d15538aa79ac07396acb670a03d6ac70e2a7a70304bfd4d62c"
+    },
+    {
+      "file": "booking/sportovni_prehled.php",
+      "line": null,
+      "sha256": "74e3d2960022392534898da28b9a62df1b51f4cb20fd516d09b60bd7ee8a8f74"
+    },
+    {
+      "file": "includes/training_rsvp.php",
+      "line": 50,
+      "sha256": "4d6cf080699b65fa721417468a3e92fb01543a3fdf1f2656bf04aab2109e2ecb"
+    },
+    {
+      "file": "includes/training_rsvp.php",
+      "line": 168,
+      "sha256": "4d6cf080699b65fa721417468a3e92fb01543a3fdf1f2656bf04aab2109e2ecb"
+    },
+    {
+      "file": "includes/training_rsvp.php",
+      "line": 285,
+      "sha256": "4d6cf080699b65fa721417468a3e92fb01543a3fdf1f2656bf04aab2109e2ecb"
+    },
+    {
+      "file": "tests/Integration/TrainingRsvpTest.php",
+      "line": null,
+      "sha256": "96474cd762d370dc3d2827d4dcf31e28c2a82db00c84971067acb1afad05f7dc"
+    },
+    {
+      "file": "training_rsvps_admin.php",
+      "line": null,
+      "sha256": "ee0bf58e4420962c7966519120198b8e262509a5ebdfaf7d043f8de9911b1dfa"
+    },
+    {
+      "file": "includes/coach_scope.php",
+      "line": 52,
+      "sha256": "055ae137254ffa0f4f171600e14f8e632e29715e6d2399f08c593c1d19cc1940"
+    },
+    {
+      "file": "includes/coach_scope.php",
+      "line": 132,
+      "sha256": "055ae137254ffa0f4f171600e14f8e632e29715e6d2399f08c593c1d19cc1940"
+    },
+    {
+      "file": "planovac.php",
+      "line": null,
+      "sha256": "e5ee63516fa909635b96f593761e4a0d7c6e4d0029b502948537e91e74d9101a"
+    },
+    {
+      "file": "tests/Integration/CoachScopeTest.php",
+      "line": null,
+      "sha256": "4724451f18890e622db8815fcbddcf928e7bbfedb625cafd3b96d5b77a0fc3bb"
+    },
+    {
+      "file": "includes/coach_training_access.php",
+      "line": 43,
+      "sha256": "0d6e6e5a532804a5c37f05b304f28c8b34daa4783287d2dad2c1a11ecebe48ae"
+    },
+    {
+      "file": "includes/coach_training_access.php",
+      "line": 75,
+      "sha256": "0d6e6e5a532804a5c37f05b304f28c8b34daa4783287d2dad2c1a11ecebe48ae"
+    },
+    {
+      "file": "tests/Integration/CoachTrainingAccessTest.php",
+      "line": null,
+      "sha256": "7e7de5c86fa1473f366ae90cdee5e9eb2cbfa92185c261fd7073105a70dceec1"
+    },
+    {
+      "file": "planovany_trenink_form.php",
+      "line": null,
+      "sha256": "75ed3b9d14f41d1ad6ef2873cca408351a627d436f33c16728390b37878fa93a"
+    },
+    {
+      "file": "formular.php",
+      "line": null,
+      "sha256": "6b20b591c8244653f390e71b8eac1eb854363edf4a22179be543f7d6649b35a9"
+    },
+    {
+      "file": "includes/training_roster_bridge.php",
+      "line": 121,
+      "sha256": "f156a1611751f4f028b4c106ab2bb9451e1a158166c0892f52f5ddf497d62ecc"
+    },
+    {
+      "file": "includes/training_roster_bridge.php",
+      "line": 151,
+      "sha256": "f156a1611751f4f028b4c106ab2bb9451e1a158166c0892f52f5ddf497d62ecc"
+    },
+    {
+      "file": "includes/training_roster_bridge.php",
+      "line": 224,
+      "sha256": "f156a1611751f4f028b4c106ab2bb9451e1a158166c0892f52f5ddf497d62ecc"
+    },
+    {
+      "file": "tests/Integration/TrainingRosterBridgeTest.php",
+      "line": null,
+      "sha256": "70e0167baf7c10edaf244b6c8deb429a721b6574b601bce9bc53ed595629bc12"
+    },
+    {
+      "file": "booking/nahrady.php",
+      "line": null,
+      "sha256": "83e48cc3e34b46ea10653bafb710719e5e9da3c5545205f826e56ec5ee356cc2"
+    },
+    {
+      "file": "includes/club_makeup.php",
+      "line": 364,
+      "sha256": "7432f12750df47f952d3e99e3d3fa03120d20625580141819ed8c654d188ad13"
+    },
+    {
+      "file": "includes/club_makeup.php",
+      "line": 395,
+      "sha256": "7432f12750df47f952d3e99e3d3fa03120d20625580141819ed8c654d188ad13"
+    },
+    {
+      "file": "includes/club_makeup.php",
+      "line": 470,
+      "sha256": "7432f12750df47f952d3e99e3d3fa03120d20625580141819ed8c654d188ad13"
+    },
+    {
+      "file": "club_makeup_policies_admin.php",
+      "line": null,
+      "sha256": "f93c6c22b8c3e6d5cf9708a0ebc091ccdca5423ab04cb0b8fe62b28c9d4d0ccd"
+    },
+    {
+      "file": "tests/Integration/ClubMakeupTest.php",
+      "line": null,
+      "sha256": "8c5767954a581084c12af08f4ea27681b0c9221d17661e292f92f9788505ac5b"
+    },
+    {
+      "file": "tests/Support/MakeupJourneyHttpAcceptance.php",
+      "line": null,
+      "sha256": "f93998348a0eadd11af356eed2d4a83dec56b75965b4025fa91b6798f8a63bf3"
+    },
+    {
+      "file": "booking/objednavka.php",
+      "line": null,
+      "sha256": "097c1f5ad8629b41d833f93f3b61e65adf18aa409243669a77d5684e95046f26"
+    },
+    {
+      "file": "booking/moje_objednavky.php",
+      "line": null,
+      "sha256": "8da9a5d362a1dba04fd5c6d80c6bb983517e568bc1c3c830f834c5106d59235b"
+    },
+    {
+      "file": "includes/shop_checkout.php",
+      "line": 1407,
+      "sha256": "8ea1dc5fb5695da9fa211958526622a76ae70f7b93836cbce38b5f9be5aa4dc9"
+    },
+    {
+      "file": "includes/shop_checkout.php",
+      "line": 1556,
+      "sha256": "8ea1dc5fb5695da9fa211958526622a76ae70f7b93836cbce38b5f9be5aa4dc9"
+    },
+    {
+      "file": "includes/shop_checkout.php",
+      "line": 1723,
+      "sha256": "8ea1dc5fb5695da9fa211958526622a76ae70f7b93836cbce38b5f9be5aa4dc9"
+    },
+    {
+      "file": "tests/Integration/ShopCheckoutTest.php",
+      "line": null,
+      "sha256": "10dbe062dcf6c7bcb718b525704693097d5b8adb624b2b698d475a391d890c3f"
+    },
+    {
+      "file": "includes/shop_payment_policy.php",
+      "line": 76,
+      "sha256": "0ed229fcfb1440e0bf33671d93008a339318f4f5fb994f776972bc060b053bd8"
+    },
+    {
+      "file": "includes/shop_payment_policy.php",
+      "line": 89,
+      "sha256": "0ed229fcfb1440e0bf33671d93008a339318f4f5fb994f776972bc060b053bd8"
+    },
+    {
+      "file": "booking/objednavka.php",
+      "line": null,
+      "sha256": "097c1f5ad8629b41d833f93f3b61e65adf18aa409243669a77d5684e95046f26"
+    },
+    {
+      "file": "tests/Integration/ShopPaymentPolicyTest.php",
+      "line": null,
+      "sha256": "d136dd4a9ab1d70f9838a8879003d8a51b001dbd0c0b78e9a8731d14428d616b"
+    },
+    {
+      "file": "docs/verification/live-payments-20261105/ACTIVATION.md",
+      "line": null,
+      "sha256": "1ca4a1a4c21788b23ec4714f6a230f34e8fe5ad673ff66c043a7f0b36c6869bb"
+    },
+    {
+      "file": "booking/klubovy_kalendar.php",
+      "line": null,
+      "sha256": "151bc03bf557d6107ab6aed2ac5bed80bc9d9d8b1be3a8142519fe9dad827405"
+    },
+    {
+      "file": "booking/krouzky.php",
+      "line": null,
+      "sha256": "6af9b57660a4fa86659f4618385bf7169046e24238b8cda40e2ba6240aae9038"
+    },
+    {
+      "file": "booking/moje_programy.php",
+      "line": null,
+      "sha256": "a16a26fd7827a7bd3b1befdf5d9841274548eab52e13d5c91a5e3b7d8d6267aa"
+    },
+    {
+      "file": "includes/club_event_shop.php",
+      "line": null,
+      "sha256": "294e8b808bfcb617b2ef77115cd910831242838774c633f0d9a17fb8e22fc269"
+    },
+    {
+      "file": "docs/shop-program-payment-verification.md",
+      "line": null,
+      "sha256": "781e6ba78a0ca930ac0aee16903803ea620671bbb480f00882ba774edbd9d974"
+    },
+    {
+      "file": "kis_roster_hierarchy_admin.php",
+      "line": null,
+      "sha256": "67e2cecaa0cfdca0efd4f012b36909cb04f666abc5d96b8421aff8f514eab0d3"
+    },
+    {
+      "file": "kis_current_rosters_admin.php",
+      "line": null,
+      "sha256": "a59bf6ff146139ebbce43353b31029903b36e675af98c603760243d561ebb1f1"
+    },
+    {
+      "file": "includes/member_evidence_groups.php",
+      "line": 6,
+      "sha256": "b4413c999385523113bca0b50c46ae108fb9ba02b546530e1f982b4207093496"
+    },
+    {
+      "file": "docs/MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md",
+      "line": null,
+      "sha256": "e7fde836cd8d70eb48d27136c225c25d185a143a8846a76e511a62bab1a6cc99"
+    },
+    {
+      "file": "docs/MEMBER_EVIDENCE_OPERATION_2026-11-02.md",
+      "line": null,
+      "sha256": "5974ce9b537d2d7492757fd202a31b463a823522979b28a1f5e04c58119db469"
+    },
+    {
+      "file": "tests/Integration/MemberEvidenceCutoverTest.php",
+      "line": null,
+      "sha256": "ca9ae29d14226f53659fd4727133862f56a9db6623a0da8d33c17387734a8e16"
+    },
+    {
+      "file": "booking/sportovni_prehled.php",
+      "line": null,
+      "sha256": "74e3d2960022392534898da28b9a62df1b51f4cb20fd516d09b60bd7ee8a8f74"
+    },
+    {
+      "file": "includes/medical_clearance.php",
+      "line": 138,
+      "sha256": "2c1a307f0dc9d566e57fcbbbb183dc525080f57aa4b334936b6728267425dd6d"
+    },
+    {
+      "file": "includes/medical_clearance.php",
+      "line": 101,
+      "sha256": "2c1a307f0dc9d566e57fcbbbb183dc525080f57aa4b334936b6728267425dd6d"
+    },
+    {
+      "file": "tests/Integration/MedicalClearanceTest.php",
+      "line": null,
+      "sha256": "c4a58ed75078489caa85e60e11c0e5cf62f44c66a40bf4239147a1137ae19d80"
+    },
+    {
+      "file": "testovaci_scenare.php",
+      "line": null,
+      "sha256": "079b0c080d389df8749e60477aea1af5746d390f39aa30f43f6e44c7d6a47818"
+    },
+    {
+      "file": "includes/localhost_acceptance_hub.php",
+      "line": 44,
+      "sha256": "a8e056bbe6ca7b98db12a1cec812623e12bdf8ce4271a3d8c85c2c4d5a737732"
+    },
+    {
+      "file": "docs/localhost-acceptance-hub.md",
+      "line": null,
+      "sha256": "1f5c38d94fbc728a744a06cebbeeeb5dcde79383e3a11a81a92e5907f2895734"
+    },
+    {
+      "file": "booking/mesicni_clenstvi.php",
+      "line": null,
+      "sha256": "245a4f9785a11eafaa1bc45972f7bff9508a85e642fb7fedd895d7e683311279"
+    },
+    {
+      "file": "includes/monthly_membership_catalog.php",
+      "line": null,
+      "sha256": "ffa8c5b5e64db61aaf68d36407ea806da691db2a900f89cfc75bb99fa8877382"
+    },
+    {
+      "file": "includes/monthly_membership.php",
+      "line": null,
+      "sha256": "ef8efe8e9c90dff1badc0c108a6c69f780158fd859d477e8c119a13478576813"
+    },
+    {
+      "file": "includes/monthly_membership_scheduler.php",
+      "line": null,
+      "sha256": "808845e619db78bf84982f5b632893452440f4c42d9ed3a7a449881fdef553ad"
+    },
+    {
+      "file": "tests/Integration/MonthlyMembershipTest.php",
+      "line": null,
+      "sha256": "951f8bba528cf9904427cf384f6d08a5268471dfa5d9cd13fc90db2623ebb3d5"
+    },
+    {
+      "file": "tests/Integration/MembershipCatalogTest.php",
+      "line": null,
+      "sha256": "d77de5a23b364426903546106f5fd88097e4f8494e3e28751cb9faec5604ddde"
+    },
+    {
+      "file": "docs/verification/membership-copy-release-20261106/RESULTS.md",
+      "line": null,
+      "sha256": "edc2e982767b148ad829a16c12c2c97c3431e55f27c8c3b462aa5c9ed742ee7f"
+    },
+    {
+      "file": "docs/verification/membership-scheduler-20261106/RESULTS.md",
+      "line": null,
+      "sha256": "545ab2192ac12ee59b8343dcbc0b8b92584260fe51df82c7c5228f45fc5945dd"
+    },
+    {
+      "file": "includes/staff_notifications.php",
+      "line": null,
+      "sha256": "46e5c5e0961adffcb8413c3eb22b5c2808e9a009d9ca46d6d738c6775ac1d87e"
+    },
+    {
+      "file": "tests/Integration/StaffNotificationsTest.php",
+      "line": null,
+      "sha256": "c484db0f1e70e555a200e11c89235790daae606b7ce63df6b6f38017fb23ffd1"
+    },
+    {
+      "file": "docs/STAFF_NOTIFICATIONS_2026-11-06.md",
+      "line": null,
+      "sha256": "809e9fe00f72ed1212c9f87c6fe57895baa094f91621e39a3de9faf92cdc1496"
+    },
+    {
+      "file": "docs/SESSION_HANDOFF_BAR_2026-11-06.md",
+      "line": null,
+      "sha256": "8cc1d2dcad7371af2cefd6cdfdfd67dfeee39ba4add769ae1967bf74e4ae1d37"
+    },
+    {
+      "file": "docs/verification/bar-acceptance-20261106/RESULTS.md",
+      "line": null,
+      "sha256": "7a8959f6a8dd1f83f3a57dc567184fcfb9baacf74b020451665148bc5a03251c"
+    },
+    {
+      "file": "docs/CURRENT_STATE.md",
+      "line": null,
+      "sha256": "a4ee43c1df2d0685b7a011050613dd5284b2613edc64febee1a06829bcfa5c38"
+    }
+  ]
+}

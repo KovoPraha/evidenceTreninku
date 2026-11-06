@@ -8,11 +8,12 @@ Scénář: R… / W… / jiný
 Datum a čas: … Europe/Prague
 Prostředí a adresa: … (bez tajných parametrů)
 Verze aplikace: … / NEZJIŠTĚNO
-Verze podkladů: 5. 11. 2026; zdrojový main 65969bb8c7d27c71861758214abbc35edae61b3c
+Verze podkladů: 6. 11. 2026; zdrojová revize 3ff0fd13522ed19ec015cb63222464b8872a0b2b
 Role a označení účtu: … (bez hesla a osobních údajů)
 Zařízení, systém, prohlížeč: …
 Předpoklady a data: např. TEST dítě A, schválené propojení, aktivní zařazení, datum tréninku, stav objednávky
 Povolený rozsah testu: pouze prohlížení / dohodnutý zápis …
+Odložené oblasti: skutečné P05/P07, export P06, heslo/T07; případnou novou výslovnou změnu zadání uvést přesně.
 
 Postup zopakování:
 1. Otevřít …

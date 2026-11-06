@@ -1,0 +1,108 @@
+{
+  "source_sha": "3ff0fd13522ed19ec015cb63222464b8872a0b2b",
+  "environment": "local PHP 8.2.12, SQLite in-memory fixtures, temporary private test files",
+  "tests": 97,
+  "assertions": 527,
+  "result": "PASS",
+  "suites": [
+    {
+      "name": "CoachTrainingAccessTest",
+      "tests": "4",
+      "assertions": "14",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.028388"
+    },
+    {
+      "name": "CoachScopeTest",
+      "tests": "12",
+      "assertions": "53",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.070932"
+    },
+    {
+      "name": "Tests\\Integration\\TrainingRsvpTest",
+      "tests": "8",
+      "assertions": "49",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.137486"
+    },
+    {
+      "name": "Tests\\Integration\\ClubMakeupTest",
+      "tests": "14",
+      "assertions": "90",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.323423"
+    },
+    {
+      "name": "Tests\\Integration\\TrainingRosterBridgeTest",
+      "tests": "8",
+      "assertions": "34",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.149351"
+    },
+    {
+      "name": "Tests\\Integration\\AccountPersonClaimTest",
+      "tests": "8",
+      "assertions": "76",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.295172"
+    },
+    {
+      "name": "Tests\\Integration\\MonthlyMembershipTest",
+      "tests": "18",
+      "assertions": "86",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "4.309090"
+    },
+    {
+      "name": "Tests\\Integration\\MembershipCatalogTest",
+      "tests": "7",
+      "assertions": "34",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.618522"
+    },
+    {
+      "name": "Tests\\Integration\\StaffNotificationsTest",
+      "tests": "10",
+      "assertions": "66",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.312161"
+    },
+    {
+      "name": "Tests\\Unit\\TrainingClosureSourceFormTest",
+      "tests": "6",
+      "assertions": "11",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.005884"
+    },
+    {
+      "name": "Tests\\Unit\\CurrentDocumentationContractTest",
+      "tests": "2",
+      "assertions": "14",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "0.810323"
+    }
+  ]
+}
