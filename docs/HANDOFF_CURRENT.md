@@ -4,6 +4,24 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
+## Povinné průběžné předání
+
+Vlastník 6. 11. výslovně požaduje zapisovat rozpracovanou i plánovanou práci
+přímo do verzovaných souborů, nikoli ponechat její jediný záznam v chatu.
+Před prací číst a během práce aktualizovat [WORK_REGISTER](WORK_REGISTER.md):
+ID, stav, další krok, závislosti, větev/worktree a odkazy na tematický plán/důkazy.
+Release a flags nadále určuje pouze CURRENT_STATE; plán nenahrazuje provozní souhlas.
+Před ukončením session aktualizovat související soubory a uvést stav PR/merge/deploy.
+Starší [session handoff](plan-eshop-tymova-evidence/SESSION_HANDOFF.md) je historická
+kompatibilní cesta s odkazem sem, nikoli zdroj dnešního SHA nebo přepínačů.
+
+[Provozní inventura z 6. 11.](verification/operations-inventory-20261106/RESULTS.md)
+opravuje mezitím zastaralý přehled: #330 už je sloučený a nasazený,
+minutový worker běží a fronta má doložené přijetí zpráv transportem.
+P01 v registru vede oddělené přihlášené UAT/doručení; nevydávat sent za schránku.
+P02–P11 vedou BAR, členství, poslední synchronizaci, platby, přejímku a lokální WIP.
+
+
 Omluvenky a náhrady nepovažovat za čekající nasazení podle existence starých větví.
 Aktuální stav a [kontrola z 6. 11.](verification/makeup-audit-20261106/RESULTS.md)
 dokládají již nasazenou funkčnost: 22 testů / 139 assertions, 23 HTTP scénářů

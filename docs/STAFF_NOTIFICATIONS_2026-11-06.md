@@ -49,3 +49,14 @@ Vlastník následně výslovně schválil sloučení, nasazení, pravidelné zpr
 Postup: dokončit CI po připojení aktuálního main, sloučit #330, spustit chráněné `deploy-production.yml`, poté `staff-notifications-production.yml` nejprve `status`, následně `install` a nezávislé `status` po skutečném minutovém běhu. Instalace je idempotentní, cizí soubor odmítne přepsat, pracovní zámek brání souběhu, pouze hostingový běh zapisuje heartbeat. Samotný status nic neposílá ani nevyrábí důkaz běhu. Výsledky fronty se zapisují také do provozního dohledu pod `staff_notifications`.
 
 Přejímka: použít existující čekající žádosti, porovnat počet událostí, osobních upozornění a přijatých e-mailů před/po běhu, zkontrolovat další běh bez duplikace a skutečnou produkční hlavičku i odkaz do žádosti. Zdrojové žádosti neschvalovat pouze kvůli testu. Doručení do schránky odlišovat od přijetí poštovním transportem.
+
+## Navazující doložený stav 6. 11. 2026
+
+PR #330 je sloučený a [nasazení 42172409868](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42172409868)
+SUCCESS. [Samostatný status](verification/operations-inventory-20261106/staff-status.json)
+dokládá skutečný minutový běh a 18 zpráv ve stavu sent bez čekajících/chybných.
+Předchozí seznam „při následném nasazení“ je postup, nikoli tvrzení o dnešním
+nenasazení. [Provozní inventura](verification/operations-inventory-20261106/RESULTS.md)
+uvádí meze tohoto důkazu. Další kroky vede P01 v [registru práce](WORK_REGISTER.md),
+živý release vždy CURRENT_STATE. Samostatné potvrzení cílové schránky a
+přihlášeného produkčního průchodu nelze nahradit zeleným workflow.

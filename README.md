@@ -17,7 +17,9 @@ Pro řízené testování na živé aplikaci použijte
 Aktuální SHA, poslední CI a produkční důkaz jsou vždy v
 [aktuálním stavu projektu](docs/CURRENT_STATE.md). Pro další počítač používejte
 stabilní [aktuální předání vývoje](docs/HANDOFF_CURRENT.md); datované handoffy
-jsou už jen historické snapshoty.
+jsou už jen historické snapshoty. Rozpracovanou i plánovanou práci
+vede verzovaný [registr práce](docs/WORK_REGISTER.md); každý krok má odkaz na
+související plán, další závislost a výsledky ověření.
 
 Veřejný produktový detail rozlišuje běžné zboží a nabídky navázané na
 sportovce. Zboží lze objednat rychlým nákupem bez účtu; kroužky, členství a

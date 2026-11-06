@@ -1,6 +1,6 @@
 # Dokumentace EvidencePavel / KIS
 
-Aktualizováno: 5. 11. 2026, Europe/Prague
+Aktualizováno: 6. 11. 2026, Europe/Prague
 
 Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
 webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
@@ -10,11 +10,15 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 | Dokument | Účel |
 |---|---|
+| [Registr rozpracované a plánované práce](WORK_REGISTER.md) | Průběžné položky P01–P11, další kroky, závislosti a odkazy na plány a důkazy |
+| [Provozní inventura 6. 11.](verification/operations-inventory-20261106/RESULTS.md) | Stav větví, mezitím nasazené #330 a doložený běh upozornění |
+| [Pracovní upozornění](STAFF_NOTIFICATIONS_2026-11-06.md) | Zvoneček, osobní přehled, e-maily, provozní worker a hranice doručení; stav v CURRENT_STATE |
+| [Omluvenky a náhrady – ověření](verification/makeup-audit-20261106/RESULTS.md) | Již nasazené, 22 testů / 139 assertions, 23 HTTP scénářů a syntetický browser PASS |
 | [TV programy](TV-PROGRAMY.md) | Obsluha TV, editor obrázků a textů, veřejné adresy a zveřejňování carouselů |
-| [Začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md) | Schválený rozsah, role, katalog, etapy a stav implementace bez produkčního nasazení |
+| [Začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md) | Nasazený modul, role, převod katalogu/domény a zbývající provozní přejímka |
 | [Měsíční členství přes e-shop](MONTHLY_MEMBERSHIP_RUNBOOK.md) | Nový tok, platby, doklady, upomínky, samostatná aktivace a hranice ověření; [plán](MONTHLY_MEMBERSHIP_PLAN.md) |
 | [Tréninky a zastupování bez povinné soupisky](COACH_TRAINING_ACCESS_2026-11-05.md) | Vlastní cíle první, ostatní dostupné; nové pravidlo, přiřazení a hranice ověření |
-| [Pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | Aplikační E1–E5 sloučeny, čtecí inventura a technický nácvik E6 prošly; konkrétní cleanup a E7/E8 otevřené |
+| [Pracovní plán evidence členů bez sezon](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | Aplikace nasazená a převod provedený; poslední sync, přihlášené UAT a E8 otevřené |
 | [Aktuální stav](CURRENT_STATE.md) | Poslední ověřené SHA, CI, deploy, funkční rozsah a provozní hranice |
 | [Aktuální předání](HANDOFF_CURRENT.md) | Bezpečné převzetí práce na jiné stanici a synchronizace s GitHubem |
 | [Hostingový Fio plán a 45 pohybů](verification/fio-followup-20261105/RESULTS.md) | Skutečné automatické importy, heartbeat a úplné čtecí posouzení čekajících pohybů |
@@ -29,8 +33,8 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Checklist pro trenéry](TRAINER_UAT_CHECKLIST_2026-11-01.md) | Krátký text připravený k přeposlání účastníkům |
 | [Browser UAT pro jiné vlákno](TRAINER_UAT_BROWSER_2026-11-01.md) | Stejné scénáře, přesný rozsah automatizace, důkazy a asistované kroky s heslem |
 | [Komplexní plán refaktoringu celé aplikace](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) | Aktuální dispozice W6–W15, přijaté změny a důvody nepřijatých kandidátů |
-| [Závěrečná technická přejímka refaktoringu](REFACTORING_CLOSURE_2026-10-30.md) | W6–W15 sloučeno a CI PASS; finální nasazení blokuje DB disk full, živé vydání v CURRENT_STATE |
-| [Finální CI a provozní incident](verification/refactoring-final-release-20261030/RESULTS.md) | Záloha odmítla nasazení před migrací/aktivací, aktuální HTTP dopad a podklady pro hosting |
+| [Závěrečná technická přejímka refaktoringu](REFACTORING_CLOSURE_2026-10-30.md) | W6–W15 sloučeno, nasazeno a technicky ověřeno; lidská přejímka a další kandidáti oddělené |
+| [Finální CI a provozní incident](verification/refactoring-final-release-20261030/RESULTS.md) | Historický incident DB kapacity; vyřešené obnovením prostoru a navazujícím nasazením, viz uzavření refaktoringu |
 | [Registr hlavních cest K0.1](REFACTORING_ROUTE_REGISTER_2026-10-29.md) | 16 kritických cest: oprávnění, služby, hlavní tabulky, vedlejší účinky, testy a otevřená měření |
 | [W6.2 — výpočet kapacity](REFACTORING_WAVE6_2026-10-29.md) | Dokončená čistá extrakce, přímé porovnání s původním kódem a ověřené produkční vydání |
 | [W6.3 — paměť kapacity](REFACTORING_W63_2026-10-29.md) | Nasazené postupné vyhodnocení řádků, migrovaný profil a paměťový rozpočet |
@@ -55,7 +59,7 @@ testy, potom `CURRENT_STATE.md` a `HANDOFF_CURRENT.md`.
 
 | Oblast | Dokumenty |
 |---|---|
-| Klubové programy a kroužky | [club-programs.md](club-programs.md), [training-roster-bridge.md](training-roster-bridge.md), [kis-roster-policies.md](kis-roster-policies.md), [účast na tréninku a návrh náhrad](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md) |
+| Klubové programy a kroužky | [club-programs.md](club-programs.md), [training-roster-bridge.md](training-roster-bridge.md), [kis-roster-policies.md](kis-roster-policies.md), [účast na tréninku a pravidla náhrad](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md) |
 | E-shop a objednávky | [shop-checkout-k4.md](shop-checkout-k4.md), [shop-beneficiaries.md](shop-beneficiaries.md), [shop-account-person-roles.md](shop-account-person-roles.md), [shop-catalog-publication.md](shop-catalog-publication.md) |
 | Platby | [Přijetí hotovosti a postup vratky](ORDER_PAYMENTS_2026-10-21.md), [produkční TEST cyklus hotovosti a vratky](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md), [shop-program-payment-verification.md](shop-program-payment-verification.md), [fio-readonly-import-k4.md](fio-readonly-import-k4.md), [stripe-integration-plan.md](stripe-integration-plan.md) |
 | Číselné řady a účetní kategorie | [Návod a implementace](SHOP_NUMBER_SERIES_2026-10-21.md), [produkční vydání a zachování VS](SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md), [kontrola před zveřejněním](SHOP_PUBLICATION_ACCOUNTING_GUARD_2026-10-22.md), [její produkční ověření](SHOP_PUBLICATION_ACCOUNTING_RELEASE_2026-10-22.md) |

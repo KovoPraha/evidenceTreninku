@@ -1,5 +1,17 @@
 # Session handoff
 
+## Aktuální vstup od 6. 11. 2026
+
+Pro novou práci použít [aktuální stav](../CURRENT_STATE.md),
+[aktuální předání](../HANDOFF_CURRENT.md) a [registr práce](../WORK_REGISTER.md).
+Zdejší starší záznamy včetně SHA, flags a oprávnění jsou datované historické
+podklady; nepřebírat je jako dnešní stav. Nové kroky a plány zapisovat do
+propojených tematických souborů a registru průběžně, výsledky do `docs/verification/`.
+[Provozní inventura 6. 11.](../verification/operations-inventory-20261106/RESULTS.md)
+spojuje poslední přehled větví s mezitím dokončeným nasazením #330.
+
+## Historické session záznamy
+
 ## Produkční účetní kontrola publikace — 22. 10. 2026
 
 Schválený push, PR a deploy dokončeny: [PR #164](https://github.com/KovoPraha/evidenceTreninku/pull/164),

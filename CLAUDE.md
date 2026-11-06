@@ -123,6 +123,15 @@ v eshop_payments_admin.php: pozice finance_manager, důvod a výslovné potvrzen
 
 ## Pracovní pravidla
 
+- Výslovný požadavek vlastníka z 6. 11. 2026: veškerou rozpracovanou a plánovanou
+  práci, rozhodnutí a výsledky zapisovat průběžně přímo do verzovaných souborů.
+  Při zahájení/pokračování aktualizovat [registr práce](docs/WORK_REGISTER.md)
+  a propojený tematický plán (ID, rozsah, oprávnění, větev/worktree, stav, další
+  krok a závislosti); při předání [handoff](docs/HANDOFF_CURRENT.md).
+  Release/flags s důkazy patří pouze do CURRENT_STATE. Samotný chat nebo lokální
+  output není trvalá projektová dokumentace; bezpečné výsledky propojit z `docs/verification/`.
+  Bez tajemství, skutečných osobních dat a dumpů; plán sám nedává provozní oprávnění.
+
 - Nová práce z čerstvého origin/main; izolované worktree mimo htdocs, pokud je
   stávající kopie rozpracovaná. Žádný reset/clean nebo přidání cizího WIP.
 - Do Gitu nepatří config.php, klíče, tajemství, dumpy ani skutečné osobní údaje.

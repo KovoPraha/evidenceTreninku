@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
-Aktualizováno 6. 11. 2026 (Europe/Prague), po skutečném převodu katalogu BAR a schválených přístupů; dřívější nasazení a aktivace zachované.
+Aktualizováno 6. 11. 2026 (Europe/Prague), po nasazení pracovních upozornění; rozpracované a plánované kroky vede [registr práce](WORK_REGISTER.md).
 
-- **Pracovní upozornění připravená, zatím nenasazená:** [PR #330](https://github.com/KovoPraha/evidenceTreninku/pull/330) přidává zvoneček, osobní přehled a e-mail pro registráře při žádosti o propojení či registraci sportovce. Přečtení není vyřízení. [Rozsah, přejímka a postup](STAFF_NOTIFICATIONS_2026-11-06.md). Aktuální automatické kontroly jsou u PR; před uvedením do provozu ověřit plánování obecného workeru, příjemce a skutečné doručení. První běh zahrne i starší čekající žádosti. Produkční plánovač ani rozesílání nebyly touto prací změněny.
+- **Pracovní upozornění #330 sloučená a nasazená:** [deploy 42172409868](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42172409868) SUCCESS, samostatný minutový worker doložený skutečným hostingovým během. [Status v 07:21:36](verification/operations-inventory-20261106/staff-status.json): 3 události / 18 osobních upozornění, 18 sent / 0 pending / 0 failed; transport není potvrzení schránky. Přihlášená přejímka a doručení mají samostatný další krok P01 v registru. [Postup](STAFF_NOTIFICATIONS_2026-11-06.md), [provozní doklady](verification/operations-inventory-20261106/RESULTS.md).
 - **[Omluvenky a náhrady již nasazené a znovu ověřené](verification/makeup-audit-20261106/RESULTS.md):** 6. 11. prošlo 22 testů / 139 assertions, 23 HTTP scénářů a skutečný místní browser (omluva, čekání na docházku, rezervace a storno s vrácením nároku). Mobilní zobrazení a uložená historie PASS. Bez nové chyby či opravy, není potřeba další nasazení. Zápisy pouze na oddělených syntetických datech; přihlášené produkční UAT se nyní neprovádělo.
 - **[Pravidelné zpracování členství i pošta zapnuté](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md):** automatizace, plán/zápis a pošta aktivní, denně 05:23 UTC. Ostrý apply --send `42108711699` PASS (0 členství/předpisů/dokladů/zpráv, žádná chyba), kontrola `42108836694` potvrdila úspěšný heartbeat v 21:01:18 UTC. Skutečné doručení při prázdné frontě neověřené. Závodní tým zůstává konceptem.
 - **[Klubové tarify #316 nasazené](verification/membership-catalog-release-20261105/RESULTS.md):** více disciplín za jednu cenu, měsíční/roční interval a formulář fakturačních údajů.
@@ -57,12 +57,12 @@ Aktualizováno 6. 11. 2026 (Europe/Prague), po skutečném převodu katalogu BAR
 
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
-- **Živé vydání:** `76bf0370a06e0ab80bab5ee9af1815835ac24efc`, [deploy 42084130988](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42084130988) SUCCESS.
+- **Poslední doložené nasazení:** `9c543ff9ef7870d3503ec7f38fc05f2b376d0a82`, [deploy 42172409868](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42172409868) SUCCESS; čtecí [provozní status](verification/operations-inventory-20261106/staff-status.json) potvrzuje běh workeru, nikoli úplnou hash inventuru webrootu.
   [BAR protokol](verification/bar-release-20261105/RESULTS.md): otestovaný a sloučený strom shodný; předchozí členství #316 a předání #317 zachované.
-- **Ověření:** všech 11 kontrol PR, CI main i deploy PASS; Linux 2203/41286 bez skipů, samostatné unixové hranice 3/45, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
+- **Historické ověření BAR vydání:** všech 11 kontrol PR, CI main i deploy PASS; Linux 2203/41286 bez skipů, samostatné unixové hranice 3/45, MariaDB 10.3/11.4, PHPStan/styl/JS PASS.
   HTTP vydání před 71/71, po 77/77; přihlášený Chrome Finance/Správa baru/Obsluha i následný skutečný katalog PASS. Přihlášení lucky a skutečná barová platba NOT RUN.
   [Čtecí porovnání](verification/bar-release-20261105/release-comparison.json): živé SHA a shodná konfigurace/flags v okamžiku BAR vydání; pozdější samostatná aktivace členství viz výše. Historický manifest není úplnou inventurou BAR.
-- **Záloha a schéma:** [úplná izolovaná obnova 42080871410](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42080871410) PASS: 357 tabulek / 2 triggery a 4341 existujících souborů včetně konfigurace a příloh.
+- **Historická záloha BAR vydání a schéma:** [úplná izolovaná obnova 42080871410](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42080871410) PASS: 357 tabulek / 2 triggery a 4341 existujících souborů včetně konfigurace a příloh.
   [Nejnovější DB záloha](verification/bar-release-20261105/deploy-database.json) vznikla před migracemi; [obnova 42085710492](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42085710492) PASS. Schema current / pending [], ledger 159 a VS zachované.
 - **DB kapacita obnovena:** po úplné externí záloze a skutečné obnově Search
   byl autorizovaně vyprázdněn pouze odvozený index Velocoty; +3,35 GB,
