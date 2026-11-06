@@ -1,5 +1,7 @@
 # BAR: provozní přejímka a návrh nabídky, 6. 11. 2026
 
+Tento protokol zachovává stav před zveřejněním. Po novém výslovném souhlasu vlastníka následovala [skutečná publikace nabídky 1 / vydání 1](../bar-menu-publication-20261106/RESULTS.md); další provozní kroky jsou v [session handoffu](../../SESSION_HANDOFF_BAR_2026-11-06.md).
+
 ## Výsledek
 
 Technická přejímka skutečným přihlášeným prohlížečem nad oddělenými syntetickými daty PASS. V produkci je uložen jediný neveřejný návrh **Bar KOVO – základní nabídka**, ID **1**, zobrazení **Fotografie produktů**, **45/45** aktivních produktů nabízených formulářem. Aktuální katalogové ceny ani zásoby se při uložení nemění. Veřejná stránka po uložení stále zobrazovala **Nabídka se připravuje.** Nabídka nebyla zveřejněna.

@@ -92,6 +92,15 @@ Aktualizováno 6. 11. 2026 (Europe/Prague), po nasazení a aktivaci pracovních 
 [Převzetí](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
 <!-- /archive -->
 
+## 6. 11. 2026 — zveřejnění základní nabídky BAR a souborový handoff
+
+Po [přípravě neveřejného návrhu a technické přejímce](verification/bar-acceptance-20261106/RESULTS.md)
+vlastník výslovně schválil zveřejnění. [Publikační protokol](verification/bar-menu-publication-20261106/RESULTS.md)
+dokládá nabídku 1 / vydání 1, všech 45 produktů a fotografií, veřejné menu i starou adresu směrovanou do KIS.
+Zveřejnění nezahájilo skutečný finanční provoz. [Session handoff](SESSION_HANDOFF_BAR_2026-11-06.md)
+zachovává konkrétní zbývající kroky; [trvalé pravidlo](WORK_DOCUMENTATION_POLICY.md) ukládá rozpracovanou,
+dokončenou i plánovanou práci přímo do souborů s odkazy. Původní archivované bloky níže zůstaly beze změny.
+
 ## 6. 11. 2026 — pracovní upozornění a souborové předání
 
 [Produkční protokol](verification/staff-notifications-release-20261106/RESULTS.md) a [průběžný plán](WORK_PLAN_CURRENT.md).

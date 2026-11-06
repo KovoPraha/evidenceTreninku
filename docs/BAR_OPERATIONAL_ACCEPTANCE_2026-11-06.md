@@ -15,6 +15,10 @@ Zadání vlastníka 6. 11. 2026: pokračovat provozní přejímkou a připravit 
 
 Produkční hesla se nečtou ani neposílají do chatu. Pokud je KIS odhlášený, vlastník obnoví svoji relaci; nezávislé místní kroky pokračují. Skutečné přihlášení Lucky jejím původním heslem vyžaduje vlastníka/obsluhu a zůstává samostatným bodem přejímky. Produkční prodeje, bankovní potvrzení, počáteční skladová množství a hotovost nelze nahrazovat syntetickou zkouškou. Produkční zásoby se neplní odhadem a veřejná nabídka se při přípravě nepublikuje.
 
-## Dokončení
+## Dokončení původní přejímky
 
 [Protokol a důkazy](verification/bar-acceptance-20261106/RESULTS.md): syntetická technická přejímka PASS, produkční návrh **1 / Bar KOVO – základní nabídka** uložený se 45 produkty a fotografiemi, dosud nezveřejněný. Původní kontext vlastníka a místní konfigurace obnovené, vlastní testovací služby vypnuté. Skutečné provozní kroky jsou výslovně vyjmenované v protokolu.
+
+## Následné schválené zveřejnění
+
+Vlastník následně 6. 11. výslovně schválil publikaci téhož návrhu. [Zveřejnění nabídky 1 / vydání 1](verification/bar-menu-publication-20261106/RESULTS.md) je dokončené: 45 produktů a 45 fotografií ověřených anonymně. Původní protokol výše zachovává stav před publikací. Další skutečné provozní kroky vede [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md), pracovní postup [publikační plán](BAR_MENU_PUBLICATION_2026-11-06.md).
