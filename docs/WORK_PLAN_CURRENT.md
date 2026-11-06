@@ -26,7 +26,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | [Navazující syntetická regrese 6. 11. PASS](verification/offline-followup-20261106/RESULTS.md); dokončit asistované UAT a lidské převzetí. Heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
 | P09 | Technický refaktoring W6–W15 uzavřený; provozní přejímka není kompletní | Lidská/účetní D12–D14, vazby, dohody a skutečné ocenění; dořešit dvě známé chybějící přílohy původní Evidence. | Vlastník/účetní; [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md), [rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot D12–D14](CLUB_PILOT_D12_D14.md), [obnova/přílohy](verification/bar-cutover-20261106/RESULTS.md) |
 | P10 | Lokální pracovní zbytky a staré větve nejsou frontou nasazení | Posoudit popisky legacy soupisek a staré dokumentační WIP proti main, archivovat už začleněné větve až po potvrzení zachování práce. Neprovádět plošný merge/reset/clean. | Vývoj/vlastník WIP; [inventura](verification/operations-inventory-20261106/RESULTS.md) |
-| P11 | [R13 optimalizovaný a změřený před/po](verification/medical-read-performance-20261106/RESULTS.md): 9 zdravotních scénářů / 540 časových vzorků, párové CI MariaDB 10.3/11.4 PASS; [původní měření 21 případů](verification/synthetic-performance-20261106/RESULTS.md). Celé K0.2 neuzavřené | Dále metadata/RSVP plánovače R05, ověřování účastníků R06 a plné HTTP měření. R13 stavový filtr musí pro přesný počet projít všechny kandidáty; případné další změny až podle měření. Produkční nasazení není součástí zadání. | Vývoj/vlastník; [předání R13](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md), [komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) |
+| P11 | [R05 plánovač optimalizovaný](verification/planner-read-performance-20261106/RESULTS.md): stejné 1/12/52 týdny × trenér/vedoucí, párové CI 10.3/11.4 PASS, data i HTML shodné; 112/203 → 28 SQL, medián měřené části 3,32–6,07× rychlejší. [R13 hotový](verification/medical-read-performance-20261106/RESULTS.md), celé K0.2 otevřené | Dále R06 dávkové ověření účastníků, plné HTTP/bootstrap/nav a další role/filtry. Historické upozornění R05 s hierarchickým filtrem dál čte kandidátní ID/data. Finální CI/merge #353 ověřit u PR; žádný deploy ani aktivace. | Vývoj/vlastník; [předání R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md), [původní měření](verification/synthetic-performance-20261106/RESULTS.md), [komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) |
 | P12 | Technická příprava HOTOVO: soubory 00–06, 20 scénářů, hlášení, mapa a spojený podklad sjednocené 6. 11. proti 3ff0fd13; přenosový ZIP ověřený. [Důkazy](verification/offline-followup-20261106/RESULTS.md). Není to provedené lidské UAT ani sdílení projektu | Vlastník určí testerku, roli/prostředí a konkrétní scénáře; oprávněná osoba dokončí pozvánku/přístup a kontrolní otázky v jejím účtu. Nové ověření hlavní verze před použitím; žádné opakování technické aktualizace bez změny podkladů. | Vlastník/testerka; [balíček a hranice](testing/chatgpt-tester-20261105/README.md), [uživatelské testování](PRODUKCNI-UZIVATELSKE-TESTOVANI.md) |
 | P13 | Další pracovní upozornění jsou záměr, konkrétní typy nejsou vybrané | Určit události, příjemce, vznik/ukončení úkolu, bezpečný odkaz, deduplikaci a testy. Push a eskalace nejsou součástí dokončené první verze. | Vlastník/vývoj; [registr typů a hranice](STAFF_NOTIFICATIONS_2026-11-06.md) |
 | P14 | HOTOVO pro tři konkrétní generace v běhu 42224275796, včetně zálohy evidence_2026-11-06_060929_014837d4.sql.gz (385 tabulek / 2 triggery). Pozdější záloha vydání #341 má 387 tabulek / 2 triggery, její hash ověřen, konkrétní obnova NOT RUN | [Přesná obnova doložená](verification/autonomous-p01-p14-20261106/restore-evidence.txt). Historické úspěšné obnovy jiných záloh za ni nevydávat; produkci neobnovovat. | Vývoj/provoz; [obnovované starší vydání](verification/staff-notifications-release-20261106/RESULTS.md), [novější záloha #341](verification/membership-scheduler-20261106/deploy-summary.json), [historická obnova BAR](verification/bar-cutover-20261106/RESULTS.md) |
@@ -204,18 +204,21 @@ chráněný PR a skutečný preflight publikace. Náhrada ověřená přes #348,
 
 ## P11 — autonomní syntetické měření 6. 11. 2026
 
-**Aktivní R05:** vlastník zadal autonomní optimalizaci plánovače, porovnání
+**R05 implementovaný a ověřený:** vlastník zadal autonomní optimalizaci plánovače, porovnání
 stejných syntetických dat a zachování chování/WIP bez změn produkce.
 Větev `codex/planner-read-performance-20261106`;
 [rozsah, metoda a výsledky](verification/planner-read-performance-20261106/RESULTS.md).
-Implementace a nové ověření zatím NOT RUN. R13 #352 ani další funkce nenasazovat.
+Implementace, místní regrese a párové CI/MariaDB 10.3/11.4 PASS; data i HTML
+shodné, 112/203 → 28 SQL. Finální CI/merge u PR #353;
+[předání a zbývající práce](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md).
+R05 #353, R13 #352 ani další funkce nenasazovat.
 
 **Navazující optimalizace R13 implementovaná a ověřená:** vlastník zadal implementaci a
 porovnání stejných syntetických dat bez produkčních změn. Vlastní větev
 `codex/medical-read-performance-20261106`; [rozsah, metoda a stav](verification/medical-read-performance-20261106/RESULTS.md).
 Filtry/stavy/oprávnění i dostupnost osob zachované; 9 párových scénářů místně a
 v CI 10.3/11.4 PASS, funkční místní browser PASS. Finální CI/merge dohledatelné
-u PR #352. R05/R06, plné HTTP měření a provozní přejímky zůstávají otevřené.
+u PR #352. R05 nyní dokončený výše; R06, plné HTTP měření a provozní přejímky zůstávají otevřené.
 
 Vlastník zadal měření bez produkčních změn a bez zásahu do WIP. Větev
 `codex/synthetic-performance-20261106`, vlastní kopie

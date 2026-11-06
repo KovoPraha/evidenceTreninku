@@ -4,15 +4,21 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Rozpracovaná návaznost: P11 optimalizace plánovače
+## Poslední návaznost: P11 optimalizace plánovače
 
 Vlastník zadal optimalizaci R05 podle měření se zachováním chování a WIP,
 bez produkčních změn. Větev `codex/planner-read-performance-20261106`, kopie
 `C:/Users/Marek/Documents/Codex/evidencePavel-planner-performance-20261106`.
-[Plán a průběžné výsledky](verification/planner-read-performance-20261106/RESULTS.md).
+[Výsledky a trvalé důkazy](verification/planner-read-performance-20261106/RESULTS.md).
 Postup: dávkové souhrny RSVP, explicitní čtecí metadata a agregované historiové
-upozornění bez filtru soupisky. Transakce a POST zachovat. Implementace a nové
-ověření zatím NOT RUN; produkční operace nejsou součástí zadání.
+upozornění bez filtru soupisky. Implementace hotová, 38 testů / 584 assertions,
+4 JavaScript testy, styl a cílený PHPStan PASS. Transakce a POST zachované.
+Párové CI 10.3/11.4 PASS: stejná data i HTML, 112/203 → 28 SQL,
+medián měřené části 3,32–6,07× rychlejší. Finální CI/merge ověřit u
+[PR #353](https://github.com/KovoPraha/evidenceTreninku/pull/353).
+[Datované předání a zbývající práce](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md):
+R06, plné HTTP měření a hierarchický filtr. WIP otisk shodný, žádné místní služby
+nevznikly. Žádný deploy ani aktivace, produkční stav tato relace nemění.
 
 ## Předchozí návaznost: P11 optimalizace zdravotního přehledu
 

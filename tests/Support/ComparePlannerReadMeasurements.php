@@ -45,6 +45,11 @@ foreach ($oldCases as $i => $old) {
     if ($old['result']['data'] !== $new['result']['data'] || $old['result']['html_lf_sha256'] !== $new['result']['html_lf_sha256']) {
         throw new RuntimeException('Planner data or rendered HTML changed.');
     }
+    // Structural budgets for this fixed fixture; shared CI timing is diagnostic only.
+    if ($new['sql']['count'] > 30 || $new['sql']['fetched_rows'] > 130
+        || $new['sql']['count'] >= $old['sql']['count'] || $new['sql']['fetched_rows'] >= $old['sql']['fetched_rows']) {
+        throw new RuntimeException('Planner query/row budget or measured improvement regressed.');
+    }
     foreach ([1, 2] as $phase) {
         $path = $argv[$phase] . '/' . sprintf('%02d-R05.json', $indexes[$phase][$i] + 1);
         $detail = json_decode((string)file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
