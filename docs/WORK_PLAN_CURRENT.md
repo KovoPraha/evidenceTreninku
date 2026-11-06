@@ -11,7 +11,7 @@ Vše, na čem se pracuje a co je plánované, zapisovat průběžně přímo do 
 - Upozornění: implementace, sloučení, nasazení, instalace minutového běhu a produkční zvoneček dokončené. [Plán](STAFF_NOTIFICATIONS_2026-11-06.md), [důkazy](verification/staff-notifications-release-20261106/RESULTS.md), [aktuální stav](CURRENT_STATE.md).
 - Otevřená mez ověření: příjemce zatím nepotvrdil doručení do schránky. Transport přijal 18 skutečných zpráv; kvůli potvrzení neposílat další kopie. Případné potvrzení připsat do protokolu.
 - Dokumentační práce této relace: souborový provozní stav, historie, pravidlo v CLAUDE, handoff a tento rozcestník. Pracovní větev `codex/staff-notifications-release-20261106`, izolovaná kopie `C:\Users\Marek\Documents\Codex\evidencePavel-staff-notifications-20261106`. Původní `C:\xampp\htdocs\evidencePavel` obsahuje nesouvisející rozpracovanost; nepřepisovat ji.
-- Předání této dokumentace: kontrola odkazů a dokumentačního kontraktu, commit, PR a sloučení po zelených kontrolách. Dokumentační commit nevyžaduje další produkční deploy. Výsledek PR dohledat podle této větve; otevřený PR nepovažovat za nový runtime release.
+- Předání této dokumentace: [PR #333](https://github.com/KovoPraha/evidenceTreninku/pull/333). Kontrola 80 řádků / 814 odkazů / 104 archivních bloků bez chyby, dalších 111 místních odkazů bez chyby, dokumentační testy 2/14 PASS. Sloučení podléhá zeleným kontrolám na přesném headu; aktuální výsledek určuje odkazovaný PR. Dokumentační commit nevyžaduje další produkční deploy a nemění živé SHA.
 
 ## Navazující kroky
 
