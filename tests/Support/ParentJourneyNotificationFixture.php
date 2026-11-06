@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Support;
@@ -36,6 +37,10 @@ final class ParentJourneyNotificationFixture
         $migration = require dirname(__DIR__, 2) . '/migrations/20261020120000_parent_journey_notifications.php';
         $migration['up']($pdo);
         $migration['up']($pdo);
-        if (!$migration['verify']($pdo)) throw new \RuntimeException('Parent notification fixture migration failed.');
+        if (!$migration['verify']($pdo)) {
+            throw new \RuntimeException('Parent notification fixture migration failed.');
+        }
+        $staffMigration = require dirname(__DIR__, 2) . '/migrations/20261106090000_staff_notifications.php';
+        $staffMigration['up']($pdo);
     }
 }

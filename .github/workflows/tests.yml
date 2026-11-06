@@ -155,6 +155,9 @@ jobs:
       - name: Ověřit měsíční členství, trvalou platbu a soukromý PDF doklad
         run: php tests/Support/MonthlyMembershipMariaDbSmoke.php
 
+      - name: Ověřit pracovní upozornění a zrušení neaktuálních e-mailů
+        run: php tests/Support/StaffNotificationsMariaDbSmoke.php
+
       - name: Ověřit převod členství bez sezon a opakování operací
         run: php tests/Support/MemberEvidenceMariaDbSmoke.php
 

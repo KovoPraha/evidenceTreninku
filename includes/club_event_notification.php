@@ -139,13 +139,22 @@ function clubEventNotificationComplete(PDO $pdo, int $id, string $token, bool $s
 }
 
 /** @param callable(string,string,string):bool $sender */
-function clubEventNotificationProcessOne(PDO $pdo, callable $sender): ?bool
+function clubEventNotificationProcessOne(PDO $pdo, callable $sender): bool|string|null
 {
     $notification = clubEventNotificationClaim($pdo);
     if ($notification === null) {
         return null;
     }
     try {
+        if (($notification['notification_type'] ?? '') === 'staff_action') {
+            require_once __DIR__ . '/staff_notifications.php';
+            $invalid = staffNotificationDeliveryInvalidReason($pdo, $notification);
+            if ($invalid !== null) {
+                $pdo->prepare("UPDATE club_event_notifications SET status='cancelled',claim_token=NULL,last_error=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='processing' AND claim_token=?")
+                    ->execute([$invalid, $notification['id'], $notification['claim_token']]);
+                return 'cancelled';
+            }
+        }
         $invalid = bookingNotificationInvalidReason($pdo, $notification);
         if ($invalid !== null) {
             clubEventNotificationHold($pdo, $notification, 'delivery_blocked: '.$invalid
@@ -187,10 +196,10 @@ function clubEventNotificationMailSender(string $recipient, string $subject, str
     return mail($recipient, $encodedSubject, $body, "Content-Type: text/plain; charset=UTF-8\r\n");
 }
 
-/** @return array{pending:int,processing:int,failed:int,sent:int} */
+/** @return array{pending:int,processing:int,failed:int,sent:int,cancelled:int} */
 function clubEventNotificationAdminSummary(PDO $pdo): array
 {
-    $summary = ['pending' => 0, 'processing' => 0, 'failed' => 0, 'sent' => 0];
+    $summary = ['pending' => 0, 'processing' => 0, 'failed' => 0, 'sent' => 0, 'cancelled' => 0];
     foreach ($pdo->query(
         'SELECT status,COUNT(*) AS total FROM club_event_notifications GROUP BY status'
     )->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -204,7 +213,7 @@ function clubEventNotificationAdminSummary(PDO $pdo): array
 /** @return list<array<string,mixed>> */
 function clubEventNotificationAdminList(PDO $pdo, string $status = '', int $limit = 100): array
 {
-    if (!in_array($status, ['', 'pending', 'processing', 'failed', 'sent'], true)) {
+    if (!in_array($status, ['', 'pending', 'processing', 'failed', 'sent', 'cancelled'], true)) {
         throw new InvalidArgumentException('Neplatný filtr stavu oznámení.');
     }
     $limit = max(1, min(500, $limit));

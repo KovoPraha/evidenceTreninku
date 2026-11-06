@@ -250,6 +250,7 @@ if ($is_logged_in && is_array($staff_active)):
     ?>        <?php
 endif;
 ?>
+        <?php if ($is_logged_in): require __DIR__ . '/includes/staff_notification_bell.php'; endif; ?>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Přepnout navigaci">
             <span class="navbar-toggler-icon"></span>
