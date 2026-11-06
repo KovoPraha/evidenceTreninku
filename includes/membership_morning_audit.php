@@ -72,16 +72,20 @@ function membershipMorningEvaluate(array $status, array $jobs, int $now): array
     $expected = strtotime('2026-11-07 05:23:00 UTC');
     $attempt = $status['state']['last_attempt_at'] ?? null;
     $success = isset($status['last_success_utc']) ? strtotime($status['last_success_utc']) : false;
-    $delay = is_int($attempt) ? $attempt - $expected : null;
     $matched = false;
+    $jobStart = null;
+    $jobFinish = null;
     $failed = 0;
     foreach ($jobs as $job) {
         $start = strtotime($job['started_at'] . ' UTC');
         if (is_int($attempt) && abs($start - $attempt) <= 2 && $job['status'] === 'success') {
             $matched = true;
+            $jobStart = $start;
+            $jobFinish = isset($job['finished_at']) ? strtotime($job['finished_at'] . ' UTC') : false;
         }
         $failed += $job['status'] === 'failed' ? 1 : 0;
     }
+    $delay = is_int($jobStart) ? $jobStart - $expected : null;
     $checks = [
         'captured_after_due' => $now >= strtotime('2026-11-07 05:30:00 UTC'),
         'captured_on_target_day' => gmdate('Y-m-d', $now) === '2026-11-07',
@@ -91,7 +95,8 @@ function membershipMorningEvaluate(array $status, array $jobs, int $now): array
         'attempt_on_target_day' => is_int($attempt) && gmdate('Y-m-d', $attempt) === '2026-11-07' && $attempt <= $now,
         'attempt_not_before_due' => $delay !== null && $delay >= 0,
         'successful_ledger_matches_attempt' => $matched && count($jobs) <= 100,
-        'new_success_after_attempt' => is_int($attempt) && $success !== false && $success >= $attempt && $success <= $now,
+        'new_success_after_attempt' => is_int($jobStart) && is_int($jobFinish) && $jobFinish >= $jobStart
+            && $success !== false && $success >= $jobFinish && $success <= $now,
         'daily_completed' => ($status['completed_today'] ?? false) === true && ($status['daily_due'] ?? true) === false,
         'worker_result_without_errors' => ($status['state']['result']['apply'] ?? false) === true
             && ($status['state']['result']['errors'] ?? null) === [],
@@ -110,6 +115,8 @@ function membershipMorningEvaluate(array $status, array $jobs, int $now): array
     return ['version' => 1, 'target_day' => '2026-11-07', 'trigger' => 'hosting_cron', 'verdict' => $verdict,
         'captured_at_utc' => gmdate(DATE_ATOM, $now), 'expected_start_utc' => gmdate(DATE_ATOM, $expected),
         'actual_attempt_utc' => is_int($attempt) ? gmdate(DATE_ATOM, $attempt) : null,
+        'actual_start_utc' => is_int($jobStart) ? gmdate(DATE_ATOM, $jobStart) : null,
+        'matched_job_finish_utc' => is_int($jobFinish) ? gmdate(DATE_ATOM, $jobFinish) : null,
         'start_delay_seconds' => $delay, 'last_success_utc' => $status['last_success_utc'] ?? null,
         'checks' => $checks, 'failed_jobs' => $failed, 'job_count' => count($jobs), 'counts' => $counts,
         'first_attempt_limitation' => ($delay ?? PHP_INT_MAX) > 60 || $failed > 0,
@@ -118,11 +125,11 @@ function membershipMorningEvaluate(array $status, array $jobs, int $now): array
 
 function membershipMorningMarkdown(array $report): string
 {
-    $actual = $report['actual_attempt_utc'] ?? 'nedoloženo';
+    $actual = $report['actual_start_utc'] ?? 'nedoloženo';
     $delay = $report['start_delay_seconds'] === null ? 'nedoloženo' : (string)$report['start_delay_seconds'];
     return '# Ranní členství 7. 11. 2026 — ' . $report['verdict'] . "\n\n"
         . 'Zachyceno přímo hostingem: ' . $report['captured_at_utc'] . ".\n"
-        . "Očekávaný start: 05:23 UTC (06:23 CET).\nSkutečný pokus UTC: " . $actual . ".\n"
+        . "Očekávaný start: 05:23 UTC (06:23 CET).\nDoložený start v ledgeru UTC: " . $actual . ".\n"
         . 'Odchylka: ' . $delay . " s.\nPoslední úspěch UTC: " . ($report['last_success_utc'] ?? 'nedoloženo') . ".\n\n"
         . 'Kontroly: ' . json_encode($report['checks'], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE) . ".\n\n"
         . "Při retry nemusí poslední pokus dokládat první start; viz first_attempt_limitation v JSON.\n"

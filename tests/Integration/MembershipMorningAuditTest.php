@@ -43,7 +43,8 @@ final class MembershipMorningAuditTest extends TestCase
 
     private function jobs(int $delay = 2): array
     {
-        return [['started_at' => gmdate('Y-m-d H:i:s', strtotime('2026-11-07 05:23:00 UTC') + $delay), 'status' => 'success']];
+        return [['started_at' => gmdate('Y-m-d H:i:s', strtotime('2026-11-07 05:23:00 UTC') + $delay),
+            'finished_at' => gmdate('Y-m-d H:i:s', strtotime('2026-11-07 05:23:00 UTC') + $delay + 1), 'status' => 'success']];
     }
 
     public function testTimelyEmptyRunHasRealAttemptAndLedgerEvidence(): void
@@ -65,6 +66,15 @@ final class MembershipMorningAuditTest extends TestCase
         $status['state']['trigger'] = 'manual';
         self::assertSame('FAIL', \membershipMorningEvaluate($status, $this->jobs(), strtotime('2026-11-07 05:30:02 UTC'))['verdict']);
         self::assertSame('FAIL', \membershipMorningEvaluate($this->membershipStatus(), [], strtotime('2026-11-07 05:30:02 UTC'))['verdict']);
+    }
+
+    public function testDelayUsesLedgerStartRatherThanEarlierGateTimestamp(): void
+    {
+        $status = $this->membershipStatus(59);
+        $status['last_success_utc'] = '2026-11-07T05:24:02+00:00';
+        $report = \membershipMorningEvaluate($status, $this->jobs(61), strtotime('2026-11-07 05:30:02 UTC'));
+        self::assertSame('LATE', $report['verdict']);
+        self::assertSame(61, $report['start_delay_seconds']);
     }
 
     public function testLateRetryFailureAndWrongDayRemainHonest(): void

@@ -68,7 +68,7 @@ def generate(root, mode, data, flags, run):
             checks = report.get("checks", {})
             if len(checks) != 13 or any(v is not True for v in checks.values()):
                 raise ValueError("PASS without all server checks")
-            actual = timestamp(report["actual_attempt_utc"])
+            actual = timestamp(report["actual_start_utc"])
             expected = dt.datetime(2026, 11, 7, 5, 23, tzinfo=UTC)
             delay = (actual - expected).total_seconds()
             if not 0 <= delay <= 60 or report.get("start_delay_seconds") != delay:
@@ -77,7 +77,7 @@ def generate(root, mode, data, flags, run):
         if not repo_ok:
             report["verdict"] = "FAIL"
         title = "Ranní audit členství 7. 11. 2026 — " + report["verdict"]
-        actual = report.get("actual_attempt_utc") or "nedoloženo"
+        actual = report.get("actual_start_utc") or "nedoloženo"
         if actual != "nedoloženo":
             actual_cet = timestamp(actual).astimezone(dt.timezone(dt.timedelta(hours=1))).isoformat()
         else:
@@ -86,7 +86,7 @@ def generate(root, mode, data, flags, run):
         delay_text = str(delay) if isinstance(delay, int) else "nedoloženo"
         failures = ", ".join(k for k, value in report.get("checks", {}).items() if value is not True) or "žádné"
         detail = ("Zachyceno hostingem: " + report["captured_at_utc"] + ".\n"
-                  "Poslední denní pokus UTC: " + actual + "; CET: " + actual_cet + "; odchylka " + delay_text + " s.\n"
+                  "Doložený start v ledgeru UTC: " + actual + "; CET: " + actual_cet + "; odchylka " + delay_text + " s.\n"
                   "Očekávaný start 05:23 UTC (06:23 CET). Úspěch UTC: " + (report.get("last_success_utc") or "nedoloženo") + ".\n"
                   "Nesplněné kontroly: " + failures + ".\n"
                   "Případné retry/omezení prvního pokusu: " + str(report.get("first_attempt_limitation")) + ".")
