@@ -1,0 +1,12 @@
+{
+    "file": "kis_rosters_admin.php",
+    "sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+    "same_php_logic_structure_excluding_copy": true,
+    "baseline_tokens": 1846,
+    "wip_tokens": 1846,
+    "token_difference_sample": [],
+    "current_replacement": "kis_roster_hierarchy_admin.php",
+    "legacy_get_redirect": 302,
+    "legacy_post_status": 410,
+    "disposition": "preserve_only_do_not_replace_current_redirect"
+}

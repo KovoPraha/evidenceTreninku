@@ -15,11 +15,11 @@ nepublikovat a neodesílat. Další kroky níže nejsou příkazem k jejich prov
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
-| P01 | Pracovní upozornění #330 nasazená; minutový běh, 18 sent, přihlášený zvoneček, přesný odkaz a přečtení/nepřečtení doložené | Získat potvrzení příjemce o doručení stávající zprávy do schránky. Neposílat další kopie ani opakovat instalaci. Produkční schválení/zamítnutí zdrojové žádosti se kvůli testu neprovádělo. | Příjemce/vlastník; [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md), [postup](STAFF_NOTIFICATIONS_2026-11-06.md) |
+| P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | HOTOVO: nabídka BAR 1 / vydání 1 zveřejněná, 45 produktů a fotografií; novější doklad #335 nahrazuje původní koncept | Publikaci neopakovat a nezakládat další návrh. Úpravy nabídky až podle dalšího zadání; zásoby/kasa a skutečný prodej zůstávají P02. Přihlášené vytvoření tiskového PDF zatím NOT RUN. | Správce baru; [publikace](verification/bar-menu-publication-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) |
 | P04 | BAR má účetní export/kontrakt a návrh adaptéru; zápis do hlavního účetnictví dosud není dokončený | Odsouhlasit účetní pravidla, implementovat a převzít adaptér bez zdvojení peněz. Není to pouze čekání na deploy nebo přepínač. Skutečná bezhotovostní úhrada/vratka také nedoložená. | Vlastník/účetní, vývoj; [kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md), [plán adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md) |
-| P05 | Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. Zbývá první skutečné sjednání/platba/PDF/doručení a doklad automatického časového startu. Roční cena neurčená; drobné štítky „kroužek“ u členství jsou kandidát další opravy. | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
+| P05 | Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. Zbývá první skutečné sjednání/platba/PDF/doručení a doklad automatického časového startu. Roční cena neurčená; textová oprava členských popisků je připravená, dosud nenasazená (viz doplňující relace níže). | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
 | P06 | Evidence členů bez sezon nasazená, 435 zařazení převedeno | Vyčkat na poslední nový export, provést schválený rozdílový sync a role/UAT. E8 odstranění legacy schématu až po přejímce a bezpečné obnově. Počáteční datum ani import neopakovat. | Vlastník dodá export; [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [provoz](MEMBER_EVIDENCE_OPERATION_2026-11-02.md), [převod](verification/member-evidence-cutover-20261102/RESULTS.md) |
 | P07 | Fio import/automatika a SumUp zapnuté; skutečný hostingový plán ověřený | Doložit skutečnou zaplacenou úhradu a přihlášený průchod. 45 pohybů bez odpovídajícího VS ponechat ručnímu posouzení, nepárovat jen částkou. | Vlastník/hospodář; [aktivace](verification/live-payments-20261105/ACTIVATION.md), [45 pohybů](verification/fio-followup-20261105/RESULTS.md) |
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | Dokončit asistované UAT a lidské převzetí; heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
@@ -107,7 +107,7 @@ Větev `codex/completion-priorities-20261106`, kopie
 | Pořadí | ID | Samostatně při navázání práce | Potřebný vstup vlastníka / podmínka uzavření |
 | --- | --- | --- | --- |
 | 1 | P14 | Ověřit metadata konkrétní zálohy a provést izolovanou obnovu chráněným postupem, porovnat tabulky/triggery a zapsat důkaz. Nikdy neobnovovat produkci. | Obvykle bez nového věcného rozhodnutí; potřebné existující technické přístupy a dostupná záloha. |
-| 1, souběžně | P01 | Připravit stručné ověření příjemcem a po potvrzení doplnit protokol, zkontrolovat čtecí stav bez nové zprávy. | Příjemce potvrdí přijetí některé z již odeslaných zpráv, případně spam. Kvůli testu znovu neposílat. |
+| Hotovo | P01 | Vlastník následně potvrdil přijetí již odeslané zprávy do schránky. | Stejné potvrzení znovu nevyžadovat a neposílat další kopie. Nejde o doložení všech 18 doručení. |
 | 2 | P05 — plán | Z historie spouštěče a heartbeat doložit skutečný automatický start; případnou technickou chybu reprodukovat a opravit. Samotný prázdný běh není selhání. | Bez nové ceny, publikace či schválení tarifu; tyto kroky jsou hotové. Nevyvolávat skutečné předpisy/poštu jen kvůli dokazování plánu. |
 | 2 | P12 | Aktualizovat dokumenty, 20 scénářů a hlášení proti main; ověřit aktuální možnosti sdílení při konkrétní realizaci. | Určit testerku, její roli/prostředí a povolené scénáře; připojení jejího účtu a přístup ke GitHubu dokončí oprávněná osoba. |
 | 3 | P05 + P07 — skutečný tok | Připravit scénář, sledovat objednávku/závazek, VS, párování, PDF a technický výsledek doručení; bez duplicitních úhrad. | Určit konkrétní skutečné sjednání, ověřenou osobu/plátce a provést skutečnou platbu. Bankovní přístup ani účetní shodu neodhadovat; 45 nejasných pohybů posuzuje hospodář. |
@@ -122,7 +122,22 @@ Větev `codex/completion-priorities-20261106`, kopie
 | Hotovo | P03 | Publikaci neprovádět znovu. Lze doplnit přihlášený průchod tiskového PDF bez změny nabídky. | Žádný další údaj pro současnou publikaci; změna obsahu nebo ceny vyžaduje konkrétní nové zadání. |
 
 Začít samostatnou technickou vlnou P14, čtecím ověřením plánu P05 a přípravou
-P12/checklistů P02. Potvrzení P01 může přijít souběžně. Poté spojit skutečné
+P12/checklistů P02. P01 je následným potvrzením vlastníka splněné. Poté spojit skutečné
 členství P05 s platbou P07 v jediném scénáři; BAR P02 je nezávislá provozní větev.
 P04 vyžaduje účetní specifikaci, P06 export a E8 zůstává až za přejímkou.
 Nevyžadovat znovu souhlas s již zveřejněným BAR ani tarifem 2200 Kč/měsíc.
+
+## Doplňující relace: členské popisky a místní WIP — 6. 11. 2026
+
+Vlastník povolil autonomní pokračování a potvrdil P01 slovy „1 OK, doručeno“;
+ostatní skutečné podklady dodá později. Souběžné vlákno „Zkontrolovat stav vývoje
+a nasazení“ vede P01, automatický běh P05, obnovu P14 a hlavní technický průchod
+ve větvi `codex/autonomous-p01-p14-20261106`. Jeho operace se neopakují.
+
+Doplňující větev `codex/membership-copy-and-wip-audit-20261106`, kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-membership-copy-audit-20261106`:
+[P10 inventura a úzká oprava názvosloví P05](verification/membership-copy-wip-20261106/RESULTS.md).
+135 kopií posouzeno pouze čtením, žádný úklid/reset. Členské šablony mají
+připravené správné popisky místo „kroužek/termín“; tato relace nic nenasazuje.
+34 testů / 206 assertions a 8 případů / 62 kontrol výrazů šablon PASS.
+Další krok: dokončit automatické kontroly a předat opravu pro budoucí vydání.

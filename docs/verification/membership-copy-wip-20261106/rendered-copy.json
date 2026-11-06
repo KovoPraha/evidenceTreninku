@@ -1,0 +1,114 @@
+{
+    "environment": "isolated PHP evaluation of actual template expressions; no application bootstrap or database",
+    "checked_at_utc": "2026-11-06T13:25:35+00:00",
+    "cases": 8,
+    "expression_checks": 62,
+    "non_membership_output_unchanged": true,
+    "production_access": false,
+    "results": [
+        {
+            "case": "membership_one",
+            "passed": true,
+            "labels": {
+                "catalog_count": "tarif",
+                "catalog_action": "Detail členství",
+                "detail_section": "Tarif a sjednání členství",
+                "interest_title": "Zajímají vás jiné možnosti členství?",
+                "interest_body": "Zanechte nám e-mail. Ozveme se k dalším možnostem členství v klubu.",
+                "detail_footer": "Před sjednáním znovu ověříme platný tarif a propojení sportovce.",
+                "interest_action": "Chci informace o členství"
+            }
+        },
+        {
+            "case": "membership_two",
+            "passed": true,
+            "labels": {
+                "catalog_count": "tarify",
+                "catalog_action": "Detail členství",
+                "detail_section": "Tarif a sjednání členství",
+                "interest_title": "Zajímají vás jiné možnosti členství?",
+                "interest_body": "Zanechte nám e-mail. Ozveme se k dalším možnostem členství v klubu.",
+                "detail_footer": "Před sjednáním znovu ověříme platný tarif a propojení sportovce.",
+                "interest_action": "Chci informace o členství"
+            }
+        },
+        {
+            "case": "membership_five",
+            "passed": true,
+            "labels": {
+                "catalog_count": "tarifů",
+                "catalog_action": "Detail členství",
+                "detail_section": "Tarif a sjednání členství",
+                "interest_title": "Zajímají vás jiné možnosti členství?",
+                "interest_body": "Zanechte nám e-mail. Ozveme se k dalším možnostem členství v klubu.",
+                "detail_footer": "Před sjednáním znovu ověříme platný tarif a propojení sportovce.",
+                "interest_action": "Chci informace o členství"
+            }
+        },
+        {
+            "case": "course_on_sale",
+            "passed": true,
+            "labels": {
+                "catalog_count": "termín",
+                "catalog_action": "Detail a přihlášení",
+                "detail_section": "Termín a přihlášení",
+                "interest_title": "Nevyhovuje vám termín?",
+                "interest_body": "Zanechte nám e-mail. Ozveme se, až vypíšeme další vhodný termín.",
+                "detail_footer": "Cena a volná kapacita se před dokončením přihlášení znovu ověří. Nesoulad věku je pouze upozornění a nákup neblokuje.",
+                "interest_action": "Chci vědět o další možnosti"
+            }
+        },
+        {
+            "case": "course_without_term",
+            "passed": true,
+            "labels": {
+                "catalog_count": "termín",
+                "catalog_action": "Detail a zájem",
+                "detail_section": "Termín a přihlášení",
+                "interest_title": "Nevyhovuje vám termín?",
+                "interest_body": "Zanechte nám e-mail. Ozveme se, až vypíšeme další vhodný termín.",
+                "detail_footer": "Cena a volná kapacita se před dokončením přihlášení znovu ověří. Nesoulad věku je pouze upozornění a nákup neblokuje.",
+                "interest_action": "Chci vědět o další možnosti"
+            }
+        },
+        {
+            "case": "course_interest_only",
+            "passed": true,
+            "labels": {
+                "catalog_count": "termín",
+                "catalog_action": "Zeptat se na kurz",
+                "detail_section": "Informace o kurzu",
+                "interest_title": "Máte zájem o tento kurz?",
+                "interest_body": "Zanechte nám e-mail. Klub vám sdělí, zda a kdy kurz otevře, a potvrdí cenu celého kurzu.",
+                "detail_footer": "Cena a volná kapacita se před dokončením přihlášení znovu ověří. Nesoulad věku je pouze upozornění a nákup neblokuje.",
+                "interest_action": "Požádat o informace o kurzu"
+            }
+        },
+        {
+            "case": "goods_in_stock",
+            "passed": true,
+            "labels": {
+                "catalog_count": "varianty",
+                "catalog_action": "Detail a varianty",
+                "detail_section": "Vyberte variantu",
+                "interest_title": "Chybí vaše velikost nebo varianta?",
+                "interest_body": "Zanechte nám e-mail. Ozveme se, až bude dostupná vhodná varianta.",
+                "detail_footer": "Před potvrzením objednávky znovu zkontrolujeme cenu a dostupnost.",
+                "interest_action": "Chci vědět o další možnosti"
+            }
+        },
+        {
+            "case": "goods_unavailable",
+            "passed": true,
+            "labels": {
+                "catalog_count": "varianta",
+                "catalog_action": "Zobrazit detail",
+                "detail_section": "Vyberte variantu",
+                "interest_title": "Chybí vaše velikost nebo varianta?",
+                "interest_body": "Zanechte nám e-mail. Ozveme se, až bude dostupná vhodná varianta.",
+                "detail_footer": "Před potvrzením objednávky znovu zkontrolujeme cenu a dostupnost.",
+                "interest_action": "Chci vědět o další možnosti"
+            }
+        }
+    ]
+}

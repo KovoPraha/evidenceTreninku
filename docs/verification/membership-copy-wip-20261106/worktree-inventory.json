@@ -1,0 +1,144 @@
+{
+  "checked_at_utc": "2026-11-06T13:28:04.920843+00:00",
+  "scope": "read-only tracked-file inventory; untracked personal/runtime artifacts not enumerated",
+  "worktrees": 135,
+  "available": 135,
+  "changed_worktrees": 8,
+  "other_active_worktree": "C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106",
+  "changed": [
+    {
+      "worktree": "C:/xampp/htdocs/evidencePavel",
+      "HEAD": "d1221f3594a965096d98da5e86a27097f66cd380",
+      "branch": "refs/heads/codex/fio-auto-reconciliation-recovery",
+      "available": true,
+      "status_exit": 0,
+      "tracked_changes_count": 1,
+      "tracked_changes": [
+        " M kis_rosters_admin.php"
+      ],
+      "truncated": false
+    },
+    {
+      "worktree": "C:/Users/Marek/AppData/Local/Temp/evidence-security-audit-20261024",
+      "HEAD": "f2626b86b714ffd1ec90f572170dac839857dfcc",
+      "available": true,
+      "status_exit": 0,
+      "tracked_changes_count": 1564,
+      "tracked_changes": [
+        " D .gitattributes",
+        " D .github/scripts/parent-browser-order-uat.cjs",
+        " D .github/scripts/parent-browser-uat.cjs",
+        " D .github/scripts/production-ssh-retry.sh",
+        " D .github/workflows/club-program-recurrence-production.yml",
+        " D .github/workflows/configure-fio-production.yml",
+        " D .github/workflows/configure-production-bank.yml",
+        " D .github/workflows/configure-stripe-sandbox.yml",
+        " D .github/workflows/configure-sumup-production.yml",
+        " D .github/workflows/deploy-production.yml",
+        " D .github/workflows/diagnose-club-catalog-targets-production.yml",
+        " D .github/workflows/diagnose-kunratice-catalog-production.yml",
+        " D .github/workflows/diagnose-packeta-production.yml",
+        " D .github/workflows/diagnose-payment-gates-production.yml",
+        " D .github/workflows/diagnose-pumptrack-production.yml",
+        " D .github/workflows/disable-stripe-production.yml",
+        " D .github/workflows/fio-import-production.yml",
+        " D .github/workflows/import-shop-catalog-production.yml",
+        " D .github/workflows/parent-browser-order-uat-production.yml",
+        " D .github/workflows/parent-browser-uat-production.yml",
+        " D .github/workflows/prepare-club-catalog-production.yml",
+        " D .github/workflows/prepare-youngest-courses-production.yml",
+        " D .github/workflows/production-drills.yml",
+        " D .github/workflows/publish-shop-catalog-production.yml",
+        " D .github/workflows/restore-uat-program-production.yml"
+      ],
+      "truncated": true
+    },
+    {
+      "worktree": "C:/Users/Marek/Documents/Codex/evidencePavel-bar-integration-20261105",
+      "HEAD": "388a91cec8b1747fe8a5680df59631cd7ad63f16",
+      "branch": "refs/heads/codex/bar-operational-pilot-20261106",
+      "available": true,
+      "status_exit": 0,
+      "tracked_changes_count": 2,
+      "tracked_changes": [
+        " M docs/BAR_OPERATIONAL_ACCEPTANCE_2026-11-06.md",
+        " M docs/WORK_PLAN_CURRENT.md"
+      ],
+      "truncated": false
+    },
+    {
+      "worktree": "C:/Users/Marek/Documents/Codex/evidencePavel-membership-copy-audit-20261106",
+      "HEAD": "646d9c7f78daa2869029c67423299e36e08c802b",
+      "branch": "refs/heads/codex/membership-copy-and-wip-audit-20261106",
+      "available": true,
+      "status_exit": 0,
+      "tracked_changes_count": 2,
+      "tracked_changes": [
+        " M booking/eshop.php",
+        " M booking/produkt.php"
+      ],
+      "truncated": false
+    },
+    {
+      "worktree": "C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106",
+      "HEAD": "646d9c7f78daa2869029c67423299e36e08c802b",
+      "branch": "refs/heads/codex/autonomous-p01-p14-20261106",
+      "available": true,
+      "status_exit": 0,
+      "tracked_changes_count": 2,
+      "tracked_changes": [
+        " M docs/WORK_PLAN_CURRENT.md",
+        " M docs/testing/chatgpt-tester-20261105/README.md"
+      ],
+      "truncated": false
+    },
+    {
+      "worktree": "C:/Users/Marek/Documents/Codex/evidencePavel-refactoring-w85-20261030",
+      "HEAD": "7eba4d722b7c2498af3eab20af398269051289b3",
+      "branch": "refs/heads/codex/refactoring-w85-sport-contracts-20261030",
+      "available": true,
+      "status_exit": 0,
+      "tracked_changes_count": 6,
+      "tracked_changes": [
+        " M docs/verification/refactoring-w85-20261030/booking-race.json",
+        " M tests/Support/MedicalClearanceMariaDbRace.php",
+        " M tests/Support/SportRaceRuntime.php",
+        " M tests/Support/SportReadWriteAssessment.php",
+        " M tests/Support/TrainingClosureAuthorizationRace.php",
+        " M tests/Support/TrainingClosureMariaDbRace.php"
+      ],
+      "truncated": false
+    },
+    {
+      "worktree": "C:/Users/Marek/Documents/Codex/evidencePavel-staff-notifications-20261106",
+      "HEAD": "388a91cec8b1747fe8a5680df59631cd7ad63f16",
+      "branch": "refs/heads/codex/membership-flow-uat-20261106",
+      "available": true,
+      "status_exit": 0,
+      "tracked_changes_count": 1,
+      "tracked_changes": [
+        " M docs/WORK_PLAN_CURRENT.md"
+      ],
+      "truncated": false
+    },
+    {
+      "worktree": "C:/xampp/htdocs/evidencePavel-order-status-system-mail-20261021",
+      "HEAD": "735d35c282df602337d97c535fc0d896880ae747",
+      "branch": "refs/heads/codex/packeta-release-proof-20261022",
+      "available": true,
+      "status_exit": 0,
+      "tracked_changes_count": 5,
+      "tracked_changes": [
+        " M docs/HANDOFF_CURRENT.md",
+        " M docs/ORDER_STATUS_EMAIL_PLAN_2026-10-21.md",
+        " M docs/PACKETA_MODULE_AUDIT_2026-10-21.md",
+        " M docs/PACKETA_RELEASE_2026-10-22.md",
+        " M docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md"
+      ],
+      "truncated": false
+    }
+  ],
+  "missing_worktrees": [],
+  "mutations": false,
+  "cleanup_performed": false
+}

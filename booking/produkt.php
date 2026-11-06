@@ -283,7 +283,7 @@ shopPublicNavigation($pdo, $product['categories'][0] ?? null); ?>
                 </div>
                 <div class="col-lg-7">
                     <div class="card-body p-4">
-                        <?php if ($isProgram): ?><span class="badge text-bg-primary mb-2">kroužek</span><?php
+                        <?php if ($isProgram): ?><span class="badge text-bg-primary mb-2"><?= $hasMonthlyOffer ? 'členství v klubu' : 'kroužek' ?></span><?php
 
 
                         endif; ?>
@@ -291,7 +291,7 @@ shopPublicNavigation($pdo, $product['categories'][0] ?? null); ?>
                         <p class="text-muted"><?= $interestOnlyCourse ?
                         'Kurz pro nejmenší děti otevíráme podle zájmu. Termín, rozsah a cenu celého kurzu vám sdělí klub e-mailem.'
                         : nl2br(shopProductH($product['public_summary'])) ?></p>
-                        <h2 class="h5 mt-4"><?= $interestOnlyCourse ? 'Informace o kurzu' : ($isProgram ? 'Termín a přihlášení' : 'Vyberte variantu')
+                        <h2 class="h5 mt-4"><?= $hasMonthlyOffer ? 'Tarif a sjednání členství' : ($interestOnlyCourse ? 'Informace o kurzu' : ($isProgram ? 'Termín a přihlášení' : 'Vyberte variantu'))
 ?></h2>
                         <?php $preferredVariantId = 0;
 if (!$interestOnlyCourse && !$isProgram && $product['variants'] !== []) {
@@ -559,16 +559,19 @@ nám kontakt</a> a ozveme se vám s možností přihlášení.</div><?php endif;
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                        <p class="small text-muted mt-4 mb-0"><?= $isProgram ?
+                        <p class="small text-muted mt-4 mb-0"><?= $hasMonthlyOffer ?
+    'Před sjednáním znovu ověříme platný tarif a propojení sportovce.' : ($isProgram ?
     'Cena a volná kapacita se před dokončením přihlášení znovu ověří. Nesoulad věku je pouze upozornění a nákup neblokuje.'
-                                : 'Před potvrzením objednávky znovu zkontrolujeme cenu a dostupnost.'
+                                : 'Před potvrzením objednávky znovu zkontrolujeme cenu a dostupnost.')
 ?></p><?php endif; ?>
                         <section id="mam-zajem" class="card bg-body-tertiary border-0 mt-4">
 <div class="card-body">
-                            <h2 class="h5"><?= $interestOnlyCourse ? 'Máte zájem o tento kurz?' : ($isProgram ? 'Nevyhovuje vám termín?' : 'Chybí vaše velikost nebo varianta?')
+                            <h2 class="h5"><?= $hasMonthlyOffer ? 'Zajímají vás jiné možnosti členství?' :
+    ($interestOnlyCourse ? 'Máte zájem o tento kurz?' : ($isProgram ? 'Nevyhovuje vám termín?' : 'Chybí vaše velikost nebo varianta?'))
 ?></h2>
-<p class="small text-muted"><?= $interestOnlyCourse ? 'Zanechte nám e-mail. Klub vám sdělí, zda a kdy kurz otevře, a potvrdí cenu celého kurzu.' :
-($isProgram ? 'Zanechte nám e-mail. Ozveme se, až vypíšeme další vhodný termín.' : 'Zanechte nám e-mail. Ozveme se, až bude dostupná vhodná varianta.')
+<p class="small text-muted"><?= $hasMonthlyOffer ? 'Zanechte nám e-mail. Ozveme se k dalším možnostem členství v klubu.' :
+    ($interestOnlyCourse ? 'Zanechte nám e-mail. Klub vám sdělí, zda a kdy kurz otevře, a potvrdí cenu celého kurzu.' :
+($isProgram ? 'Zanechte nám e-mail. Ozveme se, až vypíšeme další vhodný termín.' : 'Zanechte nám e-mail. Ozveme se, až bude dostupná vhodná varianta.'))
 ?></p>
                             <form method="post" class="row g-2 align-items-end"><?=csrf_field()
 ?><input type="hidden" name="action" value="interest">
@@ -580,10 +583,10 @@ nám kontakt</a> a ozveme se vám s možností přihlášení.</div><?php endif;
     shopProductH($_POST['interest_email']
 ?? '')?>" required>
 </div><?php if (!$interestOnlyCourse): ?><div class="col-md-6">
-<label class="form-label" for="interest-variant">Termín / varianta <span class="text-muted">(nepovinné)</span>
+<label class="form-label" for="interest-variant"><?= $hasMonthlyOffer ? 'Tarif / varianta' : 'Termín / varianta' ?> <span class="text-muted">(nepovinné)</span>
 </label>
 <select id="interest-variant" name="interest_variant_id" class="form-select">
-<option value="">Obecný zájem o produkt</option><?php foreach ($product['variants'] as $interestVariant):
+<option value=""><?= $hasMonthlyOffer ? 'Obecný zájem o členství' : 'Obecný zájem o produkt' ?></option><?php foreach ($product['variants'] as $interestVariant):
     ?><option value="<?=(int)$interestVariant['variant_id']?>"><?=shopProductH(shopProductInterestVariantLabel(
         $pdo,
         $interestVariant
@@ -595,7 +598,7 @@ nám kontakt</a> a ozveme se vám s možností přihlášení.</div><?php endif;
 </div>
 </div>
 <div class="col-12">
-<button class="btn btn-outline-primary"><?= $interestOnlyCourse ? 'Požádat o informace o kurzu' : 'Chci vědět o další možnosti'
+<button class="btn btn-outline-primary"><?= $hasMonthlyOffer ? 'Chci informace o členství' : ($interestOnlyCourse ? 'Požádat o informace o kurzu' : 'Chci vědět o další možnosti')
 ?></button>
 </div>
 </form>

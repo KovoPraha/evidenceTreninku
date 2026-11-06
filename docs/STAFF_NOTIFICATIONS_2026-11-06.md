@@ -61,7 +61,8 @@ uvádí meze tohoto důkazu. Další kroky vede P01 v [registru práce](WORK_PLA
 živý release vždy CURRENT_STATE. [Produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md)
 dokládá skutečný přihlášený zvoneček, přesný odkaz do žádosti, osobní přečtení
 a návrat do původního kontextu. Tyto kroky již nejsou neprovedené.
-Zbývá potvrzení příjemce o doručení stávající zprávy do schránky. Produkční
+Vlastník 6. 11. [potvrdil doručení stávající zprávy do schránky](verification/membership-copy-wip-20261106/RESULTS.md);
+P01 je v tomto rozsahu splněné, neznamená potvrzení všech příjemců. Produkční
 schválení/zamítnutí žádosti se kvůli zkoušce neprovádělo; mobilní průchod
 je doložen synteticky, produkční prohlížeč byl desktopový.
 Tato dokumentační relace neopakuje instalaci, rozesílání ani produkční zápis.

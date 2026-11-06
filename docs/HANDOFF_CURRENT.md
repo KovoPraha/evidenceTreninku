@@ -6,6 +6,14 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 
 ## Povinné průběžné předání
 
+Autonomní návaznost 6. 11.: vlastník potvrdil doručení P01, ostatní skutečné
+podklady dodá později. Hlavní technický průchod vede souběžná větev
+`codex/autonomous-p01-p14-20261106`; nepouštět duplicitní provozní běhy.
+[Doplňující relace P10 a členských popisků](verification/membership-copy-wip-20261106/RESULTS.md)
+posoudila 135 pracovních kopií a připravila úzkou opravu katalogu/detailu.
+Původní WIP zachovaný, bez produkčního zápisu či nasazení. Stav dokončení
+a další krok jsou ve společném plánu a propojených protokolech.
+
 Tato dokumentační relace pouze sjednocuje předání; nic nového na produkci
 nezapíná. [Záznam sjednocení a kontroly](verification/documentation-reconcile-20261106/RESULTS.md)
 uvádí původ souběžných změn #333/#334. Jediný seznam další práce je
@@ -29,7 +37,8 @@ opravuje mezitím zastaralý přehled: #330 už je sloučený a nasazený,
 minutový worker běží a fronta má doložené přijetí zpráv transportem.
 [Produkční protokol upozornění](verification/staff-notifications-release-20261106/RESULTS.md)
 dokládá také přihlášený zvoneček, přesný odkaz a změnu přečtení. P01 už nečeká
-na opakování této kontroly; zbývá potvrzení schránky. Kontrolní workflow
+na opakování této kontroly; vlastník 6. 11. potvrdil přijetí zprávy do schránky,
+P01 je splněné v doloženém rozsahu. Nejde o potvrzení všech příjemců. Kontrolní workflow
 `staff-notifications-production.yml` / `action=status` / `OVERIT-UPOZORNENI`
 nic neposílá. Instalaci ani první rozesílku neopakovat; přečtení není vyřízení.
 P02–P14 vedou BAR, členství, poslední synchronizaci, platby, lidskou přejímku,
