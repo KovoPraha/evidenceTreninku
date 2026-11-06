@@ -70,6 +70,45 @@ Zpráva s nejistým doručením po pádu nebo odmítnutí transportem se automat
 
 ## Nasazení a zapnutí
 
+### Hostingový denní plán
+
+[Oprava opožděného plánu](MEMBERSHIP_SCHEDULER_2026-11-06.md) přesouvá časování
+na existující `CRON.1minuta` hostingu. Stav nasazení a aktivace určuje protokol.
+Čas zůstává **05:23 UTC denně**, tedy 06:23 CET / 07:23 CEST. Při zdravém
+minutovém cronu se worker spustí při prvním ticku po tomto čase. Po výpadku
+hostingu dožene aktuální práci, nepřehrává jednotlivé zmeškané denní běhy.
+
+`membership-scheduler-production.yml` z `main`, chráněné prostředí production:
+
+- `action=status`, `potvrzeni=OVERIT-CLENSTVI-CRON`: pouze čtení, přesný hash
+  spouštěče, čerstvost skutečného ticku (do 180 s), poslední úspěch a denní
+  splatnost. Status nevytváří heartbeat ani účetní zápis.
+- `action=install`, `potvrzeni=ZAPNOUT-CLENSTVI-CRON`: atomicky instaluje pouze
+  vlastní spouštěč, odmítá cizí soubor i symlinky a nezakládá cron adresář.
+  Vyžaduje nasazený přesný worker a obě související knihovny.
+- Po instalaci vyčkat na přirozený tick a ověřit status. Již úspěšný dnešní
+  apply v `operational_job_runs` potlačí opakování. Teprve po důkazu ticku
+  přepnout repo proměnnou `KIS_MONTHLY_MEMBERSHIP_SCHEDULE_ENABLED=false`.
+
+Hosting čte přímo soukromé `MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED` a
+`MONTHLY_MEMBERSHIP_MAIL_ENABLED`. GitHub proměnné APPLY/MAIL řídí jen původní
+workflow. Pro zastavení hostingové pošty použít **mail-disable**, pro celou
+automatizaci **disable** v konfiguračním workflow níže. Pouhé vypnutí proměnné
+GitHubu hosting nezastaví. Stávající povolení pošty/automatizace instalace nemění.
+
+Sdílený MariaDB advisory lock chrání hosting i ruční CLI před souběhem. Při
+chybě nebo pádu je další pokus odložen nejméně o 10 minut. Nejisté doručení
+se automaticky neopakuje. Stav a zámek jsou mimo webroot v `data/.kis-deploy`.
+Denní úspěch a minutový heartbeat jsou odlišné: čerstvý tick se starým denním
+úspěchem po 05:23 vyžaduje kontrolu soukromého logu a chyb v administraci.
+
+Původní `monthly-memberships-production.yml` zůstává pro ruční dry-run/apply a
+jako záložní plán, jehož doba startu není přesná. Při návratu nejdříve odstranit
+pouze ověřený vlastní spouštěč z CRON.1minuta, zachovat soukromý stav a ověřit
+absenci spouštěče; potom povolit repo schedule. Cizí crony a data neodstraňovat.
+
+### Soukromé příznaky a ruční workflow
+
 Soukromý příznak automatizace spravuje `configure-memberships-production.yml`
 z `main` přes chráněné prostředí `production`. Režimy `probe` / `enable` /
 `disable` vyžadují potvrzení `OVERIT-CLENSTVI` / `ZAPNOUT-CLENSTVI` /
@@ -93,14 +132,14 @@ protože podmínka úlohy se vyhodnocuje před načtením prostředí `productio
 2. Ověřit soukromé ukládání PDF, účetní konfiguraci, produkt, soupisku, oprávnění schvalujícího pracovníka a doručování na určeném testovacím účtu. Připravit následující účetní rok před jeho začátkem.
 3. Na serveru lze nejprve spustit `APP_HOST=kis.kovopraha.cz php bin/monthly-memberships.php --dry-run`. Náhled nezapisuje; vykazuje počet členství, nikoli simulaci budoucích účetních dokladů.
 4. Výchozí soukromá konfigurace má `MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED=false` a `MONTHLY_MEMBERSHIP_MAIL_ENABLED=false`. První příznak po schválení povolí sjednávání, nové měsíční účtování a automatické měsíční párování Fio. Druhý samostatně povoluje skutečné odesílání.
-5. Workflow `monthly-memberships-production.yml` běží pouze z `main`, denně v 05:23 UTC. Pro plánované spuštění nastavit `KIS_MONTHLY_MEMBERSHIP_SCHEDULE_ENABLED=true`; zápis navíc vyžaduje `KIS_MONTHLY_MEMBERSHIP_APPLY_ENABLED=true`. Odesílání workflow přidá pouze s `KIS_MONTHLY_MEMBERSHIP_MAIL_ENABLED=true`. Workflow nepřepisuje soukromé příznaky aplikace. Ruční spuštění začíná v režimu `dry-run`.
+5. Záložní workflow `monthly-memberships-production.yml` má cron 05:23 UTC. Při aktivním hostingovém plánu ponechat `KIS_MONTHLY_MEMBERSHIP_SCHEDULE_ENABLED=false`. Pro případný záložní schedule řídí zápis `KIS_MONTHLY_MEMBERSHIP_APPLY_ENABLED=true` a poštu `KIS_MONTHLY_MEMBERSHIP_MAIL_ENABLED=true`. Workflow nepřepisuje soukromé příznaky aplikace. Ruční spuštění začíná v režimu `dry-run`; apply a pošta vyžadují výslovné parametry.
 6. Samostatný místní nácvik může použít `--apply --send --local-outbox`, který uloží zprávy přes stávající testovací outbox a neodesílá poštu. I nácvik zápisu vyžaduje povolenou automatizaci a izolovanou testovací databázi. Produkční `--apply --send` vyžaduje oba soukromé příznaky.
 7. Kontrolovat heartbeat `monthly_memberships`, chyby období/dokladů v administraci, čekající Fio pohyby a neúspěšné zprávy. Doklady a doručení jsou omezené na dávku 100 na běh; pro větší backlog přidat další běhy. Předpisy doplní běh za všechna chybějící dosavadní období.
 
-Pro pozastavení pošty vypnout workflow proměnnou `KIS_MONTHLY_MEMBERSHIP_MAIL_ENABLED`, aby běh pokračoval bez `--send`, a soukromý mailový příznak. Volání `--send` při vypnutém soukromém příznaku odmítne celý běh před zápisem. Pro úplné zastavení nových sjednání/automatizace vypnout soukromý příznak automatizace a zápis/plán workflow. Existující příjmy, předpisy a PDF se nemažou; stažení vlastních dokladů a ukončení členství zůstávají dostupné.
+Pro pozastavení hostingové pošty vypnout soukromý mailový příznak. U záložního GitHub plánu vypnout také proměnnou `KIS_MONTHLY_MEMBERSHIP_MAIL_ENABLED`, aby běh pokračoval bez `--send`. Volání `--send` při vypnutém soukromém příznaku odmítne celý běh před zápisem. Pro úplné zastavení nových sjednání/automatizace vypnout soukromý příznak automatizace a zápis/plán workflow. Existující příjmy, předpisy a PDF se nemažou; stažení vlastních dokladů a ukončení členství zůstávají dostupné.
 
 ## Ověření a hranice
 
 Integrační testy jsou v `tests/Integration/MonthlyMembershipTest.php`. MariaDB nácvik `tests/Support/MonthlyMembershipMariaDbSmoke.php` vytváří a nakonec ruší pouze novou izolovanou databázi `evidence_monthly_smoke_test_*`; testuje skutečnou novou migraci, částečnou rodinnou platbu, souběžný příjem a souběžné generování, opakování, PDF a ukončení. CI jej spouští v existující matici MariaDB 10.3/11.4. Místně byl ověřen na MariaDB 10.4.32. Samostatný nácvik všech migrací, zálohy a obnovy prošel pro 307 tabulek.
 
-Mobilní i desktopový vzhled byl ověřen na synteticky vyrenderovaných skutečných PHP stránkách. Zápisové kroky ověřují služby v integračních testech; nejde o důkaz přihlášeného produkčního průchodu v prohlížeči. Skutečné bankovní převody, doručení této nové rozesílky a produkční vystavení dokladů zatím ověřeny nejsou. První prázdný apply --send běh a uložený heartbeat jsou ověřené; denní plán je zapnutý, první budoucí automatický start zatím není doložen.
+Mobilní i desktopový vzhled byl ověřen na synteticky vyrenderovaných skutečných PHP stránkách. Zápisové kroky ověřují služby v integračních testech; nejde o důkaz přihlášeného produkčního průchodu v prohlížeči. Skutečné bankovní převody, doručení této nové rozesílky a produkční vystavení dokladů zatím ověřeny nejsou. První prázdný apply --send běh a uložený heartbeat jsou ověřené; automatický GitHub běh 42222661557 byl úspěšný, ale opožděný o 7 h 42 min. Nápravu a důkazy hostingového plánu vede [protokol](MEMBERSHIP_SCHEDULER_2026-11-06.md). Skutečné P05/P07 a export P06 vlastník odložil.

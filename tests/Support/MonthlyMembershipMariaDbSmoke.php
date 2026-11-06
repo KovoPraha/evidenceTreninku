@@ -80,6 +80,32 @@ $server->exec('CREATE DATABASE '.$schema.' CHARACTER SET utf8mb4 COLLATE utf8mb4
 try {
     $pdo = new PDO('mysql:host=127.0.0.1;port='.$port.';dbname='.$database.';charset=utf8mb4', 'root', '', [PDO::ATTR_ERRMODE
     => PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+    // Separate connections prove that hosting/manual processing cannot overlap.
+    if ((int)$server->query("SELECT GET_LOCK('evidence:monthly-memberships',0)")->fetchColumn() !== 1) {
+        throw new RuntimeException('Cannot acquire isolated worker test lock.');
+    }
+    try {
+        try {
+            monthlyMembershipRun($pdo, true, false, static fn (): bool => false);
+            throw new LogicException('Concurrent membership worker was accepted.');
+        } catch (RuntimeException $error) {
+            if ($error->getMessage() !== 'membership_worker_already_running') {
+                throw $error;
+            }
+        }
+    } finally {
+        $server->query("SELECT RELEASE_LOCK('evidence:monthly-memberships')");
+    }
+    // Before fixture creation the query fails: the worker must still release its lock.
+    try {
+        monthlyMembershipRun($pdo, true, false, static fn (): bool => false);
+        throw new LogicException('Missing fixture tables were accepted.');
+    } catch (PDOException) {
+        if ((int)$server->query("SELECT GET_LOCK('evidence:monthly-memberships',0)")->fetchColumn() !== 1) {
+            throw new RuntimeException('Worker lock leaked after an exception.');
+        }
+        $server->query("SELECT RELEASE_LOCK('evidence:monthly-memberships')");
+    }
     $fixture = \Tests\Support\MonthlyMembershipFixture::database();
     // Synthetic business fixture only; actual new tables use the real MariaDB migration.
     $tables = $fixture->query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
@@ -145,7 +171,7 @@ try {
     }
     echo json_encode(['ok' => true,'database' => $database,'server' => $pdo->getAttribute(PDO::ATTR_SERVER_VERSION)
     ,'checks' => ['migration_idempotent','two_children','partial_allocation','movement_replay','next_month','private_pdf'
-    ,'termination','concurrent_receipt','concurrent_period']], JSON_THROW_ON_ERROR).PHP_EOL;
+    ,'termination','concurrent_receipt','concurrent_period','worker_exclusion','worker_lock_release']], JSON_THROW_ON_ERROR).PHP_EOL;
 } finally {
     $server->exec('DROP DATABASE '.$schema);
     $previous === false ? putenv('APP_PRIVATE_STORAGE_ROOT') : putenv('APP_PRIVATE_STORAGE_ROOT='.$previous);

@@ -393,3 +393,18 @@ vlastníkem, konkrétní obnova P14 PASS, schedule P05 PASS s časovou odchylkou
 Skutečné P05/P07 a export P06 vlastník odložil. Cílené testy 136/753 PASS,
 produkční invarianty 16/16, kapacitní profil a syntetický tisk BAR PASS.
 Chybějící skutečné podklady a lidská rozhodnutí vede tentýž protokol.
+
+
+## Aktivní relace: časování členství 6. 11. 2026
+
+Zadání vlastníka: opravit opožděný automatický běh a zachovat odložené skutečné
+P05/P07 i export P06. [Plán a důkazy](MEMBERSHIP_SCHEDULER_2026-11-06.md),
+[provozní postup](MONTHLY_MEMBERSHIP_RUNBOOK.md#hostingový-denní-plán).
+Větev `codex/membership-hosting-scheduler-20261106`, izolovaná kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-operations-handoff-20261106`.
+Implementována UTC denní brána nad existujícím minutovým cronem, sdílený
+MariaDB zámek a oddělený skutečný heartbeat. Cílené testy PASS; místní MariaDB
+nedostupná, souběh se ověřuje v CI 10.3/11.4. Zbývá zelené CI, merge, chráněný
+deploy, status/install a přirozený tick; teprve potom vypnout redundantní GitHub
+schedule a doplnit skutečné důkazy. Stávající platby ani exporty se kvůli testu
+nezakládají. Původní WIP `kis_rosters_admin.php` mimo tuto větev zachovaný.

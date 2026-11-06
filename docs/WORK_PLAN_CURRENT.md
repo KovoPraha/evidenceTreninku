@@ -166,3 +166,9 @@ a anonymní HTTP 4 stránky / 19 kontrol PASS; cena zachovaná a WIP nedotčené
 Záloha 387 tabulek / 2 triggery ověřena, schéma current bez nových migrací.
 Žádná další aktivace. Zbývající skutečné sjednání/platba/PDF a podklady P05/P07
 zůstávají odložené vlastníkem; tato textová oprava je neuzavírá.
+
+## Spolehlivé denní spouštění členství
+
+Aktuální zadání: [hostingový plán](MEMBERSHIP_SCHEDULER_2026-11-06.md).
+P05/P07 se skutečnou platbou a export P06 nadále odložené; řeší se pouze
+spolehlivost již povoleného plánovače a její důkazy.
