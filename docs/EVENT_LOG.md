@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 7. 11. 2026 / E2026-11-07-P15-S4-IMPL | S4 čtecí přehled implementován a pushnut | 39/2630 lokálně, HTTP 1/36 po PDO guardu; PHPStan/styl/dokumentace CI PASS, zbytek CI probíhá. Bez merge/deploye/aktivace. | [S4](CSC_SPORTSOFT_S4_REGISTRAR.md), [draft #380](https://github.com/KovoPraha/evidenceTreninku/pull/380) |
 | 7. 11. 2026 / E2026-11-07-P15-S4 | Zahájení S4 podle zadání vlastníka | Vlastní větev, čtecí přehled registráře a syntetické testy; bez deploye/aktivace. | [Plán S4](CSC_SPORTSOFT_S4_REGISTRAR.md) |
 | 7. 11. 2026 / E2026-11-07-P15-S2S3-PROMPT | P15: prompt pro druhé pracoviště připraven podle zadání vlastníka | Syntetické adaptéry/transport proti S1, vlastní worktree a testovací originy; bez přístupu k Rikimu/portálům, instalace a aktivace NOT RUN. | [Prompt](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md), [plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376) |
 | 7. 11. 2026 / E2026-11-07-P15-S1-DONE | P15 S1: serverová implementace a syntetická přejímka HOTOVO | 2fe8aa93, 11 CI PASS; 2381/46650, MariaDB 10.3 i 11.4 každý 14/166, neprázdný restore 8 tabulek. Draft PR, bez merge/deploye/aktivace; další S2/S3 a cílová S0 inventura. | [S1](CSC_SPORTSOFT_S1_KIS.md), [důkazy](verification/csc-sportsoft-s1-20261107/RESULTS.md), [PR #376](https://github.com/KovoPraha/evidenceTreninku/pull/376) |

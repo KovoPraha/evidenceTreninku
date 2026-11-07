@@ -7,7 +7,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
-- P15: [S4 přehled registráře](CSC_SPORTSOFT_S4_REGISTRAR.md) ROZPRACOVÁNO v samostatné větvi, další implementace a syntetické testy.
+- P15: [S4 přehled registráře](CSC_SPORTSOFT_S4_REGISTRAR.md) implementace a lokální testy hotové v [draft #380](https://github.com/KovoPraha/evidenceTreninku/pull/380); dokončit CI předání.
   [S1](CSC_SPORTSOFT_S1_KIS.md) / 11 CI PASS a [prompt S2/S3 pro stanici](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md) pushnuté v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376). Bez Rikiho, portálů, deploye či aktivace.
 
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.

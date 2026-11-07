@@ -10488,7 +10488,7 @@
       "role": "reference",
       "status": "SUPPORT",
       "registry": "P15",
-      "disposition": "Rozpracovaný čtecí řez, syntetika; bez deploye/aktivace.",
+      "disposition": "Čtecí přehled implementován v draft #380, syntetické testy a browser PASS; finální CI probíhá, bez deploye/aktivace.",
       "evidence": []
     }
   ],
@@ -10557,7 +10557,8 @@
       "topic": "P15-S4",
       "added_paths": [
         "docs/CSC_SPORTSOFT_S4_REGISTRAR.md"
-      ]
+      ],
+      "pull_request": 380
     }
   ]
 }

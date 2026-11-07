@@ -62,6 +62,11 @@ final class ExternalSyncRegistrarTest extends TestCase
         self::assertSame($accepted, $overview['latest_run_id']);
         self::assertSame('failed', $overview['attempt_status']);
         self::assertSame('auth_required', $overview['failure_code']);
+        ob_start();
+        \externalSyncAdminRender(\externalSyncAdminOverview($this->pdo, 7), null, \externalSyncAdminInput([]), false);
+        $html = ob_get_clean();
+        self::assertStringContainsString('Stanice potřebuje nové přihlášení k portálu.', $html);
+        self::assertStringNotContainsString('auth_required', $html);
         self::assertSame($accepted, $this->read()['run']['id']);
         self::assertNull($this->read(['run' => $job['run_id']])['projection']);
         self::assertSame($before, Fixture::state($this->pdo));

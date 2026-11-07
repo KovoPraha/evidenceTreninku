@@ -35,6 +35,18 @@ function externalSyncAdminCollection(string $collection): string
     };
 }
 
+function externalSyncAdminFailure(?string $code): string
+{
+    return match ($code) {
+        'auth_required' => 'Stanice potřebuje nové přihlášení k portálu.',
+        'layout_changed' => 'Změnila se struktura stránky portálu.',
+        'incomplete' => 'Stanice nezískala úplný snímek dat.',
+        'network_error' => 'Přenos selhal kvůli síťové chybě.',
+        'not_created' => 'Přihláška na portálu dosud není vytvořená.',
+        null => '', default => 'Stanice nahlásila neznámou chybu.',
+    };
+}
+
 function externalSyncAdminValue(mixed $value): string
 {
     return $value === null || $value === '' ? 'Neuvedeno' : (is_bool($value) ? ($value ? 'Ano' : 'Ne') : (string)$value);
@@ -87,6 +99,9 @@ function externalSyncAdminRender(array $overview, ?array $detail, array $input, 
                         <a href="<?= $url(['connection' => $connection['id'], 'run' => $connection['attempt_id']]) ?>">Detail pokusu</a>
                     <?php endif; ?>
                 </p>
+                <?php if ($connection['failure_code'] !== null) : ?>
+                    <p class="mt-2 mb-0"><?= $h(externalSyncAdminFailure($connection['failure_code'])) ?></p>
+                <?php endif; ?>
             </div></article></div>
         <?php endforeach; ?>
         </div>
@@ -117,7 +132,7 @@ function externalSyncAdminRender(array $overview, ?array $detail, array $input, 
             <li class="list-group-item">
                 <a href="<?= $url(['connection' => $connection['id'], 'run' => $item['id']]) ?>">Běh #<?= (int)$item['sequence_no'] ?></a>
                 · <?= $h(externalSyncAdminRunStatus($item['status'])) ?> · začátek <?= $h(externalSyncAdminTime($item['started_at'])) ?>
-                <?php if ($item['failure_code'] !== null) : ?> · hlášení <?= $h($item['failure_code']) ?><?php endif; ?>
+                <?php if ($item['failure_code'] !== null) : ?> · <?= $h(externalSyncAdminFailure($item['failure_code'])) ?><?php endif; ?>
                 <?php if ($item['status'] === 'collecting' && (int)$item['lease_until'] < time()) : ?>
                     <span class="badge text-bg-warning">Bez platného pronájmu běhu</span>
                 <?php endif; ?>
@@ -162,7 +177,7 @@ function externalSyncAdminRender(array $overview, ?array $detail, array $input, 
                         </select>
                     </div><button class="btn btn-primary" type="submit">Zobrazit</button>
                 </form>
-                <p>Filtru odpovídá <?= (int)$projection['selected'] ?> řádků. Stránka <?= (int)$input['page'] ?>, nejvýše 50 řádků.</p>
+                <p>Počet řádků odpovídajících filtru: <?= (int)$projection['selected'] ?>. Stránka <?= (int)$input['page'] ?>, nejvýše 50 řádků.</p>
                 <?php if ($projection['rows'] === []) : ?><p>Na této stránce nejsou řádky odpovídající filtru.</p><?php endif; ?>
                 <?php foreach ($projection['rows'] as $record) :
                     $match = $record['match'];
@@ -171,6 +186,9 @@ function externalSyncAdminRender(array $overview, ?array $detail, array $input, 
                     <article class="card mb-3 sync-record"><div class="card-body text-break">
                         <h4 class="h5">#<?= (int)$record['ordinal'] ?> · <?= $h($record['source']['display_name'] ?? $record['source']['event_name'] ?? 'Řádek zdroje') ?></h4>
                         <p><strong><?= $h($reason[0]) ?></strong> · <?= $h($reason[1]) ?></p>
+                        <?php if ($connection['collection'] !== 'sportsoft_events') : ?>
+                            <p>UCI ID: <?= $h($match['uci_id'] ?? 'Neplatné nebo neuvedené; původní hodnota je v polích zdroje.') ?></p>
+                        <?php endif; ?>
                         <?php if ($match['sportovec_id'] !== null) : ?>
                             <p><a href="sportovec_karta.php?id=<?= (int)$match['sportovec_id'] ?>">Karta osoby #<?= (int)$match['sportovec_id'] ?></a></p>
                         <?php elseif ($match['candidate_count'] > 0) : ?>

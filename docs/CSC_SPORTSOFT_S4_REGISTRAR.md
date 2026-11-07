@@ -66,5 +66,36 @@ duplicitní UCI nelze v této obrazovce ručně potvrdit.
   PHPStan odhalil neprokázanou inicializaci `$pdo` za vstupní ochranou;
   doplněna skutečná kontrola dostupnosti PDO, bez potlačení/baseline.
 - Playwright localhost: přehled i detail načtené, mobil 390 px má scrollWidth
-  390 px a 50 řádků. Další interakce probíhají. Živé portály NOT RUN.
+  390 px a 50 řádků; desktop 1440 px má scrollWidth 1440 px. Filtr Spárováno
+  zobrazil jednu správnou osobu, detail polí zdroje lze rozbalit, návrat na
+  K prověření a přechod na druhou stránku fungují. Vizuálně zkontrolované oba
+  viewporty. České důvody chyb a UCI v řádku doplněné po této kontrole;
+  cílená S4 sada znovu PASS: 7 testů / 122 assertions.
+  Jediná browser console chyba byla chybějící favicon lokálního harnessu.
+  Živé portály a skutečné přihlášení KIS NOT RUN.
 - Merge do main/deploy/aktivace: NOT RUN.
+
+## Reprodukce a meze ověření
+
+V čistém checkoutu s `composer install`, bez `config.php`:
+
+```text
+php vendor/bin/phpunit tests/Integration/ExternalSyncRegistrarTest.php tests/Integration/ExternalSyncRegistrarHttpTest.php
+php vendor/bin/phpunit tests/Unit/ExternalIdentityMatchTest.php tests/Integration/ExternalReadSyncTest.php tests/Unit/StaffWorkspaceRegistryTest.php
+php tools/check-current-docs.php
+git diff --check
+```
+
+MariaDB 10.3/11.4 ověřuje `.github/workflows/tests.yml` se zapnutým výhradně
+testovacím `EVIDENCE_EXTERNAL_SYNC_MARIADB=1`; test vytváří vlastní náhodně
+pojmenovanou databázi a odstraňuje pouze ji. Nepoužívá konfiguraci aplikace.
+Lokální úplný PHPStan na Windows nedoběhl v praktickém čase a byl zastaven;
+autoritativní PHPStan level 5, baseline budget i styl v Linux CI na `53916669`
+PASS: [běh 42399094794](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42399094794).
+Finální CI po úpravě textů běží; předání výsledků následuje.
+
+SQL rozpočet detailu je nejvýše 10 dotazů včetně ověření role a pozorování
+dávek, stejně pro 50 i poslední 1 řádek ze snímku s 301 řádky. Celý snímek
+se pro čerstvé filtrování prochází; měření maximálních 100 000 řádků NOT RUN.
+S4 nemá novou migraci ani zápisové API. Příjem zůstává pod původním OFF
+flagem S1. Zobrazení návrhu nikdy neposune ukazatel přijatého snímku.
