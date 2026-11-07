@@ -4,7 +4,19 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Poslední návaznost: P11 optimalizace docházky
+## Poslední návaznost: P11 klubové ceny e-shopu
+
+Vlastník zadal optimalizaci klubových cen, shodu výsledků a měření před/po,
+se zachováním WIP a bez produkčního nasazení.
+[Průběžně udržovaný plán v repu](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+[session handoff](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+[výsledkový protokol](verification/member-pricing-read-performance-20261107/RESULTS.md).
+Větev `codex/member-pricing-read-performance-20261107`, vlastní kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-member-pricing-performance-20261107`.
+Stav: příprava původního algoritmu a stejné měřicí/paritní fixture;
+další kroky a ověření určuje odkazovaný plán. Checkout a produkce zachované.
+
+## Předchozí návaznost: P11 optimalizace docházky
 
 Pokyn vlastníka „ok, pokračuj“ navazuje R06 bez změn produkce a se zachováním WIP.
 Větev `codex/attendance-read-performance-20261107`, vlastní kopie

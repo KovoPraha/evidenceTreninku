@@ -14,6 +14,13 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## Aktivní návaznosti
 
+P11, 7. 11.: probíhá [optimalizace čtení klubových cen](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md)
+na výslovný pokyn vlastníka, s paritou a měřením před/po. Izolovaná větev
+`codex/member-pricing-read-performance-20261107`, základ `feb8fe8c`.
+Nyní měřicí/původní fixture, potom reader a regrese. Průběžné výsledky
+vede plán a [session handoff](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md).
+WIP zachované, žádné nasazení nebo produkční změny.
+
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
 | P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
