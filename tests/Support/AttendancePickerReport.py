@@ -16,7 +16,7 @@ parser.add_argument("output", type=Path)
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[2]
 assert args.output.resolve().is_relative_to(root / "docs" / "verification")
-assert args.output.name == "attendance-person-picker-20261107"
+assert args.output.name == "attendance-person-picker-20261107" or (args.output.name == "final" and args.output.parent.name == "attendance-person-picker-20261107")
 args.output.mkdir(parents=True, exist_ok=True)
 read = lambda name: json.loads((args.input / name).read_text(encoding="utf-8-sig"))
 before, after = read("http-before.json"), read("http-after.json")
@@ -30,6 +30,7 @@ for d in diags.values():
     assert d["complete"] and d["core_unchanged"] and all(not c["write_commands"] for c in d["cases"])
     assert d["core_checksums_before"] == before["core_checksums_before"]
 browser = {v: {role: read(f"browser-{role}-{v}.json") for role in ["coach", "sports_lead", "other_coach"]} for v in ["before", "after"]}
+expected_dpr = browser["before"]["coach"]["device_pixel_ratio"]
 for roles in browser.values():
     assert all(d["complete"] and len(d["cases"][0]["samples"]) == 13 for d in roles.values())
     assert all(s["status"] == 200 and s["navigation_count"] == 1 for d in roles.values() for s in d["cases"][0]["samples"])
@@ -54,7 +55,7 @@ for left, right in zip(before["cases"], after["cases"]):
                        "sql_count": diag["sql_count"], "php": diag["php"]}
         if case["id"] in ["closure-coach-training", "closure-lead-training", "closure-other-own"]:
             d = browser[label][case["role"]]
-            assert d["viewport"] == {"width": 1036, "height": 703} and d["device_pixel_ratio"] == 1.25
+            assert d["viewport"] == {"width": 1036, "height": 703} and abs(d["device_pixel_ratio"] - expected_dpr) < 1e-6
             item[label]["browser"] = {cache: stats(s["load_ms"] for s in d["cases"][0]["samples"] if s["cache"] == cache) for cache in ["cold", "warm"]}
     summary["cases"].append(item)
 summary["console"] = {}
@@ -82,7 +83,8 @@ environment = {k: runtime[k] for k in ["application_sha", "port", "http_port", "
 environment.update(php=before["php"], server=before["server"], playwright_cli="0.1.23",
                    before_sources_sha256_lf=base_sources,
                    chrome=browser["before"]["coach"]["browser_version"],
-                   native_viewport=browser["before"]["coach"]["viewport"], dpr=1.25,
+                   viewport=browser["before"]["coach"]["viewport"], dpr=expected_dpr,
+                   viewport_mode="controlled desktop viewport" if "-final-" in str(args.input) else "observed native window",
                    after_sources_sha256_lf={n: hashlib.sha256((root / n).read_bytes().replace(b"\r\n", b"\n")).hexdigest() for n in sources},
                    business_fixture={"plans": 728, "weeks": 52, "participants": 200, "revisions": 52,
                                      "medical_watches": 10000, "medical_records": 30000, "selectable_people": 10221})

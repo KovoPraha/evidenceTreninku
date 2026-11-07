@@ -67,12 +67,32 @@ function trainingClosurePickerInput(array $post, string $kind): array
     $query = staffListText($post, $kind . '_q');
     $action = staffListText($post, 'action');
     $prefix = 'find_' . ($kind === 'participant' ? 'participants' : 'excuse_person');
-    $page = str_starts_with($action, $prefix . '_') ? substr($action, strlen($prefix) + 1) : '1';
+    $page = staffListText($post, $kind . '_current_page') ?: '1';
+    if ($action === $prefix) {
+        $page = '1';
+    } elseif (str_starts_with($action, $prefix . '_')) {
+        $page = substr($action, strlen($prefix) + 1);
+    }
     // A changed term always starts at the first page, including native Enter/search submits.
     if ($query !== staffListText($post, $kind . '_last_q')) {
         $page = '1';
     }
     return ['q' => $query, 'page' => $page];
+}
+
+/** Separate excuse fields from attendance reason while accepting the original API payload. */
+function trainingClosureExcuseDraft(array $post): array
+{
+    if ($post === []) {
+        return [];
+    }
+    $legacy = ($post['action'] ?? '') === 'personal_excuse';
+    $draft = [];
+    foreach (['received_at', 'source', 'reason'] as $key) {
+        $value = $post['excuse_' . $key] ?? ($legacy ? ($post[$key] ?? '') : '');
+        $draft[$key] = is_scalar($value) ? (string)$value : '';
+    }
+    return $draft;
 }
 
 /** Native read-only POST keeps draft fields, selection and original concurrency version. */
@@ -86,6 +106,7 @@ function trainingClosurePeopleControls(string $kind, array $page): void
 <button class="btn btn-outline-secondary" name="action" value="<?=$action?>" formnovalidate>Hledat sportovce</button>
 </div>
 <input type="hidden" name="<?=staffListH($kind)?>_last_q" value="<?=staffListH($page['query'])?>">
+<input type="hidden" name="<?=staffListH($kind)?>_current_page" value="<?=(int)$page['page']?>">
 <p class="small" role="status">Strana <?=(int)$page['page']?> · výsledků na stránce: <?=count($page['rows'])?>.
 Vybrané osoby zůstávají v nabídce i při hledání. Změna hledání docházku ani omluvu neukládá.</p>
 <div class="mb-2">

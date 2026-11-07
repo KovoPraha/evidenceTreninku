@@ -23,6 +23,11 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 Pracovní ID 06 v původním nesloučeném plánu c0883ff2 kolidovalo s přijatým
 DOC02; přijaté DOC02 zůstává 06 a výběr osob dostává 07.
 
+Doplnění před přijetím PR #366: dvě nativní formy nepředávají neodeslaná pole
+sousední části. Volba se zpřesňuje na společný formulář s oddělenými prefixy
+omluvy a původní serverovou validací. Nový skutečný pár měření i JS/noJS
+regrese obou současných draftů nahradí předběžný pár; bez produkce.
+
 ## D2026-11-07-05
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; autonomní měření podle pokynu vlastníka bez produkčních změn.

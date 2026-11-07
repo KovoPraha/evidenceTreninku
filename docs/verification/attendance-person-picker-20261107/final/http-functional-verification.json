@@ -1,0 +1,198 @@
+{
+    "complete": true,
+    "synthetic_only": true,
+    "read_only_checks": 36,
+    "checks": [
+        {
+            "name": "No PHP error in actual-attendance",
+            "pass": true
+        },
+        {
+            "name": "No PHP error in actual-attendance",
+            "pass": true
+        },
+        {
+            "name": "Search does not require valid write or current version",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft version",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft participant_ids",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft coach_ids",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft record_source",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft reason",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft guest_reason",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft confirm_action",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft actual_started_at",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft actual_ended_at",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft person_id",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft excuse_reason",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft excuse_source",
+            "pass": true
+        },
+        {
+            "name": "Search preserves draft excuse_received_at",
+            "pass": true
+        },
+        {
+            "name": "Draft text escaped",
+            "pass": true
+        },
+        {
+            "name": "No PHP error in actual-attendance",
+            "pass": true
+        },
+        {
+            "name": "Searched guest remains selected outside results",
+            "pass": true
+        },
+        {
+            "name": "No PHP error in actual-attendance",
+            "pass": true
+        },
+        {
+            "name": "Intentionally empty selection is not restored from database",
+            "pass": true
+        },
+        {
+            "name": "No PHP error in actual-attendance",
+            "pass": true
+        },
+        {
+            "name": "Native next page retains empty draft",
+            "pass": true
+        },
+        {
+            "name": "Search CSRF required",
+            "pass": true
+        },
+        {
+            "name": "Malformed search command cannot fall through to a write",
+            "pass": true
+        },
+        {
+            "name": "Search cannot inspect foreign training",
+            "pass": true
+        },
+        {
+            "name": "No PHP error in personal-excuse",
+            "pass": true
+        },
+        {
+            "name": "No PHP error in personal-excuse",
+            "pass": true
+        },
+        {
+            "name": "Excuse search preserves neighboring attendance draft",
+            "pass": true
+        },
+        {
+            "name": "Excuse search preserves person_id",
+            "pass": true
+        },
+        {
+            "name": "Excuse search preserves excuse_received_at",
+            "pass": true
+        },
+        {
+            "name": "Excuse search preserves excuse_source",
+            "pass": true
+        },
+        {
+            "name": "Excuse search preserves excuse_reason",
+            "pass": true
+        },
+        {
+            "name": "No PHP error in actual-attendance",
+            "pass": true
+        },
+        {
+            "name": "Failed closure keeps paper source and version",
+            "pass": true
+        },
+        {
+            "name": "All search, paging and rejected writes leave domain data unchanged",
+            "pass": true
+        },
+        {
+            "name": "No PHP error in actual-attendance",
+            "pass": true
+        },
+        {
+            "name": "Canonical HTML write redirects normally",
+            "pass": true
+        },
+        {
+            "name": "Canonical revision preserves paper provenance",
+            "pass": true
+        },
+        {
+            "name": "Canonical write includes searched off-page guest",
+            "pass": true
+        },
+        {
+            "name": "No PHP error in actual-attendance",
+            "pass": true
+        },
+        {
+            "name": "Stale write retains original version and cannot overwrite",
+            "pass": true
+        },
+        {
+            "name": "Original JSON excuse API payload remains accepted",
+            "pass": true
+        },
+        {
+            "name": "Legacy excuse API retains its own source",
+            "pass": true
+        }
+    ],
+    "read_only_domain_checksums": {
+        "p11_read_ad9527ab647e37e4.treninky": 1302416506,
+        "p11_read_ad9527ab647e37e4.trenink_sportovec": 108392036,
+        "p11_read_ad9527ab647e37e4.trenink_trener": 655435705,
+        "p11_read_ad9527ab647e37e4.planovane_treninky": 3638870507,
+        "p11_read_ad9527ab647e37e4.training_closures": 923930483,
+        "p11_read_ad9527ab647e37e4.training_closure_revisions": 140858147,
+        "p11_read_ad9527ab647e37e4.training_personal_excuses": 0,
+        "p11_read_ad9527ab647e37e4.training_rsvps": 0,
+        "p11_read_ad9527ab647e37e4.club_makeup_credits": 0
+    },
+    "synthetic_write_uat_after_measurement": true,
+    "saved_version": 53,
+    "saved_participants": 201,
+    "record_source": "paper"
+}

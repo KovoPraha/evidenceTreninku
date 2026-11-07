@@ -32,7 +32,10 @@ $form = static function (array $response, string $section) use ($assert): array 
     $dom->loadHTML('<?xml encoding="UTF-8">' . $response['body'], LIBXML_NONET);
     libxml_clear_errors();
     $x = new DOMXPath($dom);
-    $node = $x->query('//*[@id="' . $section . '"]//form')->item(0);
+    $node = $x->query('//form[@id="training-session-form"]')->item(0);
+    if (!$node) {
+        $node = $x->query('//*[@id="' . $section . '"]//form')->item(0);
+    }
     if (!$node) {
         throw new RuntimeException('Missing form: ' . $section);
     }
@@ -70,11 +73,16 @@ $draft['guest_reason'] = 'LOCALHOST dolozeny host mimo soupisku.';
 $draft['confirm_action'] = '1';
 $draft['actual_started_at'] = $trainingDate . 'T08:00';
 $draft['actual_ended_at'] = $trainingDate . 'T09:00';
+$draft['excuse_reason'] = 'LOCALHOST druhy rozepsany formular.';
+$draft['excuse_source'] = 'paper';
+$draft['excuse_received_at'] = date('Y-m-d') . 'T06:00';
+$draft['person_id'] = '1001';
 $draft['participant_q'] = (string)$host;
 $response = $request($draft);
 $searched = $form($response, 'actual-attendance');
 $assert($response['status'] === 200, 'Search does not require valid write or current version');
-foreach (['version', 'participant_ids', 'coach_ids', 'record_source', 'reason', 'guest_reason', 'confirm_action', 'actual_started_at', 'actual_ended_at'] as $key) {
+foreach (['version', 'participant_ids', 'coach_ids', 'record_source', 'reason', 'guest_reason', 'confirm_action', 'actual_started_at', 'actual_ended_at',
+    'person_id', 'excuse_reason', 'excuse_source', 'excuse_received_at'] as $key) {
     $left = $draft[$key];
     $right = $searched[$key];
     if (is_array($left)) {
@@ -105,19 +113,28 @@ $assert($response['status'] === 200 && str_contains($response['body'], 'Strana 2
 $invalidCsrf = $draft;
 $invalidCsrf['csrf_token'] = 'invalid';
 $assert($request($invalidCsrf)['status'] === 403, 'Search CSRF required');
+$invalidSearch = $draft;
+$invalidSearch['version'] = (string)$version;
+$invalidSearch['action'] = 'find_participants_bad';
+$assert($request($invalidSearch)['status'] === 400, 'Malformed search command cannot fall through to a write');
 $foreign = $draft;
 $foreign['training_id'] = '102';
 $assert($request($foreign)['status'] === 403, 'Search cannot inspect foreign training');
 $excuse = $form($initial, 'personal-excuse');
 $excuse['action'] = 'find_excuse_person';
 $excuse['person_id'] = (string)$host;
-$excuse['received_at'] = date('Y-m-d') . 'T06:00';
-$excuse['source'] = 'paper';
-$excuse['reason'] = 'LOCALHOST osobni omluva z papiroveho podkladu.';
+$excuse['excuse_received_at'] = date('Y-m-d') . 'T06:00';
+$excuse['excuse_source'] = 'paper';
+$excuse['excuse_reason'] = 'LOCALHOST osobni omluva z papiroveho podkladu.';
 $excuse['excuse_q'] = 'NOT FOUND';
 $response = $request($excuse);
 $foundExcuse = $form($response, 'personal-excuse');
-foreach (['person_id', 'received_at', 'source', 'reason'] as $key) {
+$assert(
+    $foundExcuse['participant_ids'] === $excuse['participant_ids']
+    && $foundExcuse['reason'] === $excuse['reason'] && $foundExcuse['version'] === $excuse['version'],
+    'Excuse search preserves neighboring attendance draft'
+);
+foreach (['person_id', 'excuse_received_at', 'excuse_source', 'excuse_reason'] as $key) {
     $assert($foundExcuse[$key] === $excuse[$key], 'Excuse search preserves ' . $key);
 }
 $badWrite = $draft;
@@ -150,6 +167,14 @@ $afterWrite = $checksum();
 $response = $request($write);
 $stale = $form($response, 'actual-attendance');
 $assert($response['status'] === 422 && $stale['version'] === (string)$version && $afterWrite === $checksum(), 'Stale write retains original version and cannot overwrite');
+$legacy = ['csrf_token' => $write['csrf_token'], 'action' => 'personal_excuse', 'training_id' => '101',
+    'plan_id' => '50010', 'person_id' => '1002', 'received_at' => date('Y-m-d') . 'T06:00',
+    'source' => 'phone', 'reason' => 'LOCALHOST legacy JSON API excuse payload.'];
+$response = fullHttpRequest($runtime, $output, 'coach', '/training_closure_admin.php?id=101', $legacy, ['Accept: application/json']);
+$json = json_decode($response['body'], true, 512, JSON_THROW_ON_ERROR);
+$assert($response['status'] === 200 && ($json['ok'] ?? false) === true, 'Original JSON excuse API payload remains accepted');
+$rowLegacy = $admin->query('SELECT source FROM training_personal_excuses WHERE plan_id=50010 AND sportovec_id=1002')->fetchColumn();
+$assert($rowLegacy === 'phone', 'Legacy excuse API retains its own source');
 $report = ['complete' => true, 'synthetic_only' => true, 'read_only_checks' => $readOnlyChecks,
     'checks' => $checks, 'read_only_domain_checksums' => $before, 'synthetic_write_uat_after_measurement' => true,
     'saved_version' => (int)$row['version'], 'saved_participants' => count($snapshot['participant_ids']), 'record_source' => $snapshot['record_source']];

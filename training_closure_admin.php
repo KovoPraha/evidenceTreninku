@@ -47,6 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(403);
         exit('Neplatný bezpečnostní token.');
     }
+    if (str_starts_with(staffListText($_POST, 'action'), 'find_') && !trainingClosureSearchAction($_POST)) {
+        http_response_code(400);
+        exit('Neplatná strana hledání.');
+    }
     if (!trainingClosureSearchAction($_POST)) {
         try {
             if (($_POST['action'] ?? '') === 'personal_excuse') {
@@ -54,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo,
                     (int)($_POST['plan_id'] ?? 0),
                     (int)($_POST['person_id'] ?? 0),
-                    str_replace('T', ' ', (string)($_POST['received_at'] ?? '')).':00',
-                    (string)($_POST['source'] ?? ''),
-                    (string)($_POST['reason'] ?? ''),
+                    str_replace('T', ' ', (string)($_POST['excuse_received_at'] ?? $_POST['received_at'] ?? '')).':00',
+                    (string)($_POST['excuse_source'] ?? $_POST['source'] ?? ''),
+                    (string)($_POST['excuse_reason'] ?? $_POST['reason'] ?? ''),
                     $actor
                 );
                 $success = $result['eligible'] ? 'Osobní omluva byla zapsána. Nárok vznikne až po uzavření skutečné lekce.' : 'Osobní omluva byla zapsána bez nároku: '
@@ -143,14 +147,13 @@ $lessonOn = array_key_exists('lesson_on', $_GET) ? staffListText($_GET, 'lesson_
 $lessonChoices = trainingDayChoices($pdo, $actor, $lessonSearch, $lessonOn);
 $excusePerson = max(0, (int)($_POST['person_id'] ?? $_GET['person_id'] ?? 0));
 $searching = $_SERVER['REQUEST_METHOD'] === 'POST' && trainingClosureSearchAction($_POST);
-$searchExcuse = $searching && str_starts_with(staffListText($_POST, 'action'), 'find_excuse_person');
-$excuseForm = ($searchExcuse || ($error !== '' && ($_POST['action'] ?? '') === 'personal_excuse')) ? $_POST : [];
+$excuseForm = trainingClosureExcuseDraft(($searching || $error !== '') ? $_POST : []);
 $coaches = $pdo->query('SELECT id,jmeno FROM treneri WHERE aktivni=1 ORDER BY jmeno')->fetchAll(PDO::FETCH_ASSOC);
 $s = $pdo->prepare("SELECT t.id,t.datum,t.napln,c.version,c.status FROM treninky t LEFT JOIN training_closures c ON c.training_id=t.id WHERE t.datum<=? AND "
     .coachScopeTrainingPredicate($pdo)." ORDER BY CASE WHEN c.current_revision_id IS NULL THEN 0 ELSE 1 END,t.datum DESC,t.id DESC LIMIT 100");
 $s->execute([date('Y-m-d')]);
 $rows = $s->fetchAll(PDO::FETCH_ASSOC);
-$failedClosure = (($searching && !$searchExcuse) || ($error !== '' && ($_POST['action'] ?? '') !== 'personal_excuse')) ? $_POST : null;
+$failedClosure = (($searching && array_key_exists('version', $_POST)) || ($error !== '' && (($_POST['action'] ?? '') !== 'personal_excuse' || array_key_exists('version', $_POST)))) ? $_POST : null;
 $form = trainingClosureFormState($failedClosure, $current, $selectedPeople, $selectedCoaches);
 $selectedPeople = $form['participant_ids'];
 $selectedCoaches = $form['coach_ids'];
@@ -191,6 +194,12 @@ function tcH(mixed $v): string
 <?php if ($error):?><div class="alert alert-danger"><?=tcH($error)?></div><?php endif;?><?php if ($success):
     ?><div class="alert alert-success"><?=tcH($success)?></div><?php endif;?>
 <?php require __DIR__.'/includes/training_day_view.php';?>
+<?php if ($training || $plan): ?>
+<form method="post" id="training-session-form">
+<input type="hidden" name="csrf_token" value="<?=tcH(csrf_token())?>">
+<input type="hidden" name="training_id" value="<?=$trainingId?>">
+<?php if ($plan): ?><input type="hidden" name="plan_id" value="<?=(int)$plan['id']?>"><?php endif; ?>
+<?php endif; ?>
 <?php if ($training):?><section class="card mb-4" id="actual-attendance">
 <div class="card-body">
 <h2>Trénink #<?=$trainingId?> · <?=tcH($training['datum'])?></h2>
@@ -206,9 +215,6 @@ function tcH(mixed $v): string
             ?><div class="alert alert-warning">Podklad mezitím změnil jiný pracovník. <a href="?id=<?=$trainingId
             ?>">Načíst aktuální verzi</a> a zkontrolovat změny; původní návrh se nepřepíše automaticky.</div><?php
         endif;?>
-<form method="post">
-<input type="hidden" name="csrf_token" value="<?=tcH(csrf_token())?>">
-<input type="hidden" name="training_id" value="<?=$trainingId?>">
 <input type="hidden" name="version" value="<?=$form['version']?>">
 <div class="row g-3">
 <label class="col-md-6">Skutečný začátek<input class="form-control" type="datetime-local" name="actual_started_at" required value="<?=
@@ -222,12 +228,12 @@ function tcH(mixed $v): string
 <label class="d-block">Skutečně přítomní sportovci<select class="form-select" name="participant_ids[]" multiple size="9"><?php
         foreach ($people as $p):?><option value="<?=(int)$p['id']?>" <?=in_array((int)$p['id'], $selectedPeople, true) ? 'selected' : ''
             ?>><?=tcH($p['prijmeni'].' '.$p['jmeno'])?> (#<?=(int)$p['id']?>)</option><?php endforeach;
-        ?></select>
+    ?></select>
 </label>
 </div>
 <label class="col-md-6">Skutečně přítomní trenéři<select class="form-select" name="coach_ids[]" multiple required size="9"><?php
-            foreach ($coaches as $c):?><option value="<?=(int)$c['id']?>" <?=in_array((int)$c['id'], $selectedCoaches, true) ? 'selected' : ''
-                ?>><?=tcH($c['jmeno'])?></option><?php endforeach;?></select>
+        foreach ($coaches as $c):?><option value="<?=(int)$c['id']?>" <?=in_array((int)$c['id'], $selectedCoaches, true) ? 'selected' : ''
+            ?>><?=tcH($c['jmeno'])?></option><?php endforeach;?></select>
 </label>
 <label class="col-md-6">Podklad<select name="record_source" class="form-select">
 <option value="coach" <?=$form['record_source'] === 'coach' ? 'selected' : ''?>>Zápis trenéra</option>
@@ -235,32 +241,28 @@ function tcH(mixed $v): string
 </select>
 </label>
 <label class="col-md-6">Důvod účasti hostů mimo očekávanou soupisku<input class="form-control" name="guest_reason" minlength="10" maxlength="1000" value="<?=
-                    tcH($form['guest_reason'])?>">
+                tcH($form['guest_reason'])?>">
 </label>
 <label class="col-12">Důvod zápisu nebo opravy<textarea class="form-control" required minlength="10" maxlength="1000" name="reason"><?=
-                    tcH($form['reason'])?></textarea>
+                tcH($form['reason'])?></textarea>
 </label>
 </div>
 <label class="d-block my-3">
 <input type="checkbox" name="confirm_action" value="1" required <?=$form['confirm_action'] ? 'checked' : ''
-        ?>> Potvrzuji skutečný konec, účastníky a trenéry. Lekce již skončila.</label>
-<button class="btn btn-primary" name="action" value="close"><?=$current ? 'Uložit opravenou verzi' : 'Uzavřít docházku'
-        ?></button> <?php if ($current):?><button class="btn btn-outline-danger" name="action" value="void">Zneplatnit lekci s uvedeným důvodem</button><?php
-        endif;?></form>
+    ?>> Potvrzuji skutečný konec, účastníky a trenéry. Lekce již skončila.</label>
+<button class="btn btn-primary" name="action" value="close" formnovalidate><?=$current ? 'Uložit opravenou verzi' : 'Uzavřít docházku'
+    ?></button> <?php if ($current):?><button class="btn btn-outline-danger" name="action" value="void" formnovalidate>Zneplatnit lekci s uvedeným důvodem</button><?php
+    endif;?>
 <?php if ($history):?><h3 class="mt-4">Historie uzavření</h3>
 <ul><?php foreach ($history as $h):?><li>Verze <?=(int)$h['version']?> · <?=tcH($h['closed_at'])
     ?> · <?=tcH($h['status'])?> · <?=tcH($h['reason'])?></li><?php endforeach;?></ul><?php endif;
-        ?></div>
+    ?></div>
 </section><?php endif;?>
 <?php if ($plan):?><section class="card mb-4" id="personal-excuse">
 <div class="card-body">
 <h2>Osobně přijatá omluva</h2>
 <p>Zapište skutečný čas, kdy rodič či sportovec omluvu předal. Lhůta náhrady se posuzuje podle pravidel konkrétního programu; čas přepisu se nepřepisuje.</p>
-<form method="post">
-<input type="hidden" name="csrf_token" value="<?=tcH(csrf_token())?>">
-<input type="hidden" name="training_id" value="<?=$trainingId?>">
 <div class="row g-3">
-<input type="hidden" name="plan_id" value="<?=(int)$plan['id']?>">
 <p>Omluva pro lekci <strong><?=tcH($plan['nazev'].' · '.$plan['datum'])?></strong>
 </p>
 <div class="col-md-5" data-excuse-person-picker>
@@ -271,10 +273,10 @@ function tcH(mixed $v): string
     ?></option><?php endforeach;?></select>
 </label>
 </div>
-<label class="col-md-4">Skutečné přijetí omluvy<input class="form-control" type="datetime-local" required name="received_at" value="<?=
+<label class="col-md-4">Skutečné přijetí omluvy<input class="form-control" type="datetime-local" required name="excuse_received_at" value="<?=
         tcH($excuseForm['received_at'] ?? '')?>">
 </label>
-<label class="col-md-3">Způsob přijetí<select class="form-select" name="source">
+<label class="col-md-3">Způsob přijetí<select class="form-select" name="excuse_source">
 <option value="in_person" <?=($excuseForm['source'] ?? 'in_person') === 'in_person' ? 'selected' : ''
     ?>>Osobně</option>
 <option value="phone" <?=($excuseForm['source'] ?? 'in_person') === 'phone' ? 'selected' : ''
@@ -283,14 +285,15 @@ function tcH(mixed $v): string
     ?>>Na papíře</option>
 </select>
 </label>
-<label class="col-md-9">Důvod a podklad přepisu<input class="form-control" required minlength="10" maxlength="1000" name="reason" value="<?=
+<label class="col-md-9">Důvod a podklad přepisu<input class="form-control" required minlength="10" maxlength="1000" name="excuse_reason" value="<?=
         tcH($excuseForm['reason'] ?? '')?>">
 </label>
 </div>
-<button class="btn btn-outline-primary mt-3" name="action" value="personal_excuse">Zapsat osobní omluvu</button>
-</form>
+<button class="btn btn-outline-primary mt-3" name="action" value="personal_excuse" formnovalidate>Zapsat osobní omluvu</button>
+
 </div>
 </section><?php endif;?>
+<?php if ($training || $plan): ?></form><?php endif; ?>
 <h2>Zapsané lekce k uzavření a opravě</h2>
 <p>Neuzavřené lekce jsou první. Chybějící docházka neznamená absenci všech sportovců.</p>
 <table class="table">

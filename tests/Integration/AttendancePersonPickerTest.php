@@ -127,5 +127,25 @@ final class AttendancePersonPickerTest extends TestCase
             ['action' => 'find_participants_2', 'participant_q' => 'New', 'participant_last_q' => 'Anna'],
             'participant'
         ));
+        self::assertSame(['q' => 'Anna', 'page' => '3'], trainingClosurePickerInput(
+            ['action' => 'find_excuse_person', 'participant_q' => 'Anna', 'participant_last_q' => 'Anna', 'participant_current_page' => '3'],
+            'participant'
+        ));
+    }
+
+    public function testExcuseDraftKeepsItsNamespaceAndLegacyPayloadWithoutBorrowingAttendanceReason(): void
+    {
+        self::assertSame([], trainingClosureExcuseDraft([]));
+        self::assertSame(['received_at' => '', 'source' => '', 'reason' => ''], trainingClosureExcuseDraft(['action' => 'find_participants', 'reason' => 'Attendance only']));
+        self::assertSame(['received_at' => '2026-11-07T06:00', 'source' => 'paper', 'reason' => '  Excuse draft  '], trainingClosureExcuseDraft([
+            'action' => 'find_participants', 'reason' => 'Attendance draft', 'excuse_received_at' => '2026-11-07T06:00',
+            'excuse_source' => 'paper', 'excuse_reason' => '  Excuse draft  ',
+        ]));
+        self::assertSame(['received_at' => '2026-11-07T06:00', 'source' => 'phone', 'reason' => 'Legacy API'], trainingClosureExcuseDraft([
+            'action' => 'personal_excuse', 'received_at' => '2026-11-07T06:00', 'source' => 'phone', 'reason' => 'Legacy API',
+        ]));
+        self::assertSame(['received_at' => '', 'source' => '', 'reason' => ''], trainingClosureExcuseDraft([
+            'action' => 'personal_excuse', 'excuse_received_at' => [], 'excuse_source' => [], 'excuse_reason' => [],
+        ]));
     }
 }

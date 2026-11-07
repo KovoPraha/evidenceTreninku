@@ -76,3 +76,22 @@ určené pořadí při identických jménech, nyní má ID jako stabilní tie-br
 Volbu eviduje [D2026-11-07-07](DECISION_LOG.md#d2026-11-07-07); původní pracovní ID 06 bylo před integrací sjednocené s přijatým DOC02.
 
 Při integraci převzat main `22e1b2cb`: DOC02 katalog/pravidla, mobilní správa přístupů a záznam cizího nasazení P07 se zachovávají. Měřené R06 soubory se tím nemění; nový globální main ani produkce nebyly samostatně přeměřené.
+
+## Doplnění před přijetím: uchování obou rozepsaných částí
+
+Při review nalezena mezera původního návrhu se dvěma samostatnými formuláři:
+hledání v jednom POSTu uchová jen jeho pole a může zahodit neodeslaný draft
+v druhém. Původní 540/78 měření zůstává historický předběžný pár, PR #366 je
+znovu draft. Kód dosud není v main ani nasazený.
+
+Zvolená oprava: jeden společný nativní formulář pro obě části, pojmenované
+akce a oddělené prefixy polí omluvy. Hledání odešle a zachová oba drafty i bez
+JavaScriptu. Kanonické save funkce/CSRF/role/locky zůstávají; kompatibilní
+staré API názvy omluvy se stále přijmou. Zápisová tlačítka spoléhají na stejné
+serverové validace, protože nativní required pole druhé části nesmějí blokovat
+první. Nezavádí se nový JS ani endpoint. Toto rozhodnutí doplňuje D07.
+
+Znovu před/po na novém jediném kombinovaném schématu; původní controller z
+čistého d958fd6e a finální společný formulář. Ověřit navíc současně rozepsanou
+docházku a omluvu při hledání/stránkování v obou směrech, včetně JS/noJS.
+Nový runtime se nesmí zaměnit za již uklizený původní. Produkce stále beze změn.
