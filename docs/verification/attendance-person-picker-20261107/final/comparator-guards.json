@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "positive_replay_cases": 18,
+  "source_run": 42375011560,
+  "checks": [
+    {
+      "case": "sql57",
+      "rejected": true,
+      "exit_code": 255,
+      "reason": "Attendance query/row budget or measured improvement regressed"
+    },
+    {
+      "case": "html_mismatch",
+      "rejected": true,
+      "exit_code": 255,
+      "reason": "Attendance data or rendered HTML changed"
+    },
+    {
+      "case": "rows1001",
+      "rejected": true,
+      "exit_code": 255,
+      "reason": "Attendance query/row budget or measured improvement regressed"
+    }
+  ]
+}

@@ -32,6 +32,10 @@ regrese obou současných draftů PASS; předběžný pár zůstává historick�
 #367 dávkové lekce převzaté, celé integrované HTTP zatím nepřeměřené.
 
 
+Doplnění integračního měřidla: starý celostránkový cap45 je po započtení nové
+UI projekce a #367 nahrazen přesným cap56. Původní validator budget, cap1000řádků,
+HTML/data parita a relativní úspora zůstávají; vadné reporty jsou odmítané.
+
 ## D2026-11-07-05
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; autonomní měření podle pokynu vlastníka bez produkčních změn.

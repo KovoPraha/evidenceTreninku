@@ -125,3 +125,11 @@ Původní WIP má shodný SHA256. Žádná produkční operace tohoto PR.
 Zbývá společné HTTP přeměření s #367 (starých 219 SQL není dnešní integrovaný
 počet), R13/R05 objemy/kandidáti, rows examined, fyzický mobil/síť/CPU/souběh
 a další R01–R16. K0.2 zůstává otevřené. Nasazení tohoto pickeru nebylo povoleno.
+
+Integrační CI 42375011560: všech 18 párů HTML/data PASS, selhal starý cap 45 SQL.
+Nový přesný celostránkový budget 56 = 45 + 14 picker − 3 dávkové lekce; žádná změna aplikace.
+Rows cap1000, relativní úspora a samostatný validator budget3/200 a5/1200 zůstávají.
+Aktuální training_day.php nyní sdílený i v generované before kopii.
+[Přehrání 10.3](ci-budget-replay-10.3.json), [11.4](ci-budget-replay-11.4.json),
+[odmítnutí 57 SQL, 1001 řádků a vadného HTML](comparator-guards.json) PASS.
+Nový celý nativní CI běh následuje na finální hlavě PR.

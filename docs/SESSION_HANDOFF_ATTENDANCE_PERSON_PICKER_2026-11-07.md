@@ -55,3 +55,11 @@ není součást tohoto celého časového páru; integrované testy/CI zvlášť
 Integrační ověření 9d4a7538 po převzetí #367: **50 testů / 1294 assertions PASS**,
 PHP quality CI 42375011506 SUCCESS; [doklad](verification/attendance-person-picker-20261107/final/integration.json).
 Celé HTTP společné verze tím není přeměřené. Finální CI/merge hlavy u #366.
+
+Integrační CI 42375011560: všech 18 párů HTML/data PASS, selhal starý cap 45 SQL.
+Nový přesný celostránkový budget 56 = 45 + 14 picker − 3 dávkové lekce; žádná změna aplikace.
+Rows cap1000, relativní úspora a samostatný validator budget3/200 a5/1200 zůstávají.
+Aktuální training_day.php nyní sdílený i v generované before kopii.
+[Přehrání 10.3](verification/attendance-person-picker-20261107/final/ci-budget-replay-10.3.json), [11.4](verification/attendance-person-picker-20261107/final/ci-budget-replay-11.4.json),
+[odmítnutí 57 SQL, 1001 řádků a vadného HTML](verification/attendance-person-picker-20261107/final/comparator-guards.json) PASS.
+Nový celý nativní CI běh následuje na finální hlavě PR.

@@ -621,6 +621,7 @@ jobs:
           # Historical archived harnesses remain immutable; HTML parity still applies to this common UI.
           cp training_closure_admin.php "$attendance_tree/training_closure_admin.php"
           cp includes/training_closure_people.php "$attendance_tree/includes/training_closure_people.php"
+          cp includes/training_day.php "$attendance_tree/includes/training_day.php"
           # CLI flags are not inherited by measurement workers. Import the shared UI only
           # in this generated copy; the versioned frozen harness remains unchanged.
           ATTENDANCE_PROFILE="$attendance_tree/tests/Support/AttendanceBeforeProfile.php" php <<'PHP'

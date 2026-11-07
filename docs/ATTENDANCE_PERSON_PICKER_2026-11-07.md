@@ -79,3 +79,19 @@ vlastní rozhodnutí nyní 09, události 22–24. Historické commity se nepřep
 Integrační ověření 9d4a7538 po převzetí #367: **50 testů / 1294 assertions PASS**,
 PHP quality CI 42375011506 SUCCESS; [doklad](verification/attendance-person-picker-20261107/final/integration.json).
 Celé HTTP společné verze tím není přeměřené. Finální CI/merge hlavy u #366.
+
+## Doplnění po integračním CI, před úpravou měřicího rozpočtu
+
+CI 42375011560 obou MariaDB potvrdilo shodné celé HTML i doménová data ve všech
+9 R06 případech, selhalo pouze na starém limitu 45 SQL pro předchozí celé UI.
+Aktuální bounded picker přidává v tomto fixture 14 SQL a #367 ušetří 3, tedy
+nový pevný limit **45 + 14 − 3 = 56 SQL**. Pozorováno přesně 56 ve všech případech;
+139–950 řádků, původní cap 1000 a požadavek úspory vůči before platí dál.
+Původní samostatný validator budget 3 dotazy/200 a 5/1200 i transakční lock
+parita zůstávají nezměněné v AttendanceReadProfile. Nejde o zhoršení validatoru.
+
+Zvolená změna CI před implementací: sdílet i aktuální training_day.php v before,
+aby historický pár izoloval původní validator na shodné dnešní UI/lekci.
+Retargetovat pouze zastaralý celostránkový cap na 56; ponechat přísné HTML/data,
+cap řádků i relativní úsporu. Změna není aplikační optimalizace ani deploy.
+Znovu přehrát skutečné reporty, odmítnout poškozený HTML i 57 SQL a zopakovat CI.
