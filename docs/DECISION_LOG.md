@@ -37,6 +37,11 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 - **Varianta a omezení:** Computer Use skončil kvůli neurčené URL prohlížeče;
   nepokračuje ovládání desktopu. Serverové formulářové ověření neoznačovat
   za vizuální produkční Chrome UAT. [Plán a akceptace](ACCESS_OVERVIEW_2026-11-07.md).
+- **Navazující výslovné zadání ROLE01-VIS:** vlastník následně požádal o nové
+  vizuální ověření v prohlížeči pouze čtením. Dokončeno na desktopu a 390/360 px;
+  mobilní tabulka má výhradu čitelnosti, posun a editor fungují. Žádné role se
+  neměnily. [Nový vizuální protokol](verification/access-visual-20261107/RESULTS.md)
+  doplňuje původní technickou přejímku; mobilní redesign zatím jen doporučený.
 
 ## D2026-11-07-03
 
@@ -60,7 +65,7 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
 | Oblast | Trvalý zdroj | Jak číst |
 | --- | --- | --- |
-| ROLE01 — Lidé a přístupy: implementace, nasazení a technická produkční přejímka hotové | [Plán](ACCESS_OVERVIEW_2026-11-07.md), [důvod a oprávnění](#d2026-11-07-02), [produkční protokol](verification/access-release-20261107/RESULTS.md) | [Uzavření E2026-11-07-07](EVENT_LOG.md), #356; původní role přesně zachované, nové testovací účty deaktivované. Vizuální Chrome UAT NOT RUN, skutečné formuláře 16/16 PASS |
+| ROLE01 — Lidé a přístupy: implementace, nasazení a technická produkční přejímka hotové | [Plán](ACCESS_OVERVIEW_2026-11-07.md), [důvod a oprávnění](#d2026-11-07-02), [produkční protokol](verification/access-release-20261107/RESULTS.md) | [Uzavření E2026-11-07-07/10](EVENT_LOG.md), #356; původní role přesně zachované, nové testovací účty deaktivované. Formuláře 16/16 PASS; [navazující skutečný Chrome průchod](verification/access-visual-20261107/RESULTS.md) dokončen s výhradou čitelnosti mobilní tabulky |
 | Klubové dokončení a přejímka | [CLUB_COMPLETION_DECISIONS](CLUB_COMPLETION_DECISIONS.md) | D01–D20 a jejich skutečné podmínky; není to seznam všech hotových kroků |
 | Členská evidence bez sezon | [Pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [schválená mapa](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md) | D1–D8 a provozní rozhodnutí; E6–E8 ověřit v aktuálním registru |
 | Původní architektura a program | [Zadání a rozhodnutí](plan-eshop-tymova-evidence/02-zadani-a-rozhodnuti.md) | Historické programové D-xxx; dnešní stav a priority určuje registr |

@@ -34,6 +34,22 @@ k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
 
 ## Schválené produkční ověření
 
+### Navazující vizuální kontrola ROLE01-VIS
+
+7. 11. vlastník výslovně požádal znovu otevřít produkci v prohlížeči a ověřit
+přehlednost a mobilní použitelnost. **HOTOVO s výhradou čitelnosti mobilní tabulky**, větev
+`codex/access-visual-uat-20261107`, stejný samostatný worktree; základ `5cca5526`.
+Rozsah jen čtením: desktop, mobilní šířky 390/360 px, filtry GET, posun tabulky
+a otevření editoru. Žádné uložení, aktivace, grant, přepnutí pracovní role ani
+nový testovací účet. Snímky s osobními údaji zůstanou mimo Git; do protokolu
+patří bezpečný souhrn. [Výsledek skutečného Chrome průchodu](verification/access-visual-20261107/RESULTS.md):
+desktop přehledný, mobil 390/360 px s bočním posunem, editor čitelný.
+Filtr Bar 6/48, hledání neaktivního technického účtu 1/48, posun i otevření editoru PASS.
+Role ani stav účtů se neměnily. Mobilní karty jsou pouze doporučená další úprava;
+aplikační kód ani produkční vydání tento průchod nemění.
+
+### Původní technická přejímka před navazujícím vizuálním průchodem
+
 Browser Computer Use se zastavil, protože nedokázal ověřit aktuální URL.
 Původní browser úkon se neopakuje. Produkční ověření proto provede chráněný
 `production-drills.yml / overit-pracovni-pristupy` přes skutečné HTTPS formuláře:
