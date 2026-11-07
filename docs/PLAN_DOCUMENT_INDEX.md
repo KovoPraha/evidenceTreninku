@@ -872,3 +872,8 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-20e6913d1d | [deployment.json](verification/attendance-picker-release-20261107/deployment.json) | evidence / REFERENCE | P11 |
 | PL-5219851ecf | [RESULTS.md](verification/attendance-picker-release-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
 | PL-1d2cc5f812 | [snapshot.php.txt](verification/attendance-picker-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
+
+| PL-ad1bee8455 | [docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-fc5771e688 | [docs/verification/attendance-integrated-http-20261107/RESULTS.md](verification/attendance-integrated-http-20261107/RESULTS.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-a52acce523 | [docs/verification/attendance-integrated-http-20261107/CALIBRATION.md](verification/attendance-integrated-http-20261107/CALIBRATION.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-38c8d0fac7 | [docs/verification/attendance-integrated-http-20261107/REPRODUCE.md](verification/attendance-integrated-http-20261107/REPRODUCE.md) | reference / HISTORICAL_EVIDENCE | P11 |

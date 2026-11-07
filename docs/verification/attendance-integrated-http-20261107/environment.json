@@ -1,0 +1,54 @@
+{
+  "application_sha": "d958fd6ec8a515934af611532adcbab20adfe978",
+  "port": 33469,
+  "http_port": 18105,
+  "runtime": "C:/xampp/tmp/kis-attendance-http-20261107-e999e34b",
+  "datadir": "C:/xampp/tmp/kis-attendance-http-20261107-e999e34b/data",
+  "fixture_tables": 350,
+  "migrations": 161,
+  "synthetic_only": true,
+  "php": "8.2.12",
+  "server": {
+    "port": 33469,
+    "directory": "C:\\xampp\\tmp\\kis-attendance-http-20261107-e999e34b\\data\\",
+    "version": "10.4.32-MariaDB"
+  },
+  "playwright_cli": "0.1.23",
+  "before_sources_sha256_lf": {
+    "training_closure_admin.php": "8e06216dd1cf94aaadcc67a21fb84a2a2fd207a25f925aa95be045393337ae61",
+    "includes/coach_training_access.php": "6d65dcd7e16d6415eb7e7673898ec5f96f45e41eaeabdfaced1b0b3c397e56d3",
+    "includes/training_closure.php": "8db6369f248519586fd87c6c45c36e64e284c0d1b97cb61ce52c191f12ea72b8",
+    "includes/training_closure_form.php": "5913cda4fef04e58b2708567ba53cbc80814ecb5641542b9daf96edc64f66e45",
+    "includes/training_day.php": "55666c71949f8c4e795846b1d8e99aec7722587f638d9e8b0bb8a12c16875ba7",
+    "includes/staff_workspaces.php": "98c99da1dd6197f9f6702986592ea0d4440ee8e975add0f7568ebd290a61c510",
+    "assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+  },
+  "chrome": "157.0.8103.38",
+  "viewport": {
+    "width": 1036,
+    "height": 703
+  },
+  "dpr": 1.0000000149011612,
+  "viewport_mode": "controlled desktop viewport",
+  "after_sources_sha256_lf": {
+    "training_closure_admin.php": "e6612c149799001be0f368fa3d938e7c33c3d28785a57eed5474f6fb6ce3853f",
+    "includes/training_closure_people.php": "b539342556fd39ea91b23f01f267a9d57d59bde6433a25417aaed2d764a37b34",
+    "includes/coach_training_access.php": "6d65dcd7e16d6415eb7e7673898ec5f96f45e41eaeabdfaced1b0b3c397e56d3",
+    "includes/training_closure.php": "8db6369f248519586fd87c6c45c36e64e284c0d1b97cb61ce52c191f12ea72b8",
+    "includes/training_closure_form.php": "5913cda4fef04e58b2708567ba53cbc80814ecb5641542b9daf96edc64f66e45",
+    "includes/training_day.php": "8f74fdb7537e8d68ee08dc8553db3c5c14596ef41479d8f60a6b5ef79a9c5a84",
+    "includes/staff_workspaces.php": "98c99da1dd6197f9f6702986592ea0d4440ee8e975add0f7568ebd290a61c510",
+    "assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+  },
+  "business_fixture": {
+    "plans": 728,
+    "weeks": 52,
+    "participants": 200,
+    "revisions": 52,
+    "medical_watches": 10000,
+    "medical_records": 30000,
+    "selectable_people": 10221
+  },
+  "after_application_sha": "faae75e8d1bcf590e7b7d3936c7a60087aba48d4",
+  "domain_checksum_tables": 20
+}

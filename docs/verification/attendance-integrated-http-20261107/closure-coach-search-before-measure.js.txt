@@ -1,0 +1,62 @@
+// Playwright CLI run-code function. Replace only the JSON config marker in an ignored copy.
+async (page) => {
+  const config = {"role": "coach", "base_url": "http://127.0.0.1:18105", "cases": [{"id": "closure-coach-search", "role": "coach", "path": "/training_closure_admin.php?id=101&lesson_on=&lesson_q=Synthetic", "status": 200}]};
+  await page.setViewportSize({width: 1036, height: 703});
+  const context = page.context();
+  const cdp = await context.newCDPSession(page);
+  await cdp.send('Network.enable');
+  const report = { complete: false, role: config.role, cold_samples: 3, warm_samples: 10,
+    viewport: page.viewportSize() ?? await page.evaluate(() => ({ width: innerWidth, height: innerHeight })),
+    device_pixel_ratio: await page.evaluate(() => devicePixelRatio), browser_version: context.browser()?.version(),
+    user_agent: await page.evaluate(() => navigator.userAgent), cases: [] };
+  const errors = [];
+  const failed = [];
+  page.on('pageerror', e => errors.push(String(e)));
+  page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('requestfailed', r => failed.push({ url: r.url(), error: r.failure()?.errorText }));
+  for (const item of config.cases) {
+    const result = { id: item.id, path: item.path, samples: [] };
+    for (const cache of ['cold', 'warm']) {
+      await cdp.send('Network.setCacheDisabled', { cacheDisabled: cache === 'cold' });
+      const repeats = cache === 'cold' ? 3 : 11; // One unmeasured cache prime, then ten warm observations.
+      for (let i = 0; i < repeats; i++) {
+        if (cache === 'cold') await cdp.send('Network.clearBrowserCache');
+        const e0 = errors.length;
+        const f0 = failed.length;
+        const response = await page.goto(config.base_url + item.path, { waitUntil: 'load', timeout: 60000 });
+        await page.waitForFunction(() => performance.getEntriesByType('navigation')[0]?.loadEventEnd > 0);
+        // Allows deferred UI requests to finish; the mandatory 500 ms networkidle gap is NOT a load-time metric.
+        await page.waitForLoadState('networkidle', { timeout: 20000 });
+        const data = await page.evaluate(() => {
+          const n = performance.getEntriesByType('navigation')[0];
+          return {
+            status: 200, title: document.title, url: location.href,
+            navigation_count: document.querySelectorAll('nav.app-staff-topbar').length,
+            ttfb_ms: n.responseStart - n.startTime, response_end_ms: n.responseEnd - n.startTime,
+            dom_content_loaded_ms: n.domContentLoadedEventEnd - n.startTime,
+            load_ms: n.loadEventEnd - n.startTime,
+            transfer_bytes: n.transferSize, encoded_body_bytes: n.encodedBodySize,
+            decoded_body_bytes: n.decodedBodySize,
+            paint: performance.getEntriesByType('paint').map(p => ({ name: p.name, ms: p.startTime })),
+            resources: performance.getEntriesByType('resource').map(r => ({
+              url: r.name, type: r.initiatorType, start_ms: r.startTime, duration_ms: r.duration,
+              transfer_bytes: r.transferSize, encoded_bytes: r.encodedBodySize, decoded_bytes: r.decodedBodySize
+            }))
+          };
+        });
+        data.status = response.status();
+        data.console_errors = errors.slice(e0);
+        data.failed_requests = failed.slice(f0);
+        if (data.status !== 200 || data.navigation_count !== 1 || data.url !== config.base_url + item.path) {
+          throw new Error('Authenticated full browser navigation failed: ' + item.id);
+        }
+        if (cache === 'cold' || i > 0) result.samples.push({ cache, ...data });
+      }
+    }
+    report.cases.push(result);
+  }
+  await cdp.send('Network.setCacheDisabled', { cacheDisabled: false });
+  await cdp.detach();
+  report.complete = true;
+  return report;
+}

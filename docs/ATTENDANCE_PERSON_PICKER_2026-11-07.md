@@ -68,3 +68,47 @@ pickeru po převzetí E30/31 AUTO01 nese E32–34; historická čísla v commite
 Nasazení neopakovat z názvu staré větve; skutečný release/flags vlastní CURRENT_STATE.
 Další P11: R13/R05 objemy/kandidáti, rows examined, fyzický mobil/síť/CPU/souběh
 a další R01–R16. Celé K0.2 ani lidská klubová přejímka nejsou tímto uzavřené.
+
+## P11-R06-HTTP-COMBINED — rozšířené celé Windows měření, 7. 11. 2026
+
+HOTOVO v místním rozsahu nového zadání vlastníka; žádná změna aplikace/produkce.
+Plán před měřením `3ca7e028`, větev `codex/attendance-integrated-http-20261107`,
+worktree `C:/Users/Marek/Documents/Codex/evidencePavel-attendance-http-20261107`.
+[Finální výsledky a meze](verification/attendance-integrated-http-20261107/RESULTS.md),
+[předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md).
+
+Nový jediný seed 350 tabulek/161 migrací, 10221 osob, 728 plánů/52 týdnů,
+200 účastníků/52 revizí, 10k zdravotních sledování/30k záznamů, bez reseedu.
+Pár d958fd6e před oběma změnami → faae75e8 s #366/#367. Zdrojové otisky
+přesně ověřené; novější přijaté #370/#372 nemění aplikační soubory tohoto páru.
+
+- 21 HTTP případů na variantu, 540 pozitivních časů; tentokrát Chrome ve všech
+  9 kladných scénářích / 3 rolích, 234 pozorování celkem. 18 DOM kontrol PASS.
+- Velká docházka: HTML1,37 MB →92,5kB, Chrome warm6,40 →0,35s, HTTP945 →113ms.
+  Široké lekce Chrome6,39 →0,45s, SQL203 →72; seznam SQL36 →23. Čerstvé kontroly
+  u běžného detailu SQL59 →72 zachované, přínos není plošné snížení počtu SQL.
+- Oddělená diagnostika celé HTML parity, 0 aplikačních DML/DDL a 20 stejných
+  doménových checksumů. JS/noJS obou současných draftů, Enter/paging/host/prázdný
+  výběr/390px, 44 HTTP, skutečné syntetické zápisy i revokace PASS.
+- Zápisové UAT až po časování: revize53/201/paper, stale422, browser omluva1001/paper
+  a původní API1002/phone ověřené v DB. Žádné skutečné osoby, platby nebo role.
+- Vlastní schema/účty/oba configy/credentials/cookies odstraněné, služby/browsers
+  zastavené, TCP18105/33469 odmítá spojení, původní WIP stále shodný.
+
+Tento Windows pár není totéž co přijaté Linux měření #372: tam2ef20aed →faae75e8
+se stejnými už optimalizovanými lekcemi a 78 browser pozorování. Zde se srovnávají
+obě úpravy dohromady a 234 pozorování včetně filtrů. Oba reporty mají po změně
+72SQL pro široké lekce; předchozích203 vs56 plyne z jiné kontrolní verze.
+Absolutní časy ani p95 z odlišných strojů/verzí nesčítat a nevydávat za SLA.
+
+Provozní důkaz #372/release56f5ce08 přebíráme, deploy neopakovat. Tato relace jej
+nespouštěla a nemá nové pověření měnit produkci. Předání/CI této výsledkové větve
+ověřit u jejího PR; rozsah místního měření je dokončený.
+
+Zbývá: R13/R05 objemy/kandidáti, skutečné rows examined, fyzický mobil/řízená
+síť/CPU/souběh a další R01–R16. Přihlášené produkční UAT vede provozní plán;
+toto není jeho provedení. Celé K0.2 otevřené. Volba [D11](DECISION_LOG.md#d2026-11-07-11).
+Pracovní D10/E30 v 3ca7e028 před sdílením kolidovaly s přijatým #370/#372;
+přijatá ID zachovaná, vlastní volba nyní D11 a události E36/E37.
+
+Výsledkové [PR #373](https://github.com/KovoPraha/evidenceTreninku/pull/373) předává tuto dokončenou místní etapu; konkrétní CI/head/merge ověřit přímo u PR. Produkční operace nejsou součástí tohoto PR.

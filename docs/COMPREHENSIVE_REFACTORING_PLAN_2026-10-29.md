@@ -439,3 +439,7 @@ nový úplný pár ji nahrazuje: 1,37 MB → 92 kB, Chrome trenér 4,79 → 0,59
 36/380, 44 HTTP, JS/noJS/role/kanonické zápisy PASS. Bez našeho deploye.
 #367 dávkové lekce již v main; po integraci zbývá celé HTTP/browser společné verze,
 R13/R05 objemy/kandidáti, rows examined, mobil/souběh a ostatní K0.2. Finální CI/merge u PR.
+
+## Rozšířené společné R06 HTTP — 7.11.2026
+
+[Výsledky všech9scénářů /540HTTP/234Chrome](verification/attendance-integrated-http-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md). Nový pár d958fd6e →faae75e8, 20checksumů, JS/noJS/44HTTP a samostatné syntetické zápisy PASS; vlastní runtime uklizený, WIP zachovaný. Široké lekce203 →72SQL, Chrome trenér6,40 →0,35s na tomto Windows stroji. Přijatý Linux #372 má jiný baseline/prostředí a vlastní deploy, nesčítat časy. Tato relace produkci neměnila; R13/R05/rows examined/fyzický mobil/síť/CPU/souběh a K0.2 dál otevřené.

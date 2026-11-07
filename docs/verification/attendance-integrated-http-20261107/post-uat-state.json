@@ -1,0 +1,21 @@
+{
+    "complete": true,
+    "synthetic_only": true,
+    "intentional_writes_after_read_only_measurement": true,
+    "revision": 53,
+    "participants": 201,
+    "guest_20000_present": true,
+    "record_source": "paper",
+    "personal_excuses": [
+        {
+            "sportovec_id": 1001,
+            "source": "paper",
+            "received_at": "2026-11-07 06:00:00"
+        },
+        {
+            "sportovec_id": 1002,
+            "source": "phone",
+            "received_at": "2026-11-07 06:00:00"
+        }
+    ]
+}

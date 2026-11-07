@@ -6,6 +6,19 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-11
+
+PŘIJATO, 7.11.2026, nové přímé zadání vlastníka pro měření bez změny produkce.
+Volba: nový jediný seed, původní d958fd6e proti společné faae75e8, všech9GET
+scénářů ve skutečném Chrome a 21HTTP včetně negativních rolí. Staré časy nejsou
+kontrolní skupina; oddělená SQL diagnostika, 20doménových checksumů, JS/noJS,
+zápisové UAT až po časování a vlastní úklid. Aplikace se nemění.
+[Výsledek](verification/attendance-integrated-http-20261107/RESULTS.md):540HTTP/234Chrome,
+role/drafty/kanonické zápisy PASS. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+[předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md). K0.2 zůstává otevřené.
+Přijaté D10 je jiné pověření k deployi #372; nepřenáší se na tuto relaci.
+Původní pracovní D10/E30 v3ca7e028 kolidovaly s přijatými ID, nyní D11/E36/E37.
+
 ## D2026-11-07-09
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník zadal optimalizovat výběr osob
@@ -227,3 +240,5 @@ Kanonické D09 původního pickeru zachované; dočasné přeznačení na D10 v 
 75801847 bylo sjednocené při převzetí d62c3ad2. D10 označuje toto nové pokračování.
 
 P11 picker — dílčí řez uzavřený podle D10 a nového výslovného zadání: #366, nové společné měření, parita a schválené nasazení hotové. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [provozní důkaz a meze](verification/attendance-picker-release-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md). Celé K0.2 a lidská přejímka otevřené.
+
+Rozšířené celé R06 Windows měření — [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [důkazy](verification/attendance-integrated-http-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md), [volba D11](#d2026-11-07-11). Bez změny produkce v této relaci, další P11 otevřené.

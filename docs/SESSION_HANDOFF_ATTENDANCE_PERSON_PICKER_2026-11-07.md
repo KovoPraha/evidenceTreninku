@@ -28,3 +28,5 @@ Přijaté #370 priority/obnova a registry zachované; výsledkové sdílení [#3
 
 Nasazení neopakovat. Release/flags vlastní [CURRENT_STATE](CURRENT_STATE.md).
 Další P11 jsou R13/R05, rows examined a fyzický mobil/souběh; [registr](WORK_PLAN_CURRENT.md), K0.2 otevřené.
+
+Navazující rozšířené Windows měření všech9scénářů HOTOVO: [předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md), [důkazy](verification/attendance-integrated-http-20261107/RESULTS.md). Má jiný baseline než Linux #372, 234Chrome/540HTTP a čerstvé JS/noJS. Obě studie a provozní důkaz zůstávají samostatné; žádné nové nasazení touto měřicí relací.

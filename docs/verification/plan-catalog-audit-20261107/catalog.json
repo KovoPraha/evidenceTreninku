@@ -10180,6 +10180,62 @@
       "registry": "P11",
       "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
       "evidence": []
+    },
+    {
+      "id": "PL-ad1bee8455",
+      "path": "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md",
+      "title": "P11 R06 — společné celé HTTP/browser, 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u PR #373.",
+      "evidence": [
+        "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-fc5771e688",
+      "path": "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
+      "title": "Celá docházka s oběma optimalizacemi — 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u PR #373.",
+      "evidence": [
+        "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-a52acce523",
+      "path": "docs/verification/attendance-integrated-http-20261107/CALIBRATION.md",
+      "title": "Kalibrace společného Windows měření, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u PR #373.",
+      "evidence": [
+        "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-38c8d0fac7",
+      "path": "docs/verification/attendance-integrated-http-20261107/REPRODUCE.md",
+      "title": "Opakování celého páru docházky",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u PR #373.",
+      "evidence": [
+        "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",
@@ -10199,6 +10255,17 @@
         "docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md",
         "docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md"
       ]
+    },
+    {
+      "date": "2026-11-07",
+      "topic": "P11-R06-HTTP-COMBINED",
+      "added_paths": [
+        "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md",
+        "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
+        "docs/verification/attendance-integrated-http-20261107/CALIBRATION.md",
+        "docs/verification/attendance-integrated-http-20261107/REPRODUCE.md"
+      ],
+      "pull_request": 373
     }
   ]
 }
