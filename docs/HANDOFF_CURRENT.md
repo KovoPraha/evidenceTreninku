@@ -9,7 +9,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - ROLE01-VIS HOTOVO: [vizuální protokol](verification/access-visual-20261107/RESULTS.md), [plán](ACCESS_OVERVIEW_2026-11-07.md).
   Desktop přehledný; mobil 390/360 px potřebuje boční posun, editor čitelný. Role nikomu neměněny.
-  Dokumentační předání `codex/access-visual-uat-20261107`, stejný vlastní worktree; žádný další deploy.
+  Dokumentace pushnutá v [otevřeném PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361), `codex/access-visual-uat-20261107`; žádný další deploy.
 
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
   #356 nasazeno jako `ebb8b2e3`; formuláře 16/16 PASS, původních 46 účtů beze změny.

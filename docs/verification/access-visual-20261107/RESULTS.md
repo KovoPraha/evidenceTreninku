@@ -39,10 +39,13 @@ do čitelných karet. Nejde o bezvýhradnou přejímku pohodlí mobilního přeh
 - Snímky byly prohlédnuté přímo v nástroji. Obrazy skutečných jmen/kontaktů
   nebyly vloženy do Gitu; protokol obsahuje jen bezpečný souhrn.
 - Aplikační kód, schéma a konfigurace beze změny; žádný další deploy.
-  Dokumentační kontrola: `php tools/check-current-docs.php`, `git diff --check`.
+  Dokumentační kontrola PASS: `php tools/check-current-docs.php` (80 řádků CURRENT,
+  1456 lokálních odkazů, 0 chyb), `git diff origin/main --check`.
 
 ## Předání
 
-Výsledky připravené pro dokumentační PR z výše uvedené větve; sdílený stav
-určuje skutečné přijetí PR. [Deník](../../EVENT_LOG.md),
+Výsledky commitnuté a pushnuté v [otevřeném PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361)
+z výše uvedené větve; zatím nejsou součástí main. Při převzetí ověřit aktuální CI/merge.
+Souběžné změny #355 převzaté rebasingem bez změny jejich věcného obsahu.
+[Deník](../../EVENT_LOG.md),
 [rozhodnutí a uzavřené práce](../../DECISION_LOG.md).
