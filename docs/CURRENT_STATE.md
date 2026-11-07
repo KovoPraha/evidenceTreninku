@@ -1,6 +1,8 @@
 # Aktuální stav projektu
 
 Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) a [úplný katalog](PLAN_CATALOG.md).
+- **P15 S4 HOTOVO, syntetická přejímka PASS:** [přehled, panel a auditované řešení](CSC_SPORTSOFT_S4_REGISTRAR.md), [draft #382](https://github.com/KovoPraha/evidenceTreninku/pull/382), runtime 2918257b / 11 CI PASS; bez merge/deploye/aktivace.
+  [S1 a 11 CI PASS](CSC_SPORTSOFT_S1_KIS.md) v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376); [prompt S2/S3](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md) pushnutý, cílové provedení NOT RUN.
 - **P11-R05-H NASAZENO:** release `e36c9ba6e461b7da842c53939c2fe20eed821f38`, deploy42394551344 SUCCESS; [protokol](verification/planner-hierarchy-release-20261107/RESULTS.md).
   Parita/měření/všech 12 CI PASS; [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md). Import/UAT false; přihlášené UAT NOT RUN.
 - **P11 picker, katalog a lekce — předchozí nasazení:** release `56f5ce08e9ffbe1df9acfe7b844234b449171ad8`, deploy 42380611292 SUCCESS; [protokol](verification/attendance-picker-release-20261107/RESULTS.md).
@@ -36,7 +38,6 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   Přihlášené UAT a E8 nejsou dokončené; převodní mapy a bod návratu zůstávají zachované.
 
 - [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
-
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
   [Oddělený syntetický pilot](verification/trainer-pilot-20261101/RESULTS.md) je založen:
@@ -53,7 +54,6 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   produkční heslo nezměněno, skutečné spotřebování a T07 nadále nejsou ověřeny.
   Hostingový minutový cron znovu ověřen
   [1. 11. v 17:22:03 UTC](verification/trainer-pilot-20261101/trainer-readiness.json). Tři staré klubové zprávy nedotčeny.
-
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
 - **Předchozí doložené nasazení #346:** acb511cc5338911f141bc49334d515c0b21034fa, [deploy 42265034726](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42265034726) SUCCESS; [pozorovatel #346](verification/membership-morning-server-release-20261106/RESULTS.md). GitHub předání #350 aktivované sloučením, bez dalšího deploye webu; následná dokumentace toto vydání nemění.

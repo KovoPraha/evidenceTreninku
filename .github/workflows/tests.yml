@@ -156,6 +156,11 @@ jobs:
       - name: Ověřit skutečnou Evidence zálohu na MariaDB
         run: php tests/Support/DatabaseBackupMariaDbSmoke.php
 
+      - name: Ověřit čtecí synchronizaci ČSC a Sportsoftu na syntetických datech
+        env:
+          EVIDENCE_EXTERNAL_SYNC_MARIADB: '1'
+        run: php vendor/bin/phpunit tests/Integration/ExternalReadSyncTest.php tests/Integration/ExternalSyncRegistrarTest.php tests/Integration/ExternalSyncReviewTest.php
+
       - name: Ověřit měsíční členství, trvalou platbu a soukromý PDF doklad
         run: php tests/Support/MonthlyMembershipMariaDbSmoke.php
 
@@ -618,8 +623,10 @@ jobs:
           git fetch --no-tags origin fbdf622e0acadebeaf5525fb168869795a7faca2
           git worktree add --detach "$before_tree" fbdf622e0acadebeaf5525fb168869795a7faca2
           ln -s "$GITHUB_WORKSPACE/vendor" "$before_tree/vendor"
-          # Keep historical application code, but compare it on the same document schema as HEAD.
+          # Keep historical application code, but compare it on the same schema as HEAD.
           cp migrations/20261107180000_shop_document_automation.php "$before_tree/migrations/"
+          cp migrations/20261107210000_external_read_sync.php "$before_tree/migrations/"
+          cp migrations/20261107230000_external_sync_decisions.php "$before_tree/migrations/"
           cp docs/verification/medical-read-performance-20261106/before-harness.php.txt "$before_tree/tests/Support/MedicalReadBefore20261106.php"
           (cd "$before_tree" && php -d memory_limit=512M tests/Support/MedicalReadBefore20261106.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/before")
           planner_tree="$RUNNER_TEMP/planner-before"
@@ -627,6 +634,8 @@ jobs:
           git worktree add --detach "$planner_tree" 84f5c7a270d2bcedd9c1bd6c627f485d4ade7c6a
           ln -s "$GITHUB_WORKSPACE/vendor" "$planner_tree/vendor"
           cp migrations/20261107180000_shop_document_automation.php "$planner_tree/migrations/"
+          cp migrations/20261107210000_external_read_sync.php "$planner_tree/migrations/"
+          cp migrations/20261107230000_external_sync_decisions.php "$planner_tree/migrations/"
           cp docs/verification/planner-read-performance-20261106/before-harness.php.txt "$planner_tree/tests/Support/PlannerBeforeProfile.php"
           (cd "$planner_tree" && php -d memory_limit=512M tests/Support/PlannerBeforeProfile.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/planner-before" --route R05)
           attendance_tree="$RUNNER_TEMP/attendance-before"
@@ -634,6 +643,8 @@ jobs:
           git worktree add --detach "$attendance_tree" 89edfdbee5fbddbe05e0134d94f79ba0cb4143d9
           ln -s "$GITHUB_WORKSPACE/vendor" "$attendance_tree/vendor"
           cp migrations/20261107180000_shop_document_automation.php "$attendance_tree/migrations/"
+          cp migrations/20261107210000_external_read_sync.php "$attendance_tree/migrations/"
+          cp migrations/20261107230000_external_sync_decisions.php "$attendance_tree/migrations/"
           cp docs/verification/attendance-read-performance-20261107/before-harness.php.txt "$attendance_tree/tests/Support/AttendanceBeforeProfile.php"
           # R06 lesson choices depend on the preceding R05 seed: preserve the full matrix order.
           # Keep the frozen participant validator while sharing the intentionally changed picker UI.

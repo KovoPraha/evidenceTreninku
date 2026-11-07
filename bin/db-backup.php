@@ -22,7 +22,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-06.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-07.2';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -172,6 +172,15 @@ function ownedColumnsPresentInSnapshot(array $columns): array
  * jidlo_*, bar_*, results_* and legacy/archive tables are not owned here.
  */
 const EVIDENCE_TABLES = [
+    'external_sync_connections',
+    'external_sync_devices',
+    'external_sync_runs',
+    'external_sync_parts',
+    'external_sync_records',
+    'external_identity_links',
+    'external_sync_reviews',
+    'external_sync_audit',
+    'external_sync_decisions',
     'shop_document_policies',
     'shop_order_documents',
     'kis_bar_invoices',

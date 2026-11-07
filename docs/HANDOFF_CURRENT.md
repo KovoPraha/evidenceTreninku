@@ -7,6 +7,8 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
+- P15: [S4 přehled, panel a auditované řešení](CSC_SPORTSOFT_S4_REGISTRAR.md) HOTOVO v [draft #382](https://github.com/KovoPraha/evidenceTreninku/pull/382), 2918257b / 11 CI PASS; 2402/48347, obě MariaDB 26/341, browser/úklid PASS.
+  [S1](CSC_SPORTSOFT_S1_KIS.md) / 11 CI PASS a [prompt S2/S3 pro stanici](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md) pushnuté v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376). Bez Rikiho, portálů, deploye či aktivace.
 - P11-SCALE HOTOVO: [větší R13/R05](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md),2700HTTP/90parit.
   Aktuální#374 také prověřené; oba vlastní runtime úklidy PASS, produkce bez našich změn.
   Dále R13 stavové čtení/řízený Linux, fyzický mobil a souběh; K0.2 otevřené.
@@ -15,7 +17,6 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); karty zahrnuje vydání `c70939d4`; dále cílený nový Chrome, viz priorita 1.
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 - AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
-
 - P11 picker HOTOVO: [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání #366/#372](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
   [Produkční protokol](verification/attendance-picker-release-20261107/RESULTS.md): schválené nasazení a čtecí kontrola dokončené, neopakovat.
   Nový Linux pár s #367: 540 HTTP / 78 Chrome; HTML 1,37 MB → 91,6 kB, Chrome trenér 446 → 83 ms.
@@ -74,7 +75,6 @@ převzetí, P12 konkrétní testerku a přístup, P13 výběr událostí.
 4. Před předáním zapiš ověření, omezení, stav PR/merge/deploy a událost do
    [deníku](EVENT_LOG.md); významná rozhodnutí do [logu rozhodnutí](DECISION_LOG.md).
    Dokumenty commituj spolu se změnou a předej přes GitHub PR. Lokální soubor není sdílený.
-
 Historie: [deník](EVENT_LOG.md) → [rozhodnutí a uzavřené plány](DECISION_LOG.md)
 → [archiv tohoto předání](HANDOFF_ARCHIVE_2026-11-07.md) a
 [provozní archiv](CHANGELOG-PROVOZ.md). Historii sem nepřidávat; limit 80 řádků.

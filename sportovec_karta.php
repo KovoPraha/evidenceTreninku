@@ -13,13 +13,22 @@ if (!isset($_SESSION['trener_id']) || !canAccess('sprava_sportovcu')) {
     exit;
 }
 
-function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
-function d(?string $date): string {
-    if (!$date || $date === '0000-00-00') return '—';
+function h($s): string
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+function d(?string $date): string
+{
+    if (!$date || $date === '0000-00-00') {
+        return '—';
+    }
     $ts = strtotime($date);
     return $ts ? date('d.m.Y', $ts) : h($date);
 }
-function money($v): string { return number_format((float)$v, 2, ',', ' ') . ' Kč'; }
+function money($v): string
+{
+    return number_format((float)$v, 2, ',', ' ') . ' Kč';
+}
 
 header('Cache-Control: no-store, private');
 $activeTab = in_array($_GET['tab'] ?? '', ['prehled','kis','sport','poznamky','historie'], true) ? $_GET['tab'] : 'prehled';
@@ -51,10 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (in_array($action, ['set_status','clear_manual_status'], true)) {
         try {
-            sportovecMembershipDecide($pdo, $sportovecId,
+            sportovecMembershipDecide(
+                $pdo,
+                $sportovecId,
                 $action === 'clear_manual_status' ? 'review' : (string)($_POST['stav_clenstvi'] ?? ''),
-                (string)($_POST['stav_duvod'] ?? ''), (int)$_SESSION['trener_id'],
-                (string)($_POST['membership_revision'] ?? ''));
+                (string)($_POST['stav_duvod'] ?? ''),
+                (int)$_SESSION['trener_id'],
+                (string)($_POST['membership_revision'] ?? '')
+            );
             $_SESSION['flash_success'] = $action === 'clear_manual_status' ? 'Stav byl předán k ověření; ostatní vazby zůstaly zachovány.' : 'Rozhodnutí o členství bylo uloženo.';
         } catch (Throwable $e) {
             $_SESSION['flash_error'] = $e instanceof PDOException ? 'Změna se nezdařila; nebyl uložen částečný výsledek.' : $e->getMessage();
@@ -71,7 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Throwable $exception) {
             $_SESSION['flash_error'] = $exception instanceof InvalidArgumentException
                 ? $exception->getMessage() : 'Poznámku se nepodařilo bezpečně uložit. Nebyl uložen částečný výsledek.';
-            if (!$exception instanceof InvalidArgumentException) error_log('sportovec_karta note: ' . get_class($exception));
+            if (!$exception instanceof InvalidArgumentException) {
+                error_log('sportovec_karta note: ' . get_class($exception));
+            }
         }
         header('Location: sportovec_karta.php?sportovec_id=' . $sportovecId . '&tab=poznamky#poznamky');
         exit;
@@ -101,10 +116,26 @@ $status = sportovecStatusCompute($sportovec);
 $editId = $sportovecId;
 $editorActionUrl = 'sportovec_karta.php?sportovec_id=' . $sportovecId . '&tab=kis#rosters-title';
 $editContext = ['rosters' => sportovecEditorRosters($pdo, $sportovecId), 'payments' => sportovecEditorPayments($pdo, $sportovecId)];
-$financeBalance=null;
+$financeBalance = null;
+$externalPanel = null;
+$externalPanelUnavailable = false;
+if (staffActivePositionIs('registrar') && isset($pdo) && $pdo instanceof PDO) {
+    require_once __DIR__ . '/includes/external_sync_person_panel.php';
+    $syncPage = $_GET['sync_page'] ?? '1';
+    $syncPage = is_string($syncPage) && preg_match('/^[1-9][0-9]{0,5}$/D', $syncPage) ? (int)$syncPage : 1;
+    try {
+        $externalPanel = externalSyncPersonPanel($pdo, (int)$_SESSION['trener_id'], $sportovecId, $syncPage);
+    } catch (DomainException) { /* Current DB authorization has precedence over the session. */
+    } catch (PDOException) {
+        $externalPanelUnavailable = true;
+    }
+}
 if (staffActivePositionIs('registrar') || staffActivePositionIs('finance_manager')) {
-    try { $financeBalance=clubFinanceBalanceForAthlete($pdo,$sportovecId); }
-    catch (Throwable $exception) { error_log('sportovec_karta finance balance: '.$exception->getMessage()); }
+    try {
+        $financeBalance = clubFinanceBalanceForAthlete($pdo, $sportovecId);
+    } catch (Throwable $exception) {
+        error_log('sportovec_karta finance balance: '.$exception->getMessage());
+    }
 }
 
 $recentTreninky = $pdo->prepare("
@@ -121,8 +152,9 @@ $trainingYear = (int)($_GET['rok'] ?? date('Y'));
 $trainingYear = max(2000, min((int)date('Y') + 2, $trainingYear));
 $rosterTrainings = [];
 $rosterTrainingError = false;
-try { $rosterTrainings = athleteTrainingTimeline($pdo, $sportovecId, $trainingYear); }
-catch (Throwable $exception) {
+try {
+    $rosterTrainings = athleteTrainingTimeline($pdo, $sportovecId, $trainingYear);
+} catch (Throwable $exception) {
     error_log('sportovec_karta roster training timeline: ' . $exception->getMessage());
     $rosterTrainingError = true;
 }
@@ -164,8 +196,10 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin karta člena - <?= h($sportovec['prijmeni'] . ' ' . $sportovec['jmeno']) ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"
+        integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .metric .val { font-size:1.45rem; font-weight:700; }
         .timeline { border-left:3px solid #dee2e6; margin-left:.6rem; padding-left:1rem; }
@@ -178,10 +212,12 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
 <div class="container py-4" style="max-width:1280px;">
 <?= personStateSummaryHtml(personStateSummary($pdo, $sportovecId)) ?>
     <?php if (!empty($_SESSION['flash_success'])): ?>
-        <div class="alert alert-success"><?= h($_SESSION['flash_success']); unset($_SESSION['flash_success']); ?></div>
+        <div class="alert alert-success"><?= h($_SESSION['flash_success']);
+        unset($_SESSION['flash_success']); ?></div>
     <?php endif; ?>
     <?php if (!empty($_SESSION['flash_error'])): ?>
-        <div class="alert alert-danger"><?= h($_SESSION['flash_error']); unset($_SESSION['flash_error']); ?></div>
+        <div class="alert alert-danger"><?= h($_SESSION['flash_error']);
+        unset($_SESSION['flash_error']); ?></div>
     <?php endif; ?>
 
     <div class="card hero-card mb-3">
@@ -200,17 +236,48 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                 <a href="sprava_sportovcu.php" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Správa</a>
                 <a href="sportovec_detail.php?id=<?= (int)$sportovecId ?>" class="btn btn-outline-light btn-sm"><i class="bi bi-eye"></i> Starý detail</a>
                 <?php if (!empty($sportovec['id'])): ?>
-                    <a href="sportovec_treninky.php?id=<?= (int)$sportovec['id'] ?>" class="btn btn-outline-light btn-sm" target="_blank"><i class="bi bi-box-arrow-up-right"></i> Náhled karty sportovce</a>
+                    <a href="sportovec_treninky.php?id=<?= (int)$sportovec['id'] ?>
+" class="btn btn-outline-light btn-sm" target="_blank">
+<i class="bi bi-box-arrow-up-right">
+</i> Náhled karty sportovce</a>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 
-    <?php if($financeBalance!==null):?><div class="alert <?=$financeBalance['overdue_minor']>0?'alert-warning':'alert-light'?> border"><strong>Finanční saldo sportovce:</strong> <?=h(number_format($financeBalance['open_minor']/100,2,',',' '))?> Kč k úhradě · po lhůtě <?=h(number_format($financeBalance['overdue_minor']/100,2,',',' '))?> Kč<?php if($financeBalance['credit_minor']>0):?> · přeplatek <?=h(number_format($financeBalance['credit_minor']/100,2,',',' '))?> Kč<?php endif;?><div class="small mt-1">Členské předpisy, účasti a platné objednávky e-shopu. Vypočteno <?=h($financeBalance['as_of'])?>. <?php if(staffActivePositionIs('finance_manager')):?><a href="club_finance_receipt_admin.php?sportovec_id=<?=$sportovecId?>">Ověřená platba a rozpis</a><?php endif;?></div></div><?php endif;?>
+    <?php if ($financeBalance !== null):?>
+
+<div class="alert <?=$financeBalance['overdue_minor'] > 0 ? 'alert-warning' : 'alert-light'?>
+ border">
+<strong>Finanční saldo sportovce:</strong> <?=h(number_format($financeBalance['open_minor'] / 100, 2, ',', ' '))?>
+ Kč k úhradě · po lhůtě <?=h(number_format($financeBalance['overdue_minor'] / 100, 2, ',', ' '))?>
+ Kč<?php if ($financeBalance['credit_minor'] > 0):?>
+ · přeplatek <?=h(number_format($financeBalance['credit_minor'] / 100, 2, ',', ' '))?>
+ Kč<?php endif;?>
+
+<div class="small mt-1">Členské předpisy, účasti a platné objednávky e-shopu. Vypočteno <?=h($financeBalance['as_of'])?>
+. <?php if (staffActivePositionIs('finance_manager')):?>
+
+<a href="club_finance_receipt_admin.php?sportovec_id=<?=$sportovecId?>
+">Ověřená platba a rozpis</a>
+<?php endif;?>
+
+</div>
+</div>
+<?php endif;?>
+
     <div class="row g-3 mb-3">
         <div class="col-6 col-lg-3"><div class="metric"><div class="val"><?= (int)$sportovec['pocet_treninku'] ?></div><div class="text-muted small">Tréninků</div></div></div>
         <div class="col-6 col-lg-3"><div class="metric"><div class="val"><?= d($sportovec['posledni_trenink'] ?? null) ?></div><div class="text-muted small">Poslední trénink</div></div></div>
-        <div class="col-6 col-lg-3"><div class="metric"><div class="val"><?= (float)($sportovec['kis_neuhrazeno'] ?? 0) > 0 ? money($sportovec['kis_neuhrazeno']) : '0 Kč' ?></div><div class="text-muted small">KIS neuhrazeno</div></div></div>
+        <div class="col-6 col-lg-3">
+<div class="metric">
+<div class="val">
+<?= (float)($sportovec['kis_neuhrazeno'] ?? 0) > 0 ? money($sportovec['kis_neuhrazeno']) : '0 Kč' ?>
+
+</div>
+<div class="text-muted small">KIS neuhrazeno</div>
+</div>
+</div>
         <div class="col-6 col-lg-3"><div class="metric"><div class="val"><?= d($sportovec['kis_posledni_sync'] ?? null) ?></div><div class="text-muted small">Poslední KIS sync</div></div></div>
     </div>
 
@@ -251,12 +318,15 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                                 <input type="hidden" name="membership_revision" value="<?= h(sportovecMembershipRevision($sportovec)) ?>">
                                 <div class="col-5">
                                     <select name="stav_clenstvi" class="form-select form-select-sm">
-                                        <?php foreach (['aktivni'=>'Aktivní','cekajici'=>'Čekající','neaktivni'=>'Neaktivní','archiv'=>'Archiv'] as $k => $v): ?>
+                                        <?php foreach (['aktivni' => 'Aktivní','cekajici' => 'Čekající','neaktivni' => 'Neaktivní','archiv' => 'Archiv'] as $k => $v): ?>
                                             <option value="<?= h($k) ?>" <?= ($sportovec['stav_clenstvi'] ?? '') === $k ? 'selected' : '' ?>><?= h($v) ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div class="col-5"><input name="stav_duvod" required minlength="10" maxlength="1000" class="form-control form-control-sm" placeholder="Důvod" value="<?= h($sportovec['stav_duvod'] ?? '') ?>"></div>
+                                <div class="col-5">
+<input name="stav_duvod" required minlength="10" maxlength="1000" class="form-control form-control-sm" placeholder="Důvod" value="<?= h($sportovec['stav_duvod'] ?? '') ?>
+">
+</div>
                                 <div class="col-2"><button class="btn btn-sm btn-success w-100" title="Uložit"><i class="bi bi-check-lg"></i></button></div>
                             </form>
                             <?php if (!empty($sportovec['stav_manualni'])): ?>
@@ -275,12 +345,19 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
         </div>
 
         <div class="tab-pane fade <?= $activeTab === 'kis' ? 'show active' : '' ?>" id="kis">
+            <?php if ($externalPanel !== null) {
+                externalSyncPersonPanelRender($externalPanel);
+            } ?>
+            <?php if ($externalPanelUnavailable) : ?><p class="alert alert-secondary">Úložiště ČSC a Sportsoftu zatím není připravené nebo je dočasně nedostupné.</p><?php endif; ?>
             <div class="card section-card">
                 <div class="card-header bg-white fw-semibold">KIS stav a soupisky</div>
                 <div class="card-body">
                     <div class="d-flex gap-2 flex-wrap mb-3">
                         <span class="badge <?= !empty($sportovec['kis_aktivni']) ? 'bg-success' : 'bg-secondary' ?>">KIS <?= !empty($sportovec['kis_aktivni']) ? 'aktivní' : 'neaktivní' ?></span>
-                        <span class="badge <?= !empty($sportovec['kis_platebne_aktivni']) ? 'bg-success' : 'bg-warning text-dark' ?>">Platby <?= !empty($sportovec['kis_platebne_aktivni']) ? 'aktivní' : 'bez potvrzení' ?></span>
+                        <span class="badge <?= !empty($sportovec['kis_platebne_aktivni']) ? 'bg-success' : 'bg-warning text-dark' ?>
+">Platby <?= !empty($sportovec['kis_platebne_aktivni']) ? 'aktivní' : 'bez potvrzení' ?>
+
+</span>
                         <?php if ((float)($sportovec['kis_neuhrazeno'] ?? 0) > 0): ?><span class="badge bg-danger"><?= money($sportovec['kis_neuhrazeno']) ?></span><?php endif; ?>
                     </div>
                     <dl class="row mb-0">
@@ -298,17 +375,171 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
 
         <div class="tab-pane fade <?= $activeTab === 'sport' ? 'show active' : '' ?>" id="sport">
             <section class="card section-card mb-3">
-                <div class="card-header bg-white d-flex justify-content-between flex-wrap gap-2"><strong>Tréninky ze všech soupisek · <?= $trainingYear ?></strong><span><a href="?sportovec_id=<?= $sportovecId ?>&amp;tab=sport&amp;rok=<?= $trainingYear - 1 ?>#sport"><?= $trainingYear - 1 ?></a> · <a href="?sportovec_id=<?= $sportovecId ?>&amp;tab=sport&amp;rok=<?= $trainingYear + 1 ?>#sport"><?= $trainingYear + 1 ?></a></span></div>
+                <div class="card-header bg-white d-flex justify-content-between flex-wrap gap-2">
+<strong>Tréninky ze všech soupisek · <?= $trainingYear ?>
+
+</strong>
+<span>
+<a href="?sportovec_id=<?= $sportovecId ?>
+&amp;tab=sport&amp;rok=<?= $trainingYear - 1 ?>
+#sport">
+<?= $trainingYear - 1 ?>
+
+</a> · <a href="?sportovec_id=<?= $sportovecId ?>
+&amp;tab=sport&amp;rok=<?= $trainingYear + 1 ?>
+#sport">
+<?= $trainingYear + 1 ?>
+
+</a>
+</span>
+</div>
                 <div class="card-body"><p class="text-muted small">Plánované i evidované tréninky podle členství v den tréninku. Účast je uvedena samostatně.</p>
                 <?php if ($rosterTrainingError): ?><p>Tréninky se nyní nepodařilo načíst.</p><?php elseif (!$rosterTrainings): ?><p>V tomto roce nejsou evidované tréninky.</p><?php else: ?>
-                    <?php foreach ($rosterTrainings as $training): ?><details class="border rounded p-2 mb-2"><summary><strong><?= d($training['datum']) ?></strong> · <?= h($training['title']) ?> · <?= !empty($training['attended']) ? 'účast zaznamenána' : h($training['response'] ?? 'účast nepotvrzena') ?></summary><div class="mt-2 small"><strong>Skupina / soupiska:</strong> <?= h($training['targets'] ? implode(', ', $training['targets']) : 'Historický trénink bez vazby na soupisku') ?><?php if ($training['description'] !== ''): ?><p class="mt-2 mb-0"><?= nl2br(h($training['description'])) ?></p><?php endif; ?></div></details><?php endforeach; ?>
+                    <?php foreach ($rosterTrainings as $training): ?>
+
+<details class="border rounded p-2 mb-2">
+<summary>
+<strong>
+<?= d($training['datum']) ?>
+
+</strong> · <?= h($training['title']) ?>
+ · <?= !empty($training['attended']) ? 'účast zaznamenána' : h($training['response'] ?? 'účast nepotvrzena') ?>
+
+</summary>
+<div class="mt-2 small">
+<strong>Skupina / soupiska:</strong> <?= h($training['targets'] ? implode(', ', $training['targets']) : 'Historický trénink bez vazby na soupisku') ?>
+
+<?php if ($training['description'] !== ''): ?>
+
+<p class="mt-2 mb-0">
+<?= nl2br(h($training['description'])) ?>
+
+</p>
+<?php endif; ?>
+
+</div>
+</details>
+<?php endforeach; ?>
+
                 <?php endif; ?></div>
             </section>
             <div class="row g-3">
-                <div class="col-lg-6"><div class="card section-card"><div class="card-header bg-white fw-semibold">Poslední tréninky</div><div class="card-body p-0"><table class="table table-sm mb-0"><?php foreach ($treninky as $t): ?><tr><td><?= d($t['datum']) ?></td><td><?= h($t['kategorie'] ?: '—') ?></td><td><?= h(mb_strimwidth((string)$t['napln'], 0, 70, '…', 'UTF-8')) ?></td></tr><?php endforeach; if (!$treninky): ?><tr><td class="text-muted p-3">Žádné tréninky.</td></tr><?php endif; ?></table></div></div></div>
-                <div class="col-lg-6"><div class="card section-card"><div class="card-header bg-white fw-semibold">Závody</div><div class="card-body p-0"><table class="table table-sm mb-0"><?php foreach ($zavody as $z): ?><tr><td><?= d($z['datum']) ?></td><td><?= h($z['kategorie']) ?></td><td><a href="zavod_detail.php?id=<?= (int)$z['id'] ?>"><?= h(mb_strimwidth((string)$z['popis'], 0, 60, '…', 'UTF-8')) ?></a></td><td><?= h($z['cas'] ?? '') ?></td></tr><?php endforeach; if (!$zavody): ?><tr><td class="text-muted p-3">Žádné závody.</td></tr><?php endif; ?></table></div></div></div>
-                <div class="col-lg-6"><div class="card section-card"><div class="card-header bg-white fw-semibold">Kreditní období</div><div class="card-body p-0"><table class="table table-sm mb-0"><?php foreach ($obdobi as $o): ?><tr><td><?= d($o['datum_od']) ?> - <?= d($o['datum_do'] ?? null) ?></td><td><?= money($o['sazba_kc']) ?></td><td><?php if ((!empty($o['vyplaceno']) || !in_array($o['datum_do'], [null, '', '0000-00-00'], true)) && (!isset($o['pocet_treninku'], $o['castka_celkem']) || in_array($o['datum_do'], [null, '', '0000-00-00'], true))): ?><span class="badge bg-danger">Nevyřešeno: období #<?= (int)$o['id'] ?></span><small class="d-block">Předat hospodáři; chybí uzavřený souhrn.</small><?php elseif (!empty($o['vyplaceno'])): ?><span class="badge bg-success">vyplaceno</span><?php elseif (!in_array($o['datum_do'], [null, '', '0000-00-00'], true)): ?><span class="badge bg-secondary">uzavřeno</span><?php else: ?><span class="badge bg-warning text-dark">otevřeno</span><?php endif; ?></td></tr><?php endforeach; if (!$obdobi): ?><tr><td class="text-muted p-3">Žádná období.</td></tr><?php endif; ?></table></div></div></div>
-                <div class="col-lg-6"><div class="card section-card"><div class="card-header bg-white fw-semibold">Zátěžové testy</div><div class="card-body p-0"><table class="table table-sm mb-0"><?php foreach ($testy as $t): ?><tr><td><?= d($t['datum']) ?></td><td><?= $t['vaha_kg'] ? h($t['vaha_kg']) . ' kg' : '—' ?></td><td><?= $t['vyska_cm'] ? h($t['vyska_cm']) . ' cm' : '—' ?></td></tr><?php endforeach; if (!$testy): ?><tr><td class="text-muted p-3">Žádné testy.</td></tr><?php endif; ?></table></div></div></div>
+                <div class="col-lg-6">
+<div class="card section-card">
+<div class="card-header bg-white fw-semibold">Poslední tréninky</div>
+<div class="card-body p-0">
+<table class="table table-sm mb-0">
+<?php foreach ($treninky as $t): ?>
+
+<tr>
+<td>
+<?= d($t['datum']) ?>
+
+</td>
+<td>
+<?= h($t['kategorie'] ?: '—') ?>
+
+</td>
+<td>
+<?= h(mb_strimwidth((string)$t['napln'], 0, 70, '…', 'UTF-8')) ?>
+
+</td>
+</tr>
+<?php endforeach;
+if (!$treninky): ?><tr><td class="text-muted p-3">Žádné tréninky.</td></tr><?php endif; ?></table></div></div></div>
+                <div class="col-lg-6">
+<div class="card section-card">
+<div class="card-header bg-white fw-semibold">Závody</div>
+<div class="card-body p-0">
+<table class="table table-sm mb-0">
+<?php foreach ($zavody as $z): ?>
+
+<tr>
+<td>
+<?= d($z['datum']) ?>
+
+</td>
+<td>
+<?= h($z['kategorie']) ?>
+
+</td>
+<td>
+<a href="zavod_detail.php?id=<?= (int)$z['id'] ?>
+">
+<?= h(mb_strimwidth((string)$z['popis'], 0, 60, '…', 'UTF-8')) ?>
+
+</a>
+</td>
+<td>
+<?= h($z['cas'] ?? '') ?>
+
+</td>
+</tr>
+<?php endforeach;
+if (!$zavody): ?><tr><td class="text-muted p-3">Žádné závody.</td></tr><?php endif; ?></table></div></div></div>
+                <div class="col-lg-6">
+<div class="card section-card">
+<div class="card-header bg-white fw-semibold">Kreditní období</div>
+<div class="card-body p-0">
+<table class="table table-sm mb-0">
+<?php foreach ($obdobi as $o): ?>
+
+<tr>
+<td>
+<?= d($o['datum_od']) ?>
+ - <?= d($o['datum_do'] ?? null) ?>
+
+</td>
+<td>
+<?= money($o['sazba_kc']) ?>
+
+</td>
+<td>
+<?php if ((!empty($o['vyplaceno']) || !in_array($o['datum_do'], [null, '', '0000-00-00'], true))
+    && (!isset($o['pocet_treninku'], $o['castka_celkem']) || in_array($o['datum_do'], [null, '', '0000-00-00'], true))): ?>
+
+<span class="badge bg-danger">Nevyřešeno: období #<?= (int)$o['id'] ?>
+
+</span>
+<small class="d-block">Předat hospodáři; chybí uzavřený souhrn.</small>
+<?php elseif (!empty($o['vyplaceno'])): ?>
+
+<span class="badge bg-success">vyplaceno</span>
+<?php elseif (!in_array($o['datum_do'], [null, '', '0000-00-00'], true)): ?>
+
+<span class="badge bg-secondary">uzavřeno</span>
+<?php else: ?>
+
+<span class="badge bg-warning text-dark">otevřeno</span>
+<?php endif; ?>
+
+</td>
+</tr>
+<?php endforeach;
+if (!$obdobi): ?><tr><td class="text-muted p-3">Žádná období.</td></tr><?php endif; ?></table></div></div></div>
+                <div class="col-lg-6">
+<div class="card section-card">
+<div class="card-header bg-white fw-semibold">Zátěžové testy</div>
+<div class="card-body p-0">
+<table class="table table-sm mb-0">
+<?php foreach ($testy as $t): ?>
+
+<tr>
+<td>
+<?= d($t['datum']) ?>
+
+</td>
+<td>
+<?= $t['vaha_kg'] ? h($t['vaha_kg']) . ' kg' : '—' ?>
+
+</td>
+<td>
+<?= $t['vyska_cm'] ? h($t['vyska_cm']) . ' cm' : '—' ?>
+
+</td>
+</tr>
+<?php endforeach;
+if (!$testy): ?><tr><td class="text-muted p-3">Žádné testy.</td></tr><?php endif; ?></table></div></div></div>
             </div>
         </div>
 
@@ -324,7 +555,22 @@ $history = sportovecHistoryFetch($pdo, $sportovecId, 80);
                     </form>
                 </div>
             </div>
-            <div class="card section-card"><div class="card-header bg-white fw-semibold">Poznámky</div><div class="card-body"><?php foreach ($notes as $n): ?><div class="border-bottom pb-2 mb-2"><div class="small text-muted"><?= d($n['datum']) ?> · <?= h($n['trener_jmeno'] ?? '') ?></div><?= nl2br(h($n['text'])) ?></div><?php endforeach; if (!$notes): ?><div class="text-muted">Žádné interní poznámky.</div><?php endif; ?></div></div>
+            <div class="card section-card">
+<div class="card-header bg-white fw-semibold">Poznámky</div>
+<div class="card-body">
+<?php foreach ($notes as $n): ?>
+
+<div class="border-bottom pb-2 mb-2">
+<div class="small text-muted">
+<?= d($n['datum']) ?>
+ · <?= h($n['trener_jmeno'] ?? '') ?>
+
+</div>
+<?= nl2br(h($n['text'])) ?>
+
+</div>
+<?php endforeach;
+if (!$notes): ?><div class="text-muted">Žádné interní poznámky.</div><?php endif; ?></div></div>
         </div>
 
         <div class="tab-pane fade <?= $activeTab === 'historie' ? 'show active' : '' ?>" id="historie">
