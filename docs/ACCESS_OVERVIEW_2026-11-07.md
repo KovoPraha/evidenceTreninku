@@ -1,7 +1,7 @@
 # Přehled lidí, rolí a přístupů
 
-ID ROLE01; vlastník: vývoj a vlastník aplikace. Stav: implementace hotová,
-schválené nasazení / produkční přejímka rozpracované. [Rozhodnutí](DECISION_LOG.md#d2026-11-07-02).
+ID ROLE01; vlastník: vývoj a vlastník aplikace. **HOTOVO: implementace, nasazení
+a technická produkční přejímka 16/16.** [Rozhodnutí](DECISION_LOG.md#d2026-11-07-02).
 
 Zadání 7. 11. 2026: společný přehled všech pracovních účtů a jejich přístupů
 k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
@@ -23,9 +23,12 @@ k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
   prostřednictvím existující autorizační služby baru.
 - Tři dávkové dotazy načítají účty, přiřazení a zvláštní granty. Přehled
   ukazuje i deaktivované a nezařazené účty; neodvozuje přístupy z legacy role.
-- ROZPRACOVÁNO: CI/revize, schválené nasazení a produkční přejímka. Novější
-  optimalizace docházky z `feb8fe8c` zachovaná. Žádnému skutečnému člověku zde
-  nebyla role změněna.
+- Sloučeno [PR #356](https://github.com/KovoPraha/evidenceTreninku/pull/356),
+  commit `ebb8b2e3`, všech 11 CI kontrol PASS; novější hlavní změny zachované.
+  NASAZENO / ověřeno: deploy `42360171293`, přejímka `42360515313`,
+  [produkční protokol](verification/access-release-20261107/RESULTS.md).
+  Dokumentační předání `codex/access-release-20261107` ve stejném worktree.
+  Žádnému skutečnému člověku zde nebyla role změněna.
 - Hranice: přehled pracovních účtů není seznam zákazníků ani všech sportovců;
   trenérské soukromé rozsahy zůstávají samostatnou správou.
 

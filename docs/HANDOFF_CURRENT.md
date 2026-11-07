@@ -7,28 +7,24 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
-- P07 N1/N2: automatické doklady a zprávy objednávek implementované v
-  [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355); vlastník schválil merge i deploy.
-  [Plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
-  Místní tok PASS (51/496); dále CI/merge/deploy a chráněné shop_enable. Browser blokovaný; banka/schránka neověřené.
-
-- ROLE01: [plán a oprávnění](ACCESS_OVERVIEW_2026-11-07.md), [PR #356](https://github.com/KovoPraha/evidenceTreninku/pull/356).
-  Přehled a místní ověření hotové; následně schválený deploy a formulářový test
-  jen na nových technických účtech. Původní role lidí zachovat a porovnat otisk.
-  CI kódu prošlo; po převzetí #357 znovu CI/merge, baseline, deploy, ověření a úklid.
+- ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
+  #356 nasazeno jako `ebb8b2e3`; formuláře 16/16 PASS, původních 46 účtů beze změny.
+  Oba nové testovací účty deaktivované a bez rolí. Žádný další deploy ani opakování testu není potřeba.
+  Výsledkové předání: `codex/access-release-20261107`, stejný vlastní worktree jako implementace.
 
 - DOC01: [zadání, audit, plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
   Obsah a místní kontroly hotové; [GitHub předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), stav CI/merge u PR.
   Větev `codex/repo-documentation-policy-20261107`, vlastní worktree stejného tématu
   v `C:/Users/Marek/Documents/Codex/evidencePavel-repo-documentation-policy-20261107`.
-- P11: R13 #352, R05 #353 a R06 #354 jsou v main `feb8fe8c`, bez nového deploye.
+- P11: R13 #352, R05 #353 a R06 #354 jsou v main a zahrnuté v nasazení ROLE01; jejich úplná provozní přejímka zůstává v P11.
   [Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md),
   [R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md),
   [R13](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md).
   Dále plné HTTP/bootstrap/nav, další role a propojená docházka podle P11.
-- [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355): otevřená
-  syntetická přejímka jednorázového kroužku, v kontrolovaném main dosud není.
-  Před integrací zkontrolovat konflikt sdílené dokumentace a převzít věcné výsledky.
+- P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
+  [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
+  Místní tok a 2337 testů PASS; dále finální CI, schválený merge/deploy a shop_enable.
+  Browser blokovaný; skutečná banka a externí schránka zůstávají neověřené.
 - P02/P04: [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md),
   [účetní adaptér](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md); publikaci neopakovat.
 - P05: [serverové předání](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md)
