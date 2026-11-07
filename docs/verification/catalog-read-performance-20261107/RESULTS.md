@@ -75,6 +75,8 @@ nikoli na 12 variant při více variantách jednoho produktu. Vyhledávání čt
 souhrny po 100 produktech. Více malých SQL je vědomý kompromis za menší přenos
 obrázků/JSON a méně prezentace. Běžný GET nemá nový atomický snapshot;
 transakční cesta i aktuální kontroly checkoutu zůstávají kanonické.
-Plné HTTP/bootstrap/košík/navigace, browser a produkční přejímka **NOT RUN**.
+Plné HTTP/bootstrap/košík/navigace, browser a produkční přejímka nového katalogu **NOT RUN**.
+Samostatné [HTTP/browser měření #363](../full-http-performance-20261107/RESULTS.md)
+na starší verzi `feb8fe8c` zůstává zachované; nejde o přeměření této optimalizace.
 Časy nejsou produkční latence ani slib celkového vykreslení stránky.
 Katalogový PR se neslučuje automaticky; deploy/aktivace nejsou povolené.

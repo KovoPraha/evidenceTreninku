@@ -1,0 +1,10 @@
+{
+  "unique_error_locations": {
+    "http://127.0.0.1:18094/favicon.ico:0": 94
+  },
+  "sample_errors": {
+    "Failed to load resource: the server responded with a status of 404 (Not Found)": 93
+  },
+  "failed_requests": [],
+  "note": "CLI console includes setup/navigation outside samples; sample errors remain in raw browser reports."
+}

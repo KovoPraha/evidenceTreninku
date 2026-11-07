@@ -81,3 +81,8 @@ nad 64 omezená prezentace. Probe neurčuje obsah/počty ani nefiltruje výsledk
 Jde o pevnou interní heuristiku, nikoli změnu prodejnosti. Malý sortiment přidá
 jen jeden malý SELECT; velký sortiment stále omezí těžká data na stránku.
 Nové měření nahradí původní čísla; první report zůstává označený jako předchozí.
+
+Převzetí souběhu: main `d958fd6e` / #363 přináší samostatné HTTP/browser měření
+na `feb8fe8c`; výsledky zachované a nedeklarované jako přeměření nového katalogu.
+[Nový společný rozhodovací odkaz](DECISION_LOG.md#d2026-11-07-06).
+Katalogová událost je 14; dřívější pracovní ID 13 patří v main již HTTP měření.

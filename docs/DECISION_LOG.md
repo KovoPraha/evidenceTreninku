@@ -6,6 +6,20 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-05
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026; autonomní měření podle pokynu vlastníka bez produkčních změn.
+- **Volba:** standardní HTTP/UI přihlášení a celé stránky, další pozice/filtry,
+  oddělené nezinstrumentované časy a diagnostika, stejné syntetické schéma.
+- **Důvod / alternativa:** izolovaný PHP profil neobsahuje bootstrap/navigaci ani
+  práci prohlížeče. Lokální časy nejsou produkční SLA; samotný SQL count neurčuje příčinu.
+- **Dopad:** 65 HTTP případů a 403 browser pozorování hotové; další priorita
+  R06 výběr osob / lekce, nikoli neověřená další optimalizace nebo nasazení.
+  Měřená verze feb8fe8c zůstává oddělená od souběžného main 37d0ad68 / ROLE01.
+- **Podklady:** [výsledky](verification/full-http-performance-20261107/RESULTS.md),
+  [předání a otevřené etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md),
+  [událost](EVENT_LOG.md). Větev `codex/full-http-performance-20261107`; [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), CI/merge u PR.
+
 ## D2026-11-07-01
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026. Rozhodl vlastník explicitním zadáním.
@@ -93,7 +107,7 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 | Práce / rozsah | Plán, výsledek a důvody | Historie / další etapy |
 | --- | --- | --- |
-| P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-04) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); merge #358 `37d0ad68`, bez deploye; katalog/HTTP dál otevřené |
+| P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-04) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); merge #358 `37d0ad68`, bez deploye; navazující katalog otevřený |
 | DOC01 — souborová dokumentace a stručné předání | [Plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [důvod rozhodnutí](#d2026-11-07-01) | [Předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), [deník](EVENT_LOG.md); stav CI/přijetí určuje PR |
 | P11 R13 — implementace v main #352, bez deploye | [Plán a důkazy](verification/medical-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md), celé K0.2 otevřené |
 | P11 R05 — implementace v main #353, bez deploye | [Plán a důkazy](verification/planner-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md), hierarchický filtr/HTTP otevřené |
@@ -101,14 +115,16 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 | Refaktoring W6–W15 — technické dokončení | [Komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md), [uzavření](REFACTORING_CLOSURE_2026-10-30.md) | Lidská/účetní přejímka v P09; [provozní historie](CHANGELOG-PROVOZ.md) |
 | Starší session a dokončené části programu | [Deník a archivní rozcestník](EVENT_LOG.md) | Původní plány, důkazy a rozhodnutí zůstávají v Gitu; nejde o zpětné schválení neověřených kroků |
 
-## D2026-11-07-05
+P11 celé HTTP/browser — [uzavřené měření a důkazy](verification/full-http-performance-20261107/RESULTS.md), [navazující etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); celé K0.2 otevřené.
+
+## D2026-11-07-06
 
 PŘIJATO, 7. 11. 2026, podle zadání vlastníka pokračovat katalogem.
 [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md): lehká operační projekce celého
 katalogu zachová prodejnost, počty a ceny; těžká prezentace jen pro stránku.
 SQL LIMIT před cenami/prodejností zamítnuto kvůli změně výsledků; trvalá cache
 by potřebovala invalidaci. Parita a měření jsou podmínkou předání. Bez deploye.
-
-Doplnění D2026-11-07-05: první nativní měření ukázalo režii malého katalogu.
-[Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md) volí do 64 aktivních produktů
-původní cestu podle omezené sondy; sonda nikdy neurčuje výsledný katalog.
+První nativní měření ukázalo režii malého katalogu; do 64 aktivních produktů
+proto původní cesta podle sondy nejvýše 65 ID. Sonda neurčuje výsledný katalog.
+Pracovní ID v předchozích commitech této větve bylo 05; přijaté HTTP rozhodnutí
+#363 ponecháno jako 05, katalog nyní 06. Historické doklady zůstávají v Gitu.
