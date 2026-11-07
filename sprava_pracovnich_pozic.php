@@ -5,6 +5,8 @@ require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/staff_workspaces.php';
 require_once __DIR__ . '/includes/staff_account_lifecycle.php';
+require_once __DIR__ . '/includes/staff_access_overview.php';
+require_once __DIR__ . '/includes/bar/access.php';
 
 staffRequireActivePosition('system_admin');
 
@@ -74,6 +76,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 }
                 $_SESSION['flash_success'] = $result['changed'] ? 'Jméno trenéra bylo změněno.' : 'Jméno trenéra se nezměnilo.';
                 header('Location: sprava_pracovnich_pozic.php?trainer_id=' . (int)$targetId, true, 303);
+                exit;
+            }
+
+            if ($action === 'set_consumption') {
+                if (!in_array($_POST['enabled'] ?? null, ['0', '1'], true)) {
+                    throw new InvalidArgumentException('Vyberte platný stav oprávnění.');
+                }
+                barSetConsumptionPermission($pdo, (int)$targetId, $_POST['enabled'] === '1', $reason);
+                $_SESSION['flash_success'] = $_POST['enabled'] === '1'
+                    ? 'Vlastní spotřeba baru byla povolena.' : 'Oprávnění vlastní spotřeby baru bylo odebráno.';
+                header('Location: sprava_pracovnich_pozic.php?trainer_id=' . (int)$targetId . '#uprava-pristupu', true, 303);
                 exit;
             }
 
@@ -194,7 +207,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
             }
-            $known = $exception instanceof InvalidArgumentException || $exception instanceof StaffAccountLifecycleException;
+            $known = $exception instanceof InvalidArgumentException || $exception instanceof StaffAccountLifecycleException
+                || $exception instanceof DomainException;
             $errors[] = $known ? $exception->getMessage() : 'Změnu se nepodařilo bezpečně uložit.';
             if (!$known) {
                 error_log('Staff position management failed: ' . $exception->getMessage());
@@ -203,13 +217,18 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     }
 }
 
-$trainers = $pdo->query('SELECT id,jmeno,email,role,aktivni FROM treneri ORDER BY aktivni DESC,jmeno,id')->fetchAll(PDO::FETCH_ASSOC);
+$trainers = staffAccessOverview($pdo);
+$search = is_string($_GET['q'] ?? null) ? trim($_GET['q']) : '';
+$roleFilter = is_string($_GET['access'] ?? null) ? $_GET['access'] : '';
+$statusFilter = is_string($_GET['status'] ?? null) ? $_GET['status'] : '';
+$accessGroups = staffAccessOverviewGroups();
+$visibleTrainers = staffAccessOverviewFilter($trainers, $search, $roleFilter, $statusFilter);
 $selectedId = max(0, (int)($_GET['trainer_id'] ?? 0));
-if (($_POST['action'] ?? '') === 'rename_trainer' && isset($targetId) && $targetId !== false) {
-    $selectedId = (int)$targetId;
-}
-if ($selectedId === 0 && $trainers !== []) {
-    $selectedId = (int)$trainers[0]['id'];
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    $postedId = filter_var($_POST['trainer_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+    if ($postedId !== false) {
+        $selectedId = (int)$postedId;
+    }
 }
 $selected = null;
 foreach ($trainers as $trainer) {
@@ -236,7 +255,7 @@ $renameReason = $renameAttempt && is_string($_POST['reason'] ?? null) ? $_POST['
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>
-Pracovní pozice</title>
+Lidé a přístupy</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 crossorigin="anonymous">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD"
@@ -249,9 +268,9 @@ crossorigin="anonymous">
 
 <div class="mb-4">
 <h1 class="h3 mb-1">
-Pracovní pozice a rozcestníky</h1>
+Lidé a přístupy</h1>
 <p class="text-muted mb-0">
-Pozice se neslučují. Každý uživatel pracuje vždy v jednom aktivním kontextu.</p>
+Všechny pracovní účty a jejich role pro trenérské funkce, e-shop, bar a další agendy. U člověka zvolte Upravit přístupy.</p>
 </div>
 
 <?php foreach ($errors as $error): ?><div class="alert alert-danger">
@@ -260,23 +279,9 @@ Pozice se neslučují. Každý uživatel pracuje vždy v jednom aktivním kontex
 <?php if (!empty($_SESSION['flash_success'])): ?><div class="alert alert-success">
 <?= staffAdminH($_SESSION['flash_success']) ?></div>
 <?php unset($_SESSION['flash_success']); endif; ?>
+<?php require __DIR__ . '/includes/staff_access_overview_view.php'; ?>
 <div class="row g-4">
-
-<aside class="col-lg-4">
-<div class="list-group shadow-sm">
-
-<?php foreach ($trainers as $trainer): ?><a class="list-group-item list-group-item-action <?= (int)$trainer['id'] === $selectedId ? 'active' : '' ?>"
-href="?trainer_id=<?= (int)$trainer['id'] ?>">
-<strong>
-<?= staffAdminH($trainer['jmeno']) ?></strong>
-<div class="small <?= (int)$trainer['id'] === $selectedId ? 'text-white-50' : 'text-muted' ?>">
-<?= staffAdminH($trainer['email']) ?><?= (int)$trainer['aktivni'] === 1 ? '' : ' · neaktivní' ?></div>
-</a>
-<?php endforeach; ?>
-</div>
-</aside>
-
-<section class="col-lg-8">
+<section class="col-12" id="uprava-pristupu" aria-label="Úprava přístupů vybraného člověka">
 <?php if ($selected): ?>
 <div class="card border-0 shadow-sm mb-4">
 <div class="card-header bg-white d-flex justify-content-between align-items-start gap-2">
@@ -284,43 +289,21 @@ href="?trainer_id=<?= (int)$trainer['id'] ?>">
 <strong>
 <?= staffAdminH($selected['jmeno']) ?></strong>
 <div class="small text-muted">
-Legacy role <?= staffAdminH($selected['role']) ?> je pouze kompatibilní technický údaj.</div>
+<?= staffAdminH($selected['email']) ?> · #<?= $selectedId ?></div>
 </div>
 <span class="badge <?= (int)$selected['aktivni'] === 1 ? 'text-bg-success' : 'text-bg-secondary' ?>">
 <?= (int)$selected['aktivni'] === 1 ? 'Aktivní účet' : 'Deaktivovaný účet' ?></span>
 </div>
 <div class="card-body">
 
-<h2 class="h5">
-Změnit jméno trenéra</h2>
+<h2 class="h5">Přístupy: <?= staffAdminH($selected['jmeno']) ?></h2>
+<p class="text-muted">Zaškrtněte role, které má člověk mít, zvolte výchozí pozici a uložte změnu s důvodem.
+Člověk mezi přidělenými pozicemi přepíná v rozcestníku.</p>
+<?php if ($snapshot['superadmin']): ?>
+<div class="alert alert-warning">Tento účet je superadmin a má dostupné všechny pracovní pozice.
+Odebrání zaškrtnutí role jeho přístup neomezí, dokud mu níže neodeberete superadmina.</div>
+<?php endif; ?>
 
-<form method="post" class="row g-3">
-
-<?= csrf_field() ?><input type="hidden" name="action" value="rename_trainer">
-<input type="hidden" name="trainer_id" value="<?= $selectedId ?>">
-
-<div class="col-md-6">
-<label class="form-label" for="trainer-name">
-Jméno a příjmení</label>
-<input class="form-control" id="trainer-name" name="jmeno" value="<?= staffAdminH($renameName) ?>" maxlength="100"
-autocomplete="off" required>
-</div>
-
-<div class="col-md-6">
-<label class="form-label" for="rename-reason">
-Důvod změny jména</label>
-<input class="form-control" id="rename-reason" name="reason" value="<?= staffAdminH($renameReason) ?>" minlength="5"
-maxlength="1000" required>
-</div>
-
-<div class="col-12">
-<button class="btn btn-success" type="submit">
-Uložit jméno</button>
-</div>
-
-</form>
-
-<hr class="my-4">
 <h2 class="h5">
 Pracovní pozice</h2>
 
@@ -329,8 +312,8 @@ Pracovní pozice</h2>
 <input type="hidden" name="trainer_id" value="<?= $selectedId ?>">
 
 <?php foreach ($definitions as $code => $position): ?><div class="col-md-6">
-<label class="form-check border rounded p-3 h-100">
-<input class="form-check-input position-check" type="checkbox" name="positions[]" value="<?= staffAdminH($code) ?>"
+<label class="d-flex gap-2 border rounded p-3 h-100">
+<input class="form-check-input position-check flex-shrink-0" type="checkbox" name="positions[]" value="<?= staffAdminH($code) ?>"
 <?= in_array($code, $assigned, true) ? 'checked' : '' ?>>
 <span class="form-check-label ms-1">
 <strong>
@@ -342,9 +325,9 @@ Pracovní pozice</h2>
 </div>
 <?php endforeach; ?>
 <div class="col-md-6">
-<label class="form-label">
+<label class="form-label" for="default-position">
 Výchozí pozice po přihlášení</label>
-<select class="form-select" name="default_position" required>
+<select class="form-select" id="default-position" name="default_position" required>
 <?php foreach ($definitions as $code => $position): ?><option value="<?= staffAdminH($code) ?>" <?= $default === $code ? 'selected' : '' ?>>
 <?= staffAdminH($position['label']) ?></option>
 <?php endforeach; ?></select>
@@ -419,6 +402,34 @@ Důvod změny</label>
 
 </div>
 </div>
+
+<div class="card border-0 shadow-sm mb-4"><div class="card-body">
+<h2 class="h5">Vlastní spotřeba baru</h2>
+<p class="small text-muted">Povoluje odběr bez tržby. Člověk musí mít také barovou roli a aktivní účet.
+Samotný superadmin ani administrátor baru toto zvláštní povolení nenahrazuje.</p>
+<p>Aktuálně: <strong><?= $selected['own_consumption'] ? 'povolena' : 'nepovolena' ?></strong></p>
+<form method="post" class="row g-2 align-items-end">
+<?= csrf_field() ?><input type="hidden" name="action" value="set_consumption">
+<input type="hidden" name="trainer_id" value="<?= $selectedId ?>">
+<input type="hidden" name="enabled" value="<?= $selected['own_consumption'] ? '0' : '1' ?>">
+<div class="col-md-8"><label class="form-label" for="consumption-reason">Důvod změny vlastní spotřeby</label>
+<input class="form-control" id="consumption-reason" name="reason" minlength="5" maxlength="1000" required></div>
+<div class="col-md-4"><button class="btn <?= $selected['own_consumption'] ? 'btn-outline-danger' : 'btn-outline-primary' ?>"
+<?= (int)$selected['aktivni'] !== 1 && !$selected['own_consumption'] ? 'disabled' : '' ?>>
+<?= $selected['own_consumption'] ? 'Odebrat vlastní spotřebu' : 'Povolit vlastní spotřebu' ?></button></div>
+</form></div></div>
+
+<details class="card border-0 shadow-sm mb-4" <?= $renameAttempt ? 'open' : '' ?>>
+<summary class="card-header bg-white">Změnit jméno pracovního účtu</summary>
+<div class="card-body"><form method="post" class="row g-3">
+<?= csrf_field() ?><input type="hidden" name="action" value="rename_trainer">
+<input type="hidden" name="trainer_id" value="<?= $selectedId ?>">
+<div class="col-md-6"><label class="form-label" for="trainer-name">Jméno a příjmení</label>
+<input class="form-control" id="trainer-name" name="jmeno" value="<?= staffAdminH($renameName) ?>" maxlength="100" autocomplete="off" required></div>
+<div class="col-md-6"><label class="form-label" for="rename-reason">Důvod změny jména</label>
+<input class="form-control" id="rename-reason" name="reason" value="<?= staffAdminH($renameReason) ?>" minlength="5" maxlength="1000" required></div>
+<div class="col-12"><button class="btn btn-success" type="submit">Uložit jméno</button></div>
+</form></div></details>
 
 <div class="card <?= $snapshot['superadmin'] ? 'border-warning' : 'border-0' ?> shadow-sm">
 <div class="card-body">

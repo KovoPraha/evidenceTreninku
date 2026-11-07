@@ -23,6 +23,21 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
   [závazný postup](WORK_DOCUMENTATION_POLICY.md), [deník](EVENT_LOG.md).
   Zavedení pravidla neuděluje nové oprávnění k produkčním zásahům.
 
+## D2026-11-07-02
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026. Vlastník po přípravě přehledu výslovně
+  zadal nasazení a ověření změn rolí; stávající role lidí se nesmějí měnit.
+- **Volba a důvod:** zachovat současné role a audit, rozšířit dosavadní stránku
+  o společný přehled. Ověření zápisů jen na nových technických účtech, nikoli
+  na existujícím zaměstnanci nebo dosavadním testovacím účtu.
+- **Provozní ověření:** před nasazením čtecí otisk původních přístupů; následně
+  skutečné HTTPS formuláře a odvolání všech nových testovacích přístupů s
+  deaktivací účtů. Hesla jen v paměti procesu, bez e-mailů. Obnova úklidu má
+  vlastní chráněnou fázi a odmítá původní ID.
+- **Varianta a omezení:** Computer Use skončil kvůli neurčené URL prohlížeče;
+  nepokračuje ovládání desktopu. Serverové formulářové ověření neoznačovat
+  za vizuální produkční Chrome UAT. [Plán a akceptace](ACCESS_OVERVIEW_2026-11-07.md).
+
 ## Starší rozhodnutí — zachovaná v původních souborech
 
 | Oblast | Trvalý zdroj | Jak číst |

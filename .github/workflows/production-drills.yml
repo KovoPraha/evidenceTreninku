@@ -16,6 +16,7 @@ on:
           - overit-uat-pripravenost
           - overit-dopad-kluboveho-vydani
           - overit-tv-programy
+          - overit-pracovni-pristupy
           - pripravit-uat-ucty-a-data
           - obnovit-uat-test-hesla
           - deaktivovat-testovaci-ucty
@@ -37,6 +38,14 @@ on:
         type: string
       tv_uat_keep_program_id:
         description: 'Pouze TV cleanup: explicitni ID vlastniho zverejneneho programu, ktery ma zustat pro fyzickou TV; jinak prazdne'
+        type: string
+      access_phase:
+        description: 'Přístupy: čtecí otisk před vydáním, formulářový test nových účtů, nebo obnova úklidu'
+        type: choice
+        default: baseline
+        options: [baseline, verify, cleanup]
+      access_run_id:
+        description: 'Přístupy verify/cleanup: ID původního baseline běhu'
         type: string
 
 permissions:
@@ -437,6 +446,48 @@ jobs:
             production_ssh_init
             production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/club-release-impact.php' '$DEPLOY_BASE/run-club-release-impact.php'"
           fi
+
+      - name: Overit pracovni pristupy bez zmen existujicich roli
+        if: inputs.operace == 'overit-pracovni-pristupy'
+        env:
+          ACCESS_PHASE: ${{ inputs.access_phase }}
+          ACCESS_RUN_ID: ${{ inputs.access_run_id }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$APP_HOST" = kis.kovopraha.cz
+          test "$REMOTE_DIR" = kis.kovopraha.cz
+          case "$ACCESS_PHASE" in baseline) ACCESS_RUN_ID="$GITHUB_RUN_ID";; verify|cleanup) ;; *) exit 2;; esac
+          [[ "$ACCESS_RUN_ID" =~ ^[0-9]{8,20}$ ]]
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          ACCESS_REMOTE="$DEPLOY_BASE/staff-access-$ACCESS_RUN_ID"
+          production_retry "${SSH[@]}" "umask 077; mkdir -p '$ACCESS_REMOTE'; chmod 700 '$ACCESS_REMOTE'"
+          production_retry "${SCP[@]}" bin/staff-access-production-uat.php "$SSH_USER@$SSH_HOST:$ACCESS_REMOTE/staff-access-production-uat.php"
+          cat > /tmp/run-staff-access-uat.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('STAFF_ACCESS_UAT_CONFIRM=OVERIT-PRISTUPY');
+          putenv('STAFF_ACCESS_UAT_RUN_ID=$ACCESS_RUN_ID');
+          putenv('STAFF_ACCESS_UAT_PHASE=$ACCESS_PHASE');
+          require __DIR__ . '/staff-access-production-uat.php';
+          try { exit(staffAccessUatMain()); } catch (Throwable \$error) { fwrite(STDERR, \$error->getMessage() . PHP_EOL); exit(1); }
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-staff-access-uat.php "$SSH_USER@$SSH_HOST:$ACCESS_REMOTE/run.php"
+          mkdir -p output/staff-access-production
+          # Never blindly retry a test which contains form POSTs. Recovery is a separate cleanup phase.
+          "${SSH[@]}" "chmod 600 '$ACCESS_REMOTE/run.php' '$ACCESS_REMOTE/staff-access-production-uat.php'; php '$ACCESS_REMOTE/run.php'" > output/staff-access-production/result.json
+          jq -e '.ok == true' output/staff-access-production/result.json >/dev/null
+          cat output/staff-access-production/result.json
+
+      - name: Uchovat bezpecny vysledek kontroly pristupu
+        if: always() && inputs.operace == 'overit-pracovni-pristupy'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: staff-access-production-${{ github.run_id }}
+          path: output/staff-access-production/result.json
+          retention-days: 14
 
       - name: Vytvorit vyhrazeny sifrovany TV pristup
         if: inputs.operace == 'overit-tv-programy' && inputs.tv_uat_phase == 'prepare'

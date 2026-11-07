@@ -1,0 +1,21 @@
+{
+  "passed": 16,
+  "checks": [
+    "all accounts including inactive and unassigned",
+    "combined filters",
+    "empty filter",
+    "special grant not implied by admin role",
+    "role update via actual POST",
+    "updated role persisted",
+    "CSRF blocks changes",
+    "invalid CSRF writes no audit",
+    "default must be assigned",
+    "grant via actual POST",
+    "grant displayed in overview",
+    "revoke via actual POST",
+    "grant removed from overview",
+    "audit for grant and revoke",
+    "coach receives HTTP 403",
+    "roles restored via UI"
+  ]
+}
