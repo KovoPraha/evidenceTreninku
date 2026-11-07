@@ -13,8 +13,14 @@ se zachováním WIP a bez produkčního nasazení.
 [výsledkový protokol](verification/member-pricing-read-performance-20261107/RESULTS.md).
 Větev `codex/member-pricing-read-performance-20261107`, vlastní kopie
 `C:/Users/Marek/Documents/Codex/evidencePavel-member-pricing-performance-20261107`.
-Stav: příprava původního algoritmu a stejné měřicí/paritní fixture;
-další kroky a ověření určuje odkazovaný plán. Checkout a produkce zachované.
+Stav: implementace, parita a měření hotové, cíleně 20 testů / 301 assertions;
+MariaDB 10.3/11.4 500 produktů 2000 → 4 SQL, medián cenové části
+557/377 → 3,21/2,88 ms. Měřený commit má všech 11 CI kontrol PASS,
+Linux 2321/42987 a 3/45; následná regrese skutečných karet cíleně PASS.
+Finální CI a merge jsou živý stav [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358).
+Vlastní místní služby zastavené, automatický rekurzivní úklid datadirů odmítnut
+(`blocked by policy`), adresáře ponechané. Další postup a meze vede plán.
+Checkout a produkce zachované, žádný deploy ani aktivace.
 
 ## Předchozí návaznost: P11 optimalizace docházky
 

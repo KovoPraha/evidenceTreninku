@@ -24,9 +24,16 @@ shodné. Checkout a zápisové služby zachovají původní samostatné čtení.
 | A: aktuální zdroje a izolace | HOTOVO | Čerstvý main, instrukce přečtené, WIP otisk zapsaný. Původní analýza přenesena do této větve jako historický podklad. |
 | B: původní algoritmus a měřicí data | HOTOVO | Zmrazený původní algoritmus a katalogový loop v tests/Support/MemberPricingReadBaseline.php; společná syntetická fixture a střídavý měřič. |
 | C: dávkový čtecí reader | IMPLEMENTOVÁNO | Reader bez statické datové cache, společné soupisky, dávkové ceny/kategorie a sdílená pravidla. Zapojený katalog/detail; transakce stále původní cestou. |
-| D: shoda chování | PROBÍHÁ | Prvních 19 testů / 239 assertions PASS: celé varianty, vazby/členství, remízy, měny, tarify, dávky a přesná transakční SQL cesta. MariaDB kolace dosud NOT RUN. |
-| E: měření přínosu | PROBÍHÁ | Měřič připravený, 12/100/500 variant jednoho či více produktů a tři negativní účty; 5 warmup / 30 střídavých vzorků, samostatné SQL/řádky/paměť. |
-| F: regrese a předání | PROBÍHÁ | Cílené testy PASS; běží styl/PHPStan, připravuje se vlastní izolovaná MariaDB. Úplné testy a finální dokumentace zbývají. |
+| D: shoda chování | HOTOVO | 20 testů / 301 assertions PASS; 39 kolací/stavových kontrol na každé MariaDB 10.3/11.4 PASS; celé výstupy i původní SQL v transakci shodné. |
+| E: měření přínosu | HOTOVO | 1080 párových CI vzorků + 540 SQLite, samostatné SQL/řádky/EXPLAIN/paměť. Pro 500 produktů 2000 → 4 SQL; medián 10.3/11.4 557/377 → 3,21/2,88 ms. |
+| F: regrese a předání | HOTOVO pro implementaci | Všech 11 CI kontrol měřeného commitu PASS; Linux 2321/42987 a 3/45, styl/PHPStan, dokumentace. Pozdější regrese skutečných karet má cílený PASS; aktuální finální CI u PR #358. Bez merge/deploye. |
+
+Výsledky a vzorky jsou trvale v [protokolu](verification/member-pricing-read-performance-20261107/RESULTS.md).
+Zachované souborové předání vede [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358).
+Časy patří pouze cenové operaci, ne celé stránce. Lokální neuzavřené Windows/MariaDB
+běhy se nevydávají za PASS; rozhodující jsou doložené Linux/MariaDB CI výsledky.
+Vlastní místní služby zastavené. Automatická kontrola odmítla rekurzivní úklid
+syntetických datadirů jako `blocked by policy`; adresáře ponechané, viz výsledky.
 
 ## Návrh a přejímací podmínky
 

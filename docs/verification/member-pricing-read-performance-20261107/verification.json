@@ -1,0 +1,11 @@
+{
+  "runtime_commit": "0890e496cb5fa68d8397a30ccc2fbed6851493df",
+  "ci_run_id": 42358282429,
+  "local_links": 340,
+  "ci_source_hashes_checked": 14,
+  "strict_ci_pairs": 18,
+  "mariadb_semantic_checks": 78,
+  "runtime_checks_passed": 11,
+  "canonical_price_and_checkout_unchanged": true,
+  "errors": []
+}

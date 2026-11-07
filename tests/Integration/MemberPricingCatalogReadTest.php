@@ -9,6 +9,8 @@ use PHPUnit\Framework\TestCase;
 use Tests\Support\QueryProfilePdo;
 
 require_once dirname(__DIR__) . '/Support/MemberPricingReadFixture.php';
+require_once dirname(__DIR__) . '/Support/StorefrontReadFixture.php';
+require_once dirname(__DIR__, 2) . '/includes/shop_catalog_cards.php';
 
 final class MemberPricingCatalogReadTest extends TestCase
 {
@@ -60,6 +62,17 @@ final class MemberPricingCatalogReadTest extends TestCase
             $after = $this->assertParity($pdo, $catalog, $account);
             self::assertSame($catalog[0]['variants'][8], $after[0]['variants'][8]);
         }
+    }
+
+    public function testActualStorefrontPresentationCardsRetainEveryFieldAfterPricing(): void
+    {
+        $source = \Tests\Support\storefrontReadFixture(100, false);
+        $source->exec("UPDATE shop_product_categories SET category_path='Oblečení'");
+        $catalog = \shopPublicCatalogCards($source);
+        self::assertCount(100, $catalog);
+        $result = $this->assertParity($this->database(100), $catalog);
+        self::assertTrue($result[0]['variants'][0]['member_price']['is_member_price']);
+        self::assertSame($catalog[0]['images'], $result[0]['images']);
     }
 
     public function testMembershipAndRelationshipBoundariesStatusesAndChangesAreFresh(): void
