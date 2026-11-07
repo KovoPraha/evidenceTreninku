@@ -57,8 +57,8 @@ toto konkrétní vydání nahrazeno tímto potvrzením.
 
 Computer Use při pokusu otevřít syntetickou místní ukázku opakovaně neodpovídal;
 selhalo i obnovení čtecího připojení ke známé KIS kartě. Nebyl vrácen úspěšný
-snímek nové verze. Vlastník byl požádán obnovit připojení Chrome, potvrzení
-obnovy zatím nepřišlo. Místní server 8138 zastaven. Žádné osobní snímky v Gitu.
+snímek nové verze. Vlastník následně potvrdil obnovu a výslovně označil @Chrome.
+Místní server 8138 zastaven. Žádné osobní snímky v Gitu.
 
 Nové mobilní karty proto nejsou označené jako vizuálně převzaté. Starší úspěšný
 [Chrome průchod](../access-visual-20261107/RESULTS.md) se týká původní tabulky.
@@ -69,3 +69,19 @@ Další krok po obnovení spojení: skutečný přihlášený Chrome / produkce 
 prázdný výsledek, GET otevření editoru existujícího neaktivního technického účtu
 #64, desktopová tabulka. Nic neukládat ani neaktivovat, nepřepínat pracovní roli,
 nezaložit účet. Vrátit dočasný viewport a uložit bezpečný vizuální důkaz.
+
+### Navazující pokus s explicitním @Chrome — 7. 11.
+
+Připojení Chrome je nyní viditelné a nástroj našel dvě otevřené karty pracovního
+rozcestníku KIS. Přímé připojení ke konkrétní kartě bylo přijato. Čtení obsahu
+stránky i automatický snímek však opakovaně vypršely; po obnově vazby se
+připojení střídavě hlásilo jako nedostupné. Také přímé čtení DOM přes podporované
+rozhraní skončilo timeoutem. Žádný snímek ani obsah nových karet nebyl vrácen.
+
+Výsledek: vizuální přejímka 390/360 px a desktop stále **NOT RUN / BLOKOVÁNO
+nefunkčním čtením stránky v nástroji**. Nejde již jen o chybějící označení Chrome.
+Neprovádět opakované požadavky na přihlášení uživatele jako údajnou opravu.
+V tomto pokusu se nenastavoval viewport, neodeslal se žádný formulář a žádná
+role ani oprávnění se neměnily. Nasazení ani dříve doložený otisk se neopakovaly.
+Další krok: obnovit funkční čtení/snímání v ovládacím nástroji, poté dokončit
+výše popsaný pouze čtecí průchod. Výsledkové předání pokračuje v PR #365.

@@ -8,7 +8,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 ## Poslední práce a další krok
 
 - ROLE01-MOB NASAZENO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [výsledky](verification/access-mobile-cards-20261107/RESULTS.md), #361 / `3b37e053`, deploy 42365946802 SUCCESS.
-  Otisky všech 48 účtů / 82 rolí shodné před/po. Vizuální karty NOT RUN: Computer Use neodpovídá, vlastník požádán obnovit Chrome.
+  Otisky všech 48 účtů / 82 rolí shodné před/po. Vizuální karty NOT RUN: @Chrome už připojený, čtení DOM/snímků v nástroji opakovaně vyprší.
   Dále jen čtecí Chrome 390/360 px a desktop; nic neukládat. Otevřený [PR #365](https://github.com/KovoPraha/evidenceTreninku/pull/365), `codex/access-mobile-release-20261107`, stejný worktree.
 
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).

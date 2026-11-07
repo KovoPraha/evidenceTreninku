@@ -50,8 +50,9 @@ prázdný výsledek a otevření editoru; desktop bez regrese. Produkční kontr
 jen GET, žádné uložení, aktivace, grant ani nový účet. Otisky před/po přesně shodné:
 48 účtů / 82 přiřazení / 5 superadminů / 1 grant. Vlastník následně schválil
 společný deploy s cenami #358. [Výsledky a hranice](verification/access-mobile-cards-20261107/RESULTS.md).
-Další krok: obnovit neodpovídající spojení Computer Use a dokončit skutečný
-Chrome 390/360 px a desktop. Nové karty vizuálně NOT RUN; další deploy není potřeba.
+Navazující @Chrome se připojil; čtení obsahu/snímků v nástroji však vyprší.
+Další krok: obnovit funkční čtení a dokončit Chrome 390/360 px a desktop.
+Nové karty vizuálně NOT RUN / BLOKOVÁNO nástrojem; další deploy není potřeba.
 Výsledkové předání `codex/access-mobile-release-20261107`, stejný worktree; [otevřený PR #365](https://github.com/KovoPraha/evidenceTreninku/pull/365).
 
 ### Navazující vizuální kontrola ROLE01-VIS
