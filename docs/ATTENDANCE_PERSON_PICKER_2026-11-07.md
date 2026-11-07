@@ -112,3 +112,40 @@ Pracovní D10/E30 v 3ca7e028 před sdílením kolidovaly s přijatým #370/#372;
 přijatá ID zachovaná, vlastní volba nyní D11 a události E36/E37.
 
 Výsledkové [PR #373](https://github.com/KovoPraha/evidenceTreninku/pull/373) předává tuto dokončenou místní etapu; konkrétní CI/head/merge ověřit přímo u PR. Produkční operace nejsou součástí tohoto PR.
+
+
+## Přihlášené produkční UAT pouze čtením — 7. 11. 2026
+
+ID P11-PICKER-PROD-RO, stav **BLOKOVANÉ**. Vlastník nyní výslovně zadal
+ověřit přihlášené produkční UAT #366, pokud je neprovedlo jiné vlákno,
+bez změn skutečné docházky a rolí, a zapsat výsledky do repozitáře.
+Na výchozím main `69f49033` bylo vedeno jako NOT RUN; původní vlákno už měří jiné oblasti R13/R05.
+Větev `codex/attendance-picker-production-readonly-uat-20261107`, vlastní worktree
+`C:/Users/Marek/Documents/Codex/evidencePavel-picker-production-readonly-uat-20261107`.
+
+- Použít existující přihlášený prohlížeč, vlastní kontrolní okno/kartu.
+  Nepřepínat role, nezakládat účet ani jiný trvalý přístup, nečíst cookies/hesla z disku.
+- Otevřít existující trénink/lekci, ověřit nabídku vybraných osob, hledání,
+  prázdný výsledek, stránkování a návrat. Zachovat stávající výběr/verzi.
+- Zdroj ověřen: POST `find_participants*` a `find_excuse_person*` procházejí
+  `trainingClosureSearchAction()` mimo writer. Jen tyto hledací/stránkovací
+  ovladače jsou pro UAT přípustné. Žádné close/void/personal_excuse,
+  potvrzení skutečnosti, uložení oprav nebo změna skutečné docházky.
+- Závěr o nedotčeném záznamu opřít o před/po a konečné nové načtení, nikoli
+  tvrdit, že se mezitím nemohla změnit celá produkční DB jiným uživatelem.
+- Stav BLOKOVANÉ, neprovedené scénáře a meze jsou zapsané v [protokolu](verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md).
+  Snímky a jména/kontakty skutečných osob se do Gitu neukládají.
+
+Prohlížečové CUA se při vstupním připojení dvakrát resetovalo na timeout.
+Nativní Windows Computer Use následně běh automaticky zastavil při čtení
+stavu okna Chrome: nedokázal spolehlivě ověřit aktuální URL na Windows.
+Žádný scénář přihlášeného UAT nebyl proveden; docházka ani role se neměnily.
+
+Další krok: obnovit funkční ověření URL a čtení DOM/snímků v podporovaném
+ovládacím nástroji, znovu ověřit souběžnou práci a teprve potom provést
+uvedené čtecí scénáře ve stávající přihlášené relaci. Blokace není novým
+důvodem k deployi ani doloženou chybou přihlášení. Toto pokračování předává
+pouze dokumentaci blokace; podrobný [protokol](verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md) zůstává otevřený k dalšímu UAT.
+
+Dokumentační předání: první commit `648abf33` pushnutý, [PR #377](https://github.com/KovoPraha/evidenceTreninku/pull/377).
+Finální head/CI/merge ověř u PR; stav UAT zůstává BLOKOVANÉ i po sloučení dokumentace.
