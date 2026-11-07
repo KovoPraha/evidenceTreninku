@@ -275,3 +275,7 @@ D13 průběžně: první prototyp a7b1bee9 zamítnut pro deploy kvůli regresi c
 D14 upřesnění po měření V3: rychlá projekce pouze pro stav bez doplňkových filtrů; hledání/datum/osoba původní SQL, protože nativní11.4 profil doložil režii scoped větve. Žádný odhad velikosti ani další prahová sonda. Finální časování s explicitně vypnutou SQL query cache, malá pevná režie přiznaná. [Výsledky](verification/medical-state-read-performance-20261107/RESULTS.md).
 
 P11-R13-S — uzavřený technický řez podle D14: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [finální parita/přínos](verification/medical-state-read-performance-20261107/RESULTS.md), [merge/deploy/čtecí kontrola](verification/medical-state-release-20261107/RESULTS.md), [handoff](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). #381/938e9c50, deploy42405912779 SUCCESS. Malá pevná režie přiznaná; původní doplňkové filtry zachované. Přihlášené UAT/rows examined a celé K0.2 dál otevřené.
+
+## D2026-11-07-15
+
+PŘIJATO podle nového výslovného zadání Marka: [P11-R13-F](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md). Oddělit bounded výběr kandidátů od stavové historie; malé/prázdné dotazy neopakují plnou tabulku, široké dotazy neopakují textové hledání uvnitř agregace. Datum předfiltruje i historii. Přesná kanonická parita a cache-off měření všech tvarů před schváleným merge/deploy. D14/#381 zůstává historií, novým oprávněním jsou hledání a datum. Bez cache/DDL/rekurze, práva a writer zachované.
