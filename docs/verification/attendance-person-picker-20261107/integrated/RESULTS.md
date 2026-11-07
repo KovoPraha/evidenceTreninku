@@ -46,3 +46,5 @@ CI službu následně odstraní GitHub. Nové kompletní měření zatím NOT RU
 Stav commit/CI/merge/deploy se doplní podle skutečného výsledku, žádné nové
 produkční nasazení pickeru dosud neprovedené. Původní WIP v htdocs i původní
 picker worktree zachované; pokračování je ve vlastním worktree mimo htdocs.
+
+PR #366 byl mezitím sloučen souběžnou relací jako `faae75e8`, přesný strom d62c3ad2, 11 kontrol PASS. Sloučení převzaté beze změny aplikačního kódu; toto pokračování doplňuje společné měření, předání a podle aktuálního oprávnění deploy. Baseline je poslední main před pickerem `2ef20aed`, který už obsahuje #367.

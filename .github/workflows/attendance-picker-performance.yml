@@ -3,11 +3,14 @@ name: Attendance picker HTTP and browser
 on:
   pull_request:
     paths:
-      - 'training_closure_admin.php'
-      - 'includes/training_closure_people.php'
-      - 'includes/training_day.php'
-      - 'tests/Support/AttendancePicker*'
+      - 'tests/Support/AttendancePickerIntegratedProfile.py'
       - '.github/workflows/attendance-picker-performance.yml'
+  workflow_dispatch:
+    inputs:
+      baseline:
+        description: Exact pre-picker commit with the current lesson reader
+        required: true
+        default: '2ef20aedc38c02b9d4d46fcdf006095140285310'
 
 permissions:
   contents: read
@@ -47,7 +50,7 @@ jobs:
           playwright-cli --version
       - name: Compare current main and picker on one owned fixture
         env:
-          PICKER_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PICKER_BASE_SHA: ${{ inputs.baseline || '2ef20aedc38c02b9d4d46fcdf006095140285310' }}
           EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
           EVIDENCE_MARIADB_SMOKE_PORT: '3306'
           EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql

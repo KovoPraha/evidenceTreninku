@@ -9795,5 +9795,21 @@
   ],
   "checked_main": "3b37e053",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
-  "binary_documents": 21
+  "binary_documents": 21,
+  "updates": [
+    {
+      "date": "2026-11-07",
+      "pull_request": 366,
+      "added_paths": [
+        "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/CALIBRATION.md",
+        "docs/verification/attendance-person-picker-20261107/REPRODUCE.md",
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md",
+        "docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md"
+      ]
+    }
+  ]
 }

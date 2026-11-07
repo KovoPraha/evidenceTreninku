@@ -127,3 +127,5 @@ nové měření a deploy NOT RUN. Přijaté E23 lekcí a E26–29 / D09 pickeru 
 Převzatý souběžný PR head d62c3ad2 bez změny aplikačního kódu. Nové oprávnění a pokračování vlastní [D10](DECISION_LOG.md#d2026-11-07-10) / E30.
 
 Nové společné měření: [průběžný protokol](verification/attendance-person-picker-20261107/integrated/RESULTS.md). Izolovaná Windows kalibrace selhala v Aria, server zastavený; pokračuje verzovaný Linux CI HTTP/Chrome pár, nikoli další oprava cizí DB.
+
+PR #366 byl mezitím sloučen souběžnou relací jako `faae75e8`, přesný strom d62c3ad2, 11 kontrol PASS. Sloučení převzaté beze změny aplikačního kódu; toto pokračování doplňuje společné měření, předání a podle aktuálního oprávnění deploy. Baseline je poslední main před pickerem `2ef20aed`, který už obsahuje #367.
