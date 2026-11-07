@@ -24,7 +24,7 @@ Writer, transakce, zámky a oprávnění nebyly oslabeny. Nový JS ani endpoint 
 ## Stejná data a způsob měření
 
 Na novém jediném schématu byl nejprve změřen originální `d958fd6e` z odděleného
-checkoutu, potom finální společný formulář. 350 tabulek / 161 migrací,
+checkoutu, potom finální společný formulář (zdroje v commitu `2a375836`). 350 tabulek / 161 migrací,
 728 plánů / 52 týdnů, 200 účastníků / 52 papírových revizí, 10k zdravotních
 sledování / 30k záznamů a 10221 dostupných osob. Mezi variantami žádný reseed.
 Standardní HTTP/UI přihlášení; žádné podvržené session. PHP 8.2.12,
@@ -110,7 +110,8 @@ Při finálním převzetí main `269684c2` přibyly **cizí** #364 katalog/nasaz
 Měřený picker je totožný, `training_day.php` po #367 je novější než uložené
 otisky: uvedené časy/SQL jsou výsledek izolovaného picker páru před touto
 integrací, **nikoli nový celý integrovaný main nebo produkční SLA**.
-Integrované cílené testy a finální CI se evidují zvlášť v PR/předání.
+[Integrované cílené testy](integrated-tests.xml) po #367: **50 / 1294 PASS**;
+[PHP quality CI a integrační otisky](integration.json) 9d4a7538 PASS. Finální CI hlavy vede PR.
 
 První CI 42370027225 odhalilo chybějící import helperu v potomcích starého
 měřidla. Oprava vkládá import jen do generované kopie CI harnessu; verzovaný

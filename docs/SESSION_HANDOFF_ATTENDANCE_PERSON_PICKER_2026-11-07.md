@@ -51,3 +51,7 @@ není součást tohoto celého časového páru; integrované testy/CI zvlášť
 3. R13/R05 objemy/kandidáti, rows examined, fyzický mobil/síť/CPU/souběh a R01–R16.
 4. Produkční deploy/přejímka pickeru vyžadují nové explicitní zadání vlastníka.
    Podklady ostatních P01–P14 zůstávají v registru; K0.2 není uzavřené.
+
+Integrační ověření 9d4a7538 po převzetí #367: **50 testů / 1294 assertions PASS**,
+PHP quality CI 42375011506 SUCCESS; [doklad](verification/attendance-person-picker-20261107/final/integration.json).
+Celé HTTP společné verze tím není přeměřené. Finální CI/merge hlavy u #366.

@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `3b37e053`; produkční stav se tím neověřuje.
+Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `269684c2`; produkční stav se tím neověřuje.
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady

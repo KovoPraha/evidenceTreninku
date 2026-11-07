@@ -1,7 +1,7 @@
 # Kalibrace finálního páru, 7. 11. 2026
 
 Původní dvouformulářový pár v nadřazené složce byl uzavřený před nalezením
-ztráty sousedního draftu. Není kontrolní skupinou finálního párů: pro společnou
+ztráty sousedního draftu. Není kontrolní skupinou finálního páru: pro společnou
 formu vznikl nový celý seed a znovu originální d958fd6e → finální picker.
 
 - Nový vlastní runtime `kis-picker-final-20261107-76d29d23`, schema
