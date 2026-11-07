@@ -10245,7 +10245,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P15",
-      "disposition": "S0 kontrakt a prompt hotové; cílová inventura otevřená. Bez aktivace.",
+      "disposition": "P15 částečné: S0 kontrakt/prompt a S1 serverová implementace/syntetické ověření hotové v draft #376; cílová inventura, worker a pilot otevřené. Bez deploye/aktivace.",
       "evidence": [
         "docs/verification/csc-sportsoft-discovery-20261107/RESULTS.md",
         "docs/verification/csc-sportsoft-s0-20261107/RESULTS.md",
@@ -10434,7 +10434,8 @@
       "added_paths": [
         "docs/CSC_SPORTSOFT_S1_KIS.md",
         "docs/verification/csc-sportsoft-s1-20261107/RESULTS.md"
-      ]
+      ],
+      "pull_request": 376
     }
   ]
 }

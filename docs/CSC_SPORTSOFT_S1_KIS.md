@@ -1,7 +1,8 @@
 # P15 S1 — KIS úložiště, příjem a párování
 
-7. 11. 2026, vlastník Marek / vývoj KIS. Stav: IMPLEMENTOVÁNO LOKÁLNĚ,
-ověření probíhá, [draft PR #376](https://github.com/KovoPraha/evidenceTreninku/pull/376).
+7. 11. 2026, vlastník Marek / vývoj KIS. Stav: IMPLEMENTOVÁNO A PUSH,
+syntetické doménové ověření PASS, dobíhají regresní CI kroky;
+[draft PR #376](https://github.com/KovoPraha/evidenceTreninku/pull/376).
 [Hlavní plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md),
 [kontrakt v1](CSC_SPORTSOFT_S0_CONTRACT_V1.md),
 [výsledky](verification/csc-sportsoft-s1-20261107/RESULTS.md).
@@ -25,6 +26,10 @@ vytváří osm tabulek, nevkládá zařízení ani spojení a nic nezapíná:
 | external_identity_links | Vazba zdrojového klíče na UCI/osobu; revize, konflikt nebo not_seen |
 | external_sync_reviews | Důvod ruční kontroly a kandidátní interní ID |
 | external_sync_audit | Jen ID, typ aktéra, akce a čas; bez těl požadavků, jmen, tokenů a cookies |
+
+Run-local identita řádku je unikátní `(run_id, part_no, row_index)`;
+`row_index` je od 0 uvnitř původního dílu. Uchovává se i celkové pořadí a
+interní DB ID. Není zaměňována za stabilní externí identitu.
 
 Tabulky patří do Evidence backup ownership. Webový požadavek nikdy neprovádí
 DDL/migrace. Kanonické sportovce, členství, platby, licence ani přihlášky

@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
 Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) a [úplný katalog](PLAN_CATALOG.md).
-- **P15 S1 ROZPRACOVÁNO:** [ČSC/Sportsoft](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), [úložiště/příjem/UCI a testy](CSC_SPORTSOFT_S1_KIS.md).
-  Jen syntetická data, nová samostatná větev; nasazení/aktivace zakázané. S0 cílová inventura otevřená.
+- **P15 S1 implementováno a synteticky ověřeno:** [úložiště/příjem/UCI](CSC_SPORTSOFT_S1_KIS.md), [draft #376](https://github.com/KovoPraha/evidenceTreninku/pull/376).
+  [Důkazy a stav CI](verification/csc-sportsoft-s1-20261107/RESULTS.md). Bez merge/deploye/aktivace; S0 cílová inventura otevřená.
 - **P11 picker, katalog a lekce NASAZENO:** release `56f5ce08e9ffbe1df9acfe7b844234b449171ad8`, deploy 42380611292 SUCCESS; [protokol](verification/attendance-picker-release-20261107/RESULTS.md).
   Zahrnuje #366/#367/#364 a ceny #358. Záloha, migrace, VS a HTTP smoke PASS; import/UAT false. [Plán a meze](ATTENDANCE_PERSON_PICKER_2026-11-07.md).
 - P11 měření: [Linux540HTTP/78Chrome](verification/attendance-person-picker-20261107/integrated/RESULTS.md) a [Windows všech9scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO; parita PASS. Přihlášené produkční UAT NOT RUN.

@@ -293,7 +293,7 @@ Po vypnutí zůstanou běžné funkce KIS i historické údaje funkční.
 | Etapa | Konkrétní výstup / závislost | Dokončeno, když |
 | --- | --- | --- |
 | S0 — kontrakt a inventura | ČÁSTEČNĚ: přesný kontrakt, syntetické podklady a prompt hotové; cílová inventura, Sportsoft scope/negativní platba a allowlist závodů zbývají | Schéma v1 a čtecí rozsah doložené; místní Codex předá obsahově omezenou inventuru bez přístupu k Rikimu |
-| S1 — KIS úložiště a resolver | Nové migrace, ownership záloh, transakční ingest, normalizace a striktní UCI; závisí S0 | Testy konfliktů/idempotence/pořadí i rollback; obě MariaDB 10.3/11.4; původní karty/platby beze změny |
+| S1 — KIS úložiště a resolver | IMPLEMENTACE A SYNTETICKÉ OVĚŘENÍ HOTOVO v [draft #376](https://github.com/KovoPraha/evidenceTreninku/pull/376); [protokol](CSC_SPORTSOFT_S1_KIS.md), závisí na S0 #371 | Konflikty/idempotence/pořadí/rollback i obě MariaDB PASS; [důkazy a stav CI](verification/csc-sportsoft-s1-20261107/RESULTS.md). Merge/deploy/aktivace NOT RUN |
 | S2 — čtecí adaptéry | Worker nejprve čte syntetické stránky; ČSC → Sportsoft členové → vybrané existující přihlášky | Úplnost stránek, změna DOM a expirovaný login testované; zápisové ovladače mají nulový počet použití |
 | S3 — transport a provoz | Device token, scoped API, lease, restart, spool, dohled; závisí S1/S2 | Opakovaný přenos nevytvoří duplicitu; revoked device a stará lease odmítnuté; restart/lock/offline recovery PASS |
 | S4 — přehled KIS | Registrářský přehled, důvody nespárování, datum zdroje, read panel osoby; závisí S1/S3 | Neoprávněné role/rodiny data neuvidí; duplicitní UCI nelze potvrdit omylem; bez N+1 |
@@ -353,7 +353,8 @@ Rozsah: číslovaná migrace a backup ownership, striktní validace v1, tokenov�
 autorizace zařízení, lease/idempotentní díly/atomický complete, samostatné
 snímky/vazby/review. Kanonické tabulky se nemění. Machine API výchozí OFF.
 Příprava explicitní baseline a přejímka poklesu dat nesmí být právem zařízení.
-Serverové úložiště, ingest a UCI resolver jsou implementované; ověření probíhá.
+Serverové úložiště, ingest a UCI resolver jsou implementované a synteticky ověřené
+v draft PR #376; runtime f61c365d. S0 #371 nadále otevřené.
 [Technický protokol S1](CSC_SPORTSOFT_S1_KIS.md) a
 [průběžné výsledky](verification/csc-sportsoft-s1-20261107/RESULTS.md)
 obsahují API pro druhé pracoviště, meze a stav testů. Žádná aktivace/deploy.
