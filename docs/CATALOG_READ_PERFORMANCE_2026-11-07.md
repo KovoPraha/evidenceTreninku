@@ -1,6 +1,6 @@
 # P11 — omezené načítání katalogu, 7. 11. 2026
 
-ID P11-CATALOG; vlastník zadání Marek, realizace Codex. Stav HOTOVO: implementace, parita a měření; #364 K REVIEW.
+ID P11-CATALOG; vlastník zadání Marek, realizace Codex. Stav HOTOVO: implementace, parita, měření a schválené nasazení #364.
 [PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364),
 [výsledky a metoda](verification/catalog-read-performance-20261107/RESULTS.md),
 [session handoff](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md),
@@ -48,7 +48,7 @@ bez seznamu ID a checkout zůstávají kanonické. Žádná migrace ani sdílen�
 | Striktní shoda výsledků | PASS 31 testů / 2080 assertions; kompletní vybrané karty/typy, ceny, pořadí, menu, počty a filtry |
 | Objemové párové měření | PASS nad runtime `623dcaa5`, integrovaným v `0252ba58`; 480 párů na MariaDB 10.3/11.4, všech 9 zdrojových otisků shodných |
 | Regrese a předání | PASS cíleně 31/2080 a Linux 2350/45220, kvalita/dokumentace PASS; #364 k review, stav kompletních jobů u PR |
-| Deploy / provozní přejímka katalogu | NOT RUN, není součástí autorizované práce |
+| Deploy / čtecí provozní kontrola | PASS release `c70939d4`, workflow 42372002993. Veřejná pole 5/5 shodná; původní DOM baseline neporovnatelný kvůli nonce, viz protokol. Přihlášené UI NOT RUN |
 
 Shoda zahrnuje anonym/člen/neověřený účet/odvolání, více variant, veřejné i
 členské ceny, kategorické potomky, všechny druhy řazení, doslovné `%`/`_`,
@@ -93,3 +93,11 @@ CI oprava před deployem: integrační MariaDB job měl původní limit 10 minut
 po přidání úplných párových katalogových profilů 11.4 opakovaně skončila
 zrušením u této hranice (42366360313). Rozpočet jobu zvýšen na 20 minut,
 všechny kontroly zachované. Timeout není vydáván za PASS.
+
+## Skutečný výsledek nově schváleného deploye
+
+#364 sloučený a nasazený `c70939d4`, deploy 42372002993 SUCCESS.
+[Produkční protokol včetně meze CSP sondy](verification/catalog-release-20261107/RESULTS.md).
+Produkty/pořadí/navigace/počet PASS; úplný DOM před/po karet nelze z původních
+nonce hashů zpětně prokázat. Dva opravené průchody po nasazení 5/5 stabilní.
+Pokračování je [R06 nabídka lekcí](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md).

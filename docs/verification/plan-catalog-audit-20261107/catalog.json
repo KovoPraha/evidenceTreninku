@@ -9275,11 +9275,12 @@
       "title": "CATALOG_READ_PERFORMANCE_2026-11-07",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11",
-      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "disposition": "#364 sloučené a nasazené c70939d4, 42372002993 SUCCESS; parita veřejných polí a doložená mez DOM otisku.",
       "evidence": [
-        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md",
+        "docs/verification/catalog-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -9463,6 +9464,116 @@
       "status": "REFERENCE",
       "registry": "P11",
       "disposition": "Nativní parita a párové syntetické měření nabídky lekcí.",
+      "evidence": []
+    },
+    {
+      "id": "PL-5f10477b9c",
+      "path": "docs/verification/catalog-release-20261107/after-first-v2.json",
+      "title": "after-first-v2.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-0d146f42d0",
+      "path": "docs/verification/catalog-release-20261107/after-v1-inconclusive.json",
+      "title": "after-v1-inconclusive.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-96417b089b",
+      "path": "docs/verification/catalog-release-20261107/after.json",
+      "title": "after.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2eb116f551",
+      "path": "docs/verification/catalog-release-20261107/before-initial.json",
+      "title": "before-initial.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-1c7e6de6b4",
+      "path": "docs/verification/catalog-release-20261107/before.json",
+      "title": "before.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-10e4150c06",
+      "path": "docs/verification/catalog-release-20261107/deployment.json",
+      "title": "deployment.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-32b8a2462e",
+      "path": "docs/verification/catalog-release-20261107/repeatability.json",
+      "title": "repeatability.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-05e77f0ca6",
+      "path": "docs/verification/catalog-release-20261107/RESULTS.md",
+      "title": "RESULTS.md",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-4389493264",
+      "path": "docs/verification/catalog-release-20261107/snapshot.php.txt",
+      "title": "snapshot.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-6e368996bd",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/integrated-junit.xml",
+      "title": "integrated-junit.xml",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
       "evidence": []
     }
   ],

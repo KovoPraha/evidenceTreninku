@@ -1,0 +1,11 @@
+{
+  "method": "Two separate anonymous post-release GET rounds with corrected CSP nonce normalization. This does not reconstruct the original pre-release full DOM hash.",
+  "checks": {
+    "home": true,
+    "price": true,
+    "page2": true,
+    "search": true,
+    "empty": true
+  },
+  "pass": true
+}

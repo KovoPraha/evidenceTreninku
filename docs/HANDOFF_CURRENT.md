@@ -22,7 +22,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), větev `codex/full-http-performance-20261107`;
   vlastní worktree viz předání. Po integraci main cíleně 47 testů / 2877 assertions PASS.
   #363 sloučené (`d958fd6e`); bez deploye, runtime uklizený, původní WIP zachovaný.
-  Klubové ceny #358 v main bez deploye; [katalog #364: schválený merge/deploy a další krok](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
+  Klubové ceny #358 v main bez deploye; [katalog #364 nasazený: protokol a další krok](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

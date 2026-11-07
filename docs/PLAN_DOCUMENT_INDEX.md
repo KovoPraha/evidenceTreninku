@@ -799,3 +799,23 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-d3582f1892 | [verification.json](verification/attendance-lesson-read-performance-20261107/verification.json) | evidence / REFERENCE | P11 |
 | PL-9fc07f8b47 | [attendance-lesson-comparison.json](verification/attendance-lesson-read-performance-20261107/ci-10.3/attendance-lesson-comparison.json) | evidence / REFERENCE | P11 |
 | PL-d4b7b69c58 | [attendance-lesson-comparison.json](verification/attendance-lesson-read-performance-20261107/ci-11.4/attendance-lesson-comparison.json) | evidence / REFERENCE | P11 |
+
+| PL-5f10477b9c | [after-first-v2.json](verification/catalog-release-20261107/after-first-v2.json) | evidence / REFERENCE | P11 |
+
+| PL-0d146f42d0 | [after-v1-inconclusive.json](verification/catalog-release-20261107/after-v1-inconclusive.json) | evidence / REFERENCE | P11 |
+
+| PL-96417b089b | [after.json](verification/catalog-release-20261107/after.json) | evidence / REFERENCE | P11 |
+
+| PL-2eb116f551 | [before-initial.json](verification/catalog-release-20261107/before-initial.json) | evidence / REFERENCE | P11 |
+
+| PL-1c7e6de6b4 | [before.json](verification/catalog-release-20261107/before.json) | evidence / REFERENCE | P11 |
+
+| PL-10e4150c06 | [deployment.json](verification/catalog-release-20261107/deployment.json) | evidence / REFERENCE | P11 |
+
+| PL-32b8a2462e | [repeatability.json](verification/catalog-release-20261107/repeatability.json) | evidence / REFERENCE | P11 |
+
+| PL-05e77f0ca6 | [RESULTS.md](verification/catalog-release-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
+
+| PL-4389493264 | [snapshot.php.txt](verification/catalog-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
+
+| PL-6e368996bd | [integrated-junit.xml](verification/attendance-lesson-read-performance-20261107/integrated-junit.xml) | evidence / REFERENCE | P11 |

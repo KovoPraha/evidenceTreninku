@@ -55,3 +55,8 @@ a legacy ID 0 prošel; transakční kontrola a writer zůstávají původní.
 Převzatý main s katalogem #364 `c70939d4`. Nativní parita a přínos potvrzují,
 že je vhodné podle aktuálního pokynu vlastníka nasadit i dávkové lekce, po
 CI aktuální integrované verze. Zápisové služby, data a provozní přepínače beze změny.
+
+Katalogový deploy skutečně dokončen `c70939d4` / 42372002993. Po převzetí
+katalogu kombinovaná místní sada 25 testů / 2801 assertions PASS. Nyní push
+integrované verze #367 se všemi reporty a posledním okrajovým testem; po CI merge
+a podle schváleného vhodného nasazení samostatný standardní deploy lekcí.
