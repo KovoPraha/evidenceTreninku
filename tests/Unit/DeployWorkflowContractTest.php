@@ -158,7 +158,7 @@ final class DeployWorkflowContractTest extends TestCase
 
         self::assertStringContainsString("'auth_login_limits'", $backup);
         self::assertStringContainsString(
-            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-06.1'",
+            "EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-07.1'",
             $backup
         );
         foreach (['source_candidate_id', 'source_run_id', 'origin', 'created_by_trainer_id'] as $column) {
@@ -168,6 +168,8 @@ final class DeployWorkflowContractTest extends TestCase
             self::assertStringContainsString("'{$column}'", $backup);
         }
         foreach ([
+            'external_sync_connections', 'external_sync_devices', 'external_sync_runs', 'external_sync_parts',
+            'external_sync_records', 'external_identity_links', 'external_sync_reviews', 'external_sync_audit',
             'shop_orders',
             'shop_catalog_admin_events',
             'shop_attribute_definitions',

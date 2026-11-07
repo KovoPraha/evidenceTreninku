@@ -41,7 +41,7 @@ function externalSyncText(mixed $value, int $max, bool $nullable = true): ?strin
     if (!$nullable && $value === '') {
         externalSyncReject('empty_identifier');
     }
-    return $value === '' && $nullable ? null : $value;
+    return $value === '' ? null : $value;
 }
 
 function externalSyncInteger(mixed $value, int $min, int $max): int
