@@ -836,3 +836,21 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-b357de1d32 | [docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md](verification/attendance-person-picker-20261107/final/CALIBRATION.md) | reference / REFERENCE | P11 |
 | PL-629fbd394e | [docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md](verification/attendance-person-picker-20261107/final/REPRODUCE.md) | reference / REFERENCE | P11 |
 | PL-6e0dad4534 | [Integrated picker verification](verification/attendance-person-picker-20261107/integrated/RESULTS.md) | evidence / REFERENCE | P11 |
+| PL-435187d92b | [browser-coach-after.json.gz](verification/attendance-person-picker-20261107/integrated/browser-coach-after.json.gz) | evidence / REFERENCE | P11 |
+| PL-e403a774e9 | [browser-coach-before.json.gz](verification/attendance-person-picker-20261107/integrated/browser-coach-before.json.gz) | evidence / REFERENCE | P11 |
+| PL-9892e14764 | [browser-other_coach-after.json.gz](verification/attendance-person-picker-20261107/integrated/browser-other_coach-after.json.gz) | evidence / REFERENCE | P11 |
+| PL-a61807ff1b | [browser-other_coach-before.json.gz](verification/attendance-person-picker-20261107/integrated/browser-other_coach-before.json.gz) | evidence / REFERENCE | P11 |
+| PL-ddac21606f | [browser-sports_lead-after.json.gz](verification/attendance-person-picker-20261107/integrated/browser-sports_lead-after.json.gz) | evidence / REFERENCE | P11 |
+| PL-1769367e9e | [browser-sports_lead-before.json.gz](verification/attendance-person-picker-20261107/integrated/browser-sports_lead-before.json.gz) | evidence / REFERENCE | P11 |
+| PL-3bd72f1a2a | [cleanup.json.gz](verification/attendance-person-picker-20261107/integrated/cleanup.json.gz) | evidence / REFERENCE | P11 |
+| PL-810f905580 | [diagnostics-after.json.gz](verification/attendance-person-picker-20261107/integrated/diagnostics-after.json.gz) | evidence / REFERENCE | P11 |
+| PL-f0590798f7 | [diagnostics-before.json.gz](verification/attendance-person-picker-20261107/integrated/diagnostics-before.json.gz) | evidence / REFERENCE | P11 |
+| PL-5d588c3415 | [full-fixture-person-coverage.json.gz](verification/attendance-person-picker-20261107/integrated/full-fixture-person-coverage.json.gz) | evidence / REFERENCE | P11 |
+| PL-995df68572 | [http-after.json.gz](verification/attendance-person-picker-20261107/integrated/http-after.json.gz) | evidence / REFERENCE | P11 |
+| PL-2114be3d40 | [http-before.json.gz](verification/attendance-person-picker-20261107/integrated/http-before.json.gz) | evidence / REFERENCE | P11 |
+| PL-026eddef8b | [http-functional-verification.json.gz](verification/attendance-person-picker-20261107/integrated/http-functional-verification.json.gz) | evidence / REFERENCE | P11 |
+| PL-5c1aa24d08 | [http-revocation.json.gz](verification/attendance-person-picker-20261107/integrated/http-revocation.json.gz) | evidence / REFERENCE | P11 |
+| PL-a2650495a0 | [integrated-summary.json.gz](verification/attendance-person-picker-20261107/integrated/integrated-summary.json.gz) | evidence / REFERENCE | P11 |
+| PL-d044ac551f | [runner-cleanup.json](verification/attendance-person-picker-20261107/integrated/runner-cleanup.json) | evidence / REFERENCE | P11 |
+| PL-f31302bb48 | [targeted-tests.xml](verification/attendance-person-picker-20261107/integrated/targeted-tests.xml) | evidence / REFERENCE | P11 |
+| PL-f0ec6efec1 | [verification.json](verification/attendance-person-picker-20261107/integrated/verification.json) | evidence / REFERENCE | P11 |

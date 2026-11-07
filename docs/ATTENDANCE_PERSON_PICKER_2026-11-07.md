@@ -1,7 +1,7 @@
 # P11 R06 — výběr osob v docházce, 7. 11. 2026
 
-Stav: implementace a finální místní měření/UAT HOTOVO; finální CI/přijetí vede
-[PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366). **Bez našeho deploye.**
+Stav: #366 sloučené, nové integrované HTTP/Chrome měření a parita PASS; schválený deploy po dokončení CI.
+[Pokračování #372](https://github.com/KovoPraha/evidenceTreninku/pull/372), [nové důkazy](verification/attendance-person-picker-20261107/integrated/RESULTS.md).
 Vlastník: vývoj podle přímého zadání vlastníka tohoto chatu.
 Měřený base `d958fd6e`, integrační main `269684c2`; větev
 `codex/attendance-person-picker-20261107`, worktree
@@ -129,3 +129,5 @@ Převzatý souběžný PR head d62c3ad2 bez změny aplikačního kódu. Nové op
 Nové společné měření: [průběžný protokol](verification/attendance-person-picker-20261107/integrated/RESULTS.md). Izolovaná Windows kalibrace selhala v Aria, server zastavený; pokračuje verzovaný Linux CI HTTP/Chrome pár, nikoli další oprava cizí DB.
 
 PR #366 byl mezitím sloučen souběžnou relací jako `faae75e8`, přesný strom d62c3ad2, 11 kontrol PASS. Sloučení převzaté beze změny aplikačního kódu; toto pokračování doplňuje společné měření, předání a podle aktuálního oprávnění deploy. Baseline je poslední main před pickerem `2ef20aed`, který už obsahuje #367.
+
+Nový pár Linux CI 42379723334 SUCCESS: main 2ef20aed před pickerem a shodný aktuální #367 proti pickeru faae75e8. 540 HTTP / 78 Chrome, HTML 1368679 → 91620 B, HTTP trenéra 48,40 → 27,87 ms, Chrome warm 445,65 → 82,60 ms. Osm zdrojových hashů odpovídá sloučenému runtime. Ve 13 checksummech a výběrech shoda; role/čerstvost a oddělené writer UAT PASS. [Přesná metoda a meze](verification/attendance-person-picker-20261107/integrated/RESULTS.md). Předání pokračuje v #372, produkční nasazení stále NOT RUN.
