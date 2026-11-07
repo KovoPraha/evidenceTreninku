@@ -878,3 +878,15 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-a52acce523 | [docs/verification/attendance-integrated-http-20261107/CALIBRATION.md](verification/attendance-integrated-http-20261107/CALIBRATION.md) | reference / HISTORICAL_EVIDENCE | P11 |
 | PL-38c8d0fac7 | [docs/verification/attendance-integrated-http-20261107/REPRODUCE.md](verification/attendance-integrated-http-20261107/REPRODUCE.md) | reference / HISTORICAL_EVIDENCE | P11 |
 | PL-f81ce808ad | [verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md](verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md) | uat-handoff / BLOCKED | P11 |
+
+| PL-929f7b0db8 | [PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md) | plan / IN_PROGRESS | P11-R05-H |
+
+| PL-83e296b1da | [SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md) | handoff / SUPPORT | P11-R05-H |
+
+| PL-95d34cb4c2 | [RESULTS.md](verification/planner-hierarchy-read-performance-20261107/RESULTS.md) | evidence / SUPPORT | P11-R05-H |
+
+| PL-30cda92b36 | [RESULTS.md](verification/planner-hierarchy-release-20261107/RESULTS.md) | evidence / SUPPORT | P11-R05-H |
+
+| PL-708154a63b | [snapshot.php.txt](verification/planner-hierarchy-release-20261107/snapshot.php.txt) | artifact / SUPPORT | P11-R05-H |
+
+| PL-a2fca51079 | [anonymous-planner.php.txt](verification/planner-hierarchy-release-20261107/anonymous-planner.php.txt) | artifact / SUPPORT | P11-R05-H |

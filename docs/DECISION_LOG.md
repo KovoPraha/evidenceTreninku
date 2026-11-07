@@ -242,3 +242,9 @@ Kanonické D09 původního pickeru zachované; dočasné přeznačení na D10 v 
 P11 picker — dílčí řez uzavřený podle D10 a nového výslovného zadání: #366, nové společné měření, parita a schválené nasazení hotové. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [provozní důkaz a meze](verification/attendance-picker-release-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md). Celé K0.2 a lidská přejímka otevřené.
 
 Rozšířené celé R06 Windows měření — [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [důkazy](verification/attendance-integrated-http-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md), [volba D11](#d2026-11-07-11). Bez změny produkce v této relaci, další P11 otevřené.
+
+## D2026-11-07-12
+
+PŘIJATO podle nového zadání vlastníka: [P11-R05-H](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md) omezí přenos historických kandidátů čtecí agregací podle dne a hierarchie. Předek/potomek odděleně, bez sourozenců, počty přes EXISTS; složité/nekánonické případy a transakce původní cestou. Rekurzivní SQL a trvalá cache zamítnuty kvůli složitosti/invalidaci. Parita a nativní přínos před zelenými kontrolami a schváleným merge/deployem.
+
+P11-R05-H podle D12: finální parita a objemový přínos PASS na obou DB i celém HTTP/Chrome. [Důkazy](verification/planner-hierarchy-read-performance-20261107/RESULTS.md). Vhodné pro schválený standardní deploy až po zelených kontrolách výsledkového commitu; drobná režie jednoho SQL u malé filtrované historie doložená, bez soupisky čas neutrální.

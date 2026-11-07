@@ -1,0 +1,172 @@
+[
+  {
+    "size": "728-plans",
+    "complete": true,
+    "baseline_sha": "69f490332b0027232d7a58bffb578c28b2715ffa",
+    "optimized_sha": "6fe44e572a44133dba5efba1b7906df21b8cc2fb",
+    "source_sha256": {
+      "planovac.php": "68c8398692f105fad11ac8a7c7a612db9dc6c3d0e004456d53a5ea51db5b570f",
+      "includes/training_roster_filter_read.php": "c03996c525137ff29801b6715155cd828de566584804d5664c5f4014282b9869",
+      "includes/training_roster_bridge.php": "f156a1611751f4f028b4c106ab2bb9451e1a158166c0892f52f5ddf497d62ecc",
+      "includes/roster_hierarchy.php": "3a0775ebf1edbad18f584a63e2a8043b7e82a14a0c235ef8c0d130c0348a8b10",
+      "includes/coach_training_access.php": "6d65dcd7e16d6415eb7e7673898ec5f96f45e41eaeabdfaced1b0b3c397e56d3",
+      "includes/init.php": "c0a16f1231bf79bec717c29cc02e0c5929b4daa4fe5bb92391f41372b0bc8c60",
+      "includes/training_planner_pending_read.php": "f93576c381eba0a732aec82fe72f34e9aa9c86a3f5ce1a8655d65853e025b6b5"
+    },
+    "same_seed": true,
+    "cases": [
+      {
+        "id": "planner-coach-own",
+        "bytes": 111982,
+        "before_median_ms": 10.402,
+        "after_median_ms": 10.372
+      },
+      {
+        "id": "planner-coach-all",
+        "bytes": 135238,
+        "before_median_ms": 10.669,
+        "after_median_ms": 10.627500000000001
+      },
+      {
+        "id": "planner-coach-root",
+        "bytes": 112021,
+        "before_median_ms": 13.2225,
+        "after_median_ms": 13.2985
+      },
+      {
+        "id": "planner-coach-child",
+        "bytes": 112021,
+        "before_median_ms": 13.48,
+        "after_median_ms": 13.6855
+      },
+      {
+        "id": "planner-coach-trainer",
+        "bytes": 93254,
+        "before_median_ms": 10.223500000000001,
+        "after_median_ms": 10.2775
+      },
+      {
+        "id": "planner-coach-group",
+        "bytes": 135705,
+        "before_median_ms": 10.803999999999998,
+        "after_median_ms": 10.725999999999999
+      },
+      {
+        "id": "planner-coach-empty",
+        "bytes": 69560,
+        "before_median_ms": 11.227500000000001,
+        "after_median_ms": 10.4915
+      },
+      {
+        "id": "planner-coach-previous",
+        "bytes": 113941,
+        "before_median_ms": 10.224,
+        "after_median_ms": 10.369
+      },
+      {
+        "id": "planner-lead-own",
+        "bytes": 70043,
+        "before_median_ms": 7.962999999999999,
+        "after_median_ms": 8.066500000000001
+      },
+      {
+        "id": "planner-lead-all",
+        "bytes": 154889,
+        "before_median_ms": 10.734,
+        "after_median_ms": 10.795
+      },
+      {
+        "id": "planner-lead-root",
+        "bytes": 154928,
+        "before_median_ms": 14.8495,
+        "after_median_ms": 14.081
+      }
+    ],
+    "method": "Complete plain HTTP, same fixture and normalized HTML; separate diagnostics and Chrome."
+  },
+  {
+    "size": "20728-plans",
+    "complete": true,
+    "baseline_sha": "69f490332b0027232d7a58bffb578c28b2715ffa",
+    "optimized_sha": "6fe44e572a44133dba5efba1b7906df21b8cc2fb",
+    "source_sha256": {
+      "planovac.php": "68c8398692f105fad11ac8a7c7a612db9dc6c3d0e004456d53a5ea51db5b570f",
+      "includes/training_roster_filter_read.php": "c03996c525137ff29801b6715155cd828de566584804d5664c5f4014282b9869",
+      "includes/training_roster_bridge.php": "f156a1611751f4f028b4c106ab2bb9451e1a158166c0892f52f5ddf497d62ecc",
+      "includes/roster_hierarchy.php": "3a0775ebf1edbad18f584a63e2a8043b7e82a14a0c235ef8c0d130c0348a8b10",
+      "includes/coach_training_access.php": "6d65dcd7e16d6415eb7e7673898ec5f96f45e41eaeabdfaced1b0b3c397e56d3",
+      "includes/init.php": "c0a16f1231bf79bec717c29cc02e0c5929b4daa4fe5bb92391f41372b0bc8c60",
+      "includes/training_planner_pending_read.php": "f93576c381eba0a732aec82fe72f34e9aa9c86a3f5ce1a8655d65853e025b6b5"
+    },
+    "same_seed": true,
+    "cases": [
+      {
+        "id": "planner-coach-own",
+        "bytes": 111984,
+        "before_median_ms": 25.733,
+        "after_median_ms": 26.216500000000003
+      },
+      {
+        "id": "planner-coach-all",
+        "bytes": 135240,
+        "before_median_ms": 24.8485,
+        "after_median_ms": 24.747
+      },
+      {
+        "id": "planner-coach-root",
+        "bytes": 112023,
+        "before_median_ms": 63.0435,
+        "after_median_ms": 42.286
+      },
+      {
+        "id": "planner-coach-child",
+        "bytes": 112023,
+        "before_median_ms": 63.76599999999999,
+        "after_median_ms": 42.373000000000005
+      },
+      {
+        "id": "planner-coach-trainer",
+        "bytes": 93256,
+        "before_median_ms": 25.686,
+        "after_median_ms": 25.433999999999997
+      },
+      {
+        "id": "planner-coach-group",
+        "bytes": 135707,
+        "before_median_ms": 26.3365,
+        "after_median_ms": 26.171
+      },
+      {
+        "id": "planner-coach-empty",
+        "bytes": 69560,
+        "before_median_ms": 60.9125,
+        "after_median_ms": 27.415999999999997
+      },
+      {
+        "id": "planner-coach-previous",
+        "bytes": 113943,
+        "before_median_ms": 26.163,
+        "after_median_ms": 25.959000000000003
+      },
+      {
+        "id": "planner-lead-own",
+        "bytes": 70043,
+        "before_median_ms": 23.184,
+        "after_median_ms": 22.863
+      },
+      {
+        "id": "planner-lead-all",
+        "bytes": 154891,
+        "before_median_ms": 25.3595,
+        "after_median_ms": 24.802
+      },
+      {
+        "id": "planner-lead-root",
+        "bytes": 154930,
+        "before_median_ms": 102.424,
+        "after_median_ms": 40.9565
+      }
+    ],
+    "method": "Complete plain HTTP, same fixture and normalized HTML; separate diagnostics and Chrome."
+  }
+]

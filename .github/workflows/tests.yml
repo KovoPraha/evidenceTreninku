@@ -437,6 +437,25 @@ jobs:
           path: training-roster-filter-profile.json
           retention-days: 14
 
+      - name: Ověřit historický souhrn plánovače proti zmrazenému main
+        env:
+          EVIDENCE_ROSTER_READ_MARIADB: '1'
+        run: php vendor/bin/phpunit tests/Integration/PlannerHierarchyReadTest.php
+
+      - name: Změřit souhrn plánovače před a po na jedné syntetické historii
+        env:
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: php tests/Support/PlannerHierarchyProfile.php > planner-hierarchy-comparison.json
+
+      - name: Uchovat paritu a párové měření plánovače
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: planner-hierarchy-${{ matrix.mariadb-version }}
+          path: planner-hierarchy-comparison.json
+          retention-days: 30
+
       - name: Ověřit revize výsledků a řízený KIS převod na MariaDB
         run: php tests/Support/RaceKisReviewMariaDbSmoke.php
 

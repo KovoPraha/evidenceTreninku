@@ -5,6 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/training_roster_bridge.php';
 require_once __DIR__ . '/training_planner_view.php';
 require_once __DIR__ . '/training_planner_rsvp_read.php';
+require_once __DIR__ . '/training_planner_pending_read.php';
 
 /** Planner-only optimization; the shared writer and transaction read path remain canonical. */
 function trainingPlannerRsvpSummaries(PDO $pdo, array $planIds): array
@@ -27,13 +28,12 @@ function trainingPlannerPendingSummary(PDO $pdo, string $today, bool $onlyMine, 
         $where[] = 'pt.skupina_id = ?';
         $params[] = $group;
     }
-    $columns = $team > 0 ? 'pt.id,pt.datum' : 'COUNT(*) total,MIN(pt.datum) oldest_date';
+    if ($team > 0) {
+        return TrainingPlannerPendingRead::summary($pdo, $where, $params, $team);
+    }
+    $columns = 'COUNT(*) total,MIN(pt.datum) oldest_date';
     $q = $pdo->prepare('SELECT ' . $columns . ' FROM planovane_treninky pt WHERE ' . implode(' AND ', $where));
     $q->execute($params);
-    if ($team > 0) {
-        $rows = trainingRosterBridgeFilterPlanRows($pdo, $q->fetchAll(PDO::FETCH_ASSOC), $team);
-        return ['count' => count($rows), 'oldest_date' => trainingPlannerOldestPendingDate($rows)];
-    }
     $row = $q->fetch(PDO::FETCH_ASSOC);
     return ['count' => (int)$row['total'], 'oldest_date' => $row['oldest_date'] ?: null];
 }
