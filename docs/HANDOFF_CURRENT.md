@@ -7,17 +7,16 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
-- ROLE01: [plán a oprávnění](ACCESS_OVERVIEW_2026-11-07.md), [PR #356](https://github.com/KovoPraha/evidenceTreninku/pull/356).
-  Přehled a místní ověření hotové; následně schválený deploy a formulářový test
-  jen na nových technických účtech. Původní role lidí zachovat a porovnat otisk.
-  CI kódu prošlo; po převzetí #357 znovu CI/merge, baseline, deploy, ověření a úklid.
-
+- ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
+  #356 nasazeno jako `ebb8b2e3`; formuláře 16/16 PASS, původních 46 účtů beze změny.
+  Oba nové testovací účty deaktivované a bez rolí. Žádný další deploy ani opakování testu není potřeba.
+  Výsledkové předání: `codex/access-release-20261107`, stejný vlastní worktree jako implementace.
 
 - DOC01: [zadání, audit, plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
   Obsah a místní kontroly hotové; [GitHub předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), stav CI/merge u PR.
   Větev `codex/repo-documentation-policy-20261107`, vlastní worktree stejného tématu
   v `C:/Users/Marek/Documents/Codex/evidencePavel-repo-documentation-policy-20261107`.
-- P11: R13 #352, R05 #353 a R06 #354 jsou v main `feb8fe8c`, bez nového deploye.
+- P11: R13 #352, R05 #353 a R06 #354 jsou v main a zahrnuté v nasazení ROLE01; jejich úplná provozní přejímka zůstává v P11.
   [Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md),
   [R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md),
   [R13](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md).

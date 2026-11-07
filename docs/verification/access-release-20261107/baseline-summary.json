@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "run_id": 42360066301,
+  "counts": {
+    "accounts": 46,
+    "staff_user_positions": 82,
+    "staff_superadmins": 5,
+    "kis_bar_permissions": 1
+  },
+  "sha256": "debbfb081e675f110efbe5a8783c5f3cef31bbc26acb45745868c30bb2befb8b"
+}
