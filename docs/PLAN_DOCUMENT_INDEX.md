@@ -778,3 +778,9 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-30d4f6c028 | [ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
 
 | PL-22fccd64f4 | [SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
+
+| PL-38b7449ba4 | [RESULTS.md](verification/attendance-lesson-read-performance-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
+
+| PL-78d18f8e5d | [sqlite-comparison.json](verification/attendance-lesson-read-performance-20261107/sqlite-comparison.json) | evidence / REFERENCE | P11 |
+
+| PL-2ab3c6b2d7 | [targeted-junit.xml](verification/attendance-lesson-read-performance-20261107/targeted-junit.xml) | evidence / REFERENCE | P11 |

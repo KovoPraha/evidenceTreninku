@@ -1,0 +1,1639 @@
+{
+    "php": "8.2.12",
+    "server": {
+        "driver": "sqlite",
+        "version": "3.39.2"
+    },
+    "method": "5 warmups, 30 interleaved plain PDO pairs, exact ordered row and transaction parity; separate warmed SQL\/EXPLAIN. Synthetic contract fixtures; not full HTTP latency.",
+    "source_sha256": {
+        "includes\/training_day.php": "8f74fdb7537e8d68ee08dc8553db3c5c14596ef41479d8f60a6b5ef79a9c5a84",
+        "includes\/coach_scope.php": "4003076fb649fc3145ca6aba1eb66538144538ce9cc5a42db1209f1e8712ba5c",
+        "includes\/coach_training_access.php": "b8457667e995c5810116aa0d960256d36976e37aad675190feedda80a17ec642",
+        "tests\/Support\/TrainingDayChoicesBaseline.php": "5e0c4b7675e6cdd9d472bb5a290a61a2d585486602b36a4843c56f1fd849febc",
+        "tests\/Support\/TrainingDayChoicesFixture.php": "492126acb24555a2583ac8c611578bb8916cfea00edc487d9aab29714c09ea15",
+        "tests\/Support\/TrainingDayChoicesProfile.php": "153613ad9ee4bc511a95077141c3d54130cc2ae506403e074c439274f95dada0"
+    },
+    "cases": [
+        {
+            "lesson_count": 0,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        0.209,
+                        0.3909,
+                        0.1833,
+                        0.2561,
+                        0.1691,
+                        0.1662,
+                        0.1455,
+                        0.1341,
+                        0.1455,
+                        0.2726,
+                        0.779,
+                        0.2028,
+                        0.548,
+                        0.1762,
+                        0.228,
+                        0.2715,
+                        0.1751,
+                        0.1908,
+                        0.4791,
+                        0.4328,
+                        0.3091,
+                        0.1249,
+                        0.1264,
+                        0.2806,
+                        0.2425,
+                        0.4386,
+                        0.2101,
+                        0.1384,
+                        0.1434,
+                        0.1448
+                    ],
+                    "peak_increment_bytes": 2240,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 0
+                        }
+                    },
+                    "median_ms": 0.2059,
+                    "p95_ms": 0.548
+                },
+                "after": {
+                    "samples_ms": [
+                        0.1788,
+                        0.1332,
+                        0.1981,
+                        0.2766,
+                        0.1532,
+                        0.3491,
+                        0.1459,
+                        0.1328,
+                        0.7885,
+                        0.653,
+                        0.2166,
+                        0.1647,
+                        0.5801,
+                        0.2846,
+                        0.22,
+                        0.4768,
+                        0.4732,
+                        0.2947,
+                        0.3214,
+                        0.1877,
+                        0.2038,
+                        0.1591,
+                        0.1903,
+                        0.626,
+                        0.8645,
+                        0.2924,
+                        0.2754,
+                        0.1528,
+                        0.1429,
+                        0.1548
+                    ],
+                    "peak_increment_bytes": 2240,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 0
+                        }
+                    },
+                    "median_ms": 0.2183,
+                    "p95_ms": 0.7885
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 1,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        0.2125,
+                        0.233,
+                        0.2215,
+                        0.2131,
+                        0.2154,
+                        0.222,
+                        0.2262,
+                        0.2339,
+                        1.0171,
+                        0.1978,
+                        0.397,
+                        0.2446,
+                        0.2239,
+                        0.4242,
+                        0.3347,
+                        0.2605,
+                        0.7268,
+                        0.3834,
+                        0.2299,
+                        0.2609,
+                        1.0333,
+                        0.2725,
+                        0.2229,
+                        0.2085,
+                        0.2179,
+                        0.5948,
+                        0.4384,
+                        0.3594,
+                        0.2593,
+                        0.2319
+                    ],
+                    "peak_increment_bytes": 4544,
+                    "output_sha256": "9eae5f9af348ab2ec0da023d657a5ed1356972f54f244f03ed7f4a4ae872eab7",
+                    "sql": 6,
+                    "fetched_rows": 6,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 0
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 0.23925000000000002,
+                    "p95_ms": 1.0171
+                },
+                "after": {
+                    "samples_ms": [
+                        0.2287,
+                        0.2321,
+                        0.2309,
+                        0.2502,
+                        0.2382,
+                        0.215,
+                        0.2279,
+                        0.26,
+                        0.2502,
+                        0.2052,
+                        0.2233,
+                        0.3803,
+                        0.2266,
+                        0.199,
+                        0.3272,
+                        0.3022,
+                        0.3895,
+                        0.2187,
+                        0.2211,
+                        0.2184,
+                        0.316,
+                        0.2322,
+                        0.2383,
+                        0.2287,
+                        0.2787,
+                        0.2193,
+                        0.3752,
+                        0.2729,
+                        0.6764,
+                        0.3572
+                    ],
+                    "peak_increment_bytes": 5976,
+                    "output_sha256": "9eae5f9af348ab2ec0da023d657a5ed1356972f54f244f03ed7f4a4ae872eab7",
+                    "sql": 6,
+                    "fetched_rows": 6,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 0
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?)": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 0.2352,
+                    "p95_ms": 0.3895
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        5.5288,
+                        4.0305,
+                        3.8676,
+                        3.5991,
+                        4.665,
+                        5.3271,
+                        12.0657,
+                        11.3965,
+                        7.5124,
+                        6.7024,
+                        6.6036,
+                        8.7882,
+                        8.8976,
+                        3.9701,
+                        8.438,
+                        8.0437,
+                        8.834,
+                        5.5531,
+                        5.8587,
+                        4.9486,
+                        4.8761,
+                        4.0797,
+                        7.0829,
+                        7.7233,
+                        7.6557,
+                        7.3348,
+                        6.337,
+                        5.8617,
+                        8.3517,
+                        4.1067
+                    ],
+                    "peak_increment_bytes": 35224,
+                    "output_sha256": "e1c83ecccdbb4bda78ccf686a25ec47a05137cb4dd5e3655710b8279bcf6f351",
+                    "sql": 153,
+                    "fetched_rows": 202,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 6.4703,
+                    "p95_ms": 11.3965
+                },
+                "after": {
+                    "samples_ms": [
+                        1.7325,
+                        0.9639,
+                        0.7723,
+                        0.6503,
+                        0.7698,
+                        0.7184,
+                        1.2631,
+                        1.2066,
+                        1.8581,
+                        0.8181,
+                        1.4411,
+                        1.5876,
+                        0.8289,
+                        0.7825,
+                        1.1504,
+                        1.8857,
+                        7.2123,
+                        4.3106,
+                        0.8573,
+                        0.8599,
+                        0.9301,
+                        0.8369,
+                        0.9476,
+                        0.7834,
+                        1.5782,
+                        1.549,
+                        0.9107,
+                        0.7881,
+                        1.62,
+                        1.1355
+                    ],
+                    "peak_increment_bytes": 44024,
+                    "output_sha256": "e1c83ecccdbb4bda78ccf686a25ec47a05137cb4dd5e3655710b8279bcf6f351",
+                    "sql": 6,
+                    "fetched_rows": 104,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50
+                        }
+                    },
+                    "median_ms": 0.95575,
+                    "p95_ms": 4.3106
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 1000,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        6.0176,
+                        5.4888,
+                        5.2733,
+                        5.0703,
+                        5.1853,
+                        5.5272,
+                        5.6974,
+                        6.3938,
+                        5.6608,
+                        6.4336,
+                        5.8399,
+                        7.2372,
+                        5.5534,
+                        5.5786,
+                        5.8553,
+                        5.6941,
+                        5.717,
+                        5.1461,
+                        6.6156,
+                        8.9199,
+                        6.3656,
+                        6.0659,
+                        5.8419,
+                        5.62,
+                        7.7841,
+                        5.0706,
+                        7.6361,
+                        6.0906,
+                        5.6544,
+                        5.1616
+                    ],
+                    "peak_increment_bytes": 35224,
+                    "output_sha256": "7bc825a7212a840be4f0a042c5ef9da12fa3117672f6b0e2f4ace7f978869eb6",
+                    "sql": 153,
+                    "fetched_rows": 202,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 5.7072,
+                    "p95_ms": 7.7841
+                },
+                "after": {
+                    "samples_ms": [
+                        2.0171,
+                        1.8762,
+                        1.9698,
+                        2.119,
+                        1.751,
+                        1.7487,
+                        2.1256,
+                        1.8835,
+                        2.0168,
+                        1.9135,
+                        3.3659,
+                        2.4103,
+                        2.1002,
+                        1.959,
+                        2.856,
+                        2.2639,
+                        2.0759,
+                        2.1385,
+                        2.7053,
+                        2.2736,
+                        2.2517,
+                        1.9436,
+                        2.0406,
+                        1.757,
+                        2.3719,
+                        2.2116,
+                        2.3235,
+                        2.1907,
+                        2.1025,
+                        2.074
+                    ],
+                    "peak_increment_bytes": 45592,
+                    "output_sha256": "7bc825a7212a840be4f0a042c5ef9da12fa3117672f6b0e2f4ace7f978869eb6",
+                    "sql": 6,
+                    "fetched_rows": 104,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50
+                        }
+                    },
+                    "median_ms": 2.10135,
+                    "p95_ms": 2.856
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 2,
+            "position": "sports_lead",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        6.5396,
+                        4.0984,
+                        4.3702,
+                        4.6399,
+                        6.1844,
+                        3.9062,
+                        3.8361,
+                        8.8177,
+                        4.3662,
+                        3.5291,
+                        3.5127,
+                        4.8664,
+                        3.7068,
+                        4.2874,
+                        3.7848,
+                        3.8411,
+                        10.2373,
+                        5.0266,
+                        3.8416,
+                        3.8467,
+                        5.0803,
+                        3.7264,
+                        4.0033,
+                        4.0466,
+                        4.0529,
+                        5.1514,
+                        7.1836,
+                        4.5711,
+                        5.0223,
+                        8.4185
+                    ],
+                    "peak_increment_bytes": 35224,
+                    "output_sha256": "c9dd0830ccddd7c65d7a59e9b25aca7f2a70c5c425927adcad8833d0626459e3",
+                    "sql": 153,
+                    "fetched_rows": 202,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=2 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 4.3268,
+                    "p95_ms": 8.8177
+                },
+                "after": {
+                    "samples_ms": [
+                        0.879,
+                        0.8059,
+                        0.7524,
+                        0.9053,
+                        0.8478,
+                        0.7718,
+                        0.922,
+                        0.6487,
+                        0.7829,
+                        0.8043,
+                        3.0309,
+                        0.907,
+                        0.8698,
+                        0.6748,
+                        0.7995,
+                        0.6975,
+                        8.8894,
+                        3.6701,
+                        0.793,
+                        0.712,
+                        0.802,
+                        1.3222,
+                        4.658,
+                        0.8478,
+                        0.9298,
+                        0.7497,
+                        0.9225,
+                        1.0138,
+                        0.6953,
+                        0.6185
+                    ],
+                    "peak_increment_bytes": 44024,
+                    "output_sha256": "c9dd0830ccddd7c65d7a59e9b25aca7f2a70c5c425927adcad8833d0626459e3",
+                    "sql": 6,
+                    "fetched_rows": 104,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=2 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50
+                        }
+                    },
+                    "median_ms": 0.82685,
+                    "p95_ms": 4.658
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 3,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        13.4597,
+                        6.0627,
+                        4.5772,
+                        4.9147,
+                        18.8776,
+                        7.5216,
+                        24.2755,
+                        4.0902,
+                        3.8615,
+                        4.9086,
+                        4.888,
+                        7.4901,
+                        34.298,
+                        7.2117,
+                        7.3312,
+                        6.5712,
+                        7.37,
+                        7.1053,
+                        5.6719,
+                        4.8216,
+                        5.4338,
+                        4.5958,
+                        4.6107,
+                        4.0868,
+                        4.2364,
+                        6.4219,
+                        7.4319,
+                        5.1122,
+                        8.8255,
+                        3.9602
+                    ],
+                    "peak_increment_bytes": 35224,
+                    "output_sha256": "5c0fb600a31a7bc67e0bdeba3d6b6f3b52bb2eaa4e243e9d55d6081271cb7f2a",
+                    "sql": 153,
+                    "fetched_rows": 202,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=3 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 5.8673,
+                    "p95_ms": 24.2755
+                },
+                "after": {
+                    "samples_ms": [
+                        0.8343,
+                        12.1412,
+                        1.0227,
+                        1.1087,
+                        1.0351,
+                        0.8318,
+                        0.8174,
+                        1.0021,
+                        0.7499,
+                        1.6557,
+                        1.7291,
+                        0.7946,
+                        0.995,
+                        1.4312,
+                        2.2688,
+                        0.9188,
+                        0.9889,
+                        0.8807,
+                        0.9159,
+                        0.7758,
+                        1.2161,
+                        1.3164,
+                        0.9595,
+                        0.8309,
+                        0.8671,
+                        0.7751,
+                        0.9167,
+                        0.8827,
+                        0.8697,
+                        0.7634
+                    ],
+                    "peak_increment_bytes": 44024,
+                    "output_sha256": "5c0fb600a31a7bc67e0bdeba3d6b6f3b52bb2eaa4e243e9d55d6081271cb7f2a",
+                    "sql": 6,
+                    "fetched_rows": 104,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=3 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50
+                        }
+                    },
+                    "median_ms": 0.91775,
+                    "p95_ms": 2.2688
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 4,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        7.5692,
+                        6.1321,
+                        10.191,
+                        10.7921,
+                        9.3026,
+                        6.0794,
+                        14.8977,
+                        7.2068,
+                        8.4118,
+                        11.1208,
+                        9.0309,
+                        11.4707,
+                        7.2195,
+                        6.2129,
+                        8.0848,
+                        8.2407,
+                        7.9584,
+                        5.3712,
+                        10.361,
+                        6.1278,
+                        7.5254,
+                        5.3536,
+                        11.766,
+                        5.7055,
+                        5.5619,
+                        13.7984,
+                        9.1708,
+                        6.069,
+                        6.0069,
+                        9.5974
+                    ],
+                    "peak_increment_bytes": 36000,
+                    "output_sha256": "c6eb1ef4d796ad42d4dbc25e9e9035dd596f87f021653652cbe2718387a2b7fa",
+                    "sql": 254,
+                    "fetched_rows": 252,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 0,
+                            "parameter_count": 2
+                        },
+                        "SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=4 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 8.0216,
+                    "p95_ms": 13.7984
+                },
+                "after": {
+                    "samples_ms": [
+                        0.9432,
+                        0.8904,
+                        1.3757,
+                        1.4041,
+                        0.977,
+                        0.9067,
+                        1.1302,
+                        1.1573,
+                        1.8996,
+                        1.7097,
+                        0.886,
+                        4.3369,
+                        1.7109,
+                        0.8126,
+                        1.2744,
+                        1.365,
+                        0.9564,
+                        0.7985,
+                        1.1138,
+                        1.0966,
+                        0.8585,
+                        0.7568,
+                        0.9083,
+                        0.7926,
+                        0.8831,
+                        1.5086,
+                        1.2473,
+                        1.1202,
+                        0.961,
+                        0.8776
+                    ],
+                    "peak_increment_bytes": 44800,
+                    "output_sha256": "c6eb1ef4d796ad42d4dbc25e9e9035dd596f87f021653652cbe2718387a2b7fa",
+                    "sql": 9,
+                    "fetched_rows": 105,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 0,
+                            "parameter_count": 2
+                        },
+                        "SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=4 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50
+                        },
+                        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 1.0368,
+                    "p95_ms": 1.8996
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 4,
+            "position": "sports_lead",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        7.4289,
+                        6.3266,
+                        6.5548,
+                        5.69,
+                        8.2559,
+                        7.1636,
+                        6.4992,
+                        5.2569,
+                        5.8512,
+                        6.6236,
+                        6.3341,
+                        5.6063,
+                        6.3022,
+                        12.34,
+                        7.3461,
+                        6.3598,
+                        8.0958,
+                        8.6282,
+                        6.1157,
+                        7.0032,
+                        8.2717,
+                        6.5572,
+                        4.6568,
+                        4.9229,
+                        5.7757,
+                        5.7333,
+                        5.4213,
+                        4.9598,
+                        4.6643,
+                        6.3135
+                    ],
+                    "peak_increment_bytes": 36000,
+                    "output_sha256": "c6eb1ef4d796ad42d4dbc25e9e9035dd596f87f021653652cbe2718387a2b7fa",
+                    "sql": 254,
+                    "fetched_rows": 252,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 0,
+                            "parameter_count": 2
+                        },
+                        "SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=4 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 6.33035,
+                    "p95_ms": 8.6282
+                },
+                "after": {
+                    "samples_ms": [
+                        1.0842,
+                        0.7993,
+                        0.9652,
+                        0.8107,
+                        1.2289,
+                        1.9166,
+                        1.0112,
+                        0.8944,
+                        0.9782,
+                        0.8744,
+                        0.6059,
+                        0.5099,
+                        0.9777,
+                        0.8521,
+                        0.9184,
+                        0.8673,
+                        0.874,
+                        0.8521,
+                        0.927,
+                        0.846,
+                        0.9421,
+                        1.1357,
+                        0.8765,
+                        0.5617,
+                        0.8955,
+                        0.8085,
+                        0.869,
+                        0.8084,
+                        0.9367,
+                        0.767
+                    ],
+                    "peak_increment_bytes": 44800,
+                    "output_sha256": "c6eb1ef4d796ad42d4dbc25e9e9035dd596f87f021653652cbe2718387a2b7fa",
+                    "sql": 9,
+                    "fetched_rows": 105,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 0,
+                            "parameter_count": 2
+                        },
+                        "SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=4 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50
+                        },
+                        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 0.87545,
+                    "p95_ms": 1.2289
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 100,
+            "actor": 1,
+            "position": "coach",
+            "search": "kurz_%",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        1.1599,
+                        1.2021,
+                        1.4001,
+                        1.5687,
+                        1.0986,
+                        1.3212,
+                        1.3023,
+                        1.213,
+                        1.1977,
+                        1.3825,
+                        1.3849,
+                        1.4936,
+                        1.5575,
+                        1.2128,
+                        1.2358,
+                        1.4736,
+                        1.2807,
+                        1.378,
+                        1.3538,
+                        1.2932,
+                        1.2633,
+                        1.9504,
+                        1.5036,
+                        0.9953,
+                        1.3287,
+                        1.3816,
+                        1.3505,
+                        1.3501,
+                        1.9825,
+                        1.3276
+                    ],
+                    "peak_increment_bytes": 13528,
+                    "output_sha256": "23a2cacf6dea8a53d8ae4401a6c8625ebbac030b62c208a7413cd448e0b0c77d",
+                    "sql": 45,
+                    "fetched_rows": 58,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 15,
+                            "rows": 15,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 15,
+                            "rows": 15,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 14,
+                            "parameter_count": 2
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 14,
+                            "rows": 14,
+                            "parameter_count": 1
+                        }
+                    },
+                    "median_ms": 1.3394,
+                    "p95_ms": 1.9504
+                },
+                "after": {
+                    "samples_ms": [
+                        0.4485,
+                        0.4592,
+                        0.5811,
+                        0.561,
+                        0.3431,
+                        0.3041,
+                        0.5075,
+                        0.4625,
+                        0.4597,
+                        0.5236,
+                        0.5748,
+                        0.5487,
+                        0.6084,
+                        0.6005,
+                        0.5357,
+                        0.5279,
+                        0.5763,
+                        0.5314,
+                        0.5094,
+                        0.4949,
+                        0.6117,
+                        0.8785,
+                        0.6228,
+                        0.4125,
+                        0.5647,
+                        0.5317,
+                        0.5801,
+                        0.5196,
+                        0.6067,
+                        0.5214
+                    ],
+                    "peak_increment_bytes": 16768,
+                    "output_sha256": "23a2cacf6dea8a53d8ae4401a6c8625ebbac030b62c208a7413cd448e0b0c77d",
+                    "sql": 6,
+                    "fetched_rows": 32,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 14,
+                            "parameter_count": 2
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 14,
+                            "parameter_count": 14
+                        }
+                    },
+                    "median_ms": 0.53155,
+                    "p95_ms": 0.6228
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 100,
+            "actor": 1,
+            "position": "coach",
+            "search": "ŽLUTÝ",
+            "on": "2026-11-07",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        0.3187,
+                        0.3555,
+                        0.4192,
+                        0.3052,
+                        0.2316,
+                        0.193,
+                        0.1901,
+                        0.1861,
+                        0.1876,
+                        0.3935,
+                        0.3411,
+                        0.3537,
+                        0.3401,
+                        0.4727,
+                        0.3836,
+                        0.2299,
+                        0.343,
+                        0.3403,
+                        0.3408,
+                        0.3507,
+                        0.2763,
+                        0.1888,
+                        0.1773,
+                        0.2899,
+                        0.3223,
+                        0.4184,
+                        0.3007,
+                        0.4477,
+                        0.4355,
+                        0.3002
+                    ],
+                    "peak_increment_bytes": 2752,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') AND p.datum>=? AND p.datum<=? ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 4
+                        }
+                    },
+                    "median_ms": 0.3312,
+                    "p95_ms": 0.4477
+                },
+                "after": {
+                    "samples_ms": [
+                        0.419,
+                        0.5352,
+                        0.3626,
+                        0.4629,
+                        0.1997,
+                        0.1965,
+                        0.1894,
+                        0.188,
+                        0.2122,
+                        0.4853,
+                        0.3551,
+                        0.3764,
+                        0.3661,
+                        0.3324,
+                        0.3483,
+                        0.2584,
+                        0.3535,
+                        0.3327,
+                        0.344,
+                        0.3741,
+                        0.2561,
+                        0.2081,
+                        0.2007,
+                        0.2403,
+                        0.3228,
+                        0.4958,
+                        0.3012,
+                        0.309,
+                        0.4569,
+                        0.3312
+                    ],
+                    "peak_increment_bytes": 2752,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') AND p.datum>=? AND p.datum<=? ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 4
+                        }
+                    },
+                    "median_ms": 0.33255,
+                    "p95_ms": 0.4958
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 1,
+            "position": "coach",
+            "search": "NOTFOUND",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        0.221,
+                        0.2246,
+                        0.2333,
+                        0.2259,
+                        0.2213,
+                        0.2356,
+                        0.217,
+                        0.2143,
+                        0.2104,
+                        0.222,
+                        0.2686,
+                        0.2678,
+                        0.2631,
+                        0.228,
+                        0.2765,
+                        0.2294,
+                        0.235,
+                        0.2158,
+                        0.2273,
+                        0.2222,
+                        0.2148,
+                        0.2154,
+                        0.2039,
+                        0.2285,
+                        0.2324,
+                        0.2588,
+                        0.2424,
+                        0.2319,
+                        0.241,
+                        0.3233
+                    ],
+                    "peak_increment_bytes": 2536,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 2
+                        }
+                    },
+                    "median_ms": 0.22825,
+                    "p95_ms": 0.2765
+                },
+                "after": {
+                    "samples_ms": [
+                        0.2172,
+                        0.2441,
+                        0.2387,
+                        0.2307,
+                        0.2266,
+                        0.2295,
+                        0.2097,
+                        0.211,
+                        0.2127,
+                        0.2263,
+                        0.2236,
+                        0.2178,
+                        0.2701,
+                        0.2508,
+                        0.2414,
+                        0.2383,
+                        0.2098,
+                        0.2144,
+                        0.2114,
+                        0.2137,
+                        0.216,
+                        0.2199,
+                        0.2345,
+                        0.2105,
+                        0.2513,
+                        0.2663,
+                        0.2725,
+                        0.2296,
+                        0.222,
+                        0.4468
+                    ],
+                    "peak_increment_bytes": 2536,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 2
+                        }
+                    },
+                    "median_ms": 0.22644999999999998,
+                    "p95_ms": 0.2725
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "invalid",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        0.0844,
+                        0.1437,
+                        0.1407,
+                        0.0793,
+                        0.0775,
+                        0.0778,
+                        0.0788,
+                        0.079,
+                        0.077,
+                        0.0766,
+                        0.0814,
+                        0.089,
+                        0.178,
+                        0.1191,
+                        0.1269,
+                        0.1344,
+                        0.1333,
+                        0.1502,
+                        0.2055,
+                        0.134,
+                        0.1281,
+                        0.3029,
+                        0.15,
+                        0.1367,
+                        0.157,
+                        0.1374,
+                        0.1322,
+                        0.1371,
+                        0.0829,
+                        0.0761
+                    ],
+                    "peak_increment_bytes": 2240,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 0=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 0
+                        }
+                    },
+                    "median_ms": 0.13015,
+                    "p95_ms": 0.2055
+                },
+                "after": {
+                    "samples_ms": [
+                        0.0827,
+                        0.1129,
+                        0.1108,
+                        0.0822,
+                        0.0782,
+                        0.0787,
+                        0.078,
+                        0.093,
+                        0.0765,
+                        0.0792,
+                        0.0762,
+                        0.0761,
+                        0.1969,
+                        0.1278,
+                        0.1334,
+                        0.1408,
+                        0.1315,
+                        0.132,
+                        0.16,
+                        0.1317,
+                        0.1298,
+                        0.125,
+                        0.1353,
+                        0.1358,
+                        0.2211,
+                        0.144,
+                        0.1308,
+                        0.1292,
+                        0.079,
+                        0.078
+                    ],
+                    "peak_increment_bytes": 2240,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 0=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 0
+                        }
+                    },
+                    "median_ms": 0.1264,
+                    "p95_ms": 0.1969
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        }
+    ],
+    "dropped_owned_schemas": []
+}

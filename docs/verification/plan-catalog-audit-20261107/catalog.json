@@ -9294,6 +9294,39 @@
       "evidence": [
         "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
       ]
+    },
+    {
+      "id": "PL-38b7449ba4",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md",
+      "title": "RESULTS.md",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "R06 nabídka lekcí: syntetický důkaz, nikoli produkční data.",
+      "evidence": []
+    },
+    {
+      "id": "PL-78d18f8e5d",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/sqlite-comparison.json",
+      "title": "sqlite-comparison.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "R06 nabídka lekcí: syntetický důkaz, nikoli produkční data.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2ab3c6b2d7",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/targeted-junit.xml",
+      "title": "targeted-junit.xml",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "R06 nabídka lekcí: syntetický důkaz, nikoli produkční data.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

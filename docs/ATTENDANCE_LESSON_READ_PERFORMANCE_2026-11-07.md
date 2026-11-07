@@ -39,3 +39,7 @@ Původní WIP zachovaný, zdroje/flags ani data původní kopie se nemění.
 [Protokol](verification/attendance-lesson-read-performance-20261107/RESULTS.md),
 [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md),
 [registr P11](WORK_PLAN_CURRENT.md). Další krok: reference, reader a lokální parita.
+
+Implementace hotová k nativnímu ověření: 18 testů / 987 assertions PASS;
+50 nabídek 153 → 6 SQL pro trenéra, 254 → 9 pro superadmina. Celé řádky,
+výjimky, čerstvost i transakční SQL mají paritu. Nativní CI je další krok.
