@@ -22,7 +22,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   Původní WIP a oba picker worktrees zachované; výsledky a kalibrace jsou v repu, nové aktivace žádné.
   [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
-  Dále R13/R05, rows examined a fyzický mobil/souběh; K0.2 otevřené. Naše měření produkci neměnilo.
+  Dále R13/R05, rows examined a fyzický mobil/souběh; K0.2 otevřené. Naše měření produkci neměnilo. [P11-SCALE](MEDICAL_PLANNER_SCALE_2026-11-07.md): větší R13/R05 ROZPRACOVÁNO, bez produkce.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.
