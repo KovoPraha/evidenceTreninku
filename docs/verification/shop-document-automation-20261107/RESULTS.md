@@ -60,8 +60,7 @@ Nešlo o skutečný bankovní převod ani externí e-mail.
   také vypnuté pověření bez zpětného rozesílání, deduplikaci částečné výplaty
   a odmítnutí porušené přílohy před zavoláním poštovního transportu.
 
-Výsledky finálního CI, sloučení, nasazení a aktivace budou doplněny po
-dokončení. Tyto lokální důkazy je nenahrazují.
+Lokální důkazy jsou oddělené od následných produkčních kontrol uvedených níže.
 
 ## Předběžné CI a oprava srovnávacího prostředí
 
@@ -75,3 +74,44 @@ srovnávacích kopií; historický aplikační kód zůstává připnutý a kont
 shody dat/HTML, počtu tabulek/migrací i oprávnění zůstávají povinné.
 Nová sada automatizace včetně chráněné aktivace: **12 testů / 233 assertions PASS**.
 Vlastní místní web 18086 a syntetická MariaDB 33427 byly po přejímce zastavené.
+
+## Finální integrace
+
+[11 kontrol PASS](ci-summary.json) na hlavě `635c97e2`, včetně opravené srovnatelnosti
+schémat na MariaDB 10.3/11.4. [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355)
+sloučeno 7. 11. v 10:02:26 UTC jako `9460ee76`.
+[Čtecí výchozí produkční kontrola](production-before.json), běh 42361514869:
+minutový plán aktivní a aktuální, 18 dřívějších zpráv, žádné čekající/chybové zprávy.
+
+## Nasazení, aktivace a přirozený worker — PASS
+
+- [Deploy 42362258878](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42362258878)
+  SUCCESS, přesný merge `9460ee76`; [souhrn](deploy-summary.json).
+  Opakovaně 2337 testů / 43257 assertions, schéma current / pending [],
+  zachování dosavadních VS a HTTP 200. Import kroužků a úplné lidské UAT false.
+- Před migrováním ověřena záloha 387 tabulek / 2 triggerů, 6 311 972 bajtů;
+  její název a SHA-256 v souhrnu. Obnova této konkrétní produkční generace NOT RUN;
+  izolovaný integrační test záloh a obnovy nového schématu prošel v CI.
+- [Status po nasazení](production-deployed.json), běh 42362619915, potvrdil
+  nový worker a dosud vypnuté pověření. Schválený vystavovatel je verze 1,
+  Tělovýchovná jednota KOVO, z.s., IČ 00541753.
+- [Aktivace 42362688999](production-enabled.json) přes chráněné `shop_enable`
+  SUCCESS: verze pověření 1, zapnuto pro nové objednávky. Původní schválení
+  a finanční oprávnění ověřila služba, nebyly vytvořené session ani role.
+- [Nezávislý status 42362771928](production-after.json) v 10:13:31 UTC:
+  zapnuto, poslední přirozený hostingový tick **10:13:03 UTC / 11:13:03 CET**,
+  `ok=true`, interval 60 s. Doklady 0 / zprávy 0 / chyby 0 / attention 0,
+  fronta prázdná. Dřívějších 18 pracovních zpráv beze změny. Nových registrovaných
+  objednávek zatím 0, žádné historické hromadné vystavení nebo rozeslání.
+- [Anonymní HTTP kontrola](http-after.json): úvod, e-shop i Závodní tým 297
+  HTTP 200; fakturační administrace bez přihlášení přesměruje na login (302).
+
+**Meze:** celý finanční tok byl vykonán na syntetických místních datech,
+se skutečnými PDF a zachycenými přílohami, nikoli s reálným bankovním převodem.
+Produkční e-mail s novým PDF nebyl doručením do externí schránky potvrzen.
+Computer Use ukončilo produkční ovládání, protože neumělo spolehlivě určit URL
+Chrome ve Windows; produkční vizuální UAT je NOT RUN. Aktivace a status jsou
+prokázané chráněným workflow. Částečné účetní opravy nadále řídí hospodář;
+nový e-mail potvrzuje každou zaúčtovanou dílčí výplatu, ne pouhé rozhodnutí.
+Měsíční členství zůstává samostatným tokem; žádné členství ani nový závazek
+nebyly kvůli této produkční kontrole sjednány.

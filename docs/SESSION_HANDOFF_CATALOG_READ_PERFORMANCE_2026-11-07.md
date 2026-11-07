@@ -1,19 +1,22 @@
 # Předání P11 katalog — 7. 11. 2026
 
+HOTOVO pro implementaci, striktní paritu a měření. [PR #364 k review](https://github.com/KovoPraha/evidenceTreninku/pull/364), bez merge/deploye.
 [Plán a akceptace](CATALOG_READ_PERFORMANCE_2026-11-07.md),
-[výsledky](verification/catalog-read-performance-20261107/RESULTS.md),
-[PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364), aktuálně draft.
+[výsledky, surové reporty a otisky](verification/catalog-read-performance-20261107/RESULTS.md).
 
-#358 sloučený `37d0ad68`; 11 kontrol PASS, žádný náš deploy. Vlastní větev
-`codex/catalog-read-performance-20261107`, worktree a původní WIP jsou v plánu.
-Katalog implementovaný: lehká projekce celku, plné karty pro stránku;
-do 64 aktivních produktů původní cesta podle sondy max. 65 ID. Transakce původní.
-Cíleně 31 testů / 2080 assertions PASS. Finální runtime `623dcaa5`, integrovaný
-s #363 v `0252ba58`; nativní párové měření a úplná CI právě běží.
-První nativní reporty před malým fallbackem nejsou finálními čísly.
+#358 sloučený `37d0ad68`; 11 kontrol PASS, žádný náš deploy.
+Větev `codex/catalog-read-performance-20261107`, vlastní worktree viz plán.
+Katalog: lehká projekce celku, plné karty pro stránku; do 64 aktivních produktů
+původní cesta po sondě max. 65 ID. Transakce původní. Checkout beze změny.
+Cíleně 31/2080, úplný Linux 2350/45220, PHPStan/styl/dokumentace PASS.
+Runtime `623dcaa5` v `0252ba58`: 480 párů před/po na obou MariaDB,
+shodné celé výsledky a všech 9 otisků zdrojů. 5000 zboží 202/340 → 87/199 ms;
+PHP špička 71,6 → 16,8 MiB. U malých katalogů zůstává malá režie sondy;
+u programů dominuje kapacita. Více malých SQL, méně těžkých řádků.
 
-Další krok: převzít finální artefakty 10.3/11.4, ověřit zdrojové otisky,
-doplnit výsledky, všechny přehledy a PR; po zelené CI označit k review.
-Samostatné HTTP/browser #363 na `feb8fe8c` zachované; nový katalog nepřeměřují.
-Katalogový merge, deploy/aktivace a produkční UAT NOT RUN. Bez nového oprávnění
-nenasazovat. Rozpracované změny ani místní výstupy původního checkoutu neuklízet.
+Převzaté #363 HTTP/browser i #362 provozní předání; tato práce je neopakuje.
+Poslední dokumentační head a úplné CI sledovat u PR. Reporty dokazují runtime,
+nikoli produkční latenci. Nový katalog HTTP/browser/produkční UAT NOT RUN.
+Další krok: review #364, pozdější integrace podle rozhodnutí vlastníka.
+Původní WIP i jeho SHA256 zachované; původní checkout se nepřepínal.
+Bez nového zadání nenasazovat, neaktivovat ani neuklízet cizí rozpracovanou práci.

@@ -1,0 +1,61 @@
+{
+  "queue": {
+    "pending": 0,
+    "processing": 0,
+    "sent": 18,
+    "failed": 0,
+    "cancelled": 0
+  },
+  "pending_requests": 2,
+  "events": 3,
+  "notices": 18,
+  "last_sent_at": "2026-11-06 07:14:30",
+  "shop": {
+    "enabled": true,
+    "policy_id": 1,
+    "available_issuer": {
+      "id": 1,
+      "name": "Tělovýchovná jednota KOVO, z.s.",
+      "registration_id": "00541753"
+    },
+    "registered": 0,
+    "document_errors": 0,
+    "pending_documents": 0,
+    "failed_emails": 0,
+    "pending_emails": 0
+  },
+  "scheduler": {
+    "interval_seconds": 60,
+    "hosting_directory_available": true,
+    "installed_expected_source": true,
+    "executable": false,
+    "last_hosting_run": {
+      "trigger": "hosting_cron",
+      "completed_at": "2026-11-07T10:13:03+00:00",
+      "ok": true,
+      "result": {
+        "sync": {
+          "events": 0,
+          "recipients": 0,
+          "emails": 0,
+          "without_recipient": 0,
+          "invalid_email": 0
+        },
+        "processed": 0,
+        "sent": 0,
+        "failed": 0,
+        "cancelled": 0,
+        "shop": {
+          "documents": 0,
+          "sent": 0,
+          "failed": 0,
+          "attention": 0
+        }
+      }
+    },
+    "recent_successful_hosting_run": true
+  },
+  "at": "2026-11-07T10:13:31+00:00",
+  "ok": true,
+  "run_id": 42362771928
+}

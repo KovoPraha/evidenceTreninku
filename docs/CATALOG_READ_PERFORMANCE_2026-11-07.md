@@ -1,6 +1,6 @@
 # P11 — omezené načítání katalogu, 7. 11. 2026
 
-ID P11-CATALOG; vlastník zadání Marek, realizace Codex. Stav K OVĚŘENÍ V CI.
+ID P11-CATALOG; vlastník zadání Marek, realizace Codex. Stav HOTOVO: implementace, parita a měření; #364 K REVIEW.
 [PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364),
 [výsledky a metoda](verification/catalog-read-performance-20261107/RESULTS.md),
 [session handoff](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md),
@@ -18,7 +18,8 @@ Bez nasazení, aktivace nebo změn živých dat. Katalogový PR předat k review
 Větev `codex/catalog-read-performance-20261107`, vlastní worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-catalog-performance-20261107`.
 Původní checkout a WIP zůstávají nedotčené; otisk je v protokolu.
-Převzaté main `d958fd6e` / #363 přidává samostatné HTTP/browser měření
+Převzaté main `75374564` zahrnuje produkční předání #362 bez opakování operací.
+#363 přidává samostatné HTTP/browser měření
 na `feb8fe8c`; zachované výsledky nejsou přeměření nového katalogu.
 
 ## Cíl, varianty a zvolený postup
@@ -41,12 +42,12 @@ bez seznamu ID a checkout zůstávají kanonické. Žádná migrace ani sdílen�
 
 | Etapa | Stav a důkaz |
 | --- | --- |
-| Plán před implementací | `b44e7c53`; původní pracovní ID rozhodnutí 05 a události 13 po převzetí #363 přesunuta na 06/14; přijatá main ID zachovaná |
+| Plán před implementací | `b44e7c53`; původní pracovní ID rozhodnutí 05 a události 13 po převzetí #363 přesunuta na 06/15; přijatá main ID zachovaná |
 | Merge cen bez deploye | HOTOVO #358 `37d0ad68`; finální head 11 kontrol PASS |
 | Reference a implementace | HOTOVO; zmrazený řadič z přesného `37d0ad68`, pouze obal/normalizace formátu; reader + omezené API, implicitní sort_order=0 zachovaný |
 | Striktní shoda výsledků | PASS 31 testů / 2080 assertions; kompletní vybrané karty/typy, ceny, pořadí, menu, počty a filtry |
-| Objemové párové měření | BĚŽÍ nad runtime `623dcaa5`, integrovaným v `0252ba58`; 12/1000/5000 zboží a 15/80 programů, MariaDB 10.3/11.4 |
-| Regrese a předání | Cílené PASS; po převzetí #363 běží úplné CI. Po PASS doplnit výsledky a předat #364 k review |
+| Objemové párové měření | PASS nad runtime `623dcaa5`, integrovaným v `0252ba58`; 480 párů na MariaDB 10.3/11.4, všech 9 zdrojových otisků shodných |
+| Regrese a předání | PASS cíleně 31/2080 a Linux 2350/45220, kvalita/dokumentace PASS; #364 k review, stav kompletních jobů u PR |
 | Deploy / provozní přejímka katalogu | NOT RUN, není součástí autorizované práce |
 
 Shoda zahrnuje anonym/člen/neověřený účet/odvolání, více variant, veřejné i
@@ -63,8 +64,10 @@ Nad 64 produkty nejvýše 12 plných produktů; více variant na produkt je př�
 
 ## Další krok a hranice
 
-Dokončit finální CI, zaznamenat surové reporty a jejich zdrojové otisky,
-vyhodnotit i režii malých a programových katalogů a aktualizovat propojený
-[registr P11](WORK_PLAN_CURRENT.md), CURRENT a handoff. Pak předat #364 k review.
+Reporty, otisky a vyhodnocení včetně malé režie jsou v protokolu.
+5000 produktů: MariaDB 10.3 202,18 → 87,13 ms, 11.4 340,46 → 198,57 ms;
+PHP špička 71,59 → 16,82 MiB. Počet malých SQL roste; obsah a cena zůstávají shodné.
+Další krok: review #364; při pozdější integraci ověřit aktuální main a WIP.
+Nasazení a HTTP/browser nové verze čekají na samostatné zadání.
 Globální lehký průchod a programový kontext zůstávají O(katalog).
 Navazující HTTP/browser této nové verze a další priority #363 zůstávají oddělené.
