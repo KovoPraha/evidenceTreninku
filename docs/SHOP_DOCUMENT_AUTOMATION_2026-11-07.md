@@ -1,6 +1,6 @@
 # Doklady a komunikace jednorázových objednávek
 
-Stav: ROZPRACOVÁNO, 7. 11. 2026. Vlastník výslovně zadal dokončení N1/N2,
+Stav: HOTOVO pro implementaci, nasazení a aktivaci, 7. 11. 2026. Vlastník výslovně zadal dokončení N1/N2,
 ověření celého toku, dokumentaci, sloučení a nasazení.
 Navazuje [kontrola nákupu](verification/one-time-course-uat-20261107/RESULTS.md)
 a [P07](WORK_PLAN_CURRENT.md). Větev/worktree `codex/one-time-course-uat-20261107`
@@ -41,9 +41,8 @@ objednávky se nesmějí hromadně rozeslat jen instalací nové verze.
   prošly celým tokem vytvoření, úhrady, PDF, storna a potvrzené vratky;
   šest unikátních zpráv, dva doklady, opakovaný worker bez duplicit.
 
-Další krok: finální CI, sloučení, chráněné nasazení a produkční aktivace.
-Stav vydání bude zapsán
-s konkrétním SHA a během. Skutečná bankovní transakce a doručení do schránky
+Implementace, CI, sloučení, nasazení a aktivace jsou dokončené;
+přesné důkazy jsou ve výsledkovém protokolu níže. Skutečná bankovní transakce a doručení do schránky
 se nesmějí odvozovat z lokálního outboxu nebo úspěšného transportu.
 
 ## Ovládání a provoz
@@ -95,3 +94,20 @@ CI odhalilo chybějící vlastnictví nových tabulek pro zálohy; obě tabulky 
 zařazeny do `EVIDENCE_TABLES`. Opraveny byly i inicializační větve veřejných
 stránek (příslušné staré výjimky PHPStan odstraněny) a formátově závislé
 kontroly PHP výrazů. Věcné testované podmínky zůstaly zachované.
+
+## Vydání a předání
+
+[PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355) sloučeno
+7. 11. jako `9460ee76`. [Finálních 11 kontrol](verification/shop-document-automation-20261107/ci-summary.json)
+PASS, včetně obou MariaDB profilů na stejném schématu.
+[Chráněné nasazení 42362258878](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42362258878)
+skončilo SUCCESS pro přesný sloučený commit, bez importu a bez příznaku úplného lidského UAT.
+Aktivace 42362688999: vystavovatel 1 / IČ 00541753, pověření 1 zapnuté.
+Přímé produkční browser UAT nedoložené; Computer Use odmítlo ověřit aktuální URL.
+Výsledkové předání: větev `codex/shop-document-release-20261107`, původní vlastní worktree.
+
+Závěrečný status 42362771928 potvrdil zapnuté pověření a přirozený minutový
+hostingový běh v 10:13:03 UTC bez chyb i duplicit. [Produkční důkazy](verification/shop-document-automation-20261107/RESULTS.md).
+Další krok pouze při skutečném nákupu: potvrdit bankovní úhradu podle běžných
+pravidel párování a doložit doručení PDF ve schránce. Tato lidská/finanční přejímka
+není nahrazena prázdným workerem. Není potřeba opakovat aktivaci nebo instalaci.

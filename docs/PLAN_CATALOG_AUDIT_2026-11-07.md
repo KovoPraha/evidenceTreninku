@@ -60,3 +60,8 @@ rozhodnutí D2026-11-07-03 a provozní omezení původní relace zachované.
 Nakonec převzaté #363 / `d958fd6e`: osm textových podkladů místního HTTP/browser
 profilu včetně otevřených návazností R06/mobil/souběh. D2026-11-07-05 zachované;
 měřený starší `feb8fe8c` není vydávaný za nové měření main ani produkce.
+
+
+Převzaté výsledkové #362 / `75374564`: nasazení 9460ee76 a aktivace pověření 1
+doložené, přirozený minutový tick bez chyb. Katalog, CURRENT, handoff a registr
+odlišují hotový provozní krok od nedoložené skutečné banky a externího doručení PDF.

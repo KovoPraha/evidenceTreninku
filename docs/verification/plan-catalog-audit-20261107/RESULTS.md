@@ -91,3 +91,8 @@ Budoucí formulace „čeká na skutečný termín“ nahrazena čekáním na do
 Zdrojový Git ani draft #347 nedokládá výsledek; nejde o tvrzení, že server neběžel.
 Dokumentační publikátor přijímá původní i upřesněnou větu CURRENT, aby skutečný
 pozdější důkaz stále nahradil stav správně. Finanční worker ani hosting se nemění.
+
+
+Převzaté výsledkové #362 / `75374564`: nasazení 9460ee76 a aktivace pověření 1
+doložené, přirozený minutový tick bez chyb. Katalog, CURRENT, handoff a registr
+odlišují hotový provozní krok od nedoložené skutečné banky a externího doručení PDF.

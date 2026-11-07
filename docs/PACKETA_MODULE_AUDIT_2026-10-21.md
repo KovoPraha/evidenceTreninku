@@ -2,7 +2,7 @@
 
 <!-- order-automation-refresh -->
 > Aktualizace 7. 11. 2026: navazující [automatické doklady a e-maily N1/N2](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md)
-> jsou implementované a sloučené v #355. Starší „fakturace odložena“ níže
+> jsou nasazené a zapnuté, doloženo #362. Starší „fakturace odložena“ níže
 > popisuje původní řez; skutečné nasazení/aktivaci ověřte v CURRENT a registru.
 
 

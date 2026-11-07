@@ -998,7 +998,7 @@
       "role": "plan",
       "status": "DONE",
       "registry": "P11",
-      "disposition": "Dávkový reader klubových cen implementovaný, parity a měření doložené, sloučeno #358 (37d0ad68). Pouze technický řez; bez deploye. Další katalogové/HTTP úlohy zůstávají P11.",
+      "disposition": "Dávkový reader klubových cen implementovaný, parita/měření doložené, sloučeno #358 (37d0ad68), bez deploye cen. Navazující katalogový výřez, mobil/souběh a nové měření main zůstávají P11.",
       "evidence": [
         "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
         "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
@@ -1118,7 +1118,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P07/C03",
-      "disposition": "Editor šablon/ruční Packeta vydané; automatické doklady/e-maily nyní implementované v main #355. Jejich provozní aktivace a skutečný přepravní průchod se dokládají samostatně, stará odložená fakturace není dnešní stav kódu.",
+      "disposition": "Editor šablon/ruční Packeta vydané; automatické doklady/e-maily #355 nasazené a pověření aktivní, doloženo #362. Skutečná banka, externí doručení PDF a přepravní průchod zůstávají neověřené; stará odložená fakturace není dnešní stav kódu.",
       "evidence": [
         "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md",
         "docs/PACKETA_RELEASE_2026-10-22.md",
@@ -1144,7 +1144,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P07/C03",
-      "disposition": "Editor šablon/ruční Packeta vydané; automatické doklady/e-maily nyní implementované v main #355. Jejich provozní aktivace a skutečný přepravní průchod se dokládají samostatně, stará odložená fakturace není dnešní stav kódu.",
+      "disposition": "Editor šablon/ruční Packeta vydané; automatické doklady/e-maily #355 nasazené a pověření aktivní, doloženo #362. Skutečná banka, externí doručení PDF a přepravní průchod zůstávají neověřené; stará odložená fakturace není dnešní stav kódu.",
       "evidence": [
         "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md",
         "docs/PACKETA_RELEASE_2026-10-22.md",
@@ -1890,10 +1890,11 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "R13 #352 / R05 #353 / R06 #354 implementované a následně zahrnuté v nasazení ROLE01. Celé HTTP/role a K0.2 stále otevřené; datované tvrzení „bez deploye“ popisuje původní session.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/verification/access-release-20261107/RESULTS.md",
-        "docs/WORK_PLAN_CURRENT.md"
+        "docs/WORK_PLAN_CURRENT.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -1934,10 +1935,11 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "R13 #352 / R05 #353 / R06 #354 implementované a následně zahrnuté v nasazení ROLE01. Celé HTTP/role a K0.2 stále otevřené; datované tvrzení „bez deploye“ popisuje původní session.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/verification/access-release-20261107/RESULTS.md",
-        "docs/WORK_PLAN_CURRENT.md"
+        "docs/WORK_PLAN_CURRENT.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -1961,12 +1963,13 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
         "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
         "docs/verification/performance-analysis-20261107/RESULTS.md",
-        "docs/DECISION_LOG.md"
+        "docs/DECISION_LOG.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -1977,12 +1980,13 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
         "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
         "docs/verification/performance-analysis-20261107/RESULTS.md",
-        "docs/DECISION_LOG.md"
+        "docs/DECISION_LOG.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -1993,10 +1997,11 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "R13 #352 / R05 #353 / R06 #354 implementované a následně zahrnuté v nasazení ROLE01. Celé HTTP/role a K0.2 stále otevřené; datované tvrzení „bez deploye“ popisuje původní session.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/verification/access-release-20261107/RESULTS.md",
-        "docs/WORK_PLAN_CURRENT.md"
+        "docs/WORK_PLAN_CURRENT.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -2021,7 +2026,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P07",
-      "disposition": "N1/N2: automatické doklady/e-maily implementované a sloučené v #355. Produkční nasazení/aktivace, skutečný bankovní průchod a příjem ve schránce se dokládají samostatně.",
+      "disposition": "N1/N2 implementované a nasazené jako 9460ee76, pověření 1 aktivované; #362 dokládá přirozený tick bez chyb/duplicit. Skutečná banka, doručení nového PDF do externí schránky a produkční vizuální UAT zůstávají neověřené. Aktivaci neopakovat.",
       "evidence": [
         "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md",
         "docs/verification/shop-document-automation-20261107/RESULTS.md",
@@ -3810,10 +3815,11 @@
       "role": "verification-plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Měřicí/implementační řez hotový, R13/R05/R06 následně zahrnuté v nasazení ROLE01; celý HTTP/role a zbytek K0.2 zůstává otevřený.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/verification/access-release-20261107/RESULTS.md",
-        "docs/WORK_PLAN_CURRENT.md"
+        "docs/WORK_PLAN_CURRENT.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -5253,10 +5259,11 @@
       "role": "verification-plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Měřicí/implementační řez hotový, R13/R05/R06 následně zahrnuté v nasazení ROLE01; celý HTTP/role a zbytek K0.2 zůstává otevřený.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/verification/access-release-20261107/RESULTS.md",
-        "docs/WORK_PLAN_CURRENT.md"
+        "docs/WORK_PLAN_CURRENT.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -5311,12 +5318,13 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
         "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
         "docs/verification/performance-analysis-20261107/RESULTS.md",
-        "docs/DECISION_LOG.md"
+        "docs/DECISION_LOG.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -5731,12 +5739,13 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
         "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
         "docs/verification/performance-analysis-20261107/RESULTS.md",
-        "docs/DECISION_LOG.md"
+        "docs/DECISION_LOG.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -5798,10 +5807,11 @@
       "role": "verification-plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Měřicí/implementační řez hotový, R13/R05/R06 následně zahrnuté v nasazení ROLE01; celý HTTP/role a zbytek K0.2 zůstává otevřený.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/verification/access-release-20261107/RESULTS.md",
-        "docs/WORK_PLAN_CURRENT.md"
+        "docs/WORK_PLAN_CURRENT.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -8787,10 +8797,11 @@
       "role": "verification-plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Měřicí/implementační řez hotový, R13/R05/R06 následně zahrnuté v nasazení ROLE01; celý HTTP/role a zbytek K0.2 zůstává otevřený.",
+      "disposition": "Technický měřicí/implementační řez hotový; R13/R05/R06 zahrnuje ROLE01, ceny #358 v main bez deploye. Místní celé HTTP/role/browser na feb8fe8c nově doložené #363. Katalogový výřez, R06 výběr osob/lekce, mobil/souběh a měření novějšího main stále P11.",
       "evidence": [
         "docs/verification/access-release-20261107/RESULTS.md",
-        "docs/WORK_PLAN_CURRENT.md"
+        "docs/WORK_PLAN_CURRENT.md",
+        "docs/verification/full-http-performance-20261107/RESULTS.md"
       ]
     },
     {
@@ -9225,7 +9236,7 @@
       "evidence": []
     }
   ],
-  "checked_main": "d958fd6e",
+  "checked_main": "75374564",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
   "binary_documents": 21
 }
