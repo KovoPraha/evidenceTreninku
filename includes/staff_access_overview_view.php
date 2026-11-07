@@ -64,13 +64,13 @@ if (!isset($trainers, $visibleTrainers, $accessGroups, $definitions, $search, $r
                         <dt class="small text-muted mb-1"><?= staffAdminH($group['label']) ?></dt>
                         <dd class="mb-3">
                             <?php $hasRole = false;
-                            foreach ($group['codes'] as $code): ?>
+                        foreach ($group['codes'] as $code): ?>
                                 <?php
-                                if (!in_array($code, $account['positions'], true) && !$account['superadmin']) {
-                                    continue;
-                                }
-                                $hasRole = true;
-                                ?>
+                            if (!in_array($code, $account['positions'], true) && !$account['superadmin']) {
+                                continue;
+                            }
+                            $hasRole = true;
+                            ?>
                                 <div class="mb-1 text-break">
                                     <?= staffAdminH($definitions[$code]['label']) ?>
                                     <?php if ($account['default_position'] === $code): ?><span class="small text-primary">★ výchozí</span><?php endif; ?>

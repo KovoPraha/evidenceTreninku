@@ -13,8 +13,9 @@
 - Desktopová tabulka zůstává; obě zobrazení používají stejné filtrované účty
   a kanonické definice rolí. Pouze šablona, žádná změna zápisu nebo schématu.
 - PASS: PHP syntaxe šablony, dokumentační kontrakt, `git diff --check`.
-- Cílené testy přehledu/pozic/životního cyklu a baru: BĚŽÍ.
-- Styl, CI: BĚŽÍ / čeká na novou hlavu PR.
+- PASS: 44 cílených testů / 2413 assertions přehledu/pozic/životního cyklu a baru.
+- PASS: `php tools/check-php-style.php`, PSR-12 a délka řádků (1 změněný PHP soubor).
+- CI: čeká na poslední hlavu PR.
 - Merge, deploy a produkční Chrome 390/360 px + desktop: NOT RUN.
 
 ## Oprávnění a další krok
