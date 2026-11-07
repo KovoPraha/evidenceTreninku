@@ -135,4 +135,6 @@ protokolu existují; [kontrola snímků](verification-checks.txt) PASS.
 Vlastní web zastaven, úspěšná MariaDB korektně ukončena; nefunkční první
 instance po neúspěšném ukončení zastavena ověřeným PID. [Záznam úklidu](runtime-stopped.txt).
 Syntetická data zůstávají místně, žádné služby této kontroly neběží.
-Dokumentační PR se doplní po vytvoření; dokumentace nevyžaduje deploy.
+Dokumentace a důkazy jsou odeslané v [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355).
+Při předání je PR otevřené, bez merge a nasazení; CI ověřit přímo u PR.
+Dokumentační začlenění nevyžaduje deploy a neodstraňuje N1/N2.
