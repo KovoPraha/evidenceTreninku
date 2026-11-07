@@ -2,7 +2,7 @@
 
 Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) a [úplný katalog](PLAN_CATALOG.md).
 - **P11-R13-S NASAZENO:** release `938e9c50317be43e8b206da93294ca41d10065c0`, deploy42405912779 SUCCESS; [protokol](verification/medical-state-release-20261107/RESULTS.md).
-  Parita/přínos/12CI PASS; [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). Import/UAT false; přihlášené UAT NOT RUN, WIP zachovaný.
+  [Ověření původních sad](verification/medical-valid-scale-recheck-20261107/RESULTS.md), bez deploye; parita/přínos/12CI PASS; [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). Import/UAT false; přihlášené UAT NOT RUN, WIP zachovaný.
 - **P11-R05-H zachováno / historické vydání:** release `e36c9ba6e461b7da842c53939c2fe20eed821f38`, deploy42394551344 SUCCESS; [protokol](verification/planner-hierarchy-release-20261107/RESULTS.md).
   Parita/měření/všech 12 CI PASS; [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md). Import/UAT false; přihlášené UAT NOT RUN.
 - P11 měření: [Linux540HTTP/78Chrome](verification/attendance-person-picker-20261107/integrated/RESULTS.md) a [Windows9scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) dokončené. **Přihlášené produkční UAT BLOKOVANÉ**: nástroj neověřil URL; [důvod a další krok](verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md).

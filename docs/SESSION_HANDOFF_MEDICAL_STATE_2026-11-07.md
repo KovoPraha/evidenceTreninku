@@ -24,3 +24,10 @@ Výsledkové dokumentační předání: `codex/medical-state-release-proof-20261
 worktree `C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107`.
 Další deploy neopakovat. Dále přihlášené UAT/rows examined/indexy/scoped čtení,
 fyzický mobil/souběh a ostatní K0.2; P05/P07/P06/heslo/T07 tím nejsou uzavřené.
+
+## Nové převzetí: původní větší sady, bez produkčních změn
+
+7. 11. 2026: [nezávislé ověření #375](verification/medical-valid-scale-recheck-20261107/RESULTS.md) ROZPRACOVÁNO.
+#381/#383 již obsahují hotovou optimalizaci; znovu ji neimplementovat ani nenasazovat.
+Současné zadání dovoluje místní syntetické ověření a dokumentaci.
+Větev `codex/medical-valid-recheck-20261107`, base35fdad44.
