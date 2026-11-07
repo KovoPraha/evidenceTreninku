@@ -29,7 +29,7 @@ prefixy omluvy, přenos obou draftů a stavu stránek při hledání v obou smě
 Starý API payload omluvy stále přijímán. formnovalidate u zápisových tlačítek
 brání blokaci required poli sousední části; původní serverové validace platí.
 Kanonické funkce writeru, zámky, CSRF a role zůstávají. Důvod a varianty:
-[D2026-11-07-10](DECISION_LOG.md#d2026-11-07-10).
+[D2026-11-07-09](DECISION_LOG.md#d2026-11-07-09).
 
 ## Dokončená akceptace
 
@@ -76,7 +76,7 @@ stav PR a neopakovat dokončené kontroly. Produkční nasazení se tím nepovol
 
 Pracovní rozhodnutí 06 → 07 a události 14/15 → 19/20 v dřívějších commitech
 kolidovaly s mezitím přijatou prací. Při integraci 269684c2 přijatá ID zachovaná;
-vlastní rozhodnutí nyní 09, události 23–26. Historické commity se nepřepisují.
+vlastní rozhodnutí nyní 09, události 26–29. Historické commity se nepřepisují.
 
 Integrační ověření 9d4a7538 po převzetí #367: **50 testů / 1294 assertions PASS**,
 PHP quality CI 42375011506 SUCCESS; [doklad](verification/attendance-person-picker-20261107/final/integration.json).
@@ -122,5 +122,6 @@ Původní picker worktree i jeho rozpracované dokumentační sloučení a výst
    Výsledky a zbývající meze uložit do plánu, registru a obou handoffů.
 
 Aktuální stav: integrační dokumentační konflikty vyřešené v izolované kopii;
-nové měření a deploy NOT RUN. Přijaté E23 / D09 z #369/#368 zachované;
-pracovní picker E23 nyní E27 a D09 nyní D10, nové pokračování E28.
+nové měření a deploy NOT RUN. Přijaté E23 lekcí a E26–29 / D09 pickeru z d62c3ad2 zachované; nové pokračování E30 / D10. Dočasné pracovní přeznačení v 75801847 sjednocené.
+
+Převzatý souběžný PR head d62c3ad2 bez změny aplikačního kódu. Nové oprávnění a pokračování vlastní [D10](DECISION_LOG.md#d2026-11-07-10) / E30.

@@ -89,5 +89,6 @@ Původní picker worktree i jeho rozpracované dokumentační sloučení a výst
    Výsledky a zbývající meze uložit do plánu, registru a obou handoffů.
 
 Aktuální stav: integrační dokumentační konflikty vyřešené v izolované kopii;
-nové měření a deploy NOT RUN. Přijaté E23 / D09 z #369/#368 zachované;
-pracovní picker E23 nyní E27 a D09 nyní D10, nové pokračování E28.
+nové měření a deploy NOT RUN. Přijaté E23 lekcí a E26–29 / D09 pickeru z d62c3ad2 zachované; nové pokračování E30 / D10. Dočasné pracovní přeznačení v 75801847 sjednocené.
+
+Převzatý souběžný PR head d62c3ad2 bez změny aplikačního kódu. Nové oprávnění a pokračování vlastní [D10](DECISION_LOG.md#d2026-11-07-10) / E30.
