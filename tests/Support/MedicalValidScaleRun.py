@@ -162,6 +162,10 @@ try:
     wait_port(33479, db)
     php("FullHttpReadFixture.php", "--setup", OUT)
     setup_complete = True
+    with (OUT / "native-tests.txt").open("wb") as test_log:
+        subprocess.run([PHP, "vendor/bin/phpunit", "--configuration", "phpunit.xml.dist", "--filter", "MedicalStateReadTest",
+                        "--log-junit", str(OUT / "native-tests.xml")], cwd=ROOT,
+                       env=dict(ENV, EVIDENCE_ROSTER_READ_MARIADB="1"), stdout=test_log, stderr=subprocess.STDOUT, check=True)
     start_web("login")
     php("FullHttpReadProfile.php", "--login", OUT)
     stop_web()
