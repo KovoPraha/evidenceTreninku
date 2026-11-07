@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `1d88ce9e`; produkční stav se tím neověřuje.
+Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `ebb8b2e3`; produkční stav se tím neověřuje.
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -25,6 +25,7 @@ sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešn�
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
+| ROLE01 | Přehled lidí a rolí místně hotový, CI kódu #356 PASS; po souběžném #357 převzatá nová dokumentace | Sloučeno #356; čtecí otisk původních rolí, schválený deploy a skutečné HTTPS formuláře pouze na nových technických účtech; poté revokace a deaktivace. Stávající role lidí neměnit. | Vývoj/vlastník; [plán, větev a worktree](ACCESS_OVERVIEW_2026-11-07.md), [PR #356](https://github.com/KovoPraha/evidenceTreninku/pull/356) |
 | P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | HOTOVO: nabídka BAR 1 / vydání 1 zveřejněná, 45 produktů a fotografií; novější doklad #335 nahrazuje původní koncept | Publikaci neopakovat a nezakládat další návrh. Úpravy nabídky až podle dalšího zadání; zásoby/kasa a skutečný prodej zůstávají P02. Přihlášené vytvoření tiskového PDF zatím NOT RUN. | Správce baru; [publikace](verification/bar-menu-publication-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) |
@@ -65,8 +66,8 @@ Tyto položky evidují existující návrhy; tento audit jim neuděluje schvále
 
 ## Souběžné změny mimo kontrolovaný main
 
-- P09-ACCESS: [PR #356](https://github.com/KovoPraha/evidenceTreninku/pull/356),
-  přehled přístupů a následná přejímka; při kontrole otevřené, provozní výsledek nepředjímat.
+- ROLE01: [PR #356](https://github.com/KovoPraha/evidenceTreninku/pull/356) již sloučené v main `ebb8b2e3`;
+  [přehled přístupů](ACCESS_OVERVIEW_2026-11-07.md) přebrán do katalogu, produkční výsledek nepředjímat.
 - P11-PRICING: draft [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358),
   dávkové klubové ceny; stále návrh větve, nikoli vydaný kód.
 - P07-UAT: [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355)
