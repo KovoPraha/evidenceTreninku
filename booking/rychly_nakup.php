@@ -7,6 +7,9 @@ header('Cache-Control: no-store, max-age=0');
 header('Pragma: no-cache');
 header('Referrer-Policy: no-referrer');
 require_once dirname(__DIR__) . '/db.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Databázové připojení není dostupné.');
+}
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/shop_storefront.php';
 require_once dirname(__DIR__) . '/includes/shop_public_navigation.php';
@@ -47,21 +50,25 @@ if ($product === null || $variant === null || !$variant['in_stock']) {
     http_response_code(404);
     exit('Položka není dostupná pro rychlý nákup.');
 }
-$pplSettings=shopPplSettings($pdo);
-$packetaSettings=shopPacketaSettings($pdo);
-$productDeliveryMode='pickup_only';
-if (shopCheckoutColumnExists($pdo,'shop_products','delivery_mode')) {
-    $modeQuery=$pdo->prepare('SELECT delivery_mode FROM shop_products WHERE id=?');
+$pplSettings = shopPplSettings($pdo);
+$packetaSettings = shopPacketaSettings($pdo);
+$productDeliveryMode = 'pickup_only';
+if (shopCheckoutColumnExists($pdo, 'shop_products', 'delivery_mode')) {
+    $modeQuery = $pdo->prepare('SELECT delivery_mode FROM shop_products WHERE id=?');
     $modeQuery->execute([$productId]);
-    $productDeliveryMode=(string)$modeQuery->fetchColumn();
+    $productDeliveryMode = (string)$modeQuery->fetchColumn();
 }
-$pplCanShip=shopPplAvailable($pplSettings)&&$productDeliveryMode==='shipping_eligible';
-$packetaProduct=$pdo->prepare('SELECT offer_type,'.shopPacketaProductSelect($pdo).' AS packeta_shipping_enabled FROM shop_products p WHERE p.id=?');
+$pplCanShip = shopPplAvailable($pplSettings) && $productDeliveryMode === 'shipping_eligible';
+$packetaProduct = $pdo->prepare(
+    'SELECT offer_type,'.shopPacketaProductSelect($pdo).' AS packeta_shipping_enabled FROM shop_products p WHERE p.id=?'
+);
 $packetaProduct->execute([$productId]);
-$packetaCanShip=shopPacketaAvailable($packetaSettings)&&shopPacketaCartEligible($packetaProduct->fetchAll(PDO::FETCH_ASSOC));
-$pplSettings['_packeta']=$packetaCanShip?$packetaSettings:[];
-$pplCanShip=$pplCanShip||$packetaCanShip;
-$deliverySelected=(string)($_POST['delivery_method']??'personal_pickup');
+$packetaCanShip = shopPacketaAvailable($packetaSettings) && shopPacketaCartEligible($packetaProduct->fetchAll(
+    PDO::FETCH_ASSOC
+));
+$pplSettings['_packeta'] = $packetaCanShip ? $packetaSettings : [];
+$pplCanShip = $pplCanShip || $packetaCanShip;
+$deliverySelected = (string)($_POST['delivery_method'] ?? 'personal_pickup');
 
 $checkoutKeyName = 'shop_guest_checkout_' . $variantId;
 if (!isset($_SESSION[$checkoutKeyName]) || !is_array($_SESSION[$checkoutKeyName])) {
@@ -89,15 +96,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 (string)$keys['idempotency_key'],
                 (string)$keys['access_token'],
                 shopBankSettingsEffective($pdo),
-                (string)($_POST['delivery_method']??'personal_pickup'),
-                (string)($_POST['ppl_access_point_code']??''),
-                (int)($_POST['shipping_price_minor']??0),
+                (string)($_POST['delivery_method'] ?? 'personal_pickup'),
+                (string)($_POST['ppl_access_point_code'] ?? ''),
+                (int)($_POST['shipping_price_minor'] ?? 0),
                 null,
-                (string)($_POST['packeta_point_id']??''),
-                (int)($_POST['packeta_shipping_price_minor']??0)
+                (string)($_POST['packeta_point_id'] ?? ''),
+                (int)($_POST['packeta_shipping_price_minor'] ?? 0)
             );
             unset($_SESSION[$checkoutKeyName]);
-            header('Location: objednavka.php?code=' . rawurlencode((string)$order['public_code']) . '&access=' . rawurlencode((string)$keys['access_token']), true, 303);
+            header(
+                'Location: objednavka.php?code=' . rawurlencode((string)$order['public_code']) . '&access=' . rawurlencode((string)$keys['access_token']),
+                true,
+                303
+            );
             exit;
         } catch (PDOException $exception) {
             error_log('booking/rychly_nakup.php: ' . get_class($exception));
@@ -114,13 +125,120 @@ foreach (($variant['attributes_detail'] ?? []) as $attribute) {
 $variantLabel = $attributes !== [] ? implode(' · ', $attributes) : (string)$variant['sku'];
 ?>
 <!doctype html>
-<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Rychlý nákup – <?=guestCheckoutH($product['public_name'])?></title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><?php appUiAssets(); ?></head>
-<body class="bg-light"><?php publicShellNav('shop');shopPublicNavigation($pdo,$product['categories'][0]??null); ?><main class="container py-4" style="max-width:850px">
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Rychlý nákup – <?=guestCheckoutH($product['public_name'])?>
+</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+crossorigin="anonymous"><?php appUiAssets(); ?>
+</head>
+<body class="bg-light"><?php publicShellNav('shop');
+shopPublicNavigation($pdo, $product['categories'][0] ?? null); ?>
+<main class="container py-4" style="max-width:850px">
 <a class="btn btn-sm btn-outline-secondary mb-3" href="produkt.php?id=<?=$productId?>">← Zpět na produkt</a>
-<div class="row g-4"><div class="col-lg-5"><div class="card border-0 shadow-sm"><div class="card-body"><div class="small text-uppercase text-muted fw-semibold mb-2">Nákup bez registrace</div><h1 class="h4"><?=guestCheckoutH($product['public_name'])?></h1><p class="mb-2"><?=guestCheckoutH($variantLabel)?></p><div class="h5 text-primary mb-3"><?=guestCheckoutMoney((int)$variant['amount_minor'],(string)$variant['currency'])?></div><div class="alert alert-info small mb-0"><?php if($pplCanShip):?><strong>Zvolte osobní odběr nebo doručení do výdejního boxu.</strong><?php else:?><strong>Osobní odběr na velodromu.</strong> Místo a čas předání si před cestou ověřte u klubu na <a href="mailto:velodromtrebesin@gmail.com">velodromtrebesin@gmail.com</a>.<?php endif;?> Účet ani heslo nepotřebujete; po objednání dostanete platební údaje a bezpečný odkaz e-mailem.</div></div></div></div>
-<div class="col-lg-7"><?php foreach($errors as$error):?><div class="alert alert-danger"><?=guestCheckoutH($error)?></div><?php endforeach;?><form id="guest-checkout-form" method="post" class="card border-0 shadow-sm"><div class="card-body p-4"><?=csrf_field()?><input type="hidden" name="product_id" value="<?=$productId?>"><input type="hidden" name="variant_id" value="<?=$variantId?>">
-<h2 class="h5 mb-3">Kontaktní údaje</h2><div class="row g-3"><div class="col-sm-6"><label class="form-label" for="guest-first-name">Jméno</label><input id="guest-first-name" name="first_name" class="form-control" maxlength="100" value="<?=guestCheckoutH($_POST['first_name']??'')?>" autocomplete="given-name" required></div><div class="col-sm-6"><label class="form-label" for="guest-last-name">Příjmení</label><input id="guest-last-name" name="last_name" class="form-control" maxlength="100" value="<?=guestCheckoutH($_POST['last_name']??'')?>" autocomplete="family-name" required></div><div class="col-12"><label class="form-label" for="guest-email">E-mail</label><input id="guest-email" type="email" name="email" class="form-control" maxlength="254" value="<?=guestCheckoutH($_POST['email']??'')?>" autocomplete="email" required><div class="form-text">Na tuto adresu přijde odkaz na objednávku a platební údaje.</div></div><div class="col-sm-8"><label class="form-label" for="guest-phone">Telefon <span class="text-muted"><?=$pplCanShip?'(při doručení do boxu povinný)':'(nepovinný)'?></span></label><input id="guest-phone" type="tel" name="phone" class="form-control" maxlength="50" value="<?=guestCheckoutH($_POST['phone']??'')?>" autocomplete="tel"></div><div class="col-sm-4"><label class="form-label" for="guest-quantity">Množství</label><input id="guest-quantity" type="number" name="quantity" class="form-control" min="1" max="99" value="<?=max(1,min(99,(int)($_POST['quantity']??1)))?>" required></div></div>
-<details class="mt-4"><summary class="fw-semibold">Fakturační adresa <span class="text-muted fw-normal">(nepovinná)</span></summary><p class="small text-muted mt-2">Vyplňte ji jen pokud ji chcete uvést u objednávky; pro doručení do boxu ji nepotřebujeme.</p><div class="row g-3"><div class="col-12"><label class="form-label" for="guest-street">Ulice a číslo</label><input id="guest-street" name="address_street" class="form-control" maxlength="200" value="<?=guestCheckoutH($_POST['address_street']??'')?>" autocomplete="street-address"></div><div class="col-sm-8"><label class="form-label" for="guest-city">Obec</label><input id="guest-city" name="address_city" class="form-control" maxlength="100" value="<?=guestCheckoutH($_POST['address_city']??'')?>" autocomplete="address-level2"></div><div class="col-sm-4"><label class="form-label" for="guest-postcode">PSČ</label><input id="guest-postcode" name="address_postcode" class="form-control" maxlength="20" value="<?=guestCheckoutH($_POST['address_postcode']??'')?>" autocomplete="postal-code"></div></div></details>
-<?php if($pplCanShip)shopPplDeliveryFields('guest-checkout-form',$pplSettings,(int)$variant['amount_minor']*max(1,min(99,(int)($_POST['quantity']??1))),$deliverySelected,(string)($_POST['packeta_point_id']??$_POST['ppl_access_point_code']??''),'',(int)$variant['amount_minor'],true);?>
-<div class="form-check mt-4"><input id="guest-confirm" class="form-check-input" type="checkbox" name="confirmed" value="1" required><label class="form-check-label small" for="guest-confirm">Potvrzuji správnost údajů a objednávám zboží se zvoleným způsobem předání a platbou bankovním převodem.</label></div><button class="btn btn-primary btn-lg w-100 mt-3">Objednat a zobrazit platbu</button><div class="small text-muted text-center mt-2">Bez zakládání účtu. Cena a sklad se před objednáním znovu ověří.</div>
-</div></form></div></div></main><?php publicShellFooter(); ?></body></html>
+<div class="row g-4">
+<div class="col-lg-5">
+<div class="card border-0 shadow-sm">
+<div class="card-body">
+<div class="small text-uppercase text-muted fw-semibold mb-2">Nákup bez registrace</div>
+<h1 class="h4"><?=guestCheckoutH($product['public_name'])?>
+</h1>
+<p class="mb-2"><?=guestCheckoutH($variantLabel)?>
+</p>
+<div class="h5 text-primary mb-3"><?=guestCheckoutMoney((int)$variant['amount_minor'], (string)$variant['currency'])?>
+</div>
+<div class="alert alert-info small mb-0"><?php if ($pplCanShip):?>
+<strong>Zvolte osobní odběr nebo doručení do výdejního boxu.</strong>
+    <?php else:?>
+<strong>Osobní odběr na velodromu.</strong> Místo a čas předání si před cestou ověřte u klubu na <a href="mailto:velodromtrebesin@gmail.com">velodromtrebesin@gmail.com</a>.
+    <?php endif;?> Účet ani heslo nepotřebujete; po objednání dostanete platební údaje a bezpečný odkaz e-mailem.</div>
+</div>
+</div>
+</div>
+<div class="col-lg-7"><?php foreach ($errors as $error):?>
+<div class="alert alert-danger"><?=guestCheckoutH($error)?>
+</div>
+    <?php endforeach;?>
+<form id="guest-checkout-form" method="post" class="card border-0 shadow-sm">
+<div class="card-body p-4"><?=csrf_field()?>
+<input type="hidden" name="product_id" value="<?=$productId?>">
+<input type="hidden" name="variant_id" value="<?=$variantId?>">
+<h2 class="h5 mb-3">Kontaktní údaje</h2>
+<div class="row g-3">
+<div class="col-sm-6">
+<label class="form-label" for="guest-first-name">Jméno</label>
+<input id="guest-first-name" name="first_name" class="form-control" maxlength="100" value="<?=guestCheckoutH($_POST['first_name'
+    ] ?? '')?>" autocomplete="given-name" required>
+</div>
+<div class="col-sm-6">
+<label class="form-label" for="guest-last-name">Příjmení</label>
+<input id="guest-last-name" name="last_name" class="form-control" maxlength="100" value="<?=guestCheckoutH($_POST['last_name'
+    ] ?? '')?>" autocomplete="family-name" required>
+</div>
+<div class="col-12">
+<label class="form-label" for="guest-email">E-mail</label>
+<input id="guest-email" type="email" name="email" class="form-control" maxlength="254" value="<?=guestCheckoutH($_POST['email'
+    ] ?? '')?>" autocomplete="email" required>
+<div class="form-text">Na tuto adresu přijde odkaz na objednávku a platební údaje.</div>
+</div>
+<div class="col-sm-8">
+<label class="form-label" for="guest-phone">Telefon <span class="text-muted"><?=$pplCanShip ? '(při doručení do boxu povinný)'
+     : '(nepovinný)'?>
+</span>
+</label>
+<input id="guest-phone" type="tel" name="phone" class="form-control" maxlength="50" value="<?=guestCheckoutH($_POST['phone'
+    ] ?? '')?>" autocomplete="tel">
+</div>
+<div class="col-sm-4">
+<label class="form-label" for="guest-quantity">Množství</label>
+<input id="guest-quantity" type="number" name="quantity" class="form-control" min="1" max="99" value="<?=max(1, min(99, (int)
+    ($_POST['quantity'] ?? 1)))?>" required>
+</div>
+</div>
+<?php require_once dirname(__DIR__).'/includes/shop_document_automation.php';
+if (shopDocumentPolicy($pdo)): shopDocumentBillingFields($pdo, $_POST);
+else: ?>
+<details class="mt-4">
+<summary class="fw-semibold">Fakturační adresa <span class="text-muted fw-normal">(nepovinná)</span>
+</summary>
+<p class="small text-muted mt-2">Vyplňte ji jen pokud ji chcete uvést u objednávky; pro doručení do boxu ji nepotřebujeme.</p>
+<div class="row g-3">
+<div class="col-12">
+<label class="form-label" for="guest-street">Ulice a číslo</label>
+<input id="guest-street" name="address_street" class="form-control" maxlength="200" value="<?=guestCheckoutH($_POST['address_street'
+    ] ?? '')?>" autocomplete="street-address">
+</div>
+<div class="col-sm-8">
+<label class="form-label" for="guest-city">Obec</label>
+<input id="guest-city" name="address_city" class="form-control" maxlength="100" value="<?=guestCheckoutH($_POST['address_city'
+    ] ?? '')?>" autocomplete="address-level2">
+</div>
+<div class="col-sm-4">
+<label class="form-label" for="guest-postcode">PSČ</label>
+<input id="guest-postcode" name="address_postcode" class="form-control" maxlength="20" value="<?=guestCheckoutH($_POST['address_postcode'
+    ] ?? '')?>" autocomplete="postal-code">
+</div>
+</div>
+</details><?php endif; ?>
+<?php if ($pplCanShip) {
+    shopPplDeliveryFields('guest-checkout-form', $pplSettings, (int)$variant['amount_minor'] * max(1, min(99, (int)($_POST
+    ['quantity'] ?? 1))), $deliverySelected, (string)(
+        $_POST['packeta_point_id'] ?? $_POST['ppl_access_point_code'] ?? ''
+    ), '', (int)$variant['amount_minor'], true);
+}?>
+<div class="form-check mt-4">
+<input id="guest-confirm" class="form-check-input" type="checkbox" name="confirmed" value="1" required>
+<label class="form-check-label small" for="guest-confirm">Potvrzuji správnost údajů a objednávám zboží se zvoleným způsobem předání a platbou bankovním převodem.</label>
+</div>
+<button class="btn btn-primary btn-lg w-100 mt-3">Objednat a zobrazit platbu</button>
+<div class="small text-muted text-center mt-2">Bez zakládání účtu. Cena a sklad se před objednáním znovu ověří.</div>
+</div>
+</form>
+</div>
+</div>
+</main><?php publicShellFooter(); ?>
+</body>
+</html>

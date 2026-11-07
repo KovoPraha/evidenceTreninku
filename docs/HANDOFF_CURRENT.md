@@ -12,19 +12,17 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   Oba nové testovací účty deaktivované a bez rolí. Žádný další deploy ani opakování testu není potřeba.
   Výsledkové předání: `codex/access-release-20261107`, stejný vlastní worktree jako implementace.
 
+- DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [audit](PLAN_CATALOG_AUDIT_2026-11-07.md), [úplný katalog](PLAN_CATALOG.md); koncepty C01–C04 v registru.
 
-- DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [audit všech plánů a konceptů](PLAN_CATALOG_AUDIT_2026-11-07.md); [úplný katalog](PLAN_CATALOG.md), nové vazby C01–C04 v registru.
-
-- DOC01: [pravidla a krátké předání](DOCUMENTATION_GOVERNANCE_2026-11-07.md), sloučené #357; historii vede log.
-
-- P11: R13 #352 / R05 #353 / R06 #354 zahrnuté v nasazení ROLE01; celý HTTP/role a K0.2 otevřené.
+- P11: R13 #352, R05 #353 a R06 #354 jsou v main a zahrnuté v nasazení ROLE01; jejich úplná provozní přejímka zůstává v P11.
   [Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md),
   [R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md),
   [R13](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md).
   Dále plné HTTP/bootstrap/nav, další role a propojená docházka podle P11.
-- [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355): otevřená
-  navazující automatické doklady/e-maily jednorázových objednávek; zatím mimo main.
-  Před integrací zkontrolovat konflikt sdílené dokumentace a převzít věcné výsledky.
+- P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
+  [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
+  Místní tok a 2337 testů PASS; #355 sloučené; dále schválený deploy/aktivace a jejich vlastní důkazy.
+  Browser blokovaný; skutečná banka a externí schránka zůstávají neověřené.
 - P02/P04: [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md),
   [účetní adaptér](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md); publikaci neopakovat.
 - P05: [serverové předání](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md)
@@ -51,9 +49,6 @@ Skutečné P05/P07 a export P06 zůstávají odložené.
 <!-- membership-morning-preflight:end -->
 
 ## Otevřené hranice a ostatní plány
-
-Úplná inventura a podmínky pokračování: [aktivní i historické plány](PLAN_CATALOG.md).
-Přístupy #356/#359 hotové; automatické doklady #355 a cenové #358 jsou samostatně v registru.
 
 P01 dokončené v potvrzeném rozsahu; instalaci ani rozesílku neopakovat.
 Skutečné P05/P07, nový export P06, heslo a T07 vlastník odložil.

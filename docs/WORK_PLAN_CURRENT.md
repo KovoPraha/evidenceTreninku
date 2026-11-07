@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `5cca5526`; produkční stav se tím neověřuje.
+Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `9460ee76`; produkční stav se tím neověřuje.
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -22,6 +22,13 @@ zahrnuje i vložené ověřovací plány, historické prompty a podpůrné artef
 sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešní stav.
 
 ## Aktivní návaznosti
+
+P07 N1/N2: implementace a sloučení #355 hotové; schválené nasazení a aktivace mají vlastní následné důkazy.
+[Automatické doklady a komunikace](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md)
+jsou implementované v PR #355, místní browser/MariaDB celý tok PASS,
+51 testů / 496 assertions PASS. Následuje CI, merge, deploy a aktivace;
+[podklady a meze](verification/shop-document-automation-20261107/RESULTS.md).
+Skutečná bankovní platba a produkční přejímka členství zůstávají samostatné.
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
@@ -75,7 +82,7 @@ Tyto položky evidují existující návrhy; tento audit jim neuděluje schvále
 - P11-PRICING: [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358),
   dávkové klubové ceny; stále návrh větve, nikoli vydaný kód.
 - P07-UAT: [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355)
-  již implementuje automatické doklady a e-maily jednorázových objednávek. Při integraci
+  již implementovalo automatické doklady a e-maily jednorázových objednávek a je sloučené. Při přejímce
   přezkoumat proti main; příprava šablon v původním [plánu](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md)
   sama nedokládá všechny producenty zpráv. Skutečné P07 zůstává odložené.
 
@@ -105,7 +112,7 @@ Větev `codex/plan-catalog-audit-20261107`; předání [PR #360](https://github.
 | ID | Stav a podklad | Další krok / vlastník |
 | --- | --- | --- |
 | DOC01 | Obsah a místní ověření HOTOVO: [souborové plány a krátké předání](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357); větev `codex/repo-documentation-policy-20261107` | Stav CI/merge u PR; další práci vést podle nových pravidel. Pouze dokumentace a její kontrola, bez deploye. |
-| P07-UAT | [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355) otevřené při kontrole 7. 11.; původní UAT nyní rozšířené o implementaci automatických dokladů a e-mailů. Dosud mimo kontrolovaný main | Vlastník PR dořeší konflikt a kontroly; závěry jsou návrhem/podkladem, nikoli novou produkční přejímkou. |
+| P07 N1/N2 | [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355): audit rozšířen o schválenou implementaci dokladů a e-mailů; místní přejímka PASS | CI, merge, chráněný deploy a aktivace; [plán](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md). |
 
 ## Ranní serverový audit — samostatná návaznost P05
 

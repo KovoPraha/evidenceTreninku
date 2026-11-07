@@ -1,0 +1,6 @@
+pending: single order/payment; no monthly membership
+paid: single order/payment; no monthly membership
+cancelled: single order/payment; no monthly membership
+refunded: single order/payment; no monthly membership
+refunded: cancelled enrollment, removed derived roster, four retained audit events
+all report links exist
