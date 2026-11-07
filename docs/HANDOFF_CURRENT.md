@@ -8,7 +8,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 ## Poslední práce a další krok
 
 - P15: [čtecí ČSC/Sportsoft, UCI ID a nonstop stanice](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md).
-  S1 úložiště/ingest/UCI rozpracováno ve vlastní větvi; S0 v #371, cílová inventura otevřená. Bez deploye/aktivace.
+  [S1 úložiště/ingest/UCI](CSC_SPORTSOFT_S1_KIS.md) implementované, probíhají syntetické testy; S0 v #371, cílová inventura otevřená. Bez deploye/aktivace.
 
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
   Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.

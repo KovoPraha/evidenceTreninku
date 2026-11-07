@@ -8,6 +8,8 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-a60f4440be | [P15 S1 KIS úložiště a příjmový protokol](CSC_SPORTSOFT_S1_KIS.md) | reference / SUPPORT | P15 |
+| PL-9b7a77c475 | [P15 S1 syntetické ověření](verification/csc-sportsoft-s1-20261107/RESULTS.md) | verification / SUPPORT | P15 |
 | PL-8465995434 | [P15 S0 přesný čtecí kontrakt v1](CSC_SPORTSOFT_S0_CONTRACT_V1.md) | reference / SUPPORT | P15 |
 | PL-b8000d96f9 | [P15 S0 nonstop stanice oddělená od Rikiho](CSC_SPORTSOFT_S0_STATION.md) | reference / SUPPORT | P15 |
 | PL-6aa891eb3d | [P15 S0 prompt pro cílový Codex](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md) | reference / SUPPORT | P15 |

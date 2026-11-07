@@ -6,6 +6,21 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-P15-S1
+
+- **Přijaté zadání vlastníka:** nezávisle implementovat S1 KIS, jen syntetická
+  data, žádný deploy/aktivace. Samostatná větev navazuje na kontrakt S0 #371.
+- **Volba:** staging dílů + atomický manifest, vlastní tabulky a UCI resolver.
+  Přímý zápis do kanonických osob nebo obecný jmenný importer by nezaručily
+  požadované oddělení a jednoznačnost; proto se nepoužívají.
+- **Identity:** aktuální ověření při publikaci i čtení; stará vazba není důkaz
+  současné identity. Baseline/nula/pokles čekají na registráře, ne zařízení.
+- **Rozhraní:** token patří právě jednomu neměnnému scope/kolekci/eventu,
+  enabled výchozí 0 a globální příjem OFF. Bez cookies a automatického DDL.
+- **Meze:** UI/provisioning/retence a worker jsou další etapy; S1 není pilot.
+  [Technické předání](CSC_SPORTSOFT_S1_KIS.md),
+  [důkazy](verification/csc-sportsoft-s1-20261107/RESULTS.md).
+
 ## D2026-11-07-P15-S0
 
 - **Stav / datum:** PŘIJATÉ OMEZENÍ vlastníka, 7. 11. 2026: jiný Windows

@@ -156,6 +156,11 @@ jobs:
       - name: Ověřit skutečnou Evidence zálohu na MariaDB
         run: php tests/Support/DatabaseBackupMariaDbSmoke.php
 
+      - name: Ověřit čtecí synchronizaci ČSC a Sportsoftu na syntetických datech
+        env:
+          EVIDENCE_EXTERNAL_SYNC_MARIADB: '1'
+        run: php vendor/bin/phpunit tests/Integration/ExternalReadSyncTest.php
+
       - name: Ověřit měsíční členství, trvalou platbu a soukromý PDF doklad
         run: php tests/Support/MonthlyMembershipMariaDbSmoke.php
 

@@ -353,5 +353,7 @@ Rozsah: číslovaná migrace a backup ownership, striktní validace v1, tokenov�
 autorizace zařízení, lease/idempotentní díly/atomický complete, samostatné
 snímky/vazby/review. Kanonické tabulky se nemění. Machine API výchozí OFF.
 Příprava explicitní baseline a přejímka poklesu dat nesmí být právem zařízení.
-Další krok: implementace a syntetické SQLite/MariaDB/HTTP testy; žádný portál
-ani Riki není zdroj testovacích dat. Stav ROZPRACOVÁNO, testy NOT RUN.
+Serverové úložiště, ingest a UCI resolver jsou implementované; ověření probíhá.
+[Technický protokol S1](CSC_SPORTSOFT_S1_KIS.md) a
+[průběžné výsledky](verification/csc-sportsoft-s1-20261107/RESULTS.md)
+obsahují API pro druhé pracoviště, meze a stav testů. Žádná aktivace/deploy.
