@@ -63,3 +63,5 @@ Aktuální training_day.php nyní sdílený i v generované before kopii.
 [Přehrání 10.3](verification/attendance-person-picker-20261107/final/ci-budget-replay-10.3.json), [11.4](verification/attendance-person-picker-20261107/final/ci-budget-replay-11.4.json),
 [odmítnutí 57 SQL, 1001 řádků a vadného HTML](verification/attendance-person-picker-20261107/final/comparator-guards.json) PASS.
 Nový celý nativní CI běh následuje na finální hlavě PR.
+
+Před finálním CI převzaté DOC03 #368 / 8e9cdce1: priority i provozní stav karet/cen zachované, žádná změna aplikace. E22 patří přijatému DOC03, naše zahájení je E26.

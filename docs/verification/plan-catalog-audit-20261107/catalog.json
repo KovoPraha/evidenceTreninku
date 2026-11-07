@@ -88,12 +88,13 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "ROLE01",
-      "disposition": "Původní ROLE01 nasazené a technicky převzaté #359, čtecí vizuální kontrola doložená #361. Navazující mobilní karty implementované/sloučené jako 3b37e053, následný deploy a nový Chrome ještě nedoložené.",
+      "disposition": "Původní ROLE01 i čtecí vizuální kontrola dokončené. Mobilní karty #361 následně obsažené ve vydání katalogu c70939d4; cílený nový Chrome 390/360 px a desktop zatím nedoložený. Priorita 1 v registru.",
       "evidence": [
         "docs/verification/access-release-20261107/RESULTS.md",
         "docs/verification/access-visual-20261107/RESULTS.md",
         "docs/verification/access-mobile-cards-20261107/RESULTS.md",
-        "docs/WORK_PLAN_CURRENT.md"
+        "docs/WORK_PLAN_CURRENT.md",
+        "docs/verification/catalog-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -899,12 +900,12 @@
       "title": "Ranní audit členství 7. 11. 2026 — na serveru",
       "primary": true,
       "role": "plan",
-      "status": "AWAITING_EVIDENCE",
+      "status": "DONE",
       "registry": "P05",
-      "disposition": "Serverová příprava dokončená, plánovaný termín 7. 11. 05:30 UTC již uplynul. Výsledek není doložen v dostupném Gitu; draft #347 není důkaz dokončení ani neprovedení běhu. Ověřit čtením, nevyvolávat účtování.",
+      "disposition": "Serverová příprava i ranní důkaz dokončené; #347 / 599979d4, start 05:23:03 UTC, odchylka 3 s, PASS. Bez apply/send. Skutečné P05/P07 a export P06 zůstávají odložené.",
       "evidence": [
-        "docs/verification/membership-morning-server-release-20261106/RESULTS.md",
-        "docs/MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md"
+        "docs/verification/membership-scheduler-20261107/RESULTS.md",
+        "docs/WORK_PLAN_CURRENT.md"
       ]
     },
     {
@@ -1000,12 +1001,13 @@
       "role": "plan",
       "status": "DONE",
       "registry": "P11",
-      "disposition": "Dávkový reader klubových cen implementovaný, parita/měření doložené, sloučeno #358 (37d0ad68), bez deploye cen. Navazující katalogový výřez, mobil/souběh a nové měření main zůstávají P11.",
+      "disposition": "Reader klubových cen implementovaný a ověřený #358; následně zahrnutý ve vydání katalogu c70939d4. Katalog #364 také nasazený. Další R06/mobil/souběh zůstávají P11.",
       "evidence": [
         "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
         "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
         "docs/verification/performance-analysis-20261107/RESULTS.md",
-        "docs/DECISION_LOG.md"
+        "docs/DECISION_LOG.md",
+        "docs/verification/catalog-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -2012,12 +2014,12 @@
       "title": "Session handoff: serverová ranní kontrola — 6. 11. 2026",
       "primary": true,
       "role": "plan",
-      "status": "AWAITING_EVIDENCE",
+      "status": "DONE",
       "registry": "P05",
-      "disposition": "Serverová příprava dokončená, plánovaný termín 7. 11. 05:30 UTC již uplynul. Výsledek není doložen v dostupném Gitu; draft #347 není důkaz dokončení ani neprovedení běhu. Ověřit čtením, nevyvolávat účtování.",
+      "disposition": "Serverová příprava i ranní důkaz dokončené; #347 / 599979d4, start 05:23:03 UTC, odchylka 3 s, PASS. Bez apply/send. Skutečné P05/P07 a export P06 zůstávají odložené.",
       "evidence": [
-        "docs/verification/membership-morning-server-release-20261106/RESULTS.md",
-        "docs/MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md"
+        "docs/verification/membership-scheduler-20261107/RESULTS.md",
+        "docs/WORK_PLAN_CURRENT.md"
       ]
     },
     {
@@ -3727,12 +3729,13 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "ROLE01",
-      "disposition": "Vizuální čtecí kontrola původního přehledu dokončená. Mobilní karty nově implementované a sloučené #361 (3b37e053), bez doloženého následného deploye/Chrome přejímky. Původní role zachované.",
+      "disposition": "Původní ROLE01 i čtecí vizuální kontrola dokončené. Mobilní karty #361 následně obsažené ve vydání katalogu c70939d4; cílený nový Chrome 390/360 px a desktop zatím nedoložený. Priorita 1 v registru.",
       "evidence": [
         "docs/ACCESS_OVERVIEW_2026-11-07.md",
         "docs/verification/access-mobile-cards-20261107/RESULTS.md",
         "docs/verification/access-visual-20261107/RESULTS.md",
-        "docs/DECISION_LOG.md"
+        "docs/DECISION_LOG.md",
+        "docs/verification/catalog-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -9277,7 +9280,7 @@
       "role": "plan",
       "status": "DONE",
       "registry": "P11",
-      "disposition": "#364 sloučené a nasazené c70939d4, 42372002993 SUCCESS; parita veřejných polí a doložená mez DOM otisku.",
+      "disposition": "Katalog #364 implementovaný, ověřený a nasazený c70939d4 / 42372002993. Veřejná pole 5/5 shodná; původní DOM baseline neprůkazný, v2 po deployi stabilní. Přihlášené produkční UI UAT zůstává NOT RUN; dále R06 #367.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
         "docs/verification/catalog-release-20261107/RESULTS.md"
@@ -9382,7 +9385,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Dávkový výběr lekcí: schválená implementace podle výkonové analýzy, rozpracováno.",
+      "disposition": "Dávkové lekce implementované, parita a měření doložené; #367 sloučené jako 269684c2. Zbývá doložení schváleného vhodného deploye a následná kontrola, v původní relaci. Priorita 1 v registru.",
       "evidence": [
         "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
       ]

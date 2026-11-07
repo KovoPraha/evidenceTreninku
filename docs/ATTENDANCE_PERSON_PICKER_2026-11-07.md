@@ -74,7 +74,7 @@ přeměření společného main ani produkce. Integrační regrese a finální C
 
 Pracovní rozhodnutí 06 → 07 a události 14/15 → 19/20 v dřívějších commitech
 kolidovaly s mezitím přijatou prací. Při integraci 269684c2 přijatá ID zachovaná;
-vlastní rozhodnutí nyní 09, události 22–24. Historické commity se nepřepisují.
+vlastní rozhodnutí nyní 09, události 23–26. Historické commity se nepřepisují.
 
 Integrační ověření 9d4a7538 po převzetí #367: **50 testů / 1294 assertions PASS**,
 PHP quality CI 42375011506 SUCCESS; [doklad](verification/attendance-person-picker-20261107/final/integration.json).
@@ -95,3 +95,6 @@ aby historický pár izoloval původní validator na shodné dnešní UI/lekci.
 Retargetovat pouze zastaralý celostránkový cap na 56; ponechat přísné HTML/data,
 cap řádků i relativní úsporu. Změna není aplikační optimalizace ani deploy.
 Znovu přehrát skutečné reporty, odmítnout poškozený HTML i 57 SQL a zopakovat CI.
+
+Převzaté DOC03 priority #368 / 8e9cdce1, bez aplikačních změn; přijaté release
+a automatické bloky zachované. Vlastní E22 přesunuté na E26 kvůli přijatému DOC03.
