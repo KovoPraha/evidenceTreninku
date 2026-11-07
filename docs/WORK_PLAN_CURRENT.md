@@ -14,6 +14,15 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## Aktivní návaznosti
 
+7. 11. 2026: na pokyn vlastníka dokončena **syntetická kontrola
+jednorázového nákupu kroužku** (P07), včetně dokladu, upozornění, soupisky a vratky.
+[Rozsah, větev, plán a výsledky](verification/one-time-course-uat-20261107/RESULTS.md).
+96 testů / 1 963 assertions, MariaDB účetní průchod i skutečný místní browser PASS.
+Otevřené návaznosti P07: **N1 automatické účetní PDF po nákupu/úhradě** a
+**N2 e-mail po běžném checkoutu, stornu a vratce**. Ověřený je zatím e-mail
+po přijetí platby do lokálního transportu; samostatné vystavení PDF funguje.
+Skutečná bankovní platba a produkční přejímka členství zůstávají samostatné.
+
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
 | P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |

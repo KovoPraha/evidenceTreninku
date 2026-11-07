@@ -1,0 +1,1 @@
+Owned PHP stopped; successful MariaDB shut down cleanly. Failed first synthetic instance terminated after shutdown left its process alive. All synthetic files retained; no production runtime changed.

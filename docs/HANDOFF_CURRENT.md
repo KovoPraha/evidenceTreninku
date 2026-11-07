@@ -4,7 +4,23 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Poslední návaznost: P11 optimalizace plánovače
+## Poslední návaznost: P07 jednorázový kroužek — 7. 11. 2026
+
+Na pokyn vlastníka dokončena izolovaná kontrola nákupu, úhrady, soupisky,
+e-mailu, účetního dokladu a vratky. [Protokol, důkazy a reprodukce](verification/one-time-course-uat-20261107/RESULTS.md).
+Větev `codex/one-time-course-uat-20261107`, stejnojmenná pracovní kopie v
+`C:/Users/Marek/Documents/Codex/evidencePavel-one-time-course-uat-20261107`.
+96 testů / 1 963 assertions a MariaDB účetní acceptance PASS; místní rodič
+v prohlížeči viděl aktivaci a po stornu potvrzenou vratku. Historie zachovaná.
+Otevřené N1: automatické účetní PDF není napojené na běžný nákup;
+N2: běžný košík neodesílá zprávu při vytvoření, stornu ani vratce.
+E-mail po přijetí úhrady se správně vytvoří a projde místním transportem.
+Samostatné vystavení PDF, oprava a účetní export fungují. Další kroky jsou
+v [P07](WORK_PLAN_CURRENT.md), bez implementace nebo nasazení v této session.
+Produkční sjednání členství, skutečná bankovní platba a doručení do schránky
+zůstávají oddělené, tato syntetická přejímka je neuzavírá. Cizí WIP zachováno.
+
+## Předchozí návaznost: P11 optimalizace plánovače
 
 Vlastník zadal optimalizaci R05 podle měření se zachováním chování a WIP,
 bez produkčních změn. Větev `codex/planner-read-performance-20261106`, kopie
