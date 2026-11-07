@@ -63,6 +63,7 @@ omluva nebo storno. Vlastní větev/worktree v plánu. Další krok: přihláše
 kontrola až po obnovení spolehlivého ověření URL a čtení DOM/snímků v nástroji.
 Windows Computer Use běh automaticky zastavil kvůli neověřenému aktuálnímu URL;
 žádný scénář UAT neproveden. Docházka ani role se tímto pokusem neměnily.
+Dokumentační předání sdílí [PR #377](https://github.com/KovoPraha/evidenceTreninku/pull/377); nejde o provedené UAT.
 
 ## Aktivní návaznosti
 

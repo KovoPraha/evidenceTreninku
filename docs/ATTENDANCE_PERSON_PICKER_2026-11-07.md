@@ -146,3 +146,6 @@ ovládacím nástroji, znovu ověřit souběžnou práci a teprve potom provést
 uvedené čtecí scénáře ve stávající přihlášené relaci. Blokace není novým
 důvodem k deployi ani doloženou chybou přihlášení. Toto pokračování předává
 pouze dokumentaci blokace; podrobný [protokol](verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md) zůstává otevřený k dalšímu UAT.
+
+Dokumentační předání: první commit `648abf33` pushnutý, [PR #377](https://github.com/KovoPraha/evidenceTreninku/pull/377).
+Finální head/CI/merge ověř u PR; stav UAT zůstává BLOKOVANÉ i po sloučení dokumentace.

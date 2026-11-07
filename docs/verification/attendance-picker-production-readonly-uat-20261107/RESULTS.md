@@ -57,4 +57,10 @@ zůstává BLOKOVANÉ do skutečného provedení a zapsání jednotlivých výsl
 Toto pokračování dokončuje pouze dokumentační předání blokace, ne provedení UAT.
 Plán, [registr](../../WORK_PLAN_CURRENT.md), [CURRENT](../../CURRENT_STATE.md)
 a [handoff](../../HANDOFF_CURRENT.md) mají shodný stav a odkaz sem.
-Commit/PR a konkrétní stav GitHub předání doplní výsledková větev.
+První commit `648abf33` je pushnutý na uvedené větvi. Dokumentační předání
+sdílí [PR #377](https://github.com/KovoPraha/evidenceTreninku/pull/377);
+aktuální finální head, CI a merge ověř přímo u PR. Sdílení ani sloučení
+dokumentace nemění stav UAT BLOKOVANÉ.
+
+Kontroly dokumentace: `php tools/check-current-docs.php` — 0 chyb;
+`git diff --check` bez nálezu. CURRENT má 80 řádků, hlavní handoff 77.
