@@ -40,6 +40,10 @@ foreach ([100, 1000, 10000, 100000] as $watches) {
     try {
         $pdo = new Tests\Support\QueryProfilePdo($dsn . ';dbname=' . $schema, 'root', '');
         $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $pdo->exec('SET SESSION query_cache_type=OFF');
+        if (!in_array(strtoupper((string) $pdo->query('SELECT @@session.query_cache_type')->fetchColumn()), ['OFF', '0'], true)) {
+            throw new RuntimeException('SQL result cache must be disabled for timing.');
+        }
         Tests\Support\MedicalStateFixture::seed($pdo, $watches);
         // A bounded number of future chains amid a growing ordinary history.
         $pdo->exec('UPDATE medical_clearance_records SET replaces_id=NULL WHERE watch_id>100');
@@ -104,4 +108,5 @@ foreach ([100, 1000, 10000, 100000] as $watches) {
 }
 $report['complete'] = true;
 $report['source_checksums_unchanged'] = true;
+$report['query_cache_disabled'] = true;
 echo json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT) . "\n";

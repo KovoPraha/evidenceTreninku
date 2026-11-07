@@ -14,6 +14,10 @@ if ($output === false || !in_array($variant, ['before', 'after', 'prepare', 'exp
 $argv = [__FILE__, '--library'];
 require_once __DIR__ . '/FullHttpReadProfile.php';
 [$runtime, $admin, $identity] = fullHttpEnvironment($output);
+$identity['query_cache_type'] = (string) $admin->query('SELECT @@global.query_cache_type')->fetchColumn();
+if (!in_array(strtoupper($identity['query_cache_type']), ['OFF', '0'], true)) {
+    throw new RuntimeException('Owned HTTP server must have SQL result caching disabled.');
+}
 if ($variant === 'expand') {
     $admin->exec('USE `' . $runtime['schema'] . '`');
     if ((int) $admin->query('SELECT COUNT(*) FROM medical_clearance_watches')->fetchColumn() !== 10000

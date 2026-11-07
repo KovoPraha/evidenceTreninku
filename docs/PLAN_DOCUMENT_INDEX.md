@@ -901,3 +901,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-ab7b870cf9 | [MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) | plan / IN_PROGRESS | P11-R13-S |
 | PL-d7931b09d6 | [SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md) | handoff / SUPPORT | P11-R13-S |
 | PL-9d3eb581db | [RESULTS.md](verification/medical-state-read-performance-20261107/RESULTS.md) | evidence / SUPPORT | P11-R13-S |
+
+| PL-4b93cf122d | [P11-R13-S provozní předání](verification/medical-state-release-20261107/RESULTS.md) | evidence / SUPPORT | P11-R13-S |
+| PL-b3e0d886a7 | [Veřejná čtecí sonda R13](verification/medical-state-release-20261107/snapshot.php.txt) | artifact / SUPPORT | P11-R13-S |
+| PL-7e2f77ccde | [Anonymní odmítnutí R13](verification/medical-state-release-20261107/anonymous-medical.php.txt) | artifact / SUPPORT | P11-R13-S |

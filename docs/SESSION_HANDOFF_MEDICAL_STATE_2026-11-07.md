@@ -1,25 +1,23 @@
 # Předání P11-R13-S — zdravotní stavový filtr
 
-7. 11. 2026: ROZPRACOVÁNO, vlastní větev, zatím lokální.
-[Plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) určuje rozsah a akceptaci.
-Base `6b1860d5`, větev `codex/medical-state-read-performance-20261107`, samostatný
-worktree `C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107`.
-Aktuální zadání dovoluje commit/merge/deploy po shodě a měřeném přínosu a CI.
-Historické předání #352 bez deploye je zachované jako historie.
-WIP `kis_rosters_admin.php` SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` stejný.
-Produkce zůstává e36c9ba6, nový deploy/aktivace ani skutečné zdravotní změny neprovedené.
-Implementace hotová lokálně: referenční parita/18 testů344 assertions PASS, nový
-kontrakt7/185 PASS, styl/lint PASS. Nativní měření/CI a celý HTTP/Chrome NOT RUN.
-Další krok: push/PR a obě MariaDB v CI; bez prokázaného přínosu nenasazovat.
+7. 11. 2026: ROZPRACOVÁNO, push / [PR #381](https://github.com/KovoPraha/evidenceTreninku/pull/381).
+[Plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [výsledky](verification/medical-state-read-performance-20261107/RESULTS.md), [provozní příprava](verification/medical-state-release-20261107/RESULTS.md).
+Větev `codex/medical-state-read-performance-20261107`, samostatný worktree
+`C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107`.
+Base6b1860d5, převzaté #375/eafe835b a jeho bezpečné důkazy. Přijaté D13/E45/E46
+zachované; vlastní rozhodnutí D14, vlastní E47–50. Aktuální testovaná hlava c6f7576e.
 
-První nativní celý HTTP prototyp a7b1bee9: parita/HTML PASS, výkon FAIL (Platné106→197ms, Čekající105→221ms). Nebude nasazený. [Protokol](verification/medical-state-read-performance-20261107/RESULTS.md). Další varianta odstraní opakovanou agregaci; znovu všechny kontroly a měření.
+Aktuální zadání dovoluje commit/merge/deploy po shodě, přínosu a zelených CI.
+Historické předání #352 bez deploye zůstává historií. Produkce stále e36c9ba6.
+Původní WIP `kis_rosters_admin.php` SHA256
+`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` znovu shodný.
 
-Druhá varianta: sonda budoucích záznamů bez agregace, kontrola nejnovějšího verified pomocí NOT EXISTS; hlavní agregace jednou, COUNT(*) OVER a ROW_NUMBER pro počet i přesně oříznutou stránku. Podpora [MariaDB window funkcí](https://mariadb.com/docs/server/reference/sql-functions/special-functions/window-functions/window-functions-overview) a [ROW_NUMBER](https://mariadb.com/docs/server/reference/sql-functions/special-functions/window-functions/row_number); musí projít nativně na10.3/11.4. Před fallbackem se uvolní načtená sonda historie.
+První prototyp parita PASS / výkon FAIL; V2 Platné neutrální. Oba důkazy v protokolu.
+V3 agreguje records přímo bez opakovaných JOIN, pro verified stavy zúží historii;
+jedno tenké okno COUNT/ROW_NUMBER, nejvýše25 plných sledování. Budoucí explicitní
+náhrady kanonicky nad omezenou sadou; překročené limity/transakce/osoba původní cestou.
+Práva, writer, dokumenty, stav bez filtru a integrační flags nezměněné.
 
-V2/64137a5b: parita celého HTTP PASS, výrazná regrese odstraněna; Platné64,85→64,80ms neutrální, Čekající63,65→58,61ms. Zatím neuzavřeno pro deploy. EXPLAIN ukazuje opakované vnitřní spojení lidí/sledování uvnitř souhrnu i pro neomezený seznam; pro ten nyní agregace jen nad records podle watch_id, vnější filtr a scoped varianta pro hledání/období zachované. Další nativní pár je podmínkou.
+V3 celý HTTP100k Platné690,82→321,14ms, Čekající680,90→284,76ms; HTML/13checksumů PASS. Důkazy iteration3. Kvůli regresi hledání v nativním11.4 profilu V4 zachová původní SQL/bindingy pro všechny doplňkové filtry. Malá sada100 má pevnou režii navíc. Finální pomocný profil vypíná SQL query cache na obou DB; staré neřízené10.3 poměry neuvádět jako přínos.
 
-V3 navíc využívá doménový invariant: valid/expired/not_yet_valid mohou vzniknout jen z verified hlavy (včetně explicitní budoucí náhrady). Agregace pro tyto filtry proto pracuje pouze s přesnými verified záznamy; pending/revoked/missing zachovávají i nejnovější libovolný záznam. Výstup a řetězce stále kanonické. Před nasazením vyžadována celá parita i přínos.
-
-Nativní test V2 odhalil nepřesný typový předpoklad v novém testu PDO: driver vrací0 místo boolfalse. Funkční paritní případy prošly, selhal jen assertFalse(0). Test nyní nejprve ověří vypnutí režimu a pak přísně porovnává původní hodnotu včetně typu po úspěchu/výjimce; runtime se tím nemění. Nativní běhy se opakují.
-
-Převzaté #375/eafe835b, D14/E47–50 bez kolize s přijatou studií. Další CI zahrne 100k sledování/300k záznamů. Přínos V3 dosud nezměřený; nenasazovat před zelenou paritou i výkonem.
+V4 lokálně18/356 PASS, styl beze změn. Další krok: finální CI a nativní i celé HTTP/Chrome měření; poté bezpečný archiv a schválený merge/deploy. Před produkčním krokem všechny kontroly zelené. Anonymní baseline5HTTP200, zdravotní přehled403; přihlášené produkční UAT NOT RUN.

@@ -7,31 +7,23 @@ final class MedicalClearanceStateRead
 {
     public static function page(PDO $pdo, string $base, array $params, array $filters, string $on): array
     {
-        // A person's few purposes and explicit transactions retain the canonical streaming path.
-        if ($pdo->inTransaction() || str_contains($base, 'w.sportovec_id=?')) {
+        // Narrow filters and explicit transactions retain their measured canonical streaming path.
+        if ($pdo->inTransaction() || $params !== []) {
             return medicalClearanceStatePage($pdo, $base, $params, $filters, $on);
         }
         $exactState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mr.state' : 'mr.state COLLATE BINARY';
         $verifiedOnly = in_array($filters['state'], ['valid', 'expired', 'not_yet_valid'], true);
         $latestId = $verifiedOnly ? 'NULL' : 'MAX(mr.id)';
         $verifiedId = $verifiedOnly ? 'MAX(mr.id)' : "MAX(CASE WHEN $exactState='verified' THEN mr.id END)";
-        $recordJoin = $verifiedOnly ? 'JOIN' : 'LEFT JOIN';
-        $verifiedWhere = $verifiedOnly ? " AND $exactState='verified'" : '';
-        $grouped = 'SELECT w.id watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id '
-            . self::join($base, $recordJoin . ' medical_clearance_records mr ON mr.watch_id=w.id') . $verifiedWhere . ' GROUP BY w.id';
-        if ($params === []) {
-            // The unrestricted list needs no repeated person/watch joins inside the history aggregation.
-            // Missing watches still survive the outer LEFT JOIN with a null current record.
-            $grouped = 'SELECT mr.watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id'
-                . ' FROM medical_clearance_records mr'
-                . ($verifiedOnly ? " WHERE $exactState='verified'" : '') . ' GROUP BY mr.watch_id';
-        }
+        // The unrestricted list needs no repeated person/watch joins inside the history aggregation.
+        // Missing watches still survive the outer LEFT JOIN with a null current record.
+        $grouped = 'SELECT mr.watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id'
+            . ' FROM medical_clearance_records mr'
+            . ($verifiedOnly ? " WHERE $exactState='verified'" : '') . ' GROUP BY mr.watch_id';
         $headJoin = $verifiedOnly ? 'JOIN' : 'LEFT JOIN';
         $projection = self::join($base, $headJoin . ' (' . $grouped . ') mc ON mc.watch_id=w.id'
             . ' ' . $headJoin . ' medical_clearance_records mv ON mv.id=mc.verified_id'
             . ($verifiedOnly ? '' : ' LEFT JOIN medical_clearance_records ml ON ml.id=mc.last_id AND mc.verified_id IS NULL'));
-        // The scoped derived table and the outer list each use the same candidate filters.
-        $bindings = array_merge($params, $params);
         $complex = 'mv.id IS NOT NULL AND mv.issued_on>? AND mv.replaces_id IS NOT NULL AND mv.replaces_id<>0';
         $futureState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mf.state' : 'mf.state COLLATE BINARY';
         $newerState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mn.state' : 'mn.state COLLATE BINARY';
@@ -72,7 +64,7 @@ final class MedicalClearanceStateRead
         $simpleStatus = 'CASE ' . $noVerified
             . "WHEN mv.issued_on>? THEN 'not_yet_valid' WHEN mv.valid_until<? THEN 'expired' ELSE 'valid' END";
         $predicate = '(NOT (' . $complex . ') AND (' . $simpleStatus . ')=?)';
-        $bindings = [...$bindings, $on, $on, $on, $filters['state']];
+        $bindings = [$on, $on, $on, $filters['state']];
         if ($matching !== []) {
             $predicate .= ' OR w.id IN (' . implode(',', array_fill(0, count($matching), '?')) . ')';
             array_push($bindings, ...$matching);

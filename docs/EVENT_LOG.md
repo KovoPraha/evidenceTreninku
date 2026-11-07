@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 7. 11. 2026 / E2026-11-07-51 | P11-R13-S V3 objemový přínos PASS, V4 omezuje regresi hledání | HTTP100k Platné690,82→321,14ms, HTML/checksumy PASS. Doplňkové filtry původní SQL, finální měření s vypnutou query cache, bez deploye. | [Výsledky](verification/medical-state-read-performance-20261107/RESULTS.md), [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) |
 | 7. 11. 2026 / E2026-11-07-46 | P11-SCALE: větší R13/R05 a přímé ověření aktuálního#374 HOTOVO | 2160+540HTTP,90doménových/DOM parit,36negativ,21součtů/sada, oba úklidy a WIP PASS. Primární69f a aktuálníe36 oddělené, žádný náš deploy. Dále R13 stavové čtení a řízený Linux/mobil/souběh. | [Plán](MEDICAL_PLANNER_SCALE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md), [důkazy](verification/medical-planner-scale-20261107/RESULTS.md) |
 | 7. 11. 2026 / E2026-11-07-45 | P11-SCALE: vlastník zadal větší R13/R05 měření | Plán před měřičem, vlastní worktree a porty; aplikace zmrazená 69f49033, žádná produkce. Souběžnou optimalizaci plánovače neduplikovat. | [Plán](MEDICAL_PLANNER_SCALE_2026-11-07.md) |
 | 7. 11. 2026 / E2026-11-07-50 | P11-R13-S V2 parita PASS, Platné časově neutrální; pokračuje V3 | V2: Platné64,85→64,80ms, Čekající63,65→58,61ms. V3 agreguje records přímo a využívá invariant verified stavů; nové nativní měření nutné. | [Důkaz](verification/medical-state-read-performance-20261107/RESULTS.md) |

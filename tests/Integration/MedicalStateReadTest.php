@@ -95,6 +95,19 @@ final class MedicalStateReadTest extends TestCase
     public function testFreshChangesAndTransactionReadShapeArePreserved(): void
     {
         $pdo = $this->seeded();
+        foreach ([['medical_q' => 'Synthetic'], ['medical_from' => date('Y-m-d')],
+            ['medical_to' => date('Y-m-d')], ['person_id' => 1]] as $filter) {
+            $input = ['medical_state' => 'valid'] + $filter;
+            $pdo->profiling = true;
+            $pdo->profile = [];
+            $expected = medicalStateBaselineList($pdo, $input);
+            $before = $pdo->profile;
+            $pdo->profile = [];
+            self::assertSame($expected, \medicalClearanceList($pdo, $input));
+            self::assertSame(array_column($before, 'sql'), array_column($pdo->profile, 'sql'));
+            self::assertSame(array_column($before, 'parameters'), array_column($pdo->profile, 'parameters'));
+            $pdo->profiling = false;
+        }
         foreach (["UPDATE medical_clearance_records SET state='revoked' WHERE state='verified'",
             "UPDATE medical_clearance_watches SET next_review_on='2030-01-01' WHERE id=3",
             'DELETE FROM medical_clearance_records WHERE watch_id=4'] as $mutation) {

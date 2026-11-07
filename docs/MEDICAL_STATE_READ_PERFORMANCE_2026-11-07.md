@@ -4,7 +4,7 @@
 Vlastník: vývoj podle aktuálního zadání vlastníka aplikace. Registr P11-R13-S.
 [Analýza celého HTTP](verification/full-http-performance-20261107/RESULTS.md),
 [předchozí řez #352](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md),
-[rozhodnutí D13](DECISION_LOG.md#d2026-11-07-14).
+[rozhodnutí D14](DECISION_LOG.md#d2026-11-07-14).
 
 ## Zadání, izolace a rozsah
 
@@ -73,3 +73,9 @@ Nativní test V2 odhalil nepřesný typový předpoklad v novém testu PDO: driv
 ## Převzetí větší studie a další ověření
 
 Převzaté #375/eafe835b: studie 100k potvrzuje náklad stavového čtení. Její metadata, důkazy i přijaté D13/E45/E46 zachované. Toto rozhodnutí nyní D14, vlastní E47–50. V3 bude měřena v páru na 10k i 100k sledování/30k i 300k záznamů v celém HTTP a Chrome. Nativní pomocný profil 100/1k/10k všech šest případů, 100k valid/pending/person; 17 střídavých časových párů a čtyři rozehřátí. Rozšíření pouze vlastního syntetického schématu, žádná produkce.
+
+[Provozní předání](verification/medical-state-release-20261107/RESULTS.md): zatím příprava veřejného snímku/odmítnutí, merge a deploy NOT RUN. Lokální cílená sada po integraci znovu18/344 PASS; PHPStan/styl a dokumentační CI zelené, plná nativní měření běží.
+
+## Finální zúžení podle V3 měření
+
+V3 celý GET100k Platné690,82→321,14ms a Čekající680,90→284,76ms, HTML/checksumy PASS. Nativní11.4 mírná regrese hledání; V4 pro všechny doplňkové filtry používá přesně původní SQL/bindingy, doloženo12novýmiassertions. Samotná agregace tak potřebuje jen neomezenou historii; scoped větev odstraněna. Malá sada100 má asi0,7ms pevné režie navíc, podrobný protokol to přiznává. Finální profil obou DB explicitně vypíná SQL result cache; původní neřízené10.3 poměry neprezentovat jako přínos. Nové měření a CI před merge/deploy. Aktuální lokální sada18/356 PASS.

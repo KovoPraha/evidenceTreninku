@@ -10424,6 +10424,39 @@
       "registry": "P11-R13-S",
       "disposition": "První návrh parita PASS/výkon FAIL; finální varianta otevřená.",
       "evidence": []
+    },
+    {
+      "id": "PL-4b93cf122d",
+      "path": "docs/verification/medical-state-release-20261107/RESULTS.md",
+      "title": "P11-R13-S provozní předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-R13-S",
+      "disposition": "Podpůrný bezpečný důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-b3e0d886a7",
+      "path": "docs/verification/medical-state-release-20261107/snapshot.php.txt",
+      "title": "Veřejná čtecí sonda R13",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-R13-S",
+      "disposition": "Podpůrný bezpečný důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-7e2f77ccde",
+      "path": "docs/verification/medical-state-release-20261107/anonymous-medical.php.txt",
+      "title": "Anonymní odmítnutí R13",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-R13-S",
+      "disposition": "Podpůrný bezpečný důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",
