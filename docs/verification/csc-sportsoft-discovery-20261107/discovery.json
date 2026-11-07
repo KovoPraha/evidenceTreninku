@@ -1,0 +1,277 @@
+{
+  "date": "2026-11-07",
+  "timezone": "Europe/Prague",
+  "status": "Ověřený průzkum přihlášených webů bez ukládání a odesílání.",
+  "method": "Playwright CLI, samostatný Chrome, ruční přihlášení uživatelem, čtení DOM a běžná navigace.",
+  "sportsoft": {
+    "url": "https://csc.sportsoft.cz/private/events.aspx",
+    "technology": "ASP.NET Web Forms: POST formuláře, __VIEWSTATE, __EVENTVALIDATION a __doPostBack.",
+    "events": "Přehled JANEV CUP má čtyři existující přihlášky a pět tlačítek Vytvořit přihlášku.",
+    "existing_registration": {
+      "path": "Závody → Prohlédnout / změnit přihlášku → /private/order.aspx?e=<id>&m=<id>",
+      "sample": "Hlinsko 31.10.2026, již proběhlý závod. Význam parametru m nebyl nezávisle ověřen.",
+      "columns": [
+        "výběr",
+        "UCI ID",
+        "jméno",
+        "datum narození",
+        "kategorie",
+        "zaplaceno"
+      ],
+      "controls": [
+        "Filtr kategorie",
+        "Zobrazit",
+        "Uhradit startovné za vybrané závodníky"
+      ],
+      "rule": "Web uvádí, že přihláška je platná pouze pro zaplacené závodníky.",
+      "limitation": "Tento vzorek nedokazuje podobu výběru účastníků před uzávěrkou."
+    },
+    "members": {
+      "path": "/private/team.aspx",
+      "rows": 130,
+      "scope": "Stránka uvádí pouze závodníky s platnou licencí pro aktuální sezonu.",
+      "columns": [
+        "UCI ID",
+        "jméno",
+        "datum narození",
+        "národnost",
+        "role",
+        "source"
+      ],
+      "source_values": [
+        "api",
+        "manual"
+      ],
+      "source_caveat": "Hodnota api sama o sobě neprokazuje rozhraní dostupné klubu/KIS."
+    },
+    "add_member": {
+      "path": "/private/addracer.aspx",
+      "opening": "Seznam členů → Přidat do týmu dalšího člena",
+      "field": {
+        "label": "UCI ID",
+        "name": "ctl00$ContentPlaceHolder1$UCIID",
+        "maxLength": 11
+      },
+      "submit": "Přidat do týmu",
+      "inspected_without_filling_or_submitting": true
+    },
+    "authentication": "Přihlašovací .ASPXAUTH a ASP.NET_SessionId mají expires=-1; serverový timeout nezjištěn.",
+    "unverified": [
+      "Vytvořit přihlášku nebylo použito: z klientského DOM nelze určit, zda již zakládá serverový záznam.",
+      "Výběr závodníků, odeslání nové přihlášky, změny, storna, platby a stav po zápisu.",
+      "Doba přenosu licencí mezi ČSC a Sportsoftem."
+    ]
+  },
+  "csc": {
+    "url": "https://portal.czechcyclingfederation.com/",
+    "technology": "Blazor / Radzen.Blazor; dynamická ID. Po změně URL může chvíli zůstat starý či neúplný obsah.",
+    "club": {
+      "path": "/ClubDetail/Club/<club_id>",
+      "rows": 254,
+      "page_sizes": [
+        10,
+        25,
+        50,
+        100,
+        250,
+        500
+      ],
+      "columns": [
+        "Primární Akce",
+        "Akce",
+        "Licence",
+        "Uci Id",
+        "Role",
+        "Disciplína",
+        "Kategorie",
+        "Hostování",
+        "Rok platnosti"
+      ],
+      "actions": [
+        "Export",
+        "Upravit oddíl",
+        "Nový člen oddílu",
+        "Registrace závodu",
+        "Žádost"
+      ],
+      "row_actions": [
+        "Digitální karta",
+        "Upravit",
+        "Hostování",
+        "Přestup",
+        "Vyřadit",
+        "Získat licenci"
+      ],
+      "caveat": "Počty řádků nejsou počty unikátních osob. Export přítomen, jeho formát neověřen."
+    },
+    "license_detail": {
+      "path": "/Licenses/LicenseDetail/ClubDetail:<club_id>/<license_id>",
+      "results_columns": [
+        "D.startu",
+        "Závod",
+        "Disciplína",
+        "Kategorie",
+        "Pořadí",
+        "Počet závodníků",
+        "Oddíl",
+        "Výsledek",
+        "Důvod neklasifikace",
+        "Místo",
+        "Stát"
+      ]
+    },
+    "forms": {
+      "inspected": [
+        "Akce → Upravit → dialog licence",
+        "Nový člen oddílu → Nová Licence"
+      ],
+      "required_labels": [
+        [
+          "Jméno",
+          "Entity.Racer.FirstName"
+        ],
+        [
+          "Příjmení",
+          "Entity.Racer.LastName"
+        ],
+        [
+          "Pohlaví",
+          "Entity.Racer.GenderId"
+        ],
+        [
+          "Datum narození",
+          "Entity.Racer.DtBirth"
+        ],
+        [
+          "Rodné číslo",
+          "Entity.Racer.NoBirth"
+        ],
+        [
+          "E-mail držitele digitální karty",
+          "Entity.Email"
+        ],
+        [
+          "Národnost",
+          "Entity.CountryId"
+        ],
+        [
+          "Fotografie",
+          null
+        ],
+        [
+          "Město",
+          "Entity.Racer.Address.City"
+        ],
+        [
+          "Ulice",
+          "Entity.Racer.Address.Street"
+        ],
+        [
+          "Č.popisné",
+          "Entity.Racer.Address.NoDescriptive"
+        ],
+        [
+          "PSČ",
+          "Entity.Racer.Address.ZipCode"
+        ],
+        [
+          "Stát",
+          "Entity.Racer.Address.CountryId"
+        ],
+        [
+          "Jméno nouzového kontaktu",
+          "Entity.EmergencyContact.Name"
+        ],
+        [
+          "Mobil nouzového kontaktu",
+          "Entity.EmergencyContact.Mobile"
+        ],
+        [
+          "Oddíl",
+          "Entity.ClubId"
+        ],
+        [
+          "Role",
+          "Entity.RoleId"
+        ],
+        [
+          "Uci role",
+          null
+        ],
+        [
+          "Primární odvětví",
+          "Entity.DisciplineId"
+        ],
+        [
+          "Kategorie",
+          "Entity.CategoryId"
+        ]
+      ],
+      "other_fields": [
+        "Prostřední jméno",
+        "kontaktní email",
+        "číslo orientační",
+        "smlouva",
+        "smlouva schválená",
+        "platnost smlouvy",
+        "hostování zakázáno",
+        "další odvětví",
+        "UCI ID",
+        "SCM"
+      ],
+      "validation": "Povinné popisky označuje CSS form-label-required; HTML required=false. Nová licence ukázala validační hlášky už po otevření. Úplná serverová validace nebyla spuštěna.",
+      "photo_accept": ".jpg, jpeg, .png, .gif, .bmp",
+      "contract_accept": ".pdf,.xls,.doc,.docx",
+      "upload_size_limit": "nezjištěn",
+      "scm": "Čtyři výběry SCM byly při průzkumu disabled.",
+      "declarations": [
+        "Klub má podepsané prohlášení žadatele a u nezletilého zákonného zástupce a garantuje archivaci nejméně dva roky.",
+        "Klub obdržel písemný souhlas se zpracováním osobních údajů."
+      ],
+      "declarations_caveat": "Popis checkboxů ve formuláři, nikoli právní posouzení. Nebyly měněny.",
+      "duplicate_category_example": {
+        "label": "kadeti M(15 - 16)",
+        "values": [
+          "90",
+          "109",
+          "129",
+          "158"
+        ]
+      },
+      "selector_recommendation": "Použít name=Entity.* a text/role v konkrétním dialogu. Kategorie mapovat přes interní ID; vazba těchto čtyř ID na disciplíny nebyla ověřena.",
+      "closed_without_save": true
+    },
+    "request": {
+      "inspected": "Žádost (0) → prázdný dialog Žádost → zavření.",
+      "message": "Žádost je prázdná.",
+      "submit": "Odeslat žádost bylo deaktivované.",
+      "unverified": "Získat licenci, neprázdná žádost, cena/fakturace, podání, schválení a vydání nebyly provedeny."
+    },
+    "authentication": "Identity cookie má budoucí expiraci. Serverová revokace, automatická obnova a maximální délka relace neověřeny.",
+    "unverified": [
+      "Zápis/import výsledků",
+      "automatické ukládání dokumentů",
+      "správa hostování a přestupů",
+      "funkčnost exportu"
+    ]
+  },
+  "proposed_implementation": [
+    "Dva deterministické Playwright adaptéry, fronta a audit v KIS.",
+    "Samostatné stavy lokální požadavek, vzdálená přihláška, úhrada, žádost o licenci a vydaná licence.",
+    "Nejprve čtení a párování přes UCI ID, externí ID licence a ID závodu.",
+    "Čekání na správný obsah Blazor dialogu, nikoli pouze na URL/load.",
+    "Před opakováním zápisu nejprve ověřit skutečný vzdálený stav.",
+    "Při ztrátě přihlášení pozastavit úlohy a vyžádat ruční přihlášení; nespoléhat na refresh."
+  ],
+  "final_verification": {
+    "csc_open_dialogs": 0,
+    "csc_request_count": 0,
+    "csc_rows_unchanged": 254,
+    "sportsoft_existing_registration_buttons_unchanged": 4,
+    "sportsoft_new_registration_buttons_unchanged": 5,
+    "form_values_changed": false,
+    "files_uploaded": false,
+    "save_or_submission_actions": false
+  },
+  "privacy": "Bez osobních hodnot sportovců, cookies, hesel a odkazů na digitální průkazy. Pracovní snímky DOM zůstávají lokálně mimo Git."
+}

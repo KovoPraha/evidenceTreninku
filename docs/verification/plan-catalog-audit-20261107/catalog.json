@@ -9578,6 +9578,41 @@
       "registry": "P11",
       "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
       "evidence": []
+    },
+    {
+      "id": "PL-f4f6043c1f",
+      "path": "docs/CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md",
+      "title": "Čtecí synchronizace ČSC a Sportsoftu do KIS",
+      "primary": true,
+      "role": "plan",
+      "status": "PLANNED",
+      "registry": "P15",
+      "disposition": "Dokumentace první čtecí etapy; implementace a aktivace NOT RUN.",
+      "evidence": [
+        "docs/verification/csc-sportsoft-discovery-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-d0ee3c3e30",
+      "path": "docs/verification/csc-sportsoft-discovery-20261107/RESULTS.md",
+      "title": "P15: průzkum ČSC a Sportsoftu",
+      "primary": false,
+      "role": "verification",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Pozorovaný DOM, hranice a ověření dokumentace.",
+      "evidence": []
+    },
+    {
+      "id": "PL-bf46335bf2",
+      "path": "docs/verification/csc-sportsoft-discovery-20261107/discovery.json",
+      "title": "Strukturovaný čtecí průzkum bez osobních hodnot",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Bezpečný souhrn průzkumu; žádné cookies ani osobní hodnoty.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

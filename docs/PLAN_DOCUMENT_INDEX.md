@@ -8,6 +8,9 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-bf46335bf2 | [Strukturovaný čtecí průzkum bez osobních hodnot](verification/csc-sportsoft-discovery-20261107/discovery.json) | artifact / SUPPORT | P15 |
+| PL-d0ee3c3e30 | [P15: průzkum ČSC a Sportsoftu](verification/csc-sportsoft-discovery-20261107/RESULTS.md) | verification / SUPPORT | P15 |
+| PL-f4f6043c1f | [Čtecí synchronizace ČSC a Sportsoftu do KIS](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md) | plan / PLANNED | P15 |
 | PL-a54ff182c7 | [AGENTS.md](../AGENTS.md) | reference / REFERENCE | DOC02 |
 | PL-6ebdb617a8 | [CLAUDE.md](../CLAUDE.md) | reference / REFERENCE | DOC02 |
 | PL-53413c7074 | [INSTALACE.txt](../INSTALACE.txt) | artifact / SUPPORT | DOC02 |

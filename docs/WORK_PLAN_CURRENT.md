@@ -47,6 +47,9 @@ mohou běžet souběžně s dodáváním podkladů pro body 2–6; nečekají na
 
 ## Aktivní návaznosti
 
+P15: vlastník zvolil čtecí synchronizaci ČSC/Sportsoftu, UCI ID a nonstop stanici.
+[Implementační plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), [průzkum](verification/csc-sportsoft-discovery-20261107/RESULTS.md); dokumentace se připravuje, runtime/aktivace NOT RUN.
+
 P07 N1/N2: [automatické doklady a komunikace](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md)
 jsou sloučené v #355, nasazené a zapnuté pro nové objednávky.
 Místní browser/MariaDB celý tok PASS, 2337 testů / 43257 assertions a 11 CI PASS.
@@ -55,6 +58,7 @@ Skutečná bankovní platba, externí schránka a produkční přejímka členst
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
+| P15 | PLÁNOVÁNO: [čtecí ČSC/Sportsoft, párování UCI a nonstop stanice](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md) | S0: inventura stanice, minimální kontrakt a syntetické fixtures; pak S1 úložiště/resolver. Žádné změny portálů ani automatické přepisy karet. | Marek / vývoj; vlastní codex/csc-sportsoft-read-sync-plan-20261107; [důkazy a meze](verification/csc-sportsoft-discovery-20261107/RESULTS.md). Dokumentace lokální, PR bude doplněno. |
 | ROLE01-MOB | ČÁSTEČNĚ HOTOVO: karty #361 jsou v main a obsažené ve vydání katalogu `c70939d4` | Doložit cílený nový čtecí Chrome 390/360 px a desktop; stávající role neměnit, deploy neopakovat jen podle starého statusu | Vývoj; [plán](ACCESS_OVERVIEW_2026-11-07.md), [vydání](verification/catalog-release-20261107/RESULTS.md), vlastní `codex/access-visual-uat-20261107` / PR #361 |
 | P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |

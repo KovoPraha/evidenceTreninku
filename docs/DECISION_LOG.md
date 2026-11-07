@@ -6,6 +6,24 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-09
+
+- **Stav / datum:** PŘIJATÝ SMĚR, 7. 11. 2026; explicitní zadání vlastníka.
+- **Volba:** první etapa čte ČSC a Sportsoft, páruje přes UCI ID a běží na
+  nonstop stanici. V tomto úkolu vzniká konkrétní plán a projektová dokumentace.
+- **Důvod:** skutečný DOM lze obsluhovat Playwrightem; ruční přihlášení je
+  dostupné. Oddělený worker nevyžaduje prohlížeč na stávajícím PHP hostingu.
+- **Varianty:** serverový worker může následovat; obecné AI klikání ani
+  nekonečný refresh relace nejsou základ provozu. Nanoclaw může dělat dohled.
+- **Technický návrh:** samostatné externí snímky a striktní UCI resolver.
+  Existující import dovoluje i shodu jména/data narození, proto se nepoužije
+  k automatickému spojování této integrace. Kanonické karty se nepřepisují.
+- **Hranice:** žádné přihlášky/licence/platby či jiné zápisy do portálů.
+  Nasazení, první produkční ingest KIS a pravidelná aktivace jsou samostatné
+  kroky; dnešní dokumentace je neprovedla. Detailní kontrakt je návrh.
+- **Podklady:** [P15](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), [průzkum](verification/csc-sportsoft-discovery-20261107/RESULTS.md),
+  [registr](WORK_PLAN_CURRENT.md). Vlastník Marek / vývoj KIS.
+
 ## D2026-11-07-05
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; autonomní měření podle pokynu vlastníka bez produkčních změn.
