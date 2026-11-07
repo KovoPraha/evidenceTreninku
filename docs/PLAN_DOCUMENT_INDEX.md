@@ -898,7 +898,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-bea1125b4b | [CALIBRATION.md](verification/medical-planner-scale-20261107/CALIBRATION.md) | artifact / SUPPORT | P11-SCALE |
 
 | PL-7c69e31171 | [Aktuální planner po #374](verification/medical-planner-scale-20261107/current-planner/RESULTS.md) | artifact / SUPPORT | P11-SCALE |
-| PL-ab7b870cf9 | [MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) | plan / IN_PROGRESS | P11-R13-S |
+| PL-ab7b870cf9 | [MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) | plan / DONE | P11-R13-S |
 | PL-d7931b09d6 | [SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md) | handoff / SUPPORT | P11-R13-S |
 | PL-9d3eb581db | [RESULTS.md](verification/medical-state-read-performance-20261107/RESULTS.md) | evidence / SUPPORT | P11-R13-S |
 

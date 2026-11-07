@@ -1,0 +1,9 @@
+{
+    "at_utc": "2026-11-07T19:27:19+00:00",
+    "url": "https://kis.kovopraha.cz/medical_clearance_admin.php",
+    "method": "Anonymous GET without cookies, redirects or POST; response body and headers not stored.",
+    "http": 403,
+    "redirect_path": null,
+    "pass": true,
+    "limitation": "Confirms anonymous rejection only. Authenticated production medical UI UAT was not performed."
+}

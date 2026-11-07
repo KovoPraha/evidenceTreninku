@@ -9,7 +9,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - P11-SCALE HOTOVO: [větší R13/R05](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md),2700HTTP/90parit.
   Aktuální#374 také prověřené; oba vlastní runtime úklidy PASS, produkce bez našich změn.
-  Dále R13 stavové čtení/řízený Linux, fyzický mobil a souběh; K0.2 otevřené.
+  R13 stavový řez nyní uzavírá P11-R13-S; dále fyzický mobil/souběh, K0.2 otevřené.
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
   Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.
   Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); karty zahrnuje vydání `c70939d4`; dále cílený nový Chrome, viz priorita 1.
@@ -22,8 +22,8 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   Původní WIP a oba picker worktrees zachované; výsledky a kalibrace jsou v repu, nové aktivace žádné.
   [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
-- P11-R13-S ROZPRACOVÁNO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md).
-  PR #381: V3 objemový přínos PASS, V4 původní hledání/datum; nové měření10k/100k a CI před deployem. WIP zachovaný.
+- P11-R13-S HOTOVO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [provozní důkaz](verification/medical-state-release-20261107/RESULTS.md).
+  #381/938e9c50, deploy42405912779 SUCCESS; další deploy neopakovat. WIP zachovaný, přihlášené UAT NOT RUN.
 - P11-R05-H HOTOVO: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
   #374 v main a nasazeno; [provozní důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md) PASS. WIP zachovaný; R13/K0.2 a přihlášené UAT otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),

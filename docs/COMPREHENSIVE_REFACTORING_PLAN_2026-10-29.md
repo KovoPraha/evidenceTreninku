@@ -453,3 +453,7 @@ i při malém HTML; aktuální R05 omezuje přenos historie při shodných výsl
 Samostatné piny, raw data a manifesty, časové poměry nejsou kontrolovaný pár.
 Další R13 stavové čtení a řízené větší testy, složitější historie, mobil/souběh;
 K0.2 zůstává otevřené. Nové produkční nasazení tato studie neprovádí.
+
+## P11-R13-S — stavový filtr zdravotního přehledu
+
+[Plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [finální důkazy](verification/medical-state-read-performance-20261107/RESULTS.md), [provozní předání](verification/medical-state-release-20261107/RESULTS.md), [session](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). #381/938e9c50 a deploy42405912779 SUCCESS. Parita12CI/oběDB/2160HTTP/208Chrome, celý GET100k Platné1062,80→519,94ms. Původní hledání/datum/osoba/transakce, malá pevná režie a meze v protokolu. WIP zachovaný; přihlášené UAT/rows examined/mobil/souběh a K0.2 otevřené. Další deploy neopakovat.

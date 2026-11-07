@@ -1,0 +1,45 @@
+{
+  "validated_head": "a1d7a70d95123734939046456478d19caa276f35",
+  "merged_main": "938e9c50317be43e8b206da93294ca41d10065c0",
+  "native_cases_per_db": 21,
+  "timed_pairs_per_db": 357,
+  "native_query_cache_disabled": true,
+  "native_status_tests": {
+    "10.3": [
+      7,
+      201
+    ],
+    "11.4": [
+      7,
+      201
+    ]
+  },
+  "full_suite": [
+    2377,
+    47777
+  ],
+  "http_positive_samples": 2160,
+  "http_negative_checks": 48,
+  "chrome_observations": 208,
+  "normalized_complete_html_equal": true,
+  "domain_checksums_equal": 13,
+  "diagnostic_domain_writes": 0,
+  "source_sha256": {
+    "medical_clearance_admin.php": "50b54860b65b59b5a45b8708ba1f52eaa78a16ec30b172970a0b474309214984",
+    "includes/medical_clearance.php": "fbc840eca59c5181d5e8da7fa5d362366bc3086f9c5778173cb9c17a5ff23b3b",
+    "includes/medical_clearance_admin_view.php": "8b58828fb56ea5103e028660509e14ccb7c578d7d28860e54c1f4cf6728d2632",
+    "includes/staff_record_list.php": "8bc50843e58aa51fcd5671e2263ebac06a86af3834da11083bdff1394b060c8b",
+    "includes/coach_scope.php": "055ae137254ffa0f4f171600e14f8e632e29715e6d2399f08c593c1d19cc1940",
+    "includes/init.php": "c0a16f1231bf79bec717c29cc02e0c5929b4daa4fe5bb92391f41372b0bc8c60",
+    "includes/medical_clearance_state_read.php": "04cc7bc2c3c9ed113ff0a89c94219bb2e84130ef819e6fe004fb43b2f995114c",
+    "includes/medical_clearance_read.php": "cfcdec2766c64d15ed610794873835cb2354fa38fe7edca6bf71b0cdb3e11acc",
+    "baseline_medical_read": "72e87e42a03337a0de2b6f5c322413f8915d49d481a9e188fc4bddb94b608b0f"
+  },
+  "cleanup": {
+    "owned_fixture_cleanup": true,
+    "php_server_stopped": true,
+    "route_restored": true,
+    "bridge_account_removed": true,
+    "private_artifacts_excluded": true
+  }
+}

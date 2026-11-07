@@ -1,0 +1,16 @@
+{
+  "pr": 381,
+  "validated_head": "a1d7a70d95123734939046456478d19caa276f35",
+  "merged_main": "938e9c50317be43e8b206da93294ca41d10065c0",
+  "complete_tree_equal": true,
+  "measured_source_equal": {
+    "medical_clearance_admin.php": true,
+    "includes/medical_clearance.php": true,
+    "includes/medical_clearance_admin_view.php": true,
+    "includes/staff_record_list.php": true,
+    "includes/coach_scope.php": true,
+    "includes/init.php": true,
+    "includes/medical_clearance_state_read.php": true,
+    "includes/medical_clearance_read.php": true
+  }
+}

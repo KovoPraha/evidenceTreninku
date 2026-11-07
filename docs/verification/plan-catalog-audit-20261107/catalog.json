@@ -10398,10 +10398,13 @@
       "title": "P11-R13-S — stavový filtr zdravotního přehledu",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-R13-S",
-      "disposition": "Schválený čtecí řez; parita a měření před merge/deploy.",
-      "evidence": []
+      "disposition": "Technický řez #381 nasazený; finální parita/přínos a čtecí produkční kontrola PASS. Přihlášené UAT a celé K0.2 otevřené.",
+      "evidence": [
+        "docs/verification/medical-state-read-performance-20261107/RESULTS.md",
+        "docs/verification/medical-state-release-20261107/RESULTS.md"
+      ]
     },
     {
       "id": "PL-d7931b09d6",
