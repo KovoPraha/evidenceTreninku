@@ -1,6 +1,11 @@
 # Pracovní pozice administrace
 
-Stav pracovní větve k 5. 11. 2026. Dvě barové pozice jsou součástí rozpracovaného začlenění; nejsou nasazené. Rozsah a další etapy určuje [plán začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md).
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Barové role jsou v main a vydaném modulu; věta o nenasazeném BAR níže je původní stav z 5. 11.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P02/P04. [RESULTS.md](verification/bar-release-20261105/RESULTS.md)
+
+
+Historický stav pracovní větve k 5. 11. 2026. Dvě barové pozice jsou součástí rozpracovaného začlenění; nejsou nasazené. Rozsah a další etapy určuje [plán začlenění baru](BAR_INTEGRATION_PLAN_2026-11-05.md).
 
 Administrace je rozdělena na jedenáct pracovních pozic. Každá pozice má vlastní rozcestník a v navigaci vidí jen svoje funkce. Účet může mít přiřazeno více pozic, ale v jednu chvíli pracuje vždy právě v jedné z nich.
 

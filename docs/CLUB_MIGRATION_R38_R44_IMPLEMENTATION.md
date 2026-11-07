@@ -1,5 +1,10 @@
 # R38–R44 — migrace a technická příprava přechodu
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Implementační a technické přejímací balíky jsou v main a integrační vydání doložené; skutečné údaje, účetní/lidská přejímka a ostré převody se tím neuzavírají.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P09. [CLUB_IMPLEMENTATION_HANDOFF.md](CLUB_IMPLEMENTATION_HANDOFF.md) · [RESULTS.md](verification/production-integration-20261025/RESULTS.md) · [CLUB_COMPLETION_DECISIONS.md](CLUB_COMPLETION_DECISIONS.md)
+
+
 Místní balík navazuje na `67121f0b` (R31–R37). Větev
 `codex/migration-cutover-r38-r44-20261023`, pracovní kopie
 `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`.

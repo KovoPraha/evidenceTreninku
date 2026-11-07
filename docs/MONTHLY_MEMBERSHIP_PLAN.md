@@ -1,5 +1,10 @@
 # Měsíční členství přes e-shop
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Implementace, tarif 2200 Kč, publikace, automatizace a pošta doložené. Skutečné sjednání/platba/PDF/doručení vlastníkem odložené; roční cena neurčená.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P05. [RESULTS.md](verification/monthly-coach-release-20261105/RESULTS.md) · [RESULTS.md](verification/racing-team-status-20261106/RESULTS.md) · [RESULTS.md](verification/membership-scheduler-20261106/RESULTS.md)
+
+
 Základ implementace: `97b85bb5`, 5. 11. 2026. Implementace a syntetické ověření jsou oddělené od produkčního nasazení a aktivace plánovače.
 
 Aktuální denní časování a přejímku určuje [hostingový plán z 6. 11.](MEMBERSHIP_SCHEDULER_2026-11-06.md),

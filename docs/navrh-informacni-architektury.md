@@ -1,5 +1,10 @@
 # Návrh informační architektury
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Starý návrh navigace je částečně překrytý novým UI; zbylé změny/rename nejsou schválené. Neopakovat původní inventuru jako dnešní stav.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr C02. [UX-NAVIGACE-A-KALENDARE-2026-10-08.md](UX-NAVIGACE-A-KALENDARE-2026-10-08.md) · [staff_workspaces.php](../includes/staff_workspaces.php)
+
+
 Aktualizováno: 8. 8. 2026, Europe/Prague · Base: `main` HEAD `5c99509`
 („Add env-driven inputs to Shoptet import for restricted hosting shell").
 

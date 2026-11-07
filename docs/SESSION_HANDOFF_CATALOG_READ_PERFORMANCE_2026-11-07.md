@@ -20,3 +20,7 @@ nikoli produkční latenci. Nový katalog HTTP/browser/produkční UAT NOT RUN.
 Další krok: review #364, pozdější integrace podle rozhodnutí vlastníka.
 Původní WIP i jeho SHA256 zachované; původní checkout se nepřepínal.
 Bez nového zadání nenasazovat, neaktivovat ani neuklízet cizí rozpracovanou práci.
+
+Aktuální pokračování: vlastník povolil vhodné nasazení a další implementaci.
+Katalog merge/deploy nyní schválený; CI, veřejné čtecí před/po a standardní
+chráněné nasazení. Následuje dávkový výběr lekcí docházky podle #363.

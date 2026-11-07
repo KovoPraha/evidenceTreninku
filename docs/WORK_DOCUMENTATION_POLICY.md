@@ -22,6 +22,12 @@ odpovídající soubory znovu načíst, nikoli jen odkázat na vzpomínku na jej
 | Historické podrobnosti | Datované tematické soubory, archivy a [CHANGELOG-PROVOZ](CHANGELOG-PROVOZ.md); bez přepisování starých výsledků na dnešní |
 | Starší vstupní cesta session handoffu | [SESSION_HANDOFF](plan-eshop-tymova-evidence/SESSION_HANDOFF.md), pouze rozcestník do 25 řádků |
 
+Úplnou evidenci souborů doplňuje [katalog plánů](PLAN_CATALOG.md) a
+[textový index](PLAN_DOCUMENT_INDEX.md). Při přidání plánu aktualizuj jeho
+záznam v `docs/verification/plan-catalog-audit-20261107/catalog.json` a odkaz
+v katalogu; původní ID podle cesty zachovej. Podpůrný protokol není automaticky
+další schválenou roadmapou. Dokončené řezy vyžadují konkrétní důkaz svého rozsahu.
+
 ## Životní cyklus každé práce
 
 1. **Načtení a zahájení:** ověř Git a WIP, načti CURRENT, handoff, registr,

@@ -1,5 +1,10 @@
 # Číselné řady a účetní kategorie e-shopu
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Číselné řady vydané; nečekají znovu na lokální revizi ani deploy.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P07. [SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md](SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md)
+
+
 ## Aktuální produkční výsledek
 
 **Nasazeno a ověřeno 21. 10. 2026.** [PR #160](https://github.com/KovoPraha/evidenceTreninku/pull/160),
@@ -158,7 +163,7 @@ v ignorovaných `tmp/http-process.txt` a `tmp/mariadb-process.txt`; data a
 `docs/localhost-testovani.md`. Ukládání nastavení při browser testu nevytvořilo
 žádnou objednávku ani nepotvrdilo úhradu; nákupní zápisy ověřují integrační testy.
 
-Implementace je připravená k lokální revizi. Další krok je kontrola změn a
+Historický záznam před vydáním: implementace byla připravená k lokální revizi. Další krok tehdy byla kontrola změn a
 případné samostatně vyžádané publikování PR; nezapínat produkci ani automaticky
 nepřenášet testovací mapování. Při navazujícím řezu znovu ověřit aktuální main
 a případný drift zálohovacího kontraktu.

@@ -1,5 +1,11 @@
 # Přehled lidí, rolí a přístupů
 
+> Aktualizace katalogu 7. 11. 2026: #361 sloučené jako `3b37e053`.
+> Původní přehled a čtecí vizuální kontrola dokončené; navazující mobilní
+> karty jsou implementované v main. Jejich následný deploy a nový produkční
+> Chrome průchod zůstávají nedoložené, viz registr ROLE01-MOB.
+
+
 ID ROLE01; vlastník: vývoj a vlastník aplikace. **HOTOVO: implementace, nasazení
 a technická produkční přejímka 16/16.** [Rozhodnutí](DECISION_LOG.md#d2026-11-07-02).
 

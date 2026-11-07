@@ -1,5 +1,10 @@
 # Úplný import osob ze starého KIS
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Staré importní kontrakty a sandbox nejsou oprávnění k novému nahrazení osob. Současné osoby zachovat; nový sync pouze podle P06.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P06/P09. [MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md)
+
+
 Import `kis-full-person-v1` je samostatný schválený cutover osob a kontaktů.
 Nepoužívá katalog licencí jako zdroj identity a nemění kontrakt staršího
 třízdrojového preview `kis-import-field-v1`. `id_hash` ze starého KIS se ukládá

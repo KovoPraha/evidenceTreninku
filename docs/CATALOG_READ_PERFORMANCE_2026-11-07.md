@@ -76,3 +76,15 @@ Před předáním převzatý také main `3b37e053` / #361 (mobilní karty přís
 Všech 9 měřených katalogových zdrojů je stále shodných s `0252ba58`.
 Jeho samostatné provozní zadání se v tomto úkolu nevykonává. Poslední CI
 převzetí sleduje PR; katalogová parita a měření zůstávají doložené.
+
+## Pokračování a nové oprávnění vlastníka
+
+Vlastník nyní výslovně zadal vhodné změny nasadit, určitě commitnout a pokračovat
+implementací dalších optimalizací. Původní zákaz deploye je historický; pro
+ověřený katalog je nyní schválen merge a standardní chráněný deploy bez importu.
+Nasazení má smysl podle doložené parity a přínosu. Před ním převzít main #360,
+dokončit celý CI včetně zrušené MariaDB 11.4, zachytit anonymní veřejný katalog
+před/po a ověřit shodné karty/ceny/menu. Neměnit produkční data ani přepínače.
+Aktuální produkční workflow už nasadilo `3b37e053` (42365946802) v jiném úkolu;
+neopakovat jeho aktivace ani vizuální role UAT. Nyní nasadit pouze nový katalog.
+Další etapa: P11-R06-LESSONS, dávkový výběr nabízených lekcí podle #363.

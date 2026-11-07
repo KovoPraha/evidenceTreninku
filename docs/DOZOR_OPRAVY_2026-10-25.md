@@ -1,6 +1,11 @@
 # Opravy po nezávislé přejímce 25. 10. 2026
 
-Vlastník schválil implementaci připomínek dozoru. Bez merge do main, deploye,
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Opravy dozoru F1–F3 byly následně vydané; staré zákazy popisují původní implementační etapu, nikoli čekající deploy.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P11. [RESULTS.md](verification/dozor-release-20261026/RESULTS.md)
+
+
+Historické zadání implementační etapy: vlastník schválil připomínky dozoru. Tehdy bez merge do main, deploye,
 aktivace integrací, nových migrací a zásahů do skutečných dat.
 Práce probíhá v izolovaných worktrees mimo htdocs; původní WIP zůstává zachován.
 Během práce se main posunul cizími PR #201 a #202 na 83ebee72; všechny navázané

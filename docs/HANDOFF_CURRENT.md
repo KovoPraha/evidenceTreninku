@@ -9,22 +9,20 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
   Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.
-  Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); dále implementace, CI, merge/deploy a Chrome.
+  Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); sloučené `3b37e053`; dále schválený deploy a nový Chrome.
 
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 
-- DOC01: [zadání, audit, plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
-  Obsah a místní kontroly hotové; [GitHub předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), stav CI/merge u PR.
-  Větev `codex/repo-documentation-policy-20261107`, vlastní worktree stejného tématu
-  v `C:/Users/Marek/Documents/Codex/evidencePavel-repo-documentation-policy-20261107`.
+- DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [audit](PLAN_CATALOG_AUDIT_2026-11-07.md), [úplný katalog](PLAN_CATALOG.md); koncepty C01–C04 v registru.
+
 - P11: celé HTTP/browser na `feb8fe8c` HOTOVO; [výsledky](verification/full-http-performance-20261107/RESULTS.md),
   [předání a další kroky](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md). 65 případů / 930 HTTP vzorků,
   403 browser pozorování; role/filtry/revokace PASS. Dále R06 výběr osob a lekce, mobil/souběh.
   R13 #352 / R05 #353 / R06 #354 zahrnuje ROLE01; novější main nebyl přeměřen.
   [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), větev `codex/full-http-performance-20261107`;
   vlastní worktree viz předání. Po integraci main cíleně 47 testů / 2877 assertions PASS.
-  Žádný náš deploy; runtime uklizený, původní WIP zachovaný. CI/merge u PR.
-  Klubové ceny #358 v main bez deploye; [katalog #364 k review: plán/předání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
+  #363 sloučené (`d958fd6e`); bez deploye, runtime uklizený, původní WIP zachovaný.
+  Klubové ceny #358 v main bez deploye; [katalog #364: schválený merge/deploy a další krok](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.
@@ -36,12 +34,12 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   Výsledek nepředpokládat z data; číst důkaz. Místní úloha zůstává PAUSED.
 
 <!-- membership-morning-publish:start -->
-## Ranní audit 7. 11. — čeká na skutečný termín
+## Ranní audit 7. 11. — čeká na doložený výsledek
 
-Ranní výsledek **NOT RUN**. Hosting jej zachytí od 05:30 UTC (06:30 CET),
-serverový přenos doplní protokol a tento handoff přes připravený
+Termín 05:30 UTC již uplynul; výsledek **NEDOLOŽEN v Gitu**.
+Nejde o důkaz, že server neběžel. Výsledek má doplnit
 [výsledkový PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347).
-PC ani místní Codex nejsou potřeba. [Přesný postup a stav](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
+PC není potřeba. [Přesný postup a stav](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
 Skutečné P05/P07 a export P06 zůstávají odložené.
 <!-- membership-morning-publish:end -->
 

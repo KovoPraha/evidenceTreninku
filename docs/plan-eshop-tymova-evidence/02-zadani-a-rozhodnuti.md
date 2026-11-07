@@ -1,6 +1,11 @@
 # 02 – Zadání a rozhodnutí
 
-Stav: produktový návrh k potvrzení
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Původní program M1/M2 a tehdejší rozhodnutí. Dnešní pořadí určuje registr; zbylé produktové návrhy C01, členský model P06 a přejímka P09.
+> [Katalog všech plánů](../PLAN_CATALOG.md), položky C01/P06/P09 v [registru](../WORK_PLAN_CURRENT.md).
+
+
+Původní stav: produktový návrh k potvrzení (historická rozhodnutí níže)
 Pravidlo: pracovní vlákno nesmí samo změnit rozhodnutí označené jako blokující.
 
 ## Produktová vize

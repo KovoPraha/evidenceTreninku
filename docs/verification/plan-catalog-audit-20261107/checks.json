@@ -1,0 +1,35 @@
+{
+  "base": "1d88ce9e",
+  "original_text_documents": 695,
+  "indexed_documents": 766,
+  "primary_entries": 324,
+  "primary_statuses": {
+    "REFERENCE": 84,
+    "PARTIAL": 96,
+    "HISTORICAL": 57,
+    "CONCEPT": 4,
+    "PLANNED": 1,
+    "DONE": 50,
+    "AWAITING_INPUT": 10,
+    "AWAITING_EVIDENCE": 2,
+    "SUPERSEDED": 20
+  },
+  "coverage": "PASS: every original text document registered; all source/evidence files exist; IDs unique",
+  "navigation": "PASS: CURRENT, handoff, work register and decision log expose the complete catalog",
+  "documentation_contract": "CURRENT_STATE: 80 lines; local links: 4251; archived blocks: 107; errors: 0",
+  "negative_unregistered_plan": "PASS: rejected",
+  "negative_done_without_evidence": "PASS: rejected",
+  "negative_missing_evidence": "PASS: rejected",
+  "synthetic_publisher": {
+    "status": "PASS, copy only; no live audit",
+    "sizes": {
+      "docs/CURRENT_STATE.md": 80,
+      "docs/HANDOFF_CURRENT.md": 77
+    }
+  },
+  "sizes": {
+    "docs/CURRENT_STATE.md": 80,
+    "docs/HANDOFF_CURRENT.md": 78,
+    "docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md": 15
+  }
+}

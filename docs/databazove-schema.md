@@ -1,5 +1,10 @@
 # Databázové schéma — Evidence Tréninků
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Historický referenční základ 2.20; jeho „plánované“ tabulky a návody nejsou dnešní implementační roadmapa. Schéma určuje migrační katalog a další práci společný registr.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr DOC02. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md)
+
+
 > Historický popis baseline 2.20. Pro aktuální schéma jsou autoritativní
 > `database/local-demo-schema.sql`, neměnné soubory v `migrations/` a jejich
 > testy. Aktuální počet a produkční bod uvádí [`CURRENT_STATE.md`](CURRENT_STATE.md).
