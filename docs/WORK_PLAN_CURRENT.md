@@ -202,6 +202,15 @@ Vlastník požádal odstranit závislost na zapnutém PC. [Aktuální serverový
 jednorázový hostingový pozorovatel, neměnný důkaz, automatická dokumentace přes
 chráněný PR a skutečný preflight publikace. Náhrada ověřená přes #348, místní úloha PAUSED. Skutečné P05/P07 i export P06 zůstávají odložené.
 
+## P11 — navazující optimalizace docházky 7. 11. 2026
+
+Aktivní R06 na pokyn „ok, pokračuj“, bez produkčních změn a se zachováním WIP.
+[Plán a průběžné výsledky](verification/attendance-read-performance-20261107/RESULTS.md),
+větev `codex/attendance-read-performance-20261107`, base `89edfdbe`.
+Dávkové GET kontroly účastníků, čerstvá autorizace a původní transakční cesta;
+místní regrese 29 testů / 206 assertions PASS. Párové syntetické měření
+10/50/200 osob × 1/12/52 revizí a MariaDB parita dosud NOT RUN.
+
 ## P11 — autonomní syntetické měření 6. 11. 2026
 
 **R05 implementovaný a ověřený:** vlastník zadal autonomní optimalizaci plánovače, porovnání

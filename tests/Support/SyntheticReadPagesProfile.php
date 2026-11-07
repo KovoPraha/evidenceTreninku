@@ -387,7 +387,8 @@ $report['source_files_sha256'] = [];
 foreach (['planovac.php', 'training_closure_admin.php', 'medical_clearance_admin.php', 'includes/training_day_view.php',
     'includes/medical_clearance_admin_view.php', 'includes/medical_clearance.php', 'includes/medical_clearance_read.php',
     'assets/js/medical-person-picker.js', 'includes/training_planner_read.php', 'includes/training_planner_rsvp_read.php',
-    'includes/training_planner_view.php', 'includes/family_schema_read_scope.php'] as $file) {
+    'includes/training_planner_view.php', 'includes/family_schema_read_scope.php', 'includes/coach_training_access.php',
+    'includes/training_closure.php'] as $file) {
     $report['source_files_sha256'][$file] = hash('sha256', str_replace("\r\n", "\n", (string)file_get_contents(dirname(__DIR__, 2) . '/' . $file)));
 }
 try {
