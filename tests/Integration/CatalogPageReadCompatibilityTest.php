@@ -23,7 +23,7 @@ final class CatalogPageReadCompatibilityTest extends TestCase
 
     public function testPageEdgesSearchCategoriesAndEverySortHaveIdenticalCardsAndCounts(): void
     {
-        foreach ([0, 1, 12, 13, 48] as $size) {
+        foreach ([0, 1, 12, 13, 48, 80] as $size) {
             $pdo = \catalogPageFixture($size);
             foreach ([null, 0, 1, 2, 3] as $account) {
                 foreach ([[], ['strana' => -3], ['strana' => 99], ['strana' => 2, 'razeni' => 'price'],
@@ -35,6 +35,26 @@ final class CatalogPageReadCompatibilityTest extends TestCase
                     self::assertLessThanOrEqual(12, count($state['products']));
                 }
             }
+        }
+    }
+
+    public function testStrategyBoundaryRetainsExactStateAndBoundsHeavyReads(): void
+    {
+        foreach ([64 => 64, 65 => 12] as $size => $expectedRows) {
+            $pdo = new \Tests\Support\QueryProfilePdo('sqlite::memory:');
+            \catalogPageCopyFixture(\catalogPageFixture($size), $pdo);
+            $this->parity($pdo, 1, ['strana' => 2]);
+            $pdo->profile = [];
+            $pdo->profiling = true;
+            \shopCatalogPageRead($pdo, null, []);
+            $pdo->profiling = false;
+            $rows = 0;
+            foreach ($pdo->profile as $query) {
+                if (str_contains($query['sql'], 'v.attributes_json')) {
+                    $rows += $query['fetched_rows'];
+                }
+            }
+            self::assertSame($expectedRows, $rows);
         }
     }
 
@@ -67,7 +87,7 @@ final class CatalogPageReadCompatibilityTest extends TestCase
 
     public function testProgramsCapacityTermsAndMonthlyFlagsRemainCanonical(): void
     {
-        $pdo = \catalogPageFixture(15, true);
+        $pdo = \catalogPageFixture(80, true);
         $this->parity($pdo, null);
         $pdo->exec('UPDATE club_program_offers SET capacity=0 WHERE id=1');
         $pdo->exec("UPDATE club_program_offers SET sales_open_at='2099-01-01' WHERE id=2");
@@ -86,7 +106,7 @@ final class CatalogPageReadCompatibilityTest extends TestCase
     public function testMonthlyTariffsEnabledDoNotReceiveMemberPrice(): void
     {
         define('MONTHLY_MEMBERSHIP_AUTOMATION_ENABLED', true);
-        $pdo = \catalogPageFixture(15, true);
+        $pdo = \catalogPageFixture(80, true);
         $pdo->exec('CREATE TABLE monthly_membership_tariffs(id INTEGER PRIMARY KEY,variant_id INTEGER,status TEXT,amount_minor INTEGER,billing_interval TEXT)');
         $pdo->exec("INSERT INTO monthly_membership_tariffs VALUES(1,1,'active',10001,'year'),(2,2,'inactive',10002,'month'),(3,3,'active',1,'month')");
         $state = $this->parity($pdo, 1);
@@ -96,7 +116,7 @@ final class CatalogPageReadCompatibilityTest extends TestCase
 
     public function testTransactionsUseOriginalReadsAndEmptySelectionLoadsNoFullVariants(): void
     {
-        $source = \catalogPageFixture(30);
+        $source = \catalogPageFixture(80);
         $pdo = new \Tests\Support\QueryProfilePdo('sqlite::memory:');
         \catalogPageCopyFixture($source, $pdo);
         $pdo->beginTransaction();
@@ -107,7 +127,17 @@ final class CatalogPageReadCompatibilityTest extends TestCase
         $before = $pdo->profile;
         $pdo->profile = [];
         \shopCatalogPageRead($pdo, 1, []);
-        $shape = static fn (array $q): array => [$q['sql'], $q['parameters'], $q['fetched_rows']];
+        $shape = static function (array $q): array {
+            $parameters = $q['parameters'];
+            if (str_contains($q['sql'], 'FROM account_person_roles r ')) {
+                // The canonical function deliberately reads the current clock on
+                // every call; crossing a second must not fail SQL-shape parity.
+                self::assertSame($parameters[1], $parameters[2]);
+                self::assertMatchesRegularExpression('/^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$/D', $parameters[1]);
+                $parameters[1] = $parameters[2] = '<current clock>';
+            }
+            return [$q['sql'], $parameters, $q['fetched_rows']];
+        };
         self::assertSame(array_map($shape, $before), array_map($shape, $pdo->profile));
         $pdo->profiling = false;
         $pdo->rollBack();

@@ -124,7 +124,14 @@ function shopCatalogPageSelect(PDO $pdo, array $products, array $input, ?array $
  */
 function shopCatalogPageRead(PDO $pdo, ?int $accountId, array $input): array
 {
-    if ($pdo->inTransaction()) {
+    // Small catalogs do not amortize a second projection. This bounded probe
+    // selects an algorithm only; canonical saleability still selects products.
+    $useFullCatalog = $pdo->inTransaction();
+    if (!$useFullCatalog) {
+        $probe = $pdo->query("SELECT id FROM shop_products WHERE catalog_status='active' AND offer_type IN ('goods','program') LIMIT 65");
+        $useFullCatalog = count($probe->fetchAll(PDO::FETCH_COLUMN)) <= 64;
+    }
+    if ($useFullCatalog) {
         $products = shopPublicCatalogCards($pdo);
         if ($accountId !== null) {
             $products = shopMemberPricesApplyToCatalog($pdo, $accountId, $products);

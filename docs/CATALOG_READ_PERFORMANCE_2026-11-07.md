@@ -59,3 +59,25 @@ Další krok: ověřit striktní paritu a změřit omezenou projekci.
   zachovává původní chování detailů a ostatních uživatelů úplného katalogu.
 - Zůstává globální práce nad lehkými kandidáty a programovou kapacitou;
   změna neřeší bootstrap/navigaci ani nepředstavuje SQL stránkování všech dat.
+
+## GitHub ověření
+
+[PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364), větev pushnutá.
+Cílená sada rozšířená o původní ceny: 28 testů / 1495 assertions PASS.
+První úplný Linux běh `42363899233`: 2349 testů, jedna strukturní kontrola
+ještě hledala konstantu 12 v řadiči místo nového readeru. Kontrola přesměrovaná
+na skutečné místo a doplněné ověření zapojení; aplikační parita tím neselhala.
+Nativní databázové měření pokračuje; finální CI bude zopakované po opravě testu.
+Místní první objemový běh ukončen při změně zdrojů před konečným měřením;
+částečné/nekonzistentní časy se nepoužívají. Dokončené CI bude zdrojem výsledků.
+
+## Úprava podle prvního nativního měření
+
+MariaDB 10.3: 5000 produktů 288,35 → 127,09 ms, paměť 71,59 → 16,78 MiB;
+12 produktů 3,67 → 5,63 ms a 15 programů 17,10 → 19,44 ms.
+Před další implementací zvolen malý omezený přepínač: nejvýše 65 ID aktivních
+produktů pro rozhodnutí strategie. Do 64 produktů zůstane kanonická úplná cesta;
+nad 64 omezená prezentace. Probe neurčuje obsah/počty ani nefiltruje výsledky.
+Jde o pevnou interní heuristiku, nikoli změnu prodejnosti. Malý sortiment přidá
+jen jeden malý SELECT; velký sortiment stále omezí těžká data na stránku.
+Nové měření nahradí původní čísla; první report zůstává označený jako předchozí.

@@ -36,6 +36,7 @@ function catalogPageMeasure(PDO $pdo, Tests\Support\QueryProfilePdo $instrument,
     if ($expected !== shopCatalogPageRead($pdo, $account, $input)) {
         throw new RuntimeException('Complete catalog page state differs.');
     }
+    $smallCatalog = $expected['activeCatalogCount'] <= 64;
     $hash = hash('sha256', serialize($expected));
     unset($expected);
     $output = [];
@@ -95,7 +96,7 @@ function catalogPageMeasure(PDO $pdo, Tests\Support\QueryProfilePdo $instrument,
             'fetched_rows' => array_sum(array_column($instrument->profile, 'fetched_rows')),
             'full_variant_rows' => $fullRows, 'image_rows' => $imageRows,
             'queries' => $groups, 'median_ms' => ($times[14] + $times[15]) / 2, 'p95_ms' => $times[28]];
-        if ($mode === 'after' && ($fullRows > 12 || $imageRows > 36)) {
+        if ($mode === 'after' && ($fullRows > ($smallCatalog ? 64 : 12) || $imageRows > ($smallCatalog ? 192 : 36))) {
             throw new RuntimeException('Full presentation exceeded selected single-variant page.');
         }
     }
@@ -104,7 +105,7 @@ function catalogPageMeasure(PDO $pdo, Tests\Support\QueryProfilePdo $instrument,
 
 $cases = [];
 $cleanup = [];
-foreach ([12, 1000, 5000, 15] as $size) {
+foreach ([12, 1000, 5000, 15, 80] as $size) {
     $schema = 'catalog_page_' . bin2hex(random_bytes(8));
     try {
         if ($mysql) {
@@ -124,7 +125,7 @@ foreach ([12, 1000, 5000, 15] as $size) {
             $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             $instrument->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         }
-        $source = catalogPageFixture($size, $size === 15);
+        $source = catalogPageFixture($size, in_array($size, [15, 80], true));
         catalogPageCopyFixture($source, $pdo);
         if (!$mysql) {
             catalogPageCopyFixture($source, $instrument);
@@ -135,7 +136,7 @@ foreach ([12, 1000, 5000, 15] as $size) {
             : [[null, []]] as $case => [$account, $input]) {
             $cases[$size . '_' . $case] = catalogPageMeasure($pdo, $instrument, $account, $input);
         }
-        if ($size === 15) {
+        if (in_array($size, [15, 80], true)) {
             foreach (["UPDATE club_program_offers SET capacity=0 WHERE id=1",
                 "UPDATE club_event_term_versions SET status='withdrawn' WHERE scope_key='program:2'",
                 "UPDATE account_person_roles SET status='revoked'"] as $sql) {
@@ -144,7 +145,7 @@ foreach ([12, 1000, 5000, 15] as $size) {
                     throw new RuntimeException('Fresh program/eligibility state differs.');
                 }
             }
-            $cases['fresh_program_changes'] = 'PASS';
+            $cases['fresh_program_changes_' . $size] = 'PASS';
         }
     } finally {
         $pdo = $instrument = null;

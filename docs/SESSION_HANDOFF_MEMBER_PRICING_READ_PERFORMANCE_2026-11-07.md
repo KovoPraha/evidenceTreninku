@@ -1,6 +1,6 @@
 # Předání — dávkové klubové ceny e-shopu 7. 11. 2026
 
-Stav: IMPLEMENTACE, PARITA A MĚŘENÍ HOTOVÉ, bez nasazení.
+Stav: IMPLEMENTACE, PARITA A MĚŘENÍ HOTOVÉ; #358 v main `37d0ad68`, bez nasazení.
 Zadání vlastníka: optimalizovat klubové ceny, ověřit shodné výsledky a změřit
 před/po, zachovat WIP, průběžně aktualizovat plán v repu. Bez produkčního deploye.
 
@@ -21,8 +21,8 @@ se čtou při každém volání. Styly a snížený PHPStan baseline budget PASS
 `0890e496`: všech 11 kontrol PASS, plný Linux 2321/42987 a 3/45, obě MariaDB
 39/39 kolací/transakčních kontrol, shodné celé výsledky všech 9 profilů.
 Vzorky a EXPLAIN v protokolu; následná regrese skutečných katalogových karet
-má cílený PASS, poslední finální CI/merge je živý stav PR. Tato práce se neslučuje
-ani nenasazuje automaticky. Časy nejsou celá stránka ani produkční SLA.
+má cílený PASS; finální head `02ad8016` má 11 kontrol PASS a #358 je sloučený.
+Žádné nasazení se neprovedlo. Časy nejsou celá stránka ani produkční SLA.
 
 Vlastní místní služby zastavené; místní neuzavřené Windows/MariaDB běhy
 se nevydávají za PASS. Automatická kontrola odmítla rekurzivní odstranění
