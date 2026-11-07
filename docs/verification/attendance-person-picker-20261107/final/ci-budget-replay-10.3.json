@@ -1,0 +1,214 @@
+{
+    "complete": true,
+    "before_source_sha": "89edfdbee5fbddbe05e0134d94f79ba0cb4143d9",
+    "after_source_sha": "4db3027162ba661fda3f25703bf848153eaa111c",
+    "server": {
+        "version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+        "port": 3306
+    },
+    "php": "8.2.35",
+    "domain_results_equal": true,
+    "html_lf_equal": true,
+    "timing_samples_per_phase": 270,
+    "sql_samples_per_phase": 9,
+    "cases": [
+        {
+            "participants": 10,
+            "revisions": 1,
+            "role": "coach",
+            "before": {
+                "sql": 68,
+                "rows": 141,
+                "median_ms": 14.81746,
+                "p95_ms": 16.121125,
+                "peak_increment_bytes": 198880
+            },
+            "after": {
+                "sql": 56,
+                "rows": 139,
+                "median_ms": 13.0615085,
+                "p95_ms": 13.534592,
+                "peak_increment_bytes": 238408
+            },
+            "sql_reduction_percent": 17.65,
+            "row_reduction_percent": 1.42,
+            "median_speedup": 1.13
+        },
+        {
+            "participants": 10,
+            "revisions": 12,
+            "role": "coach",
+            "before": {
+                "sql": 68,
+                "rows": 152,
+                "median_ms": 14.995729,
+                "p95_ms": 17.069365,
+                "peak_increment_bytes": 205024
+            },
+            "after": {
+                "sql": 56,
+                "rows": 150,
+                "median_ms": 13.189384,
+                "p95_ms": 13.545013,
+                "peak_increment_bytes": 244552
+            },
+            "sql_reduction_percent": 17.65,
+            "row_reduction_percent": 1.32,
+            "median_speedup": 1.14
+        },
+        {
+            "participants": 10,
+            "revisions": 52,
+            "role": "coach",
+            "before": {
+                "sql": 68,
+                "rows": 192,
+                "median_ms": 14.947962,
+                "p95_ms": 17.40784,
+                "peak_increment_bytes": 227808
+            },
+            "after": {
+                "sql": 56,
+                "rows": 190,
+                "median_ms": 12.927555000000002,
+                "p95_ms": 14.198717,
+                "peak_increment_bytes": 267336
+            },
+            "sql_reduction_percent": 17.65,
+            "row_reduction_percent": 1.04,
+            "median_speedup": 1.16
+        },
+        {
+            "participants": 50,
+            "revisions": 1,
+            "role": "coach",
+            "before": {
+                "sql": 108,
+                "rows": 301,
+                "median_ms": 19.0436785,
+                "p95_ms": 21.043922,
+                "peak_increment_bytes": 211144
+            },
+            "after": {
+                "sql": 56,
+                "rows": 299,
+                "median_ms": 13.334771,
+                "p95_ms": 14.06184,
+                "peak_increment_bytes": 240552
+            },
+            "sql_reduction_percent": 48.15,
+            "row_reduction_percent": 0.66,
+            "median_speedup": 1.43
+        },
+        {
+            "participants": 50,
+            "revisions": 12,
+            "role": "coach",
+            "before": {
+                "sql": 108,
+                "rows": 312,
+                "median_ms": 18.401848,
+                "p95_ms": 20.557323,
+                "peak_increment_bytes": 217112
+            },
+            "after": {
+                "sql": 56,
+                "rows": 310,
+                "median_ms": 13.30448,
+                "p95_ms": 13.941288,
+                "peak_increment_bytes": 246696
+            },
+            "sql_reduction_percent": 48.15,
+            "row_reduction_percent": 0.64,
+            "median_speedup": 1.38
+        },
+        {
+            "participants": 50,
+            "revisions": 52,
+            "role": "coach",
+            "before": {
+                "sql": 108,
+                "rows": 352,
+                "median_ms": 17.323805999999998,
+                "p95_ms": 20.360222,
+                "peak_increment_bytes": 239192
+            },
+            "after": {
+                "sql": 56,
+                "rows": 350,
+                "median_ms": 13.371151,
+                "p95_ms": 17.677165,
+                "peak_increment_bytes": 269480
+            },
+            "sql_reduction_percent": 48.15,
+            "row_reduction_percent": 0.57,
+            "median_speedup": 1.3
+        },
+        {
+            "participants": 200,
+            "revisions": 1,
+            "role": "coach",
+            "before": {
+                "sql": 258,
+                "rows": 901,
+                "median_ms": 28.443102500000002,
+                "p95_ms": 30.46437,
+                "peak_increment_bytes": 369608
+            },
+            "after": {
+                "sql": 56,
+                "rows": 899,
+                "median_ms": 14.212042,
+                "p95_ms": 14.910673,
+                "peak_increment_bytes": 369608
+            },
+            "sql_reduction_percent": 78.29,
+            "row_reduction_percent": 0.22,
+            "median_speedup": 2
+        },
+        {
+            "participants": 200,
+            "revisions": 12,
+            "role": "coach",
+            "before": {
+                "sql": 258,
+                "rows": 912,
+                "median_ms": 28.53057,
+                "p95_ms": 29.831693,
+                "peak_increment_bytes": 375576
+            },
+            "after": {
+                "sql": 56,
+                "rows": 910,
+                "median_ms": 14.5783255,
+                "p95_ms": 15.056328,
+                "peak_increment_bytes": 375576
+            },
+            "sql_reduction_percent": 78.29,
+            "row_reduction_percent": 0.22,
+            "median_speedup": 1.96
+        },
+        {
+            "participants": 200,
+            "revisions": 52,
+            "role": "coach",
+            "before": {
+                "sql": 258,
+                "rows": 952,
+                "median_ms": 28.743488,
+                "p95_ms": 54.955702,
+                "peak_increment_bytes": 397656
+            },
+            "after": {
+                "sql": 56,
+                "rows": 950,
+                "median_ms": 14.4781495,
+                "p95_ms": 14.704317,
+                "peak_increment_bytes": 397656
+            },
+            "sql_reduction_percent": 78.29,
+            "row_reduction_percent": 0.21,
+            "median_speedup": 1.99
+        }
+    ]
+}

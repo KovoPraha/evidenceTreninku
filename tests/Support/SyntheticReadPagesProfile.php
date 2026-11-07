@@ -20,6 +20,7 @@ require_once dirname(__DIR__, 2) . '/includes/training_rsvp.php';
 require_once dirname(__DIR__, 2) . '/includes/club_makeup.php';
 require_once dirname(__DIR__, 2) . '/includes/training_day.php';
 require_once dirname(__DIR__, 2) . '/includes/training_closure_form.php';
+require_once dirname(__DIR__, 2) . '/includes/training_closure_people.php';
 require_once dirname(__DIR__, 2) . '/includes/training_planner_view.php';
 require_once dirname(__DIR__, 2) . '/includes/training_planner_read.php';
 require_once dirname(__DIR__, 2) . '/includes/medical_clearance.php';

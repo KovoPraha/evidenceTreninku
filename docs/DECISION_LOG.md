@@ -6,6 +6,37 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-09
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník zadal optimalizovat výběr osob
+  podle měření, ověřit stejná syntetická data a zachovat chování/WIP bez produkce.
+- **Volba / důvod:** omezená hledaná stránka plus všechny již vybrané osoby;
+  nativní POST hledání zachová práci i bez JavaScriptu. AJAX není pro omezení
+  HTML nutný a přidal by další asynchronní stav/endpoint.
+  Změna neomezuje hosty a nedotýká se kanonického writeru ani oprávnění.
+- **Varianty:** pouhé skrytí dlouhého seznamu nezmenší HTML; vlastní soupiska
+  jako hranice by změnila chování. Cache oprávnění není přípustná.
+- **Akceptace / stav:** [plán a průběh](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+  implementace/místní měření/UAT HOTOVO; větev `codex/attendance-person-picker-20261107`,
+  [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), finální CI/merge u PR.
+
+Pracovní ID 06/07 kolidovalo s přijatým DOC02/katalogem; ta ID zůstávají,
+vlastní rozhodnutí je 09. Historické commitové doklady se nemění.
+
+Doplnění před přijetím PR #366: dvě nativní formy nepředávají neodeslaná pole
+sousední části. Volba se zpřesňuje na společný formulář s oddělenými prefixy
+omluvy a původní serverovou validací. Nový úplný pár měření a JS/noJS
+regrese obou současných draftů PASS; předběžný pár zůstává historický; bez produkce.
+
+[Finální důkazy](verification/attendance-person-picker-20261107/final/RESULTS.md);
+#367 dávkové lekce převzaté, celé integrované HTTP zatím nepřeměřené.
+
+
+Doplnění integračního měřidla: starý celostránkový cap45 je po započtení nové
+UI projekce a #367 nahrazen přesným cap56. Původní validator budget, cap1000řádků,
+HTML/data parita a relativní úspora zůstávají; vadné reporty jsou odmítané.
+
+
 ## D2026-11-07-05
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; autonomní měření podle pokynu vlastníka bez produkčních změn.
@@ -181,3 +212,5 @@ PŘIJATO podle pokračovacího zadání vlastníka. [Dávkové lekce](ATTENDANCE
 Po nativní paritě a přínosu přibližně 20× u 50 lekcí je podle aktuálního zadání vhodné nasadit i tuto čtecí optimalizaci. Merge a standardní deploy následují až po zelených požadovaných kontrolách; žádné změny osob, rolí nebo docházky.
 
 P11 R06 nabídka lekcí — uzavřený dílčí řez podle D2026-11-07-08: #367, finální CI, parita a měření PASS; [plán](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md), [produkční důkaz a meze](verification/attendance-lesson-release-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md). Výběr osob a celé K0.2 dál otevřené.
+
+P11 picker — [finální místní výsledek](verification/attendance-person-picker-20261107/final/RESULTS.md), [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), PR #366 bez našeho deploye.

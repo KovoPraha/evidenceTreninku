@@ -1,0 +1,33 @@
+async (page) => {
+  const c = JSON.parse('__PRIVATE_CREDENTIAL__');
+  const root = 'C:/Users/Marek/Documents/Codex/evidencePavel-attendance-picker-20261107/output/playwright/attendance-picker-20261107/';
+  await page.goto('http://127.0.0.1:18095/login.php');
+  await page.getByRole('textbox', {name: 'Jméno nebo e-mail', exact: true}).fill(c.login);
+  await page.getByRole('textbox', {name: 'Heslo', exact: true}).fill(c.password);
+  await page.getByRole('button', {name: 'Přihlásit se', exact: true}).click();
+  await page.goto('http://127.0.0.1:18095/training_closure_admin.php?id=101');
+  await page.waitForFunction(() => document.body.classList.contains('app-ui-ready'));
+  await page.setViewportSize({width: 1036, height: 703});
+  await page.locator('#actual-attendance').screenshot({path: root + 'picker-form-desktop.png'});
+  await page.setViewportSize({width: 390, height: 844});
+  await page.locator('#actual-attendance').screenshot({path: root + 'picker-form-mobile.png'});
+  const form = page.locator('#personal-excuse');
+  await form.locator('input[name="excuse_q"]').fill('1001');
+  await Promise.all([page.waitForNavigation({waitUntil: 'load'}), form.getByRole('button', {name: 'Hledat sportovce', exact: true}).click()]);
+  await form.locator('select[name="person_id"]').selectOption('1001');
+  await form.locator('input[name="excuse_received_at"]').fill('2026-11-07T06:00');
+  await form.locator('select[name="excuse_source"]').selectOption('paper');
+  await form.locator('input[name="excuse_reason"]').fill('LOCALHOST potvrzená osobní omluva ze syntetického papíru.');
+  const [response] = await Promise.all([
+    page.waitForResponse(r => r.request().method() === 'POST' && r.url().includes('/training_closure_admin.php')),
+    page.waitForNavigation({waitUntil: 'load'}),
+    form.getByRole('button', {name: 'Zapsat osobní omluvu', exact: true}).click()
+  ]);
+  const text = await page.locator('main').innerText();
+  if (response.status() !== 303 || !text.includes('Osobní omluva byla zapsána')) {
+    throw new Error('Personal excuse write failed: HTTP ' + response.status() + ' / ' + text.slice(0, 900));
+  }
+  return {complete: true, synthetic_only: true, post_status: response.status(), final_url: page.url(),
+    browser_button_dispatch: 'personal_excuse', selected_person: 1001, source: 'paper',
+    success: 'Osobní omluva byla zapsána', screenshots: ['picker-form-desktop.png', 'picker-form-mobile.png']};
+}

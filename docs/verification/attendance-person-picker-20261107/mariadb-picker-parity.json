@@ -1,0 +1,30 @@
+{
+    "complete": true,
+    "synthetic_only": true,
+    "server": "10.4.32-MariaDB",
+    "cases": [
+        {
+            "role": "coach",
+            "original_people": 1200,
+            "pages": 24,
+            "data_sha256": "aff1ea533b29d749daef287168b682885d0ebd6faf38022fec8db51e9e9ead04",
+            "bounded_projection": true,
+            "all_people_and_order_equal": true,
+            "literal_and_accent_search": true,
+            "pinned_people": 1200
+        },
+        {
+            "role": "sports_lead",
+            "original_people": 1200,
+            "pages": 24,
+            "data_sha256": "07cde54241455fada8ba41c77e139d4052ca763334aa13fe59ba766ad5680e27",
+            "bounded_projection": true,
+            "all_people_and_order_equal": true,
+            "literal_and_accent_search": true,
+            "pinned_people": 1200
+        }
+    ],
+    "fresh_data_and_revocation": true,
+    "read_only_parity_session": true,
+    "schema_removed": true
+}
