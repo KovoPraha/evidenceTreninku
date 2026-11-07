@@ -141,17 +141,19 @@ final class MedicalStateReadTest extends TestCase
             return;
         }
         $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+        $disabled = $pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY);
+        self::assertFalse((bool) $disabled);
         self::assertSame(
             medicalStateBaselineList($pdo, ['medical_state' => 'valid']),
             \medicalClearanceList($pdo, ['medical_state' => 'valid'])
         );
-        self::assertFalse($pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY));
+        self::assertSame($disabled, $pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY));
         $filters = \staffListFilters(['medical_state' => 'valid'], 'medical_', ['valid' => 'Valid']);
         try {
             \MedicalClearanceStateRead::page($pdo, 'FROM medical_clearance_watches w WHERE w.missing_column=?', [1], $filters, date('Y-m-d'));
             self::fail('Invalid SQL must fail.');
         } catch (\PDOException) {
-            self::assertFalse($pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY));
+            self::assertSame($disabled, $pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY));
         }
         self::assertSame(1, (int) $pdo->query('SELECT 1')->fetchColumn());
     }

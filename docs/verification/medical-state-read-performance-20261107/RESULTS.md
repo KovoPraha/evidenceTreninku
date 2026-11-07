@@ -26,3 +26,5 @@ referenční parita a obě nativní DB i celé HTTP/Chrome. Finální varianta z
 ## V2/64137a5b — odstraněna regrese, Platné neutrální
 
 [HTTP/Chrome42401069703](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42401069703) PASS. [Souhrn](iteration2/integrated-summary.json), úklid a13 checksumů PASS. Platné64,85→64,80ms, Čekající63,65→58,61ms, Odvolané65,09→59,59ms, Expired63,91→58,35ms; hledání Platných66,13→67,32ms. Neporovnávat absolutní časy s jiným runnerem prvního prototypu. V2 výraznou regresi odstranila, ale běžný filtr Platné zatím nemá jasný přínos. Pro běžný seznam bez dalších filtrů následuje přímá agregace records bez vnitřních opakovaných JOIN lidí/sledování, odvozená z odděleného EXPLAIN. Jeho odhady nejsou rows examined. Nová varianta bude znovu změřena.
+
+Nativní V2 kontrakt: šest funkčních testů prošlo; selhal nový test typu PDO hodnoty (`0` není bool`false`, 7/186 s jedním assertion selháním). Opravený test ověřuje skutečně vypnutý režim a pak přísnou shodu původní hodnoty včetně typu po úspěchu i výjimce. Žádný zásah do runtime. Nativní kontrakt/měření musí být znovu zelené.

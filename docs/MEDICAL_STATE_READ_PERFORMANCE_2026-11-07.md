@@ -67,3 +67,5 @@ V2 drží v pracovním okně pouze ID a stavová metadata; jména a plná sledov
 V2/64137a5b: parita celého HTTP PASS, výrazná regrese odstraněna; Platné64,85→64,80ms neutrální, Čekající63,65→58,61ms. Zatím neuzavřeno pro deploy. EXPLAIN ukazuje opakované vnitřní spojení lidí/sledování uvnitř souhrnu i pro neomezený seznam; pro ten nyní agregace jen nad records podle watch_id, vnější filtr a scoped varianta pro hledání/období zachované. Další nativní pár je podmínkou.
 
 V3 navíc využívá doménový invariant: valid/expired/not_yet_valid mohou vzniknout jen z verified hlavy (včetně explicitní budoucí náhrady). Agregace pro tyto filtry proto pracuje pouze s přesnými verified záznamy; pending/revoked/missing zachovávají i nejnovější libovolný záznam. Výstup a řetězce stále kanonické. Před nasazením vyžadována celá parita i přínos.
+
+Nativní test V2 odhalil nepřesný typový předpoklad v novém testu PDO: driver vrací0 místo boolfalse. Funkční paritní případy prošly, selhal jen assertFalse(0). Test nyní nejprve ověří vypnutí režimu a pak přísně porovnává původní hodnotu včetně typu po úspěchu/výjimce; runtime se tím nemění. Nativní běhy se opakují.
