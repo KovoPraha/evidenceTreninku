@@ -6,7 +6,7 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
-## D2026-11-07-04
+## D2026-11-07-05
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; autonomní měření podle pokynu vlastníka bez produkčních změn.
 - **Volba:** standardní HTTP/UI přihlášení a celé stránky, další pozice/filtry,
@@ -15,10 +15,10 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
   práci prohlížeče. Lokální časy nejsou produkční SLA; samotný SQL count neurčuje příčinu.
 - **Dopad:** 65 HTTP případů a 403 browser pozorování hotové; další priorita
   R06 výběr osob / lekce, nikoli neověřená další optimalizace nebo nasazení.
-  Měřená verze feb8fe8c zůstává oddělená od souběžného main 9460ee76 / ROLE01.
+  Měřená verze feb8fe8c zůstává oddělená od souběžného main 37d0ad68 / ROLE01.
 - **Podklady:** [výsledky](verification/full-http-performance-20261107/RESULTS.md),
   [předání a otevřené etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md),
-  [událost](EVENT_LOG.md). Větev `codex/full-http-performance-20261107`; PR se dokončuje.
+  [událost](EVENT_LOG.md). Větev `codex/full-http-performance-20261107`; [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), CI/merge u PR.
 
 ## D2026-11-07-01
 
@@ -70,6 +70,26 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 - **Realizace / akceptace:** [plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [lokální důkazy a otevřené meze](verification/shop-document-automation-20261107/RESULTS.md).
 
+## D2026-11-07-04
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník výslovně zadal začít
+  klubovými cenami, změřit před/po, ověřit shodu a nic nenasazovat.
+- **Volba a důvod:** oddělený reader pro jednu cenovou prezentaci katalogu/detailu.
+  Společné soupisky a pravidla načíst dávkově, zachovat databázové kolace
+  a původní cenová rozhodnutí. Checkout a transakční cesta zůstanou kanonické.
+- **Varianty:** rozšíření na celý katalogový výřez nebo dlouhodobá cache
+  oprávnění nejsou potřeba k odstranění prokázaných opakovaných SQL.
+  Měření celého HTTP zůstává další samostatný krok.
+- **Dopad a důkazy:** [plán P11 cen](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+  [parita a měření](verification/member-pricing-read-performance-20261107/RESULTS.md),
+  [předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+  [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358).
+  Implementace/parita hotové, začlenění řídí PR; bez deploye a aktivace.
+
+Pracovní označení této volby ve starších commitech PR #358 bylo D2026-11-07-02.
+Při převzetí #356 je kolize s jeho již přijatým ROLE01 rozhodnutím vyřešena
+společným ID D2026-11-07-04; obsah ani původní commitové důkazy se nemění.
+
 ## Starší rozhodnutí — zachovaná v původních souborech
 
 | Oblast | Trvalý zdroj | Jak číst |
@@ -87,6 +107,7 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 | Práce / rozsah | Plán, výsledek a důvody | Historie / další etapy |
 | --- | --- | --- |
+| P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-04) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); bez merge/deploye, katalog/HTTP dál otevřené |
 | DOC01 — souborová dokumentace a stručné předání | [Plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [důvod rozhodnutí](#d2026-11-07-01) | [Předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), [deník](EVENT_LOG.md); stav CI/přijetí určuje PR |
 | P11 R13 — implementace v main #352, bez deploye | [Plán a důkazy](verification/medical-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md), celé K0.2 otevřené |
 | P11 R05 — implementace v main #353, bez deploye | [Plán a důkazy](verification/planner-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md), hierarchický filtr/HTTP otevřené |

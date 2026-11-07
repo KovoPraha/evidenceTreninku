@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Unit\QueryProfilePdoTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Unit\QueryProfilePdoTest.php" tests="1" assertions="22" errors="0" failures="0" skipped="0" time="3.236519">
+    <testcase name="testCountsFetchedRowsAndReexecutionsWithoutCountingFixtureWrites" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Unit\QueryProfilePdoTest.php" line="15" class="Tests\Unit\QueryProfilePdoTest" classname="Tests.Unit.QueryProfilePdoTest" assertions="22" time="3.236519"/>
+  </testsuite>
+</testsuites>

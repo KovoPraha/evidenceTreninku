@@ -417,3 +417,14 @@ Nový nález R06: 10221 osob ve výběru / cca 1,37 MB HTML a více sekund do lo
 v tomto Chrome zátěžovém fixture; široké hledání lekcí 203 SQL. [Předání](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md)
 vede prioritu omezeného hledaného výběru při zachování dostupnosti osob,
 další objemy/mobil/souběh a R01–R16. Celé K0.2 ani produkční SLA tím uzavřené nejsou.
+## Klubové ceny e-shopu — 7. 11. 2026
+
+[Plán a průběžný stav](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+[párové výsledky](verification/member-pricing-read-performance-20261107/RESULTS.md),
+[session handoff](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md).
+Dávkové ceny katalogu/detailu hotové: 500 produktů 2000 → 4 SQL, medián
+měřené cenové části 557/377 → 3,21/2,88 ms na MariaDB 10.3/11.4. Shodná data,
+kolace i původní transakční SQL; checkout zachovaný. 20/301 cíleně, měřená
+implementace 11 CI kontrol PASS. [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358)
+vede finální CI/začlenění. Bez nasazení. Katalogový výřez a celé HTTP zůstávají
+další samostatné zásahy; nepřevádět zrychlení cenové části na celou aplikaci.

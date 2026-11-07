@@ -78,7 +78,10 @@ nadále výhradně [CURRENT_STATE](CURRENT_STATE.md), jehož release/flags touto
 ## Souběžný main při integraci
 
 Měření zůstává na `feb8fe8c` (348 tabulek / 160 migrací). Při předání převzatý
-main `9460ee76` obsahuje navíc shop migraci a změnu popisku navigace system_admin;
+main `37d0ad68` obsahuje navíc shop migraci, dávkové klubové ceny #358 a změnu popisku navigace system_admin;
 novější main ani produkční release nebyly touto relací přeměřeny. Záznamy ROLE01,
 DOC01 a P07 zůstávají zachované. R13/R05/R06 už zahrnuje release ROLE01 podle
 CURRENT_STATE; žádné nové nasazení tato relace neprovádí.
+
+Předání je pushnuté v [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363),
+větev `codex/full-http-performance-20261107`; finální CI/merge se ověřují u PR.

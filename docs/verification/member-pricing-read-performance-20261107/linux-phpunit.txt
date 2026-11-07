@@ -1,0 +1,6 @@
+PHPUnit na PHP 8.2	Spustit testy	2026-11-07T09:07:20.8936554Z Runtime:       PHP 8.2.35
+PHPUnit na PHP 8.2	Spustit testy	2026-11-07T09:08:09.5658826Z Time: 00:48.671, Memory: 111.00 MB
+PHPUnit na PHP 8.2	Spustit testy	2026-11-07T09:08:09.5659122Z OK (2321 tests, 42987 assertions)
+PHPUnit na PHP 8.2	Ověřit unixové hranice soukromého úložiště bez přeskočení	2026-11-07T09:08:11.6054375Z Runtime:       PHP 8.2.35
+PHPUnit na PHP 8.2	Ověřit unixové hranice soukromého úložiště bez přeskočení	2026-11-07T09:08:11.8397645Z Time: 00:00.233, Memory: 60.50 MB
+PHPUnit na PHP 8.2	Ověřit unixové hranice soukromého úložiště bez přeskočení	2026-11-07T09:08:11.8400424Z OK (3 tests, 45 assertions)

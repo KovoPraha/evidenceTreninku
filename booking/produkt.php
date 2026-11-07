@@ -122,12 +122,8 @@ $isLoggedIn = isset($_SESSION['verejny_uzivatel_id']);
 $accountId = (int)($_SESSION['verejny_uzivatel_id'] ?? 0);
 $people = $isLoggedIn ? familyPortalAuthorizedPeople($pdo, $accountId) : [];
 if ($product !== null && $isLoggedIn) {
-    foreach ($product['variants'] as &$variant) {
-        if (!isset($variant['monthly_tariff_id'])) {
-            shopMemberPriceApplyToItem($pdo, $accountId, $variant);
-        }
-    }
-    unset($variant);
+    require_once dirname(__DIR__) . '/includes/shop_member_pricing_read.php';
+    $product = shopMemberPricesApplyToCatalog($pdo, $accountId, [$product])[0];
 }
 $errors = [];
 $interestSuccess = (string)($_SESSION['shop_interest_success'] ?? '');
