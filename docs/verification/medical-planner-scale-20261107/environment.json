@@ -1,0 +1,54 @@
+{
+  "runtime": "C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee",
+  "datadir": "C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee/data",
+  "port": 33479,
+  "http_port": 18115,
+  "schema": "p11_read_d1ef9b4b5f827e5b",
+  "application_sha": "d2182268b395ab8f2bdb8f68df41e9030478135e",
+  "fixture_tables": 350,
+  "migrations": 161,
+  "synthetic_only": true,
+  "measured_application_sha": "69f490332b0027232d7a58bffb578c28b2715ffa",
+  "sources_sha256_lf": {
+    "planovac.php": "68c8398692f105fad11ac8a7c7a612db9dc6c3d0e004456d53a5ea51db5b570f",
+    "medical_clearance_admin.php": "50b54860b65b59b5a45b8708ba1f52eaa78a16ec30b172970a0b474309214984",
+    "includes/medical_clearance.php": "fbc840eca59c5181d5e8da7fa5d362366bc3086f9c5778173cb9c17a5ff23b3b",
+    "includes/medical_clearance_read.php": "72e87e42a03337a0de2b6f5c322413f8915d49d481a9e188fc4bddb94b608b0f",
+    "includes/medical_clearance_admin_view.php": "8b58828fb56ea5103e028660509e14ccb7c578d7d28860e54c1f4cf6728d2632",
+    "includes/training_planner_read.php": "8be8e95cb8f7f17a17f8ddfa6a0ea37e60af9920f543f97137feab6fa0e5eabd",
+    "includes/training_planner_rsvp_read.php": "20a7c706c71c69986650c76f1f3fa1dfcce0a667ba57a24953d186d1c91a52ce",
+    "includes/training_planner_view.php": "deaf9607919d1524ea21675442a1c685cb3b785525ff66c6dc3f92072a6f3312",
+    "includes/training_roster_filter_read.php": "c03996c525137ff29801b6715155cd828de566584804d5664c5f4014282b9869",
+    "includes/training_roster_bridge.php": "f156a1611751f4f028b4c106ab2bb9451e1a158166c0892f52f5ddf497d62ecc",
+    "includes/training_rsvp.php": "4d6cf080699b65fa721417468a3e92fb01543a3fdf1f2656bf04aab2109e2ecb",
+    "includes/roster_hierarchy.php": "3a0775ebf1edbad18f584a63e2a8043b7e82a14a0c235ef8c0d130c0348a8b10",
+    "includes/staff_workspaces.php": "98c99da1dd6197f9f6702986592ea0d4440ee8e975add0f7568ebd290a61c510",
+    "hlavicka.php": "3012d42d1200d391b07ef395da89039d8f7cabc57d6ae75d044f8e046a516637",
+    "db.php": "bae8ae992697fce593292f06a27db353f4735764d5c4afbebfe1fefcb419ff9e",
+    "composer.lock": "6dfced171913b8d8429c3d0a2beb9a2a6971eac7602d64d617e4810289fbf8b5"
+  },
+  "php": "PHP 8.2.12 (cli) (built: Oct 24 2023 21:15:15) (ZTS Visual C++ 2019 x64)",
+  "browser_performance_measured": false,
+  "production_changed": false,
+  "session_gc_maxlifetime_seconds": {
+    "baseline_through_incomplete_medical100k": 1440,
+    "medical100k_replay_and_later": 14400
+  },
+  "php_memory_limit": {
+    "plain_http": "512M",
+    "cli_domain_parity": "1024M"
+  },
+  "temporary_directory": {
+    "baseline_and_medical50k": "Windows user TEMP, see calibration",
+    "medical100k_replay_and_later": "C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee/mysql-tmp"
+  },
+  "php_ini": "C:\\xampp\\php\\php.ini",
+  "database_settings": {
+    "innodb_buffer_pool_size": 134217728,
+    "tmp_table_size": 16777216,
+    "max_heap_table_size": 16777216,
+    "sort_buffer_size": 2097152,
+    "version": "10.4.32-MariaDB",
+    "tmpdir": "C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee/mysql-tmp"
+  }
+}

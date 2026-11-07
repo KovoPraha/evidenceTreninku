@@ -79,3 +79,18 @@ a DB se bezpečně zastavily; všechny21checksumy před/po restartu a obnovení
 Celá100k sada se opakuje, neúplná fáze je oddělená mimo finální vzorky.
 [Kalibrace](verification/medical-planner-scale-20261107/CALIBRATION.md),
 [průběžný výsledek](verification/medical-planner-scale-20261107/RESULTS.md).
+
+## Doplnění rozsahu před závěrečným předáním
+
+Primární fáze hotová:72kladných/28záporných/2160časů,51hashovaných artefaktů,
+13testů/759assertions, úklid a původní WIP PASS. Raw důkazy a zmrazená69f49033
+zůstávají neměnné. Přijatý main e36c9ba6 nově obsahuje#374, který má vlastní
+Linux20728plánů/HTTP/Chrome důkazy. Produkční UAT pickeru převzaté z#377 je BLOKOVANÉ.
+
+Návazný bezpečný postup v témže zadání měření: po uložení primárních důkazů
+převzít main, ověřit aktuální planner520 a roster1000 (18kladných×30,8negativ),
+stejné rozměry/seeder, doménová/DOM parita, oddělené SQL/rows examined a vlastní
+syntetický localhost. Bez produkce. Nejde o přesně párový časový experiment
+napříč restartem/reseedem; závěr o přínosu bude opřen o strukturální data,
+párové časy nové opravy vlastní#374. Aktuální follow-up archivovat samostatně,
+nezaměnit za primární2160vzorky. Potom druhý vlastní úklid a finální předání.

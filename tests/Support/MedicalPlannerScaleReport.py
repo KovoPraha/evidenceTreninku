@@ -19,7 +19,7 @@ def read(path: Path):
 
 
 def write(path: Path, data):
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def main():
@@ -99,7 +99,7 @@ def main():
     assert len(checkpoints["checkpoints"]) >= 3
     assert all(c["complete"] and c["domain_unchanged"] for c in checkpoints["checkpoints"])
     assert all(c["checksums"] == checkpoints["checkpoints"][0]["checksums"] for c in checkpoints["checkpoints"])
-    for name in ("environment", "cleanup", "secret-scan", "logins", "logins-initial", "web-select-only", "schema-metadata", "restart-checkpoints"):
+    for name in ("environment", "cleanup", "secret-scan", "logins", "logins-initial", "web-select-only", "schema-metadata", "restart-checkpoints", "checks"):
         data = read(source / (name + ".json"))
         write(target / (name + ".json"), data)
         archive[name + ".json"] = hashlib.sha256((target / (name + ".json")).read_bytes()).hexdigest()
@@ -108,8 +108,11 @@ def main():
     archive["summary.json"] = hashlib.sha256((target / "summary.json").read_bytes()).hexdigest()
     for name in ("MedicalPlannerScaleProfile.php", "MedicalPlannerScaleRuntime.ps1", "MedicalPlannerScaleRun.ps1", "MedicalPlannerScaleReport.py"):
         destination = target / (name + ".txt")
-        destination.write_bytes((root / "tests/Support" / name).read_bytes())
+        destination.write_bytes((root / "tests/Support" / name).read_bytes().replace(b"\r\n", b"\n"))
         archive[destination.name] = hashlib.sha256(destination.read_bytes()).hexdigest()
+    tests = target / "targeted-tests.xml"
+    tests.write_bytes((source / "targeted-tests.xml").read_bytes().replace(b"\r\n", b"\n"))
+    archive[tests.name] = hashlib.sha256(tests.read_bytes()).hexdigest()
     write(target / "artifact-sha256.json", archive)
     def case(level, name):
         return next(c for c in summary["levels"][level]["cases"] if c["id"] == name)
@@ -117,21 +120,22 @@ def main():
     medical_valid = [case(level, "medical-valid") for level in ("baseline", "medical50k", "medical100k")]
     medical_all = [case(level, "medical-all") for level in ("baseline", "medical50k", "medical100k")]
     planner_root = [case(level, "planner-lead-root") for level in ("baseline", "planner260", "planner520")]
-    valid_times = " / ".join(f'{c["median_ms"]/1000:.2f}' for c in medical_valid)
-    all_times = " / ".join(f'{c["median_ms"]/1000:.2f}' for c in medical_all)
-    planner_times = " / ".join(f'{c["median_ms"]/1000:.2f}' for c in planner_root)
+    examined = " / ".join(str(c["actual_rows_examined"]) for c in medical_valid)
+    planner_rows = " / ".join(str(c["projection_fetched_rows"]) for c in planner_root)
+    planner_memory = " / ".join(f'{c["php_peak_bytes"]/1048576:.2f}' for c in planner_root)
     lines = ["# Zdravotní přehled a plánovač — větší syntetická data, 7. 11. 2026", "",
              "Místní HTTP/SQL měření HOTOVO; aplikace ani produkce se touto studií neměnily.",
              "[Plán](../../MEDICAL_PLANNER_SCALE_2026-11-07.md), [předání](../../SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md).", "",
              "## Praktický výsledek", "",
-             f'- Zdravotní filtr **Platné** při 10k / 50k / 100k sledování: orientační HTTP medián **{valid_times} s**. '
-             f'Při 100k prozkoumal server {medical_valid[-1]["actual_rows_examined"]:,} řádků, '
-             f'přesto stránka měla jen {medical_valid[-1]["html_bytes"]:,} B a nejvýše 25 sledování.',
-             f'- Běžný zdravotní seznam při stejných objemech: **{all_times} s**. '
-             'Omezené vrácené řádky a malé HTML nezaručují omezenou práci DB; roste i počet osob v hledání.',
-             f'- Plánovač vedoucího s filtrem kořene při 52 / 260 / 520 týdnech: **{planner_times} s**. '
-             f'Historický helper při 520 týdnech načetl {planner_root[-1]["projection_fetched_rows"]:,} řádků; '
-             'jde o verzi před souběžnou opravou #374.',
+             f'- Zdravotní filtr **Platné**: server při 10k / 50k / 100k sledování prozkoumal **{examined} řádků**, '
+             'pokaždé při stejných 20 SQL. Přesný počet vyžaduje průchod celou kandidátní historií.',
+             f'- Při 100k trvalo Platné orientačně **{medical_valid[-1]["median_ms"]/1000:.2f} s**, '
+             f'PHP peak zůstal {medical_valid[-1]["php_peak_bytes"]/1048576:.2f} MiB a HTML {medical_valid[-1]["html_bytes"]:,} B. '
+             f'Běžný seznam měl {medical_all[-1]["median_ms"]/1000:.2f} s a {medical_all[-1]["actual_rows_examined"]:,} Rows_examined. '
+             'Malá stránka a omezený počet načtených řádků neznamenají omezenou práci databáze.',
+             f'- Plánovač vedoucího s filtrem kořene při 52 / 260 / 520 týdnech: '
+             f'historický helper načetl **{planner_rows} řádků**, PHP peak celého requestu **{planner_memory} MiB**. '
+             'Jde o verzi před souběžnou opravou #374; časy v úplné tabulce nejsou důkazem zrychlení při větším objemu.',
              '- Výsledky filtrů, konkrétní položky, počty odpovědí a přístupové hranice souhlasí. '
              'Tato studie nemění aplikaci ani produkci. Další priority vede předání.', "",
              "## Rozsah a metoda", "",
@@ -183,7 +187,7 @@ def main():
               "[Souhrn](summary.json), [prostředí a otisky](environment.json), [manifest](artifact-sha256.json).",
               "Každá ze sedmi sad má všech pět komprimovaných JSON podkladů: seed/http/diagnostics/verification/projections.",
               "[Reprodukce](REPRODUCE.md), [kalibrace](CALIBRATION.md)."]
-    (target / "RESULTS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (target / "RESULTS.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     print(json.dumps({key: summary[key] for key in ("positive_cases", "negative_cases", "observations")}))
     print(f"Archived {len(archive)} hashed non-Markdown artifacts.")
 

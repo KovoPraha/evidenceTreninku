@@ -1,0 +1,19 @@
+{
+  "complete": true,
+  "php_syntax": "PASS",
+  "php_style": "PASS (0 fixes)",
+  "powershell_parsers": {
+    "MedicalPlannerScaleRuntime": "PASS",
+    "MedicalPlannerScaleRun": "PASS"
+  },
+  "python_compile": "PASS",
+  "invalid_port_rejected_before_database_connection": true,
+  "targeted_phpunit": {
+    "status": "PASS",
+    "tests": 13,
+    "assertions": 759,
+    "junit": "targeted-tests.xml"
+  },
+  "measured_application_sources": "16 LF hashes verified against 69f49033",
+  "production_changed": false
+}
