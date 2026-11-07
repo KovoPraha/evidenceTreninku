@@ -24,7 +24,6 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
 - **[Osmý funkční průchod](verification/functional-uat-round8-20261104/RESULTS.md):** příprava období, hierarchie ke dni lekce, věkové návrhy a stránkování. Skutečný místní browser, 25 kontrol HTTP/model/persistence a cílené 21/190 PASS; všech 12 doménových snapshotů shodných. Bez nové chyby runtime.
 - **[Pátý](verification/functional-uat-round5-20261104/RESULTS.md) a [šestý průchod](verification/functional-uat-round6-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob; následný skutečný Chrome a 16 kontrol persistence PASS. Bez další chyby runtime; výsledky jsou v nasazeném PR #295, heslo/T07 vynechané.
 - **[Třetí funkční vlna sloučena a nasazena](verification/functional-round3-release-20261104/RESULTS.md):** opravené náhledy členství a české časové stavy rodinného přehledu. Přihlášený produkční náhled PASS bez potvrzení změny; rodinná stránka načtena, účet nemá propojené sportovce pro ověření štítků. Místní matice 119/119 PASS; úplné UAT všech rolí není uzavřené. Heslo/T07 nadále odložené.
-
 - **Evidence členů bez sezon: aplikace nasazena a schválená data převedena.**
   [Převod 41542954307](https://github.com/KovoPraha/evidenceTreninku/actions/runs/41542954307)
   potvrdil 435 výchozích zařazení od **2. 11. 2026**, odstranění 560 historických
@@ -77,4 +76,5 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
 AUTO01: [výsledky priorit 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md): novější záloha 389 tabulek / 2 triggery PASS v izolaci; inventura 332 větví / 156 worktrees, WIP zachované.
+- **P11-SCALE HOTOVO:** [větší R13/R05](MEDICAL_PLANNER_SCALE_2026-11-07.md),2700HTTP; aktuální#374 prověřené. Bez změny produkce touto relací.
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)

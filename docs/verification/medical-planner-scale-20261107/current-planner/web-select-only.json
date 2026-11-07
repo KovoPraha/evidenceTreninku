@@ -1,0 +1,6 @@
+{
+  "complete": true,
+  "standard_logins_done_before_revocation": true,
+  "only_schema_select_granted": true,
+  "application_roles_unchanged": true
+}

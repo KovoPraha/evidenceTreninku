@@ -202,3 +202,12 @@ snímky jsou pouze ke čtení, nový snímek nepřebírá rozhodnutí předchoz�
   a portály nejsou v tomto harnessu; bootstrap/session/header jsou testové.
 - MariaDB 10.3/11.4 lock-wait, plný Linux CI a obnova deváté tabulky čekají
   na PR. Deploy, merge, aktivace, portály a data Rikiho **NOT RUN**.
+
+### Převzetí souběžné dokumentace / draft PR
+
+Push `3e510713` a [draft #382](https://github.com/KovoPraha/evidenceTreninku/pull/382).
+Při otevření PR main postoupil na `eafe835b` (#375 P11-SCALE). Převzato do
+vlastní větve; konflikty pouze v dokumentačních přehledech, logy i katalog
+zachovávají oba výsledky. Nejde o merge PR do main ani o deploy.
+Browser dále PASS: filtr „Odloženo“ vrací jeden rozhodnutý řádek; panel na
+390/1440 px bez přetečení, původní UCI s nulami a licence zůstávají zobrazené.
