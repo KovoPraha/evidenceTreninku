@@ -1,0 +1,68 @@
+name: Planner hierarchy HTTP and browser
+
+on:
+  pull_request:
+    paths:
+      - 'includes/training_planner_pending_read.php'
+      - 'includes/training_planner_read.php'
+      - 'tests/Support/PlannerHierarchyHttpProfile.php'
+      - 'tests/Support/PlannerHierarchyIntegratedProfile.py'
+      - '.github/workflows/planner-hierarchy-performance.yml'
+  workflow_dispatch:
+    inputs:
+      baseline:
+        description: Exact pre-optimization commit with the current planner page
+        required: true
+        default: '69f490332b0027232d7a58bffb578c28b2715ffa'
+
+permissions:
+  contents: read
+
+jobs:
+  integrated-planner:
+    name: Planner hierarchy HTTP and Chrome (MariaDB 11.4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.2'
+          extensions: mbstring, gd, zip, curl, pdo_mysql, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+      - name: Prepare locked PHP dependencies and browser CLI
+        run: |
+          composer install --prefer-dist --no-interaction --no-progress
+          npm install --global @playwright/cli@0.1.23
+          if ! command -v google-chrome >/dev/null; then npx --yes playwright install --with-deps chrome; fi
+          google-chrome --version
+          playwright-cli --version
+      - name: Compare current main and planner on one owned fixture
+        env:
+          PLANNER_BASE_SHA: ${{ inputs.baseline || '69f490332b0027232d7a58bffb578c28b2715ffa' }}
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: python3 tests/Support/PlannerHierarchyIntegratedProfile.py
+      - name: Preserve safe integrated measurements
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: planner-hierarchy-integrated-http-browser
+          path: output/planner-hierarchy-ci-safe/
+          if-no-files-found: warn
+          retention-days: 30

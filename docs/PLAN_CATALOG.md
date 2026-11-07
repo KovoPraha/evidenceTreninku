@@ -17,6 +17,7 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 | ID | Soubor | Stav / registr | Dispozice a důkaz |
 | --- | --- | --- | --- |
+| PL-f81ce808ad | [Přihlášené produkční UAT pickeru — blokované](verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md) | BLOCKED / P11 | Přihlášené produkční UAT blokované: dva CUA timeouty a následný automatický stop Windows Computer Use kvůli neověřenému aktuálnímu URL. Žádný scénář UAT neproveden, docházka ani role nezměněné. Další krok: funkční ověření URL/čtení stránky, poté původní čtecí scénáře. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md#přihlášené-produkční-uat-pouze-čtením--7-11-2026) |
 | PL-f72bce19e1 | [Přehled lidí, rolí a přístupů](ACCESS_OVERVIEW_2026-11-07.md) | PARTIAL / ROLE01 | Původní ROLE01 i čtecí vizuální kontrola dokončené. Mobilní karty #361 následně obsažené ve vydání katalogu c70939d4; cílený nový Chrome 390/360 px a desktop zatím nedoložený. Priorita 1 v registru. [verification/access-release-20261107/RESULTS.md](verification/access-release-20261107/RESULTS.md); [verification/access-visual-20261107/RESULTS.md](verification/access-visual-20261107/RESULTS.md); [verification/access-mobile-cards-20261107/RESULTS.md](verification/access-mobile-cards-20261107/RESULTS.md); [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md); [verification/catalog-release-20261107/RESULTS.md](verification/catalog-release-20261107/RESULTS.md) |
 | PL-c6375850d3 | [Funkční audit příležitostí — co by aplikace mohla umět navíc](AUDIT-PRILEZITOSTI-A-NAPADY.md) | CONCEPT / C01 | Neschválený produktový zásobník. Každý námět nejprve posoudit proti dnešnímu kódu; časové/ekonomické odhady nejsou závazek. [plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md](plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md) |
 | PL-20ad757250 | [Hloubkový funkční audit příležitostí](AUDIT-PRILEZITOSTI-HLOUBKOVE.md) | CONCEPT / C01 | Neschválený produktový zásobník. Každý námět nejprve posoudit proti dnešnímu kódu; časové/ekonomické odhady nejsou závazek. [plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md](plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md) |
@@ -379,6 +380,7 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-ad1bee8455 | [Celé R06 Windows měření](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) | PARTIAL / P11 | Místní měření hotové, [důkazy](verification/attendance-integrated-http-20261107/RESULTS.md); další P11 otevřené, žádný náš deploy. |
 
-| PL-400959e0ab | [P11-SCALE - vetsi zdravotni prehled a planovac](MEDICAL_PLANNER_SCALE_2026-11-07.md) | IN_PROGRESS / P11-SCALE | Vlastni izolovane HTTP/SQL mereni, produkci nemenit. |
+| PL-929f7b0db8 | [P11-R05-H — historický souhrn plánovače se soupiskou](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md) | PARTIAL / P11-R05-H | Parita a měření PASS; výsledkové CI/merge/deploy otevřené. [Důkazy](verification/planner-hierarchy-read-performance-20261107/RESULTS.md). |
 
+| PL-400959e0ab | [P11-SCALE - vetsi zdravotni prehled a planovac](MEDICAL_PLANNER_SCALE_2026-11-07.md) | IN_PROGRESS / P11-SCALE | Vlastni izolovane HTTP/SQL mereni, produkci nemenit. |
 | PL-fc92c8ac29 | [Předání většího R13/R05 měření](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md) | IN_PROGRESS / P11-SCALE | Sběr probíhá, bez produkce. |

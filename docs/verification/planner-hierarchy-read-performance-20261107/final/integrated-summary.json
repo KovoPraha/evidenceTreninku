@@ -1,0 +1,176 @@
+[
+  {
+    "size": "728-plans",
+    "complete": true,
+    "baseline_sha": "69f490332b0027232d7a58bffb578c28b2715ffa",
+    "optimized_sha": "65440e3b2f080a9f2efd37a85d10cf202e2bc890",
+    "source_sha256": {
+      "planovac.php": "68c8398692f105fad11ac8a7c7a612db9dc6c3d0e004456d53a5ea51db5b570f",
+      "includes/training_roster_filter_read.php": "c03996c525137ff29801b6715155cd828de566584804d5664c5f4014282b9869",
+      "includes/training_roster_bridge.php": "f156a1611751f4f028b4c106ab2bb9451e1a158166c0892f52f5ddf497d62ecc",
+      "includes/roster_hierarchy.php": "3a0775ebf1edbad18f584a63e2a8043b7e82a14a0c235ef8c0d130c0348a8b10",
+      "includes/coach_training_access.php": "6d65dcd7e16d6415eb7e7673898ec5f96f45e41eaeabdfaced1b0b3c397e56d3",
+      "includes/init.php": "c0a16f1231bf79bec717c29cc02e0c5929b4daa4fe5bb92391f41372b0bc8c60",
+      "includes/training_planner_pending_read.php": "c2d8ba8e9903d38b9fa877a2bfddd4e9edf9fd19cdb3edd199e41928e5367aea",
+      "includes/training_planner_read.php": "1b7d971a86ccee9581de513cdc736f341d14f566f0ad8a9dd464d06086b2c580",
+      "baseline_planner_read": "8be8e95cb8f7f17a17f8ddfa6a0ea37e60af9920f543f97137feab6fa0e5eabd"
+    },
+    "same_seed": true,
+    "cases": [
+      {
+        "id": "planner-coach-own",
+        "bytes": 111982,
+        "before_median_ms": 12.61,
+        "after_median_ms": 12.486999999999998
+      },
+      {
+        "id": "planner-coach-all",
+        "bytes": 135238,
+        "before_median_ms": 12.6755,
+        "after_median_ms": 12.792
+      },
+      {
+        "id": "planner-coach-root",
+        "bytes": 112021,
+        "before_median_ms": 16.051000000000002,
+        "after_median_ms": 16.1315
+      },
+      {
+        "id": "planner-coach-child",
+        "bytes": 112021,
+        "before_median_ms": 17.009,
+        "after_median_ms": 16.425
+      },
+      {
+        "id": "planner-coach-trainer",
+        "bytes": 93254,
+        "before_median_ms": 13.805,
+        "after_median_ms": 12.4495
+      },
+      {
+        "id": "planner-coach-group",
+        "bytes": 135705,
+        "before_median_ms": 13.3245,
+        "after_median_ms": 12.9285
+      },
+      {
+        "id": "planner-coach-empty",
+        "bytes": 69560,
+        "before_median_ms": 13.2535,
+        "after_median_ms": 12.7585
+      },
+      {
+        "id": "planner-coach-previous",
+        "bytes": 113941,
+        "before_median_ms": 12.330499999999999,
+        "after_median_ms": 12.526
+      },
+      {
+        "id": "planner-lead-own",
+        "bytes": 70043,
+        "before_median_ms": 9.383,
+        "after_median_ms": 9.238
+      },
+      {
+        "id": "planner-lead-all",
+        "bytes": 154889,
+        "before_median_ms": 12.8625,
+        "after_median_ms": 12.835
+      },
+      {
+        "id": "planner-lead-root",
+        "bytes": 154928,
+        "before_median_ms": 17.8485,
+        "after_median_ms": 16.516999999999996
+      }
+    ],
+    "method": "Complete plain HTTP, same fixture and normalized HTML; separate diagnostics and Chrome."
+  },
+  {
+    "size": "20728-plans",
+    "complete": true,
+    "baseline_sha": "69f490332b0027232d7a58bffb578c28b2715ffa",
+    "optimized_sha": "65440e3b2f080a9f2efd37a85d10cf202e2bc890",
+    "source_sha256": {
+      "planovac.php": "68c8398692f105fad11ac8a7c7a612db9dc6c3d0e004456d53a5ea51db5b570f",
+      "includes/training_roster_filter_read.php": "c03996c525137ff29801b6715155cd828de566584804d5664c5f4014282b9869",
+      "includes/training_roster_bridge.php": "f156a1611751f4f028b4c106ab2bb9451e1a158166c0892f52f5ddf497d62ecc",
+      "includes/roster_hierarchy.php": "3a0775ebf1edbad18f584a63e2a8043b7e82a14a0c235ef8c0d130c0348a8b10",
+      "includes/coach_training_access.php": "6d65dcd7e16d6415eb7e7673898ec5f96f45e41eaeabdfaced1b0b3c397e56d3",
+      "includes/init.php": "c0a16f1231bf79bec717c29cc02e0c5929b4daa4fe5bb92391f41372b0bc8c60",
+      "includes/training_planner_pending_read.php": "c2d8ba8e9903d38b9fa877a2bfddd4e9edf9fd19cdb3edd199e41928e5367aea",
+      "includes/training_planner_read.php": "1b7d971a86ccee9581de513cdc736f341d14f566f0ad8a9dd464d06086b2c580",
+      "baseline_planner_read": "8be8e95cb8f7f17a17f8ddfa6a0ea37e60af9920f543f97137feab6fa0e5eabd"
+    },
+    "same_seed": true,
+    "cases": [
+      {
+        "id": "planner-coach-own",
+        "bytes": 111984,
+        "before_median_ms": 29.2865,
+        "after_median_ms": 29.4585
+      },
+      {
+        "id": "planner-coach-all",
+        "bytes": 135240,
+        "before_median_ms": 28.1605,
+        "after_median_ms": 28.3395
+      },
+      {
+        "id": "planner-coach-root",
+        "bytes": 112023,
+        "before_median_ms": 70.5925,
+        "after_median_ms": 47.362
+      },
+      {
+        "id": "planner-coach-child",
+        "bytes": 112023,
+        "before_median_ms": 70.41,
+        "after_median_ms": 47.092
+      },
+      {
+        "id": "planner-coach-trainer",
+        "bytes": 93256,
+        "before_median_ms": 29.223,
+        "after_median_ms": 29.210500000000003
+      },
+      {
+        "id": "planner-coach-group",
+        "bytes": 135707,
+        "before_median_ms": 30.034000000000002,
+        "after_median_ms": 30.0765
+      },
+      {
+        "id": "planner-coach-empty",
+        "bytes": 69560,
+        "before_median_ms": 67.0335,
+        "after_median_ms": 30.5075
+      },
+      {
+        "id": "planner-coach-previous",
+        "bytes": 113943,
+        "before_median_ms": 29.1245,
+        "after_median_ms": 29.1295
+      },
+      {
+        "id": "planner-lead-own",
+        "bytes": 70043,
+        "before_median_ms": 25.213,
+        "after_median_ms": 25.308999999999997
+      },
+      {
+        "id": "planner-lead-all",
+        "bytes": 154891,
+        "before_median_ms": 28.2215,
+        "after_median_ms": 28.4085
+      },
+      {
+        "id": "planner-lead-root",
+        "bytes": 154930,
+        "before_median_ms": 116.245,
+        "after_median_ms": 46.769000000000005
+      }
+    ],
+    "method": "Complete plain HTTP, same fixture and normalized HTML; separate diagnostics and Chrome."
+  }
+]
