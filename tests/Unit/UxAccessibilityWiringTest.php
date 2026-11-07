@@ -300,7 +300,7 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString("fetch('ajax_sportovci.php?q='", $charges);
         self::assertStringContainsString('const exact=choices.get(q);if(exact){hidden.value=exact;return;}', $charges);
         self::assertStringContainsString('QR kód se nepodařilo zobrazit.', $order);
-        self::assertStringContainsString("\$order['payment_record_status']==='pending'", $order);
+        self::assertStringContainsString("\$order['payment_record_status']==='pending'", preg_replace('/\s+/', '', $order));
         self::assertStringContainsString('text-md-end d-flex flex-wrap justify-content-md-end gap-1', $publicTrainings);
     }
 }

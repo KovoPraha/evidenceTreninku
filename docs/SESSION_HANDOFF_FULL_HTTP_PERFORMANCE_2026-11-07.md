@@ -70,7 +70,15 @@ mazání starších adresářů. Původní WIP při závěrečné kontrole stejn
 
 Bez deploye, produkčních dat/konfigurace, aktivací nebo transportu. P05/P07,
 export P06, heslo/T07 a ranní audit jiné relace se neopakovaly. Produkční stav
-nadále výhradně [CURRENT_STATE](CURRENT_STATE.md), který se touto relací nemění.
+nadále výhradně [CURRENT_STATE](CURRENT_STATE.md), jehož release/flags touto relací neměníme; doplňujeme pouze odkaz P11.
 [Reprodukce](verification/full-http-performance-20261107/REPRODUCE.md),
 [kalibrace](verification/full-http-performance-20261107/CALIBRATION.md),
 [průběžný plán](WORK_PLAN_CURRENT.md), [předchozí R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md).
+
+## Souběžný main při integraci
+
+Měření zůstává na `feb8fe8c` (348 tabulek / 160 migrací). Při předání převzatý
+main `9460ee76` obsahuje navíc shop migraci a změnu popisku navigace system_admin;
+novější main ani produkční release nebyly touto relací přeměřeny. Záznamy ROLE01,
+DOC01 a P07 zůstávají zachované. R13/R05/R06 už zahrnuje release ROLE01 podle
+CURRENT_STATE; žádné nové nasazení tato relace neprovádí.

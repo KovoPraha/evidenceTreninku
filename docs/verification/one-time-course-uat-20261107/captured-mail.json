@@ -1,0 +1,10 @@
+{
+    "transport": "local callable capture; no external send",
+    "messages": [
+        {
+            "email": "rodic@localhost.test",
+            "subject": "Platba přijata – objednávka KP261107A6EDB29BF7",
+            "body": "Dobrý den,\n\npotvrzujeme přijetí platby za objednávku KP261107A6EDB29BF7.\n\nDatum přijetí platby: 07. 11. 2026 08:45\nPřijatá částka: 249,00 CZK\n\nPoložky objednávky:\n- LOCALHOST – placený kroužek (NEPLATIT) × 1\n\nCo se děje dál:\n- Kroužek byl po přijetí platby aktivován; aktuální stav najdete ve svém účtu.\n\nStav objednávky najdete po přihlášení v Moje objednávky:\nhttp:\/\/127.0.0.1:18086\/booking\/prihlaseni.php?redirect=moje_objednavky.php\n\nKlub KOVO Praha"
+        }
+    ]
+}

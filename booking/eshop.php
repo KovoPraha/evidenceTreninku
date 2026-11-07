@@ -63,10 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $current = (int)$item['quantity'];
                     }
                 }
-                shopCartSetQuantity($pdo, $accountId, $variantId, $offer ? 1 : min(99, $current + 1), $offer ? (int)($_POST['sportovec_id'] ?? 0) :
+                shopCartSetQuantity($pdo, $accountId, $variantId, $offer ? 1 : min(99, $current + 1), $offer ? (int)($_POST
+    ['sportovec_id'] ?? 0) :
     null);
 
-                $_SESSION['flash_shop'] = $offer ? 'Období kroužku bylo přidáno pro vybrané dítě.' : 'Položka byla přidána do košíku.';
+                $_SESSION['flash_shop'] = $offer ? 'Období kroužku bylo přidáno pro vybrané dítě.' : 'Položka byla přidána do košíku.'
+                ;
 
             } elseif ($action === 'quantity') {
                 $variantId = (int)($_POST['variant_id'] ?? 0);
@@ -115,7 +117,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $offer = clubProgramOfferForVariant($pdo, (int)$item['variant_id']);
                     if ($offer && (!clubProgramVariantSaleState($pdo, (int)$item['variant_id'])['saleable'] ||
  $item['beneficiary_sportovec_id'] === null)) {
-                        throw new ClubProgramException('Období kroužku už není v prodeji, nemá platné podmínky nebo u něj není vybrané dítě.');
+                        throw new ClubProgramException(
+                            'Období kroužku už není v prodeji, nemá platné podmínky nebo u něj není vybrané dítě.'
+                        );
 
                     }
                 }
@@ -161,7 +165,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $exception) {
             error_log('booking/eshop.php: ' . $exception->getMessage());
             $errors[] = 'Databázová operace selhala bez částečného zápisu.';
-        } catch (InvalidArgumentException|ShopCheckoutException|ShopCouponException|ClubProgramException|PublicVelodromeShopException|ClubEventShopException
+        } catch (InvalidArgumentException|ShopCheckoutException|ShopCouponException|ClubProgramException|PublicVelodromeShopException
+    |ClubEventShopException
     $exception) {
         $errors[] = $exception->getMessage();
     }
@@ -179,14 +184,16 @@ foreach (shopPublicCatalogCards($pdo) as $product) {
         }
         unset($variant);
     }
-    $product['has_member_price'] = count(array_filter($product['variants'], static fn (array $variant): bool => ($variant['member_price']['is_member_price']
+    $product['has_member_price'] = count(array_filter($product['variants'], static fn (array $variant): bool => ($variant
+    ['member_price']['is_member_price']
     ?? false) === true)) > 0;
 
     $product['interest_only_course'] = shopProductIsInterestOnlyYoungestCourse($product);
     $product['min_amount_minor'] = min(array_column($product['variants'], 'amount_minor'));
     $product['max_amount_minor'] = max(array_column($product['variants'], 'amount_minor'));
     $product['currency'] = (string)$product['variants'][0]['currency'];
-    $product['in_stock'] = count(array_filter($product['variants'], static fn (array $variant): bool => (bool)$variant['in_stock'])) > 0;
+    $product['in_stock'] = count(array_filter($product['variants'], static fn (array $variant): bool => (bool)$variant['in_stock'
+    ])) > 0;
 
     $products[] = $product;
 }
@@ -217,13 +224,15 @@ if (!in_array($catalogSort, ['order','name','price'], true)) {
 }
 if ($catalogSearch !== '') {
     $needle = mb_strtolower($catalogSearch, 'UTF-8');
-    $products = array_values(array_filter($products, static fn (array$product): bool => str_contains(mb_strtolower((string)$product['public_name']
+    $products = array_values(array_filter($products, static fn (array$product): bool => str_contains(mb_strtolower((string)
+    $product['public_name']
     .
 ' '.(string)$product['public_summary'], 'UTF-8'), $needle)));
 }
 usort($products, static function (array$a, array$b) use ($catalogSort): int {
     if ($catalogSort === 'price') {
-        return[(int)$a['min_amount_minor'],mb_strtolower((string)$a['public_name'], 'UTF-8'),(int)$a['product_id']] <=> [(int)$b['min_amount_minor']
+        return[(int)$a['min_amount_minor'],mb_strtolower((string)$a['public_name'], 'UTF-8'),(int)$a['product_id']] <=> [
+    (int)$b['min_amount_minor']
     ,
 mb_strtolower((string)$b['public_name'], 'UTF-8'),(int)$b['product_id']];
     }if ($catalogSort === 'name') {
@@ -231,7 +240,8 @@ mb_strtolower((string)$b['public_name'], 'UTF-8'),(int)$b['product_id']];
             (string)$b['public_name'],
             'UTF-8'
         ),(int)$b['product_id']];
-    }return[(int)($a['sort_order'] ?? 0),mb_strtolower((string)$a['public_name'], 'UTF-8'),(int)$a['product_id']] <=> [(int)($b['sort_order'] ?? 0)
+    }return[(int)($a['sort_order'] ?? 0),mb_strtolower((string)$a['public_name'], 'UTF-8'),(int)$a['product_id']] <=> [(int)
+    ($b['sort_order'] ?? 0)
     ,
 mb_strtolower((string)$b['public_name'], 'UTF-8'),(int)$b['product_id']];
 });
@@ -255,7 +265,8 @@ foreach ($categoryMenu as $categoryItem) {
             }
         }
     }if ($count > 0) {
-        $topCategories[] = ['path' => $path,'name' => (string)($categoryItem['display_name'] ?? $categoryItem['menu_label'] ?? $path)
+        $topCategories[] = ['path' => $path,'name' => (string)($categoryItem['display_name'] ?? $categoryItem['menu_label'
+    ] ?? $path)
     ,
 'count' => $count];
     }
@@ -267,7 +278,8 @@ $cart = $isLoggedIn ? shopCartDetail($pdo, $accountId) : ['items' => [],'event_i
 'coupon_error' => null];
 $pplSettings = shopPplSettings($pdo);
 $packetaSettings = shopPacketaSettings($pdo);
-$pplCanShip = $isLoggedIn && shopPplAvailable($pplSettings) && shopPplCartEligible($cart['items']) && $cart['event_items'] === []
+$pplCanShip = $isLoggedIn && shopPplAvailable($pplSettings) && shopPplCartEligible($cart['items']) && $cart['event_items'
+    ] === []
     &&
  $cart['velodrome_items'] === [];
 $packetaCanShip = $isLoggedIn && shopPacketaAvailable($packetaSettings) && shopPacketaCartEligible($cart['items'])
@@ -318,7 +330,8 @@ if (!in_array($financeSelection, array_map(
 if (count($cartBeneficiaries) === 1) {
     $financeSelection = (int)array_key_first($cartBeneficiaries);
 }
-if ($isLoggedIn && (!isset($_SESSION['shop_checkout_key']) || preg_match('/^[a-f0-9]{32}$/D', (string)$_SESSION['shop_checkout_key']) !== 1)) {
+if ($isLoggedIn && (!isset($_SESSION['shop_checkout_key']) || preg_match('/^[a-f0-9]{32}$/D', (string)$_SESSION['shop_checkout_key'
+    ]) !== 1)) {
     $_SESSION['shop_checkout_key'] = bin2hex(random_bytes(16));
 }
 
@@ -347,7 +360,8 @@ publicSeoHead(
     $selectedCategory === '' ? 'E-shop KOVO Praha – cyklistické zboží a klubové služby' : $selectedCategoryLabel
     .
 ' – e-shop KOVO Praha',
-    $selectedCategory === '' ? 'Klubový e-shop KOVO Praha: cyklistické zboží, kroužky a klubové služby. Prohlédněte si aktuálně dostupné nabídky.'
+    $selectedCategory === '' ? ('Klubový e-shop KOVO Praha: cyklistické zboží, kroužky a klubové služby. Prohlédněte si ' .
+    'aktuálně dostupné nabídky.')
     : 'Aktuální nabídka v kategorii '.
 $selectedCategoryLabel.' v e-shopu KOVO Praha.',
     $seoPath,
@@ -540,7 +554,9 @@ $selectedCategory === '' ? 'Aktivní nabídka' : 'Kategorie: '.shopPublicH($sele
  class="small text-muted" aria-live="polite"><?=
 $filteredProductCount
 ?> <?=
-$filteredProductCount === 1 ? 'výsledek' : ($filteredProductCount >= 2 && $filteredProductCount <= 4 ? 'výsledky' : 'výsledků')
+$filteredProductCount === 1 ? 'výsledek' : (
+    $filteredProductCount >= 2 && $filteredProductCount <= 4 ? 'výsledky' : 'výsledků'
+)
 ?></span
 >
 </div
@@ -550,7 +566,8 @@ $filteredProductCount === 1 ? 'výsledek' : ($filteredProductCount >= 2 && $filt
 <?php
 foreach ($products as $product): $variantCount = count($product['variants']);
     $imageUrl = shopStorefrontPrimaryImageUrl($product['images']);
-    $hasMonthlyOffer = array_filter($product['variants'], static fn (array $v): bool => isset($v['monthly_tariff_id'])) !== [];
+    $hasMonthlyOffer = array_filter($product['variants'], static fn (array $v): bool => isset($v['monthly_tariff_id'])) !==
+     [];
     ?>
 <div
  class="col-md-6">
@@ -561,7 +578,8 @@ foreach ($products as $product): $variantCount = count($product['variants']);
     shopPublicH($imageUrl)
     ?>" alt="<?=
     shopPublicH($product['public_name'])
-    ?>" class="card-img-top app-product-image p-2" style="height:220px" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-app-csp-handler="<?=
+    ?>" class="card-img-top app-product-image p-2" style="height:220px" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-app-csp-handler="
+    <?=
 
 
 
@@ -654,7 +672,8 @@ endif;
     $variantCount
     ?> <?=
     $hasMonthlyOffer ? ($variantCount === 1 ? 'tarif' : ($variantCount <= 4 ? 'tarify' : 'tarifů')) :
-        ($product['is_program'] ? ($variantCount === 1 ? 'termín' : 'termíny') : ($variantCount === 1 ? 'varianta' : ($variantCount <= 4 ? 'varianty' :
+        ($product['is_program'] ? ($variantCount === 1 ? 'termín' : 'termíny') : ($variantCount === 1 ? 'varianta' : ($variantCount
+     <= 4 ? 'varianty' :
     'variant')))
     ?></div
 >
@@ -665,12 +684,14 @@ endif;
  class="d-flex justify-content-between align-items-center mt-auto pt-3">
             <strong
 ><?=
-     $product['interest_only_course'] ? 'Cena kurzu na dotaz' : (((int)$product['min_amount_minor'] !== (int)$product['max_amount_minor'] ? 'od ' :
+     $product['interest_only_course'] ? 'Cena kurzu na dotaz' : (((int)$product['min_amount_minor'] !== (int)$product['max_amount_minor'
+    ] ? 'od ' :
     '') .
      shopPublicMoney((int)$product['min_amount_minor'], (string)$product['currency']))
     ?><?php if ($hasMonthlyOffer):
         ?> / <?=htmlspecialchars(count(array_unique(array_column($product['variants'], 'billing_interval'))) === 1
-            ? membershipIntervalLabel($product['variants'][0]) : 'období dle tarifu', ENT_QUOTES, 'UTF-8')?><?php endif; ?></strong
+            ? membershipIntervalLabel($product['variants'][0]) : 'období dle tarifu', ENT_QUOTES, 'UTF-8')?><?php endif;
+    ?></strong
 >
             <?php
 if ($product['has_member_price'] && !$product['interest_only_course']):
@@ -684,7 +705,8 @@ endif;
     (int)$product['product_id']
     ?>"><?=
     $hasMonthlyOffer ? 'Detail členství' : ($product['interest_only_course'] ? 'Zeptat se na kurz'
-        : ($product['is_program'] ? ($product['program_offers'] !== [] ? 'Detail a přihlášení' : 'Detail a zájem') : ($product['in_stock'] ? 'Detail a varianty'
+        : ($product['is_program'] ? ($product['program_offers'] !== [] ? 'Detail a přihlášení' : 'Detail a zájem') : ($product
+    ['in_stock'] ? 'Detail a varianty'
                 : 'Zobrazit detail')))
     ?></a
 >
@@ -1260,6 +1282,8 @@ $pplCanShip ? "Zvolte způsob předání níže." : "Osobní odběr / rezervace.
 csrf_field()
 ?><input
  type="hidden" name="action" value="checkout"><?php
+require_once dirname(__DIR__).'/includes/shop_document_automation.php';
+shopDocumentBillingFields($pdo, $_POST);
 if ($pplCanShip) {
     shopPplDeliveryFields(
         "shop-checkout-form",

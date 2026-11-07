@@ -1,0 +1,20 @@
+{
+  "handoff_limit": "PASS: invalid change rejected",
+  "required_navigation": "PASS: invalid change rejected",
+  "archive_integrity": "PASS: invalid change rejected",
+  "publisher_docs/HANDOFF_CURRENT.md": {
+    "status": "PASS (synthetic copy only)",
+    "lines_after_publish": 69
+  },
+  "publisher_docs/CURRENT_STATE.md": {
+    "status": "PASS (synthetic copy only)",
+    "lines_after_publish": 80
+  },
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "sizes": {
+    "docs/CURRENT_STATE.md": 80,
+    "docs/HANDOFF_CURRENT.md": 70,
+    "docs/WORK_PLAN_CURRENT.md": 106,
+    "docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md": 15
+  }
+}

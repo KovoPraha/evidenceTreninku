@@ -1,0 +1,76 @@
+{
+    "synthetic_only": true,
+    "phase": "paid",
+    "checked_at": "2026-11-07T08:46:58+01:00",
+    "orders": [
+        {
+            "id": 1,
+            "account_id": 1,
+            "public_code": "KP261107A6EDB29BF7",
+            "status": "processing",
+            "payment_status": "paid",
+            "total_minor": 24900,
+            "currency": "CZK"
+        }
+    ],
+    "payments": [
+        {
+            "id": 1,
+            "payable_type": "shop_order",
+            "payable_id": 1,
+            "status": "paid",
+            "amount_minor": 24900,
+            "variable_symbol": "2610000001"
+        }
+    ],
+    "enrollments": [
+        {
+            "id": 1,
+            "source_order_item_id": 1,
+            "sportovec_id": 2,
+            "status": "active"
+        }
+    ],
+    "course_rosters": [
+        {
+            "id": 8,
+            "team_id": 1,
+            "sportovec_id": 2,
+            "status": "active",
+            "source_ref": "club_program_enrollment:1"
+        }
+    ],
+    "notifications": [
+        {
+            "id": 1,
+            "order_id": 1,
+            "notification_type": "shop_payment_received",
+            "status": "sent",
+            "attempts": 1
+        }
+    ],
+    "document_count": [
+        {
+            "count": 0
+        }
+    ],
+    "monthly_membership_count": [
+        {
+            "count": 0
+        }
+    ],
+    "order_events": [
+        {
+            "action": "place",
+            "from_status": null,
+            "to_status": "placed",
+            "note": "Objednávka vytvořena serverovým checkoutem."
+        },
+        {
+            "action": "confirm_bank_payment",
+            "from_status": "placed",
+            "to_status": "processing",
+            "note": "LOCALHOST UAT 2026-11-07: syntetická úhrada, žádné skutečné peníze."
+        }
+    ]
+}

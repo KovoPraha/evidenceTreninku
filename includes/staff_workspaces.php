@@ -437,8 +437,8 @@ function staffPositionDefinitions(): array
             'sort' => 80,
             'groups' => [
                 ['label' => 'Účty a přístupy', 'icon' => 'person-gear', 'items' => [
-                    ['route' => 'sprava_pracovnich_pozic.php', 'label' => 'Pracovní pozice', 'description'
-    => 'Přiřazení pozic a superadminů', 'icon' => 'person-workspace'],
+                    ['route' => 'sprava_pracovnich_pozic.php', 'label' => 'Lidé a přístupy', 'description'
+      => 'Přehled rolí pro sport, e-shop a bar; úprava přístupů', 'icon' => 'person-workspace'],
                     ['route' => 'bar/permissions.php', 'label' => 'Vlastní spotřeba baru',
                         'description' => 'Přidělení a odebrání zvláštního oprávnění', 'icon' => 'key'],
                     ['route' => 'sprava_treneru.php', 'label' => 'Pracovní účty', 'description' => 'Účty, hesla a aktivace',

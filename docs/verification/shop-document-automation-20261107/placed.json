@@ -1,0 +1,47 @@
+{
+    "synthetic_only": true,
+    "phase": "placed",
+    "checked_at": "2026-11-07T10:16:51+01:00",
+    "worker": {
+        "documents": 0,
+        "sent": 1,
+        "failed": 0,
+        "attention": 0
+    },
+    "repeat": {
+        "documents": 0,
+        "sent": 0,
+        "failed": 0,
+        "attention": 0
+    },
+    "captured_mail": [
+        {
+            "email": "rodic@localhost.test",
+            "subject": "Objednávka KP261107BE5C4A205A – platební údaje",
+            "body": "Dobrý den,\n\nobjednávka KP261107BE5C4A205A byla přijata.\nČástka: 249,00 CZK\nÚčet: CZ7599999999999999999999\nVariabilní symbol: 2610000002\nSplatnost: 2026-11-14 23:59:59\n\nObjednávku a doklady najdete po přihlášení: http:\/\/127.0.0.1:18086\/booking\/objednavka.php?code=KP261107BE5C4A205A\n\nKlub KOVO Praha",
+            "attachments": []
+        }
+    ],
+    "order": [
+        {
+            "id": 2,
+            "status": "placed",
+            "payment_status": "pending",
+            "total_minor": 24900
+        }
+    ],
+    "documents": [],
+    "notifications": [
+        {
+            "notification_type": "shop_order_placed",
+            "status": "sent",
+            "attempts": 1
+        }
+    ],
+    "enrollments": [],
+    "monthly_count": [
+        {
+            "total": 0
+        }
+    ]
+}

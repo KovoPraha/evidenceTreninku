@@ -1,0 +1,47 @@
+{
+    "synthetic_only": true,
+    "phase": "pending",
+    "checked_at": "2026-11-07T08:45:15+01:00",
+    "orders": [
+        {
+            "id": 1,
+            "account_id": 1,
+            "public_code": "KP261107A6EDB29BF7",
+            "status": "placed",
+            "payment_status": "pending",
+            "total_minor": 24900,
+            "currency": "CZK"
+        }
+    ],
+    "payments": [
+        {
+            "id": 1,
+            "payable_type": "shop_order",
+            "payable_id": 1,
+            "status": "pending",
+            "amount_minor": 24900,
+            "variable_symbol": "2610000001"
+        }
+    ],
+    "enrollments": [],
+    "course_rosters": [],
+    "notifications": [],
+    "document_count": [
+        {
+            "count": 0
+        }
+    ],
+    "monthly_membership_count": [
+        {
+            "count": 0
+        }
+    ],
+    "order_events": [
+        {
+            "action": "place",
+            "from_status": null,
+            "to_status": "placed",
+            "note": "Objednávka vytvořena serverovým checkoutem."
+        }
+    ]
+}

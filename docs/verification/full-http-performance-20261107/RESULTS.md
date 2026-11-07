@@ -204,4 +204,12 @@ potvrzují shodná data po browseru i obnovené revokaci. Runtime zůstává zas
    samostatné kandidáty. Produkční nasazení/UAT pouze novým zadáním.
 
 P05/P07, export P06, heslo/T07 a ranní audit jiné relace se neopakovaly.
-[CURRENT_STATE](../../CURRENT_STATE.md) se tímto měřením nemění.
+Release/flags v [CURRENT_STATE](../../CURRENT_STATE.md) tímto měřením neměníme; doplňujeme odkaz P11.
+
+## Souběžný main při integraci
+
+Měření zůstává na `feb8fe8c` (348 tabulek / 160 migrací). Při předání převzatý
+main `9460ee76` obsahuje navíc shop migraci a změnu popisku navigace system_admin;
+novější main ani produkční release nebyly touto relací přeměřeny. Záznamy ROLE01,
+DOC01 a P07 zůstávají zachované. R13/R05/R06 už zahrnuje release ROLE01 podle
+CURRENT_STATE; žádné nové nasazení tato relace neprovádí.
