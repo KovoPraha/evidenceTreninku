@@ -107,6 +107,7 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 | Práce / rozsah | Plán, výsledek a důvody | Historie / další etapy |
 | --- | --- | --- |
+| P07 N1/N2 — automatické doklady a komunikace nasazené/zapnuté | [Plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md), [důkazy](verification/shop-document-automation-20261107/RESULTS.md), [volba](#d2026-11-07-03) | #355, přirozený worker ověřen; skutečný bankovní převod a externí doručení zůstávají samostatnou přejímkou |
 | P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-04) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); bez merge/deploye, katalog/HTTP dál otevřené |
 | DOC01 — souborová dokumentace a stručné předání | [Plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [důvod rozhodnutí](#d2026-11-07-01) | [Předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), [deník](EVENT_LOG.md); stav CI/přijetí určuje PR |
 | P11 R13 — implementace v main #352, bez deploye | [Plán a důkazy](verification/medical-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md), celé K0.2 otevřené |

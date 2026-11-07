@@ -1,0 +1,23 @@
+[
+  {
+    "path": "/index.php",
+    "status": 200,
+    "location": null
+  },
+  {
+    "path": "/booking/eshop.php",
+    "status": 200,
+    "location": null
+  },
+  {
+    "path": "/booking/produkt.php?id=297",
+    "status": 200,
+    "location": null,
+    "racing_team_present": true
+  },
+  {
+    "path": "/accounting_settings_admin.php",
+    "status": 302,
+    "location": "login.php"
+  }
+]
