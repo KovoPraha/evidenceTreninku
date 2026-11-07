@@ -34,6 +34,23 @@ k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
 
 ## Schválené produkční ověření
 
+### Mobilní karty ROLE01-MOB
+
+7. 11. vlastník výslovně schválil úpravu mobilního přehledu na karty, merge,
+nasazení a nové vizuální ověření. **ROZPRACOVÁNO**, vývoj; pokračuje vlastní větev
+`codex/access-visual-uat-20261107`, stejný worktree, základ main `9460ee76`.
+Dosavadní dokumentační PR #361 se rozšiřuje o tuto implementaci.
+Mobil pod 768 px: jedna karta na člověka, celé jméno/kontakt, stav, skupiny rolí,
+výchozí role, superadmin a samostatný grant spotřeby; tlačítko úpravy po ruce.
+Desktop zachová tabulku. Obě varianty čtou stejný filtrovaný seznam; bez změny
+autorizace, ukládání, schématu či přiřazení. Varianta pouhého fixování jména
+neřeší zalamování štítků, proto samostatné mobilní karty.
+Akceptace: 390/360 px bez vodorovného posunu, jméno a role pohromadě, filtry,
+prázdný výsledek a otevření editoru; desktop bez regrese. Produkční kontrola
+jen GET, žádné uložení, aktivace, grant ani nový účet. Další krok: implementace,
+cílená regrese, CI a merge, standardní deploy bez importu, vizuální Chrome.
+Výsledky a vydání budou odděleně doložené v navazujícím protokolu.
+
 ### Navazující vizuální kontrola ROLE01-VIS
 
 7. 11. vlastník výslovně požádal znovu otevřít produkci v prohlížeči a ověřit

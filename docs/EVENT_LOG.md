@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 7. 11. 2026 / E2026-11-07-11 | ROLE01-MOB: vlastník schválil mobilní karty, nasazení a nové vizuální ověření | ROZPRACOVÁNO, jen prezentační změna; žádná změna produkčních rolí | [Plán](ACCESS_OVERVIEW_2026-11-07.md), pokračuje vlastní PR #361 |
 | 7. 11. 2026 / E2026-11-07-10 | ROLE01-VIS: skutečný přihlášený Chrome průchod dokončen | Desktop přehledný; mobil 390/360 px s výhradou široké tabulky. Posun a otevření čitelného editoru PASS. Role, účty ani vydání se neměnily. | [Vizuální výsledek](verification/access-visual-20261107/RESULTS.md), [plán](ACCESS_OVERVIEW_2026-11-07.md); dokumentační větev `codex/access-visual-uat-20261107` |
 | 7. 11. 2026 / E2026-11-07-09 | ROLE01-VIS: vlastník požádal o skutečný vizuální desktop/mobilní průchod | ROZPRACOVÁNO, jen filtry a otevření editoru; žádné změny rolí či stavu účtů, žádný nový účet | [Plán](ACCESS_OVERVIEW_2026-11-07.md), větev `codex/access-visual-uat-20261107` |
 | 7. 11. 2026 / E2026-11-07-08 | P07 N1/N2: doklady a e-maily implementované na výslovné zadání vlastníka | Místní celý tok, 2337 testů a obě integrační MariaDB PASS. Srovnávací prostředí doplněno o stejnou migraci; finální CI/merge/deploy/aktivace následují. | [Plán](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md), [důkazy](verification/shop-document-automation-20261107/RESULTS.md), [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355) |

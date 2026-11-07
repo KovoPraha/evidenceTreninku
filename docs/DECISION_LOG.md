@@ -61,6 +61,19 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 - **Realizace / akceptace:** [plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [lokální důkazy a otevřené meze](verification/shop-document-automation-20261107/RESULTS.md).
 
+## D2026-11-07-04
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026, výslovné zadání vlastníka po ROLE01-VIS.
+- **Volba:** pod 768 px samostatné sémantické karty osob se skupinami rolí,
+  stavem a přímým tlačítkem editoru; nad breakpointem zůstává tabulka.
+  Obě zobrazení používají stejný filtrovaný seznam a kanonické definice.
+- **Důvod / varianta:** boční posun původní tabulky fungoval, ale skryl jméno
+  a lámal štítky do úzkých sloupců. Fixování jména by nevyřešilo šířku rolí.
+- **Oprávnění:** implementace, merge, standardní nasazení a čtecí vizuální
+  kontrola schválené. Žádná změna stávajících rolí ani založení nových účtů.
+- **Realizace / další krok:** [ROLE01-MOB](ACCESS_OVERVIEW_2026-11-07.md), PR #361;
+  testy a vizuální produkční přejímka se zaznamenají samostatně.
+
 ## Starší rozhodnutí — zachovaná v původních souborech
 
 | Oblast | Trvalý zdroj | Jak číst |
