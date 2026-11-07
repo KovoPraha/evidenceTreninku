@@ -17,6 +17,7 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 | ID | Soubor | Stav / registr | Dispozice a důkaz |
 | --- | --- | --- | --- |
+| PL-f8baf5dce9 | [Omezené načítání katalogu](CATALOG_READ_PERFORMANCE_2026-11-07.md) | PARTIAL / P11 | Implementace, parita a měření hotové v #364; vlastník nově povolil nasazení. [Předání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md), [výsledky](verification/catalog-read-performance-20261107/RESULTS.md). |
 | PL-f72bce19e1 | [Přehled lidí, rolí a přístupů](ACCESS_OVERVIEW_2026-11-07.md) | PARTIAL / ROLE01 | Původní ROLE01 nasazené a technicky převzaté #359, čtecí vizuální kontrola doložená #361. Navazující mobilní karty implementované/sloučené jako 3b37e053, následný deploy a nový Chrome ještě nedoložené. [verification/access-release-20261107/RESULTS.md](verification/access-release-20261107/RESULTS.md); [verification/access-visual-20261107/RESULTS.md](verification/access-visual-20261107/RESULTS.md); [verification/access-mobile-cards-20261107/RESULTS.md](verification/access-mobile-cards-20261107/RESULTS.md); [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) |
 | PL-c6375850d3 | [Funkční audit příležitostí — co by aplikace mohla umět navíc](AUDIT-PRILEZITOSTI-A-NAPADY.md) | CONCEPT / C01 | Neschválený produktový zásobník. Každý námět nejprve posoudit proti dnešnímu kódu; časové/ekonomické odhady nejsou závazek. [plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md](plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md) |
 | PL-20ad757250 | [Hloubkový funkční audit příležitostí](AUDIT-PRILEZITOSTI-HLOUBKOVE.md) | CONCEPT / C01 | Neschválený produktový zásobník. Každý námět nejprve posoudit proti dnešnímu kódu; časové/ekonomické odhady nejsou závazek. [plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md](plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md) |
@@ -370,9 +371,7 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 Sloučené podklady mají místní verzované odkazy. Dosud otevřený ranní výsledek
 se ověřuje v konkrétním PR; jeho existence není důkaz provedení ani dokončení.
 
-## Doplnění P11: výběr osob v docházce / PR #366
+| PL-30d4f6c028 | [Dávkové lekce](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | PARTIAL / P11 | Schválená implementace, [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md); parita a měření před/po. |
 
-| ID | Soubor | Stav / registr | Dispozice a důkaz |
-| --- | --- | --- | --- |
-| PL-c0b7a64780 | [P11 R06 — výběr osob v docházce, 7. 11. 2026](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), další lekce/mobil/souběh otevřené. |
-| PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), další lekce/mobil/souběh otevřené. |
+| PL-c0b7a64780 | [P11 R06 — výběr osob v docházce, 7. 11. 2026](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), integrované HTTP po #367/mobil/souběh otevřené. |
+| PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), integrované HTTP po #367/mobil/souběh otevřené. |

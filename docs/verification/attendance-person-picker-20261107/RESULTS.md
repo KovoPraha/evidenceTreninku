@@ -1,3 +1,7 @@
+> HISTORICKÝ PŘEDBĚŽNÝ PÁR: dvě oddělené formy měly mezeru přenosu sousedního draftu.
+> [Finální společný formulář a nové celé měření](final/RESULTS.md) jsou aktuální důkaz.
+> Zdejší surové artefakty zůstávají beze změny; níže je původní dobový výsledek.
+
 # P11 R06 — omezený výběr osob v docházce, 7. 11. 2026
 
 **Implementace a místní ověření HOTOVO, bez nasazení.** Místo dvou úplných

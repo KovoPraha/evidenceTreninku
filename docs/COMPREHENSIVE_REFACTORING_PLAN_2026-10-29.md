@@ -431,9 +431,11 @@ další samostatné zásahy; nepřevádět zrychlení cenové části na celou a
 
 ## R06 výběr osob — 7. 11. 2026
 
-[Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [výsledky](verification/attendance-person-picker-20261107/RESULTS.md),
+[Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [finální důkazy](verification/attendance-person-picker-20261107/final/RESULTS.md),
 [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366).
-Místní implementace/měření/UAT hotové: 50 výsledků plus všechny vybrané osoby,
-10221 osob dosažitelných v obou rolích, nativní JS/noJS a kanonické zápisy PASS.
-1,37 MB → 92 kB; Chrome trenér 5,23 → 1,11 s. Bez deploye; další lekce 219 SQL,
-R13/R05 kandidáti, mobil/souběh a celý K0.2 otevřené. Finální CI/merge u PR.
+50 výsledků + všichni vybraní, 10221 osob dostupných oběma rolím; společný nativní
+formulář zachová obě rozepsané části i bez JS. První dva formuláře měly mezeru,
+nový úplný pár ji nahrazuje: 1,37 MB → 92 kB, Chrome trenér 4,79 → 0,59 s.
+36/380, 44 HTTP, JS/noJS/role/kanonické zápisy PASS. Bez našeho deploye.
+#367 dávkové lekce již v main; po integraci zbývá celé HTTP/browser společné verze,
+R13/R05 objemy/kandidáti, rows examined, mobil/souběh a ostatní K0.2. Finální CI/merge u PR.

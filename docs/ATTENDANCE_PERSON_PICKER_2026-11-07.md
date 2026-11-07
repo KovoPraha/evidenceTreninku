@@ -1,97 +1,77 @@
 # P11 R06 — výběr osob v docházce, 7. 11. 2026
 
-Stav: implementace, místní srovnání a UAT HOTOVO; bez produkčního nasazení.
-Vlastník: vývoj podle přímého zadání vlastníka v tomto chatu.
-Base `d958fd6e` / #363, větev `codex/attendance-person-picker-20261107`, worktree
+Stav: implementace a finální místní měření/UAT HOTOVO; finální CI/přijetí vede
+[PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366). **Bez našeho deploye.**
+Vlastník: vývoj podle přímého zadání vlastníka tohoto chatu.
+Měřený base `d958fd6e`, integrační main `269684c2`; větev
+`codex/attendance-person-picker-20261107`, worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-attendance-picker-20261107`.
-Původní WIP `kis_rosters_admin.php` SHA256
-`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` zachovat.
+Původní WIP `kis_rosters_admin.php` zachovaný, SHA256
+`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
 
-## Cíl, volba a hranice
+## Cíl, oprávnění a volba
 
 [Předchozí celé měření](verification/full-http-performance-20261107/RESULTS.md)
-ukázalo 10221 osob ve dvou seznamech, cca 1,37 MB HTML a několik sekund
-načítání docházky. Omezit seznamy na hledanou stránku a vybrané osoby.
-Hledání musí zpřístupnit i hosty mimo preferovanou soupisku; oprávnění se
-ověřuje čerstvě, preference není omezení přístupu. Jména a ID jsou jediné
-osobní údaje nové projekce. Žádné dlouhodobé cache ani změny writeru/zámků.
+našlo 10221 osob ve dvou seznamech, 1,37 MB HTML a několik sekund načítání.
+Zadání: omezit projekci/HTML, zachovat dostupnost všech osob včetně hostů,
+rozepsanou práci, původ, role i souběhovou ochranu; produkci neměnit.
+Plán před kódem byl commitnutý v `c0883ff2`.
 
-Zvolený postup: nativní formulář s hledáním a stránkováním, vždy zachovat
-aktuální výběr a celý rozepsaný návrh. První verze používá nativní POST hledání,
-bez nového AJAX endpointu nebo skriptu.
-Dohledání každé osoby i odeslání tak funguje také bez JavaScriptu. Osobní
-omluva má samostatný výběr a stav, zachová se papírový původ, verze, validace,
-prázdný výběr i konflikty souběhu. Pouhé skrytí 10k option v DOM nepomůže
-velikosti HTML; omezení na vlastní soupisku by změnilo chování a není zvolené.
+Zvoleno 50 výsledků + všechny vybrané osoby, pouze id/jméno/příjmení,
+čerstvá autorizace bez cache; nativní POST bez nového JS/AJAX endpointu.
+Pouhé skrytí dlouhého seznamu nesníží HTML, omezení na soupisku by měnilo chování.
 
-## Postup a akceptace
+První návrh dvou nezávislých forem prošel prvními měřeními, ale review odhalilo
+ztrátu neodeslaných polí sousední části. PR byl vrácen do draftu; původní
+[předběžný pár](verification/attendance-person-picker-20261107/RESULTS.md) zůstává.
+Před opravou doplněna volba: **jeden společný nativní formulář**, oddělené
+prefixy omluvy, přenos obou draftů a stavu stránek při hledání v obou směrech.
+Starý API payload omluvy stále přijímán. formnovalidate u zápisových tlačítek
+brání blokaci required poli sousední části; původní serverové validace platí.
+Kanonické funkce writeru, zámky, CSRF a role zůstávají. Důvod a varianty:
+[D2026-11-07-09](DECISION_LOG.md#d2026-11-07-09).
 
-1. Nový vlastní localhost runtime a stejný kombinovaný seed: 52 týdnů,
-   200 účastníků / 52 revizí, 10k zdravotních sledování / 30k záznamů.
-   Změřit současný base na novém schématu, potom stejná data po změně;
-   staré časy #363 nepoužívat jako přímou kontrolní skupinu.
-2. Omezit projekci a HTML obou výběrů, zachovat vybrané osoby nezávisle na
-   hledání/stránce. Žádné načtení všech jmen do JSON ani DOM.
-3. Regrese hledání/stránek, preferencí a hostů, falešných ID, odebrané role,
-   obou formulářů, selhaného POST, klávesnice a režimu bez JavaScriptu.
-   Ověřit kanonické uložení, původ a verzi pouze na syntetických datech.
-4. Stejné HTTP a Chrome cold/warm případy před/po, HTML bajty/option count,
-   oddělená SQL/PHP diagnostika a shoda doménových dat po čtecím profilu.
-5. Místní kontroly, doklady v `docs/verification/`, úklid vlastních služeb,
-   aktualizace registru/CURRENT/handoff/logů, PR a CI bez deploye.
+## Dokončená akceptace
 
-## Průběh a zbývající práce
+1. Nový společný seed pro finální pár: originální d958fd6e a pak finální picker,
+   350 tabulek / 161 migrací, 728 plánů / 52 týdnů, 200 účastníků / 52 revizí,
+   10k zdravotních sledování / 30k záznamů, 10221 osob. Mezi variantami beze změny.
+2. 21 HTTP případů na variantu / celkem 540 pozitivních časů, 78 Chrome pozorování
+   tří rolí, 9 DOM kontrol na variantu PASS. HTML 1,37 MB → 92 kB;
+   Chrome warm trenér 4,79 → 0,59 s, vedoucí 5,80 → 0,62 s, druhý trenér 5,61 → 0,40 s.
+3. Oddělené diagnostiky: celé HTML stejné jako prostý GET každé varianty,
+   0 DML/DDL a 13 shodných doménových checksums. SQL trenéra 59 → 75;
+   přínos HTML/DOM, nikoli plošně menší SQL nebo prokázané rows examined.
+4. Všech 10221 osob právě jednou ve 205 stranách pro obě role, MariaDB parita
+   celého universe/pořadí/kolací/wildcardů/pinů/čerstvé role PASS.
+5. JS/noJS Enter/paging/obě současné rozepsané části/nový i prázdný výběr/390 px
+   PASS; 44 HTTP kontrol včetně CSRF, cizí lekce a neplatné find_* PASS.
+6. Až po časování kanonická revize 53 / 201 osob / paper, stale 422 bez přepsání,
+   osobní omluva skutečným tlačítkem 1001/paper a původní JSON API 1002/phone
+   ověřené v DB. Revokace role/deaktivace PASS, původní role obnovené.
+7. 36 testů / 380 assertions, PHPStan, styl 9 PHP PASS. Oba vlastní runtime
+   zastavené a citlivé dočasné soubory/DB/configy odstraněné, WIP shodný.
 
-Implementace zapojená: 50 výsledků + vybraní, nativní čtecí POST, obě formy.
-Před/po 21 HTTP případů (9 pozitivních × 30 = 270 vzorků na variantu),
-39 Chrome pozorování na variantu pro coach / sports_lead / other_coach.
-9 DOM kontrol na variantu PASS, stejné doménové checksums; větší docházka
-1,37 MB → 92 kB. Lokálně cílených 35 testů / 374 assertions PASS.
-Oddělená HTTP diagnostika před/po: 0 DML/DDL, shoda s prostým HTTP.
-SQL u trenérského formuláře 59 → 75 kvůli čerstvým kontrolám a vybraným
-projekcím; zmenšuje se přenos jmen/HTML, netvrdíme pokles počtu SQL všude.
-Nativní JS/noJS, 36 HTTP kontrol, revize 53 / 201 osob / paper, stale write,
-osobní omluva přes UI a role/account revokace PASS. Všech 10221 osob dosažitelných
-právě jednou ve 205 stránkách pro obě role. PHPStan i styl devíti PHP PASS.
-Vlastní runtime uklizený/zastavený, WIP shodný. [Výsledky](verification/attendance-person-picker-20261107/RESULTS.md),
-[předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
-Plán před kódem pushnutý v c0883ff2; celé předání a finální CI/merge řídí
-[PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366). Žádný náš deploy.
-Hledání lekcí, R13/R05, fyzický mobil, souběžná zátěž a další R01–R16
-zůstávají samostatné etapy P11; toto není uzavření celého K0.2.
+[Finální důkazy a přesné meze](verification/attendance-person-picker-20261107/final/RESULTS.md),
+[session handoff](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+CI doplňuje reader paritu 10.3/11.4. Historický zmrazený validator harness
+se nemění; generovaná kopie importuje sdílený UI helper i v potomcích.
+První CI selhání importu 42370027225 je opravené bez vypnutí přísné HTML parity.
 
-Volba upřesněna před zapojením: nativní POST hledání stačí k omezení HTML;
-AJAX by přidal souběh požadavků a další endpoint bez nutnosti pro měřený cíl.
-Změna hledání nesmí spustit writer; CSRF, actor i lekce se kontrolují standardně.
-Nový base má 350 tabulek / 161 migrací kvůli #355, doménový seed je stejný
-jako #363. Před/po běží na jediném společném novém schématu.
+## Integrace a zbývající práce
 
-Historická CI parita R06 bude používat shodnou novou stránku a picker v obou
-stromech, ale ponechá zmrazený původní validátor. Přidává se samostatná
-MariaDB kontrola celé množiny, pořadí, kolací, wildcardů a čerstvé role.
-Archivované before-harness soubory se nemění, přísná HTML parita se neruší.
-Vybraná ID se při srovnání formulářů chápou jako množina: původní SQL nemělo
-určené pořadí při identických jménech, nyní má ID jako stabilní tie-breaker.
+Převzaté cizí #347 serverové výsledky, #364 katalog/vydání a #367 dávkové lekce
+se zachovávají; release/flags a automatické bloky mají zdroj v CURRENT/main.
+Po #367 je training_day.php novější než měřený pár; čísla zde nejsou nové
+přeměření společného main ani produkce. Integrační regrese a finální CI zvlášť.
 
-Volbu eviduje [D2026-11-07-07](DECISION_LOG.md#d2026-11-07-07); původní pracovní ID 06 bylo před integrací sjednocené s přijatým DOC02.
+1. Dokončit finální CI/review a přijetí #366 bez produkčního nasazení.
+2. Celé HTTP/browser kombinace s #367; starých 219 SQL není dnešní integrovaný
+   výsledek. Dávkové lekce již implementované, neplánovat jejich duplikaci.
+3. R13/R05 objemy/kandidáti, skutečné rows examined, fyzický mobil/CPU/síť/souběh
+   a další R01–R16. K0.2 zůstává otevřené.
+4. Nasazení/přejímka pickeru až na nové explicitní zadání. Žádná aktivace zde.
 
-Při integraci převzat main `22e1b2cb`: DOC02 katalog/pravidla, mobilní správa přístupů a záznam cizího nasazení P07 se zachovávají. Měřené R06 soubory se tím nemění; nový globální main ani produkce nebyly samostatně přeměřené.
-
-## Doplnění před přijetím: uchování obou rozepsaných částí
-
-Při review nalezena mezera původního návrhu se dvěma samostatnými formuláři:
-hledání v jednom POSTu uchová jen jeho pole a může zahodit neodeslaný draft
-v druhém. Původní 540/78 měření zůstává historický předběžný pár, PR #366 je
-znovu draft. Kód dosud není v main ani nasazený.
-
-Zvolená oprava: jeden společný nativní formulář pro obě části, pojmenované
-akce a oddělené prefixy polí omluvy. Hledání odešle a zachová oba drafty i bez
-JavaScriptu. Kanonické save funkce/CSRF/role/locky zůstávají; kompatibilní
-staré API názvy omluvy se stále přijmou. Zápisová tlačítka spoléhají na stejné
-serverové validace, protože nativní required pole druhé části nesmějí blokovat
-první. Nezavádí se nový JS ani endpoint. Toto rozhodnutí doplňuje D07.
-
-Znovu před/po na novém jediném kombinovaném schématu; původní controller z
-čistého d958fd6e a finální společný formulář. Ověřit navíc současně rozepsanou
-docházku a omluvu při hledání/stránkování v obou směrech, včetně JS/noJS.
-Nový runtime se nesmí zaměnit za již uklizený původní. Produkce stále beze změn.
+Pracovní rozhodnutí 06 → 07 a události 14/15 → 19/20 v dřívějších commitech
+kolidovaly s mezitím přijatou prací. Při integraci 269684c2 přijatá ID zachovaná;
+vlastní rozhodnutí nyní 09, události 22–24. Historické commity se nepřepisují.

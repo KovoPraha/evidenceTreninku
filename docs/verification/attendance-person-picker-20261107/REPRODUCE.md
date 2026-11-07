@@ -1,3 +1,7 @@
+> HISTORICKÝ PŘEDBĚŽNÝ PÁR: dvě oddělené formy měly mezeru přenosu sousedního draftu.
+> [Finální společný formulář a nové celé měření](final/RESULTS.md) jsou aktuální důkaz.
+> Zdejší surové artefakty zůstávají beze změny; níže je původní dobový výsledek.
+
 # Opakování P11 R06 výběru osob
 
 Pouze nový vlastní checkout bez configu a nový localhost MariaDB runtime.

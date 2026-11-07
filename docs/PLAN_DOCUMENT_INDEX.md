@@ -775,12 +775,56 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-edbd6d52dc | [tests/fixtures/bar-localhost-invoice.pdf](../tests/fixtures/bar-localhost-invoice.pdf) | binary-artifact / SUPPORT | DOC02 |
 | PL-794e724c77 | [tests/fixtures/kis/README.md](../tests/fixtures/kis/README.md) | reference / REFERENCE | DOC02 |
 
-## Doplnění po původní inventuře: P11 / PR #366
+| PL-f8baf5dce9 | [CATALOG_READ_PERFORMANCE_2026-11-07.md](CATALOG_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
 
-| ID | Soubor | Role / dispozice | Registr |
-| --- | --- | --- | --- |
-| PL-c0b7a64780 | [P11 R06 — výběr osob v docházce, 7. 11. 2026](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
-| PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
-| PL-607748e4e4 | [P11 R06 — omezený výběr osob v docházce, 7. 11. 2026](verification/attendance-person-picker-20261107/RESULTS.md) | reference / HISTORICAL_EVIDENCE | P11 |
-| PL-491b6bafd7 | [Kalibrace a oddělení důkazů, 7. 11. 2026](verification/attendance-person-picker-20261107/CALIBRATION.md) | reference / HISTORICAL_EVIDENCE | P11 |
-| PL-53ee3c4ece | [Opakování P11 R06 výběru osob](verification/attendance-person-picker-20261107/REPRODUCE.md) | reference / REFERENCE | P11 |
+| PL-e65877b86a | [SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) | handoff / PARTIAL | P11 |
+
+| PL-fe732227cf | [RESULTS.md](verification/catalog-read-performance-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
+
+| PL-d31c81def3 | [targeted-junit.xml](verification/catalog-read-performance-20261107/targeted-junit.xml) | evidence / REFERENCE | P11 |
+
+| PL-cd5426bfc3 | [verification.json](verification/catalog-read-performance-20261107/verification.json) | evidence / REFERENCE | P11 |
+
+| PL-bfe0fab5b2 | [catalog-page-comparison.json](verification/catalog-read-performance-20261107/ci-10.3/catalog-page-comparison.json) | evidence / REFERENCE | P11 |
+
+| PL-2160b8afe9 | [catalog-page-comparison.json](verification/catalog-read-performance-20261107/ci-final-10.3/catalog-page-comparison.json) | evidence / REFERENCE | P11 |
+
+| PL-101d3dd75c | [catalog-page-comparison.json](verification/catalog-read-performance-20261107/ci-final-11.4/catalog-page-comparison.json) | evidence / REFERENCE | P11 |
+
+| PL-30d4f6c028 | [ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-22fccd64f4 | [SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-38b7449ba4 | [RESULTS.md](verification/attendance-lesson-read-performance-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
+| PL-78d18f8e5d | [sqlite-comparison.json](verification/attendance-lesson-read-performance-20261107/sqlite-comparison.json) | evidence / REFERENCE | P11 |
+| PL-2ab3c6b2d7 | [targeted-junit.xml](verification/attendance-lesson-read-performance-20261107/targeted-junit.xml) | evidence / REFERENCE | P11 |
+| PL-d3582f1892 | [verification.json](verification/attendance-lesson-read-performance-20261107/verification.json) | evidence / REFERENCE | P11 |
+| PL-9fc07f8b47 | [attendance-lesson-comparison.json](verification/attendance-lesson-read-performance-20261107/ci-10.3/attendance-lesson-comparison.json) | evidence / REFERENCE | P11 |
+| PL-d4b7b69c58 | [attendance-lesson-comparison.json](verification/attendance-lesson-read-performance-20261107/ci-11.4/attendance-lesson-comparison.json) | evidence / REFERENCE | P11 |
+
+| PL-5f10477b9c | [after-first-v2.json](verification/catalog-release-20261107/after-first-v2.json) | evidence / REFERENCE | P11 |
+
+| PL-0d146f42d0 | [after-v1-inconclusive.json](verification/catalog-release-20261107/after-v1-inconclusive.json) | evidence / REFERENCE | P11 |
+
+| PL-96417b089b | [after.json](verification/catalog-release-20261107/after.json) | evidence / REFERENCE | P11 |
+
+| PL-2eb116f551 | [before-initial.json](verification/catalog-release-20261107/before-initial.json) | evidence / REFERENCE | P11 |
+
+| PL-1c7e6de6b4 | [before.json](verification/catalog-release-20261107/before.json) | evidence / REFERENCE | P11 |
+
+| PL-10e4150c06 | [deployment.json](verification/catalog-release-20261107/deployment.json) | evidence / REFERENCE | P11 |
+
+| PL-32b8a2462e | [repeatability.json](verification/catalog-release-20261107/repeatability.json) | evidence / REFERENCE | P11 |
+
+| PL-05e77f0ca6 | [RESULTS.md](verification/catalog-release-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
+
+| PL-4389493264 | [snapshot.php.txt](verification/catalog-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
+
+| PL-6e368996bd | [integrated-junit.xml](verification/attendance-lesson-read-performance-20261107/integrated-junit.xml) | evidence / REFERENCE | P11 |
+
+| PL-c0b7a64780 | [docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-10360221ef | [docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-607748e4e4 | [docs/verification/attendance-person-picker-20261107/RESULTS.md](verification/attendance-person-picker-20261107/RESULTS.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-491b6bafd7 | [docs/verification/attendance-person-picker-20261107/CALIBRATION.md](verification/attendance-person-picker-20261107/CALIBRATION.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-53ee3c4ece | [docs/verification/attendance-person-picker-20261107/REPRODUCE.md](verification/attendance-person-picker-20261107/REPRODUCE.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-d04eafb86a | [docs/verification/attendance-person-picker-20261107/final/RESULTS.md](verification/attendance-person-picker-20261107/final/RESULTS.md) | reference / REFERENCE | P11 |
+| PL-b357de1d32 | [docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md](verification/attendance-person-picker-20261107/final/CALIBRATION.md) | reference / REFERENCE | P11 |
+| PL-629fbd394e | [docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md](verification/attendance-person-picker-20261107/final/REPRODUCE.md) | reference / REFERENCE | P11 |

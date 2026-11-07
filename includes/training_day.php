@@ -26,8 +26,12 @@ function trainingDayChoices(PDO $pdo, int $actor, string $search, string $on): a
     $q = $pdo->prepare('SELECT p.* FROM planovane_treninky p WHERE '.$where.' ORDER BY CASE WHEN p.trener_id='.$actor
     .' THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50');
     $q->execute($params);
+    $rows = $q->fetchAll(PDO::FETCH_ASSOC);
+    if (!$pdo->inTransaction()) {
+        return trainingDayReadCurrentChoices($pdo, $rows);
+    }
     $out = [];
-    foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    foreach ($rows as $row) {
         try {
             coachScopeAssertPlan($pdo, (int)$row['id'], substitution: true);
             $out[] = $row;
@@ -35,4 +39,29 @@ function trainingDayChoices(PDO $pdo, int $actor, string $search, string $on): a
         }
     }
     return $out;
+}
+
+/** Current GET projection only. Transactional callers retain the original loop.
+ * @param list<array<string,mixed>> $rows @return list<array<string,mixed>>
+ */
+function trainingDayReadCurrentChoices(PDO $pdo, array $rows): array
+{
+    if ($rows === []) {
+        return [];
+    }
+    try {
+        $ids = array_map('intval', array_column($rows, 'id'));
+        $marks = implode(',', array_fill(0, count($ids), '?'));
+        $q = $pdo->prepare("SELECT id FROM planovane_treninky WHERE id IN ($marks)");
+        $q->execute($ids);
+        $existing = array_fill_keys(array_map('intval', $q->fetchAll(PDO::FETCH_COLUMN)), true);
+        // Fresh employment check after the batch. Nothing is cached across calls;
+        // trainingDayPlan and every writer still perform canonical current checks.
+        coachTrainingRequireActor($pdo);
+        return array_values(array_filter($rows, static fn (array $row): bool => isset($existing[(int) $row['id']])));
+    } catch (RuntimeException) {
+        // The original per-row loop also omits rows on revoked employment or a
+        // failed current plan read. Initial actor/filter/query errors still escape.
+        return [];
+    }
 }

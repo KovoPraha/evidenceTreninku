@@ -61,16 +61,17 @@ final class ShopStorefrontWiringTest extends TestCase
     {
         $source = (string)file_get_contents(dirname(__DIR__, 2) . '/booking/eshop.php');
         self::assertStringContainsString('produkt.php?id=', $source);
-        self::assertStringContainsString('shopPublicCatalogCards($pdo)', $source);
-        self::assertStringContainsString("\$_GET['kategorie']", $source);
+        self::assertStringContainsString('shopCatalogPageRead($pdo, $isLoggedIn ? $accountId : null, $_GET)', $source);
+        $reader = (string) file_get_contents(dirname(__DIR__, 2) . '/includes/shop_catalog_page_read.php');
+        self::assertStringContainsString("\$input['kategorie']", $reader);
         $navigation = (string)file_get_contents(dirname(__DIR__, 2).'/includes/shop_public_navigation.php');
         self::assertStringContainsString("rawurlencode(\$path)", $navigation);
         self::assertMatchesRegularExpression('/shopPublicNavigation\(\s*\$pdo/', $source);
-        self::assertStringContainsString('shopCategoryDescendants', $source);
-        self::assertStringContainsString('shopStorefrontCategoryMenu', $source);
+        self::assertStringContainsString('shopCategoryDescendants', $reader);
+        self::assertStringContainsString('shopStorefrontCategoryMenu', $reader);
         self::assertStringContainsString('clubProgramVariantSaleState', $source);
         $cards = (string) file_get_contents(dirname(__DIR__, 2) . '/includes/shop_catalog_cards.php');
-        self::assertStringContainsString('shopPublicSaleableCatalog($pdo, $readContext)', $cards);
+        self::assertStringContainsString('shopPublicSaleableCatalog($pdo, $readContext, $productIds)', $cards);
         self::assertStringNotContainsString('clubProgramOfferIsOnSale($offer)', $source);
         self::assertStringContainsString("listing_attributes", $source);
         $detail = (string)file_get_contents(dirname(__DIR__, 2).'/booking/produkt.php');

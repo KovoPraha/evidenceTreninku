@@ -30,8 +30,15 @@ function shopStorefrontReadRows(
     ?int $productId = null,
     ?DateTimeImmutable $now = null,
     bool $navigation = false,
-    ?ClubProgramReadContext $readContext = null
+    ?ClubProgramReadContext $readContext = null,
+    ?array $productIds = null
 ): array {
+    if ($productIds !== null) {
+        $productIds = array_values(array_unique(array_filter(array_map('intval', $productIds), static fn (int $id): bool => $id > 0)));
+        if ($productIds === []) {
+            return [];
+        }
+    }
     if ($productId !== null && $productId < 1) {
         return [];
     }
@@ -57,9 +64,10 @@ function shopStorefrontReadRows(
         . "AND v.catalog_status='active' AND (v.visible=1 OR v.visible IS NULL) "
         . "AND v.price_mode='fixed' AND v.amount_minor>=0 AND v.currency='CZK' "
         . ($productId === null ? '' : 'AND p.id=? ')
+        . ($productIds === null ? '' : 'AND p.id IN (' . implode(',', array_fill(0, count($productIds), '?')) . ') ')
         . 'ORDER BY sort_order,pub.public_name,v.sku,v.id';
     $statement = $pdo->prepare($sql);
-    $statement->execute($productId === null ? [] : [$productId]);
+    $statement->execute(array_merge($productId === null ? [] : [$productId], $productIds ?? []));
     $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
     $monthlyTariffs = [];
     if (monthlyMembershipTable($pdo, 'monthly_membership_tariffs')) {

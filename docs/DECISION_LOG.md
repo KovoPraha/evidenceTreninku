@@ -6,7 +6,7 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
-## D2026-11-07-07
+## D2026-11-07-09
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník zadal optimalizovat výběr osob
   podle měření, ověřit stejná syntetická data a zachovat chování/WIP bez produkce.
@@ -20,13 +20,17 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
   implementace/místní měření/UAT HOTOVO; větev `codex/attendance-person-picker-20261107`,
   [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), finální CI/merge u PR.
 
-Pracovní ID 06 v původním nesloučeném plánu c0883ff2 kolidovalo s přijatým
-DOC02; přijaté DOC02 zůstává 06 a výběr osob dostává 07.
+Pracovní ID 06/07 kolidovalo s přijatým DOC02/katalogem; ta ID zůstávají,
+vlastní rozhodnutí je 09. Historické commitové doklady se nemění.
 
 Doplnění před přijetím PR #366: dvě nativní formy nepředávají neodeslaná pole
 sousední části. Volba se zpřesňuje na společný formulář s oddělenými prefixy
-omluvy a původní serverovou validací. Nový skutečný pár měření i JS/noJS
-regrese obou současných draftů nahradí předběžný pár; bez produkce.
+omluvy a původní serverovou validací. Nový úplný pár měření a JS/noJS
+regrese obou současných draftů PASS; předběžný pár zůstává historický; bez produkce.
+
+[Finální důkazy](verification/attendance-person-picker-20261107/final/RESULTS.md);
+#367 dávkové lekce převzaté, celé integrované HTTP zatím nepřeměřené.
+
 
 ## D2026-11-07-05
 
@@ -177,4 +181,28 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 P11 celé HTTP/browser — [uzavřené měření a důkazy](verification/full-http-performance-20261107/RESULTS.md), [navazující etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); celé K0.2 otevřené.
 
-P11 výběr osob — [místně dokončená implementace a ověření](verification/attendance-person-picker-20261107/RESULTS.md), [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366); bez deploye, ostatní P11 otevřené.
+## D2026-11-07-07
+
+PŘIJATO, 7. 11. 2026, podle zadání vlastníka pokračovat katalogem.
+[Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md): lehká operační projekce celého
+katalogu zachová prodejnost, počty a ceny; těžká prezentace jen pro stránku.
+SQL LIMIT před cenami/prodejností zamítnuto kvůli změně výsledků; trvalá cache
+by potřebovala invalidaci. Parita a měření jsou podmínkou předání. Bez deploye.
+První nativní měření ukázalo režii malého katalogu; do 64 aktivních produktů
+proto původní cesta podle sondy nejvýše 65 ID. Sonda neurčuje výsledný katalog.
+Pracovní ID v předchozích commitech této větve bylo 05; přijaté HTTP rozhodnutí
+#363 ponecháno jako 05, katalog nyní 06. Historické doklady zůstávají v Gitu.
+
+P11 katalog — [plán a volba](CATALOG_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/catalog-read-performance-20261107/RESULTS.md), [předání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md); implementace/parita/měření hotové v #364, bez merge/deploye.
+
+Při převzetí #361 zůstává jeho přijaté mobilní rozhodnutí 06, katalogové pracovní 06 nyní nese 07. V tomto katalogovém úkolu se deploy nadále neprovádí; samostatné produkční oprávnění ROLE01-MOB se zde nevykonává.
+
+Aktuální pokyn vlastníka v tomto úkolu: ověřené změny commitnout, podle vhodnosti nasadit a pokračovat implementací další doložené optimalizace. Pro katalog je nyní merge/deploy schválený; pro další etapu se nejprve dokládá parita a měření.
+
+## D2026-11-07-08
+
+PŘIJATO podle pokračovacího zadání vlastníka. [Dávkové lekce](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md): omezit opakování stejné aktuální kontroly v GET, zachovat výběr kandidátů a transakční writer. Bez cache mezi voláními; parita a měření před/po nutné. UI výběru osob je samostatný větší zásah.
+
+Po nativní paritě a přínosu přibližně 20× u 50 lekcí je podle aktuálního zadání vhodné nasadit i tuto čtecí optimalizaci. Merge a standardní deploy následují až po zelených požadovaných kontrolách; žádné změny osob, rolí nebo docházky.
+
+P11 výběr osob — [finální místní ověření](verification/attendance-person-picker-20261107/final/RESULTS.md), [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md); PR #366, bez deploye, další P11 otevřené.

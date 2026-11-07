@@ -1,3 +1,7 @@
+> HISTORICKÝ PŘEDBĚŽNÝ PÁR: dvě oddělené formy měly mezeru přenosu sousedního draftu.
+> [Finální společný formulář a nové celé měření](final/RESULTS.md) jsou aktuální důkaz.
+> Zdejší surové artefakty zůstávají beze změny; níže je původní dobový výsledek.
+
 # Kalibrace a oddělení důkazů, 7. 11. 2026
 
 - První inicializace MariaDB dostala chybně sestavený PowerShell argument a

@@ -15,14 +15,13 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [audit](PLAN_CATALOG_AUDIT_2026-11-07.md), [úplný katalog](PLAN_CATALOG.md); koncepty C01–C04 v registru.
 
-- P11 R06 výběr osob: implementace/místní ověření HOTOVO, **bez deploye**.
-  [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [výsledky](verification/attendance-person-picker-20261107/RESULTS.md),
-  [předání a další kroky](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366).
-  1,37 MB → 92 kB, Chrome trenér 5,23 → 1,11 s; JS/noJS, role, draft, zápisy a revokace PASS.
-  Větev `codex/attendance-person-picker-20261107`, vlastní worktree viz předání; finální CI/merge u PR.
-  Runtime uklizený, WIP zachovaný. Dále lekce 219 SQL, R13/R05, mobil/souběh; K0.2 otevřené.
-  [Předchozí celé HTTP #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md) v main; R13/R05/R06 #354 zahrnuje ROLE01.
-  Klubové ceny #358 v main bez dalšího deploye; [katalog #364](https://github.com/KovoPraha/evidenceTreninku/pull/364) vede vlastní větev.
+- P11 picker: implementace/místní měření/UAT HOTOVO, **bez našeho deploye**; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+  [finální výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [předání / PR #366](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+  1,37 MB → 92 kB, Chrome trenér 4,79 → 0,59 s; obě rozepsané části, JS/noJS, role a zápisy PASS.
+  Větev `codex/attendance-person-picker-20261107`, finální CI/merge u PR; runtime uklizený, WIP zachovaný.
+  Převzaté [dávkové lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md); celé HTTP společné verze dosud nepřeměřené.
+  [Původní HTTP #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md) je historický base; dále R13/R05/rows examined/mobil/souběh.
+  R13/R05/R06 #354 zahrnuje ROLE01; [katalog #364 a cizí vydání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zachované. K0.2 otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.
@@ -34,13 +33,12 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   Výsledek nepředpokládat z data; číst důkaz. Místní úloha zůstává PAUSED.
 
 <!-- membership-morning-publish:start -->
-## Ranní audit 7. 11. — čeká na doložený výsledek
+## Ranní serverový výsledek PASS
 
-Termín 05:30 UTC již uplynul; výsledek **NEDOLOŽEN v Gitu**.
-Nejde o důkaz, že server neběžel. Výsledek má doplnit
-[výsledkový PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347).
-PC není potřeba. [Přesný postup a stav](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
+[Ranní serverový výsledek PASS](verification/membership-scheduler-20261107/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
 Skutečné P05/P07 a export P06 zůstávají odložené.
+
 <!-- membership-morning-publish:end -->
 
 <!-- membership-morning-preflight:start -->

@@ -9270,6 +9270,313 @@
       "evidence": []
     },
     {
+      "id": "PL-f8baf5dce9",
+      "path": "docs/CATALOG_READ_PERFORMANCE_2026-11-07.md",
+      "title": "CATALOG_READ_PERFORMANCE_2026-11-07",
+      "primary": true,
+      "role": "plan",
+      "status": "DONE",
+      "registry": "P11",
+      "disposition": "#364 sloučené a nasazené c70939d4, 42372002993 SUCCESS; parita veřejných polí a doložená mez DOM otisku.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md",
+        "docs/verification/catalog-release-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-e65877b86a",
+      "path": "docs/SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md",
+      "title": "SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07",
+      "primary": false,
+      "role": "handoff",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-fe732227cf",
+      "path": "docs/verification/catalog-read-performance-20261107/RESULTS.md",
+      "title": "RESULTS",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-d31c81def3",
+      "path": "docs/verification/catalog-read-performance-20261107/targeted-junit.xml",
+      "title": "targeted-junit",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-cd5426bfc3",
+      "path": "docs/verification/catalog-read-performance-20261107/verification.json",
+      "title": "verification",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-bfe0fab5b2",
+      "path": "docs/verification/catalog-read-performance-20261107/ci-10.3/catalog-page-comparison.json",
+      "title": "catalog-page-comparison",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-2160b8afe9",
+      "path": "docs/verification/catalog-read-performance-20261107/ci-final-10.3/catalog-page-comparison.json",
+      "title": "catalog-page-comparison",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-101d3dd75c",
+      "path": "docs/verification/catalog-read-performance-20261107/ci-final-11.4/catalog-page-comparison.json",
+      "title": "catalog-page-comparison",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-30d4f6c028",
+      "path": "docs/ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
+      "title": "ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Dávkový výběr lekcí: schválená implementace podle výkonové analýzy, rozpracováno.",
+      "evidence": [
+        "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-22fccd64f4",
+      "path": "docs/SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
+      "title": "SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
+      "primary": false,
+      "role": "handoff",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Dávkový výběr lekcí: schválená implementace podle výkonové analýzy, rozpracováno.",
+      "evidence": [
+        "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-38b7449ba4",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md",
+      "title": "RESULTS.md",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "R06 nabídka lekcí: syntetický důkaz, nikoli produkční data.",
+      "evidence": []
+    },
+    {
+      "id": "PL-78d18f8e5d",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/sqlite-comparison.json",
+      "title": "sqlite-comparison.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "R06 nabídka lekcí: syntetický důkaz, nikoli produkční data.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2ab3c6b2d7",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/targeted-junit.xml",
+      "title": "targeted-junit.xml",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "R06 nabídka lekcí: syntetický důkaz, nikoli produkční data.",
+      "evidence": []
+    },
+    {
+      "id": "PL-d3582f1892",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/verification.json",
+      "title": "verification.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Nativní parita a párové syntetické měření nabídky lekcí.",
+      "evidence": []
+    },
+    {
+      "id": "PL-9fc07f8b47",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/ci-10.3/attendance-lesson-comparison.json",
+      "title": "attendance-lesson-comparison.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Nativní parita a párové syntetické měření nabídky lekcí.",
+      "evidence": []
+    },
+    {
+      "id": "PL-d4b7b69c58",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/ci-11.4/attendance-lesson-comparison.json",
+      "title": "attendance-lesson-comparison.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Nativní parita a párové syntetické měření nabídky lekcí.",
+      "evidence": []
+    },
+    {
+      "id": "PL-5f10477b9c",
+      "path": "docs/verification/catalog-release-20261107/after-first-v2.json",
+      "title": "after-first-v2.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-0d146f42d0",
+      "path": "docs/verification/catalog-release-20261107/after-v1-inconclusive.json",
+      "title": "after-v1-inconclusive.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-96417b089b",
+      "path": "docs/verification/catalog-release-20261107/after.json",
+      "title": "after.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2eb116f551",
+      "path": "docs/verification/catalog-release-20261107/before-initial.json",
+      "title": "before-initial.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-1c7e6de6b4",
+      "path": "docs/verification/catalog-release-20261107/before.json",
+      "title": "before.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-10e4150c06",
+      "path": "docs/verification/catalog-release-20261107/deployment.json",
+      "title": "deployment.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-32b8a2462e",
+      "path": "docs/verification/catalog-release-20261107/repeatability.json",
+      "title": "repeatability.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-05e77f0ca6",
+      "path": "docs/verification/catalog-release-20261107/RESULTS.md",
+      "title": "RESULTS.md",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-4389493264",
+      "path": "docs/verification/catalog-release-20261107/snapshot.php.txt",
+      "title": "snapshot.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-6e368996bd",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/integrated-junit.xml",
+      "title": "integrated-junit.xml",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
       "id": "PL-c0b7a64780",
       "path": "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
       "title": "P11 R06 — výběr osob v docházce, 7. 11. 2026",
@@ -9277,9 +9584,9 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
       "evidence": [
-        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
       ]
     },
@@ -9291,9 +9598,9 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
       "evidence": [
-        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
       ]
     },
@@ -9305,9 +9612,9 @@
       "role": "reference",
       "status": "HISTORICAL_EVIDENCE",
       "registry": "P11",
-      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
       "evidence": [
-        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
       ]
     },
@@ -9319,9 +9626,9 @@
       "role": "reference",
       "status": "HISTORICAL_EVIDENCE",
       "registry": "P11",
-      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
       "evidence": [
-        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
       ]
     },
@@ -9331,11 +9638,53 @@
       "title": "Opakování P11 R06 výběru osob",
       "primary": false,
       "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-d04eafb86a",
+      "path": "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+      "title": "P11 R06 — finální výběr osob, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
       "status": "REFERENCE",
       "registry": "P11",
-      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
       "evidence": [
-        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-b357de1d32",
+      "path": "docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md",
+      "title": "Kalibrace finálního páru, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-629fbd394e",
+      "path": "docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md",
+      "title": "Opakování P11 R06 výběru osob",
+      "primary": false,
+      "role": "reference",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
       ]
     }
@@ -9352,7 +9701,10 @@
         "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
         "docs/verification/attendance-person-picker-20261107/RESULTS.md",
         "docs/verification/attendance-person-picker-20261107/CALIBRATION.md",
-        "docs/verification/attendance-person-picker-20261107/REPRODUCE.md"
+        "docs/verification/attendance-person-picker-20261107/REPRODUCE.md",
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md",
+        "docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md"
       ]
     }
   ]
