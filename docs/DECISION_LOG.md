@@ -6,6 +6,19 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-06
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník zadal optimalizovat výběr osob
+  podle měření, ověřit stejná syntetická data a zachovat chování/WIP bez produkce.
+- **Volba / důvod:** omezená hledaná stránka plus všechny již vybrané osoby;
+  nativní POST hledání zachová práci i bez JavaScriptu. AJAX není pro omezení
+  HTML nutný a přidal by další asynchronní stav/endpoint.
+  Změna neomezuje hosty a nedotýká se kanonického writeru ani oprávnění.
+- **Varianty:** pouhé skrytí dlouhého seznamu nezmenší HTML; vlastní soupiska
+  jako hranice by změnila chování. Cache oprávnění není přípustná.
+- **Akceptace / stav:** [plán a průběh](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+  místní větev `codex/attendance-person-picker-20261107`, měření/regrese zatím NOT RUN.
+
 ## D2026-11-07-05
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; autonomní měření podle pokynu vlastníka bez produkčních změn.

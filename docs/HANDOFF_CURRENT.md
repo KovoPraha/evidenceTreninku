@@ -18,7 +18,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   v `C:/Users/Marek/Documents/Codex/evidencePavel-repo-documentation-policy-20261107`.
 - P11: celé HTTP/browser na `feb8fe8c` HOTOVO; [výsledky](verification/full-http-performance-20261107/RESULTS.md),
   [předání a další kroky](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md). 65 případů / 930 HTTP vzorků,
-  403 browser pozorování; role/filtry/revokace PASS. Dále R06 výběr osob a lekce, mobil/souběh.
+  403 browser pozorování; role/filtry/revokace PASS. [Výběr osob nyní ROZPRACOVÁNO](ATTENDANCE_PERSON_PICKER_2026-11-07.md).
   R13 #352 / R05 #353 / R06 #354 zahrnuje ROLE01; novější main nebyl přeměřen.
   [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), větev `codex/full-http-performance-20261107`;
   vlastní worktree viz předání. Po integraci main cíleně 47 testů / 2877 assertions PASS.
