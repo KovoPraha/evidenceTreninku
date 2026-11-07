@@ -1,6 +1,11 @@
 # Doručení do PPL Parcelboxu
 
-Stav: implementováno lokálně, výchozí nastavení **vypnuto**. Nejde o automatické vytváření zásilek ani štítků. Nasazení a aktivace vyžadují samostatné provozní ověření.
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Kód je v main; příslušné skutečné provozní spuštění/přejímka není doložené. Stripe je v posledním provozním snapshotu false, souhrny nemají schválený plán.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr C03. [CURRENT_STATE.md](CURRENT_STATE.md) · [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md)
+
+
+Stav k auditu 7. 11. 2026: kód v main, výchozí nastavení **vypnuto**; skutečná provozní přejímka zde není doložená. Nejde o automatické vytváření zásilek ani štítků. Nasazení a aktivace vyžadují samostatné provozní ověření.
 
 ## Co zákazník uvidí
 

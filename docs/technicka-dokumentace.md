@@ -1,5 +1,10 @@
 # Technická dokumentace — Evidence Tréninků
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Historický referenční základ 2.20; jeho „plánované“ tabulky a návody nejsou dnešní implementační roadmapa. Schéma určuje migrační katalog a další práci společný registr.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr DOC02. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md)
+
+
 > Historický technický základ baseline 2.20. Aktuální provozní stav a předání
 > jsou v [`CURRENT_STATE.md`](CURRENT_STATE.md) a
 > [`HANDOFF_CURRENT.md`](HANDOFF_CURRENT.md). Přesné současné chování určuje

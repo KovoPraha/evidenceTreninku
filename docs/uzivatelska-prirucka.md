@@ -1,5 +1,10 @@
 # Uživatelská příručka — Evidence Tréninků
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Historický referenční základ 2.20; jeho „plánované“ tabulky a návody nejsou dnešní implementační roadmapa. Schéma určuje migrační katalog a další práci společný registr.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr DOC02. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md)
+
+
 > Tato příručka popisuje původní základ aplikace a nemusí obsahovat všechny
 > novější KIS, e-shopové a rodinné obrazovky. Aktuální změny a provozní stav
 > jsou v [`CURRENT_STATE.md`](CURRENT_STATE.md); produkční testování se řídí

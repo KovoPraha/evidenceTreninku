@@ -1,5 +1,11 @@
 # ROLE01-VIS — vizuální produkční kontrola
 
+> Aktualizace katalogu 7. 11. 2026: #361 sloučené jako `3b37e053`.
+> Původní přehled a čtecí vizuální kontrola dokončené; navazující mobilní
+> karty jsou implementované v main. Jejich následný deploy a nový produkční
+> Chrome průchod zůstávají nedoložené, viz registr ROLE01-MOB.
+
+
 7. 11. 2026, Europe/Prague. [Plán a oprávnění](../../ACCESS_OVERVIEW_2026-11-07.md).
 Skutečný přihlášený Chrome, produkční stránka
 `https://kis.kovopraha.cz/sprava_pracovnich_pozic.php`, kontext Správce systému.

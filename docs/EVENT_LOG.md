@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 7. 11. 2026 / E2026-11-07-18 | DOC02: úplný katalog plánů a opravy stavů | Inventura, záchrana 18 lokálních textových plánů/příloh a registr C01–C04; obsah a místní ověření hotové; [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360), stav CI/merge u PR, bez provozních změn | [Audit](PLAN_CATALOG_AUDIT_2026-11-07.md), [katalog](PLAN_CATALOG.md), [výsledky](verification/plan-catalog-audit-20261107/RESULTS.md) |
 | 7. 11. 2026 / E2026-11-07-17 | ROLE01-MOB: vlastník schválil mobilní karty, nasazení a nové vizuální ověření | ROZPRACOVÁNO, jen prezentační změna; žádná změna produkčních rolí | [Plán](ACCESS_OVERVIEW_2026-11-07.md), pokračuje vlastní PR #361 |
 | 7. 11. 2026 / E2026-11-07-16 | ROLE01-VIS: skutečný přihlášený Chrome průchod dokončen | Desktop přehledný; mobil 390/360 px s výhradou široké tabulky. Posun a otevření čitelného editoru PASS. Role, účty ani vydání se neměnily. | [Vizuální výsledek](verification/access-visual-20261107/RESULTS.md), [plán](ACCESS_OVERVIEW_2026-11-07.md); dokumentační větev `codex/access-visual-uat-20261107` |
 | 7. 11. 2026 / E2026-11-07-15 | ROLE01-VIS: vlastník požádal o skutečný vizuální desktop/mobilní průchod | ROZPRACOVÁNO, jen filtry a otevření editoru; žádné změny rolí či stavu účtů, žádný nový účet | [Plán](ACCESS_OVERVIEW_2026-11-07.md), větev `codex/access-visual-uat-20261107` |

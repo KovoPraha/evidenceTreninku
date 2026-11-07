@@ -1,6 +1,11 @@
 # Rodné číslo — bezpečnostní a provozní kontrakt
 
-Stav: lokální implementace R2, produkční aktivace nepovolena
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Registrační a soukromé datové cesty jsou v main; staré tvrzení o nulové implementaci je překonané. Rozsah R7 a konkrétní právní/retentní závěry neuzavírat odhadem.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P09/C02. [registrace_sportovce.php](../booking/registrace_sportovce.php) · [athlete_registration.php](../includes/athlete_registration.php) · [REGISTRATION_TEXTS_ADMIN_2026-10-21.md](REGISTRATION_TEXTS_ADMIN_2026-10-21.md) · [REGISTRACE-SPORTOVCE-VZOROVE-INFORMACE.md](REGISTRACE-SPORTOVCE-VZOROVE-INFORMACE.md)
+
+
+Původní stav řezu R2 (16. 8. 2026): lokální implementace před produkční autorizací.
 
 Kontrakt: `person-sensitive-v1`
 

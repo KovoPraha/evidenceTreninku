@@ -1,5 +1,10 @@
 # B1 — ochrana uzavřené finanční evidence
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Implementační a technické přejímací balíky jsou v main a integrační vydání doložené; skutečné údaje, účetní/lidská přejímka a ostré převody se tím neuzavírají.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P09. [CLUB_IMPLEMENTATION_HANDOFF.md](CLUB_IMPLEMENTATION_HANDOFF.md) · [RESULTS.md](verification/production-integration-20261025/RESULTS.md) · [CLUB_COMPLETION_DECISIONS.md](CLUB_COMPLETION_DECISIONS.md)
+
+
 Předání k 22. 10. 2026. **Implementace a automatická přejímka prvního balíku jsou dokončené lokálně. Produkce nebyla změněna.** Nejde o dokončení celých etap 0–6 ani o účetní převzetí hospodářem.
 
 Rozsah odpovídá balíku B1 (R04 + R05) ze sjednoceného realizačního plánu. Práce proběhla ve větvi `codex/finance-b1-20261022`, v samostatné pracovní kopii `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, ze základu `68b22bd2b3b666dbb4fb571a2731eae5b7f056d9`. Původní checkout a jeho rozpracovaná změna `kis_rosters_admin.php` zůstaly zachovány. Nebyl proveden push, merge ani deploy.

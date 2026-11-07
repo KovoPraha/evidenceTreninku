@@ -1,6 +1,7 @@
 # Ranní audit členství 7. 11. 2026 — na serveru
 
-Stav: **SERVER PŘIPRAVEN**, ranní výsledek zatím **NOT RUN**.
+Stav: **SERVER PŘIPRAVEN, VÝSLEDEK V GITU NEDOLOŽEN** (audit 7. 11. v 10:18 UTC).
+Plánovaný termín 05:30 UTC již uplynul; původní NOT RUN není důkazem neprovedení serverového běhu.
 
 Vlastník požádal kontrolu bez zapnutého počítače a zápis výsledku přímo do
 repozitářové dokumentace i handoffu. Skutečné P05/P07 a export P06 dále odložené.

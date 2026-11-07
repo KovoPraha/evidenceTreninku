@@ -1,5 +1,10 @@
 # Předání — dávkové klubové ceny e-shopu 7. 11. 2026
 
+> Aktualizace auditora 7. 11. 2026: #358 je sloučené v main `37d0ad68`.
+> Implementace/parita/měření dokončené, bez deploye; katalogový výřez a celé
+> HTTP zůstávají v [P11](WORK_PLAN_CURRENT.md). Níže je původní průběh práce.
+
+
 Stav: IMPLEMENTACE, PARITA A MĚŘENÍ HOTOVÉ, bez nasazení.
 Zadání vlastníka: optimalizovat klubové ceny, ověřit shodné výsledky a změřit
 před/po, zachovat WIP, průběžně aktualizovat plán v repu. Bez produkčního deploye.

@@ -1,5 +1,10 @@
 # Vývojářský průvodce
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Historický referenční základ 2.20; jeho „plánované“ tabulky a návody nejsou dnešní implementační roadmapa. Schéma určuje migrační katalog a další práci společný registr.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr DOC02. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md)
+
+
 > Tento dlouhý průvodce vznikl pro baseline 2.19/2.20 a některé inventáře mohou
 > být historické. Aktuální SHA, testy, migrace a předání jsou v
 > [`CURRENT_STATE.md`](CURRENT_STATE.md) a

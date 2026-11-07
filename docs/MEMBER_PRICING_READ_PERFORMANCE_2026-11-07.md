@@ -1,5 +1,10 @@
 # P11 — optimalizace čtení klubových cen 7. 11. 2026
 
+> Aktualizace auditora 7. 11. 2026: #358 je sloučené v main `37d0ad68`.
+> Implementace/parita/měření dokončené, bez deploye; katalogový výřez a celé
+> HTTP zůstávají v [P11](WORK_PLAN_CURRENT.md). Níže je původní průběh práce.
+
+
 ## Zadání, rozsah a pracovní kopie
 
 ID P11-CENY; vlastník implementace: vývoj, rozsah a provozní rozhodnutí: vlastník aplikace.
