@@ -42,6 +42,7 @@ source = {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in source
 server = None
 sessions = set()
 cleanup_ok = False
+database_alias_created = False
 
 
 def read(name):
@@ -50,6 +51,25 @@ def read(name):
 
 def php(script, *args):
     subprocess.run(["php", "-d", "memory_limit=512M", "tests/Support/" + script, *map(str, args)], cwd=root, check=True)
+
+
+def database_alias(remove=False):
+    # A GitHub service forwards 127.0.0.1 to its bridge. Restrict the extra account
+    # to the actual root connection's source IP and this one owned schema.
+    code = r'''
+    $argv=[__FILE__,'--library']; require 'tests/Support/FullHttpReadProfile.php';
+    [$runtime,$admin]=fullHttpEnvironment($argvOutput);
+    $host=substr(strrchr((string)$admin->query('SELECT USER()')->fetchColumn(),'@'),1);
+    if (!filter_var($host,FILTER_VALIDATE_IP)) { throw new RuntimeException('Expected bridge IP'); }
+    if ($host==='127.0.0.1') { exit; }
+    if (!preg_match('/^http_[a-f0-9]{10}$/D',$runtime['web_user'])) { throw new RuntimeException('Unexpected owned user'); }
+    $account=$admin->quote($runtime['web_user']).'@'.$admin->quote($host);
+    if ($removeAlias) { $admin->exec('DROP USER IF EXISTS '.$account); }
+    else { require 'config.php'; $admin->exec('CREATE USER '.$account.' IDENTIFIED BY '.$admin->quote(DB_PASS));
+      $admin->exec('GRANT SELECT,INSERT,UPDATE,DELETE ON `'.$runtime['schema'].'`.* TO '.$account); }
+    '''
+    prefix = "$argvOutput=" + json.dumps(str(output)) + ";$removeAlias=" + ("true" if remove else "false") + ";"
+    subprocess.run(["php", "-r", prefix + code], cwd=root, check=True)
 
 
 def cli(session, *args):
@@ -139,6 +159,8 @@ def stop_server():
 
 try:
     php("FullHttpReadFixture.php", "--setup", output)
+    database_alias()
+    database_alias_created = True
     for variant, content in [("before", baseline), ("after", original)]:
         route.write_bytes(content)
         start_server()
@@ -188,6 +210,9 @@ finally:
         except Exception:
             pass
     if (root / "config.php").exists():
+        if database_alias_created:
+            database_alias(remove=True)
+            database_alias_created = False
         php("FullHttpReadCleanup.php", output)
         cleanup_ok = True
     whitelist = ["integrated-summary.json", "http-before.json", "http-after.json", "diagnostics-before.json", "diagnostics-after.json",
@@ -198,4 +223,5 @@ finally:
             value = json.loads((output / name).read_text())
             (safe / (name + ".gz")).write_bytes(gzip.compress(json.dumps(value, ensure_ascii=False).encode(), mtime=0))
     (safe / "runner-cleanup.json").write_text(json.dumps(dict(owned_fixture_cleanup=cleanup_ok, php_server_stopped=server is None,
-        route_restored=route.read_bytes() == original, private_artifacts_excluded=True)))
+        route_restored=route.read_bytes() == original, bridge_account_removed=not database_alias_created,
+        private_artifacts_excluded=True)))

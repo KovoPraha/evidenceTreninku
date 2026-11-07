@@ -48,3 +48,7 @@ produkční nasazení pickeru dosud neprovedené. Původní WIP v htdocs i půvo
 picker worktree zachované; pokračování je ve vlastním worktree mimo htdocs.
 
 PR #366 byl mezitím sloučen souběžnou relací jako `faae75e8`, přesný strom d62c3ad2, 11 kontrol PASS. Sloučení převzaté beze změny aplikačního kódu; toto pokračování doplňuje společné měření, předání a podle aktuálního oprávnění deploy. Baseline je poslední main před pickerem `2ef20aed`, který už obsahuje #367.
+
+## Kalibrace Linux CI
+
+První běh 42379420027 skončil před časováním: standardní login HTTP 503, DB user vytvořený původním localhost fixture byl na hostu 127.0.0.1, GitHub service ale vidí TCP zdroj 172.18.0.1. Není to PASS ani produkční chyba. Runner nyní přes stávající port/datadir/config guard zjistí skutečný zdroj root spojení, validuje IP a vytvoří další účet pouze pro tuto IP a jediné vlastní schéma se stejnými čtyřmi DML právy. Před původním úklidem jej opět odstraní. Doménová autorizace a oba porovnávané aplikační stromy beze změny.
