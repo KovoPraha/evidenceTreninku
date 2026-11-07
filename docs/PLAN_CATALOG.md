@@ -374,3 +374,6 @@ Sloučené podklady mají místní verzované odkazy. Ranní výsledek už je do
 další otevřené kroky a závislosti určuje [prioritní přehled registru](WORK_PLAN_CURRENT.md#priority-a-závislosti).
 
 | PL-30d4f6c028 | [Dávkové lekce](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | DONE / P11 | Implementace, parita/měření, merge a schválené nasazení dokončené; [provozní důkaz a meze](verification/attendance-lesson-release-20261107/RESULTS.md). Celé K0.2 otevřené. |
+
+| PL-c0b7a64780 | [P11 R06 — výběr osob v docházce, 7. 11. 2026](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), integrované HTTP po #367/mobil/souběh otevřené. |
+| PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), integrované HTTP po #367/mobil/souběh otevřené. |

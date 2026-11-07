@@ -830,3 +830,12 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-3bb72b363f | [initial-wrong-route.json](verification/attendance-lesson-release-20261107/initial-wrong-route.json) | evidence / REFERENCE | P11 |
 | PL-33db4f8391 | [RESULTS.md](verification/attendance-lesson-release-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
 | PL-28f93c29c8 | [snapshot.php.txt](verification/attendance-lesson-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
+
+| PL-c0b7a64780 | [docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-10360221ef | [docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-607748e4e4 | [docs/verification/attendance-person-picker-20261107/RESULTS.md](verification/attendance-person-picker-20261107/RESULTS.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-491b6bafd7 | [docs/verification/attendance-person-picker-20261107/CALIBRATION.md](verification/attendance-person-picker-20261107/CALIBRATION.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-53ee3c4ece | [docs/verification/attendance-person-picker-20261107/REPRODUCE.md](verification/attendance-person-picker-20261107/REPRODUCE.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-d04eafb86a | [docs/verification/attendance-person-picker-20261107/final/RESULTS.md](verification/attendance-person-picker-20261107/final/RESULTS.md) | reference / REFERENCE | P11 |
+| PL-b357de1d32 | [docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md](verification/attendance-person-picker-20261107/final/CALIBRATION.md) | reference / REFERENCE | P11 |
+| PL-629fbd394e | [docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md](verification/attendance-person-picker-20261107/final/REPRODUCE.md) | reference / REFERENCE | P11 |

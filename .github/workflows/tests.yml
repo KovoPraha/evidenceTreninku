@@ -617,8 +617,26 @@ jobs:
           cp migrations/20261107180000_shop_document_automation.php "$attendance_tree/migrations/"
           cp docs/verification/attendance-read-performance-20261107/before-harness.php.txt "$attendance_tree/tests/Support/AttendanceBeforeProfile.php"
           # R06 lesson choices depend on the preceding R05 seed: preserve the full matrix order.
+          # Keep the frozen participant validator while sharing the intentionally changed picker UI.
+          # Historical archived harnesses remain immutable; HTML parity still applies to this common UI.
+          cp training_closure_admin.php "$attendance_tree/training_closure_admin.php"
+          cp includes/training_closure_people.php "$attendance_tree/includes/training_closure_people.php"
+          cp includes/training_day.php "$attendance_tree/includes/training_day.php"
+          # CLI flags are not inherited by measurement workers. Import the shared UI only
+          # in this generated copy; the versioned frozen harness remains unchanged.
+          ATTENDANCE_PROFILE="$attendance_tree/tests/Support/AttendanceBeforeProfile.php" php <<'PHP'
+          <?php
+          $file = getenv('ATTENDANCE_PROFILE');
+          $source = file_get_contents($file);
+          $needle = "require_once dirname(__DIR__, 2) . '/includes/training_closure_form.php';";
+          if (substr_count($source, $needle) !== 1) {
+              throw new RuntimeException('Unexpected frozen harness import boundary.');
+          }
+          file_put_contents($file, str_replace($needle, $needle . "\nrequire_once dirname(__DIR__, 2) . '/includes/training_closure_people.php';", $source));
+          PHP
           (cd "$attendance_tree" && php -d memory_limit=512M tests/Support/AttendanceBeforeProfile.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/attendance-before")
           php tests/Support/AttendanceReadProfile.php > synthetic-read-pages/attendance-read-parity.json
+          php tests/Support/AttendancePickerReadProfile.php > synthetic-read-pages/attendance-picker-parity.json
           php tests/Support/MedicalClearanceReadProfile.php > synthetic-read-pages/medical-read-parity.json
           php tests/Support/PlannerReadProfile.php > synthetic-read-pages/planner-read-parity.json
           php -d memory_limit=512M tests/Support/SyntheticReadPagesProfile.php --run synthetic-read-pages/after

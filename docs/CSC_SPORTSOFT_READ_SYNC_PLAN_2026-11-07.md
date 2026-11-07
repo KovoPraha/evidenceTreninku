@@ -3,7 +3,7 @@
 Datum: 7. 11. 2026, Europe/Prague. Vlastník: Marek / klub; realizace: vývoj KIS.
 Stav: **PLÁNOVÁNO; plán a průzkum hotové, implementace a aktivace NOT RUN**.
 Zvolený rozsah: čtení obou portálů, párování UCI ID, worker na nonstop stanici.
-[Registr P15](WORK_PLAN_CURRENT.md), [rozhodnutí D2026-11-07-09](DECISION_LOG.md#d2026-11-07-09),
+[Registr P15](WORK_PLAN_CURRENT.md), [rozhodnutí D2026-11-07-P15](DECISION_LOG.md#d2026-11-07-p15),
 [průzkum a ověření](verification/csc-sportsoft-discovery-20261107/RESULTS.md).
 
 Větev: `codex/csc-sportsoft-read-sync-plan-20261107`.

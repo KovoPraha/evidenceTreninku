@@ -1,0 +1,51 @@
+{
+  "application_sha": "d958fd6ec8a515934af611532adcbab20adfe978",
+  "port": 33459,
+  "http_port": 18095,
+  "runtime": "C:/xampp/tmp/kis-picker-20261107-d6aeea40",
+  "datadir": "C:/xampp/tmp/kis-picker-20261107-d6aeea40/data",
+  "fixture_tables": 350,
+  "migrations": 161,
+  "synthetic_only": true,
+  "php": "8.2.12",
+  "server": {
+    "port": 33459,
+    "directory": "C:\\xampp\\tmp\\kis-picker-20261107-d6aeea40\\data\\",
+    "version": "10.4.32-MariaDB"
+  },
+  "playwright_cli": "0.1.23",
+  "before_sources_sha256_lf": {
+    "training_closure_admin.php": "8e06216dd1cf94aaadcc67a21fb84a2a2fd207a25f925aa95be045393337ae61",
+    "includes/coach_training_access.php": "6d65dcd7e16d6415eb7e7673898ec5f96f45e41eaeabdfaced1b0b3c397e56d3",
+    "includes/training_closure.php": "8db6369f248519586fd87c6c45c36e64e284c0d1b97cb61ce52c191f12ea72b8",
+    "includes/training_closure_form.php": "5913cda4fef04e58b2708567ba53cbc80814ecb5641542b9daf96edc64f66e45",
+    "includes/training_day.php": "55666c71949f8c4e795846b1d8e99aec7722587f638d9e8b0bb8a12c16875ba7",
+    "includes/staff_workspaces.php": "98c99da1dd6197f9f6702986592ea0d4440ee8e975add0f7568ebd290a61c510",
+    "assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+  },
+  "chrome": "157.0.8103.38",
+  "native_viewport": {
+    "width": 1036,
+    "height": 703
+  },
+  "dpr": 1.25,
+  "after_sources_sha256_lf": {
+    "training_closure_admin.php": "7b6a4ed08b63478cb0ace33b67a61f278ef137d04c3e7a2de76f91e94ab67e09",
+    "includes/training_closure_people.php": "78e3648c3130af6329ff5e16732dfd2275ea0431597b0dac97838b92ed0fa59e",
+    "includes/coach_training_access.php": "6d65dcd7e16d6415eb7e7673898ec5f96f45e41eaeabdfaced1b0b3c397e56d3",
+    "includes/training_closure.php": "8db6369f248519586fd87c6c45c36e64e284c0d1b97cb61ce52c191f12ea72b8",
+    "includes/training_closure_form.php": "5913cda4fef04e58b2708567ba53cbc80814ecb5641542b9daf96edc64f66e45",
+    "includes/training_day.php": "55666c71949f8c4e795846b1d8e99aec7722587f638d9e8b0bb8a12c16875ba7",
+    "includes/staff_workspaces.php": "98c99da1dd6197f9f6702986592ea0d4440ee8e975add0f7568ebd290a61c510",
+    "assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+  },
+  "business_fixture": {
+    "plans": 728,
+    "weeks": 52,
+    "participants": 200,
+    "revisions": 52,
+    "medical_watches": 10000,
+    "medical_records": 30000,
+    "selectable_people": 10221
+  }
+}
