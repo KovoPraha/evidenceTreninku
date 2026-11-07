@@ -8,5 +8,6 @@ Aktuální zadání dovoluje commit/merge/deploy po shodě a měřeném přínos
 Historické předání #352 bez deploye je zachované jako historie.
 WIP `kis_rosters_admin.php` SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` stejný.
 Produkce zůstává e36c9ba6, nový deploy/aktivace ani skutečné zdravotní změny neprovedené.
-Implementace/parita/měření/CI NOT RUN; další krok SQL projekce se zachováním
-kanonického řešení budoucích řetězců, referenční testy a nativní pár před/po.
+Implementace hotová lokálně: referenční parita/18 testů344 assertions PASS, nový
+kontrakt7/185 PASS, styl/lint PASS. Nativní měření/CI a celý HTTP/Chrome NOT RUN.
+Další krok: push/PR a obě MariaDB v CI; bez prokázaného přínosu nenasazovat.

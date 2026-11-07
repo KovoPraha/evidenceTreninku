@@ -47,8 +47,13 @@ kanonické. Výsledný počet, pořadí, stránky včetně ořezu a úplné stav
 
 ## Akceptace a průběžný stav
 
-Implementace, parita, měření a CI: NOT RUN. Merge/deploy/produkční smoke: NOT RUN.
+Implementace lokálně hotová. Referenční36 původních kombinací i smíšená legacy data PASS;
+18 cílených testů /344 assertions PASS, nový kontrakt zvlášť7/185 PASS, styl/lint PASS.
+Nativní parita/měření a celé HTTP/Chrome připravené v CI. Merge/deploy/produkční smoke NOT RUN.
 Přihlášené produkční UAT a rows examined jsou samostatné; neslibovat je z SQL countu.
 Původní WIP hash ověřený shodný, nový worktree kompletně připravený z main.
-Další krok: implementovat omezenou čtecí projekci a referenční kontrakt.
+Konkrétní projekce používá MAX aktuálního verified a posledního záznamu pouze nad
+kandidáty danými filtrem. Nejvýše128 budoucích řetězců /4096 historických metadat;
+při překročení původní stream. Filtr konkrétní osoby je původní cesta bez režie.
+Další krok: PR, obě nativní MariaDB a celý HTTP/Chrome pár, archiv přínosu před merge.
 Průběžné [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md).

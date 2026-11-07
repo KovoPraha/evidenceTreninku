@@ -1,0 +1,68 @@
+name: Medical state HTTP and browser
+
+on:
+  pull_request:
+    paths:
+      - 'includes/medical_clearance_state_read.php'
+      - 'includes/medical_clearance_read.php'
+      - 'tests/Support/MedicalStateHttpProfile.php'
+      - 'tests/Support/MedicalStateIntegratedProfile.py'
+      - '.github/workflows/medical-state-performance.yml'
+  workflow_dispatch:
+    inputs:
+      baseline:
+        description: Exact pre-optimization commit with the current medical page
+        required: true
+        default: '6b1860d5722514583c67a5f20849d7870e2bf1b6'
+
+permissions:
+  contents: read
+
+jobs:
+  integrated-medical-state:
+    name: Medical state HTTP and Chrome (MariaDB 11.4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.2'
+          extensions: mbstring, gd, zip, curl, pdo_mysql, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+      - name: Prepare locked PHP dependencies and browser CLI
+        run: |
+          composer install --prefer-dist --no-interaction --no-progress
+          npm install --global @playwright/cli@0.1.23
+          if ! command -v google-chrome >/dev/null; then npx --yes playwright install --with-deps chrome; fi
+          google-chrome --version
+          playwright-cli --version
+      - name: Compare current main and medical list on one owned fixture
+        env:
+          MEDICAL_BASE_SHA: ${{ inputs.baseline || '6b1860d5722514583c67a5f20849d7870e2bf1b6' }}
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: python3 tests/Support/MedicalStateIntegratedProfile.py
+      - name: Preserve safe integrated measurements
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: medical-state-integrated-http-browser
+          path: output/medical-state-ci-safe/
+          if-no-files-found: warn
+          retention-days: 30
