@@ -354,7 +354,8 @@ autorizace zařízení, lease/idempotentní díly/atomický complete, samostatn�
 snímky/vazby/review. Kanonické tabulky se nemění. Machine API výchozí OFF.
 Příprava explicitní baseline a přejímka poklesu dat nesmí být právem zařízení.
 Serverové úložiště, ingest a UCI resolver jsou implementované a synteticky ověřené
-v draft PR #376; runtime f61c365d. S0 #371 nadále otevřené.
+v draft PR #376; runtime f61c365d, ověřený celek 2fe8aa93 (11 CI PASS).
+S0 #371 nadále otevřené.
 [Technický protokol S1](CSC_SPORTSOFT_S1_KIS.md) a
 [průběžné výsledky](verification/csc-sportsoft-s1-20261107/RESULTS.md)
 obsahují API pro druhé pracoviště, meze a stav testů. Žádná aktivace/deploy.

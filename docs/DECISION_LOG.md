@@ -17,6 +17,9 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
   současné identity. Baseline/nula/pokles čekají na registráře, ne zařízení.
 - **Rozhraní:** token patří právě jednomu neměnnému scope/kolekci/eventu,
   enabled výchozí 0 a globální příjem OFF. Bez cookies a automatického DDL.
+- **Ověření:** 2fe8aa93 / 11 CI PASS v draft #376. Historické výkonnostní
+  profily dostaly stejnou novou migraci; srovnávací guardy ani zmrazený kód
+  nejsou oslabeny. Neprázdná obnova integračních tabulek ověřená na obou MariaDB.
 - **Meze:** UI/provisioning/retence a worker jsou další etapy; S1 není pilot.
   [Technické předání](CSC_SPORTSOFT_S1_KIS.md),
   [důkazy](verification/csc-sportsoft-s1-20261107/RESULTS.md).

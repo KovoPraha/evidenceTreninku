@@ -57,7 +57,7 @@ Tato relace neduplikuje vlastníky ani neruší zákaz produkční změny picker
 ## Aktivní návaznosti
 
 P15: vlastník zvolil čtecí synchronizaci ČSC/Sportsoftu, UCI ID a nonstop stanici.
-[Plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), [S0 výsledek](verification/csc-sportsoft-s0-20261107/RESULTS.md): kontrakt/prompt hotové, cílová inventura otevřená; [S1 implementace/testy](CSC_SPORTSOFT_S1_KIS.md) hotové v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376); [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371), merge/deploy/aktivace NOT RUN.
+[Plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), [S0 výsledek](verification/csc-sportsoft-s0-20261107/RESULTS.md): kontrakt/prompt hotové, cílová inventura otevřená; [S1 implementace/testy](CSC_SPORTSOFT_S1_KIS.md) / 11 CI PASS v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376); [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371), merge/deploy/aktivace NOT RUN.
 
 P07 N1/N2: [automatické doklady a komunikace](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md)
 jsou sloučené v #355, nasazené a zapnuté pro nové objednávky.

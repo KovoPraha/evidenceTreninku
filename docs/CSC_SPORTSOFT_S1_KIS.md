@@ -1,7 +1,7 @@
 # P15 S1 — KIS úložiště, příjem a párování
 
 7. 11. 2026, vlastník Marek / vývoj KIS. Stav: IMPLEMENTOVÁNO A PUSH,
-syntetické doménové ověření PASS, dobíhají regresní CI kroky;
+S1 synteticky ověřené, všech 11 CI kontrol PASS na 2fe8aa93;
 [draft PR #376](https://github.com/KovoPraha/evidenceTreninku/pull/376).
 [Hlavní plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md),
 [kontrakt v1](CSC_SPORTSOFT_S0_CONTRACT_V1.md),
