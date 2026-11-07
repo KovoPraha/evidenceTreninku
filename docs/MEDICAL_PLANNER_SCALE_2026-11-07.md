@@ -43,3 +43,18 @@ Další krok: implementovat pouze měřicí podporu a bezpečně založit izolov
 Navazuje na [R13](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md),
 [R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md) a
 [celé HTTP](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md).
+
+## Průběh přípravy
+
+Plán zaznamenaný před měřičem v commitu `d2182268`, sdílená vlastní větev.
+Nový datadir `C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee/data`,
+MariaDB 10.4.32 / PHP 8.2.12, 350 tabulek / 161 migrací, schema pouze syntetické.
+Standardní login všech 12 rolí, potom web DB účet omezený na SELECT.
+Zdravotní seeder zachovává stejná tři stavová metadata na sledování, velké objemy
+vkládá dávkově mimo časování. Nové soupisky 10000–10049 neodstraňují původní
+migrované ukázkové soupisky navázané na nabídky. Přesné počty v každém seedu.
+Před časováním základních 18 doménových/DOM kontrol PASS; stejné úplné výsledky
+jako zmrazený zdravotní algoritmus a kanonické RSVP. Samostatné projekce READ ONLY.
+Předchozí neplatné přípravy (staré ID registráře a FK nabídky) jsou kalibrace,
+nejsou časové vzorky. První pomalý per-row seed se před časováním nahradil
+stejným dávkovým postupem jako ostatní objemy; jeho protokol zůstal oddělený.

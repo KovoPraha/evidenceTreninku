@@ -378,3 +378,7 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 | PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | DONE / P11 | Aktuální předání hotového dílčího pickeru; [nasazení a meze](verification/attendance-picker-release-20261107/RESULTS.md). Ostatní P11 otevřené. |
 
 | PL-ad1bee8455 | [Celé R06 Windows měření](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) | PARTIAL / P11 | Místní měření hotové, [důkazy](verification/attendance-integrated-http-20261107/RESULTS.md); další P11 otevřené, žádný náš deploy. |
+
+| PL-400959e0ab | [P11-SCALE - vetsi zdravotni prehled a planovac](MEDICAL_PLANNER_SCALE_2026-11-07.md) | IN_PROGRESS / P11-SCALE | Vlastni izolovane HTTP/SQL mereni, produkci nemenit. |
+
+| PL-fc92c8ac29 | [Předání většího R13/R05 měření](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md) | IN_PROGRESS / P11-SCALE | Sběr probíhá, bez produkce. |

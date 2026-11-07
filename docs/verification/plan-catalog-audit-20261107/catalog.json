@@ -10236,6 +10236,30 @@
         "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
       ]
+    },
+    {
+      "id": "PL-400959e0ab",
+      "path": "docs/MEDICAL_PLANNER_SCALE_2026-11-07.md",
+      "title": "P11-SCALE - vetsi zdravotni prehled a planovac",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P11-SCALE",
+      "disposition": "Autorizovane vetsi synteticke mereni, bez produkcnich zmen; aplikace zmrazena 69f49033.",
+      "evidence": []
+    },
+    {
+      "id": "PL-fc92c8ac29",
+      "path": "docs/SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md",
+      "title": "Predani vetsiho R13/R05 mereni",
+      "primary": true,
+      "role": "handoff",
+      "status": "IN_PROGRESS",
+      "registry": "P11-SCALE",
+      "disposition": "Probihajici izolovane mereni; zadne produkcni zmeny.",
+      "evidence": [
+        "docs/MEDICAL_PLANNER_SCALE_2026-11-07.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",
