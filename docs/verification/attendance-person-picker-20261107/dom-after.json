@@ -1,0 +1,105 @@
+{
+    "complete": true,
+    "method": "outside timing: DOM checks on full authenticated HTTP",
+    "cases": [
+        {
+            "id": "closure-coach-training",
+            "data": {
+                "navigation": 1,
+                "selected_people": 200,
+                "available_people": 250,
+                "lesson_choices": 2,
+                "record_source": "paper"
+            },
+            "pass": true
+        },
+        {
+            "id": "closure-coach-plan",
+            "data": {
+                "navigation": 1,
+                "selected_people": 200,
+                "available_people": 250,
+                "lesson_choices": 2,
+                "record_source": "paper"
+            },
+            "pass": true
+        },
+        {
+            "id": "closure-coach-search",
+            "data": {
+                "navigation": 1,
+                "selected_people": 200,
+                "available_people": 250,
+                "lesson_choices": 50,
+                "record_source": "paper"
+            },
+            "pass": true
+        },
+        {
+            "id": "closure-coach-empty-search",
+            "data": {
+                "navigation": 1,
+                "selected_people": 200,
+                "available_people": 250,
+                "lesson_choices": 0,
+                "record_source": "paper"
+            },
+            "pass": true
+        },
+        {
+            "id": "closure-coach-list",
+            "data": {
+                "navigation": 1,
+                "selected_people": 0,
+                "available_people": 0,
+                "lesson_choices": 2,
+                "record_source": ""
+            },
+            "pass": true
+        },
+        {
+            "id": "closure-lead-training",
+            "data": {
+                "navigation": 1,
+                "selected_people": 200,
+                "available_people": 250,
+                "lesson_choices": 2,
+                "record_source": "paper"
+            },
+            "pass": true
+        },
+        {
+            "id": "closure-lead-foreign",
+            "data": {
+                "navigation": 1,
+                "selected_people": 0,
+                "available_people": 50,
+                "lesson_choices": 2,
+                "record_source": "coach"
+            },
+            "pass": true
+        },
+        {
+            "id": "closure-lead-plan",
+            "data": {
+                "navigation": 1,
+                "selected_people": 0,
+                "available_people": 50,
+                "lesson_choices": 2,
+                "record_source": "coach"
+            },
+            "pass": true
+        },
+        {
+            "id": "closure-other-own",
+            "data": {
+                "navigation": 1,
+                "selected_people": 0,
+                "available_people": 50,
+                "lesson_choices": 2,
+                "record_source": "coach"
+            },
+            "pass": true
+        }
+    ]
+}

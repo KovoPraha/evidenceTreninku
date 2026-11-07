@@ -1,6 +1,6 @@
 # P11 R06 — výběr osob v docházce, 7. 11. 2026
 
-Stav: ROZPRACOVÁNO, místní implementace a srovnání; bez produkčního oprávnění.
+Stav: implementace, místní srovnání a UAT HOTOVO; bez produkčního nasazení.
 Vlastník: vývoj podle přímého zadání vlastníka v tomto chatu.
 Base `d958fd6e` / #363, větev `codex/attendance-person-picker-20261107`, worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-attendance-picker-20261107`.
@@ -42,9 +42,21 @@ velikosti HTML; omezení na vlastní soupisku by změnilo chování a není zvol
 
 ## Průběh a zbývající práce
 
-Zahájeno, dosud bez aplikované optimalizace. Měření/regrese NOT RUN.
-Další konkrétní krok: změřit base na novém vlastním kombinovaném fixture.
-Sdílení: zatím místní větev, bez push/PR/merge. Produkce beze změny.
+Implementace zapojená: 50 výsledků + vybraní, nativní čtecí POST, obě formy.
+Před/po 21 HTTP případů (9 pozitivních × 30 = 270 vzorků na variantu),
+39 Chrome pozorování na variantu pro coach / sports_lead / other_coach.
+9 DOM kontrol na variantu PASS, stejné doménové checksums; větší docházka
+1,37 MB → 92 kB. Lokálně cílených 35 testů / 374 assertions PASS.
+Oddělená HTTP diagnostika před/po: 0 DML/DDL, shoda s prostým HTTP.
+SQL u trenérského formuláře 59 → 75 kvůli čerstvým kontrolám a vybraným
+projekcím; zmenšuje se přenos jmen/HTML, netvrdíme pokles počtu SQL všude.
+Nativní JS/noJS, 36 HTTP kontrol, revize 53 / 201 osob / paper, stale write,
+osobní omluva přes UI a role/account revokace PASS. Všech 10221 osob dosažitelných
+právě jednou ve 205 stránkách pro obě role. PHPStan i styl devíti PHP PASS.
+Vlastní runtime uklizený/zastavený, WIP shodný. [Výsledky](verification/attendance-person-picker-20261107/RESULTS.md),
+[předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+Plán před kódem pushnutý v c0883ff2; celé předání a finální CI/merge řídí
+[PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366). Žádný náš deploy.
 Hledání lekcí, R13/R05, fyzický mobil, souběžná zátěž a další R01–R16
 zůstávají samostatné etapy P11; toto není uzavření celého K0.2.
 
@@ -53,3 +65,10 @@ AJAX by přidal souběh požadavků a další endpoint bez nutnosti pro měřen�
 Změna hledání nesmí spustit writer; CSRF, actor i lekce se kontrolují standardně.
 Nový base má 350 tabulek / 161 migrací kvůli #355, doménový seed je stejný
 jako #363. Před/po běží na jediném společném novém schématu.
+
+Historická CI parita R06 bude používat shodnou novou stránku a picker v obou
+stromech, ale ponechá zmrazený původní validátor. Přidává se samostatná
+MariaDB kontrola celé množiny, pořadí, kolací, wildcardů a čerstvé role.
+Archivované before-harness soubory se nemění, přísná HTML parita se neruší.
+Vybraná ID se při srovnání formulářů chápou jako množina: původní SQL nemělo
+určené pořadí při identických jménech, nyní má ID jako stabilní tie-breaker.
