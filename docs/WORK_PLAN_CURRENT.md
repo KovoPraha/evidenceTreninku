@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 6. 11. 2026, Europe/Prague. Výchozí ověřený main `9c543ff9`.
+Aktualizováno 7. 11. 2026, Europe/Prague. Výchozí main návaznosti R06 `89edfdbe`.
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -18,8 +18,10 @@ Nové zadání 7. 11.: [společný přehled lidí a rolí](ACCESS_OVERVIEW_2026-
 pro trenérské funkce, e-shop a bar. Místně hotovo v samostatné větvi
 `codex/access-overview-20261107`: přehled, filtry, editor rolí i vlastní spotřeby.
 [Ověření](verification/access-overview-20261107/RESULTS.md): 44 testů / 2413 assertions,
-16 HTTP kontrol a desktop/mobilní Chrome. Další krok: revize a samostatné nasazení.
-Bez produkčních změn přiřazení a bez nasazení v této relaci.
+16 HTTP kontrol a desktop/mobilní Chrome. Vlastník následně 7. 11. výslovně
+schválil nasazení a produkční ověření, při zachování stávajících rolí lidí.
+ROZPRACOVÁNO: CI/merge/deploy, čtecí kontrola původních účtů před/po a změny
+rolí pouze na novém dočasném syntetickém účtu s následnou revokací/deaktivací.
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
@@ -33,7 +35,7 @@ Bez produkčních změn přiřazení a bez nasazení v této relaci.
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | [Navazující syntetická regrese 6. 11. PASS](verification/offline-followup-20261106/RESULTS.md); dokončit asistované UAT a lidské převzetí. Heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
 | P09 | Technický refaktoring W6–W15 uzavřený; provozní přejímka není kompletní | Lidská/účetní D12–D14, vazby, dohody a skutečné ocenění; dořešit dvě známé chybějící přílohy původní Evidence. | Vlastník/účetní; [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md), [rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot D12–D14](CLUB_PILOT_D12_D14.md), [obnova/přílohy](verification/bar-cutover-20261106/RESULTS.md) |
 | P10 | Lokální pracovní zbytky a staré větve nejsou frontou nasazení | Posoudit popisky legacy soupisek a staré dokumentační WIP proti main, archivovat už začleněné větve až po potvrzení zachování práce. Neprovádět plošný merge/reset/clean. | Vývoj/vlastník WIP; [inventura](verification/operations-inventory-20261106/RESULTS.md) |
-| P11 | [R05 plánovač optimalizovaný](verification/planner-read-performance-20261106/RESULTS.md): stejné 1/12/52 týdny × trenér/vedoucí, párové CI 10.3/11.4 PASS, data i HTML shodné; 112/203 → 28 SQL, medián měřené části 3,32–6,07× rychlejší. [R13 hotový](verification/medical-read-performance-20261106/RESULTS.md), celé K0.2 otevřené | Dále R06 dávkové ověření účastníků, plné HTTP/bootstrap/nav a další role/filtry. Historické upozornění R05 s hierarchickým filtrem dál čte kandidátní ID/data. Finální CI/merge #353 ověřit u PR; žádný deploy ani aktivace. | Vývoj/vlastník; [předání R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md), [původní měření](verification/synthetic-performance-20261106/RESULTS.md), [komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) |
+| P11 | [R06 docházka optimalizovaná](verification/attendance-read-performance-20261107/RESULTS.md): 9 párů na MariaDB 10.3/11.4, data i HTML shodné, 200 osob 244 → 45 SQL / medián 2,30–2,48× rychlejší; [R05 hotový](verification/planner-read-performance-20261106/RESULTS.md), [R13 hotový](verification/medical-read-performance-20261106/RESULTS.md). Celé K0.2 otevřené | Dále plné HTTP/bootstrap/nav, další role a plánem propojená docházka. R05 upozornění s hierarchickým filtrem dál čte kandidátní ID/data. Finální CI/merge #354 ověřit u PR; žádný deploy ani aktivace. | Vývoj/vlastník; [předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md), [původní měření](verification/synthetic-performance-20261106/RESULTS.md), [komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) |
 | P12 | Technická příprava HOTOVO: soubory 00–06, 20 scénářů, hlášení, mapa a spojený podklad sjednocené 6. 11. proti 3ff0fd13; přenosový ZIP ověřený. [Důkazy](verification/offline-followup-20261106/RESULTS.md). Není to provedené lidské UAT ani sdílení projektu | Vlastník určí testerku, roli/prostředí a konkrétní scénáře; oprávněná osoba dokončí pozvánku/přístup a kontrolní otázky v jejím účtu. Nové ověření hlavní verze před použitím; žádné opakování technické aktualizace bez změny podkladů. | Vlastník/testerka; [balíček a hranice](testing/chatgpt-tester-20261105/README.md), [uživatelské testování](PRODUKCNI-UZIVATELSKE-TESTOVANI.md) |
 | P13 | Další pracovní upozornění jsou záměr, konkrétní typy nejsou vybrané | Určit události, příjemce, vznik/ukončení úkolu, bezpečný odkaz, deduplikaci a testy. Push a eskalace nejsou součástí dokončené první verze. | Vlastník/vývoj; [registr typů a hranice](STAFF_NOTIFICATIONS_2026-11-06.md) |
 | P14 | HOTOVO pro tři konkrétní generace v běhu 42224275796, včetně zálohy evidence_2026-11-06_060929_014837d4.sql.gz (385 tabulek / 2 triggery). Pozdější záloha vydání #341 má 387 tabulek / 2 triggery, její hash ověřen, konkrétní obnova NOT RUN | [Přesná obnova doložená](verification/autonomous-p01-p14-20261106/restore-evidence.txt). Historické úspěšné obnovy jiných záloh za ni nevydávat; produkci neobnovovat. | Vývoj/provoz; [obnovované starší vydání](verification/staff-notifications-release-20261106/RESULTS.md), [novější záloha #341](verification/membership-scheduler-20261106/deploy-summary.json), [historická obnova BAR](verification/bar-cutover-20261106/RESULTS.md) |
@@ -209,6 +211,17 @@ Vlastník požádal odstranit závislost na zapnutém PC. [Aktuální serverový
 jednorázový hostingový pozorovatel, neměnný důkaz, automatická dokumentace přes
 chráněný PR a skutečný preflight publikace. Náhrada ověřená přes #348, místní úloha PAUSED. Skutečné P05/P07 i export P06 zůstávají odložené.
 
+## P11 — navazující optimalizace docházky 7. 11. 2026
+
+R06 dokončený na pokyn „ok, pokračuj“, bez produkčních změn a se zachováním WIP.
+[Plán a průběžné výsledky](verification/attendance-read-performance-20261107/RESULTS.md),
+větev `codex/attendance-read-performance-20261107`, base `89edfdbe`.
+Dávkové GET kontroly účastníků, čerstvá autorizace a původní transakční cesta;
+místní regrese 29 testů / 206 assertions PASS. Párové syntetické měření
+10/50/200 osob × 1/12/52 revizí a MariaDB parita 10.3/11.4 PASS, data i HTML
+shodné. [Předání a další práce](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md),
+finální CI/merge #354 u PR. Měřidlo kalibrované bez oslabení parity.
+
 ## P11 — autonomní syntetické měření 6. 11. 2026
 
 **R05 implementovaný a ověřený:** vlastník zadal autonomní optimalizaci plánovače, porovnání
@@ -225,7 +238,7 @@ porovnání stejných syntetických dat bez produkčních změn. Vlastní větev
 `codex/medical-read-performance-20261106`; [rozsah, metoda a stav](verification/medical-read-performance-20261106/RESULTS.md).
 Filtry/stavy/oprávnění i dostupnost osob zachované; 9 párových scénářů místně a
 v CI 10.3/11.4 PASS, funkční místní browser PASS. Finální CI/merge dohledatelné
-u PR #352. R05 nyní dokončený výše; R06, plné HTTP měření a provozní přejímky zůstávají otevřené.
+u PR #352. R05 nyní dokončený výše; R06 následně dokončený výše; plné HTTP měření a provozní přejímky zůstávají otevřené.
 
 Vlastník zadal měření bez produkčních změn a bez zásahu do WIP. Větev
 `codex/synthetic-performance-20261106`, vlastní kopie

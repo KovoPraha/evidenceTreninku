@@ -6,8 +6,10 @@ k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
 - Větev `codex/access-overview-20261107`, samostatný worktree
   `C:/Users/Marek/Documents/Codex/evidencePavel-access-overview-20261107`.
 - Základ `origin/main` `89edfdbe`; původní WIP zachované.
-- Oprávnění: místní implementace a syntetické ověření. Produkční přiřazení,
-  merge a nasazení nejsou součástí tohoto zadání.
+- Původní rozsah: místní implementace a syntetické ověření. Následný výslovný
+  pokyn vlastníka 7. 11. schvaluje merge, produkční nasazení a ověření změn rolí.
+  Stávající role lidí se nesmějí měnit; test pouze na novém syntetickém účtu,
+  na konci odebrat jeho oprávnění a deaktivovat jej. Srovnat původní přístupy před/po.
 - HOTOVO místně: `sprava_pracovnich_pozic.php` je společný přehled všech
   pracovních účtů s vyhledáváním a filtry rolí/stavu, dostupný v menu jako
   **Správce systému → Lidé a přístupy**. URL zůstává stejná.
@@ -18,8 +20,9 @@ k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
   prostřednictvím existující autorizační služby baru.
 - Tři dávkové dotazy načítají účty, přiřazení a zvláštní granty. Přehled
   ukazuje i deaktivované a nezařazené účty; neodvozuje přístupy z legacy role.
-- Další krok: revize a samostatně schválené nasazení; následně čtecí ověření
-  skutečných účtů. Žádnému skutečnému člověku zde nebyla role změněna.
+- ROZPRACOVÁNO: CI/revize, schválené nasazení a produkční přejímka. Novější
+  optimalizace docházky z `feb8fe8c` zachovaná. Žádnému skutečnému člověku zde
+  nebyla role změněna.
 - Hranice: přehled pracovních účtů není seznam zákazníků ani všech sportovců;
   trenérské soukromé rozsahy zůstávají samostatnou správou.
 

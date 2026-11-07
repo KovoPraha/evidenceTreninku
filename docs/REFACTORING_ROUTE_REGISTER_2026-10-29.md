@@ -43,6 +43,13 @@ medián měřené části 3,32–6,07× rychlejší. Čerstvost a transakční z
 [Předání R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md),
 PR #353; bez nasazení. R06, plné HTTP a hierarchické filtry zůstávají otevřené.
 
+Následně 7. 11. dokončená [optimalizace R06](verification/attendance-read-performance-20261107/RESULTS.md):
+dávkové čtení ID mimo transakci, původní autorizační a transakční cesta zachovaná.
+Devět párů 10/50/200 osob × 1/12/52 revizí na MariaDB 10.3/11.4, celá data
+i HTML shodné; 200 osob 244 → 45 SQL, medián měřené části 2,30–2,48× rychlejší.
+[Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md),
+PR #354, bez nasazení. Plné HTTP, další role/propojené lekce a filtry zbývají.
+
 ## Historický základ K0.1
 
 Zdroj: `3cc60fb6d7fad4bc6430724529295ef025d75178`, ověřeno 29. 10. 2026.

@@ -17,8 +17,25 @@ auditovaný editor včetně zvláštní vlastní spotřeby baru. Žádné nové 
 migrace ani odhadované přidělení skutečných přístupů.
 44 cílených testů / 2413 assertions a 16 HTTP kontrol PASS, desktop/mobilní Chrome PASS.
 Úplný PHPStan level 5, styl změněných PHP a dokumentační kontrakt PASS.
-Další krok je revize a samostatně schválené nasazení. Produkce ani původní WIP
-nebyly touto relací změněny; nejde o přihlášené produkční UAT.
+Vlastník 7. 11. následně výslovně schválil nasazení a ověření změn rolí, se
+zákazem měnit stávající role lidí. Nasazení a oddělený nový syntetický účet
+jsou rozpracované; původní lokální ověření není produkční UAT.
+
+## Předchozí návaznost: P11 optimalizace docházky
+
+Pokyn vlastníka „ok, pokračuj“ navazuje R06 bez změn produkce a se zachováním WIP.
+Větev `codex/attendance-read-performance-20261107`, vlastní kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-attendance-performance-20261107`.
+[Výsledky a trvalé důkazy](verification/attendance-read-performance-20261107/RESULTS.md).
+Dávkové ověření ID mimo transakci hotové; čerstvá role a přesná původní
+transakční cesta zachované. Místně 29 testů / 206 assertions a PHPStan/styl PASS.
+Párové CI 10.3/11.4 PASS, všech 11 kontrol: 200 osob 244 → 45 SQL,
+medián měřené části 2,30–2,48× rychlejší, všechna data i HTML shodné.
+Finální dokumentační CI/merge u [PR #354](https://github.com/KovoPraha/evidenceTreninku/pull/354).
+[Datované předání a zbývající práce](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md):
+plné HTTP, další role/propojené lekce a hierarchické filtry. Kalibrace měřidla
+oddělená od platných výsledků; původní WIP shodné, žádná místní DB/HTTP služba.
+Žádný deploy ani aktivace, produkční stav tato relace nemění.
 
 ## Předchozí návaznost: P11 optimalizace plánovače
 

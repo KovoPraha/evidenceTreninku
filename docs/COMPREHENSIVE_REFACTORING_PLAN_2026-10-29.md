@@ -400,3 +400,11 @@ potvrdily celá data i HTML, 112/203 → 28 SQL a medián měřené části
 3,32–6,07× rychlejší. READ ONLY, čerstvost a transakční zámky zachované.
 [Předání R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md) vede
 stav PR #353 a zbývající R06, plné HTTP i hierarchické filtry. Bez nasazení.
+
+Na pokyn „ok, pokračuj“ 7. 11. dokončené [R06 dávkové ověření účastníků](verification/attendance-read-performance-20261107/RESULTS.md)
+mimo transakci; čerstvá role a přesné transakční kontroly zachované.
+Devět párů na MariaDB 10.3/11.4: celá data i HTML shodné, 200 osob
+244 → 45 SQL a medián měřené části 2,30–2,48× rychlejší. Všech 11 kontrol PASS,
+první neplatné přípravy měření oddělené v kalibračním protokolu.
+[Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md) vede
+PR #354, plné HTTP, další role/propojené lekce a hierarchické filtry. Bez nasazení.

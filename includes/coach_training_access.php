@@ -48,10 +48,24 @@ function coachTrainingPersonPredicate(PDO $pdo): string
 function coachTrainingAssertPeople(PDO $pdo, array $ids): void
 {
     coachTrainingRequireActor($pdo);
-    $q = $pdo->prepare('SELECT id FROM sportovci WHERE id=?');
-    foreach (array_unique(array_map('intval', $ids)) as $id) {
-        $q->execute([$id]);
-        if ($id < 1 || !$q->fetchColumn()) {
+    $ids = array_values(array_unique(array_map('intval', $ids)));
+    // Preserve write-time validation and its query order inside transactions.
+    if ($pdo->inTransaction() || $ids === []) {
+        $q = $pdo->prepare('SELECT id FROM sportovci WHERE id=?');
+        foreach ($ids as $id) {
+            $q->execute([$id]);
+            if ($id < 1 || !$q->fetchColumn()) {
+                throw new RuntimeException('Vybraný sportovec neexistuje.');
+            }
+        }
+        return;
+    }
+    // One fresh projection per call, with bounded parameter lists and no cached identities.
+    foreach (array_chunk($ids, 500) as $chunk) {
+        $marks = implode(',', array_fill(0, count($chunk), '?'));
+        $q = $pdo->prepare("SELECT id FROM sportovci WHERE id IN ($marks)");
+        $q->execute($chunk);
+        if (min($chunk) < 1 || count($q->fetchAll(PDO::FETCH_COLUMN)) !== count($chunk)) {
             throw new RuntimeException('Vybraný sportovec neexistuje.');
         }
     }
