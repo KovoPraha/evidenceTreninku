@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "target_day": "2026-11-07",
+  "trigger": "hosting_cron",
+  "verdict": "PASS",
+  "captured_at_utc": "2026-11-07T05:30:03+00:00",
+  "expected_start_utc": "2026-11-07T05:23:00+00:00",
+  "actual_attempt_utc": "2026-11-07T05:23:03+00:00",
+  "actual_start_utc": "2026-11-07T05:23:03+00:00",
+  "matched_job_finish_utc": "2026-11-07T05:23:03+00:00",
+  "start_delay_seconds": 3,
+  "last_success_utc": "2026-11-07T05:23:03+00:00",
+  "checks": {
+    "captured_after_due": true,
+    "captured_on_target_day": true,
+    "expected_worker_installed": true,
+    "fresh_membership_tick": true,
+    "hosting_provenance": true,
+    "attempt_on_target_day": true,
+    "attempt_not_before_due": true,
+    "successful_ledger_matches_attempt": true,
+    "new_success_after_attempt": true,
+    "daily_completed": true,
+    "worker_result_without_errors": true,
+    "no_failed_jobs": true,
+    "automation_and_mail_preserved": true
+  },
+  "failed_jobs": 0,
+  "job_count": 1,
+  "counts": {
+    "memberships": 0,
+    "charges": 0,
+    "documents": 0,
+    "queued": 0,
+    "sent": 0
+  },
+  "first_attempt_limitation": false,
+  "deferred": [
+    "P05/P07 actual membership/payment",
+    "P06 export"
+  ],
+  "repository_flags": {
+    "schedule": "false",
+    "apply": "true",
+    "mail": "true"
+  },
+  "collected_at_utc": "2026-11-07T11:53:31+00:00",
+  "publication_run": 42370063239
+}
