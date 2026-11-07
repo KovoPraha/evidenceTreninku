@@ -60,11 +60,11 @@ Plán není souhlas s publikací, reálnou platbou, rozesílkou nebo datovým p�
 Tajemství, hesla, session, produkční dumpy a osobní přílohy do Gitu nepatří;
 uvést jen bezpečnou referenci a způsob ověření soukromého podkladu.
 
-## Aktivní dokumentační práce a souběžné návrhy
+## Aktuální předání a souběžné návrhy
 
 | ID | Stav a podklad | Další krok / vlastník |
 | --- | --- | --- |
-| DOC01 | ROZPRACOVÁNO: [souborové plány, krátké předání a historická evidence](DOCUMENTATION_GOVERNANCE_2026-11-07.md); větev `codex/repo-documentation-policy-20261107` | Dokončit kontroly a GitHub PR; pouze dokumentace a její kontrola, bez deploye. |
+| DOC01 | Obsah a místní ověření HOTOVO: [souborové plány a krátké předání](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357); větev `codex/repo-documentation-policy-20261107` | Stav CI/merge u PR; další práci vést podle nových pravidel. Pouze dokumentace a její kontrola, bez deploye. |
 | P07-UAT | [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355) otevřené při kontrole 7. 11.; syntetický jednorázový kroužek, účetní PDF a mezery notifikací. Dosud není součástí kontrolovaného main | Vlastník PR dořeší konflikt a kontroly; závěry jsou návrhem/podkladem, nikoli novou produkční přejímkou. |
 
 ## Ranní serverový audit — samostatná návaznost P05

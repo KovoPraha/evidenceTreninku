@@ -1,6 +1,6 @@
 # Souborová dokumentace a stručné předání — 7. 11. 2026
 
-Stav: K OVĚŘENÍ / GitHub předání. ID DOC01. Zadání vlastníka: všechny záměry, koncepty,
+Stav: HOTOVO — souborový obsah a místní ověření. ID DOC01. Zadání vlastníka: všechny záměry, koncepty,
 implementační plány, změny, výsledky a rozhodnutí vést ve verzovaných souborech;
 průběžně aktualizovat CURRENT a session handoff, historii oddělit a zpřístupnit
 vývojářům přes GitHub. Interní paměť ani chat nejsou projektovou evidencí.
@@ -34,7 +34,7 @@ Kontrola hlídala jen délku CURRENT (80 řádků) a malou část místních odk
 - [x] Odstranit session historii z aktuálního registru, zachovat P01–P14,
   doplnit dohledatelné souběžné PR a oddělit jejich stav od main/produkce.
 - [x] Propojit aktuální stav, handoff, registr, deník událostí a rozhodovací log.
-- [ ] Ověřit délky, odkazy, zachování archivů a kompatibilitu serverového
+- [x] Ověřit délky, odkazy, zachování archivů a kompatibilitu serverového
   publikátoru auditu; předat změnu přes GitHub PR a zapsat skutečný stav.
 
 ## Souběh a důkazní hranice
@@ -52,4 +52,6 @@ Starší plány a rozhodnutí se zpětně nepovažují za dokončené bez zdroje
 Místní dokumentační kontrakt, kontrola odkazů/integrity, tři negativní zkoušky
 kontrolního nástroje, pět regresí publikátoru i syntetický zápis do kopie
 skutečných dokumentů PASS. [Přesné výsledky a meze](verification/documentation-governance-20261107/RESULTS.md).
-Následuje dokončení GitHub PR a kontrol; stav předání zapsat sem a do přehledů.
+GitHub předání: [PR #357](https://github.com/KovoPraha/evidenceTreninku/pull/357),
+první commit `620512ee`; konečný head a skutečný stav CI/sloučení určuje PR.
+Následující vývoj používá nová pravidla; další dokumentační deploy není potřeba.

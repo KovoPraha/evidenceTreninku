@@ -10,6 +10,7 @@ Bez změny aplikačního kódu, produkce, databáze či provozní konfigurace.
 | --- | --- |
 | `php tools/check-current-docs.php` | PASS; CURRENT 80 řádků, hlavní handoff 70, session rozcestník 15; přes 1 400 místních odkazů, 107 původních archivních bloků a tři nové snapshoty bez porušení |
 | `php -l tools/check-current-docs.php` | PASS |
+| PSR-12 formát kontrolního skriptu | Upraven pomocí projektového PHP CS Fixer; konečnou kontrolu provádí PR CI |
 | Existující `CurrentDocumentationContractTest` | PASS, 2 testy / 14 assertions; samostatný běh se sdílenými instalovanými závislostmi, bez přístupu k DB |
 | `git diff --check` | PASS |
 | `python tests/Support/test_membership_audit_publication.py` | PASS, všech pět existujících regresí |
@@ -29,4 +30,5 @@ ranního auditu, novým povolením ani produkční operací. Stav draftu #347 a
 otevřeného #355 je časový snímek; před integrací jej znovu ověřit.
 Původní WIP v `C:/xampp/htdocs/evidencePavel` se neupravoval; bezpečný otisk
 `kis_rosters_admin.php` při předání je v souhrnu, nejde o commit tohoto souboru.
-Následuje GitHub PR, povinné kontroly a zapsání skutečného stavu předání.
+GitHub předání [PR #357](https://github.com/KovoPraha/evidenceTreninku/pull/357),
+první commit `620512ee`; konečný head a stav povinných kontrol/sloučení určuje PR.

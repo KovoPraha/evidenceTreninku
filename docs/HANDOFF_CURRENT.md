@@ -8,7 +8,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 ## Poslední práce a další krok
 
 - DOC01: [zadání, audit, plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
-  Krátké předání, oddělená historie, deník a rozhodnutí; dokončit kontroly a PR.
+  Obsah a místní kontroly hotové; [GitHub předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), stav CI/merge u PR.
   Větev `codex/repo-documentation-policy-20261107`, vlastní worktree stejného tématu
   v `C:/Users/Marek/Documents/Codex/evidencePavel-repo-documentation-policy-20261107`.
 - P11: R13 #352, R05 #353 a R06 #354 jsou v main `feb8fe8c`, bez nového deploye.
