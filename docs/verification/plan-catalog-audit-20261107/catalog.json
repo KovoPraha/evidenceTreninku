@@ -10341,6 +10341,17 @@
       "registry": "P11-R13-S",
       "disposition": "Schválený čtecí řez; parita a měření před merge/deploy.",
       "evidence": []
+    },
+    {
+      "id": "PL-9d3eb581db",
+      "path": "docs/verification/medical-state-read-performance-20261107/RESULTS.md",
+      "title": "P11-R13-S — parita a měření zdravotního přehledu",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-R13-S",
+      "disposition": "První návrh parita PASS/výkon FAIL; finální varianta otevřená.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

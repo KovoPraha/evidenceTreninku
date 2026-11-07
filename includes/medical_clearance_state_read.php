@@ -21,7 +21,13 @@ final class MedicalClearanceStateRead
         // The scoped derived table and the outer list each use the same candidate filters.
         $bindings = array_merge($params, $params);
         $complex = 'mv.id IS NOT NULL AND mv.issued_on>? AND mv.replaces_id IS NOT NULL AND mv.replaces_id<>0';
-        $candidates = self::read($pdo, 'SELECT w.id ' . $projection . ' AND (' . $complex . ') LIMIT 129', [...$bindings, $on]);
+        $futureState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mf.state' : 'mf.state COLLATE BINARY';
+        $newerState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mn.state' : 'mn.state COLLATE BINARY';
+        $candidates = self::read($pdo, 'SELECT w.id '
+            . self::join($base, 'JOIN medical_clearance_records mf ON mf.watch_id=w.id')
+            . " AND $futureState='verified' AND mf.issued_on>? AND mf.replaces_id IS NOT NULL AND mf.replaces_id<>0"
+            . ' AND NOT EXISTS (SELECT 1 FROM medical_clearance_records mn WHERE mn.watch_id=w.id'
+            . " AND $newerState='verified' AND mn.id>mf.id) LIMIT 129", [...$params, $on]);
         if (count($candidates) > 128) {
             return medicalClearanceStatePage($pdo, $base, $params, $filters, $on);
         }
@@ -33,6 +39,7 @@ final class MedicalClearanceStateRead
             $records = self::read($pdo, 'SELECT id,watch_id,state,issued_on,valid_until,replaces_id'
                 . ' FROM medical_clearance_records WHERE watch_id IN (' . $marks . ') ORDER BY id DESC LIMIT 4097', $ids);
             if (count($records) > 4096) {
+                unset($records);
                 return medicalClearanceStatePage($pdo, $base, $params, $filters, $on);
             }
             $byWatch = [];
@@ -58,30 +65,41 @@ final class MedicalClearanceStateRead
             array_push($bindings, ...$matching);
         }
         $filtered = $projection . ' AND (' . $predicate . ')';
-        $count = self::read($pdo, 'SELECT COUNT(*) total ' . $filtered, $bindings);
-        $total = (int) $count[0]['total'];
+        $select = 'w.id';
+        $fields = ['id', 'state', 'issued_on', 'valid_until', 'replaces_id'];
+        foreach (['mv', 'ml'] as $alias) {
+            foreach ($fields as $field) {
+                $select .= ',' . $alias . '.' . $field . ' AS _medical_read_' . $alias . '_' . $field;
+            }
+        }
+        // One aggregation for both the exact total and the clamped page, including an excessive page number.
+        $window = 'SELECT ' . $select . ',COUNT(*) OVER () AS _medical_read_total,'
+            . 'ROW_NUMBER() OVER (ORDER BY w.next_review_on,w.id) AS _medical_read_number ' . $filtered;
+        $requestedStart = ($filters['page'] - 1) * 25 + 1;
+        $start = 'CASE WHEN ' . $requestedStart . '>mp._medical_read_total'
+            . ' THEN mp._medical_read_total-((mp._medical_read_total-1)%25) ELSE ' . $requestedStart . ' END';
+        $selected = self::read($pdo, 'SELECT * FROM (' . $window . ') mp WHERE mp._medical_read_number>=(' . $start
+            . ') AND mp._medical_read_number<(' . $start . ')+25 ORDER BY mp._medical_read_number', $bindings);
+        $total = (int) ($selected[0]['_medical_read_total'] ?? 0);
         $pages = max(1, (int) ceil($total / 25));
         $page = min($filters['page'], $pages);
-        $rows = [];
-        if ($total > 0) {
-            $select = 'w.*,s.jmeno,s.prijmeni';
-            $fields = ['id', 'state', 'issued_on', 'valid_until', 'replaces_id'];
-            foreach (['mv', 'ml'] as $alias) {
-                foreach ($fields as $field) {
-                    $select .= ',' . $alias . '.' . $field . ' AS _medical_read_' . $alias . '_' . $field;
-                }
+        foreach ($selected as $row) {
+            $record = [];
+            $alias = $row['_medical_read_mv_id'] !== null ? 'mv' : 'ml';
+            foreach ($fields as $field) {
+                $record[$field] = $row['_medical_read_' . $alias . '_' . $field];
             }
-            $rows = self::read($pdo, 'SELECT ' . $select . ' ' . $filtered
-                . ' ORDER BY w.next_review_on,w.id LIMIT 25 OFFSET ' . (($page - 1) * 25), $bindings);
+            $statuses[(int) $row['id']] ??= medicalClearanceStatusFromRecords($record['id'] !== null ? [$record] : [], $on);
+        }
+        // Keep names and the full watch projection out of the window's working set.
+        $rows = [];
+        if ($selected !== []) {
+            $ids = array_column($selected, 'id');
+            $marks = implode(',', array_fill(0, count($ids), '?'));
+            $rows = self::read($pdo, 'SELECT w.*,s.jmeno,s.prijmeni FROM medical_clearance_watches w'
+                . ' JOIN sportovci s ON s.id=w.sportovec_id WHERE w.id IN (' . $marks . ') ORDER BY w.next_review_on,w.id', $ids);
             foreach ($rows as &$row) {
-                $record = [];
-                $alias = $row['_medical_read_mv_id'] !== null ? 'mv' : 'ml';
-                foreach ($fields as $field) {
-                    $record[$field] = $row['_medical_read_' . $alias . '_' . $field];
-                    unset($row['_medical_read_mv_' . $field], $row['_medical_read_ml_' . $field]);
-                }
-                $row['evaluated_status'] = $statuses[(int) $row['id']]
-                    ?? medicalClearanceStatusFromRecords($record['id'] !== null ? [$record] : [], $on);
+                $row['evaluated_status'] = $statuses[(int) $row['id']];
             }
             unset($row);
         }

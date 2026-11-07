@@ -85,7 +85,7 @@ final class MedicalStateReadTest extends TestCase
         $actual = \medicalClearanceList($pdo, $input);
         self::assertSame($expected, $actual);
         self::assertLessThanOrEqual(3, count($pdo->profile));
-        self::assertLessThanOrEqual(26, array_sum(array_column($pdo->profile, 'fetched_rows')));
+        self::assertLessThanOrEqual(50, array_sum(array_column($pdo->profile, 'fetched_rows')));
         self::assertStringNotContainsString('PRIVATE MEDICAL SENTINEL', json_encode($actual));
         foreach ($actual['rows'] as $row) {
             self::assertFalse((bool) array_filter(array_keys($row), static fn (string $k): bool => str_starts_with($k, '_medical_read_')));

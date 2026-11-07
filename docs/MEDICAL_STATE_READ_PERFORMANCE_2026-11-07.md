@@ -57,3 +57,9 @@ kandidáty danými filtrem. Nejvýše128 budoucích řetězců /4096 historický
 při překročení původní stream. Filtr konkrétní osoby je původní cesta bez režie.
 Další krok: PR, obě nativní MariaDB a celý HTTP/Chrome pár, archiv přínosu před merge.
 Průběžné [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md).
+
+První nativní celý HTTP prototyp a7b1bee9: parita/HTML PASS, výkon FAIL (Platné106→197ms, Čekající105→221ms). Nebude nasazený. [Protokol](verification/medical-state-read-performance-20261107/RESULTS.md). Další varianta odstraní opakovanou agregaci; znovu všechny kontroly a měření.
+
+Druhá varianta: sonda budoucích záznamů bez agregace, kontrola nejnovějšího verified pomocí NOT EXISTS; hlavní agregace jednou, COUNT(*) OVER a ROW_NUMBER pro počet i přesně oříznutou stránku. Podpora [MariaDB window funkcí](https://mariadb.com/docs/server/reference/sql-functions/special-functions/window-functions/window-functions-overview) a [ROW_NUMBER](https://mariadb.com/docs/server/reference/sql-functions/special-functions/window-functions/row_number); musí projít nativně na10.3/11.4. Před fallbackem se uvolní načtená sonda historie.
+
+V2 drží v pracovním okně pouze ID a stavová metadata; jména a plná sledování hydratuje teprve pro25 vybraných ID. Důvod: neopakovat agregaci a nezvětšovat řadicí pracovní data. Běžný přenos nejvýše50 řádků (25 projekce +25 plných), složité řetězce mají původní limity. Lokální parita po úpravě PASS; nativní přínos se musí znovu změřit.

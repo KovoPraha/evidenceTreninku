@@ -254,3 +254,5 @@ P11-R05-H — uzavřený technický řez podle D12: [plán](PLANNER_HIERARCHY_RE
 ## D2026-11-07-13
 
 PŘIJATO podle aktuálního zadání vlastníka: [P11-R13-S](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) oddělí běžnou čtecí SQL projekci od složitých budoucích řetězců. Ty zůstávají kanonické, nad limitem a v transakci původní stream. Práva, writer a zdravotní rozhodnutí beze změny. Persistentní stavy/rekurzivní SQL odmítnuté kvůli invalidaci a složitosti. Parita, měření a CI před schváleným merge/deploy. Historický zákaz deploye #352 není aktuální pokyn.
+
+D13 průběžně: první prototyp a7b1bee9 zamítnut pro deploy kvůli regresi celého GET. Opakované agregace nahrazuje cílená sonda a jediná agregace s COUNT/ROW_NUMBER OVER; nejde o rekurzivní SQL ani cache. [Důkaz](verification/medical-state-read-performance-20261107/RESULTS.md), [oficiální MariaDB reference](https://mariadb.com/docs/server/reference/sql-functions/special-functions/window-functions/window-functions-overview). Po změně opakovat paritu a měření obou DB i HTTP, bez předčasného deploye.
