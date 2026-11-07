@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "checks": [
+    "overview_authenticated",
+    "dedicated_target_form",
+    "csrf_rejected",
+    "unassigned_default_rejected",
+    "roles_form_saved",
+    "roles_persisted",
+    "default_persisted",
+    "combined_filter",
+    "bar_role_effective",
+    "system_access_denied",
+    "consumption_granted",
+    "consumption_revoked",
+    "roles_removed",
+    "revoked_bar_access_denied",
+    "role_changes_audited",
+    "consumption_changes_audited"
+  ],
+  "error": null,
+  "test_account_ids": [
+    63,
+    64
+  ],
+  "cleanup": {
+    "accounts_deactivated": 2,
+    "test_positions_revoked": true,
+    "original_roles_unchanged": true,
+    "before": {
+      "counts": {
+        "accounts": 46,
+        "staff_user_positions": 82,
+        "staff_superadmins": 5,
+        "kis_bar_permissions": 1
+      },
+      "sha256": "debbfb081e675f110efbe5a8783c5f3cef31bbc26acb45745868c30bb2befb8b"
+    },
+    "after": {
+      "counts": {
+        "accounts": 46,
+        "staff_user_positions": 82,
+        "staff_superadmins": 5,
+        "kis_bar_permissions": 1
+      },
+      "sha256": "debbfb081e675f110efbe5a8783c5f3cef31bbc26acb45745868c30bb2befb8b"
+    }
+  },
+  "run_id": 42360515313
+}
