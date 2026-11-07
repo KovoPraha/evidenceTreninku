@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\phpunit.xml.dist" tests="13" assertions="759" errors="0" failures="0" skipped="0" time="2.513177">
+    <testsuite name="integration" tests="13" assertions="759" errors="0" failures="0" skipped="0" time="2.513177">
+      <testsuite name="MedicalClearanceReadTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\MedicalClearanceReadTest.php" tests="4" assertions="101" errors="0" failures="0" skipped="0" time="1.571103">
+        <testcase name="testAllFiltersAndClampedPagesMatchTheFrozenAlgorithm" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\MedicalClearanceReadTest.php" line="27" class="MedicalClearanceReadTest" classname="MedicalClearanceReadTest" assertions="73" time="1.181861"/>
+        <testcase name="testPageReadsOnlyItsRecordsAndStateScanStreamsHistories" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\MedicalClearanceReadTest.php" line="41" class="MedicalClearanceReadTest" classname="MedicalClearanceReadTest" assertions="12" time="0.266582"/>
+        <testcase name="testPersonLookupFindsAnyPersonEscapesSearchAndKeepsSelection" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\MedicalClearanceReadTest.php" line="59" class="MedicalClearanceReadTest" classname="MedicalClearanceReadTest" assertions="14" time="0.037163"/>
+        <testcase name="testPersonLookupRejectsChangedRoleAndRevokedRegistrar" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\MedicalClearanceReadTest.php" line="81" class="MedicalClearanceReadTest" classname="MedicalClearanceReadTest" assertions="2" time="0.085497"/>
+      </testsuite>
+      <testsuite name="Tests\Integration\PlannerCopyCountTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\PlannerCopyCountTest.php" tests="1" assertions="108" errors="0" failures="0" skipped="0" time="0.171611">
+        <testcase name="testCopyCountPreservesAllFiltersWithOneBaseRead" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\PlannerCopyCountTest.php" line="20" class="Tests\Integration\PlannerCopyCountTest" classname="Tests.Integration.PlannerCopyCountTest" assertions="108" time="0.171611"/>
+      </testsuite>
+      <testsuite name="PlannerReadTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\PlannerReadTest.php" tests="6" assertions="304" errors="0" failures="0" skipped="0" time="0.109069">
+        <testcase name="testBatchSummariesMatchCanonicalOverviewsAtEveryPlanDate" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\PlannerReadTest.php" line="21" class="PlannerReadTest" classname="PlannerReadTest" assertions="14" time="0.037137"/>
+        <testcase name="testPendingFiltersAndHistoryMatchTheOriginalRead" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\PlannerReadTest.php" line="32" class="PlannerReadTest" classname="PlannerReadTest" assertions="218" time="0.048370"/>
+        <testcase name="testNoCachedMembershipResponsesHierarchyOrSchemaBetweenCalls" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\PlannerReadTest.php" line="54" class="PlannerReadTest" classname="PlannerReadTest" assertions="3" time="0.009338"/>
+        <testcase name="testMissingPeopleTablePreservesZeroEntriesAndInvalidDatesCloseMetadataScope" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\PlannerReadTest.php" line="68" class="PlannerReadTest" classname="PlannerReadTest" assertions="2" time="0.003252"/>
+        <testcase name="testQueryCountDoesNotGrowPerPlanAndCountsDoNotReadNamesOrNotes" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\PlannerReadTest.php" line="82" class="PlannerReadTest" classname="PlannerReadTest" assertions="34" time="0.003291"/>
+        <testcase name="testLargeInputUsesBoundedChunksAndPreservesMissingPlanEntries" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\PlannerReadTest.php" line="98" class="PlannerReadTest" classname="PlannerReadTest" assertions="33" time="0.007682"/>
+      </testsuite>
+      <testsuite name="Tests\Integration\TrainingRosterFilterReadTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\TrainingRosterFilterReadTest.php" tests="2" assertions="246" errors="0" failures="0" skipped="0" time="0.661394">
+        <testcase name="testFiltersMatchHistoricalBaselineAndQueryBudget" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\TrainingRosterFilterReadTest.php" line="21" class="Tests\Integration\TrainingRosterFilterReadTest" classname="Tests.Integration.TrainingRosterFilterReadTest" assertions="240" time="0.497770"/>
+        <testcase name="testFreshCallsCyclesDuplicatesAndMissingEdges" file="C:\Users\Marek\Documents\Codex\evidencePavel-medical-planner-scale-20261107\tests\Integration\TrainingRosterFilterReadTest.php" line="44" class="Tests\Integration\TrainingRosterFilterReadTest" classname="Tests.Integration.TrainingRosterFilterReadTest" assertions="6" time="0.163624"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

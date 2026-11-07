@@ -167,8 +167,10 @@ try:
     database_alias()
     database_alias_created = True
     summaries = []
-    for size in ["10000-watches"]:
-        php("MedicalStateHttpProfile.php", output, "prepare")
+    php("MedicalStateHttpProfile.php", output, "prepare")
+    for size in ["10000-watches", "100000-watches"]:
+        if size == "100000-watches":
+            php("MedicalStateHttpProfile.php", output, "expand")
         for variant, content in [("before", baseline), ("after", original)]:
             route.write_bytes(content)
             start_server()

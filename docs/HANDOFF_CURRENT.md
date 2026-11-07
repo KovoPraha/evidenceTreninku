@@ -7,11 +7,13 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
+- P11-SCALE HOTOVO: [větší R13/R05](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md),2700HTTP/90parit.
+  Aktuální#374 také prověřené; oba vlastní runtime úklidy PASS, produkce bez našich změn.
+  Dále R13 stavové čtení/řízený Linux, fyzický mobil a souběh; K0.2 otevřené.
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
   Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.
   Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); karty zahrnuje vydání `c70939d4`; dále cílený nový Chrome, viz priorita 1.
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
-
 - AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
 
 - P11 picker HOTOVO: [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání #366/#372](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
@@ -21,7 +23,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
 - P11-R13-S ROZPRACOVÁNO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md).
-  PR #381: první návrh parita PASS/výkon FAIL; V2 Platné neutrální, ověření V3 běží, bez předčasného deploye. WIP zachovaný.
+  PR #381: první návrh parita PASS/výkon FAIL; V2 Platné neutrální, ověření V3 na10k/100k navazuje po převzetí#375, bez předčasného deploye. WIP zachovaný.
 - P11-R05-H HOTOVO: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
   #374 v main a nasazeno; [provozní důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md) PASS. WIP zachovaný; R13/K0.2 a přihlášené UAT otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),

@@ -89,3 +89,13 @@ větev `codex/full-http-performance-20261107`; finální CI/merge se ověřují 
 Po integraci nového main znovu cíleně **47 testů / 2877 assertions PASS**
 (včetně přehledu rolí), [JUnit](verification/full-http-performance-20261107/integrated-tests.xml). Styl sedmi nových PHP souborů PASS;
 kontrola aktuální dokumentace 80 řádků CURRENT / 0 chyb.
+
+## Aktualizace převzetí 7.11.2026 — větší data a aktuální R05
+
+Tento výše uvedený postup je historický popis konkrétní etapy. R06 a celé HTTP
+už jsou hotové, nečekají na novou implementaci. [P11-SCALE předání](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md)
+dokládá100k zdravotních sledování,520týdnů a1000členství,2160primárních časů
+a540časů aktuálního#374, přímou shodu domén a bezpečný úklid. Starý R05 nález
+14554 řádků má nyní ověřenou opravu#374; znovu ji neimplementovat ani nenasazovat.
+Dále R13 stavové čtení, řízený Linux100k, složitější historie a mobil/souběh.
+Provozní stav výhradněCURRENT; tato relace produkci neměnila.

@@ -4,7 +4,7 @@
 Vlastník: vývoj podle aktuálního zadání vlastníka aplikace. Registr P11-R13-S.
 [Analýza celého HTTP](verification/full-http-performance-20261107/RESULTS.md),
 [předchozí řez #352](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md),
-[rozhodnutí D13](DECISION_LOG.md#d2026-11-07-13).
+[rozhodnutí D13](DECISION_LOG.md#d2026-11-07-14).
 
 ## Zadání, izolace a rozsah
 
@@ -69,3 +69,7 @@ V2/64137a5b: parita celého HTTP PASS, výrazná regrese odstraněna; Platné64,
 V3 navíc využívá doménový invariant: valid/expired/not_yet_valid mohou vzniknout jen z verified hlavy (včetně explicitní budoucí náhrady). Agregace pro tyto filtry proto pracuje pouze s přesnými verified záznamy; pending/revoked/missing zachovávají i nejnovější libovolný záznam. Výstup a řetězce stále kanonické. Před nasazením vyžadována celá parita i přínos.
 
 Nativní test V2 odhalil nepřesný typový předpoklad v novém testu PDO: driver vrací0 místo boolfalse. Funkční paritní případy prošly, selhal jen assertFalse(0). Test nyní nejprve ověří vypnutí režimu a pak přísně porovnává původní hodnotu včetně typu po úspěchu/výjimce; runtime se tím nemění. Nativní běhy se opakují.
+
+## Převzetí větší studie a další ověření
+
+Převzaté #375/eafe835b: studie 100k potvrzuje náklad stavového čtení. Její metadata, důkazy i přijaté D13/E45/E46 zachované. Toto rozhodnutí nyní D14, vlastní E47–50. V3 bude měřena v páru na 10k i 100k sledování/30k i 300k záznamů v celém HTTP a Chrome. Nativní pomocný profil 100/1k/10k všech šest případů, 100k valid/pending/person; 17 střídavých časových párů a čtyři rozehřátí. Rozšíření pouze vlastního syntetického schématu, žádná produkce.

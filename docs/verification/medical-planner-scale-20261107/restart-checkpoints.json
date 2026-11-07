@@ -1,0 +1,107 @@
+{
+  "complete": true,
+  "checkpoints": [
+    {
+      "complete": true,
+      "level": "medical100k",
+      "checksums": {
+        "p11_read_d1ef9b4b5f827e5b.sportovci": 2805711830,
+        "p11_read_d1ef9b4b5f827e5b.coach_scope_grants": 0,
+        "p11_read_d1ef9b4b5f827e5b.planovane_treninky": 4087779114,
+        "p11_read_d1ef9b4b5f827e5b.training_roster_links": 4230645932,
+        "p11_read_d1ef9b4b5f827e5b.club_teams": 1561694346,
+        "p11_read_d1ef9b4b5f827e5b.club_roster_members": 3552221946,
+        "p11_read_d1ef9b4b5f827e5b.club_team_edges": 2223792142,
+        "p11_read_d1ef9b4b5f827e5b.treninky": 1302416506,
+        "p11_read_d1ef9b4b5f827e5b.trenink_sportovec": 108392036,
+        "p11_read_d1ef9b4b5f827e5b.trenink_trener": 655435705,
+        "p11_read_d1ef9b4b5f827e5b.training_closures": 923930483,
+        "p11_read_d1ef9b4b5f827e5b.training_closure_revisions": 140858147,
+        "p11_read_d1ef9b4b5f827e5b.training_personal_excuses": 0,
+        "p11_read_d1ef9b4b5f827e5b.training_rsvps": 3946058099,
+        "p11_read_d1ef9b4b5f827e5b.club_makeup_credits": 0,
+        "p11_read_d1ef9b4b5f827e5b.medical_clearance_watches": 30344959,
+        "p11_read_d1ef9b4b5f827e5b.medical_clearance_records": 3597287477,
+        "p11_read_d1ef9b4b5f827e5b.medical_clearance_policies": 1227498405,
+        "p11_read_d1ef9b4b5f827e5b.treneri": 3827364118,
+        "p11_read_d1ef9b4b5f827e5b.staff_user_positions": 865191700,
+        "p11_read_d1ef9b4b5f827e5b.staff_superadmins": 0
+      },
+      "server": {
+        "port": 33479,
+        "directory": "C:\\xampp\\tmp\\kis-medical-planner-scale-20261107-ee3c4eee\\data\\",
+        "version": "10.4.32-MariaDB"
+      },
+      "tmpdir": "C:\\Users\\Marek\\AppData\\Local\\Temp",
+      "domain_unchanged": true
+    },
+    {
+      "complete": true,
+      "level": "medical100k",
+      "checksums": {
+        "p11_read_d1ef9b4b5f827e5b.sportovci": 2805711830,
+        "p11_read_d1ef9b4b5f827e5b.coach_scope_grants": 0,
+        "p11_read_d1ef9b4b5f827e5b.planovane_treninky": 4087779114,
+        "p11_read_d1ef9b4b5f827e5b.training_roster_links": 4230645932,
+        "p11_read_d1ef9b4b5f827e5b.club_teams": 1561694346,
+        "p11_read_d1ef9b4b5f827e5b.club_roster_members": 3552221946,
+        "p11_read_d1ef9b4b5f827e5b.club_team_edges": 2223792142,
+        "p11_read_d1ef9b4b5f827e5b.treninky": 1302416506,
+        "p11_read_d1ef9b4b5f827e5b.trenink_sportovec": 108392036,
+        "p11_read_d1ef9b4b5f827e5b.trenink_trener": 655435705,
+        "p11_read_d1ef9b4b5f827e5b.training_closures": 923930483,
+        "p11_read_d1ef9b4b5f827e5b.training_closure_revisions": 140858147,
+        "p11_read_d1ef9b4b5f827e5b.training_personal_excuses": 0,
+        "p11_read_d1ef9b4b5f827e5b.training_rsvps": 3946058099,
+        "p11_read_d1ef9b4b5f827e5b.club_makeup_credits": 0,
+        "p11_read_d1ef9b4b5f827e5b.medical_clearance_watches": 30344959,
+        "p11_read_d1ef9b4b5f827e5b.medical_clearance_records": 3597287477,
+        "p11_read_d1ef9b4b5f827e5b.medical_clearance_policies": 1227498405,
+        "p11_read_d1ef9b4b5f827e5b.treneri": 3827364118,
+        "p11_read_d1ef9b4b5f827e5b.staff_user_positions": 865191700,
+        "p11_read_d1ef9b4b5f827e5b.staff_superadmins": 0
+      },
+      "server": {
+        "port": 33479,
+        "directory": "C:\\xampp\\tmp\\kis-medical-planner-scale-20261107-ee3c4eee\\data\\",
+        "version": "10.4.32-MariaDB"
+      },
+      "tmpdir": "C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee/mysql-tmp",
+      "domain_unchanged": true
+    },
+    {
+      "complete": true,
+      "level": "medical100k",
+      "checksums": {
+        "p11_read_d1ef9b4b5f827e5b.sportovci": 2805711830,
+        "p11_read_d1ef9b4b5f827e5b.coach_scope_grants": 0,
+        "p11_read_d1ef9b4b5f827e5b.planovane_treninky": 4087779114,
+        "p11_read_d1ef9b4b5f827e5b.training_roster_links": 4230645932,
+        "p11_read_d1ef9b4b5f827e5b.club_teams": 1561694346,
+        "p11_read_d1ef9b4b5f827e5b.club_roster_members": 3552221946,
+        "p11_read_d1ef9b4b5f827e5b.club_team_edges": 2223792142,
+        "p11_read_d1ef9b4b5f827e5b.treninky": 1302416506,
+        "p11_read_d1ef9b4b5f827e5b.trenink_sportovec": 108392036,
+        "p11_read_d1ef9b4b5f827e5b.trenink_trener": 655435705,
+        "p11_read_d1ef9b4b5f827e5b.training_closures": 923930483,
+        "p11_read_d1ef9b4b5f827e5b.training_closure_revisions": 140858147,
+        "p11_read_d1ef9b4b5f827e5b.training_personal_excuses": 0,
+        "p11_read_d1ef9b4b5f827e5b.training_rsvps": 3946058099,
+        "p11_read_d1ef9b4b5f827e5b.club_makeup_credits": 0,
+        "p11_read_d1ef9b4b5f827e5b.medical_clearance_watches": 30344959,
+        "p11_read_d1ef9b4b5f827e5b.medical_clearance_records": 3597287477,
+        "p11_read_d1ef9b4b5f827e5b.medical_clearance_policies": 1227498405,
+        "p11_read_d1ef9b4b5f827e5b.treneri": 3827364118,
+        "p11_read_d1ef9b4b5f827e5b.staff_user_positions": 865191700,
+        "p11_read_d1ef9b4b5f827e5b.staff_superadmins": 0
+      },
+      "server": {
+        "port": 33479,
+        "directory": "C:\\xampp\\tmp\\kis-medical-planner-scale-20261107-ee3c4eee\\data\\",
+        "version": "10.4.32-MariaDB"
+      },
+      "tmpdir": "C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee/mysql-tmp",
+      "domain_unchanged": true
+    }
+  ]
+}

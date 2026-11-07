@@ -1,0 +1,258 @@
+{
+  "complete": true,
+  "application_pin": "e36c9ba6e461b7da842c53939c2fe20eed821f38",
+  "positive_cases": 18,
+  "negative_cases": 8,
+  "observations": 540,
+  "controlled_timing_pair": false,
+  "levels": {
+    "planner520": {
+      "counts": {
+        "sportovci": 10221,
+        "planovane_treninky": 7280,
+        "training_roster_links": 7280,
+        "club_teams": 3,
+        "club_roster_members": 20,
+        "club_team_edges": 1,
+        "training_rsvps": 211,
+        "medical_clearance_watches": 10000,
+        "medical_clearance_records": 30000
+      },
+      "cases": [
+        {
+          "id": "planner-coach-own",
+          "median_ms": 1068.2155,
+          "p95_ms": 1720.492,
+          "full_http_sql": 37,
+          "actual_rows_examined": 29507,
+          "server_rows_sent": 222,
+          "php_peak_bytes": 3392264,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 3369120
+        },
+        {
+          "id": "planner-coach-root",
+          "median_ms": 1620.0455000000002,
+          "p95_ms": 2853.9150000000004,
+          "full_http_sql": 47,
+          "actual_rows_examined": 55134,
+          "server_rows_sent": 3951,
+          "php_peak_bytes": 3525792,
+          "projection_fetched_rows": 3706,
+          "previous_projection_fetched_rows": 7278,
+          "previous_php_peak_bytes": 8003328
+        },
+        {
+          "id": "planner-coach-child",
+          "median_ms": 1253.487,
+          "p95_ms": 1966.9769999999999,
+          "full_http_sql": 47,
+          "actual_rows_examined": 55134,
+          "server_rows_sent": 3951,
+          "php_peak_bytes": 3525800,
+          "projection_fetched_rows": 3706,
+          "previous_projection_fetched_rows": 7278,
+          "previous_php_peak_bytes": 8953760
+        },
+        {
+          "id": "planner-coach-trainer",
+          "median_ms": 992.41,
+          "p95_ms": 1564.8059999999998,
+          "full_http_sql": 37,
+          "actual_rows_examined": 29507,
+          "server_rows_sent": 221,
+          "php_peak_bytes": 3393280,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 3370136
+        },
+        {
+          "id": "planner-coach-group",
+          "median_ms": 850.8675000000001,
+          "p95_ms": 1608.3039999999999,
+          "full_http_sql": 37,
+          "actual_rows_examined": 29556,
+          "server_rows_sent": 355,
+          "php_peak_bytes": 3408768,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 3385624
+        },
+        {
+          "id": "planner-coach-empty",
+          "median_ms": 1485.412,
+          "p95_ms": 3683.2889999999998,
+          "full_http_sql": 36,
+          "actual_rows_examined": 36650,
+          "server_rows_sent": 3797,
+          "php_peak_bytes": 3507592,
+          "projection_fetched_rows": 3706,
+          "previous_projection_fetched_rows": 7278,
+          "previous_php_peak_bytes": 8865304
+        },
+        {
+          "id": "planner-lead-all",
+          "median_ms": 1240.21,
+          "p95_ms": 1966.154,
+          "full_http_sql": 37,
+          "actual_rows_examined": 29556,
+          "server_rows_sent": 355,
+          "php_peak_bytes": 3408096,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 3384952
+        },
+        {
+          "id": "planner-lead-root",
+          "median_ms": 1445.281,
+          "p95_ms": 2498.785,
+          "full_http_sql": 47,
+          "actual_rows_examined": 58767,
+          "server_rows_sent": 4105,
+          "php_peak_bytes": 3540968,
+          "projection_fetched_rows": 3706,
+          "previous_projection_fetched_rows": 14554,
+          "previous_php_peak_bytes": 10834296
+        },
+        {
+          "id": "planner-lead-own",
+          "median_ms": 1014.3515,
+          "p95_ms": 1413.173,
+          "full_http_sql": 25,
+          "actual_rows_examined": 29198,
+          "server_rows_sent": 60,
+          "php_peak_bytes": 3372920,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 3349776
+        }
+      ],
+      "domain_equals_primary": true
+    },
+    "roster1000": {
+      "counts": {
+        "sportovci": 11201,
+        "planovane_treninky": 728,
+        "training_roster_links": 728,
+        "club_teams": 52,
+        "club_roster_members": 1000,
+        "club_team_edges": 50,
+        "training_rsvps": 10501,
+        "medical_clearance_watches": 10000,
+        "medical_clearance_records": 30000
+      },
+      "cases": [
+        {
+          "id": "planner-coach-own",
+          "median_ms": 1058.9605,
+          "p95_ms": 1557.855,
+          "full_http_sql": 37,
+          "actual_rows_examined": 15696,
+          "server_rows_sent": 6445,
+          "php_peak_bytes": 6195984,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 6172840
+        },
+        {
+          "id": "planner-coach-root",
+          "median_ms": 2429.7705,
+          "p95_ms": 7572.897,
+          "full_http_sql": 47,
+          "actual_rows_examined": 18538,
+          "server_rows_sent": 7045,
+          "php_peak_bytes": 6196864,
+          "projection_fetched_rows": 479,
+          "previous_projection_fetched_rows": 775,
+          "previous_php_peak_bytes": 6173720
+        },
+        {
+          "id": "planner-coach-child",
+          "median_ms": 1772.0605,
+          "p95_ms": 7960.559,
+          "full_http_sql": 47,
+          "actual_rows_examined": 18538,
+          "server_rows_sent": 7045,
+          "php_peak_bytes": 6196864,
+          "projection_fetched_rows": 479,
+          "previous_projection_fetched_rows": 775,
+          "previous_php_peak_bytes": 6173720
+        },
+        {
+          "id": "planner-coach-trainer",
+          "median_ms": 880.6845000000001,
+          "p95_ms": 2535.412,
+          "full_http_sql": 37,
+          "actual_rows_examined": 15696,
+          "server_rows_sent": 6444,
+          "php_peak_bytes": 6196592,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 6173448
+        },
+        {
+          "id": "planner-coach-group",
+          "median_ms": 762.9970000000001,
+          "p95_ms": 1761.209,
+          "full_http_sql": 37,
+          "actual_rows_examined": 15745,
+          "server_rows_sent": 11723,
+          "php_peak_bytes": 9007912,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 8984768
+        },
+        {
+          "id": "planner-coach-empty",
+          "median_ms": 503.4235,
+          "p95_ms": 1673.8319999999999,
+          "full_http_sql": 36,
+          "actual_rows_examined": 4135,
+          "server_rows_sent": 717,
+          "php_peak_bytes": 3374936,
+          "projection_fetched_rows": 479,
+          "previous_projection_fetched_rows": 775,
+          "previous_php_peak_bytes": 4166176
+        },
+        {
+          "id": "planner-lead-all",
+          "median_ms": 546.6755,
+          "p95_ms": 944.252,
+          "full_http_sql": 37,
+          "actual_rows_examined": 15745,
+          "server_rows_sent": 11723,
+          "php_peak_bytes": 9002912,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 8979768
+        },
+        {
+          "id": "planner-lead-root",
+          "median_ms": 567.3345,
+          "p95_ms": 1212.4779999999998,
+          "full_http_sql": 47,
+          "actual_rows_examined": 18895,
+          "server_rows_sent": 12344,
+          "php_peak_bytes": 9002992,
+          "projection_fetched_rows": 479,
+          "previous_projection_fetched_rows": 1499,
+          "previous_php_peak_bytes": 8979848
+        },
+        {
+          "id": "planner-lead-own",
+          "median_ms": 328.395,
+          "p95_ms": 720.296,
+          "full_http_sql": 25,
+          "actual_rows_examined": 3088,
+          "server_rows_sent": 109,
+          "php_peak_bytes": 3372920,
+          "projection_fetched_rows": 1,
+          "previous_projection_fetched_rows": 1,
+          "previous_php_peak_bytes": 3349776
+        }
+      ],
+      "domain_equals_primary": true
+    }
+  }
+}

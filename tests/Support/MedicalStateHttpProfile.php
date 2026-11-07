@@ -8,12 +8,37 @@ if (PHP_SAPI !== 'cli') {
 }
 $output = realpath($argv[1] ?? '');
 $variant = $argv[2] ?? '';
-if ($output === false || !in_array($variant, ['before', 'after', 'prepare'], true)) {
-    throw new RuntimeException('Owned output and before/after/prepare required.');
+if ($output === false || !in_array($variant, ['before', 'after', 'prepare', 'expand'], true)) {
+    throw new RuntimeException('Owned output and before/after/prepare/expand required.');
 }
 $argv = [__FILE__, '--library'];
 require_once __DIR__ . '/FullHttpReadProfile.php';
 [$runtime, $admin, $identity] = fullHttpEnvironment($output);
+if ($variant === 'expand') {
+    $admin->exec('USE `' . $runtime['schema'] . '`');
+    if ((int) $admin->query('SELECT COUNT(*) FROM medical_clearance_watches')->fetchColumn() !== 10000
+        || (int) $admin->query('SELECT MAX(id) FROM sportovci')->fetchColumn() !== 20000) {
+        throw new RuntimeException('Expected exactly the owned 10k fixture before expansion.');
+    }
+    $policy = $admin->query('SELECT policy_id FROM medical_clearance_watches ORDER BY id LIMIT 1')->fetchColumn();
+    $person = $admin->prepare("INSERT INTO sportovci(id,jmeno,prijmeni,narozeni) VALUES(?,'Synthetic medical','Synthetic','2017-01-01')");
+    $watch = $admin->prepare("INSERT INTO medical_clearance_watches(sportovec_id,purpose,policy_id,next_review_on,created_by) VALUES(?,'synthetic-purpose',?,CURRENT_DATE,7)");
+    $record = $admin->prepare("INSERT INTO medical_clearance_records(watch_id,issued_on,valid_until,original_location,state,revision,recorded_by,verified_by,verified_at) "
+        . "VALUES(?,DATE_SUB(CURRENT_DATE,INTERVAL 30 DAY),DATE_ADD(CURRENT_DATE,INTERVAL 30 DAY),'Synthetic fixture, no document',?,1,7,"
+        . "IF(?='pending',NULL,7),IF(?='pending',NULL,CURRENT_TIMESTAMP))");
+    $admin->beginTransaction();
+    for ($id = 20001; $id <= 110000; $id++) {
+        $person->execute([$id]);
+        $watch->execute([$id, $policy]);
+        $watchId = (int) $admin->lastInsertId();
+        foreach (['superseded', 'pending', 'verified'] as $state) {
+            $record->execute([$watchId, $state, $state, $state]);
+        }
+    }
+    $admin->commit();
+    $admin->query('ANALYZE TABLE medical_clearance_watches,medical_clearance_records,sportovci')->fetchAll();
+    exit;
+}
 if ($variant === 'prepare') {
     $admin->exec('USE `' . $runtime['schema'] . '`');
     $ids = $admin->query('SELECT id FROM medical_clearance_watches ORDER BY id LIMIT 50')->fetchAll(PDO::FETCH_COLUMN);

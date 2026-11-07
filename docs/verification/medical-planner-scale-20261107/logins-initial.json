@@ -1,0 +1,74 @@
+{
+  "coach": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 385.27099999999996,
+    "post_ms": 522.49
+  },
+  "sports_lead": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 51.769000000000005,
+    "post_ms": 373.665
+  },
+  "registrar": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 33.659,
+    "post_ms": 374.821
+  },
+  "program_coordinator": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 33.414,
+    "post_ms": 557.5360000000001
+  },
+  "catalog_manager": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 29.201,
+    "post_ms": 370.06899999999996
+  },
+  "order_operator": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 25.222,
+    "post_ms": 336.943
+  },
+  "finance_manager": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 32.976,
+    "post_ms": 346.10400000000004
+  },
+  "tv_operator": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 31.97,
+    "post_ms": 389.015
+  },
+  "bar_operator": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 29.419,
+    "post_ms": 479.684
+  },
+  "bar_admin": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 32.775999999999996,
+    "post_ms": 296.59000000000003
+  },
+  "system_admin": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 29.388,
+    "post_ms": 344.951
+  },
+  "other_coach": {
+    "form_status": 200,
+    "post_status": 303,
+    "form_ms": 30.882,
+    "post_ms": 537.6220000000001
+  }
+}

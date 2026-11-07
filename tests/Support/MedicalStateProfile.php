@@ -34,7 +34,7 @@ $percentile = static function (array $samples, float $p): float {
     sort($samples, SORT_NUMERIC);
     return $samples[(int) ceil(count($samples) * $p) - 1];
 };
-foreach ([100, 1000, 10000] as $watches) {
+foreach ([100, 1000, 10000, 100000] as $watches) {
     $schema = 'p11_medstate_' . bin2hex(random_bytes(8));
     $admin->exec('CREATE DATABASE `' . $schema . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
     try {
@@ -53,6 +53,9 @@ foreach ([100, 1000, 10000] as $watches) {
             'missing' => ['medical_state' => 'missing'], 'expired' => ['medical_state' => 'expired'],
             'person' => ['medical_state' => 'valid', 'person_id' => 1],
             'search' => ['medical_state' => 'valid', 'medical_q' => 'Synthetic']];
+        if ($watches === 100000) {
+            $cases = array_intersect_key($cases, array_flip(['valid', 'pending', 'person']));
+        }
         foreach ($cases as $name => $input) {
             $expected = Tests\Support\medicalStateBaselineList($pdo, $input);
             $samples = ['before' => [], 'after' => []];

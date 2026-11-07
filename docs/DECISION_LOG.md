@@ -6,6 +6,21 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-13
+
+PŘIJATO 7. 11. 2026 na přímé zadání vlastníka: [P11-SCALE](MEDICAL_PLANNER_SCALE_2026-11-07.md).
+Měřit stejnou zmrazenou aplikaci 69f49033 při větším objemu; neimplementovat
+souběžnou optimalizaci plánovače. Nový datadir, standardní login a SELECT-only
+web účet, oddělené prosté HTTP časy a diagnostika se skutečnými rows examined
+ze slow logu. Zdravotní růst a růst historie měnit odděleně; členství a šířku
+hierarchie rozšířit společně a tuto mez uvést. Staré časy nejsou kontrolní skupina.
+Žádné produkční změny, deploy ani nové zápisové UAT. [Předání](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md).
+
+Dokončení: primární2160 a aktuální#374 540HTTP,90parit a oba úklidy PASS.
+Po přijetí nové aplikace přidané dvě největší sady; přímá shoda se starými
+doménami, strukturální přínos prokázaný, časový poměr není kontrolovaný experiment.
+[Obě fáze](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md), bez produkce.
+
 ## D2026-11-07-11
 
 PŘIJATO, 7.11.2026, nové přímé zadání vlastníka pro měření bez změny produkce.
@@ -251,7 +266,7 @@ P11-R05-H podle D12: finální parita a objemový přínos PASS na obou DB i cel
 
 P11-R05-H — uzavřený technický řez podle D12: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [parita/přínos](verification/planner-hierarchy-read-performance-20261107/RESULTS.md), [merge/deploy/čtecí důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md), [handoff](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md). #374/e36c9ba6 a deploy42394551344 SUCCESS. Lidské UAT/rows examined a celé K0.2 tím nejsou uzavřené.
 
-## D2026-11-07-13
+## D2026-11-07-14
 
 PŘIJATO podle aktuálního zadání vlastníka: [P11-R13-S](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) oddělí běžnou čtecí SQL projekci od složitých budoucích řetězců. Ty zůstávají kanonické, nad limitem a v transakci původní stream. Práva, writer a zdravotní rozhodnutí beze změny. Persistentní stavy/rekurzivní SQL odmítnuté kvůli invalidaci a složitosti. Parita, měření a CI před schváleným merge/deploy. Historický zákaz deploye #352 není aktuální pokyn.
 
