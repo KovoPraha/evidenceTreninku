@@ -7,7 +7,7 @@ HOTOVO/DONE označuje pouze vymezený technický/dokumentační řez, ne všechn
 provozní přejímky; PARTIAL zachovává otevřenou návaznost.
 
 Podrobná metoda a opravy: [audit DOC02](PLAN_CATALOG_AUDIT_2026-11-07.md).
-Všechny textové soubory včetně protokolů, fixtures a exportů jsou zvlášť v
+Všechny textové soubory a binární plány/přílohy včetně protokolů, fixtures a exportů jsou zvlášť v
 [úplném indexu](PLAN_DOCUMENT_INDEX.md); nejsou vydávány za samostatné schválené plány.
 Strojová data: [katalog](verification/plan-catalog-audit-20261107/catalog.json).
 Aktivní položky C01–C04 jsou dosud neschválené/odložené záměry, nikoli nová
@@ -181,6 +181,15 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 | ID | Soubor | Stav / registr | Dispozice a důkaz |
 | --- | --- | --- | --- |
+| PL-1080434dea | [KIS-kompletni-uzivatelske-testovaci-scenare.docx](KIS-kompletni-uzivatelske-testovaci-scenare.docx) | HISTORICAL / P08/P12 | Historický testovací plán/manuál (srpen/září 2026); není aktuální autorizací produkčních zápisů. Dnešní scénáře, identity a prostředí určuje UAT runbook a registr. [PRODUKCNI-UZIVATELSKE-TESTOVANI.md](PRODUKCNI-UZIVATELSKE-TESTOVANI.md); [testing/chatgpt-tester-20261105/README.md](testing/chatgpt-tester-20261105/README.md); [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) |
+| PL-9a88f9b8f2 | [KIS-kompletni-uzivatelske-testovaci-scenare.pdf](KIS-kompletni-uzivatelske-testovaci-scenare.pdf) | HISTORICAL / P08/P12 | Historický testovací plán/manuál (srpen/září 2026); není aktuální autorizací produkčních zápisů. Dnešní scénáře, identity a prostředí určuje UAT runbook a registr. [PRODUKCNI-UZIVATELSKE-TESTOVANI.md](PRODUKCNI-UZIVATELSKE-TESTOVANI.md); [testing/chatgpt-tester-20261105/README.md](testing/chatgpt-tester-20261105/README.md); [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) |
+| PL-1d4abd5de5 | [KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.docx](../output/docx/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.docx) | HISTORICAL / C04/P08 | Datovaný návrh po UAT 8. 9. 2026, ne dnešní seznam vad; připravenost, obrázky a role byly mezitím měněné. Před případnou další opravou znovu reprodukovat, nepřebírat staré FAIL/BLOCKED jako aktuální. [UAT-OPRAVY-2026-09-21.md](UAT-OPRAVY-2026-09-21.md); [PRODUKCNI-UZIVATELSKE-TESTOVANI.md](PRODUKCNI-UZIVATELSKE-TESTOVANI.md); [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) |
+| PL-0b73189b77 | [JEDNODUCHY_MANUAL_PRODUKCNIHO_TESTOVANI_2026-09.pdf](../output/pdf/JEDNODUCHY_MANUAL_PRODUKCNIHO_TESTOVANI_2026-09.pdf) | HISTORICAL / P08/P12 | Historický testovací plán/manuál (srpen/září 2026); není aktuální autorizací produkčních zápisů. Dnešní scénáře, identity a prostředí určuje UAT runbook a registr. [PRODUKCNI-UZIVATELSKE-TESTOVANI.md](PRODUKCNI-UZIVATELSKE-TESTOVANI.md); [testing/chatgpt-tester-20261105/README.md](testing/chatgpt-tester-20261105/README.md); [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) |
+| PL-658801e31c | [KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf](../output/pdf/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf) | HISTORICAL / C04/P08 | Datovaný návrh po UAT 8. 9. 2026, ne dnešní seznam vad; připravenost, obrázky a role byly mezitím měněné. Před případnou další opravou znovu reprodukovat, nepřebírat staré FAIL/BLOCKED jako aktuální. [UAT-OPRAVY-2026-09-21.md](UAT-OPRAVY-2026-09-21.md); [PRODUKCNI-UZIVATELSKE-TESTOVANI.md](PRODUKCNI-UZIVATELSKE-TESTOVANI.md); [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) |
+| PL-330ae80673 | [UZIVATELSKE_TESTOVANI_SCENARE_2026-09.pdf](../output/pdf/UZIVATELSKE_TESTOVANI_SCENARE_2026-09.pdf) | HISTORICAL / P08/P12 | Historický testovací plán/manuál (srpen/září 2026); není aktuální autorizací produkčních zápisů. Dnešní scénáře, identity a prostředí určuje UAT runbook a registr. [PRODUKCNI-UZIVATELSKE-TESTOVANI.md](PRODUKCNI-UZIVATELSKE-TESTOVANI.md); [testing/chatgpt-tester-20261105/README.md](testing/chatgpt-tester-20261105/README.md); [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) |
+| PL-6283b88cbd | [DATOVE_TOKY_APLIKACE.xlsx](../outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_APLIKACE.xlsx) | HISTORICAL / C04/P11 | Grafický tabulkový audit datových toků s textovým protějškem; historické návrhy nejsou samy aktivní opravou ani dnešní měření. [outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_KOD.md](../outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_KOD.md); [outputs/data-flow-audit-2026-08-24/NALEZY_A_RIZIKA.md](../outputs/data-flow-audit-2026-08-24/NALEZY_A_RIZIKA.md) |
+| PL-eaeb8f22ad | [DATOVE_TOKY_APLIKACE.xlsx](../outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx) | HISTORICAL / C04/P11 | Grafický tabulkový audit datových toků s textovým protějškem; historické návrhy nejsou samy aktivní opravou ani dnešní měření. [outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_KOD.md](../outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_KOD.md); [outputs/data-flow-audit-2026-10-07/NALEZY_A_RIZIKA.md](../outputs/data-flow-audit-2026-10-07/NALEZY_A_RIZIKA.md) |
+| PL-ecfbaf2776 | [DATOVE_TOKY_APLIKACE.xlsx](../outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_APLIKACE.xlsx) | HISTORICAL / C04/P11 | Grafický tabulkový audit datových toků s textovým protějškem; historické návrhy nejsou samy aktivní opravou ani dnešní měření. [outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_KOD.md](../outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_KOD.md); [outputs/data-flow-audit-2026-10-19/NALEZY_A_RIZIKA.md](../outputs/data-flow-audit-2026-10-19/NALEZY_A_RIZIKA.md) |
 | PL-466f85d7f7 | [AUDIT M2 — adversariální průchod (aplikace pod tlakem)](AUDIT-M2-ADVERSARIAL.md) | HISTORICAL / C04/P11 | Datovaný audit/test; staré zbylé nálezy nejsou ověřené dnešní závady. Kandidáty před realizací znovu porovnat s aktuálními opravami. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md); [REFACTORING_CLOSURE_2026-10-30.md](REFACTORING_CLOSURE_2026-10-30.md) |
 | PL-a0aac83b26 | [AUDIT M2 — druhý průchod (re-audit)](AUDIT-M2-AI-SIMULACE-RE2.md) | HISTORICAL / C04/P11 | Datovaný audit/test; staré zbylé nálezy nejsou ověřené dnešní závady. Kandidáty před realizací znovu porovnat s aktuálními opravami. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md); [REFACTORING_CLOSURE_2026-10-30.md](REFACTORING_CLOSURE_2026-10-30.md) |
 | PL-db86bdce25 | [AUDIT M2 — AI simulace a nezávislá revize](AUDIT-M2-AI-SIMULACE.md) | HISTORICAL / C04/P11 | Datovaný audit/test; staré zbylé nálezy nejsou ověřené dnešní závady. Kandidáty před realizací znovu porovnat s aktuálními opravami. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md); [REFACTORING_CLOSURE_2026-10-30.md](REFACTORING_CLOSURE_2026-10-30.md) |
@@ -249,6 +258,15 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 | PL-2f157e1d19 | [Datové toky EvidencePavel / KIS — revize 19. 10. 2026](../outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_KOD.md) | HISTORICAL / C04/P11 | Datovaný audit/test; staré zbylé nálezy nejsou ověřené dnešní závady. Kandidáty před realizací znovu porovnat s aktuálními opravami. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md); [REFACTORING_CLOSURE_2026-10-30.md](REFACTORING_CLOSURE_2026-10-30.md) |
 | PL-180749d8ac | [Nálezy: logika, redundance a slepé cesty — 19. 10. 2026](../outputs/data-flow-audit-2026-10-19/NALEZY_A_RIZIKA.md) | HISTORICAL / C04/P11 | Datovaný audit/test; staré zbylé nálezy nejsou ověřené dnešní závady. Kandidáty před realizací znovu porovnat s aktuálními opravami. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md); [REFACTORING_CLOSURE_2026-10-30.md](REFACTORING_CLOSURE_2026-10-30.md) |
 | PL-0a5411a05f | [Offline testování EvidencePavel na localhostu](../outputs/localhost-test-2026-08-25/OFFLINE_TESTOVANI.md) | HISTORICAL / C04/P11 | Datovaný audit/test; staré zbylé nálezy nejsou ověřené dnešní závady. Kandidáty před realizací znovu porovnat s aktuálními opravami. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md); [REFACTORING_CLOSURE_2026-10-30.md](REFACTORING_CLOSURE_2026-10-30.md) |
+
+
+
+
+
+
+
+
+
 
 ## Referenční podklady a rozcestníky
 

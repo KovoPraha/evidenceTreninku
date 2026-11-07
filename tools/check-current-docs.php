@@ -91,7 +91,7 @@ foreach ($catalog['entries'] as $entry) {
             $errors[] = 'Plan has no work register item: ' . $workId;
         }
     }
-    if ($entry['primary']) {
+    if ($entry['primary'] && str_ends_with($entry['path'], '.md')) {
         $paths[] = $entry['path'];
     }
 }

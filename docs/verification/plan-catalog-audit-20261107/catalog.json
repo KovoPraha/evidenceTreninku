@@ -820,6 +820,36 @@
       ]
     },
     {
+      "id": "PL-1080434dea",
+      "path": "docs/KIS-kompletni-uzivatelske-testovaci-scenare.docx",
+      "title": "KIS-kompletni-uzivatelske-testovaci-scenare.docx",
+      "primary": true,
+      "role": "historical-test-plan",
+      "status": "HISTORICAL",
+      "registry": "P08/P12",
+      "disposition": "Historický testovací plán/manuál (srpen/září 2026); není aktuální autorizací produkčních zápisů. Dnešní scénáře, identity a prostředí určuje UAT runbook a registr.",
+      "evidence": [
+        "docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md",
+        "docs/testing/chatgpt-tester-20261105/README.md",
+        "docs/WORK_PLAN_CURRENT.md"
+      ]
+    },
+    {
+      "id": "PL-9a88f9b8f2",
+      "path": "docs/KIS-kompletni-uzivatelske-testovaci-scenare.pdf",
+      "title": "KIS-kompletni-uzivatelske-testovaci-scenare.pdf",
+      "primary": true,
+      "role": "historical-test-plan",
+      "status": "HISTORICAL",
+      "registry": "P08/P12",
+      "disposition": "Historický testovací plán/manuál (srpen/září 2026); není aktuální autorizací produkčních zápisů. Dnešní scénáře, identity a prostředí určuje UAT runbook a registr.",
+      "evidence": [
+        "docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md",
+        "docs/testing/chatgpt-tester-20261105/README.md",
+        "docs/WORK_PLAN_CURRENT.md"
+      ]
+    },
+    {
       "id": "PL-80f32d4bb6",
       "path": "docs/MEMBERSHIP_AUTOMATION_ACTIVATION_2026-11-05.md",
       "title": "Aktivace pravidelného zpracování členství",
@@ -3776,6 +3806,17 @@
       ]
     },
     {
+      "id": "PL-bfd0749f2b",
+      "path": "docs/verification/autonomous-p01-p14-20261106/bar-menu-synthetic.pdf",
+      "title": "bar-menu-synthetic.pdf",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "SUPPORT",
+      "registry": "DOC02",
+      "disposition": "Binární příloha, výstupní vzorek nebo šablona; není samostatným schváleným implementačním plánem.",
+      "evidence": []
+    },
+    {
       "id": "PL-f5e4f1045e",
       "path": "docs/verification/autonomous-p01-p14-20261106/capacity-benchmark.php.txt",
       "title": "capacity-benchmark.php.txt",
@@ -4216,6 +4257,28 @@
       "status": "HISTORICAL_EVIDENCE",
       "registry": "DOC02",
       "disposition": "Datovaný protokol/snímek; výsledek platí jen pro prostředí a rozsah v souboru, otevřené kroky se přebírají přes příslušný plán.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2c687d1252",
+      "path": "docs/verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-faktura.pdf",
+      "title": "LOCALHOST-NEPLATIT-faktura.pdf",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "SUPPORT",
+      "registry": "DOC02",
+      "disposition": "Binární příloha, výstupní vzorek nebo šablona; není samostatným schváleným implementačním plánem.",
+      "evidence": []
+    },
+    {
+      "id": "PL-6dea7c4b80",
+      "path": "docs/verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-podklady.xlsx",
+      "title": "LOCALHOST-NEPLATIT-podklady.xlsx",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "SUPPORT",
+      "registry": "DOC02",
+      "disposition": "Binární příloha, výstupní vzorek nebo šablona; není samostatným schváleným implementačním plánem.",
       "evidence": []
     },
     {
@@ -5506,6 +5569,17 @@
       "status": "HISTORICAL_EVIDENCE",
       "registry": "DOC02",
       "disposition": "Datovaný protokol/snímek; výsledek platí jen pro prostředí a rozsah v souboru, otevřené kroky se přebírají přes příslušný plán.",
+      "evidence": []
+    },
+    {
+      "id": "PL-65caaad098",
+      "path": "docs/verification/r18-r24/r18-r24-stock-sample.pdf",
+      "title": "r18-r24-stock-sample.pdf",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "SUPPORT",
+      "registry": "DOC02",
+      "disposition": "Binární příloha, výstupní vzorek nebo šablona; není samostatným schváleným implementačním plánem.",
       "evidence": []
     },
     {
@@ -8458,6 +8532,17 @@
       "evidence": []
     },
     {
+      "id": "PL-cdddd898ca",
+      "path": "ebook.pdf",
+      "title": "ebook.pdf",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "SUPPORT",
+      "registry": "DOC02",
+      "disposition": "Binární příloha, výstupní vzorek nebo šablona; není samostatným schváleným implementačním plánem.",
+      "evidence": []
+    },
+    {
       "id": "PL-686a2eedc7",
       "path": "migrations/README.md",
       "title": "Cislovane databazove migrace",
@@ -8467,6 +8552,80 @@
       "registry": "DOC02",
       "disposition": "Referenční podklad, nikoli samostatný schválený implementační plán.",
       "evidence": []
+    },
+    {
+      "id": "PL-1d4abd5de5",
+      "path": "output/docx/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.docx",
+      "title": "KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.docx",
+      "primary": true,
+      "role": "historical-concept",
+      "status": "HISTORICAL",
+      "registry": "C04/P08",
+      "disposition": "Datovaný návrh po UAT 8. 9. 2026, ne dnešní seznam vad; připravenost, obrázky a role byly mezitím měněné. Před případnou další opravou znovu reprodukovat, nepřebírat staré FAIL/BLOCKED jako aktuální.",
+      "evidence": [
+        "docs/UAT-OPRAVY-2026-09-21.md",
+        "docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md",
+        "docs/WORK_PLAN_CURRENT.md"
+      ]
+    },
+    {
+      "id": "PL-0b73189b77",
+      "path": "output/pdf/JEDNODUCHY_MANUAL_PRODUKCNIHO_TESTOVANI_2026-09.pdf",
+      "title": "JEDNODUCHY_MANUAL_PRODUKCNIHO_TESTOVANI_2026-09.pdf",
+      "primary": true,
+      "role": "historical-test-plan",
+      "status": "HISTORICAL",
+      "registry": "P08/P12",
+      "disposition": "Historický testovací plán/manuál (srpen/září 2026); není aktuální autorizací produkčních zápisů. Dnešní scénáře, identity a prostředí určuje UAT runbook a registr.",
+      "evidence": [
+        "docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md",
+        "docs/testing/chatgpt-tester-20261105/README.md",
+        "docs/WORK_PLAN_CURRENT.md"
+      ]
+    },
+    {
+      "id": "PL-658801e31c",
+      "path": "output/pdf/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf",
+      "title": "KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf",
+      "primary": true,
+      "role": "historical-concept",
+      "status": "HISTORICAL",
+      "registry": "C04/P08",
+      "disposition": "Datovaný návrh po UAT 8. 9. 2026, ne dnešní seznam vad; připravenost, obrázky a role byly mezitím měněné. Před případnou další opravou znovu reprodukovat, nepřebírat staré FAIL/BLOCKED jako aktuální.",
+      "evidence": [
+        "docs/UAT-OPRAVY-2026-09-21.md",
+        "docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md",
+        "docs/WORK_PLAN_CURRENT.md"
+      ]
+    },
+    {
+      "id": "PL-330ae80673",
+      "path": "output/pdf/UZIVATELSKE_TESTOVANI_SCENARE_2026-09.pdf",
+      "title": "UZIVATELSKE_TESTOVANI_SCENARE_2026-09.pdf",
+      "primary": true,
+      "role": "historical-test-plan",
+      "status": "HISTORICAL",
+      "registry": "P08/P12",
+      "disposition": "Historický testovací plán/manuál (srpen/září 2026); není aktuální autorizací produkčních zápisů. Dnešní scénáře, identity a prostředí určuje UAT runbook a registr.",
+      "evidence": [
+        "docs/PRODUKCNI-UZIVATELSKE-TESTOVANI.md",
+        "docs/testing/chatgpt-tester-20261105/README.md",
+        "docs/WORK_PLAN_CURRENT.md"
+      ]
+    },
+    {
+      "id": "PL-6283b88cbd",
+      "path": "outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_APLIKACE.xlsx",
+      "title": "DATOVE_TOKY_APLIKACE.xlsx",
+      "primary": true,
+      "role": "historical-analysis",
+      "status": "HISTORICAL",
+      "registry": "C04/P11",
+      "disposition": "Grafický tabulkový audit datových toků s textovým protějškem; historické návrhy nejsou samy aktivní opravou ani dnešní měření.",
+      "evidence": [
+        "outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_KOD.md",
+        "outputs/data-flow-audit-2026-08-24/NALEZY_A_RIZIKA.md"
+      ]
     },
     {
       "id": "PL-af3fa0a38c",
@@ -8497,6 +8656,20 @@
       ]
     },
     {
+      "id": "PL-eaeb8f22ad",
+      "path": "outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx",
+      "title": "DATOVE_TOKY_APLIKACE.xlsx",
+      "primary": true,
+      "role": "historical-analysis",
+      "status": "HISTORICAL",
+      "registry": "C04/P11",
+      "disposition": "Grafický tabulkový audit datových toků s textovým protějškem; historické návrhy nejsou samy aktivní opravou ani dnešní měření.",
+      "evidence": [
+        "outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_KOD.md",
+        "outputs/data-flow-audit-2026-10-07/NALEZY_A_RIZIKA.md"
+      ]
+    },
+    {
       "id": "PL-3b6f48690f",
       "path": "outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_KOD.md",
       "title": "Datové toky EvidencePavel / KIS – aktuální technická mapa",
@@ -8522,6 +8695,20 @@
       "evidence": [
         "docs/WORK_PLAN_CURRENT.md",
         "docs/REFACTORING_CLOSURE_2026-10-30.md"
+      ]
+    },
+    {
+      "id": "PL-ecfbaf2776",
+      "path": "outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_APLIKACE.xlsx",
+      "title": "DATOVE_TOKY_APLIKACE.xlsx",
+      "primary": true,
+      "role": "historical-analysis",
+      "status": "HISTORICAL",
+      "registry": "C04/P11",
+      "disposition": "Grafický tabulkový audit datových toků s textovým protějškem; historické návrhy nejsou samy aktivní opravou ani dnešní měření.",
+      "evidence": [
+        "outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_KOD.md",
+        "outputs/data-flow-audit-2026-10-19/NALEZY_A_RIZIKA.md"
       ]
     },
     {
@@ -8578,6 +8765,28 @@
       "evidence": []
     },
     {
+      "id": "PL-559652d753",
+      "path": "templates/prihlasovaci_tabulka_draha.xlsx",
+      "title": "prihlasovaci_tabulka_draha.xlsx",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "SUPPORT",
+      "registry": "DOC02",
+      "disposition": "Binární příloha, výstupní vzorek nebo šablona; není samostatným schváleným implementačním plánem.",
+      "evidence": []
+    },
+    {
+      "id": "PL-edae0cfc9c",
+      "path": "templates/prihlasovaci_tabulka_uci.xlsx",
+      "title": "prihlasovaci_tabulka_uci.xlsx",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "SUPPORT",
+      "registry": "DOC02",
+      "disposition": "Binární příloha, výstupní vzorek nebo šablona; není samostatným schváleným implementačním plánem.",
+      "evidence": []
+    },
+    {
       "id": "PL-e6eefc8f6d",
       "path": "tests/Support/FamilyMembershipPortalW73.txt",
       "title": "FamilyMembershipPortalW73.txt",
@@ -8611,6 +8820,17 @@
       "evidence": []
     },
     {
+      "id": "PL-edbd6d52dc",
+      "path": "tests/fixtures/bar-localhost-invoice.pdf",
+      "title": "bar-localhost-invoice.pdf",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "SUPPORT",
+      "registry": "DOC02",
+      "disposition": "Binární příloha, výstupní vzorek nebo šablona; není samostatným schváleným implementačním plánem.",
+      "evidence": []
+    },
+    {
       "id": "PL-794e724c77",
       "path": "tests/fixtures/kis/README.md",
       "title": "Syntetické KIS parity fixtures",
@@ -8623,5 +8843,6 @@
     }
   ],
   "checked_main": "ebb8b2e3",
-  "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360"
+  "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
+  "binary_documents": 17
 }

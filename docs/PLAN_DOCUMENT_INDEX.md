@@ -1,8 +1,8 @@
-# Úplný index verzovaných textových podkladů
+# Úplný index verzovaných podkladů
 
 Inventura k 7. 11. 2026. [Katalog plánů](PLAN_CATALOG.md) obsahuje hlavní
 plány, koncepty a vložené ověřovací plány; tento seznam eviduje i zbytek
-textové dokumentace, aby žádný soubor nezmizel jen kvůli názvu nebo složce.
+textové dokumentace i binární plány/přílohy, aby žádný soubor nezmizel jen kvůli názvu, formátu nebo složce.
 Historický protokol/fixture není nové schválení ani tvrzení o dnešním provozu.
 ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkazů.
 
@@ -729,3 +729,20 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-b16ae2413b | [tests/Support/FamilyOverviewPageW72.txt](../tests/Support/FamilyOverviewPageW72.txt) | artifact / SUPPORT | DOC02 |
 | PL-62a9578541 | [tests/Support/InventoryPageBaseline.txt](../tests/Support/InventoryPageBaseline.txt) | artifact / SUPPORT | DOC02 |
 | PL-794e724c77 | [tests/fixtures/kis/README.md](../tests/fixtures/kis/README.md) | reference / REFERENCE | DOC02 |
+| PL-1080434dea | [KIS-kompletni-uzivatelske-testovaci-scenare.docx](KIS-kompletni-uzivatelske-testovaci-scenare.docx) | historical-test-plan / HISTORICAL | P08/P12 |
+| PL-9a88f9b8f2 | [KIS-kompletni-uzivatelske-testovaci-scenare.pdf](KIS-kompletni-uzivatelske-testovaci-scenare.pdf) | historical-test-plan / HISTORICAL | P08/P12 |
+| PL-bfd0749f2b | [verification/autonomous-p01-p14-20261106/bar-menu-synthetic.pdf](verification/autonomous-p01-p14-20261106/bar-menu-synthetic.pdf) | binary-artifact / SUPPORT | DOC02 |
+| PL-2c687d1252 | [verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-faktura.pdf](verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-faktura.pdf) | binary-artifact / SUPPORT | DOC02 |
+| PL-6dea7c4b80 | [verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-podklady.xlsx](verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-podklady.xlsx) | binary-artifact / SUPPORT | DOC02 |
+| PL-65caaad098 | [verification/r18-r24/r18-r24-stock-sample.pdf](verification/r18-r24/r18-r24-stock-sample.pdf) | binary-artifact / SUPPORT | DOC02 |
+| PL-cdddd898ca | [ebook.pdf](../ebook.pdf) | binary-artifact / SUPPORT | DOC02 |
+| PL-1d4abd5de5 | [output/docx/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.docx](../output/docx/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.docx) | historical-concept / HISTORICAL | C04/P08 |
+| PL-0b73189b77 | [output/pdf/JEDNODUCHY_MANUAL_PRODUKCNIHO_TESTOVANI_2026-09.pdf](../output/pdf/JEDNODUCHY_MANUAL_PRODUKCNIHO_TESTOVANI_2026-09.pdf) | historical-test-plan / HISTORICAL | P08/P12 |
+| PL-658801e31c | [output/pdf/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf](../output/pdf/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf) | historical-concept / HISTORICAL | C04/P08 |
+| PL-330ae80673 | [output/pdf/UZIVATELSKE_TESTOVANI_SCENARE_2026-09.pdf](../output/pdf/UZIVATELSKE_TESTOVANI_SCENARE_2026-09.pdf) | historical-test-plan / HISTORICAL | P08/P12 |
+| PL-6283b88cbd | [outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_APLIKACE.xlsx](../outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_APLIKACE.xlsx) | historical-analysis / HISTORICAL | C04/P11 |
+| PL-eaeb8f22ad | [outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx](../outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx) | historical-analysis / HISTORICAL | C04/P11 |
+| PL-ecfbaf2776 | [outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_APLIKACE.xlsx](../outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_APLIKACE.xlsx) | historical-analysis / HISTORICAL | C04/P11 |
+| PL-559652d753 | [templates/prihlasovaci_tabulka_draha.xlsx](../templates/prihlasovaci_tabulka_draha.xlsx) | binary-artifact / SUPPORT | DOC02 |
+| PL-edae0cfc9c | [templates/prihlasovaci_tabulka_uci.xlsx](../templates/prihlasovaci_tabulka_uci.xlsx) | binary-artifact / SUPPORT | DOC02 |
+| PL-edbd6d52dc | [tests/fixtures/bar-localhost-invoice.pdf](../tests/fixtures/bar-localhost-invoice.pdf) | binary-artifact / SUPPORT | DOC02 |
