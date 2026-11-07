@@ -68,9 +68,9 @@ Inspekce zdrojů na base 8e9cdce1:
 ## Kontroly dokumentace
 
 Ověřeno místně před předáním:
-- php tools/check-current-docs.php — PASS: 4435 místních odkazů,
+- php tools/check-current-docs.php — PASS po převzetí main 2ef20aed: 4453 místních odkazů,
   108 archivních bloků, 0 chyb, CURRENT/HANDOFF každý 80 řádků.
-- git diff --check — PASS.
+- git diff origin/main --check — PASS.
 - Obsah discovery.json ručně porovnán s průzkumem; žádné osobní hodnoty,
   hesla, hodnoty cookies ani URL digitálních karet. Údaje v JSON jsou
   metadata formulářů a souhrn, nikoli export členů.
@@ -79,5 +79,5 @@ První mezikontrola zachytila chybějící registraci nového plánu v katalogu;
 po doplnění JSON katalogu a indexů opakovaná kontrola výše prošla.
 
 Runtime testy aplikace NOT RUN: změna je pouze dokumentační.
-Push/PR se doplní po publikaci větve; merge/deploy/aktivace nejsou tímto
-dokumentačním krokem prováděny.
+Větev publikována, [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371) otevřené;
+merge/deploy/aktivace nejsou tímto dokumentačním krokem prováděny.

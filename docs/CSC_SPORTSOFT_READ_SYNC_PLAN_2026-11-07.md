@@ -9,7 +9,7 @@ Zvolený rozsah: čtení obou portálů, párování UCI ID, worker na nonstop s
 Větev: `codex/csc-sportsoft-read-sync-plan-20261107`.
 Worktree: `C:/Users/Marek/Documents/Codex/evidencePavel-csc-sportsoft-plan-20261107`.
 Základ inspekce kódu: `8e9cdce1ef758529dfa5a9950424518d39a79dc6`.
-Předání: zatím lokální dokumentace; push/PR se doplní po kontrolách.
+Předání: větev publikována, [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371) otevřené; merge/deploy/aktivace NOT RUN.
 Tento úkol připravuje plán a předává dokumentaci, nespouští implementaci.
 
 ## 1. Zadání, hranice a rozhodnutí
@@ -329,5 +329,5 @@ Nové přihlášky a licence jsou oddělená budoucí etapa vyžadující vlastn
 a ověření přesného okamžiku zápisu na obou portálech.
 
 Průzkum: PASS pouze v rozsahu [protokolu](verification/csc-sportsoft-discovery-20261107/RESULTS.md).
-Dokumentační kontrola PASS (4435 místních odkazů, 108 archivních bloků),
-git diff --check PASS. Konkrétní PR se doplní po publikaci větve.
+Dokumentační kontrola po převzetí main 2ef20aed PASS (4453 místních odkazů,
+108 archivních bloků); git diff origin/main --check PASS. Předáno v PR #371.
