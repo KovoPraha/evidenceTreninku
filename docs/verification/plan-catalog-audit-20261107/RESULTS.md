@@ -14,9 +14,9 @@ Výchozí main `1d88ce9e`; pouze dokumentace, bez provozních operací.
 - Při práci přibyl main `ebb8b2e3` / #356. Oba nové dokumenty ROLE01 jsou
   [doinventarizované](inventory-merged-main.json); rozhodnutí D2026-11-07-02,
   událost ROLE01 a její schválené provozní hranice zachované.
-- [Katalog](../../PLAN_CATALOG.md) má 316 hlavních záznamů: 232 plánovacích
+- [Katalog](../../PLAN_CATALOG.md) má 321 hlavních záznamů: 237 plánovacích
   podkladů/dispozic a 84 referencí. [Úplný index](../../PLAN_DOCUMENT_INDEX.md)
-  eviduje 749 souborů (728 textových a 21 binárních) včetně všech původních, nových a zachráněných podkladů.
+  eviduje 756 souborů (735 textových a 21 binárních) včetně všech původních, nových a zachráněných podkladů.
 - 18 podrobných textů etap 0–6/R01–R44 bylo pouze v lokálním output.
   Jsou sdílené jako [historická specifikace](../../plans/realization-20261022/README.md).
   Původní soubory nebyly měněny. Přenos má historické záhlaví, opravené relativní
@@ -74,7 +74,7 @@ Následný main `5cca5526` / #359 doložil skutečné vydání a technickou pře
 nový protokol i aktualizované stavy jsou převzaté. #355 bylo v tomto bodě ještě nesloučené a #358 již nebyl draft.
 Následný main `9460ee76` / #355 obsahuje automatické doklady/e-maily;
 nový plán, přejímací protokoly i související artefakty jsou rovněž v katalogu.
-#358 zůstává samostatná nesloučená práce; produkční krok #355 má vlastní důkazy.
+#358 je také sloučené do main `37d0ad68`, bez deploye. Jeho sedm nových textových podkladů a rozhodnutí D2026-11-07-04 jsou začleněné; katalogový výřez a plné HTTP zůstávají P11. Produkční krok #355 má vlastní důkazy.
 
 
 Poslední doinventarizování #355 přidalo šest textových a čtyři binární

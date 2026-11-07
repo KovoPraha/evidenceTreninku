@@ -84,6 +84,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-2bb51e6b1a | [MEMBER_EVIDENCE_OPERATION_2026-11-02.md](MEMBER_EVIDENCE_OPERATION_2026-11-02.md) | plan / PARTIAL | P06 |
 | PL-e19f04c169 | [MEMBER_EVIDENCE_PRODUCTION_TRANSITION_2026-11-02.md](MEMBER_EVIDENCE_PRODUCTION_TRANSITION_2026-11-02.md) | plan / PARTIAL | P06 |
 | PL-da62f33480 | [MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) | plan / PARTIAL | P06 |
+| PL-c798690b24 | [MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md) | plan / DONE | P11 |
 | PL-3f1811eecb | [MONTHLY_MEMBERSHIP_PLAN.md](MONTHLY_MEMBERSHIP_PLAN.md) | plan / PARTIAL | P05 |
 | PL-76c0217058 | [MONTHLY_MEMBERSHIP_RUNBOOK.md](MONTHLY_MEMBERSHIP_RUNBOOK.md) | plan / PARTIAL | P05 |
 | PL-4ebc1c82c7 | [MONTHLY_MEMBERSHIP_VERIFICATION.md](MONTHLY_MEMBERSHIP_VERIFICATION.md) | plan / PARTIAL | P05 |
@@ -154,6 +155,8 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-17e29dfd14 | [SESSION_HANDOFF_BAR_2026-11-06.md](SESSION_HANDOFF_BAR_2026-11-06.md) | plan / PARTIAL | P02/P04 |
 | PL-52728b1b0f | [SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md) | plan / PARTIAL | P11 |
 | PL-01615a9ed7 | [SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md) | completed-plan / DONE | P05 |
+| PL-b2601aa5d3 | [SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-5d0c0f40fc | [SESSION_HANDOFF_PERFORMANCE_ANALYSIS_2026-11-07.md](SESSION_HANDOFF_PERFORMANCE_ANALYSIS_2026-11-07.md) | plan / PARTIAL | P11 |
 | PL-c8d8a10ca6 | [SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md) | plan / PARTIAL | P11 |
 | PL-be9f31bf84 | [SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md) | plan / AWAITING_EVIDENCE | P05 |
 | PL-b0a95e9214 | [SHOP_DOCUMENT_AUTOMATION_2026-11-07.md](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md) | plan / PARTIAL | P07 |
@@ -414,6 +417,8 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-ea0c6c4cc4 | [verification/member-evidence-20261102/RESULTS.md](verification/member-evidence-20261102/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-d8212919ff | [verification/member-evidence-cutover-20261102/RESULTS.md](verification/member-evidence-cutover-20261102/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-ae2abc78c2 | [verification/member-evidence-release-20261102/RESULTS.md](verification/member-evidence-release-20261102/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
+| PL-d19e3e32e4 | [verification/member-pricing-read-performance-20261107/RESULTS.md](verification/member-pricing-read-performance-20261107/RESULTS.md) | plan / PARTIAL | P11 |
+| PL-8ad3bf5a0e | [verification/member-pricing-read-performance-20261107/linux-phpunit.txt](verification/member-pricing-read-performance-20261107/linux-phpunit.txt) | artifact / HISTORICAL_EVIDENCE | P11 |
 | PL-0da5b499fa | [verification/membership-automation-20261105/RESULTS.md](verification/membership-automation-20261105/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-733fe0f370 | [verification/membership-catalog-release-20261105/RESULTS.md](verification/membership-catalog-release-20261105/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-271efb1f7e | [verification/membership-copy-release-20261106/RESULTS.md](verification/membership-copy-release-20261106/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
@@ -448,6 +453,8 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-24328604b9 | [verification/people-training-20261023/session-smoke.txt](verification/people-training-20261023/session-smoke.txt) | artifact / SUPPORT | DOC02 |
 | PL-21f2c1528e | [verification/people-training-production-20261023/RESULTS.md](verification/people-training-production-20261023/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-93e76a0269 | [verification/people-training-production-20261023/acceptance-hub-export.md](verification/people-training-production-20261023/acceptance-hub-export.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
+| PL-877fbd6dc7 | [verification/performance-analysis-20261107/RESULTS.md](verification/performance-analysis-20261107/RESULTS.md) | plan / PARTIAL | P11 |
+| PL-b4ddd9e8f5 | [verification/performance-analysis-20261107/probe.php.txt](verification/performance-analysis-20261107/probe.php.txt) | artifact / HISTORICAL_EVIDENCE | P11 |
 | PL-ec429b6a05 | [verification/person-life-documents-20261024/RESULTS.md](verification/person-life-documents-20261024/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-90375bb3ce | [verification/person-life-documents-20261024/phpunit.txt](verification/person-life-documents-20261024/phpunit.txt) | artifact / SUPPORT | DOC02 |
 | PL-3fc6c2a659 | [verification/plan-catalog-audit-20261107/RESULTS.md](verification/plan-catalog-audit-20261107/RESULTS.md) | evidence / REFERENCE | DOC02 |

@@ -1,0 +1,2385 @@
+{
+    "php": "8.2.35",
+    "server": {
+        "port": 3306,
+        "version": "11.4.13-MariaDB-ubu2404",
+        "driver": "mysql"
+    },
+    "method": "5 warmups, 30 interleaved plain PDO samples per phase, same process and fixtures; separate warmed instrumentation; complete strict data parity. Presentation prices only, not full HTTP.",
+    "source_sha256": {
+        "includes\/shop_member_pricing.php": "35ad8220ddf0db369f04fbd28982a509c324f884b2158386c62724f6ff97b1fc",
+        "includes\/shop_member_pricing_read.php": "3bba57a10b4116556ac6b954afc11e2ed0f6b369e15f071ff71e9e29c7f8b2bf",
+        "booking\/eshop.php": "ad2d604b0a391eb9b6c7ecfab10013b8ece9217c6f466820d69ae0e5ab92859c",
+        "booking\/produkt.php": "263b7a14b095e6a593e73aeef96fba3af6f7867f91851034ec8383ce8b020ffa",
+        "tests\/Support\/MemberPricingReadBaseline.php": "a74527287f0d88daf6cdecd98128322b525d9c8cfa83635717f00aaf1f868df4",
+        "tests\/Support\/MemberPricingReadFixture.php": "d1f49dea8e9f160bfe740fca66485f6b38cb8b66a8696e13e5bfd438554ebbe6",
+        "tests\/Support\/MemberPricingReadProfile.php": "9584dcba6d7be2fbc52f01e9dd1bfd51def7a63b5a59e6884720c5e3e9d11f3b"
+    },
+    "cases": {
+        "variants_12_account_1": {
+            "before": {
+                "samples_ms": [
+                    9.180787,
+                    9.021937,
+                    8.578165,
+                    8.597624,
+                    8.558234,
+                    8.52259,
+                    8.534468,
+                    9.184934,
+                    11.204904,
+                    9.831613,
+                    9.24879,
+                    9.132624,
+                    8.267734,
+                    8.101002,
+                    8.129695,
+                    8.50962,
+                    8.512134,
+                    8.531103,
+                    8.478073,
+                    8.394646,
+                    8.629202,
+                    8.559356,
+                    8.4962,
+                    8.523262,
+                    8.474257,
+                    8.451953,
+                    8.522169,
+                    8.9259,
+                    8.717475,
+                    8.323729
+                ],
+                "peak_increment_bytes": 133752,
+                "output_sha256": "57b0e4ef3ca1741ffd36c65226291f22a3b3ca89ef8e850df3c67ecdd583ffcd",
+                "sql": 48,
+                "fetched_rows": 60,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 12,
+                        "rows": 24,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_9ae1ba568a49ef34.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_9ae1ba568a49ef34.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 12,
+                        "rows": 0,
+                        "parameter_count": 4,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "9",
+                                "ref": "const,const",
+                                "rows": "1",
+                                "Extra": "Using index condition; Using where"
+                            }
+                        ]
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 12,
+                        "rows": 12,
+                        "parameter_count": 1,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ref",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": "idx_pricing_category_product",
+                                "key_len": "9",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 12,
+                        "rows": 24,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 8.5327855,
+                "p95_ms": 9.831613
+            },
+            "after": {
+                "samples_ms": [
+                    0.810458,
+                    0.804749,
+                    0.748304,
+                    0.770257,
+                    0.776436,
+                    0.752289,
+                    0.748814,
+                    0.715163,
+                    0.981737,
+                    1.104833,
+                    0.821574,
+                    0.850548,
+                    0.707842,
+                    0.691928,
+                    0.696715,
+                    0.701653,
+                    0.76573,
+                    0.754142,
+                    0.710046,
+                    0.725269,
+                    0.763276,
+                    0.755555,
+                    0.74651,
+                    0.743015,
+                    0.766191,
+                    0.761564,
+                    0.716225,
+                    0.75237,
+                    0.710226,
+                    0.714763
+                ],
+                "peak_increment_bytes": 85064,
+                "output_sha256": "57b0e4ef3ca1741ffd36c65226291f22a3b3ca89ef8e850df3c67ecdd583ffcd",
+                "sql": 4,
+                "fetched_rows": 5,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_9ae1ba568a49ef34.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_9ae1ba568a49ef34.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 4,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "9",
+                                "ref": "const,const",
+                                "rows": "1",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 1,
+                        "parameter_count": 1,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ref",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": "idx_pricing_category_product",
+                                "key_len": "9",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 0.7523295,
+                "p95_ms": 0.981737
+            },
+            "parity": true,
+            "speedup": 11.341819641526751
+        },
+        "variants_100_account_1": {
+            "before": {
+                "samples_ms": [
+                    72.554299,
+                    74.154982,
+                    69.944893,
+                    77.663608,
+                    84.259238,
+                    72.148612,
+                    75.085702,
+                    76.079287,
+                    74.390259,
+                    73.867367,
+                    72.336557,
+                    71.813455,
+                    88.315372,
+                    71.864132,
+                    72.703123,
+                    73.844853,
+                    72.546536,
+                    72.222174,
+                    76.03475,
+                    84.369195,
+                    120.495479,
+                    75.847887,
+                    73.163751,
+                    77.311373,
+                    73.003097,
+                    73.484967,
+                    73.682576,
+                    72.253802,
+                    75.243101,
+                    72.737273
+                ],
+                "peak_increment_bytes": 213432,
+                "output_sha256": "0a0d35f55c4571c2c065b4a7e8293dd7f254989d3861c727b581d43191b13f7f",
+                "sql": 400,
+                "fetched_rows": 500,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 100,
+                        "rows": 200,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_002cc9164339389d.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_002cc9164339389d.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 100,
+                        "rows": 0,
+                        "parameter_count": 4,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "9",
+                                "ref": "const,const",
+                                "rows": "1",
+                                "Extra": "Using index condition; Using where"
+                            }
+                        ]
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 100,
+                        "rows": 100,
+                        "parameter_count": 1,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ref",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": "idx_pricing_category_product",
+                                "key_len": "9",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 100,
+                        "rows": 200,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 73.76371449999999,
+                "p95_ms": 88.315372
+            },
+            "after": {
+                "samples_ms": [
+                    0.897139,
+                    0.877399,
+                    0.906022,
+                    0.895907,
+                    0.903128,
+                    0.845491,
+                    0.948326,
+                    0.917039,
+                    0.900545,
+                    0.85163,
+                    0.890539,
+                    0.844619,
+                    0.868646,
+                    0.828765,
+                    0.898561,
+                    0.847624,
+                    0.871781,
+                    0.846793,
+                    0.921105,
+                    0.914395,
+                    0.968557,
+                    0.920484,
+                    0.927776,
+                    0.91757,
+                    0.872592,
+                    0.839071,
+                    0.949258,
+                    0.884019,
+                    0.912192,
+                    0.909157
+                ],
+                "peak_increment_bytes": 91768,
+                "output_sha256": "0a0d35f55c4571c2c065b4a7e8293dd7f254989d3861c727b581d43191b13f7f",
+                "sql": 4,
+                "fetched_rows": 5,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_002cc9164339389d.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_002cc9164339389d.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 4,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "9",
+                                "ref": "const,const",
+                                "rows": "1",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 1,
+                        "parameter_count": 1,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ref",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": "idx_pricing_category_product",
+                                "key_len": "9",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 0.89785,
+                "p95_ms": 0.949258
+            },
+            "parity": true,
+            "speedup": 82.1559442000334
+        },
+        "variants_500_account_1": {
+            "before": {
+                "samples_ms": [
+                    366.920476,
+                    369.060602,
+                    396.597229,
+                    386.518666,
+                    377.356829,
+                    386.580618,
+                    378.160947,
+                    375.687023,
+                    374.307338,
+                    370.4795,
+                    378.737258,
+                    376.973179,
+                    374.420669,
+                    373.362277,
+                    366.02169,
+                    377.846753,
+                    398.840901,
+                    384.442829,
+                    369.612844,
+                    379.499771,
+                    373.846154,
+                    367.557621,
+                    367.337753,
+                    387.90717,
+                    371.902279,
+                    388.863342,
+                    384.234076,
+                    381.524756,
+                    379.419959,
+                    396.715627
+                ],
+                "peak_increment_bytes": 575160,
+                "output_sha256": "55aa8568afbde7b380ec442c48b296fc6da4d98487e93d7d729f6d23f3c60235",
+                "sql": 2000,
+                "fetched_rows": 2500,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 500,
+                        "rows": 1000,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_b1ecce99b119557b.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_b1ecce99b119557b.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 500,
+                        "rows": 0,
+                        "parameter_count": 4,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "9",
+                                "ref": "const,const",
+                                "rows": "1",
+                                "Extra": "Using index condition; Using where"
+                            }
+                        ]
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 500,
+                        "rows": 500,
+                        "parameter_count": 1,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ref",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": "idx_pricing_category_product",
+                                "key_len": "9",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 500,
+                        "rows": 1000,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 377.601791,
+                "p95_ms": 396.715627
+            },
+            "after": {
+                "samples_ms": [
+                    1.352125,
+                    1.270792,
+                    1.331314,
+                    1.278994,
+                    1.41495,
+                    1.321609,
+                    1.385195,
+                    1.291383,
+                    1.3485,
+                    1.259554,
+                    1.379086,
+                    1.299616,
+                    1.342483,
+                    1.24816,
+                    1.398197,
+                    1.285957,
+                    1.380277,
+                    1.230732,
+                    1.331904,
+                    1.240016,
+                    1.320436,
+                    1.222149,
+                    1.318544,
+                    1.237302,
+                    1.356613,
+                    1.246236,
+                    1.404095,
+                    1.325696,
+                    1.872094,
+                    1.50045
+                ],
+                "peak_increment_bytes": 437496,
+                "output_sha256": "55aa8568afbde7b380ec442c48b296fc6da4d98487e93d7d729f6d23f3c60235",
+                "sql": 4,
+                "fetched_rows": 5,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_b1ecce99b119557b.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_b1ecce99b119557b.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 4,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "9",
+                                "ref": "const,const",
+                                "rows": "1",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 1,
+                        "parameter_count": 1,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ref",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": "idx_pricing_category_product",
+                                "key_len": "9",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 1.3236525000000001,
+                "p95_ms": 1.50045
+            },
+            "parity": true,
+            "speedup": 285.27260062591955
+        },
+        "products_12_account_1": {
+            "before": {
+                "samples_ms": [
+                    9.04516,
+                    9.047663,
+                    9.108586,
+                    9.24348,
+                    9.088466,
+                    9.063417,
+                    8.988494,
+                    9.009806,
+                    9.054093,
+                    8.861411,
+                    8.989085,
+                    9.054053,
+                    9.122657,
+                    9.173214,
+                    9.125451,
+                    9.176158,
+                    9.434959,
+                    10.022589,
+                    9.188667,
+                    9.13097,
+                    9.137489,
+                    9.112892,
+                    9.305835,
+                    9.158912,
+                    9.068084,
+                    9.458906,
+                    8.861972,
+                    8.903385,
+                    8.897617,
+                    8.97904
+                ],
+                "peak_increment_bytes": 141032,
+                "output_sha256": "2312ac46d822d64f8bcf90a21b5239acb6ae6aedc8ef68237e73aeaf2e8c1dd0",
+                "sql": 48,
+                "fetched_rows": 60,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 12,
+                        "rows": 24,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_71a95a4f985ebe13.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_71a95a4f985ebe13.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 12,
+                        "rows": 0,
+                        "parameter_count": 4,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "9",
+                                "ref": "const,const",
+                                "rows": "1",
+                                "Extra": "Using index condition; Using where"
+                            }
+                        ]
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 12,
+                        "rows": 12,
+                        "parameter_count": 1,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ref",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": "idx_pricing_category_product",
+                                "key_len": "9",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 12,
+                        "rows": 24,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 9.098526,
+                "p95_ms": 9.458906
+            },
+            "after": {
+                "samples_ms": [
+                    0.827823,
+                    0.822304,
+                    0.833652,
+                    0.818559,
+                    0.844087,
+                    0.817837,
+                    0.811979,
+                    0.83256,
+                    0.857288,
+                    0.811177,
+                    0.83285,
+                    0.802805,
+                    0.833692,
+                    0.844148,
+                    0.822975,
+                    0.855675,
+                    0.906312,
+                    0.882375,
+                    0.887183,
+                    0.874183,
+                    0.882025,
+                    0.856787,
+                    0.876948,
+                    0.862987,
+                    0.87856,
+                    0.876977,
+                    0.838499,
+                    0.809345,
+                    0.820933,
+                    0.809215
+                ],
+                "peak_increment_bytes": 90176,
+                "output_sha256": "2312ac46d822d64f8bcf90a21b5239acb6ae6aedc8ef68237e73aeaf2e8c1dd0",
+                "sql": 4,
+                "fetched_rows": 16,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_71a95a4f985ebe13.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_71a95a4f985ebe13.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?,?,?,?,?,?,?,?,?,?,?,?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 15,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "1",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 12,
+                        "parameter_count": 12,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ALL",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "12",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 0.8360955,
+                "p95_ms": 0.887183
+            },
+            "parity": true,
+            "speedup": 10.882161188524517
+        },
+        "products_100_account_1": {
+            "before": {
+                "samples_ms": [
+                    76.876232,
+                    76.850543,
+                    75.853763,
+                    76.447494,
+                    76.423806,
+                    72.582163,
+                    73.37355,
+                    77.010265,
+                    75.447805,
+                    76.143466,
+                    76.199953,
+                    78.140588,
+                    75.934653,
+                    75.378613,
+                    75.870254,
+                    76.104718,
+                    76.732393,
+                    75.160936,
+                    76.271678,
+                    75.030959,
+                    76.460404,
+                    75.143156,
+                    75.757406,
+                    75.759837,
+                    75.350251,
+                    75.022245,
+                    76.191679,
+                    75.238382,
+                    75.102696,
+                    73.090552
+                ],
+                "peak_increment_bytes": 278440,
+                "output_sha256": "7d41c58b9bc6deb0afbb680d82d288e570872c87a80494a001537842ae626bde",
+                "sql": 400,
+                "fetched_rows": 500,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 100,
+                        "rows": 200,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_e3653c88f7537d46.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_e3653c88f7537d46.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 100,
+                        "rows": 0,
+                        "parameter_count": 4,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "9",
+                                "ref": "const,const",
+                                "rows": "1",
+                                "Extra": "Using index condition; Using where"
+                            }
+                        ]
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 100,
+                        "rows": 100,
+                        "parameter_count": 1,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ref",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": "idx_pricing_category_product",
+                                "key_len": "9",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 100,
+                        "rows": 200,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 75.8620085,
+                "p95_ms": 77.010265
+            },
+            "after": {
+                "samples_ms": [
+                    1.321951,
+                    1.261969,
+                    1.444877,
+                    1.304845,
+                    1.234378,
+                    1.234549,
+                    1.350023,
+                    1.256742,
+                    1.349756,
+                    1.25265,
+                    1.366331,
+                    1.27304,
+                    1.281643,
+                    1.235744,
+                    1.369266,
+                    1.274262,
+                    1.34608,
+                    1.405971,
+                    1.354263,
+                    1.234262,
+                    1.34601,
+                    1.245759,
+                    1.37913,
+                    1.277577,
+                    1.393703,
+                    1.289785,
+                    1.301252,
+                    1.268073,
+                    1.265869,
+                    1.24647
+                ],
+                "peak_increment_bytes": 159112,
+                "output_sha256": "7d41c58b9bc6deb0afbb680d82d288e570872c87a80494a001537842ae626bde",
+                "sql": 4,
+                "fetched_rows": 104,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_e3653c88f7537d46.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_e3653c88f7537d46.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 103,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "1",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 100,
+                        "parameter_count": 100,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ALL",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "100",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 1.285714,
+                "p95_ms": 1.405971
+            },
+            "parity": true,
+            "speedup": 59.00379750084389
+        },
+        "products_500_account_1": {
+            "before": {
+                "samples_ms": [
+                    376.2736,
+                    370.253185,
+                    375.715628,
+                    379.484306,
+                    376.379822,
+                    368.006106,
+                    382.268669,
+                    380.456796,
+                    388.406823,
+                    381.277171,
+                    374.189083,
+                    378.247836,
+                    372.444147,
+                    378.322767,
+                    377.224918,
+                    374.076502,
+                    374.283376,
+                    374.841309,
+                    375.060978,
+                    378.234075,
+                    376.223916,
+                    374.078067,
+                    389.755057,
+                    378.147562,
+                    374.526323,
+                    392.093931,
+                    385.804789,
+                    377.760025,
+                    377.812966,
+                    387.575939
+                ],
+                "peak_increment_bytes": 902568,
+                "output_sha256": "71a5554296c0edc570c26414e9414dc44d85390956ba0e3ee0651243916c29ad",
+                "sql": 2000,
+                "fetched_rows": 2500,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 500,
+                        "rows": 1000,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_3655fe8590ce0776.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_3655fe8590ce0776.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 500,
+                        "rows": 0,
+                        "parameter_count": 4,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "9",
+                                "ref": "const,const",
+                                "rows": "1",
+                                "Extra": "Using index condition; Using where"
+                            }
+                        ]
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 500,
+                        "rows": 500,
+                        "parameter_count": 1,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ref",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": "idx_pricing_category_product",
+                                "key_len": "9",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 500,
+                        "rows": 1000,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 377.49247149999997,
+                "p95_ms": 389.755057
+            },
+            "after": {
+                "samples_ms": [
+                    2.923151,
+                    2.741937,
+                    2.887777,
+                    2.73081,
+                    2.98836,
+                    2.78371,
+                    3.079117,
+                    2.811562,
+                    3.212048,
+                    2.817,
+                    3.03201,
+                    2.83345,
+                    2.993942,
+                    2.829834,
+                    2.947573,
+                    2.753249,
+                    2.935625,
+                    2.771297,
+                    2.887682,
+                    2.728812,
+                    2.933101,
+                    2.762192,
+                    3.064138,
+                    2.85965,
+                    2.997328,
+                    2.830285,
+                    3.337812,
+                    2.881092,
+                    3.138986,
+                    2.867526
+                ],
+                "peak_increment_bytes": 776968,
+                "output_sha256": "71a5554296c0edc570c26414e9414dc44d85390956ba0e3ee0651243916c29ad",
+                "sql": 4,
+                "fetched_rows": 504,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_3655fe8590ce0776.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_3655fe8590ce0776.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 503,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_product_prices",
+                                "type": "ref",
+                                "possible_keys": "uq_member_product_team_product,idx_member_product_active,fk_member_product_product",
+                                "key": "idx_member_product_active",
+                                "key_len": "1",
+                                "ref": "const",
+                                "rows": "1",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 500,
+                        "parameter_count": 500,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_product_categories",
+                                "type": "ALL",
+                                "possible_keys": "idx_pricing_category_product",
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "500",
+                                "Extra": "Using where; Using filesort"
+                            }
+                        ]
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "shop_member_category_rules",
+                                "type": "ref",
+                                "possible_keys": "uq_member_category_team_path,idx_member_category_active",
+                                "key": "idx_member_category_active",
+                                "key_len": "2003",
+                                "ref": "const,const",
+                                "rows": "2",
+                                "Extra": "Using index condition"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 2.8843870000000003,
+                "p95_ms": 3.212048
+            },
+            "parity": true,
+            "speedup": 130.87441855063136
+        },
+        "products_500_account_2": {
+            "before": {
+                "samples_ms": [
+                    100.974232,
+                    99.586431,
+                    102.95822,
+                    114.73333,
+                    99.762546,
+                    100.500418,
+                    99.951623,
+                    102.649684,
+                    99.0211,
+                    99.163324,
+                    101.399981,
+                    102.138205,
+                    103.716641,
+                    100.985318,
+                    98.756442,
+                    100.696142,
+                    103.837664,
+                    99.860214,
+                    97.813991,
+                    99.029524,
+                    101.51026,
+                    98.279043,
+                    99.264652,
+                    97.548762,
+                    100.093699,
+                    100.990443,
+                    102.664516,
+                    98.314038,
+                    99.325017,
+                    100.506213
+                ],
+                "peak_increment_bytes": 771792,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 500,
+                "fetched_rows": 0,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 500,
+                        "rows": 0,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_34339c0de37141a0.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_34339c0de37141a0.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 100.29705849999999,
+                "p95_ms": 103.837664
+            },
+            "after": {
+                "samples_ms": [
+                    0.528596,
+                    0.412311,
+                    0.754246,
+                    0.420584,
+                    0.512271,
+                    0.439551,
+                    0.45789,
+                    0.413042,
+                    0.427984,
+                    0.399963,
+                    0.486974,
+                    0.442787,
+                    0.440944,
+                    0.420944,
+                    0.42487,
+                    0.41158,
+                    0.508556,
+                    0.42504,
+                    0.534425,
+                    0.423878,
+                    0.476378,
+                    0.425491,
+                    0.426965,
+                    0.396369,
+                    0.536341,
+                    0.399273,
+                    0.450702,
+                    0.408558,
+                    0.466646,
+                    0.443891
+                ],
+                "peak_increment_bytes": 732880,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 1,
+                "fetched_rows": 0,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_34339c0de37141a0.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_34339c0de37141a0.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 0.4337675,
+                "p95_ms": 0.536341
+            },
+            "parity": true,
+            "speedup": 231.22308264219888
+        },
+        "products_500_account_3": {
+            "before": {
+                "samples_ms": [
+                    101.547166,
+                    102.851777,
+                    102.475389,
+                    103.602974,
+                    101.874131,
+                    100.971635,
+                    100.615888,
+                    101.571692,
+                    101.604402,
+                    101.411661,
+                    104.11599,
+                    104.094045,
+                    116.967856,
+                    103.346045,
+                    102.904487,
+                    104.991103,
+                    104.241629,
+                    102.32471,
+                    101.096004,
+                    106.360621,
+                    106.272289,
+                    104.175979,
+                    104.575724,
+                    102.709854,
+                    103.263694,
+                    107.971801,
+                    103.01133,
+                    105.07761,
+                    104.649525,
+                    103.353296
+                ],
+                "peak_increment_bytes": 771792,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 500,
+                "fetched_rows": 0,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 500,
+                        "rows": 0,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_c3b43c501c293225.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_c3b43c501c293225.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 103.3048695,
+                "p95_ms": 107.971801
+            },
+            "after": {
+                "samples_ms": [
+                    0.470591,
+                    0.431963,
+                    0.502279,
+                    0.406154,
+                    0.46339,
+                    0.424843,
+                    0.466185,
+                    0.414717,
+                    0.513707,
+                    0.450151,
+                    0.47621,
+                    0.427066,
+                    0.737655,
+                    0.433085,
+                    0.460787,
+                    0.446615,
+                    0.531494,
+                    0.418482,
+                    0.44928,
+                    0.413766,
+                    0.493667,
+                    0.432094,
+                    0.478573,
+                    0.399363,
+                    0.43042,
+                    0.399864,
+                    0.475729,
+                    0.405893,
+                    0.460875,
+                    0.400785
+                ],
+                "peak_increment_bytes": 732880,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 1,
+                "fetched_rows": 0,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 5,
+                        "explain": [
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "r",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using temporary; Using filesort"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "u",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "4",
+                                "ref": "pricing_read_c3b43c501c293225.r.account_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "m",
+                                "type": "ALL",
+                                "possible_keys": null,
+                                "key": null,
+                                "key_len": null,
+                                "ref": null,
+                                "rows": "3",
+                                "Extra": "Using where; Using join buffer (flat, BNL join)"
+                            },
+                            {
+                                "id": 1,
+                                "select_type": "SIMPLE",
+                                "table": "t",
+                                "type": "eq_ref",
+                                "possible_keys": "PRIMARY",
+                                "key": "PRIMARY",
+                                "key_len": "8",
+                                "ref": "pricing_read_c3b43c501c293225.m.team_id",
+                                "rows": "1",
+                                "Extra": "Using where"
+                            }
+                        ]
+                    }
+                },
+                "median_ms": 0.4479475,
+                "p95_ms": 0.531494
+            },
+            "parity": true,
+            "speedup": 230.61825213892251
+        },
+        "products_500_account_0": {
+            "before": {
+                "samples_ms": [
+                    0.126962,
+                    0.12574,
+                    0.244539,
+                    0.124619,
+                    0.125079,
+                    0.124478,
+                    0.254525,
+                    0.125129,
+                    0.127553,
+                    0.123487,
+                    0.137418,
+                    0.125049,
+                    0.125991,
+                    0.125139,
+                    0.124688,
+                    0.124448,
+                    0.124558,
+                    0.13189,
+                    0.12582,
+                    0.413324,
+                    0.12623,
+                    0.131419,
+                    0.12545,
+                    0.243388,
+                    0.342958,
+                    0.124999,
+                    0.125389,
+                    0.124578,
+                    0.124498,
+                    0.124108
+                ],
+                "peak_increment_bytes": 732664,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 0,
+                "fetched_rows": 0,
+                "queries": [],
+                "median_ms": 0.12541950000000002,
+                "p95_ms": 0.342958
+            },
+            "after": {
+                "samples_ms": [
+                    0.181123,
+                    0.172751,
+                    0.180573,
+                    0.232221,
+                    0.173052,
+                    0.178129,
+                    0.17211,
+                    0.172611,
+                    0.171409,
+                    0.1722,
+                    0.171949,
+                    0.17237,
+                    0.179561,
+                    0.171499,
+                    0.172991,
+                    0.181344,
+                    0.173542,
+                    0.173833,
+                    0.17261,
+                    0.172371,
+                    0.300083,
+                    0.183147,
+                    0.43068,
+                    0.51006,
+                    0.172941,
+                    0.172951,
+                    0.36409,
+                    0.174213,
+                    0.173592,
+                    0.173612
+                ],
+                "peak_increment_bytes": 732880,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 0,
+                "fetched_rows": 0,
+                "queries": [],
+                "median_ms": 0.173567,
+                "p95_ms": 0.43068
+            },
+            "parity": true,
+            "speedup": 0.7225999181872131
+        }
+    },
+    "dropped_owned_schemas": [
+        "pricing_read_9ae1ba568a49ef34",
+        "pricing_read_002cc9164339389d",
+        "pricing_read_b1ecce99b119557b",
+        "pricing_read_71a95a4f985ebe13",
+        "pricing_read_e3653c88f7537d46",
+        "pricing_read_3655fe8590ce0776",
+        "pricing_read_34339c0de37141a0",
+        "pricing_read_c3b43c501c293225",
+        "pricing_read_0b8da57d9ab941d9"
+    ]
+}

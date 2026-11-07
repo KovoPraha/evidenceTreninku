@@ -991,6 +991,22 @@
       ]
     },
     {
+      "id": "PL-c798690b24",
+      "path": "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
+      "title": "P11 — optimalizace čtení klubových cen 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "DONE",
+      "registry": "P11",
+      "disposition": "Dávkový reader klubových cen implementovaný, parity a měření doložené, sloučeno #358 (37d0ad68). Pouze technický řez; bez deploye. Další katalogové/HTTP úlohy zůstávají P11.",
+      "evidence": [
+        "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
+        "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
+        "docs/verification/performance-analysis-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
       "id": "PL-3f1811eecb",
       "path": "docs/MONTHLY_MEMBERSHIP_PLAN.md",
       "title": "Měsíční členství přes e-shop",
@@ -1920,6 +1936,38 @@
       "disposition": "Hostingový plán a přirozené tiky technicky ověřené; první ranní audit je samostatný otevřený plán, nikoli opakování instalace.",
       "evidence": [
         "docs/verification/membership-scheduler-20261106/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-b2601aa5d3",
+      "path": "docs/SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
+      "title": "Předání — dávkové klubové ceny e-shopu 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "evidence": [
+        "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
+        "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
+        "docs/verification/performance-analysis-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
+      "id": "PL-5d0c0f40fc",
+      "path": "docs/SESSION_HANDOFF_PERFORMANCE_ANALYSIS_2026-11-07.md",
+      "title": "Předání — analýza rychlosti 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "evidence": [
+        "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
+        "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
+        "docs/verification/performance-analysis-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
       ]
     },
     {
@@ -5136,6 +5184,38 @@
       "evidence": []
     },
     {
+      "id": "PL-d19e3e32e4",
+      "path": "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
+      "title": "P11 — dávkové klubové ceny: výsledek a měření 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "evidence": [
+        "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
+        "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
+        "docs/verification/performance-analysis-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
+      "id": "PL-8ad3bf5a0e",
+      "path": "docs/verification/member-pricing-read-performance-20261107/linux-phpunit.txt",
+      "title": "linux-phpunit.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "evidence": [
+        "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
+        "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
+        "docs/verification/performance-analysis-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
       "id": "PL-0da5b499fa",
       "path": "docs/verification/membership-automation-20261105/RESULTS.md",
       "title": "Zapnutí pravidelného zpracování členství — 5. 11. 2026",
@@ -5522,6 +5602,38 @@
       "registry": "DOC02",
       "disposition": "Datovaný protokol/snímek; výsledek platí jen pro prostředí a rozsah v souboru, otevřené kroky se přebírají přes příslušný plán.",
       "evidence": []
+    },
+    {
+      "id": "PL-877fbd6dc7",
+      "path": "docs/verification/performance-analysis-20261107/RESULTS.md",
+      "title": "P11 — analýza rychlosti a příležitostí k refaktoringu 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "evidence": [
+        "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
+        "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
+        "docs/verification/performance-analysis-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
+      "id": "PL-b4ddd9e8f5",
+      "path": "docs/verification/performance-analysis-20261107/probe.php.txt",
+      "title": "probe.php.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Analýza a dávkové klubové ceny jsou v main #358; technické měření/parita doložené. Katalogový výřez a přihlášené HTTP/session/browser metriky zůstávají v P11; tento řez nebyl nasazen.",
+      "evidence": [
+        "docs/MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md",
+        "docs/verification/member-pricing-read-performance-20261107/RESULTS.md",
+        "docs/verification/performance-analysis-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
+      ]
     },
     {
       "id": "PL-ec429b6a05",
@@ -8993,7 +9105,7 @@
       "evidence": []
     }
   ],
-  "checked_main": "9460ee76",
+  "checked_main": "37d0ad68",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
   "binary_documents": 21
 }

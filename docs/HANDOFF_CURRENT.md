@@ -19,9 +19,12 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   [R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md),
   [R13](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md).
   Dále plné HTTP/bootstrap/nav, další role a propojená docházka podle P11.
+  Klubové ceny: [plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+  [předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+  #358 sloučené (`37d0ad68`), bez deploye; dále katalogový výřez.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
-  Místní tok a 2337 testů PASS; #355 sloučené; dále schválený deploy/aktivace a jejich vlastní důkazy.
+  Místní tok a 2337 testů PASS; #355 v main, deploy a shop_enable vede vlastní plán.
   Browser blokovaný; skutečná banka a externí schránka zůstávají neověřené.
 - P02/P04: [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md),
   [účetní adaptér](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md); publikaci neopakovat.
@@ -32,10 +35,10 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 <!-- membership-morning-publish:start -->
 ## Ranní audit 7. 11. — čeká na doložený výsledek
 
-Plánovaný termín 05:30 UTC (06:30 CET) již uplynul. Výsledek v Gitu zatím
-**NEDOLOŽEN**; původní předání uvádělo NOT RUN. Ověřit čtením
-[výsledkové PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347)
-a [serverový plán](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md), nevyvolávat apply/send.
+Termín 05:30 UTC již uplynul; výsledek **NEDOLOŽEN v Gitu**.
+Nejde o důkaz, že server neběžel. Výsledek má doplnit
+[výsledkový PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347).
+PC není potřeba. [Přesný postup a stav](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
 Skutečné P05/P07 a export P06 zůstávají odložené.
 <!-- membership-morning-publish:end -->
 

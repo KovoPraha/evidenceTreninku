@@ -1,0 +1,7 @@
+{
+  "windows_full_suite": "INCOMPLETE; stopped after 1098+ tests, three platform skips observed; authoritative complete run is Linux CI",
+  "local_mariadb": "INCOMPLETE; native-AIO calibration stalled during DDL; sequential native-off parity stopped before final report; no valid timing from these runs",
+  "reason": "Use completed target-specific MariaDB 10.3/11.4 CI results; release own local resources",
+  "port": 33447,
+  "production_changes": false
+}
