@@ -1,0 +1,23 @@
+[
+  {
+    "source": "docs/HANDOFF_CURRENT.md",
+    "ref": "feb8fe8c",
+    "archive": "docs/HANDOFF_ARCHIVE_2026-11-07.md",
+    "lines": 536,
+    "sha256": "ba06535235db3f6215ca294ea4397fbaa5c9176d9d6ff677005be8a2a4a1fc69"
+  },
+  {
+    "source": "docs/WORK_PLAN_CURRENT.md",
+    "ref": "feb8fe8c",
+    "archive": "docs/WORK_PLAN_ARCHIVE_2026-11-07.md",
+    "lines": 265,
+    "sha256": "79817589183382aee646eb531fbfcc69a8347105f7d541a09a36a9f95d893f41"
+  },
+  {
+    "source": "docs/plan-eshop-tymova-evidence/SESSION_HANDOFF.md",
+    "ref": "feb8fe8c",
+    "archive": "docs/plan-eshop-tymova-evidence/SESSION_HISTORY_2026-11-07.md",
+    "lines": 3697,
+    "sha256": "b5f99ae43525f5a99748fc4da4738af7e58df6d022bb7a2a8c20a1062389fe7b"
+  }
+]

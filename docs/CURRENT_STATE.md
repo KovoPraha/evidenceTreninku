@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 6. 11. 2026 (Europe/Prague), po nasazení pozorovatele a ověření serverového předání. Další kroky vede jediný [registr práce](WORK_PLAN_CURRENT.md).
+Dokumentace 7. 11. 2026 (Europe/Prague); provozní důkazy z 6. 11. níže znovu neověřené. P11: [plán klubových cen](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), implementace v PR #358 bez deploye. Další [registr práce](WORK_PLAN_CURRENT.md).
 
 - **[Pracovní upozornění nasazená a minutový běh aktivní](verification/staff-notifications-release-20261106/RESULTS.md):** PR #330, produkční zvoneček, přesný odkaz a přečtení/nepřečtení ověřeny. Tři žádosti × šest účtů = 18 upozornění a 18 e-mailů přijatých transportem; další běhy bez duplikace či chyb. Vlastník 6. 11. [potvrdil přijetí zprávy do schránky](verification/membership-copy-wip-20261106/RESULTS.md); P01 splněné v tomto rozsahu, nejde o potvrzení všech 18 doručení. Čtecí dohled: staff-notifications-production.yml / status.
 - **[Omluvenky a náhrady již nasazené a znovu ověřené](verification/makeup-audit-20261106/RESULTS.md):** 6. 11. prošlo 22 testů / 139 assertions, 23 HTTP scénářů a skutečný místní browser (omluva, čekání na docházku, rezervace a storno s vrácením nároku). Mobilní zobrazení a uložená historie PASS. Bez nové chyby či opravy, není potřeba další nasazení. Zápisy pouze na oddělených syntetických datech; přihlášené produkční UAT se nyní neprovádělo.
@@ -76,5 +76,5 @@ Aktualizováno 6. 11. 2026 (Europe/Prague), po nasazení pozorovatele a ověřen
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
-
-[Převzetí](HANDOFF_CURRENT.md) · [Historie](CHANGELOG-PROVOZ.md) · [Dokumentace](README.md)
+Poslední dokumentační změna DOC01: [souborové plány a krátké předání](DOCUMENTATION_GOVERNANCE_2026-11-07.md), obsah/ověření hotové, [předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357); R13 #352 / R05 #353 / R06 #354 v main, bez deploye. [P07-UAT #355](https://github.com/KovoPraha/evidenceTreninku/pull/355) otevřené; aktivní plány P01–P14 v [registru](WORK_PLAN_CURRENT.md).
+[Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)

@@ -2,6 +2,10 @@
 
 ## Zadání, rozsah a pracovní kopie
 
+ID P11-CENY; vlastník implementace: vývoj, rozsah a provozní rozhodnutí: vlastník aplikace.
+Volba readeru a varianty: [D2026-11-07-02](DECISION_LOG.md#d2026-11-07-02),
+průběh a trvalé předání: [deník událostí](EVENT_LOG.md).
+
 Vlastník zadal optimalizaci klubových cen podle [analýzy](verification/performance-analysis-20261107/RESULTS.md),
 ověření shodných výsledků a měření před/po. Zachovat WIP, průběžně aktualizovat
 tento plán a session handoff, nic nenasazovat na produkci.
