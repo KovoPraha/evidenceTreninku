@@ -58,3 +58,5 @@ Nativní i celé HTTP důkazy archivované, hashe runtime shodné s Git objekty.
 Další krok: commit důkazů, zelené kontroly výsledkové hlavy,
 merge a autorizovaný standardní deploy; veřejné čtecí srovnání a session handoff.
 Rozhodnutí [D12](DECISION_LOG.md#d2026-11-07-12); průběžné předání [handoff](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
+
+Převzato nové main `b3d0f4bb` / #377: pouze dokumentační blokované UAT pickeru, jeho fakta a metadata zachované; žádná změna měřeného runtime. Výsledková hlava 0ac7680c měla všech12 CI PASS; integrovaná hlava se musí znovu ověřit. Veřejný baseline pěti GET a odmítnutí anonymního plánovače PASS.

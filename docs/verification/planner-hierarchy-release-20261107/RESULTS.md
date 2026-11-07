@@ -11,5 +11,5 @@ Po výsledkovém CI: merge #374, ověřit fresh main a nepřítomnost souběžn�
 čtecí veřejný baseline, dispatch deploy-production.yml na main s potvrzením NASADIT,
 importovat_krouzky=false a uat_schvaleno=false. Vyčkat zálohy, migrací, VS,
 aktivace a HTTP smoke; zapsat přesné release SHA a run ID, opakovat veřejné GET.
-Sondy jsou připravené, neprovedené. Původní WIP zachovat; produkční osoby/role/
+Veřejný baseline proveden před merge/deploy: [pět katalogových GET](before.json) HTTP200, [anonymní plánovač](anonymous-planner-before.json) odmítnutý přesměrováním na login. Finální databázové CI ještě běží; deploy dosud NOT RUN. Původní WIP zachovat; produkční osoby/role/
 platby/docházku ani flags neměnit. Přihlášené produkční UI UAT NOT RUN.

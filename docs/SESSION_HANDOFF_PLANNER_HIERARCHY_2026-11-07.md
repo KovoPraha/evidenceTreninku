@@ -15,3 +15,5 @@ Helper36k: 10.3 medián127,23 →2,07 ms, 11.4 medián151,47 →45,56 ms; řádk
 [Průběžné důkazy](verification/planner-hierarchy-read-performance-20261107/RESULTS.md).
 Další krok: commit výsledků a zelené kontroly nové výsledkové hlavy, merge/deploy,
 veřejný čtecí před/po smoke a výsledkové předání. Přihlášené produkční UAT NOT RUN.
+
+Převzato nové main `b3d0f4bb` / #377: pouze dokumentační blokované UAT pickeru, jeho fakta a metadata zachované; žádná změna měřeného runtime. Výsledková hlava 0ac7680c měla všech12 CI PASS; integrovaná hlava se musí znovu ověřit. Veřejný baseline pěti GET a odmítnutí anonymního plánovače PASS.

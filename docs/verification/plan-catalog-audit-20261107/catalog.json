@@ -10238,6 +10238,20 @@
       ]
     },
     {
+      "id": "PL-f81ce808ad",
+      "path": "docs/verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md",
+      "title": "Přihlášené produkční UAT pickeru — pouze čtením",
+      "primary": true,
+      "role": "uat-handoff",
+      "status": "BLOCKED",
+      "registry": "P11",
+      "disposition": "Přihlášené produkční UAT blokované: dva CUA timeouty a následný automatický stop Windows Computer Use kvůli neověřenému aktuálnímu URL. Žádný scénář UAT neproveden, docházka ani role nezměněné. Další krok: funkční ověření URL/čtení stránky, poté původní čtecí scénáře.",
+      "evidence": [
+        "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md"
+      ]
+    },
+    {
       "id": "PL-929f7b0db8",
       "path": "docs/PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md",
       "title": "P11-R05-H — historický souhrn plánovače se soupiskou",
