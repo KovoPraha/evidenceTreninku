@@ -1,5 +1,12 @@
 # 05 – Řízení vláken
 
+> Historický programový podklad. Aktuální práci určuje [společný registr](../WORK_PLAN_CURRENT.md),
+> [CURRENT](../CURRENT_STATE.md) a [stručný session handoff](../HANDOFF_CURRENT.md).
+> Platí [pravidla souborové dokumentace](../WORK_DOCUMENTATION_POLICY.md),
+> [deník](../EVENT_LOG.md) a [rozhodovací log](../DECISION_LOG.md).
+> Starý board ani níže uvedený model řízení není druhou aktuální frontou či oprávněním k delegaci.
+
+
 ## Provozní model
 
 Jeden **řídicí task** drží celkový plán a rozhodnutí. Pracovní tasky dostávají

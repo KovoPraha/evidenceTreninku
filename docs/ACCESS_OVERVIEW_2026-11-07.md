@@ -1,5 +1,8 @@
 # Přehled lidí, rolí a přístupů
 
+ID ROLE01; vlastník: vývoj a vlastník aplikace. Stav: implementace hotová,
+schválené nasazení / produkční přejímka rozpracované. [Rozhodnutí](DECISION_LOG.md#d2026-11-07-02).
+
 Zadání 7. 11. 2026: společný přehled všech pracovních účtů a jejich přístupů
 k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
 
