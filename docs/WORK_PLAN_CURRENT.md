@@ -14,6 +14,13 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## Aktivní návaznosti
 
+Nové zadání 7. 11.: [společný přehled lidí a rolí](ACCESS_OVERVIEW_2026-11-07.md)
+pro trenérské funkce, e-shop a bar. Místně hotovo v samostatné větvi
+`codex/access-overview-20261107`: přehled, filtry, editor rolí i vlastní spotřeby.
+[Ověření](verification/access-overview-20261107/RESULTS.md): 44 testů / 2413 assertions,
+16 HTTP kontrol a desktop/mobilní Chrome. Další krok: revize a samostatné nasazení.
+Bez produkčních změn přiřazení a bez nasazení v této relaci.
+
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
 | P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |

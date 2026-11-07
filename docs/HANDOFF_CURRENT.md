@@ -4,7 +4,23 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Poslední návaznost: P11 optimalizace plánovače
+## Poslední návaznost: přehled lidí a přístupů
+
+Zadání 7. 11.: přehled všech pracovních účtů, rolí pro trenéry, e-shop a bar,
+jednoduchá úprava na stejném místě. [Rozsah a stav](ACCESS_OVERVIEW_2026-11-07.md),
+[ověření a meze](verification/access-overview-20261107/RESULTS.md).
+Větev `codex/access-overview-20261107`, samostatná kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-access-overview-20261107`, základ `89edfdbe`.
+Implementace místně hotová: menu **Lidé a přístupy**, původní URL
+`sprava_pracovnich_pozic.php`, přehled po oblastech, hledání a filtry,
+auditovaný editor včetně zvláštní vlastní spotřeby baru. Žádné nové role,
+migrace ani odhadované přidělení skutečných přístupů.
+44 cílených testů / 2413 assertions a 16 HTTP kontrol PASS, desktop/mobilní Chrome PASS.
+Úplný PHPStan level 5, styl změněných PHP a dokumentační kontrakt PASS.
+Další krok je revize a samostatně schválené nasazení. Produkce ani původní WIP
+nebyly touto relací změněny; nejde o přihlášené produkční UAT.
+
+## Předchozí návaznost: P11 optimalizace plánovače
 
 Vlastník zadal optimalizaci R05 podle měření se zachováním chování a WIP,
 bez produkčních změn. Větev `codex/planner-read-performance-20261106`, kopie
