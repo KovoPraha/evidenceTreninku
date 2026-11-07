@@ -70,7 +70,7 @@ změna jsou zaznamenané výše.
 4. Neměnit env/konstantu na jinou cestu a nepřesouvat stávající obsah bez
    samostatného plánu. Aktuální nález nedokládá konflikt konfiguračních zdrojů.
 
-Historický [hostingový runbook](thinline-deploy-runbook.md#L43) uvádí tento
+Historický [hostingový runbook](thinline-deploy-runbook.md#vlastnosti-serveru-empiricky-ověřené-ne-domněnky) uvádí tento
 typ cesty jako vhodný v reálném filesystemu. Aktuální webová diagnostika má
 přednost před historickým seznamem povolených adresářů. Nejde o oprávnění
 agenta měnit hostingové nastavení bez příslušného přístupu.

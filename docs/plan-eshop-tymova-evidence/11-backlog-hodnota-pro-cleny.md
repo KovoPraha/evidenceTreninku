@@ -1,5 +1,10 @@
 # 11 – Backlog hodnoty pro členy
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Technické řezy ICS/přehledů/souhrnů a normalizace existují; export ročního přehledu, progres, retence a řízený import nejsou automaticky dokončené.
+> [Katalog všech plánů](../PLAN_CATALOG.md), položky C01/C03 v [registru](../WORK_PLAN_CURRENT.md).
+
+
 Stav: vytříděný produktový backlog navazující na M2
 
 Aktualizováno: 5. 8. 2026

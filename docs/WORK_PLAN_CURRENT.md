@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `feb8fe8c`; produkční stav se tím neověřuje.
+Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `1d88ce9e`; produkční stav se tím neověřuje.
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -12,6 +12,15 @@ Následné zadání vlastníka 6. 11.: pokračovat plně autonomně přes P01–
 Aktivní průchod a bezpečně doložené výsledky vede [protokol](verification/autonomous-p01-p14-20261106/RESULTS.md).
 Dřívější dokumentační rozsah je historický; chybějící skutečné podklady se nedoplňují odhadem.
 
+## Úplný katalog plánů
+
+[Katalog všech plánů a konceptů](PLAN_CATALOG.md) je součást tohoto registru:
+každý dokument má vlastní stabilní ID, stav, vazbu na P/C/DOC a důkaz nebo
+výslovně otevřenou podmínku. [Úplný index textových podkladů](PLAN_DOCUMENT_INDEX.md)
+zahrnuje i vložené ověřovací plány, historické prompty a podpůrné artefakty.
+[Původní etapy 0–6 a R01–R44](plans/realization-20261022/README.md) jsou nyní
+sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešní stav.
+
 ## Aktivní návaznosti
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
@@ -20,7 +29,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | HOTOVO: nabídka BAR 1 / vydání 1 zveřejněná, 45 produktů a fotografií; novější doklad #335 nahrazuje původní koncept | Publikaci neopakovat a nezakládat další návrh. Úpravy nabídky až podle dalšího zadání; zásoby/kasa a skutečný prodej zůstávají P02. Přihlášené vytvoření tiskového PDF zatím NOT RUN. | Správce baru; [publikace](verification/bar-menu-publication-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) |
 | P04 | BAR má účetní export/kontrakt a návrh adaptéru; zápis do hlavního účetnictví dosud není dokončený | Odsouhlasit účetní pravidla, implementovat a převzít adaptér bez zdvojení peněz. Není to pouze čekání na deploy nebo přepínač. Skutečná bezhotovostní úhrada/vratka také nedoložená. | Vlastník/účetní, vývoj; [kontrakt](BAR_ACCOUNTING_CONTRACT_V1.md), [plán adaptéru](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md) |
-| P05 | Skutečný tok ODLOŽENO vlastníkem; [hostingový plán #341 nasazený a přirozené minutové tiky ověřené](verification/membership-scheduler-20261106/RESULTS.md), denně 05:23 UTC; redundantní GitHub schedule vypnutý.  Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. První skutečné sjednání/platba/PDF/doručení zůstávají odložené. Technická oprava časování hotová; časovou přejímku 7. 11. vede serverový plán níže, dlouhodobý provoz jediný audit neuzavírá. Roční cena neurčená; textová oprava členských popisků #340 nasazena a ověřena (viz autorizované vydání níže). | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
+| P05 | Skutečný tok ODLOŽENO vlastníkem; [hostingový plán #341 nasazený a přirozené minutové tiky ověřené](verification/membership-scheduler-20261106/RESULTS.md), denně 05:23 UTC; redundantní GitHub schedule vypnutý.  Závodní tým 297 / varianta 951 schválený, aktivní a zveřejněný za 2200 Kč/měsíc; údaje TJ KOVO uložené. Novější #336 doložilo cestu ke sjednání. Plán/pošta povolené, ruční prázdný běh doložený | Neopakovat schválení/publikaci. Sjednání vyžaduje klubem ověřeného sportovce; použitý účet jej neměl. První skutečné sjednání/platba/PDF/doručení zůstávají odložené. Technická oprava časování hotová; časovou přejímku 7. 11. vede serverový plán níže, dlouhodobý provoz jediný audit neuzavírá. Roční cena neurčená; textová oprava členských popisků #340 nasazena a ověřena (viz [důkaz vydání](verification/membership-copy-release-20261106/RESULTS.md)). | Vlastník/účetní; [čtecí doklad #336](verification/racing-team-status-20261106/RESULTS.md), [runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [pošta](MEMBERSHIP_MAIL_ACTIVATION_2026-11-05.md), [historické založení](verification/membership-catalog-release-20261105/RESULTS.md) |
 | P06 | Export/sync ODLOŽENO vlastníkem.  Evidence členů bez sezon nasazená, 435 zařazení převedeno | Vyčkat na poslední nový export, provést schválený rozdílový sync a role/UAT. E8 odstranění legacy schématu až po přejímce a bezpečné obnově. Počáteční datum ani import neopakovat. | Vlastník dodá export; [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [provoz](MEMBER_EVIDENCE_OPERATION_2026-11-02.md), [převod](verification/member-evidence-cutover-20261102/RESULTS.md) |
 | P07 | Skutečná platba ODLOŽENO vlastníkem.  Fio import/automatika a SumUp zapnuté; skutečný hostingový plán ověřený | Doložit skutečnou zaplacenou úhradu a přihlášený průchod. 45 pohybů bez odpovídajícího VS ponechat ručnímu posouzení, nepárovat jen částkou. | Vlastník/hospodář; [aktivace](verification/live-payments-20261105/ACTIVATION.md), [45 pohybů](verification/fio-followup-20261105/RESULTS.md) |
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | [Navazující syntetická regrese 6. 11. PASS](verification/offline-followup-20261106/RESULTS.md); dokončit asistované UAT a lidské převzetí. Heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
@@ -42,6 +51,29 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
   [převod](verification/bar-cutover-20261106/RESULTS.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md).
   Import/striktní nulový počátek neopakovat přes vzniklé legitimní záznamy.
 
+
+## Dříve neevidované koncepty a otevřené návaznosti
+
+Tyto položky evidují existující návrhy; tento audit jim neuděluje schválení realizace.
+
+| ID | Stav a rozsah | Další krok / vlastník / podklady |
+| --- | --- | --- |
+| C01 | KONCEPT / ČÁSTEČNĚ PŘEKRYTO: wallet, osobní progres/rekordy, retenční přehled, roční přehled/export, TrainingPeaks/Strava/FIT; M3 normalizace/read-only příprava hotová, řízený import a nejasné řádky otevřené | Vlastník vybere konkrétní záměr a ověří jeho dnešní rozsah, datový/účetní kontrakt a podmínku přijetí; [V1–V7 a blokované návrhy](plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md), [M3 a zbývající kroky](plan-eshop-tymova-evidence/12-milnik-m3-clenska-hodnota.md), [úplný katalog](PLAN_CATALOG.md) |
+| C02 | KONCEPT / K REVIZI: zbytky návrhu informační architektury a registrace; registrační a rolové cesty již v main, starý text „nic neimplementováno“ není dnešní stav | Vývoj/vlastník porovná zbývající varianty s dnešním UI; právní/retentní podmínky řeší odpovědná osoba klubu. [Návrh IA](navrh-informacni-architektury.md), [registrace](navrh-registrace-sportovce.md); nepovažovat starý R7 ani rename za nové pověření |
+| C03 | IMPLEMENTOVÁNO ČÁSTEČNĚ / PROVOZ NEDOLOŽEN: volitelné rodinné souhrny a připomínky předpisů, budoucí Stripe aktivace/refund slice, PPL a skutečná přepravní přejímka Packety | Správce/vlastník vybere konkrétní aktivaci, příjemce, účet a scénář; doloží skutečný průchod před zapnutím. [Souhrny](family-weekly-summaries.md), [upomínky V3](plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md), [Stripe](stripe-integration-plan.md), [PPL](PPL_BOX_CHECKOUT.md), [Packeta](PACKETA_MODULE_AUDIT_2026-10-21.md). Nezaměňovat s již aktivovanými Fio/SumUp P07 a členstvím P05 |
+| C04 | K OVĚŘENÍ: zbylé návrhy starých bezpečnostních/datových/UX auditů, hosting a kapacita, další technický dluh a fyzická TV | Vývoj nejprve ověří aktuální reprodukci; hosting rozhodne vlastník. Starý nález není automaticky dnešní závada. [Úklid a kandidáti](DOZOR_UKLID_2026-10-25.md), [hosting](mariadb-10.3-compatibility-2026-08-06.md), [TV postup](TV-PROGRAMY.md), [historické audity a dispozice](PLAN_CATALOG.md); aktivní výkonové měření zůstává P11 |
+
+## Souběžné změny mimo kontrolovaný main
+
+- P09-ACCESS: [PR #356](https://github.com/KovoPraha/evidenceTreninku/pull/356),
+  přehled přístupů a následná přejímka; při kontrole otevřené, provozní výsledek nepředjímat.
+- P11-PRICING: draft [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358),
+  dávkové klubové ceny; stále návrh větve, nikoli vydaný kód.
+- P07-UAT: [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355)
+  hlásí návaznosti účetního PDF/notifikací jednorázového košíku. Při integraci
+  přezkoumat proti main; příprava šablon v původním [plánu](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md)
+  sama nedokládá všechny producenty zpráv. Skutečné P07 zůstává odložené.
+
 ## Povinný záznam při každé další práci
 
 Trenérské přiřazení po #314 určuje přednost výběru, nikoli možnost zastupovat.
@@ -61,6 +93,9 @@ Tajemství, hesla, session, produkční dumpy a osobní přílohy do Gitu nepat�
 uvést jen bezpečnou referenci a způsob ověření soukromého podkladu.
 
 ## Aktuální předání a souběžné návrhy
+
+DOC02 ROZPRACOVÁNO: [audit všech plánů a konceptů](PLAN_CATALOG_AUDIT_2026-11-07.md).
+Větev `codex/plan-catalog-audit-20261107`; další krok: inventura a ověření vazeb.
 
 | ID | Stav a podklad | Další krok / vlastník |
 | --- | --- | --- |

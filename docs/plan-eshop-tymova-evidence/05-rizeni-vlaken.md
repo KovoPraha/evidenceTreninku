@@ -1,5 +1,10 @@
 # 05 – Řízení vláken
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Původní program M1/M2 a tehdejší rozhodnutí. Dnešní pořadí určuje registr; zbylé produktové návrhy C01, členský model P06 a přejímka P09.
+> [Katalog všech plánů](../PLAN_CATALOG.md), položky C01/P06/P09 v [registru](../WORK_PLAN_CURRENT.md).
+
+
 > Historický programový podklad. Aktuální práci určuje [společný registr](../WORK_PLAN_CURRENT.md),
 > [CURRENT](../CURRENT_STATE.md) a [stručný session handoff](../HANDOFF_CURRENT.md).
 > Platí [pravidla souborové dokumentace](../WORK_DOCUMENTATION_POLICY.md),

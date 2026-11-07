@@ -1,5 +1,10 @@
 # Sklady, prodej a vratky R18–R24
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Implementační a technické přejímací balíky jsou v main a integrační vydání doložené; skutečné údaje, účetní/lidská přejímka a ostré převody se tím neuzavírají.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P09. [CLUB_IMPLEMENTATION_HANDOFF.md](CLUB_IMPLEMENTATION_HANDOFF.md) · [RESULTS.md](verification/production-integration-20261025/RESULTS.md) · [CLUB_COMPLETION_DECISIONS.md](CLUB_COMPLETION_DECISIONS.md)
+
+
 Lokální implementace 22. 10. 2026 navazuje na účetní základ `fd402b6d9e12a86d932f376c8eaff76877d9a029`.
 Pracovní kopie: `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
 `codex/inventory-r18-r24-20261022`. Vlastník autorizoval implementaci a ověření

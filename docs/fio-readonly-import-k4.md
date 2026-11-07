@@ -1,5 +1,10 @@
 # Fio synchronizace a párování plateb
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Fio import/automatika zapnuté a hosting doložený; původní vypnutý shadow režim je historický. Skutečná úhrada a 45 nejasných pohybů zůstávají otevřené.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P07. [ACTIVATION.md](verification/live-payments-20261105/ACTIVATION.md) · [RESULTS.md](verification/fio-followup-20261105/RESULTS.md)
+
+
 Stav 20. 10. 2026: token odpověděl pro účet 2302794191/2010
 (`CZ6820100000002302794191`) a kód pro doplnění historie i bezpečné potvrzení
 jednoznačných shod je nasazený. Po neúspěšném prvním importu byl produkční

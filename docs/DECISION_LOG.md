@@ -23,6 +23,17 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
   [závazný postup](WORK_DOCUMENTATION_POLICY.md), [deník](EVENT_LOG.md).
   Zavedení pravidla neuděluje nové oprávnění k produkčním zásahům.
 
+## Úplný rejstřík plánů a jejich výsledků
+
+[Dokončené technické a dokumentační řezy](PLAN_CATALOG.md#dokončené-technické-a-dokumentační-řezy)
+mají pro každý soubor vlastní ID, registr a důkaz vymezeného uzavření.
+[Historické a nahrazené plány](PLAN_CATALOG.md#historické-a-nahrazené-plány)
+včetně etap 0–6 zůstávají dostupné se zdrojem nebo nástupcem.
+[Aktivní a neuzavřené plány](PLAN_CATALOG.md#aktivní-a-neuzavřené-plány)
+se neztrácejí uvnitř starých promptů. [Úplný index](PLAN_DOCUMENT_INDEX.md)
+zahrnuje také datované protokoly a textové podpůrné artefakty.
+Tento zpětný audit není novým produktovým rozhodnutím ani dodatečným schválením konceptů.
+
 ## Starší rozhodnutí — zachovaná v původních souborech
 
 | Oblast | Trvalý zdroj | Jak číst |

@@ -1,5 +1,10 @@
 # Sjednocená administrace a správa e-shopu
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Původní místní UI řez následně předán a nasazen; novou práci neodvozovat ze starého worktree.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P09. [UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md](UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md) · [CLUB_IMPLEMENTATION_HANDOFF.md](CLUB_IMPLEMENTATION_HANDOFF.md)
+
+
 Následné schválené produkční nasazení a browser ověření jsou dokončené; viz [produkční report](UNIFIED_ADMIN_SHOP_PRODUCTION_2026-10-20.md). Níže je původní lokální implementační předání.
 
 Stav 20. 10. 2026: lokální implementace ve větvi `codex/unified-admin-shop-20261020`, základ `4991c91f`. Pracovní kopie: `C:\xampp\htdocs\evidencePavel-unified-admin-shop-20261020`. Produkční nasazení ani vzdálený Git nejsou součástí tohoto kroku.

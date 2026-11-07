@@ -1,5 +1,10 @@
 # R31–R37: klubová administrativa a společná přejímka
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Implementační a technické přejímací balíky jsou v main a integrační vydání doložené; skutečné údaje, účetní/lidská přejímka a ostré převody se tím neuzavírají.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P09. [CLUB_IMPLEMENTATION_HANDOFF.md](CLUB_IMPLEMENTATION_HANDOFF.md) · [RESULTS.md](verification/production-integration-20261025/RESULTS.md) · [CLUB_COMPLETION_DECISIONS.md](CLUB_COMPLETION_DECISIONS.md)
+
+
 Lokální implementace 23. 10. 2026 navazuje na R25–R30 (`4033bf18`).
 Pracovní kopie `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
 `codex/club-administration-r31-r37-20261023`. Produkce nebyla změněna.

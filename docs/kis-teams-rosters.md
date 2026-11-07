@@ -1,5 +1,10 @@
 # KIS sezóny, týmy a soupisky
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Původní import/sezonní model je historický; změněné části nahrazuje schválený bezsezonní plán. Importy neopakovat podle staré specifikace.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P06. [MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) · [RESULTS.md](verification/member-evidence-cutover-20261102/RESULTS.md)
+
+
 První funkční přírůstek KIS/F2 zavádí interní model sezóny, týmu a členství na
 soupisce. Externí KIS se nemění a zůstává zdrojem pro shadow porovnání.
 

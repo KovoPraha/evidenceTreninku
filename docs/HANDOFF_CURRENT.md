@@ -7,6 +7,8 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
+- DOC02: [audit všech plánů a konceptů](PLAN_CATALOG_AUDIT_2026-11-07.md); [úplný katalog](PLAN_CATALOG.md), nové vazby C01–C04 v registru.
+
 - DOC01: [zadání, audit, plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
   Obsah a místní kontroly hotové; [GitHub předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), stav CI/merge u PR.
   Větev `codex/repo-documentation-policy-20261107`, vlastní worktree stejného tématu
@@ -45,6 +47,9 @@ Skutečné P05/P07 a export P06 zůstávají odložené.
 <!-- membership-morning-preflight:end -->
 
 ## Otevřené hranice a ostatní plány
+
+Úplná inventura a podmínky pokračování: [aktivní i historické plány](PLAN_CATALOG.md).
+Přístupy #356 a cenový draft #358 jsou samostatné souběžné práce v registru.
 
 P01 dokončené v potvrzeném rozsahu; instalaci ani rozesílku neopakovat.
 Skutečné P05/P07, nový export P06, heslo a T07 vlastník odložil.

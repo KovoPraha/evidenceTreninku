@@ -57,6 +57,61 @@ $paths = array_merge($paths, array_map(
     static fn (string $path): string => str_replace('\\', '/', substr($path, strlen($root) + 1)),
     glob($root . '/docs/verification/documentation-governance-20261107/*.md') ?: []
 ));
+$catalogFile = $root . '/docs/verification/plan-catalog-audit-20261107/catalog.json';
+$catalog = json_decode((string) file_get_contents($catalogFile), true, 512, JSON_THROW_ON_ERROR);
+$registered = [];
+$catalogIds = [];
+$workRegister = (string) file_get_contents($root . '/docs/WORK_PLAN_CURRENT.md');
+foreach ($catalog['entries'] as $entry) {
+    if (isset($registered[$entry['path']]) || isset($catalogIds[$entry['id']])) {
+        $errors[] = 'Duplicate plan catalog path or ID: ' . $entry['path'];
+    }
+    $registered[$entry['path']] = true;
+    $catalogIds[$entry['id']] = true;
+    if (!is_file($root . '/' . $entry['path'])) {
+        $errors[] = 'Plan catalog source missing: ' . $entry['path'];
+        continue;
+    }
+    foreach ($entry['evidence'] as $evidence) {
+        if (!is_file($root . '/' . $evidence)) {
+            $errors[] = 'Plan evidence missing: ' . $evidence;
+        }
+    }
+    if ($entry['status'] === 'DONE' && $entry['evidence'] === []) {
+        $errors[] = 'Completed plan needs evidence: ' . $entry['path'];
+    }
+    preg_match_all('/(?:P\d{2}|C\d{2}|DOC\d+)\b/', $entry['registry'], $workIds);
+    foreach ($workIds[0] as $workId) {
+        if (!preg_match('/\b' . preg_quote($workId, '/') . '\b/', $workRegister)) {
+            $errors[] = 'Plan has no work register item: ' . $workId;
+        }
+    }
+    if ($entry['primary']) {
+        $paths[] = $entry['path'];
+    }
+}
+foreach (['docs/CURRENT_STATE.md', 'docs/HANDOFF_CURRENT.md', 'docs/WORK_PLAN_CURRENT.md', 'docs/DECISION_LOG.md'] as $path) {
+    if (!str_contains((string) file_get_contents($root . '/' . $path), '](PLAN_CATALOG.md')) {
+        $errors[] = $path . ': missing complete plan catalog navigation.';
+    }
+}
+// New top-level documentation and explicitly named plans must be registered.
+// Generated evidence reports remain compatible with the server audit publisher.
+$documents = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . '/docs', FilesystemIterator::SKIP_DOTS));
+foreach ($documents as $document) {
+    $path = str_replace('\\', '/', substr($document->getPathname(), strlen($root) + 1));
+    if (
+        $document->isFile()
+        && preg_match('~^docs/[^/]+[.]md$|^docs/.*(?:plan|prompt|roadmap|backlog|concept).*?\.md$~i', $path)
+        && !isset($registered[$path])
+    ) {
+        $errors[] = 'Document or plan not registered: ' . $path;
+    }
+}
+$paths = array_values(array_unique(array_merge($paths, [
+    'docs/PLAN_CATALOG.md', 'docs/PLAN_DOCUMENT_INDEX.md',
+    'docs/verification/plan-catalog-audit-20261107/RESULTS.md',
+])));
 $links = 0;
 foreach ($paths as $path) {
     $source = (string) file_get_contents($root . '/' . $path);

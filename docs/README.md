@@ -14,6 +14,13 @@ a [registr otevřených plánů a konceptů](WORK_PLAN_CURRENT.md). Všechny zá
 na odpovídající plán musí odkazovat CURRENT i handoff. Dokumentaci předávejte přes GitHub PR spolu se změnou.
 [Deník událostí](EVENT_LOG.md) a [rozhodovací log / uzavřené plány](DECISION_LOG.md) zajišťují historickou dohledatelnost bez načítání historie v handoffu.
 
+## Úplnost plánů a konceptů
+
+[Katalog všech plánů](PLAN_CATALOG.md) propojuje aktivní, dokončené i nahrazené
+návrhy se společným registrem a důkazy. [Úplný textový index](PLAN_DOCUMENT_INDEX.md)
+zahrnuje i vložené plány a protokoly. Původní [etapy 0–6](plans/realization-20261022/README.md)
+byly dosud pouze v lokálním output; nyní jsou sdílené jako historické specifikace.
+
 ## Začněte zde
 
 | Dokument | Účel |
