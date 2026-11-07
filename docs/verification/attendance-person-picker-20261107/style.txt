@@ -1,0 +1,21 @@
+warning: in the working copy of 'tests/Support/SyntheticReadPagesProfile.php', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'training_closure_admin.php', LF will be replaced by CRLF the next time Git touches it
+PHP CS Fixer 3.95.27 Adalbertus by Fabien Potencier, Dariusz Ruminski and contributors.
+PHP runtime: 8.2.12
+Loaded config default from ".php-cs-fixer.dist.php".
+Running analysis on 7 cores with 10 files per process.
+Paths from configuration have been overridden by paths provided as command arguments.
+ 0/9 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 1/9 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  11%
+ 2/9 [▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░]  22%
+ 3/9 [▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░]  33%
+ 4/9 [▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░]  44%
+ 5/9 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░]  55%
+ 6/9 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░]  66%
+ 7/9 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  77%
+ 8/9 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░]  88%
+ 9/9 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+
+Found 0 of 9 files that can be fixed in 4.050 seconds, 20.00 MB memory used
+Changed PHP files: 9; errors: 0

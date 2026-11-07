@@ -15,14 +15,14 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [audit](PLAN_CATALOG_AUDIT_2026-11-07.md), [úplný katalog](PLAN_CATALOG.md); koncepty C01–C04 v registru.
 
-- P11: celé HTTP/browser na `feb8fe8c` HOTOVO; [výsledky](verification/full-http-performance-20261107/RESULTS.md),
-  [předání a další kroky](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md). 65 případů / 930 HTTP vzorků,
-  403 browser pozorování; role/filtry/revokace PASS. Dále R06 výběr osob a lekce, mobil/souběh.
-  R13 #352 / R05 #353 / R06 #354 zahrnuje ROLE01; novější main nebyl přeměřen.
-  [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), větev `codex/full-http-performance-20261107`;
-  vlastní worktree viz předání. Po integraci main cíleně 47 testů / 2877 assertions PASS.
-  #363 sloučené (`d958fd6e`); bez deploye, runtime uklizený, původní WIP zachovaný.
-  Klubové ceny #358 v main bez deploye; [plán a návazný katalog](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md).
+- P11 R06 výběr osob: implementace/místní ověření HOTOVO, **bez deploye**.
+  [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [výsledky](verification/attendance-person-picker-20261107/RESULTS.md),
+  [předání a další kroky](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366).
+  1,37 MB → 92 kB, Chrome trenér 5,23 → 1,11 s; JS/noJS, role, draft, zápisy a revokace PASS.
+  Větev `codex/attendance-person-picker-20261107`, vlastní worktree viz předání; finální CI/merge u PR.
+  Runtime uklizený, WIP zachovaný. Dále lekce 219 SQL, R13/R05, mobil/souběh; K0.2 otevřené.
+  [Předchozí celé HTTP #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md) v main; R13/R05/R06 #354 zahrnuje ROLE01.
+  Klubové ceny #358 v main bez dalšího deploye; [katalog #364](https://github.com/KovoPraha/evidenceTreninku/pull/364) vede vlastní větev.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

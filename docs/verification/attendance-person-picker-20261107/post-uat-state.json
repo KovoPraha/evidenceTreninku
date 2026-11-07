@@ -1,0 +1,13 @@
+{
+    "synthetic_only": true,
+    "canonical_version": 53,
+    "participants": 201,
+    "record_source": "paper",
+    "personal_excuse": {
+        "plan_id": 50010,
+        "sportovec_id": 1001,
+        "received_at": "2026-11-07 06:00:00",
+        "source": "paper"
+    },
+    "browser_write_database_verified": true
+}

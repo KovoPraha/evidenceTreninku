@@ -9268,9 +9268,92 @@
       "registry": "DOC02",
       "disposition": "Referenční podklad, nikoli samostatný schválený implementační plán.",
       "evidence": []
+    },
+    {
+      "id": "PL-c0b7a64780",
+      "path": "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+      "title": "P11 R06 — výběr osob v docházce, 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-10360221ef",
+      "path": "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+      "title": "P11 R06 — předání výběru osob v docházce, 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-607748e4e4",
+      "path": "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+      "title": "P11 R06 — omezený výběr osob v docházce, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-491b6bafd7",
+      "path": "docs/verification/attendance-person-picker-20261107/CALIBRATION.md",
+      "title": "Kalibrace a oddělení důkazů, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-53ee3c4ece",
+      "path": "docs/verification/attendance-person-picker-20261107/REPRODUCE.md",
+      "title": "Opakování P11 R06 výběru osob",
+      "primary": false,
+      "role": "reference",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Výběr osob implementovaný a místně ověřený v PR #366, bez deploye; další lekce/mobil/souběh a P11 otevřené. Finální CI/merge u PR.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
-  "binary_documents": 21
+  "binary_documents": 21,
+  "updates": [
+    {
+      "date": "2026-11-07",
+      "pull_request": 366,
+      "added_paths": [
+        "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/CALIBRATION.md",
+        "docs/verification/attendance-person-picker-20261107/REPRODUCE.md"
+      ]
+    }
+  ]
 }

@@ -6,6 +6,23 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-07
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník zadal optimalizovat výběr osob
+  podle měření, ověřit stejná syntetická data a zachovat chování/WIP bez produkce.
+- **Volba / důvod:** omezená hledaná stránka plus všechny již vybrané osoby;
+  nativní POST hledání zachová práci i bez JavaScriptu. AJAX není pro omezení
+  HTML nutný a přidal by další asynchronní stav/endpoint.
+  Změna neomezuje hosty a nedotýká se kanonického writeru ani oprávnění.
+- **Varianty:** pouhé skrytí dlouhého seznamu nezmenší HTML; vlastní soupiska
+  jako hranice by změnila chování. Cache oprávnění není přípustná.
+- **Akceptace / stav:** [plán a průběh](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+  implementace/místní měření/UAT HOTOVO; větev `codex/attendance-person-picker-20261107`,
+  [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), finální CI/merge u PR.
+
+Pracovní ID 06 v původním nesloučeném plánu c0883ff2 kolidovalo s přijatým
+DOC02; přijaté DOC02 zůstává 06 a výběr osob dostává 07.
+
 ## D2026-11-07-05
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; autonomní měření podle pokynu vlastníka bez produkčních změn.
@@ -154,3 +171,5 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 | Starší session a dokončené části programu | [Deník a archivní rozcestník](EVENT_LOG.md) | Původní plány, důkazy a rozhodnutí zůstávají v Gitu; nejde o zpětné schválení neověřených kroků |
 
 P11 celé HTTP/browser — [uzavřené měření a důkazy](verification/full-http-performance-20261107/RESULTS.md), [navazující etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); celé K0.2 otevřené.
+
+P11 výběr osob — [místně dokončená implementace a ověření](verification/attendance-person-picker-20261107/RESULTS.md), [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366); bez deploye, ostatní P11 otevřené.

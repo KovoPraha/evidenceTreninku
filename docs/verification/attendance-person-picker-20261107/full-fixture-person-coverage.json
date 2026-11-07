@@ -1,0 +1,24 @@
+{
+    "complete": true,
+    "synthetic_only": true,
+    "method": "direct helper-level PDO coverage on the measured fixture; HTTP authentication verified separately",
+    "read_only_session": true,
+    "cases": [
+        {
+            "role": "coach",
+            "people": 10221,
+            "pages": 205,
+            "every_person_reachable_once": true,
+            "preference_and_stable_name_id_order_equal": true,
+            "data_sha256": "c9847eb797c67b76e71702b4a2c20672af5f99533672a8f078e85395a69a4b1f"
+        },
+        {
+            "role": "sports_lead",
+            "people": 10221,
+            "pages": 205,
+            "every_person_reachable_once": true,
+            "preference_and_stable_name_id_order_equal": true,
+            "data_sha256": "c9847eb797c67b76e71702b4a2c20672af5f99533672a8f078e85395a69a4b1f"
+        }
+    ]
+}

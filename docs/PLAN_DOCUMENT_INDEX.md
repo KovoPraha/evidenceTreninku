@@ -774,3 +774,13 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-62a9578541 | [tests/Support/InventoryPageBaseline.txt](../tests/Support/InventoryPageBaseline.txt) | artifact / SUPPORT | DOC02 |
 | PL-edbd6d52dc | [tests/fixtures/bar-localhost-invoice.pdf](../tests/fixtures/bar-localhost-invoice.pdf) | binary-artifact / SUPPORT | DOC02 |
 | PL-794e724c77 | [tests/fixtures/kis/README.md](../tests/fixtures/kis/README.md) | reference / REFERENCE | DOC02 |
+
+## Doplnění po původní inventuře: P11 / PR #366
+
+| ID | Soubor | Role / dispozice | Registr |
+| --- | --- | --- | --- |
+| PL-c0b7a64780 | [P11 R06 — výběr osob v docházce, 7. 11. 2026](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-607748e4e4 | [P11 R06 — omezený výběr osob v docházce, 7. 11. 2026](verification/attendance-person-picker-20261107/RESULTS.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-491b6bafd7 | [Kalibrace a oddělení důkazů, 7. 11. 2026](verification/attendance-person-picker-20261107/CALIBRATION.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-53ee3c4ece | [Opakování P11 R06 výběru osob](verification/attendance-person-picker-20261107/REPRODUCE.md) | reference / REFERENCE | P11 |

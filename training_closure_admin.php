@@ -13,6 +13,7 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 require_once __DIR__.'/csrf_helper.php';
 require_once __DIR__.'/includes/training_day.php';
 require_once __DIR__.'/includes/training_closure_form.php';
+require_once __DIR__.'/includes/training_closure_people.php';
 require_once __DIR__.'/includes/ui_shell.php';
 $actor = (int)$_SESSION['trener_id'];
 try {
@@ -46,55 +47,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         http_response_code(403);
         exit('Neplatný bezpečnostní token.');
     }
-    try {
-        if (($_POST['action'] ?? '') === 'personal_excuse') {
-            $result = trainingPersonalExcuseRecord(
-                $pdo,
-                (int)($_POST['plan_id'] ?? 0),
-                (int)($_POST['person_id'] ?? 0),
-                str_replace('T', ' ', (string)($_POST['received_at'] ?? '')).':00',
-                (string)($_POST['source'] ?? ''),
-                (string)($_POST['reason'] ?? ''),
-                $actor
-            );
-            $success = $result['eligible'] ? 'Osobní omluva byla zapsána. Nárok vznikne až po uzavření skutečné lekce.' : 'Osobní omluva byla zapsána bez nároku: '
+    if (!trainingClosureSearchAction($_POST)) {
+        try {
+            if (($_POST['action'] ?? '') === 'personal_excuse') {
+                $result = trainingPersonalExcuseRecord(
+                    $pdo,
+                    (int)($_POST['plan_id'] ?? 0),
+                    (int)($_POST['person_id'] ?? 0),
+                    str_replace('T', ' ', (string)($_POST['received_at'] ?? '')).':00',
+                    (string)($_POST['source'] ?? ''),
+                    (string)($_POST['reason'] ?? ''),
+                    $actor
+                );
+                $success = $result['eligible'] ? 'Osobní omluva byla zapsána. Nárok vznikne až po uzavření skutečné lekce.' : 'Osobní omluva byla zapsána bez nároku: '
     .clubMakeupExcuseFailureMessage((string)$result['denial']);
-        } else {
-            $participants = is_array($_POST['participant_ids'] ?? null) ? $_POST['participant_ids'] : [];
-            $guest = [];
-            foreach ($participants as $id) {
-                $guest[(int)$id] = trim((string)($_POST['guest_reason'] ?? ''));
-            }
-            $result = trainingClosureClose($pdo, $trainingId, (int)($_POST['version'] ?? 0), [
-                'actual_started_at' => str_replace('T', ' ', (string)($_POST['actual_started_at'] ?? '')).':00'
+            } else {
+                $participants = is_array($_POST['participant_ids'] ?? null) ? $_POST['participant_ids'] : [];
+                $guest = [];
+                foreach ($participants as $id) {
+                    $guest[(int)$id] = trim((string)($_POST['guest_reason'] ?? ''));
+                }
+                $result = trainingClosureClose($pdo, $trainingId, (int)($_POST['version'] ?? 0), [
+                    'actual_started_at' => str_replace('T', ' ', (string)($_POST['actual_started_at'] ?? '')).':00'
     ,
-                'actual_ended_at' => str_replace('T', ' ', (string)($_POST['actual_ended_at'] ?? '')).':00',
-                'participant_ids' => $participants,'coach_ids' => is_array($_POST['coach_ids'] ?? null) ? $_POST['coach_ids'] : []
+                    'actual_ended_at' => str_replace('T', ' ', (string)($_POST['actual_ended_at'] ?? '')).':00',
+                    'participant_ids' => $participants,'coach_ids' => is_array($_POST['coach_ids'] ?? null) ? $_POST['coach_ids'] : []
     ,
-                'guest_reasons' => $guest,'reason' => (string)($_POST['reason'] ?? ''),'record_source' => (string)($_POST['record_source'] ?? 'coach')
+                    'guest_reasons' => $guest,'reason' => (string)($_POST['reason'] ?? ''),'record_source' => (string)($_POST['record_source'] ?? 'coach')
     ,
-                'confirmed' => ($_POST['confirm_action'] ?? '') === '1','void' => ($_POST['action'] ?? '') === 'void'
+                    'confirmed' => ($_POST['confirm_action'] ?? '') === '1','void' => ($_POST['action'] ?? '') === 'void'
     ,
-            ], $actor);
-            $success = 'Docházka byla uložena jako verze '.$result['version'].'.'.($result['review_required'] ? ' Oprava zasahuje uzavřený podklad odměny; předejte hospodáři kontrolu rozdílu.'
+                ], $actor);
+                $success = 'Docházka byla uložena jako verze '.$result['version'].'.'.($result['review_required'] ? ' Oprava zasahuje uzavřený podklad odměny; předejte hospodáři kontrolu rozdílu.'
     : '');
-        }
-    } catch (Throwable $e) {
-        $expected = $e instanceof TrainingClosureException || $e instanceof ClubMakeupException || $e instanceof InvalidArgumentException
+            }
+        } catch (Throwable $e) {
+            $expected = $e instanceof TrainingClosureException || $e instanceof ClubMakeupException || $e instanceof InvalidArgumentException
     || get_class($e) === RuntimeException::class;
-        http_response_code($expected ? 422 : 500);
-        $error = $expected ? $e->getMessage() : 'Zápis se nepodařil.';
-    }
-    if (str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')) {
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(['ok' => $error === '','message' => $error ?: $success,'result' => $error === '' ? ($result ?? null) : null], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-    if ($error === '') {
-        $_SESSION['training_closure_success'] = $success;
-        header('Location: training_closure_admin.php?'.http_build_query(['id' => $trainingId,'plan_id' => (int)($_POST['plan_id'] ?? 0)
+            http_response_code($expected ? 422 : 500);
+            $error = $expected ? $e->getMessage() : 'Zápis se nepodařil.';
+        }
+        if (str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['ok' => $error === '','message' => $error ?: $success,'result' => $error === '' ? ($result ?? null) : null], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        if ($error === '') {
+            $_SESSION['training_closure_success'] = $success;
+            header('Location: training_closure_admin.php?'.http_build_query(['id' => $trainingId,'plan_id' => (int)($_POST['plan_id'] ?? 0)
     ,'person_id' => (int)($_POST['person_id'] ?? 0)]), true, 303);
-        exit;
+            exit;
+        }
     }
 }
 $current = null;
@@ -139,18 +142,33 @@ $lessonSearch = mb_substr(staffListText($_GET, 'lesson_q'), 0, 100);
 $lessonOn = array_key_exists('lesson_on', $_GET) ? staffListText($_GET, 'lesson_on') : date('Y-m-d');
 $lessonChoices = trainingDayChoices($pdo, $actor, $lessonSearch, $lessonOn);
 $excusePerson = max(0, (int)($_POST['person_id'] ?? $_GET['person_id'] ?? 0));
-$excuseForm = $error !== '' && ($_POST['action'] ?? '') === 'personal_excuse' ? $_POST : [];
-$people = $pdo->query('SELECT s.id,s.jmeno,s.prijmeni FROM sportovci s WHERE '.coachTrainingPersonPredicate($pdo)
-    .' ORDER BY CASE WHEN ('.coachTrainingPreferredPersonPredicate($pdo).') THEN 0 ELSE 1 END,s.prijmeni,s.jmeno')->fetchAll(PDO::FETCH_ASSOC);
+$searching = $_SERVER['REQUEST_METHOD'] === 'POST' && trainingClosureSearchAction($_POST);
+$searchExcuse = $searching && str_starts_with(staffListText($_POST, 'action'), 'find_excuse_person');
+$excuseForm = ($searchExcuse || ($error !== '' && ($_POST['action'] ?? '') === 'personal_excuse')) ? $_POST : [];
 $coaches = $pdo->query('SELECT id,jmeno FROM treneri WHERE aktivni=1 ORDER BY jmeno')->fetchAll(PDO::FETCH_ASSOC);
 $s = $pdo->prepare("SELECT t.id,t.datum,t.napln,c.version,c.status FROM treninky t LEFT JOIN training_closures c ON c.training_id=t.id WHERE t.datum<=? AND "
     .coachScopeTrainingPredicate($pdo)." ORDER BY CASE WHEN c.current_revision_id IS NULL THEN 0 ELSE 1 END,t.datum DESC,t.id DESC LIMIT 100");
 $s->execute([date('Y-m-d')]);
 $rows = $s->fetchAll(PDO::FETCH_ASSOC);
-$failedClosure = $error !== '' && ($_POST['action'] ?? '') !== 'personal_excuse' ? $_POST : null;
+$failedClosure = (($searching && !$searchExcuse) || ($error !== '' && ($_POST['action'] ?? '') !== 'personal_excuse')) ? $_POST : null;
 $form = trainingClosureFormState($failedClosure, $current, $selectedPeople, $selectedCoaches);
 $selectedPeople = $form['participant_ids'];
 $selectedCoaches = $form['coach_ids'];
+$people = [];
+$excusePeople = [];
+$participantPage = null;
+$excusePage = null;
+$participantInput = trainingClosurePickerInput($_POST, 'participant');
+$excuseInput = trainingClosurePickerInput($_POST, 'excuse');
+if ($training) {
+    $participantPage = trainingClosurePersonPage($pdo, $participantInput);
+    $people = trainingClosurePersonOptions($participantPage, trainingClosureSelectedPeople($pdo, $selectedPeople));
+}
+if ($plan) {
+    $excusePage = $participantPage !== null && $participantInput === $excuseInput
+        ? $participantPage : trainingClosurePersonPage($pdo, $excuseInput);
+    $excusePeople = trainingClosurePersonOptions($excusePage, trainingClosureSelectedPeople($pdo, [$excusePerson]));
+}
 function tcH(mixed $v): string
 {
     return htmlspecialchars((string)$v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -199,11 +217,14 @@ function tcH(mixed $v): string
 <label class="col-md-6">Skutečný konec<input class="form-control" type="datetime-local" name="actual_ended_at" required value="<?=
         tcH($form['actual_ended_at'])?>">
 </label>
-<label class="col-md-6">Skutečně přítomní sportovci<select class="form-select" name="participant_ids[]" multiple size="9"><?php
+<div class="col-md-6" data-attendance-person-picker>
+<?php trainingClosurePeopleControls('participant', $participantPage); ?>
+<label class="d-block">Skutečně přítomní sportovci<select class="form-select" name="participant_ids[]" multiple size="9"><?php
         foreach ($people as $p):?><option value="<?=(int)$p['id']?>" <?=in_array((int)$p['id'], $selectedPeople, true) ? 'selected' : ''
             ?>><?=tcH($p['prijmeni'].' '.$p['jmeno'])?> (#<?=(int)$p['id']?>)</option><?php endforeach;
         ?></select>
 </label>
+</div>
 <label class="col-md-6">Skutečně přítomní trenéři<select class="form-select" name="coach_ids[]" multiple required size="9"><?php
             foreach ($coaches as $c):?><option value="<?=(int)$c['id']?>" <?=in_array((int)$c['id'], $selectedCoaches, true) ? 'selected' : ''
                 ?>><?=tcH($c['jmeno'])?></option><?php endforeach;?></select>
@@ -237,17 +258,19 @@ function tcH(mixed $v): string
 <p>Zapište skutečný čas, kdy rodič či sportovec omluvu předal. Lhůta náhrady se posuzuje podle pravidel konkrétního programu; čas přepisu se nepřepisuje.</p>
 <form method="post">
 <input type="hidden" name="csrf_token" value="<?=tcH(csrf_token())?>">
-<input type="hidden" name="action" value="personal_excuse">
 <input type="hidden" name="training_id" value="<?=$trainingId?>">
 <div class="row g-3">
 <input type="hidden" name="plan_id" value="<?=(int)$plan['id']?>">
 <p>Omluva pro lekci <strong><?=tcH($plan['nazev'].' · '.$plan['datum'])?></strong>
 </p>
-<label class="col-md-5">Sportovec<select class="form-select" required name="person_id">
-<option value="">Vyberte sportovce</option><?php foreach ($people as $p):?><option value="<?=(int)$p['id']
+<div class="col-md-5" data-excuse-person-picker>
+<?php trainingClosurePeopleControls('excuse', $excusePage); ?>
+<label class="d-block">Sportovec<select class="form-select" required name="person_id">
+<option value="">Vyberte sportovce</option><?php foreach ($excusePeople as $p):?><option value="<?=(int)$p['id']
     ?>" <?=$excusePerson === (int)$p['id'] ? 'selected' : ''?>><?=tcH($p['prijmeni'].' '.$p['jmeno'])
     ?></option><?php endforeach;?></select>
 </label>
+</div>
 <label class="col-md-4">Skutečné přijetí omluvy<input class="form-control" type="datetime-local" required name="received_at" value="<?=
         tcH($excuseForm['received_at'] ?? '')?>">
 </label>
@@ -264,7 +287,7 @@ function tcH(mixed $v): string
         tcH($excuseForm['reason'] ?? '')?>">
 </label>
 </div>
-<button class="btn btn-outline-primary mt-3">Zapsat osobní omluvu</button>
+<button class="btn btn-outline-primary mt-3" name="action" value="personal_excuse">Zapsat osobní omluvu</button>
 </form>
 </div>
 </section><?php endif;?>

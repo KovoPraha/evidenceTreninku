@@ -369,3 +369,10 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 Sloučené podklady mají místní verzované odkazy. Dosud otevřený ranní výsledek
 se ověřuje v konkrétním PR; jeho existence není důkaz provedení ani dokončení.
+
+## Doplnění P11: výběr osob v docházce / PR #366
+
+| ID | Soubor | Stav / registr | Dispozice a důkaz |
+| --- | --- | --- | --- |
+| PL-c0b7a64780 | [P11 R06 — výběr osob v docházce, 7. 11. 2026](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), další lekce/mobil/souběh otevřené. |
+| PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), další lekce/mobil/souběh otevřené. |

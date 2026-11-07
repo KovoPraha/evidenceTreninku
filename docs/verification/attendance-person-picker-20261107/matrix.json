@@ -1,0 +1,128 @@
+[
+    {
+        "id": "closure-coach-training",
+        "role": "coach",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 200
+    },
+    {
+        "id": "closure-coach-plan",
+        "role": "coach",
+        "path": "\/training_closure_admin.php?plan_id=50010",
+        "status": 200
+    },
+    {
+        "id": "closure-coach-search",
+        "role": "coach",
+        "path": "\/training_closure_admin.php?id=101&lesson_on=&lesson_q=Synthetic",
+        "status": 200
+    },
+    {
+        "id": "closure-coach-empty-search",
+        "role": "coach",
+        "path": "\/training_closure_admin.php?id=101&lesson_on=&lesson_q=NOTFOUND",
+        "status": 200
+    },
+    {
+        "id": "closure-coach-list",
+        "role": "coach",
+        "path": "\/training_closure_admin.php",
+        "status": 200
+    },
+    {
+        "id": "closure-lead-training",
+        "role": "sports_lead",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 200
+    },
+    {
+        "id": "closure-lead-foreign",
+        "role": "sports_lead",
+        "path": "\/training_closure_admin.php?id=102",
+        "status": 200
+    },
+    {
+        "id": "closure-lead-plan",
+        "role": "sports_lead",
+        "path": "\/training_closure_admin.php?plan_id=50011",
+        "status": 200
+    },
+    {
+        "id": "closure-other-own",
+        "role": "other_coach",
+        "path": "\/training_closure_admin.php?id=102",
+        "status": 200
+    },
+    {
+        "id": "closure-coach-foreign-denied",
+        "role": "coach",
+        "path": "\/training_closure_admin.php?id=102",
+        "status": 403
+    },
+    {
+        "id": "closure-coach-foreign-plan-denied",
+        "role": "coach",
+        "path": "\/training_closure_admin.php?plan_id=50011",
+        "status": 403
+    },
+    {
+        "id": "closure-registrar-denied",
+        "role": "registrar",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 403
+    },
+    {
+        "id": "closure-program_coordinator-denied",
+        "role": "program_coordinator",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 403
+    },
+    {
+        "id": "closure-catalog_manager-denied",
+        "role": "catalog_manager",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 403
+    },
+    {
+        "id": "closure-order_operator-denied",
+        "role": "order_operator",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 403
+    },
+    {
+        "id": "closure-finance_manager-denied",
+        "role": "finance_manager",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 403
+    },
+    {
+        "id": "closure-tv_operator-denied",
+        "role": "tv_operator",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 403
+    },
+    {
+        "id": "closure-bar_operator-denied",
+        "role": "bar_operator",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 403
+    },
+    {
+        "id": "closure-bar_admin-denied",
+        "role": "bar_admin",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 403
+    },
+    {
+        "id": "closure-system_admin-denied",
+        "role": "system_admin",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 403
+    },
+    {
+        "id": "closure-anonymous",
+        "role": "anonymous",
+        "path": "\/training_closure_admin.php?id=101",
+        "status": 302
+    }
+]
