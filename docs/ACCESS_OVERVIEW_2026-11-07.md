@@ -26,6 +26,28 @@ k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
 - Hranice: přehled pracovních účtů není seznam zákazníků ani všech sportovců;
   trenérské soukromé rozsahy zůstávají samostatnou správou.
 
+## Schválené produkční ověření
+
+Browser Computer Use se zastavil, protože nedokázal ověřit aktuální URL.
+Původní browser úkon se neopakuje. Produkční ověření proto provede chráněný
+`production-drills.yml / overit-pracovni-pristupy` přes skutečné HTTPS formuláře:
+
+1. `access_phase=baseline` před nasazením uloží pouze čtecí otisk rolí, výchozích
+   pozic, superadminů a zvláštních barových grantů původních účtů mimo webroot.
+2. Standardní deploy z main vytvoří a ověří zálohu; bez importu kroužků.
+3. `access_phase=verify`, `access_run_id=<baseline běh>` založí dva nové technické
+   účty na neexistujících adresách `@example.invalid`, bez sdílení hesel či pošty.
+   Použije skutečný login, CSRF, formuláře rolí a explicitního grantu spotřeby,
+   zkontroluje jejich persistenci, audit i povolení/odmítnutí přístupu.
+4. Úklid ve `finally` deaktivuje výhradně tyto nové účty a odebere jejich pozice
+   i granty. Původní ID nesmějí být přijata jako testovací účet ani při úklidu.
+   Porovná otisk všech původních přiřazení s bodem 1. Při přerušení procesu lze
+   spustit samostatné `access_phase=cleanup` se stejným baseline ID.
+
+Hesla zůstávají pouze v paměti procesu; soukromý obnovovací soubor obsahuje jen
+ID, otisky a stav. Výstupem jsou agregace a výsledky kontrol, nikoli HTML
+se skutečnými jmény/e-maily. Nejde o nové vizuální produkční UAT v Chrome.
+
 Ověření: 44 cílených testů / 2413 assertions, 16 HTTP kontrol formulářů a
 Chrome při šířkách 1280 a 390 px. Podrobnosti a hranice bootstrapu jsou v
 [protokolu](verification/access-overview-20261107/RESULTS.md). Návaznosti:
