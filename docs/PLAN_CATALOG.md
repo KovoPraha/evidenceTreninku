@@ -370,3 +370,5 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 Sloučené podklady mají místní verzované odkazy. Dosud otevřený ranní výsledek
 se ověřuje v konkrétním PR; jeho existence není důkaz provedení ani dokončení.
+
+| PL-30d4f6c028 | [Dávkové lekce](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | PARTIAL / P11 | Schválená implementace, [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md); parita a měření před/po. |

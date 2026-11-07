@@ -207,6 +207,20 @@ jobs:
           path: catalog-page-comparison.json
           retention-days: 14
 
+      - name: Porovnat nabídku lekcí a dávkové současné oprávnění
+        env:
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: php tests/Support/TrainingDayChoicesProfile.php --mariadb > attendance-lesson-comparison.json
+
+      - name: Uchovat nabídku lekcí a párové měření
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: attendance-lesson-read-${{ matrix.mariadb-version }}
+          path: attendance-lesson-comparison.json
+          retention-days: 14
+
       - name: Uchovat shodu a párové měření klubových cen
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

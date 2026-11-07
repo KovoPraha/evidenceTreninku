@@ -1,0 +1,3035 @@
+{
+    "php": "8.2.35",
+    "server": {
+        "port": 3306,
+        "version": "11.4.13-MariaDB-ubu2404",
+        "driver": "mysql"
+    },
+    "method": "5 warmups, 30 interleaved plain PDO pairs, exact ordered row and transaction parity; separate warmed SQL\/EXPLAIN. Synthetic contract fixtures; not full HTTP latency.",
+    "source_sha256": {
+        "includes\/training_day.php": "8f74fdb7537e8d68ee08dc8553db3c5c14596ef41479d8f60a6b5ef79a9c5a84",
+        "includes\/coach_scope.php": "055ae137254ffa0f4f171600e14f8e632e29715e6d2399f08c593c1d19cc1940",
+        "includes\/coach_training_access.php": "6d65dcd7e16d6415eb7e7673898ec5f96f45e41eaeabdfaced1b0b3c397e56d3",
+        "tests\/Support\/TrainingDayChoicesBaseline.php": "5e0c4b7675e6cdd9d472bb5a290a61a2d585486602b36a4843c56f1fd849febc",
+        "tests\/Support\/TrainingDayChoicesFixture.php": "492126acb24555a2583ac8c611578bb8916cfea00edc487d9aab29714c09ea15",
+        "tests\/Support\/TrainingDayChoicesProfile.php": "3af679b73aad968c20ace70eef4fc3ca074b6221d8fcaff158a1aa0192e35b32"
+    },
+    "cases": [
+        {
+            "lesson_count": 0,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        0.39895,
+                        0.393222,
+                        0.417829,
+                        0.404209,
+                        0.404148,
+                        0.430167,
+                        0.409396,
+                        0.391289,
+                        0.455886,
+                        0.406302,
+                        0.413673,
+                        0.408014,
+                        0.397929,
+                        0.399481,
+                        0.40528,
+                        0.401154,
+                        0.392871,
+                        0.414053,
+                        0.397508,
+                        0.403417,
+                        0.416537,
+                        0.420392,
+                        0.399161,
+                        0.406913,
+                        0.401194,
+                        0.402946,
+                        0.423367,
+                        0.414654,
+                        0.400883,
+                        0.396807
+                    ],
+                    "peak_increment_bytes": 60808,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.4041785,
+                    "p95_ms": 0.430167
+                },
+                "after": {
+                    "samples_ms": [
+                        0.417028,
+                        0.43844,
+                        0.402065,
+                        0.408875,
+                        0.461991,
+                        0.424519,
+                        0.414224,
+                        0.410188,
+                        0.45821,
+                        0.438851,
+                        0.402816,
+                        0.399091,
+                        0.414104,
+                        0.402546,
+                        0.400183,
+                        0.412151,
+                        0.411059,
+                        0.402826,
+                        0.395546,
+                        0.417909,
+                        0.402987,
+                        0.400933,
+                        0.41202,
+                        0.399732,
+                        0.416637,
+                        0.41819,
+                        0.401955,
+                        0.396537,
+                        0.421935,
+                        0.400533
+                    ],
+                    "peak_increment_bytes": 60808,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.41062350000000003,
+                    "p95_ms": 0.45821
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 1,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        0.771982,
+                        0.773133,
+                        0.765623,
+                        0.782027,
+                        0.776499,
+                        0.764751,
+                        0.789979,
+                        0.75767,
+                        0.782638,
+                        0.787656,
+                        0.764912,
+                        0.79043,
+                        0.789508,
+                        0.769519,
+                        0.779423,
+                        0.77734,
+                        0.789779,
+                        0.825032,
+                        0.829018,
+                        0.818251,
+                        0.819513,
+                        0.820024,
+                        0.822968,
+                        0.833535,
+                        0.817911,
+                        0.80402,
+                        0.83038,
+                        0.813635,
+                        0.826784,
+                        0.822748
+                    ],
+                    "peak_increment_bytes": 100976,
+                    "output_sha256": "9eae5f9af348ab2ec0da023d657a5ed1356972f54f244f03ed7f4a4ae872eab7",
+                    "sql": 6,
+                    "fetched_rows": 6,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.789879,
+                    "p95_ms": 0.83038
+                },
+                "after": {
+                    "samples_ms": [
+                        0.800835,
+                        0.770079,
+                        0.772413,
+                        0.75694,
+                        0.778511,
+                        0.782738,
+                        0.773745,
+                        0.775226,
+                        0.787295,
+                        0.778362,
+                        0.787245,
+                        0.785062,
+                        0.766013,
+                        0.801225,
+                        0.760966,
+                        0.807305,
+                        0.869229,
+                        0.906915,
+                        0.81681,
+                        0.828978,
+                        0.806163,
+                        0.815427,
+                        0.821857,
+                        0.799212,
+                        0.810199,
+                        0.795498,
+                        0.814306,
+                        0.803239,
+                        0.821136,
+                        0.839083
+                    ],
+                    "peak_increment_bytes": 140336,
+                    "output_sha256": "9eae5f9af348ab2ec0da023d657a5ed1356972f54f244f03ed7f4a4ae872eab7",
+                    "sql": 6,
+                    "fetched_rows": 6,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?)": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.8000235,
+                    "p95_ms": 0.869229
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        20.617062,
+                        20.118641,
+                        20.405283,
+                        20.615408,
+                        20.054845,
+                        19.979592,
+                        20.161526,
+                        19.058049,
+                        19.998035,
+                        20.421017,
+                        20.056577,
+                        20.71645,
+                        20.284781,
+                        19.598027,
+                        19.383054,
+                        18.887779,
+                        19.490451,
+                        18.924043,
+                        19.255597,
+                        19.686561,
+                        19.545018,
+                        19.42017,
+                        20.054555,
+                        19.889497,
+                        19.941645,
+                        20.0251,
+                        20.180084,
+                        20.116247,
+                        19.783261,
+                        19.84886
+                    ],
+                    "peak_increment_bytes": 134488,
+                    "output_sha256": "e1c83ecccdbb4bda78ccf686a25ec47a05137cb4dd5e3655710b8279bcf6f351",
+                    "sql": 153,
+                    "fetched_rows": 202,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 19.9888135,
+                    "p95_ms": 20.617062
+                },
+                "after": {
+                    "samples_ms": [
+                        1.039124,
+                        0.955468,
+                        0.998382,
+                        1.043325,
+                        0.971672,
+                        0.92381,
+                        0.960705,
+                        0.921387,
+                        0.988718,
+                        0.931391,
+                        0.985463,
+                        0.925393,
+                        1.017131,
+                        0.944702,
+                        1.037301,
+                        0.958552,
+                        1.016049,
+                        0.947886,
+                        0.979995,
+                        0.898722,
+                        0.973135,
+                        0.913775,
+                        1.042579,
+                        0.948157,
+                        1.04322,
+                        0.958072,
+                        1.039254,
+                        0.973576,
+                        1.015458,
+                        1.026059
+                    ],
+                    "peak_increment_bytes": 183352,
+                    "output_sha256": "e1c83ecccdbb4bda78ccf686a25ec47a05137cb4dd5e3655710b8279bcf6f351",
+                    "sql": 6,
+                    "fetched_rows": 104,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "ALL",
+                                    "possible_keys": "PRIMARY",
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.9733555,
+                    "p95_ms": 1.04322
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 1000,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        20.270344,
+                        20.015896,
+                        20.264311,
+                        20.222497,
+                        20.026692,
+                        19.933878,
+                        19.692905,
+                        19.033778,
+                        19.093138,
+                        20.283979,
+                        20.384291,
+                        20.291562,
+                        20.392503,
+                        20.137459,
+                        19.91188,
+                        20.127515,
+                        19.473776,
+                        19.255392,
+                        19.555268,
+                        20.4936,
+                        19.862115,
+                        19.492864,
+                        19.17407,
+                        19.096853,
+                        20.017249,
+                        20.275206,
+                        20.413765,
+                        20.022887,
+                        19.985291,
+                        19.899972
+                    ],
+                    "peak_increment_bytes": 134496,
+                    "output_sha256": "7bc825a7212a840be4f0a042c5ef9da12fa3117672f6b0e2f4ace7f978869eb6",
+                    "sql": 153,
+                    "fetched_rows": 202,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1000",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 20.016572500000002,
+                    "p95_ms": 20.413765
+                },
+                "after": {
+                    "samples_ms": [
+                        1.251624,
+                        1.176461,
+                        1.258194,
+                        1.317823,
+                        1.223942,
+                        1.178464,
+                        1.321619,
+                        1.226276,
+                        1.246806,
+                        1.190232,
+                        1.244123,
+                        1.171103,
+                        1.260607,
+                        1.18278,
+                        1.207768,
+                        1.158894,
+                        1.274488,
+                        1.188959,
+                        1.254358,
+                        1.214228,
+                        1.184693,
+                        1.152695,
+                        1.231063,
+                        1.177422,
+                        1.275891,
+                        1.180988,
+                        1.221539,
+                        1.15609,
+                        1.205525,
+                        1.137702
+                    ],
+                    "peak_increment_bytes": 184928,
+                    "output_sha256": "7bc825a7212a840be4f0a042c5ef9da12fa3117672f6b0e2f4ace7f978869eb6",
+                    "sql": 6,
+                    "fetched_rows": 104,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1000",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "range",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 1.210998,
+                    "p95_ms": 1.317823
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 2,
+            "position": "sports_lead",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        19.445518,
+                        19.664717,
+                        19.980954,
+                        19.861103,
+                        19.58639,
+                        19.54691,
+                        19.731639,
+                        20.003758,
+                        20.135647,
+                        20.445818,
+                        20.422023,
+                        19.086804,
+                        19.006397,
+                        19.035461,
+                        20.273359,
+                        20.023598,
+                        19.690787,
+                        19.603165,
+                        19.422082,
+                        19.020889,
+                        18.96891,
+                        19.159207,
+                        19.729165,
+                        20.523586,
+                        20.895781,
+                        20.614833,
+                        20.409894,
+                        20.066282,
+                        20.048201,
+                        19.834754
+                    ],
+                    "peak_increment_bytes": 134488,
+                    "output_sha256": "c9dd0830ccddd7c65d7a59e9b25aca7f2a70c5c425927adcad8833d0626459e3",
+                    "sql": 153,
+                    "fetched_rows": 202,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=2 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 19.783196500000003,
+                    "p95_ms": 20.614833
+                },
+                "after": {
+                    "samples_ms": [
+                        1.006886,
+                        0.913585,
+                        0.984261,
+                        0.912143,
+                        0.960816,
+                        0.911943,
+                        1.006916,
+                        0.932764,
+                        1.006585,
+                        0.941968,
+                        1.026545,
+                        0.941587,
+                        0.962769,
+                        0.940856,
+                        0.954857,
+                        0.930551,
+                        0.957291,
+                        0.921056,
+                        0.978903,
+                        0.930891,
+                        0.957291,
+                        0.916108,
+                        1.041518,
+                        1.034666,
+                        1.008528,
+                        0.951322,
+                        0.98991,
+                        0.942519,
+                        0.955428,
+                        0.924341
+                    ],
+                    "peak_increment_bytes": 183352,
+                    "output_sha256": "c9dd0830ccddd7c65d7a59e9b25aca7f2a70c5c425927adcad8833d0626459e3",
+                    "sql": 6,
+                    "fetched_rows": 104,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=2 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "ALL",
+                                    "possible_keys": "PRIMARY",
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.9551425,
+                    "p95_ms": 1.034666
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 3,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        19.936667,
+                        19.793411,
+                        20.261276,
+                        20.081465,
+                        20.46325,
+                        19.974904,
+                        19.791019,
+                        20.083312,
+                        20.215543,
+                        20.211295,
+                        20.01835,
+                        20.167429,
+                        19.85225,
+                        19.748618,
+                        19.735544,
+                        19.113799,
+                        19.119262,
+                        20.546495,
+                        20.09758,
+                        19.98487,
+                        20.014394,
+                        20.063548,
+                        20.129848,
+                        20.231902,
+                        20.145522,
+                        19.728523,
+                        19.857147,
+                        19.366949,
+                        19.104064,
+                        19.977108
+                    ],
+                    "peak_increment_bytes": 134488,
+                    "output_sha256": "5c0fb600a31a7bc67e0bdeba3d6b6f3b52bb2eaa4e243e9d55d6081271cb7f2a",
+                    "sql": 153,
+                    "fetched_rows": 202,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=3 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 19.999632,
+                    "p95_ms": 20.46325
+                },
+                "after": {
+                    "samples_ms": [
+                        0.966414,
+                        0.941337,
+                        1.007757,
+                        0.933655,
+                        0.98984,
+                        0.960336,
+                        1.01001,
+                        0.960286,
+                        1.035398,
+                        0.940054,
+                        1.013936,
+                        0.939565,
+                        0.986264,
+                        0.958643,
+                        1.020085,
+                        0.973946,
+                        1.058463,
+                        0.95679,
+                        0.993015,
+                        0.950761,
+                        0.977341,
+                        1.031832,
+                        1.020075,
+                        0.952814,
+                        1.005834,
+                        0.93706,
+                        1.013515,
+                        0.945533,
+                        1.020616,
+                        0.952274
+                    ],
+                    "peak_increment_bytes": 183352,
+                    "output_sha256": "5c0fb600a31a7bc67e0bdeba3d6b6f3b52bb2eaa4e243e9d55d6081271cb7f2a",
+                    "sql": 6,
+                    "fetched_rows": 104,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=3 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "ALL",
+                                    "possible_keys": "PRIMARY",
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.9756435,
+                    "p95_ms": 1.035398
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 4,
+            "position": "coach",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        33.666187,
+                        33.047226,
+                        32.393206,
+                        33.714889,
+                        33.756047,
+                        34.747094,
+                        34.654109,
+                        34.897545,
+                        34.091482,
+                        33.577258,
+                        33.804765,
+                        34.321964,
+                        35.337788,
+                        34.001747,
+                        33.85762,
+                        32.775641,
+                        33.086178,
+                        33.498048,
+                        33.367213,
+                        33.407752,
+                        33.802306,
+                        32.706468,
+                        32.730112,
+                        33.423276,
+                        33.296952,
+                        32.893164,
+                        33.542906,
+                        33.143716,
+                        32.331122,
+                        32.549196
+                    ],
+                    "peak_increment_bytes": 152552,
+                    "output_sha256": "c6eb1ef4d796ad42d4dbc25e9e9035dd596f87f021653652cbe2718387a2b7fa",
+                    "sql": 254,
+                    "fetched_rows": 252,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 0,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_superadmins",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=4 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "TABLES",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": "TABLE_SCHEMA,TABLE_NAME",
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": null,
+                                    "Extra": "Using where; Skip_open_table; Scanned 0 databases"
+                                }
+                            ]
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 33.520477,
+                    "p95_ms": 34.897545
+                },
+                "after": {
+                    "samples_ms": [
+                        1.596027,
+                        1.436983,
+                        1.44158,
+                        1.359266,
+                        1.430733,
+                        1.37532,
+                        1.543093,
+                        1.418245,
+                        1.406937,
+                        1.36175,
+                        1.40853,
+                        1.35531,
+                        1.479256,
+                        1.495451,
+                        1.436452,
+                        1.343232,
+                        1.452776,
+                        1.347778,
+                        1.450854,
+                        1.380397,
+                        1.461099,
+                        1.371885,
+                        1.442611,
+                        1.332566,
+                        1.530934,
+                        1.404524,
+                        1.454539,
+                        1.345325,
+                        1.4553,
+                        1.385014
+                    ],
+                    "peak_increment_bytes": 201416,
+                    "output_sha256": "c6eb1ef4d796ad42d4dbc25e9e9035dd596f87f021653652cbe2718387a2b7fa",
+                    "sql": 9,
+                    "fetched_rows": 105,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 0,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_superadmins",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=4 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "ALL",
+                                    "possible_keys": "PRIMARY",
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "TABLES",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": "TABLE_SCHEMA,TABLE_NAME",
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": null,
+                                    "Extra": "Using where; Skip_open_table; Scanned 0 databases"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 1.424489,
+                    "p95_ms": 1.543093
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 4,
+            "position": "sports_lead",
+            "search": "",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        32.918842,
+                        32.848862,
+                        34.281478,
+                        34.443192,
+                        34.297,
+                        33.362344,
+                        33.452645,
+                        33.657669,
+                        32.319259,
+                        32.672486,
+                        33.12049,
+                        33.477368,
+                        33.813248,
+                        33.629446,
+                        33.654054,
+                        32.894345,
+                        33.556737,
+                        33.876878,
+                        32.981456,
+                        32.766378,
+                        33.263026,
+                        33.648905,
+                        32.375018,
+                        32.328319,
+                        41.575897,
+                        38.47816,
+                        33.243706,
+                        33.678746,
+                        33.15326,
+                        33.264016
+                    ],
+                    "peak_increment_bytes": 152552,
+                    "output_sha256": "c6eb1ef4d796ad42d4dbc25e9e9035dd596f87f021653652cbe2718387a2b7fa",
+                    "sql": 254,
+                    "fetched_rows": 252,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 51,
+                            "rows": 0,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?": {
+                            "count": 51,
+                            "rows": 51,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_superadmins",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=4 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "TABLES",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": "TABLE_SCHEMA,TABLE_NAME",
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": null,
+                                    "Extra": "Using where; Skip_open_table; Scanned 0 databases"
+                                }
+                            ]
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 50,
+                            "rows": 50,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 33.4074945,
+                    "p95_ms": 38.47816
+                },
+                "after": {
+                    "samples_ms": [
+                        1.367038,
+                        1.374138,
+                        1.450603,
+                        1.427298,
+                        1.400608,
+                        1.348609,
+                        1.440719,
+                        1.333427,
+                        1.398685,
+                        1.369721,
+                        1.398825,
+                        1.346597,
+                        1.550329,
+                        1.433738,
+                        1.377653,
+                        1.314469,
+                        1.424874,
+                        1.34246,
+                        1.536293,
+                        1.41531,
+                        1.385245,
+                        1.340768,
+                        1.403482,
+                        1.354418,
+                        1.628011,
+                        2.344614,
+                        1.590238,
+                        1.407879,
+                        1.388179,
+                        1.339916
+                    ],
+                    "peak_increment_bytes": 201416,
+                    "output_sha256": "c6eb1ef4d796ad42d4dbc25e9e9035dd596f87f021653652cbe2718387a2b7fa",
+                    "sql": 9,
+                    "fetched_rows": 105,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 0,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_superadmins WHERE trainer_id=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_superadmins",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "1",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 ORDER BY CASE WHEN p.trener_id=4 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 50,
+                            "parameter_count": 50,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "ALL",
+                                    "possible_keys": "PRIMARY",
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "TABLES",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": "TABLE_SCHEMA,TABLE_NAME",
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": null,
+                                    "Extra": "Using where; Skip_open_table; Scanned 0 databases"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 1.398755,
+                    "p95_ms": 1.628011
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 100,
+            "actor": 1,
+            "position": "coach",
+            "search": "kurz_%",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        5.676724,
+                        5.652568,
+                        5.796959,
+                        5.693028,
+                        6.074063,
+                        6.073299,
+                        5.985878,
+                        6.009423,
+                        5.996654,
+                        6.009764,
+                        5.935342,
+                        5.915653,
+                        5.989213,
+                        5.929453,
+                        5.898576,
+                        5.884165,
+                        16.380814,
+                        5.918887,
+                        6.229514,
+                        6.006229,
+                        5.9012,
+                        5.762192,
+                        5.662221,
+                        5.638035,
+                        5.62797,
+                        5.610654,
+                        5.696999,
+                        5.962512,
+                        5.944335,
+                        5.880409
+                    ],
+                    "peak_increment_bytes": 110816,
+                    "output_sha256": "23a2cacf6dea8a53d8ae4401a6c8625ebbac030b62c208a7413cd448e0b0c77d",
+                    "sql": 45,
+                    "fetched_rows": 58,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 15,
+                            "rows": 15,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 15,
+                            "rows": 15,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 14,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "100",
+                                    "Extra": "Using where; Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 14,
+                            "rows": 14,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 5.91727,
+                    "p95_ms": 6.229514
+                },
+                "after": {
+                    "samples_ms": [
+                        0.876159,
+                        0.885252,
+                        0.940356,
+                        0.886014,
+                        0.99747,
+                        1.028641,
+                        0.874484,
+                        0.878511,
+                        0.912311,
+                        0.882937,
+                        0.860674,
+                        0.863117,
+                        0.86471,
+                        0.859181,
+                        0.870749,
+                        0.841916,
+                        0.8915,
+                        0.859953,
+                        0.880073,
+                        0.851921,
+                        0.859081,
+                        0.831099,
+                        0.903819,
+                        0.903598,
+                        0.879772,
+                        0.884259,
+                        0.930769,
+                        0.903508,
+                        0.897139,
+                        0.874064
+                    ],
+                    "peak_increment_bytes": 152584,
+                    "output_sha256": "23a2cacf6dea8a53d8ae4401a6c8625ebbac030b62c208a7413cd448e0b0c77d",
+                    "sql": 6,
+                    "fetched_rows": 32,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 14,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "100",
+                                    "Extra": "Using where; Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 14,
+                            "parameter_count": 14,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "range",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": null,
+                                    "rows": "14",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.8799224999999999,
+                    "p95_ms": 0.99747
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 100,
+            "actor": 1,
+            "position": "coach",
+            "search": "ŽLUTÝ",
+            "on": "2026-11-07",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        5.19573,
+                        5.469182,
+                        5.285235,
+                        5.253376,
+                        5.223672,
+                        5.185515,
+                        5.210732,
+                        5.123972,
+                        5.207948,
+                        5.144984,
+                        5.192675,
+                        5.108919,
+                        5.034207,
+                        5.08544,
+                        4.987437,
+                        4.975089,
+                        4.928889,
+                        4.973546,
+                        4.9499,
+                        5.005934,
+                        5.001979,
+                        4.957702,
+                        4.96284,
+                        5.08266,
+                        4.967067,
+                        4.983681,
+                        4.994027,
+                        4.999806,
+                        4.958613,
+                        5.016942
+                    ],
+                    "peak_increment_bytes": 109824,
+                    "output_sha256": "3513ab9b171984b78c569edd3728b618ce38528692d062c9684e88ddfc7f5d76",
+                    "sql": 39,
+                    "fetched_rows": 50,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 13,
+                            "rows": 13,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 13,
+                            "rows": 13,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') AND p.datum>=? AND p.datum<=? ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 12,
+                            "parameter_count": 4,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "100",
+                                    "Extra": "Using where; Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT trener_id FROM planovane_treninky WHERE id=?": {
+                            "count": 12,
+                            "rows": 12,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 5.0255745,
+                    "p95_ms": 5.285235
+                },
+                "after": {
+                    "samples_ms": [
+                        0.961896,
+                        0.989407,
+                        0.95094,
+                        0.887834,
+                        0.903288,
+                        0.896317,
+                        0.910909,
+                        0.888045,
+                        0.910378,
+                        0.881465,
+                        0.901545,
+                        0.888005,
+                        0.895947,
+                        1.11467,
+                        0.920895,
+                        0.910549,
+                        0.916087,
+                        0.920153,
+                        0.922286,
+                        0.914044,
+                        0.914785,
+                        0.910809,
+                        0.87165,
+                        0.883018,
+                        0.910469,
+                        0.912081,
+                        0.887384,
+                        0.912332,
+                        0.897019,
+                        0.912492
+                    ],
+                    "peak_increment_bytes": 151224,
+                    "output_sha256": "3513ab9b171984b78c569edd3728b618ce38528692d062c9684e88ddfc7f5d76",
+                    "sql": 6,
+                    "fetched_rows": 28,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 2,
+                            "rows": 2,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') AND p.datum>=? AND p.datum<=? ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 12,
+                            "parameter_count": 4,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "100",
+                                    "Extra": "Using where; Using filesort"
+                                }
+                            ]
+                        },
+                        "SELECT id FROM planovane_treninky WHERE id IN (?,?,?,?,?,?,?,?,?,?,?,?)": {
+                            "count": 1,
+                            "rows": 12,
+                            "parameter_count": 12,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "planovane_treninky",
+                                    "type": "range",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": null,
+                                    "rows": "12",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.910679,
+                    "p95_ms": 0.989407
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 1,
+            "position": "coach",
+            "search": "NOTFOUND",
+            "on": "",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        0.443376,
+                        0.417638,
+                        0.437127,
+                        0.4988,
+                        0.418629,
+                        0.446512,
+                        0.434633,
+                        0.414213,
+                        0.450568,
+                        0.450096,
+                        0.458068,
+                        0.440141,
+                        0.427412,
+                        0.455615,
+                        0.428665,
+                        0.430237,
+                        0.451579,
+                        0.461022,
+                        0.4724,
+                        0.444468,
+                        0.461894,
+                        0.479101,
+                        0.467022,
+                        0.455334,
+                        0.43884,
+                        0.490778,
+                        0.471609,
+                        0.480633,
+                        0.471649,
+                        0.491359
+                    ],
+                    "peak_increment_bytes": 60808,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using where; Using filesort"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.4510735,
+                    "p95_ms": 0.491359
+                },
+                "after": {
+                    "samples_ms": [
+                        0.429796,
+                        0.435204,
+                        0.440061,
+                        0.427503,
+                        0.454222,
+                        0.414473,
+                        0.429395,
+                        0.461644,
+                        0.43891,
+                        0.453481,
+                        0.442955,
+                        0.442125,
+                        0.45844,
+                        0.454744,
+                        0.4457,
+                        0.434042,
+                        0.434062,
+                        0.467893,
+                        0.442565,
+                        0.456907,
+                        0.482646,
+                        0.482285,
+                        0.475034,
+                        0.461214,
+                        0.485299,
+                        0.466141,
+                        0.480933,
+                        0.468494,
+                        0.485089,
+                        0.472941
+                    ],
+                    "peak_increment_bytes": 60808,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 1=1 AND (p.nazev LIKE ? ESCAPE '!' OR p.id LIKE ? ESCAPE '!') ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "p",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "50",
+                                    "Extra": "Using where; Using filesort"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.45448299999999997,
+                    "p95_ms": 0.485089
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        },
+        {
+            "lesson_count": 50,
+            "actor": 1,
+            "position": "coach",
+            "search": "",
+            "on": "invalid",
+            "measurement": {
+                "before": {
+                    "samples_ms": [
+                        0.410597,
+                        0.422215,
+                        0.420762,
+                        0.413872,
+                        0.409575,
+                        0.557734,
+                        0.451078,
+                        0.477057,
+                        0.444819,
+                        0.413371,
+                        0.439241,
+                        0.422095,
+                        0.415324,
+                        0.409335,
+                        0.422535,
+                        0.410797,
+                        0.414543,
+                        0.414433,
+                        0.450527,
+                        0.418038,
+                        0.424308,
+                        0.409806,
+                        0.438799,
+                        0.420943,
+                        0.419611,
+                        0.436035,
+                        0.427713,
+                        0.435254,
+                        0.412279,
+                        0.852201
+                    ],
+                    "peak_increment_bytes": 60808,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 0=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": null,
+                                    "type": null,
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": null,
+                                    "Extra": "Impossible WHERE"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.421519,
+                    "p95_ms": 0.557734
+                },
+                "after": {
+                    "samples_ms": [
+                        0.423136,
+                        0.427602,
+                        0.406701,
+                        0.422234,
+                        0.432069,
+                        1.178546,
+                        0.411238,
+                        0.491244,
+                        0.412921,
+                        0.423637,
+                        0.422946,
+                        0.404899,
+                        0.43202,
+                        0.41273,
+                        0.414614,
+                        0.415505,
+                        0.672701,
+                        0.825711,
+                        0.629677,
+                        0.420131,
+                        0.518059,
+                        0.660273,
+                        0.428614,
+                        0.414393,
+                        0.423046,
+                        0.434583,
+                        0.441774,
+                        0.414664,
+                        0.428123,
+                        0.442786
+                    ],
+                    "peak_increment_bytes": 60808,
+                    "output_sha256": "35786c7117b4e38d0f169239752ce71158266ae2f6e4aa230fbbb87bd699c0e3",
+                    "sql": 3,
+                    "fetched_rows": 2,
+                    "queries": {
+                        "SELECT id FROM treneri WHERE id=? AND aktivni=1": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 1,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "treneri",
+                                    "type": "const",
+                                    "possible_keys": "PRIMARY",
+                                    "key": "PRIMARY",
+                                    "key_len": "4",
+                                    "ref": "const",
+                                    "rows": "1",
+                                    "Extra": ""
+                                }
+                            ]
+                        },
+                        "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?": {
+                            "count": 1,
+                            "rows": 1,
+                            "parameter_count": 2,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": "staff_user_positions",
+                                    "type": "ALL",
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": "4",
+                                    "Extra": "Using where"
+                                }
+                            ]
+                        },
+                        "SELECT p.* FROM planovane_treninky p WHERE 0=1 ORDER BY CASE WHEN p.trener_id=1 THEN 0 ELSE 1 END,p.datum DESC,p.cas_od,p.id DESC LIMIT 50": {
+                            "count": 1,
+                            "rows": 0,
+                            "parameter_count": 0,
+                            "explain": [
+                                {
+                                    "id": 1,
+                                    "select_type": "SIMPLE",
+                                    "table": null,
+                                    "type": null,
+                                    "possible_keys": null,
+                                    "key": null,
+                                    "key_len": null,
+                                    "ref": null,
+                                    "rows": null,
+                                    "Extra": "Impossible WHERE"
+                                }
+                            ]
+                        }
+                    },
+                    "median_ms": 0.4256195,
+                    "p95_ms": 0.825711
+                },
+                "parity": true,
+                "transaction_parity": true
+            }
+        }
+    ],
+    "dropped_owned_schemas": [
+        "lesson_read_dd957728c6168ba5",
+        "lesson_read_ab2aa49d3fde9008",
+        "lesson_read_1298b5ceb431349e",
+        "lesson_read_786f77d4200c775c",
+        "lesson_read_67dfa864509de768",
+        "lesson_read_2fa101e58b4cc263",
+        "lesson_read_732314e1165a05cb",
+        "lesson_read_e84d19ff69e9b28e",
+        "lesson_read_15cfdea29ac01e53",
+        "lesson_read_75945269c295222a",
+        "lesson_read_7f87aa68ec7f3bae",
+        "lesson_read_10bde47746fed2d3"
+    ]
+}
