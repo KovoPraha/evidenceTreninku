@@ -1,4 +1,7 @@
-param([Parameter(Mandatory)][string]$Output)
+param(
+ [Parameter(Mandatory)][string]$Output,
+ [ValidateSet('baseline','medical50k','medical100k','planner260','planner520','roster200','roster1000')][string]$StartAt='baseline'
+)
 $ErrorActionPreference='Stop'
 $root=(Resolve-Path -LiteralPath "$PSScriptRoot/../..").Path
 $outputPath=(Resolve-Path -LiteralPath $Output).Path
@@ -11,6 +14,7 @@ function Invoke-Profile([string]$Action,[string]$Level) {
  if ($LASTEXITCODE -ne 0) { throw "Scale profile failed: $Action / $Level" }
 }
 $levels=@('baseline','medical50k','medical100k','planner260','planner520','roster200','roster1000')
+$levels=$levels[([array]::IndexOf($levels,$StartAt))..($levels.Length-1)]
 foreach ($level in $levels) {
  if (!(Test-Path -LiteralPath "$outputPath/$level/seed.json")) { Invoke-Profile 'seed' $level }
  if (Test-Path -LiteralPath "$outputPath/$level/http.json") { throw 'Refusing to silently overwrite prior timing.' }

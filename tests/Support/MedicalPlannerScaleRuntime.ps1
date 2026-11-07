@@ -30,7 +30,7 @@ switch ($Action) {
   $webRoot=(Resolve-Path -LiteralPath $Root).Path.Replace('\','/')
   if ($webRoot -notmatch '^C:/Users/Marek/Documents/Codex/evidencePavel-medical-planner-scale-20261107$' -or
    (Get-FileHash -LiteralPath "$webRoot/config.php" -Algorithm SHA256).Hash.ToLowerInvariant() -ne $owned.config_sha256) { throw 'Unexpected isolated web root/config.' }
-  $argsList=@('-d',"session.save_path=$($owned.runtime)/sessions",'-d','date.timezone=Europe/Prague','-d','display_errors=1','-d','log_errors=1')
+  $argsList=@('-d',"session.save_path=$($owned.runtime)/sessions",'-d','session.gc_maxlifetime=14400','-d','date.timezone=Europe/Prague','-d','display_errors=1','-d','log_errors=1')
   if ($Instrument) {
    $env:EVIDENCE_PERFORMANCE_CONFIRM='SYNTHETIC-ONLY'
    $env:P11_HTTP_METRICS="$($owned.runtime)/metrics"

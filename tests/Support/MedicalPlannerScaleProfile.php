@@ -10,17 +10,18 @@ if (PHP_SAPI !== 'cli') {
 $action = $argv[1] ?? '';
 $output = realpath($argv[2] ?? '');
 $level = $argv[3] ?? '';
-if ($output === false || !in_array($action, ['seed', 'measure', 'verify', 'diagnose', 'project', 'restrict'], true)) {
+if ($output === false || !in_array($action, ['seed', 'measure', 'verify', 'diagnose', 'project', 'restrict', 'allow-login', 'checkpoint'], true)) {
     throw new RuntimeException('seed/measure/verify/diagnose/project OWN_OUTPUT LEVEL required.');
 }
 $argv = [__FILE__, '--library'];
 require_once __DIR__ . '/FullHttpReadProfile.php';
-[$runtime, $admin, $identity] = fullHttpEnvironment($output);
-$credentials = json_decode((string)file_get_contents($output . '/credentials.json'), true, 512, JSON_THROW_ON_ERROR);
-if ($runtime['port'] !== 33479 || $runtime['http_port'] !== 18115
-    || !preg_match('~^C:/xampp/tmp/kis-medical-planner-scale-20261107-[a-f0-9]{8}/data$~D', $runtime['datadir'])) {
+$declaredRuntime = json_decode((string)file_get_contents($output . '/runtime.json'), true, 512, JSON_THROW_ON_ERROR);
+if (($declaredRuntime['port'] ?? null) !== 33479 || ($declaredRuntime['http_port'] ?? null) !== 18115
+    || !preg_match('~^C:/xampp/tmp/kis-medical-planner-scale-20261107-[a-f0-9]{8}/data$~D', (string)($declaredRuntime['datadir'] ?? ''))) {
     throw new RuntimeException('Only the explicitly owned scale-study runtime is allowed.');
 }
+[$runtime, $admin, $identity] = fullHttpEnvironment($output);
+$credentials = json_decode((string)file_get_contents($output . '/credentials.json'), true, 512, JSON_THROW_ON_ERROR);
 $levels = [
     'baseline' => [10000, 52, 20, 1, true, true],
     'medical50k' => [50000, 52, 20, 1, true, false],
@@ -47,8 +48,15 @@ $pdo = new PDO(
 date_default_timezone_set('Europe/Prague');
 $pdo->exec("SET time_zone='" . date('P') . "'");
 
-if ($action === 'restrict') {
+if (in_array($action, ['restrict', 'allow-login'], true)) {
     scaleAssert(preg_match('/^http_[a-f0-9]{10}$/D', $runtime['web_user']) === 1, 'Unexpected owned database user.');
+    if ($action === 'allow-login') {
+        scaleAssert(empty($runtime['web_process_id']), 'Only prepare fresh logins between stopped web phases.');
+        $admin->exec('GRANT INSERT,UPDATE,DELETE ON `' . $runtime['schema'] . '`.* TO '
+            . $admin->quote($runtime['web_user']) . "@'127.0.0.1'");
+        echo "Owned synthetic DB account temporarily permits standard login. Restrict before any measurement.\n";
+        exit;
+    }
     $admin->exec('REVOKE INSERT,UPDATE,DELETE ON `' . $runtime['schema'] . '`.* FROM '
         . $admin->quote($runtime['web_user']) . "@'127.0.0.1'");
     scaleWrite($output . '/web-select-only.json', ['complete' => true, 'standard_logins_done_before_revocation' => true,
@@ -228,6 +236,14 @@ if ($action === 'seed') {
 
 $seed = json_decode((string)file_get_contents($directory . '/seed.json'), true, 512, JSON_THROW_ON_ERROR);
 scaleAssert($seed['today'] === date('Y-m-d') && $seed['checksums'] === scaleChecksums($pdo), 'Fixture changed or day boundary crossed.');
+if ($action === 'checkpoint') {
+    $pdo->exec('SET SESSION TRANSACTION READ ONLY');
+    $checkpoint = ['complete' => true, 'level' => $level, 'checksums' => scaleChecksums($pdo),
+        'server' => $identity, 'tmpdir' => $pdo->query('SELECT @@tmpdir')->fetchColumn(), 'domain_unchanged' => true];
+    scaleWrite($directory . '/checkpoint-' . date('His') . '.json', $checkpoint);
+    echo "All 21 owned domain checksums still match the seed.\n";
+    exit;
+}
 $cases = scaleCases($medical, $planner);
 
 if ($action === 'measure') {

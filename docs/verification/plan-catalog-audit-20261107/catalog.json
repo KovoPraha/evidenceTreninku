@@ -10260,6 +10260,39 @@
       "evidence": [
         "docs/MEDICAL_PLANNER_SCALE_2026-11-07.md"
       ]
+    },
+    {
+      "id": "PL-e7e4ef7ca6",
+      "path": "docs/verification/medical-planner-scale-20261107/RESULTS.md",
+      "title": "P11-SCALE RESULTS.md",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-SCALE",
+      "disposition": "Podpurny protokol vetsiho syntetickeho mereni; neni samostatny plan ani produkcni souhlas.",
+      "evidence": []
+    },
+    {
+      "id": "PL-9d4c15ff42",
+      "path": "docs/verification/medical-planner-scale-20261107/REPRODUCE.md",
+      "title": "P11-SCALE REPRODUCE.md",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-SCALE",
+      "disposition": "Podpurny protokol vetsiho syntetickeho mereni; neni samostatny plan ani produkcni souhlas.",
+      "evidence": []
+    },
+    {
+      "id": "PL-bea1125b4b",
+      "path": "docs/verification/medical-planner-scale-20261107/CALIBRATION.md",
+      "title": "P11-SCALE CALIBRATION.md",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-SCALE",
+      "disposition": "Podpurny protokol vetsiho syntetickeho mereni; neni samostatny plan ani produkcni souhlas.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

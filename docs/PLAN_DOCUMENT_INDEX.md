@@ -881,3 +881,9 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-400959e0ab | [MEDICAL_PLANNER_SCALE_2026-11-07.md](MEDICAL_PLANNER_SCALE_2026-11-07.md) | plan / IN_PROGRESS | P11-SCALE |
 
 | PL-fc92c8ac29 | [SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md) | handoff / IN_PROGRESS | P11-SCALE |
+
+| PL-e7e4ef7ca6 | [RESULTS.md](verification/medical-planner-scale-20261107/RESULTS.md) | artifact / SUPPORT | P11-SCALE |
+
+| PL-9d4c15ff42 | [REPRODUCE.md](verification/medical-planner-scale-20261107/REPRODUCE.md) | artifact / SUPPORT | P11-SCALE |
+
+| PL-bea1125b4b | [CALIBRATION.md](verification/medical-planner-scale-20261107/CALIBRATION.md) | artifact / SUPPORT | P11-SCALE |

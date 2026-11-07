@@ -58,3 +58,24 @@ jako zmrazený zdravotní algoritmus a kanonické RSVP. Samostatné projekce REA
 Předchozí neplatné přípravy (staré ID registráře a FK nabídky) jsou kalibrace,
 nejsou časové vzorky. První pomalý per-row seed se před časováním nahradil
 stejným dávkovým postupem jako ostatní objemy; jeho protokol zůstal oddělený.
+
+
+Průběžné sdílení [PR #375](https://github.com/KovoPraha/evidenceTreninku/pull/375),
+head měřiče `2feee67e`, draft během sběru. První CI dokumentace a PHP quality PASS;
+nejde o finální dokončení ani merge. Základní sada hotová: 18×30 časů, 4 negativa,
+18 úplných doménových/DOM parit, samostatné projekce a 22 diagnostických GET.
+Všech 21 součtů shodných. Stavové platné/odvolané čtení: 130558 Rows_examined,
+30065 serverových výstupních řádků, přesto nejvýše 25 zobrazených sledování.
+Slow log navíc eviduje protokolové Quit (0/0 řádků), proto jeho počet položek
+není totéž jako počet SQL Query/Execute z general logu. Řádkové čítače se tím nemění.
+Sada 50k je založená a její ověření běží; sada 100k a větší plánovač zatím NOT RUN.
+
+## Obnovení100k fáze
+
+Sady10k a50k hotové, všechny konečné časy zachované. První100k časování
+přerušilo HTTP500 kvůli chybějícímu lokálnímu TEMP .MAI souboru. Vlastní web
+a DB se bezpečně zastavily; všechny21checksumy před/po restartu a obnovení
+12standardních loginů shodné. Pouze vlastní my.ini nyní má vlastní tmpdir.
+Celá100k sada se opakuje, neúplná fáze je oddělená mimo finální vzorky.
+[Kalibrace](verification/medical-planner-scale-20261107/CALIBRATION.md),
+[průběžný výsledek](verification/medical-planner-scale-20261107/RESULTS.md).

@@ -93,10 +93,17 @@ def main():
         for name, data in reports.items():
             preserve(level + "-" + name, data)
     assert (summary["positive_cases"], summary["negative_cases"], summary["observations"]) == (72, 28, 2160)
-    for name in ("environment", "cleanup", "secret-scan", "logins", "web-select-only"):
+    incomplete = read(source / "incomplete-run.json")
+    assert incomplete["complete"] is False and incomplete["excluded_from_final_timings"] is True
+    checkpoints = read(source / "restart-checkpoints.json")
+    assert len(checkpoints["checkpoints"]) >= 3
+    assert all(c["complete"] and c["domain_unchanged"] for c in checkpoints["checkpoints"])
+    assert all(c["checksums"] == checkpoints["checkpoints"][0]["checksums"] for c in checkpoints["checkpoints"])
+    for name in ("environment", "cleanup", "secret-scan", "logins", "logins-initial", "web-select-only", "schema-metadata", "restart-checkpoints"):
         data = read(source / (name + ".json"))
         write(target / (name + ".json"), data)
         archive[name + ".json"] = hashlib.sha256((target / (name + ".json")).read_bytes()).hexdigest()
+    preserve("incomplete-run", incomplete)
     write(target / "summary.json", summary)
     archive["summary.json"] = hashlib.sha256((target / "summary.json").read_bytes()).hexdigest()
     for name in ("MedicalPlannerScaleProfile.php", "MedicalPlannerScaleRuntime.ps1", "MedicalPlannerScaleRun.ps1", "MedicalPlannerScaleReport.py"):
@@ -104,19 +111,45 @@ def main():
         destination.write_bytes((root / "tests/Support" / name).read_bytes())
         archive[destination.name] = hashlib.sha256(destination.read_bytes()).hexdigest()
     write(target / "artifact-sha256.json", archive)
+    def case(level, name):
+        return next(c for c in summary["levels"][level]["cases"] if c["id"] == name)
+
+    medical_valid = [case(level, "medical-valid") for level in ("baseline", "medical50k", "medical100k")]
+    medical_all = [case(level, "medical-all") for level in ("baseline", "medical50k", "medical100k")]
+    planner_root = [case(level, "planner-lead-root") for level in ("baseline", "planner260", "planner520")]
+    valid_times = " / ".join(f'{c["median_ms"]/1000:.2f}' for c in medical_valid)
+    all_times = " / ".join(f'{c["median_ms"]/1000:.2f}' for c in medical_all)
+    planner_times = " / ".join(f'{c["median_ms"]/1000:.2f}' for c in planner_root)
     lines = ["# Zdravotní přehled a plánovač — větší syntetická data, 7. 11. 2026", "",
              "Místní HTTP/SQL měření HOTOVO; aplikace ani produkce se touto studií neměnily.",
              "[Plán](../../MEDICAL_PLANNER_SCALE_2026-11-07.md), [předání](../../SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md).", "",
+             "## Praktický výsledek", "",
+             f'- Zdravotní filtr **Platné** při 10k / 50k / 100k sledování: orientační HTTP medián **{valid_times} s**. '
+             f'Při 100k prozkoumal server {medical_valid[-1]["actual_rows_examined"]:,} řádků, '
+             f'přesto stránka měla jen {medical_valid[-1]["html_bytes"]:,} B a nejvýše 25 sledování.',
+             f'- Běžný zdravotní seznam při stejných objemech: **{all_times} s**. '
+             'Omezené vrácené řádky a malé HTML nezaručují omezenou práci DB; roste i počet osob v hledání.',
+             f'- Plánovač vedoucího s filtrem kořene při 52 / 260 / 520 týdnech: **{planner_times} s**. '
+             f'Historický helper při 520 týdnech načetl {planner_root[-1]["projection_fetched_rows"]:,} řádků; '
+             'jde o verzi před souběžnou opravou #374.',
+             '- Výsledky filtrů, konkrétní položky, počty odpovědí a přístupové hranice souhlasí. '
+             'Tato studie nemění aplikaci ani produkci. Další priority vede předání.', "",
              "## Rozsah a metoda", "",
              "Zmrazená aplikace 69f49033, PHP 8.2.12 / MariaDB 10.4.32 na nevyhrazeném Windows PC.",
              "Nový vlastní datadir/porty, 350 tabulek / 161 migrací, žádný produkční config nebo dump.",
-             "Dvanáct standardních formulářových přihlášení; web DB účet potom SELECT only.",
+             "Jde o minimální legacy testovací schéma doplněné celým migračním katalogem, nikoli kopii produkčního schématu.",
+             "[Definice a indexy devíti tabulek](schema-metadata.json) zachycují podmínky studie; vedle PK začíná index plánů veřejností, další legacy indexy produkce se nekopírují.",
+             "Dvanáct rolí standardně přihlášených formulářem; po restartu vlastního serveru znovu všech 12. Web DB účet při měření SELECT only.",
              "72 kladných případů × pět zahřátí + 30 časů = **2160 HTTP vzorků**, 28 záporných kontrol.",
              "Celý prostý HTTP request včetně bootstrapu, aktuálního oprávnění a navigace; prostředky prohlížeče se nenačítají.",
-             "P95 je 29. z 30 seřazených hodnot. Všechny kompletní vzorky zachované; žádné odlehlé hodnoty vyřazené.",
+             "P95 je 29. z 30 seřazených hodnot. Všechny vzorky finálních úplných běhů zachované; žádné odlehlé hodnoty vyřazené.",
+             "První neúplná 100k fáze skončila chybou sdílené dočasné složky. Po ověření 21 součtů dostal vlastní server vlastní tmpdir a celých 100k se zopakovalo.",
+             "[Neúplný běh](incomplete-run.json.gz) je oddělený od 2160 vzorků; [kontrolní body](restart-checkpoints.json) dokládají nezměněná data.",
+             "Původní 10k/50k a zopakované 100k mají odlišnou cestu tmpdir na stejném disku; časové poměry nejsou kontrolovaný experiment.",
              "Studie měří růst objemů stejné aplikace. Nejde o pár starého/nového kódu ani o produkční SLA.", "",
              "Oddělená diagnostika ověřuje úplné HTML (jen CRLF/LF a CSP nonce normalizované), PHP peak a SQL.",
              "Skutečné rows examined pocházejí z **mysql.slow_log.rows_examined** vlastního serveru; nejsou to odhady EXPLAIN.",
+             "Jde o serverový čítač, nikoli počet všech fyzických čtení úložiště. Slow log může navíc evidovat Quit s nulovými řádky.",
              "Rows sent jsou serverové výstupní řádky včetně metadat. Samostatné CLI projekce měří skutečně fetched rows",
              "jen daného helperu (seznam + picker nebo historický souhrn), ne celé HTTP stránky. Tyto počty nezaměňovat.", "",
              "## Nezávislé objemy", "",
