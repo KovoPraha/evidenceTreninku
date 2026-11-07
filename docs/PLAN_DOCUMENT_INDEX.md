@@ -775,18 +775,27 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-edbd6d52dc | [tests/fixtures/bar-localhost-invoice.pdf](../tests/fixtures/bar-localhost-invoice.pdf) | binary-artifact / SUPPORT | DOC02 |
 | PL-794e724c77 | [tests/fixtures/kis/README.md](../tests/fixtures/kis/README.md) | reference / REFERENCE | DOC02 |
 
+| PL-f8baf5dce9 | [CATALOG_READ_PERFORMANCE_2026-11-07.md](CATALOG_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
+
+| PL-e65877b86a | [SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) | handoff / PARTIAL | P11 |
+
+| PL-fe732227cf | [RESULTS.md](verification/catalog-read-performance-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
+
+| PL-d31c81def3 | [targeted-junit.xml](verification/catalog-read-performance-20261107/targeted-junit.xml) | evidence / REFERENCE | P11 |
+
+| PL-cd5426bfc3 | [verification.json](verification/catalog-read-performance-20261107/verification.json) | evidence / REFERENCE | P11 |
+
+| PL-bfe0fab5b2 | [catalog-page-comparison.json](verification/catalog-read-performance-20261107/ci-10.3/catalog-page-comparison.json) | evidence / REFERENCE | P11 |
+
+| PL-2160b8afe9 | [catalog-page-comparison.json](verification/catalog-read-performance-20261107/ci-final-10.3/catalog-page-comparison.json) | evidence / REFERENCE | P11 |
+
+| PL-101d3dd75c | [catalog-page-comparison.json](verification/catalog-read-performance-20261107/ci-final-11.4/catalog-page-comparison.json) | evidence / REFERENCE | P11 |
+
 | PL-30d4f6c028 | [ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
-
 | PL-22fccd64f4 | [SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
-
 | PL-38b7449ba4 | [RESULTS.md](verification/attendance-lesson-read-performance-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
-
 | PL-78d18f8e5d | [sqlite-comparison.json](verification/attendance-lesson-read-performance-20261107/sqlite-comparison.json) | evidence / REFERENCE | P11 |
-
 | PL-2ab3c6b2d7 | [targeted-junit.xml](verification/attendance-lesson-read-performance-20261107/targeted-junit.xml) | evidence / REFERENCE | P11 |
-
 | PL-d3582f1892 | [verification.json](verification/attendance-lesson-read-performance-20261107/verification.json) | evidence / REFERENCE | P11 |
-
 | PL-9fc07f8b47 | [attendance-lesson-comparison.json](verification/attendance-lesson-read-performance-20261107/ci-10.3/attendance-lesson-comparison.json) | evidence / REFERENCE | P11 |
-
 | PL-d4b7b69c58 | [attendance-lesson-comparison.json](verification/attendance-lesson-read-performance-20261107/ci-11.4/attendance-lesson-comparison.json) | evidence / REFERENCE | P11 |

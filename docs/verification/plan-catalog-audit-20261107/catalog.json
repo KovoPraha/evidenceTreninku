@@ -9270,6 +9270,110 @@
       "evidence": []
     },
     {
+      "id": "PL-f8baf5dce9",
+      "path": "docs/CATALOG_READ_PERFORMANCE_2026-11-07.md",
+      "title": "CATALOG_READ_PERFORMANCE_2026-11-07",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-e65877b86a",
+      "path": "docs/SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md",
+      "title": "SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07",
+      "primary": false,
+      "role": "handoff",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-fe732227cf",
+      "path": "docs/verification/catalog-read-performance-20261107/RESULTS.md",
+      "title": "RESULTS",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-d31c81def3",
+      "path": "docs/verification/catalog-read-performance-20261107/targeted-junit.xml",
+      "title": "targeted-junit",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-cd5426bfc3",
+      "path": "docs/verification/catalog-read-performance-20261107/verification.json",
+      "title": "verification",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-bfe0fab5b2",
+      "path": "docs/verification/catalog-read-performance-20261107/ci-10.3/catalog-page-comparison.json",
+      "title": "catalog-page-comparison",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-2160b8afe9",
+      "path": "docs/verification/catalog-read-performance-20261107/ci-final-10.3/catalog-page-comparison.json",
+      "title": "catalog-page-comparison",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-101d3dd75c",
+      "path": "docs/verification/catalog-read-performance-20261107/ci-final-11.4/catalog-page-comparison.json",
+      "title": "catalog-page-comparison",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "evidence": [
+        "docs/verification/catalog-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
       "id": "PL-30d4f6c028",
       "path": "docs/ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
       "title": "ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",

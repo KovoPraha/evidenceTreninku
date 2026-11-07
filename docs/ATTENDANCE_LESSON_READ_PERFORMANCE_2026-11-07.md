@@ -51,3 +51,7 @@ Nativní parita a 720 párů na 10.3/11.4 PASS, 6 otisků zdrojů shodných.
 První runtime `b20715ec` má všech 11 CI kontrol PASS včetně 10.3/11.4.
 Doplněný lokální okrajový test pro NULL/neaktivního/chybějícího vlastníka
 a legacy ID 0 prošel; transakční kontrola a writer zůstávají původní.
+
+Převzatý main s katalogem #364 `c70939d4`. Nativní parita a přínos potvrzují,
+že je vhodné podle aktuálního pokynu vlastníka nasadit i dávkové lekce, po
+CI aktuální integrované verze. Zápisové služby, data a provozní přepínače beze změny.

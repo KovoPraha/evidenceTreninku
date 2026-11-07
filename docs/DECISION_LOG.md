@@ -155,6 +155,26 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 P11 celé HTTP/browser — [uzavřené měření a důkazy](verification/full-http-performance-20261107/RESULTS.md), [navazující etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); celé K0.2 otevřené.
 
+## D2026-11-07-07
+
+PŘIJATO, 7. 11. 2026, podle zadání vlastníka pokračovat katalogem.
+[Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md): lehká operační projekce celého
+katalogu zachová prodejnost, počty a ceny; těžká prezentace jen pro stránku.
+SQL LIMIT před cenami/prodejností zamítnuto kvůli změně výsledků; trvalá cache
+by potřebovala invalidaci. Parita a měření jsou podmínkou předání. Bez deploye.
+První nativní měření ukázalo režii malého katalogu; do 64 aktivních produktů
+proto původní cesta podle sondy nejvýše 65 ID. Sonda neurčuje výsledný katalog.
+Pracovní ID v předchozích commitech této větve bylo 05; přijaté HTTP rozhodnutí
+#363 ponecháno jako 05, katalog nyní 06. Historické doklady zůstávají v Gitu.
+
+P11 katalog — [plán a volba](CATALOG_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/catalog-read-performance-20261107/RESULTS.md), [předání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md); implementace/parita/měření hotové v #364, bez merge/deploye.
+
+Při převzetí #361 zůstává jeho přijaté mobilní rozhodnutí 06, katalogové pracovní 06 nyní nese 07. V tomto katalogovém úkolu se deploy nadále neprovádí; samostatné produkční oprávnění ROLE01-MOB se zde nevykonává.
+
+Aktuální pokyn vlastníka v tomto úkolu: ověřené změny commitnout, podle vhodnosti nasadit a pokračovat implementací další doložené optimalizace. Pro katalog je nyní merge/deploy schválený; pro další etapu se nejprve dokládá parita a měření.
+
 ## D2026-11-07-08
 
 PŘIJATO podle pokračovacího zadání vlastníka. [Dávkové lekce](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md): omezit opakování stejné aktuální kontroly v GET, zachovat výběr kandidátů a transakční writer. Bez cache mezi voláními; parita a měření před/po nutné. UI výběru osob je samostatný větší zásah.
+
+Po nativní paritě a přínosu přibližně 20× u 50 lekcí je podle aktuálního zadání vhodné nasadit i tuto čtecí optimalizaci. Merge a standardní deploy následují až po zelených požadovaných kontrolách; žádné změny osob, rolí nebo docházky.
