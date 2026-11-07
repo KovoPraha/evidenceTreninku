@@ -192,6 +192,20 @@ jobs:
           EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
         run: php tests/Support/MemberPricingReadProfile.php --mariadb > member-pricing-comparison.json
 
+      - name: Porovnat katalogové stránky a změřit omezenou prezentaci
+        env:
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: php tests/Support/CatalogPageProfile.php --mariadb > catalog-page-comparison.json
+
+      - name: Uchovat katalogovou paritu a měření
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: catalog-page-read-${{ matrix.mariadb-version }}
+          path: catalog-page-comparison.json
+          retention-days: 14
+
       - name: Uchovat shodu a párové měření klubových cen
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:

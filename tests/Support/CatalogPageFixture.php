@@ -23,7 +23,8 @@ function catalogPageFixture(int $count, bool $mixed = false): PDO
     $pdo->exec('CREATE TABLE account_person_roles(id INTEGER PRIMARY KEY,account_id INTEGER,sportovec_id INTEGER,relation_role TEXT,status TEXT,valid_from TEXT,valid_to TEXT)');
     $pdo->exec('CREATE TABLE club_roster_members(id INTEGER PRIMARY KEY,team_id INTEGER,sportovec_id INTEGER,status TEXT,valid_from TEXT,valid_to TEXT)');
     $pdo->exec('DROP TABLE shop_member_category_rules');
-    $pdo->exec('CREATE TABLE shop_member_category_rules(id INTEGER PRIMARY KEY,team_id INTEGER,category_path TEXT,discount_type TEXT,value_minor_or_basis_points INTEGER,currency TEXT,active INTEGER)');
+    $pdo->exec('CREATE TABLE shop_member_category_rules(id INTEGER PRIMARY KEY,team_id INTEGER,category_path TEXT,'
+        . 'discount_type TEXT,value_minor_or_basis_points INTEGER,currency TEXT,active INTEGER)');
     $pdo->exec('CREATE TABLE shop_member_product_prices(id INTEGER PRIMARY KEY,team_id INTEGER,product_id INTEGER,amount_minor INTEGER,currency TEXT,active INTEGER)');
     $pdo->exec('INSERT INTO verejni_uzivatele VALUES(1,1,1),(2,1,0),(3,1,1)');
     $pdo->exec("INSERT INTO account_person_roles VALUES(1,1,50,'guardian','approved','2020-01-01',NULL)");

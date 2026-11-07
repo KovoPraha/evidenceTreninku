@@ -107,7 +107,8 @@ final class CatalogPageReadCompatibilityTest extends TestCase
         $before = $pdo->profile;
         $pdo->profile = [];
         \shopCatalogPageRead($pdo, 1, []);
-        self::assertSame($before, $pdo->profile);
+        $shape = static fn (array $q): array => [$q['sql'], $q['parameters'], $q['fetched_rows']];
+        self::assertSame(array_map($shape, $before), array_map($shape, $pdo->profile));
         $pdo->profiling = false;
         $pdo->rollBack();
         $pdo->profile = [];

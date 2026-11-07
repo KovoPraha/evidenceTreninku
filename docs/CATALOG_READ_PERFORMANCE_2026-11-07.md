@@ -43,3 +43,19 @@ Současná produkce a souběžné provozní práce jsou vedené pouze v CURRENT_
 Výsledky budou v [protokolu](verification/catalog-read-performance-20261107/RESULTS.md),
 převzetí v [session handoffu](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
 Další krok: ověřit striktní paritu a změřit omezenou projekci.
+
+## Průběžný výsledek implementace
+
+- Plán zapsaný před kódem `b44e7c53`; implementace `c76b60b0`, převzetí cen
+  a skutečný merge #358 evidovaný v `7296909a`. Výchozí zmrazený řadič je
+  `tests/Support/CatalogPageBaseline.php` z přesného main po merge `37d0ad68` (jen normalizace formátu).
+- Nový reader načte lehké kandidáty a prodejnost, dávkové ceny pro řazení,
+  přesné kategorie/menu a až poté úplné karty pro vybraných nejvýše 12 produktů.
+  Hledání čte souhrny po 100 produktech; JSON a obrázky jen pro stránku.
+- Cíleně 21 testů / 1357 assertions PASS (SQLite). Transakční porovnání ověřuje
+  SQL, parametry a počty řádků; náhodné časy SQL nejsou součástí sémantické parity.
+- Objemové párové měření a kvalita běží; MariaDB 10.3/11.4 zatím NOT RUN pro
+  nový katalog. Plné HTTP/browser a produkce NOT RUN. Nové API bez výběru ID
+  zachovává původní chování detailů a ostatních uživatelů úplného katalogu.
+- Zůstává globální práce nad lehkými kandidáty a programovou kapacitou;
+  změna neřeší bootstrap/navigaci ani nepředstavuje SQL stránkování všech dat.
