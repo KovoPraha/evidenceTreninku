@@ -60,7 +60,9 @@ function externalSyncCollect(PDO $pdo, array $run, array $manifest): array
             externalSyncReject('page_gap_or_overlap');
         }
         $offset += $batch['page']['row_count'];
-        array_push($rows, ...$batch['rows']);
+        foreach ($batch['rows'] as $rowIndex => $row) {
+            $rows[] = ['row' => $row, 'part_no' => (int)$part['part_no'], 'row_index' => $rowIndex];
+        }
         if (count($rows) > 100000) {
             externalSyncReject('run_limit_exceeded', 413);
         }
@@ -103,7 +105,8 @@ function externalSyncNormalized(string $collection, array $row): array
 function externalSyncStoreRows(PDO $pdo, array $connection, array $run, array $rows): void
 {
     $keys = [];
-    foreach ($rows as $row) {
+    foreach ($rows as $source) {
+        $row = $source['row'];
         $key = externalSyncEntityKey($connection['collection'], $row);
         if ($key !== null) {
             $keys[$key] = ($keys[$key] ?? 0) + 1;
@@ -112,11 +115,12 @@ function externalSyncStoreRows(PDO $pdo, array $connection, array $run, array $r
     if ($connection['collection'] === 'csc_licenses' && $keys !== [] && max($keys) > 1) {
         externalSyncReject('duplicate_license_id');
     }
-    foreach ($rows as $index => $row) {
+    foreach ($rows as $index => $source) {
+        $row = $source['row'];
         $key = externalSyncEntityKey($connection['collection'], $row);
         $status = $key === null ? 'missing_source_key' : (($keys[$key] > 1) ? 'duplicate_source_key' : 'pending');
-        externalSyncQuery($pdo, 'INSERT INTO external_sync_records(run_id,ordinal_no,entity_key,uci_id,row_json,normalized_json,match_status)
-            VALUES(?,?,?,?,?,?,?)', [$run['id'], $index + 1, $status === 'duplicate_source_key' ? null : $key,
+        externalSyncQuery($pdo, 'INSERT INTO external_sync_records(run_id,ordinal_no,part_no,row_index,entity_key,uci_id,row_json,normalized_json,match_status)
+            VALUES(?,?,?,?,?,?,?,?,?)', [$run['id'], $index + 1, $source['part_no'], $source['row_index'], $status === 'duplicate_source_key' ? null : $key,
                 externalIdentityUci($row['uci_id_raw'] ?? null)['uci'], externalSyncJson($row),
                 externalSyncJson(externalSyncNormalized($connection['collection'], $row)), $status]);
     }

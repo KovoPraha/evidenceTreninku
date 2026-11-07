@@ -14,8 +14,8 @@ function externalSyncBackupSeed(PDO $pdo): array
     $pdo->exec("UPDATE external_sync_connections SET latest_run_id='00000000-0000-4000-8000-000000000001' WHERE id='backup-test'");
     $pdo->prepare('INSERT INTO external_sync_parts(run_id,part_no,request_hash,payload_json,payload_bytes) VALUES(?,1,?,?,2)')
         ->execute(['00000000-0000-4000-8000-000000000001', hash('sha256', '{}'), '{}']);
-    $pdo->exec("INSERT INTO external_sync_records(run_id,ordinal_no,entity_key,uci_id,row_json,normalized_json,match_status,sportovec_id)
-        VALUES('00000000-0000-4000-8000-000000000001',1,'test-key','00000000001','{}','{}','identity_conflict',NULL)");
+    $pdo->exec("INSERT INTO external_sync_records(run_id,ordinal_no,part_no,row_index,entity_key,uci_id,row_json,normalized_json,match_status,sportovec_id)
+        VALUES('00000000-0000-4000-8000-000000000001',1,1,0,'test-key','00000000001','{}','{}','identity_conflict',NULL)");
     $pdo->exec("INSERT INTO external_identity_links(connection_id,entity_key,uci_id,sportovec_id,status,run_id,revision)
         VALUES('backup-test','test-key','00000000001',987654,'identity_conflict','00000000-0000-4000-8000-000000000001',3)");
     $pdo->exec("INSERT INTO external_sync_reviews(run_id,ordinal_no,reason_code,candidate_ids_json)

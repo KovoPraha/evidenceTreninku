@@ -39,9 +39,10 @@ return [
         )' . $tail);
         $pdo->exec('CREATE TABLE IF NOT EXISTS external_sync_records (
             id ' . $id . ', run_id VARCHAR(36) NOT NULL, ordinal_no INT NOT NULL,
+            part_no INT NOT NULL, row_index INT NOT NULL,
             entity_key VARCHAR(64) NULL, uci_id VARCHAR(11) NULL, row_json TEXT NOT NULL,
             normalized_json TEXT NOT NULL, match_status VARCHAR(40) NOT NULL,
-            sportovec_id INT NULL, UNIQUE(run_id,ordinal_no),
+            sportovec_id INT NULL, UNIQUE(run_id,ordinal_no), UNIQUE(run_id,part_no,row_index),
             FOREIGN KEY(run_id) REFERENCES external_sync_runs(id)
         )' . $tail);
         $pdo->exec('CREATE TABLE IF NOT EXISTS external_identity_links (
@@ -71,7 +72,7 @@ return [
                 'external_sync_devices' => 'id,connection_id,token_hash,enabled,last_seen_at',
                 'external_sync_runs' => 'id,connection_id,device_id,sequence_no,lease_generation,lease_until,started_at,finished_at,status,row_count,manifest_hash,failure_code',
                 'external_sync_parts' => 'run_id,part_no,request_hash,payload_json,payload_bytes',
-                'external_sync_records' => 'id,run_id,ordinal_no,entity_key,uci_id,row_json,normalized_json,match_status,sportovec_id',
+                'external_sync_records' => 'id,run_id,ordinal_no,part_no,row_index,entity_key,uci_id,row_json,normalized_json,match_status,sportovec_id',
                 'external_identity_links' => 'connection_id,entity_key,uci_id,sportovec_id,status,run_id,revision',
                 'external_sync_reviews' => 'id,run_id,ordinal_no,reason_code,candidate_ids_json',
                 'external_sync_audit' => 'id,connection_id,run_id,actor_kind,actor_id,action_code,recorded_at',

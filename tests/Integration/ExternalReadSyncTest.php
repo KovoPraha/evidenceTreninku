@@ -336,6 +336,8 @@ final class ExternalReadSyncTest extends TestCase
         \externalSyncApproveSnapshot($this->pdo, $job['run_id'], 7);
         $rows = \externalSyncReadSnapshot($this->pdo, 'sportsoft_members', 7)['records'];
         self::assertCount(2, $rows);
+        self::assertSame([1, 2], array_map('intval', array_column($rows, 'part_no')));
+        self::assertSame([0, 0], array_map('intval', array_column($rows, 'row_index')));
         self::assertSame(['duplicate_source_key', 'duplicate_source_key'], array_column(array_column($rows, 'match'), 'status'));
         self::assertSame(0, (int)$this->pdo->query('SELECT COUNT(*) FROM external_identity_links')->fetchColumn());
     }
@@ -361,7 +363,7 @@ final class ExternalReadSyncTest extends TestCase
         $code = <<<'PHP'
             require $argv[1];
             $pdo = new PDO($argv[2], 'root', '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-            $pdo->exec('SET innodb_lock_wait_timeout=5');
+            $pdo->exec('SET innodb_lock_wait_timeout=10');
             echo "ready\n"; flush();
             try { externalSyncDispatch($pdo, $argv[3], 'claim', '{}'); echo 'unexpected'; }
             catch (ExternalSyncException $e) { echo $e->getMessage(); }
@@ -382,7 +384,7 @@ final class ExternalReadSyncTest extends TestCase
             stream_set_timeout($pipes[1], 10);
             self::assertSame("ready\n", fgets($pipes[1]));
             $waiting = false;
-            for ($i = 0; $i < 100; $i++) {
+            for ($i = 0; $i < 25; $i++) {
                 $query = $this->server->prepare('SELECT COUNT(*) FROM information_schema.INNODB_LOCK_WAITS w
                     JOIN information_schema.INNODB_TRX t ON t.trx_id=w.blocking_trx_id WHERE t.trx_mysql_thread_id=?');
                 $query->execute([(int)$this->pdo->query('SELECT CONNECTION_ID()')->fetchColumn()]);
@@ -390,7 +392,8 @@ final class ExternalReadSyncTest extends TestCase
                     $waiting = true;
                     break;
                 }
-                usleep(20000);
+                // InnoDB's diagnostic tables are cached; allow their refresh window.
+                usleep(200000);
             }
             self::assertTrue($waiting, 'Device must actually wait on the connection lock');
             $this->pdo->exec('UPDATE external_sync_devices SET enabled=0');
