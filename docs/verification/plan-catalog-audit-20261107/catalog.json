@@ -9268,6 +9268,32 @@
       "registry": "DOC02",
       "disposition": "Referenční podklad, nikoli samostatný schválený implementační plán.",
       "evidence": []
+    },
+    {
+      "id": "PL-30d4f6c028",
+      "path": "docs/ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
+      "title": "ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Dávkový výběr lekcí: schválená implementace podle výkonové analýzy, rozpracováno.",
+      "evidence": [
+        "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-22fccd64f4",
+      "path": "docs/SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
+      "title": "SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
+      "primary": false,
+      "role": "handoff",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Dávkový výběr lekcí: schválená implementace podle výkonové analýzy, rozpracováno.",
+      "evidence": [
+        "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",

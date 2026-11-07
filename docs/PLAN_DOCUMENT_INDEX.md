@@ -774,3 +774,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-62a9578541 | [tests/Support/InventoryPageBaseline.txt](../tests/Support/InventoryPageBaseline.txt) | artifact / SUPPORT | DOC02 |
 | PL-edbd6d52dc | [tests/fixtures/bar-localhost-invoice.pdf](../tests/fixtures/bar-localhost-invoice.pdf) | binary-artifact / SUPPORT | DOC02 |
 | PL-794e724c77 | [tests/fixtures/kis/README.md](../tests/fixtures/kis/README.md) | reference / REFERENCE | DOC02 |
+
+| PL-30d4f6c028 | [ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
+
+| PL-22fccd64f4 | [SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
