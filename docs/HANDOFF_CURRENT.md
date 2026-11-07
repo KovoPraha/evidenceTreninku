@@ -9,20 +9,20 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
   Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.
-  Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); sloučené `3b37e053`; dále schválený deploy a nový Chrome.
+  Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); karty zahrnuje vydání `c70939d4`; dále cílený nový Chrome, viz priorita 1.
 
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 
-- DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [audit](PLAN_CATALOG_AUDIT_2026-11-07.md), [úplný katalog](PLAN_CATALOG.md); koncepty C01–C04 v registru.
+- DOC03: [priority a závislosti](WORK_PLAN_CURRENT.md#priority-a-závislosti); [DOC02 audit](PLAN_CATALOG_AUDIT_2026-11-07.md) a [úplný katalog](PLAN_CATALOG.md).
 
 - P11: celé HTTP/browser na `feb8fe8c` HOTOVO; [výsledky](verification/full-http-performance-20261107/RESULTS.md),
   [předání a další kroky](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md). 65 případů / 930 HTTP vzorků,
-  403 browser pozorování; role/filtry/revokace PASS. Dále [R06 dávkové lekce](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) rozpracované, výběr osob a mobil/souběh.
+  403 browser pozorování; role/filtry/revokace PASS. Dále [R06 dávkové lekce](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) sloučené #367, výběr osob a mobil/souběh.
   R13 #352 / R05 #353 / R06 #354 zahrnuje ROLE01; novější main nebyl přeměřen.
   [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), větev `codex/full-http-performance-20261107`;
   vlastní worktree viz předání. Po integraci main cíleně 47 testů / 2877 assertions PASS.
   #363 sloučené (`d958fd6e`); bez deploye, runtime uklizený, původní WIP zachovaný.
-  Klubové ceny #358 v main bez deploye; [katalog #364 nasazený: protokol a další krok](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
+  Klubové ceny #358 zahrnuté ve vydání `c70939d4`; [katalog #364 nasazený: protokol a další krok](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.
