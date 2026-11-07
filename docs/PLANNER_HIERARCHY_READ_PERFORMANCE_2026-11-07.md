@@ -37,10 +37,12 @@ Týdenní karty, RSVP, náhled kopírování, POST, transakční chování a opr
 
 ## Akceptace a aktuální výsledek
 
-- Shoda návratových hodnot a HTML: NOT RUN.
+- Lokální SQLite parita a regrese: PASS, 14 testů / 1579 assertions; 1134 kombinací nového kontraktu. Doplněný limit sondy: 8 testů / 1170 assertions PASS. Celé HTML/Chrome na 6fe44e57 PASS v běhu 42390451276; přesné výsledky stahuji, finální commit se znovu změří.
 - Přínos před/po v nativní MariaDB: NOT RUN; nepřipisovat helper měření celému GET.
 - Regrese, CI, merge, deploy: NOT RUN. Produkční stav vlastní [CURRENT](CURRENT_STATE.md).
 - Lidská produkční přejímka: NOT RUN; syntetické testy ji nenahrazují.
 
-Další krok: implementovat omezenou čtecí agregaci a referenční paritní testy.
+Implementována omezená agregace: sonda 65, nejvýše 4096 dat / 512 hran / 128 skupin / 900 parametrů; nad limitem kanonický fallback. SQLite porovnání odhalilo ztrátu číselné afinity přes COALESCE; opraveno sloupcovým IN a samostatnou větví pro NULL. Lokální cílené testy nyní PASS.
+
+[PR #374](https://github.com/KovoPraha/evidenceTreninku/pull/374) otevřený. Statická analýza/styl/dokumentace CI PASS. Další krok: finální nativní CI 10.3/11.4 a opakovaný celý HTTP/Chrome pár po doplnění pevného limitu sondy; výsledky zapsat před merge.
 Rozhodnutí [D12](DECISION_LOG.md#d2026-11-07-12); průběžné předání [handoff](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).

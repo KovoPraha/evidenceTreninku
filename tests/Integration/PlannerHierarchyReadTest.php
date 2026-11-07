@@ -141,4 +141,25 @@ final class PlannerHierarchyReadTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         \trainingPlannerPendingSummary($pdo, '2027-01-01', false, 7, 0, 0, 1);
     }
+
+    public function testLongDailyHistoryFallsBackWithoutLosingTheOldestPlan(): void
+    {
+        $pdo = $this->seeded(4100);
+        $update = $pdo->prepare('UPDATE planovane_treninky SET datum=? WHERE id=?');
+        $start = new \DateTimeImmutable('2010-01-01');
+        $pdo->beginTransaction();
+        for ($i = 1; $i <= 4100; $i++) {
+            $update->execute([$start->modify('+' . $i . ' days')->format('Y-m-d'), $i]);
+        }
+        // Ensure all dates remain candidates, including case-insensitive native status values.
+        $pdo->exec("UPDATE planovane_treninky SET stav='planovany'");
+        $pdo->commit();
+        $expected = plannerHierarchyPendingBaseline($pdo, '2027-01-01', false, 7, 0, 0, 1);
+        $pdo->profile = [];
+        $pdo->profiling = true;
+        self::assertSame($expected, \trainingPlannerPendingSummary($pdo, '2027-01-01', false, 7, 0, 0, 1));
+        $dateQueries = array_values(array_filter($pdo->profile, static fn (array $q): bool => str_contains($q['sql'], 'SELECT DISTINCT pt.datum')));
+        self::assertCount(1, $dateQueries);
+        self::assertSame(4097, $dateQueries[0]['fetched_rows']);
+    }
 }

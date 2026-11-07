@@ -22,7 +22,7 @@ final class TrainingPlannerPendingRead
         if (count($rows) <= 64) {
             return self::filtered($pdo, $rows, $team);
         }
-        $query = $pdo->prepare('SELECT DISTINCT pt.datum' . $base . ' ORDER BY pt.datum');
+        $query = $pdo->prepare('SELECT DISTINCT pt.datum' . $base . ' ORDER BY pt.datum LIMIT 4097');
         $query->execute($parameters);
         $dates = $query->fetchAll(PDO::FETCH_COLUMN);
         if (count($dates) > 4096) {

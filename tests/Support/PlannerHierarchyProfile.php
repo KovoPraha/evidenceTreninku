@@ -25,8 +25,11 @@ if ($normalize($identity['directory']) !== $normalize((string) getenv('EVIDENCE_
     throw new RuntimeException('Wrong owned database server.');
 }
 $report = ['complete' => false, 'synthetic_only' => true, 'server' => $identity['version'], 'php' => PHP_VERSION,
-    'method' => 'One seed per size, read-only session, 4 warmups and 16 alternating timed pairs; separate SQL/fetch diagnostics.',
-    'baseline' => '69f49033', 'cases' => []];
+    'method' => 'One seed per size, read-only session, 4 warmups and 17 alternating timed pairs; separate SQL/fetch diagnostics.',
+    'baseline' => '69f49033', 'source_sha256' => [
+        'includes/training_planner_pending_read.php' => hash_file('sha256', dirname(__DIR__, 2) . '/includes/training_planner_pending_read.php'),
+        'includes/training_planner_read.php' => hash_file('sha256', dirname(__DIR__, 2) . '/includes/training_planner_read.php'),
+    ], 'cases' => []];
 $percentile = static function (array $samples, float $p): float {
     sort($samples, SORT_NUMERIC);
     return $samples[(int) ceil(count($samples) * $p) - 1];
@@ -50,7 +53,7 @@ foreach ([40, 720, 7200, 36000] as $plans) {
                 $expected = Tests\Support\plannerHierarchyPendingBaseline(...$args);
                 $samples = ['before' => [], 'after' => []];
                 $diagnostics = [];
-                for ($iteration = -4; $iteration < 16; $iteration++) {
+                for ($iteration = -4; $iteration < 17; $iteration++) {
                     $order = $iteration % 2 === 0 ? ['before', 'after'] : ['after', 'before'];
                     foreach ($order as $variant) {
                         $start = hrtime(true);

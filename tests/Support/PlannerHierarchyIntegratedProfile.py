@@ -40,6 +40,8 @@ for p in source_files:
         raise RuntimeError("Unrelated application source differs from baseline: " + p)
 source = {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in source_files}
 source["includes/training_planner_pending_read.php"] = hashlib.sha256((root / "includes/training_planner_pending_read.php").read_bytes()).hexdigest()
+source["includes/training_planner_read.php"] = hashlib.sha256(original).hexdigest()
+source["baseline_planner_read"] = hashlib.sha256(baseline).hexdigest()
 server = None
 sessions = set()
 cleanup_ok = False
