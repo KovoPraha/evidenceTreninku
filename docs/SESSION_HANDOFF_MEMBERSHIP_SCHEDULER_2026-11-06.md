@@ -16,13 +16,12 @@ se nezakládala platba, členství, export ani zpráva. P05/P07 a P06 dál odlo�
 [registr](WORK_PLAN_CURRENT.md), [hlavní handoff](HANDOFF_CURRENT.md).
 
 <!-- membership-morning-publish:start -->
-## Ranní audit 7. 11. — čeká na skutečný termín
+## Ranní serverový výsledek PASS
 
-Ranní výsledek **NOT RUN**. Hosting jej zachytí od 05:30 UTC (06:30 CET),
-serverový přenos doplní protokol a tento handoff přes připravený
-[výsledkový PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347).
-PC ani místní Codex nejsou potřeba. [Přesný postup a stav](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
+[Ranní serverový výsledek PASS](verification/membership-scheduler-20261107/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
 Skutečné P05/P07 a export P06 zůstávají odložené.
+
 <!-- membership-morning-publish:end -->
 
 <!-- membership-morning-preflight:start -->
