@@ -4,6 +4,14 @@ Samostatná klubová aplikace pro evidenci tréninků, osoby a soupisky KIS,
 rodinné účty, e-shop, programy, události a rezervace sportovišť. Backend je PHP
 8.2+ nad MariaDB; projekt se lokálně provozuje v XAMPP.
 
+
+## Dokumentace práce a rozhodnutí
+
+Před změnou načtěte [pravidla](docs/WORK_DOCUMENTATION_POLICY.md), [aktuální stav](docs/CURRENT_STATE.md), [stručný session handoff](docs/HANDOFF_CURRENT.md)
+a [registr otevřených plánů a konceptů](docs/WORK_PLAN_CURRENT.md). Všechny záměry, postupy, změny a výsledky patří do verzovaných souborů;
+na odpovídající plán musí odkazovat CURRENT i handoff. Dokumentaci předávejte přes GitHub PR spolu se změnou.
+[Deník událostí](docs/EVENT_LOG.md) a [rozhodovací log / uzavřené plány](docs/DECISION_LOG.md) zajišťují historickou dohledatelnost bez načítání historie v handoffu.
+
 ## Produkce
 
 Produkční aplikace běží na <https://kis.kovopraha.cz/>. Nasazení provádí ruční

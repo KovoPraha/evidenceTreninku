@@ -1,6 +1,13 @@
 # Program rozšíření Evidence: e-shop a týmová evidence
 
-Stav dokumentu: živý programový plán
+> Historický programový podklad. Aktuální práci určuje [společný registr](../WORK_PLAN_CURRENT.md),
+> [CURRENT](../CURRENT_STATE.md) a [stručný session handoff](../HANDOFF_CURRENT.md).
+> Platí [pravidla souborové dokumentace](../WORK_DOCUMENTATION_POLICY.md),
+> [deník](../EVENT_LOG.md) a [rozhodovací log](../DECISION_LOG.md).
+> Starý board ani níže uvedený model řízení není druhou aktuální frontou či oprávněním k delegaci.
+
+
+Stav dokumentu: historický programový plán (původní audit 3. 8. 2026)
 Datum auditu: 3. 8. 2026
 Implementace nových funkcí: **první lokální vertikály existují; aktuální
 produktovou prioritou je integrovaný a prokliknutelný milník M1**
@@ -41,7 +48,7 @@ Po splnění těchto bodů lze bezpečně spouštět pracovní vlákna po vertik
 První technická část Fáze 0 už vznikla na lokální větvi `codex/foundation`:
 testovací základ, oprava KIS matcheru, bezpečnější trenérská hesla a aktualizace
 zranitelných knihoven. Tato práce zatím není v `origin/main` ani v produkci;
-aktuální stav je vždy v `SESSION_HANDOFF.md`.
+aktuální stav je v [CURRENT](../CURRENT_STATE.md); `SESSION_HANDOFF.md` je jen rozcestník.
 
 ## Dokumenty
 
@@ -60,7 +67,7 @@ aktuální stav je vždy v `SESSION_HANDOFF.md`.
 | [12 – Milník M3](12-milnik-m3-clenska-hodnota.md) | Každodenní rodinné a provozní přehledy nad již propojenými daty, s oddělenými produkčními branami |
 | [11 – Hodnota pro členy](11-backlog-hodnota-pro-cleny.md) | Vytřídění funkčního auditu, bezpečné pořadí nových služeb a první řez veřejného ICS kalendáře |
 | [Prompt Claude Code – revize M2](PROMPT-CLAUDE-CODE-REVIZE-M2.md) | Read-only prompt pro nezávislou revizi kódu, dokumentace, testů a pořadí M2 |
-| [Session handoff](SESSION_HANDOFF.md) | Obnovitelný stav řídicího tasku, aktivní práce a další krok |
+| [Session handoff](SESSION_HANDOFF.md) | Krátký kompatibilní rozcestník na hlavní předání a zachovanou historii |
 | [Prompt nového řídicího tasku](PROMPT-NOVE-RIDICI-VLAKNO.md) | Text ke zkopírování při otevření pokračujícího tasku |
 
 ## Rozhodnutí doporučená ke schválení
