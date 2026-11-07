@@ -154,3 +154,21 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 | Starší session a dokončené části programu | [Deník a archivní rozcestník](EVENT_LOG.md) | Původní plány, důkazy a rozhodnutí zůstávají v Gitu; nejde o zpětné schválení neověřených kroků |
 
 P11 celé HTTP/browser — [uzavřené měření a důkazy](verification/full-http-performance-20261107/RESULTS.md), [navazující etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); celé K0.2 otevřené.
+
+## D2026-11-07-07
+
+PŘIJATO, 7. 11. 2026, podle zadání vlastníka pokračovat katalogem.
+[Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md): lehká operační projekce celého
+katalogu zachová prodejnost, počty a ceny; těžká prezentace jen pro stránku.
+SQL LIMIT před cenami/prodejností zamítnuto kvůli změně výsledků; trvalá cache
+by potřebovala invalidaci. Parita a měření jsou podmínkou předání. Bez deploye.
+První nativní měření ukázalo režii malého katalogu; do 64 aktivních produktů
+proto původní cesta podle sondy nejvýše 65 ID. Sonda neurčuje výsledný katalog.
+Pracovní ID v předchozích commitech této větve bylo 05; přijaté HTTP rozhodnutí
+#363 ponecháno jako 05, katalog nyní 06. Historické doklady zůstávají v Gitu.
+
+P11 katalog — [plán a volba](CATALOG_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/catalog-read-performance-20261107/RESULTS.md), [předání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md); implementace/parita/měření hotové v #364, bez merge/deploye.
+
+Při převzetí #361 zůstává jeho přijaté mobilní rozhodnutí 06, katalogové pracovní 06 nyní nese 07. V tomto katalogovém úkolu se deploy nadále neprovádí; samostatné produkční oprávnění ROLE01-MOB se zde nevykonává.
+
+Aktuální pokyn vlastníka v tomto úkolu: ověřené změny commitnout, podle vhodnosti nasadit a pokračovat implementací další doložené optimalizace. Pro katalog je nyní merge/deploy schválený; pro další etapu se nejprve dokládá parita a měření.

@@ -1,0 +1,33 @@
+{
+  "runtime_commit": "0252ba58f19f937fd1a98501f759fb94624bd2bf",
+  "workflow_run": 42365054949,
+  "total_timed_pairs": 480,
+  "checks": {
+    "10.3": {
+      "server": {
+        "port": 3306,
+        "version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+        "driver": "mysql"
+      },
+      "source_hashes_against_git_0252ba58": "PASS",
+      "strict_page_state_and_samples": "PASS",
+      "timed_scenarios": 8,
+      "pairs_per_scenario": 30,
+      "owned_schemas_dropped": 5,
+      "report_sha256": "d309365774b260aeab73dd9ff12448288a803d65724dd36de84bc976bdc02dea"
+    },
+    "11.4": {
+      "server": {
+        "port": 3306,
+        "version": "11.4.13-MariaDB-ubu2404",
+        "driver": "mysql"
+      },
+      "source_hashes_against_git_0252ba58": "PASS",
+      "strict_page_state_and_samples": "PASS",
+      "timed_scenarios": 8,
+      "pairs_per_scenario": 30,
+      "owned_schemas_dropped": 5,
+      "report_sha256": "57d537a185baf523821c0fc4496162291916e1fc548bf7ff4fe0a73f1bc34c3d"
+    }
+  }
+}

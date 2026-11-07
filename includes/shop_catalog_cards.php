@@ -7,11 +7,11 @@ require_once __DIR__ . '/shop_public_navigation.php';
 /** Public program presentation only; account prices and checkout remain separate.
  * @return list<array<string,mixed>>
  */
-function shopPublicCatalogCards(PDO $pdo): array
+function shopPublicCatalogCards(PDO $pdo, ?array $productIds = null, ?ClubProgramReadContext $readContext = null): array
 {
-    $readContext = new ClubProgramReadContext($pdo);
+    $readContext ??= new ClubProgramReadContext($pdo);
     $products = [];
-    foreach (shopPublicSaleableCatalog($pdo, $readContext) as $product) {
+    foreach (shopPublicSaleableCatalog($pdo, $readContext, $productIds) as $product) {
         // Classification uses the original publication, not a rewritten display title.
         $identity = $product;
         $identity['public_name'] = $product['variants'][0]['public_name'];

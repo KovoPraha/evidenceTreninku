@@ -35,7 +35,7 @@ shodné. Checkout a zápisové služby zachovají původní samostatné čtení.
 | C: dávkový čtecí reader | IMPLEMENTOVÁNO | Reader bez statické datové cache, společné soupisky, dávkové ceny/kategorie a sdílená pravidla. Zapojený katalog/detail; transakce stále původní cestou. |
 | D: shoda chování | HOTOVO | 20 testů / 301 assertions PASS; 39 kolací/stavových kontrol na každé MariaDB 10.3/11.4 PASS; celé výstupy i původní SQL v transakci shodné. |
 | E: měření přínosu | HOTOVO | 1080 párových CI vzorků + 540 SQLite, samostatné SQL/řádky/EXPLAIN/paměť. Pro 500 produktů 2000 → 4 SQL; medián 10.3/11.4 557/377 → 3,21/2,88 ms. |
-| F: regrese a předání | HOTOVO pro implementaci | Všech 11 CI kontrol měřeného commitu PASS; Linux 2321/42987 a 3/45, styl/PHPStan, dokumentace. Pozdější regrese skutečných karet má cílený PASS; aktuální finální CI u PR #358. Bez merge/deploye. |
+| F: regrese a předání | HOTOVO pro implementaci | Všech 11 CI kontrol měřeného commitu PASS; Linux 2321/42987 a 3/45, styl/PHPStan, dokumentace. Pozdější regrese skutečných karet má cílený PASS; finální head `02ad8016` 11/11 CI PASS, merge #358 `37d0ad68`. Bez deploye. |
 
 Výsledky a vzorky jsou trvale v [protokolu](verification/member-pricing-read-performance-20261107/RESULTS.md).
 Zachované souborové předání vede [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358).
@@ -72,3 +72,9 @@ Budoucí etapy: samostatný katalogový výřez, přihlášené celé HTTP/boots
 browser metriky a širší profil podle [komplexního plánu](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md).
 Začlenění, nasazení a provozní přejímka jsou samostatné skutečnosti;
 aktuální produkci určuje pouze [CURRENT_STATE](CURRENT_STATE.md).
+
+## Začlenění 7. 11. 2026
+
+#358 sloučený podle pokynu vlastníka: `37d0ad687211aa912a90e8ad105842847956890d`,
+head `02ad8016`, 11 kontrol PASS (Testy 42362702007). Bez deploye.
+Navazuje [katalogový plán](CATALOG_READ_PERFORMANCE_2026-11-07.md).
