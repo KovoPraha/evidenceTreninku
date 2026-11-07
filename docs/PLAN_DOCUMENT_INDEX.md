@@ -890,3 +890,5 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-708154a63b | [snapshot.php.txt](verification/planner-hierarchy-release-20261107/snapshot.php.txt) | artifact / SUPPORT | P11-R05-H |
 
 | PL-a2fca51079 | [anonymous-planner.php.txt](verification/planner-hierarchy-release-20261107/anonymous-planner.php.txt) | artifact / SUPPORT | P11-R05-H |
+| PL-ab7b870cf9 | [MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) | plan / IN_PROGRESS | P11-R13-S |
+| PL-d7931b09d6 | [SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md) | handoff / SUPPORT | P11-R13-S |

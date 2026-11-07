@@ -16,12 +16,12 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - P11 picker HOTOVO: [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání #366/#372](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
   [Produkční protokol](verification/attendance-picker-release-20261107/RESULTS.md): schválené nasazení a čtecí kontrola dokončené, neopakovat.
-  Nový Linux pár s #367: 540 HTTP / 78 Chrome; HTML 1,37 MB → 91,6 kB, Chrome trenér 446 → 83 ms.
-  Osm aplikačních hashů shodných, 13 kontrolních součtů/úplná množina osob/44 HTTP a oddělené writer UAT PASS.
   **Přihlášené produkční UAT pickeru BLOKOVANÉ**: Windows nástroj neověřil aktuální URL; [neprovedené scénáře a další krok](verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md).
   Původní WIP a oba picker worktrees zachované; výsledky a kalibrace jsou v repu, nové aktivace žádné.
   [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
+- P11-R13-S ROZPRACOVÁNO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md).
+  Vlastní větev; parita a měření před schváleným merge/deploy. WIP zachovaný.
 - P11-R05-H HOTOVO: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
   #374 v main a nasazeno; [provozní důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md) PASS. WIP zachovaný; R13/K0.2 a přihlášené UAT otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
