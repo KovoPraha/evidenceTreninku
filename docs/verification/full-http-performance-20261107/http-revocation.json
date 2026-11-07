@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "synthetic_only": true,
+  "checks": {
+    "removed_role": {
+      "status": 403,
+      "pass": true
+    },
+    "inactive_account": {
+      "status": 303,
+      "pass": true
+    }
+  },
+  "original_role_rows_restored": true
+}
