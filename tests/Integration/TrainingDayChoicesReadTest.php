@@ -69,6 +69,21 @@ final class TrainingDayChoicesReadTest extends TestCase
             }
         }
     }
+    public function testSubstitutionPreservesNullInactiveMissingAndLegacyPlanOwners(): void
+    {
+        $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+        \trainingDayChoicesSeed($pdo, 10);
+        $pdo->exec('UPDATE planovane_treninky SET trener_id=NULL WHERE id=1');
+        $pdo->exec('UPDATE planovane_treninky SET trener_id=5 WHERE id=2');
+        $pdo->exec('UPDATE planovane_treninky SET trener_id=999 WHERE id=3');
+        $pdo->exec("INSERT INTO planovane_treninky VALUES(0,NULL,'2026-11-07','14:00','15:00','Legacy zero','LOCALHOST',NULL)");
+        foreach ([[1, 'coach'], [2, 'sports_lead'], [4, 'coach']] as [$actor, $position]) {
+            \trainingDayChoicesSession($actor, $position);
+            $result = $this->parity($pdo, $actor);
+            self::assertCount(11, $result['rows']);
+        }
+    }
+
     public function testRevocationDeactivationAndDifferentSessionsAreFresh(): void
     {
         $pdo = new PDO('sqlite::memory:');

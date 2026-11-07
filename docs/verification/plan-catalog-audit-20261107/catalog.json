@@ -9327,6 +9327,39 @@
       "registry": "P11",
       "disposition": "R06 nabídka lekcí: syntetický důkaz, nikoli produkční data.",
       "evidence": []
+    },
+    {
+      "id": "PL-d3582f1892",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/verification.json",
+      "title": "verification.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Nativní parita a párové syntetické měření nabídky lekcí.",
+      "evidence": []
+    },
+    {
+      "id": "PL-9fc07f8b47",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/ci-10.3/attendance-lesson-comparison.json",
+      "title": "attendance-lesson-comparison.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Nativní parita a párové syntetické měření nabídky lekcí.",
+      "evidence": []
+    },
+    {
+      "id": "PL-d4b7b69c58",
+      "path": "docs/verification/attendance-lesson-read-performance-20261107/ci-11.4/attendance-lesson-comparison.json",
+      "title": "attendance-lesson-comparison.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Nativní parita a párové syntetické měření nabídky lekcí.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

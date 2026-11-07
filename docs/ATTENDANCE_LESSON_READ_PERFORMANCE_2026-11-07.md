@@ -40,6 +40,14 @@ Původní WIP zachovaný, zdroje/flags ani data původní kopie se nemění.
 [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md),
 [registr P11](WORK_PLAN_CURRENT.md). Další krok: reference, reader a lokální parita.
 
-Implementace hotová k nativnímu ověření: 18 testů / 987 assertions PASS;
+Implementace hotová k nativnímu ověření: 19 testů / 993 assertions PASS;
 50 nabídek 153 → 6 SQL pro trenéra, 254 → 9 pro superadmina. Celé řádky,
 výjimky, čerstvost i transakční SQL mají paritu. Nativní CI je další krok.
+
+Nativní parita a 720 párů na 10.3/11.4 PASS, 6 otisků zdrojů shodných.
+50 nabídek trenéra: 41,47/19,99 → 1,77/0,97 ms, 153 → 6 SQL.
+[PR #367](https://github.com/KovoPraha/evidenceTreninku/pull/367); celkové CI dobíhá.
+
+První runtime `b20715ec` má všech 11 CI kontrol PASS včetně 10.3/11.4.
+Doplněný lokální okrajový test pro NULL/neaktivního/chybějícího vlastníka
+a legacy ID 0 prošel; transakční kontrola a writer zůstávají původní.

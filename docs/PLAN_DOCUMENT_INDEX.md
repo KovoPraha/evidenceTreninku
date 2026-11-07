@@ -784,3 +784,9 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-78d18f8e5d | [sqlite-comparison.json](verification/attendance-lesson-read-performance-20261107/sqlite-comparison.json) | evidence / REFERENCE | P11 |
 
 | PL-2ab3c6b2d7 | [targeted-junit.xml](verification/attendance-lesson-read-performance-20261107/targeted-junit.xml) | evidence / REFERENCE | P11 |
+
+| PL-d3582f1892 | [verification.json](verification/attendance-lesson-read-performance-20261107/verification.json) | evidence / REFERENCE | P11 |
+
+| PL-9fc07f8b47 | [attendance-lesson-comparison.json](verification/attendance-lesson-read-performance-20261107/ci-10.3/attendance-lesson-comparison.json) | evidence / REFERENCE | P11 |
+
+| PL-d4b7b69c58 | [attendance-lesson-comparison.json](verification/attendance-lesson-read-performance-20261107/ci-11.4/attendance-lesson-comparison.json) | evidence / REFERENCE | P11 |

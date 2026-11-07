@@ -1,0 +1,23 @@
+{
+  "runtime_commit": "b20715eca59c2d0fcf5a7a89fd5a0edf55f79ffb",
+  "workflow_run": 42370346225,
+  "total_timed_pairs": 720,
+  "checks": {
+    "10.3": {
+      "source_hashes": "PASS",
+      "strict_ordered_rows": "PASS",
+      "transaction_parity": "PASS",
+      "scenarios": 12,
+      "owned_schemas_dropped": 12,
+      "report_sha256": "20c50418a8b1c4ed963daaf09a9e6bfd63f6f15835c280998a03aa52e616e2b1"
+    },
+    "11.4": {
+      "source_hashes": "PASS",
+      "strict_ordered_rows": "PASS",
+      "transaction_parity": "PASS",
+      "scenarios": 12,
+      "owned_schemas_dropped": 12,
+      "report_sha256": "592419a35b168e7a3125ace02aba099dd004637d796c4c5337b891d527679fe0"
+    }
+  }
+}
