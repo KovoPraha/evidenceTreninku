@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 7. 11. 2026 / E2026-11-07-40 | P11-R05-H finální parita a měření PASS | 2370/47564; obě MariaDB 8/1170, 24 případů ×17 párů na DB; celý GET −32,9 % trenér /−59,8 % vedoucí při20k historii, HTML přesně stejné. Runtime65440e3b, zdrojové hashe shodné. | [Důkazy](verification/planner-hierarchy-read-performance-20261107/RESULTS.md), [PR #374](https://github.com/KovoPraha/evidenceTreninku/pull/374) |
 | 7. 11. 2026 / E2026-11-07-39 | P11-R05-H implementace a lokální parita hotová | 14/1579 PASS; nativní kontrakt, párový profil a celé HTTP/Chrome připraveny v CI. Produkce beze změny. | [Plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md) |
 | 7. 11. 2026 / E2026-11-07-38 | P11-R05-H zahájen podle zadání vlastníka | Plán před implementací, vlastní worktree z 69f49033; WIP beze změny. Parita a přínos podmínkou merge/deploye. | [Plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [D12](DECISION_LOG.md#d2026-11-07-12) |
 | 7. 11. 2026 / E2026-11-07-37 | P11 R06: rozšířený celý Windows pár dokončený | 540HTTP/234Chrome všech9scénářů, 20shodných součtů, oddělené diagnostiky0zápisů a JS/noJS/44HTTP/kanonické zápisy/revokace PASS. Runtime uklizený, WIP shodný. Přijaté #370/#372 a jejich cizí deploy zachované, žádný náš deploy. | [Výsledek](verification/attendance-integrated-http-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) |

@@ -1,6 +1,6 @@
 # P11-R05-H — historický souhrn plánovače se soupiskou
 
-7. 11. 2026, Europe/Prague. Stav: ROZPRACOVÁNO. Vlastník: vývoj podle zadání vlastníka aplikace.
+7. 11. 2026, Europe/Prague. Stav: K OVĚŘENÍ výsledkového commitu / merge / deploy. Vlastník: vývoj podle zadání vlastníka aplikace.
 Plán uložen před implementací. Navazuje na [analýzu](verification/full-http-performance-20261107/RESULTS.md)
 a [předchozí řez plánovače](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md).
 
@@ -37,12 +37,24 @@ Týdenní karty, RSVP, náhled kopírování, POST, transakční chování a opr
 
 ## Akceptace a aktuální výsledek
 
-- Lokální SQLite parita a regrese: PASS, 14 testů / 1579 assertions; 1134 kombinací nového kontraktu. Doplněný limit sondy: 8 testů / 1170 assertions PASS. Celé HTML/Chrome na 6fe44e57 PASS v běhu 42390451276; přesné výsledky stahuji, finální commit se znovu změří.
-- Přínos před/po v nativní MariaDB: NOT RUN; nepřipisovat helper měření celému GET.
-- Regrese, CI, merge, deploy: NOT RUN. Produkční stav vlastní [CURRENT](CURRENT_STATE.md).
-- Lidská produkční přejímka: NOT RUN; syntetické testy ji nenahrazují.
+- Implementace zmrazená na `65440e3b`; [PR #374](https://github.com/KovoPraha/evidenceTreninku/pull/374).
+- SQLite parita/regrese PASS: původně 14/1579, po pevném LIMIT sondy nový kontrakt 8/1170;
+  1134 kombinací filtrů. Linux celá sada 2370 testů / 47564 assertions PASS.
+- Finální celé HTML/Chrome PASS: [42390969061](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969061).
+  Velká historie: trenér HTTP 70,59 → 47,36 ms; vedoucí 116,25 → 46,77 ms.
+- Obě finální nativní MariaDB PASS v 42390969094, kontrakt 8/1170 na každé; 24 případů ×17 párů na DB.
+  Helper měření není čas celého GET. [Protokol a artefakty](verification/planner-hierarchy-read-performance-20261107/RESULTS.md).
+- Statická analýza/styl/dokumentace CI PASS. Merge a deploy NOT RUN;
+  produkční stav vlastní [CURRENT](CURRENT_STATE.md), produkce zatím beze změny.
+- Lidská produkční přejímka NOT RUN; syntetické testy ji nenahrazují.
 
-Implementována omezená agregace: sonda 65, nejvýše 4096 dat / 512 hran / 128 skupin / 900 parametrů; nad limitem kanonický fallback. SQLite porovnání odhalilo ztrátu číselné afinity přes COALESCE; opraveno sloupcovým IN a samostatnou větví pro NULL. Lokální cílené testy nyní PASS.
+Agregace má sondu 65, nejvýše 4097 načtených dat pro detekci limitu 4096,
+513 hran pro limit 512, 128 skupin / 900 parametrů; nad limitem kanonický fallback.
+První testy odhalily SQLite afinitu COALESCE/parametrů; opraveno sloupcovým IN
+s odděleným NULL. Lokální PHPStan nad sdílenými balíčky nedokončen a vlastní proces
+zastaven; fresh Linux PHPStan/styl PASS je rozhodující ověření.
 
-[PR #374](https://github.com/KovoPraha/evidenceTreninku/pull/374) otevřený. Statická analýza/styl/dokumentace CI PASS. Další krok: finální nativní CI 10.3/11.4 a opakovaný celý HTTP/Chrome pár po doplnění pevného limitu sondy; výsledky zapsat před merge.
+Nativní i celé HTTP důkazy archivované, hashe runtime shodné s Git objekty.
+Další krok: commit důkazů, zelené kontroly výsledkové hlavy,
+merge a autorizovaný standardní deploy; veřejné čtecí srovnání a session handoff.
 Rozhodnutí [D12](DECISION_LOG.md#d2026-11-07-12); průběžné předání [handoff](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).

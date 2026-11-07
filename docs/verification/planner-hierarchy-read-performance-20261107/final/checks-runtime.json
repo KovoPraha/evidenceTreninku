@@ -1,0 +1,62 @@
+[
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969094/job/128458255403",
+    "name": "MariaDB profily \u00c4\u0164ten\u0102\u00ad (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969094/job/128458255278",
+    "name": "PHPUnit na PHP 8.2",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/runs/128458484725",
+    "name": "CodeQL",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969094/job/128458255240",
+    "name": "MariaDB integra\u00c4\u0164n\u0102\u00ad smoke (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969094/job/128458255095",
+    "name": "MariaDB integra\u00c4\u0164n\u0102\u00ad smoke (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969060/job/128458255020",
+    "name": "docs",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969094/job/128458255203",
+    "name": "MariaDB profily \u00c4\u0164ten\u0102\u00ad (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969057/job/128458254914",
+    "name": "PHPStan level 5 and changed-file style",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390965709/job/128458247642",
+    "name": "Analyze (javascript-typescript)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390965709/job/128458247534",
+    "name": "Analyze (actions)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390965709/job/128458247661",
+    "name": "Analyze (python)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969061/job/128458254684",
+    "name": "Planner hierarchy HTTP and Chrome (MariaDB 11.4)",
+    "state": "SUCCESS"
+  }
+]

@@ -10243,10 +10243,12 @@
       "title": "P11-R05-H — historický souhrn plánovače se soupiskou",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "PARTIAL",
       "registry": "P11-R05-H",
-      "disposition": "Probíhající schválený řez plánovače; parita a měření před merge/deploy.",
-      "evidence": []
+      "disposition": "Implementace/parita/měření hotové; výsledkové CI/merge/deploy otevřené.",
+      "evidence": [
+        "docs/verification/planner-hierarchy-read-performance-20261107/RESULTS.md"
+      ]
     },
     {
       "id": "PL-83e296b1da",
@@ -10257,6 +10259,50 @@
       "status": "SUPPORT",
       "registry": "P11-R05-H",
       "disposition": "Probíhající schválený řez plánovače; parita a měření před merge/deploy.",
+      "evidence": []
+    },
+    {
+      "id": "PL-95d34cb4c2",
+      "path": "docs/verification/planner-hierarchy-read-performance-20261107/RESULTS.md",
+      "title": "P11-R05-H — parita a přínos historického souhrnu plánovače",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-R05-H",
+      "disposition": "Průběžné důkazy; finální CI a deploy dosud otevřené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-30cda92b36",
+      "path": "docs/verification/planner-hierarchy-release-20261107/RESULTS.md",
+      "title": "P11-R05-H — produkční předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-R05-H",
+      "disposition": "Připravené produkční předání a veřejná čtecí sonda; provedení dosud NOT RUN.",
+      "evidence": []
+    },
+    {
+      "id": "PL-708154a63b",
+      "path": "docs/verification/planner-hierarchy-release-20261107/snapshot.php.txt",
+      "title": "snapshot.php.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-R05-H",
+      "disposition": "Připravené produkční předání a veřejná čtecí sonda; provedení dosud NOT RUN.",
+      "evidence": []
+    },
+    {
+      "id": "PL-a2fca51079",
+      "path": "docs/verification/planner-hierarchy-release-20261107/anonymous-planner.php.txt",
+      "title": "anonymous-planner.php.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-R05-H",
+      "disposition": "Připravené produkční předání a veřejná čtecí sonda; provedení dosud NOT RUN.",
       "evidence": []
     }
   ],
