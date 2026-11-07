@@ -564,7 +564,8 @@ jobs:
           git worktree add --detach "$attendance_tree" 89edfdbee5fbddbe05e0134d94f79ba0cb4143d9
           ln -s "$GITHUB_WORKSPACE/vendor" "$attendance_tree/vendor"
           cp docs/verification/attendance-read-performance-20261107/before-harness.php.txt "$attendance_tree/tests/Support/AttendanceBeforeProfile.php"
-          (cd "$attendance_tree" && php -d memory_limit=512M tests/Support/AttendanceBeforeProfile.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/attendance-before" --route R06)
+          # R06 lesson choices depend on the preceding R05 seed: preserve the full matrix order.
+          (cd "$attendance_tree" && php -d memory_limit=512M tests/Support/AttendanceBeforeProfile.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/attendance-before")
           php tests/Support/AttendanceReadProfile.php > synthetic-read-pages/attendance-read-parity.json
           php tests/Support/MedicalClearanceReadProfile.php > synthetic-read-pages/medical-read-parity.json
           php tests/Support/PlannerReadProfile.php > synthetic-read-pages/planner-read-parity.json

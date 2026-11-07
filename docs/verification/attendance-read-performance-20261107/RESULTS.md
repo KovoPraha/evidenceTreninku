@@ -27,3 +27,11 @@ pro trenéra načítá účastníky a `coachTrainingAssertPeople` provádí jede
 na každou osobu. Soukromé profily i další doménové guardy se nemění.
 Plné HTTP/bootstrap/navigace a další role/filtry zůstávají samostatné úkoly.
 Produkční stav určuje [CURRENT_STATE](../../CURRENT_STATE.md), který tato relace nemění.
+
+
+## Kalibrace CI
+
+První porovnání odmítnuto kvůli nestejnému pořadí seedů, nikoli přijato
+jako výkonový výsledek. [Přesný nález a oprava](CALIBRATION.md).
+Obě verze nyní připravují úplnou matici R05 → R06 → R13; jen výsledné
+R06 páry se porovnávají. Striktní parita dat/HTML nebyla oslabená.
