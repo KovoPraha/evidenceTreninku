@@ -1,6 +1,6 @@
 # P11 — katalog: parita a párové měření 7. 11. 2026
 
-Stav: implementace a cílená parita PASS, finální nativní měření probíhá.
+Stav: implementace, striktní parita a finální nativní měření PASS; PR #364.
 [Plán](../../CATALOG_READ_PERFORMANCE_2026-11-07.md),
 [předání](../../SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md),
 [PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364).
@@ -65,9 +65,39 @@ Sonda vybírá jen strategii; nikdy neurčuje prodejnost, stránku ani počty.
 
 ## Finální ověření a otevřené hranice
 
-Finální runtime `623dcaa5`, nativní měření a úplné CI zatím probíhají.
-Doplnit reporty, finální SHA, výsledky a stav review po skutečném dokončení.
-Místní nedokončená objemová měření během úprav byla ukončená a nepoužívají se.
+Finální runtime `623dcaa5`, integrovaný beze změny kódu v `0252ba58`.
+Párová nativní parita **PASS na obou MariaDB**, 8 scénářů × 30 párů × 2 DB
+= **480 párů / 960 měřených volání**, mimo zahřátí a instrumentaci.
+[Report 10.3](ci-final-10.3/catalog-page-comparison.json),
+[report 11.4](ci-final-11.4/catalog-page-comparison.json),
+[ověření otisků a vzorků](verification.json).
+Všech 9 otisků zdrojů v obou reportech odpovídá přesným Git blobům `0252ba58`.
+Všech 10 vlastních náhodných schémat (5 na DB) odstraněno přes `finally`.
+
+| MariaDB / případ | Medián ms před → po | p95 ms před → po | PHP MiB před → po | SQL před → po | řádky před → po |
+| --- | --- | --- | --- | --- | --- |
+| 10.3 / 12 zboží | 2.57 → 2.69 | 3.10 → 3.13 | 0.21 → 0.24 | 15 → 16 | 70 → 82 |
+| 10.3 / 1000 zboží | 31.16 → 12.00 | 39.00 → 13.68 | 14.33 → 3.37 | 15 → 24 | 5010 → 2141 |
+| 10.3 / 5000 zboží | 202.18 → 87.13 | 208.62 → 90.65 | 71.59 → 16.82 | 23 → 40 | 25010 → 10141 |
+| 10.3 / 5000, člen / cena / strana 2 | 238.17 → 121.34 | 299.63 → 161.99 | 71.59 → 24.89 | 45 → 62 | 30013 → 15144 |
+| 10.3 / 5000, hledání / strana 400 | 279.65 → 174.95 | 310.13 → 189.71 | 71.59 → 17.46 | 23 → 90 | 25010 → 15141 |
+| 10.3 / 5000, prázdná kategorie | 205.12 → 76.60 | 225.92 → 90.50 | 71.59 → 16.76 | 23 → 32 | 25010 → 10075 |
+| 10.3 / 15 programů | 11.92 → 11.95 | 12.62 → 12.54 | 0.31 → 0.35 | 58 → 59 | 236 → 251 |
+| 10.3 / 80 programů | 37.77 → 36.81 | 38.83 → 46.10 | 1.49 → 0.75 | 188 → 195 | 1016 → 931 |
+| 11.4 / 12 zboží | 5.42 → 5.66 | 6.53 → 7.47 | 0.21 → 0.24 | 15 → 16 | 70 → 82 |
+| 11.4 / 1000 zboží | 58.65 → 35.55 | 60.55 → 37.16 | 14.33 → 3.37 | 15 → 24 | 5010 → 2141 |
+| 11.4 / 5000 zboží | 340.46 → 198.57 | 350.43 → 208.14 | 71.59 → 16.82 | 23 → 40 | 25010 → 10141 |
+| 11.4 / 5000, člen / cena / strana 2 | 407.83 → 260.62 | 417.85 → 273.00 | 71.59 → 24.89 | 45 → 62 | 30013 → 15144 |
+| 11.4 / 5000, hledání / strana 400 | 417.03 → 303.08 | 427.73 → 306.99 | 71.59 → 17.46 | 23 → 90 | 25010 → 15141 |
+| 11.4 / 5000, prázdná kategorie | 314.03 → 165.11 | 323.56 → 172.19 | 71.59 → 16.76 | 23 → 32 | 25010 → 10075 |
+| 11.4 / 15 programů | 22.93 → 23.12 | 24.34 → 24.36 | 0.31 → 0.35 | 58 → 59 | 236 → 251 |
+| 11.4 / 80 programů | 89.54 → 90.84 | 93.54 → 93.98 | 1.49 → 0.75 | 188 → 195 | 1016 → 931 |
+
+5000 zboží: plné varianty **5000 → 12**, obrázkové řádky **15000 → 36**.
+Lehký katalog a sonda zůstávají globální, proto celkové načtené řádky neklesají
+na 12 a SQL je více. Malé katalogy mají pouze režii sondy; u 80 programů dál
+dominuje sdílené čtení kapacity a podmínek. Žádný údaj se nepřenáší mezi GET.
+Místní nedokončená objemová měření při úpravách byla ukončená a nepoužívají se.
 
 Globální lehké kandidáty, ceny pro řazení, prodejnost a programový kontext jsou
 stále O(katalog); nad 64 produkty se omezují těžká data na stránku 12 produktů,
@@ -80,3 +110,14 @@ Samostatné [HTTP/browser měření #363](../full-http-performance-20261107/RESU
 na starší verzi `feb8fe8c` zůstává zachované; nejde o přeměření této optimalizace.
 Časy nejsou produkční latence ani slib celkového vykreslení stránky.
 Katalogový PR se neslučuje automaticky; deploy/aktivace nejsou povolené.
+
+## Regrese a provozní hranice při předání
+
+Měřený runtime `0252ba58`: Linux **2350 testů / 45220 assertions PASS**,
+navíc unixové soukromé úložiště 3/45 a Python 5/5. PHPStan/styl i kontrola
+dokumentace PASS. Úplné MariaDB joby a poslední dokumentační head mají živý
+stav v [PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364);
+katalogové profilovací kroky 10.3/11.4 jsou dokončené PASS.
+Čtecí inventura Actions: poslední deploy `42362258878` mířil na `9460ee76`,
+před merge cen; samostatný produkční handoff #362 se přebírá bez opakování operací.
+Tato práce neprovedla deploy, aktivaci, změnu skutečných dat ani odesílání.

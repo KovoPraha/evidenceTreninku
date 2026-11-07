@@ -1,88 +1,70 @@
 # P11 — omezené načítání katalogu, 7. 11. 2026
 
-ID P11-CATALOG; vlastník zadání Marek, realizace Codex. Stav ROZPRACOVÁNO.
-Oprávnění: sloučit #358 do main a pokračovat katalogem; bez nasazení, aktivace
-nebo změn živých dat. Původní WIP zůstává ve své pracovní kopii.
+ID P11-CATALOG; vlastník zadání Marek, realizace Codex. Stav K OVĚŘENÍ V CI.
+[PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364),
+[výsledky a metoda](verification/catalog-read-performance-20261107/RESULTS.md),
+[session handoff](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md),
+[rozhodnutí D2026-11-07-06](DECISION_LOG.md#d2026-11-07-06).
 
-## Cíl a důvod
+## Zadání, oprávnění a pracovní kopie
 
-[Analýza](verification/performance-analysis-20261107/RESULTS.md) prokázala tvorbu
-celého katalogu před výběrem 12 karet. Zachovat přesný viditelný výsledek,
-menu a počty, omezit načtení obrázků, JSON a prezentaci atributů na vybranou stránku.
-Nezbytné lehké údaje pro prodejnost a řazení všech cen zůstávají globální.
+Vlastník zadal sloučit #358 do main a pokračovat katalogem podle
+[analýzy](verification/performance-analysis-20261107/RESULTS.md), zachovat WIP,
+ověřit shodu, změřit před/po a průběžně aktualizovat plán i handoff v repu.
+Bez nasazení, aktivace nebo změn živých dat. Katalogový PR předat k review.
 
-Varianta SQL LIMIT před prodejností/cenami mění výsledek; dlouhodobá cache
-oprávnění přidává invalidaci. Zvolena projekce pro jednu operaci a následná
-dávka plných karet. Vyhledávání ponechá PHP Unicode/podřetězcovou sémantiku.
-Detaily a checkout nadále používají své kanonické čtení. Transakce použije
-původní úplnou cestu. Žádná migrace ani sdílená cache osobních dat.
-
-## Postup a akceptace
-
-1. Dokončit CI a merge #358, zaznamenat skutečný merge SHA odděleně od deploye.
-2. Zmrazit původní řadič katalogu jako testovací referenci po #358.
-3. Lehké kandidáty filtrovat a řadit přesnými dosavadními pravidly; plné karty
-   sestavit dávkově pouze pro stránku. Zachovat i původní implicitní sort_order=0.
-4. Striktní parita celých vybraných karet, typů, filtrů, stránkování a menu:
-   anonym/člen, varianty, ceny, kategorie, Unicode hledání, sklad, import,
-   programy a tarify, změny mezi voláními a transakční fallback.
-5. Stejná syntetická data před/po, zahřátí a střídání pořadí měření; čas/p95,
-   SQL, vrácené řádky, plné varianty/obrázky a přírůstek špičky paměti.
-   SQLite místně; MariaDB 10.3/11.4 v CI. Žádné produkční dumpy ani připojení.
-6. Přiměřené regresní testy, kvalita, dokumentační kontrola; PR a ověření CI.
-   Katalog předat k review; nové nasazení ani merge katalogového PR nebyly zadány.
-
-## Pracovní stav a návaznosti
-
+#358 sloučený `37d0ad687211aa912a90e8ad105842847956890d`, head `02ad8016`,
+11 kontrol PASS; [cenový plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md).
 Větev `codex/catalog-read-performance-20261107`, vlastní worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-catalog-performance-20261107`.
-Základ před převzetím #358: main `9460ee76`; #358 sloučený `37d0ad68`, všech 11 kontrol PASS, bez deploye.
-[Plán cen](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md) je v main.
-Současná produkce a souběžné provozní práce jsou vedené pouze v CURRENT_STATE.
+Původní checkout a WIP zůstávají nedotčené; otisk je v protokolu.
+Převzaté main `d958fd6e` / #363 přidává samostatné HTTP/browser měření
+na `feb8fe8c`; zachované výsledky nejsou přeměření nového katalogu.
 
-Výsledky budou v [protokolu](verification/catalog-read-performance-20261107/RESULTS.md),
-převzetí v [session handoffu](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
-Další krok: ověřit striktní paritu a změřit omezenou projekci.
+## Cíl, varianty a zvolený postup
 
-## Průběžný výsledek implementace
+Dříve vznikly obrázky, popisy, JSON a prezentace atributů celého katalogu
+před výběrem 12 karet. Nový reader zachová globální lehké údaje pro prodejnost,
+řazení skutečnou členskou cenou, kategorie a jejich počty; plné karty sestaví
+jen pro vybranou stránku. Hledání čte popisy po 100 produktech v PHP se stejnou
+Unicode/podřetězcovou sémantikou. Kategorie se čtou po 500 ID.
 
-- Plán zapsaný před kódem `b44e7c53`; implementace `c76b60b0`, převzetí cen
-  a skutečný merge #358 evidovaný v `7296909a`. Výchozí zmrazený řadič je
-  `tests/Support/CatalogPageBaseline.php` z přesného main po merge `37d0ad68` (jen normalizace formátu).
-- Nový reader načte lehké kandidáty a prodejnost, dávkové ceny pro řazení,
-  přesné kategorie/menu a až poté úplné karty pro vybraných nejvýše 12 produktů.
-  Hledání čte souhrny po 100 produktech; JSON a obrázky jen pro stránku.
-- Cíleně 21 testů / 1357 assertions PASS (SQLite). Transakční porovnání ověřuje
-  SQL, parametry a počty řádků; náhodné časy SQL nejsou součástí sémantické parity.
-- Objemové párové měření a kvalita běží; MariaDB 10.3/11.4 zatím NOT RUN pro
-  nový katalog. Plné HTTP/browser a produkce NOT RUN. Nové API bez výběru ID
-  zachovává původní chování detailů a ostatních uživatelů úplného katalogu.
-- Zůstává globální práce nad lehkými kandidáty a programovou kapacitou;
-  změna neřeší bootstrap/navigaci ani nepředstavuje SQL stránkování všech dat.
+SQL LIMIT před prodejností/cenami by měnil výsledek, trvalá cache oprávnění
+potřebuje invalidaci. Zvolena projekce pro jednu operaci a následná dávka
+karet. První nativní měření prokázalo režii malého katalogu (~2 ms), proto
+sonda nejvýše 65 ID aktivních produktů volí do 64 produktů původní cestu.
+Sonda nevybírá obsah ani počty. Tento kompromis se měří v obou větvích.
+Transakce vždy použije původní úplnou cestu bez sondy. Ostatní volání API
+bez seznamu ID a checkout zůstávají kanonické. Žádná migrace ani sdílená cache.
 
-## GitHub ověření
+## Etapy a ověřitelné přijetí
 
-[PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364), větev pushnutá.
-Cílená sada rozšířená o původní ceny: 28 testů / 1495 assertions PASS.
-První úplný Linux běh `42363899233`: 2349 testů, jedna strukturní kontrola
-ještě hledala konstantu 12 v řadiči místo nového readeru. Kontrola přesměrovaná
-na skutečné místo a doplněné ověření zapojení; aplikační parita tím neselhala.
-Nativní databázové měření pokračuje; finální CI bude zopakované po opravě testu.
-Místní první objemový běh ukončen při změně zdrojů před konečným měřením;
-částečné/nekonzistentní časy se nepoužívají. Dokončené CI bude zdrojem výsledků.
+| Etapa | Stav a důkaz |
+| --- | --- |
+| Plán před implementací | `b44e7c53`; původní pracovní ID rozhodnutí 05 a události 13 po převzetí #363 přesunuta na 06/14; přijatá main ID zachovaná |
+| Merge cen bez deploye | HOTOVO #358 `37d0ad68`; finální head 11 kontrol PASS |
+| Reference a implementace | HOTOVO; zmrazený řadič z přesného `37d0ad68`, pouze obal/normalizace formátu; reader + omezené API, implicitní sort_order=0 zachovaný |
+| Striktní shoda výsledků | PASS 31 testů / 2080 assertions; kompletní vybrané karty/typy, ceny, pořadí, menu, počty a filtry |
+| Objemové párové měření | BĚŽÍ nad runtime `623dcaa5`, integrovaným v `0252ba58`; 12/1000/5000 zboží a 15/80 programů, MariaDB 10.3/11.4 |
+| Regrese a předání | Cílené PASS; po převzetí #363 běží úplné CI. Po PASS doplnit výsledky a předat #364 k review |
+| Deploy / provozní přejímka katalogu | NOT RUN, není součástí autorizované práce |
 
-## Úprava podle prvního nativního měření
+Shoda zahrnuje anonym/člen/neověřený účet/odvolání, více variant, veřejné i
+členské ceny, kategorické potomky, všechny druhy řazení, doslovné `%`/`_`,
+Unicode hledání včetně přechodu názvu do popisu, prázdný výsledek a krajní
+stránku. Také sklad 0/NULL, importy 157–159, tarify s oběma přepínači,
+programovou prodejnost/podmínky/kapacitu, změny mezi čteními a transakční SQL.
 
-MariaDB 10.3: 5000 produktů 288,35 → 127,09 ms, paměť 71,59 → 16,78 MiB;
-12 produktů 3,67 → 5,63 ms a 15 programů 17,10 → 19,44 ms.
-Před další implementací zvolen malý omezený přepínač: nejvýše 65 ID aktivních
-produktů pro rozhodnutí strategie. Do 64 produktů zůstane kanonická úplná cesta;
-nad 64 omezená prezentace. Probe neurčuje obsah/počty ani nefiltruje výsledky.
-Jde o pevnou interní heuristiku, nikoli změnu prodejnosti. Malý sortiment přidá
-jen jeden malý SELECT; velký sortiment stále omezí těžká data na stránku.
-Nové měření nahradí původní čísla; první report zůstává označený jako předchozí.
+Měření: 5 zahřátí a 30 střídavých párů na stejných datech a PDO, samostatná
+instrumentace SQL/řádků/EXPLAIN. Ověřit medián/p95, PHP špičku a těžké řádky;
+nevydávat čísla izolované operace za celé HTTP nebo produkční latenci.
+Syntetická schémata, vlastní ověřený localhost kontejner; bez configu/dumpů.
+Nad 64 produkty nejvýše 12 plných produktů; více variant na produkt je přípustných.
 
-Převzetí souběhu: main `d958fd6e` / #363 přináší samostatné HTTP/browser měření
-na `feb8fe8c`; výsledky zachované a nedeklarované jako přeměření nového katalogu.
-[Nový společný rozhodovací odkaz](DECISION_LOG.md#d2026-11-07-06).
-Katalogová událost je 14; dřívější pracovní ID 13 patří v main již HTTP měření.
+## Další krok a hranice
+
+Dokončit finální CI, zaznamenat surové reporty a jejich zdrojové otisky,
+vyhodnotit i režii malých a programových katalogů a aktualizovat propojený
+[registr P11](WORK_PLAN_CURRENT.md), CURRENT a handoff. Pak předat #364 k review.
+Globální lehký průchod a programový kontext zůstávají O(katalog).
+Navazující HTTP/browser této nové verze a další priority #363 zůstávají oddělené.
