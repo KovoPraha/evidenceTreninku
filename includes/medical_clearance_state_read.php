@@ -12,12 +12,24 @@ final class MedicalClearanceStateRead
             return medicalClearanceStatePage($pdo, $base, $params, $filters, $on);
         }
         $exactState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mr.state' : 'mr.state COLLATE BINARY';
-        $grouped = 'SELECT w.id watch_id,MAX(mr.id) last_id,'
-            . "MAX(CASE WHEN $exactState='verified' THEN mr.id END) verified_id "
-            . self::join($base, 'LEFT JOIN medical_clearance_records mr ON mr.watch_id=w.id') . ' GROUP BY w.id';
-        $projection = self::join($base, 'LEFT JOIN (' . $grouped . ') mc ON mc.watch_id=w.id'
-            . ' LEFT JOIN medical_clearance_records mv ON mv.id=mc.verified_id'
-            . ' LEFT JOIN medical_clearance_records ml ON ml.id=mc.last_id AND mc.verified_id IS NULL');
+        $verifiedOnly = in_array($filters['state'], ['valid', 'expired', 'not_yet_valid'], true);
+        $latestId = $verifiedOnly ? 'NULL' : 'MAX(mr.id)';
+        $verifiedId = $verifiedOnly ? 'MAX(mr.id)' : "MAX(CASE WHEN $exactState='verified' THEN mr.id END)";
+        $recordJoin = $verifiedOnly ? 'JOIN' : 'LEFT JOIN';
+        $verifiedWhere = $verifiedOnly ? " AND $exactState='verified'" : '';
+        $grouped = 'SELECT w.id watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id '
+            . self::join($base, $recordJoin . ' medical_clearance_records mr ON mr.watch_id=w.id') . $verifiedWhere . ' GROUP BY w.id';
+        if ($params === []) {
+            // The unrestricted list needs no repeated person/watch joins inside the history aggregation.
+            // Missing watches still survive the outer LEFT JOIN with a null current record.
+            $grouped = 'SELECT mr.watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id'
+                . ' FROM medical_clearance_records mr'
+                . ($verifiedOnly ? " WHERE $exactState='verified'" : '') . ' GROUP BY mr.watch_id';
+        }
+        $headJoin = $verifiedOnly ? 'JOIN' : 'LEFT JOIN';
+        $projection = self::join($base, $headJoin . ' (' . $grouped . ') mc ON mc.watch_id=w.id'
+            . ' ' . $headJoin . ' medical_clearance_records mv ON mv.id=mc.verified_id'
+            . ($verifiedOnly ? '' : ' LEFT JOIN medical_clearance_records ml ON ml.id=mc.last_id AND mc.verified_id IS NULL'));
         // The scoped derived table and the outer list each use the same candidate filters.
         $bindings = array_merge($params, $params);
         $complex = 'mv.id IS NOT NULL AND mv.issued_on>? AND mv.replaces_id IS NOT NULL AND mv.replaces_id<>0';
@@ -55,9 +67,10 @@ final class MedicalClearanceStateRead
             }
         }
         $latestState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY ml.state' : 'ml.state COLLATE BINARY';
-        $simpleStatus = "CASE WHEN mv.id IS NULL THEN CASE $latestState WHEN 'pending' THEN 'pending'"
-            . " WHEN 'revoked' THEN 'revoked' ELSE 'missing' END"
-            . " WHEN mv.issued_on>? THEN 'not_yet_valid' WHEN mv.valid_until<? THEN 'expired' ELSE 'valid' END";
+        $noVerified = $verifiedOnly ? '' : "WHEN mv.id IS NULL THEN CASE $latestState WHEN 'pending' THEN 'pending'"
+            . " WHEN 'revoked' THEN 'revoked' ELSE 'missing' END ";
+        $simpleStatus = 'CASE ' . $noVerified
+            . "WHEN mv.issued_on>? THEN 'not_yet_valid' WHEN mv.valid_until<? THEN 'expired' ELSE 'valid' END";
         $predicate = '(NOT (' . $complex . ') AND (' . $simpleStatus . ')=?)';
         $bindings = [...$bindings, $on, $on, $on, $filters['state']];
         if ($matching !== []) {
@@ -69,7 +82,8 @@ final class MedicalClearanceStateRead
         $fields = ['id', 'state', 'issued_on', 'valid_until', 'replaces_id'];
         foreach (['mv', 'ml'] as $alias) {
             foreach ($fields as $field) {
-                $select .= ',' . $alias . '.' . $field . ' AS _medical_read_' . $alias . '_' . $field;
+                $value = $verifiedOnly && $alias === 'ml' ? 'NULL' : $alias . '.' . $field;
+                $select .= ',' . $value . ' AS _medical_read_' . $alias . '_' . $field;
             }
         }
         // One aggregation for both the exact total and the clamped page, including an excessive page number.

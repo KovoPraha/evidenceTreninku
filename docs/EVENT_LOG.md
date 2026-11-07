@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 7. 11. 2026 / E2026-11-07-48 | P11-R13-S V2 parita PASS, Platné časově neutrální; pokračuje V3 | V2: Platné64,85→64,80ms, Čekající63,65→58,61ms. V3 agreguje records přímo a využívá invariant verified stavů; nové nativní měření nutné. | [Důkaz](verification/medical-state-read-performance-20261107/RESULTS.md) |
 | 7. 11. 2026 / E2026-11-07-47 | P11-R13-S první návrh zamítnut pro nasazení | Parita a HTML PASS, časová regrese105→195–220ms při10k. Další SQL varianta a nové měření; produkce beze změny. | [Důkaz](verification/medical-state-read-performance-20261107/RESULTS.md) |
 | 7. 11. 2026 / E2026-11-07-46 | P11-R13-S čtecí projekce a lokální parita hotové | 18/344 a nový kontrakt7/185 PASS; bounded budoucí řetězce, původní transakce/osoba, styl/lint PASS. Nativní a celé HTTP měření následují v CI, bez deploye. | [Plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) |
 | 7. 11. 2026 / E2026-11-07-45 | P11-R13-S zahájen podle nového zadání vlastníka | Plán před implementací, vlastní worktree z6b1860d5; WIP hash shodný. Čtecí stavový filtr, parita a přínos podmínkou merge/deploy. | [Plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [D13](DECISION_LOG.md#d2026-11-07-13) |

@@ -21,7 +21,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
 - P11-R13-S ROZPRACOVÁNO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md).
-  PR #381: první návrh parita PASS/výkon FAIL; ověření V2 běží, bez předčasného deploye. WIP zachovaný.
+  PR #381: první návrh parita PASS/výkon FAIL; V2 Platné neutrální, ověření V3 běží, bez předčasného deploye. WIP zachovaný.
 - P11-R05-H HOTOVO: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
   #374 v main a nasazeno; [provozní důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md) PASS. WIP zachovaný; R13/K0.2 a přihlášené UAT otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
