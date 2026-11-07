@@ -19,6 +19,7 @@
   "http-dom-verification.json": "8cc24a0de655cc427d8e71f947ab4ddd98f889cfb89555f977761411d425fb19",
   "http-revocation.json": "ac5b82dcd9203fd30baafab3c81338ddb655ceb8b5f91215324cb0a5a250cc86",
   "http-timings.json.gz": "675f86e1a87b54e5afdfc7222ab801066fb5e33776b8b7e93245f0e16645d9e4",
+  "integrated-tests.xml": "851da23159b8ee7ffa35ff4bd96f8c07b5469e6f47f9bfe9ab2b5fea1fbd079e",
   "logins.json": "9ef475032612c86745df1d0b56aee4943944c3234935e839cd8a6e4dd8cc0395",
   "matrix.json": "3598ba11d5bfee90957eb94817b47f4a88a09706a3af1b69ddec6ba2f6e3c593",
   "medical-desktop.png": "41efcb3442ca447e7ac9bbd96c9e573b694926a49b9d192a14cd5780e90e513f",

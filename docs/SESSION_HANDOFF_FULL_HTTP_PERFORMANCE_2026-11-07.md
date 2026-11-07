@@ -85,3 +85,7 @@ CURRENT_STATE; žádné nové nasazení tato relace neprovádí.
 
 Předání je pushnuté v [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363),
 větev `codex/full-http-performance-20261107`; finální CI/merge se ověřují u PR.
+
+Po integraci nového main znovu cíleně **47 testů / 2877 assertions PASS**
+(včetně přehledu rolí), [JUnit](verification/full-http-performance-20261107/integrated-tests.xml). Styl sedmi nových PHP souborů PASS;
+kontrola aktuální dokumentace 80 řádků CURRENT / 0 chyb.
