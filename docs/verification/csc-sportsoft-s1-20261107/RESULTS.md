@@ -5,16 +5,20 @@
 Pouze lokální izolované SQLite/MariaDB databáze a syntetické S0 fixtures.
 Nečte se aplikační config/DB, portály ani Riki. S1 v samostatné větvi
 `codex/csc-sportsoft-s1-ingest-20261107`, závislost S0 #371.
+Předáno jako [draft PR #376](https://github.com/KovoPraha/evidenceTreninku/pull/376),
+implementační commit 79ddc3e6; následné hraniční testy/dokumentace se doplňují.
 
 | Kontrola | Stav / důkaz |
 | --- | --- |
 | První cílený průchod SQLite + UCI | PASS 12 testů / 131 assertions; průběžný výsledek před doplněním hraničních scénářů |
-| Rozšířený SQLite/UCI průchod | RUNNING |
-| MariaDB lokální ingest, transakce, revokace | RUNNING |
+| Rozšířený SQLite/UCI/HTTP průchod | PASS 18 testů / 195 assertions, 1 očekávaný skip MariaDB souběhu; další hranice poklesu se doplňuje |
+| MariaDB lokální ingest, transakce, revokace | NOT RUN: localhost:3306 odmítl připojení, služba nebyla zapínaná; ověření přesunuto do CI |
 | Neprázdná obnova osmi tabulek skutečnou Evidence zálohou | NOT RUN |
-| HTTP anonymní přístup a výchozí OFF | NOT RUN |
-| Celá PHPUnit, PHPStan, style, syntax, composer validate | RUNNING |
-| Dokumentace/odkazy a git diff --check | NOT RUN |
+| HTTP anonymní přístup a výchozí OFF | PASS 10 assertions; skutečný lokální HTTP, chybějící/false flag, cookie, Bearer a podvržený forwarded HTTPS |
+| AnonymousSweep | PASS 36 public + 2 CLI + 261 chráněných cest, errors 0 |
+| Composer validate / první style fix | PASS; po posledních doplněních opakovat style check |
+| Celá PHPUnit / PHPStan | RUNNING; místní kompletní analyse překročilo 300s limit Composeru před výsledkem, není vydáváno za PASS |
+| Dokumentace/odkazy a git diff --check | PASS průběžně: CURRENT 80 řádků, 4635 odkazů, 108 archivních bloků, errors 0 |
 | Linux CI a MariaDB 10.3 / 11.4 | NOT RUN |
 | Merge / deploy / zapnutí / skutečné portály / stanice | NOT RUN, mimo povolený rozsah |
 

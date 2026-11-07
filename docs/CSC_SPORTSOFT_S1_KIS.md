@@ -1,7 +1,8 @@
 # P15 S1 — KIS úložiště, příjem a párování
 
 7. 11. 2026, vlastník Marek / vývoj KIS. Stav: IMPLEMENTOVÁNO LOKÁLNĚ,
-ověření probíhá. [Hlavní plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md),
+ověření probíhá, [draft PR #376](https://github.com/KovoPraha/evidenceTreninku/pull/376).
+[Hlavní plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md),
 [kontrakt v1](CSC_SPORTSOFT_S0_CONTRACT_V1.md),
 [výsledky](verification/csc-sportsoft-s1-20261107/RESULTS.md).
 Větev `codex/csc-sportsoft-s1-ingest-20261107`, worktree
@@ -114,6 +115,9 @@ předchozí snímek zůstane čitelný. Zařízení jej nemůže schválit.
 registrářské UI S4: ověří aktuální aktivní pracovní pozici, zařízení,
 spojení a poslední sekvenci. Není vystavený přes machine API. Volající musí
 získat trainer ID z ověřeného přihlášení, nikdy z libovolného parametru klienta.
+`externalSyncReadReview()` vrací registráři navržené řádky včetně aktuálních
+konfliktů a příznaku superseded bez přesunu ukazatele. U čekající baseline
+se review počítá v náhledu; trvalé důvody identity vzniknou při publikaci.
 
 [Resolver](../includes/external_identity_match.php) zachovává úvodní nuly,
 odstraňuje jen ASCII mezery/NBSP a vyžaduje 11 ASCII číslic. Chybějící,

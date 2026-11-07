@@ -407,4 +407,45 @@ final class ExternalReadSyncTest extends TestCase
             proc_close($process);
         }
     }
+
+    public function testDropThresholdDuplicateLicenseAndReadAuthorization(): void
+    {
+        foreach ([5, 4, 3] as $count) {
+            $job = $this->call('claim');
+            $batch = $this->batch($job);
+            $template = $batch['rows'][0];
+            $batch['rows'] = [];
+            for ($i = 0; $i < $count; $i++) {
+                $row = $template;
+                $row['license_id'] = 'synthetic-license-' . $i;
+                $batch['rows'][] = $row;
+            }
+            $batch['page']['row_count'] = $batch['page']['reported_total'] = $count;
+            $receipt = $this->call('upload_part', $batch);
+            self::assertSame(
+                $count === 4 ? 'complete' : 'review_required',
+                $this->call('complete', $this->manifest($job, [$receipt], $count))['status']
+            );
+            if ($count === 5) {
+                \externalSyncApproveSnapshot($this->pdo, $job['run_id'], 7);
+            }
+        }
+        self::assertCount(4, \externalSyncReadSnapshot($this->pdo, 'csc_licenses', 7)['records']);
+        self::assertCount(3, \externalSyncReadReview($this->pdo, $job['run_id'], 7)['records']);
+        $this->pdo->exec('DELETE FROM staff_user_positions');
+        foreach (['externalSyncReadSnapshot' => 'csc_licenses', 'externalSyncReadReview' => $job['run_id']] as $function => $id) {
+            try {
+                $function($this->pdo, $id, 7);
+                self::fail('Revoked registrar can read private records');
+            } catch (\DomainException) {
+                self::assertTrue(true);
+            }
+        }
+        $next = $this->call('claim');
+        $batch = $this->batch($next);
+        $batch['rows'][] = $batch['rows'][0];
+        $batch['page']['row_count'] = $batch['page']['reported_total'] = 2;
+        $receipt = $this->call('upload_part', $batch);
+        $this->assertRejected(fn () => $this->call('complete', $this->manifest($next, [$receipt], 2)), 'duplicate_license_id');
+    }
 }
