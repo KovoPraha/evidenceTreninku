@@ -408,3 +408,15 @@ Devět párů na MariaDB 10.3/11.4: celá data i HTML shodné, 200 osob
 první neplatné přípravy měření oddělené v kalibračním protokolu.
 [Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md) vede
 PR #354, plné HTTP, další role/propojené lekce a hierarchické filtry. Bez nasazení.
+
+## Klubové ceny e-shopu — 7. 11. 2026
+
+[Plán a průběžný stav](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+[párové výsledky](verification/member-pricing-read-performance-20261107/RESULTS.md),
+[session handoff](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md).
+Dávkové ceny katalogu/detailu hotové: 500 produktů 2000 → 4 SQL, medián
+měřené cenové části 557/377 → 3,21/2,88 ms na MariaDB 10.3/11.4. Shodná data,
+kolace i původní transakční SQL; checkout zachovaný. 20/301 cíleně, měřená
+implementace 11 CI kontrol PASS. [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358)
+vede finální CI/začlenění. Bez nasazení. Katalogový výřez a celé HTTP zůstávají
+další samostatné zásahy; nepřevádět zrychlení cenové části na celou aplikaci.
