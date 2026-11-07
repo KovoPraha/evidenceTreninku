@@ -69,7 +69,7 @@ Hlava `efdd7a2a`: [CI 42360862108](https://github.com/KovoPraha/evidenceTreninku
 prošla PHPUnit **2337 testů / 43257 assertions**, integračními smoke na MariaDB
 10.3 i 11.4 a samostatnou linuxovou kontrolou privátního úložiště. PHPStan,
 styl, dokumentace a CodeQL také PASS. Dva profily čtení odmítly porovnání,
-protože připnuté historické aplikace měly 159 migrací a aktuální 160.
+protože připnuté historické aplikace měly 160 položek migračního ledgeru / 347 tabulek a aktuální 161 / 349.
 Workflow nyní přidává tutéž novou migraci dokladů do všech tří izolovaných
 srovnávacích kopií; historický aplikační kód zůstává připnutý a kontroly
 shody dat/HTML, počtu tabulek/migrací i oprávnění zůstávají povinné.
