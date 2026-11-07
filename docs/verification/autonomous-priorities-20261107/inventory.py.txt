@@ -1,0 +1,70 @@
+import argparse,collections,datetime,hashlib,json,os,subprocess,tempfile
+from pathlib import Path
+
+parser=argparse.ArgumentParser()
+parser.add_argument('--repo',required=True)
+parser.add_argument('--prs',required=True)
+parser.add_argument('--open-prs',required=True)
+parser.add_argument('--out',required=True)
+args=parser.parse_args();root=Path(args.repo)
+def git(*parts,cwd=root,input=None,check=True):
+ result=subprocess.run(['git','--no-optional-locks',*parts],cwd=cwd,input=input,capture_output=True)
+ if check and result.returncode:raise RuntimeError('Read-only git failed: '+str(parts[:2])+': '+result.stderr.decode('utf-8',errors='replace')[:300])
+ return result
+def text(*parts,**kw):return git(*parts,**kw).stdout.decode('utf-8',errors='strict')
+main=text('rev-parse','origin/main').strip();main_tree=text('rev-parse',main+'^{tree}').strip()
+prs=json.loads(Path(args.prs).read_text(encoding='utf-8-sig'));open_prs=json.loads(Path(args.open_prs).read_text(encoding='utf-8-sig'))
+open_by_branch={p['headRefName']:p for p in open_prs};merged_by_branch=collections.defaultdict(list)
+for pr in prs:merged_by_branch[pr['headRefName']].append(pr)
+merged=set(text('for-each-ref','--merged='+main,'--format=%(refname:short)','refs/heads').splitlines())
+branches=[]
+for row in text('for-each-ref','--format=%(refname:short)%09%(objectname)%09%(committerdate:iso-strict)','refs/heads').splitlines():
+ name,sha,when=row.split('\t');matches=merged_by_branch.get(name,[]);exact=[p for p in matches if p['headRefOid']==sha]
+ if name in open_by_branch:state='OPEN_PR_OWNED'
+ elif name.startswith('codex/autonomous-priorities-1-7-8-'):state='CURRENT_AUDIT_OWNED'
+ elif name in merged:state='ANCESTRY_IN_MAIN'
+ elif exact:state='EXACT_HEAD_OF_MERGED_PR'
+ elif matches:state='MERGED_PR_NAME_HEAD_DIFFERS_REVIEW'
+ else:state='NO_MERGE_PROOF_REVIEW'
+ branches.append({'branch':name,'head':sha,'commit_time':when,'classification':state,'open_pr':open_by_branch.get(name,{}).get('number'),'merged_prs':[{'number':p['number'],'head':p['headRefOid'],'merge':p['mergeCommit']['oid'] if p.get('mergeCommit') else None} for p in matches]})
+worktrees=[];record={}
+for line in (text('worktree','list','--porcelain')+'\n').splitlines():
+ if not line:
+  if record:worktrees.append(record);record={}
+ elif line.startswith('worktree '):record['path']=line[9:]
+ elif line.startswith('HEAD '):record['head']=line[5:]
+ elif line.startswith('branch '):record['branch']=line[7:].removeprefix('refs/heads/')
+ elif line=='detached':record['detached']=True
+
+def digest(path):
+ h=hashlib.sha256()
+ with path.open('rb') as handle:
+  for chunk in iter(lambda:handle.read(1024*1024),b''):h.update(chunk)
+ return h.hexdigest()
+tracked=[]
+for wt in worktrees:
+ path=Path(wt['path']);result=git('status','--porcelain=v1','-z','--untracked-files=normal',cwd=path,check=False)
+ if result.returncode:wt['status']='UNREADABLE_REVIEW';wt['reason']='git status failed';continue
+ parts=result.stdout.decode('utf-8').split('\0');changes=[];untracked=0;i=0
+ while i<len(parts):
+  entry=parts[i];i+=1
+  if not entry:continue
+  code=entry[:2];relative=entry[3:]
+  if 'R' in code or 'C' in code:i+=1
+  if code=='??':untracked+=1;continue
+  file=path/relative;row={'path':relative,'status':code,'exists':file.is_file()}
+  if file.is_file():
+   row['sha256']=digest(file);row['bytes']=file.stat().st_size
+   blob=git('show',main+':'+relative,check=False)
+   if blob.returncode==0:
+    row['same_as_main_exact']=row['sha256']==hashlib.sha256(blob.stdout).hexdigest()
+    if row['bytes']<4*1024*1024:
+     raw=file.read_bytes();row['same_as_main_lf']=raw.replace(b'\r\n',b'\n')==blob.stdout.replace(b'\r\n',b'\n')
+   row['stable_after_read']=row['sha256']==digest(file)
+  changes.append(row)
+ wt.update(status='DIRTY' if changes or untracked else 'CLEAN',untracked_entries=untracked,tracked_changes=changes)
+
+summary={'main':main,'main_tree':main_tree,'branches':len(branches),'branch_classes':dict(collections.Counter(x['classification'] for x in branches)),'worktrees':len(worktrees),'worktree_states':dict(collections.Counter(x['status'] for x in worktrees)),'tracked_wip_files':sum(len(x.get('tracked_changes',[])) for x in worktrees),'untracked_entries':sum(x.get('untracked_entries',0) for x in worktrees),'mutations':'NONE: no checkout, reset, clean, branch deletion or patch application','limits':'A merged PR head or matching patch is evidence for review, never permission to remove a branch or WIP. Squash ancestry alone is insufficient. Active workers may modify their files after this snapshot.'}
+output={'captured_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'summary':summary,'branches':branches,'worktrees':worktrees}
+Path(args.out).write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(json.dumps(summary,ensure_ascii=False,indent=2))

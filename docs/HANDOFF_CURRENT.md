@@ -13,7 +13,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 
-- DOC03: [priority a závislosti](WORK_PLAN_CURRENT.md#priority-a-závislosti); [DOC02 audit](PLAN_CATALOG_AUDIT_2026-11-07.md) a [úplný katalog](PLAN_CATALOG.md).
+- AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
 
 - P11 picker: dokončení #366 ROZPRACOVÁNO, nyní schválený vhodný deploy po ověření; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
   [finální výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [předání / PR #366](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).

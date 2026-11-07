@@ -131,3 +131,5 @@ Nové společné měření: [průběžný protokol](verification/attendance-pers
 PR #366 byl mezitím sloučen souběžnou relací jako `faae75e8`, přesný strom d62c3ad2, 11 kontrol PASS. Sloučení převzaté beze změny aplikačního kódu; toto pokračování doplňuje společné měření, předání a podle aktuálního oprávnění deploy. Baseline je poslední main před pickerem `2ef20aed`, který už obsahuje #367.
 
 Nový pár Linux CI 42379723334 SUCCESS: main 2ef20aed před pickerem a shodný aktuální #367 proti pickeru faae75e8. 540 HTTP / 78 Chrome, HTML 1368679 → 91620 B, HTTP trenéra 48,40 → 27,87 ms, Chrome warm 445,65 → 82,60 ms. Osm zdrojových hashů odpovídá sloučenému runtime. Ve 13 checksummech a výběrech shoda; role/čerstvost a oddělené writer UAT PASS. [Přesná metoda a meze](verification/attendance-person-picker-20261107/integrated/RESULTS.md). Předání pokračuje v #372, produkční nasazení stále NOT RUN.
+
+Převzatý dokumentační #370 / 56f5ce08: P14 obnova/inventura a její přijatá E30/31 zachované. Pracovní pokračování tohoto pickeru nyní E32–34 / D10; dřívější pracovní čísla v historii nejsou nové paralelní události. Aplikační PHP/JS/workflow main proti faae75e8 shodné.

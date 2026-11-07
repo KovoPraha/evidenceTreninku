@@ -827,6 +827,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-3bb72b363f | [initial-wrong-route.json](verification/attendance-lesson-release-20261107/initial-wrong-route.json) | evidence / REFERENCE | P11 |
 | PL-33db4f8391 | [RESULTS.md](verification/attendance-lesson-release-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
 | PL-28f93c29c8 | [snapshot.php.txt](verification/attendance-lesson-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
+
 | PL-c0b7a64780 | [docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
 | PL-10360221ef | [docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
 | PL-607748e4e4 | [docs/verification/attendance-person-picker-20261107/RESULTS.md](verification/attendance-person-picker-20261107/RESULTS.md) | reference / HISTORICAL_EVIDENCE | P11 |
@@ -835,6 +836,16 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-d04eafb86a | [docs/verification/attendance-person-picker-20261107/final/RESULTS.md](verification/attendance-person-picker-20261107/final/RESULTS.md) | reference / REFERENCE | P11 |
 | PL-b357de1d32 | [docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md](verification/attendance-person-picker-20261107/final/CALIBRATION.md) | reference / REFERENCE | P11 |
 | PL-629fbd394e | [docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md](verification/attendance-person-picker-20261107/final/REPRODUCE.md) | reference / REFERENCE | P11 |
+
+| PL-c7836c4046 | [AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md) | plan / DONE | P14/P10/P11/C04 |
+
+| PL-8cafa3571d | [verification/autonomous-priorities-20261107/RESULTS.md](verification/autonomous-priorities-20261107/RESULTS.md) | evidence / REFERENCE | P14/P10/P11/C04 |
+| PL-b21613ab0c | [verification/autonomous-priorities-20261107/restore-proof.json](verification/autonomous-priorities-20261107/restore-proof.json) | evidence / REFERENCE | P14/P10/C04 |
+| PL-be0c6f50a6 | [verification/autonomous-priorities-20261107/restore-evidence.txt](verification/autonomous-priorities-20261107/restore-evidence.txt) | artifact / REFERENCE | P14/P10/C04 |
+| PL-6e7cacb9d3 | [verification/autonomous-priorities-20261107/work-inventory.json](verification/autonomous-priorities-20261107/work-inventory.json) | evidence / REFERENCE | P14/P10/C04 |
+| PL-b01de98e79 | [verification/autonomous-priorities-20261107/inventory.py.txt](verification/autonomous-priorities-20261107/inventory.py.txt) | artifact / REFERENCE | P14/P10/C04 |
+| PL-c2803a08b6 | [verification/autonomous-priorities-20261107/technical-candidates.json](verification/autonomous-priorities-20261107/technical-candidates.json) | evidence / REFERENCE | P14/P10/C04 |
+| PL-f2ad7d0e44 | [verification/autonomous-priorities-20261107/technical-candidates-junit.xml](verification/autonomous-priorities-20261107/technical-candidates-junit.xml) | evidence / REFERENCE | P14/P10/C04 |
 | PL-6e0dad4534 | [Integrated picker verification](verification/attendance-person-picker-20261107/integrated/RESULTS.md) | evidence / REFERENCE | P11 |
 | PL-435187d92b | [browser-coach-after.json.gz](verification/attendance-person-picker-20261107/integrated/browser-coach-after.json.gz) | evidence / REFERENCE | P11 |
 | PL-e403a774e9 | [browser-coach-before.json.gz](verification/attendance-person-picker-20261107/integrated/browser-coach-before.json.gz) | evidence / REFERENCE | P11 |
