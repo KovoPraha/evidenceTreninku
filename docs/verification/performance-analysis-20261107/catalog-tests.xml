@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\StorefrontReadPerformanceTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\StorefrontReadPerformanceTest.php" tests="3" assertions="72" errors="0" failures="0" skipped="0" time="1.242283">
+    <testcase name="testDetailReadsOnlyItsOwnVariantsEvenWithLargeUnrelatedCatalog" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\StorefrontReadPerformanceTest.php" line="14" class="Tests\Integration\StorefrontReadPerformanceTest" classname="Tests.Integration.StorefrontReadPerformanceTest" assertions="5" time="0.183098"/>
+    <testcase name="testCatalogSchemaQueriesDoNotGrowWithVariantCount" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\StorefrontReadPerformanceTest.php" line="24" class="Tests\Integration\StorefrontReadPerformanceTest" classname="Tests.Integration.StorefrontReadPerformanceTest" assertions="3" time="0.117023"/>
+    <testcase name="testNavigationQueryBudgetAndNoDetailPresentationData" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\StorefrontReadPerformanceTest.php" line="33" class="Tests\Integration\StorefrontReadPerformanceTest" classname="Tests.Integration.StorefrontReadPerformanceTest" assertions="64" time="0.942161"/>
+  </testsuite>
+</testsuites>

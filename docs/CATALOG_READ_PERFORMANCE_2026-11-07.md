@@ -36,10 +36,10 @@ původní úplnou cestu. Žádná migrace ani sdílená cache osobních dat.
 
 Větev `codex/catalog-read-performance-20261107`, vlastní worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-catalog-performance-20261107`.
-Základ před převzetím #358: main `9460ee76`; #358 čeká na CI po převzetí #355.
-Plán cen MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md bude dostupný po merge.
+Základ před převzetím #358: main `9460ee76`; #358 sloučený `37d0ad68`, všech 11 kontrol PASS, bez deploye.
+[Plán cen](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md) je v main.
 Současná produkce a souběžné provozní práce jsou vedené pouze v CURRENT_STATE.
 
 Výsledky budou v [protokolu](verification/catalog-read-performance-20261107/RESULTS.md),
 převzetí v [session handoffu](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
-Další krok: dokončit merge cen, zmrazit referenci a implementovat omezenou projekci.
+Další krok: ověřit striktní paritu a změřit omezenou projekci.

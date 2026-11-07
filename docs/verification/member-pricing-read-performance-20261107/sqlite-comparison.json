@@ -1,0 +1,1070 @@
+{
+    "php": "8.2.12",
+    "server": {
+        "driver": "sqlite",
+        "version": "3.39.2"
+    },
+    "method": "5 warmups, 30 interleaved plain PDO samples per phase, same process and fixtures; separate warmed instrumentation; complete strict data parity. Presentation prices only, not full HTTP.",
+    "source_sha256": {
+        "includes\/shop_member_pricing.php": "7405204dae7576be80a7c087552c2de356983a8b91cf6c176d56636df164edef",
+        "includes\/shop_member_pricing_read.php": "3bba57a10b4116556ac6b954afc11e2ed0f6b369e15f071ff71e9e29c7f8b2bf",
+        "booking\/eshop.php": "a033e2871098950cf8e28b77a14f06ac649e70ceff9ca8f0c62fed23ea4c39be",
+        "booking\/produkt.php": "51fb666a3832d8c8466ae42bb81cf4defca65cb3da6a487052ce9e6606009f0a",
+        "tests\/Support\/MemberPricingReadBaseline.php": "a74527287f0d88daf6cdecd98128322b525d9c8cfa83635717f00aaf1f868df4",
+        "tests\/Support\/MemberPricingReadFixture.php": "d1f49dea8e9f160bfe740fca66485f6b38cb8b66a8696e13e5bfd438554ebbe6",
+        "tests\/Support\/MemberPricingReadProfile.php": "9584dcba6d7be2fbc52f01e9dd1bfd51def7a63b5a59e6884720c5e3e9d11f3b"
+    },
+    "cases": {
+        "variants_12_account_1": {
+            "before": {
+                "samples_ms": [
+                    7.0981,
+                    21.0807,
+                    6.7903,
+                    8.7773,
+                    7.7969,
+                    7.249,
+                    5.6269,
+                    6.0645,
+                    6.1254,
+                    6.1781,
+                    7.3125,
+                    7.3653,
+                    8.2407,
+                    9.4719,
+                    13.7286,
+                    10.2832,
+                    8.7516,
+                    6.234,
+                    10.3927,
+                    7.9973,
+                    9.2786,
+                    14.0788,
+                    11.2022,
+                    7.3581,
+                    10.098,
+                    10.2803,
+                    9.297,
+                    13.3496,
+                    9.8501,
+                    5.7317
+                ],
+                "peak_increment_bytes": 19800,
+                "output_sha256": "57b0e4ef3ca1741ffd36c65226291f22a3b3ca89ef8e850df3c67ecdd583ffcd",
+                "sql": 48,
+                "fetched_rows": 60,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 12,
+                        "rows": 24,
+                        "parameter_count": 5
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 12,
+                        "rows": 0,
+                        "parameter_count": 4
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 12,
+                        "rows": 12,
+                        "parameter_count": 1
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 12,
+                        "rows": 24,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 8.49615,
+                "p95_ms": 14.0788
+            },
+            "after": {
+                "samples_ms": [
+                    0.9155,
+                    1.6177,
+                    0.8848,
+                    0.8414,
+                    0.9065,
+                    0.98,
+                    0.7296,
+                    0.7171,
+                    0.7325,
+                    0.6835,
+                    0.8508,
+                    0.8841,
+                    0.7949,
+                    0.8845,
+                    0.9057,
+                    0.9459,
+                    0.8435,
+                    0.9467,
+                    0.7968,
+                    0.7609,
+                    0.8294,
+                    1.1238,
+                    0.8747,
+                    0.8162,
+                    0.9712,
+                    1.0095,
+                    0.8169,
+                    0.9861,
+                    1.2194,
+                    1.0857
+                ],
+                "peak_increment_bytes": 15808,
+                "output_sha256": "57b0e4ef3ca1741ffd36c65226291f22a3b3ca89ef8e850df3c67ecdd583ffcd",
+                "sql": 4,
+                "fetched_rows": 5,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 4
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 1,
+                        "parameter_count": 1
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 0.8843,
+                "p95_ms": 1.2194
+            },
+            "parity": true,
+            "speedup": 9.607768856722831
+        },
+        "variants_100_account_1": {
+            "before": {
+                "samples_ms": [
+                    74.7117,
+                    75.6452,
+                    64.9051,
+                    64.9507,
+                    95.6711,
+                    64.1033,
+                    88.273,
+                    73.9109,
+                    98.7485,
+                    92.2316,
+                    141.4201,
+                    121.9783,
+                    102.5767,
+                    129.1163,
+                    105.8274,
+                    69.5882,
+                    65.1674,
+                    63.893,
+                    85.8876,
+                    71.4974,
+                    107.1745,
+                    69.7971,
+                    76.6414,
+                    76.084,
+                    77.8027,
+                    81.6803,
+                    99.6427,
+                    73.6446,
+                    94.316,
+                    77.9335
+                ],
+                "peak_increment_bytes": 98776,
+                "output_sha256": "0a0d35f55c4571c2c065b4a7e8293dd7f254989d3861c727b581d43191b13f7f",
+                "sql": 400,
+                "fetched_rows": 500,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 100,
+                        "rows": 200,
+                        "parameter_count": 5
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 100,
+                        "rows": 0,
+                        "parameter_count": 4
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 100,
+                        "rows": 100,
+                        "parameter_count": 1
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 100,
+                        "rows": 200,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 77.8681,
+                "p95_ms": 129.1163
+            },
+            "after": {
+                "samples_ms": [
+                    2.5661,
+                    2.1738,
+                    2.0806,
+                    2.051,
+                    1.7441,
+                    2.0562,
+                    1.8911,
+                    2.2927,
+                    3.3812,
+                    3.4797,
+                    2.2767,
+                    2.1627,
+                    2.0857,
+                    3.038,
+                    2.0387,
+                    1.9649,
+                    2.0219,
+                    2.0612,
+                    2.6812,
+                    2.6499,
+                    1.9326,
+                    1.9351,
+                    2.9751,
+                    2.4375,
+                    1.6718,
+                    1.6438,
+                    2.911,
+                    2.1461,
+                    2.0964,
+                    2.036
+                ],
+                "peak_increment_bytes": 91968,
+                "output_sha256": "0a0d35f55c4571c2c065b4a7e8293dd7f254989d3861c727b581d43191b13f7f",
+                "sql": 4,
+                "fetched_rows": 5,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 4
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 1,
+                        "parameter_count": 1
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 2.09105,
+                "p95_ms": 3.3812
+            },
+            "parity": true,
+            "speedup": 37.23875564907582
+        },
+        "variants_500_account_1": {
+            "before": {
+                "samples_ms": [
+                    470.8257,
+                    352.5676,
+                    383.0849,
+                    467.5402,
+                    349.3078,
+                    463.2648,
+                    351.1564,
+                    333.8539,
+                    545.6016,
+                    427.5206,
+                    417.2662,
+                    399.7589,
+                    362.8184,
+                    423.1329,
+                    632.4662,
+                    337.0709,
+                    446.529,
+                    395.4109,
+                    373.6652,
+                    481.4488,
+                    368.272,
+                    402.446,
+                    575.4849,
+                    325.778,
+                    726.1012,
+                    474.1573,
+                    537.188,
+                    468.3014,
+                    335.5008,
+                    371.8881
+                ],
+                "peak_increment_bytes": 457304,
+                "output_sha256": "55aa8568afbde7b380ec442c48b296fc6da4d98487e93d7d729f6d23f3c60235",
+                "sql": 2000,
+                "fetched_rows": 2500,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 500,
+                        "rows": 1000,
+                        "parameter_count": 5
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 500,
+                        "rows": 0,
+                        "parameter_count": 4
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 500,
+                        "rows": 500,
+                        "parameter_count": 1
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 500,
+                        "rows": 1000,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 409.8561,
+                "p95_ms": 632.4662
+            },
+            "after": {
+                "samples_ms": [
+                    12.1934,
+                    13.4601,
+                    7.3018,
+                    9.0385,
+                    12.7284,
+                    10.3113,
+                    8.5316,
+                    7.8629,
+                    13.8688,
+                    7.1693,
+                    9.5127,
+                    10.5403,
+                    6.9912,
+                    9.3566,
+                    9.659,
+                    7.3123,
+                    8.8922,
+                    9.1755,
+                    12.0744,
+                    11.5765,
+                    17.4049,
+                    15.8636,
+                    8.7129,
+                    26.7911,
+                    6.4657,
+                    11.4345,
+                    10.9995,
+                    14.9421,
+                    7.9464,
+                    8.1137
+                ],
+                "peak_increment_bytes": 437696,
+                "output_sha256": "55aa8568afbde7b380ec442c48b296fc6da4d98487e93d7d729f6d23f3c60235",
+                "sql": 4,
+                "fetched_rows": 5,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 4
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 1,
+                        "parameter_count": 1
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 9.58585,
+                "p95_ms": 17.4049
+            },
+            "parity": true,
+            "speedup": 42.7563648502741
+        },
+        "products_12_account_1": {
+            "before": {
+                "samples_ms": [
+                    12.4715,
+                    11.6947,
+                    8.4227,
+                    6.1166,
+                    5.9433,
+                    6.0932,
+                    8.9849,
+                    7.8622,
+                    8.0112,
+                    8.1842,
+                    13.593,
+                    9.8015,
+                    7.2349,
+                    7.4705,
+                    14.0268,
+                    7.1569,
+                    11.5573,
+                    8.5439,
+                    10.0186,
+                    7.7198,
+                    5.8433,
+                    6.5251,
+                    5.849,
+                    11.8776,
+                    9.8847,
+                    12.3727,
+                    13.3947,
+                    11.1924,
+                    17.4497,
+                    7.6338
+                ],
+                "peak_increment_bytes": 27080,
+                "output_sha256": "2312ac46d822d64f8bcf90a21b5239acb6ae6aedc8ef68237e73aeaf2e8c1dd0",
+                "sql": 48,
+                "fetched_rows": 60,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 12,
+                        "rows": 24,
+                        "parameter_count": 5
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 12,
+                        "rows": 0,
+                        "parameter_count": 4
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 12,
+                        "rows": 12,
+                        "parameter_count": 1
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 12,
+                        "rows": 24,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 8.4833,
+                "p95_ms": 14.0268
+            },
+            "after": {
+                "samples_ms": [
+                    5.3804,
+                    2.953,
+                    0.9123,
+                    0.9761,
+                    0.926,
+                    0.9519,
+                    0.9976,
+                    0.9266,
+                    1.0368,
+                    1.011,
+                    1.8352,
+                    1.7261,
+                    1.1877,
+                    1.8776,
+                    1.1205,
+                    1.0612,
+                    1.3618,
+                    1.1899,
+                    1.5872,
+                    1.7067,
+                    1.0254,
+                    0.9475,
+                    0.977,
+                    0.9215,
+                    1.0134,
+                    0.9884,
+                    1.1774,
+                    9.2924,
+                    1.5745,
+                    0.9675
+                ],
+                "peak_increment_bytes": 23184,
+                "output_sha256": "2312ac46d822d64f8bcf90a21b5239acb6ae6aedc8ef68237e73aeaf2e8c1dd0",
+                "sql": 4,
+                "fetched_rows": 16,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?,?,?,?,?,?,?,?,?,?,?,?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 15
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 12,
+                        "parameter_count": 12
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 1.049,
+                "p95_ms": 5.3804
+            },
+            "parity": true,
+            "speedup": 8.087035271687322
+        },
+        "products_100_account_1": {
+            "before": {
+                "samples_ms": [
+                    104.3975,
+                    77.3065,
+                    72.8156,
+                    84.6862,
+                    82.9985,
+                    88.3765,
+                    98.128,
+                    82.151,
+                    83.3969,
+                    91.7286,
+                    58.026,
+                    61.5384,
+                    69.046,
+                    80.4876,
+                    86.8338,
+                    67.4032,
+                    65.2002,
+                    65.2455,
+                    82.1284,
+                    91.7437,
+                    55.9034,
+                    82.2193,
+                    92.5358,
+                    83.5388,
+                    70.3083,
+                    72.5573,
+                    69.9486,
+                    66.3875,
+                    74.4439,
+                    86.4779
+                ],
+                "peak_increment_bytes": 163784,
+                "output_sha256": "7d41c58b9bc6deb0afbb680d82d288e570872c87a80494a001537842ae626bde",
+                "sql": 400,
+                "fetched_rows": 500,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 100,
+                        "rows": 200,
+                        "parameter_count": 5
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 100,
+                        "rows": 0,
+                        "parameter_count": 4
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 100,
+                        "rows": 100,
+                        "parameter_count": 1
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 100,
+                        "rows": 200,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 81.30799999999999,
+                "p95_ms": 98.128
+            },
+            "after": {
+                "samples_ms": [
+                    3.532,
+                    5.0541,
+                    6.1282,
+                    4.9885,
+                    6.5836,
+                    9.4625,
+                    6.0077,
+                    5.5077,
+                    4.6434,
+                    5.9379,
+                    3.5599,
+                    3.4441,
+                    3.2387,
+                    4.1395,
+                    3.7,
+                    3.5069,
+                    3.7066,
+                    3.4008,
+                    5.9029,
+                    4.0443,
+                    3.3192,
+                    3.2102,
+                    5.4541,
+                    4.1825,
+                    3.2524,
+                    4.2734,
+                    4.7871,
+                    3.6824,
+                    20.1291,
+                    3.8514
+                ],
+                "peak_increment_bytes": 159312,
+                "output_sha256": "7d41c58b9bc6deb0afbb680d82d288e570872c87a80494a001537842ae626bde",
+                "sql": 4,
+                "fetched_rows": 104,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 103
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 100,
+                        "parameter_count": 100
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 4.161,
+                "p95_ms": 9.4625
+            },
+            "parity": true,
+            "speedup": 19.540495073299688
+        },
+        "products_500_account_1": {
+            "before": {
+                "samples_ms": [
+                    417.3403,
+                    372.139,
+                    599.6403,
+                    357.5468,
+                    423.2376,
+                    387.4974,
+                    427.3576,
+                    426.8484,
+                    365.6979,
+                    377.6854,
+                    324.6484,
+                    318.0301,
+                    323.8148,
+                    318.0043,
+                    324.8277,
+                    448.8261,
+                    385.6929,
+                    455.6876,
+                    454.2239,
+                    461.1657,
+                    298.4157,
+                    425.4975,
+                    458.1017,
+                    425.627,
+                    603.6202,
+                    436.1451,
+                    347.103,
+                    452.3839,
+                    392.3554,
+                    521.6436
+                ],
+                "peak_increment_bytes": 784712,
+                "output_sha256": "71a5554296c0edc570c26414e9414dc44d85390956ba0e3ee0651243916c29ad",
+                "sql": 2000,
+                "fetched_rows": 2500,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 500,
+                        "rows": 1000,
+                        "parameter_count": 5
+                    },
+                    "SELECT team_id,amount_minor FROM shop_member_product_prices WHERE active=1 AND product_id=? AND currency=? AND team_id IN (?,?)": {
+                        "count": 500,
+                        "rows": 0,
+                        "parameter_count": 4
+                    },
+                    "SELECT category_path FROM shop_product_categories WHERE product_id=? ORDER BY is_default DESC,sort_order,id": {
+                        "count": 500,
+                        "rows": 500,
+                        "parameter_count": 1
+                    },
+                    "SELECT team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 500,
+                        "rows": 1000,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 420.28895,
+                "p95_ms": 599.6403
+            },
+            "after": {
+                "samples_ms": [
+                    22.7043,
+                    24.293,
+                    14.5985,
+                    14.2269,
+                    19.5777,
+                    16.8062,
+                    15.5452,
+                    23.1545,
+                    19.18,
+                    15.7447,
+                    19.261,
+                    21.2638,
+                    16.5224,
+                    15.5655,
+                    15.7099,
+                    15.1329,
+                    23.9564,
+                    18.3787,
+                    23.5505,
+                    22.4823,
+                    19.6068,
+                    19.7795,
+                    16.0508,
+                    17.1785,
+                    24.2607,
+                    20.8702,
+                    32.42,
+                    34.5807,
+                    23.4923,
+                    23.9721
+                ],
+                "peak_increment_bytes": 777168,
+                "output_sha256": "71a5554296c0edc570c26414e9414dc44d85390956ba0e3ee0651243916c29ad",
+                "sql": 4,
+                "fetched_rows": 504,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 5
+                    },
+                    "SELECT product_id,team_id,amount_minor,(currency=?) AS currency_0 FROM shop_member_product_prices WHERE active=1 AND product_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) AND team_id IN (?,?)": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 503
+                    },
+                    "SELECT product_id,category_path FROM shop_product_categories WHERE product_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY product_id,is_default DESC,sort_order,id": {
+                        "count": 1,
+                        "rows": 500,
+                        "parameter_count": 500
+                    },
+                    "SELECT 0 AS pricing_read_key,team_id,category_path,discount_type,value_minor_or_basis_points,currency FROM shop_member_category_rules WHERE active=1 AND team_id IN (?,?) AND category_path IN (?)": {
+                        "count": 1,
+                        "rows": 2,
+                        "parameter_count": 3
+                    }
+                },
+                "median_ms": 19.59225,
+                "p95_ms": 32.42
+            },
+            "parity": true,
+            "speedup": 21.451795990761653
+        },
+        "products_500_account_2": {
+            "before": {
+                "samples_ms": [
+                    184.1493,
+                    117.3773,
+                    131.1411,
+                    157.4008,
+                    145.4029,
+                    187.2021,
+                    129.7663,
+                    191.5757,
+                    140.9214,
+                    158.4948,
+                    188.4149,
+                    339.2611,
+                    244.6512,
+                    323.2109,
+                    221.0378,
+                    188.5309,
+                    161.6533,
+                    164.9555,
+                    201.4746,
+                    192.2387,
+                    197.0091,
+                    159.6312,
+                    148.6771,
+                    141.0499,
+                    133.5829,
+                    128.4389,
+                    121.2382,
+                    152.802,
+                    147.3749,
+                    127.8933
+                ],
+                "peak_increment_bytes": 733784,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 500,
+                "fetched_rows": 0,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 500,
+                        "rows": 0,
+                        "parameter_count": 5
+                    }
+                },
+                "median_ms": 159.063,
+                "p95_ms": 323.2109
+            },
+            "after": {
+                "samples_ms": [
+                    11.4753,
+                    2.9479,
+                    6.5019,
+                    9.8123,
+                    3.0406,
+                    2.784,
+                    3.561,
+                    6.4316,
+                    2.986,
+                    2.9016,
+                    5.6743,
+                    3.352,
+                    3.887,
+                    4.4722,
+                    5.1978,
+                    6.1155,
+                    4.2701,
+                    3.5343,
+                    4.6189,
+                    5.1862,
+                    3.6768,
+                    4.433,
+                    2.9848,
+                    2.8932,
+                    4.1451,
+                    2.9017,
+                    3.8698,
+                    2.8339,
+                    3.1811,
+                    3.063
+                ],
+                "peak_increment_bytes": 732880,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 1,
+                "fetched_rows": 0,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 5
+                    }
+                },
+                "median_ms": 3.7733,
+                "p95_ms": 9.8123
+            },
+            "parity": true,
+            "speedup": 42.15487769326584
+        },
+        "products_500_account_3": {
+            "before": {
+                "samples_ms": [
+                    99.7174,
+                    114.7317,
+                    107.8503,
+                    157.5349,
+                    116.6327,
+                    137.6746,
+                    143.0894,
+                    171.9677,
+                    134.0503,
+                    111.9323,
+                    155.8479,
+                    175.2379,
+                    168.2491,
+                    116.3959,
+                    153.5423,
+                    165.2434,
+                    163.6849,
+                    104.4669,
+                    114.1459,
+                    113.5226,
+                    108.6743,
+                    113.821,
+                    117.5162,
+                    130.3787,
+                    123.2757,
+                    139.4654,
+                    158.2291,
+                    173.5518,
+                    156.5771,
+                    142.787
+                ],
+                "peak_increment_bytes": 733784,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 500,
+                "fetched_rows": 0,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 500,
+                        "rows": 0,
+                        "parameter_count": 5
+                    }
+                },
+                "median_ms": 135.86245,
+                "p95_ms": 173.5518
+            },
+            "after": {
+                "samples_ms": [
+                    3.0735,
+                    2.7709,
+                    3.2442,
+                    2.8008,
+                    4.6104,
+                    3.1134,
+                    2.8513,
+                    2.6619,
+                    2.9916,
+                    3.0166,
+                    4.5207,
+                    5.2129,
+                    2.9383,
+                    3.7477,
+                    2.9639,
+                    5.1576,
+                    3.004,
+                    4.4962,
+                    3.0201,
+                    2.7022,
+                    2.8857,
+                    2.9265,
+                    3.7044,
+                    5.3155,
+                    2.5049,
+                    2.3548,
+                    7.2563,
+                    3.5218,
+                    3.6348,
+                    3.1363
+                ],
+                "peak_increment_bytes": 732880,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 1,
+                "fetched_rows": 0,
+                "queries": {
+                    "SELECT DISTINCT t.id,t.name FROM account_person_roles r JOIN verejni_uzivatele u ON u.id=r.account_id AND u.aktivni=1 AND u.email_overeno=1 JOIN club_roster_members m ON m.sportovec_id=r.sportovec_id JOIN club_teams t ON t.id=m.team_id WHERE r.account_id=? AND r.status='approved' AND r.relation_role IN ('self','guardian') AND r.valid_from<=? AND (r.valid_to IS NULL OR r.valid_to>?) AND m.status='active' AND m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) AND t.status='active' ORDER BY t.name,t.id": {
+                        "count": 1,
+                        "rows": 0,
+                        "parameter_count": 5
+                    }
+                },
+                "median_ms": 3.0468,
+                "p95_ms": 5.3155
+            },
+            "parity": true,
+            "speedup": 44.59185046606275
+        },
+        "products_500_account_0": {
+            "before": {
+                "samples_ms": [
+                    2.203,
+                    2.2385,
+                    2.1854,
+                    5.9043,
+                    2.1449,
+                    2.9313,
+                    3.1839,
+                    1.8867,
+                    1.8538,
+                    2.9308,
+                    2.8839,
+                    1.9464,
+                    1.9732,
+                    4.6814,
+                    2.8199,
+                    1.849,
+                    4.6175,
+                    2.2837,
+                    1.8955,
+                    1.8058,
+                    2.4915,
+                    4.4113,
+                    7.1949,
+                    2.3721,
+                    3.2021,
+                    1.9395,
+                    2.2972,
+                    1.9612,
+                    2.6724,
+                    1.8898
+                ],
+                "peak_increment_bytes": 732664,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 0,
+                "fetched_rows": 0,
+                "queries": [],
+                "median_ms": 2.29045,
+                "p95_ms": 5.9043
+            },
+            "after": {
+                "samples_ms": [
+                    3.0169,
+                    4.9181,
+                    9.1646,
+                    5.5522,
+                    4.6005,
+                    5.2764,
+                    3.9737,
+                    3.0571,
+                    8.1768,
+                    2.3123,
+                    4.5541,
+                    2.3715,
+                    2.4148,
+                    2.9949,
+                    4.9032,
+                    3.0173,
+                    4.7661,
+                    7.0762,
+                    2.1632,
+                    2.6609,
+                    6.3149,
+                    6.0792,
+                    6.1388,
+                    5.1083,
+                    2.6531,
+                    2.471,
+                    2.3634,
+                    2.2916,
+                    2.2306,
+                    2.3028
+                ],
+                "peak_increment_bytes": 732880,
+                "output_sha256": "47e110892ccfb86d168c457db64eb9da386802a861bd31552030449347a8eb0c",
+                "sql": 0,
+                "fetched_rows": 0,
+                "queries": [],
+                "median_ms": 3.5154,
+                "p95_ms": 8.1768
+            },
+            "parity": true,
+            "speedup": 0.651547476816294
+        }
+    },
+    "dropped_owned_schemas": []
+}
