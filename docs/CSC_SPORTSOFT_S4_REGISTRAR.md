@@ -58,5 +58,13 @@ duplicitní UCI nelze v této obrazovce ručně potvrdit.
   Při GET je DB `query_only=ON`, test navíc porovnává hash všech integračních
   a kmenových tabulek. Ověřeny 403/405/400/404/503, odebrání role a HTML escaping.
 - Dokumentace: kontrola PASS, CURRENT 80 řádků, 4701 místních odkazů, 0 chyb.
-  Celkové finální testy, browser a CI probíhají; push/PR S4 zatím NOT RUN.
-  Merge/deploy/aktivace: NOT RUN.
+  Lokální finální sada PASS: 39 testů / 2630 assertions, jeden očekávaný
+  SQLite skip MariaDB lock-race. Styl PHP PASS (23 změněných souborů).
+- Push hotový, [draft PR #380](https://github.com/KovoPraha/evidenceTreninku/pull/380).
+  Integrovaný dokumentační main `6b1860d5`, runtime `5095d1ee`, merge `fb6fbc13`.
+  CI dokumentace PASS; S1/S4 MariaDB krok na 10.3 i 11.4 PASS. Celé CI probíhá.
+  PHPStan odhalil neprokázanou inicializaci `$pdo` za vstupní ochranou;
+  doplněna skutečná kontrola dostupnosti PDO, bez potlačení/baseline.
+- Playwright localhost: přehled i detail načtené, mobil 390 px má scrollWidth
+  390 px a 50 řádků. Další interakce probíhají. Živé portály NOT RUN.
+- Merge do main/deploy/aktivace: NOT RUN.

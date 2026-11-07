@@ -14,6 +14,10 @@ if (!isset($_SESSION['trener_id'])) {
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/includes/external_sync_admin_read.php';
 require_once __DIR__ . '/includes/external_sync_admin_view.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    http_response_code(503);
+    exit('Databázové připojení momentálně není dostupné.');
+}
 if (!staffActivePositionIs('registrar')) {
     http_response_code(403);
     exit('Přepněte do pracovního prostoru registráře.');
