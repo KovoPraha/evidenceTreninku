@@ -16,6 +16,11 @@ ze slow logu. Zdravotní růst a růst historie měnit odděleně; členství a 
 hierarchie rozšířit společně a tuto mez uvést. Staré časy nejsou kontrolní skupina.
 Žádné produkční změny, deploy ani nové zápisové UAT. [Předání](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md).
 
+Dokončení: primární2160 a aktuální#374 540HTTP,90parit a oba úklidy PASS.
+Po přijetí nové aplikace přidané dvě největší sady; přímá shoda se starými
+doménami, strukturální přínos prokázaný, časový poměr není kontrolovaný experiment.
+[Obě fáze](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md), bez produkce.
+
 ## D2026-11-07-11
 
 PŘIJATO, 7.11.2026, nové přímé zadání vlastníka pro měření bez změny produkce.

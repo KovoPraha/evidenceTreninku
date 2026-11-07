@@ -382,5 +382,5 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-929f7b0db8 | [P11-R05-H — historický souhrn plánovače se soupiskou](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md) | PARTIAL / P11-R05-H | Parita a měření PASS; výsledkové CI/merge/deploy otevřené. [Důkazy](verification/planner-hierarchy-read-performance-20261107/RESULTS.md). |
 
-| PL-400959e0ab | [P11-SCALE - vetsi zdravotni prehled a planovac](MEDICAL_PLANNER_SCALE_2026-11-07.md) | IN_PROGRESS / P11-SCALE | Vlastni izolovane HTTP/SQL mereni, produkci nemenit. |
-| PL-fc92c8ac29 | [Předání většího R13/R05 měření](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md) | IN_PROGRESS / P11-SCALE | Sběr probíhá, bez produkce. |
+| PL-400959e0ab | [P11-SCALE - vetsi zdravotni prehled a planovac](MEDICAL_PLANNER_SCALE_2026-11-07.md) | DONE / P11-SCALE | 2700HTTP/90parit a oba úklidy PASS; [důkazy](verification/medical-planner-scale-20261107/RESULTS.md), bez produkce. |
+| PL-fc92c8ac29 | [Předání většího R13/R05 měření](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md) | DONE / P11-SCALE | Hotové měření a přímá shoda aktuálního #374, bez produkce. |

@@ -142,3 +142,10 @@ Nový prohlížečový výkon, fyzický mobil, řízená síť/CPU a souběžní
 [Souhrn](summary.json), [prostředí a otisky](environment.json), [manifest](artifact-sha256.json).
 Každá ze sedmi sad má všech pět komprimovaných JSON podkladů: seed/http/diagnostics/verification/projections.
 [Reprodukce](REPRODUCE.md), [kalibrace](CALIBRATION.md).
+
+## Novější přijatý plánovač
+
+Při předání převzatý main e36c9ba6 / #374. Jeho vlastní párový Linux test
+obsahuje20728plánů a celý HTTP/Chrome. Zdejší primární R05 popisuje starší69f49033.
+[Doplnění dvou největších sad na aktuálním kódu](current-planner/RESULTS.md) je dokončené
+samostatně; primárních2160vzorků a jejich51hashů se nepřepisuje.

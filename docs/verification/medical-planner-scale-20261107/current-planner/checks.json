@@ -1,0 +1,15 @@
+{
+  "complete": true,
+  "php_syntax": "PASS",
+  "php_style": "PASS (0 fixes on final batched source)",
+  "powershell_parsers": 3,
+  "python_compiles": 2,
+  "targeted_phpunit": {
+    "status": "PASS",
+    "tests": 21,
+    "assertions": 1929,
+    "junit": "targeted-tests.xml"
+  },
+  "application_sources": "17 LF hashes equal e36c9ba6",
+  "production_changed": false
+}

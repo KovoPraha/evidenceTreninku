@@ -1,96 +1,74 @@
 # P11-SCALE — větší zdravotní přehled a plánovač
 
-7. 11. 2026, vlastník vývoj / zadavatel Marek. Stav ROZPRACOVÁNO.
-Přímé zadání: měřit větší syntetická data, produkci neměnit, zachovat WIP.
-Base `69f490332b0027232d7a58bffb578c28b2715ffa`, větev
-`codex/medical-planner-scale-20261107`, vlastní worktree
+7. 11. 2026, Europe/Prague. HOTOVO v rozsahu této studie; celé K0.2 otevřené.
+Vlastník vývoj podle přímého zadání Marka. Produkci neměnit, zachovat WIP.
+Větev `codex/medical-planner-scale-20261107`, worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-medical-planner-scale-20261107`.
-Původní WIP kis_rosters_admin.php SHA256
+Sdílení a finální CI/začlenění vede [PR #375](https://github.com/KovoPraha/evidenceTreninku/pull/375).
+
+## Původní plán, změny a akceptace
+
+Plán uložený před implementací v `d2182268`; nový vlastní localhost, migrovaný
+syntetický základ, větší objemy při zachování úplných výsledků, oddělené časy
+a SQL diagnostika, nezměněná doménová data při GET a vlastní úklid.
+Varianta měření stejné aplikace místo další implementace; jiný chat mezitím
+řešil opravu #374. Rozhodnutí D2026-11-07-13, deník E2026-11-07-44.
+
+Primární aplikace `69f49033`, 16 LF otisků; 10k/50k/100k zdravotních sledování,
+tři záznamy na sledování, historie 52/260/520 týdnů (728/3640/7280 plánů),
+20/200/1000 členství při 1/10/50 hranách. Zdravotní objemy a historie oddělené,
+členství a šířka hierarchie rostou společně. Všech 72 kladných ×30 =2160 časů,
+28 záporných, doména/DOM/HTML/READ ONLY a 21 checksumů PASS v každé sadě.
+[Kompletní primární důkazy](verification/medical-planner-scale-20261107/RESULTS.md),
+51 hashovaných artefaktů. Přípravy a neúplná 100k fáze jsou v kalibraci.
+
+Při uzavření přijatý main `e36c9ba6` / #374. Doplněné aktuální planner520
+a roster1000: 18 kladných ×30 =540 časů, 8 záporných. Přímá přesná shoda
+všech domén se starou sadou, aktuální source17/DOM/SQL/21checksumů PASS.
+[Samostatný aktuální protokol](verification/medical-planner-scale-20261107/current-planner/RESULTS.md).
+Jde o pozdější nový seed a restart, žádný kontrolovaný časový pár.
+Skutečný párový Linux/Chrome přínos #374 zahrnuje 20728 plánů a má vlastní důkazy.
+
+## Výsledek pro uživatele
+
+Zdravotní Platné při 100k zkoumá 1300558 řádků a vrací přes300k metadatových řádků;
+stránka přitom zůstává kolem50kB a PHP kolem2,16MiB. Místní HTTP medián4,50s,
+běžný seznam0,56s; časy na nevyhrazené Windows stanici jsou orientační.
+Novější plánovač #374 omezil přenos historie při stejných výsledcích;
+starý nález14554 řádků v desetileté sadě není současná neopravená implementace.
+Aktuální přesná čísla vede navazující protokol. Žádná úprava produktové aplikace touto relací.
+
+## Bezpečnost, ověření a meze
+
+Windows / PHP8.2.12 / MariaDB10.4.32, 350 tabulek /161 migrací, buffer pool128MiB.
+Minimální legacy schéma s celým migračním katalogem, nikoli produkční klon indexů.
+Skutečné Rows_examined ze slow logu, fetched rows helperů oddělené od celého HTTP.
+Web účty po standardním loginu SELECT only. Žádná SQL DML/DDL z diagnostických GET.
+Fáze100k se po chybě sdíleného TEMP zopakovala celá, 21 součtů před/po restartu shodných.
+Pouze vlastní my.ini dostal vlastní tmpdir; žádný zásah do společného XAMPP/TEMP.
+Obě fáze mají bezpečný whitelist, kontrolu secret hodnot, úklid schématu/účtu/configu/relací,
+zastavené vlastní procesy a nezávisle odmítnuté sockety33479/18115. Runtime se nemaže rekurzivně.
+Původní `kis_rosters_admin.php` SHA256 stále
 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
 
-## Postup a akceptace před měřením
+Primární regrese13/759 PASS; aktuální testy/styl/parsers/compile a finální PR CI
+mají konkrétní doklady v protokolech a PR. Aktuální stav produkce vlastní pouze
+[CURRENT](CURRENT_STATE.md); cizí schválený deploy #374 tato relace nespouští.
 
-1. Nový vlastní localhost MariaDB datadir, port 33479, HTTP 18115.
-   Vlastní náhodné schéma a přístup, žádný produkční config/dump/transport.
-2. Stejný migrovaný syntetický základ jako předchozí celé HTTP.
-   Zdravotní objemy 10 000 / 50 000 / 100 000 sledování, tři záznamy na sledování.
-   Stavové filtry Platné a Odvoláno, běžný seznam, osoba, hledání, stránky.
-   Plánovač 52 / 260 / 520 týdnů, 14 plánů týdně; vedle historie samostatně
-   ověřit 20 / 200 / 1000 členství a širší hierarchii. Průběžně uložit přesné počty.
-3. Měřit aktuální zmrazenou aplikaci, nikoli optimalizovat. Celé běžné HTTP
-   přes skutečný standardní login, pět zahřátí a 30 vzorků/případ.
-   Oddělená SQL/PHP diagnostika, kontrola úplného HTML a kontrolní součty.
-   Samostatné čtecí projekce pro počet vrácených řádků a skutečné DB ANALYZE;
-   EXPLAIN odhad nevydávat za skutečné rows examined. Časy diagnostiky nemíchat s HTTP.
-4. Explicitně ověřit počty, osoby, stav, stránkování a plán/filtry vůči známému seedu;
-   READ ONLY pro CLI projekce a web DB účet po loginu omezit na SELECT.
-   Příliš drahý případ lze ukončit až s uvedeným limitem a neúplným stavem;
-   nesmí zmizet ze závěrečného reportu. Bez zápisového UAT či změny aplikace.
-5. Úklid vlastního schématu/účtu/configu/cookies a zastavení vlastních procesů.
-   Bez rekurzivního mazání. Výsledky, metoda, omezení a další kroky do verzovaných souborů.
-6. Kontrola dokumentace, cílená kontrola měřiče, PR a CI; produkční nasazení NOT RUN.
+## Další úkoly podle priority
 
-## Souběh a hranice
+1. K OVĚŘENÍ: navrhnout úspornější R13 stavové čtení a COUNT/picker dotazy podle
+   skutečných čítačů. Zachovat řetězce nahrazení, hranice dat, odvolání, přesné počty a stránkování.
+   Před změnou ověřit skutečné relevantní indexy; syntetický minimální model není produkční indexová mapa.
+2. R13 100k zopakovat na řízeném Linux/MariaDB10.3/11.4 a složitější historii;
+   metadata před časováním, jednotný tmpdir a opakované pořadí běhů. Současné časové poměry nejsou kauzální.
+3. R05 #374 je již implementované a ověřené i zde; neopakovat jeho opravu ani deploy.
+   U1000 členství celkový Rows_examined17382→18895 i přes úsporu helperu1499→479:
+   samostatně analyzovat čtení členství/RSVP a režii sond, bez tvrzení plošného zrychlení.
+   Proměnlivá topologie a fallback nad limity mají zvláštní podmínky měření.
+4. Fyzický mobil, řízená síť/CPU, souběžní uživatelé a ostatní R01–R16/K0.2 zůstávají otevřené.
+   Přihlášené produkční UAT pickeru z #377 zůstává blokované dostupností ověřitelného browseru.
+   P05/P07, exportP06 a heslo/T07 mají své dřívější závislosti v jediném registru.
 
-Jiný chat `01a1b4e4-bb47-70e0-8d10-c24f6ae5f569` mezitím samostatně
-optimalizuje hierarchický filtr a má vlastní pověření k deployi. Tato studie
-zmrazí současnou aplikaci před touto změnou; nepřebírá jeho WIP ani nasazení.
-Změny main při předání převezme pouze do dokumentace s jasným rozlišením měřeného SHA.
-Výkony na nevyhrazené Windows stanici nejsou produkční SLA. Nový browser,
-fyzický mobil, síť/CPU omezení a souběžná zátěž nejsou tímto zadáním uzavřené.
-
-Další krok: implementovat pouze měřicí podporu a bezpečně založit izolované prostředí.
-Navazuje na [R13](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md),
-[R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md) a
-[celé HTTP](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md).
-
-## Průběh přípravy
-
-Plán zaznamenaný před měřičem v commitu `d2182268`, sdílená vlastní větev.
-Nový datadir `C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee/data`,
-MariaDB 10.4.32 / PHP 8.2.12, 350 tabulek / 161 migrací, schema pouze syntetické.
-Standardní login všech 12 rolí, potom web DB účet omezený na SELECT.
-Zdravotní seeder zachovává stejná tři stavová metadata na sledování, velké objemy
-vkládá dávkově mimo časování. Nové soupisky 10000–10049 neodstraňují původní
-migrované ukázkové soupisky navázané na nabídky. Přesné počty v každém seedu.
-Před časováním základních 18 doménových/DOM kontrol PASS; stejné úplné výsledky
-jako zmrazený zdravotní algoritmus a kanonické RSVP. Samostatné projekce READ ONLY.
-Předchozí neplatné přípravy (staré ID registráře a FK nabídky) jsou kalibrace,
-nejsou časové vzorky. První pomalý per-row seed se před časováním nahradil
-stejným dávkovým postupem jako ostatní objemy; jeho protokol zůstal oddělený.
-
-
-Průběžné sdílení [PR #375](https://github.com/KovoPraha/evidenceTreninku/pull/375),
-head měřiče `2feee67e`, draft během sběru. První CI dokumentace a PHP quality PASS;
-nejde o finální dokončení ani merge. Základní sada hotová: 18×30 časů, 4 negativa,
-18 úplných doménových/DOM parit, samostatné projekce a 22 diagnostických GET.
-Všech 21 součtů shodných. Stavové platné/odvolané čtení: 130558 Rows_examined,
-30065 serverových výstupních řádků, přesto nejvýše 25 zobrazených sledování.
-Slow log navíc eviduje protokolové Quit (0/0 řádků), proto jeho počet položek
-není totéž jako počet SQL Query/Execute z general logu. Řádkové čítače se tím nemění.
-Sada 50k je založená a její ověření běží; sada 100k a větší plánovač zatím NOT RUN.
-
-## Obnovení100k fáze
-
-Sady10k a50k hotové, všechny konečné časy zachované. První100k časování
-přerušilo HTTP500 kvůli chybějícímu lokálnímu TEMP .MAI souboru. Vlastní web
-a DB se bezpečně zastavily; všechny21checksumy před/po restartu a obnovení
-12standardních loginů shodné. Pouze vlastní my.ini nyní má vlastní tmpdir.
-Celá100k sada se opakuje, neúplná fáze je oddělená mimo finální vzorky.
-[Kalibrace](verification/medical-planner-scale-20261107/CALIBRATION.md),
-[průběžný výsledek](verification/medical-planner-scale-20261107/RESULTS.md).
-
-## Doplnění rozsahu před závěrečným předáním
-
-Primární fáze hotová:72kladných/28záporných/2160časů,51hashovaných artefaktů,
-13testů/759assertions, úklid a původní WIP PASS. Raw důkazy a zmrazená69f49033
-zůstávají neměnné. Přijatý main e36c9ba6 nově obsahuje#374, který má vlastní
-Linux20728plánů/HTTP/Chrome důkazy. Produkční UAT pickeru převzaté z#377 je BLOKOVANÉ.
-
-Návazný bezpečný postup v témže zadání měření: po uložení primárních důkazů
-převzít main, ověřit aktuální planner520 a roster1000 (18kladných×30,8negativ),
-stejné rozměry/seeder, doménová/DOM parita, oddělené SQL/rows examined a vlastní
-syntetický localhost. Bez produkce. Nejde o přesně párový časový experiment
-napříč restartem/reseedem; závěr o přínosu bude opřen o strukturální data,
-párové časy nové opravy vlastní#374. Aktuální follow-up archivovat samostatně,
-nezaměnit za primární2160vzorky. Potom druhý vlastní úklid a finální předání.
+[Dated handoff](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md),
+[registr](WORK_PLAN_CURRENT.md), [katalog](PLAN_CATALOG.md).

@@ -1,7 +1,9 @@
 # Opakování P11-SCALE
 
-Pouze vlastní syntetický localhost. Zmrazená aplikace `69f49033`; měřicí podporu
-převzít z PR #375. Pro jiný den/adresář/port explicitně upravit úzké guardy.
+Pouze vlastní syntetický localhost. Zmrazená aplikace `69f49033`; pro přesné
+opakování primární fáze použít její čtyři LF zdrojové snapshoty `.txt` v tomto
+adresáři (zkopírovat bez koncovky `.txt`). Pozdější R05 seeder v PR #375 je dávkový
+a patří doplnění aktuálního plánovače. Pro jiný den/adresář/port explicitně upravit úzké guardy.
 Nespouštět na produkční konfiguraci ani připojení. Nepoužít produkční dump.
 
 1. Vlastní čistý worktree `C:/Users/Marek/Documents/Codex/evidencePavel-medical-planner-scale-20261107`,

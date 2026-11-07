@@ -1,35 +1,50 @@
 # Předání P11-SCALE — větší zdravotní přehled a plánovač
 
-7. 11. 2026. ROZPRACOVÁNO, sběr výsledků běží; nejde o dokončený benchmark.
-[Plán a přijaté hranice](MEDICAL_PLANNER_SCALE_2026-11-07.md).
-
+7. 11. 2026. HOTOVO v tomto rozsahu; [plán a další priority](MEDICAL_PLANNER_SCALE_2026-11-07.md).
 Větev `codex/medical-planner-scale-20261107`, vlastní worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-medical-planner-scale-20261107`.
-Zmrazená aplikace `69f49033`, původní WIP se nepřepíná ani nestashuje.
-**Produkci neměnit, neprovádět deploy, aktivace ani transport.**
+Předání/finální CI/začlenění: [PR #375](https://github.com/KovoPraha/evidenceTreninku/pull/375).
+**Žádný produkční deploy, aktivace nebo zápis touto relací.**
 
-Nový vlastní MariaDB datadir `C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee/data`,
-port 33479, HTTP 18115. Po izolaci tmpdir proběhl restart vlastního DB serveru; aktuální PID/cesty
-ověřit v ignorovaném `output/medical-planner-scale-20261107/runtime.json`.
-Před zastavením ověřit konkrétní PID a marker datadir/session, nikdy cizí službu.
+## Dokončené měření
 
-Hotové: standardní login 12 rolí, potom web DB účet SELECT only, základních
-18 kontrol úplné doménové shody a konkrétních DOM ID PASS; základních
-18 READ ONLY projekcí PASS. Aplikační zdroje ověřené proti zmrazenému main.
-Základních 18×30 časů a 4 negativa hotové, 22 oddělených diagnostik PASS.
-Celých 72 kladných a 28 záporných případů se teprve dokončuje; běží 50k.
-[Draft PR #375](https://github.com/KovoPraha/evidenceTreninku/pull/375) obsahuje plán a měřič, finální důkazy se doplní.
+- Primární69f49033:72kladných/28záporných,2160časů. 100k sledování/300k záznamů,
+  520týdnů/7280plánů a1000členství/50hran, jednotlivé osy popsané v protokolu.
+- Aktuálníe36c9ba6 po#374:18kladných/8záporných,540časů na planner520/roster1000.
+  Všech18 úplných domén přesně shodných s původní sadou i kanonickým readerem.
+- Celkem2700časů,90doménových/DOM parit a90projekcí READ ONLY; všechny
+  diagnostické HTML shodné a v každé sadě21 stejných doménových checksumů.
+- Zdravotní Platné100k:1300558 Rows_examined, přes300k metadatových řádků,
+  PHP2,16MiB/HTML49,9kB. HTTP4,50s, běžný seznam0,56s orientačně.
+- Aktuální plánovač520, vedoucí/kořen: helper14554→3706 řádků,
+  PHP10,33→3.38MiB. Přenos historie opravený #374;
+  naše časové poměry nejsou řízený párový odhad zrychlení.
 
-Další krok: dokončit sedm sad, oddělenou slow/general-log diagnostiku a paritu;
-zapsat skutečné rows examined, vyhodnotit omezení a provést úklid vlastního prostředí.
-Nesmí se přepsat hotové/částečné časové soubory ani předstírat dokončené případy.
+[Primární protokol](verification/medical-planner-scale-20261107/RESULTS.md),
+[aktuální planner](verification/medical-planner-scale-20261107/current-planner/RESULTS.md).
+Raw data, manifesty, prostředí, správné zdrojové piny, kontrolní body a JUnit v repu.
 
-Jiný aktivní chat optimalizuje plánovač a má jiné oprávnění k nasazení.
-Jeho WIP a release nepřebírat do této zmrazené studie; při integraci rozlišit
-zde měřený kód od novějšího main. Registry P05/P07, export P06 a heslo/T07 platí dál.
+## Úklid a omezení
 
-Průběžně: 10k/50k sady hotové. První100k fáze přerušená kvůli chybějícímu
-uživatelskému TEMP .MAI, neúplný běh se nepočítá. Všech21součtů před/po
-restartu a obnovení12standardních loginů shodných. Nový vlastní mysql-tmp
-jen ve vlastním my.ini, aplikace stejná. Celá100k sada se znovu měří.
-[Kalibrace](verification/medical-planner-scale-20261107/CALIBRATION.md).
+Obě vlastní náhodná schémata/účty/configy/credentials/cookies a26/13syntetických
+relací uklizené podle skutečných protokolů; vlastní web/DB zastavené a oba porty
+33479/18115 odmítají spojení. Runtimeee3c4eee ponechaný zastavený, žádné rekurzivní mazání.
+Primární per-row/role/FK přípravy a TEMP chyba jsou oddělené v kalibraci;
+celá neúplná100k fáze zopakovaná na stejných nezměněných datech s vlastním tmpdir.
+Aktuální první serverový start vyžadoval readiness; měřené vzorky se neztratily.
+Zdrojové otisky normalizované LF; Windows Git archive může vracet CRLF.
+Testovací schéma neobsahuje všechny produkční legacy indexy. Složitá historie
+náhrad, historicky proměnlivá topologie, fyzický mobil a souběh nejsou velkou sadou pokryté.
+Původní WIP beze změny, kis_rosters_admin.php SHA256
+`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
+
+## Další kroky
+
+1. R13 úspornější stavový přehled a COUNT/picker čtení: nový návrh s měřením,
+   skutečné indexy a zachování úplného kanonického výpočtu. Žádná další oprava už implementovaného R05.
+2. R13 100k řízený Linux10.3/11.4, složitější historie, jednotný tmpdir a metadatový preflight.
+3. R05 mnoho členství/RSVP a režie sond: u1000celkový Rows_examined17382→18895,
+   přestože helper1499→479. Neopakovat hotovou opravu historie, posoudit jinou část čtení.
+   Mobil/síť/CPU/souběh, ostatní K0.2; produkční picker UAT z #377 blokovaný nástrojem.
+4. Produkční release #374 vlastní jiná relace a CURRENT; nepřebírat její deploy pověření.
+   P05/P07, exportP06 a heslo/T07 ponechat dle [registru](WORK_PLAN_CURRENT.md).

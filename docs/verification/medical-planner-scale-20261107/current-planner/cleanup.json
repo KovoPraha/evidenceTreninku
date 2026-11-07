@@ -1,0 +1,26 @@
+{
+  "synthetic_only": true,
+  "schema_removed": true,
+  "web_user_removed": true,
+  "owned_config_removed": true,
+  "credentials_and_cookie_jars_removed": true,
+  "database_stopped": true,
+  "http_stopped": true,
+  "ports_closed": true,
+  "port_checks": [
+    {
+      "port": 33479,
+      "closed": true,
+      "error": "ECONNREFUSED"
+    },
+    {
+      "port": 18115,
+      "closed": true,
+      "error": "ECONNREFUSED"
+    }
+  ],
+  "original_wip_unchanged": true,
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "owned_session_files_removed": 13,
+  "runtime_directory_retained_stopped": "C:/xampp/tmp/kis-medical-planner-scale-20261107-ee3c4eee"
+}

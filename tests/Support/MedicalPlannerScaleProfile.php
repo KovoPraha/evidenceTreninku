@@ -129,6 +129,37 @@ function scaleSeedMedical(PDO $pdo, int $people): void
     $pdo->query('ANALYZE TABLE medical_clearance_watches,medical_clearance_records,sportovci')->fetchAll();
 }
 
+/** Identical plan/link business fields; batching is outside every measured interval. */
+function scaleSeedPlanner(PDO $pdo, int $weeks): void
+{
+    $pdo->exec('DELETE FROM training_roster_links WHERE plan_id>=50000');
+    $pdo->exec('DELETE FROM planovane_treninky WHERE id>=50000');
+    $monday = new DateTimeImmutable('monday this week');
+    $rows = [];
+    for ($week = 0; $week < $weeks; $week++) {
+        for ($day = 0; $day < 7; $day++) {
+            $date = $monday->modify('-' . ($week * 7) . ' days')->modify('+' . $day . ' days')->format('Y-m-d');
+            foreach ([7, 8] as $trainer) {
+                $id = 50000 + $week * 14 + $day * 2 + $trainer - 7;
+                $rows[] = '(' . $id . ',' . $pdo->quote($date) . ",'Synthetic plan','16:00','17:00'," . $trainer . ",1,'mtb')";
+            }
+        }
+    }
+    $pdo->beginTransaction();
+    try {
+        foreach (array_chunk($rows, 1000) as $chunk) {
+            $pdo->exec('INSERT INTO planovane_treninky(id,datum,nazev,cas_od,cas_do,trener_id,skupina_id,kategorie) VALUES' . implode(',', $chunk));
+        }
+        $pdo->exec("INSERT INTO training_roster_links(plan_id,team_id,target_date,team_code_snapshot,team_name_snapshot,created_by_trainer_id)
+            SELECT id,1,datum,'SYN','Synthetic roster',7 FROM planovane_treninky WHERE id>=50000 ORDER BY id");
+        $pdo->commit();
+    } catch (Throwable $e) {
+        $pdo->rollBack();
+        throw $e;
+    }
+    $pdo->query('ANALYZE TABLE planovane_treninky,training_roster_links')->fetchAll();
+}
+
 function scaleCases(bool $medical, bool $planner): array
 {
     $cases = [];
@@ -174,7 +205,7 @@ if ($action === 'seed') {
     medicalClearanceRegistrar($pdo);
     scaleSeedMedical($pdo, $watches);
     $pdo->exec("UPDATE medical_clearance_records SET state='revoked' WHERE state='verified' AND watch_id % 10=0");
-    p11SeedPlanner($pdo, $weeks);
+    scaleSeedPlanner($pdo, $weeks);
     $pdo->exec('DELETE FROM training_rsvps; DELETE FROM club_roster_members; DELETE FROM club_team_edges');
     // Extra names stay below the medical ID range. Every level resets exactly this owned expansion.
     $pdo->exec('DELETE FROM sportovci WHERE id BETWEEN 2001 AND 2999');
@@ -193,6 +224,7 @@ if ($action === 'seed') {
         VALUES(?,?,'active','manual','2010-01-01',7)");
     $rsvp = $pdo->prepare('INSERT INTO training_rsvps(plan_id,sportovec_id,response,responded_at)
         VALUES(?,?,?,CURRENT_TIMESTAMP)');
+    $rsvpRows = [];
     $pdo->beginTransaction();
     try {
         for ($i = 0; $i < $children; $i++) {
@@ -207,9 +239,12 @@ if ($action === 'seed') {
             $member->execute([10000 + ($i % $children), $id]);
             if ($i % 4 !== 3) {
                 for ($plan = 50000; $plan < 50014; $plan++) {
-                    $rsvp->execute([$plan, $id, $i % 4 === 2 ? 'not_going' : 'going']);
+                    $rsvpRows[] = '(' . $plan . ',' . $id . ',' . $pdo->quote($i % 4 === 2 ? 'not_going' : 'going') . ',CURRENT_TIMESTAMP)';
                 }
             }
+        }
+        foreach (array_chunk($rsvpRows, 1000) as $chunk) {
+            $pdo->exec('INSERT INTO training_rsvps(plan_id,sportovec_id,response,responded_at) VALUES' . implode(',', $chunk));
         }
         // Irrelevant person's response must never inflate summaries.
         $rsvp->execute([50000, 999, 'going']);

@@ -10325,10 +10325,13 @@
       "title": "P11-SCALE - vetsi zdravotni prehled a planovac",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-SCALE",
-      "disposition": "Autorizovane vetsi synteticke mereni, bez produkcnich zmen; aplikace zmrazena 69f49033.",
-      "evidence": []
+      "disposition": "Hotove vetsi synteticke mereni vcetne aktualniho #374; oba uklidy a WIP PASS. K0.2 otevrene, zadna produkcni zmena touto relaci.",
+      "evidence": [
+        "docs/verification/medical-planner-scale-20261107/RESULTS.md",
+        "docs/verification/medical-planner-scale-20261107/current-planner/RESULTS.md"
+      ]
     },
     {
       "id": "PL-fc92c8ac29",
@@ -10336,11 +10339,12 @@
       "title": "Predani vetsiho R13/R05 mereni",
       "primary": true,
       "role": "handoff",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-SCALE",
-      "disposition": "Probihajici izolovane mereni; zadne produkcni zmeny.",
+      "disposition": "Hotove vetsi synteticke mereni vcetne aktualniho #374; oba uklidy a WIP PASS. K0.2 otevrene, zadna produkcni zmena touto relaci.",
       "evidence": [
-        "docs/MEDICAL_PLANNER_SCALE_2026-11-07.md"
+        "docs/verification/medical-planner-scale-20261107/RESULTS.md",
+        "docs/verification/medical-planner-scale-20261107/current-planner/RESULTS.md"
       ]
     },
     {
@@ -10374,6 +10378,17 @@
       "status": "SUPPORT",
       "registry": "P11-SCALE",
       "disposition": "Podpurny protokol vetsiho syntetickeho mereni; neni samostatny plan ani produkcni souhlas.",
+      "evidence": []
+    },
+    {
+      "id": "PL-7c69e31171",
+      "path": "docs/verification/medical-planner-scale-20261107/current-planner/RESULTS.md",
+      "title": "P11-SCALE aktualni planner po #374",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-SCALE",
+      "disposition": "Doplnkovy protokol aktualniho cteciho kodu; neni novy plan ani povoleni produkcnich zmen.",
       "evidence": []
     }
   ],
