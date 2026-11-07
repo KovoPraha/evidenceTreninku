@@ -119,7 +119,7 @@ $editContext = ['rosters' => sportovecEditorRosters($pdo, $sportovecId), 'paymen
 $financeBalance = null;
 $externalPanel = null;
 $externalPanelUnavailable = false;
-if (staffActivePositionIs('registrar')) {
+if (staffActivePositionIs('registrar') && isset($pdo) && $pdo instanceof PDO) {
     require_once __DIR__ . '/includes/external_sync_person_panel.php';
     $syncPage = $_GET['sync_page'] ?? '1';
     $syncPage = is_string($syncPage) && preg_match('/^[1-9][0-9]{0,5}$/D', $syncPage) ? (int)$syncPage : 1;
