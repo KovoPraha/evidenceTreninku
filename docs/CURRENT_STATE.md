@@ -76,5 +76,5 @@ Aktualizováno 7. 11. 2026 (Europe/Prague) po nasazení ROLE01; starší provozn
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
-DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [úplný audit plánů a dispozic](PLAN_CATALOG_AUDIT_2026-11-07.md), [katalog](PLAN_CATALOG.md). ROLE01 technicky převzaté #359; N1/N2 #355 sloučené, jejich produkční krok samostatně. Další aktivní P/C a #358 v registru.
+P11: [celé HTTP/browser a další kroky](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); DOC01: [pravidla a audit](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)

@@ -1912,6 +1912,21 @@
       ]
     },
     {
+      "id": "PL-ffab6ec50f",
+      "path": "docs/SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md",
+      "title": "P11 — celé HTTP a prohlížeč, předání 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Dokončený místní celý HTTP/browser profil na feb8fe8c, začleněný #363 (d958fd6e), bez deploye. R06 výběr osob/lekce, mobil a souběh nadále P11; nejnovější main nebyl tímto přeměřen.",
+      "evidence": [
+        "docs/verification/full-http-performance-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
       "id": "PL-52728b1b0f",
       "path": "docs/SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md",
       "title": "Předání P11 / R13 — zdravotní přehled, 6. 11. 2026",
@@ -4408,6 +4423,111 @@
       "evidence": [
         "docs/verification/live-payments-20261105/ACTIVATION.md",
         "docs/verification/fio-followup-20261105/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-3f15f41daa",
+      "path": "docs/verification/full-http-performance-20261107/CALIBRATION.md",
+      "title": "Kalibrace měřidla, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Dokončený místní celý HTTP/browser profil na feb8fe8c, začleněný #363 (d958fd6e), bez deploye. R06 výběr osob/lekce, mobil a souběh nadále P11; nejnovější main nebyl tímto přeměřen.",
+      "evidence": [
+        "docs/verification/full-http-performance-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
+      "id": "PL-563f5d8f03",
+      "path": "docs/verification/full-http-performance-20261107/REPRODUCE.md",
+      "title": "Opakování celého HTTP/browser profilu",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Dokončený místní celý HTTP/browser profil na feb8fe8c, začleněný #363 (d958fd6e), bez deploye. R06 výběr osob/lekce, mobil a souběh nadále P11; nejnovější main nebyl tímto přeměřen.",
+      "evidence": [
+        "docs/verification/full-http-performance-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
+      "id": "PL-9f939b787c",
+      "path": "docs/verification/full-http-performance-20261107/RESULTS.md",
+      "title": "P11 — celé HTTP a prohlížeč, 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Dokončený místní celý HTTP/browser profil na feb8fe8c, začleněný #363 (d958fd6e), bez deploye. R06 výběr osob/lekce, mobil a souběh nadále P11; nejnovější main nebyl tímto přeměřen.",
+      "evidence": [
+        "docs/verification/full-http-performance-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
+      "id": "PL-846dcf1fcd",
+      "path": "docs/verification/full-http-performance-20261107/browser-coach-source.js.txt",
+      "title": "browser-coach-source.js.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Dokončený místní celý HTTP/browser profil na feb8fe8c, začleněný #363 (d958fd6e), bez deploye. R06 výběr osob/lekce, mobil a souběh nadále P11; nejnovější main nebyl tímto přeměřen.",
+      "evidence": [
+        "docs/verification/full-http-performance-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
+      "id": "PL-9536bf756f",
+      "path": "docs/verification/full-http-performance-20261107/browser-other_coach-source.js.txt",
+      "title": "browser-other_coach-source.js.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Dokončený místní celý HTTP/browser profil na feb8fe8c, začleněný #363 (d958fd6e), bez deploye. R06 výběr osob/lekce, mobil a souběh nadále P11; nejnovější main nebyl tímto přeměřen.",
+      "evidence": [
+        "docs/verification/full-http-performance-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
+      "id": "PL-fb7455f7f2",
+      "path": "docs/verification/full-http-performance-20261107/browser-registrar-source.js.txt",
+      "title": "browser-registrar-source.js.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Dokončený místní celý HTTP/browser profil na feb8fe8c, začleněný #363 (d958fd6e), bez deploye. R06 výběr osob/lekce, mobil a souběh nadále P11; nejnovější main nebyl tímto přeměřen.",
+      "evidence": [
+        "docs/verification/full-http-performance-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
+      "id": "PL-faaf0c4621",
+      "path": "docs/verification/full-http-performance-20261107/browser-sports_lead-source.js.txt",
+      "title": "browser-sports_lead-source.js.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Dokončený místní celý HTTP/browser profil na feb8fe8c, začleněný #363 (d958fd6e), bez deploye. R06 výběr osob/lekce, mobil a souběh nadále P11; nejnovější main nebyl tímto přeměřen.",
+      "evidence": [
+        "docs/verification/full-http-performance-20261107/RESULTS.md",
+        "docs/SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md",
+        "docs/DECISION_LOG.md"
       ]
     },
     {
@@ -9105,7 +9225,7 @@
       "evidence": []
     }
   ],
-  "checked_main": "37d0ad68",
+  "checked_main": "d958fd6e",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
   "binary_documents": 21
 }

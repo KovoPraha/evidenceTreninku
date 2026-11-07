@@ -153,6 +153,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-47ddb10f34 | [SEO-ESHOP-A-VEREJNE-STRANKY.md](SEO-ESHOP-A-VEREJNE-STRANKY.md) | reference / REFERENCE | DOC02 |
 | PL-c6c69156d6 | [SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
 | PL-17e29dfd14 | [SESSION_HANDOFF_BAR_2026-11-06.md](SESSION_HANDOFF_BAR_2026-11-06.md) | plan / PARTIAL | P02/P04 |
+| PL-ffab6ec50f | [SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
 | PL-52728b1b0f | [SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md) | plan / PARTIAL | P11 |
 | PL-01615a9ed7 | [SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md) | completed-plan / DONE | P05 |
 | PL-b2601aa5d3 | [SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
@@ -349,6 +350,13 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-77e6a19437 | [verification/final-system-20261024/phpunit.txt](verification/final-system-20261024/phpunit.txt) | artifact / SUPPORT | DOC02 |
 | PL-a5ea2177fc | [verification/fio-followup-20261105/PLAN.md](verification/fio-followup-20261105/PLAN.md) | verification-plan / PARTIAL | P07 |
 | PL-53d17bcdb7 | [verification/fio-followup-20261105/RESULTS.md](verification/fio-followup-20261105/RESULTS.md) | evidence / PARTIAL | P07 |
+| PL-3f15f41daa | [verification/full-http-performance-20261107/CALIBRATION.md](verification/full-http-performance-20261107/CALIBRATION.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-563f5d8f03 | [verification/full-http-performance-20261107/REPRODUCE.md](verification/full-http-performance-20261107/REPRODUCE.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-9f939b787c | [verification/full-http-performance-20261107/RESULTS.md](verification/full-http-performance-20261107/RESULTS.md) | plan / PARTIAL | P11 |
+| PL-846dcf1fcd | [verification/full-http-performance-20261107/browser-coach-source.js.txt](verification/full-http-performance-20261107/browser-coach-source.js.txt) | artifact / HISTORICAL_EVIDENCE | P11 |
+| PL-9536bf756f | [verification/full-http-performance-20261107/browser-other_coach-source.js.txt](verification/full-http-performance-20261107/browser-other_coach-source.js.txt) | artifact / HISTORICAL_EVIDENCE | P11 |
+| PL-fb7455f7f2 | [verification/full-http-performance-20261107/browser-registrar-source.js.txt](verification/full-http-performance-20261107/browser-registrar-source.js.txt) | artifact / HISTORICAL_EVIDENCE | P11 |
+| PL-faaf0c4621 | [verification/full-http-performance-20261107/browser-sports_lead-source.js.txt](verification/full-http-performance-20261107/browser-sports_lead-source.js.txt) | artifact / HISTORICAL_EVIDENCE | P11 |
 | PL-b4af5faeef | [verification/functional-release-20261102/RESULTS.md](verification/functional-release-20261102/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-1908a30268 | [verification/functional-round10-release-20261105/PLAN.md](verification/functional-round10-release-20261105/PLAN.md) | verification-plan / DONE | P08/P09 |
 | PL-816baa38bc | [verification/functional-round10-release-20261105/RESULTS.md](verification/functional-round10-release-20261105/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |

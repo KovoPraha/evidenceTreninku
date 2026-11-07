@@ -1,0 +1,392 @@
+[
+  {
+    "id": "planner-coach-own",
+    "role": "coach",
+    "path": "/planovac.php",
+    "status": 200
+  },
+  {
+    "id": "planner-coach-all",
+    "role": "coach",
+    "path": "/planovac.php?jen_moje=0",
+    "status": 200
+  },
+  {
+    "id": "planner-coach-root",
+    "role": "coach",
+    "path": "/planovac.php?team_id=1",
+    "status": 200
+  },
+  {
+    "id": "planner-coach-child",
+    "role": "coach",
+    "path": "/planovac.php?team_id=2",
+    "status": 200
+  },
+  {
+    "id": "planner-coach-trainer",
+    "role": "coach",
+    "path": "/planovac.php?jen_moje=0&trener_id=8",
+    "status": 200
+  },
+  {
+    "id": "planner-coach-group",
+    "role": "coach",
+    "path": "/planovac.php?jen_moje=0&skupina_id=1",
+    "status": 200
+  },
+  {
+    "id": "planner-coach-empty",
+    "role": "coach",
+    "path": "/planovac.php?team_id=999999",
+    "status": 200
+  },
+  {
+    "id": "planner-coach-previous",
+    "role": "coach",
+    "path": "/planovac.php?datum=2026-10-31",
+    "status": 200
+  },
+  {
+    "id": "planner-lead-own",
+    "role": "sports_lead",
+    "path": "/planovac.php",
+    "status": 200
+  },
+  {
+    "id": "planner-lead-all",
+    "role": "sports_lead",
+    "path": "/planovac.php?jen_moje=0",
+    "status": 200
+  },
+  {
+    "id": "planner-lead-root",
+    "role": "sports_lead",
+    "path": "/planovac.php?jen_moje=0&team_id=1",
+    "status": 200
+  },
+  {
+    "id": "closure-coach-training",
+    "role": "coach",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 200
+  },
+  {
+    "id": "closure-coach-plan",
+    "role": "coach",
+    "path": "/training_closure_admin.php?plan_id=50010",
+    "status": 200
+  },
+  {
+    "id": "closure-coach-search",
+    "role": "coach",
+    "path": "/training_closure_admin.php?id=101&lesson_on=&lesson_q=Synthetic",
+    "status": 200
+  },
+  {
+    "id": "closure-coach-empty-search",
+    "role": "coach",
+    "path": "/training_closure_admin.php?id=101&lesson_on=&lesson_q=NOTFOUND",
+    "status": 200
+  },
+  {
+    "id": "closure-coach-list",
+    "role": "coach",
+    "path": "/training_closure_admin.php",
+    "status": 200
+  },
+  {
+    "id": "closure-lead-training",
+    "role": "sports_lead",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 200
+  },
+  {
+    "id": "closure-lead-foreign",
+    "role": "sports_lead",
+    "path": "/training_closure_admin.php?id=102",
+    "status": 200
+  },
+  {
+    "id": "closure-lead-plan",
+    "role": "sports_lead",
+    "path": "/training_closure_admin.php?plan_id=50011",
+    "status": 200
+  },
+  {
+    "id": "closure-other-own",
+    "role": "other_coach",
+    "path": "/training_closure_admin.php?id=102",
+    "status": 200
+  },
+  {
+    "id": "closure-coach-foreign-denied",
+    "role": "coach",
+    "path": "/training_closure_admin.php?id=102",
+    "status": 403
+  },
+  {
+    "id": "closure-coach-foreign-plan-denied",
+    "role": "coach",
+    "path": "/training_closure_admin.php?plan_id=50011",
+    "status": 403
+  },
+  {
+    "id": "medical-registrar-all",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-valid",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?medical_state=valid",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-pending",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?medical_state=pending",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-revoked",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?medical_state=revoked",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-empty",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?medical_state=expired",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-person",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?person_id=10001",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-unknown-person",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?person_id=999999",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-page2",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?medical_page=2",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-last-page",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?medical_page=400",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-search",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?medical_q=Synthetic",
+    "status": 200
+  },
+  {
+    "id": "medical-registrar-picker",
+    "role": "registrar",
+    "path": "/medical_clearance_admin.php?medical_person_q=Synthetic&medical_person_page=2",
+    "status": 200
+  },
+  {
+    "id": "medical-coach-denied",
+    "role": "coach",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "medical-sports_lead-denied",
+    "role": "sports_lead",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "planner-registrar-denied",
+    "role": "registrar",
+    "path": "/planovac.php",
+    "status": 403
+  },
+  {
+    "id": "closure-registrar-denied",
+    "role": "registrar",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 403
+  },
+  {
+    "id": "planner-program_coordinator-denied",
+    "role": "program_coordinator",
+    "path": "/planovac.php",
+    "status": 403
+  },
+  {
+    "id": "closure-program_coordinator-denied",
+    "role": "program_coordinator",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 403
+  },
+  {
+    "id": "medical-program_coordinator-denied",
+    "role": "program_coordinator",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "planner-catalog_manager-denied",
+    "role": "catalog_manager",
+    "path": "/planovac.php",
+    "status": 403
+  },
+  {
+    "id": "closure-catalog_manager-denied",
+    "role": "catalog_manager",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 403
+  },
+  {
+    "id": "medical-catalog_manager-denied",
+    "role": "catalog_manager",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "planner-order_operator-denied",
+    "role": "order_operator",
+    "path": "/planovac.php",
+    "status": 403
+  },
+  {
+    "id": "closure-order_operator-denied",
+    "role": "order_operator",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 403
+  },
+  {
+    "id": "medical-order_operator-denied",
+    "role": "order_operator",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "planner-finance_manager-denied",
+    "role": "finance_manager",
+    "path": "/planovac.php",
+    "status": 403
+  },
+  {
+    "id": "closure-finance_manager-denied",
+    "role": "finance_manager",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 403
+  },
+  {
+    "id": "medical-finance_manager-denied",
+    "role": "finance_manager",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "planner-tv_operator-denied",
+    "role": "tv_operator",
+    "path": "/planovac.php",
+    "status": 403
+  },
+  {
+    "id": "closure-tv_operator-denied",
+    "role": "tv_operator",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 403
+  },
+  {
+    "id": "medical-tv_operator-denied",
+    "role": "tv_operator",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "planner-bar_operator-denied",
+    "role": "bar_operator",
+    "path": "/planovac.php",
+    "status": 403
+  },
+  {
+    "id": "closure-bar_operator-denied",
+    "role": "bar_operator",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 403
+  },
+  {
+    "id": "medical-bar_operator-denied",
+    "role": "bar_operator",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "planner-bar_admin-denied",
+    "role": "bar_admin",
+    "path": "/planovac.php",
+    "status": 403
+  },
+  {
+    "id": "closure-bar_admin-denied",
+    "role": "bar_admin",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 403
+  },
+  {
+    "id": "medical-bar_admin-denied",
+    "role": "bar_admin",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "planner-system_admin-denied",
+    "role": "system_admin",
+    "path": "/planovac.php",
+    "status": 403
+  },
+  {
+    "id": "closure-system_admin-denied",
+    "role": "system_admin",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 403
+  },
+  {
+    "id": "medical-system_admin-denied",
+    "role": "system_admin",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "medical-other_coach-denied",
+    "role": "other_coach",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  },
+  {
+    "id": "planner-anonymous",
+    "role": "anonymous",
+    "path": "/planovac.php",
+    "status": 302
+  },
+  {
+    "id": "closure-anonymous",
+    "role": "anonymous",
+    "path": "/training_closure_admin.php?id=101",
+    "status": 302
+  },
+  {
+    "id": "medical-anonymous",
+    "role": "anonymous",
+    "path": "/medical_clearance_admin.php",
+    "status": 403
+  }
+]
