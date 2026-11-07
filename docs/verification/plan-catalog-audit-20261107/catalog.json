@@ -81,6 +81,21 @@
       "evidence": []
     },
     {
+      "id": "PL-f72bce19e1",
+      "path": "docs/ACCESS_OVERVIEW_2026-11-07.md",
+      "title": "Přehled lidí, rolí a přístupů",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "ROLE01",
+      "disposition": "Přehled přístupů sloučený v main přes #356 (ebb8b2e3). Produkční nasazení, porovnání původních rolí a formulářová přejímka jsou samostatné kroky původní relace; zde se jejich výsledek nepředjímá.",
+      "evidence": [
+        "docs/ACCESS_OVERVIEW_2026-11-07.md",
+        "docs/verification/access-overview-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
       "id": "PL-18045cf53e",
       "path": "docs/ACCOUNTING_LEDGER_R13_R16.md",
       "title": "R13 / R16 — průkazné peněžní pohyby",
@@ -1191,11 +1206,12 @@
       "title": "Audit všech plánů a konceptů — 7. 11. 2026",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "DOC02",
-      "disposition": "Probíhá úplná inventura, opravy stavů a předání přes PR; pouze dokumentace.",
+      "disposition": "Obsahový audit a místní ověření dokončené; sdílené plány a katalog připravené pro GitHub předání, bez provozní změny.",
       "evidence": [
-        "docs/PLAN_CATALOG_AUDIT_2026-11-07.md"
+        "docs/verification/plan-catalog-audit-20261107/RESULTS.md",
+        "docs/verification/plan-catalog-audit-20261107/checks.json"
       ]
     },
     {
@@ -3585,6 +3601,17 @@
       "evidence": [
         "docs/WORK_PLAN_CURRENT.md"
       ]
+    },
+    {
+      "id": "PL-562808a802",
+      "path": "docs/verification/access-overview-20261107/RESULTS.md",
+      "title": "Lidé a přístupy — místní ověření 7. 11. 2026",
+      "primary": false,
+      "role": "evidence",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "DOC02",
+      "disposition": "Datovaný protokol/snímek; výsledek platí jen pro prostředí a rozsah v souboru, otevřené kroky se přebírají přes příslušný plán.",
+      "evidence": []
     },
     {
       "id": "PL-b8d9a0c387",
@@ -8594,5 +8621,6 @@
       "disposition": "Referenční podklad, nikoli samostatný schválený implementační plán.",
       "evidence": []
     }
-  ]
+  ],
+  "checked_main": "ebb8b2e3"
 }

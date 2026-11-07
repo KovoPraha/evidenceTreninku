@@ -95,8 +95,8 @@ uvést jen bezpečnou referenci a způsob ověření soukromého podkladu.
 
 ## Aktuální předání a souběžné návrhy
 
-DOC02 ROZPRACOVÁNO: [audit všech plánů a konceptů](PLAN_CATALOG_AUDIT_2026-11-07.md).
-Větev `codex/plan-catalog-audit-20261107`; další krok: inventura a ověření vazeb.
+DOC02 obsah a místní ověření HOTOVO: [audit všech plánů a konceptů](PLAN_CATALOG_AUDIT_2026-11-07.md).
+Větev `codex/plan-catalog-audit-20261107`; další krok: GitHub předání a CI.
 
 | ID | Stav a podklad | Další krok / vlastník |
 | --- | --- | --- |

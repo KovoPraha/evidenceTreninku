@@ -62,12 +62,17 @@ $catalog = json_decode((string) file_get_contents($catalogFile), true, 512, JSON
 $registered = [];
 $catalogIds = [];
 $workRegister = (string) file_get_contents($root . '/docs/WORK_PLAN_CURRENT.md');
+$catalogMarkdown = (string) file_get_contents($root . '/docs/PLAN_CATALOG.md');
+$documentIndex = (string) file_get_contents($root . '/docs/PLAN_DOCUMENT_INDEX.md');
 foreach ($catalog['entries'] as $entry) {
     if (isset($registered[$entry['path']]) || isset($catalogIds[$entry['id']])) {
         $errors[] = 'Duplicate plan catalog path or ID: ' . $entry['path'];
     }
     $registered[$entry['path']] = true;
     $catalogIds[$entry['id']] = true;
+    if (!str_contains($documentIndex, $entry['id']) || ($entry['primary'] && !str_contains($catalogMarkdown, $entry['id']))) {
+        $errors[] = 'Plan catalog entry not indexed: ' . $entry['id'];
+    }
     if (!is_file($root . '/' . $entry['path'])) {
         $errors[] = 'Plan catalog source missing: ' . $entry['path'];
         continue;
@@ -80,7 +85,7 @@ foreach ($catalog['entries'] as $entry) {
     if ($entry['status'] === 'DONE' && $entry['evidence'] === []) {
         $errors[] = 'Completed plan needs evidence: ' . $entry['path'];
     }
-    preg_match_all('/(?:P\d{2}|C\d{2}|DOC\d+)\b/', $entry['registry'], $workIds);
+    preg_match_all('/(?:P\d{2}|C\d{2}|DOC\d+|ROLE\d+)\b/', $entry['registry'], $workIds);
     foreach ($workIds[0] as $workId) {
         if (!preg_match('/\b' . preg_quote($workId, '/') . '\b/', $workRegister)) {
             $errors[] = 'Plan has no work register item: ' . $workId;

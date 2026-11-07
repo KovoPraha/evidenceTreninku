@@ -15,6 +15,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-7bf4926593 | [bin/deploy-delete-manifest.txt](../bin/deploy-delete-manifest.txt) | artifact / SUPPORT | DOC02 |
 | PL-fd576aa984 | [database/README.md](../database/README.md) | reference / REFERENCE | DOC02 |
 | PL-6b161a4eb3 | [A10-PERSON-AUDIT-TIMELINE.md](A10-PERSON-AUDIT-TIMELINE.md) | reference / REFERENCE | DOC02 |
+| PL-f72bce19e1 | [ACCESS_OVERVIEW_2026-11-07.md](ACCESS_OVERVIEW_2026-11-07.md) | plan / PARTIAL | ROLE01 |
 | PL-18045cf53e | [ACCOUNTING_LEDGER_R13_R16.md](ACCOUNTING_LEDGER_R13_R16.md) | reference / REFERENCE | DOC02 |
 | PL-5f6a8c268c | [ADMIN-PRACOVNI-POZICE.md](ADMIN-PRACOVNI-POZICE.md) | reference / REFERENCE | DOC02 |
 | PL-466f85d7f7 | [AUDIT-M2-ADVERSARIAL.md](AUDIT-M2-ADVERSARIAL.md) | historical-analysis / HISTORICAL | C04/P11 |
@@ -100,7 +101,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-99a4b304f7 | [PERSON_FOUNDATION_R07_R08.md](PERSON_FOUNDATION_R07_R08.md) | plan / PARTIAL | P09 |
 | PL-77c1b8b268 | [PHP_QUALITY.md](PHP_QUALITY.md) | reference / REFERENCE | DOC02 |
 | PL-974ffb9a0a | [PLAN_CATALOG.md](PLAN_CATALOG.md) | catalog / REFERENCE | DOC02 |
-| PL-7dba18bd07 | [PLAN_CATALOG_AUDIT_2026-11-07.md](PLAN_CATALOG_AUDIT_2026-11-07.md) | plan / IN_PROGRESS | DOC02 |
+| PL-7dba18bd07 | [PLAN_CATALOG_AUDIT_2026-11-07.md](PLAN_CATALOG_AUDIT_2026-11-07.md) | plan / DONE | DOC02 |
 | PL-748376e8ad | [PLAN_DOCUMENT_INDEX.md](PLAN_DOCUMENT_INDEX.md) | catalog / REFERENCE | DOC02 |
 | PL-d59539426f | [PPL_BOX_CHECKOUT.md](PPL_BOX_CHECKOUT.md) | plan / PARTIAL | C03 |
 | PL-fce6b94807 | [PRODUKCNI-UAT-UCTY-A-DATA.md](PRODUKCNI-UAT-UCTY-A-DATA.md) | reference / REFERENCE | DOC02 |
@@ -280,6 +281,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-5bccb967d7 | [training-roster-bridge.md](training-roster-bridge.md) | reference / REFERENCE | DOC02 |
 | PL-571b8c5115 | [uzivatelska-prirucka.md](uzivatelska-prirucka.md) | reference / REFERENCE | DOC02 |
 | PL-ef4a62cbc8 | [verification/R42_LOCAL_OPERATIONS_FOLLOWUP.md](verification/R42_LOCAL_OPERATIONS_FOLLOWUP.md) | verification-plan / HISTORICAL | P09/P11 |
+| PL-562808a802 | [verification/access-overview-20261107/RESULTS.md](verification/access-overview-20261107/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-b8d9a0c387 | [verification/accountant-handover-20261024/PREDANI_UCETNI.md](verification/accountant-handover-20261024/PREDANI_UCETNI.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-5f0cdd069d | [verification/accountant-handover-20261024/RESULTS.md](verification/accountant-handover-20261024/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-9ed7a2d760 | [verification/accountant-handover-20261024/browser-accepted.txt](verification/accountant-handover-20261024/browser-accepted.txt) | artifact / SUPPORT | DOC02 |
