@@ -877,3 +877,5 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-fc5771e688 | [docs/verification/attendance-integrated-http-20261107/RESULTS.md](verification/attendance-integrated-http-20261107/RESULTS.md) | reference / HISTORICAL_EVIDENCE | P11 |
 | PL-a52acce523 | [docs/verification/attendance-integrated-http-20261107/CALIBRATION.md](verification/attendance-integrated-http-20261107/CALIBRATION.md) | reference / HISTORICAL_EVIDENCE | P11 |
 | PL-38c8d0fac7 | [docs/verification/attendance-integrated-http-20261107/REPRODUCE.md](verification/attendance-integrated-http-20261107/REPRODUCE.md) | reference / HISTORICAL_EVIDENCE | P11 |
+| PL-929f7b0db8 | [PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md) | plan / IN_PROGRESS | P11-R05-H |
+| PL-83e296b1da | [SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md) | handoff / SUPPORT | P11-R05-H |
