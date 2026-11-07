@@ -1,0 +1,7 @@
+{
+  "path": "original checkout kis_rosters_admin.php",
+  "sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "same_as_before": true,
+  "original_checkout_branch": "codex/fio-auto-reconciliation-recovery",
+  "unrelated_outputs_retained": true
+}
