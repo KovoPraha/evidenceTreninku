@@ -6,6 +6,79 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-P15-S2S3-PROMPT
+
+- **Zadání vlastníka 7. 11.:** připravit prompt cílovému Codexu pro S2/S3
+  proti hotovému S1, jen syntetické testy a bez kontaktu se soukromými daty Rikiho.
+- **Hranice:** nové vlastní testovací procesy jsou součástí vývoje; nesmí
+  vzniknout trvalá služba, OS účet, scheduler, aktivní produkční flag ani login.
+  Runtime nesdílí Riki WSL/Docker, profily, cache, prostředí nebo úložiště.
+- **Akceptace:** skutečný S1 ingest, čtyři lokální kolekce, nulové mutační
+  handlery, přesné retry bajty, lease/revokace, šifrovaný spool a omezená síť.
+  Mock ani statická fixture není důkazem živých selektorů/Windows bootu.
+- **Předání:** [prompt](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md), draft #376;
+  na stanici má vzniknout vlastní draft PR. Tímto krokem tam nic neběželo.
+
+## D2026-11-07-P15-S1
+
+- **Přijaté zadání vlastníka:** nezávisle implementovat S1 KIS, jen syntetická
+  data, žádný deploy/aktivace. Samostatná větev navazuje na kontrakt S0 #371.
+- **Volba:** staging dílů + atomický manifest, vlastní tabulky a UCI resolver.
+  Přímý zápis do kanonických osob nebo obecný jmenný importer by nezaručily
+  požadované oddělení a jednoznačnost; proto se nepoužívají.
+- **Identity:** aktuální ověření při publikaci i čtení; stará vazba není důkaz
+  současné identity. Baseline/nula/pokles čekají na registráře, ne zařízení.
+- **Rozhraní:** token patří právě jednomu neměnnému scope/kolekci/eventu,
+  enabled výchozí 0 a globální příjem OFF. Bez cookies a automatického DDL.
+- **Ověření:** 2fe8aa93 / 11 CI PASS v draft #376. Historické výkonnostní
+  profily dostaly stejnou novou migraci; srovnávací guardy ani zmrazený kód
+  nejsou oslabeny. Neprázdná obnova integračních tabulek ověřená na obou MariaDB.
+- **Meze:** UI/provisioning/retence a worker jsou další etapy; S1 není pilot.
+  [Technické předání](CSC_SPORTSOFT_S1_KIS.md),
+  [důkazy](verification/csc-sportsoft-s1-20261107/RESULTS.md).
+
+## D2026-11-07-P15-S0
+
+- **Stav / datum:** PŘIJATÉ OMEZENÍ vlastníka, 7. 11. 2026: jiný Windows
+  počítač s Rikim; místní Codex má Evidence repo a převezme inventuru promptem.
+- **Soukromí:** KIS nesmí číst/zapisovat/indexovat žádná soukromá data Rikiho.
+  Žádné profily, DB, kontejnery, mounty, vault ani AI paměť se nepřebírají.
+- **Technický návrh:** samostatný nativní Windows účet/worker a scheduler;
+  nevyžaduje WSL/Docker ani dohled Rikiho. Jeho Interactive startovací úloha
+  nedokládá boot bez přihlášení. Živý stav cílového hostu zatím UNKNOWN.
+- **Varianta:** vlastní VM/správní hranice, pokud účet/ACL nestačí nebo nelze
+  doložit oddělení od širokých oprávnění Rikiho. Nevydávat společný host za
+  izolaci proti administrátorovi. Instalace/aktivace se nyní neprovádí.
+- **Kontrakt:** čtyři kolekce, jen přehledové údaje, UCI páruje server.
+  Platnost licence z tooltipu, Hostování z disabled checkboxu; platba `ano`
+  doložena, negativní varianta zůstává unknown. Bez jmenného fallbacku.
+- **Důkazy a předání:** [S0 stanice](CSC_SPORTSOFT_S0_STATION.md),
+  [kontrakt](CSC_SPORTSOFT_S0_CONTRACT_V1.md), [protokol](verification/csc-sportsoft-s0-20261107/RESULTS.md).
+  Upřesňuje D2026-11-07-P15; předchozí možný dohled Nanoclaw se nepoužije.
+
+## D2026-11-07-P15
+
+- **Stav / datum:** PŘIJATÝ SMĚR, 7. 11. 2026; explicitní zadání vlastníka.
+- **Volba:** první etapa čte ČSC a Sportsoft, páruje přes UCI ID a běží na
+  nonstop stanici. V tomto úkolu vzniká konkrétní plán a projektová dokumentace.
+- **Důvod:** skutečný DOM lze obsluhovat Playwrightem; ruční přihlášení je
+  dostupné. Oddělený worker nevyžaduje prohlížeč na stávajícím PHP hostingu.
+- **Varianty:** serverový worker může následovat; obecné AI klikání ani
+  nekonečný refresh relace nejsou základ provozu. Nanoclaw může dělat dohled.
+- **Technický návrh:** samostatné externí snímky a striktní UCI resolver.
+  Existující import dovoluje i shodu jména/data narození, proto se nepoužije
+  k automatickému spojování této integrace. Kanonické karty se nepřepisují.
+- **Hranice:** žádné přihlášky/licence/platby či jiné zápisy do portálů.
+  Nasazení, první produkční ingest KIS a pravidelná aktivace jsou samostatné
+  kroky; dnešní dokumentace je neprovedla. Detailní kontrakt je návrh.
+- **Podklady:** [P15](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), [průzkum](verification/csc-sportsoft-discovery-20261107/RESULTS.md),
+  [registr](WORK_PLAN_CURRENT.md). Vlastník Marek / vývoj KIS.
+
+
+Pracovní ID 09 v PR #371 kolidovalo s již přijatým pickerem #366.
+P15 proto před merge používá samostatné ID P15; historické commity se nemění.
+
+
 ## D2026-11-07-11
 
 PŘIJATO, 7.11.2026, nové přímé zadání vlastníka pro měření bez změny produkce.
@@ -250,3 +323,11 @@ PŘIJATO podle nového zadání vlastníka: [P11-R05-H](PLANNER_HIERARCHY_READ_P
 P11-R05-H podle D12: finální parita a objemový přínos PASS na obou DB i celém HTTP/Chrome. [Důkazy](verification/planner-hierarchy-read-performance-20261107/RESULTS.md). Vhodné pro schválený standardní deploy až po zelených kontrolách výsledkového commitu; drobná režie jednoho SQL u malé filtrované historie doložená, bez soupisky čas neutrální.
 
 P11-R05-H — uzavřený technický řez podle D12: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [parita/přínos](verification/planner-hierarchy-read-performance-20261107/RESULTS.md), [merge/deploy/čtecí důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md), [handoff](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md). #374/e36c9ba6 a deploy42394551344 SUCCESS. Lidské UAT/rows examined a celé K0.2 tím nejsou uzavřené.
+
+## D2026-11-07-P15-S4
+
+Vlastník 7. 11. zadal čtecí přehled synchronizací a nespárovaných záznamů.
+[S4](CSC_SPORTSOFT_S4_REGISTRAR.md) odděluje poslední přijatý snímek od pokusu
+a přepočítává párování při čtení. Místo rozšíření ingestu či ručního schvalování
+vzniká GET rozhraní v samostatné větvi, aby stanice mohla pokračovat proti S1.
+Žádná změna kontraktu, aktivace, produkční zápis ani přístup k Rikimu.

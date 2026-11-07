@@ -1,0 +1,434 @@
+{
+  "notice": "SYNTHETIC ONLY. No allocated UCI identity implied. Never upload to production.",
+  "valid_batches": [
+    {
+      "schema_version": 1,
+      "run_id": "00000000-0000-4000-8000-000000000001",
+      "connection_id": "synthetic-connection",
+      "lease_generation": 1,
+      "collection": "csc_licenses",
+      "event_id": null,
+      "scope_id": "synthetic-club",
+      "adapter_version": "fixture-v1",
+      "observed_at": "2026-11-07T00:00:00Z",
+      "part_no": 1,
+      "page": {
+        "index": 1,
+        "reported_total": 1,
+        "row_offset": 0,
+        "row_count": 1
+      },
+      "rows": [
+        {
+          "license_id": "synthetic-license-a",
+          "uci_id_raw": "000 000 000 01",
+          "display_name": "TEST Syntetický A",
+          "license_status_raw": "Platná licence",
+          "role_label": "TEST závodník",
+          "discipline_label": "TEST dráha",
+          "category_label": "TEST kategorie",
+          "hosting_checked": false,
+          "validity_year_raw": "2026"
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "run_id": "00000000-0000-4000-8000-000000000001",
+      "connection_id": "synthetic-connection",
+      "lease_generation": 1,
+      "collection": "sportsoft_members",
+      "event_id": null,
+      "scope_id": "synthetic-club",
+      "adapter_version": "fixture-v1",
+      "observed_at": "2026-11-07T00:00:00Z",
+      "part_no": 1,
+      "page": {
+        "index": 1,
+        "reported_total": 1,
+        "row_offset": 0,
+        "row_count": 1
+      },
+      "rows": [
+        {
+          "member_id": null,
+          "uci_id_raw": "00000000001",
+          "display_name": "TEST Syntetický A",
+          "birth_date_raw": "02.01.2000",
+          "nationality_label": "TEST",
+          "role_label": "TEST závodník",
+          "source_label": "manual"
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "run_id": "00000000-0000-4000-8000-000000000001",
+      "connection_id": "synthetic-connection",
+      "lease_generation": 1,
+      "collection": "sportsoft_events",
+      "event_id": null,
+      "scope_id": "synthetic-club",
+      "adapter_version": "fixture-v1",
+      "observed_at": "2026-11-07T00:00:00Z",
+      "part_no": 1,
+      "page": {
+        "index": 1,
+        "reported_total": 1,
+        "row_offset": 0,
+        "row_count": 1
+      },
+      "rows": [
+        {
+          "event_id": "synthetic-event-a",
+          "event_date_raw": "31.10.2026",
+          "event_name": "TEST závod — nikdy neodesílat",
+          "venue_label": "TEST místo",
+          "registration_action_label": "Prohlédnout / změnit přihlášku"
+        }
+      ]
+    },
+    {
+      "schema_version": 1,
+      "run_id": "00000000-0000-4000-8000-000000000001",
+      "connection_id": "synthetic-connection",
+      "lease_generation": 1,
+      "collection": "sportsoft_registrations",
+      "event_id": "synthetic-event-a",
+      "scope_id": "synthetic-club",
+      "adapter_version": "fixture-v1",
+      "observed_at": "2026-11-07T00:00:00Z",
+      "part_no": 1,
+      "page": {
+        "index": 1,
+        "reported_total": 1,
+        "row_offset": 0,
+        "row_count": 1
+      },
+      "rows": [
+        {
+          "registration_id": null,
+          "uci_id_raw": "00000000001",
+          "display_name": "TEST Syntetický A",
+          "birth_date_raw": "02.01.2000",
+          "category_label": "TEST kategorie",
+          "paid_raw": "ano"
+        }
+      ]
+    }
+  ],
+  "invalid_batches": [
+    {
+      "case": "unknown_sensitive_field",
+      "expected": "schema_rejected",
+      "batch": {
+        "schema_version": 1,
+        "run_id": "00000000-0000-4000-8000-000000000001",
+        "connection_id": "synthetic-connection",
+        "lease_generation": 1,
+        "collection": "csc_licenses",
+        "event_id": null,
+        "scope_id": "synthetic-club",
+        "adapter_version": "fixture-v1",
+        "observed_at": "2026-11-07T00:00:00Z",
+        "part_no": 1,
+        "page": {
+          "index": 1,
+          "reported_total": 1,
+          "row_offset": 0,
+          "row_count": 1
+        },
+        "rows": [
+          {
+            "license_id": "synthetic-license-a",
+            "uci_id_raw": "000 000 000 01",
+            "display_name": "TEST Syntetický A",
+            "license_status_raw": "Platná licence",
+            "role_label": "TEST závodník",
+            "discipline_label": "TEST dráha",
+            "category_label": "TEST kategorie",
+            "hosting_checked": false,
+            "validity_year_raw": "2026",
+            "birth_number": "TEST-FORBIDDEN"
+          }
+        ]
+      }
+    },
+    {
+      "case": "numeric_uci",
+      "expected": "schema_rejected",
+      "batch": {
+        "schema_version": 1,
+        "run_id": "00000000-0000-4000-8000-000000000001",
+        "connection_id": "synthetic-connection",
+        "lease_generation": 1,
+        "collection": "csc_licenses",
+        "event_id": null,
+        "scope_id": "synthetic-club",
+        "adapter_version": "fixture-v1",
+        "observed_at": "2026-11-07T00:00:00Z",
+        "part_no": 1,
+        "page": {
+          "index": 1,
+          "reported_total": 1,
+          "row_offset": 0,
+          "row_count": 1
+        },
+        "rows": [
+          {
+            "license_id": "synthetic-license-a",
+            "uci_id_raw": 1,
+            "display_name": "TEST Syntetický A",
+            "license_status_raw": "Platná licence",
+            "role_label": "TEST závodník",
+            "discipline_label": "TEST dráha",
+            "category_label": "TEST kategorie",
+            "hosting_checked": false,
+            "validity_year_raw": "2026"
+          }
+        ]
+      }
+    },
+    {
+      "case": "missing_license_id",
+      "expected": "schema_rejected",
+      "batch": {
+        "schema_version": 1,
+        "run_id": "00000000-0000-4000-8000-000000000001",
+        "connection_id": "synthetic-connection",
+        "lease_generation": 1,
+        "collection": "csc_licenses",
+        "event_id": null,
+        "scope_id": "synthetic-club",
+        "adapter_version": "fixture-v1",
+        "observed_at": "2026-11-07T00:00:00Z",
+        "part_no": 1,
+        "page": {
+          "index": 1,
+          "reported_total": 1,
+          "row_offset": 0,
+          "row_count": 1
+        },
+        "rows": [
+          {
+            "uci_id_raw": "000 000 000 01",
+            "display_name": "TEST Syntetický A",
+            "license_status_raw": "Platná licence",
+            "role_label": "TEST závodník",
+            "discipline_label": "TEST dráha",
+            "category_label": "TEST kategorie",
+            "hosting_checked": false,
+            "validity_year_raw": "2026"
+          }
+        ]
+      }
+    },
+    {
+      "case": "unverified_member_id",
+      "expected": "schema_rejected",
+      "batch": {
+        "schema_version": 1,
+        "run_id": "00000000-0000-4000-8000-000000000001",
+        "connection_id": "synthetic-connection",
+        "lease_generation": 1,
+        "collection": "sportsoft_members",
+        "event_id": null,
+        "scope_id": "synthetic-club",
+        "adapter_version": "fixture-v1",
+        "observed_at": "2026-11-07T00:00:00Z",
+        "part_no": 1,
+        "page": {
+          "index": 1,
+          "reported_total": 1,
+          "row_offset": 0,
+          "row_count": 1
+        },
+        "rows": [
+          {
+            "member_id": "guessed",
+            "uci_id_raw": "00000000001",
+            "display_name": "TEST Syntetický A",
+            "birth_date_raw": "02.01.2000",
+            "nationality_label": "TEST",
+            "role_label": "TEST závodník",
+            "source_label": "manual"
+          }
+        ]
+      }
+    },
+    {
+      "case": "registration_missing_event",
+      "expected": "schema_rejected",
+      "batch": {
+        "schema_version": 1,
+        "run_id": "00000000-0000-4000-8000-000000000001",
+        "connection_id": "synthetic-connection",
+        "lease_generation": 1,
+        "collection": "sportsoft_registrations",
+        "event_id": null,
+        "scope_id": "synthetic-club",
+        "adapter_version": "fixture-v1",
+        "observed_at": "2026-11-07T00:00:00Z",
+        "part_no": 1,
+        "page": {
+          "index": 1,
+          "reported_total": 1,
+          "row_offset": 0,
+          "row_count": 1
+        },
+        "rows": [
+          {
+            "registration_id": null,
+            "uci_id_raw": "00000000001",
+            "display_name": "TEST Syntetický A",
+            "birth_date_raw": "02.01.2000",
+            "category_label": "TEST kategorie",
+            "paid_raw": "ano"
+          }
+        ]
+      }
+    },
+    {
+      "case": "member_event_scope",
+      "expected": "schema_rejected",
+      "batch": {
+        "schema_version": 1,
+        "run_id": "00000000-0000-4000-8000-000000000001",
+        "connection_id": "synthetic-connection",
+        "lease_generation": 1,
+        "collection": "sportsoft_members",
+        "event_id": "synthetic-event-a",
+        "scope_id": "synthetic-club",
+        "adapter_version": "fixture-v1",
+        "observed_at": "2026-11-07T00:00:00Z",
+        "part_no": 1,
+        "page": {
+          "index": 1,
+          "reported_total": 1,
+          "row_offset": 0,
+          "row_count": 1
+        },
+        "rows": [
+          {
+            "member_id": null,
+            "uci_id_raw": "00000000001",
+            "display_name": "TEST Syntetický A",
+            "birth_date_raw": "02.01.2000",
+            "nationality_label": "TEST",
+            "role_label": "TEST závodník",
+            "source_label": "manual"
+          }
+        ]
+      }
+    }
+  ],
+  "uci_cases": [
+    {
+      "raw": "000 000 000 01",
+      "expected": "00000000001"
+    },
+    {
+      "raw": null,
+      "expected_state": "missing_uci"
+    },
+    {
+      "raw": "   ",
+      "expected_state": "missing_uci"
+    },
+    {
+      "raw": "000-00000001",
+      "expected_state": "invalid_uci"
+    },
+    {
+      "raw": "００００００００００１",
+      "expected_state": "invalid_uci"
+    },
+    {
+      "raw": "000\t00000001",
+      "expected_state": "invalid_uci"
+    },
+    {
+      "raw": "123",
+      "expected_state": "invalid_uci"
+    }
+  ],
+  "semantic_cases": [
+    {
+      "case": "duplicate_kis_uci",
+      "kis_person_ids": [
+        "synthetic-a",
+        "synthetic-b"
+      ],
+      "uci": "00000000001",
+      "expected": "duplicate_kis_uci_no_link"
+    },
+    {
+      "case": "two_distinct_csc_licenses_same_uci",
+      "license_ids": [
+        "synthetic-a",
+        "synthetic-b"
+      ],
+      "uci": "00000000001",
+      "expected": "preserve_two_licenses_one_person"
+    },
+    {
+      "case": "duplicate_member_composite_key",
+      "expected": "preserve_rows_review_no_silent_merge"
+    },
+    {
+      "case": "invalid_calendar_date",
+      "raw": "31.02.2000",
+      "expected": "birth_date_null_invalid_birth_date"
+    },
+    {
+      "case": "missing_source_column",
+      "expected": "layout_changed_no_publish"
+    },
+    {
+      "case": "validity_icon_invalid_current_year",
+      "raw": "Neplatná licence",
+      "year": "2026",
+      "expected": "invalid"
+    },
+    {
+      "case": "payment_yes",
+      "raw": "ano",
+      "expected": "paid"
+    },
+    {
+      "case": "payment_no_not_yet_verified",
+      "raw": "ne",
+      "expected": "unknown"
+    },
+    {
+      "case": "partial_25_of_254",
+      "expected": "incomplete_no_publish"
+    },
+    {
+      "case": "stale_lease_upload",
+      "expected": "reject_no_latest_change"
+    },
+    {
+      "case": "wrong_club_scope",
+      "expected": "reject_before_publish"
+    },
+    {
+      "case": "name_order_diacritics",
+      "source": "TEST NOVÁK Adam",
+      "kis": "Adam TEST Novak",
+      "expected": "define_token_order_tolerance_in_S1_before_auto_link"
+    },
+    {
+      "case": "missing_member_uci",
+      "expected": "run_local_row_missing_uci_no_stable_link"
+    },
+    {
+      "case": "unknown_registration_event_id",
+      "expected": "do_not_navigate_or_guess"
+    },
+    {
+      "case": "transport_row_count_mismatch",
+      "expected": "reject_at_ingest_even_if_schema_valid"
+    }
+  ]
+}
