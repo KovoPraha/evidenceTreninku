@@ -443,3 +443,13 @@ R13/R05 objemy/kandidáti, rows examined, mobil/souběh a ostatní K0.2. Fináln
 ## Rozšířené společné R06 HTTP — 7.11.2026
 
 [Výsledky všech9scénářů /540HTTP/234Chrome](verification/attendance-integrated-http-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md). Nový pár d958fd6e →faae75e8, 20checksumů, JS/noJS/44HTTP a samostatné syntetické zápisy PASS; vlastní runtime uklizený, WIP zachovaný. Široké lekce203 →72SQL, Chrome trenér6,40 →0,35s na tomto Windows stroji. Přijatý Linux #372 má jiný baseline/prostředí a vlastní deploy, nesčítat časy. Tato relace produkci neměnila; R13/R05/rows examined/fyzický mobil/síť/CPU/souběh a K0.2 dál otevřené.
+
+## P11-SCALE — větší objemy a aktuální R05,7.11.2026
+
+[Plán](MEDICAL_PLANNER_SCALE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md).
+Primární69f:2160HTTP, aktuálníe36 po#374 dalších540HTTP;90doménových/DOM parit,
+36negativ a oba vlastní úklidy/WIP PASS. Zdravotní100k zkoumá1,3milionu řádků
+i při malém HTML; aktuální R05 omezuje přenos historie při shodných výsledcích.
+Samostatné piny, raw data a manifesty, časové poměry nejsou kontrolovaný pár.
+Další R13 stavové čtení a řízené větší testy, složitější historie, mobil/souběh;
+K0.2 zůstává otevřené. Nové produkční nasazení tato studie neprovádí.

@@ -60,3 +60,13 @@ Finální stav všech povinných kontrol a začlenění je u PR. Sloučení nen�
 Nepokračovat původní variantou se 200 kandidáty na dávku: u velkého stavového
 filtru opakovala příliš mnoho dotazů. Vývojová CSP chyba nového skriptu byla
 opravena před finálním browser průchodem; nejde o produkční závadu.
+
+## Aktualizace převzetí 7.11.2026 — větší data a aktuální R05
+
+Tento výše uvedený postup je historický popis konkrétní etapy. R06 a celé HTTP
+už jsou hotové, nečekají na novou implementaci. [P11-SCALE předání](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md)
+dokládá100k zdravotních sledování,520týdnů a1000členství,2160primárních časů
+a540časů aktuálního#374, přímou shodu domén a bezpečný úklid. Starý R05 nález
+14554 řádků má nyní ověřenou opravu#374; znovu ji neimplementovat ani nenasazovat.
+Dále R13 stavové čtení, řízený Linux100k, složitější historie a mobil/souběh.
+Provozní stav výhradněCURRENT; tato relace produkci neměnila.
