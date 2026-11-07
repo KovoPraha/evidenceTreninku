@@ -79,3 +79,11 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 | P11 R06 — implementace v main #354, bez deploye | [Plán a důkazy](verification/attendance-read-performance-20261107/RESULTS.md) | [Předání](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md), role/HTTP otevřené |
 | Refaktoring W6–W15 — technické dokončení | [Komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md), [uzavření](REFACTORING_CLOSURE_2026-10-30.md) | Lidská/účetní přejímka v P09; [provozní historie](CHANGELOG-PROVOZ.md) |
 | Starší session a dokončené části programu | [Deník a archivní rozcestník](EVENT_LOG.md) | Původní plány, důkazy a rozhodnutí zůstávají v Gitu; nejde o zpětné schválení neověřených kroků |
+
+## D2026-11-07-05
+
+PŘIJATO, 7. 11. 2026, podle zadání vlastníka pokračovat katalogem.
+[Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md): lehká operační projekce celého
+katalogu zachová prodejnost, počty a ceny; těžká prezentace jen pro stránku.
+SQL LIMIT před cenami/prodejností zamítnuto kvůli změně výsledků; trvalá cache
+by potřebovala invalidaci. Parita a měření jsou podmínkou předání. Bez deploye.
