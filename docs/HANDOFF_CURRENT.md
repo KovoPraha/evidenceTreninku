@@ -7,9 +7,9 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
-- ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
-  Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.
-  Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); dále implementace, CI, merge/deploy a Chrome.
+- ROLE01-MOB NASAZENO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [výsledky](verification/access-mobile-cards-20261107/RESULTS.md), #361 / `3b37e053`, deploy 42365946802 SUCCESS.
+  Otisky všech 48 účtů / 82 rolí shodné před/po. Vizuální karty NOT RUN: Computer Use neodpovídá, vlastník požádán obnovit Chrome.
+  Dále jen čtecí Chrome 390/360 px a desktop; nic neukládat. Výsledková větev `codex/access-mobile-release-20261107`, stejný worktree.
 
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 
@@ -24,7 +24,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), větev `codex/full-http-performance-20261107`;
   vlastní worktree viz předání. Po integraci main cíleně 47 testů / 2877 assertions PASS.
   Žádný náš deploy; runtime uklizený, původní WIP zachovaný. CI/merge u PR.
-  Klubové ceny #358 v main bez deploye; [plán a návazný katalog](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md).
+  Klubové ceny #358 nasazené po následném souhlasu vlastníka spolu s ROLE01-MOB; [plán a návazný katalog](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md).
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

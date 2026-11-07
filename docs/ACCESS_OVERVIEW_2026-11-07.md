@@ -37,9 +37,9 @@ k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
 ### Mobilní karty ROLE01-MOB
 
 7. 11. vlastník výslovně schválil úpravu mobilního přehledu na karty, merge,
-nasazení a nové vizuální ověření. **ROZPRACOVÁNO**, vývoj; pokračuje vlastní větev
+nasazení a nové vizuální ověření. **NASAZENO, vizuální přejímka K OVĚŘENÍ**; implementační větev
 `codex/access-visual-uat-20261107`, stejný worktree, základ main `9460ee76`.
-Dosavadní dokumentační PR #361 se rozšiřuje o tuto implementaci.
+PR #361 sloučeno jako `3b37e053`; deploy `42365946802` SUCCESS, všech 11 CI PASS.
 Mobil pod 768 px: jedna karta na člověka, celé jméno/kontakt, stav, skupiny rolí,
 výchozí role, superadmin a samostatný grant spotřeby; tlačítko úpravy po ruce.
 Desktop zachová tabulku. Obě varianty čtou stejný filtrovaný seznam; bez změny
@@ -47,9 +47,12 @@ autorizace, ukládání, schématu či přiřazení. Varianta pouhého fixován�
 neřeší zalamování štítků, proto samostatné mobilní karty.
 Akceptace: 390/360 px bez vodorovného posunu, jméno a role pohromadě, filtry,
 prázdný výsledek a otevření editoru; desktop bez regrese. Produkční kontrola
-jen GET, žádné uložení, aktivace, grant ani nový účet. Další krok: implementace,
-cílená regrese, CI a merge, standardní deploy bez importu, vizuální Chrome.
-Výsledky a vydání budou odděleně doložené v navazujícím protokolu.
+jen GET, žádné uložení, aktivace, grant ani nový účet. Otisky před/po přesně shodné:
+48 účtů / 82 přiřazení / 5 superadminů / 1 grant. Vlastník následně schválil
+společný deploy s cenami #358. [Výsledky a hranice](verification/access-mobile-cards-20261107/RESULTS.md).
+Další krok: obnovit neodpovídající spojení Computer Use a dokončit skutečný
+Chrome 390/360 px a desktop. Nové karty vizuálně NOT RUN; další deploy není potřeba.
+Výsledkové předání `codex/access-mobile-release-20261107`, stejný worktree.
 
 ### Navazující vizuální kontrola ROLE01-VIS
 
