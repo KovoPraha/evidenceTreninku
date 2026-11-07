@@ -12,10 +12,10 @@ function shopPublicNavigationH(mixed $value): string
 }
 
 /** @return list<array<string,mixed>> */
-function shopPublicSaleableCatalog(PDO $pdo, ?ClubProgramReadContext $readContext = null): array
+function shopPublicSaleableCatalog(PDO $pdo, ?ClubProgramReadContext $readContext = null, ?array $productIds = null): array
 {
     $readContext ??= new ClubProgramReadContext($pdo);
-    return shopPublicFilterSaleableProducts($pdo, shopStorefrontCatalog($pdo, $readContext), $readContext);
+    return shopPublicFilterSaleableProducts($pdo, shopStorefrontCatalog($pdo, $readContext, $productIds), $readContext);
 }
 
 /** @param list<array<string,mixed>> $catalog @return list<array<string,mixed>> */
