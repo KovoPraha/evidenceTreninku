@@ -140,3 +140,5 @@ sdílené CI/merge a konkrétní hlavu určuje výsledkový PR této větve.
 HTTP/MariaDB a všechny vlastní browsery zastavené. TCP 18105/33469 odmítají spojení,
 runtime e999e34b ponechaný zastavený, žádné rekurzivní mazání. Původní WIP má
 SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
+
+Předání výsledků: [PR #373](https://github.com/KovoPraha/evidenceTreninku/pull/373), větev `codex/attendance-integrated-http-20261107`. Stav finálních kontrol/přijetí u PR; žádné nasazení touto relací.

@@ -110,3 +110,5 @@ síť/CPU/souběh a další R01–R16. Přihlášené produkční UAT vede provo
 toto není jeho provedení. Celé K0.2 otevřené. Volba [D11](DECISION_LOG.md#d2026-11-07-11).
 Pracovní D10/E30 v 3ca7e028 před sdílením kolidovaly s přijatým #370/#372;
 přijatá ID zachovaná, vlastní volba nyní D11 a události E36/E37.
+
+Výsledkové [PR #373](https://github.com/KovoPraha/evidenceTreninku/pull/373) předává tuto dokončenou místní etapu; konkrétní CI/head/merge ověřit přímo u PR. Produkční operace nejsou součástí tohoto PR.

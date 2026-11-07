@@ -60,3 +60,5 @@ Původní WIP `kis_rosters_admin.php` zůstal SHA256
 Stav CI/review/merge je u výsledkového PR této větve; hotové měření/implementaci
 neopakovat jen kvůli staršímu „čeká“ v historickém předání. Vlastní D11/E36/E37
 nekolidují s přijatým provozním D10 a E30–E35.
+
+Výsledkové [PR #373](https://github.com/KovoPraha/evidenceTreninku/pull/373) předává tuto dokončenou místní etapu; konkrétní CI/head/merge ověřit přímo u PR. Produkční operace nejsou součástí tohoto PR.

@@ -10189,7 +10189,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u výsledkové větve.",
+      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u PR #373.",
       "evidence": [
         "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
@@ -10203,7 +10203,7 @@
       "role": "reference",
       "status": "HISTORICAL_EVIDENCE",
       "registry": "P11",
-      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u výsledkové větve.",
+      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u PR #373.",
       "evidence": [
         "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
@@ -10217,7 +10217,7 @@
       "role": "reference",
       "status": "HISTORICAL_EVIDENCE",
       "registry": "P11",
-      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u výsledkové větve.",
+      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u PR #373.",
       "evidence": [
         "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
@@ -10231,7 +10231,7 @@
       "role": "reference",
       "status": "HISTORICAL_EVIDENCE",
       "registry": "P11",
-      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u výsledkové větve.",
+      "disposition": "Rozšířené celé Windows R06 měření místně hotové, 540HTTP/234Chrome, bez změny produkce touto relací; další P11 otevřené. CI/přijetí u PR #373.",
       "evidence": [
         "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
@@ -10264,7 +10264,8 @@
         "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
         "docs/verification/attendance-integrated-http-20261107/CALIBRATION.md",
         "docs/verification/attendance-integrated-http-20261107/REPRODUCE.md"
-      ]
+      ],
+      "pull_request": 373
     }
   ]
 }
