@@ -1,0 +1,18 @@
+{
+  "shop": {
+    "enabled": true,
+    "policy_id": 1,
+    "available_issuer": {
+      "id": 1,
+      "name": "Tělovýchovná jednota KOVO, z.s.",
+      "registration_id": "00541753"
+    },
+    "registered": 0,
+    "document_errors": 0,
+    "pending_documents": 0,
+    "failed_emails": 0,
+    "pending_emails": 0
+  },
+  "ok": true,
+  "run_id": 42362688999
+}

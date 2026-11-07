@@ -14,12 +14,11 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## Aktivní návaznosti
 
-P07 N1/N2: vlastník zadal implementaci, ověření, sloučení a nasazení.
-[Automatické doklady a komunikace](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md)
-jsou implementované v PR #355, místní browser/MariaDB celý tok PASS,
-51 testů / 496 assertions PASS. Následuje CI, merge, deploy a aktivace;
-[podklady a meze](verification/shop-document-automation-20261107/RESULTS.md).
-Skutečná bankovní platba a produkční přejímka členství zůstávají samostatné.
+P07 N1/N2: [automatické doklady a komunikace](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md)
+jsou sloučené v #355, nasazené a zapnuté pro nové objednávky.
+Místní browser/MariaDB celý tok PASS, 2337 testů / 43257 assertions a 11 CI PASS.
+[Provozní výsledky a meze](verification/shop-document-automation-20261107/RESULTS.md).
+Skutečná bankovní platba, externí schránka a produkční přejímka členství zůstávají samostatné.
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
@@ -80,7 +79,7 @@ uvést jen bezpečnou referenci a způsob ověření soukromého podkladu.
 | ID | Stav a podklad | Další krok / vlastník |
 | --- | --- | --- |
 | DOC01 | Obsah a místní ověření HOTOVO: [souborové plány a krátké předání](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357); větev `codex/repo-documentation-policy-20261107` | Stav CI/merge u PR; další práci vést podle nových pravidel. Pouze dokumentace a její kontrola, bez deploye. |
-| P07 N1/N2 | [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355): audit rozšířen o schválenou implementaci dokladů a e-mailů; místní přejímka PASS | CI, merge, chráněný deploy a aktivace; [plán](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md). |
+| P07 N1/N2 | [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355) sloučené, doklady a e-maily nasazené a zapnuté | [Protokol a hranice](verification/shop-document-automation-20261107/RESULTS.md), [provozní návod](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md). |
 
 ## Ranní serverový audit — samostatná návaznost P05
 
