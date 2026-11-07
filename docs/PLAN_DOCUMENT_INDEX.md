@@ -8,9 +8,17 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-8465995434 | [P15 S0 přesný čtecí kontrakt v1](CSC_SPORTSOFT_S0_CONTRACT_V1.md) | reference / SUPPORT | P15 |
+| PL-b8000d96f9 | [P15 S0 nonstop stanice oddělená od Rikiho](CSC_SPORTSOFT_S0_STATION.md) | reference / SUPPORT | P15 |
+| PL-6aa891eb3d | [P15 S0 prompt pro cílový Codex](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md) | reference / SUPPORT | P15 |
+| PL-7d3ce8bdbf | [P15 S0 výsledky a hranice předání](verification/csc-sportsoft-s0-20261107/RESULTS.md) | verification / SUPPORT | P15 |
+| PL-2eba69f6f2 | [P15 S0 čtecí Windows inventura](verification/csc-sportsoft-s0-20261107/station-inventory.ps1) | artifact / SUPPORT | P15 |
+| PL-f3f68a192c | [P15 S0 JSON Schema čtecího přenosu](verification/csc-sportsoft-s0-20261107/contract.schema.json) | artifact / SUPPORT | P15 |
+| PL-ea508a0d92 | [P15 S0 syntetické kontraktové fixtures](verification/csc-sportsoft-s0-20261107/fixtures.json) | artifact / SUPPORT | P15 |
+| PL-43db11dcee | [P15 S0 syntetický HTML podklad](verification/csc-sportsoft-s0-20261107/source-fixtures.html) | artifact / SUPPORT | P15 |
 | PL-bf46335bf2 | [Strukturovaný čtecí průzkum bez osobních hodnot](verification/csc-sportsoft-discovery-20261107/discovery.json) | artifact / SUPPORT | P15 |
 | PL-d0ee3c3e30 | [P15: průzkum ČSC a Sportsoftu](verification/csc-sportsoft-discovery-20261107/RESULTS.md) | verification / SUPPORT | P15 |
-| PL-f4f6043c1f | [Čtecí synchronizace ČSC a Sportsoftu do KIS](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md) | plan / PLANNED | P15 |
+| PL-f4f6043c1f | [Čtecí synchronizace ČSC a Sportsoftu do KIS](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md) | plan / PARTIAL | P15 |
 | PL-a54ff182c7 | [AGENTS.md](../AGENTS.md) | reference / REFERENCE | DOC02 |
 | PL-6ebdb617a8 | [CLAUDE.md](../CLAUDE.md) | reference / REFERENCE | DOC02 |
 | PL-53413c7074 | [INSTALACE.txt](../INSTALACE.txt) | artifact / SUPPORT | DOC02 |

@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
 Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) a [úplný katalog](PLAN_CATALOG.md).
-- **P15 PLÁNOVÁNO:** [čtecí ČSC/Sportsoft](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), UCI ID, nonstop stanice.
-  Plán a průzkum hotové; implementace/aktivace NOT RUN, dále S0.
+- **P15 S0 ČÁSTEČNĚ:** [čtecí ČSC/Sportsoft](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), UCI ID, nonstop stanice.
+  Kontrakt a prompt hotové; cílová inventura otevřená. Samostatný Windows worker bez Riki dat; aktivace NOT RUN.
 - **P11 katalog a lekce NASAZENO:** release `269684c234698cb40ae661e4080e318d4a05cfd3`, deploy 42374036053 SUCCESS; [protokol](verification/attendance-lesson-release-20261107/RESULTS.md).
   #367 / dávkové lekce navazují na #364; klubové ceny #358 zahrnuté. Záloha, migrace, VS a HTTP smoke PASS; import/UAT false. [Plán R06](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md).
 - **P07 N1/N2 NASAZENO / ZAPNUTO:** [protokol](verification/shop-document-automation-20261107/RESULTS.md), #355 / `9460ee76`, deploy 42362258878 SUCCESS. 2337 testů / 43257 assertions, 11 CI PASS; migrace current, původní VS beze změny. Pověření 1 / vystavovatel TJ KOVO 1 aktivované během 42362688999. Import/UAT flag false; záloha 387 tabulek / 2 triggery ověřená. Status 42362771928 PASS: přirozený tick 10:13:03 UTC, fronta/chyby 0. Skutečné doručení nového PDF do schránky neověřené.

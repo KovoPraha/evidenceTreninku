@@ -9787,11 +9787,12 @@
       "title": "Čtecí synchronizace ČSC a Sportsoftu do KIS",
       "primary": true,
       "role": "plan",
-      "status": "PLANNED",
+      "status": "PARTIAL",
       "registry": "P15",
-      "disposition": "Dokumentace první čtecí etapy; implementace a aktivace NOT RUN.",
+      "disposition": "S0 kontrakt a prompt hotové; cílová inventura otevřená. Bez aktivace.",
       "evidence": [
-        "docs/verification/csc-sportsoft-discovery-20261107/RESULTS.md"
+        "docs/verification/csc-sportsoft-discovery-20261107/RESULTS.md",
+        "docs/verification/csc-sportsoft-s0-20261107/RESULTS.md"
       ]
     },
     {
@@ -9815,6 +9816,94 @@
       "registry": "P15",
       "disposition": "Bezpečný souhrn průzkumu; žádné cookies ani osobní hodnoty.",
       "evidence": []
+    },
+    {
+      "id": "PL-8465995434",
+      "path": "docs/CSC_SPORTSOFT_S0_CONTRACT_V1.md",
+      "title": "P15 S0 přesný čtecí kontrakt v1",
+      "primary": false,
+      "role": "reference",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-b8000d96f9",
+      "path": "docs/CSC_SPORTSOFT_S0_STATION.md",
+      "title": "P15 S0 nonstop stanice oddělená od Rikiho",
+      "primary": false,
+      "role": "reference",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-6aa891eb3d",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md",
+      "title": "P15 S0 prompt pro cílový Codex",
+      "primary": false,
+      "role": "reference",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-7d3ce8bdbf",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/RESULTS.md",
+      "title": "P15 S0 výsledky a hranice předání",
+      "primary": false,
+      "role": "verification",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2eba69f6f2",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/station-inventory.ps1",
+      "title": "P15 S0 čtecí Windows inventura",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-f3f68a192c",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/contract.schema.json",
+      "title": "P15 S0 JSON Schema čtecího přenosu",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-ea508a0d92",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/fixtures.json",
+      "title": "P15 S0 syntetické kontraktové fixtures",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-43db11dcee",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/source-fixtures.html",
+      "title": "P15 S0 syntetický HTML podklad",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",
@@ -9833,6 +9922,20 @@
         "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
         "docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md",
         "docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md"
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "pull_request": 371,
+      "added_paths": [
+        "docs/CSC_SPORTSOFT_S0_CONTRACT_V1.md",
+        "docs/CSC_SPORTSOFT_S0_STATION.md",
+        "docs/verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md",
+        "docs/verification/csc-sportsoft-s0-20261107/RESULTS.md",
+        "docs/verification/csc-sportsoft-s0-20261107/station-inventory.ps1",
+        "docs/verification/csc-sportsoft-s0-20261107/contract.schema.json",
+        "docs/verification/csc-sportsoft-s0-20261107/fixtures.json",
+        "docs/verification/csc-sportsoft-s0-20261107/source-fixtures.html"
       ]
     }
   ]

@@ -8,7 +8,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 ## Poslední práce a další krok
 
 - P15: [čtecí ČSC/Sportsoft, UCI ID a nonstop stanice](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md).
-  Plán/podklady hotové v [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371); dále S0, implementace a aktivace NOT RUN.
+  [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371): [S0 prompt pro stanici](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md) hotový; cílová inventura otevřená, aktivace NOT RUN.
 
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
   Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.

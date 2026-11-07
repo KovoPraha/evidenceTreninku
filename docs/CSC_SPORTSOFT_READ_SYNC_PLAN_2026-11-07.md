@@ -1,7 +1,7 @@
 # P15 — Čtecí synchronizace ČSC a Sportsoftu do KIS
 
 Datum: 7. 11. 2026, Europe/Prague. Vlastník: Marek / klub; realizace: vývoj KIS.
-Stav: **PLÁNOVÁNO; plán a průzkum hotové, implementace a aktivace NOT RUN**.
+Stav: **S0 ČÁSTEČNĚ HOTOVO; kontrakt a předání stanici hotové, cílová inventura otevřená**.
 Zvolený rozsah: čtení obou portálů, párování UCI ID, worker na nonstop stanici.
 [Registr P15](WORK_PLAN_CURRENT.md), [rozhodnutí D2026-11-07-P15](DECISION_LOG.md#d2026-11-07-p15),
 [průzkum a ověření](verification/csc-sportsoft-discovery-20261107/RESULTS.md).
@@ -10,7 +10,11 @@ Větev: `codex/csc-sportsoft-read-sync-plan-20261107`.
 Worktree: `C:/Users/Marek/Documents/Codex/evidencePavel-csc-sportsoft-plan-20261107`.
 Základ inspekce kódu: `8e9cdce1ef758529dfa5a9950424518d39a79dc6`.
 Předání: větev publikována, [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371) otevřené; merge/deploy/aktivace NOT RUN.
-Tento úkol připravuje plán a předává dokumentaci, nespouští implementaci.
+Navazující zadání vlastníka: provést S0 a průběžně zapsat inventuru a seznam polí.
+Stanice je jiný Windows počítač s Rikim; KIS má být provozně oddělený.
+Podrobnosti: [kontrakt S0](CSC_SPORTSOFT_S0_CONTRACT_V1.md),
+[stanice](CSC_SPORTSOFT_S0_STATION.md), [předávací prompt](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md).
+Portály se nemění; implementace a aktivace NOT RUN.
 
 ## 1. Zadání, hranice a rozhodnutí
 
@@ -75,8 +79,8 @@ Nepotřebuje veřejný port, přístup k DB ani obecné vzdálené spouštění 
 
 Worker bude verzovaný Node.js/TypeScript proces s uzamčenými závislostmi
 Playwright a oddělenými adaptéry. Nepoběží jako smyčka příkazů do Codexu.
-Nanoclaw může hlídat běh a upozornit obsluhu; nebude rozhodovat o identitách,
-ovládat běžné kroky AI ani mít právo opravovat a nasazovat worker automaticky.
+Po upřesnění S0 se Riki/Nanoclaw nepoužije ani pro dohled. KIS má vlastní
+Windows účet, proces, profily, plánovač a stav v KIS; žádné sdílení soukromých dat.
 Budoucí přesun stejného procesu na server je možný po samostatném ověření;
 v této etapě nic dalšího neprovisionovat.
 
@@ -136,8 +140,8 @@ Předběžné tabulky (číselnou migraci přidělit až při realizaci):
 - `external_sync_reviews`: typ nejasnosti, záznam, kandidáti jako ID,
   rozhodnutí/důvod, actor a čas. Oddělit audit stroje od lidského registráře.
 
-Kolekce `csc_licenses`, `sportsoft_members` a
-`sportsoft_registrations:<event_id>` mají vlastní úplnost i poslední
+Kolekce `csc_licenses`, `sportsoft_members`, `sportsoft_events` a
+`sportsoft_registrations` s rozsahem `event_id` mají vlastní úplnost i poslední
 úspěšný snímek. Chyba jedné přihlášky nezneplatní kompletní seznam členů.
 ČSC klíč = externí ID licence v rozsahu oddílu. U Sportsoftu teprve ověřit
 ID řádku; není-li k dispozici, použít deklarovaný složený klíč
@@ -145,7 +149,9 @@ ID řádku; není-li k dispozici, použít deklarovaný složený klíč
 Externí platba = `paid/unpaid/unknown` plus doslovný stav zdroje,
 nikdy nová položka `payments`.
 
-Obálka dávky v1:
+Přesná pole a validační pravidla nyní vlastní [kontrakt S0](CSC_SPORTSOFT_S0_CONTRACT_V1.md)
+a [JSON Schema](verification/csc-sportsoft-s0-20261107/contract.schema.json).
+Zkrácená ilustrace obálky (placeholdery nejsou platný produkční payload):
 ```json
 {
   "schema_version": 1,
@@ -153,11 +159,13 @@ Obálka dávky v1:
   "connection_id": "<server-issued-id>",
   "lease_generation": 1,
   "collection": "csc_licenses",
+  "event_id": null,
+  "scope_id": "<verified-club>",
   "part_no": 1,
   "adapter_version": "<release>",
   "observed_at": "<UTC timestamp>",
   "rows": [],
-  "page": {"index": 1, "reported_total": 0, "row_count": 0}
+  "page": {"index": 1, "reported_total": 0, "row_offset": 0, "row_count": 0}
 }
 ```
 
@@ -186,7 +194,7 @@ Nová čistá služba `includes/external_identity_match.php`; nepřepisovat
 obecný `kisMatchResolve()`. Párování běží na serveru nad aktuálními daty KIS.
 Stanice proto nepotřebuje stáhnout celý adresář sportovců KIS.
 
-Normalizace: řetězec, odstranit pouze formátovací mezery včetně NBSP,
+Normalizace: řetězec, odstranit pouze ASCII space a NBSP podle kontraktu S0,
 pak přesně 11 ASCII číslic. Zachovat úvodní nuly, nepřevádět na číslo,
 neodstraňovat písmena/interpunkci. Formát není důkaz přidělení ID; checksum
 nezavádět bez samostatně ověřeného pravidla. `uciid` kanonické karty neměnit.
@@ -245,11 +253,11 @@ registrář řeší záznamy, nemá automaticky přístup k tajemstvím zaříze
 
 ## 8. Provoz nonstop stanice
 
-OS ani konkrétní stroj zatím nebyly inventarizované; před instalací ověřit
-OS, disk, zamykání, restart, síť a odpovědnou obsluhu. Windows: vyhrazená
-naplánovaná úloha; Linux: systemd service/timer. Vybrat podle skutečné stanice,
-neinstalovat obě varianty. Node LTS a verze Playwright uzamknout v lockfile,
-nejdřív syntetické ověření stejné verze browseru.
+Vlastník potvrdil jiný Windows počítač s Rikim; repozitář Rikiho dokládá
+WSL2 Ubuntu a Docker, nikoli aktuální inventuru. Navržen je vlastní nativní
+Windows worker mimo Riki/WSL/Docker. Místní Codex převezme [prompt S0](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md).
+[Požadavky a hranice](CSC_SPORTSOFT_S0_STATION.md) vlastní konkrétní instalaci,
+oddělení účtů, Node LTS, profily, boot a chybějící ověření. Zatím nic neinstalováno.
 
 Návrh výchozího režimu po povolené aktivaci:
 - Každých 6 hodin seznamy obou systémů; vybrané existující přihlášky jednou
@@ -284,7 +292,7 @@ Po vypnutí zůstanou běžné funkce KIS i historické údaje funkční.
 
 | Etapa | Konkrétní výstup / závislost | Dokončeno, když |
 | --- | --- | --- |
-| S0 — kontrakt a inventura | Ověřit stanici, klub/tým, minimální pole, čtecí cesty a event allowlist; syntetické HTML ČSC/Sportsoftu | Schéma v1 a akční allowlist pokrývají pozorovaný DOM; žádné reálné osobní fixture; inventura stanice zapsaná |
+| S0 — kontrakt a inventura | ČÁSTEČNĚ: přesný kontrakt, syntetické podklady a prompt hotové; cílová inventura, Sportsoft scope/negativní platba a allowlist závodů zbývají | Schéma v1 a čtecí rozsah doložené; místní Codex předá obsahově omezenou inventuru bez přístupu k Rikimu |
 | S1 — KIS úložiště a resolver | Nové migrace, ownership záloh, transakční ingest, normalizace a striktní UCI; závisí S0 | Testy konfliktů/idempotence/pořadí i rollback; obě MariaDB 10.3/11.4; původní karty/platby beze změny |
 | S2 — čtecí adaptéry | Worker nejprve čte syntetické stránky; ČSC → Sportsoft členové → vybrané existující přihlášky | Úplnost stránek, změna DOM a expirovaný login testované; zápisové ovladače mají nulový počet použití |
 | S3 — transport a provoz | Device token, scoped API, lease, restart, spool, dohled; závisí S1/S2 | Opakovaný přenos nevytvoří duplicitu; revoked device a stará lease odmítnuté; restart/lock/offline recovery PASS |
@@ -322,8 +330,9 @@ bezobslužného provozu po restartu.
 
 ## 11. Další krok a předání
 
-Další implementační krok: S0 — ověřit prostředí nonstop stanice a uzavřít
-schéma minimálních čtecích dat + syntetické fixtures; potom S1.
+Další krok: předat [prompt místnímu Codexu](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md)
+a získat cílovou inventuru/oddělení účtů. Kontrakt, schéma a syntetické fixtures
+jsou připravené pro S1; jejich připravenost není dokončená inventura ani pilot.
 Zatím nejsou nasazené endpointy, DB tabulky, worker, plánovač ani device token.
 Nové přihlášky a licence jsou oddělená budoucí etapa vyžadující vlastní plán
 a ověření přesného okamžiku zápisu na obou portálech.
@@ -331,3 +340,4 @@ a ověření přesného okamžiku zápisu na obou portálech.
 Průzkum: PASS pouze v rozsahu [protokolu](verification/csc-sportsoft-discovery-20261107/RESULTS.md).
 Dokumentační kontrola po převzetí main 2ef20aed PASS (4453 místních odkazů,
 108 archivních bloků); git diff origin/main --check PASS. Předáno v PR #371.
+Aktuální doplnění S0 a jeho kontrolu vede [protokol S0](verification/csc-sportsoft-s0-20261107/RESULTS.md).
