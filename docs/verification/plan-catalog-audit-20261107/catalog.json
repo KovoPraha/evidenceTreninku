@@ -9675,12 +9675,14 @@
       "title": "P11 R06 — výběr osob v docházce, 7. 11. 2026",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11",
-      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "disposition": "Dílčí picker: implementace/parita, nový společný HTTP/Chrome pár, merge #366 a schválené nasazení hotové; celé K0.2 otevřené.",
       "evidence": [
         "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
-        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/verification/attendance-person-picker-20261107/integrated/RESULTS.md",
+        "docs/verification/attendance-picker-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -9689,12 +9691,14 @@
       "title": "P11 R06 — předání výběru osob v docházce, 7. 11. 2026",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11",
-      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "disposition": "Předání dílčího pickeru: implementace, nová integrovaná parita/měření, merge a schválené nasazení hotové; ostatní P11 otevřené.",
       "evidence": [
         "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
-        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/verification/attendance-person-picker-20261107/integrated/RESULTS.md",
+        "docs/verification/attendance-picker-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -10098,6 +10102,83 @@
       "status": "REFERENCE",
       "registry": "P11",
       "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-107fed76ae",
+      "path": "docs/verification/attendance-picker-release-20261107/after.json",
+      "title": "after.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-fcf7e04f4b",
+      "path": "docs/verification/attendance-picker-release-20261107/anonymous-lesson.json",
+      "title": "anonymous-lesson.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-1714b998a1",
+      "path": "docs/verification/attendance-picker-release-20261107/anonymous-lesson.php.txt",
+      "title": "anonymous-lesson.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-198880d137",
+      "path": "docs/verification/attendance-picker-release-20261107/before.json",
+      "title": "before.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-20e6913d1d",
+      "path": "docs/verification/attendance-picker-release-20261107/deployment.json",
+      "title": "deployment.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-5219851ecf",
+      "path": "docs/verification/attendance-picker-release-20261107/RESULTS.md",
+      "title": "RESULTS.md",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-1d2cc5f812",
+      "path": "docs/verification/attendance-picker-release-20261107/snapshot.php.txt",
+      "title": "snapshot.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
       "evidence": []
     }
   ],

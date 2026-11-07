@@ -225,3 +225,5 @@ aktuálního main s #367 a pickerem; žádné aktivace ani skutečné zápisy do
 [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
 Kanonické D09 původního pickeru zachované; dočasné přeznačení na D10 v pracovním
 75801847 bylo sjednocené při převzetí d62c3ad2. D10 označuje toto nové pokračování.
+
+P11 picker — dílčí řez uzavřený podle D10 a nového výslovného zadání: #366, nové společné měření, parita a schválené nasazení hotové. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [provozní důkaz a meze](verification/attendance-picker-release-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md). Celé K0.2 a lidská přejímka otevřené.

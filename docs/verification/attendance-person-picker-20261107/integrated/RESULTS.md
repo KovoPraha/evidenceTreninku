@@ -1,6 +1,6 @@
 # P11 picker — společné měření aktuálního main, 7. 11. 2026
 
-ROZPRACOVÁNO. [Plán](../../../ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+HOTOVO v rozsahu nového společného měření/parity; nasazení má samostatný [protokol](../../attendance-picker-release-20261107/RESULTS.md). [Plán](../../../ATTENDANCE_PERSON_PICKER_2026-11-07.md),
 [předání](../../../SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md),
 [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366).
 
@@ -29,7 +29,7 @@ Příkazy a kontrolovaný postup jsou verzované v
 Uploaduje se pouze whitelist bezpečných JSON, nikoli config, hesla, cookies,
 HTML nebo soukromé CLI logy. Úklid vlastní DB, účtu, configu a session cookie jars
 provádí původní guardovaný nástroj; PHP proces se zastaví a aplikační soubor obnoví i při chybě.
-CI službu následně odstraní GitHub. Nové kompletní měření zatím NOT RUN.
+CI službu následně odstraní GitHub. Nové kompletní měření dokončené; přesný výsledek níže.
 
 ## Místní ověření a neúspěšná kalibrace
 
@@ -43,8 +43,7 @@ CI službu následně odstraní GitHub. Nové kompletní měření zatím NOT RU
   přesného datadiru a portu. Adresář zůstal pro diagnostiku, nic se plošně nemaže.
   Žádný cizí ani produkční server se neopravoval. Nové měření proto v Linux CI.
 
-Stav commit/CI/merge/deploy se doplní podle skutečného výsledku, žádné nové
-produkční nasazení pickeru dosud neprovedené. Původní WIP v htdocs i původní
+Provozní provedení je doložené v samostatném release protokolu; benchmark a provozní UAT jsou oddělené skutečnosti. Původní WIP v htdocs i původní
 picker worktree zachované; pokračování je ve vlastním worktree mimo htdocs.
 
 PR #366 byl mezitím sloučen souběžnou relací jako `faae75e8`, přesný strom d62c3ad2, 11 kontrol PASS. Sloučení převzaté beze změny aplikačního kódu; toto pokračování doplňuje společné měření, předání a podle aktuálního oprávnění deploy. Baseline je poslední main před pickerem `2ef20aed`, který už obsahuje #367.

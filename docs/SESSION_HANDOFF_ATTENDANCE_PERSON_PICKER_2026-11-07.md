@@ -1,102 +1,30 @@
 # P11 R06 — předání výběru osob, 7. 11. 2026
 
-Aktuální pokračování: #366 v main, nové integrované měření/parita PASS; schválený deploy čeká na zbývající CI. WIP zachovaný.
-[Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
-[finální důkazy](verification/attendance-person-picker-20261107/final/RESULTS.md),
-[PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366): stav finálního CI/merge ověřit u PR.
-Větev `codex/attendance-person-picker-20261107`, worktree
-`C:/Users/Marek/Documents/Codex/evidencePavel-attendance-picker-20261107`.
+HOTOVO: #366 commitnuté/sloučené, shoda výsledků a nové společné měření s #367,
+schválené nasazení i čtecí kontrola. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+[integrovaná parita/měření](verification/attendance-person-picker-20261107/integrated/RESULTS.md),
+[produkční protokol a přesné vydání](verification/attendance-picker-release-20261107/RESULTS.md).
 
-## Hotovo a důležitá oprava
+- 50 výsledků plus všichni vybraní; hosté zachovaní, počet účastníků bez limitu 50.
+- Jeden společný nativní formulář přenáší obě rozepsané části. Původní API,
+  CSRF, verze/původ a kanonické zápisy/transakce zůstávají.
+- Nový stejný seed před/po s aktuálním #367: 10221 osob / 205 stran obou rolí,
+  540 HTTP časů / 78 Chrome, 13 checksumů. Vybrané hodnoty i úplná množina osob stejné.
+- HTML 1368679 → 91620 B (−93,3 %), HTTP trenéra 48,40 → 27,87 ms,
+  Chrome warm 445,65 → 82,60 ms. Syntetický Linux CI, nikoli produkční SLA.
+  SQL trenéra 56 → 72; jde hlavně o přenos/DOM. Rows examined neprokázané.
+- 44 HTTP kontrol a následné oddělené syntetické writer UAT/revokace PASS.
+  Původní JS/noJS a 390 px mají dřívější důkazy nad shodnými UI zdroji.
+- Linux 2362 testů / 46386 assertions a obě MariaDB PASS; všech 12 kontrol
+  hlavy 50a0c811 SUCCESS. Osm hashů aplikace odpovídá #366 i nasazené verzi.
+- Produkční veřejný katalog 5/5 shodný včetně normalizovaného DOM, soukromá trasa
+  anonymně 302 login. Přihlášené produkční picker UAT NOT RUN, skutečné zápisy se neprováděly.
 
-- Hledání/paging po 50 plus všichni vybraní, hosté dostupní, počet účastníků
-  neomezený na 50. Nativní čtecí POST, žádný nový JS/endpoint/cache oprávnění.
-- Obě části patří do jednoho formuláře: hledání zachová současně rozepsanou
-  docházku i omluvu včetně prázdného výběru, verze, původu a sousední stránky.
-  První dva nezávislé formuláře měly tuto mezeru; první výsledky jsou historické.
-  Prefixy omluvy oddělené, původní API stále podporované. Zápisová tlačítka
-  neblokují required pole sousední části, serverová validace zůstává původní.
-- Nový stejný seed před/po: 10221 osob, 728 plánů, 200 účastníků, 52 revizí,
-  10k zdravotních sledování / 30k záznamů. 540 HTTP časů + 78 Chrome pozorování.
-  HTML 1,37 MB → 92 kB; warm Chrome trenér **4,79 → 0,59 s**, vedoucí
-  **5,80 → 0,62 s**, druhý trenér **5,61 → 0,40 s**. Lokální řízený viewport,
-  žádné produkční SLA. SQL někde stouplo: 59 → 75, fresh checks zachované.
-- JS/noJS, obě současně rozepsané části, 390 px, role/CSRF, všech 10221 osob
-  ve 205 stranách obou rolí PASS. 44 HTTP kontrol, revize 53/201/paper, stale422,
-  skutečná UI omluva 1001/paper a legacy JSON 1002/phone ověřené v DB.
-- Čtecí měření/diagnostiky 0 DML/DDL a 13 nezměněných checksums; zápisové UAT
-  až následně. 36 testů / 380 assertions, PHPStan a styl 9 PHP PASS.
-- CI 10.3/11.4 reader parita; staré měřidlo sdílí aktuální UI, původní validator.
-  Import opraven v generované kopii i pro workers; archivovaný harness a přísná
-  HTML/doménová parita zůstávají. Finální výsledky CI patří k finálnímu PR head.
+Původní WIP v htdocs i původní picker worktree/výstupy zachované. Dokončení
+`codex/attendance-picker-completion-20261107`, vlastní worktree stejného názvu v Documents/Codex.
+Linux prostředí uklizené. Vlastní neúspěšný Windows Aria datadir zůstává zastavený;
+neúspěšné kalibrace jsou v protokolu, žádný pokus o plošné/rekurzivní mazání.
+Přijaté #370 priority/obnova a registry zachované; výsledkové sdílení [#372](https://github.com/KovoPraha/evidenceTreninku/pull/372).
 
-## Úklid a integrace
-
-První runtime `kis-picker-20261107-d6aeea40` i finální
-`kis-picker-final-20261107-76d29d23` jsou zastavené, adresáře ponechané.
-Vlastní schema/účty/oba configy/credentials/cookies odstraněné, browsery zavřené,
-TCP 18095 a 33459 odmítají spojení. Původní `kis_rosters_admin.php` stále SHA256
-`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
-
-Měřený base d958fd6e; převzatý main 269684c2 obsahuje cizí #347, #364 a #367.
-Jejich dokumentace/provozní výsledky zachované. Novější training_day.php po #367
-není součást tohoto celého časového páru; integrované testy/CI zvlášť.
-Žádná produkční operace tohoto vlákna. Release/flags číst z CURRENT.
-
-## Zbývá podle priority
-
-Finální CI/review/přijetí #366 mají konkrétní SHA a stav u PR; při převzetí
-neopakovat již hotový krok. Tato relace nepovoluje deploy.
-
-1. Celé HTTP/browser společné verze s #367. Dávkové lekce už hotové; starých
-   219 SQL před integrací není aktuální počet a není to úkol znovu implementovat.
-2. R13/R05 objemy/kandidáti, rows examined, fyzický mobil/síť/CPU/souběh a R01–R16.
-3. Produkční deploy/přejímka pickeru vyžadují nové explicitní zadání vlastníka.
-   Podklady ostatních P01–P14 zůstávají v registru; K0.2 není uzavřené.
-
-Integrační ověření 9d4a7538 po převzetí #367: **50 testů / 1294 assertions PASS**,
-PHP quality CI 42375011506 SUCCESS; [doklad](verification/attendance-person-picker-20261107/final/integration.json).
-Celé HTTP společné verze tím není přeměřené. Finální CI/merge hlavy u #366.
-
-Integrační CI 42375011560: všech 18 párů HTML/data PASS, selhal starý cap 45 SQL.
-Nový přesný celostránkový budget 56 = 45 + 14 picker − 3 dávkové lekce; žádná změna aplikace.
-Rows cap1000, relativní úspora a samostatný validator budget3/200 a5/1200 zůstávají.
-Aktuální training_day.php nyní sdílený i v generované before kopii.
-[Přehrání 10.3](verification/attendance-person-picker-20261107/final/ci-budget-replay-10.3.json), [11.4](verification/attendance-person-picker-20261107/final/ci-budget-replay-11.4.json),
-[odmítnutí 57 SQL, 1001 řádků a vadného HTML](verification/attendance-person-picker-20261107/final/comparator-guards.json) PASS.
-Nový celý nativní CI běh a jeho výsledek evidují kontroly finální hlavy PR.
-
-Před finálním CI převzaté DOC03 #368 / 8e9cdce1: priority i provozní stav karet/cen zachované, žádná změna aplikace. E22 patří přijatému DOC03, naše zahájení je E26.
-
-## Pokračování podle nového zadání vlastníka
-
-7. 11. 2026: dokončit #366, ověřit výsledky a změřit před/po; pokud kontroly
-projdou, commitnout, sloučit a nasadit. Dřívější zákaz deploye je historický.
-Neaktivovat nové integrace a neměnit skutečné osoby, role ani docházku.
-Izolované pokračování `codex/attendance-picker-completion-20261107`, worktree
-`C:/Users/Marek/Documents/Codex/evidencePavel-attendance-picker-completion-20261107`.
-Původní picker worktree i jeho rozpracované dokumentační sloučení a výstupy zachované.
-
-1. Převzít #369 / `2ef20aed`, zachovat přijaté release/priority a automatické bloky.
-2. Na jediném novém syntetickém localhost fixture měřit aktuální main před pickerem
-   a potom stejný main s pickerem; shodné #367 na obou stranách, stejné session a data.
-3. Celé HTTP včetně rolí/negativních případů, skutečný Chrome před/po;
-   zvlášť ověřit všechny osoby a oba drafty, původní API a writer kontrakty.
-   Původní hotové testy zbytečně neopakovat, pokud jejich aplikační zdroje zůstaly stejné.
-4. Finální požadované CI, commit/push do #366 bez přepsání cizí práce,
-   merge aktuálního main a standardní chráněný deploy bez importu/UAT flagu.
-5. Čtecí produkční kontrola a průběžný release protokol; přihlášené skutečné zápisy neprovádět.
-   Výsledky a zbývající meze uložit do plánu, registru a obou handoffů.
-
-Aktuální stav: integrační dokumentační konflikty vyřešené v izolované kopii;
-nové měření a deploy NOT RUN. Přijaté E23 lekcí a E26–29 / D09 pickeru z d62c3ad2 zachované; nové pokračování E30 / D10. Dočasné pracovní přeznačení v 75801847 sjednocené.
-
-Převzatý souběžný PR head d62c3ad2 bez změny aplikačního kódu. Nové oprávnění a pokračování vlastní [D10](DECISION_LOG.md#d2026-11-07-10) / E30.
-
-Nové společné měření: [průběžný protokol](verification/attendance-person-picker-20261107/integrated/RESULTS.md). Izolovaná Windows kalibrace selhala v Aria, server zastavený; pokračuje verzovaný Linux CI HTTP/Chrome pár, nikoli další oprava cizí DB.
-
-PR #366 byl mezitím sloučen souběžnou relací jako `faae75e8`, přesný strom d62c3ad2, 11 kontrol PASS. Sloučení převzaté beze změny aplikačního kódu; toto pokračování doplňuje společné měření, předání a podle aktuálního oprávnění deploy. Baseline je poslední main před pickerem `2ef20aed`, který už obsahuje #367.
-
-Nový pár Linux CI 42379723334 SUCCESS: main 2ef20aed před pickerem a shodný aktuální #367 proti pickeru faae75e8. 540 HTTP / 78 Chrome, HTML 1368679 → 91620 B, HTTP trenéra 48,40 → 27,87 ms, Chrome warm 445,65 → 82,60 ms. Osm zdrojových hashů odpovídá sloučenému runtime. Ve 13 checksummech a výběrech shoda; role/čerstvost a oddělené writer UAT PASS. [Přesná metoda a meze](verification/attendance-person-picker-20261107/integrated/RESULTS.md). Předání pokračuje v #372, produkční nasazení stále NOT RUN.
-
-Převzatý dokumentační #370 / 56f5ce08: P14 obnova/inventura a její přijatá E30/31 zachované. Pracovní pokračování tohoto pickeru nyní E32–34 / D10; dřívější pracovní čísla v historii nejsou nové paralelní události. Aplikační PHP/JS/workflow main proti faae75e8 shodné.
+Nasazení neopakovat. Release/flags vlastní [CURRENT_STATE](CURRENT_STATE.md).
+Další P11 jsou R13/R05, rows examined a fyzický mobil/souběh; [registr](WORK_PLAN_CURRENT.md), K0.2 otevřené.

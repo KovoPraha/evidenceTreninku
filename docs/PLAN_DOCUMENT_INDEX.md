@@ -828,8 +828,8 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-33db4f8391 | [RESULTS.md](verification/attendance-lesson-release-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
 | PL-28f93c29c8 | [snapshot.php.txt](verification/attendance-lesson-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
 
-| PL-c0b7a64780 | [docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
-| PL-10360221ef | [docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / PARTIAL | P11 |
+| PL-c0b7a64780 | [docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / DONE | P11 |
+| PL-10360221ef | [docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | plan / DONE | P11 |
 | PL-607748e4e4 | [docs/verification/attendance-person-picker-20261107/RESULTS.md](verification/attendance-person-picker-20261107/RESULTS.md) | reference / HISTORICAL_EVIDENCE | P11 |
 | PL-491b6bafd7 | [docs/verification/attendance-person-picker-20261107/CALIBRATION.md](verification/attendance-person-picker-20261107/CALIBRATION.md) | reference / HISTORICAL_EVIDENCE | P11 |
 | PL-53ee3c4ece | [docs/verification/attendance-person-picker-20261107/REPRODUCE.md](verification/attendance-person-picker-20261107/REPRODUCE.md) | reference / HISTORICAL_EVIDENCE | P11 |
@@ -865,3 +865,10 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-d044ac551f | [runner-cleanup.json](verification/attendance-person-picker-20261107/integrated/runner-cleanup.json) | evidence / REFERENCE | P11 |
 | PL-f31302bb48 | [targeted-tests.xml](verification/attendance-person-picker-20261107/integrated/targeted-tests.xml) | evidence / REFERENCE | P11 |
 | PL-f0ec6efec1 | [verification.json](verification/attendance-person-picker-20261107/integrated/verification.json) | evidence / REFERENCE | P11 |
+| PL-107fed76ae | [after.json](verification/attendance-picker-release-20261107/after.json) | evidence / REFERENCE | P11 |
+| PL-fcf7e04f4b | [anonymous-lesson.json](verification/attendance-picker-release-20261107/anonymous-lesson.json) | evidence / REFERENCE | P11 |
+| PL-1714b998a1 | [anonymous-lesson.php.txt](verification/attendance-picker-release-20261107/anonymous-lesson.php.txt) | evidence / REFERENCE | P11 |
+| PL-198880d137 | [before.json](verification/attendance-picker-release-20261107/before.json) | evidence / REFERENCE | P11 |
+| PL-20e6913d1d | [deployment.json](verification/attendance-picker-release-20261107/deployment.json) | evidence / REFERENCE | P11 |
+| PL-5219851ecf | [RESULTS.md](verification/attendance-picker-release-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
+| PL-1d2cc5f812 | [snapshot.php.txt](verification/attendance-picker-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
