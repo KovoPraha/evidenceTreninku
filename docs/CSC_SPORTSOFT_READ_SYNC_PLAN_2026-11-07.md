@@ -15,7 +15,7 @@ Stanice je jiný Windows počítač s Rikim; KIS má být provozně oddělený.
 Podrobnosti: [kontrakt S0](CSC_SPORTSOFT_S0_CONTRACT_V1.md),
 [stanice](CSC_SPORTSOFT_S0_STATION.md), [předávací prompt](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md).
 Portály se nemění; S1 implementace/testy hotové, aktivace NOT RUN.
-Navazující [S4 čtecí přehled](CSC_SPORTSOFT_S4_REGISTRAR.md) implementován podle zadání vlastníka; syntetická přejímka v draft #380.
+Navazující [S4 čtecí přehled](CSC_SPORTSOFT_S4_REGISTRAR.md) implementován podle zadání vlastníka; syntetická přejímka / 11 CI PASS v draft #380.
 
 ## 1. Zadání, hranice a rozhodnutí
 
@@ -297,7 +297,7 @@ Po vypnutí zůstanou běžné funkce KIS i historické údaje funkční.
 | S1 — KIS úložiště a resolver | IMPLEMENTACE A SYNTETICKÉ OVĚŘENÍ HOTOVO v [draft #376](https://github.com/KovoPraha/evidenceTreninku/pull/376); [protokol](CSC_SPORTSOFT_S1_KIS.md), závisí na S0 #371 | Konflikty/idempotence/pořadí/rollback i obě MariaDB PASS; [důkazy a stav CI](verification/csc-sportsoft-s1-20261107/RESULTS.md). Merge/deploy/aktivace NOT RUN |
 | S2 — čtecí adaptéry | Worker nejprve čte syntetické stránky; ČSC → Sportsoft členové → vybrané existující přihlášky | Úplnost stránek, změna DOM a expirovaný login testované; zápisové ovladače mají nulový počet použití |
 | S3 — transport a provoz | Device token, scoped API, lease, restart, spool, dohled; závisí S1/S2 | Opakovaný přenos nevytvoří duplicitu; revoked device a stará lease odmítnuté; restart/lock/offline recovery PASS |
-| S4 — přehled KIS ([čtecí řez implementován](CSC_SPORTSOFT_S4_REGISTRAR.md)) | Registrářský přehled, důvody nespárování, datum zdroje, read panel osoby; závisí S1/S3 | Neoprávněné role/rodiny data neuvidí; duplicitní UCI nelze potvrdit omylem; bez N+1 |
+| S4 — přehled KIS ([čtecí řez a syntetika HOTOVO, zbytek otevřený](CSC_SPORTSOFT_S4_REGISTRAR.md)) | Registrářský přehled, důvody nespárování, datum zdroje, read panel osoby; závisí S1/S3 | Neoprávněné role/rodiny data neuvidí; duplicitní UCI nelze potvrdit omylem; bez N+1 |
 | S5 — schválený čtecí pilot | Nejdřív izolované prostředí, poté konkrétně povolený první produkční snímek | Registrář ověří baseline všech řádků, více licencí i absenci; druhý stejný běh bez duplicit a kanonických změn |
 | S6 — pravidelný provoz | Aktivace vybraného plánu na stanici, runbook a předání | Sedm dní dohledaných běhů, kontrolovaný restart a jedno ruční obnovení relace; vlastník převezme stav a vypnutí |
 

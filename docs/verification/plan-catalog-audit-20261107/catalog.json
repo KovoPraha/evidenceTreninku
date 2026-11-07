@@ -10488,7 +10488,7 @@
       "role": "reference",
       "status": "SUPPORT",
       "registry": "P15",
-      "disposition": "Čtecí přehled implementován v draft #380, syntetické testy a browser PASS; finální CI probíhá, bez deploye/aktivace.",
+      "disposition": "Čtecí řez a syntetická přejímka HOTOVO v draft #380, db7a174f / 11 CI PASS; zbytek S4 otevřený, bez deploye/aktivace.",
       "evidence": []
     }
   ],

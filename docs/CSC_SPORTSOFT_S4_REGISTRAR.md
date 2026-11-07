@@ -1,6 +1,6 @@
 # P15 S4 — čtecí přehled pro registráře
 
-Datum: 7. 11. 2026. Stav: implementace čtecího řezu HOTOVO, OVĚŘOVÁNÍ; vlastník Marek / KIS Codex.
+Datum: 7. 11. 2026. Stav: čtecí implementace a syntetická přejímka HOTOVO v draft #380; vlastník Marek / KIS Codex.
 Navazuje na [hlavní plán P15](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md),
 [S1](CSC_SPORTSOFT_S1_KIS.md) v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376).
 Větev `codex/csc-sportsoft-s4-registrar-20261107`, vlastní worktree
@@ -62,7 +62,7 @@ duplicitní UCI nelze v této obrazovce ručně potvrdit.
   SQLite skip MariaDB lock-race. Styl PHP PASS (23 změněných souborů).
 - Push hotový, [draft PR #380](https://github.com/KovoPraha/evidenceTreninku/pull/380).
   Integrovaný dokumentační main `6b1860d5`, runtime `5095d1ee`, merge `fb6fbc13`.
-  CI dokumentace PASS; S1/S4 MariaDB krok na 10.3 i 11.4 PASS. Celé CI probíhá.
+  CI dokumentace PASS; S1/S4 MariaDB krok na 10.3 i 11.4 PASS. Finální výsledek je v tabulce níže.
   PHPStan odhalil neprokázanou inicializaci `$pdo` za vstupní ochranou;
   doplněna skutečná kontrola dostupnosti PDO, bez potlačení/baseline.
 - Playwright localhost: přehled i detail načtené, mobil 390 px má scrollWidth
@@ -92,10 +92,37 @@ pojmenovanou databázi a odstraňuje pouze ji. Nepoužívá konfiguraci aplikace
 Lokální úplný PHPStan na Windows nedoběhl v praktickém čase a byl zastaven;
 autoritativní PHPStan level 5, baseline budget i styl v Linux CI na `53916669`
 PASS: [běh 42399094794](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42399094794).
-Finální CI po úpravě textů běží; předání výsledků následuje.
+Finální ověření runtime `db7a174fa19006380ff2b8f0ed4ee7a7b940c561`: **všech 11 kontrol PASS**.
+Výsledkové předání mění pouze dokumentaci; neprohlašuje opakování celé sady na pozdějším dokumentačním commitu.
+
+| Kontrola | Výsledek | Důkaz |
+| --- | --- | --- |
+| Celá sada PHP 8.2 na Linuxu | PASS: 2396 testů / 48111 assertions, 1 očekávaný SQLite skip MariaDB lock-race | [PHPUnit](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42399616696/job/128484347389) |
+| S1 + S4 na MariaDB 10.3 | PASS: 20 testů / 252 assertions, včetně skutečného lock-race | [MariaDB 10.3](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42399616696/job/128484347662) |
+| S1 + S4 na MariaDB 11.4 | PASS: 20 testů / 252 assertions, celý job PASS | [MariaDB 11.4](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42399616696/job/128484347761) |
+| Oba MariaDB profily čtení celého projektu | PASS | [Testy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42399616696) |
+| PHPStan level 5, baseline, styl a anonymní inventura | PASS, bez nové výjimky; anonymní přístup 0 chyb | [PHP quality](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42399616756) |
+| Dokumentace a odkazy | PASS | [Dokumentace](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42399616677) |
+| CodeQL / actions, JS a Python | PASS | [CodeQL](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42399613215) |
+
+Playwright i dočasný localhost PHP server byly ukončené, vlastní syntetická
+SQLite a HTTP sandbox odstraněné. Vlastní worktree byl po pushi čistý.
+Samostatné S0/S1 PR zůstávají závislostí; #380 je obsahuje, do main se nic
+nesloučilo. Prompt stanice je shodný s pushnutou větví S1/#376.
 
 SQL rozpočet detailu je nejvýše 10 dotazů včetně ověření role a pozorování
 dávek, stejně pro 50 i poslední 1 řádek ze snímku s 301 řádky. Celý snímek
 se pro čerstvé filtrování prochází; měření maximálních 100 000 řádků NOT RUN.
 S4 nemá novou migraci ani zápisové API. Příjem zůstává pod původním OFF
 flagem S1. Zobrazení návrhu nikdy neposune ukazatel přijatého snímku.
+
+## Předání a další krok
+
+Čtecí řez požadovaný vlastníkem je implementovaný, synteticky ověřený a
+pushnutý v draft [#380](https://github.com/KovoPraha/evidenceTreninku/pull/380).
+Stanice může pokračovat podle [S2/S3 promptu](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md)
+v pushnuté větvi `codex/csc-sportsoft-s1-ingest-20261107` / #376.
+S4 příjmový kontrakt nemění. Širší S4 (osobní panel, auditovaná ruční
+rozhodnutí), skutečný worker/pilot a plné přihlášené UAT zůstávají otevřené.
+Merge/deploy/aktivace a portálové operace NOT RUN. Riki ani jeho data nebyly
+použity; místní syntetické procesy jsou ukončené.

@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 7. 11. 2026 / E2026-11-07-P15-S4-DONE | S4 čtecí řez a syntetická přejímka HOTOVO | db7a174f / 11 CI PASS, 2396/48111, obě MariaDB 20/252; localhost browser a HTTP PASS, sandbox uklizený. Zbytek S4 otevřený; bez merge/deploye/aktivace. | [Výsledky a předání](CSC_SPORTSOFT_S4_REGISTRAR.md), [draft #380](https://github.com/KovoPraha/evidenceTreninku/pull/380) |
 | 7. 11. 2026 / E2026-11-07-P15-S4-IMPL | S4 čtecí přehled implementován a pushnut | 39/2630 lokálně, HTTP 1/36 po PDO guardu; PHPStan/styl/dokumentace CI PASS, zbytek CI probíhá. Bez merge/deploye/aktivace. | [S4](CSC_SPORTSOFT_S4_REGISTRAR.md), [draft #380](https://github.com/KovoPraha/evidenceTreninku/pull/380) |
 | 7. 11. 2026 / E2026-11-07-P15-S4 | Zahájení S4 podle zadání vlastníka | Vlastní větev, čtecí přehled registráře a syntetické testy; bez deploye/aktivace. | [Plán S4](CSC_SPORTSOFT_S4_REGISTRAR.md) |
 | 7. 11. 2026 / E2026-11-07-P15-S2S3-PROMPT | P15: prompt pro druhé pracoviště připraven podle zadání vlastníka | Syntetické adaptéry/transport proti S1, vlastní worktree a testovací originy; bez přístupu k Rikimu/portálům, instalace a aktivace NOT RUN. | [Prompt](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md), [plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376) |
