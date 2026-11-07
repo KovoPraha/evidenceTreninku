@@ -22,7 +22,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-07.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-07.2';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -180,6 +180,7 @@ const EVIDENCE_TABLES = [
     'external_identity_links',
     'external_sync_reviews',
     'external_sync_audit',
+    'external_sync_decisions',
     'shop_document_policies',
     'shop_order_documents',
     'kis_bar_invoices',

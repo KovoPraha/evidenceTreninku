@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/** Nonempty synthetic data in all eight owned tables, including pending review and token hash. */
+/** Nonempty synthetic data in all nine owned tables, including pending review and token hash. */
 function externalSyncBackupSeed(PDO $pdo): array
 {
     $pdo->exec("INSERT INTO external_sync_connections(id,provider,scope_id,collection,next_sequence,latest_sequence,latest_row_count)
@@ -22,6 +22,8 @@ function externalSyncBackupSeed(PDO $pdo): array
         VALUES('00000000-0000-4000-8000-000000000001',1,'identity_conflict','[987654]')");
     $pdo->exec("INSERT INTO external_sync_audit(connection_id,run_id,actor_kind,actor_id,action_code,recorded_at)
         VALUES('backup-test','00000000-0000-4000-8000-000000000001','device','backup-test','complete',1)");
+    $pdo->prepare('INSERT INTO external_sync_decisions(run_id,ordinal_no,revision,state,reason,actor_id,recorded_at,basis_hash) VALUES(?,1,1,?,?,7,1,?)')
+        ->execute(['00000000-0000-4000-8000-000000000001', 'deferred', 'TEST backup review reason', hash('sha256', 'TEST basis')]);
     return externalSyncBackupSnapshot($pdo);
 }
 
@@ -29,7 +31,7 @@ function externalSyncBackupSnapshot(PDO $pdo): array
 {
     $snapshot = [];
     foreach (['external_sync_connections', 'external_sync_devices', 'external_sync_runs', 'external_sync_parts',
-        'external_sync_records', 'external_identity_links', 'external_sync_reviews', 'external_sync_audit'] as $table) {
+        'external_sync_records', 'external_identity_links', 'external_sync_reviews', 'external_sync_audit', 'external_sync_decisions'] as $table) {
         $snapshot[$table] = $pdo->query('SELECT * FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC);
     }
     return $snapshot;

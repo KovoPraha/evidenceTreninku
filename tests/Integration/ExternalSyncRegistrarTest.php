@@ -92,7 +92,7 @@ final class ExternalSyncRegistrarTest extends TestCase
         $this->pdo->profile = [];
         $first = $this->read(['filter' => 'all'])['projection'];
         $queries = count($this->pdo->profile);
-        self::assertLessThanOrEqual(10, $queries);
+        self::assertLessThanOrEqual(11, $queries);
         self::assertCount(50, $first['rows']);
         self::assertSame(301, $first['total']);
         self::assertSame('identity_conflict', $first['rows'][0]['match']['status']);

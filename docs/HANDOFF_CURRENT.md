@@ -7,7 +7,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
-- P15: [S4 přehled registráře](CSC_SPORTSOFT_S4_REGISTRAR.md) čtecí řez a 11 CI PASS v [draft #380](https://github.com/KovoPraha/evidenceTreninku/pull/380); další oddělené S2/S3 a otevřený zbytek S4.
+- P15: [S4 přehled registráře](CSC_SPORTSOFT_S4_REGISTRAR.md) čtecí řez a 11 CI PASS v [draft #380](https://github.com/KovoPraha/evidenceTreninku/pull/380); panel osoby a auditovaná řešení S4 nově ROZPRACOVÁNO, vlastní větev v plánu.
   [S1](CSC_SPORTSOFT_S1_KIS.md) / 11 CI PASS a [prompt S2/S3 pro stanici](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md) pushnuté v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376). Bez Rikiho, portálů, deploye či aktivace.
 
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.

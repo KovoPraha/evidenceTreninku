@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/external_sync_read.php';
+require_once __DIR__ . '/external_sync_review.php';
 
 function externalSyncAdminReasons(): array
 {
@@ -39,7 +40,7 @@ function externalSyncAdminFields(string $collection): array
 /** Scalar-only GET parameters; reject arrays and arbitrary SQL/filter fragments. */
 function externalSyncAdminInput(array $query): array
 {
-    $result = ['connection' => '', 'run' => '', 'filter' => 'needs_review', 'page' => 1, 'history_page' => 1, 'connections_page' => 1];
+    $result = ['connection' => '', 'run' => '', 'filter' => 'needs_review', 'work' => 'all', 'page' => 1, 'history_page' => 1, 'connections_page' => 1];
     foreach ($result as $key => $default) {
         if (!isset($query[$key])) {
             continue;
@@ -59,6 +60,9 @@ function externalSyncAdminInput(array $query): array
     }
     if (!in_array($result['filter'], array_merge(['all', 'needs_review'], array_keys(externalSyncAdminReasons())), true)) {
         throw new InvalidArgumentException('Neplatný filtr párování.');
+    }
+    if (!in_array($result['work'], array_merge(['all'], array_keys(externalSyncReviewStates())), true)) {
+        throw new InvalidArgumentException('Neplatný stav řešení.');
     }
     return $result;
 }
@@ -119,11 +123,11 @@ function externalSyncAdminDetailRead(PDO $pdo, array $input): array
     return ['connection' => $connection, 'run' => $run ?: null,
         'history' => array_slice($history, 0, 25), 'history_has_next' => count($history) > 25,
         'projection' => $run && in_array($run['status'], ['complete', 'review_required'], true)
-            ? externalSyncAdminRecords($pdo, $connection, $run, $input['filter'], (int)$input['page']) : null];
+            ? externalSyncAdminRecords($pdo, $connection, $run, $input['filter'], (int)$input['page'], $input['work']) : null];
 }
 
 /** Two streaming passes preserve whole-snapshot conflicts without keeping every JSON row in PHP arrays. */
-function externalSyncAdminRecords(PDO $pdo, array $connection, array $run, string $filter, int $page): array
+function externalSyncAdminRecords(PDO $pdo, array $connection, array $run, string $filter, int $page, string $work = 'all'): array
 {
     $people = $connection['collection'] === 'sportsoft_events' ? [] : externalSyncPeople($pdo);
     $byUci = [];
@@ -136,7 +140,7 @@ function externalSyncAdminRecords(PDO $pdo, array $connection, array $run, strin
         }
     }
     unset($people);
-    $links = externalSyncQuery($pdo, 'SELECT entity_key,uci_id,sportovec_id FROM external_identity_links WHERE connection_id=?', [$connection['id']]);
+    $links = externalSyncQuery($pdo, 'SELECT entity_key,uci_id,sportovec_id,revision FROM external_identity_links WHERE connection_id=?', [$connection['id']]);
     $linksByKey = [];
     while ($link = $links->fetch(PDO::FETCH_ASSOC)) {
         $linksByKey[$link['entity_key']] = $link;
@@ -148,6 +152,7 @@ function externalSyncAdminRecords(PDO $pdo, array $connection, array $run, strin
     ));
     $query = externalSyncQuery($pdo, 'SELECT ordinal_no,part_no,entity_key,uci_id,row_json,match_status
         FROM external_sync_records WHERE run_id=? ORDER BY ordinal_no', [$run['id']]);
+    $decisions = externalSyncReviewLatest($pdo, $run['id']);
     $counts = array_fill_keys(array_keys(externalSyncAdminReasons()), 0);
     $rows = [];
     $total = 0;
@@ -161,10 +166,17 @@ function externalSyncAdminRecords(PDO $pdo, array $connection, array $run, strin
             $candidates[(int)$prior] = $byId[(int)$prior];
         }
         $match = externalSyncResolveRecord($record, $candidates, $linksByKey, $conflicts, $connection['collection']);
+        $review = externalSyncReviewProjection(
+            $decisions[$record['ordinal_no']] ?? null,
+            externalSyncReviewBasis($connection, $run, $record, $match, $candidates, $linksByKey[$record['entity_key'] ?? ''] ?? null)
+        );
         $counts[$match['status']]++;
         $total++;
         $needsReview = !in_array($match['status'], ['matched', 'not_applicable'], true);
         if ($filter !== 'all' && !($filter === 'needs_review' && $needsReview) && $filter !== $match['status']) {
+            continue;
+        }
+        if ($work !== 'all' && $review['state'] !== $work) {
             continue;
         }
         $selected++;
@@ -174,7 +186,7 @@ function externalSyncAdminRecords(PDO $pdo, array $connection, array $run, strin
         $source = json_decode($record['row_json'], true, 16, JSON_THROW_ON_ERROR);
         $match['candidate_count'] = count($match['candidate_ids']);
         $match['candidate_ids'] = array_slice($match['candidate_ids'], 0, 10);
-        $rows[] = ['ordinal' => (int)$record['ordinal_no'], 'part_no' => (int)$record['part_no'], 'match' => $match,
+        $rows[] = ['ordinal' => (int)$record['ordinal_no'], 'part_no' => (int)$record['part_no'], 'match' => $match, 'review' => $review,
             'source' => array_intersect_key($source, externalSyncAdminFields($connection['collection'])),
             'normalized' => externalSyncNormalized($connection['collection'], $source), 'observed_at' => null];
     }

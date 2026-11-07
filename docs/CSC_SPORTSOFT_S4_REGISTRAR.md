@@ -126,3 +126,79 @@ S4 příjmový kontrakt nemění. Širší S4 (osobní panel, auditovaná ručn�
 rozhodnutí), skutečný worker/pilot a plné přihlášené UAT zůstávají otevřené.
 Merge/deploy/aktivace a portálové operace NOT RUN. Riki ani jeho data nebyly
 použity; místní syntetické procesy jsou ukončené.
+
+## Navazující S4 — panel osoby a auditovaná řešení (zadání 7. 11.)
+
+Stav: ROZPRACOVÁNO, vlastník Marek / KIS Codex. Nová větev
+`codex/csc-sportsoft-s4-review-20261107` ve stávajícím čistém izolovaném worktree
+`C:/Users/Marek/Documents/Codex/evidencePavel-csc-sportsoft-s4-20261107`.
+Base: aktuální main `6b1860d5` je předkem #380 / `ad80e3dc`; S1 a čtecí S4
+zůstávají závislostmi. Výslovné zadání: doplnit zbývající S4, pouze syntetika,
+bez deploye, aktivace, portálů a Rikiho.
+
+Plán před implementací:
+
+1. Nová append-only tabulka rozhodnutí po řádku snímku: stav, revize, autor,
+   čas, povinný důvod a hash kontextu bez kopie osobních údajů. Samostatná
+   migrace, rozšíření záloh a syntetické obnovy; žádná DDL z webu.
+2. Oddělený detail a POST pro registráře s CSRF. Akce odložit, nespadá do KIS,
+   znovu otevřít a ověřit po opravě. Poslední akce uspěje pouze při aktuálním
+   jednoznačném `matched`; neposkytuje výjimku z UCI resolveru ani editor karty.
+   Schvalování celého baseline patří do dalšího pilotu, tento řez jej nezapíná.
+3. Serializace na connection → run → aktuální actor → kmenové osoby/vazby;
+   po čekání znovu ověřit oprávnění, revizi, zdroj a hash náhledu. Starý snímek,
+   změněná identita či druhý souběžný zápis vrací konflikt bez částečného auditu.
+   Rozhodnutí platí jen pro konkrétní řádek a nezměněný kontext; nesmí potlačit
+   nový snímek či nově vzniklý konflikt. Výsledek resolveru a stav řešení oddělit.
+4. Přehled zobrazí stav řešení a filtr fronty. Detail zpřístupní celou historii
+   stránkovaně. Audit obsahuje povinný důvod a interní reference; při ověření
+   jednoznačné osoby doplnit referenci do její existující historie.
+5. Registrářský panel ČSC / Sportsoft na kartě osoby: jen přijaté aktuální
+   snímky, čerstvá shoda UCI, více licencí, původ/čas/stáří; bez cizích nebo
+   konfliktních vazeb a bez N+1. Návrhy čekající na kontrolu nejsou data osoby.
+6. Testy: syntetický lifecycle rozhodnutí, stale preview/revision/snapshot,
+   role a CSRF, souběh a revokace při čekání MariaDB, rollback auditu, nový
+   snímek/změna UCI, panel a query budget, backup/restore, HTTP a browser.
+   Průběžně zapsat PASS/FAIL/NOT RUN a předat vlastní draft PR.
+
+Akceptace: panel a celé auditované řešení dostupné registráři, žádné vynucené
+párování, zápisy pouze integračních rozhodnutí/auditu a oprávněné historie
+osoby; kmenové údaje, licence, přihlášky a platby beze změny. Dosud NOT RUN.
+
+### Průběžný výsledek implementace navazujícího S4
+
+Implementace HOTOVÁ LOKÁLNĚ, před push/CI; nejde o nasazenou ani aktivní funkci.
+Panel je v záložce KIS na kartě osoby a načítá se pouze registráři (i při
+přepínání záložek bez reloadu). Obsahuje přijaté licence, členství a přihlášky,
+25 řádků na stránku, původ/čas/stáří a odkaz na audit. Konflikt stejného UCI
+kdekoli ve stejném snímku zabrání zobrazení dotčených řádků. Kalendář závodů
+není údajem osoby. Přehled dostal filtr stavů řešení; detail rozhodnutí je
+samostatná trasa `external_sync_review.php`, historie po 20 událostech.
+
+Nová migrace `20261107230000_external_sync_decisions` přidává devátou vlastněnou
+integrační tabulku. Backup kontrakt `2026-11-07.2` a restore fixture zahrnují
+neprázdné rozhodnutí. S1 kontrakt ani stanice se nemění. Rozhodnutí nevytváří
+identity link a nemění přijatý snímek; `resolved` potvrzuje aktuální výsledek
+S1 resolveru a zapíše referenci do historie osoby. Každý nový pokus (i neúspěšný)
+konzervativně zneplatní dosavadní hash rozhodnutí; nové posouzení je výslovné.
+Zdrojová data ani kmenové údaje se v tomto workflow neopravují. Historické
+snímky jsou pouze ke čtení, nový snímek nepřebírá rozhodnutí předchozího.
+
+- PASS lokálně: S1 + oba S4 integrační testy, skutečné HTTP GET/POST,
+  migrace/backup ownership, registr tras a anonymous policy: **59 testů,
+  3378 assertions, 2 očekávané SQLite skips** (nativní MariaDB lock-wait).
+- PASS HTTP: role/CSRF/array vstupy, nepovolený forced-resolve, 303 po zápisu,
+  409 při replay, escapování důvodu, čtení panelu; GET nemění hash dat.
+- PASS logika: odložit → nespadá → otevřít, oprava UCI → ověřit, audit/ref
+  osoby, duplicitní UCI zneplatní rozhodnutí, rollback při chybě historie,
+  starý snímek, historie 20+3, více licencí a zdroje, návrhy se nezobrazují.
+- PASS budget: panel nejvýše **7 SELECT**, přehled s workflow nejvýše **11**;
+  počet nezávisí na počtu řádků, části se načítají hromadně.
+- PASS style check po mechanickém zalomení dlouhých řádků existující karty.
+  První kontrola backup seznamu odhalila požadavek na jeden název tabulky na
+  řádek; formát opraven a celý výše uvedený testovací výběr prošel.
+- Browser ROZPRACOVÁNO: skutečný lokální formulář uložil syntetické odložení
+  a historii revize 1, 390 px bez horizontálního přetečení. Celá KIS session
+  a portály nejsou v tomto harnessu; bootstrap/session/header jsou testové.
+- MariaDB 10.3/11.4 lock-wait, plný Linux CI a obnova deváté tabulky čekají
+  na PR. Deploy, merge, aktivace, portály a data Rikiho **NOT RUN**.

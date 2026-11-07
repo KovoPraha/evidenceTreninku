@@ -175,6 +175,13 @@ function externalSyncAdminRender(array $overview, ?array $detail, array $input, 
                             <option value="<?= $h($key) ?>" <?= $input['filter'] === $key ? 'selected' : '' ?>><?= $h($label[0]) ?></option>
                         <?php endforeach; ?>
                         </select>
+                    </div>
+                    <div><label for="sync-work" class="form-label">Stav řešení</label>
+                        <select id="sync-work" name="work" class="form-select">
+                        <?php foreach (['all' => 'Všechny stavy'] + externalSyncReviewStates() as $key => $label) : ?>
+                            <option value="<?= $h($key) ?>" <?= $input['work'] === $key ? 'selected' : '' ?>><?= $h($label) ?></option>
+                        <?php endforeach; ?>
+                        </select>
                     </div><button class="btn btn-primary" type="submit">Zobrazit</button>
                 </form>
                 <p>Počet řádků odpovídajících filtru: <?= (int)$projection['selected'] ?>. Stránka <?= (int)$input['page'] ?>, nejvýše 50 řádků.</p>
@@ -188,6 +195,9 @@ function externalSyncAdminRender(array $overview, ?array $detail, array $input, 
                         <p><strong><?= $h($reason[0]) ?></strong> · <?= $h($reason[1]) ?></p>
                         <?php if ($connection['collection'] !== 'sportsoft_events') : ?>
                             <p>UCI ID: <?= $h($match['uci_id'] ?? 'Neplatné nebo neuvedené; původní hodnota je v polích zdroje.') ?></p>
+                            <p>Řešení: <strong><?= $h(externalSyncReviewStates()[$record['review']['state']]) ?></strong>
+                                <?php if ($record['review']['stale']) : ?> · údaje se změnily, vyžaduje nové posouzení<?php endif; ?>
+                                · <a href="external_sync_review.php?<?= $h(http_build_query(['run' => $run['id'], 'ordinal' => $record['ordinal']])) ?>">Řešení a historie</a></p>
                         <?php endif; ?>
                         <?php if ($match['sportovec_id'] !== null) : ?>
                             <p><a href="sportovec_karta.php?id=<?= (int)$match['sportovec_id'] ?>">Karta osoby #<?= (int)$match['sportovec_id'] ?></a></p>

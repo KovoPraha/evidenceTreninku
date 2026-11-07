@@ -331,3 +331,12 @@ Vlastník 7. 11. zadal čtecí přehled synchronizací a nespárovaných záznam
 a přepočítává párování při čtení. Místo rozšíření ingestu či ručního schvalování
 vzniká GET rozhraní v samostatné větvi, aby stanice mohla pokračovat proti S1.
 Žádná změna kontraktu, aktivace, produkční zápis ani přístup k Rikimu.
+
+## D2026-11-07-P15-S4-REVIEW
+
+Podle nového zadání vlastníka doplnit panel osoby a auditovaná řešení S4.
+[Plán](CSC_SPORTSOFT_S4_REGISTRAR.md): rozhodnutí je stav práce registráře,
+nikoli výjimka z identity resolveru. Append-only revize, hash aktuálního
+kontextu, odmítnutí zastaralého formuláře a izolace po řádku snímku brání
+přenosu starého vyloučení na změněné údaje. Panel jen z přijatých snímků.
+Bez zapnutí, deploye, schválení baseline či přístupu k portálům/Rikimu.

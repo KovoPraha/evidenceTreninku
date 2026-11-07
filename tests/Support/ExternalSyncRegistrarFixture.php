@@ -15,6 +15,9 @@ final class ExternalSyncRegistrarFixture
     {
         $migration = require dirname(__DIR__, 2) . '/migrations/20261107210000_external_read_sync.php';
         $migration['up']($pdo);
+        $decisions = require dirname(__DIR__, 2) . '/migrations/20261107230000_external_sync_decisions.php';
+        $decisions['up']($pdo);
+        $pdo->exec('CREATE TABLE sportovec_history(sportovec_id INT,created_by INT,source TEXT,event_type TEXT,title TEXT,detail TEXT,old_json TEXT,new_json TEXT,ref_table TEXT,ref_id INT)');
         $pdo->exec("CREATE TABLE sportovci(id INT PRIMARY KEY,jmeno TEXT,prijmeni TEXT,narozeni TEXT,uciid TEXT);
             INSERT INTO sportovci VALUES(1,'TEST Syntetický','A','2000-01-02','00000000001');
             CREATE TABLE treneri(id INT PRIMARY KEY,aktivni INT);
@@ -77,7 +80,7 @@ final class ExternalSyncRegistrarFixture
         $state = [];
         foreach (['sportovci', 'treneri', 'staff_user_positions', 'external_sync_connections', 'external_sync_devices',
             'external_sync_runs', 'external_sync_parts', 'external_sync_records', 'external_identity_links',
-            'external_sync_reviews', 'external_sync_audit'] as $table) {
+            'external_sync_reviews', 'external_sync_audit', 'external_sync_decisions', 'sportovec_history'] as $table) {
             $rows = $pdo->query('SELECT * FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC);
             $encoded = array_map('externalSyncJson', $rows);
             sort($encoded);

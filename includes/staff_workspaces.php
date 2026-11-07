@@ -576,7 +576,7 @@ function staffRouteOwners(): array
 
     'kis_review_admin.php',
             'sportovci_hromadne.php','sportovec_karta.php','paper_registration_file.php',
-            'medical_clearance_file.php',
+            'medical_clearance_file.php','external_sync_review.php',
         ],
         'program_coordinator' => [
             'club_event_participants_export.php',

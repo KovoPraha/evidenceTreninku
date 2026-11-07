@@ -33,10 +33,13 @@ final class ExternalSyncRegistrarHttpTest extends TestCase
                 }
                 usleep(20000);
             }
-            $request = static function (string $role, string $query = '', string $method = 'GET') use ($address): array {
-                $curl = curl_init('http://' . $address . '/external_sync_admin.php?' . $query);
+            $request = static function (string $role, string $query = '', string $method = 'GET', string $route = 'external_sync_admin.php', ?array $post = null) use ($address): array {
+                $curl = curl_init('http://' . $address . '/' . $route . '?' . $query);
                 curl_setopt_array($curl, [CURLOPT_RETURNTRANSFER => true, CURLOPT_CUSTOMREQUEST => $method,
                     CURLOPT_HTTPHEADER => ['X-Synthetic-Role: ' . $role], CURLOPT_HEADER => true, CURLOPT_TIMEOUT => 20]);
+                if ($post !== null) {
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
+                }
                 $raw = (string)curl_exec($curl);
                 $status = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
                 $size = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
@@ -64,6 +67,39 @@ final class ExternalSyncRegistrarHttpTest extends TestCase
             self::assertSame(400, $request('registrar', 'page[]=1')[0]);
             self::assertSame(404, $request('registrar', 'connection=missing')[0]);
             self::assertSame($before, Fixture::state($sandbox->pdo));
+            $run = (string)$sandbox->pdo->query('SELECT latest_run_id FROM external_sync_connections')->fetchColumn();
+            $context = \externalSyncReviewGet($sandbox->pdo, 7, $run, 2);
+            $query = http_build_query(['run' => $run, 'ordinal' => 2]);
+            $post = ['run' => $run, 'ordinal' => '2', 'revision' => '0', 'basis' => $context['review']['basis_hash'],
+                'state' => 'deferred', 'reason' => 'TEST <script>rozhodnutí</script>', 'csrf_token' => 'SYNTHETIC-CSRF'];
+            foreach (['anonymous', 'family', 'coach', 'nonregistrar', 'inactive'] as $role) {
+                self::assertSame(403, $request($role, $query, 'GET', 'external_sync_review.php')[0]);
+                self::assertSame(403, $request($role, '', 'POST', 'external_sync_review.php', $post)[0]);
+            }
+            [$status, $body] = $request('registrar', $query, 'GET', 'external_sync_review.php');
+            self::assertSame(200, $status, $body);
+            self::assertStringContainsString('SYNTHETIC-CSRF', $body);
+            self::assertStringNotContainsString('<script>alert', $body);
+            self::assertSame(403, $request('registrar', '', 'POST', 'external_sync_review.php', array_replace($post, ['csrf_token' => 'wrong']))[0]);
+            self::assertSame(422, $request('registrar', '', 'POST', 'external_sync_review.php', array_replace($post, ['reason' => ['array']]))[0]);
+            self::assertSame(409, $request('registrar', '', 'POST', 'external_sync_review.php', array_replace($post, ['state' => 'resolved']))[0]);
+            self::assertSame(405, $request('registrar', $query, 'DELETE', 'external_sync_review.php')[0]);
+            self::assertSame($before, Fixture::state($sandbox->pdo));
+            [$status, $body, $headers] = $request('registrar', '', 'POST', 'external_sync_review.php', $post);
+            self::assertSame(303, $status, $body);
+            self::assertStringContainsString('Location: external_sync_review.php?', $headers);
+            $after = Fixture::state($sandbox->pdo);
+            self::assertNotSame($before, $after);
+            self::assertSame(409, $request('registrar', '', 'POST', 'external_sync_review.php', $post)[0]);
+            [$status, $body] = $request('registrar', $query, 'GET', 'external_sync_review.php');
+            self::assertSame(200, $status, $body);
+            self::assertStringContainsString('TEST &lt;script&gt;rozhodnutí&lt;/script&gt;', $body);
+            self::assertStringContainsString('Revize 1', $body);
+            self::assertStringNotContainsString('<script>rozhodnutí', $body);
+            [$status, $body] = $request('registrar', '', 'GET', 'panel.php');
+            self::assertSame(200, $status, $body);
+            self::assertStringContainsString('sync-person-record', $body);
+            self::assertSame($after, Fixture::state($sandbox->pdo));
             $sandbox->pdo->exec('DELETE FROM staff_user_positions WHERE trainer_id=7');
             self::assertSame(403, $request('registrar')[0]);
             $sandbox->pdo->exec("INSERT INTO staff_user_positions VALUES(7,'registrar'); DROP TABLE external_sync_records");

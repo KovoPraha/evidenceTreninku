@@ -29,8 +29,21 @@ final class ExternalSyncRegistrarSandbox
         }
         ExternalSyncRegistrarFixture::ingest($this->pdo, $token, $rows);
         copy($root . '/external_sync_admin.php', $this->directory . '/external_sync_admin.php');
+        copy($root . '/external_sync_review.php', $this->directory . '/external_sync_review.php');
+        copy($root . '/csrf_helper.php', $this->directory . '/csrf_helper.php');
+        $panelCode = <<<'PHP'
+<?php
+require __DIR__ . '/includes/session_security.php';
+app_session_start();
+require __DIR__ . '/includes/init.php';
+require_once PANEL_MODULE;
+echo '<!doctype html><meta name="viewport" content="width=device-width, initial-scale=1"><link href="assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet"><main class="container py-4">';
+externalSyncPersonPanelRender(externalSyncPersonPanel($pdo, 7, 1));
+echo '</main>';
+PHP;
+        file_put_contents($this->directory . '/panel.php', str_replace('PANEL_MODULE', var_export($root . '/includes/external_sync_person_panel.php', true), $panelCode));
         copy($root . '/assets/vendor/bootstrap/bootstrap.min.css', $this->directory . '/assets/vendor/bootstrap/bootstrap.min.css');
-        foreach (['external_sync_admin_read.php', 'external_sync_admin_view.php'] as $name) {
+        foreach (['external_sync_admin_read.php', 'external_sync_admin_view.php', 'external_sync_review_view.php'] as $name) {
             file_put_contents($this->directory . '/includes/' . $name, '<?php require_once ' . var_export($root . '/includes/' . $name, true) . ';');
         }
         // No real session, browser profile, config or application database is read.
@@ -38,7 +51,7 @@ final class ExternalSyncRegistrarSandbox
 <?php
 function app_session_start(): void {
     $role = $_SERVER['HTTP_X_SYNTHETIC_ROLE'] ?? ($_COOKIE['synthetic_role'] ?? ($_GET['synthetic_role'] ?? 'anonymous'));
-    $_SESSION = [];
+    $_SESSION = ['csrf_token' => 'SYNTHETIC-CSRF'];
     if ($role === 'family') { $_SESSION['verejny_uzivatel_id'] = 1; }
     if (in_array($role, ['registrar', 'coach', 'inactive', 'nonregistrar'], true)) {
         $_SESSION['trener_id'] = $role === 'inactive' ? 9 : ($role === 'nonregistrar' ? 8 : 7);
@@ -49,7 +62,8 @@ function app_session_start(): void {
 PHP);
         $bootstrap = '<?php require_once ' . var_export($root . '/includes/staff_workspaces.php', true) . ';'
             . '$pdo=new PDO(' . var_export('sqlite:' . $this->directory . '/synthetic.sqlite', true)
-            . ',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]); $pdo->exec("PRAGMA query_only=ON");';
+            . ',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);'
+            . 'if (($_SERVER["REQUEST_METHOD"] ?? "GET") !== "POST") { $pdo->exec("PRAGMA query_only=ON"); }';
         file_put_contents($this->directory . '/includes/init.php', $bootstrap);
         file_put_contents($this->directory . '/hlavicka.php', '<header class="container pt-3">KIS · TEST · syntetická data</header>');
     }
@@ -57,7 +71,8 @@ PHP);
     public function cleanup(): void
     {
         // Exact files created here; never recurse into an application directory.
-        foreach (['external_sync_admin.php', 'includes/external_sync_admin_read.php', 'includes/external_sync_admin_view.php',
+        foreach (['external_sync_review.php', 'csrf_helper.php', 'panel.php', 'includes/external_sync_review_view.php', 'external_sync_admin.php',
+            'includes/external_sync_admin_read.php', 'includes/external_sync_admin_view.php',
             'includes/session_security.php', 'includes/init.php', 'hlavicka.php', 'server.log',
             'assets/vendor/bootstrap/bootstrap.min.css'] as $file) {
             if (is_file($this->directory . '/' . $file)) {
