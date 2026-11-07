@@ -169,16 +169,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $success = (string)($_SESSION['flash_shop'] ?? '');
 unset($_SESSION['flash_shop']);
+require_once dirname(__DIR__) . '/includes/shop_member_pricing_read.php';
+$catalogProducts = shopPublicCatalogCards($pdo);
+if ($isLoggedIn) {
+    $catalogProducts = shopMemberPricesApplyToCatalog($pdo, $accountId, $catalogProducts);
+}
 $products = [];
-foreach (shopPublicCatalogCards($pdo) as $product) {
-    if ($isLoggedIn) {
-        foreach ($product['variants'] as &$variant) {
-            if (!isset($variant['monthly_tariff_id'])) {
-                shopMemberPriceApplyToItem($pdo, $accountId, $variant);
-            }
-        }
-        unset($variant);
-    }
+foreach ($catalogProducts as $product) {
     $product['has_member_price'] = count(array_filter($product['variants'], static fn (array $variant): bool => ($variant['member_price']['is_member_price']
     ?? false) === true)) > 0;
 
@@ -190,6 +187,7 @@ foreach (shopPublicCatalogCards($pdo) as $product) {
 
     $products[] = $product;
 }
+unset($catalogProducts);
 $activeCatalogCount = count($products);
 $allProducts = $products;
 $categoryNodes = shopCategoryNodes($pdo);

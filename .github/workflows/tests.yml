@@ -182,6 +182,25 @@ jobs:
       - name: Ověřit katalogové karty bez opakovaných dotazů
         run: php tests/Support/CatalogCardsMariaDbSmoke.php
 
+      - name: Ověřit dávkové klubové ceny, kolace a nezměněné transakční čtení
+        run: php tests/Support/MemberPricingReadMariaDbSmoke.php > member-pricing-parity.json
+
+      - name: Změřit původní a dávkové čtení klubových cen na stejných datech
+        env:
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: php tests/Support/MemberPricingReadProfile.php --mariadb > member-pricing-comparison.json
+
+      - name: Uchovat shodu a párové měření klubových cen
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: member-pricing-read-${{ matrix.mariadb-version }}
+          path: |
+            member-pricing-parity.json
+            member-pricing-comparison.json
+          retention-days: 14
+
       - name: Ověřit dávkové podmínky, kolace a čerstvé zamykající čtení
         run: php tests/Support/ProgramTermsBatchMariaDbSmoke.php
 

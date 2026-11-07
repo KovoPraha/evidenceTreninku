@@ -22,11 +22,11 @@ shodné. Checkout a zápisové služby zachovají původní samostatné čtení.
 | Etapa | Stav | Podmínka dokončení |
 | --- | --- | --- |
 | A: aktuální zdroje a izolace | HOTOVO | Čerstvý main, instrukce přečtené, WIP otisk zapsaný. Původní analýza přenesena do této větve jako historický podklad. |
-| B: původní algoritmus a měřicí data | PROBÍHÁ | Zmrazit původní cenu, připravit stejné syntetické scénáře před/po a oddělenou SQL instrumentaci. |
-| C: dávkový čtecí reader | PLÁN | Načíst společné soupisky/pravidla v rámci jednoho volání, omezit SQL dávkami; žádná cache oprávnění mezi voláními. |
-| D: shoda chování | PLÁN | Celé varianty včetně typů, zdrojových popisků a ceny shodné; platnost vazeb/členství, remízy, zaokrouhlení, měny, kolace a tarify. |
-| E: měření přínosu | PLÁN | Stejná data a proces/metoda pro obě cesty; 12/100/500 variant, více produktů i opakované varianty. SQL, řádky, čas, paměť. |
-| F: regrese a předání | PLÁN | Cílené a přiměřené úplné testy, MariaDB, styl/PHPStan, odkazy a dokumentace; uložit výsledky, commit/PR bez produkčního deploye. |
+| B: původní algoritmus a měřicí data | HOTOVO | Zmrazený původní algoritmus a katalogový loop v tests/Support/MemberPricingReadBaseline.php; společná syntetická fixture a střídavý měřič. |
+| C: dávkový čtecí reader | IMPLEMENTOVÁNO | Reader bez statické datové cache, společné soupisky, dávkové ceny/kategorie a sdílená pravidla. Zapojený katalog/detail; transakce stále původní cestou. |
+| D: shoda chování | PROBÍHÁ | Prvních 19 testů / 239 assertions PASS: celé varianty, vazby/členství, remízy, měny, tarify, dávky a přesná transakční SQL cesta. MariaDB kolace dosud NOT RUN. |
+| E: měření přínosu | PROBÍHÁ | Měřič připravený, 12/100/500 variant jednoho či více produktů a tři negativní účty; 5 warmup / 30 střídavých vzorků, samostatné SQL/řádky/paměť. |
+| F: regrese a předání | PROBÍHÁ | Cílené testy PASS; běží styl/PHPStan, připravuje se vlastní izolovaná MariaDB. Úplné testy a finální dokumentace zbývají. |
 
 ## Návrh a přejímací podmínky
 

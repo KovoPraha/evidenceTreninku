@@ -650,12 +650,6 @@ parameters:
 			path: booking/produkt.php
 
 		-
-			message: '#^Strict comparison using \!\=\= between non\-empty\-list and array\{\} will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 1
-			path: booking/produkt.php
-
-		-
 			message: '#^Ternary operator condition is always true\.$#'
 			identifier: ternary.alwaysTrue
 			count: 3
