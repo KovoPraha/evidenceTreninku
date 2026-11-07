@@ -1,0 +1,142 @@
+{
+    "complete": true,
+    "before_source_sha": "84f5c7a270d2bcedd9c1bd6c627f485d4ade7c6a",
+    "after_source_sha": "d96fa34e226830bff1eeb8fddc4dec1ee49a6dbd",
+    "server": {
+        "version": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+        "port": 3306
+    },
+    "php": "8.2.35",
+    "domain_results_equal": true,
+    "html_lf_equal": true,
+    "timing_samples_per_phase": 180,
+    "sql_samples_per_phase": 6,
+    "cases": [
+        {
+            "weeks": 1,
+            "role": "coach",
+            "before": {
+                "sql": 112,
+                "rows": 415,
+                "median_ms": 17.212501500000002,
+                "p95_ms": 18.4857,
+                "peak_increment_bytes": 389192
+            },
+            "after": {
+                "sql": 28,
+                "rows": 97,
+                "median_ms": 5.389680500000001,
+                "p95_ms": 5.983555,
+                "peak_increment_bytes": 388424
+            },
+            "sql_reduction_percent": 75,
+            "row_reduction_percent": 76.63,
+            "median_speedup": 3.19
+        },
+        {
+            "weeks": 1,
+            "role": "sports_lead",
+            "before": {
+                "sql": 203,
+                "rows": 784,
+                "median_ms": 30.066626499999998,
+                "p95_ms": 43.674934,
+                "peak_increment_bytes": 467776
+            },
+            "after": {
+                "sql": 28,
+                "rows": 125,
+                "median_ms": 5.557302,
+                "p95_ms": 8.598542,
+                "peak_increment_bytes": 423896
+            },
+            "sql_reduction_percent": 86.21,
+            "row_reduction_percent": 84.06,
+            "median_speedup": 5.41
+        },
+        {
+            "weeks": 12,
+            "role": "coach",
+            "before": {
+                "sql": 112,
+                "rows": 492,
+                "median_ms": 17.572917500000003,
+                "p95_ms": 18.781543,
+                "peak_increment_bytes": 392304
+            },
+            "after": {
+                "sql": 28,
+                "rows": 97,
+                "median_ms": 5.3931059999999995,
+                "p95_ms": 5.741765,
+                "peak_increment_bytes": 388424
+            },
+            "sql_reduction_percent": 75,
+            "row_reduction_percent": 80.28,
+            "median_speedup": 3.26
+        },
+        {
+            "weeks": 12,
+            "role": "sports_lead",
+            "before": {
+                "sql": 203,
+                "rows": 938,
+                "median_ms": 31.246223999999998,
+                "p95_ms": 33.781868,
+                "peak_increment_bytes": 543856
+            },
+            "after": {
+                "sql": 28,
+                "rows": 125,
+                "median_ms": 5.5705235,
+                "p95_ms": 6.096428,
+                "peak_increment_bytes": 423896
+            },
+            "sql_reduction_percent": 86.21,
+            "row_reduction_percent": 86.67,
+            "median_speedup": 5.61
+        },
+        {
+            "weeks": 52,
+            "role": "coach",
+            "before": {
+                "sql": 112,
+                "rows": 772,
+                "median_ms": 18.031276,
+                "p95_ms": 18.821708,
+                "peak_increment_bytes": 527408
+            },
+            "after": {
+                "sql": 28,
+                "rows": 97,
+                "median_ms": 5.340922,
+                "p95_ms": 5.554029,
+                "peak_increment_bytes": 388424
+            },
+            "sql_reduction_percent": 75,
+            "row_reduction_percent": 87.44,
+            "median_speedup": 3.38
+        },
+        {
+            "weeks": 52,
+            "role": "sports_lead",
+            "before": {
+                "sql": 203,
+                "rows": 1498,
+                "median_ms": 30.7783565,
+                "p95_ms": 35.975979,
+                "peak_increment_bytes": 802800
+            },
+            "after": {
+                "sql": 28,
+                "rows": 125,
+                "median_ms": 5.873209,
+                "p95_ms": 6.56268,
+                "peak_increment_bytes": 423896
+            },
+            "sql_reduction_percent": 86.21,
+            "row_reduction_percent": 91.66,
+            "median_speedup": 5.24
+        }
+    ]
+}

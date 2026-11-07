@@ -7,7 +7,7 @@ závisí i na předchozím R05 seedu: před změnou `choices=0`, po `choices=2`.
 Liší se proto i HTML a šest souvisejících dotazů. Nejde o doklad změněného
 chování aplikace ani platné srovnávací časy; komparátor správně odmítl oba výstupy.
 
-Samostatná parita validátoru na MariaDB 11.4 již PASS: 84 případů, čerstvost
+Samostatná parita validátoru na MariaDB 10.3/11.4 již PASS: 84 případů, čerstvost
 dat/oprávnění, shodné transakční SQL včetně zámků a úklid. To samo nenahrazuje
 plnou datovou/HTML paritu GET.
 
@@ -27,3 +27,11 @@ interval**, nikoli maskování časů ve výsledném HTML nebo změnu aplikace.
 Původní měřič se od `89edfdbe` liší pouze tímto doplněním v seedu; aktuální
 navíc zaznamenává otisky dvou služeb. Měřená těla i všechny ostatní seedovací
 kroky jsou zachované. Samostatné původní časy s odlišnými vstupy se nepoužijí.
+
+
+[Strojový doklad prvního odmítnutého porovnání](calibration-42351458564.json).
+[Druhý běh 42351925475](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42351925475)
+po opravě pořadí již má celá doménová data shodná, HTML stále odlišné;
+[doklad MariaDB 11.4](calibration-42351925475.json). Je rovněž vyřazený
+z platných srovnávacích výsledků. Aplikační změna `b98961ae` se při těchto
+kalibracích neupravovala, měnily se pouze testovací vstupy/orchestrace.

@@ -1,0 +1,103 @@
+{
+    "complete": true,
+    "synthetic_only": true,
+    "server": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+    "fixture_watches": 431,
+    "fixture_people": 57,
+    "parity_cases": 36,
+    "lookup_all_people": true,
+    "page_read": [
+        {
+            "sql": "SELECT COUNT(*) FROM medical_clearance_watches w JOIN sportovci s ON s.id=w.sportovec_id WHERE 1=1",
+            "parameters": [],
+            "execute_ms": 0.057237,
+            "fetch_ms": 0.001302,
+            "fetched_rows": 1
+        },
+        {
+            "sql": "SELECT w.*,s.jmeno,s.prijmeni FROM medical_clearance_watches w JOIN sportovci s ON s.id=w.sportovec_id WHERE 1=1 ORDER BY w.next_review_on,w.id LIMIT 25 OFFSET 0",
+            "parameters": [],
+            "execute_ms": 0.060682,
+            "fetch_ms": 0.009575,
+            "fetched_rows": 25
+        },
+        {
+            "sql": "SELECT id,watch_id,state,issued_on,valid_until,replaces_id\n        FROM medical_clearance_records WHERE watch_id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY id DESC",
+            "parameters": [
+                4,
+                8,
+                12,
+                16,
+                20,
+                24,
+                28,
+                32,
+                36,
+                40,
+                44,
+                48,
+                52,
+                56,
+                60,
+                64,
+                68,
+                72,
+                76,
+                80,
+                84,
+                88,
+                92,
+                96,
+                100
+            ],
+            "execute_ms": 0.064167,
+            "fetch_ms": 0.011851000000000002,
+            "fetched_rows": 37
+        }
+    ],
+    "buffering_restored": true,
+    "state_read": [
+        {
+            "sql": "SELECT w.id,r.id AS medical_record_id,r.state AS medical_record_state,r.issued_on AS medical_record_issued_on,r.valid_until AS medical_record_valid_until,r.replaces_id AS medical_record_replaces_id FROM medical_clearance_watches w JOIN sportovci s ON s.id=w.sportovec_id LEFT JOIN medical_clearance_records r ON r.watch_id=w.id WHERE 1=1 ORDER BY w.next_review_on,w.id,r.id DESC",
+            "parameters": [],
+            "execute_ms": 0.05973,
+            "fetch_ms": 0.26628500000000066,
+            "fetched_rows": 676
+        },
+        {
+            "sql": "SELECT w.*,s.jmeno,s.prijmeni FROM medical_clearance_watches w JOIN sportovci s ON s.id=w.sportovec_id\n            WHERE w.id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY w.next_review_on,w.id",
+            "parameters": [
+                12,
+                16,
+                24,
+                40,
+                44,
+                52,
+                68,
+                72,
+                80,
+                96,
+                100,
+                108,
+                124,
+                128,
+                136,
+                152,
+                156,
+                164,
+                180,
+                184,
+                192,
+                208,
+                212,
+                220,
+                236
+            ],
+            "execute_ms": 0.061883,
+            "fetch_ms": 0.008082,
+            "fetched_rows": 25
+        }
+    ],
+    "read_only_session": true,
+    "schema_removed": true
+}
