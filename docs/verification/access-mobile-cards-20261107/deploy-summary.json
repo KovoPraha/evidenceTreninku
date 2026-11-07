@@ -1,0 +1,27 @@
+{
+  "run_id": 42365946802,
+  "sha": "3b37e0537f50f7064ae2d8a84b5a1daee4af50aa",
+  "conclusion": "success",
+  "implementation_pr": 361,
+  "tested_head": "00b6292d239872ce6a6a28987bfbd02d1eee95c8",
+  "ci_checks_passed": 11,
+  "tests": 2344,
+  "assertions": 43433,
+  "uat_approved": false,
+  "import_rosters": false,
+  "backup": {
+    "verified": true,
+    "backup": "evidence_2026-11-07_105649_0708d904.sql.gz",
+    "tables": 389,
+    "triggers": 2,
+    "restore_of_this_generation": "NOT RUN"
+  },
+  "pending_migrations": [],
+  "existing_variable_symbols_unchanged": true,
+  "http": {
+    "code": 200,
+    "verified_from": "production server",
+    "github_runner": "TCP timeout"
+  },
+  "new_cards_visual_acceptance": "NOT RUN: Computer Use connection unavailable"
+}

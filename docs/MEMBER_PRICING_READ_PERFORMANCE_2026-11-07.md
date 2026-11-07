@@ -67,3 +67,11 @@ Budoucí etapy: samostatný katalogový výřez, přihlášené celé HTTP/boots
 browser metriky a širší profil podle [komplexního plánu](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md).
 Začlenění, nasazení a provozní přejímka jsou samostatné skutečnosti;
 aktuální produkci určuje pouze [CURRENT_STATE](CURRENT_STATE.md).
+
+## Následné schválené společné vydání 7. 11.
+
+Vlastník později výslovně schválil nasazení cen #358 společně s mobilními
+kartami ROLE01-MOB. Deploy 42365946802 SUCCESS / `3b37e053`;
+[důkazy a hranice vydání](verification/access-mobile-cards-20261107/RESULTS.md).
+Tím se původní rozsah bez deploye mění pouze pro toto konkrétní vydání;
+navazující výkonnostní měření celého katalogu se tím neuzavírá.
