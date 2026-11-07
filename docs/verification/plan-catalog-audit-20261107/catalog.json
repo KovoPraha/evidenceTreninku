@@ -86,12 +86,14 @@
       "title": "Přehled lidí, rolí a přístupů",
       "primary": true,
       "role": "plan",
-      "status": "DONE",
+      "status": "PARTIAL",
       "registry": "ROLE01",
-      "disposition": "Implementace #356 i produkční vydání a technická přejímka #359 dokončené: formuláře 16/16 PASS, původní role zachované, nové testovací účty deaktivované. Vizuální produkční Chrome UAT se tím netvrdí.",
+      "disposition": "Původní ROLE01 nasazené a technicky převzaté #359, čtecí vizuální kontrola doložená #361. Navazující mobilní karty implementované/sloučené jako 3b37e053, následný deploy a nový Chrome ještě nedoložené.",
       "evidence": [
         "docs/verification/access-release-20261107/RESULTS.md",
-        "docs/DECISION_LOG.md"
+        "docs/verification/access-visual-20261107/RESULTS.md",
+        "docs/verification/access-mobile-cards-20261107/RESULTS.md",
+        "docs/WORK_PLAN_CURRENT.md"
       ]
     },
     {
@@ -3718,6 +3720,22 @@
       ]
     },
     {
+      "id": "PL-db3d5af899",
+      "path": "docs/verification/access-mobile-cards-20261107/RESULTS.md",
+      "title": "ROLE01-MOB — mobilní karty lidí a přístupů",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "ROLE01",
+      "disposition": "Vizuální čtecí kontrola původního přehledu dokončená. Mobilní karty nově implementované a sloučené #361 (3b37e053), bez doloženého následného deploye/Chrome přejímky. Původní role zachované.",
+      "evidence": [
+        "docs/ACCESS_OVERVIEW_2026-11-07.md",
+        "docs/verification/access-mobile-cards-20261107/RESULTS.md",
+        "docs/verification/access-visual-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
+      ]
+    },
+    {
       "id": "PL-562808a802",
       "path": "docs/verification/access-overview-20261107/RESULTS.md",
       "title": "Lidé a přístupy — místní ověření 7. 11. 2026",
@@ -3739,6 +3757,22 @@
       "disposition": "Doložený výsledek vydání a 16 skutečných formulářových kontrol; nejde o další plán.",
       "evidence": [
         "docs/ACCESS_OVERVIEW_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-dc759ee338",
+      "path": "docs/verification/access-visual-20261107/RESULTS.md",
+      "title": "ROLE01-VIS — vizuální produkční kontrola",
+      "primary": false,
+      "role": "evidence",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "ROLE01",
+      "disposition": "Vizuální čtecí kontrola původního přehledu dokončená. Mobilní karty nově implementované a sloučené #361 (3b37e053), bez doloženého následného deploye/Chrome přejímky. Původní role zachované.",
+      "evidence": [
+        "docs/ACCESS_OVERVIEW_2026-11-07.md",
+        "docs/verification/access-mobile-cards-20261107/RESULTS.md",
+        "docs/verification/access-visual-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
       ]
     },
     {
@@ -9236,7 +9270,7 @@
       "evidence": []
     }
   ],
-  "checked_main": "75374564",
+  "checked_main": "3b37e053",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
   "binary_documents": 21
 }

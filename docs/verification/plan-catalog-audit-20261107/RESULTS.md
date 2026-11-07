@@ -14,9 +14,9 @@ Výchozí main `1d88ce9e`; pouze dokumentace, bez provozních operací.
 - Při práci přibyl main `ebb8b2e3` / #356. Oba nové dokumenty ROLE01 jsou
   [doinventarizované](inventory-merged-main.json); rozhodnutí D2026-11-07-02,
   událost ROLE01 a její schválené provozní hranice zachované.
-- [Katalog](../../PLAN_CATALOG.md) má 323 hlavních záznamů: 239 plánovacích
+- [Katalog](../../PLAN_CATALOG.md) má 324 hlavních záznamů: 240 plánovacích
   podkladů/dispozic a 84 referencí. [Úplný index](../../PLAN_DOCUMENT_INDEX.md)
-  eviduje 764 souborů (743 textových a 21 binárních) včetně všech původních, nových a zachráněných podkladů.
+  eviduje 766 souborů (745 textových a 21 binárních) včetně všech původních, nových a zachráněných podkladů.
 - 18 podrobných textů etap 0–6/R01–R44 bylo pouze v lokálním output.
   Jsou sdílené jako [historická specifikace](../../plans/realization-20261022/README.md).
   Původní soubory nebyly měněny. Přenos má historické záhlaví, opravené relativní
@@ -96,3 +96,8 @@ pozdější důkaz stále nahradil stav správně. Finanční worker ani hosting
 Převzaté výsledkové #362 / `75374564`: nasazení 9460ee76 a aktivace pověření 1
 doložené, přirozený minutový tick bez chyb. Katalog, CURRENT, handoff a registr
 odlišují hotový provozní krok od nedoložené skutečné banky a externího doručení PDF.
+
+
+Převzaté #361 / `3b37e053`: dvě nové textové přílohy, původní čtecí vizuální
+přejímka a implementované mobilní karty. Karty jsou v main, jejich následný
+deploy a nový Chrome nejsou tímto doložené. ROLE01 má tuto návaznost znovu otevřenou.

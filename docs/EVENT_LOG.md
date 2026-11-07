@@ -9,7 +9,10 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
-| 7. 11. 2026 / E2026-11-07-15 | DOC02: úplný katalog plánů a opravy stavů | Inventura, záchrana 18 lokálních textových plánů/příloh a registr C01–C04; obsah a místní ověření hotové; [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360), stav CI/merge u PR, bez provozních změn | [Audit](PLAN_CATALOG_AUDIT_2026-11-07.md), [katalog](PLAN_CATALOG.md), [výsledky](verification/plan-catalog-audit-20261107/RESULTS.md) |
+| 7. 11. 2026 / E2026-11-07-18 | DOC02: úplný katalog plánů a opravy stavů | Inventura, záchrana 18 lokálních textových plánů/příloh a registr C01–C04; obsah a místní ověření hotové; [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360), stav CI/merge u PR, bez provozních změn | [Audit](PLAN_CATALOG_AUDIT_2026-11-07.md), [katalog](PLAN_CATALOG.md), [výsledky](verification/plan-catalog-audit-20261107/RESULTS.md) |
+| 7. 11. 2026 / E2026-11-07-17 | ROLE01-MOB: vlastník schválil mobilní karty, nasazení a nové vizuální ověření | ROZPRACOVÁNO, jen prezentační změna; žádná změna produkčních rolí | [Plán](ACCESS_OVERVIEW_2026-11-07.md), pokračuje vlastní PR #361 |
+| 7. 11. 2026 / E2026-11-07-16 | ROLE01-VIS: skutečný přihlášený Chrome průchod dokončen | Desktop přehledný; mobil 390/360 px s výhradou široké tabulky. Posun a otevření čitelného editoru PASS. Role, účty ani vydání se neměnily. | [Vizuální výsledek](verification/access-visual-20261107/RESULTS.md), [plán](ACCESS_OVERVIEW_2026-11-07.md); dokumentační větev `codex/access-visual-uat-20261107` |
+| 7. 11. 2026 / E2026-11-07-15 | ROLE01-VIS: vlastník požádal o skutečný vizuální desktop/mobilní průchod | ROZPRACOVÁNO, jen filtry a otevření editoru; žádné změny rolí či stavu účtů, žádný nový účet | [Plán](ACCESS_OVERVIEW_2026-11-07.md), větev `codex/access-visual-uat-20261107` |
 | 7. 11. 2026 / E2026-11-07-14 | P07 N1/N2: nasazení a aktivace HOTOVO | #355 / `9460ee76`, deploy 42362258878 SUCCESS; pověření 1 zapnuté, přirozený tick 10:13:03 UTC bez chyb. Skutečná banka a externí schránka neověřené. | [Protokol](verification/shop-document-automation-20261107/RESULTS.md), [plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md), [rozhodnutí](DECISION_LOG.md#d2026-11-07-03) |
 | 7. 11. 2026 / E2026-11-07-13 | P11: celé HTTP/browser na feb8fe8c dokončené | 65 případů / 930 HTTP vzorků, 403 browser pozorování; role, filtry, revokace a nezměněná data PASS. Náš deploy neproveden. Dále R06 výběr osob a lekce; novější main nepřeměřen. | [Výsledky](verification/full-http-performance-20261107/RESULTS.md), [předání / větev a PR](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md), [rozhodnutí](DECISION_LOG.md#d2026-11-07-05) |
 | 7. 11. 2026 / E2026-11-07-12 | P11 ceny: vlastník povolil sloučení #358 a návaznou optimalizaci katalogu | Před merge převzatý nový produkční handoff #359; cenový kód nezměněný. Po CI sloučit bez deploye, katalog v samostatné větvi. | [Plán cen](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358) |
@@ -44,3 +47,9 @@ Při převzetí již sloučeného ROLE01 #359 jsou kolidující pracovní ID zav
 ve společném deníku jako 08/09/10; původní commitové doklady zůstávají zachované.
 
 Při převzetí #355 je přijaté P07 ID 08 a rozhodnutí 03 zachováno; pracovní cenové události jsou nyní 09–12 a rozhodnutí 04.
+
+Při převzetí #358 jsou pracovní ROLE01-VIS/MOB události z PR #361 přiděleny jako 13–15; přijatá cenová ID 09–12 zachována.
+
+Po převzetí #363 jsou pracovní ROLE01-VIS/MOB události 14–16; přijaté P11 ID 13 zachováno. Vlastník následně výslovně schválil společné nasazení karet i cen #358.
+
+Po převzetí #362 jsou pracovní ROLE01-VIS/MOB události 15–17; přijaté P07 ID 14 zachováno.

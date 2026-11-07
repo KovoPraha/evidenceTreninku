@@ -1,5 +1,11 @@
 # Přehled lidí, rolí a přístupů
 
+> Aktualizace katalogu 7. 11. 2026: #361 sloučené jako `3b37e053`.
+> Původní přehled a čtecí vizuální kontrola dokončené; navazující mobilní
+> karty jsou implementované v main. Jejich následný deploy a nový produkční
+> Chrome průchod zůstávají nedoložené, viz registr ROLE01-MOB.
+
+
 ID ROLE01; vlastník: vývoj a vlastník aplikace. **HOTOVO: implementace, nasazení
 a technická produkční přejímka 16/16.** [Rozhodnutí](DECISION_LOG.md#d2026-11-07-02).
 
@@ -33,6 +39,39 @@ k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
   trenérské soukromé rozsahy zůstávají samostatnou správou.
 
 ## Schválené produkční ověření
+
+### Mobilní karty ROLE01-MOB
+
+7. 11. vlastník výslovně schválil úpravu mobilního přehledu na karty, merge,
+nasazení a nové vizuální ověření. **ROZPRACOVÁNO**, vývoj; pokračuje vlastní větev
+`codex/access-visual-uat-20261107`, stejný worktree, základ main `9460ee76`.
+Dosavadní dokumentační PR #361 se rozšiřuje o tuto implementaci.
+Mobil pod 768 px: jedna karta na člověka, celé jméno/kontakt, stav, skupiny rolí,
+výchozí role, superadmin a samostatný grant spotřeby; tlačítko úpravy po ruce.
+Desktop zachová tabulku. Obě varianty čtou stejný filtrovaný seznam; bez změny
+autorizace, ukládání, schématu či přiřazení. Varianta pouhého fixování jména
+neřeší zalamování štítků, proto samostatné mobilní karty.
+Akceptace: 390/360 px bez vodorovného posunu, jméno a role pohromadě, filtry,
+prázdný výsledek a otevření editoru; desktop bez regrese. Produkční kontrola
+jen GET, žádné uložení, aktivace, grant ani nový účet. Další krok: implementace,
+cílená regrese, CI a merge, standardní deploy bez importu, vizuální Chrome.
+Výsledky a vydání budou odděleně doložené v navazujícím protokolu.
+
+### Navazující vizuální kontrola ROLE01-VIS
+
+7. 11. vlastník výslovně požádal znovu otevřít produkci v prohlížeči a ověřit
+přehlednost a mobilní použitelnost. **HOTOVO s výhradou čitelnosti mobilní tabulky**, větev
+`codex/access-visual-uat-20261107`, stejný samostatný worktree; základ `5cca5526`.
+Rozsah jen čtením: desktop, mobilní šířky 390/360 px, filtry GET, posun tabulky
+a otevření editoru. Žádné uložení, aktivace, grant, přepnutí pracovní role ani
+nový testovací účet. Snímky s osobními údaji zůstanou mimo Git; do protokolu
+patří bezpečný souhrn. [Výsledek skutečného Chrome průchodu](verification/access-visual-20261107/RESULTS.md):
+desktop přehledný, mobil 390/360 px s bočním posunem, editor čitelný.
+Filtr Bar 6/48, hledání neaktivního technického účtu 1/48, posun i otevření editoru PASS.
+Role ani stav účtů se neměnily. Mobilní karty jsou pouze doporučená další úprava;
+aplikační kód ani produkční vydání tento průchod nemění.
+
+### Původní technická přejímka před navazujícím vizuálním průchodem
 
 Browser Computer Use se zastavil, protože nedokázal ověřit aktuální URL.
 Původní browser úkon se neopakuje. Produkční ověření proto provede chráněný

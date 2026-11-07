@@ -7,10 +7,11 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
+- ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
+  Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.
+  Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); sloučené `3b37e053`; dále schválený deploy a nový Chrome.
+
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
-  #356 nasazeno jako `ebb8b2e3`; formuláře 16/16 PASS, původních 46 účtů beze změny.
-  Oba nové testovací účty deaktivované a bez rolí. Žádný další deploy ani opakování testu není potřeba.
-  Výsledkové předání: `codex/access-release-20261107`, stejný vlastní worktree jako implementace.
 
 - DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [audit](PLAN_CATALOG_AUDIT_2026-11-07.md), [úplný katalog](PLAN_CATALOG.md); koncepty C01–C04 v registru.
 

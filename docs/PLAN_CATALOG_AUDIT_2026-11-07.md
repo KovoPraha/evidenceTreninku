@@ -41,8 +41,8 @@ Původních 695 textových dokumentů bylo inventarizováno; při souběžném m
 #356 do `ebb8b2e3` přibyly dva dokumenty ROLE01, které audit rovněž převzal.
 18 dosud lokálních plánů/příloh etap 0–6 je nyní sdílených jako historický
 podklad v `docs/plans/realization-20261022/`, bez provozních dat či JSON zdroje.
-Celkem 764 indexovaných souborů (743 textových a 21 binárních); 323 hlavních záznamů zahrnuje
-239 plánovacích podkladů/dispozic a 84 referencí. Nejde o 239 nově schválených úkolů.
+Celkem 766 indexovaných souborů (745 textových a 21 binárních); 324 hlavních záznamů zahrnuje
+240 plánovacích podkladů/dispozic a 84 referencí. Nejde o 240 nově schválených úkolů.
 Místní kontroly PASS; předání [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360). Konečný head a skutečný stav CI/sloučení určuje PR; další dokumentační deploy není potřeba.
 
 
@@ -65,3 +65,8 @@ měřený starší `feb8fe8c` není vydávaný za nové měření main ani produ
 Převzaté výsledkové #362 / `75374564`: nasazení 9460ee76 a aktivace pověření 1
 doložené, přirozený minutový tick bez chyb. Katalog, CURRENT, handoff a registr
 odlišují hotový provozní krok od nedoložené skutečné banky a externího doručení PDF.
+
+
+Převzaté #361 / `3b37e053`: dvě nové textové přílohy, původní čtecí vizuální
+přejímka a implementované mobilní karty. Karty jsou v main, jejich následný
+deploy a nový Chrome nejsou tímto doložené. ROLE01 má tuto návaznost znovu otevřenou.
