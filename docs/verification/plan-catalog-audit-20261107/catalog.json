@@ -10391,6 +10391,72 @@
       "registry": "P11-SCALE",
       "disposition": "Doplnkovy protokol aktualniho cteciho kodu; neni novy plan ani povoleni produkcnich zmen.",
       "evidence": []
+    },
+    {
+      "id": "PL-ab7b870cf9",
+      "path": "docs/MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md",
+      "title": "P11-R13-S — stavový filtr zdravotního přehledu",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P11-R13-S",
+      "disposition": "Schválený čtecí řez; parita a měření před merge/deploy.",
+      "evidence": []
+    },
+    {
+      "id": "PL-d7931b09d6",
+      "path": "docs/SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md",
+      "title": "Předání P11-R13-S — zdravotní stavový filtr",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-R13-S",
+      "disposition": "Schválený čtecí řez; parita a měření před merge/deploy.",
+      "evidence": []
+    },
+    {
+      "id": "PL-9d3eb581db",
+      "path": "docs/verification/medical-state-read-performance-20261107/RESULTS.md",
+      "title": "P11-R13-S — parita a měření zdravotního přehledu",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-R13-S",
+      "disposition": "První návrh parita PASS/výkon FAIL; finální varianta otevřená.",
+      "evidence": []
+    },
+    {
+      "id": "PL-4b93cf122d",
+      "path": "docs/verification/medical-state-release-20261107/RESULTS.md",
+      "title": "P11-R13-S provozní předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-R13-S",
+      "disposition": "Podpůrný bezpečný důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-b3e0d886a7",
+      "path": "docs/verification/medical-state-release-20261107/snapshot.php.txt",
+      "title": "Veřejná čtecí sonda R13",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-R13-S",
+      "disposition": "Podpůrný bezpečný důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-7e2f77ccde",
+      "path": "docs/verification/medical-state-release-20261107/anonymous-medical.php.txt",
+      "title": "Anonymní odmítnutí R13",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-R13-S",
+      "disposition": "Podpůrný bezpečný důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

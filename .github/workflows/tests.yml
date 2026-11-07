@@ -437,6 +437,25 @@ jobs:
           path: training-roster-filter-profile.json
           retention-days: 14
 
+      - name: Ověřit stavový filtr zdravotního přehledu proti zmrazenému main
+        env:
+          EVIDENCE_ROSTER_READ_MARIADB: '1'
+        run: php vendor/bin/phpunit tests/Integration/MedicalStateReadTest.php
+
+      - name: Změřit zdravotní stavový filtr před a po na jedné syntetické historii
+        env:
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: php tests/Support/MedicalStateProfile.php > medical-state-comparison.json
+
+      - name: Uchovat paritu a párové měření zdravotního přehledu
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: medical-state-${{ matrix.mariadb-version }}
+          path: medical-state-comparison.json
+          retention-days: 30
+
       - name: Ověřit historický souhrn plánovače proti zmrazenému main
         env:
           EVIDENCE_ROSTER_READ_MARIADB: '1'

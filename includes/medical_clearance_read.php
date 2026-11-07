@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/staff_record_list.php';
+require_once __DIR__ . '/medical_clearance_state_read.php';
 
 /** Load complete replacement chains only for the bounded set of watches being evaluated. */
 function medicalClearanceListStatuses(PDO $pdo, array $rows, string $on): array
@@ -124,7 +125,7 @@ function medicalClearanceList(PDO $pdo, array $input): array
     $base = 'FROM medical_clearance_watches w JOIN sportovci s ON s.id=w.sportovec_id WHERE ' . $where;
     $on = date('Y-m-d');
     if ($f['state'] !== '' && $f['error'] === '') {
-        return ['filters' => $f] + medicalClearanceStatePage($pdo, $base, $params, $f, $on);
+        return ['filters' => $f] + MedicalClearanceStateRead::page($pdo, $base, $params, $f, $on);
     }
     $page = staffListPage($pdo, 'w.*,s.jmeno,s.prijmeni', $base, 'w.next_review_on,w.id', $params, $f['page']);
     $page['rows'] = medicalClearanceListStatuses($pdo, $page['rows'], $on);
