@@ -1,0 +1,772 @@
+{
+  "complete": true,
+  "same_measured_fixture": true,
+  "http_cases_per_variant": 21,
+  "http_positive_per_variant": 9,
+  "http_samples_per_variant": 270,
+  "browser_samples_per_variant": 117,
+  "p95_method": "nearest rank ceil(0.95*n)",
+  "cases": [
+    {
+      "id": "closure-coach-training",
+      "role": "coach",
+      "path": "/training_closure_admin.php?id=101",
+      "before": {
+        "http": {
+          "samples": 30,
+          "median_ms": 945.0264999999999,
+          "p95_ms": 1251.955
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 940.5129999999999,
+          "p95_ms": 1222.78
+        },
+        "html_bytes": 1369527,
+        "participant_options": 10221,
+        "excuse_options": 10222,
+        "sql_count": 59,
+        "php": {
+          "id": "closure-coach-training",
+          "php_ms": 440.2836,
+          "peak_php_bytes": 8481640,
+          "allocated_peak_bytes": 10485760,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 31,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 6615.5,
+            "p95_ms": 7722.5999999940395
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 6396.70000000298,
+            "p95_ms": 9047.10000000894
+          }
+        }
+      },
+      "after": {
+        "http": {
+          "samples": 30,
+          "median_ms": 112.5735,
+          "p95_ms": 190.521
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 111.304,
+          "p95_ms": 188.971
+        },
+        "html_bytes": 92490,
+        "participant_options": 250,
+        "excuse_options": 51,
+        "sql_count": 72,
+        "php": {
+          "id": "closure-coach-training",
+          "php_ms": 189.3223,
+          "peak_php_bytes": 2578496,
+          "allocated_peak_bytes": 4194304,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 32,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 300.8999999910593,
+            "p95_ms": 301.19999998807907
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 346.5000000074506,
+            "p95_ms": 542.8999999910593
+          }
+        }
+      }
+    },
+    {
+      "id": "closure-coach-plan",
+      "role": "coach",
+      "path": "/training_closure_admin.php?plan_id=50010",
+      "before": {
+        "http": {
+          "samples": 30,
+          "median_ms": 1314.8600000000001,
+          "p95_ms": 2103.8920000000003
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 1299.5145,
+          "p95_ms": 2088.054
+        },
+        "html_bytes": 1369527,
+        "participant_options": 10221,
+        "excuse_options": 10222,
+        "sql_count": 65,
+        "php": {
+          "id": "closure-coach-plan",
+          "php_ms": 276.4933,
+          "peak_php_bytes": 8483088,
+          "allocated_peak_bytes": 10485760,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 31,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 6326,
+            "p95_ms": 9455.70000000298
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 6780.55000000447,
+            "p95_ms": 8946
+          }
+        }
+      },
+      "after": {
+        "http": {
+          "samples": 30,
+          "median_ms": 117.37299999999999,
+          "p95_ms": 168.857
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 116.2735,
+          "p95_ms": 167.512
+        },
+        "html_bytes": 92490,
+        "participant_options": 250,
+        "excuse_options": 51,
+        "sql_count": 78,
+        "php": {
+          "id": "closure-coach-plan",
+          "php_ms": 155.0805,
+          "peak_php_bytes": 2579440,
+          "allocated_peak_bytes": 4194304,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 32,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 349.5,
+            "p95_ms": 524.2999999970198
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 418.04999999701977,
+            "p95_ms": 629.4000000059605
+          }
+        }
+      }
+    },
+    {
+      "id": "closure-coach-search",
+      "role": "coach",
+      "path": "/training_closure_admin.php?id=101&lesson_on=&lesson_q=Synthetic",
+      "before": {
+        "http": {
+          "samples": 30,
+          "median_ms": 1178.187,
+          "p95_ms": 1841.371
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 1169.0034999999998,
+          "p95_ms": 1831.852
+        },
+        "html_bytes": 1373702,
+        "participant_options": 10221,
+        "excuse_options": 10222,
+        "sql_count": 203,
+        "php": {
+          "id": "closure-coach-search",
+          "php_ms": 343.3413,
+          "peak_php_bytes": 8527736,
+          "allocated_peak_bytes": 10485760,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 31,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 6344.600000008941,
+            "p95_ms": 8514
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 6393.64999999851,
+            "p95_ms": 8276
+          }
+        }
+      },
+      "after": {
+        "http": {
+          "samples": 30,
+          "median_ms": 106.4345,
+          "p95_ms": 149.83599999999998
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 105.6725,
+          "p95_ms": 148.737
+        },
+        "html_bytes": 96665,
+        "participant_options": 250,
+        "excuse_options": 51,
+        "sql_count": 72,
+        "php": {
+          "id": "closure-coach-search",
+          "php_ms": 169.0642,
+          "peak_php_bytes": 2624088,
+          "allocated_peak_bytes": 4194304,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 32,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 513.4000000059605,
+            "p95_ms": 815.9000000059605
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 445.94999999552965,
+            "p95_ms": 615.3000000119209
+          }
+        }
+      }
+    },
+    {
+      "id": "closure-coach-empty-search",
+      "role": "coach",
+      "path": "/training_closure_admin.php?id=101&lesson_on=&lesson_q=NOTFOUND",
+      "before": {
+        "http": {
+          "samples": 30,
+          "median_ms": 823.0095,
+          "p95_ms": 1104.016
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 798.076,
+          "p95_ms": 1087.2269999999999
+        },
+        "html_bytes": 1369440,
+        "participant_options": 10221,
+        "excuse_options": 10222,
+        "sql_count": 53,
+        "php": {
+          "id": "closure-coach-empty-search",
+          "php_ms": 269.0445,
+          "peak_php_bytes": 8480016,
+          "allocated_peak_bytes": 12582912,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 31,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 7881.600000008941,
+            "p95_ms": 8345
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 6687.60000000149,
+            "p95_ms": 9033.800000011921
+          }
+        }
+      },
+      "after": {
+        "http": {
+          "samples": 30,
+          "median_ms": 121.5395,
+          "p95_ms": 161.423
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 120.12200000000001,
+          "p95_ms": 160.356
+        },
+        "html_bytes": 92403,
+        "participant_options": 250,
+        "excuse_options": 51,
+        "sql_count": 69,
+        "php": {
+          "id": "closure-coach-empty-search",
+          "php_ms": 133.778,
+          "peak_php_bytes": 2576368,
+          "allocated_peak_bytes": 4194304,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 32,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 348.29999999701977,
+            "p95_ms": 398.79999999701977
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 389.75,
+            "p95_ms": 518.8999999910593
+          }
+        }
+      }
+    },
+    {
+      "id": "closure-coach-list",
+      "role": "coach",
+      "path": "/training_closure_admin.php",
+      "before": {
+        "http": {
+          "samples": 30,
+          "median_ms": 572.943,
+          "p95_ms": 851.1809999999999
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 571.4024999999999,
+          "p95_ms": 850.564
+        },
+        "html_bytes": 39357,
+        "participant_options": 0,
+        "excuse_options": 0,
+        "sql_count": 36,
+        "php": {
+          "id": "closure-coach-list",
+          "php_ms": 229.3695,
+          "peak_php_bytes": 7304360,
+          "allocated_peak_bytes": 12582912,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 31,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 887.9000000059605,
+            "p95_ms": 6698.0999999940395
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 799.75,
+            "p95_ms": 1171.9000000059605
+          }
+        }
+      },
+      "after": {
+        "http": {
+          "samples": 30,
+          "median_ms": 65.319,
+          "p95_ms": 80.348
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 64.1075,
+          "p95_ms": 79.28
+        },
+        "html_bytes": 39357,
+        "participant_options": 0,
+        "excuse_options": 0,
+        "sql_count": 23,
+        "php": {
+          "id": "closure-coach-list",
+          "php_ms": 70.4246,
+          "peak_php_bytes": 2396080,
+          "allocated_peak_bytes": 4194304,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 32,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 184,
+            "p95_ms": 187.8999999910593
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 152.55000000447035,
+            "p95_ms": 188.79999999701977
+          }
+        }
+      }
+    },
+    {
+      "id": "closure-lead-training",
+      "role": "sports_lead",
+      "path": "/training_closure_admin.php?id=101",
+      "before": {
+        "http": {
+          "samples": 30,
+          "median_ms": 605.7909999999999,
+          "p95_ms": 938.246
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 601.7255,
+          "p95_ms": 935.096
+        },
+        "html_bytes": 1369783,
+        "participant_options": 10221,
+        "excuse_options": 10222,
+        "sql_count": 43,
+        "php": {
+          "id": "closure-lead-training",
+          "php_ms": 294.5155,
+          "peak_php_bytes": 8482648,
+          "allocated_peak_bytes": 10485760,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 31,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 5784.100000008941,
+            "p95_ms": 6052.300000011921
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 5422.95000000298,
+            "p95_ms": 6053.0999999940395
+          }
+        }
+      },
+      "after": {
+        "http": {
+          "samples": 30,
+          "median_ms": 93.12899999999999,
+          "p95_ms": 121.553
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 92.054,
+          "p95_ms": 120.338
+        },
+        "html_bytes": 92746,
+        "participant_options": 250,
+        "excuse_options": 51,
+        "sql_count": 51,
+        "php": {
+          "id": "closure-lead-training",
+          "php_ms": 81.86,
+          "peak_php_bytes": 2579000,
+          "allocated_peak_bytes": 4194304,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 32,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 356.29999999701977,
+            "p95_ms": 422.59999999403954
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 343.90000000596046,
+            "p95_ms": 427.19999998807907
+          }
+        }
+      }
+    },
+    {
+      "id": "closure-lead-foreign",
+      "role": "sports_lead",
+      "path": "/training_closure_admin.php?id=102",
+      "before": {
+        "http": {
+          "samples": 30,
+          "median_ms": 586.652,
+          "p95_ms": 937.979
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 571.0450000000001,
+          "p95_ms": 904.794
+        },
+        "html_bytes": 1343393,
+        "participant_options": 10221,
+        "excuse_options": 10222,
+        "sql_count": 43,
+        "php": {
+          "id": "closure-lead-foreign",
+          "php_ms": 297.6743,
+          "peak_php_bytes": 8403496,
+          "allocated_peak_bytes": 12582912,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 31,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 5150.399999991059,
+            "p95_ms": 5927.79999999702
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 3910.0000000074506,
+            "p95_ms": 7089.899999991059
+          }
+        }
+      },
+      "after": {
+        "http": {
+          "samples": 30,
+          "median_ms": 90.3075,
+          "p95_ms": 142.3
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 88.725,
+          "p95_ms": 141.023
+        },
+        "html_bytes": 52341,
+        "participant_options": 50,
+        "excuse_options": 51,
+        "sql_count": 46,
+        "php": {
+          "id": "closure-lead-foreign",
+          "php_ms": 96.9266,
+          "peak_php_bytes": 2429456,
+          "allocated_peak_bytes": 4194304,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 32,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 224.90000000596046,
+            "p95_ms": 271.5
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 228.89999999850988,
+            "p95_ms": 279.40000000596046
+          }
+        }
+      }
+    },
+    {
+      "id": "closure-lead-plan",
+      "role": "sports_lead",
+      "path": "/training_closure_admin.php?plan_id=50011",
+      "before": {
+        "http": {
+          "samples": 30,
+          "median_ms": 697.858,
+          "p95_ms": 981.0459999999999
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 687.9165,
+          "p95_ms": 953.603
+        },
+        "html_bytes": 1343393,
+        "participant_options": 10221,
+        "excuse_options": 10222,
+        "sql_count": 49,
+        "php": {
+          "id": "closure-lead-plan",
+          "php_ms": 272.5099,
+          "peak_php_bytes": 8404440,
+          "allocated_peak_bytes": 12582912,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 31,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 4005.5999999940395,
+            "p95_ms": 4764.20000000298
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 3414.5,
+            "p95_ms": 5031.79999999702
+          }
+        }
+      },
+      "after": {
+        "http": {
+          "samples": 30,
+          "median_ms": 92.36600000000001,
+          "p95_ms": 148.425
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 91.4725,
+          "p95_ms": 146.728
+        },
+        "html_bytes": 52341,
+        "participant_options": 50,
+        "excuse_options": 51,
+        "sql_count": 52,
+        "php": {
+          "id": "closure-lead-plan",
+          "php_ms": 69.0099,
+          "peak_php_bytes": 2430400,
+          "allocated_peak_bytes": 4194304,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 32,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 247.5,
+            "p95_ms": 307.09999999403954
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 232.10000000149012,
+            "p95_ms": 333.59999999403954
+          }
+        }
+      }
+    },
+    {
+      "id": "closure-other-own",
+      "role": "other_coach",
+      "path": "/training_closure_admin.php?id=102",
+      "before": {
+        "http": {
+          "samples": 30,
+          "median_ms": 774.3375,
+          "p95_ms": 1317.393
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 769.711,
+          "p95_ms": 1303.3110000000001
+        },
+        "html_bytes": 1343134,
+        "participant_options": 10221,
+        "excuse_options": 10222,
+        "sql_count": 58,
+        "php": {
+          "id": "closure-other-own",
+          "php_ms": 339.6414,
+          "peak_php_bytes": 8401840,
+          "allocated_peak_bytes": 12582912,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 31,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 3349.2000000029802,
+            "p95_ms": 5157.29999999702
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 3769.4000000059605,
+            "p95_ms": 4808.5
+          }
+        }
+      },
+      "after": {
+        "http": {
+          "samples": 30,
+          "median_ms": 121.0795,
+          "p95_ms": 163.586
+        },
+        "ttfb": {
+          "samples": 30,
+          "median_ms": 119.953,
+          "p95_ms": 162.214
+        },
+        "html_bytes": 52082,
+        "participant_options": 50,
+        "excuse_options": 51,
+        "sql_count": 61,
+        "php": {
+          "id": "closure-other-own",
+          "php_ms": 99.3,
+          "peak_php_bytes": 2428928,
+          "allocated_peak_bytes": 4194304,
+          "status": 200,
+          "db_bootstrap_included": true,
+          "navigation_included": true,
+          "included_file_count": 32,
+          "fatal": false
+        },
+        "browser": {
+          "cold": {
+            "samples": 3,
+            "median_ms": 358.8999999910593,
+            "p95_ms": 425.80000001192093
+          },
+          "warm": {
+            "samples": 10,
+            "median_ms": 281.1000000014901,
+            "p95_ms": 730.4000000059605
+          }
+        }
+      }
+    }
+  ],
+  "console": {
+    "before": {
+      "sample_errors": {
+        "Failed to load resource: the server responded with a status of 404 (Not Found)": 26
+      },
+      "failed_requests": []
+    },
+    "after": {
+      "sample_errors": {
+        "Failed to load resource: the server responded with a status of 404 (Not Found)": 27
+      },
+      "failed_requests": []
+    }
+  }
+}
