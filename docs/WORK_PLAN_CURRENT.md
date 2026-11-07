@@ -69,6 +69,7 @@ Nový pokus po #377: BLOKOVANÉ chybějící přihlášenou relací; souběžná
 Větev `codex/attendance-picker-uat-retry-20261107`, rozsah a průběh ve stejném plánu/protokolu.
 Další krok vlastníka: ručně se přihlásit existujícím pracovním účtem v kontrolní kartě;
 potom vývoj ověří stránku a provede původní čtecí scénáře bez změny docházky/rolí.
+Nové dokumentační předání: [PR #378](https://github.com/KovoPraha/evidenceTreninku/pull/378), větev pushnutá; stav merge ověř u PR.
 
 ## Aktivní návaznosti
 

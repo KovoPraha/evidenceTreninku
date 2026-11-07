@@ -166,3 +166,5 @@ Aktuální stav **BLOKOVANÉ — chybí přihlášená relace**. Karta předána
 k ručnímu přihlášení existujícím pracovním účtem bez změny role. Přihlašovací
 formulář nevyplněn ani neodeslán, funkční scénáře neprovedené. Další krok:
 po potvrzeném přihlášení obnovit čtení cílové stránky a pokračovat výše vymezeným UAT.
+Opakovaný pokus je pushnutý ve větvi výše a sdílený v [PR #378](https://github.com/KovoPraha/evidenceTreninku/pull/378).
+Aktuální head, CI a stav merge ověř přímo u PR; UAT tím není provedeno.

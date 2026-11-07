@@ -87,3 +87,8 @@ skončila na téže přihlašovací stránce. To dokládá odstranění předcho
 Formulář nebyl vyplněn ani odeslán. Kontrolní karta je předána vlastníkovi
 k ručnímu přihlášení; funkční scénáře čekají na platnou existující relaci.
 Žádné uložení docházky, omluvy ani změna role se neprováděly.
+
+První commit opakovaného pokusu `40531586` je pushnutý. Dokumentační předání
+sdílí [PR #378](https://github.com/KovoPraha/evidenceTreninku/pull/378);
+finální head, CI a merge ověř přímo u PR. Kontrola dokumentace: 0 chyb,
+`git diff --check` bez nálezu. Toto předání neuzavírá funkční UAT.
