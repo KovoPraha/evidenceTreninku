@@ -76,7 +76,7 @@ stav PR a neopakovat dokončené kontroly. Produkční nasazení se tím nepovol
 
 Pracovní rozhodnutí 06 → 07 a události 14/15 → 19/20 v dřívějších commitech
 kolidovaly s mezitím přijatou prací. Při integraci 269684c2 přijatá ID zachovaná;
-vlastní rozhodnutí nyní 09, události 23–26. Historické commity se nepřepisují.
+vlastní rozhodnutí nyní 09, události 26–29. Historické commity se nepřepisují.
 
 Integrační ověření 9d4a7538 po převzetí #367: **50 testů / 1294 assertions PASS**,
 PHP quality CI 42375011506 SUCCESS; [doklad](verification/attendance-person-picker-20261107/final/integration.json).
@@ -100,3 +100,6 @@ Znovu přehrát skutečné reporty, odmítnout poškozený HTML i 57 SQL a zopak
 
 Převzaté DOC03 priority #368 / 8e9cdce1, bez aplikačních změn; přijaté release
 a automatické bloky zachované. Vlastní E22 přesunuté na E26 kvůli přijatému DOC03.
+
+Převzatý produkční důkaz lekcí #369 / 2ef20aed: provozní release jiného vlákna
+zachovaný, picker #366 v něm není. Vlastní E26–E29 a D09; žádná změna aplikace.

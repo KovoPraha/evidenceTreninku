@@ -67,3 +67,6 @@ Aktuální training_day.php nyní sdílený i v generované before kopii.
 Nový celý nativní CI běh a jeho výsledek evidují kontroly finální hlavy PR.
 
 Před finálním CI převzaté DOC03 #368 / 8e9cdce1: priority i provozní stav karet/cen zachované, žádná změna aplikace. E22 patří přijatému DOC03, naše zahájení je E26.
+
+Převzatý produkční důkaz lekcí #369 / 2ef20aed: provozní release jiného vlákna
+zachovaný, picker #366 v něm není. Vlastní E26–E29 a D09; žádná změna aplikace.
