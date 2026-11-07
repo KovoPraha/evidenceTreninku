@@ -7,7 +7,7 @@ netestované prostředí projektu — localhost XAMPP je `10.4.32`, CI dosud bě
 jen na `11.4`. Tento dokument je čistě statická analýza; k produkci se
 nepřipojuje a nic v ní nemění. Otevřené provozní rozhodnutí (upgrade hostingu
 vs. vědomé setrvání na 10.3/Debian 10 po EOL) zůstává u vlastníka — viz
-poznámka v [SESSION_HANDOFF.md](plan-eshop-tymova-evidence/SESSION_HANDOFF.md#poslední-známý-důkazní-snapshot).
+poznámka v [historii session](plan-eshop-tymova-evidence/SESSION_HISTORY_2026-11-07.md#poslední-známý-důkazní-snapshot).
 
 ## Rozsah a metoda
 

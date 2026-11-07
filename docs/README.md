@@ -1,10 +1,18 @@
 # Dokumentace EvidencePavel / KIS
 
-Aktualizováno: 6. 11. 2026, Europe/Prague
+Aktualizováno: 7. 11. 2026, Europe/Prague
 
 Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
 webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
 <https://kis.kovopraha.cz/>.
+
+
+## Dokumentace práce a rozhodnutí
+
+Před změnou načtěte [pravidla](WORK_DOCUMENTATION_POLICY.md), [aktuální stav](CURRENT_STATE.md), [stručný session handoff](HANDOFF_CURRENT.md)
+a [registr otevřených plánů a konceptů](WORK_PLAN_CURRENT.md). Všechny záměry, postupy, změny a výsledky patří do verzovaných souborů;
+na odpovídající plán musí odkazovat CURRENT i handoff. Dokumentaci předávejte přes GitHub PR spolu se změnou.
+[Deník událostí](EVENT_LOG.md) a [rozhodovací log / uzavřené plány](DECISION_LOG.md) zajišťují historickou dohledatelnost bez načítání historie v handoffu.
 
 ## Začněte zde
 
@@ -102,8 +110,7 @@ testy, potom `CURRENT_STATE.md` a `HANDOFF_CURRENT.md`.
 
 ## Historické dokumenty
 
-Datované audity, roadmapy, staré handoffy, implementační prompty a soubor
-`plan-eshop-tymova-evidence/SESSION_HANDOFF.md` zůstávají v repozitáři jako
+Datované audity, roadmapy, staré handoffy, implementační prompty a [archiv session](plan-eshop-tymova-evidence/SESSION_HISTORY_2026-11-07.md) zůstávají v repozitáři jako
 auditní a rozhodovací stopa. Jejich SHA, počty testů, verze a označení
 „plánováno“ popisují dobu vzniku. Nejsou autoritou pro aktuální checkout.
 
