@@ -161,6 +161,9 @@ try {
         throw new RuntimeException('MariaDB migration catalog is not current before backup smoke.');
     }
 
+    require_once __DIR__ . '/ExternalSyncBackupSeed.php';
+    $externalSnapshot = externalSyncBackupSeed($pdo);
+
     if (!mkdir($appRoot, 0700, true) || !mkdir($backupRoot, 0700, true)) {
         throw new RuntimeException('Cannot create backup smoke directories.');
     }
@@ -209,7 +212,7 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-11-06.1') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-11-07.1') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
@@ -430,6 +433,10 @@ try {
     if ($restoredTriggers !== $expectedTriggers) {
         throw new RuntimeException('Database restore trigger list does not match the backup manifest.');
     }
+    if ($externalSnapshot !== externalSyncBackupSnapshot($restore)) {
+        throw new RuntimeException('External sync populated backup/restore differs from source.');
+    }
+    echo "External sync populated backup/restore PASS (8 tables)\n";
     if ($barSnapshot !== barAcceptanceDatabaseSnapshot($restore)) {
         throw new RuntimeException('Nonempty BAR restore differs from the original data snapshot.');
     }
