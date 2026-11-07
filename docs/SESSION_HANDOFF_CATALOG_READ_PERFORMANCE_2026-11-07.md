@@ -14,7 +14,7 @@ shodné celé výsledky a všech 9 otisků zdrojů. 5000 zboží 202/340 → 87/
 PHP špička 71,6 → 16,8 MiB. U malých katalogů zůstává malá režie sondy;
 u programů dominuje kapacita. Více malých SQL, méně těžkých řádků.
 
-Převzaté #363 HTTP/browser i #362 provozní předání; tato práce je neopakuje.
+Převzaté #363 HTTP/browser, #362 provozní předání i #361 mobilní karty; tato práce je neopakuje.
 Poslední dokumentační head a úplné CI sledovat u PR. Reporty dokazují runtime,
 nikoli produkční latenci. Nový katalog HTTP/browser/produkční UAT NOT RUN.
 Další krok: review #364, pozdější integrace podle rozhodnutí vlastníka.

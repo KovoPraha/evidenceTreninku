@@ -4,7 +4,7 @@ ID P11-CATALOG; vlastník zadání Marek, realizace Codex. Stav HOTOVO: implemen
 [PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364),
 [výsledky a metoda](verification/catalog-read-performance-20261107/RESULTS.md),
 [session handoff](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md),
-[rozhodnutí D2026-11-07-06](DECISION_LOG.md#d2026-11-07-06).
+[rozhodnutí D2026-11-07-07](DECISION_LOG.md#d2026-11-07-07).
 
 ## Zadání, oprávnění a pracovní kopie
 
@@ -42,7 +42,7 @@ bez seznamu ID a checkout zůstávají kanonické. Žádná migrace ani sdílen�
 
 | Etapa | Stav a důkaz |
 | --- | --- |
-| Plán před implementací | `b44e7c53`; původní pracovní ID rozhodnutí 05 a události 13 po převzetí #363 přesunuta na 06/15; přijatá main ID zachovaná |
+| Plán před implementací | `b44e7c53`; původní pracovní ID rozhodnutí 05 a události 13 po převzetí #363 přesunuta na 07/18; přijatá main ID zachovaná |
 | Merge cen bez deploye | HOTOVO #358 `37d0ad68`; finální head 11 kontrol PASS |
 | Reference a implementace | HOTOVO; zmrazený řadič z přesného `37d0ad68`, pouze obal/normalizace formátu; reader + omezené API, implicitní sort_order=0 zachovaný |
 | Striktní shoda výsledků | PASS 31 testů / 2080 assertions; kompletní vybrané karty/typy, ceny, pořadí, menu, počty a filtry |
@@ -71,3 +71,8 @@ Další krok: review #364; při pozdější integraci ověřit aktuální main a
 Nasazení a HTTP/browser nové verze čekají na samostatné zadání.
 Globální lehký průchod a programový kontext zůstávají O(katalog).
 Navazující HTTP/browser této nové verze a další priority #363 zůstávají oddělené.
+
+Před předáním převzatý také main `3b37e053` / #361 (mobilní karty přístupů).
+Všech 9 měřených katalogových zdrojů je stále shodných s `0252ba58`.
+Jeho samostatné provozní zadání se v tomto úkolu nevykonává. Poslední CI
+převzetí sleduje PR; katalogová parita a měření zůstávají doložené.

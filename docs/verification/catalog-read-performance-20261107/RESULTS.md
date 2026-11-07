@@ -118,6 +118,10 @@ navíc unixové soukromé úložiště 3/45 a Python 5/5. PHPStan/styl i kontrol
 dokumentace PASS. Úplné MariaDB joby a poslední dokumentační head mají živý
 stav v [PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364);
 katalogové profilovací kroky 10.3/11.4 jsou dokončené PASS.
-Čtecí inventura Actions: poslední deploy `42362258878` mířil na `9460ee76`,
+V čtecí inventuře před převzetím #361 byl poslední deploy `42362258878` mířil na `9460ee76`,
 před merge cen; samostatný produkční handoff #362 se přebírá bez opakování operací.
 Tato práce neprovedla deploy, aktivaci, změnu skutečných dat ani odesílání.
+
+Před předáním převzatý také #361 / `3b37e053`. Jde o oddělenou prezentaci
+přístupů; katalogové zdroje a testy se nezměnily. Nejnovější integrační CI
+běží u PR; úspěšná plná CI měřeného runtime zůstává `42365054949`.
