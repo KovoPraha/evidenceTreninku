@@ -80,3 +80,10 @@ nový plán, přejímací protokoly i související artefakty jsou rovněž v ka
 Poslední doinventarizování #355 přidalo šest textových a čtyři binární
 podklady, včetně samostatného plánu N1/N2. Všechny jsou indexované; zdrojové
 rozhodnutí D2026-11-07-03 a provozní omezení původní relace zachované.
+
+
+Ranní termín 7. 11. 05:30 UTC byl při kontrole v 10:18 UTC již v minulosti.
+Budoucí formulace „čeká na skutečný termín“ nahrazena čekáním na doložený výsledek.
+Zdrojový Git ani draft #347 nedokládá výsledek; nejde o tvrzení, že server neběžel.
+Dokumentační publikátor přijímá původní i upřesněnou větu CURRENT, aby skutečný
+pozdější důkaz stále nahradil stav správně. Finanční worker ani hosting se nemění.

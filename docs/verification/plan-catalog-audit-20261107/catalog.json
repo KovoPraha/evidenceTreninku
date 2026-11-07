@@ -899,7 +899,7 @@
       "role": "plan",
       "status": "AWAITING_EVIDENCE",
       "registry": "P05",
-      "disposition": "Serverová příprava dokončená; skutečný ranní výsledek v dostupném main stále NOT RUN, draft #347 není důkaz dokončení.",
+      "disposition": "Serverová příprava dokončená, plánovaný termín 7. 11. 05:30 UTC již uplynul. Výsledek není doložen v dostupném Gitu; draft #347 není důkaz dokončení ani neprovedení běhu. Ověřit čtením, nevyvolávat účtování.",
       "evidence": [
         "docs/verification/membership-morning-server-release-20261106/RESULTS.md",
         "docs/MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md"
@@ -1944,7 +1944,7 @@
       "role": "plan",
       "status": "AWAITING_EVIDENCE",
       "registry": "P05",
-      "disposition": "Serverová příprava dokončená; skutečný ranní výsledek v dostupném main stále NOT RUN, draft #347 není důkaz dokončení.",
+      "disposition": "Serverová příprava dokončená, plánovaný termín 7. 11. 05:30 UTC již uplynul. Výsledek není doložen v dostupném Gitu; draft #347 není důkaz dokončení ani neprovedení běhu. Ověřit čtením, nevyvolávat účtování.",
       "evidence": [
         "docs/verification/membership-morning-server-release-20261106/RESULTS.md",
         "docs/MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md"
