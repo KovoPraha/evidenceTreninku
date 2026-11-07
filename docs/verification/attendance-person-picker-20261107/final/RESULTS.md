@@ -132,4 +132,4 @@ Rows cap1000, relativní úspora a samostatný validator budget3/200 a5/1200 zů
 Aktuální training_day.php nyní sdílený i v generované before kopii.
 [Přehrání 10.3](ci-budget-replay-10.3.json), [11.4](ci-budget-replay-11.4.json),
 [odmítnutí 57 SQL, 1001 řádků a vadného HTML](comparator-guards.json) PASS.
-Nový celý nativní CI běh následuje na finální hlavě PR.
+Nový celý nativní CI běh a jeho výsledek evidují kontroly finální hlavy PR.

@@ -65,12 +65,14 @@ se zachovávají; release/flags a automatické bloky mají zdroj v CURRENT/main.
 Po #367 je training_day.php novější než měřený pár; čísla zde nejsou nové
 přeměření společného main ani produkce. Integrační regrese a finální CI zvlášť.
 
-1. Dokončit finální CI/review a přijetí #366 bez produkčního nasazení.
-2. Celé HTTP/browser kombinace s #367; starých 219 SQL není dnešní integrovaný
+Finální CI/review a přijetí eviduje přímo #366; při převzetí ověřit aktuální
+stav PR a neopakovat dokončené kontroly. Produkční nasazení se tím nepovoluje.
+
+1. Celé HTTP/browser kombinace s #367; starých 219 SQL není dnešní integrovaný
    výsledek. Dávkové lekce již implementované, neplánovat jejich duplikaci.
-3. R13/R05 objemy/kandidáti, skutečné rows examined, fyzický mobil/CPU/síť/souběh
+2. R13/R05 objemy/kandidáti, skutečné rows examined, fyzický mobil/CPU/síť/souběh
    a další R01–R16. K0.2 zůstává otevřené.
-4. Nasazení/přejímka pickeru až na nové explicitní zadání. Žádná aktivace zde.
+3. Nasazení/přejímka pickeru až na nové explicitní zadání. Žádná aktivace zde.
 
 Pracovní rozhodnutí 06 → 07 a události 14/15 → 19/20 v dřívějších commitech
 kolidovaly s mezitím přijatou prací. Při integraci 269684c2 přijatá ID zachovaná;

@@ -45,11 +45,13 @@ není součást tohoto celého časového páru; integrované testy/CI zvlášť
 
 ## Zbývá podle priority
 
-1. Finální CI/review/přijetí #366 bez deploye; konkrétní SHA/checks u PR.
-2. Celé HTTP/browser společné verze s #367. Dávkové lekce už hotové; starých
+Finální CI/review/přijetí #366 mají konkrétní SHA a stav u PR; při převzetí
+neopakovat již hotový krok. Tato relace nepovoluje deploy.
+
+1. Celé HTTP/browser společné verze s #367. Dávkové lekce už hotové; starých
    219 SQL před integrací není aktuální počet a není to úkol znovu implementovat.
-3. R13/R05 objemy/kandidáti, rows examined, fyzický mobil/síť/CPU/souběh a R01–R16.
-4. Produkční deploy/přejímka pickeru vyžadují nové explicitní zadání vlastníka.
+2. R13/R05 objemy/kandidáti, rows examined, fyzický mobil/síť/CPU/souběh a R01–R16.
+3. Produkční deploy/přejímka pickeru vyžadují nové explicitní zadání vlastníka.
    Podklady ostatních P01–P14 zůstávají v registru; K0.2 není uzavřené.
 
 Integrační ověření 9d4a7538 po převzetí #367: **50 testů / 1294 assertions PASS**,
@@ -62,6 +64,6 @@ Rows cap1000, relativní úspora a samostatný validator budget3/200 a5/1200 zů
 Aktuální training_day.php nyní sdílený i v generované before kopii.
 [Přehrání 10.3](verification/attendance-person-picker-20261107/final/ci-budget-replay-10.3.json), [11.4](verification/attendance-person-picker-20261107/final/ci-budget-replay-11.4.json),
 [odmítnutí 57 SQL, 1001 řádků a vadného HTML](verification/attendance-person-picker-20261107/final/comparator-guards.json) PASS.
-Nový celý nativní CI běh následuje na finální hlavě PR.
+Nový celý nativní CI běh a jeho výsledek evidují kontroly finální hlavy PR.
 
 Před finálním CI převzaté DOC03 #368 / 8e9cdce1: priority i provozní stav karet/cen zachované, žádná změna aplikace. E22 patří přijatému DOC03, naše zahájení je E26.
