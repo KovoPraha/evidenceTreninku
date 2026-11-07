@@ -6,6 +6,20 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-05
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026; autonomní měření podle pokynu vlastníka bez produkčních změn.
+- **Volba:** standardní HTTP/UI přihlášení a celé stránky, další pozice/filtry,
+  oddělené nezinstrumentované časy a diagnostika, stejné syntetické schéma.
+- **Důvod / alternativa:** izolovaný PHP profil neobsahuje bootstrap/navigaci ani
+  práci prohlížeče. Lokální časy nejsou produkční SLA; samotný SQL count neurčuje příčinu.
+- **Dopad:** 65 HTTP případů a 403 browser pozorování hotové; další priorita
+  R06 výběr osob / lekce, nikoli neověřená další optimalizace nebo nasazení.
+  Měřená verze feb8fe8c zůstává oddělená od souběžného main 37d0ad68 / ROLE01.
+- **Podklady:** [výsledky](verification/full-http-performance-20261107/RESULTS.md),
+  [předání a otevřené etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md),
+  [událost](EVENT_LOG.md). Větev `codex/full-http-performance-20261107`; [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), CI/merge u PR.
+
 ## D2026-11-07-01
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026. Rozhodl vlastník explicitním zadáním.
@@ -100,3 +114,5 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 | P11 R06 — implementace v main #354, bez deploye | [Plán a důkazy](verification/attendance-read-performance-20261107/RESULTS.md) | [Předání](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md), role/HTTP otevřené |
 | Refaktoring W6–W15 — technické dokončení | [Komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md), [uzavření](REFACTORING_CLOSURE_2026-10-30.md) | Lidská/účetní přejímka v P09; [provozní historie](CHANGELOG-PROVOZ.md) |
 | Starší session a dokončené části programu | [Deník a archivní rozcestník](EVENT_LOG.md) | Původní plány, důkazy a rozhodnutí zůstávají v Gitu; nejde o zpětné schválení neověřených kroků |
+
+P11 celé HTTP/browser — [uzavřené měření a důkazy](verification/full-http-performance-20261107/RESULTS.md), [navazující etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); celé K0.2 otevřené.

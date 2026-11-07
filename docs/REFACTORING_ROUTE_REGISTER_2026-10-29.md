@@ -50,6 +50,13 @@ i HTML shodné; 200 osob 244 → 45 SQL, medián měřené části 2,30–2,48×
 [Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md),
 PR #354, bez nasazení. Plné HTTP, další role/propojené lekce a filtry zbývají.
 
+Následně 7. 11. [celé HTTP/browser R05/R06/R13](verification/full-http-performance-20261107/RESULTS.md)
+dokončené: skutečný bootstrap/nav, další role, filtry a propojené lekce,
+65 případů / 930 HTTP vzorků a 403 browser pozorování. DOM, role/revokace,
+HTML a checksums PASS. Jde o localhost PHP vývojový server / Chrome, nikoli
+Linux paired CI nebo produkční SLA. [Předání](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md)
+vede R06 velký výběr osob a kontroly lekcí, další objemy/mobil/souběh a ostatní R01–R16.
+
 ## Historický základ K0.1
 
 Zdroj: `3cc60fb6d7fad4bc6430724529295ef025d75178`, ověřeno 29. 10. 2026.
