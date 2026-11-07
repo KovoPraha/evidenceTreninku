@@ -4,7 +4,23 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Poslední návaznost: P11 optimalizace plánovače
+## Poslední návaznost: P11 optimalizace docházky
+
+Pokyn vlastníka „ok, pokračuj“ navazuje R06 bez změn produkce a se zachováním WIP.
+Větev `codex/attendance-read-performance-20261107`, vlastní kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-attendance-performance-20261107`.
+[Výsledky a trvalé důkazy](verification/attendance-read-performance-20261107/RESULTS.md).
+Dávkové ověření ID mimo transakci hotové; čerstvá role a přesná původní
+transakční cesta zachované. Místně 29 testů / 206 assertions a PHPStan/styl PASS.
+Párové CI 10.3/11.4 PASS, všech 11 kontrol: 200 osob 244 → 45 SQL,
+medián měřené části 2,30–2,48× rychlejší, všechna data i HTML shodné.
+Finální dokumentační CI/merge u [PR #354](https://github.com/KovoPraha/evidenceTreninku/pull/354).
+[Datované předání a zbývající práce](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md):
+plné HTTP, další role/propojené lekce a hierarchické filtry. Kalibrace měřidla
+oddělená od platných výsledků; původní WIP shodné, žádná místní DB/HTTP služba.
+Žádný deploy ani aktivace, produkční stav tato relace nemění.
+
+## Předchozí návaznost: P11 optimalizace plánovače
 
 Vlastník zadal optimalizaci R05 podle měření se zachováním chování a WIP,
 bez produkčních změn. Větev `codex/planner-read-performance-20261106`, kopie

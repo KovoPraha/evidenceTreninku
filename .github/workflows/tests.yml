@@ -546,7 +546,7 @@ jobs:
           EVIDENCE_MARIADB_SMOKE_PORT: '3306'
           EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
         run: |
-          mkdir -p synthetic-read-pages/before synthetic-read-pages/after synthetic-read-pages/planner-before
+          mkdir -p synthetic-read-pages/before synthetic-read-pages/after synthetic-read-pages/planner-before synthetic-read-pages/attendance-before
           before_tree="$RUNNER_TEMP/medical-before"
           git fetch --no-tags origin fbdf622e0acadebeaf5525fb168869795a7faca2
           git worktree add --detach "$before_tree" fbdf622e0acadebeaf5525fb168869795a7faca2
@@ -559,15 +559,25 @@ jobs:
           ln -s "$GITHUB_WORKSPACE/vendor" "$planner_tree/vendor"
           cp docs/verification/planner-read-performance-20261106/before-harness.php.txt "$planner_tree/tests/Support/PlannerBeforeProfile.php"
           (cd "$planner_tree" && php -d memory_limit=512M tests/Support/PlannerBeforeProfile.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/planner-before" --route R05)
+          attendance_tree="$RUNNER_TEMP/attendance-before"
+          git fetch --no-tags origin 89edfdbee5fbddbe05e0134d94f79ba0cb4143d9
+          git worktree add --detach "$attendance_tree" 89edfdbee5fbddbe05e0134d94f79ba0cb4143d9
+          ln -s "$GITHUB_WORKSPACE/vendor" "$attendance_tree/vendor"
+          cp docs/verification/attendance-read-performance-20261107/before-harness.php.txt "$attendance_tree/tests/Support/AttendanceBeforeProfile.php"
+          # R06 lesson choices depend on the preceding R05 seed: preserve the full matrix order.
+          (cd "$attendance_tree" && php -d memory_limit=512M tests/Support/AttendanceBeforeProfile.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/attendance-before")
+          php tests/Support/AttendanceReadProfile.php > synthetic-read-pages/attendance-read-parity.json
           php tests/Support/MedicalClearanceReadProfile.php > synthetic-read-pages/medical-read-parity.json
           php tests/Support/PlannerReadProfile.php > synthetic-read-pages/planner-read-parity.json
           php -d memory_limit=512M tests/Support/SyntheticReadPagesProfile.php --run synthetic-read-pages/after
           php tests/Support/CompareMedicalReadMeasurements.php synthetic-read-pages/before synthetic-read-pages/after > synthetic-read-pages/medical-comparison.json
           php tests/Support/ComparePlannerReadMeasurements.php synthetic-read-pages/planner-before synthetic-read-pages/after > synthetic-read-pages/planner-comparison.json
+          php tests/Support/CompareAttendanceReadMeasurements.php synthetic-read-pages/attendance-before synthetic-read-pages/after > synthetic-read-pages/attendance-comparison.json
           jq -e '.complete == true and (.cases | length) == 24 and (.negative_checks | length) == 4' synthetic-read-pages/after/summary.json >/dev/null
           jq -e '.removed == true' synthetic-read-pages/after/cleanup.json >/dev/null
           jq -e '.complete == true and .domain_results_equal == true and (.cases | length) == 9' synthetic-read-pages/medical-comparison.json >/dev/null
           jq -e '.complete == true and .domain_results_equal == true and .html_lf_equal == true and (.cases | length) == 6' synthetic-read-pages/planner-comparison.json >/dev/null
+          jq -e '.complete == true and .domain_results_equal == true and .html_lf_equal == true and (.cases | length) == 9' synthetic-read-pages/attendance-comparison.json >/dev/null
 
       - name: Preserve synthetic GET path measurements
         if: always()

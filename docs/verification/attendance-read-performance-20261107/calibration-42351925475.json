@@ -1,0 +1,62 @@
+{
+  "run_id": 42351925475,
+  "accepted_performance_measurement": false,
+  "reason": "Full seed order corrected, but independent revision timestamps were not fixed. Same data results, different complete HTML.",
+  "version": "11.4",
+  "pairs": [
+    {
+      "participants": 10,
+      "revisions": 1,
+      "data_equal": true,
+      "html_equal": false
+    },
+    {
+      "participants": 10,
+      "revisions": 12,
+      "data_equal": true,
+      "html_equal": false
+    },
+    {
+      "participants": 10,
+      "revisions": 52,
+      "data_equal": true,
+      "html_equal": false
+    },
+    {
+      "participants": 50,
+      "revisions": 1,
+      "data_equal": true,
+      "html_equal": false
+    },
+    {
+      "participants": 50,
+      "revisions": 12,
+      "data_equal": true,
+      "html_equal": false
+    },
+    {
+      "participants": 50,
+      "revisions": 52,
+      "data_equal": true,
+      "html_equal": false
+    },
+    {
+      "participants": 200,
+      "revisions": 1,
+      "data_equal": true,
+      "html_equal": false
+    },
+    {
+      "participants": 200,
+      "revisions": 12,
+      "data_equal": true,
+      "html_equal": false
+    },
+    {
+      "participants": 200,
+      "revisions": 52,
+      "data_equal": true,
+      "html_equal": false
+    }
+  ]
+}
