@@ -1,6 +1,6 @@
 # Autonomní dokončení priorit 1, 7 a 8 — 7. 11. 2026
 
-ID AUTO01, registr P11 / P14 / P10 / C04. Stav: ROZPRACOVÁNO.
+ID AUTO01, registr P11 / P14 / P10 / C04. Stav: HOTOVO pro převzatý rozsah P14/P10/C04 a kontrolu souběhu; bod 1 má původní vlastníky.
 Vlastník výslovně zadal ověřit aktuální stav a práci ostatních vláken, nic
 neduplikovat, dokončit dostupné kroky bez jeho vstupu a průběžně psát do repa.
 Pořadí a závislosti: [registr](WORK_PLAN_CURRENT.md#priority-a-závislosti).
@@ -30,16 +30,17 @@ Doklady se po jejich dokončení převezmou do společného registru.
 | Krok | Stav / přijetí |
 | --- | --- |
 | 1 — zabránit duplicitám | HOTOVO vstupní kontrola; průběžně sledovat výsledková předání a skutečný main. [Lekce](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md), [karty](ACCESS_OVERVIEW_2026-11-07.md). |
-| 7 — novější záloha | PLÁNOVÁNO: prověřit existující `production-drills.yml`, spustit `obnovit-zalohu-izolovane` pro nejnovější dostupnou generaci. Uložit název, hash, počty tabulek/řádků/triggerů a úspěšný úklid; neplést se staršími třemi obnovenými generacemi. |
-| 8 — větve a WIP | PLÁNOVÁNO: inventura všech místních větví a worktrees, rozlišení ancestry/patch shody po squash, bezpečné otisky rozpracovaných sledovaných souborů. Kandidát k posouzení není povolení smazání. |
-| 8 — technické nálezy | PLÁNOVÁNO: prověřit konkrétní kandidáty [starého úklidu](DOZOR_UKLID_2026-10-25.md) proti dnešnímu kódu a testům. Opravit doloženou malou chybu v existujícím rozsahu, nebo zapsat důkaz, proč další změna není potřebná / vyžaduje vlastníka. |
-| Společné předání | PLÁNOVÁNO: důkazy, stav a další krok v [protokolu](verification/autonomous-priorities-20261107/RESULTS.md), registru, CURRENT, handoffu a deníku; přes GitHub PR. |
+| 7 — novější záloha | PASS 42376793141: novější generace z 7. 11., ověření SHA, počtů řádků 389 tabulek a 2 triggerů; izolované dočasné prostředí uklizené. [Důkaz](verification/autonomous-priorities-20261107/restore-proof.json). |
+| 8 — větve a WIP | HOTOVO snímek 332 větví / 156 worktrees, PR/ancestry/shoda obsahu a otisky WIP. Root WIP nezměněný. 41 větví k posouzení vlastníkem, nikoli automatické smazání. |
+| 8 — technické nálezy | HOTOVO: alias/export, blokace ebook a použití fontu ověřené; 14 testů / 289 assertions a 3 anonymní HEAD PASS. Bez doložené nové chyby; žádná zbytečná runtime změna nebo odstranění ochranných testů. |
+| Společné předání | HOTOVO obsahově: důkazy, stav a další krok v [protokolu](verification/autonomous-priorities-20261107/RESULTS.md), registru, CURRENT, handoffu a deníku; přes GitHub PR. |
 
 ## Průběh a další krok
 
-Vstupní kontrola zabránila třem duplicitním pracím z bodu 1. Další krok je
-čtecí kontrola bezpečnosti existující izolované obnovy a konkrétní novější záloha;
-souběžně lze dokončit inventuru WIP a dnešní platnosti starých nálezů.
+Vstupní kontrola zabránila třem duplicitním pracím. #369 s výsledky nasazení
+je nyní v main, #366 také sloučené (bez nového produkčního povolení). Cílený
+Chrome zůstává původnímu vlastníkovi #365. Vlastní P14 a triáž P10/C04 dokončené;
+[předání PR #370](https://github.com/KovoPraha/evidenceTreninku/pull/370) určuje skutečný stav CI/merge.
 
 Podklady: [provozní inventura](verification/operations-inventory-20261106/RESULTS.md),
 [předchozí obnovy](verification/autonomous-p01-p14-20261106/RESULTS.md),

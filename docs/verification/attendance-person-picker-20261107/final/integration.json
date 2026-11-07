@@ -1,0 +1,17 @@
+{
+  "complete": true,
+  "measured_after_commit": "2a375836",
+  "integrated_application_commit": "9d4a7538a640d1d9e76373f76e321dbc64130b25",
+  "upstream_main": "269684c234698cb40ae661e4080e318d4a05cfd3",
+  "integrated_targeted_tests": 50,
+  "integrated_assertions": 1294,
+  "php_quality_run": 42375011506,
+  "php_quality_conclusion": "success",
+  "full_integrated_http_remeasurement": false,
+  "production_changed_by_this_work": false,
+  "integrated_sources_sha256_lf": {
+    "training_closure_admin.php": "e6612c149799001be0f368fa3d938e7c33c3d28785a57eed5474f6fb6ce3853f",
+    "includes/training_closure_people.php": "b539342556fd39ea91b23f01f267a9d57d59bde6433a25417aaed2d764a37b34",
+    "includes/training_day.php": "8f74fdb7537e8d68ee08dc8553db3c5c14596ef41479d8f60a6b5ef79a9c5a84"
+  }
+}

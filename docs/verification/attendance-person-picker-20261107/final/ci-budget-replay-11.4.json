@@ -1,0 +1,214 @@
+{
+    "complete": true,
+    "before_source_sha": "89edfdbee5fbddbe05e0134d94f79ba0cb4143d9",
+    "after_source_sha": "4db3027162ba661fda3f25703bf848153eaa111c",
+    "server": {
+        "version": "11.4.13-MariaDB-ubu2404",
+        "port": 3306
+    },
+    "php": "8.2.35",
+    "domain_results_equal": true,
+    "html_lf_equal": true,
+    "timing_samples_per_phase": 270,
+    "sql_samples_per_phase": 9,
+    "cases": [
+        {
+            "participants": 10,
+            "revisions": 1,
+            "role": "coach",
+            "before": {
+                "sql": 68,
+                "rows": 141,
+                "median_ms": 23.869628499999997,
+                "p95_ms": 24.671655,
+                "peak_increment_bytes": 198880
+            },
+            "after": {
+                "sql": 56,
+                "rows": 139,
+                "median_ms": 21.287316,
+                "p95_ms": 21.593127,
+                "peak_increment_bytes": 238408
+            },
+            "sql_reduction_percent": 17.65,
+            "row_reduction_percent": 1.42,
+            "median_speedup": 1.12
+        },
+        {
+            "participants": 10,
+            "revisions": 12,
+            "role": "coach",
+            "before": {
+                "sql": 68,
+                "rows": 152,
+                "median_ms": 24.014830500000002,
+                "p95_ms": 34.745741,
+                "peak_increment_bytes": 205024
+            },
+            "after": {
+                "sql": 56,
+                "rows": 150,
+                "median_ms": 21.348224000000002,
+                "p95_ms": 22.159944,
+                "peak_increment_bytes": 244552
+            },
+            "sql_reduction_percent": 17.65,
+            "row_reduction_percent": 1.32,
+            "median_speedup": 1.12
+        },
+        {
+            "participants": 10,
+            "revisions": 52,
+            "role": "coach",
+            "before": {
+                "sql": 68,
+                "rows": 192,
+                "median_ms": 23.9446695,
+                "p95_ms": 24.379836,
+                "peak_increment_bytes": 227808
+            },
+            "after": {
+                "sql": 56,
+                "rows": 190,
+                "median_ms": 21.483001,
+                "p95_ms": 21.841266,
+                "peak_increment_bytes": 267336
+            },
+            "sql_reduction_percent": 17.65,
+            "row_reduction_percent": 1.04,
+            "median_speedup": 1.11
+        },
+        {
+            "participants": 50,
+            "revisions": 1,
+            "role": "coach",
+            "before": {
+                "sql": 108,
+                "rows": 301,
+                "median_ms": 30.0081235,
+                "p95_ms": 30.723471,
+                "peak_increment_bytes": 211144
+            },
+            "after": {
+                "sql": 56,
+                "rows": 299,
+                "median_ms": 21.713092500000002,
+                "p95_ms": 22.974333,
+                "peak_increment_bytes": 240552
+            },
+            "sql_reduction_percent": 48.15,
+            "row_reduction_percent": 0.66,
+            "median_speedup": 1.38
+        },
+        {
+            "participants": 50,
+            "revisions": 12,
+            "role": "coach",
+            "before": {
+                "sql": 108,
+                "rows": 312,
+                "median_ms": 30.309244,
+                "p95_ms": 31.893908,
+                "peak_increment_bytes": 217112
+            },
+            "after": {
+                "sql": 56,
+                "rows": 310,
+                "median_ms": 22.157980000000002,
+                "p95_ms": 28.779033,
+                "peak_increment_bytes": 246696
+            },
+            "sql_reduction_percent": 48.15,
+            "row_reduction_percent": 0.64,
+            "median_speedup": 1.37
+        },
+        {
+            "participants": 50,
+            "revisions": 52,
+            "role": "coach",
+            "before": {
+                "sql": 108,
+                "rows": 352,
+                "median_ms": 30.401137499999997,
+                "p95_ms": 37.381794,
+                "peak_increment_bytes": 239192
+            },
+            "after": {
+                "sql": 56,
+                "rows": 350,
+                "median_ms": 22.0535565,
+                "p95_ms": 22.358625,
+                "peak_increment_bytes": 269480
+            },
+            "sql_reduction_percent": 48.15,
+            "row_reduction_percent": 0.57,
+            "median_speedup": 1.38
+        },
+        {
+            "participants": 200,
+            "revisions": 1,
+            "role": "coach",
+            "before": {
+                "sql": 258,
+                "rows": 901,
+                "median_ms": 54.0399065,
+                "p95_ms": 56.838469,
+                "peak_increment_bytes": 369608
+            },
+            "after": {
+                "sql": 56,
+                "rows": 899,
+                "median_ms": 23.4151445,
+                "p95_ms": 24.7668,
+                "peak_increment_bytes": 369608
+            },
+            "sql_reduction_percent": 78.29,
+            "row_reduction_percent": 0.22,
+            "median_speedup": 2.31
+        },
+        {
+            "participants": 200,
+            "revisions": 12,
+            "role": "coach",
+            "before": {
+                "sql": 258,
+                "rows": 912,
+                "median_ms": 53.390570499999995,
+                "p95_ms": 61.313844,
+                "peak_increment_bytes": 375576
+            },
+            "after": {
+                "sql": 56,
+                "rows": 910,
+                "median_ms": 23.2663445,
+                "p95_ms": 24.240689,
+                "peak_increment_bytes": 375576
+            },
+            "sql_reduction_percent": 78.29,
+            "row_reduction_percent": 0.22,
+            "median_speedup": 2.29
+        },
+        {
+            "participants": 200,
+            "revisions": 52,
+            "role": "coach",
+            "before": {
+                "sql": 258,
+                "rows": 952,
+                "median_ms": 53.5806075,
+                "p95_ms": 56.28673,
+                "peak_increment_bytes": 397656
+            },
+            "after": {
+                "sql": 56,
+                "rows": 950,
+                "median_ms": 23.372859499999997,
+                "p95_ms": 25.059952,
+                "peak_increment_bytes": 397656
+            },
+            "sql_reduction_percent": 78.29,
+            "row_reduction_percent": 0.21,
+            "median_speedup": 2.29
+        }
+    ]
+}

@@ -1,0 +1,53 @@
+{
+  "complete": true,
+  "contexts": [
+    {
+      "javascript_enabled": false,
+      "checks": [
+        "Initial 200 selected participants",
+        "Initial paper source",
+        "Keyboard Enter search preserves selections",
+        "Search preserves draft text",
+        "Search keeps concurrency version",
+        "Off-page guest is searchable",
+        "New guest pinned after empty search",
+        "Confirmation remains checked",
+        "Intentionally empty selection remains empty",
+        "Keyboard paging reaches second page",
+        "Paging keeps empty draft",
+        "Excuse selection survives different query",
+        "Excuse time retained",
+        "Excuse source retained",
+        "Excuse reason retained",
+        "Expected JavaScript mode",
+        "390 px layout has no horizontal overflow"
+      ],
+      "native_search_and_keyboard": true,
+      "screenshot": "picker-nojs-desktop.png"
+    },
+    {
+      "javascript_enabled": true,
+      "checks": [
+        "Initial 200 selected participants",
+        "Initial paper source",
+        "Keyboard Enter search preserves selections",
+        "Search preserves draft text",
+        "Search keeps concurrency version",
+        "Off-page guest is searchable",
+        "New guest pinned after empty search",
+        "Confirmation remains checked",
+        "Intentionally empty selection remains empty",
+        "Keyboard paging reaches second page",
+        "Paging keeps empty draft",
+        "Excuse selection survives different query",
+        "Excuse time retained",
+        "Excuse source retained",
+        "Excuse reason retained",
+        "Expected JavaScript mode",
+        "390 px layout has no horizontal overflow"
+      ],
+      "native_search_and_keyboard": true,
+      "screenshot": "picker-js-desktop.png"
+    }
+  ]
+}

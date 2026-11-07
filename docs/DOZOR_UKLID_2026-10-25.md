@@ -1,5 +1,10 @@
 # Dozor 5 — úklid a návrh dalších kroků
 
+> Ověření 7. 11. 2026: konkrétní export/PDF/font kandidáty znovu prověřil
+> [AUTO01](verification/autonomous-priorities-20261107/RESULTS.md). Alias a blokace
+> jsou vyřešené, font se používá; další introspekce/Wiring není plošný příkaz k odstranění.
+
+
 Základ: `3b164e91`, 25. 10. 2026. Pouze změna aliasu exportu a vyloučení nepoužívaného PDF; introspekce a testy se nemažou.
 
 ## Export a statické soubory

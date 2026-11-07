@@ -13,16 +13,15 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 
-- AUTO01: [plán priorit 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), vlastní P14 + P10/C04; bod 1 původní relace #365/#366/#369. [Priority](WORK_PLAN_CURRENT.md#priority-a-závislosti), [katalog](PLAN_CATALOG.md).
+- AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
 
-- P11: celé HTTP/browser na `feb8fe8c` HOTOVO; [výsledky](verification/full-http-performance-20261107/RESULTS.md),
-  [předání a další kroky](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md). 65 případů / 930 HTTP vzorků,
-  403 browser pozorování; role/filtry/revokace PASS. [R06 dávkové lekce #367 HOTOVO](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md); dále výběr osob a mobil/souběh.
-  R13 #352 / R05 #353 / R06 #354 zahrnuje ROLE01; novější main nebyl přeměřen.
-  [PR #363](https://github.com/KovoPraha/evidenceTreninku/pull/363), větev `codex/full-http-performance-20261107`;
-  vlastní worktree viz předání. Po integraci main cíleně 47 testů / 2877 assertions PASS.
-  #363 sloučené (`d958fd6e`); bez deploye, runtime uklizený, původní WIP zachovaný.
-  Klubové ceny #358 zahrnuté v nasazení; [katalog #364 nasazený: protokol a další krok](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md).
+- P11 picker: implementace/místní měření/UAT HOTOVO, **bez našeho deploye**; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+  [finální výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [předání / PR #366](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+  1,37 MB → 92 kB, Chrome trenér 4,79 → 0,59 s; obě rozepsané části, JS/noJS, role a zápisy PASS.
+  Větev `codex/attendance-person-picker-20261107`, sloučené #366 (`faae75e8`); runtime uklizený, WIP zachovaný.
+  Převzaté [lekce #367 nasazené jiným vláknem](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md); celé HTTP společné verze dosud nepřeměřené.
+  [Původní HTTP #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md) je historický base; dále R13/R05/rows examined/mobil/souběh.
+  R13/R05/R06 #354 zahrnuje ROLE01; [katalog #364 a cizí vydání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zachované. K0.2 otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

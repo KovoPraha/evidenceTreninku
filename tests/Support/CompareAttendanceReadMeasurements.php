@@ -45,8 +45,10 @@ foreach ($oldCases as $i => $old) {
     if ($old['result']['data'] !== $new['result']['data'] || $old['result']['html_lf_sha256'] !== $new['result']['html_lf_sha256']) {
         throw new RuntimeException('Attendance data or rendered HTML changed.');
     }
-    // Structural budgets for this fixed fixture; shared CI timing is diagnostic only.
-    if ($new['sql']['count'] > 45 || $new['sql']['fetched_rows'] > 1000
+    // Current shared UI: original 45 + 14 bounded-picker reads - 3 batched lesson reads.
+    // Canonical validator budgets (3/200 and 5/1200) stay in AttendanceReadProfile.
+    // Full HTML/data parity, row cap and relative improvement remain mandatory.
+    if ($new['sql']['count'] > 56 || $new['sql']['fetched_rows'] > 1000
         || $new['sql']['count'] >= $old['sql']['count'] || $new['sql']['fetched_rows'] > $old['sql']['fetched_rows']) {
         throw new RuntimeException('Attendance query/row budget or measured improvement regressed.');
     }

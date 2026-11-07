@@ -1,0 +1,17 @@
+{
+  "synthetic_only": true,
+  "schema_removed": true,
+  "web_user_removed": true,
+  "owned_config_removed": true,
+  "credentials_and_cookie_jars_removed": true,
+  "http_stopped": true,
+  "mariadb_stopped": true,
+  "browser_closed": true,
+  "socket_connect_results": {
+    "18095": 10035,
+    "33459": 10035
+  },
+  "baseline_config_removed": true,
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "runtime_retained_stopped": true
+}

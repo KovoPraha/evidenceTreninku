@@ -76,5 +76,5 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
-AUTO01: [pokračování priorit 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 obnova v izolaci a P10/C04 čtecí inventura; [priority](WORK_PLAN_CURRENT.md#priority-a-závislosti).
+AUTO01: [výsledky priorit 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md): novější záloha 389 tabulek / 2 triggery PASS v izolaci; inventura 332 větví / 156 worktrees, WIP zachované.
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)

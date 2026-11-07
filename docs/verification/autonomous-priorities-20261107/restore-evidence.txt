@@ -1,0 +1,4 @@
+evidence_2026-11-07_125007_ce199079.sql.gz: OK
+Generace 1 obnovena: 389 tabulek, 2 triggeru.
+Izolovana obnova overena pro 1 generaci zaloh.
+Uklid docasnych dat drillu: success

@@ -9670,17 +9670,131 @@
       "evidence": []
     },
     {
+      "id": "PL-c0b7a64780",
+      "path": "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+      "title": "P11 R06 — výběr osob v docházce, 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-10360221ef",
+      "path": "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+      "title": "P11 R06 — předání výběru osob v docházce, 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-607748e4e4",
+      "path": "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+      "title": "P11 R06 — omezený výběr osob v docházce, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-491b6bafd7",
+      "path": "docs/verification/attendance-person-picker-20261107/CALIBRATION.md",
+      "title": "Kalibrace a oddělení důkazů, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-53ee3c4ece",
+      "path": "docs/verification/attendance-person-picker-20261107/REPRODUCE.md",
+      "title": "Opakování P11 R06 výběru osob",
+      "primary": false,
+      "role": "reference",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-d04eafb86a",
+      "path": "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+      "title": "P11 R06 — finální výběr osob, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-b357de1d32",
+      "path": "docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md",
+      "title": "Kalibrace finálního páru, 7. 11. 2026",
+      "primary": false,
+      "role": "reference",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-629fbd394e",
+      "path": "docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md",
+      "title": "Opakování P11 R06 výběru osob",
+      "primary": false,
+      "role": "reference",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "evidence": [
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+      ]
+    },
+    {
       "id": "PL-c7836c4046",
       "path": "docs/AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md",
       "title": "Autonomní dokončení priorit 1, 7 a 8 — 7. 11. 2026",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P14/P10/P11/C04",
-      "disposition": "Autonomní průchod podle výslovného zadání vlastníka; bod 1 má aktivní vlastníky, tato relace obnovuje novější zálohu v izolaci a prověřuje WIP/technické kandidáty. Bez produkční datové obnovy či mazání cizí práce.",
+      "disposition": "Samostatný průchod dokončený: novější DB záloha 389 tabulek / 2 triggery PASS v izolaci, čtecí inventura 332 větví / 156 worktrees, kandidáti a WIP ověřené bez mazání. Bod 1 neduplikován, otevřené vizuální/provozní kroky mají původní vlastníky.",
       "evidence": [
-        "docs/AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md",
-        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md",
+        "docs/verification/autonomous-priorities-20261107/restore-proof.json",
+        "docs/verification/autonomous-priorities-20261107/work-inventory.json",
+        "docs/verification/autonomous-priorities-20261107/technical-candidates-junit.xml"
       ]
     },
     {
@@ -9689,16 +9803,112 @@
       "title": "Priority 1 / 7 / 8 — výsledky autonomního průchodu",
       "primary": false,
       "role": "evidence",
-      "status": "IN_PROGRESS",
+      "status": "REFERENCE",
       "registry": "P14/P10/P11/C04",
       "disposition": "Autonomní průchod podle výslovného zadání vlastníka; bod 1 má aktivní vlastníky, tato relace obnovuje novější zálohu v izolaci a prověřuje WIP/technické kandidáty. Bez produkční datové obnovy či mazání cizí práce.",
       "evidence": [
-        "docs/AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md",
+        "docs/verification/autonomous-priorities-20261107/restore-proof.json",
+        "docs/verification/autonomous-priorities-20261107/work-inventory.json",
+        "docs/verification/autonomous-priorities-20261107/technical-candidates.json",
+        "docs/verification/autonomous-priorities-20261107/technical-candidates-junit.xml"
+      ]
+    },
+    {
+      "id": "PL-b21613ab0c",
+      "path": "docs/verification/autonomous-priorities-20261107/restore-proof.json",
+      "title": "restore-proof.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-be0c6f50a6",
+      "path": "docs/verification/autonomous-priorities-20261107/restore-evidence.txt",
+      "title": "restore-evidence.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-6e7cacb9d3",
+      "path": "docs/verification/autonomous-priorities-20261107/work-inventory.json",
+      "title": "work-inventory.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-b01de98e79",
+      "path": "docs/verification/autonomous-priorities-20261107/inventory.py.txt",
+      "title": "inventory.py.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-c2803a08b6",
+      "path": "docs/verification/autonomous-priorities-20261107/technical-candidates.json",
+      "title": "technical-candidates.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-f2ad7d0e44",
+      "path": "docs/verification/autonomous-priorities-20261107/technical-candidates-junit.xml",
+      "title": "technical-candidates-junit.xml",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
         "docs/verification/autonomous-priorities-20261107/RESULTS.md"
       ]
     }
   ],
   "checked_main": "3b37e053",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
-  "binary_documents": 21
+  "binary_documents": 21,
+  "updates": [
+    {
+      "date": "2026-11-07",
+      "pull_request": 366,
+      "added_paths": [
+        "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/CALIBRATION.md",
+        "docs/verification/attendance-person-picker-20261107/REPRODUCE.md",
+        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
+        "docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md",
+        "docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md"
+      ]
+    }
+  ]
 }
