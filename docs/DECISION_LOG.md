@@ -51,6 +51,8 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
   Historické objednávky bez pověření zpětně nerozesílat; ruční doklady nepřepisovat.
 - **Varianty:** vystavení během platební transakce by spojilo PDF výpadek s penězi;
   plošný nový odesílač by zasáhl staré zprávy. Zvolen omezený worker a verze pověření.
+- **Provozní cesta:** při nefunkčním Computer Use chráněná operace s přesným
+  vystavovatelem/IČ a existujícím platným finančním pověřením; bez falešné session.
 - **Realizace / akceptace:** [plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [lokální důkazy a otevřené meze](verification/shop-document-automation-20261107/RESULTS.md).
 

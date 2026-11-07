@@ -10,7 +10,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 - P07 N1/N2: automatické doklady a zprávy objednávek implementované v
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355); vlastník schválil merge i deploy.
   [Plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
-  Místní tok PASS (51/496); dále CI/merge/deploy/aktivace. Banka a schránka neověřené.
+  Místní tok PASS (51/496); dále CI/merge/deploy a chráněné shop_enable. Browser blokovaný; banka/schránka neověřené.
 
 - ROLE01: [plán a oprávnění](ACCESS_OVERVIEW_2026-11-07.md), [PR #356](https://github.com/KovoPraha/evidenceTreninku/pull/356).
   Přehled a místní ověření hotové; následně schválený deploy a formulářový test

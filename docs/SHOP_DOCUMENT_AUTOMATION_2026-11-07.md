@@ -76,3 +76,22 @@ se nepřepisují automatickým úplným stornem. Operátor tak musí dořešit p
 kde už existuje jiná oprava. Opravné PDF není potvrzení výplaty.
 
 [Konkrétní důkazy a meze přejímky](verification/shop-document-automation-20261107/RESULTS.md).
+
+## Provozní aktivace bez funkčního ovládání prohlížeče
+
+Computer Use 7. 11. odmítlo pokračovat, protože ve Windows nedokázalo spolehlivě
+ověřit aktuální URL. Produkční browser UAT tohoto vydání proto není potvrzené.
+Náhradou pro schválenou aktivaci je chráněné workflow
+`staff-notifications-production.yml`, nejprve `status`, poté `shop_enable`.
+Operátor předá přesné `issuer_id` ze statusu a ověřené `issuer_registration_id`;
+`potvrzeni=ZAPNOUT-UPOZORNENI`. Operace ověří neměnnou verzi vystavovatele,
+její IČ a stále aktivní finanční oprávnění původního schvalujícího. Nevytváří
+přihlášenou session ani nepřiděluje roli. Audit obsahuje ID chráněného běhu.
+Opakovaná aktivace téhož vystavovatele nevyrobí další pověření; jiného odmítne.
+Potom `status` a přirozený minutový tick ověří stav workeru. Vlastník tuto
+aktivaci zadal spolu s dokončením a nasazením; nejde o nový bankovní pohyb.
+
+CI odhalilo chybějící vlastnictví nových tabulek pro zálohy; obě tabulky byly
+zařazeny do `EVIDENCE_TABLES`. Opraveny byly i inicializační větve veřejných
+stránek (příslušné staré výjimky PHPStan odstraněny) a formátově závislé
+kontroly PHP výrazů. Věcné testované podmínky zůstaly zachované.

@@ -85,6 +85,27 @@ final class ShopDocumentAutomationTest extends TestCase
         ;
     }
 
+    public function testProtectedActivationUsesExistingIssuerMandateWithoutCreatingSessionOrDuplicatePolicy(): void
+    {
+        \shopDocumentConfigure($this->pdo, 1, 'LOCALHOST vypnutí před provozní aktivací.', false);
+        $_SESSION = [];
+        $id = \shopDocumentEnableApprovedIssuer($this->pdo, 1, 'LOCALHOST', 'LOCALHOST chráněné zadání.');
+        self::assertSame($id, \shopDocumentEnableApprovedIssuer($this->pdo, 1, 'LOCALHOST', 'LOCALHOST opakování.'));
+        self::assertSame([], $_SESSION);
+        self::assertNull(\AccountingDocumentWorker::actor());
+        self::assertTrue(\shopDocumentStatus($this->pdo)['enabled']);
+        self::assertSame(1, \shopDocumentStatus($this->pdo)['available_issuer']['id']);
+        try {
+            \shopDocumentEnableApprovedIssuer($this->pdo, 1, 'OTHER', 'LOCALHOST chybný vystavovatel.');
+            self::fail('Issuer mismatch must be refused.');
+        } catch (\DomainException $e) {
+            self::assertStringContainsString('IČ', $e->getMessage());
+        }
+        $this->pdo->exec('DELETE FROM staff_user_positions WHERE trainer_id=7');
+        $this->expectException(\DomainException::class);
+        \shopDocumentEnableApprovedIssuer($this->pdo, 1, 'LOCALHOST', 'LOCALHOST odňaté pověření.');
+    }
+
     public function testFullOrderPaymentDocumentCancelCorrectionRefundAndReplay(): void
     {
         $p = $this->pdo;

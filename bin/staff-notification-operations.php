@@ -13,7 +13,7 @@ $job = null;
 try {
     $host = (string)getenv('APP_HOST');
     $action = (string)getenv('STAFF_NOTIFICATION_ACTION');
-    if ($host !== 'kis.kovopraha.cz' || !in_array($action, ['status', 'install', 'process'], true)) {
+    if ($host !== 'kis.kovopraha.cz' || !in_array($action, ['status', 'install', 'process', 'shop_enable'], true)) {
         throw new RuntimeException('staff_notification_invalid_operation');
     }
     $_SERVER['HTTP_HOST'] = $host;
@@ -43,6 +43,20 @@ try {
         } finally {
             $pdo->rollBack();
         }
+    } elseif ($action === 'shop_enable') {
+        $issuerId = (string)getenv('SHOP_DOCUMENT_ISSUER_ID');
+        $registrationId = (string)getenv('SHOP_DOCUMENT_ISSUER_REGISTRATION_ID');
+        $runId = (string)getenv('SHOP_DOCUMENT_OPERATION_RUN_ID');
+        if (!ctype_digit($issuerId) || !ctype_digit($registrationId) || !ctype_digit($runId)) {
+            throw new RuntimeException('shop_document_activation_inputs_invalid');
+        }
+        shopDocumentEnableApprovedIssuer(
+            $pdo,
+            (int)$issuerId,
+            $registrationId,
+            'Aktivace podle zadání vlastníka; chráněná provozní operace GitHub Actions '.$runId.'.'
+        );
+        $result = ['shop' => shopDocumentStatus($pdo)];
     } elseif ($action === 'install') {
         // Require the deployed schema before enabling a persistent job.
         staffNotificationWorkerStatus($pdo);

@@ -14,6 +14,35 @@ function shopDocumentPolicy(PDO $pdo): ?array
     return $row && (int)$row['enabled'] === 1 ? $row : null;
 }
 
+/** Protected operations entry point: reuse a named, previously approved issuer and its still-valid finance mandate. */
+function shopDocumentEnableApprovedIssuer(PDO $pdo, int $issuerId, string $registrationId, string $reason): int
+{
+    if (PHP_SAPI !== 'cli' || $issuerId < 1 || trim($registrationId) === '') {
+        throw new DomainException('Aktivace vyžaduje chráněnou provozní operaci a přesného vystavovatele.');
+    }
+    $q = $pdo->prepare('SELECT * FROM accounting_issuer_versions WHERE id=?');
+    $q->execute([$issuerId]);
+    $issuer = $q->fetch(PDO::FETCH_ASSOC);
+    $party = $issuer ? json_decode($issuer['snapshot_json'], true, 512, JSON_THROW_ON_ERROR) : [];
+    if (!$issuer || !hash_equals((string)($party['registration_id'] ?? ''), $registrationId)) {
+        throw new DomainException('Schválený vystavovatel neodpovídá očekávanému IČ.');
+    }
+    return AccountingDocumentWorker::run($pdo, (int)$issuer['approved_by'], static function () use (
+        $pdo,
+        $issuerId,
+        $reason
+    ): int {
+        $current = shopDocumentPolicy($pdo);
+        if ($current !== null) {
+            if ((int)$current['issuer_id'] !== $issuerId) {
+                throw new DomainException('Aktivní pověření používá jiného vystavovatele; změnu proveďte v administraci.');
+            }
+            return (int)$current['id'];
+        }
+        return shopDocumentConfigure($pdo, $issuerId, $reason);
+    });
+}
+
 /** An explicit, versioned finance mandate. Never run during migrations or GET requests. */
 function shopDocumentConfigure(PDO $pdo, int $issuerId, string $reason, bool $enabled = true): int
 {
@@ -246,7 +275,11 @@ function shopDocumentNotify(PDO $pdo, int $orderId, string $type): int
 function shopDocumentStatus(PDO $pdo): array
 {
     $policy = shopDocumentPolicy($pdo);
+    $issuer = $pdo->query('SELECT id,snapshot_json FROM accounting_issuer_versions ORDER BY id DESC LIMIT 1')->fetch(PDO::FETCH_ASSOC);
+    $party = $issuer ? json_decode($issuer['snapshot_json'], true, 512, JSON_THROW_ON_ERROR) : [];
     return ['enabled' => $policy !== null, 'policy_id' => $policy['id'] ?? null,
+        'available_issuer' => $issuer ? ['id' => (int)$issuer['id'], 'name' => $party['name'],
+            'registration_id' => $party['registration_id']] : null,
         'registered' => (int)$pdo->query('SELECT COUNT(*) FROM shop_order_documents')->fetchColumn(),
         'document_errors' => (int)$pdo->query('SELECT COUNT(*) FROM shop_order_documents WHERE last_error IS NOT NULL')->
     fetchColumn(),
