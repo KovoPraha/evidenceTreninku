@@ -62,3 +62,16 @@ Nešlo o skutečný bankovní převod ani externí e-mail.
 
 Výsledky finálního CI, sloučení, nasazení a aktivace budou doplněny po
 dokončení. Tyto lokální důkazy je nenahrazují.
+
+## Předběžné CI a oprava srovnávacího prostředí
+
+Hlava `efdd7a2a`: [CI 42360862108](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42360862108)
+prošla PHPUnit **2337 testů / 43257 assertions**, integračními smoke na MariaDB
+10.3 i 11.4 a samostatnou linuxovou kontrolou privátního úložiště. PHPStan,
+styl, dokumentace a CodeQL také PASS. Dva profily čtení odmítly porovnání,
+protože připnuté historické aplikace měly 159 migrací a aktuální 160.
+Workflow nyní přidává tutéž novou migraci dokladů do všech tří izolovaných
+srovnávacích kopií; historický aplikační kód zůstává připnutý a kontroly
+shody dat/HTML, počtu tabulek/migrací i oprávnění zůstávají povinné.
+Nová sada automatizace včetně chráněné aktivace: **12 testů / 233 assertions PASS**.
+Vlastní místní web 18086 a syntetická MariaDB 33427 byly po přejímce zastavené.
