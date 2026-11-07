@@ -88,3 +88,8 @@ před/po a ověřit shodné karty/ceny/menu. Neměnit produkční data ani přep
 Aktuální produkční workflow už nasadilo `3b37e053` (42365946802) v jiném úkolu;
 neopakovat jeho aktivace ani vizuální role UAT. Nyní nasadit pouze nový katalog.
 Další etapa: P11-R06-LESSONS, dávkový výběr nabízených lekcí podle #363.
+
+CI oprava před deployem: integrační MariaDB job měl původní limit 10 minut;
+po přidání úplných párových katalogových profilů 11.4 opakovaně skončila
+zrušením u této hranice (42366360313). Rozpočet jobu zvýšen na 20 minut,
+všechny kontroly zachované. Timeout není vydáván za PASS.
