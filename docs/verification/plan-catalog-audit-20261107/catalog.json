@@ -9280,10 +9280,11 @@
       "role": "plan",
       "status": "DONE",
       "registry": "P11",
-      "disposition": "Katalog #364 implementovaný, ověřený a nasazený c70939d4 / 42372002993. Veřejná pole 5/5 shodná; původní DOM baseline neprůkazný, v2 po deployi stabilní. Přihlášené produkční UI UAT zůstává NOT RUN; dále R06 #367.",
+      "disposition": "Dílčí čtecí optimalizace: implementace, nativní parita/měření, merge a schválené nasazení hotové; celé K0.2 otevřené.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
-        "docs/verification/catalog-release-20261107/RESULTS.md"
+        "docs/verification/catalog-release-20261107/RESULTS.md",
+        "docs/verification/attendance-lesson-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -9294,7 +9295,7 @@
       "role": "handoff",
       "status": "REFERENCE",
       "registry": "P11",
-      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "disposition": "Aktuální předání dokončeného dílčího řezu a odkaz na skutečné provozní důkazy; další P11 samostatně.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md"
       ]
@@ -9383,11 +9384,12 @@
       "title": "ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11",
-      "disposition": "Dávkové lekce implementované, parita a měření doložené; #367 sloučené jako 269684c2. Zbývá doložení schváleného vhodného deploye a následná kontrola, v původní relaci. Priorita 1 v registru.",
+      "disposition": "Dílčí čtecí optimalizace: implementace, nativní parita/měření, merge a schválené nasazení hotové; celé K0.2 otevřené.",
       "evidence": [
-        "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
+        "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md",
+        "docs/verification/attendance-lesson-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -9396,9 +9398,9 @@
       "title": "SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
       "primary": false,
       "role": "handoff",
-      "status": "PARTIAL",
+      "status": "REFERENCE",
       "registry": "P11",
-      "disposition": "Dávkový výběr lekcí: schválená implementace podle výkonové analýzy, rozpracováno.",
+      "disposition": "Aktuální předání dokončeného dílčího řezu a odkaz na skutečné provozní důkazy; další P11 samostatně.",
       "evidence": [
         "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
       ]
@@ -9580,6 +9582,94 @@
       "evidence": []
     },
     {
+      "id": "PL-d2d8935760",
+      "path": "docs/verification/attendance-lesson-release-20261107/after.json",
+      "title": "after.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-b599cfe9fc",
+      "path": "docs/verification/attendance-lesson-release-20261107/anonymous-lesson.json",
+      "title": "anonymous-lesson.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-3ec1623c55",
+      "path": "docs/verification/attendance-lesson-release-20261107/anonymous-lesson.php.txt",
+      "title": "anonymous-lesson.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-b0f1a886c9",
+      "path": "docs/verification/attendance-lesson-release-20261107/before.json",
+      "title": "before.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2650687986",
+      "path": "docs/verification/attendance-lesson-release-20261107/deployment.json",
+      "title": "deployment.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-3bb72b363f",
+      "path": "docs/verification/attendance-lesson-release-20261107/initial-wrong-route.json",
+      "title": "initial-wrong-route.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-33db4f8391",
+      "path": "docs/verification/attendance-lesson-release-20261107/RESULTS.md",
+      "title": "RESULTS.md",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-28f93c29c8",
+      "path": "docs/verification/attendance-lesson-release-20261107/snapshot.php.txt",
+      "title": "snapshot.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
       "id": "PL-c0b7a64780",
       "path": "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
       "title": "P11 R06 — výběr osob v docházce, 7. 11. 2026",
@@ -9694,21 +9784,5 @@
   ],
   "checked_main": "3b37e053",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
-  "binary_documents": 21,
-  "updates": [
-    {
-      "date": "2026-11-07",
-      "pull_request": 366,
-      "added_paths": [
-        "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
-        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
-        "docs/verification/attendance-person-picker-20261107/RESULTS.md",
-        "docs/verification/attendance-person-picker-20261107/CALIBRATION.md",
-        "docs/verification/attendance-person-picker-20261107/REPRODUCE.md",
-        "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
-        "docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md",
-        "docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md"
-      ]
-    }
-  ]
+  "binary_documents": 21
 }

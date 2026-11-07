@@ -1,18 +1,19 @@
 # Předání P11-R06-LESSONS — 7. 11. 2026
 
+HOTOVO: dávkové čtení nabídky lekcí, parita, měření, merge a schválené nasazení.
 [Plán](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md),
-[výsledky](verification/attendance-lesson-read-performance-20261107/RESULTS.md).
-Vlastní větev/worktree v plánu, původní WIP zachovaný. ROZPRACOVÁNO.
-Reference a dávkový read hotové; 19 testů / 993 assertions PASS.
-50 nabídek: trenér 153 → 6 SQL, superadmin 254 → 9 SQL.
-Další krok: nativní CI a reporty 10.3/11.4, potom PR review.
-Katalogový deploy #364 běží samostatně; tuto implementaci s ním nemíchat.
-Místní testy a měření PASS; nativní CI této etapy NOT RUN, produkční změny žádné.
+[měření](verification/attendance-lesson-read-performance-20261107/RESULTS.md),
+[produkční protokol a meze](verification/attendance-lesson-release-20261107/RESULTS.md).
 
-Nativní parita a 720 párů na 10.3/11.4 PASS, 6 otisků zdrojů shodných.
-50 nabídek trenéra: 41,47/19,99 → 1,77/0,97 ms, 153 → 6 SQL.
-[PR #367](https://github.com/KovoPraha/evidenceTreninku/pull/367); celkové CI dobíhá.
+#367 sloučený; CI včetně obou MariaDB PASS, Linux 2355 testů / 46183 assertions.
+720 párů: celé řádky/pořadí stejné, 153 → 6 SQL; 50 nabídek trenéra
+41,47/19,99 → 1,77/0,97 ms. Jde o syntetické čtení helperu.
+Transakční SQL/parametry/řádky stejné; writer a potvrzení docházky nezměněné.
+Veřejný katalog po tomto druhém vydání: normalizovaný DOM i pole 5/5 shodné.
+Anonymní soukromá trasa odmítnutá; přihlášené produkční R06 UAT NOT RUN.
+Nové role/osoby/lekce ani účast se kvůli ověření nevytvářely.
 
-První runtime `b20715ec` má všech 11 CI kontrol PASS včetně 10.3/11.4.
-Doplněný lokální okrajový test pro NULL/neaktivního/chybějícího vlastníka
-a legacy ID 0 prošel; transakční kontrola a writer zůstávají původní.
+Původní WIP zachovaný; detaily izolovaných větví a výsledkového předání v plánu.
+Release/flags vlastní [CURRENT_STATE](CURRENT_STATE.md); nasazení neopakovat.
+Další P11 je existující [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366) pro výběr osob; neduplikovat. Dále mobil a souběh s celým HTTP/browser;
+nejde o dokončení K0.2. [Registr](WORK_PLAN_CURRENT.md) zůstává otevřený.

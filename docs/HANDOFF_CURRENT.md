@@ -15,10 +15,10 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - DOC03: [priority a závislosti](WORK_PLAN_CURRENT.md#priority-a-závislosti); [DOC02 audit](PLAN_CATALOG_AUDIT_2026-11-07.md) a [úplný katalog](PLAN_CATALOG.md).
 
-- P11 picker: implementace/místní měření/UAT HOTOVO, **bez našeho deploye**; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+- P11 picker: dokončení #366 ROZPRACOVÁNO, nyní schválený vhodný deploy po ověření; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
   [finální výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [předání / PR #366](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
   1,37 MB → 92 kB, Chrome trenér 4,79 → 0,59 s; obě rozepsané části, JS/noJS, role a zápisy PASS.
-  Větev `codex/attendance-person-picker-20261107`, finální CI/merge u PR; runtime uklizený, WIP zachovaný.
+  Větev `codex/attendance-person-picker-20261107`, nové společné měření/CI, pak merge/deploy; původní WIP zachovaný.
   Převzaté [dávkové lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md); celé HTTP společné verze dosud nepřeměřené.
   [Původní HTTP #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md) je historický base; dále R13/R05/rows examined/mobil/souběh.
   R13/R05/R06 #354 zahrnuje ROLE01; [katalog #364 a cizí vydání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zachované. K0.2 otevřené.

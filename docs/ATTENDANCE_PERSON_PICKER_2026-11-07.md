@@ -29,7 +29,7 @@ prefixy omluvy, přenos obou draftů a stavu stránek při hledání v obou smě
 Starý API payload omluvy stále přijímán. formnovalidate u zápisových tlačítek
 brání blokaci required poli sousední části; původní serverové validace platí.
 Kanonické funkce writeru, zámky, CSRF a role zůstávají. Důvod a varianty:
-[D2026-11-07-09](DECISION_LOG.md#d2026-11-07-09).
+[D2026-11-07-10](DECISION_LOG.md#d2026-11-07-10).
 
 ## Dokončená akceptace
 
@@ -100,3 +100,27 @@ Znovu přehrát skutečné reporty, odmítnout poškozený HTML i 57 SQL a zopak
 
 Převzaté DOC03 priority #368 / 8e9cdce1, bez aplikačních změn; přijaté release
 a automatické bloky zachované. Vlastní E22 přesunuté na E26 kvůli přijatému DOC03.
+
+## Pokračování podle nového zadání vlastníka
+
+7. 11. 2026: dokončit #366, ověřit výsledky a změřit před/po; pokud kontroly
+projdou, commitnout, sloučit a nasadit. Dřívější zákaz deploye je historický.
+Neaktivovat nové integrace a neměnit skutečné osoby, role ani docházku.
+Izolované pokračování `codex/attendance-picker-completion-20261107`, worktree
+`C:/Users/Marek/Documents/Codex/evidencePavel-attendance-picker-completion-20261107`.
+Původní picker worktree i jeho rozpracované dokumentační sloučení a výstupy zachované.
+
+1. Převzít #369 / `2ef20aed`, zachovat přijaté release/priority a automatické bloky.
+2. Na jediném novém syntetickém localhost fixture měřit aktuální main před pickerem
+   a potom stejný main s pickerem; shodné #367 na obou stranách, stejné session a data.
+3. Celé HTTP včetně rolí/negativních případů, skutečný Chrome před/po;
+   zvlášť ověřit všechny osoby a oba drafty, původní API a writer kontrakty.
+   Původní hotové testy zbytečně neopakovat, pokud jejich aplikační zdroje zůstaly stejné.
+4. Finální požadované CI, commit/push do #366 bez přepsání cizí práce,
+   merge aktuálního main a standardní chráněný deploy bez importu/UAT flagu.
+5. Čtecí produkční kontrola a průběžný release protokol; přihlášené skutečné zápisy neprovádět.
+   Výsledky a zbývající meze uložit do plánu, registru a obou handoffů.
+
+Aktuální stav: integrační dokumentační konflikty vyřešené v izolované kopii;
+nové měření a deploy NOT RUN. Přijaté E23 / D09 z #369/#368 zachované;
+pracovní picker E23 nyní E27 a D09 nyní D10, nové pokračování E28.

@@ -1,6 +1,6 @@
 # R06 nabídka lekcí — parita a párové měření
 
-Stav: implementace, lokální i nativní parita a měření PASS; celkové CI k dokončení.
+Stav: implementace, lokální i nativní parita, měření a finální integrované CI PASS; #367 sloučené.
 [Plán](../../ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md),
 [předání](../../SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md).
 
@@ -31,7 +31,7 @@ Nativní CI 10.3/11.4: stejný profiler s `--mariadb`, nativní prepared stateme
 explicitně potvrzený vlastní localhost server a datadir, náhodné vlastní schéma
 odstraněné ve finally. Bez configu, skutečných osob, lekcí nebo transportů.
 Nativní výsledky PASS na obou verzích; viz tabulka níže. Writer / trainingDayPlan / potvrzení nezměněné.
-Produkční provoz nové etapy zatím žádný; katalog #364 se nasazuje samostatně.
+Následné provozní provedení a meze jsou v [release protokolu](../attendance-lesson-release-20261107/RESULTS.md). Katalog #364 měl samostatné předchozí vydání.
 
 ## Nativní párové výsledky
 
