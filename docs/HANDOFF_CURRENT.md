@@ -7,7 +7,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
-- P15: [S4 přehled, panel a auditované řešení](CSC_SPORTSOFT_S4_REGISTRAR.md) HOTOVO v [draft #382](https://github.com/KovoPraha/evidenceTreninku/pull/382), 2918257b / 11 CI PASS; 2402/48347, obě MariaDB 26/341, browser/úklid PASS.
+- P15: [S4 přehled, panel a auditované řešení](CSC_SPORTSOFT_S4_REGISTRAR.md) HOTOVO v [draft #382](https://github.com/KovoPraha/evidenceTreninku/pull/382), doběh 33bdae93 / 11 CI PASS; 2402/48347, obě MariaDB 26/341, browser/úklid PASS.
   [S1](CSC_SPORTSOFT_S1_KIS.md) / 11 CI PASS a [prompt S2/S3 pro stanici](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md) pushnuté v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376). Bez Rikiho, portálů, deploye či aktivace.
 - P11-SCALE HOTOVO: [větší R13/R05](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md),2700HTTP/90parit.
   Aktuální#374 také prověřené; oba vlastní runtime úklidy PASS, produkce bez našich změn.

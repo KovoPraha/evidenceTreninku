@@ -2,7 +2,7 @@
 
 Aktuální stav 7. 11. 2026: přehled, panel a auditované řešení IMPLEMENTOVÁNY
 v [draft #382](https://github.com/KovoPraha/evidenceTreninku/pull/382), runtime
-`2918257b061133f956be1fc943f24de8cdfd88b4`; všech 11 CI kontrol PASS. Vlastník Marek / KIS Codex.
+`2918257b061133f956be1fc943f24de8cdfd88b4`; následný head `33bdae93` rovněž 11 CI PASS (doběh ověřen níže). Vlastník Marek / KIS Codex.
 Větev `codex/csc-sportsoft-s4-review-20261107`; bez merge do main, deploye a aktivace.
 S1 kontrakt/prompt pro stanici zůstává beze změny. Podrobnosti současného řezu
 jsou od části „Navazující S4“ níže; předchozí čtecí přejímka zůstává historickým důkazem.
@@ -287,3 +287,34 @@ adaptéry a propojení proti nezměněnému S1 kontraktu, následně samostatně
 povolený pilot / přihlášené UAT. Schválení baseline či případných změn portálů
 není součástí tohoto řešení. Bez merge do main, nasazení, aktivace scheduleru,
 portálových operací a jakéhokoli přístupu k soukromým datům Rikiho.
+
+### Kontrola doběhu CI #382 na zadání vlastníka
+
+**HOTOVO, 7. 11. 2026; P15-S4-CI.** Vlastník požádal ověřit doběh po závěrečném
+předání, případné chyby opravit a zapsat výsledky. Rozsah: pouze čtení GitHub CI
+pro přesný head a aktualizace dokumentace; bez merge, nasazení, zapnutí nebo
+přístupu k portálům či Rikimu. Vlastník Marek / KIS Codex; stejná větev
+`codex/csc-sportsoft-s4-review-20261107` a izolovaný worktree uvedený výše.
+Postup: ověřit head/checks → přečíst relevantní job logs → případnou opravu
+synteticky ověřit → zapsat a pushnout dokumentaci. Žádná oprava nebyla potřeba.
+
+Prověřený head **`33bdae9383163b9d891db87fb2e172ba602c8e5d`**: všech **11 kontrol
+SUCCESS**, žádná čekající, zrušená ani selhaná. PR je OPEN / draft; nesloučený.
+
+| Kontrola | Výsledek na 33bdae93 | Důkaz |
+| --- | --- | --- |
+| Kompletní PHP 8.2 | 2402 testů / 48347 assertions; 2 očekávané SQLite skips pro nativní čekání MariaDB | [PHPUnit](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42405048004/job/128500816416) |
+| MariaDB 10.3 | Celý job PASS; S1/S4 26 testů / 341 assertions bez skipu | [MariaDB 10.3](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42405048004/job/128500816725) |
+| MariaDB 11.4 | Celý job PASS; S1/S4 26 testů / 341 assertions bez skipu | [MariaDB 11.4](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42405048004/job/128500816677) |
+| Záloha / obnova | Obě DB PASS, 350 vlastněných tabulek; log výslovně potvrzuje `External sync populated backup/restore PASS (9 tables)` | Oba integrační joby výše |
+| Čtecí profily | Obě DB PASS | [10.3](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42405048004/job/128500816754), [11.4](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42405048004/job/128500816799) |
+| PHPStan / styl / anonymous inventory | PASS | [Quality](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42405047957) |
+| Dokumentace | PASS | [Docs](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42405047974) |
+| CodeQL | Actions, JavaScript/TypeScript, Python i souhrnný check PASS | [CodeQL](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42405044443) |
+
+Tato kontrola uzavírá dříve čekající CI závěrečného commitu včetně opraveného
+výpisu obnovy. Nový zápis mění pouze dokumentaci; aplikační kód, testy,
+workflow a konfigurace zůstávají shodné s ověřeným headem. Kontrola dokumentace
+PASS: CURRENT 80 řádků, 4753 místních odkazů, 0 chyb; `git diff --check` PASS. Další krok projektu
+zůstává S0 inventura cílové stanice a oddělené S2/S3; tento požadavek nepovoluje
+merge, deploy, aktivaci ani živé UAT.
