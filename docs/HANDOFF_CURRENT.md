@@ -13,7 +13,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 
-- AUTO01: [plán priorit 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), vlastní P14 + P10/C04; bod 1 nadále původní relace #365/#366/#369. [Priority](WORK_PLAN_CURRENT.md#priority-a-závislosti).
+- AUTO01: [plán priorit 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), vlastní P14 + P10/C04; bod 1 původní relace #365/#366/#369. [Priority](WORK_PLAN_CURRENT.md#priority-a-závislosti), [katalog](PLAN_CATALOG.md).
 
 - P11: celé HTTP/browser na `feb8fe8c` HOTOVO; [výsledky](verification/full-http-performance-20261107/RESULTS.md),
   [předání a další kroky](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md). 65 případů / 930 HTTP vzorků,
