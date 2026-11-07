@@ -1,0 +1,15 @@
+{
+  "run_id": 42379723334,
+  "run_url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42379723334",
+  "artifact_id": 13576733188,
+  "artifact_digest": "sha256:e0bb1c02bd0aaafa4fba98774c8ecc1a6952483002a5261f1d4de20cac34cc35",
+  "measured_head": "50a0c8110def513d6ea76d587479ab9f077be317",
+  "runtime_commit": "faae75e8d1bcf590e7b7d3936c7a60087aba48d4",
+  "baseline_commit": "2ef20aedc38c02b9d4d46fcdf006095140285310",
+  "source_hashes_against_merged_runtime": "PASS",
+  "source_hash_count": 8,
+  "http_timed_samples": 540,
+  "browser_samples": 78,
+  "form_state_parity": true,
+  "core_checksums": 13
+}

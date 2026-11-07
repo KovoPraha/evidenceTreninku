@@ -1,30 +1,62 @@
 # P11 R06 — společné celé HTTP/browser, 7. 11. 2026
 
-Stav ROZPRACOVÁNO, pouze syntetický localhost; žádný deploy ani aktivace.
-[Plán a akceptace](ATTENDANCE_PERSON_PICKER_2026-11-07.md#p11-r06-http-combined--celé-načtení-společné-verze-7-11-2026).
+Místní měření a ověření HOTOVO, žádná změna aplikace nebo produkce touto relací.
+[Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+[výsledky / důkazy / reprodukce](verification/attendance-integrated-http-20261107/RESULTS.md).
 Větev `codex/attendance-integrated-http-20261107`, worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-attendance-http-20261107`.
-Měřená aplikace faae75e8, kontrolní d958fd6e; stejný nový kombinovaný seed.
-Cíl 540 pozitivních HTTP časů a 234 Chrome pozorování tří rolí / devíti případů.
-Dále parity/role/drafty, oddělená diagnostika, vlastní úklid a výsledkové PR.
-Původní WIP `kis_rosters_admin.php` SHA256
-`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` zachovat.
-Cizí worktree `attendance-picker-completion` se nepoužívá ani nemění.
-Fyzický mobil a řízený souběh tímto nejsou automaticky přijaté. K0.2 otevřené.
+Plán před měřením3ca7e028; přesný stav výsledkového PR/CI a sdílení ověřit u větve.
 
-Průběh: nový runtime `kis-attendance-http-20261107-e999e34b`, DB 33469 / HTTP 18105,
-350 tabulek / 161 migrací; stejné doménové objemy jako plán. Standardní HTTP
-login 12/12, původní aplikace 21 HTTP případů / 270 časů a 9 DOM kontrol PASS.
-Rozšířený snapshot 20 skutečných doménových tabulek hotový; předběžná kontrola
-odmítla nehotový seed a neexistující legacy tabulku ještě před časováním.
-Používá se kanonický `coach_scope_grants`, seed byl vytvořen jednou.
-Chrome baseline probíhá, první úplný případ má 13 pozorování; časy společné
-verze a závěrečný úklid zatím NOT RUN. Vlastní DB PID 29536, web PID 25936.
-Citlivé místní config/credentials zatím potřebné pro měření, nic z nich necommitovat.
+## Skutečně ověřeno
 
-Oba čtecí páry dokončené: 540 HTTP časů, 234 Chrome pozorování, 18 DOM kontrol,
-všech 20 doménových checksumů shodných. Diagnostiky HTML parity PASS, 0 aplikačních
-DML/DDL; širší lekce 203 → 72 SQL, trenérský detail 59 → 72, seznam 36 → 23.
-JS/noJS obou současných draftů, klávesnice, výběr/host/390px PASS; 44 HTTP kontrol
-včetně revize 53/201/paper, stale422 a legacy API omluvy PASS. Role/account revokace PASS.
-Zbývá pozitivní browser omluva, DB kontrola a úklid, archiv a finální předání.
+- Nový jediný dataset: 350tabulek/161migrací, 10221osob, 728plánů/52týdnů,
+  200účastníků/52revizí a 10kzdravotních sledování/30kzáznamů. Žádný reseed.
+- Kontrolní d958fd6e před oběma změnami →společná faae75e8, osm hashů shodných
+  s Git blobem. Novější přijaté #370/#372 jsou dokumentace/testy a provozní doklad.
+- 21HTTP případů na variantu /540 pozitivních časů; 234Chrome pozorování
+  všech9 kladných případů a tří rolí. Standardní login12účtů a skutečné UI.
+  Všechny role/filtry a 18DOM kontrol PASS, žádné podvržené session.
+- Velká docházka HTML1,37MB →92,5kB; Chrome warm6,40 →0,35s, HTTP945 →113ms.
+  Široké hledání lekcí SQL203 →72, Chrome6,39 →0,45s; seznam SQL36 →23.
+  Běžný detail SQL59 →72 kvůli čerstvým kontrolám, netvrdit plošný pokles SQL.
+- Samostatné diagnostiky celého HTML: shoda s prostým HTTP, 0aplikačních DML/DDL,
+  20doménových tabulek před/po stejné. Kompletní pomalejší vzorky ponechané;
+  první neúplný networkidle běh vedoucího zopakovaný celý.
+- JS/noJS obou současných draftů v obou směrech, Enter/paging/host/prázdný
+  výběr/390px PASS. 44HTTP kontrol včetně CSRF/cizí lekce/neplatné find_* PASS.
+- Až po časování skutečné syntetické UAT: revize53/201/paper, stale422bez přepsání,
+  legacyAPI1002/phone a browser tlačítko1001/paper v06:00 ověřené vDB.
+  Odebraná role/deaktivovaný účet odmítnuté, původní celé řádky obnovené.
+- Nové pomůcky: PHP syntaxe/styl, PowerShell parsery a Python compile PASS.
+  Žádný nový aplikační kód; další úplné CI výsledkové větve určuje její PR.
+
+## Dvě rozdílná měření a skutečná produkce
+
+Přijaté #372 má Linux pár2ef20aed →faae75e8, tedy samotný picker při shodných
+už optimalizovaných lekcích. Tento Windows pár měří obě úpravy a všech9GET
+scénářů, ne jen3detaily. Po změně v obou studiích72SQL pro široké lekce;
+203 vs56 před změnou není rozpor. Absolutní časy mezi stroji/verzemi nesčítat.
+Výsledky jsou lokální/CI syntetika, nikoli produkční SLA nebo fyzický mobil.
+
+[Provozní doklad #372](verification/attendance-picker-release-20261107/RESULTS.md)
+je samostatně povolené vydání druhé relace; release56f5ce08, deploy42380611292.
+Deploy neopakovat. Tato relace nic na produkci nespustila ani nezměnila.
+Release/flags má pouze CURRENT. Přihlášené produkční UAT je stále oddělené.
+
+## Úklid a zbývající práce
+
+Vlastní runtime `C:/xampp/tmp/kis-attendance-http-20261107-e999e34b` zastavený,
+adresář ponechaný. Schema/účet/oba configy/credentials/cookies a soukromé
+browser callbacky/logy odstraněné; všechny vlastní browsery zavřené. TCP18105 a33469
+odmítají spojení. 55 bezpečných artefaktů má SHA manifest a kontrolu tajemství.
+Původní WIP `kis_rosters_admin.php` zůstal SHA256
+`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
+
+1. R13/R05 objemy/kandidáti a skutečné rows examined podle plánu P11.
+2. Fyzický mobil, řízená síť/CPU a více souběžných uživatelů; 390px zde je funkční emulace.
+3. Přihlášené produkční převzetí podle samostatného zadání; zde žádný produkční test/zápis.
+4. Další R01–R16 a ostatní lidské/podkladové závislosti v registru. K0.2 otevřené.
+
+Stav CI/review/merge je u výsledkového PR této větve; hotové měření/implementaci
+neopakovat jen kvůli staršímu „čeká“ v historickém předání. Vlastní D11/E36/E37
+nekolidují s přijatým provozním D10 a E30–E35.

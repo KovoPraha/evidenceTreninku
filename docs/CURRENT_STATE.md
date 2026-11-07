@@ -1,8 +1,9 @@
 # Aktuální stav projektu
 
 Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) a [úplný katalog](PLAN_CATALOG.md).
-- **P11 katalog a lekce NASAZENO:** release `269684c234698cb40ae661e4080e318d4a05cfd3`, deploy 42374036053 SUCCESS; [protokol](verification/attendance-lesson-release-20261107/RESULTS.md).
-  #367 / dávkové lekce navazují na #364; klubové ceny #358 zahrnuté. Záloha, migrace, VS a HTTP smoke PASS; import/UAT false. [Plán R06](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md).
+- **P11 picker, katalog a lekce NASAZENO:** release `56f5ce08e9ffbe1df9acfe7b844234b449171ad8`, deploy 42380611292 SUCCESS; [protokol](verification/attendance-picker-release-20261107/RESULTS.md).
+  Zahrnuje #366/#367/#364 a ceny #358. Záloha, migrace, VS a HTTP smoke PASS; import/UAT false. [Plán a meze](ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+- P11 picker: nové společné měření/parita a všechny CI PASS; 540 HTTP / 78 Chrome, HTML −93,3 %. [Měření](verification/attendance-person-picker-20261107/integrated/RESULTS.md); přihlášené produkční UAT NOT RUN.
 - **P07 N1/N2 NASAZENO / ZAPNUTO:** [protokol](verification/shop-document-automation-20261107/RESULTS.md), #355 / `9460ee76`, deploy 42362258878 SUCCESS. 2337 testů / 43257 assertions, 11 CI PASS; migrace current, původní VS beze změny. Pověření 1 / vystavovatel TJ KOVO 1 aktivované během 42362688999. Import/UAT flag false; záloha 387 tabulek / 2 triggery ověřená. Status 42362771928 PASS: přirozený tick 10:13:03 UTC, fronta/chyby 0. Skutečné doručení nového PDF do schránky neověřené.
 - **ROLE01-MOB rozpracováno:** [mobilní karty / plán](ACCESS_OVERVIEW_2026-11-07.md), karty #361 zahrnuje vydání katalogu `c70939d4`; cílený nový čtecí Chrome zbývá. **ROLE01 NASAZENO A OVĚŘENO:** [Lidé a přístupy](ACCESS_OVERVIEW_2026-11-07.md), release `ebb8b2e3`, [deploy 42360171293 a přejímka 42360515313](verification/access-release-20261107/RESULTS.md) PASS. 2325 testů / 42966 assertions, skutečné formuláře 16/16, HTTP 7/7. Všech 46 původních účtů a 82 rolí beze změny; oba nové testovací účty deaktivované a bez oprávnění. Záloha 387 tabulek / 2 triggery ověřená, import false, migrace current / pending [].
 - **[Pracovní upozornění nasazená a minutový běh aktivní](verification/staff-notifications-release-20261106/RESULTS.md):** PR #330, produkční zvoneček, přesný odkaz a přečtení/nepřečtení ověřeny. Tři žádosti × šest účtů = 18 upozornění a 18 e-mailů přijatých transportem; další běhy bez duplikace či chyb. Vlastník 6. 11. [potvrdil přijetí zprávy do schránky](verification/membership-copy-wip-20261106/RESULTS.md); P01 splněné v tomto rozsahu, nejde o potvrzení všech 18 doručení. Čtecí dohled: staff-notifications-production.yml / status.
@@ -16,7 +17,6 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
 - **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** karta pro 223 aktivních produktů / nové objednávky, 8 starých plateb zachováno.
   **[Fio hostingový plán ověřený](verification/fio-followup-20261105/RESULTS.md):** dva skutečné importy, všech 45 pohybů bez shodného VS. Žádné vynucené přiřazení; skutečná placená úhrada stále nedoložená.
 - **[PR #305 sloučený a nasazený](verification/functional-round10-release-20261105/RESULTS.md):** vratky zachovávají objednávku a stránkují úplnou historii. Linux i deploy 2009/38764, HTTP před/po 48/48 a izolovaná obnova PASS. Přihlášený čtecí Chrome PASS v dostupném rozsahu; heslo/T07 vynechané.
-
 - **[Osmý funkční průchod](verification/functional-uat-round8-20261104/RESULTS.md):** příprava období, hierarchie ke dni lekce, věkové návrhy a stránkování. Skutečný místní browser, 25 kontrol HTTP/model/persistence a cílené 21/190 PASS; všech 12 doménových snapshotů shodných. Bez nové chyby runtime.
 
 - **[Pátý](verification/functional-uat-round5-20261104/RESULTS.md) a [šestý průchod](verification/functional-uat-round6-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob; následný skutečný Chrome a 16 kontrol persistence PASS. Bez další chyby runtime; výsledky jsou v nasazeném PR #295, heslo/T07 vynechané.
@@ -76,5 +76,5 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
-Další kroky: [priority](WORK_PLAN_CURRENT.md#priority-a-závislosti); [P11 společné HTTP — rozpracováno, bez deploye](ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+AUTO01: [výsledky priorit 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md): novější záloha 389 tabulek / 2 triggery PASS v izolaci; inventura 332 větví / 156 worktrees, WIP zachované.
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)

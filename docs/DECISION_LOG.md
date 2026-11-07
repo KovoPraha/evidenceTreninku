@@ -6,15 +6,18 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
-## D2026-11-07-10
+## D2026-11-07-11
 
-PŘIJATO, 7. 11. 2026, přímé zadání vlastníka: přeměřit společné celé načtení
-#366/#367 bez změny produkce. Nový jediný seed a skutečné HTTP/UI přihlášení,
-kontrolní d958fd6e a společná faae75e8; historické časy z jiného runtime nejsou
-kontrolní skupina. Všech 9 pozitivních případů v Chrome, 21 HTTP včetně rolí;
-prosté časy oddělené od diagnostiky, neměnit aplikaci. Příspěvek jednotlivého
-helperu neodvozovat z integrovaného páru. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
-[předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md). K0.2 dál otevřené.
+PŘIJATO, 7.11.2026, nové přímé zadání vlastníka pro měření bez změny produkce.
+Volba: nový jediný seed, původní d958fd6e proti společné faae75e8, všech9GET
+scénářů ve skutečném Chrome a 21HTTP včetně negativních rolí. Staré časy nejsou
+kontrolní skupina; oddělená SQL diagnostika, 20doménových checksumů, JS/noJS,
+zápisové UAT až po časování a vlastní úklid. Aplikace se nemění.
+[Výsledek](verification/attendance-integrated-http-20261107/RESULTS.md):540HTTP/234Chrome,
+role/drafty/kanonické zápisy PASS. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+[předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md). K0.2 zůstává otevřené.
+Přijaté D10 je jiné pověření k deployi #372; nepřenáší se na tuto relaci.
+Původní pracovní D10/E30 v3ca7e028 kolidovaly s přijatými ID, nyní D11/E36/E37.
 
 ## D2026-11-07-09
 
@@ -185,6 +188,7 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 | Práce / rozsah | Plán, výsledek a důvody | Historie / další etapy |
 | --- | --- | --- |
+| AUTO01 / P14 / P10 — konkrétní izolovaná obnova a čtecí triáž hotové | [Plán](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), [důkazy a meze](verification/autonomous-priorities-20261107/RESULTS.md) | #370; 389 tabulek / 2 triggery, WIP zachované. Neuzavírá celé C04, živé finanční ani vizuální přejímky |
 | P05 ranní serverový audit 7. 11. — technický důkaz dokončený | [Plán](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md), [výsledek PASS](verification/membership-scheduler-20261107/RESULTS.md) | #347 / 599979d4, start s odchylkou 3 s. Skutečné sjednání/platba a export dál odložené |
 | P07 N1/N2 — automatické doklady a komunikace nasazené/zapnuté | [Plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md), [důkazy](verification/shop-document-automation-20261107/RESULTS.md), [volba](#d2026-11-07-03) | #355, přirozený worker ověřen; skutečný bankovní převod a externí doručení zůstávají samostatnou přejímkou |
 | P11 klubové ceny — implementace a párové měření sloučené #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-04) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); v main `37d0ad68`, bez deploye, katalog/HTTP dál otevřené |
@@ -224,3 +228,17 @@ Po nativní paritě a přínosu přibližně 20× u 50 lekcí je podle aktuáln�
 P11 R06 nabídka lekcí — uzavřený dílčí řez podle D2026-11-07-08: #367, finální CI, parita a měření PASS; [plán](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md), [produkční důkaz a meze](verification/attendance-lesson-release-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md). Výběr osob a celé K0.2 dál otevřené.
 
 P11 picker — [finální místní výsledek](verification/attendance-person-picker-20261107/final/RESULTS.md), [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), PR #366 bez našeho deploye.
+
+## D2026-11-07-10
+
+PŘIJATO 7. 11. podle nového výslovného zadání vlastníka: dokončit #366,
+ověřit shodu a přínos, po zelených kontrolách commit/merge/deploy. Původní
+zákaz nasazení je historický. Před nasazením doplnit celý HTTP/browser pár
+aktuálního main s #367 a pickerem; žádné aktivace ani skutečné zápisy docházky.
+[Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+Kanonické D09 původního pickeru zachované; dočasné přeznačení na D10 v pracovním
+75801847 bylo sjednocené při převzetí d62c3ad2. D10 označuje toto nové pokračování.
+
+P11 picker — dílčí řez uzavřený podle D10 a nového výslovného zadání: #366, nové společné měření, parita a schválené nasazení hotové. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [provozní důkaz a meze](verification/attendance-picker-release-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md). Celé K0.2 a lidská přejímka otevřené.
+
+Rozšířené celé R06 Windows měření — [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [důkazy](verification/attendance-integrated-http-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md), [volba D11](#d2026-11-07-11). Bez změny produkce v této relaci, další P11 otevřené.

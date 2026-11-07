@@ -134,6 +134,7 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 | ID | Soubor | Stav / registr | Dispozice a důkaz |
 | --- | --- | --- | --- |
+| PL-c7836c4046 | [Autonomní priority 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md) | DONE / P14/P10/P11/C04 | Samostatný průchod dokončený: novější DB záloha 389 tabulek / 2 triggery PASS v izolaci, čtecí inventura 332 větví / 156 worktrees, kandidáti a WIP ověřené bez mazání. Bod 1 neduplikován, otevřené vizuální/provozní kroky mají původní vlastníky. [Důkazy](verification/autonomous-priorities-20261107/RESULTS.md) |
 | PL-aaead3784f | [BAR: zveřejnění základní nabídky](BAR_MENU_PUBLICATION_2026-11-06.md) | DONE / P03 | Nabídka 1 / vydání 1 zveřejněna; nová publikace není další krok. Lidský provoz patří P02. [verification/bar-menu-publication-20261106/RESULTS.md](verification/bar-menu-publication-20261106/RESULTS.md) |
 | PL-5c84021293 | [Souborová dokumentace a stručné předání — 7. 11. 2026](DOCUMENTATION_GOVERNANCE_2026-11-07.md) | DONE / DOC01 | Pravidla/krátký handoff začleněné přes #357; toto je výchozí dokončená změna pro DOC02. [verification/documentation-governance-20261107/RESULTS.md](verification/documentation-governance-20261107/RESULTS.md); [DECISION_LOG.md](DECISION_LOG.md) |
 | PL-4c796c0275 | [Zadání pro vývojové vlákno: opravy po kontrole stavebního dozoru (25. 10. 2026)](DOZOR_2026-10-25.md) | DONE / P11 | Opravy dozoru F1–F3 byly následně vydané; staré zákazy popisují původní implementační etapu, nikoli čekající deploy. [verification/dozor-release-20261026/RESULTS.md](verification/dozor-release-20261026/RESULTS.md) |
@@ -373,8 +374,7 @@ Sloučené podklady mají místní verzované odkazy. Ranní výsledek už je do
 další otevřené kroky a závislosti určuje [prioritní přehled registru](WORK_PLAN_CURRENT.md#priority-a-závislosti).
 
 | PL-30d4f6c028 | [Dávkové lekce](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | DONE / P11 | Implementace, parita/měření, merge a schválené nasazení dokončené; [provozní důkaz a meze](verification/attendance-lesson-release-20261107/RESULTS.md). Celé K0.2 otevřené. |
+| PL-c0b7a64780 | [P11 R06 — výběr osob v docházce, 7. 11. 2026](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | DONE / P11 | Implementace, parita, nové společné měření, merge a schválené nasazení dokončené; [protokol a meze](verification/attendance-picker-release-20261107/RESULTS.md). Celé K0.2 otevřené. |
+| PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | DONE / P11 | Aktuální předání hotového dílčího pickeru; [nasazení a meze](verification/attendance-picker-release-20261107/RESULTS.md). Ostatní P11 otevřené. |
 
-| PL-c0b7a64780 | [P11 R06 — výběr osob v docházce, 7. 11. 2026](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), integrované HTTP po #367/mobil/souběh otevřené. |
-| PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), integrované HTTP po #367/mobil/souběh otevřené. |
-
-| PL-ad1bee8455 | [Společné HTTP docházky](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) | PARTIAL / P11 | Rozpracované párové měření; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), bez produkce. |
+| PL-ad1bee8455 | [Celé R06 Windows měření](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) | PARTIAL / P11 | Místní měření hotové, [důkazy](verification/attendance-integrated-http-20261107/RESULTS.md); další P11 otevřené, žádný náš deploy. |

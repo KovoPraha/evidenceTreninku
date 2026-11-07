@@ -30,3 +30,5 @@
   nikdy config, cookies, credentials, rawHTML nebo přihlašovací logy.
 
 [Výsledky](RESULTS.md), [vyčištěné prostředí](cleanup.json).
+
+Serverové logy původního i společného prostého běhu: všechny404 pouze /favicon.ico; žádná jiná404cesta. Logy zůstávají místní, nearchivují se.
