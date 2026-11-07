@@ -8,23 +8,24 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 ## Poslední práce a další krok
 
 - P15: [čtecí ČSC/Sportsoft, UCI ID a nonstop stanice](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md).
-  [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371): [S0 prompt pro stanici](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md) hotový; cílová inventura otevřená, aktivace NOT RUN.
+  S1 úložiště/ingest/UCI rozpracováno ve vlastní větvi; S0 v #371, cílová inventura otevřená. Bez deploye/aktivace.
 
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
   Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.
   Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); karty zahrnuje vydání `c70939d4`; dále cílený nový Chrome, viz priorita 1.
-
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 
 - AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
 
-- P11 picker: implementace/místní měření/UAT HOTOVO, **bez našeho deploye**; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
-  [finální výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [předání / PR #366](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
-  1,37 MB → 92 kB, Chrome trenér 4,79 → 0,59 s; obě rozepsané části, JS/noJS, role a zápisy PASS.
-  Větev `codex/attendance-person-picker-20261107`, sloučené #366 (`faae75e8`); runtime uklizený, WIP zachovaný.
-  Převzaté [lekce #367 nasazené jiným vláknem](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md); celé HTTP společné verze dosud nepřeměřené.
-  [Původní HTTP #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md) je historický base; dále R13/R05/rows examined/mobil/souběh.
-  R13/R05/R06 #354 zahrnuje ROLE01; [katalog #364 a cizí vydání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zachované. K0.2 otevřené.
+- P11 picker HOTOVO: [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání #366/#372](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+  [Produkční protokol](verification/attendance-picker-release-20261107/RESULTS.md): schválené nasazení a čtecí kontrola dokončené, neopakovat.
+  Nový Linux pár s #367: 540 HTTP / 78 Chrome; HTML 1,37 MB → 91,6 kB, Chrome trenér 446 → 83 ms.
+  Osm aplikačních hashů shodných, 13 kontrolních součtů/úplná množina osob/44 HTTP a oddělené writer UAT PASS.
+  Linux 2362/46386, obě MariaDB a všech 12 kontrol PASS; přihlášené produkční picker UAT NOT RUN.
+  Původní WIP a oba picker worktrees zachované; výsledky a kalibrace jsou v repu, nové aktivace žádné.
+  [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
+  [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
+  Dále R13/R05, rows examined a fyzický mobil/souběh; K0.2 otevřené. Naše měření produkci neměnilo.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

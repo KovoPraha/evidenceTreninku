@@ -1,0 +1,131 @@
+{
+    "normalization_version": 2,
+    "phase": "after",
+    "at_utc": "2026-11-07T14:18:21+00:00",
+    "method": "Five anonymous serial GETs, no cookies or POST. Hash main and shop navigation after removing scripts/nonces/CSRF values. No raw HTML/session stored.",
+    "cases": {
+        "home": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php",
+            "http": 200,
+            "total_ms": 2285.8,
+            "product_ids": [
+                247,
+                218,
+                221,
+                219,
+                220,
+                217,
+                216,
+                93,
+                67,
+                85,
+                124,
+                104
+            ],
+            "sha256": {
+                "main": "71cd676245573a2d6cf8dae400221fbe3339c814ef480eaa21296e9987a71679",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": null,
+            "same_product_ids_and_order": true,
+            "same_navigation": true,
+            "same_active_catalog_count": true,
+            "complete_dom_match": true,
+            "same_comparable_public_fields": true
+        },
+        "price": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price",
+            "http": 200,
+            "total_ms": 1742.76,
+            "product_ids": [
+                230,
+                229,
+                228,
+                93,
+                274,
+                92,
+                82,
+                83,
+                29,
+                85,
+                117,
+                87
+            ],
+            "sha256": {
+                "main": "7e08a3a60603c85b87b7b2495e442983e8ab361f5cfdfee25eb4620de6dbe2b2",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": null,
+            "same_product_ids_and_order": true,
+            "same_navigation": true,
+            "same_active_catalog_count": true,
+            "complete_dom_match": true,
+            "same_comparable_public_fields": true
+        },
+        "page2": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2",
+            "http": 200,
+            "total_ms": 3174.67,
+            "product_ids": [
+                172,
+                287,
+                11,
+                269,
+                235,
+                7,
+                174,
+                73,
+                100,
+                117,
+                87,
+                173
+            ],
+            "sha256": {
+                "main": "7845b463c8f48d3e44be4ea4dacbaf148066c45ac6f16d3c51229e0ee732fafd",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": null,
+            "same_product_ids_and_order": true,
+            "same_navigation": true,
+            "same_active_catalog_count": true,
+            "complete_dom_match": true,
+            "same_comparable_public_fields": true
+        },
+        "search": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?q=cyklo",
+            "http": 200,
+            "total_ms": 2608.03,
+            "product_ids": [],
+            "sha256": {
+                "main": "e992ef7b64f5593b66ad4f58d212ccb3977257d30619c7334fa2d12977268945",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": 222,
+            "same_product_ids_and_order": true,
+            "same_navigation": true,
+            "same_active_catalog_count": true,
+            "complete_dom_match": true,
+            "same_comparable_public_fields": true
+        },
+        "empty": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?q=__catalog_performance_no_match__",
+            "http": 200,
+            "total_ms": 1990.6,
+            "product_ids": [],
+            "sha256": {
+                "main": "7e04a6b98ff64f3014a95f8132877d060d515e1a666baad79f1f099e1e2ae7d4",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": 222,
+            "same_product_ids_and_order": true,
+            "same_navigation": true,
+            "same_active_catalog_count": true,
+            "complete_dom_match": true,
+            "same_comparable_public_fields": true
+        }
+    },
+    "baseline_normalization_version": 2,
+    "complete_dom_before_after": true,
+    "limitation": null,
+    "parity": true
+}

@@ -341,3 +341,17 @@ Průzkum: PASS pouze v rozsahu [protokolu](verification/csc-sportsoft-discovery-
 Dokumentační kontrola po převzetí main 2ef20aed PASS (4453 místních odkazů,
 108 archivních bloků); git diff origin/main --check PASS. Předáno v PR #371.
 Aktuální doplnění S0 a jeho kontrolu vede [protokol S0](verification/csc-sportsoft-s0-20261107/RESULTS.md).
+
+
+## 12. S1 — zahájení serverové implementace 7. 11. 2026
+
+Vlastník zadal implementovat úložiště, ingest a UCI matcher na syntetických
+datech, bez nasazení nebo aktivace. Větev `codex/csc-sportsoft-s1-ingest-20261107`,
+worktree `C:/Users/Marek/Documents/Codex/evidencePavel-csc-sportsoft-s1-20261107`.
+Základ: S0 z PR #371 (dosud otevřené) + main 69f49033; S1 má vlastní PR.
+Rozsah: číslovaná migrace a backup ownership, striktní validace v1, tokenová
+autorizace zařízení, lease/idempotentní díly/atomický complete, samostatné
+snímky/vazby/review. Kanonické tabulky se nemění. Machine API výchozí OFF.
+Příprava explicitní baseline a přejímka poklesu dat nesmí být právem zařízení.
+Další krok: implementace a syntetické SQLite/MariaDB/HTTP testy; žádný portál
+ani Riki není zdroj testovacích dat. Stav ROZPRACOVÁNO, testy NOT RUN.
