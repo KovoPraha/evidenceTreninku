@@ -6,6 +6,19 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-P15-S2S3-PROMPT
+
+- **Zadání vlastníka 7. 11.:** připravit prompt cílovému Codexu pro S2/S3
+  proti hotovému S1, jen syntetické testy a bez kontaktu se soukromými daty Rikiho.
+- **Hranice:** nové vlastní testovací procesy jsou součástí vývoje; nesmí
+  vzniknout trvalá služba, OS účet, scheduler, aktivní produkční flag ani login.
+  Runtime nesdílí Riki WSL/Docker, profily, cache, prostředí nebo úložiště.
+- **Akceptace:** skutečný S1 ingest, čtyři lokální kolekce, nulové mutační
+  handlery, přesné retry bajty, lease/revokace, šifrovaný spool a omezená síť.
+  Mock ani statická fixture není důkazem živých selektorů/Windows bootu.
+- **Předání:** [prompt](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md), draft #376;
+  na stanici má vzniknout vlastní draft PR. Tímto krokem tam nic neběželo.
+
 ## D2026-11-07-P15-S1
 
 - **Přijaté zadání vlastníka:** nezávisle implementovat S1 KIS, jen syntetická

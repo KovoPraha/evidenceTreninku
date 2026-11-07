@@ -155,3 +155,7 @@ provozní retence/úklid a schválený pilot S5/S6. Do té doby nepovolovat
 produkční příjem: staging obsahuje osobní údaje a není implementovaný
 automatický retenční úklid. Zálohy vyžadují stejnou ochranu jako zdrojová DB.
 Žádný proces této etapy nečte portály ani soukromou infrastrukturu/data Rikiho.
+
+Pro další pracoviště je připravený [prompt S2/S3 pro stanici](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md).
+Zadává implementaci a přejímku pouze na syntetických datech; není provozním
+povolením a žádné provedení na cílové stanici se tím nedokládá.

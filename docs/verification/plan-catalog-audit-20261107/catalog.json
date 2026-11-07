@@ -10383,6 +10383,19 @@
       "registry": "P15",
       "disposition": "S1 implementace a syntetické ověření, bez deploye/aktivace.",
       "evidence": []
+    },
+    {
+      "id": "PL-a885da3ce8",
+      "path": "docs/CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md",
+      "title": "P15 S2/S3 prompt pro oddělenou stanici",
+      "primary": false,
+      "role": "reference",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Zadání syntetického vývoje workeru proti S1; předání hotové, cílové provedení/aktivace NOT RUN.",
+      "evidence": [
+        "docs/CSC_SPORTSOFT_S1_KIS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",
@@ -10436,6 +10449,14 @@
         "docs/verification/csc-sportsoft-s1-20261107/RESULTS.md"
       ],
       "pull_request": 376
+    },
+    {
+      "date": "2026-11-07",
+      "topic": "P15-S2S3-PROMPT",
+      "pull_request": 376,
+      "added_paths": [
+        "docs/CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md"
+      ]
     }
   ]
 }

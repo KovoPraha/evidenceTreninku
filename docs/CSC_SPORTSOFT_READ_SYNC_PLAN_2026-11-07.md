@@ -359,3 +359,21 @@ S0 #371 nadále otevřené.
 [Technický protokol S1](CSC_SPORTSOFT_S1_KIS.md) a
 [průběžné výsledky](verification/csc-sportsoft-s1-20261107/RESULTS.md)
 obsahují API pro druhé pracoviště, meze a stav testů. Žádná aktivace/deploy.
+
+## 13. Předání S2/S3 cílovému Codexu
+
+7. 11. 2026 vlastník zadal připravit konkrétní prompt pro syntetický vývoj
+na nonstop stanici proti hotovému S1. [Prompt](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md)
+je připravený a předává se dokumentačním doplněním draft PR #376 ve stejné
+větvi `codex/csc-sportsoft-s1-ingest-20261107`. Neznamená spuštění S2/S3.
+
+Zadání odděluje nové lokální testovací procesy od trvalé instalace: vlastní
+worktree, profil/cache/spool, přesné loopback originy vytvořené harness,
+žádný kontakt s Rikim nebo reálnými portály. Worker testuje skutečný S1
+validator/ingest; výjimky kvůli HTTP/TLS se nepřidávají do produkčního API.
+Výsledkem cílové stanice má být vlastní draft PR a sanitizovaný protokol,
+nikoli aktivace účtu, scheduleru nebo pilotu. Stav cílového provedení NOT RUN.
+
+Ověření předání: `php tools/check-current-docs.php` a `git diff --cached --check`
+PASS; CURRENT 80 řádků, 4649 odkazů, 108 archivních bloků, 0 chyb.
+Věcně porovnáno s aktuálním S1 protokolem a jeho testy; runtime se nemění.
