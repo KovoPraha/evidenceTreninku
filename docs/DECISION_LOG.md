@@ -40,6 +40,24 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
 ## D2026-11-07-03
 
+- **Stav / datum:** PŘIJATO, 7. 11. 2026. Vlastník zadal automatické doklady,
+  e-maily při vytvoření/stornu/vratce, ověření, sloučení a nasazení.
+- **Volba a důvod:** nové objednávky s výslovným finančním pověřením a adresou;
+  neměnný podklad při nákupu, faktura až po úhradě, opravný doklad při stornu.
+  Existující minutový worker, stejné účetní služby a unikátní události chrání
+  před duplicitami. PDF chyba neblokuje zaúčtování příjmu.
+- **Hranice:** samotné storno nevyplácí peníze. Potvrzení vratky až po evidované
+  výplatě. Nejasné doručení držet k prověření, neodesílat naslepo znovu.
+  Historické objednávky bez pověření zpětně nerozesílat; ruční doklady nepřepisovat.
+- **Varianty:** vystavení během platební transakce by spojilo PDF výpadek s penězi;
+  plošný nový odesílač by zasáhl staré zprávy. Zvolen omezený worker a verze pověření.
+- **Provozní cesta:** při nefunkčním Computer Use chráněná operace s přesným
+  vystavovatelem/IČ a existujícím platným finančním pověřením; bez falešné session.
+- **Realizace / akceptace:** [plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
+  [lokální důkazy a otevřené meze](verification/shop-document-automation-20261107/RESULTS.md).
+
+## D2026-11-07-04
+
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník výslovně zadal začít
   klubovými cenami, změřit před/po, ověřit shodu a nic nenasazovat.
 - **Volba a důvod:** oddělený reader pro jednu cenovou prezentaci katalogu/detailu.
@@ -56,7 +74,7 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
 Pracovní označení této volby ve starších commitech PR #358 bylo D2026-11-07-02.
 Při převzetí #356 je kolize s jeho již přijatým ROLE01 rozhodnutím vyřešena
-společným ID D2026-11-07-03; obsah ani původní commitové důkazy se nemění.
+společným ID D2026-11-07-04; obsah ani původní commitové důkazy se nemění.
 
 ## Starší rozhodnutí — zachovaná v původních souborech
 
@@ -75,7 +93,7 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 | Práce / rozsah | Plán, výsledek a důvody | Historie / další etapy |
 | --- | --- | --- |
-| P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-03) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); bez merge/deploye, katalog/HTTP dál otevřené |
+| P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-04) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); bez merge/deploye, katalog/HTTP dál otevřené |
 | DOC01 — souborová dokumentace a stručné předání | [Plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [důvod rozhodnutí](#d2026-11-07-01) | [Předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), [deník](EVENT_LOG.md); stav CI/přijetí určuje PR |
 | P11 R13 — implementace v main #352, bez deploye | [Plán a důkazy](verification/medical-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md), celé K0.2 otevřené |
 | P11 R05 — implementace v main #353, bez deploye | [Plán a důkazy](verification/planner-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md), hierarchický filtr/HTTP otevřené |

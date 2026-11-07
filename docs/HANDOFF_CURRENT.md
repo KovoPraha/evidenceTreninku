@@ -24,9 +24,10 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   Klubové ceny: [plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
   [předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
   PR #358 – vlastník povolil merge bez deploye; po CI navazuje katalog.
-- [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355): otevřená
-  syntetická přejímka jednorázového kroužku, v kontrolovaném main dosud není.
-  Před integrací zkontrolovat konflikt sdílené dokumentace a převzít věcné výsledky.
+- P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
+  [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
+  Místní tok a 2337 testů PASS; #355 v main, deploy a shop_enable vede vlastní plán.
+  Browser blokovaný; skutečná banka a externí schránka zůstávají neověřené.
 - P02/P04: [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md),
   [účetní adaptér](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md); publikaci neopakovat.
 - P05: [serverové předání](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md)

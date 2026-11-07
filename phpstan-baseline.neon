@@ -613,17 +613,7 @@ parameters:
 			path: booking/nahrady.php
 
 
-		-
-			message: '#^Variable \$isGuestAccess might not be defined\.$#'
-			identifier: variable.undefined
-			count: 3
-			path: booking/objednavka.php
 
-		-
-			message: '#^Variable \$order might not be defined\.$#'
-			identifier: variable.undefined
-			count: 51
-			path: booking/objednavka.php
 
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
@@ -685,17 +675,7 @@ parameters:
 			count: 2
 			path: booking/rodinny_kalendar.php
 
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 10
-			path: booking/rychla_prihlaska.php
 
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 14
-			path: booking/rychly_nakup.php
 
 		-
 			message: '#^Variable \$items might not be defined\.$#'

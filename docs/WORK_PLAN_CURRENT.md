@@ -14,6 +14,13 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## Aktivní návaznosti
 
+P07 N1/N2: vlastník zadal implementaci, ověření, sloučení a nasazení.
+[Automatické doklady a komunikace](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md)
+jsou implementované v PR #355, místní browser/MariaDB celý tok PASS,
+51 testů / 496 assertions PASS. Následuje CI, merge, deploy a aktivace;
+[podklady a meze](verification/shop-document-automation-20261107/RESULTS.md).
+Skutečná bankovní platba a produkční přejímka členství zůstávají samostatné.
+
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
 | P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
@@ -70,7 +77,7 @@ uvést jen bezpečnou referenci a způsob ověření soukromého podkladu.
 | ID | Stav a podklad | Další krok / vlastník |
 | --- | --- | --- |
 | DOC01 | Obsah a místní ověření HOTOVO: [souborové plány a krátké předání](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357); větev `codex/repo-documentation-policy-20261107` | Stav CI/merge u PR; další práci vést podle nových pravidel. Pouze dokumentace a její kontrola, bez deploye. |
-| P07-UAT | [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355) otevřené při kontrole 7. 11.; syntetický jednorázový kroužek, účetní PDF a mezery notifikací. Dosud není součástí kontrolovaného main | Vlastník PR dořeší konflikt a kontroly; závěry jsou návrhem/podkladem, nikoli novou produkční přejímkou. |
+| P07 N1/N2 | [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355): audit rozšířen o schválenou implementaci dokladů a e-mailů; místní přejímka PASS | CI, merge, chráněný deploy a aktivace; [plán](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md). |
 
 ## Ranní serverový audit — samostatná návaznost P05
 
