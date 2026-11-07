@@ -1,0 +1,59 @@
+{
+  "base": "8e9cdce1",
+  "captured_at_utc": "2026-11-07T13:30:44.670014+00:00",
+  "http": [
+    {
+      "path": "ebook.pdf",
+      "method": "HEAD",
+      "status": 403,
+      "location": null
+    },
+    {
+      "path": "export.php",
+      "method": "HEAD",
+      "status": 302,
+      "location": "login.php"
+    },
+    {
+      "path": "export_csv.php",
+      "method": "HEAD",
+      "status": 302,
+      "location": "login.php"
+    }
+  ],
+  "http_boundary": "Three anonymous serial HEAD requests, no cookie jar, no authenticated session, no POST or production data mutation. This is not authenticated export UAT.",
+  "source_checks": {
+    "legacy_export_is_guarded_alias": true,
+    "legacy_export_preserves_query_encoding_contract": true,
+    "ebook_excluded_from_both_rsync_phases": true,
+    "arial_font_still_exists_and_is_used": true
+  },
+  "source_sha256": {
+    "export.php": "77f0fe8d3cd0a489907e9edb0e84a88a1507fd015a5f4fae67ed349f150278e7",
+    ".htaccess": "31f8a0d38f36e8f1d2e803e6069eaa7c36f99161a1b739ade86687facf1941c1",
+    ".github/workflows/deploy-production.yml": "4d0dea7472eb942d7b9416dcf901c303b3ccbcba426e40380d4272dd0861787c",
+    "generuj_story.php": "f6f47322733686f149ff4daf9e0c3cc10ab0072d4b28521ca804594ac36ee3ae"
+  },
+  "candidates": [
+    {
+      "name": "duplicate export.php/export_csv.php",
+      "disposition": "ALREADY_RESOLVED: canonical handler plus guarded alias; retain bookmarks and reauthorization."
+    },
+    {
+      "name": "unused ebook.pdf in release",
+      "disposition": "ALREADY_RESOLVED: excluded in both release phases, live HEAD 403; no production delete needed."
+    },
+    {
+      "name": "arial.ttf cleanup",
+      "disposition": "RETAIN: active rendering dependency, not unused."
+    },
+    {
+      "name": "runtime schema introspection",
+      "disposition": "FUTURE_MEASURED_SLICE: historical count is not a current defect or bottleneck; no safe bulk removal from live compatibility paths."
+    },
+    {
+      "name": "wiring test removal",
+      "disposition": "RETAIN: structural security/deployment contracts complement behavioral tests; deleting assertions is not completion. Broader replacement requires a bounded measured plan."
+    }
+  ]
+}

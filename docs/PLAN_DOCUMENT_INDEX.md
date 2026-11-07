@@ -836,3 +836,13 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-d04eafb86a | [docs/verification/attendance-person-picker-20261107/final/RESULTS.md](verification/attendance-person-picker-20261107/final/RESULTS.md) | reference / REFERENCE | P11 |
 | PL-b357de1d32 | [docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md](verification/attendance-person-picker-20261107/final/CALIBRATION.md) | reference / REFERENCE | P11 |
 | PL-629fbd394e | [docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md](verification/attendance-person-picker-20261107/final/REPRODUCE.md) | reference / REFERENCE | P11 |
+
+| PL-c7836c4046 | [AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md) | plan / DONE | P14/P10/P11/C04 |
+
+| PL-8cafa3571d | [verification/autonomous-priorities-20261107/RESULTS.md](verification/autonomous-priorities-20261107/RESULTS.md) | evidence / REFERENCE | P14/P10/P11/C04 |
+| PL-b21613ab0c | [verification/autonomous-priorities-20261107/restore-proof.json](verification/autonomous-priorities-20261107/restore-proof.json) | evidence / REFERENCE | P14/P10/C04 |
+| PL-be0c6f50a6 | [verification/autonomous-priorities-20261107/restore-evidence.txt](verification/autonomous-priorities-20261107/restore-evidence.txt) | artifact / REFERENCE | P14/P10/C04 |
+| PL-6e7cacb9d3 | [verification/autonomous-priorities-20261107/work-inventory.json](verification/autonomous-priorities-20261107/work-inventory.json) | evidence / REFERENCE | P14/P10/C04 |
+| PL-b01de98e79 | [verification/autonomous-priorities-20261107/inventory.py.txt](verification/autonomous-priorities-20261107/inventory.py.txt) | artifact / REFERENCE | P14/P10/C04 |
+| PL-c2803a08b6 | [verification/autonomous-priorities-20261107/technical-candidates.json](verification/autonomous-priorities-20261107/technical-candidates.json) | evidence / REFERENCE | P14/P10/C04 |
+| PL-f2ad7d0e44 | [verification/autonomous-priorities-20261107/technical-candidates-junit.xml](verification/autonomous-priorities-20261107/technical-candidates-junit.xml) | evidence / REFERENCE | P14/P10/C04 |

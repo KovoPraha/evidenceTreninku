@@ -9,6 +9,8 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 7. 11. 2026 / E2026-11-07-31 | AUTO01: izolovaná obnova a bezpečná inventura dokončené | 42376793141 PASS: novější generace, shoda řádků 389 tabulek / 2 triggerů, úklid SUCCESS. 332 větví / 156 worktrees; WIP nezměněné, nic nesmazané. 14/289 a 3 anonymní HEAD PASS. #369/#366 převzaté bez duplikace. | [Plán](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), [výsledky](verification/autonomous-priorities-20261107/RESULTS.md), [PR #370](https://github.com/KovoPraha/evidenceTreninku/pull/370) |
+| 7. 11. 2026 / E2026-11-07-30 | AUTO01: vlastník zadal autonomní dokončení priorit 1/7/8 | Ověřen main i tři aktivní relace; neduplikovat lekce, výběr osob ani stejný Chrome. Tato relace přebírá izolovanou obnovu novější zálohy a čtecí inventuru P10/C04. | [Plán](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), [výsledky](verification/autonomous-priorities-20261107/RESULTS.md); vlastní větev v plánu |
 | 7. 11. 2026 / E2026-11-07-29 | P11 picker: sjednocení integračního SQL rozpočtu | CI 42375011560 data/HTML 18 párů shodné; nový pevný celostránkový cap56 pro aktuální UI, stejné lekce v obou stromech. Samostatný validator budget a ostatní guardy zachované; replay18 a tři odmítací kontroly PASS. Nový nativní CI, bez změny aplikace/produkce. | [Výsledek](verification/attendance-person-picker-20261107/final/RESULTS.md), [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md) |
 | 7. 11. 2026 / E2026-11-07-28 | P11 picker: oprava přenosu obou draftů a nové úplné měření | Společný formulář, 540 HTTP/78 Chrome, 36/380, 44 HTTP, JS/noJS a kanonické zápisy PASS; starý pár předběžný. Převzaté #347/#364/#367, finální CI/review #366, žádný náš deploy. | [Finální důkazy](verification/attendance-person-picker-20261107/final/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), [volba](DECISION_LOG.md#d2026-11-07-09) |
 | 7. 11. 2026 / E2026-11-07-27 | P11 R06: předběžný dvouformulářový picker změřený, nahrazen E28 | 1,37 MB → 92 kB, Chrome trenér 5,23 → 1,11 s. 540 HTTP časů / 78 browser pozorování, JS/noJS, 36 HTTP kontrol, skutečné zápisy a revokace PASS. Runtime uklizený, WIP shodný, žádný náš deploy. Finální CI/merge u PR. | [Výsledky](verification/attendance-person-picker-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366) |
@@ -68,3 +70,7 @@ Pracovní katalogová událost dříve 18 je po přijetí DOC02 #360 zachycena j
 Při převzetí priorit #368 zůstává přijaté DOC03 ID 22 zachované; pracovní release událost této větve nyní nese 23. Původní commitové doklady zůstávají v Gitu.
 
 Při převzetí #369 přijaté E23 patří produkčnímu dokladu lekcí. Naše pracovní E23/E24/E25 jsou nyní E27/E28/E29; vlastní E26 a D09 zůstávají. Původní commity se nemění.
+
+
+Pracovní událost AUTO01 měla v prvním draftu ID `E2026-11-07-24`. Při integraci
+#369 je její společné ID `E2026-11-07-30`; již přijatá událost #369 zůstala zachovaná.

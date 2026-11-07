@@ -1,0 +1,23 @@
+{
+  "run_id": 42376793141,
+  "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42376793141",
+  "workflow_ref": "main",
+  "workflow_sha": "2ef20aedc38c02b9d4d46fcdf006095140285310",
+  "operation": "obnovit-zalohu-izolovane",
+  "conclusion": "success",
+  "created_at": "2026-11-07T13:24:06Z",
+  "finished_at": "2026-11-07T13:25:19Z",
+  "backup_file": "evidence_2026-11-07_125007_ce199079.sql.gz",
+  "generations": 1,
+  "tables_with_matching_row_counts": 389,
+  "matching_triggers": 2,
+  "sql_sha256_sidecar_pass": true,
+  "sql_sha256_equals_manifest": true,
+  "application_and_filename_manifest_checks": true,
+  "cleanup_step": {
+    "name": "Uklid docasnych dat drillu",
+    "conclusion": "success"
+  },
+  "boundary": "Backup copied to ephemeral GitHub runner MariaDB 11.4. No production database restore; private dump and manifest removed by the workflow, not committed.",
+  "deployment_reference": "docs/verification/attendance-lesson-release-20261107/deployment.json"
+}
