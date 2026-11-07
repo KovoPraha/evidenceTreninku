@@ -322,6 +322,8 @@ PŘIJATO podle nového zadání vlastníka: [P11-R05-H](PLANNER_HIERARCHY_READ_P
 
 P11-R05-H podle D12: finální parita a objemový přínos PASS na obou DB i celém HTTP/Chrome. [Důkazy](verification/planner-hierarchy-read-performance-20261107/RESULTS.md). Vhodné pro schválený standardní deploy až po zelených kontrolách výsledkového commitu; drobná režie jednoho SQL u malé filtrované historie doložená, bez soupisky čas neutrální.
 
+P11-R05-H — uzavřený technický řez podle D12: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [parita/přínos](verification/planner-hierarchy-read-performance-20261107/RESULTS.md), [merge/deploy/čtecí důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md), [handoff](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md). #374/e36c9ba6 a deploy42394551344 SUCCESS. Lidské UAT/rows examined a celé K0.2 tím nejsou uzavřené.
+
 ## D2026-11-07-P15-S4
 
 Vlastník 7. 11. zadal čtecí přehled synchronizací a nespárovaných záznamů.

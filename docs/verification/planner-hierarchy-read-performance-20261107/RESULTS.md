@@ -4,7 +4,8 @@
 [předání](../../SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md), [PR #374](https://github.com/KovoPraha/evidenceTreninku/pull/374).
 Runtime `65440e3b2f080a9f2efd37a85d10cf202e2bc890`, baseline přesně
 `69f490332b0027232d7a58bffb578c28b2715ffa`. Implementace/parita/měření PASS;
-merge/deploy NOT RUN při zápisu tohoto protokolu. Výsledkový commit se ještě ověřuje.
+#374 sloučené, schválené nasazení42394551344 a veřejné před/po PASS;
+[produkční důkaz a meze](../planner-hierarchy-release-20261107/RESULTS.md).
 
 ## Kontrakt a regrese
 
@@ -21,7 +22,7 @@ merge/deploy NOT RUN při zápisu tohoto protokolu. Výsledkový commit se ješt
 - [Testy a nativní měření 42390969094](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969094),
   [celé HTTP/Chrome 42390969061](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969061).
   Dva runtime zdrojové hashe přesně shodné v nativních a HTTP důkazech i Git objektech.
-  Finální dokumentační commit musí před merge získat vlastní zelené kontroly.
+  Integrovaná výsledková hlava 87130cfe získala všech 12 zelených kontrol před merge.
 
 ## Nativní helper před/po
 
@@ -73,12 +74,12 @@ SQL/PHP diagnostika zvlášť, ve všech 84 případech HTML shodné s prostým 
 Objemový trenér: medián HTTP **−32,9 %**, vedoucí **−59,8 %**.
 Bez soupisky neutrální; malá historie kořenové soupisky 16,05 →16,13 ms,
 SQL 46 →47, PHP peak 1 219 432 →863 624 B. Tuto malou režii nezakrýváme.
-Velká historie trenér: SQL66 →47, PHP peak9 422 016 →863 624 B (−90,8 %);
-vedoucí SQL87 →47, PHP peak17 987 600 →798 224 B (−95,6 %).
+Velká historie trenér: SQL 66 →47, PHP peak 9 422 016 →863 624 B (−90,8 %);
+vedoucí SQL 87 →47, PHP peak 17 987 600 →798 224 B (−95,6 %).
 
 **104 browser pozorování**, na roli/variantu/velikost 3 cold +10 warm,
 navíc jedno nezapočtené warm zahřátí. Objemový warm load medián:
-trenér131,35 →108,65 ms (−17,3 %), vedoucí195,20 →121,10 ms (−38,0 %).
+trenér 131,35 →108,65 ms (−17,3 %), vedoucí 195,20 →121,10 ms (−38,0 %).
 Žádné console errors nebo failed requests; povinná networkidle mezera se do
 loadEventEnd nepočítá. Browser/HTTP raw bezpečné JSON jsou vedle souhrnu v gzip.
 [První nezávislý pár](initial/integrated-summary.json) na 6fe44e57 přínos potvrzuje;
@@ -90,6 +91,6 @@ Syntetické Linux CI měření není produkční SLA ani inventura skutečných 
 Přenesené řádky nejsou rows examined; rows examined, fyzický mobil a souběžná
 produkční zátěž NOT RUN. Bez cache práv/dat mezi voláními; transakční/writer,
 kopírování, týdenní karty a RSVP nezměněné. Pro extrémní graf/data funguje fallback.
-Produkce zatím beze změny, žádná aktivace ani skutečné osoby/role/platby/docházka.
-Merge, standardní schválený deploy a veřejný čtecí smoke následují až po finálních CI;
-přihlášené produkční UI UAT NOT RUN. Původní WIP hash beze změny.
+Nasazení i veřejné čtecí ověření dokončené po všech 12 CI integrované hlavy 87130cfe;
+žádné nové aktivace ani skutečné změny osob/rolí/plateb/docházky.
+Přihlášené produkční UI UAT NOT RUN. Původní WIP hash beze změny.

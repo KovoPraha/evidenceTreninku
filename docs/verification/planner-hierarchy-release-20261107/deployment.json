@@ -1,0 +1,225 @@
+{
+  "release_sha": "e36c9ba6e461b7da842c53939c2fe20eed821f38",
+  "runtime_source_commit": "65440e3b2f080a9f2efd37a85d10cf202e2bc890",
+  "tested_integrated_head": "87130cfe74b8b87f9c5058b333695cf1c1ee8b2d",
+  "run_id": 42394551344,
+  "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42394551344",
+  "inputs": {
+    "potvrzeni": "NASADIT",
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "jobs": [
+    {
+      "completedAt": "2026-11-07T17:10:58Z",
+      "conclusion": "success",
+      "databaseId": 128469018492,
+      "name": "Nasazen\u0102\u00ad KIS (kis.kovopraha.cz)",
+      "startedAt": "2026-11-07T17:05:28Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-07T17:05:30Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-07T17:05:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:05:30Z",
+          "conclusion": "success",
+          "name": "Ov\u00c4\u203a\u0139\u2122it ru\u00c4\u0164n\u0102\u00ad potvrzen\u0102\u00ad",
+          "number": 2,
+          "startedAt": "2026-11-07T17:05:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:05:30Z",
+          "conclusion": "success",
+          "name": "Ov\u00c4\u203a\u0139\u2122it konfigura\u00c4\u0164n\u0102\u00ad Variables",
+          "number": 3,
+          "startedAt": "2026-11-07T17:05:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:05:32Z",
+          "conclusion": "success",
+          "name": "St\u0102\u02c7hnout k\u0102\u0142d z main",
+          "number": 4,
+          "startedAt": "2026-11-07T17:05:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:05:35Z",
+          "conclusion": "success",
+          "name": "P\u0139\u2122ipravit PHP",
+          "number": 5,
+          "startedAt": "2026-11-07T17:05:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:06:30Z",
+          "conclusion": "success",
+          "name": "Kontrola PHP syntaxe",
+          "number": 6,
+          "startedAt": "2026-11-07T17:05:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:07:13Z",
+          "conclusion": "success",
+          "name": "Nainstalovat z\u0102\u02c7vislosti a spustit testy",
+          "number": 7,
+          "startedAt": "2026-11-07T17:06:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:07:13Z",
+          "conclusion": "success",
+          "name": "P\u0139\u2122ipravit ov\u00c4\u203a\u0139\u2122en\u0102\u00a9 SSH spojen\u0102\u00ad",
+          "number": 8,
+          "startedAt": "2026-11-07T17:07:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:07:24Z",
+          "conclusion": "success",
+          "name": "P\u0139\u2122edletov\u0102\u02c7 kontrola serveru bez zm\u00c4\u203any aplikace",
+          "number": 9,
+          "startedAt": "2026-11-07T17:07:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:07:28Z",
+          "conclusion": "success",
+          "name": "Nahr\u0102\u02c7t z\u0102\u02c7lohovac\u0102\u00ad n\u0102\u02c7stroj mimo aplikaci",
+          "number": 10,
+          "startedAt": "2026-11-07T17:07:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:08:16Z",
+          "conclusion": "success",
+          "name": "Vytvo\u0139\u2122it a ov\u00c4\u203a\u0139\u2122it produk\u00c4\u0164n\u0102\u00ad z\u0102\u02c7lohu",
+          "number": 11,
+          "startedAt": "2026-11-07T17:07:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:08:27Z",
+          "conclusion": "success",
+          "name": "P\u0139\u2122ipravit soukrom\u0102\u02dd kl\u0102\u00ad\u00c4\u0164 archivu KIS a jeho z\u0102\u02c7lohu",
+          "number": 12,
+          "startedAt": "2026-11-07T17:08:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:08:37Z",
+          "conclusion": "success",
+          "name": "P\u0139\u2122ipravit soukrom\u0102\u00a9 \u0102\u015flo\u0139\u013ei\u0139\u02c7t\u00c4\u203a dokument\u0139\u017b",
+          "number": 13,
+          "startedAt": "2026-11-07T17:08:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:08:49Z",
+          "conclusion": "success",
+          "name": "P\u0139\u2122ipravit kompletn\u0102\u00ad release mimo webroot",
+          "number": 14,
+          "startedAt": "2026-11-07T17:08:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:08:55Z",
+          "conclusion": "success",
+          "name": "Zachytit otisky dosavadn\u0102\u00adch variabiln\u0102\u00adch symbol\u0139\u017b",
+          "number": 15,
+          "startedAt": "2026-11-07T17:08:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:09:11Z",
+          "conclusion": "success",
+          "name": "Aplikovat migrace z p\u0139\u2122ipraven\u0102\u00a9ho release",
+          "number": 16,
+          "startedAt": "2026-11-07T17:08:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:09:19Z",
+          "conclusion": "success",
+          "name": "Ov\u00c4\u203a\u0139\u2122it zachov\u0102\u02c7n\u0102\u00ad dosavadn\u0102\u00adch variabiln\u0102\u00adch symbol\u0139\u017b",
+          "number": 17,
+          "startedAt": "2026-11-07T17:09:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:09:21Z",
+          "conclusion": "success",
+          "name": "Aktivovat ov\u00c4\u203a\u0139\u2122en\u0102\u02dd release",
+          "number": 18,
+          "startedAt": "2026-11-07T17:09:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:09:21Z",
+          "conclusion": "skipped",
+          "name": "Zalo\u0139\u013eit produkty krou\u0139\u013ek\u0139\u017b 2026/27 v KIS",
+          "number": 19,
+          "startedAt": "2026-11-07T17:09:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:09:34Z",
+          "conclusion": "success",
+          "name": "Odstranit jen vyjmenovan\u0102\u00a9 osi\u0139\u2122el\u0102\u00a9 soubory a p\u0139\u2122esunout soukrom\u0102\u00a9 p\u0139\u2122\u0102\u00adlohy",
+          "number": 20,
+          "startedAt": "2026-11-07T17:09:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:09:58Z",
+          "conclusion": "success",
+          "name": "Ov\u00c4\u203a\u0139\u2122it z\u0102\u02c7kaz HTTP p\u0139\u2122\u0102\u00adstupu ke kl\u0102\u00ad\u00c4\u0164i archivu",
+          "number": 21,
+          "startedAt": "2026-11-07T17:09:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:10:55Z",
+          "conclusion": "success",
+          "name": "HTTP smoke test bez tajn\u0102\u00a9ho tokenu",
+          "number": 22,
+          "startedAt": "2026-11-07T17:09:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:10:57Z",
+          "conclusion": "success",
+          "name": "Odstranit kopii produk\u00c4\u0164n\u0102\u00ad konfigurace z release",
+          "number": 23,
+          "startedAt": "2026-11-07T17:10:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:10:57Z",
+          "conclusion": "success",
+          "name": "Post St\u0102\u02c7hnout k\u0102\u0142d z main",
+          "number": 46,
+          "startedAt": "2026-11-07T17:10:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-07T17:10:57Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 47,
+          "startedAt": "2026-11-07T17:10:57Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42394551344/job/128469018492"
+    }
+  ]
+}
