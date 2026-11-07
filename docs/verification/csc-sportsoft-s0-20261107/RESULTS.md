@@ -3,7 +3,8 @@
 Datum: 7. 11. 2026, Europe/Prague. Vlastník: Marek / vývoj KIS.
 Větev/worktree pokračují z [P15](../../CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md),
 [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371).
-Převzatý main pro tento řez `faae75e8`; cizí WIP původního checkoutu zachované.
+Převzatý main `faae75e8`, před předáním doplněn `56f5ce08` (#370);
+cizí WIP původního checkoutu zachované.
 
 ## Hotové výstupy
 

@@ -9782,6 +9782,116 @@
       ]
     },
     {
+      "id": "PL-c7836c4046",
+      "path": "docs/AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md",
+      "title": "Autonomní dokončení priorit 1, 7 a 8 — 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "DONE",
+      "registry": "P14/P10/P11/C04",
+      "disposition": "Samostatný průchod dokončený: novější DB záloha 389 tabulek / 2 triggery PASS v izolaci, čtecí inventura 332 větví / 156 worktrees, kandidáti a WIP ověřené bez mazání. Bod 1 neduplikován, otevřené vizuální/provozní kroky mají původní vlastníky.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md",
+        "docs/verification/autonomous-priorities-20261107/restore-proof.json",
+        "docs/verification/autonomous-priorities-20261107/work-inventory.json",
+        "docs/verification/autonomous-priorities-20261107/technical-candidates-junit.xml"
+      ]
+    },
+    {
+      "id": "PL-8cafa3571d",
+      "path": "docs/verification/autonomous-priorities-20261107/RESULTS.md",
+      "title": "Priority 1 / 7 / 8 — výsledky autonomního průchodu",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P14/P10/P11/C04",
+      "disposition": "Autonomní průchod podle výslovného zadání vlastníka; bod 1 má aktivní vlastníky, tato relace obnovuje novější zálohu v izolaci a prověřuje WIP/technické kandidáty. Bez produkční datové obnovy či mazání cizí práce.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/restore-proof.json",
+        "docs/verification/autonomous-priorities-20261107/work-inventory.json",
+        "docs/verification/autonomous-priorities-20261107/technical-candidates.json",
+        "docs/verification/autonomous-priorities-20261107/technical-candidates-junit.xml"
+      ]
+    },
+    {
+      "id": "PL-b21613ab0c",
+      "path": "docs/verification/autonomous-priorities-20261107/restore-proof.json",
+      "title": "restore-proof.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-be0c6f50a6",
+      "path": "docs/verification/autonomous-priorities-20261107/restore-evidence.txt",
+      "title": "restore-evidence.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-6e7cacb9d3",
+      "path": "docs/verification/autonomous-priorities-20261107/work-inventory.json",
+      "title": "work-inventory.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-b01de98e79",
+      "path": "docs/verification/autonomous-priorities-20261107/inventory.py.txt",
+      "title": "inventory.py.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-c2803a08b6",
+      "path": "docs/verification/autonomous-priorities-20261107/technical-candidates.json",
+      "title": "technical-candidates.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-f2ad7d0e44",
+      "path": "docs/verification/autonomous-priorities-20261107/technical-candidates-junit.xml",
+      "title": "technical-candidates-junit.xml",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P14/P10/C04",
+      "disposition": "Důkaz konkrétního rozsahu AUTO01; neobsahuje privátní SQL, konfiguraci ani obsah cizího WIP.",
+      "evidence": [
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
       "id": "PL-f4f6043c1f",
       "path": "docs/CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md",
       "title": "Čtecí synchronizace ČSC a Sportsoftu do KIS",
