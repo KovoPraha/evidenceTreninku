@@ -1,0 +1,9 @@
+{
+    "at_utc": "2026-11-07T12:54:08+00:00",
+    "url": "https://kis.kovopraha.cz/booking/training_closure_admin.php",
+    "method": "Anonymous GET without cookies, redirects or POST; response body and headers not stored.",
+    "http": 404,
+    "redirect_path": null,
+    "pass": false,
+    "limitation": "Confirms anonymous rejection only. Authenticated production lesson UI UAT was not performed."
+}
