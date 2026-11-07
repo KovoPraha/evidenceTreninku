@@ -791,8 +791,8 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | PL-101d3dd75c | [catalog-page-comparison.json](verification/catalog-read-performance-20261107/ci-final-11.4/catalog-page-comparison.json) | evidence / REFERENCE | P11 |
 
-| PL-30d4f6c028 | [ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / PARTIAL | P11 |
-| PL-22fccd64f4 | [SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | handoff / PARTIAL | P11 |
+| PL-30d4f6c028 | [ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | plan / DONE | P11 |
+| PL-22fccd64f4 | [SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) | handoff / REFERENCE | P11 |
 | PL-38b7449ba4 | [RESULTS.md](verification/attendance-lesson-read-performance-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
 | PL-78d18f8e5d | [sqlite-comparison.json](verification/attendance-lesson-read-performance-20261107/sqlite-comparison.json) | evidence / REFERENCE | P11 |
 | PL-2ab3c6b2d7 | [targeted-junit.xml](verification/attendance-lesson-read-performance-20261107/targeted-junit.xml) | evidence / REFERENCE | P11 |
@@ -819,6 +819,14 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-4389493264 | [snapshot.php.txt](verification/catalog-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
 
 | PL-6e368996bd | [integrated-junit.xml](verification/attendance-lesson-read-performance-20261107/integrated-junit.xml) | evidence / REFERENCE | P11 |
+| PL-d2d8935760 | [after.json](verification/attendance-lesson-release-20261107/after.json) | evidence / REFERENCE | P11 |
+| PL-b599cfe9fc | [anonymous-lesson.json](verification/attendance-lesson-release-20261107/anonymous-lesson.json) | evidence / REFERENCE | P11 |
+| PL-3ec1623c55 | [anonymous-lesson.php.txt](verification/attendance-lesson-release-20261107/anonymous-lesson.php.txt) | evidence / REFERENCE | P11 |
+| PL-b0f1a886c9 | [before.json](verification/attendance-lesson-release-20261107/before.json) | evidence / REFERENCE | P11 |
+| PL-2650687986 | [deployment.json](verification/attendance-lesson-release-20261107/deployment.json) | evidence / REFERENCE | P11 |
+| PL-3bb72b363f | [initial-wrong-route.json](verification/attendance-lesson-release-20261107/initial-wrong-route.json) | evidence / REFERENCE | P11 |
+| PL-33db4f8391 | [RESULTS.md](verification/attendance-lesson-release-20261107/RESULTS.md) | evidence / REFERENCE | P11 |
+| PL-28f93c29c8 | [snapshot.php.txt](verification/attendance-lesson-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
 
 | PL-c7836c4046 | [AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md) | plan / IN_PROGRESS | P14/P10/P11/C04 |
 

@@ -9,7 +9,8 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
-| 7. 11. 2026 / E2026-11-07-23 | AUTO01: vlastník zadal autonomní dokončení priorit 1/7/8 | Ověřen main i tři aktivní relace; neduplikovat lekce, výběr osob ani stejný Chrome. Tato relace přebírá izolovanou obnovu novější zálohy a čtecí inventuru P10/C04. | [Plán](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), [výsledky](verification/autonomous-priorities-20261107/RESULTS.md); vlastní větev v plánu |
+| 7. 11. 2026 / E2026-11-07-24 | AUTO01: vlastník zadal autonomní dokončení priorit 1/7/8 | Ověřen main i tři aktivní relace; neduplikovat lekce, výběr osob ani stejný Chrome. Tato relace přebírá izolovanou obnovu novější zálohy a čtecí inventuru P10/C04. | [Plán](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), [výsledky](verification/autonomous-priorities-20261107/RESULTS.md); vlastní větev v plánu |
+| 7. 11. 2026 / E2026-11-07-23 | P11 R06 lekce #367 sloučené a schválené nasazení dokončené | Finální CI včetně obou MariaDB PASS, Linux 2355/46183. Veřejný normalizovaný DOM 5/5 shodný, anonymní soukromá trasa odmítnutá; přihlášené R06 UAT NOT RUN. WIP zachovaný. | [Plán](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md), [provozní důkaz](verification/attendance-lesson-release-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) |
 | 7. 11. 2026 / E2026-11-07-22 | DOC03: stručné priority a závislosti podle zadání vlastníka | Hotový přehled samostatných kroků, lidských podkladů a odložených prací; snapshot main 269684c2. Ranní PASS, vydaný katalog a merge lekcí zohledněné. Pořadí je doporučení, žádná nová finanční aktivace. | [Priority v registru](WORK_PLAN_CURRENT.md#priority-a-závislosti), [handoff](HANDOFF_CURRENT.md); větev `codex/work-priorities-20261107` |
 | 7. 11. 2026 / E2026-11-07-21 | P11 katalog #364 NASAZENO podle nového souhlasu | `c70939d4`, deploy 42372002993 SUCCESS. Veřejná pole 5/5 shodná, 222 nabídek; původní DOM baseline neprokazatelný kvůli CSP nonce, v2 následně 5/5 stabilní. Dále R06 #367. | [Produkční protokol](verification/catalog-release-20261107/RESULTS.md), [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md), [handoff](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) |
 | 7. 11. 2026 / E2026-11-07-20 | P11 R06 lekce: implementace, parita a párové měření hotové | 19/993 cíleně, první runtime 11 CI PASS; 720 párů 10.3/11.4, 153 → 6 SQL pro trenéra. Převzatý katalog #364; po integraci CI a vhodný samostatný deploy podle zadání vlastníka. | [Plán](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/attendance-lesson-read-performance-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md), [volba](DECISION_LOG.md#d2026-11-07-08) |
@@ -60,3 +61,9 @@ Po převzetí #363 jsou pracovní ROLE01-VIS/MOB události 14–16; přijaté P1
 Po převzetí #362 jsou pracovní ROLE01-VIS/MOB události 15–17; přijaté P07 ID 14 zachováno.
 
 Pracovní katalogová událost dříve 18 je po přijetí DOC02 #360 zachycena jako 19; přijaté DOC02 ID 18 zachované.
+
+Při převzetí priorit #368 zůstává přijaté DOC03 ID 22 zachované; pracovní release událost této větve nyní nese 23. Původní commitové doklady zůstávají v Gitu.
+
+
+Pracovní událost AUTO01 měla v prvním draftu ID `E2026-11-07-23`. Při integraci
+#369 je její společné ID `E2026-11-07-24`; již přijatá událost #369 zůstala zachovaná.
