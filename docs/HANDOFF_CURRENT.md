@@ -4,7 +4,25 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Poslední návaznost: P07 jednorázový kroužek — 7. 11. 2026
+## Poslední návaznost: P07 automatické doklady a e-maily — 7. 11. 2026
+
+Vlastník výslovně zadal dokončení N1/N2, ověření, dokumentaci, sloučení a nasazení.
+[Plán a provozní návod](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
+[průběžné výsledky](verification/shop-document-automation-20261107/RESULTS.md).
+Větev/worktree `codex/one-time-course-uat-20261107` /
+`C:/Users/Marek/Documents/Codex/evidencePavel-one-time-course-uat-20261107`, PR #355.
+Implementace hotová v pracovní kopii: pověření a fakturační adresa, automatické
+PDF po platbě, opravné PDF po stornu, e-maily k událostem včetně dílčí výplaty,
+PDF přílohy a chráněné stažení. Zapojeno do existujícího minutového workeru.
+Místní MariaDB + browser ověřily objednávku 249 Kč, fakturu, storno, opravu,
+vratku, šest zpráv a opakování bez duplicit. Poslední cílená sada 51 testů /
+496 assertions PASS; další kvalita a CI probíhají. Produkční aktivace zatím
+neproběhla. Další krok: dokončit CI, merge, chráněný deploy, zapnout pověření
+v přihlášené administraci a ověřit hostingový worker; vše zapsat do CURRENT_STATE.
+Zachovat cizí WIP v hlavní kopii a nedokončenou měsíční UAT větev. Skutečnou
+bankovní platbu ani doručení do schránky neodvozovat ze syntetického testu.
+
+## Předchozí návaznost: P07 audit jednorázového kroužku — 7. 11. 2026
 
 Na pokyn vlastníka dokončena izolovaná kontrola nákupu, úhrady, soupisky,
 e-mailu, účetního dokladu a vratky. [Protokol, důkazy a reprodukce](verification/one-time-course-uat-20261107/RESULTS.md).

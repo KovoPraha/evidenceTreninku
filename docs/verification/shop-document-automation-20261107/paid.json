@@ -1,0 +1,84 @@
+{
+    "synthetic_only": true,
+    "phase": "paid",
+    "checked_at": "2026-11-07T10:17:03+01:00",
+    "worker": {
+        "documents": 1,
+        "sent": 2,
+        "failed": 0,
+        "attention": 0
+    },
+    "repeat": {
+        "documents": 0,
+        "sent": 0,
+        "failed": 0,
+        "attention": 0
+    },
+    "captured_mail": [
+        {
+            "email": "rodic@localhost.test",
+            "subject": "Platba přijata – objednávka KP261107BE5C4A205A",
+            "body": "Dobrý den,\n\npotvrzujeme přijetí platby za objednávku KP261107BE5C4A205A.\n\nDatum přijetí platby: 07. 11. 2026 10:16\nPřijatá částka: 249,00 CZK\n\nPoložky objednávky:\n- LOCALHOST – placený kroužek (NEPLATIT) × 1\n\nCo se děje dál:\n- Kroužek byl po přijetí platby aktivován; aktuální stav najdete ve svém účtu.\n\nStav objednávky najdete po přihlášení v Moje objednávky:\nhttp:\/\/127.0.0.1:18086\/booking\/prihlaseni.php?redirect=moje_objednavky.php\n\nKlub KOVO Praha",
+            "attachments": []
+        },
+        {
+            "email": "rodic@localhost.test",
+            "subject": "Doklad k objednávce KP261107BE5C4A205A",
+            "body": "Dobrý den,\n\nv příloze zasíláme doklad k úhradě objednávky KP261107BE5C4A205A. Nejde o novou výzvu k platbě. Aktuální stav včetně případného storna najdete v objednávce.\n\nObjednávku a doklady najdete po přihlášení: http:\/\/127.0.0.1:18086\/booking\/objednavka.php?code=KP261107BE5C4A205A\n\nKlub KOVO Praha",
+            "attachments": [
+                {
+                    "name": "doklad-1.pdf",
+                    "sha256": "beb8f77c43b92e341dbf3e0cc1a71923da649666207e2c49c0516220ed6acdff",
+                    "bytes": 23539
+                }
+            ]
+        }
+    ],
+    "order": [
+        {
+            "id": 2,
+            "status": "processing",
+            "payment_status": "paid",
+            "total_minor": 24900
+        }
+    ],
+    "documents": [
+        {
+            "id": 1,
+            "kind": "invoice",
+            "status": "issued",
+            "number": "FA-2026-000001",
+            "total_minor": 24900,
+            "pdf_sha256": "beb8f77c43b92e341dbf3e0cc1a71923da649666207e2c49c0516220ed6acdff"
+        }
+    ],
+    "notifications": [
+        {
+            "notification_type": "shop_order_placed",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_payment_received",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_invoice_issued",
+            "status": "sent",
+            "attempts": 1
+        }
+    ],
+    "enrollments": [
+        {
+            "id": 2,
+            "sportovec_id": 1,
+            "status": "active"
+        }
+    ],
+    "monthly_count": [
+        {
+            "total": 0
+        }
+    ]
+}
