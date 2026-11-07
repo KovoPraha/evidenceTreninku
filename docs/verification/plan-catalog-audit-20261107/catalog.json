@@ -9675,12 +9675,14 @@
       "title": "P11 R06 — výběr osob v docházce, 7. 11. 2026",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11",
-      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "disposition": "Dílčí picker: implementace/parita, nový společný HTTP/Chrome pár, merge #366 a schválené nasazení hotové; celé K0.2 otevřené.",
       "evidence": [
         "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
-        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/verification/attendance-person-picker-20261107/integrated/RESULTS.md",
+        "docs/verification/attendance-picker-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -9689,12 +9691,14 @@
       "title": "P11 R06 — předání výběru osob v docházce, 7. 11. 2026",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11",
-      "disposition": "Finální společný picker místně hotový, PR #366 / finální CI a přijetí u PR, bez našeho deploye. Převzaté #367; celé společné HTTP a další P11 otevřené.",
+      "disposition": "Předání dílčího pickeru: implementace, nová integrovaná parita/měření, merge a schválené nasazení hotové; ostatní P11 otevřené.",
       "evidence": [
         "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
-        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
+        "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/verification/attendance-person-picker-20261107/integrated/RESULTS.md",
+        "docs/verification/attendance-picker-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -9890,6 +9894,292 @@
       "evidence": [
         "docs/verification/autonomous-priorities-20261107/RESULTS.md"
       ]
+    },
+    {
+      "id": "PL-6e0dad4534",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/RESULTS.md",
+      "title": "Integrated picker HTTP/browser verification",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Aktuální společné měření s #367, samostatná evidence neúspěšné Windows kalibrace; žádné produkční oprávnění samo o sobě.",
+      "evidence": []
+    },
+    {
+      "id": "PL-435187d92b",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/browser-coach-after.json.gz",
+      "title": "browser-coach-after.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-e403a774e9",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/browser-coach-before.json.gz",
+      "title": "browser-coach-before.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-9892e14764",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/browser-other_coach-after.json.gz",
+      "title": "browser-other_coach-after.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-a61807ff1b",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/browser-other_coach-before.json.gz",
+      "title": "browser-other_coach-before.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-ddac21606f",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/browser-sports_lead-after.json.gz",
+      "title": "browser-sports_lead-after.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-1769367e9e",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/browser-sports_lead-before.json.gz",
+      "title": "browser-sports_lead-before.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-3bd72f1a2a",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/cleanup.json.gz",
+      "title": "cleanup.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-810f905580",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/diagnostics-after.json.gz",
+      "title": "diagnostics-after.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-f0590798f7",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/diagnostics-before.json.gz",
+      "title": "diagnostics-before.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-5d588c3415",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/full-fixture-person-coverage.json.gz",
+      "title": "full-fixture-person-coverage.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-995df68572",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/http-after.json.gz",
+      "title": "http-after.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2114be3d40",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/http-before.json.gz",
+      "title": "http-before.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-026eddef8b",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/http-functional-verification.json.gz",
+      "title": "http-functional-verification.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-5c1aa24d08",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/http-revocation.json.gz",
+      "title": "http-revocation.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-a2650495a0",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/integrated-summary.json.gz",
+      "title": "integrated-summary.json.gz",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-d044ac551f",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/runner-cleanup.json",
+      "title": "runner-cleanup.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-f31302bb48",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/targeted-tests.xml",
+      "title": "targeted-tests.xml",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-f0ec6efec1",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/verification.json",
+      "title": "verification.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný integrovaný syntetický výsledek z ověřeného CI; bez konfigurace, hesel, session a HTML.",
+      "evidence": []
+    },
+    {
+      "id": "PL-107fed76ae",
+      "path": "docs/verification/attendance-picker-release-20261107/after.json",
+      "title": "after.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-fcf7e04f4b",
+      "path": "docs/verification/attendance-picker-release-20261107/anonymous-lesson.json",
+      "title": "anonymous-lesson.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-1714b998a1",
+      "path": "docs/verification/attendance-picker-release-20261107/anonymous-lesson.php.txt",
+      "title": "anonymous-lesson.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-198880d137",
+      "path": "docs/verification/attendance-picker-release-20261107/before.json",
+      "title": "before.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-20e6913d1d",
+      "path": "docs/verification/attendance-picker-release-20261107/deployment.json",
+      "title": "deployment.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-5219851ecf",
+      "path": "docs/verification/attendance-picker-release-20261107/RESULTS.md",
+      "title": "RESULTS.md",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-1d2cc5f812",
+      "path": "docs/verification/attendance-picker-release-20261107/snapshot.php.txt",
+      "title": "snapshot.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného picker deploye a čtecí kontroly, bez citlivého obsahu.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

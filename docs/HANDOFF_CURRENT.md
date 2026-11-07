@@ -15,13 +15,14 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
 
-- P11 picker: implementace/místní měření/UAT HOTOVO, **bez našeho deploye**; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
-  [finální výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [předání / PR #366](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
-  1,37 MB → 92 kB, Chrome trenér 4,79 → 0,59 s; obě rozepsané části, JS/noJS, role a zápisy PASS.
-  Větev `codex/attendance-person-picker-20261107`, sloučené #366 (`faae75e8`); runtime uklizený, WIP zachovaný.
-  Převzaté [lekce #367 nasazené jiným vláknem](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md); celé HTTP společné verze dosud nepřeměřené.
-  [Původní HTTP #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md) je historický base; dále R13/R05/rows examined/mobil/souběh.
-  R13/R05/R06 #354 zahrnuje ROLE01; [katalog #364 a cizí vydání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zachované. K0.2 otevřené.
+- P11 picker HOTOVO: [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání #366/#372](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+  [Produkční protokol](verification/attendance-picker-release-20261107/RESULTS.md): schválené nasazení a čtecí kontrola dokončené, neopakovat.
+  Nový Linux pár s #367: 540 HTTP / 78 Chrome; HTML 1,37 MB → 91,6 kB, Chrome trenér 446 → 83 ms.
+  Osm aplikačních hashů shodných, 13 kontrolních součtů/úplná množina osob/44 HTTP a oddělené writer UAT PASS.
+  Linux 2362/46386, obě MariaDB a všech 12 kontrol PASS; přihlášené produkční picker UAT NOT RUN.
+  Původní WIP a oba picker worktrees zachované; výsledky a kalibrace jsou v repu, nové aktivace žádné.
+  [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
+  Dále R13/R05 objemy, rows examined, fyzický mobil/síť/souběh a ostatní R01–R16; K0.2 otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

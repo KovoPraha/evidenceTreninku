@@ -215,3 +215,15 @@ Po nativní paritě a přínosu přibližně 20× u 50 lekcí je podle aktuáln�
 P11 R06 nabídka lekcí — uzavřený dílčí řez podle D2026-11-07-08: #367, finální CI, parita a měření PASS; [plán](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md), [produkční důkaz a meze](verification/attendance-lesson-release-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md). Výběr osob a celé K0.2 dál otevřené.
 
 P11 picker — [finální místní výsledek](verification/attendance-person-picker-20261107/final/RESULTS.md), [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), PR #366 bez našeho deploye.
+
+## D2026-11-07-10
+
+PŘIJATO 7. 11. podle nového výslovného zadání vlastníka: dokončit #366,
+ověřit shodu a přínos, po zelených kontrolách commit/merge/deploy. Původní
+zákaz nasazení je historický. Před nasazením doplnit celý HTTP/browser pár
+aktuálního main s #367 a pickerem; žádné aktivace ani skutečné zápisy docházky.
+[Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+Kanonické D09 původního pickeru zachované; dočasné přeznačení na D10 v pracovním
+75801847 bylo sjednocené při převzetí d62c3ad2. D10 označuje toto nové pokračování.
+
+P11 picker — dílčí řez uzavřený podle D10 a nového výslovného zadání: #366, nové společné měření, parita a schválené nasazení hotové. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [provozní důkaz a meze](verification/attendance-picker-release-20261107/RESULTS.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md). Celé K0.2 a lidská přejímka otevřené.
