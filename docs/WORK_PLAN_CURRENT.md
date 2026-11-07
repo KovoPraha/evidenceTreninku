@@ -45,6 +45,15 @@ Hotové: pracovní upozornění P01, zveřejnění nabídky P03, technické jád
 a katalog #364. Jejich opakování není další prioritou. Technické body 1, 7 a 8
 mohou běžet souběžně s dodáváním podkladů pro body 2–6; nečekají na nové produktové zadání.
 
+## AUTO01 — pokračování priorit 1, 7 a 8
+
+ROZPRACOVÁNO podle nového výslovného zadání vlastníka: [plán AUTO01](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md),
+[výsledky](verification/autonomous-priorities-20261107/RESULTS.md).
+Bod 1 má aktivní vlastníky: předání lekcí #369, výběr osob #366, Chrome / #365;
+jejich práci neduplikovat. Tato relace přebírá izolovanou obnovu novější zálohy
+P14 a čtecí inventuru větví/WIP a dnešních technických kandidátů P10/C04.
+Větev `codex/autonomous-priorities-1-7-8-20261107`, vlastní worktree viz plán.
+
 ## Aktivní návaznosti
 
 P07 N1/N2: [automatické doklady a komunikace](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md)

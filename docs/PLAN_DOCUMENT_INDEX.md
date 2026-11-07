@@ -819,3 +819,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-4389493264 | [snapshot.php.txt](verification/catalog-release-20261107/snapshot.php.txt) | evidence / REFERENCE | P11 |
 
 | PL-6e368996bd | [integrated-junit.xml](verification/attendance-lesson-read-performance-20261107/integrated-junit.xml) | evidence / REFERENCE | P11 |
+
+| PL-c7836c4046 | [AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md) | plan / IN_PROGRESS | P14/P10/P11/C04 |
+
+| PL-8cafa3571d | [verification/autonomous-priorities-20261107/RESULTS.md](verification/autonomous-priorities-20261107/RESULTS.md) | evidence / IN_PROGRESS | P14/P10/P11/C04 |

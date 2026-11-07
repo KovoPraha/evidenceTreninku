@@ -9578,6 +9578,34 @@
       "registry": "P11",
       "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
       "evidence": []
+    },
+    {
+      "id": "PL-c7836c4046",
+      "path": "docs/AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md",
+      "title": "Autonomní dokončení priorit 1, 7 a 8 — 7. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P14/P10/P11/C04",
+      "disposition": "Autonomní průchod podle výslovného zadání vlastníka; bod 1 má aktivní vlastníky, tato relace obnovuje novější zálohu v izolaci a prověřuje WIP/technické kandidáty. Bez produkční datové obnovy či mazání cizí práce.",
+      "evidence": [
+        "docs/AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md",
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-8cafa3571d",
+      "path": "docs/verification/autonomous-priorities-20261107/RESULTS.md",
+      "title": "Priority 1 / 7 / 8 — výsledky autonomního průchodu",
+      "primary": false,
+      "role": "evidence",
+      "status": "IN_PROGRESS",
+      "registry": "P14/P10/P11/C04",
+      "disposition": "Autonomní průchod podle výslovného zadání vlastníka; bod 1 má aktivní vlastníky, tato relace obnovuje novější zálohu v izolaci a prověřuje WIP/technické kandidáty. Bez produkční datové obnovy či mazání cizí práce.",
+      "evidence": [
+        "docs/AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md",
+        "docs/verification/autonomous-priorities-20261107/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",

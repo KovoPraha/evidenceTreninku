@@ -76,5 +76,5 @@ Aktualizováno 7. 11. 2026 (Europe/Prague) po nasazení dokladů jednorázových
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
-Další kroky: [priority a závislosti v registru](WORK_PLAN_CURRENT.md#priority-a-závislosti); [P11 měření](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md).
+AUTO01: [pokračování priorit 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 obnova v izolaci a P10/C04 čtecí inventura; [priority](WORK_PLAN_CURRENT.md#priority-a-závislosti).
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)
