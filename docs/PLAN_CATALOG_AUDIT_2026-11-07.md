@@ -41,11 +41,18 @@ Původních 695 textových dokumentů bylo inventarizováno; při souběžném m
 #356 do `ebb8b2e3` přibyly dva dokumenty ROLE01, které audit rovněž převzal.
 18 dosud lokálních plánů/příloh etap 0–6 je nyní sdílených jako historický
 podklad v `docs/plans/realization-20261022/`, bez provozních dat či JSON zdroje.
-Celkem 739 indexovaných souborů (722 textových a 17 binárních); 315 hlavních záznamů zahrnuje
-231 plánovacích podkladů/dispozic a 84 referencí. Nejde o 231 nově schválených úkolů.
+Celkem 749 indexovaných souborů (728 textových a 21 binárních); 316 hlavních záznamů zahrnuje
+232 plánovacích podkladů/dispozic a 84 referencí. Nejde o 232 nově schválených úkolů.
 Místní kontroly PASS; předání [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360). Konečný head a skutečný stav CI/sloučení určuje PR; další dokumentační deploy není potřeba.
 
 
 Následný main `5cca5526` / #359 doložil skutečné vydání a technickou přejímku ROLE01;
-nový protokol i aktualizované stavy jsou převzaté. #355 nyní implementuje automatické
-doklady/e-maily a #358 už není draft; obě změny zůstávají nesloučené.
+nový protokol i aktualizované stavy jsou převzaté. #355 bylo v tomto bodě ještě nesloučené a #358 již nebyl draft.
+Následný main `9460ee76` / #355 obsahuje automatické doklady/e-maily;
+nový plán, přejímací protokoly i související artefakty jsou rovněž v katalogu.
+#358 zůstává samostatná nesloučená práce; produkční krok #355 má vlastní důkazy.
+
+
+Poslední doinventarizování #355 přidalo šest textových a čtyři binární
+podklady, včetně samostatného plánu N1/N2. Všechny jsou indexované; zdrojové
+rozhodnutí D2026-11-07-03 a provozní omezení původní relace zachované.

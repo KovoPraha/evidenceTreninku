@@ -156,6 +156,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-01615a9ed7 | [SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md) | completed-plan / DONE | P05 |
 | PL-c8d8a10ca6 | [SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md) | plan / PARTIAL | P11 |
 | PL-be9f31bf84 | [SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md) | plan / AWAITING_EVIDENCE | P05 |
+| PL-b0a95e9214 | [SHOP_DOCUMENT_AUTOMATION_2026-11-07.md](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md) | plan / PARTIAL | P07 |
 | PL-9a6dac9ef8 | [SHOP_NUMBER_SERIES_2026-10-21.md](SHOP_NUMBER_SERIES_2026-10-21.md) | completed-plan / DONE | P07 |
 | PL-a942755a96 | [SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md](SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md) | reference / REFERENCE | DOC02 |
 | PL-df449ee41a | [SHOP_PUBLICATION_ACCOUNTING_GUARD_2026-10-22.md](SHOP_PUBLICATION_ACCOUNTING_GUARD_2026-10-22.md) | reference / REFERENCE | DOC02 |
@@ -430,6 +431,12 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-a5f1d9c820 | [verification/multi-child-course-20261023/RESULTS.md](verification/multi-child-course-20261023/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-4d3c1249d1 | [verification/multi-child-course-20261023/acceptance-hub-export.md](verification/multi-child-course-20261023/acceptance-hub-export.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-3db23dc709 | [verification/offline-followup-20261106/RESULTS.md](verification/offline-followup-20261106/RESULTS.md) | verification-plan / PARTIAL | P02/P05/P06/P07/P08/P09/P12/P13/P14 |
+| PL-ebe5a54fcb | [verification/one-time-course-uat-20261107/RESULTS.md](verification/one-time-course-uat-20261107/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | P07 |
+| PL-6e8bc6c40f | [verification/one-time-course-uat-20261107/accounting/LOCALHOST-NEPLATIT-faktura.pdf](verification/one-time-course-uat-20261107/accounting/LOCALHOST-NEPLATIT-faktura.pdf) | binary-artifact / HISTORICAL_EVIDENCE | P07 |
+| PL-028f845b50 | [verification/one-time-course-uat-20261107/accounting/LOCALHOST-NEPLATIT-podklady.xlsx](verification/one-time-course-uat-20261107/accounting/LOCALHOST-NEPLATIT-podklady.xlsx) | binary-artifact / HISTORICAL_EVIDENCE | P07 |
+| PL-b8a1ad11d6 | [verification/one-time-course-uat-20261107/mariadb-smoke.txt](verification/one-time-course-uat-20261107/mariadb-smoke.txt) | artifact / HISTORICAL_EVIDENCE | P07 |
+| PL-2095b26091 | [verification/one-time-course-uat-20261107/runtime-stopped.txt](verification/one-time-course-uat-20261107/runtime-stopped.txt) | artifact / HISTORICAL_EVIDENCE | P07 |
+| PL-3282cb3228 | [verification/one-time-course-uat-20261107/verification-checks.txt](verification/one-time-course-uat-20261107/verification-checks.txt) | artifact / HISTORICAL_EVIDENCE | P07 |
 | PL-644d8d9877 | [verification/operations-inventory-20261106/RESULTS.md](verification/operations-inventory-20261106/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-715cfa4e93 | [verification/partial-browser-acceptance-20261025/BLOCKERS.md](verification/partial-browser-acceptance-20261025/BLOCKERS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-d0fd4e11e5 | [verification/partial-browser-acceptance-20261025/RESULTS.md](verification/partial-browser-acceptance-20261025/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
@@ -706,6 +713,9 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-b7268a51a9 | [verification/security-fixes-20261024/phpunit.txt](verification/security-fixes-20261024/phpunit.txt) | artifact / SUPPORT | DOC02 |
 | PL-912bb1b13e | [verification/security-fixes-20261024/regressions-before.txt](verification/security-fixes-20261024/regressions-before.txt) | artifact / SUPPORT | DOC02 |
 | PL-d4863d9795 | [verification/security-fixes-20261024/targeted-after.txt](verification/security-fixes-20261024/targeted-after.txt) | artifact / SUPPORT | DOC02 |
+| PL-8936a23683 | [verification/shop-document-automation-20261107/RESULTS.md](verification/shop-document-automation-20261107/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | P07 |
+| PL-2c163be0fa | [verification/shop-document-automation-20261107/doklad-1.pdf](verification/shop-document-automation-20261107/doklad-1.pdf) | binary-artifact / HISTORICAL_EVIDENCE | P07 |
+| PL-6d673f5fe9 | [verification/shop-document-automation-20261107/doklad-2.pdf](verification/shop-document-automation-20261107/doklad-2.pdf) | binary-artifact / HISTORICAL_EVIDENCE | P07 |
 | PL-f7c52bb749 | [verification/staff-notifications-release-20261106/RESULTS.md](verification/staff-notifications-release-20261106/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-c49924f94b | [verification/stock-followup-20261024/RESULTS.md](verification/stock-followup-20261024/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |
 | PL-d0076d01da | [verification/stock-production-20261024/RESULTS.md](verification/stock-production-20261024/RESULTS.md) | evidence / HISTORICAL_EVIDENCE | DOC02 |

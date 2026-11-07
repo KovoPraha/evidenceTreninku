@@ -1102,9 +1102,9 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P07/C03",
-      "disposition": "Editor šablon/ruční Packeta vydané; skutečný přepravní průchod a odložené části dokončení/fakturace nejsou celé převzaté. Návrh #355 je oddělený od main.",
+      "disposition": "Editor šablon/ruční Packeta vydané; automatické doklady/e-maily nyní implementované v main #355. Jejich provozní aktivace a skutečný přepravní průchod se dokládají samostatně, stará odložená fakturace není dnešní stav kódu.",
       "evidence": [
-        "docs/ORDER_STATUS_EMAIL_RELEASE_2026-10-21.md",
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md",
         "docs/PACKETA_RELEASE_2026-10-22.md",
         "docs/WORK_PLAN_CURRENT.md"
       ]
@@ -1128,9 +1128,9 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P07/C03",
-      "disposition": "Editor šablon/ruční Packeta vydané; skutečný přepravní průchod a odložené části dokončení/fakturace nejsou celé převzaté. Návrh #355 je oddělený od main.",
+      "disposition": "Editor šablon/ruční Packeta vydané; automatické doklady/e-maily nyní implementované v main #355. Jejich provozní aktivace a skutečný přepravní průchod se dokládají samostatně, stará odložená fakturace není dnešní stav kódu.",
       "evidence": [
-        "docs/ORDER_STATUS_EMAIL_RELEASE_2026-10-21.md",
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md",
         "docs/PACKETA_RELEASE_2026-10-22.md",
         "docs/WORK_PLAN_CURRENT.md"
       ]
@@ -1948,6 +1948,21 @@
       "evidence": [
         "docs/verification/membership-morning-server-release-20261106/RESULTS.md",
         "docs/MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-b0a95e9214",
+      "path": "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md",
+      "title": "Doklady a komunikace jednorázových objednávek",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P07",
+      "disposition": "N1/N2: automatické doklady/e-maily implementované a sloučené v #355. Produkční nasazení/aktivace, skutečný bankovní průchod a příjem ve schránce se dokládají samostatně.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md",
+        "docs/verification/shop-document-automation-20261107/RESULTS.md",
+        "docs/DECISION_LOG.md"
       ]
     },
     {
@@ -5310,6 +5325,84 @@
       ]
     },
     {
+      "id": "PL-ebe5a54fcb",
+      "path": "docs/verification/one-time-course-uat-20261107/RESULTS.md",
+      "title": "Jednorázový nákup kroužku — 7. 11. 2026",
+      "primary": false,
+      "role": "evidence",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P07",
+      "disposition": "Podklad/přejímací artefakt N1/N2 nebo původního testu; dokládá jen vlastní uvedený rozsah, nikoli nový provozní souhlas.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-6e8bc6c40f",
+      "path": "docs/verification/one-time-course-uat-20261107/accounting/LOCALHOST-NEPLATIT-faktura.pdf",
+      "title": "LOCALHOST-NEPLATIT-faktura.pdf",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P07",
+      "disposition": "Podklad/přejímací artefakt N1/N2 nebo původního testu; dokládá jen vlastní uvedený rozsah, nikoli nový provozní souhlas.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-028f845b50",
+      "path": "docs/verification/one-time-course-uat-20261107/accounting/LOCALHOST-NEPLATIT-podklady.xlsx",
+      "title": "LOCALHOST-NEPLATIT-podklady.xlsx",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P07",
+      "disposition": "Podklad/přejímací artefakt N1/N2 nebo původního testu; dokládá jen vlastní uvedený rozsah, nikoli nový provozní souhlas.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-b8a1ad11d6",
+      "path": "docs/verification/one-time-course-uat-20261107/mariadb-smoke.txt",
+      "title": "mariadb-smoke.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P07",
+      "disposition": "Podklad/přejímací artefakt N1/N2 nebo původního testu; dokládá jen vlastní uvedený rozsah, nikoli nový provozní souhlas.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-2095b26091",
+      "path": "docs/verification/one-time-course-uat-20261107/runtime-stopped.txt",
+      "title": "runtime-stopped.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P07",
+      "disposition": "Podklad/přejímací artefakt N1/N2 nebo původního testu; dokládá jen vlastní uvedený rozsah, nikoli nový provozní souhlas.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-3282cb3228",
+      "path": "docs/verification/one-time-course-uat-20261107/verification-checks.txt",
+      "title": "verification-checks.txt",
+      "primary": false,
+      "role": "artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P07",
+      "disposition": "Podklad/přejímací artefakt N1/N2 nebo původního testu; dokládá jen vlastní uvedený rozsah, nikoli nový provozní souhlas.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md"
+      ]
+    },
+    {
       "id": "PL-644d8d9877",
       "path": "docs/verification/operations-inventory-20261106/RESULTS.md",
       "title": "Provozní inventura a návaznosti — 6. 11. 2026",
@@ -8361,6 +8454,45 @@
       "evidence": []
     },
     {
+      "id": "PL-8936a23683",
+      "path": "docs/verification/shop-document-automation-20261107/RESULTS.md",
+      "title": "Automatické doklady a zprávy objednávek — 7. 11. 2026",
+      "primary": false,
+      "role": "evidence",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P07",
+      "disposition": "Podklad/přejímací artefakt N1/N2 nebo původního testu; dokládá jen vlastní uvedený rozsah, nikoli nový provozní souhlas.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-2c163be0fa",
+      "path": "docs/verification/shop-document-automation-20261107/doklad-1.pdf",
+      "title": "doklad-1.pdf",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P07",
+      "disposition": "Podklad/přejímací artefakt N1/N2 nebo původního testu; dokládá jen vlastní uvedený rozsah, nikoli nový provozní souhlas.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md"
+      ]
+    },
+    {
+      "id": "PL-6d673f5fe9",
+      "path": "docs/verification/shop-document-automation-20261107/doklad-2.pdf",
+      "title": "doklad-2.pdf",
+      "primary": false,
+      "role": "binary-artifact",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "P07",
+      "disposition": "Podklad/přejímací artefakt N1/N2 nebo původního testu; dokládá jen vlastní uvedený rozsah, nikoli nový provozní souhlas.",
+      "evidence": [
+        "docs/SHOP_DOCUMENT_AUTOMATION_2026-11-07.md"
+      ]
+    },
+    {
       "id": "PL-f7c52bb749",
       "path": "docs/verification/staff-notifications-release-20261106/RESULTS.md",
       "title": "Pracovní upozornění – produkční vydání 6. 11. 2026",
@@ -8861,7 +8993,7 @@
       "evidence": []
     }
   ],
-  "checked_main": "5cca5526",
+  "checked_main": "9460ee76",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
-  "binary_documents": 17
+  "binary_documents": 21
 }
