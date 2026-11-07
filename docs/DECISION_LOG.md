@@ -6,7 +6,7 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
-## D2026-11-07-06
+## D2026-11-07-07
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník zadal optimalizovat výběr osob
   podle měření, ověřit stejná syntetická data a zachovat chování/WIP bez produkce.
@@ -17,7 +17,11 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 - **Varianty:** pouhé skrytí dlouhého seznamu nezmenší HTML; vlastní soupiska
   jako hranice by změnila chování. Cache oprávnění není přípustná.
 - **Akceptace / stav:** [plán a průběh](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
-  místní větev `codex/attendance-person-picker-20261107`, měření/regrese zatím NOT RUN.
+  implementace/místní měření/UAT HOTOVO; větev `codex/attendance-person-picker-20261107`,
+  [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), finální CI/merge u PR.
+
+Pracovní ID 06 v původním nesloučeném plánu c0883ff2 kolidovalo s přijatým
+DOC02; přijaté DOC02 zůstává 06 a výběr osob dostává 07.
 
 ## D2026-11-07-05
 
@@ -64,6 +68,11 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 - **Varianta a omezení:** Computer Use skončil kvůli neurčené URL prohlížeče;
   nepokračuje ovládání desktopu. Serverové formulářové ověření neoznačovat
   za vizuální produkční Chrome UAT. [Plán a akceptace](ACCESS_OVERVIEW_2026-11-07.md).
+- **Navazující výslovné zadání ROLE01-VIS:** vlastník následně požádal o nové
+  vizuální ověření v prohlížeči pouze čtením. Dokončeno na desktopu a 390/360 px;
+  mobilní tabulka má výhradu čitelnosti, posun a editor fungují. Žádné role se
+  neměnily. [Nový vizuální protokol](verification/access-visual-20261107/RESULTS.md)
+  doplňuje původní technickou přejímku; mobilní redesign zatím jen doporučený.
 
 ## D2026-11-07-03
 
@@ -97,17 +106,49 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
   [parita a měření](verification/member-pricing-read-performance-20261107/RESULTS.md),
   [předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
   [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358).
-  Implementace/parita hotové, začlenění řídí PR; bez deploye a aktivace.
+  Implementace/parita hotové a sloučené jako `37d0ad68` / #358; bez deploye a aktivace.
 
 Pracovní označení této volby ve starších commitech PR #358 bylo D2026-11-07-02.
 Při převzetí #356 je kolize s jeho již přijatým ROLE01 rozhodnutím vyřešena
 společným ID D2026-11-07-04; obsah ani původní commitové důkazy se nemění.
 
+## D2026-11-07-06
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026, výslovné zadání vlastníka po ROLE01-VIS.
+- **Volba:** pod 768 px samostatné sémantické karty osob se skupinami rolí,
+  stavem a přímým tlačítkem editoru; nad breakpointem zůstává tabulka.
+  Obě zobrazení používají stejný filtrovaný seznam a kanonické definice.
+- **Důvod / varianta:** boční posun původní tabulky fungoval, ale skryl jméno
+  a lámal štítky do úzkých sloupců. Fixování jména by nevyřešilo šířku rolí.
+- **Oprávnění:** implementace, merge, standardní nasazení a čtecí vizuální
+  kontrola schválené. Žádná změna stávajících rolí ani založení nových účtů.
+- **Realizace / další krok:** [ROLE01-MOB](ACCESS_OVERVIEW_2026-11-07.md), PR #361;
+  testy a vizuální produkční přejímka se zaznamenají samostatně.
+
+
+Následné výslovné potvrzení vlastníka: společně nasadit karty a cenovou optimalizaci #358. Tím je pro toto vydání schválen i deploy původně omezený v D2026-11-07-04.
+
+## Úplný rejstřík plánů a jejich výsledků
+
+[Dokončené technické a dokumentační řezy](PLAN_CATALOG.md#dokončené-technické-a-dokumentační-řezy)
+mají pro každý soubor vlastní ID, registr a důkaz vymezeného uzavření.
+[Historické a nahrazené plány](PLAN_CATALOG.md#historické-a-nahrazené-plány)
+včetně etap 0–6 zůstávají dostupné se zdrojem nebo nástupcem.
+[Aktivní a neuzavřené plány](PLAN_CATALOG.md#aktivní-a-neuzavřené-plány)
+se neztrácejí uvnitř starých promptů. [Úplný index](PLAN_DOCUMENT_INDEX.md)
+zahrnuje také datované protokoly a textové podpůrné artefakty.
+Tento zpětný audit není novým produktovým rozhodnutím ani dodatečným schválením konceptů.
+
+
+
+
+
+
 ## Starší rozhodnutí — zachovaná v původních souborech
 
 | Oblast | Trvalý zdroj | Jak číst |
 | --- | --- | --- |
-| ROLE01 — Lidé a přístupy: implementace, nasazení a technická produkční přejímka hotové | [Plán](ACCESS_OVERVIEW_2026-11-07.md), [důvod a oprávnění](#d2026-11-07-02), [produkční protokol](verification/access-release-20261107/RESULTS.md) | [Uzavření E2026-11-07-07](EVENT_LOG.md), #356; původní role přesně zachované, nové testovací účty deaktivované. Vizuální Chrome UAT NOT RUN, skutečné formuláře 16/16 PASS |
+| ROLE01 — Lidé a přístupy: implementace, nasazení a technická produkční přejímka hotové | [Plán](ACCESS_OVERVIEW_2026-11-07.md), [důvod a oprávnění](#d2026-11-07-02), [produkční protokol](verification/access-release-20261107/RESULTS.md) | [Uzavření E2026-11-07-07/16](EVENT_LOG.md), #356; původní role přesně zachované, nové testovací účty deaktivované. Formuláře 16/16 PASS; [navazující skutečný Chrome průchod](verification/access-visual-20261107/RESULTS.md) dokončen s výhradou čitelnosti mobilní tabulky |
 | Klubové dokončení a přejímka | [CLUB_COMPLETION_DECISIONS](CLUB_COMPLETION_DECISIONS.md) | D01–D20 a jejich skutečné podmínky; není to seznam všech hotových kroků |
 | Členská evidence bez sezon | [Pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [schválená mapa](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md) | D1–D8 a provozní rozhodnutí; E6–E8 ověřit v aktuálním registru |
 | Původní architektura a program | [Zadání a rozhodnutí](plan-eshop-tymova-evidence/02-zadani-a-rozhodnuti.md) | Historické programové D-xxx; dnešní stav a priority určuje registr |
@@ -120,12 +161,15 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 | Práce / rozsah | Plán, výsledek a důvody | Historie / další etapy |
 | --- | --- | --- |
-| P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-04) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); bez merge/deploye, katalog/HTTP dál otevřené |
+| P07 N1/N2 — automatické doklady a komunikace nasazené/zapnuté | [Plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md), [důkazy](verification/shop-document-automation-20261107/RESULTS.md), [volba](#d2026-11-07-03) | #355, přirozený worker ověřen; skutečný bankovní převod a externí doručení zůstávají samostatnou přejímkou |
+| P11 klubové ceny — implementace a párové měření sloučené #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-04) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); v main `37d0ad68`, bez deploye, katalog/HTTP dál otevřené |
 | DOC01 — souborová dokumentace a stručné předání | [Plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [důvod rozhodnutí](#d2026-11-07-01) | [Předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), [deník](EVENT_LOG.md); stav CI/přijetí určuje PR |
-| P11 R13 — implementace v main #352, bez deploye | [Plán a důkazy](verification/medical-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md), celé K0.2 otevřené |
-| P11 R05 — implementace v main #353, bez deploye | [Plán a důkazy](verification/planner-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md), hierarchický filtr/HTTP otevřené |
-| P11 R06 — implementace v main #354, bez deploye | [Plán a důkazy](verification/attendance-read-performance-20261107/RESULTS.md) | [Předání](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md), role/HTTP otevřené |
+| P11 R13 — implementace #352, zahrnutá v nasazení ROLE01 | [Plán a důkazy](verification/medical-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md), celé K0.2 otevřené |
+| P11 R05 — implementace #353, zahrnutá v nasazení ROLE01 | [Plán a důkazy](verification/planner-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md), hierarchický filtr/HTTP otevřené |
+| P11 R06 — implementace #354, zahrnutá v nasazení ROLE01 | [Plán a důkazy](verification/attendance-read-performance-20261107/RESULTS.md) | [Předání](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md), role/HTTP otevřené |
 | Refaktoring W6–W15 — technické dokončení | [Komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md), [uzavření](REFACTORING_CLOSURE_2026-10-30.md) | Lidská/účetní přejímka v P09; [provozní historie](CHANGELOG-PROVOZ.md) |
 | Starší session a dokončené části programu | [Deník a archivní rozcestník](EVENT_LOG.md) | Původní plány, důkazy a rozhodnutí zůstávají v Gitu; nejde o zpětné schválení neověřených kroků |
 
 P11 celé HTTP/browser — [uzavřené měření a důkazy](verification/full-http-performance-20261107/RESULTS.md), [navazující etapy](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); celé K0.2 otevřené.
+
+P11 výběr osob — [místně dokončená implementace a ověření](verification/attendance-person-picker-20261107/RESULTS.md), [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366); bez deploye, ostatní P11 otevřené.

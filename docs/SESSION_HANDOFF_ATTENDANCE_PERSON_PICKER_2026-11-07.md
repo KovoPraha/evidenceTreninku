@@ -57,3 +57,8 @@ včetně chybně pojmenovaného nikdy nespouštěného inicializačního adresá
    kandidáty; zdravotní odkazy a historie nebyly kvůli výkonu zkrácené.
 5. Produkční deploy/přejímka jen na nové explicitní zadání. Aktuální cizí
    vydání/aktivace přebírat z CURRENT, nikoli z této místní měřicí relace.
+
+Při integraci převzat main `22e1b2cb` (DOC02 katalog, mobilní přístupy, cizí vydání P07).
+Naměřené R06 soubory jsou stále přesně shodné s uloženými otisky; nový globální
+main ani produkce nebyly touto relací přeměřené. Release/flags a automatizované
+bloky převzaté beze změny z main.

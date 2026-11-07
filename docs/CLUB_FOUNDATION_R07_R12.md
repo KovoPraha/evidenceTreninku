@@ -1,5 +1,10 @@
 # R07–R12 — společný základ oddílu
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Implementační a technické přejímací balíky jsou v main a integrační vydání doložené; skutečné údaje, účetní/lidská přejímka a ostré převody se tím neuzavírají.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P09. [CLUB_IMPLEMENTATION_HANDOFF.md](CLUB_IMPLEMENTATION_HANDOFF.md) · [RESULTS.md](verification/production-integration-20261025/RESULTS.md) · [CLUB_COMPLETION_DECISIONS.md](CLUB_COMPLETION_DECISIONS.md)
+
+
 Lokální implementace navazuje na B1 (`2ccd30e27fa209302db4d1e17d4eb411a4c87cca`). Pracovní větev je `codex/club-foundation-r07-r12-20261022`, pracovní kopie `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`. Původní checkout a jeho rozpracované změny se nemění. Tento balík neznamená dokončení finančních, skladových a migračních úkolů R13–R43.
 
 **Produkce, vzdálený Git, ostré osoby, plánovače a aktivace integrací nejsou součástí této práce.** Dosavadní produkční údaje v jiných dokumentech nejsou nově ověřeným stavem ani povolením k nasazení tohoto balíku.

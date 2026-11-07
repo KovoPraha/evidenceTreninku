@@ -1,5 +1,10 @@
 # KIS parity v1 – syntetický dry run
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Staré importní kontrakty a sandbox nejsou oprávnění k novému nahrazení osob. Současné osoby zachovat; nový sync pouze podle P06.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P06/P09. [MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md)
+
+
 `bin/kis-parity-dry-run.php` je čistě lokální CLI kontrola klasifikovaného,
 syntetického KIS snapshotu. Nemá připojení k databázi, konfiguraci, session ani
 síti. Neumí nic aplikovat a KIS ani Evidenci nemění.

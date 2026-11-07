@@ -116,8 +116,9 @@ def generate(root, mode, data, flags, run):
             meta = {"source": source, "part": 0, "sha256": hashlib.sha256(old.encode()).hexdigest()}
             history += "\n\n<!-- archive " + json.dumps(meta) + " -->\n" + old + "\n<!-- /archive -->\n"
         line = "Ranní serverový audit 7. 11.: [" + report["verdict"] + "](" + out.removeprefix("docs/") + "/RESULTS.md)."
-        phrase = "příští ranní běh zatím nelze doložit."
-        if phrase in state:
+        phrases = ["ranní výsledek zatím není doložen v Gitu.", "příští ranní běh zatím nelze doložit."]
+        phrase = next((value for value in phrases if value in state), None)
+        if phrase is not None:
             state = state.replace(phrase, line, 1)
         else:
             pattern = r"Ranní serverový audit 7\. 11\.: \[(?:PASS|LATE|FAIL|BLOCKED)\]\(" + re.escape(out.removeprefix("docs/") + "/RESULTS.md") + r"\)\."

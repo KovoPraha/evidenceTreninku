@@ -72,3 +72,7 @@ MariaDB kontrola celé množiny, pořadí, kolací, wildcardů a čerstvé role.
 Archivované before-harness soubory se nemění, přísná HTML parita se neruší.
 Vybraná ID se při srovnání formulářů chápou jako množina: původní SQL nemělo
 určené pořadí při identických jménech, nyní má ID jako stabilní tie-breaker.
+
+Volbu eviduje [D2026-11-07-07](DECISION_LOG.md#d2026-11-07-07); původní pracovní ID 06 bylo před integrací sjednocené s přijatým DOC02.
+
+Při integraci převzat main `22e1b2cb`: DOC02 katalog/pravidla, mobilní správa přístupů a záznam cizího nasazení P07 se zachovávají. Měřené R06 soubory se tím nemění; nový globální main ani produkce nebyly samostatně přeměřené.

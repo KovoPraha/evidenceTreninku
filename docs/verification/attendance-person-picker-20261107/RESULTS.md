@@ -127,3 +127,8 @@ Runtime ponechaný zastavený, bez rekurzivního mazání. Původní WIP SHA256 
 Dále dle priority: **hledání lekcí** (po této změně široký případ 219 SQL),
 R13/R05 objemy/kandidáti, reálné rows examined, mobil/CPU/síť/souběh a ostatní
 R01–R16. Celé K0.2 otevřené. Změny produkce vyžadují nové explicitní zadání.
+
+Při integraci převzat main `22e1b2cb` (DOC02 katalog, mobilní přístupy, cizí vydání P07).
+Naměřené R06 soubory jsou stále přesně shodné s uloženými otisky; nový globální
+main ani produkce nebyly touto relací přeměřené. Release/flags a automatizované
+bloky převzaté beze změny z main.

@@ -1,5 +1,10 @@
 # Prompt pro Claude Code – nezávislá revize M1/M2
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Původní program M1/M2 a tehdejší rozhodnutí. Dnešní pořadí určuje registr; zbylé produktové návrhy C01, členský model P06 a přejímka P09.
+> [Katalog všech plánů](../PLAN_CATALOG.md), položky C01/P06/P09 v [registru](../WORK_PLAN_CURRENT.md).
+
+
 Níže uvedený blok vložte do Claude Code spuštěného v kořeni
 `C:\xampp\htdocs\evidencePavel`. Výsledek pak celý předejte řídicímu tasku.
 

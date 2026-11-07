@@ -1,6 +1,12 @@
 # Rozhodnutí před ostrým provozem — schválený základ a otevřené podklady
 
-## Aktuální povolení D15 — 25. 10. 2026
+> Rozhodnutí jsou datovaná a mají vlastní rozsah. Novější jednotlivé aktivace
+> Fio/SumUp, členství a převod BAR dokládá [CURRENT](CURRENT_STATE.md).
+> D12–D14/D16 ani účetní převzetí se tím automaticky neuzavírají.
+> Úplné vazby na plány a dnešní otevřené položky vede [katalog](PLAN_CATALOG.md).
+
+
+## Doložené povolení D15 konkrétního vydání — 25. 10. 2026
 
 Uživatel zadal: „Slouč ověřenou integrační větev do main a nasaď ji na produkci.
 Postupuj autonomně, ověř zálohu a možnost návratu. Nové integrace nezapínej,

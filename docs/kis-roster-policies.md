@@ -1,5 +1,10 @@
 # KIS: stabilni serie, sezony a politiky soupisek
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Původní import/sezonní model je historický; změněné části nahrazuje schválený bezsezonní plán. Importy neopakovat podle staré specifikace.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P06. [MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) · [RESULTS.md](verification/member-evidence-cutover-20261102/RESULTS.md)
+
+
 Tento prirustek M1.2 oddeluje stabilni skupinu od jeji soupisky pro konkretni obdobi.
 Je urcen pro localhost prototyp; sam neprovadi zadny automaticky presun sportovcu.
 

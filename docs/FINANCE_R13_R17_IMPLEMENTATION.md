@@ -1,5 +1,10 @@
 # Finanční základ R13–R17
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Implementační a technické přejímací balíky jsou v main a integrační vydání doložené; skutečné údaje, účetní/lidská přejímka a ostré převody se tím neuzavírají.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P09. [CLUB_IMPLEMENTATION_HANDOFF.md](CLUB_IMPLEMENTATION_HANDOFF.md) · [RESULTS.md](verification/production-integration-20261025/RESULTS.md) · [CLUB_COMPLETION_DECISIONS.md](CLUB_COMPLETION_DECISIONS.md)
+
+
 Lokální implementace navazující na B1 a R07–R12, 22. 10. 2026. Pracovní větev
 `codex/finance-r13-r17-20261022`, základ `0e23e9e766079ce658bbc7687fed7f19b53779de`.
 Vlastník autorizoval implementaci se subagenty a ověření v izolovaném prostředí.
