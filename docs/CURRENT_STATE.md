@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
 Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) a [úplný katalog](PLAN_CATALOG.md).
-- **P15 S1 implementováno a synteticky ověřeno:** [úložiště/příjem/UCI](CSC_SPORTSOFT_S1_KIS.md), [draft #376](https://github.com/KovoPraha/evidenceTreninku/pull/376).
-  [Důkazy: 11 CI PASS](verification/csc-sportsoft-s1-20261107/RESULTS.md), 2fe8aa93. Bez merge/deploye/aktivace; [prompt S2/S3 pro stanici](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md) připravený, provedení NOT RUN.
+- **P15 S4 ROZPRACOVÁNO:** [registrářský čtecí přehled](CSC_SPORTSOFT_S4_REGISTRAR.md), vlastní větev; pouze syntetické testy, bez deploye/aktivace.
+  [S1 a 11 CI PASS](CSC_SPORTSOFT_S1_KIS.md) v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376); [prompt S2/S3](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md) pushnutý, cílové provedení NOT RUN.
 - **P11 picker, katalog a lekce NASAZENO:** release `56f5ce08e9ffbe1df9acfe7b844234b449171ad8`, deploy 42380611292 SUCCESS; [protokol](verification/attendance-picker-release-20261107/RESULTS.md).
   Zahrnuje #366/#367/#364 a ceny #358. Záloha, migrace, VS a HTTP smoke PASS; import/UAT false. [Plán a meze](ATTENDANCE_PERSON_PICKER_2026-11-07.md).
 - P11 měření: [Linux540HTTP/78Chrome](verification/attendance-person-picker-20261107/integrated/RESULTS.md) a [Windows9scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) dokončené. **Přihlášené produkční UAT BLOKOVANÉ**: nástroj neověřil URL; [důvod a další krok](verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md).
@@ -39,7 +39,6 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   Přihlášené UAT a E8 nejsou dokončené; převodní mapy a bod návratu zůstávají zachované.
 
 - [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
-
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
   [Oddělený syntetický pilot](verification/trainer-pilot-20261101/RESULTS.md) je založen:
@@ -56,7 +55,6 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   produkční heslo nezměněno, skutečné spotřebování a T07 nadále nejsou ověřeny.
   Hostingový minutový cron znovu ověřen
   [1. 11. v 17:22:03 UTC](verification/trainer-pilot-20261101/trainer-readiness.json). Tři staré klubové zprávy nedotčeny.
-
 - **W6–W15 implementovány, sloučeny, nasazeny a technicky ověřeny.**
   [Rozsah a omezení přejímky](REFACTORING_CLOSURE_2026-10-30.md).
 - **Předchozí doložené nasazení #346:** acb511cc5338911f141bc49334d515c0b21034fa, [deploy 42265034726](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42265034726) SUCCESS; [pozorovatel #346](verification/membership-morning-server-release-20261106/RESULTS.md). GitHub předání #350 aktivované sloučením, bez dalšího deploye webu; následná dokumentace toto vydání nemění.

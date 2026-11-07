@@ -7,8 +7,8 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
-- P15: [čtecí ČSC/Sportsoft, UCI ID a nonstop stanice](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md).
-  [S1 úložiště/ingest/UCI](CSC_SPORTSOFT_S1_KIS.md) a syntetické testy / 11 CI PASS v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376); S0 #371 otevřené. Další [prompt S2/S3 pro stanici](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md), jen syntetika bez Rikiho a portálů.
+- P15: [S4 přehled registráře](CSC_SPORTSOFT_S4_REGISTRAR.md) ROZPRACOVÁNO v samostatné větvi, další implementace a syntetické testy.
+  [S1](CSC_SPORTSOFT_S1_KIS.md) / 11 CI PASS a [prompt S2/S3 pro stanici](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md) pushnuté v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376). Bez Rikiho, portálů, deploye či aktivace.
 
 - ROLE01-MOB ROZPRACOVÁNO: [plán](ACCESS_OVERVIEW_2026-11-07.md); vlastník schválil karty, deploy a čtecí vizuální kontrolu.
   Navazuje na [zjištění ROLE01-VIS](verification/access-visual-20261107/RESULTS.md), role nikomu neměnit.
@@ -75,7 +75,6 @@ převzetí, P12 konkrétní testerku a přístup, P13 výběr událostí.
 4. Před předáním zapiš ověření, omezení, stav PR/merge/deploy a událost do
    [deníku](EVENT_LOG.md); významná rozhodnutí do [logu rozhodnutí](DECISION_LOG.md).
    Dokumenty commituj spolu se změnou a předej přes GitHub PR. Lokální soubor není sdílený.
-
 Historie: [deník](EVENT_LOG.md) → [rozhodnutí a uzavřené plány](DECISION_LOG.md)
 → [archiv tohoto předání](HANDOFF_ARCHIVE_2026-11-07.md) a
 [provozní archiv](CHANGELOG-PROVOZ.md). Historii sem nepřidávat; limit 80 řádků.

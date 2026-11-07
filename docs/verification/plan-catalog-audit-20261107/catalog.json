@@ -10478,6 +10478,17 @@
       "evidence": [
         "docs/CSC_SPORTSOFT_S1_KIS.md"
       ]
+    },
+    {
+      "id": "PL-85ea0f67d2",
+      "path": "docs/CSC_SPORTSOFT_S4_REGISTRAR.md",
+      "title": "P15 S4 čtecí přehled registráře",
+      "primary": false,
+      "role": "reference",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Rozpracovaný čtecí řez, syntetika; bez deploye/aktivace.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",
@@ -10538,6 +10549,13 @@
       "pull_request": 376,
       "added_paths": [
         "docs/CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md"
+      ]
+    },
+    {
+      "date": "2026-11-07",
+      "topic": "P15-S4",
+      "added_paths": [
+        "docs/CSC_SPORTSOFT_S4_REGISTRAR.md"
       ]
     }
   ]

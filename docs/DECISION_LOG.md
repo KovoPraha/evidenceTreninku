@@ -321,3 +321,11 @@ Rozšířené celé R06 Windows měření — [plán](ATTENDANCE_PERSON_PICKER_2
 PŘIJATO podle nového zadání vlastníka: [P11-R05-H](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md) omezí přenos historických kandidátů čtecí agregací podle dne a hierarchie. Předek/potomek odděleně, bez sourozenců, počty přes EXISTS; složité/nekánonické případy a transakce původní cestou. Rekurzivní SQL a trvalá cache zamítnuty kvůli složitosti/invalidaci. Parita a nativní přínos před zelenými kontrolami a schváleným merge/deployem.
 
 P11-R05-H podle D12: finální parita a objemový přínos PASS na obou DB i celém HTTP/Chrome. [Důkazy](verification/planner-hierarchy-read-performance-20261107/RESULTS.md). Vhodné pro schválený standardní deploy až po zelených kontrolách výsledkového commitu; drobná režie jednoho SQL u malé filtrované historie doložená, bez soupisky čas neutrální.
+
+## D2026-11-07-P15-S4
+
+Vlastník 7. 11. zadal čtecí přehled synchronizací a nespárovaných záznamů.
+[S4](CSC_SPORTSOFT_S4_REGISTRAR.md) odděluje poslední přijatý snímek od pokusu
+a přepočítává párování při čtení. Místo rozšíření ingestu či ručního schvalování
+vzniká GET rozhraní v samostatné větvi, aby stanice mohla pokračovat proti S1.
+Žádná změna kontraktu, aktivace, produkční zápis ani přístup k Rikimu.

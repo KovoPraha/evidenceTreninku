@@ -147,6 +147,8 @@ function staffPositionDefinitions(): array
     => 'Veřejnost, kroužky a závodní oddíl podle živých dat', 'icon' => 'layers'],
                 ]],
                 ['label' => 'KIS a soupisky', 'icon' => 'arrow-repeat', 'items' => [
+                    ['route' => 'external_sync_admin.php', 'label' => 'ČSC a Sportsoft',
+                        'description' => 'Čtecí synchronizace a nespárované záznamy', 'icon' => 'arrow-repeat'],
                     ['route' => 'kis_sync_center.php', 'label' => 'KIS centrum', 'description' => 'Import a konflikty osob',
 
      'icon' => 'arrow-repeat'],

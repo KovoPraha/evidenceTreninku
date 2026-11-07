@@ -904,3 +904,5 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-708154a63b | [snapshot.php.txt](verification/planner-hierarchy-release-20261107/snapshot.php.txt) | artifact / SUPPORT | P11-R05-H |
 
 | PL-a2fca51079 | [anonymous-planner.php.txt](verification/planner-hierarchy-release-20261107/anonymous-planner.php.txt) | artifact / SUPPORT | P11-R05-H |
+
+| PL-85ea0f67d2 | [P15 S4 přehled registráře](CSC_SPORTSOFT_S4_REGISTRAR.md) | reference / SUPPORT | P15 |

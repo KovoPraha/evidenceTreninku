@@ -132,7 +132,7 @@ function externalSyncPeople(PDO $pdo, bool $lock = false): array
 }
 
 /** Source contradictions affect every row sharing the UCI, even across different licences. */
-function externalSyncSourceConflicts(array $records): array
+function externalSyncSourceConflicts(iterable $records): array
 {
     $seen = [];
     foreach ($records as $record) {
