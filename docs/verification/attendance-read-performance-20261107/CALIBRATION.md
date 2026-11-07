@@ -16,3 +16,14 @@ Oprava: zmrazený původní měřič i nový měřič spustit v úplném pořad�
 Seed ani měřené tělo se nemění, neschovávají se rozdíly v komparátoru a
 požadavek striktní shody celých doménových dat i HTML zůstává zachovaný.
 Produkce, aplikace a původní WIP se touto opravou měřicí přípravy nemění.
+
+
+Při následné kontrole přípravy odhalen také automatický `closed_at` každé
+syntetické revize (`DEFAULT CURRENT_TIMESTAMP`). HTML jej legitimně zobrazuje;
+dvě nezávislá seedování by měla různý čas i při shodných počtech a obsahu.
+Oba měřiče proto v seedu výslovně nastaví stejné datum/čas `CURRENT_DATE 18:00:00`
+pro revize tréninku 101. Jde o deterministické testovací vstupy **mimo měřený
+interval**, nikoli maskování časů ve výsledném HTML nebo změnu aplikace.
+Původní měřič se od `89edfdbe` liší pouze tímto doplněním v seedu; aktuální
+navíc zaznamenává otisky dvou služeb. Měřená těla i všechny ostatní seedovací
+kroky jsou zachované. Samostatné původní časy s odlišnými vstupy se nepoužijí.

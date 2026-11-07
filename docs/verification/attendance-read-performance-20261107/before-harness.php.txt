@@ -305,6 +305,8 @@ function p11SeedClosure(PDO $pdo, int $participants, int $revisions): void
         $q->execute([$i, $snapshot]);
     }
     $pdo->prepare("INSERT INTO training_closures VALUES(101,?,?,'closed')")->execute([(int)$pdo->lastInsertId(), $revisions]);
+    // The audit timestamp is fixture data: identical across independent before/after seeds.
+    $pdo->exec("UPDATE training_closure_revisions SET closed_at=CONCAT(CURRENT_DATE,' 18:00:00') WHERE training_id=101");
     $pdo->query('ANALYZE TABLE training_closures,training_closure_revisions,trenink_sportovec')->fetchAll();
 }
 
