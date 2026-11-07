@@ -1,0 +1,60 @@
+// Playwright CLI run-code function. Replace only the JSON config marker in an ignored copy.
+async (page) => {
+  const config = {"role": "registrar", "base_url": "http://127.0.0.1:18094", "cases": [{"id": "medical-registrar-all", "role": "registrar", "path": "/medical_clearance_admin.php", "status": 200}, {"id": "medical-registrar-valid", "role": "registrar", "path": "/medical_clearance_admin.php?medical_state=valid", "status": 200}, {"id": "medical-registrar-pending", "role": "registrar", "path": "/medical_clearance_admin.php?medical_state=pending", "status": 200}, {"id": "medical-registrar-revoked", "role": "registrar", "path": "/medical_clearance_admin.php?medical_state=revoked", "status": 200}, {"id": "medical-registrar-empty", "role": "registrar", "path": "/medical_clearance_admin.php?medical_state=expired", "status": 200}, {"id": "medical-registrar-person", "role": "registrar", "path": "/medical_clearance_admin.php?person_id=10001", "status": 200}, {"id": "medical-registrar-unknown-person", "role": "registrar", "path": "/medical_clearance_admin.php?person_id=999999", "status": 200}, {"id": "medical-registrar-page2", "role": "registrar", "path": "/medical_clearance_admin.php?medical_page=2", "status": 200}, {"id": "medical-registrar-last-page", "role": "registrar", "path": "/medical_clearance_admin.php?medical_page=400", "status": 200}, {"id": "medical-registrar-search", "role": "registrar", "path": "/medical_clearance_admin.php?medical_q=Synthetic", "status": 200}, {"id": "medical-registrar-picker", "role": "registrar", "path": "/medical_clearance_admin.php?medical_person_q=Synthetic&medical_person_page=2", "status": 200}]};
+  const context = page.context();
+  const cdp = await context.newCDPSession(page);
+  await cdp.send('Network.enable');
+  const report = { complete: false, role: config.role, cold_samples: 3, warm_samples: 10,
+    viewport: page.viewportSize(), browser_version: context.browser()?.version(),
+    user_agent: await page.evaluate(() => navigator.userAgent), cases: [] };
+  const errors = [];
+  const failed = [];
+  page.on('pageerror', e => errors.push(String(e)));
+  page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('requestfailed', r => failed.push({ url: r.url(), error: r.failure()?.errorText }));
+  for (const item of config.cases) {
+    const result = { id: item.id, path: item.path, samples: [] };
+    for (const cache of ['cold', 'warm']) {
+      await cdp.send('Network.setCacheDisabled', { cacheDisabled: cache === 'cold' });
+      const repeats = cache === 'cold' ? 3 : 11; // One unmeasured cache prime, then ten warm observations.
+      for (let i = 0; i < repeats; i++) {
+        if (cache === 'cold') await cdp.send('Network.clearBrowserCache');
+        const e0 = errors.length;
+        const f0 = failed.length;
+        const response = await page.goto(config.base_url + item.path, { waitUntil: 'load', timeout: 60000 });
+        await page.waitForFunction(() => performance.getEntriesByType('navigation')[0]?.loadEventEnd > 0);
+        // Allows deferred UI requests to finish; the mandatory 500 ms networkidle gap is NOT a load-time metric.
+        await page.waitForLoadState('networkidle', { timeout: 20000 });
+        const data = await page.evaluate(() => {
+          const n = performance.getEntriesByType('navigation')[0];
+          return {
+            status: 200, title: document.title, url: location.href,
+            navigation_count: document.querySelectorAll('nav.app-staff-topbar').length,
+            ttfb_ms: n.responseStart - n.startTime, response_end_ms: n.responseEnd - n.startTime,
+            dom_content_loaded_ms: n.domContentLoadedEventEnd - n.startTime,
+            load_ms: n.loadEventEnd - n.startTime,
+            transfer_bytes: n.transferSize, encoded_body_bytes: n.encodedBodySize,
+            decoded_body_bytes: n.decodedBodySize,
+            paint: performance.getEntriesByType('paint').map(p => ({ name: p.name, ms: p.startTime })),
+            resources: performance.getEntriesByType('resource').map(r => ({
+              url: r.name, type: r.initiatorType, start_ms: r.startTime, duration_ms: r.duration,
+              transfer_bytes: r.transferSize, encoded_bytes: r.encodedBodySize, decoded_bytes: r.decodedBodySize
+            }))
+          };
+        });
+        data.status = response.status();
+        data.console_errors = errors.slice(e0);
+        data.failed_requests = failed.slice(f0);
+        if (data.status !== 200 || data.navigation_count !== 1 || data.url !== config.base_url + item.path) {
+          throw new Error('Authenticated full browser navigation failed: ' + item.id);
+        }
+        if (cache === 'cold' || i > 0) result.samples.push({ cache, ...data });
+      }
+    }
+    report.cases.push(result);
+  }
+  await cdp.send('Network.setCacheDisabled', { cacheDisabled: false });
+  await cdp.detach();
+  report.complete = true;
+  return report;
+}

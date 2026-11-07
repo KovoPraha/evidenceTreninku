@@ -1,7 +1,7 @@
 # ROLE01-MOB — mobilní karty lidí a přístupů
 
 7. 11. 2026, [schválený plán](../../ACCESS_OVERVIEW_2026-11-07.md),
-[rozhodnutí](../../DECISION_LOG.md#d2026-11-07-05). Vlastní worktree
+[rozhodnutí](../../DECISION_LOG.md#d2026-11-07-06). Vlastní worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-access-overview-20261107`, větev
 `codex/access-visual-uat-20261107`, [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361).
 
@@ -26,3 +26,9 @@ formuláře, neaktivovat účty, nepřidávat granty ani testovací identity.
 Neopakovat starší zapisující drill. Standardní deploy bez importu kroužků.
 Další krok: dokončit testy/CI, sloučit přesnou hlavu PR a nasadit; poté
 vizuálně zkontrolovat karty a filtry bez bočního posunu a desktopovou tabulku.
+
+Čtecí baseline 42364034851 PASS: 48 účtů, 82 přiřazení, 5 superadminů,
+1 barový grant. SHA-256 `7cb89121cb73926ba98601ee9e4b04d3684229ab1b966a99585c28de3fbcdd41`.
+Vlastník výslovně schválil společné nasazení karet a cenové optimalizace #358.
+Pokus o místní vizuální ukázku přerušilo neodpovídající spojení Computer Use;
+žádný úspěšný snímek nevrácen, vizuální přejímka zůstává NOT RUN. Místní server zastaven.

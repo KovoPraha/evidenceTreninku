@@ -76,5 +76,5 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). ROLE01-MOB: schválené mobilní kar
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
-Poslední dokumentační změna DOC01: [souborové plány a krátké předání](DOCUMENTATION_GOVERNANCE_2026-11-07.md), obsah/ověření hotové, [předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357); R13 #352 / R05 #353 / R06 #354 zahrnuté v nasazení ROLE01; jejich úplná provozní/výkonnostní přejímka není tímto testem uzavřená. [P07-UAT #355](https://github.com/KovoPraha/evidenceTreninku/pull/355) otevřené; aktivní plány P01–P14 v [registru](WORK_PLAN_CURRENT.md).
+P11: [celé HTTP/browser a další kroky](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); DOC01: [pravidla a audit](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)
