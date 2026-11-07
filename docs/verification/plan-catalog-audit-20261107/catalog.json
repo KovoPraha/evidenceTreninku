@@ -9780,6 +9780,20 @@
         "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
       ]
+    },
+    {
+      "id": "PL-ad1bee8455",
+      "path": "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md",
+      "title": "P11 R06 — společné celé HTTP/browser",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11",
+      "disposition": "Nové společné HTTP měření faae75e8/d958fd6e ROZPRACOVÁNO, bez produkce; cíle a další kroky v tematickém plánu.",
+      "evidence": [
+        "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",

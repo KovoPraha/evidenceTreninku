@@ -6,6 +6,16 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-10
+
+PŘIJATO, 7. 11. 2026, přímé zadání vlastníka: přeměřit společné celé načtení
+#366/#367 bez změny produkce. Nový jediný seed a skutečné HTTP/UI přihlášení,
+kontrolní d958fd6e a společná faae75e8; historické časy z jiného runtime nejsou
+kontrolní skupina. Všech 9 pozitivních případů v Chrome, 21 HTTP včetně rolí;
+prosté časy oddělené od diagnostiky, neměnit aplikaci. Příspěvek jednotlivého
+helperu neodvozovat z integrovaného páru. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+[předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md). K0.2 dál otevřené.
+
 ## D2026-11-07-09
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník zadal optimalizovat výběr osob

@@ -376,3 +376,5 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-c0b7a64780 | [P11 R06 — výběr osob v docházce, 7. 11. 2026](ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), integrované HTTP po #367/mobil/souběh otevřené. |
 | PL-10360221ef | [P11 R06 — předání výběru osob v docházce, 7. 11. 2026](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md) | PARTIAL / P11 | Místní implementace/měření/UAT hotové, bez deploye; [výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366), integrované HTTP po #367/mobil/souběh otevřené. |
+
+| PL-ad1bee8455 | [Společné HTTP docházky](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) | PARTIAL / P11 | Rozpracované párové měření; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), bez produkce. |

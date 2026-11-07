@@ -76,5 +76,5 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
-Další kroky: [priority](WORK_PLAN_CURRENT.md#priority-a-závislosti); [P11 picker — místně hotovo, bez deploye](ATTENDANCE_PERSON_PICKER_2026-11-07.md).
+Další kroky: [priority](WORK_PLAN_CURRENT.md#priority-a-závislosti); [P11 společné HTTP — rozpracováno, bez deploye](ATTENDANCE_PERSON_PICKER_2026-11-07.md).
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)

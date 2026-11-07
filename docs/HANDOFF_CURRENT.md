@@ -15,13 +15,13 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 - DOC03: [priority a závislosti](WORK_PLAN_CURRENT.md#priority-a-závislosti); [DOC02 audit](PLAN_CATALOG_AUDIT_2026-11-07.md) a [úplný katalog](PLAN_CATALOG.md).
 
-- P11 picker: implementace/místní měření/UAT HOTOVO, **bez našeho deploye**; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
-  [finální výsledky](verification/attendance-person-picker-20261107/final/RESULTS.md), [předání / PR #366](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
-  1,37 MB → 92 kB, Chrome trenér 4,79 → 0,59 s; obě rozepsané části, JS/noJS, role a zápisy PASS.
-  Větev `codex/attendance-person-picker-20261107`, finální CI/merge u PR; runtime uklizený, WIP zachovaný.
-  Převzaté [lekce #367 nasazené jiným vláknem](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md); celé HTTP společné verze dosud nepřeměřené.
-  [Původní HTTP #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md) je historický base; dále R13/R05/rows examined/mobil/souběh.
-  R13/R05/R06 #354 zahrnuje ROLE01; [katalog #364 a cizí vydání](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zachované. K0.2 otevřené.
+- P11 společné HTTP/browser: ROZPRACOVÁNO, bez změny produkce; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md),
+  [aktuální předání](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md). Nový stejný seed d958fd6e → faae75e8 (#366 + #367).
+  21 HTTP případů a všech 9 pozitivních browser případů / 3 role, oddělená SQL diagnostika a JS/noJS drafty.
+  Větev `codex/attendance-integrated-http-20261107`, vlastní worktree viz předání; původní WIP zachovat.
+  Picker #366 sloučený, [předchozí důkazy](verification/attendance-person-picker-20261107/final/RESULTS.md); žádný náš deploy.
+  [Lekce #367 / cizí provozní doklad](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) zachované.
+  Dále R13/R05/rows examined/fyzický mobil/souběh; celé K0.2 otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

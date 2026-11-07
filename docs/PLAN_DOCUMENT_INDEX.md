@@ -836,3 +836,5 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-d04eafb86a | [docs/verification/attendance-person-picker-20261107/final/RESULTS.md](verification/attendance-person-picker-20261107/final/RESULTS.md) | reference / REFERENCE | P11 |
 | PL-b357de1d32 | [docs/verification/attendance-person-picker-20261107/final/CALIBRATION.md](verification/attendance-person-picker-20261107/final/CALIBRATION.md) | reference / REFERENCE | P11 |
 | PL-629fbd394e | [docs/verification/attendance-person-picker-20261107/final/REPRODUCE.md](verification/attendance-person-picker-20261107/final/REPRODUCE.md) | reference / REFERENCE | P11 |
+
+| PL-ad1bee8455 | [Společné HTTP docházky](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) | PARTIAL / P11 | Rozpracované párové měření; [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), bez produkce. |
