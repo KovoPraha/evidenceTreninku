@@ -9277,10 +9277,11 @@
       "role": "plan",
       "status": "DONE",
       "registry": "P11",
-      "disposition": "#364 sloučené a nasazené c70939d4, 42372002993 SUCCESS; parita veřejných polí a doložená mez DOM otisku.",
+      "disposition": "Dílčí čtecí optimalizace: implementace, nativní parita/měření, merge a schválené nasazení hotové; celé K0.2 otevřené.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
-        "docs/verification/catalog-release-20261107/RESULTS.md"
+        "docs/verification/catalog-release-20261107/RESULTS.md",
+        "docs/verification/attendance-lesson-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -9291,7 +9292,7 @@
       "role": "handoff",
       "status": "REFERENCE",
       "registry": "P11",
-      "disposition": "Katalog #364: ověřená implementace a párové měření, nyní schválený merge/deploy.",
+      "disposition": "Aktuální předání dokončeného dílčího řezu a odkaz na skutečné provozní důkazy; další P11 samostatně.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md"
       ]
@@ -9380,11 +9381,12 @@
       "title": "ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11",
-      "disposition": "Dávkový výběr lekcí: schválená implementace podle výkonové analýzy, rozpracováno.",
+      "disposition": "Dílčí čtecí optimalizace: implementace, nativní parita/měření, merge a schválené nasazení hotové; celé K0.2 otevřené.",
       "evidence": [
-        "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
+        "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md",
+        "docs/verification/attendance-lesson-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -9393,9 +9395,9 @@
       "title": "SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md",
       "primary": false,
       "role": "handoff",
-      "status": "PARTIAL",
+      "status": "REFERENCE",
       "registry": "P11",
-      "disposition": "Dávkový výběr lekcí: schválená implementace podle výkonové analýzy, rozpracováno.",
+      "disposition": "Aktuální předání dokončeného dílčího řezu a odkaz na skutečné provozní důkazy; další P11 samostatně.",
       "evidence": [
         "docs/verification/attendance-lesson-read-performance-20261107/RESULTS.md"
       ]
@@ -9574,6 +9576,94 @@
       "status": "REFERENCE",
       "registry": "P11",
       "disposition": "Bezpečný provozní/ověřovací podklad, nikoli nové oprávnění nebo dump.",
+      "evidence": []
+    },
+    {
+      "id": "PL-d2d8935760",
+      "path": "docs/verification/attendance-lesson-release-20261107/after.json",
+      "title": "after.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-b599cfe9fc",
+      "path": "docs/verification/attendance-lesson-release-20261107/anonymous-lesson.json",
+      "title": "anonymous-lesson.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-3ec1623c55",
+      "path": "docs/verification/attendance-lesson-release-20261107/anonymous-lesson.php.txt",
+      "title": "anonymous-lesson.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-b0f1a886c9",
+      "path": "docs/verification/attendance-lesson-release-20261107/before.json",
+      "title": "before.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2650687986",
+      "path": "docs/verification/attendance-lesson-release-20261107/deployment.json",
+      "title": "deployment.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-3bb72b363f",
+      "path": "docs/verification/attendance-lesson-release-20261107/initial-wrong-route.json",
+      "title": "initial-wrong-route.json",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-33db4f8391",
+      "path": "docs/verification/attendance-lesson-release-20261107/RESULTS.md",
+      "title": "RESULTS.md",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
+      "evidence": []
+    },
+    {
+      "id": "PL-28f93c29c8",
+      "path": "docs/verification/attendance-lesson-release-20261107/snapshot.php.txt",
+      "title": "snapshot.php.txt",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Bezpečný důkaz schváleného nasazení a čtecího ověření; bez HTML/session/dumpů.",
       "evidence": []
     }
   ],
