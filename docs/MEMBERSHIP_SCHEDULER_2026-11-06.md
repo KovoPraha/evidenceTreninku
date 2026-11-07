@@ -71,3 +71,12 @@ Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
 Skutečné P05/P07 a export P06 zůstávají odložené.
 
 <!-- membership-morning-preflight:end -->
+
+<!-- membership-morning-publish:start -->
+## Ranní serverový výsledek PASS
+
+[Ranní serverový výsledek PASS](verification/membership-scheduler-20261107/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
+Skutečné P05/P07 a export P06 zůstávají odložené.
+
+<!-- membership-morning-publish:end -->
