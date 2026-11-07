@@ -16,7 +16,8 @@ Pouze prezentační šablona, žádná změna autorizace, zápisů nebo schémat
 Původní vlastní větev `codex/access-visual-uat-20261107`; následné výsledkové
 předání `codex/access-mobile-release-20261107`, základ `3b37e053`, stejný worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-access-overview-20261107`.
-Výsledkové předání se sdílí samostatným dokumentačním PR; runtime tím nemění.
+Výsledky jsou commitnuté a pushnuté v [otevřeném dokumentačním PR #365](https://github.com/KovoPraha/evidenceTreninku/pull/365),
+zatím mimo main; runtime tím nemění. Stav CI/přijetí ověřit u tohoto PR.
 
 ## Ověření
 
