@@ -22,6 +22,7 @@ Skutečná bankovní platba, externí schránka a produkční přejímka členst
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
+| ROLE01-MOB | ROZPRACOVÁNO: mobilní karty, výslovně schválené nasazení | Implementace, cílená regrese, CI/merge, standardní deploy a čtecí Chrome 390/360 px; stávající role neměnit | Vývoj; [plán](ACCESS_OVERVIEW_2026-11-07.md), vlastní `codex/access-visual-uat-20261107` / PR #361 |
 | P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | HOTOVO: nabídka BAR 1 / vydání 1 zveřejněná, 45 produktů a fotografií; novější doklad #335 nahrazuje původní koncept | Publikaci neopakovat a nezakládat další návrh. Úpravy nabídky až podle dalšího zadání; zásoby/kasa a skutečný prodej zůstávají P02. Přihlášené vytvoření tiskového PDF zatím NOT RUN. | Správce baru; [publikace](verification/bar-menu-publication-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) |
@@ -39,6 +40,8 @@ Skutečná bankovní platba, externí schránka a produkční přejímka členst
 
 ## Dokončené položky, které znovu neotvírat podle názvu větve
 
+- ROLE01-VIS: [skutečný Chrome desktop/mobil](verification/access-visual-20261107/RESULTS.md) dokončen pouze čtením.
+  Filtry, posun a otevření editoru PASS; mobilní přehled má výhradu čitelnosti široké tabulky. Role beze změny.
 - ROLE01: [Lidé a přístupy](ACCESS_OVERVIEW_2026-11-07.md) nasazené / 16 produkčních kontrol PASS.
   [Protokol](verification/access-release-20261107/RESULTS.md): původních 46 účtů a 82 přiřazení beze změny,
   nové testovací účty 63/64 deaktivované a bez rolí. [Uzavření a důvod](DECISION_LOG.md#d2026-11-07-02).
