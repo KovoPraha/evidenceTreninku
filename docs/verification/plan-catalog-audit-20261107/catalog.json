@@ -10236,6 +10236,20 @@
         "docs/verification/attendance-integrated-http-20261107/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md"
       ]
+    },
+    {
+      "id": "PL-f81ce808ad",
+      "path": "docs/verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md",
+      "title": "Přihlášené produkční UAT pickeru — pouze čtením",
+      "primary": true,
+      "role": "uat-handoff",
+      "status": "BLOCKED",
+      "registry": "P11",
+      "disposition": "Přihlášené produkční UAT blokované: dva CUA timeouty a následný automatický stop Windows Computer Use kvůli neověřenému aktuálnímu URL. Žádný scénář UAT neproveden, docházka ani role nezměněné. Další krok: funkční ověření URL/čtení stránky, poté původní čtecí scénáře.",
+      "evidence": [
+        "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
+        "docs/verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",
