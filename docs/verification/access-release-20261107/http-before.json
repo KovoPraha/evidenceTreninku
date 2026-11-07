@@ -1,0 +1,44 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "location": null,
+    "fatal": false
+  },
+  {
+    "path": "/booking/eshop.php",
+    "status": 200,
+    "location": null,
+    "fatal": false
+  },
+  {
+    "path": "/bar/menu.php",
+    "status": 200,
+    "location": null,
+    "fatal": false
+  },
+  {
+    "path": "/sprava_pracovnich_pozic.php",
+    "status": 302,
+    "location": "login.php",
+    "fatal": false
+  },
+  {
+    "path": "/includes/staff_access_overview.php",
+    "status": 403,
+    "location": null,
+    "fatal": false
+  },
+  {
+    "path": "/includes/staff_access_overview_view.php",
+    "status": 403,
+    "location": null,
+    "fatal": false
+  },
+  {
+    "path": "/bin/staff-access-production-uat.php",
+    "status": 403,
+    "location": null,
+    "fatal": false
+  }
+]
