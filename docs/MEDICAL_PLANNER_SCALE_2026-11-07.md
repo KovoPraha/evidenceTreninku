@@ -12,7 +12,7 @@ Plán uložený před implementací v `d2182268`; nový vlastní localhost, migr
 syntetický základ, větší objemy při zachování úplných výsledků, oddělené časy
 a SQL diagnostika, nezměněná doménová data při GET a vlastní úklid.
 Varianta měření stejné aplikace místo další implementace; jiný chat mezitím
-řešil opravu #374. Rozhodnutí D2026-11-07-13, deník E2026-11-07-44.
+řešil opravu #374. Rozhodnutí D2026-11-07-13, deník E2026-11-07-45.
 
 Primární aplikace `69f49033`, 16 LF otisků; 10k/50k/100k zdravotních sledování,
 tři záznamy na sledování, historie 52/260/520 týdnů (728/3640/7280 plánů),
@@ -72,3 +72,6 @@ mají konkrétní doklady v protokolech a PR. Aktuální stav produkce vlastní 
 
 [Dated handoff](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md),
 [registr](WORK_PLAN_CURRENT.md), [katalog](PLAN_CATALOG.md).
+
+Před přijetím #375: pracovníE44/E45 v99b08204 kolidovalo s přijatým
+produkčnímE44 z#379. Vlastní start/dokončení nyníE45/E46; přijatýE44 zachovaný.

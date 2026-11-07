@@ -1,0 +1,38 @@
+{
+  "merged_release": "e36c9ba6e461b7da842c53939c2fe20eed821f38",
+  "tested_head": "87130cfe74b8b87f9c5058b333695cf1c1ee8b2d",
+  "complete_tree_equal": true,
+  "measured_source_hashes_match": true,
+  "existing_deploys": [
+    {
+      "conclusion": "success",
+      "databaseId": 42380611292,
+      "headSha": "56f5ce08e9ffbe1df9acfe7b844234b449171ad8",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 42374036053,
+      "headSha": "269684c234698cb40ae661e4080e318d4a05cfd3",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 42372002993,
+      "headSha": "c70939d45b53c718083f01110d26b6cf12fb35b0",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 42365946802,
+      "headSha": "3b37e0537f50f7064ae2d8a84b5a1daee4af50aa",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 42362258878,
+      "headSha": "9460ee76fab0c3251dcc2e85b710d1b7cfb8b432",
+      "status": "completed"
+    }
+  ]
+}
