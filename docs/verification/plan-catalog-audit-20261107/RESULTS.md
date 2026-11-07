@@ -16,7 +16,7 @@ Výchozí main `1d88ce9e`; pouze dokumentace, bez provozních operací.
   událost ROLE01 a její schválené provozní hranice zachované.
 - [Katalog](../../PLAN_CATALOG.md) má 315 hlavních záznamů: 231 plánovacích
   podkladů/dispozic a 84 referencí. [Úplný index](../../PLAN_DOCUMENT_INDEX.md)
-  eviduje 738 souborů (721 textových a 17 binárních) včetně všech původních, nových a zachráněných podkladů.
+  eviduje 739 souborů (722 textových a 17 binárních) včetně všech původních, nových a zachráněných podkladů.
 - 18 podrobných textů etap 0–6/R01–R44 bylo pouze v lokálním output.
   Jsou sdílené jako [historická specifikace](../../plans/realization-20261022/README.md).
   Původní soubory nebyly měněny. Přenos má historické záhlaví, opravené relativní
@@ -68,3 +68,8 @@ autor/reviewer; automatická kontrola nevydává historický text za nové rozho
 Pouze dokumentační změna a její kontrolní nástroj, bez nasazení. Původní WIP
 zachovaný. P05/P06/P07, heslo/T07, účetní/lidská přejímka a konkrétní koncepty
 zůstávají v rozsahu registru. Předání [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360); konečný head a skutečný stav CI/sloučení určuje PR.
+
+
+Následný main `5cca5526` / #359 doložil skutečné vydání a technickou přejímku ROLE01;
+nový protokol i aktualizované stavy jsou převzaté. #355 nyní implementuje automatické
+doklady/e-maily a #358 už není draft; obě změny zůstávají nesloučené.

@@ -86,12 +86,11 @@
       "title": "Přehled lidí, rolí a přístupů",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "ROLE01",
-      "disposition": "Přehled přístupů sloučený v main přes #356 (ebb8b2e3). Produkční nasazení, porovnání původních rolí a formulářová přejímka jsou samostatné kroky původní relace; zde se jejich výsledek nepředjímá.",
+      "disposition": "Implementace #356 i produkční vydání a technická přejímka #359 dokončené: formuláře 16/16 PASS, původní role zachované, nové testovací účty deaktivované. Vizuální produkční Chrome UAT se tím netvrdí.",
       "evidence": [
-        "docs/ACCESS_OVERVIEW_2026-11-07.md",
-        "docs/verification/access-overview-20261107/RESULTS.md",
+        "docs/verification/access-release-20261107/RESULTS.md",
         "docs/DECISION_LOG.md"
       ]
     },
@@ -1875,8 +1874,9 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "R13 #352 / R05 #353 / R06 #354 v main; dílčí implementace a parita hotové. Bez nového deploye; zbývá celý HTTP/role a další měření.",
+      "disposition": "R13 #352 / R05 #353 / R06 #354 implementované a následně zahrnuté v nasazení ROLE01. Celé HTTP/role a K0.2 stále otevřené; datované tvrzení „bez deploye“ popisuje původní session.",
       "evidence": [
+        "docs/verification/access-release-20261107/RESULTS.md",
         "docs/WORK_PLAN_CURRENT.md"
       ]
     },
@@ -1903,8 +1903,9 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "R13 #352 / R05 #353 / R06 #354 v main; dílčí implementace a parita hotové. Bez nového deploye; zbývá celý HTTP/role a další měření.",
+      "disposition": "R13 #352 / R05 #353 / R06 #354 implementované a následně zahrnuté v nasazení ROLE01. Celé HTTP/role a K0.2 stále otevřené; datované tvrzení „bez deploye“ popisuje původní session.",
       "evidence": [
+        "docs/verification/access-release-20261107/RESULTS.md",
         "docs/WORK_PLAN_CURRENT.md"
       ]
     },
@@ -1929,8 +1930,9 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "R13 #352 / R05 #353 / R06 #354 v main; dílčí implementace a parita hotové. Bez nového deploye; zbývá celý HTTP/role a další měření.",
+      "disposition": "R13 #352 / R05 #353 / R06 #354 implementované a následně zahrnuté v nasazení ROLE01. Celé HTTP/role a K0.2 stále otevřené; datované tvrzení „bez deploye“ popisuje původní session.",
       "evidence": [
+        "docs/verification/access-release-20261107/RESULTS.md",
         "docs/WORK_PLAN_CURRENT.md"
       ]
     },
@@ -3644,6 +3646,19 @@
       "evidence": []
     },
     {
+      "id": "PL-65a90e6b3e",
+      "path": "docs/verification/access-release-20261107/RESULTS.md",
+      "title": "ROLE01: produkční vydání a důkaz zachování přístupů",
+      "primary": false,
+      "role": "evidence",
+      "status": "HISTORICAL_EVIDENCE",
+      "registry": "ROLE01",
+      "disposition": "Doložený výsledek vydání a 16 skutečných formulářových kontrol; nejde o další plán.",
+      "evidence": [
+        "docs/ACCESS_OVERVIEW_2026-11-07.md"
+      ]
+    },
+    {
       "id": "PL-b8d9a0c387",
       "path": "docs/verification/accountant-handover-20261024/PREDANI_UCETNI.md",
       "title": "Ukázkové předání účetní — LOCALHOST, NEPLATIT",
@@ -3717,8 +3732,9 @@
       "role": "verification-plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Měřicí/implementační řez hotový; otevřený celý HTTP/role a zbytek K0.2, bez nového deploye.",
+      "disposition": "Měřicí/implementační řez hotový, R13/R05/R06 následně zahrnuté v nasazení ROLE01; celý HTTP/role a zbytek K0.2 zůstává otevřený.",
       "evidence": [
+        "docs/verification/access-release-20261107/RESULTS.md",
         "docs/WORK_PLAN_CURRENT.md"
       ]
     },
@@ -5054,8 +5070,9 @@
       "role": "verification-plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Měřicí/implementační řez hotový; otevřený celý HTTP/role a zbytek K0.2, bez nového deploye.",
+      "disposition": "Měřicí/implementační řez hotový, R13/R05/R06 následně zahrnuté v nasazení ROLE01; celý HTTP/role a zbytek K0.2 zůstává otevřený.",
       "evidence": [
+        "docs/verification/access-release-20261107/RESULTS.md",
         "docs/WORK_PLAN_CURRENT.md"
       ]
     },
@@ -5456,8 +5473,9 @@
       "role": "verification-plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Měřicí/implementační řez hotový; otevřený celý HTTP/role a zbytek K0.2, bez nového deploye.",
+      "disposition": "Měřicí/implementační řez hotový, R13/R05/R06 následně zahrnuté v nasazení ROLE01; celý HTTP/role a zbytek K0.2 zůstává otevřený.",
       "evidence": [
+        "docs/verification/access-release-20261107/RESULTS.md",
         "docs/WORK_PLAN_CURRENT.md"
       ]
     },
@@ -8405,8 +8423,9 @@
       "role": "verification-plan",
       "status": "PARTIAL",
       "registry": "P11",
-      "disposition": "Měřicí/implementační řez hotový; otevřený celý HTTP/role a zbytek K0.2, bez nového deploye.",
+      "disposition": "Měřicí/implementační řez hotový, R13/R05/R06 následně zahrnuté v nasazení ROLE01; celý HTTP/role a zbytek K0.2 zůstává otevřený.",
       "evidence": [
+        "docs/verification/access-release-20261107/RESULTS.md",
         "docs/WORK_PLAN_CURRENT.md"
       ]
     },
@@ -8842,7 +8861,7 @@
       "evidence": []
     }
   ],
-  "checked_main": "ebb8b2e3",
+  "checked_main": "5cca5526",
   "pull_request": "https://github.com/KovoPraha/evidenceTreninku/pull/360",
   "binary_documents": 17
 }
