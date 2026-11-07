@@ -10257,11 +10257,12 @@
       "title": "P11-R05-H — historický souhrn plánovače se soupiskou",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11-R05-H",
-      "disposition": "Implementace/parita/měření hotové; výsledkové CI/merge/deploy otevřené.",
+      "disposition": "Technický řez #374 nasazený, parita/přínos a čtecí produkční kontrola PASS; přihlášené UAT a celé P11 otevřené.",
       "evidence": [
-        "docs/verification/planner-hierarchy-read-performance-20261107/RESULTS.md"
+        "docs/verification/planner-hierarchy-read-performance-20261107/RESULTS.md",
+        "docs/verification/planner-hierarchy-release-20261107/RESULTS.md"
       ]
     },
     {
@@ -10272,7 +10273,7 @@
       "role": "handoff",
       "status": "SUPPORT",
       "registry": "P11-R05-H",
-      "disposition": "Probíhající schválený řez plánovače; parita a měření před merge/deploy.",
+      "disposition": "Technický řez #374 nasazený, parita/přínos a čtecí produkční kontrola PASS; přihlášené UAT a celé P11 otevřené.",
       "evidence": []
     },
     {
@@ -10283,7 +10284,7 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-R05-H",
-      "disposition": "Průběžné důkazy; finální CI a deploy dosud otevřené.",
+      "disposition": "Technický řez #374 nasazený, parita/přínos a čtecí produkční kontrola PASS; přihlášené UAT a celé P11 otevřené.",
       "evidence": []
     },
     {
@@ -10294,7 +10295,7 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-R05-H",
-      "disposition": "Připravené produkční předání a veřejná čtecí sonda; provedení dosud NOT RUN.",
+      "disposition": "Technický řez #374 nasazený, parita/přínos a čtecí produkční kontrola PASS; přihlášené UAT a celé P11 otevřené.",
       "evidence": []
     },
     {
@@ -10305,7 +10306,7 @@
       "role": "artifact",
       "status": "SUPPORT",
       "registry": "P11-R05-H",
-      "disposition": "Připravené produkční předání a veřejná čtecí sonda; provedení dosud NOT RUN.",
+      "disposition": "Technický řez #374 nasazený, parita/přínos a čtecí produkční kontrola PASS; přihlášené UAT a celé P11 otevřené.",
       "evidence": []
     },
     {
@@ -10316,7 +10317,7 @@
       "role": "artifact",
       "status": "SUPPORT",
       "registry": "P11-R05-H",
-      "disposition": "Připravené produkční předání a veřejná čtecí sonda; provedení dosud NOT RUN.",
+      "disposition": "Technický řez #374 nasazený, parita/přínos a čtecí produkční kontrola PASS; přihlášené UAT a celé P11 otevřené.",
       "evidence": []
     }
   ],

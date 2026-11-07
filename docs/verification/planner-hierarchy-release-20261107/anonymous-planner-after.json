@@ -1,0 +1,9 @@
+{
+    "at_utc": "2026-11-07T17:12:01+00:00",
+    "url": "https://kis.kovopraha.cz/planovac.php",
+    "method": "Anonymous GET without cookies, redirects or POST; response body and headers not stored.",
+    "http": 302,
+    "redirect_path": "login.php",
+    "pass": true,
+    "limitation": "Confirms anonymous rejection only. Authenticated production planner UI UAT was not performed."
+}

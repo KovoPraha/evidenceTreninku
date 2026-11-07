@@ -1,6 +1,6 @@
 # P11-R05-H — historický souhrn plánovače se soupiskou
 
-7. 11. 2026, Europe/Prague. Stav: K OVĚŘENÍ výsledkového commitu / merge / deploy. Vlastník: vývoj podle zadání vlastníka aplikace.
+7. 11. 2026, Europe/Prague. Stav: HOTOVO — implementace, parita/měření, merge/deploy a čtecí smoke. Vlastník: vývoj podle zadání vlastníka aplikace.
 Plán uložen před implementací. Navazuje na [analýzu](verification/full-http-performance-20261107/RESULTS.md)
 a [předchozí řez plánovače](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md).
 
@@ -35,28 +35,38 @@ Týdenní karty, RSVP, náhled kopírování, POST, transakční chování a opr
    po zelených kontrolách merge a schválený standardní deploy s import/UAT false.
    Čtecí produkční smoke, ověřit WIP, výsledkové předání do repa.
 
-## Akceptace a aktuální výsledek
+## Akceptace a výsledný stav
 
-- Implementace zmrazená na `65440e3b`; [PR #374](https://github.com/KovoPraha/evidenceTreninku/pull/374).
-- SQLite parita/regrese PASS: původně 14/1579, po pevném LIMIT sondy nový kontrakt 8/1170;
-  1134 kombinací filtrů. Linux celá sada 2370 testů / 47564 assertions PASS.
-- Finální celé HTML/Chrome PASS: [42390969061](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42390969061).
-  Velká historie: trenér HTTP 70,59 → 47,36 ms; vedoucí 116,25 → 46,77 ms.
-- Obě finální nativní MariaDB PASS v 42390969094, kontrakt 8/1170 na každé; 24 případů ×17 párů na DB.
-  Helper měření není čas celého GET. [Protokol a artefakty](verification/planner-hierarchy-read-performance-20261107/RESULTS.md).
-- Statická analýza/styl/dokumentace CI PASS. Merge a deploy NOT RUN;
-  produkční stav vlastní [CURRENT](CURRENT_STATE.md), produkce zatím beze změny.
-- Lidská produkční přejímka NOT RUN; syntetické testy ji nenahrazují.
+**HOTOVO pro tento technický řez**: implementace, parita/měření, commit, merge
+[PR #374](https://github.com/KovoPraha/evidenceTreninku/pull/374), schválený deploy a veřejné čtecí ověření PASS.
+Release `e36c9ba6e461b7da842c53939c2fe20eed821f38`, [deploy 42394551344](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42394551344) SUCCESS.
+[Provozní důkaz a meze](verification/planner-hierarchy-release-20261107/RESULTS.md).
 
-Agregace má sondu 65, nejvýše 4097 načtených dat pro detekci limitu 4096,
-513 hran pro limit 512, 128 skupin / 900 parametrů; nad limitem kanonický fallback.
-První testy odhalily SQLite afinitu COALESCE/parametrů; opraveno sloupcovým IN
-s odděleným NULL. Lokální PHPStan nad sdílenými balíčky nedokončen a vlastní proces
-zastaven; fresh Linux PHPStan/styl PASS je rozhodující ověření.
+- Frozen reference69f49033; runtime 65440e3b, integrovaná hlava 87130cfe všech 12 CI PASS.
+  Celý strom sloučeného vydání přesně stejný; měřené source hashe shodné.
+- SQLite nový kontrakt 8/1170, celá Linux sada 2370/47564; obě MariaDB 8/1170 PASS,
+  1134 kombinací filtrů, 24 případů ×17 střídavých párů na DB.
+- Celé HTML přesně stejné:1360 HTTP / 104 Chrome,13 checksumů shodných,
+  čtecí diagnostika bez DML/DDL, izolovaný runtime uklizený.
+- Velký GET20k: trenér70,59→47,36ms (−32,9 %), vedoucí116,25→46,77ms (−59,8 %).
+  Helper 36k: 10.3 127,23→2,07ms,11.4 151,47→45,56ms; řádky 72946→167,SQL 70→5.
+  Malá historie časově neutrální. [Metoda a všechny časy](verification/planner-hierarchy-read-performance-20261107/RESULTS.md).
+- Deploy: ověřená záloha, migrace, původní VS, aktivace a HTTP smoke PASS;
+  importovat_krouzky=false, uat_schvaleno=false; žádné nové aktivace/datové operace.
+- Produkční veřejné před/po 5/5: DOM/pole shodné, plánovač302login. WIP hash shodný.
 
-Nativní i celé HTTP důkazy archivované, hashe runtime shodné s Git objekty.
-Další krok: commit důkazů, zelené kontroly výsledkové hlavy,
-merge a autorizovaný standardní deploy; veřejné čtecí srovnání a session handoff.
-Rozhodnutí [D12](DECISION_LOG.md#d2026-11-07-12); průběžné předání [handoff](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
+Agregace má sondu 65; nejvýše 4097 dat pro detekci limitu 4096,513 hran pro limit 512,
+128 skupin / 900 parametrů. Nad limitem původní cesta. První test zachytil SQLite
+ztrátu afinity COALESCE; opraveno sloupcovým IN a samostatným NULL. Místní PHPStan
+nad sdílenými balíčky nedokončen/zastaven; fresh Linux PHPStan/styl PASS rozhodující.
+Během čekání přijatý docs-only #377/b3d0f4bb; blokované UAT pickeru zachované,
+pracovní události R05 nyníE39/40/41, integračníE42, merge/deployE43/44.
 
-Převzato nové main `b3d0f4bb` / #377: pouze dokumentační blokované UAT pickeru, jeho fakta a metadata zachované; žádná změna měřeného runtime. Výsledková hlava 0ac7680c měla všech12 CI PASS; integrovaná hlava se musí znovu ověřit. Veřejný baseline pěti GET a odmítnutí anonymního plánovače PASS.
+## Předání a otevřené návaznosti
+
+Runtime je v main a nasazený; výsledkové předání vlastní větev
+`codex/planner-hierarchy-release-proof-20261107`, stejný worktree, pouze dokumentace.
+Po kontrolách toto předání sloučit; **další deploy dokumentů není potřeba**.
+Původní WIP a neversionované výstupy zachované. Přihlášené produkční UI UAT,
+rows examined, fyzický mobil/souběh NOT RUN; další R13 a celé K0.2 otevřené.
+[Handoff](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md), [D12](DECISION_LOG.md#d2026-11-07-12).
