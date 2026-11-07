@@ -61,4 +61,4 @@ autor/reviewer; automatická kontrola nevydává historický text za nové rozho
 
 Pouze dokumentační změna a její kontrolní nástroj, bez nasazení. Původní WIP
 zachovaný. P05/P06/P07, heslo/T07, účetní/lidská přejímka a konkrétní koncepty
-zůstávají v rozsahu registru. Následuje GitHub PR a skutečné CI/merge předání.
+zůstávají v rozsahu registru. Předání [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360); konečný head a skutečný stav CI/sloučení určuje PR.

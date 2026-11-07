@@ -1,6 +1,6 @@
 # Audit všech plánů a konceptů — 7. 11. 2026
 
-Stav: HOTOVO — obsahový audit a místní ověření; GitHub předání se doplní níže. ID DOC02. Vlastník zadal projít všechny existující plány
+Stav: HOTOVO — obsahový audit a místní ověření; GitHub předání [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360). ID DOC02. Vlastník zadal projít všechny existující plány
 a koncepty v repozitáři, zkontrolovat jejich evidenci v registru, dohledání
 aktivních z CURRENT a handoffu a dokončených z rozhodovacího logu; opravit
 chybějící vazby a neaktuální stavy podle důkazů.
@@ -43,4 +43,4 @@ Původních 695 textových dokumentů bylo inventarizováno; při souběžném m
 podklad v `docs/plans/realization-20261022/`, bez provozních dat či JSON zdroje.
 Celkem 721 indexovaných textových souborů; 306 hlavních záznamů zahrnuje
 222 plánovacích podkladů/dispozic a 84 referencí. Nejde o 222 nově schválených úkolů.
-Místní kontroly PASS; následuje GitHub předání, CI a začlenění dokumentace.
+Místní kontroly PASS; předání [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360). Konečný head a skutečný stav CI/sloučení určuje PR; další dokumentační deploy není potřeba.

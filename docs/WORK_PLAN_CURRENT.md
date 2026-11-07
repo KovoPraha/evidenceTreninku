@@ -96,7 +96,7 @@ uvést jen bezpečnou referenci a způsob ověření soukromého podkladu.
 ## Aktuální předání a souběžné návrhy
 
 DOC02 obsah a místní ověření HOTOVO: [audit všech plánů a konceptů](PLAN_CATALOG_AUDIT_2026-11-07.md).
-Větev `codex/plan-catalog-audit-20261107`; další krok: GitHub předání a CI.
+Větev `codex/plan-catalog-audit-20261107`; předání [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360), skutečný stav CI/merge u PR.
 
 | ID | Stav a podklad | Další krok / vlastník |
 | --- | --- | --- |

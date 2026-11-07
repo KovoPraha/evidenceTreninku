@@ -76,5 +76,5 @@ Dokumentace aktualizována 7. 11. 2026 (Europe/Prague); provozní důkazy níže
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
-DOC02: [audit všech plánů](PLAN_CATALOG_AUDIT_2026-11-07.md), registr rozšířen o C01–C04 a souběžné #355/#356/#358. [DOC01 #357](https://github.com/KovoPraha/evidenceTreninku/pull/357) sloučené; R13 #352 / R05 #353 / R06 #354 v main, bez nového deploye. Konkrétní stavy a důkazy v [katalogu](PLAN_CATALOG.md).
+DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [audit všech plánů](PLAN_CATALOG_AUDIT_2026-11-07.md), registr rozšířen o C01–C04 a souběžné #355/#356/#358. [DOC01 #357](https://github.com/KovoPraha/evidenceTreninku/pull/357) sloučené; R13 #352 / R05 #353 / R06 #354 v main, bez nového deploye. Konkrétní stavy a důkazy v [katalogu](PLAN_CATALOG.md).
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)

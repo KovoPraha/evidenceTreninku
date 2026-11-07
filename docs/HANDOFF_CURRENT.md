@@ -12,7 +12,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   jen na nových technických účtech. Původní role lidí zachovat a porovnat otisk.
   CI kódu prošlo; #356 sloučené; následuje baseline, povolený deploy, ověření a úklid v původní relaci.
 
-- DOC02: [audit všech plánů a konceptů](PLAN_CATALOG_AUDIT_2026-11-07.md); [úplný katalog](PLAN_CATALOG.md), nové vazby C01–C04 v registru.
+- DOC02 [PR #360](https://github.com/KovoPraha/evidenceTreninku/pull/360): [audit všech plánů a konceptů](PLAN_CATALOG_AUDIT_2026-11-07.md); [úplný katalog](PLAN_CATALOG.md), nové vazby C01–C04 v registru.
 
 - DOC01: [pravidla a krátké předání](DOCUMENTATION_GOVERNANCE_2026-11-07.md), sloučené #357; historii vede log.
 
