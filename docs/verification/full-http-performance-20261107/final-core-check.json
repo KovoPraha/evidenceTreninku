@@ -1,0 +1,18 @@
+{
+  "core_unchanged_after_browser_and_revocation": true,
+  "checksums": {
+    "p11_read_38a870931ab87cc3.planovane_treninky": 3638870507,
+    "p11_read_38a870931ab87cc3.training_roster_links": 2723331740,
+    "p11_read_38a870931ab87cc3.club_roster_members": 146787672,
+    "p11_read_38a870931ab87cc3.club_team_edges": 2039414970,
+    "p11_read_38a870931ab87cc3.treninky": 1302416506,
+    "p11_read_38a870931ab87cc3.trenink_sportovec": 108392036,
+    "p11_read_38a870931ab87cc3.training_closures": 923930483,
+    "p11_read_38a870931ab87cc3.training_closure_revisions": 140858147,
+    "p11_read_38a870931ab87cc3.medical_clearance_watches": 3383937927,
+    "p11_read_38a870931ab87cc3.medical_clearance_records": 2752087815,
+    "p11_read_38a870931ab87cc3.medical_clearance_policies": 3344403727,
+    "p11_read_38a870931ab87cc3.treneri": 3585168704,
+    "p11_read_38a870931ab87cc3.staff_user_positions": 1988289017
+  }
+}

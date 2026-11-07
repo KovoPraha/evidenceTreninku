@@ -1,16 +1,32 @@
 # Dokumentace EvidencePavel / KIS
 
-Aktualizováno: 6. 11. 2026, Europe/Prague
+Aktualizováno: 7. 11. 2026, Europe/Prague
 
 Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
 webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
 <https://kis.kovopraha.cz/>.
+
+
+## Dokumentace práce a rozhodnutí
+
+Před změnou načtěte [pravidla](WORK_DOCUMENTATION_POLICY.md), [aktuální stav](CURRENT_STATE.md), [stručný session handoff](HANDOFF_CURRENT.md)
+a [registr otevřených plánů a konceptů](WORK_PLAN_CURRENT.md). Všechny záměry, postupy, změny a výsledky patří do verzovaných souborů;
+na odpovídající plán musí odkazovat CURRENT i handoff. Dokumentaci předávejte přes GitHub PR spolu se změnou.
+[Deník událostí](EVENT_LOG.md) a [rozhodovací log / uzavřené plány](DECISION_LOG.md) zajišťují historickou dohledatelnost bez načítání historie v handoffu.
+
+## Úplnost plánů a konceptů
+
+[Katalog všech plánů](PLAN_CATALOG.md) propojuje aktivní, dokončené i nahrazené
+návrhy se společným registrem a důkazy. [Úplný textový index](PLAN_DOCUMENT_INDEX.md)
+zahrnuje i vložené plány a protokoly. Původní [etapy 0–6](plans/realization-20261022/README.md)
+byly dosud pouze v lokálním output; nyní jsou sdílené jako historické specifikace.
 
 ## Začněte zde
 
 | Dokument | Účel |
 |---|---|
 | [Registr rozpracované a plánované práce](WORK_PLAN_CURRENT.md) | Jediný seznam P01–P14: doložený stav, další kroky, závislosti a odpovědnost |
+| [Automatické doklady a zprávy objednávek](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md) | Faktury a opravy, PDF přílohy, storna/vratky a [ověření celého toku](verification/shop-document-automation-20261107/RESULTS.md) |
 | [Závodní tým – aktuální ověření](verification/racing-team-status-20261106/RESULTS.md) | Schválený a zveřejněný tarif 2200 Kč/měsíc, cesta ke sjednání a podmínka ověřeného sportovce |
 | [Sjednocení dokumentace 6. 11.](verification/documentation-reconcile-20261106/RESULTS.md) | Sloučení souběžného předání #333/#334, opravené rozpory a hranice ověření; bez produkčních změn |
 | [Průběžný plán – kompatibilní rozcestník](WORK_REGISTER.md) | Odkazuje na stejný registr; nevytváří druhý seznam úkolů |
@@ -23,6 +39,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 | [Session handoff BAR](SESSION_HANDOFF_BAR_2026-11-06.md) | Dokončená publikace a pořadí přihlášení Lucky, zásob, kasy a účetního propojení |
 | [Pravidla souborové dokumentace](WORK_DOCUMENTATION_POLICY.md) | Průběžné záznamy rozpracované, dokončené a plánované práce v souborech |
 | [Pracovní balíček pro testerku](testing/chatgpt-tester-20261105/README.md) | Sjednoceno 6. 11.: instrukce, 20 scénářů, zdrojová mapa a přenosový balíček ověřené; skutečná testerka/přístup a lidské UAT ještě neurčené |
+| [Ranní kontrola 7. 11. bez PC](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md) | Pozorovatel na hostingu a automatické předání; [důkazy](verification/membership-morning-server-release-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md) |
 | [Spolehlivé denní členství](MEMBERSHIP_SCHEDULER_2026-11-06.md) | Hostingový plán 05:23 UTC, skutečné minutové tiky a ochrana proti souběhu; [výsledky](verification/membership-scheduler-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_MEMBERSHIP_SCHEDULER_2026-11-06.md) |
 | [Měsíční členství přes e-shop](MONTHLY_MEMBERSHIP_RUNBOOK.md) | Nový tok, platby, doklady, upomínky, samostatná aktivace a hranice ověření; [plán](MONTHLY_MEMBERSHIP_PLAN.md) |
 | [Tréninky a zastupování bez povinné soupisky](COACH_TRAINING_ACCESS_2026-11-05.md) | Vlastní cíle první, ostatní dostupné; nové pravidlo, přiřazení a hranice ověření |
@@ -100,8 +117,7 @@ testy, potom `CURRENT_STATE.md` a `HANDOFF_CURRENT.md`.
 
 ## Historické dokumenty
 
-Datované audity, roadmapy, staré handoffy, implementační prompty a soubor
-`plan-eshop-tymova-evidence/SESSION_HANDOFF.md` zůstávají v repozitáři jako
+Datované audity, roadmapy, staré handoffy, implementační prompty a [archiv session](plan-eshop-tymova-evidence/SESSION_HISTORY_2026-11-07.md) zůstávají v repozitáři jako
 auditní a rozhodovací stopa. Jejich SHA, počty testů, verze a označení
 „plánováno“ popisují dobu vzniku. Nejsou autoritou pro aktuální checkout.
 

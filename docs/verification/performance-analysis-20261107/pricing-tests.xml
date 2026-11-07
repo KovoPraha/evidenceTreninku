@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\ShopMemberPricingTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\ShopMemberPricingTest.php" tests="4" assertions="15" errors="0" failures="0" skipped="0" time="0.292421">
+    <testcase name="testInactiveUnverifiedOrEndedRelationshipCannotReceiveMemberPrice" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\ShopMemberPricingTest.php" line="13" class="Tests\Integration\ShopMemberPricingTest" classname="Tests.Integration.ShopMemberPricingTest" assertions="4" time="0.274465"/>
+    <testcase name="testAnonymousKeepsPublicPriceAndParentGetsCheapestEligibleRosterPrice" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\ShopMemberPricingTest.php" line="26" class="Tests\Integration\ShopMemberPricingTest" classname="Tests.Integration.ShopMemberPricingTest" assertions="4" time="0.006047"/>
+    <testcase name="testProductPriceOverridesCategoryInsideTeamAndInactiveMembershipIsIgnored" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\ShopMemberPricingTest.php" line="39" class="Tests\Integration\ShopMemberPricingTest" classname="Tests.Integration.ShopMemberPricingTest" assertions="4" time="0.006796"/>
+    <testcase name="testRuleChangesAreAuditedAndDeactivationFallsBackToPublicPrice" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\ShopMemberPricingTest.php" line="54" class="Tests\Integration\ShopMemberPricingTest" classname="Tests.Integration.ShopMemberPricingTest" assertions="3" time="0.005113"/>
+  </testsuite>
+</testsuites>

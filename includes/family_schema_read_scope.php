@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Metadata only, during one explicit family GET projection. No DDL or USE inside
+ * Metadata only, during one explicit GET projection (family portal or planner). No DDL or USE inside
  * the scope. Never store authority, rows or a PDO here beyond the caller's finally.
  * Outside a scope every helper keeps its original fresh read and error behavior.
  */

@@ -1,0 +1,95 @@
+{
+    "synthetic_only": true,
+    "phase": "refunded",
+    "checked_at": "2026-11-07T10:18:09+01:00",
+    "worker": {
+        "documents": 0,
+        "sent": 1,
+        "failed": 0,
+        "attention": 0
+    },
+    "repeat": {
+        "documents": 0,
+        "sent": 0,
+        "failed": 0,
+        "attention": 0
+    },
+    "captured_mail": [
+        {
+            "email": "rodic@localhost.test",
+            "subject": "Vrácení platby – objednávka KP261107BE5C4A205A",
+            "body": "Dobrý den,\n\nklub potvrdil dokončení vrácení platby za objednávku KP261107BE5C4A205A, celkem 249,00 CZK. Připsání poslední platby na účet závisí na bance.\n\nObjednávku a doklady najdete po přihlášení: http:\/\/127.0.0.1:18086\/booking\/objednavka.php?code=KP261107BE5C4A205A\n\nKlub KOVO Praha",
+            "attachments": []
+        }
+    ],
+    "order": [
+        {
+            "id": 2,
+            "status": "cancelled",
+            "payment_status": "refunded",
+            "total_minor": 24900
+        }
+    ],
+    "documents": [
+        {
+            "id": 1,
+            "kind": "invoice",
+            "status": "issued",
+            "number": "FA-2026-000001",
+            "total_minor": 24900,
+            "pdf_sha256": "beb8f77c43b92e341dbf3e0cc1a71923da649666207e2c49c0516220ed6acdff"
+        },
+        {
+            "id": 2,
+            "kind": "correction",
+            "status": "issued",
+            "number": "OPR-2026-000001",
+            "total_minor": -24900,
+            "pdf_sha256": "3a514202642167436ded34fb7f00f95f35e26caf71167a7fc37033e4bc81ada6"
+        }
+    ],
+    "notifications": [
+        {
+            "notification_type": "shop_order_placed",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_payment_received",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_invoice_issued",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_order_cancelled",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_correction_issued",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_order_refunded",
+            "status": "sent",
+            "attempts": 1
+        }
+    ],
+    "enrollments": [
+        {
+            "id": 2,
+            "sportovec_id": 1,
+            "status": "cancelled"
+        }
+    ],
+    "monthly_count": [
+        {
+            "total": 0
+        }
+    ]
+}

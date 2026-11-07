@@ -1,0 +1,182 @@
+[
+  {
+    "source": "output/realizacni-plan-2026-10-22/00_REALIZACNI_PLAN.md",
+    "target": "docs/plans/realization-20261022/realizacni-plan-2026-10-22/00_REALIZACNI_PLAN.md",
+    "source_sha256": "e4e25f28dfcf028f7d304320ea66879c40e8e3864bb5e5179fdee7fa2d74dbe8",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-0-2026-10-22/00_ETAPA_0.md",
+    "target": "docs/plans/realization-20261022/etapa-0-2026-10-22/00_ETAPA_0.md",
+    "source_sha256": "18bc034774281ce3116e99acd993e41fd9445f01d3fac7475725e4e055b9692c",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-0-2026-10-22/01_UCETNI_DOKLADY_A_EXPORT.md",
+    "target": "docs/plans/realization-20261022/etapa-0-2026-10-22/01_UCETNI_DOKLADY_A_EXPORT.md",
+    "source_sha256": "22d68f051f39bc893520a484ee1ef5e00c3ae8e83ee4e0e06519247dc4b15e11",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-0-2026-10-22/02_PAPIROVE_AGENDY.md",
+    "target": "docs/plans/realization-20261022/etapa-0-2026-10-22/02_PAPIROVE_AGENDY.md",
+    "source_sha256": "4e92a1d3c704da876fd6edbb1dd1608e918ba14ca9d9a37917d7f79a78e20be7",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-0-2026-10-22/03_EVIDENCE_VS_KIS.md",
+    "target": "docs/plans/realization-20261022/etapa-0-2026-10-22/03_EVIDENCE_VS_KIS.md",
+    "source_sha256": "c8cedc018d5e6f111aca371c4578f65ef4c82376b4b1710de5ba6b5c1d47cfc5",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-1-2026-10-22/00_ETAPA_1_PLAN.md",
+    "target": "docs/plans/realization-20261022/etapa-1-2026-10-22/00_ETAPA_1_PLAN.md",
+    "source_sha256": "75b836519a74bbc6582a486154bdb28fc34d51cbec7e1245677cb046f7f806fa",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-1-2026-10-22/01_PRIJEMKA_A_ZDROJE.md",
+    "target": "docs/plans/realization-20261022/etapa-1-2026-10-22/01_PRIJEMKA_A_ZDROJE.md",
+    "source_sha256": "7d5ef45331a15626b00fb6c10dfe360a66ea48ec25d51f7fba2cc203943101e1",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-2-2026-10-22/00_ETAPA_2_PLAN.md",
+    "target": "docs/plans/realization-20261022/etapa-2-2026-10-22/00_ETAPA_2_PLAN.md",
+    "source_sha256": "2162507d49cd46f235db8cfc492461f93749af7b84b6ac03e700d7f8e0666130",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-2-2026-10-22/01_KONTRAKT_EXPORTU_PRIJEMKA_A_ZDROJE.md",
+    "target": "docs/plans/realization-20261022/etapa-2-2026-10-22/01_KONTRAKT_EXPORTU_PRIJEMKA_A_ZDROJE.md",
+    "source_sha256": "8937cd660129b24745d39a98b1fec884b8a45f68f42e56af4f0ab4e9c19eb622",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-3-2026-10-22/00_ETAPA_3_PLAN.md",
+    "target": "docs/plans/realization-20261022/etapa-3-2026-10-22/00_ETAPA_3_PLAN.md",
+    "source_sha256": "858e9a4427d8dff43dc7edb817b136530906d997128bafb43e19ea39c53fcd92",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-3-2026-10-22/01_SKLADOVY_MODEL_PRIJEMKA_A_ZDROJE.md",
+    "target": "docs/plans/realization-20261022/etapa-3-2026-10-22/01_SKLADOVY_MODEL_PRIJEMKA_A_ZDROJE.md",
+    "source_sha256": "a1e285667bb37d52b81b6e350637fa55ece8bbdf540cec875ef22def2408046e",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-4-2026-10-22/00_ETAPA_4_PLAN.md",
+    "target": "docs/plans/realization-20261022/etapa-4-2026-10-22/00_ETAPA_4_PLAN.md",
+    "source_sha256": "c0eed9a05b73e1b639c6ff59c354bab9b31209fd0364a9398887df40e57f27c6",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-4-2026-10-22/01_PRAVIDLA_PRIJEMKA_A_ZDROJE.md",
+    "target": "docs/plans/realization-20261022/etapa-4-2026-10-22/01_PRAVIDLA_PRIJEMKA_A_ZDROJE.md",
+    "source_sha256": "bb219e68820a238d239386100cf9feced35e08b851d354001ab68af3712e51db",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-5-2026-10-22/00_ETAPA_5_PLAN.md",
+    "target": "docs/plans/realization-20261022/etapa-5-2026-10-22/00_ETAPA_5_PLAN.md",
+    "source_sha256": "cd80bc9d7f378397df93f44ac0dbdc514b1a205443764521cd6c1fc004d9bd86",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-5-2026-10-22/01_PRAVIDLA_PRIJEMKA_A_ZDROJE.md",
+    "target": "docs/plans/realization-20261022/etapa-5-2026-10-22/01_PRAVIDLA_PRIJEMKA_A_ZDROJE.md",
+    "source_sha256": "85bffc9584e55fcc990f7854e8f5a17256a65c21953dd2164ea4a04c0a7ecf34",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-6-2026-10-22/00_ETAPA_6_PLAN.md",
+    "target": "docs/plans/realization-20261022/etapa-6-2026-10-22/00_ETAPA_6_PLAN.md",
+    "source_sha256": "23723592ae360234ea0237e6dc0b468f7687884ac0242e82723e5acb6a6744a9",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-6-2026-10-22/01_MIGRACE_PILOT_A_PRECHOD.md",
+    "target": "docs/plans/realization-20261022/etapa-6-2026-10-22/01_MIGRACE_PILOT_A_PRECHOD.md",
+    "source_sha256": "46dd5cb56316448cfa652716111712896dd59fdaea790a795f67153c295d480e",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  },
+  {
+    "source": "output/etapa-6-2026-10-22/02_PRIJEMKA_A_ZDROJE.md",
+    "target": "docs/plans/realization-20261022/etapa-6-2026-10-22/02_PRIJEMKA_A_ZDROJE.md",
+    "source_sha256": "d2a09160eeb4419dbd5cea894a2fa7452a01a9bf4017fffbf3d4182bbb1ffdb1",
+    "adjustments": [
+      "historical status banner",
+      "repository-relative code links",
+      "private JSON evidence reference where present"
+    ]
+  }
+]

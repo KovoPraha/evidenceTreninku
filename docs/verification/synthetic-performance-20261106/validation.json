@@ -1,0 +1,13 @@
+{
+  "local_links_checked": 290,
+  "missing_links": [],
+  "targeted_tests": 27,
+  "assertions": 155,
+  "cases": 21,
+  "timing_samples": 630,
+  "sql_samples": 21,
+  "unchanged_output": true,
+  "original_wip_preserved": true,
+  "production_workflow_dispatched": false,
+  "runtime_cleanup": "schema removed, server stopped; filesystem directory retained after automatic approval rejection"
+}

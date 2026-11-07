@@ -1,0 +1,123 @@
+[
+  {
+    "path": "docs/KIS-kompletni-uzivatelske-testovaci-scenare.docx",
+    "size_bytes": 101936,
+    "sha256": "a0afc98c717071db276419b328292b095b675a8b9e1e6bd5b8d950cc64e5b1c2",
+    "role": "historical-test-plan",
+    "inspection": "Read document XML text; historical date, test scope and proposals verified.",
+    "text_nodes": 2169
+  },
+  {
+    "path": "docs/KIS-kompletni-uzivatelske-testovaci-scenare.pdf",
+    "size_bytes": 209027,
+    "sha256": "109dadc51266dc0f3becb321c9b317a4268582f93bf937f178a976ff211b3c6c",
+    "role": "historical-test-plan",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "docs/verification/autonomous-p01-p14-20261106/bar-menu-synthetic.pdf",
+    "size_bytes": 73548,
+    "sha256": "7e1a1afb7407a40491859eb7dbe7822778778233bbfcbc09bca73c0bde469cd3",
+    "role": "binary-artifact",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "docs/verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-faktura.pdf",
+    "size_bytes": 24287,
+    "sha256": "9f3f6b5f8210e62cef391a5301f4a88ff1f25d5f82932e43036305072efe1cd5",
+    "role": "binary-artifact",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "docs/verification/final-system-20261024/accountant-sample/LOCALHOST-NEPLATIT-podklady.xlsx",
+    "size_bytes": 22187,
+    "sha256": "d8d223abd7d32d2bbafc7dd3d9dcf3c8362301b0e4df2d0eb826d016f600e4d0",
+    "role": "binary-artifact",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "docs/verification/r18-r24/r18-r24-stock-sample.pdf",
+    "size_bytes": 23767,
+    "sha256": "65ca5c58763d34a78f80956e2b2a1ebc5823f576dff97cc8dfb64b63e7b8d79c",
+    "role": "binary-artifact",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "ebook.pdf",
+    "size_bytes": 9433244,
+    "sha256": "036655a9d3aea36d2f34a431579d66fb9d0050eee2b24ef424d7ffbc295e0636",
+    "role": "binary-artifact",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "output/docx/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.docx",
+    "size_bytes": 48157,
+    "sha256": "6c4dbd52f374017ad66971e239e33a3288c1bee320f49a41eedde1be3e677dc2",
+    "role": "historical-concept",
+    "inspection": "Read document XML text; historical date, test scope and proposals verified.",
+    "text_nodes": 254
+  },
+  {
+    "path": "output/pdf/JEDNODUCHY_MANUAL_PRODUKCNIHO_TESTOVANI_2026-09.pdf",
+    "size_bytes": 161319,
+    "sha256": "9e1a5ba7906b4e82c8be3ba25fd775e8abc22b24274a782b1abd3dba2a1fb939",
+    "role": "historical-test-plan",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "output/pdf/KIS_PRODUKCNI_UAT_NAVRZENE_OPRAVY_2026-09-08.pdf",
+    "size_bytes": 94573,
+    "sha256": "9826a69a69e7876bb67e3b00f1b0a5c91b9f01a5de020b9f385185fae01b87d8",
+    "role": "historical-concept",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "output/pdf/UZIVATELSKE_TESTOVANI_SCENARE_2026-09.pdf",
+    "size_bytes": 215298,
+    "sha256": "3e08be14172b0519cf5019a7870082c3c41b81d92bad89485077243c364f96c9",
+    "role": "historical-test-plan",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "outputs/data-flow-audit-2026-08-24/DATOVE_TOKY_APLIKACE.xlsx",
+    "size_bytes": 42639,
+    "sha256": "a77187735dbe0bdfc633a709690af6d8958bccbca61681e18f07d90bfcb714a2",
+    "role": "historical-analysis",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "outputs/data-flow-audit-2026-10-07/DATOVE_TOKY_APLIKACE.xlsx",
+    "size_bytes": 48765,
+    "sha256": "f99dbc7e31008b968981ff792f79d65b8549536a3ce106c4baae8519a17c173a",
+    "role": "historical-analysis",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "outputs/data-flow-audit-2026-10-19/DATOVE_TOKY_APLIKACE.xlsx",
+    "size_bytes": 39979,
+    "sha256": "3933ce8dd0a8c2722b9003c32140a7e9bf830883f22b121cddaae856c67b1043",
+    "role": "historical-analysis",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "templates/prihlasovaci_tabulka_draha.xlsx",
+    "size_bytes": 15660,
+    "sha256": "ff0f2a4923b9485c1a64a9b4614815bd86dfd81ce25e7d046197b627d73a979b",
+    "role": "binary-artifact",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "templates/prihlasovaci_tabulka_uci.xlsx",
+    "size_bytes": 48620,
+    "sha256": "1dac40f5ad6a5f122046047412ff7b4a1af2f2a76cae50d5e63c01c0cb4d0eb0",
+    "role": "binary-artifact",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  },
+  {
+    "path": "tests/fixtures/bar-localhost-invoice.pdf",
+    "size_bytes": 1587,
+    "sha256": "38a58ab6a356de1d467e36d01d3e2f1eabca5c4575e3a4e206b272f8f2b50a08",
+    "role": "binary-artifact",
+    "inspection": "Indexed as historical/manual variant or supporting binary; no fresh functional or layout acceptance claimed."
+  }
+]

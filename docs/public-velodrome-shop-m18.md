@@ -1,5 +1,12 @@
 # M1.8 – placený velodrom přes shop objednávku
 
+> Aktualizace evidence 7. 11. 2026: platební/kapacitní kontrakt je v main.
+> Automatická expirace pending objednávek již má [implementaci](../bin/expire-shop-orders.php);
+> stará poznámka o chybějící expiraci níže popisuje M1.8, ne dnešní kód.
+> Její skutečný produkční plán se tím nepotvrzuje. Zbývající přejímky P07/C03
+> vede [registr](WORK_PLAN_CURRENT.md) a [katalog](PLAN_CATALOG.md).
+
+
 ## Výsledek
 
 Placený veřejný slot nepoužívá vlastní platební tabulku ani ruční potvrzení rezervace. Je položkou existujícího `shop_carts` a po checkoutu existujícího `shop_orders`; platba vzniká v `payments` jako `payable_type=shop_order` a používá stejné VS, SPD a QR jako ostatní objednávky.

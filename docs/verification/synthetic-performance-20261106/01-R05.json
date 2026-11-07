@@ -1,0 +1,858 @@
+{
+    "case": {
+        "route": "R05",
+        "role": "coach",
+        "mode": "all",
+        "weeks": 1,
+        "sql": {
+            "count": 112,
+            "fetched_rows": 414,
+            "execute_ms": 83.22239999999998,
+            "fetch_ms": 1.1067000000000007
+        },
+        "median_ms": 185.83769999999998,
+        "p95_ms": 488.2725,
+        "peak_increment_bytes": 389960,
+        "process_peak_bytes": 4194304,
+        "result": {
+            "data": {
+                "plans": [
+                    50000,
+                    50002,
+                    50004,
+                    50006,
+                    50008,
+                    50010,
+                    50012
+                ],
+                "stats": {
+                    "planovany": 7,
+                    "evidovany": 0
+                },
+                "warnings": 4,
+                "oldest_pending": "2026-11-02",
+                "copy_count": 7,
+                "rsvp": {
+                    "50000": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50002": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50004": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50006": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50008": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50010": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50012": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    }
+                }
+            },
+            "html_bytes": 77595,
+            "data_sha256": "af4d567f98c85ffc89e8afd2607e4bf9f01270fb2adbac08821753b27fed183c",
+            "html_sha256": "bab2fac65012cc4de3a673296a14814055cab51460c8047a58b9110139b964f7",
+            "result_sha256": "8c0d003862ba80bd9397bc9ee48abaf486651c78be13979f8f7d1e3caa126a60"
+        }
+    },
+    "sql_detail": {
+        "route": "R05",
+        "role": "coach",
+        "mode": "all",
+        "measurement": "sql",
+        "warmups": 5,
+        "read_only_session": true,
+        "samples": [
+            {
+                "ms": 154.3679,
+                "peak_increment_bytes": 451208,
+                "process_peak_bytes": 4194304
+            }
+        ],
+        "result": {
+            "data": {
+                "plans": [
+                    50000,
+                    50002,
+                    50004,
+                    50006,
+                    50008,
+                    50010,
+                    50012
+                ],
+                "stats": {
+                    "planovany": 7,
+                    "evidovany": 0
+                },
+                "warnings": 4,
+                "oldest_pending": "2026-11-02",
+                "copy_count": 7,
+                "rsvp": {
+                    "50000": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50002": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50004": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50006": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50008": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50010": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50012": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    }
+                }
+            },
+            "html_bytes": 77595,
+            "data_sha256": "af4d567f98c85ffc89e8afd2607e4bf9f01270fb2adbac08821753b27fed183c",
+            "html_sha256": "bab2fac65012cc4de3a673296a14814055cab51460c8047a58b9110139b964f7",
+            "result_sha256": "8c0d003862ba80bd9397bc9ee48abaf486651c78be13979f8f7d1e3caa126a60"
+        },
+        "sql": {
+            "count": 112,
+            "fetched_rows": 414,
+            "execute_ms": 83.22239999999998,
+            "fetch_ms": 1.1067000000000007
+        },
+        "queries": [
+            {
+                "sql": "SELECT id FROM treneri WHERE id=? AND aktivni=1",
+                "count": 1,
+                "fetched_rows": 1,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "treneri",
+                        "type": "const",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT trainer_id FROM staff_user_positions WHERE trainer_id=? AND position_code=?",
+                "count": 1,
+                "fetched_rows": 1,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "staff_user_positions",
+                        "type": "const",
+                        "possible_keys": "PRIMARY,idx_staff_user_positions_default,fk_staff_user_positions_position",
+                        "key": "PRIMARY",
+                        "key_len": "262",
+                        "ref": "const,const",
+                        "rows": "1",
+                        "Extra": "Using index"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT id, nazev, hash FROM skupiny ORDER BY nazev",
+                "count": 1,
+                "fetched_rows": 1,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "skupiny",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "1",
+                        "Extra": "Using filesort"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT id, jmeno FROM treneri ORDER BY jmeno",
+                "count": 1,
+                "fetched_rows": 4,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "treneri",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "3",
+                        "Extra": "Using filesort"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT id, nazev FROM sportovist WHERE aktivni=1",
+                "count": 1,
+                "fetched_rows": 0,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "sportovist",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "1",
+                        "Extra": "Using where"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT pt.*, sk.nazev AS skupina_nazev, COALESCE( (SELECT GROUP_CONCAT(ps2.nazev ORDER BY ps2.poradi SEPARATOR ', ') FROM planovane_treninky_podskupiny ptp2 JOIN podskupiny ps2 ON ps2.id = ptp2.podskupina_id WHERE ptp2.plan_id = pt.id), (SELECT ps3.nazev FROM podskupiny ps3 WHERE ps3.id = pt.podskupina_id) ) AS podskupiny_nazvy, t.jmeno AS trener_jmeno FROM planovane_treninky pt LEFT JOIN skupiny sk ON sk.id = pt.skupina_id LEFT JOIN treneri t ON t.id = pt.trener_id WHERE pt.datum BETWEEN ? AND ? AND pt.stav != 'zruseny' AND pt.trener_id = ? ORDER BY pt.datum, pt.cas_od, pt.nazev",
+                "count": 1,
+                "fetched_rows": 7,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "PRIMARY",
+                        "table": "pt",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "14",
+                        "Extra": "Using where; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "PRIMARY",
+                        "table": "sk",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "p11_read_ef5922421349abdf.pt.skupina_id",
+                        "rows": "1",
+                        "Extra": "Using where"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "PRIMARY",
+                        "table": "t",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "p11_read_ef5922421349abdf.pt.trener_id",
+                        "rows": "1",
+                        "Extra": "Using where"
+                    },
+                    {
+                        "id": 3,
+                        "select_type": "DEPENDENT SUBQUERY",
+                        "table": "ps3",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "p11_read_ef5922421349abdf.pt.podskupina_id",
+                        "rows": "1",
+                        "Extra": ""
+                    },
+                    {
+                        "id": 2,
+                        "select_type": "DEPENDENT SUBQUERY",
+                        "table": "ptp2",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "1",
+                        "Extra": "Using where"
+                    },
+                    {
+                        "id": 2,
+                        "select_type": "DEPENDENT SUBQUERY",
+                        "table": "ps2",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "p11_read_ef5922421349abdf.ptp2.podskupina_id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT plan_id,team_name_snapshot FROM training_roster_links WHERE plan_id IN (?,?,?,?,?,?,?) ORDER BY team_name_snapshot",
+                "count": 1,
+                "fetched_rows": 7,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "training_roster_links",
+                        "type": "ALL",
+                        "possible_keys": "uq_training_roster_plan_team",
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "14",
+                        "Extra": "Using where; Using filesort"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+                "count": 39,
+                "fetched_rows": 39
+            },
+            {
+                "sql": "SELECT datum FROM planovane_treninky WHERE id=?",
+                "count": 7,
+                "fetched_rows": 7,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "planovane_treninky",
+                        "type": "const",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT team_id FROM training_roster_links WHERE plan_id=? ORDER BY team_id",
+                "count": 7,
+                "fetched_rows": 7,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "training_roster_links",
+                        "type": "ref",
+                        "possible_keys": "uq_training_roster_plan_team",
+                        "key": "uq_training_roster_plan_team",
+                        "key_len": "5",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": "Using where; Using index"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+                "count": 17,
+                "fetched_rows": 17
+            },
+            {
+                "sql": "SELECT parent_team_id,child_team_id FROM club_team_edges WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)",
+                "count": 7,
+                "fetched_rows": 0,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "club_team_edges",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "1",
+                        "Extra": "Using where"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT DISTINCT sportovec_id FROM club_roster_members WHERE team_id IN (?) AND valid_from<=? AND (valid_to IS NULL OR valid_to>=?) AND status<>'cancelled' AND (status<>'removed' OR valid_to IS NOT NULL) ORDER BY sportovec_id",
+                "count": 7,
+                "fetched_rows": 140,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "club_roster_members",
+                        "type": "index",
+                        "possible_keys": "idx_club_roster_team_status,idx_club_roster_member_period",
+                        "key": "idx_club_roster_person_status",
+                        "key_len": "110",
+                        "ref": null,
+                        "rows": "20",
+                        "Extra": "Using where"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT MIN(team_name_snapshot) FROM training_roster_links WHERE plan_id=?",
+                "count": 7,
+                "fetched_rows": 7,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "training_roster_links",
+                        "type": "ref",
+                        "possible_keys": "uq_training_roster_plan_team",
+                        "key": "uq_training_roster_plan_team",
+                        "key_len": "5",
+                        "ref": "const",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT sp.id AS sportovec_id,sp.jmeno,sp.prijmeni,r.response,r.member_note,r.responded_at FROM sportovci sp LEFT JOIN training_rsvps r ON r.plan_id=? AND r.sportovec_id=sp.id WHERE sp.id IN (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ORDER BY CASE r.response WHEN 'going' THEN 0 WHEN 'not_going' THEN 2 ELSE 1 END,sp.prijmeni,sp.jmeno,sp.id",
+                "count": 7,
+                "fetched_rows": 140,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "sp",
+                        "type": "range",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": null,
+                        "rows": "20",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "r",
+                        "type": "eq_ref",
+                        "possible_keys": "uq_training_rsvp_person,idx_training_rsvp_plan_response,fk_training_rsvp_person",
+                        "key": "uq_training_rsvp_person",
+                        "key_len": "8",
+                        "ref": "const,p11_read_ef5922421349abdf.sp.id",
+                        "rows": "1",
+                        "Extra": ""
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT stav, COUNT(*) AS cnt FROM planovane_treninky pt WHERE pt.datum BETWEEN ? AND ? AND pt.trener_id = ? AND stav != 'zruseny' GROUP BY stav",
+                "count": 1,
+                "fetched_rows": 1,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "pt",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "14",
+                        "Extra": "Using where; Using temporary; Using filesort"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT COUNT(*) FROM planovane_treninky WHERE datum BETWEEN ? AND ? AND stav = 'planovany' AND trener_id = ?",
+                "count": 1,
+                "fetched_rows": 1,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "planovane_treninky",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "14",
+                        "Extra": "Using where"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT DISTINCT o.id, o.nazev, o.obsah_html, o.datum, t.jmeno AS trener_jmeno FROM oznameni o JOIN oznameni_targets ot ON ot.oznameni_id = o.id LEFT JOIN treneri t ON t.id = o.vlozil_trener_id WHERE ot.target_type = 'skupina' AND ot.target_id IN (?) ORDER BY o.datum DESC, o.id DESC LIMIT 5",
+                "count": 1,
+                "fetched_rows": 0,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "o",
+                        "type": "ALL",
+                        "possible_keys": "PRIMARY",
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "1",
+                        "Extra": "Using temporary; Using filesort"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "ot",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "1",
+                        "Extra": "Using where; Using join buffer (flat, BNL join)"
+                    },
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "t",
+                        "type": "eq_ref",
+                        "possible_keys": "PRIMARY",
+                        "key": "PRIMARY",
+                        "key_len": "4",
+                        "ref": "p11_read_ef5922421349abdf.o.vlozil_trener_id",
+                        "rows": "1",
+                        "Extra": "Using where"
+                    }
+                ]
+            },
+            {
+                "sql": "SHOW COLUMNS FROM club_teams",
+                "count": 2,
+                "fetched_rows": 28
+            },
+            {
+                "sql": "SELECT id,name,team_kind FROM club_teams WHERE status='active' ORDER BY name,id",
+                "count": 1,
+                "fetched_rows": 2,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "club_teams",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "2",
+                        "Extra": "Using where; Using filesort"
+                    }
+                ]
+            },
+            {
+                "sql": "SELECT pt.id,pt.datum FROM planovane_treninky pt WHERE pt.stav = 'planovany' AND pt.datum < ? AND pt.trener_id = ?",
+                "count": 1,
+                "fetched_rows": 4,
+                "explain": [
+                    {
+                        "id": 1,
+                        "select_type": "SIMPLE",
+                        "table": "pt",
+                        "type": "ALL",
+                        "possible_keys": null,
+                        "key": null,
+                        "key_len": null,
+                        "ref": null,
+                        "rows": "14",
+                        "Extra": "Using where"
+                    }
+                ]
+            }
+        ]
+    },
+    "timing": {
+        "route": "R05",
+        "role": "coach",
+        "mode": "all",
+        "measurement": "timing",
+        "warmups": 5,
+        "read_only_session": true,
+        "samples": [
+            {
+                "ms": 188.2368,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 180.1326,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 176.6197,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 137.7051,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 95.8507,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 100.7475,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 108.226,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 107.6539,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 98.3243,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 70.5547,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 102.5736,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 120.8394,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 366.5215,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 296.6657,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 348.202,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 398.3114,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 516.2797,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 356.1869,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 290.0758,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 488.2725,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 360.5462,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 274.3809,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 267.1926,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 363.4082,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 172.2515,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 187.2738,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 176.9263,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 184.4016,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 166.6361,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            },
+            {
+                "ms": 233.5019,
+                "peak_increment_bytes": 389960,
+                "process_peak_bytes": 4194304
+            }
+        ],
+        "result": {
+            "data": {
+                "plans": [
+                    50000,
+                    50002,
+                    50004,
+                    50006,
+                    50008,
+                    50010,
+                    50012
+                ],
+                "stats": {
+                    "planovany": 7,
+                    "evidovany": 0
+                },
+                "warnings": 4,
+                "oldest_pending": "2026-11-02",
+                "copy_count": 7,
+                "rsvp": {
+                    "50000": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50002": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50004": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50006": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50008": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50010": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    },
+                    "50012": {
+                        "expected": 20,
+                        "going": 0,
+                        "not_going": 0,
+                        "pending": 20
+                    }
+                }
+            },
+            "html_bytes": 77595,
+            "data_sha256": "af4d567f98c85ffc89e8afd2607e4bf9f01270fb2adbac08821753b27fed183c",
+            "html_sha256": "bab2fac65012cc4de3a673296a14814055cab51460c8047a58b9110139b964f7",
+            "result_sha256": "8c0d003862ba80bd9397bc9ee48abaf486651c78be13979f8f7d1e3caa126a60"
+        }
+    }
+}

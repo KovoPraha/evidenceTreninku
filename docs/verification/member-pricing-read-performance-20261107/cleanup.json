@@ -1,0 +1,11 @@
+{
+  "owned_port": 33447,
+  "owned_services_stopped": true,
+  "owned_datadirs_retained": [
+    "C:/Users/Marek/AppData/Local/Temp/kis-price-20261107-e9b8a4d2",
+    "C:/xampp/tmp/kis-price-20261107-native-off"
+  ],
+  "recursive_cleanup": "Automatic approval review rejected the cleanup command: blocked by policy. Not retried or bypassed; stopped synthetic datadirs retained.",
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "production_changes": false
+}

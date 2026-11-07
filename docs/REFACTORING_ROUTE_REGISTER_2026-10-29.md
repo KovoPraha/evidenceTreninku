@@ -22,6 +22,41 @@ určuje CURRENT_STATE; samotná tabulka není tvrzení o nasazení ani úplném 
 Následující inventura a doplňky jsou historický postup od výchozího K0.1;
 jejich „dosud nezměřeno“ popisuje tehdejší stav, ne současné otevřené úkoly.
 
+## Nové čtecí měření P11 — 6. 11. 2026
+
+[21 případů R05/R06/R13](verification/synthetic-performance-20261106/RESULTS.md)
+doplňuje skutečné GET datové části a šablony bez bootstrapu/nav. Pět zahřátí,
+30 časových vzorků na případ, oddělený SQL/EXPLAIN profil a autorizační negativa.
+Prioritami jsou objem načítání R13, opakované metadata/RSVP R05 a ověření osob R06.
+Lokální čísla nejsou HTTP SLA, uzavření celé K0.2 nebo nová implementace.
+[Průběžné priority a zbývající rozsah](WORK_PLAN_CURRENT.md) jsou zachované.
+
+Navazující [optimalizace R13](verification/medical-read-performance-20261106/RESULTS.md)
+implementuje stránku před metadaty, cílený výběr osob a postupný výpočet stavů.
+Parita, místní browser i párové měření před/po v CI 10.3/11.4 PASS; stav vede
+[předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md). Bez nasazení.
+
+Navazující [optimalizace R05](verification/planner-read-performance-20261106/RESULTS.md)
+čte RSVP v dávkách a historické upozornění bez soupiskového filtru agregací.
+Párová MariaDB 10.3/11.4: 112/203 → 28 SQL, stejná data i HTML,
+medián měřené části 3,32–6,07× rychlejší. Čerstvost a transakční zámky PASS.
+[Předání R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md),
+PR #353; bez nasazení. R06, plné HTTP a hierarchické filtry zůstávají otevřené.
+
+Následně 7. 11. dokončená [optimalizace R06](verification/attendance-read-performance-20261107/RESULTS.md):
+dávkové čtení ID mimo transakci, původní autorizační a transakční cesta zachovaná.
+Devět párů 10/50/200 osob × 1/12/52 revizí na MariaDB 10.3/11.4, celá data
+i HTML shodné; 200 osob 244 → 45 SQL, medián měřené části 2,30–2,48× rychlejší.
+[Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md),
+PR #354, bez nasazení. Plné HTTP, další role/propojené lekce a filtry zbývají.
+
+Následně 7. 11. [celé HTTP/browser R05/R06/R13](verification/full-http-performance-20261107/RESULTS.md)
+dokončené: skutečný bootstrap/nav, další role, filtry a propojené lekce,
+65 případů / 930 HTTP vzorků a 403 browser pozorování. DOM, role/revokace,
+HTML a checksums PASS. Jde o localhost PHP vývojový server / Chrome, nikoli
+Linux paired CI nebo produkční SLA. [Předání](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md)
+vede R06 velký výběr osob a kontroly lekcí, další objemy/mobil/souběh a ostatní R01–R16.
+
 ## Historický základ K0.1
 
 Zdroj: `3cc60fb6d7fad4bc6430724529295ef025d75178`, ověřeno 29. 10. 2026.

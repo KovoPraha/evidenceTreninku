@@ -1,5 +1,10 @@
 # 03 – Cílová architektura
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Původní program M1/M2 a tehdejší rozhodnutí. Dnešní pořadí určuje registr; zbylé produktové návrhy C01, členský model P06 a přejímka P09.
+> [Katalog všech plánů](../PLAN_CATALOG.md), položky C01/P06/P09 v [registru](../WORK_PLAN_CURRENT.md).
+
+
 ## Architektonický směr
 
 Pro první etapy doporučujeme **modulární monolit** v Evidence. Nasazuje se jako

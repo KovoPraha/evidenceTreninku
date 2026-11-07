@@ -1,0 +1,24 @@
+{
+  "target_day": "2026-11-07",
+  "capture_due_utc": "2026-11-07T05:30:00+00:00",
+  "collection_hours_utc": [
+    "05:35",
+    "06:35",
+    "12:35"
+  ],
+  "observer_installed": true,
+  "natural_waiting_tick_proven": true,
+  "workflow_state": "active",
+  "local_automation_status": "PAUSED",
+  "future_result_pull_request": {
+    "headRefName": "codex/membership-audit-result-20261107",
+    "isDraft": true,
+    "state": "OPEN",
+    "url": "https://github.com/KovoPraha/evidenceTreninku/pull/347"
+  },
+  "morning_result": "NOT RUN",
+  "deferred": [
+    "P05/P07 actual payment",
+    "P06 export"
+  ]
+}

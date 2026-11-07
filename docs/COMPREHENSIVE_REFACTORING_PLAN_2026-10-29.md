@@ -375,3 +375,56 @@ W10.2 je [nasazená a ověřená](verification/refactoring-w102-release-20261030
 2204 → 1207 SQL, metadata 1002 → 5, stejné výsledky a čerstvé write kontroly.
 Po přijetí a nasazení navazuje [W11](REFACTORING_W11_2026-10-30.md);
 úplné technické scénáře/obnova a browser přejímka zůstávají W12–W15.
+
+
+## Navazující syntetické měření P11 — 6. 11. 2026
+
+Na výslovné zadání vlastníka doplněno [21 čtecích případů R05/R06/R13](verification/synthetic-performance-20261106/RESULTS.md),
+bez produkčních změn a bez nové runtime optimalizace. Pět zahřátí / 30 časových
+vzorků, samostatné SQL/EXPLAIN, paměť a shodné výsledky; místní MariaDB 10.4.32,
+testovací workflow doplňuje 10.3/11.4. Nález R13 je především neomezené načítání
+před stránkováním a výběr všech osob; R05 opakuje metadata a RSVP po plánech,
+R06 ověřuje osoby jednotlivě. Návrhy optimalizace a přesné dosud neměřené hranice
+jsou v protokolu; nepředstírat dokončení celého K0.2 nebo produkční SLA.
+
+Na dalším výslovném zadání navazuje [implementace optimalizace R13](verification/medical-read-performance-20261106/RESULTS.md):
+omezené načítání stránky a osob, stream minimálních metadat pro kanonický
+stavový filtr. Parita, místní browser i párové CI 10.3/11.4 PASS; finální CI/merge ověřit u PR.
+[Session handoff](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md)
+vede další postup; produkce se touto relací nemění a ostatní P11 úkoly zůstávají otevřené.
+
+Následující výslovné zadání dokončilo [optimalizaci R05 plánovače](verification/planner-read-performance-20261106/RESULTS.md):
+dávkové RSVP a agregované historické upozornění bez filtru soupisky.
+Stejné syntetické případy 1/12/52 týdnů × trenér/vedoucí na MariaDB 10.3/11.4
+potvrdily celá data i HTML, 112/203 → 28 SQL a medián měřené části
+3,32–6,07× rychlejší. READ ONLY, čerstvost a transakční zámky zachované.
+[Předání R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md) vede
+stav PR #353 a zbývající R06, plné HTTP i hierarchické filtry. Bez nasazení.
+
+Na pokyn „ok, pokračuj“ 7. 11. dokončené [R06 dávkové ověření účastníků](verification/attendance-read-performance-20261107/RESULTS.md)
+mimo transakci; čerstvá role a přesné transakční kontroly zachované.
+Devět párů na MariaDB 10.3/11.4: celá data i HTML shodné, 200 osob
+244 → 45 SQL a medián měřené části 2,30–2,48× rychlejší. Všech 11 kontrol PASS,
+první neplatné přípravy měření oddělené v kalibračním protokolu.
+[Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md) vede
+PR #354, plné HTTP, další role/propojené lekce a hierarchické filtry. Bez nasazení.
+
+Na samostatné zadání 7. 11. dokončené [celé HTTP/browser R05/R06/R13](verification/full-http-performance-20261107/RESULTS.md):
+65 případů / 930 HTTP vzorků, 403 Chrome pozorování, skutečný login/bootstrap/nav,
+další pozice, filtry a propojené lekce. Celé HTML, 31 DOM kontrol, revokace
+a checksums PASS, 0 SQL zápisů v diagnostických GET. Aplikace beze změny.
+Nový nález R06: 10221 osob ve výběru / cca 1,37 MB HTML a více sekund do load
+v tomto Chrome zátěžovém fixture; široké hledání lekcí 203 SQL. [Předání](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md)
+vede prioritu omezeného hledaného výběru při zachování dostupnosti osob,
+další objemy/mobil/souběh a R01–R16. Celé K0.2 ani produkční SLA tím uzavřené nejsou.
+## Klubové ceny e-shopu — 7. 11. 2026
+
+[Plán a průběžný stav](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+[párové výsledky](verification/member-pricing-read-performance-20261107/RESULTS.md),
+[session handoff](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md).
+Dávkové ceny katalogu/detailu hotové: 500 produktů 2000 → 4 SQL, medián
+měřené cenové části 557/377 → 3,21/2,88 ms na MariaDB 10.3/11.4. Shodná data,
+kolace i původní transakční SQL; checkout zachovaný. 20/301 cíleně, měřená
+implementace 11 CI kontrol PASS. [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358)
+vede finální CI/začlenění. Bez nasazení. Katalogový výřez a celé HTTP zůstávají
+další samostatné zásahy; nepřevádět zrychlení cenové části na celou aplikaci.

@@ -55,7 +55,7 @@ final class TesterFeedbackWiringTest extends TestCase
         self::assertStringNotContainsString('no-roster-confirm-wrap', $form);
         $planner = (string)file_get_contents($root . '/planovac.php');
         self::assertStringContainsString('trainingRosterBridgePlanTeamIds', $planner);
-        self::assertStringContainsString('trainingRsvpPlanSummaries', $planner);
+        self::assertStringContainsString('trainingPlannerRsvpSummaries', $planner);
         self::assertStringContainsString('training_rsvps_admin.php', $planner);
         foreach (['booking/sportovni_prehled.php', 'booking/muj_sport.php'] as $path) {
             $source = (string)file_get_contents($root . '/' . $path);
@@ -123,7 +123,7 @@ final class TesterFeedbackWiringTest extends TestCase
     public function testQuickProgramCheckoutDoesNotPresentUnlimitedCapacityAsZero(): void
     {
         $page = (string)file_get_contents(dirname(__DIR__, 2).'/booking/rychla_prihlaska.php');
-        self::assertStringContainsString("if(\$offer['capacity']!==null)", $page);
+        self::assertStringContainsString("if(\$offer['capacity']!==null)", preg_replace('/\s+/', '', $page));
         self::assertStringContainsString('Kapacita není omezena.', $page);
         self::assertStringNotContainsString("Volná místa: <strong><?=(int)\$offer['available_count']?></strong><?php if(\$offer['capacity']!==null)", $page);
     }

@@ -1,5 +1,10 @@
 # 04 – Roadmapa a brány
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Původní program M1/M2 a tehdejší rozhodnutí. Dnešní pořadí určuje registr; zbylé produktové návrhy C01, členský model P06 a přejímka P09.
+> [Katalog všech plánů](../PLAN_CATALOG.md), položky C01/P06/P09 v [registru](../WORK_PLAN_CURRENT.md).
+
+
 > **Aktualizace 3. 8. 2026:** Pro nejbližší produktovou práci má přednost
 > [08 – Milník M1](08-milnik-m1-integrovany-prototyp.md). Tento dokument zůstává
 > dlouhodobou rizikovou roadmapou; dřívější předpoklad dlouhého KIS shadow

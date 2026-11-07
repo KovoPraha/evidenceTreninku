@@ -1,45 +1,88 @@
-# Průběžná souborová dokumentace práce
+# Povinná souborová dokumentace práce
 
-Trvalé zadání vlastníka ze 6. 11. 2026: změny zapisovat vždy přímo do souborů; vše,
-na čem se pracuje a co se plánuje, musí být dohledatelné v repozitáři s odkazy
-na související dokumenty. Platí pro kód, provozní změny, přejímku i budoucí etapy.
-Pokyn je dostupný také v kořenovém [AGENTS.md](../AGENTS.md) a [CLAUDE.md](../CLAUDE.md).
+Trvalé zadání vlastníka z 6.–7. 11. 2026 platí pro všechny vývojáře a vlákna:
+veškeré implementační plány, koncepty, záměry, zamýšlené postupy, změny,
+rozhodnutí a výsledky se průběžně zapisují do verzovaných souborů repozitáře.
+GitHub musí obsahovat kontext potřebný k pokračování i bez původního chatu.
+Chat ani interní paměť nejsou zdrojem projektového stavu. Při převzetí je nutné
+odpovídající soubory znovu načíst, nikoli jen odkázat na vzpomínku na jejich obsah.
+[AGENTS](../AGENTS.md) a [CLAUDE](../CLAUDE.md) odkazují na tento postup.
 
-## Kam zapisovat
+## Kam patří informace
 
 | Obsah | Kanonické místo |
 | --- | --- |
-| Současné nasazení, aktivace, ověřený provozní stav a jeho meze | [CURRENT_STATE.md](CURRENT_STATE.md), stručně s odkazy na důkazy |
-| Převzetí další session a rozcestník k aktuálním plánům | [HANDOFF_CURRENT.md](HANDOFF_CURRENT.md) |
-| Společná rozpracovanost a další práce celého projektu | Jediný [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md), položky P01–P14; [WORK_REGISTER.md](WORK_REGISTER.md) zůstává kompatibilním rozcestníkem; podrobnosti v tematických plánech |
-| Rozsah konkrétní práce, etapy, rozpracované i budoucí úkoly | Příslušný plán v `docs/`; při nové větší práci vytvořit datovaný plán |
-| Konkrétní předání dokončené nebo přerušené session | Datovaný handoff v `docs/`, propojený s hlavním handoffem a plánem |
-| Výsledky, PASS/FAIL/NOT RUN, snímky a bezpečné strojové souhrny | Tematický protokol v `docs/verification/` |
-| Orientace mezi oblastmi | [README dokumentace](README.md) a odkazy mezi příslušnými plány |
-| Původní stav a starší rozhodnutí | Datované protokoly a [provozní archiv](CHANGELOG-PROVOZ.md); historii nepřepisovat na nový výsledek |
+| Současné nasazení, flags, důkazy a rozcestník aktivních plánů | [CURRENT_STATE](CURRENT_STATE.md), nejvýše 80 řádků |
+| Stručné převzetí, poslední vývoj, blokátory, další kroky a odkazy na plány | [HANDOFF_CURRENT](HANDOFF_CURRENT.md), nejvýše 80 řádků; toto je aktuální session handoff |
+| Veškerá otevřená, plánovaná a odložená práce včetně konceptů | Jediný [WORK_PLAN_CURRENT](WORK_PLAN_CURRENT.md); [WORK_REGISTER](WORK_REGISTER.md) jen odkazuje sem |
+| Cíl, varianty, zamýšlený postup, rozsah, akceptace a etapy konkrétní změny | Existující tematický soubor v `docs/` nebo nový datovaný plán; nesepisovat druhý konkurenční plán |
+| Výsledky, prostředí, PASS/FAIL/NOT RUN a bezpečné důkazy | Tematický soubor nebo `docs/verification/<téma>/RESULTS.md` |
+| Co a kdy vzniklo, změnilo stav, bylo předáno či dokončeno | [EVENT_LOG](EVENT_LOG.md), průběžný deník s odkazy na plán, rozhodnutí, důkazy a PR |
+| Proč byla zvolena varianta, kdo rozhodl, co ji nahradilo; dohledání uzavřených plánů | [DECISION_LOG](DECISION_LOG.md), společný rozhodovací rozcestník |
+| Historické podrobnosti | Datované tematické soubory, archivy a [CHANGELOG-PROVOZ](CHANGELOG-PROVOZ.md); bez přepisování starých výsledků na dnešní |
+| Starší vstupní cesta session handoffu | [SESSION_HANDOFF](plan-eshop-tymova-evidence/SESSION_HANDOFF.md), pouze rozcestník do 25 řádků |
 
-## Pracovní postup
+Úplnou evidenci souborů doplňuje [katalog plánů](PLAN_CATALOG.md) a
+[textový index](PLAN_DOCUMENT_INDEX.md). Při přidání plánu aktualizuj jeho
+záznam v `docs/verification/plan-catalog-audit-20261107/catalog.json` a odkaz
+v katalogu; původní ID podle cesty zachovej. Podpůrný protokol není automaticky
+další schválenou roadmapou. Dokončené řezy vyžadují konkrétní důkaz svého rozsahu.
 
-1. Při převzetí načíst aktuální main, stav pracovní kopie, hlavní handoff, společný průběžný plán a příslušný tematický plán.
-   Nový požadavek nebo změnu rozsahu zaznamenat do souboru už při zahájení práce.
-2. Průběžně označovat dokončené, rozpracované, plánované a neověřené kroky.
-   U úkolu uvést výsledek, podmínku dokončení, závislosti či chybějící podklady a odkaz
-   na příslušnou implementaci, postup nebo důkaz. Pozdější etapy mají zůstat v plánu i po dokončení první části.
-3. Po skutečném ověření zapsat prostředí, rozsah a jeho meze. Implementace, úspěšný test,
-   nasazení, aktivace a lidská přejímka jsou samostatné skutečnosti. Neprovedený krok uvést jako NOT RUN.
-4. Před předáním, ukončením nebo kompaktací session obnovit souborový handoff:
-   zadání a oprávnění, větev/pracovní kopii, hotové výsledky, ověření, otevřené kroky,
-   další konkrétní postup a související odkazy. Chat slouží jako stručný doprovod.
-5. Ověřit místní odkazy a dokumentační kontrakt, zahrnout dokumentaci do vlastní změny v Gitu
-   a uvést související PR. Zachovat souběžné změny ostatních prací. Zápis dokumentace nevyžaduje nové potvrzení.
+## Životní cyklus každé práce
 
-U drobné práce stačí rozšířit existující tematický plán/protokol a handoff;
-nevytvářet souběžné zdroje pravdy. Citlivé provozní podklady zůstávají v řízeném soukromém
-úložišti, v repozitáři je pouze bezpečný souhrn a postup jejich použití.
+1. **Načtení a zahájení:** ověř Git a WIP, načti CURRENT, handoff, registr,
+   tematický plán a související rozhodnutí. Nový požadavek/koncept nebo změnu
+   rozsahu zapiš do odpovídajícího souboru ještě před implementací.
+2. **Registrace:** přidej či aktualizuj položku registru. Uveď ID, vlastníka,
+   větev/worktree, stav, další krok a závislosti. Odpovídající soubor musí být
+   dohledatelný z CURRENT i handoffu, přímo nebo přes jasně označenou položku
+   společného registru. Oba krátké přehledy aktualizuj ve stejné změně.
+3. **Průběžný zápis:** po změně postupu, rozsahu, výsledku či blokátoru obnov
+   tematický plán, registr a oba přehledy; do deníku přidej významnou událost.
+   Podstatnou volbu zapiš do rozhodovacího logu: varianty, důvod, rozhodující
+   osoba/pokyn, datum, dopad, odkazy. Nejasný záměr neoznačuj jako schválený.
+4. **Ověření:** ulož příkazy/metodu, prostředí, výsledek a omezení. Implementace,
+   CI, merge, deploy, aktivace a lidské převzetí jsou samostatné skutečnosti.
+   Neprovedený krok je NOT RUN. Aktuální skutečnosti ověřuj v jejich zdroji;
+   historická autorizace není nové povolení produkční operace.
+5. **Předání/kompaktace:** ještě před koncem práce ulož hotové i otevřené kroky,
+   blokátory a další konkrétní akci do souborů. CURRENT a handoff pouze shrnují
+   a odkazují; nesmějí růst o denní historii. Chat je stručný doprovod.
+6. **Sdílení:** kontrola dokumentace → commit příslušných souborů spolu se změnou
+   → push vlastní větve → PR → kontroly → merge podle oprávnění. Zapiš skutečný
+   stav předání; lokální soubor nebo otevřený PR ještě není společný main.
+   Před integrací načti změny souběžných PR a zachovej jejich věcný obsah.
+7. **Uzavření:** do plánu zapiš výsledek a zbývající etapy; do deníku uzavření
+   a trvalé odkazy. V rozhodovacím logu přidej významné rozhodnutí nebo odkaz
+   do rejstříku uzavřených prací. Teprve potom zkrať aktivní přehledy.
+   Dokončený plán nemaž; musí být dostupný z logu i po ukončení vlákna.
 
-## Aktuální příklad: BAR
+Stavy: KONCEPT → PLÁNOVÁNO → ROZPRACOVÁNO → K OVĚŘENÍ → HOTOVO;
+ODLOŽENO a BLOKOVÁNO vyžadují podmínku pokračování. ZAMÍTNUTO/NAHRAZENO
+vyžadují důvod a odkaz na rozhodnutí/nástupce. „HOTOVO“ vždy upřesňuje rozsah
+(např. implementace hotová, produkční přejímka otevřená). U drobné opravy stačí
+doplnit existující tematický soubor; povinné odkazy a evidence stále platí.
 
-[Plán začlenění](BAR_INTEGRATION_PLAN_2026-11-05.md) →
-[provozní přejímka](BAR_OPERATIONAL_ACCEPTANCE_2026-11-06.md) →
-[publikace nabídky](BAR_MENU_PUBLICATION_2026-11-06.md) →
-[session handoff a otevřené etapy](SESSION_HANDOFF_BAR_2026-11-06.md).
+## Minimální obsah tematického plánu
+
+- ID/téma, datum, stav, vlastník a související položka registru.
+- Cíl a rozsah, oprávnění, varianty/důvody a vazba na rozhodnutí.
+- Zamýšlený postup, etapy, závislosti a ověřitelné podmínky dokončení.
+- Větev, base/worktree, průběžné výsledky a odkazy na důkazy/PR.
+- Otevřené kroky, blokátory a další konkrétní akce.
+
+## Stručnost, historie a kontrola
+
+CURRENT a hlavní handoff mají každý nejvýše 80 řádků. Nevkládej dlouhé odstavce
+do jediné řádky jen kvůli limitu. Seznam celé práce patří do registru; podrobná
+předání do tematických souborů. Deník se po zvětšení rozdělí na datované části
+s trvalým rozcestníkem; původní odkazy a rozhodovací ID musí zůstat dohledatelné.
+Přesun historie musí zachovat obsah, odkazy a důkaz zachování. Staré programové
+boardy nejsou druhou aktuální frontou. Konkrétní automatizované bloky
+`membership-morning-*` v aktuálních souborech zachovej pro serverový publikátor.
+
+Povinně spusť `php tools/check-current-docs.php` a `git diff --check`.
+Kontrola hlídá délky přehledů, základní propojení, místní odkazy a integritu
+archivů. Věcnou úplnost a skutečnost tvrzení musí zkontrolovat autor/reviewer.
+Citlivé podklady zůstávají v soukromém řízeném úložišti; v Gitu jen bezpečný
+souhrn/reference. Hesla, tokeny, session, dumpy a osobní přílohy se necommitují.

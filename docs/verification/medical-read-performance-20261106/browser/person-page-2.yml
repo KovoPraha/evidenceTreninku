@@ -1,0 +1,369 @@
+- generic [active] [ref=f6e1]:
+  - navigation [ref=f6e2]:
+    - generic [ref=f6e3]:
+      - link "KOVO Praha – pracovní rozcestník" [ref=f6e4] [cursor=pointer]:
+        - /url: /pracovni_pozice.php
+      - button "Pracovní upozornění" [ref=f6e7] [cursor=pointer]:
+        - generic [aria-hidden] [ref=f6e8]: 
+        - generic [ref=f6e9]: nepřečtených upozornění
+      - generic [ref=f6e10]:
+        - text:       
+        - list [ref=f6e11]:
+          - listitem [ref=f6e12]:
+            - text: 
+            - button "" [ref=f6e13] [cursor=pointer]
+            - button "" [ref=f6e15] [cursor=pointer]
+            - link "" [ref=f6e17] [cursor=pointer]:
+              - /url: /booking/eshop.php
+          - listitem [ref=f6e19]:
+            - button " Členové a KIS" [ref=f6e20] [cursor=pointer]:
+              - generic [ref=f6e21]: 
+              - text: Členové a KIS
+            - text:   
+          - listitem [ref=f6e22]:
+            - generic [ref=f6e23]:
+              - generic [ref=f6e24]: 
+              - text: Smoke Admin
+          - listitem [ref=f6e25]:
+            - button " Odhlásit" [ref=f6e27] [cursor=pointer]:
+              - generic [ref=f6e28]: 
+              - text: Odhlásit
+  - complementary "Pracovní nabídka" [ref=f6e29]:
+    - generic [ref=f6e30]:
+      - link "Pracovní rozcestník" [ref=f6e31] [cursor=pointer]:
+        - /url: /pracovni_pozice.php
+        - generic [aria-hidden] [ref=f6e32]: 
+        - text: Pracovní rozcestník
+      - generic [ref=f6e33]:
+        - heading "Členové" [level=2] [ref=f6e34]
+        - link "Sportovci" [ref=f6e35] [cursor=pointer]:
+          - /url: /sprava_sportovcu.php
+          - generic [aria-hidden] [ref=f6e36]: 
+        - link "Účty a osoby" [ref=f6e38] [cursor=pointer]:
+          - /url: /eshop_identity_admin.php
+          - generic [aria-hidden] [ref=f6e39]: 
+        - link "Registrační texty a souhlasy" [ref=f6e41] [cursor=pointer]:
+          - /url: /registration_texts_admin.php
+          - generic [aria-hidden] [ref=f6e42]: 
+        - group [ref=f6e44]:
+          - generic "Další nástroje" [ref=f6e45] [cursor=pointer]
+          - link "Vyřízení osoby" [ref=f6e46] [cursor=pointer]:
+            - /url: /person_lifecycle_admin.php
+            - generic [aria-hidden] [ref=f6e47]: 
+          - link "Skupiny" [ref=f6e49] [cursor=pointer]:
+            - /url: /sprava_skupin.php
+            - generic [aria-hidden] [ref=f6e50]: 
+          - link "Podskupiny" [ref=f6e52] [cursor=pointer]:
+            - /url: /sprava_podskupin.php
+            - generic [aria-hidden] [ref=f6e53]: 
+          - link "Ověření identity" [ref=f6e55] [cursor=pointer]:
+            - /url: /identity_reviews_admin.php
+            - generic [aria-hidden] [ref=f6e56]: 
+          - link "Papírové přihlášky a souhlasy" [ref=f6e58] [cursor=pointer]:
+            - /url: /paper_registrations_admin.php
+            - generic [aria-hidden] [ref=f6e59]: 
+          - link "Zdravotní prohlídky" [ref=f6e61] [cursor=pointer]:
+            - /url: /medical_clearance_admin.php
+            - generic [aria-hidden] [ref=f6e62]: 
+          - link "Osobní přijetí do programu" [ref=f6e64] [cursor=pointer]:
+            - /url: /club_program_admissions_admin.php
+            - generic [aria-hidden] [ref=f6e65]: 
+          - link "Úrovně zapojení" [ref=f6e67] [cursor=pointer]:
+            - /url: /member_engagement_admin.php
+            - generic [aria-hidden] [ref=f6e68]: 
+      - generic [ref=f6e70]:
+        - heading "KIS a soupisky" [level=2] [ref=f6e71]
+        - link "Skupiny a soupisky" [ref=f6e72] [cursor=pointer]:
+          - /url: /kis_roster_hierarchy_admin.php
+          - generic [aria-hidden] [ref=f6e73]: 
+        - group [ref=f6e75]:
+          - generic "Další nástroje" [ref=f6e76] [cursor=pointer]
+          - text:      
+      - generic [ref=f6e77]:
+        - heading "Kontrola" [level=2] [ref=f6e78]
+        - group [ref=f6e79]:
+          - generic "Další nástroje" [ref=f6e80] [cursor=pointer]
+          - text:  
+      - generic [ref=f6e81]:
+        - heading "K dořešení" [level=2] [ref=f6e82]
+        - group [ref=f6e83]:
+          - generic "Další nástroje" [ref=f6e84] [cursor=pointer]
+          - text: 
+      - generic [ref=f6e85]: KOVO Praha · KIS
+  - text:   
+  - main [ref=f6e86]:
+    - heading "Zdravotní prohlídky" [level=1] [ref=f6e87]
+    - paragraph [ref=f6e88]: Evidujte platnost uvedenou v podkladu. Zátěžový test je samostatná sportovní agenda. Nahraný dokument čeká na výslovné ověření.
+    - paragraph [ref=f6e89]:
+      - link "Případy a odpovědnosti — přiřadit vlastníka a další krok" [ref=f6e90] [cursor=pointer]:
+        - /url: provozni_prehled_admin.php
+      - text: ·
+      - link "Všechny podklady" [ref=f6e91] [cursor=pointer]:
+        - /url: medical_clearance_admin.php
+    - paragraph [ref=f6e92]:
+      - link "Podklady skupiny k datu aktivity" [ref=f6e93] [cursor=pointer]:
+        - /url: medical_activity_admin.php
+    - heading "Sledované podklady" [level=2] [ref=f6e94]
+    - paragraph [ref=f6e95]: Stav se vyhodnocuje k dnešnímu dni. Období filtruje termín další kontroly.
+    - form "Filtry přehledu" [ref=f6e96]:
+      - generic [ref=f6e97]:
+        - text: Hledat jméno, označení nebo číslo
+        - textbox "Hledat jméno, označení nebo číslo" [ref=f6e98]
+      - generic [ref=f6e99]:
+        - text: Stav
+        - combobox "Stav" [ref=f6e100]:
+          - option "Všechny stavy" [selected]
+          - option "Nedoloženo"
+          - option "Čeká na ověření"
+          - option "Platné"
+          - option "Platnost skončila"
+          - option "Dosud neplatné"
+          - option "Odvoláno"
+      - generic [ref=f6e101]:
+        - text: Kontrola od
+        - textbox "Kontrola od" [ref=f6e102]
+      - generic [ref=f6e103]:
+        - text: Do
+        - textbox "Do" [ref=f6e104]
+      - button "Vyhledat" [ref=f6e106] [cursor=pointer]
+    - status [ref=f6e107]: "Nalezeno: 100 · strana 1 z 4"
+    - link "Další" [ref=f6e108] [cursor=pointer]:
+      - /url: "?medical_q=&medical_state=&medical_from=&medical_to=&medical_page=2"
+    - table [ref=f6e109]:
+      - rowgroup [ref=f6e110]:
+        - row [ref=f6e111]:
+          - columnheader "Osoba" [ref=f6e112]
+          - columnheader "Účel" [ref=f6e113]
+          - columnheader "Stav dnes" [ref=f6e114]
+          - columnheader "Kontrola od" [ref=f6e115]
+      - rowgroup [ref=f6e116]:
+        - row [ref=f6e117]:
+          - cell [ref=f6e118]:
+            - link "Synthetic Synthetic medical" [ref=f6e119] [cursor=pointer]:
+              - /url: "?id=1"
+          - cell "synthetic-purpose" [ref=f6e120]
+          - cell "Platné" [ref=f6e121]
+          - cell "2026-11-06" [ref=f6e122]
+        - row [ref=f6e123]:
+          - cell [ref=f6e124]:
+            - link "Synthetic Synthetic medical" [ref=f6e125] [cursor=pointer]:
+              - /url: "?id=2"
+          - cell "synthetic-purpose" [ref=f6e126]
+          - cell "Platné" [ref=f6e127]
+          - cell "2026-11-06" [ref=f6e128]
+        - row [ref=f6e129]:
+          - cell [ref=f6e130]:
+            - link "Synthetic Synthetic medical" [ref=f6e131] [cursor=pointer]:
+              - /url: "?id=3"
+          - cell "synthetic-purpose" [ref=f6e132]
+          - cell "Platné" [ref=f6e133]
+          - cell "2026-11-06" [ref=f6e134]
+        - row [ref=f6e135]:
+          - cell [ref=f6e136]:
+            - link "Synthetic Synthetic medical" [ref=f6e137] [cursor=pointer]:
+              - /url: "?id=4"
+          - cell "synthetic-purpose" [ref=f6e138]
+          - cell "Platné" [ref=f6e139]
+          - cell "2026-11-06" [ref=f6e140]
+        - row [ref=f6e141]:
+          - cell [ref=f6e142]:
+            - link "Synthetic Synthetic medical" [ref=f6e143] [cursor=pointer]:
+              - /url: "?id=5"
+          - cell "synthetic-purpose" [ref=f6e144]
+          - cell "Platné" [ref=f6e145]
+          - cell "2026-11-06" [ref=f6e146]
+        - row [ref=f6e147]:
+          - cell [ref=f6e148]:
+            - link "Synthetic Synthetic medical" [ref=f6e149] [cursor=pointer]:
+              - /url: "?id=6"
+          - cell "synthetic-purpose" [ref=f6e150]
+          - cell "Platné" [ref=f6e151]
+          - cell "2026-11-06" [ref=f6e152]
+        - row [ref=f6e153]:
+          - cell [ref=f6e154]:
+            - link "Synthetic Synthetic medical" [ref=f6e155] [cursor=pointer]:
+              - /url: "?id=7"
+          - cell "synthetic-purpose" [ref=f6e156]
+          - cell "Platné" [ref=f6e157]
+          - cell "2026-11-06" [ref=f6e158]
+        - row [ref=f6e159]:
+          - cell [ref=f6e160]:
+            - link "Synthetic Synthetic medical" [ref=f6e161] [cursor=pointer]:
+              - /url: "?id=8"
+          - cell "synthetic-purpose" [ref=f6e162]
+          - cell "Platné" [ref=f6e163]
+          - cell "2026-11-06" [ref=f6e164]
+        - row [ref=f6e165]:
+          - cell [ref=f6e166]:
+            - link "Synthetic Synthetic medical" [ref=f6e167] [cursor=pointer]:
+              - /url: "?id=9"
+          - cell "synthetic-purpose" [ref=f6e168]
+          - cell "Platné" [ref=f6e169]
+          - cell "2026-11-06" [ref=f6e170]
+        - row [ref=f6e171]:
+          - cell [ref=f6e172]:
+            - link "Synthetic Synthetic medical" [ref=f6e173] [cursor=pointer]:
+              - /url: "?id=10"
+          - cell "synthetic-purpose" [ref=f6e174]
+          - cell "Platné" [ref=f6e175]
+          - cell "2026-11-06" [ref=f6e176]
+        - row [ref=f6e177]:
+          - cell [ref=f6e178]:
+            - link "Synthetic Synthetic medical" [ref=f6e179] [cursor=pointer]:
+              - /url: "?id=11"
+          - cell "synthetic-purpose" [ref=f6e180]
+          - cell "Platné" [ref=f6e181]
+          - cell "2026-11-06" [ref=f6e182]
+        - row [ref=f6e183]:
+          - cell [ref=f6e184]:
+            - link "Synthetic Synthetic medical" [ref=f6e185] [cursor=pointer]:
+              - /url: "?id=12"
+          - cell "synthetic-purpose" [ref=f6e186]
+          - cell "Platné" [ref=f6e187]
+          - cell "2026-11-06" [ref=f6e188]
+        - row [ref=f6e189]:
+          - cell [ref=f6e190]:
+            - link "Synthetic Synthetic medical" [ref=f6e191] [cursor=pointer]:
+              - /url: "?id=13"
+          - cell "synthetic-purpose" [ref=f6e192]
+          - cell "Platné" [ref=f6e193]
+          - cell "2026-11-06" [ref=f6e194]
+        - row [ref=f6e195]:
+          - cell [ref=f6e196]:
+            - link "Synthetic Synthetic medical" [ref=f6e197] [cursor=pointer]:
+              - /url: "?id=14"
+          - cell "synthetic-purpose" [ref=f6e198]
+          - cell "Platné" [ref=f6e199]
+          - cell "2026-11-06" [ref=f6e200]
+        - row [ref=f6e201]:
+          - cell [ref=f6e202]:
+            - link "Synthetic Synthetic medical" [ref=f6e203] [cursor=pointer]:
+              - /url: "?id=15"
+          - cell "synthetic-purpose" [ref=f6e204]
+          - cell "Platné" [ref=f6e205]
+          - cell "2026-11-06" [ref=f6e206]
+        - row [ref=f6e207]:
+          - cell [ref=f6e208]:
+            - link "Synthetic Synthetic medical" [ref=f6e209] [cursor=pointer]:
+              - /url: "?id=16"
+          - cell "synthetic-purpose" [ref=f6e210]
+          - cell "Platné" [ref=f6e211]
+          - cell "2026-11-06" [ref=f6e212]
+        - row [ref=f6e213]:
+          - cell [ref=f6e214]:
+            - link "Synthetic Synthetic medical" [ref=f6e215] [cursor=pointer]:
+              - /url: "?id=17"
+          - cell "synthetic-purpose" [ref=f6e216]
+          - cell "Platné" [ref=f6e217]
+          - cell "2026-11-06" [ref=f6e218]
+        - row [ref=f6e219]:
+          - cell [ref=f6e220]:
+            - link "Synthetic Synthetic medical" [ref=f6e221] [cursor=pointer]:
+              - /url: "?id=18"
+          - cell "synthetic-purpose" [ref=f6e222]
+          - cell "Platné" [ref=f6e223]
+          - cell "2026-11-06" [ref=f6e224]
+        - row [ref=f6e225]:
+          - cell [ref=f6e226]:
+            - link "Synthetic Synthetic medical" [ref=f6e227] [cursor=pointer]:
+              - /url: "?id=19"
+          - cell "synthetic-purpose" [ref=f6e228]
+          - cell "Platné" [ref=f6e229]
+          - cell "2026-11-06" [ref=f6e230]
+        - row [ref=f6e231]:
+          - cell [ref=f6e232]:
+            - link "Synthetic Synthetic medical" [ref=f6e233] [cursor=pointer]:
+              - /url: "?id=20"
+          - cell "synthetic-purpose" [ref=f6e234]
+          - cell "Platné" [ref=f6e235]
+          - cell "2026-11-06" [ref=f6e236]
+        - row [ref=f6e237]:
+          - cell [ref=f6e238]:
+            - link "Synthetic Synthetic medical" [ref=f6e239] [cursor=pointer]:
+              - /url: "?id=21"
+          - cell "synthetic-purpose" [ref=f6e240]
+          - cell "Platné" [ref=f6e241]
+          - cell "2026-11-06" [ref=f6e242]
+        - row [ref=f6e243]:
+          - cell [ref=f6e244]:
+            - link "Synthetic Synthetic medical" [ref=f6e245] [cursor=pointer]:
+              - /url: "?id=22"
+          - cell "synthetic-purpose" [ref=f6e246]
+          - cell "Platné" [ref=f6e247]
+          - cell "2026-11-06" [ref=f6e248]
+        - row [ref=f6e249]:
+          - cell [ref=f6e250]:
+            - link "Synthetic Synthetic medical" [ref=f6e251] [cursor=pointer]:
+              - /url: "?id=23"
+          - cell "synthetic-purpose" [ref=f6e252]
+          - cell "Platné" [ref=f6e253]
+          - cell "2026-11-06" [ref=f6e254]
+        - row [ref=f6e255]:
+          - cell [ref=f6e256]:
+            - link "Synthetic Synthetic medical" [ref=f6e257] [cursor=pointer]:
+              - /url: "?id=24"
+          - cell "synthetic-purpose" [ref=f6e258]
+          - cell "Platné" [ref=f6e259]
+          - cell "2026-11-06" [ref=f6e260]
+        - row [ref=f6e261]:
+          - cell [ref=f6e262]:
+            - link "Synthetic Synthetic medical" [ref=f6e263] [cursor=pointer]:
+              - /url: "?id=25"
+          - cell "synthetic-purpose" [ref=f6e264]
+          - cell "Platné" [ref=f6e265]
+          - cell "2026-11-06" [ref=f6e266]
+    - group [ref=f6e267]:
+      - generic "Začít sledovat podklad osoby" [ref=f6e268] [cursor=pointer]
+      - form "Vyhledání osoby pro zdravotní podklad" [ref=f6e269]:
+        - generic [ref=f6e270]:
+          - text: Hledat osobu jménem nebo číslem
+          - textbox "Hledat osobu jménem nebo číslem" [ref=f6e271]: Synthetic
+        - button "Vyhledat osobu" [ref=f6e272] [cursor=pointer]
+      - status [ref=f6e273]: "Nalezeno osob: 320 · strana 2 z 13"
+      - link "Předchozí osoby" [ref=f6e274] [cursor=pointer]:
+        - /url: "?medical_q=&medical_state=&medical_from=&medical_to=&medical_page=1&medical_selected_person=10100&medical_person_q=Synthetic&medical_person_page=1"
+      - link "Další osoby" [ref=f6e275] [cursor=pointer]:
+        - /url: "?medical_q=&medical_state=&medical_from=&medical_to=&medical_page=1&medical_selected_person=10100&medical_person_q=Synthetic&medical_person_page=3"
+      - paragraph [ref=f6e276]: Osobu vyhledejte nebo přejděte na další stránku. Dříve vybraná osoba zůstává v nabídce i mimo výsledky hledání.
+      - generic [ref=f6e277]:
+        - generic [ref=f6e278]:
+          - text: Osoba
+          - combobox "Osoba" [ref=f6e279]:
+            - option "Vyberte osobu"
+            - 'option "Synthetic Synthetic medical #10100" [selected]'
+            - 'option "Synthetic Synthetic medical #10006"'
+            - 'option "Synthetic Synthetic medical #10007"'
+            - 'option "Synthetic Synthetic medical #10008"'
+            - 'option "Synthetic Synthetic medical #10009"'
+            - 'option "Synthetic Synthetic medical #10010"'
+            - 'option "Synthetic Synthetic medical #10011"'
+            - 'option "Synthetic Synthetic medical #10012"'
+            - 'option "Synthetic Synthetic medical #10013"'
+            - 'option "Synthetic Synthetic medical #10014"'
+            - 'option "Synthetic Synthetic medical #10015"'
+            - 'option "Synthetic Synthetic medical #10016"'
+            - 'option "Synthetic Synthetic medical #10017"'
+            - 'option "Synthetic Synthetic medical #10018"'
+            - 'option "Synthetic Synthetic medical #10019"'
+            - 'option "Synthetic Synthetic medical #10020"'
+            - 'option "Synthetic Synthetic medical #10021"'
+            - 'option "Synthetic Synthetic medical #10022"'
+            - 'option "Synthetic Synthetic medical #10023"'
+            - 'option "Synthetic Synthetic medical #10024"'
+            - 'option "Synthetic Synthetic medical #10025"'
+            - 'option "Synthetic Synthetic medical #10026"'
+            - 'option "Synthetic Synthetic medical #10027"'
+            - 'option "Synthetic Synthetic medical #10028"'
+            - 'option "Synthetic Synthetic medical #10029"'
+            - 'option "Synthetic Synthetic medical #10030"'
+        - generic [ref=f6e280]:
+          - text: Potvrzená pravidla
+          - combobox "Potvrzená pravidla" [ref=f6e281]:
+            - option "Vyberte účel" [selected]
+            - 'option "synthetic-purpose #1"'
+        - generic [ref=f6e282]:
+          - text: Důvod
+          - textbox "Důvod" [ref=f6e283]
+        - button "Založit sledování" [ref=f6e284] [cursor=pointer]
+    - group [ref=f6e285]:
+      - generic "Potvrdit pravidla nového účelu" [ref=f6e286] [cursor=pointer]

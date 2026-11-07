@@ -1,6 +1,6 @@
 # Evidence + e-shop + KIS — vývojový kontext
 
-Aktualizováno 25. 10. 2026. Před změnou přečti [aktuální stav](docs/CURRENT_STATE.md)
+Aktualizováno 7. 11. 2026 (pravidla dokumentace). Před změnou přečti [aktuální stav](docs/CURRENT_STATE.md)
 a [postup převzetí stanice](docs/HANDOFF_CURRENT.md), potom proveď
 `git fetch --prune origin` a ověř Git, CI a dotčený kód.
 Stav release patří pouze do CURRENT_STATE; historie do [provozního archivu](docs/CHANGELOG-PROVOZ.md).
@@ -19,7 +19,8 @@ Závislosti určuje composer.lock. Webové requesty nesmějí provádět migrace
 
 - Veřejná homepage, katalog, kurzy, klubové akce, kalendáře a velodrom.
 - Rodinné účty, ověřované vazby na osoby, omezený sportovní účet a revokace session.
-- Osm pracovních pozic, oddělené agendy, explicitní delegace a svěření trenérů.
+- Pracovní pozice podle kanonického registru `includes/staff_workspaces.php`,
+  oddělené agendy, explicitní delegace a svěření trenérů.
 - Registrářské zpracování osob, verzované registrační texty/souhlasy, papírové
   podklady, soukromé soubory a historie. Hierarchie soupisek a časově platné členství.
 - Programy, přijetí, tréninky, omluvy, náhrady a uzavření skutečné účasti;
@@ -122,6 +123,16 @@ anonymní guard/actor funkci. Příklady skutečných finančních akcí jsou
 v eshop_payments_admin.php: pozice finance_manager, důvod a výslovné potvrzení.
 
 ## Pracovní pravidla
+
+Závazný postup pro všechny vývojáře je v [AGENTS](AGENTS.md) a
+[pravidlech souborové dokumentace](docs/WORK_DOCUMENTATION_POLICY.md).
+Načti dotčený plán ze souboru při každém převzetí. Všechny koncepty, záměry,
+implementační plány, zamýšlené postupy, změny a rozhodnutí průběžně ukládej
+do repozitáře; interní paměť ani chat nejsou projektovým záznamem.
+Současně aktualizuj registr, CURRENT a HANDOFF_CURRENT odkazy. Oba krátké
+přehledy mají nejvýše 80 řádků. Události patří do [deníku](docs/EVENT_LOG.md),
+volby a uzavřené plány do [rozhodovacího logu](docs/DECISION_LOG.md).
+Dokumentaci commituj a předej přes GitHub PR spolu s příslušnou změnou.
 
 - Výslovný požadavek vlastníka z 6. 11. 2026: veškerou rozpracovanou a plánovanou
   práci, rozhodnutí a výsledky zapisovat průběžně přímo do verzovaných souborů.

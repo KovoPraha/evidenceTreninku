@@ -1,5 +1,10 @@
 # R25–R30 — členská a sportovní agenda
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Implementační a technické přejímací balíky jsou v main a integrační vydání doložené; skutečné údaje, účetní/lidská přejímka a ostré převody se tím neuzavírají.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P09. [CLUB_IMPLEMENTATION_HANDOFF.md](CLUB_IMPLEMENTATION_HANDOFF.md) · [RESULTS.md](verification/production-integration-20261025/RESULTS.md) · [CLUB_COMPLETION_DECISIONS.md](CLUB_COMPLETION_DECISIONS.md)
+
+
 Lokální implementace navazuje na R18–R24, commit `12f28b611a8781968ca6b73821c0df3e2e4075dc`.
 Pracovní kopie: `C:\xampp\htdocs\evidencePavel-finance-b1-20261022`, větev
 `codex/membership-sports-r25-r30-20261023`. Původní checkout zůstal nedotčen.

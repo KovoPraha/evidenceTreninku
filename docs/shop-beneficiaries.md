@@ -1,6 +1,11 @@
 # Příjemce položky e-shopu
 
-Stav: technický kontrakt M1.1, bez zapojení do současného UI
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Příjemce položky je zapojený v dnešním checkoutu; původní „bez UI“ popisuje M1.1, nikoli aktuální aplikaci.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr P07. [shop-checkout-k4.md](shop-checkout-k4.md) · [shop-program-payment-verification.md](shop-program-payment-verification.md)
+
+
+Původní stav M1.1: samotný technický kontrakt před zapojením do tehdejšího UI.
 
 Objednávající účet zůstává uložený na `shop_orders.account_id`. Konkrétní osoba,
 které se položka týká, je volitelně uložená na

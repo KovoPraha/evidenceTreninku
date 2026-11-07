@@ -270,7 +270,7 @@ if ($filterTeam > 0) {
     $plany = trainingRosterBridgeFilterPlanRows($pdo, $plany, $filterTeam);
 }
 $canonicalPlanLabels = trainingRosterBridgePlanLabels($pdo, $plany);
-$rsvpSummaries = trainingRsvpPlanSummaries($pdo, array_map(static fn (array $plan): int => (int)$plan['id'], $plany));
+$rsvpSummaries = trainingPlannerRsvpSummaries($pdo, array_map(static fn (array $plan): int => (int)$plan['id'], $plany));
 
 // Indexovat dle data
 $planyDne = [];
@@ -589,27 +589,11 @@ try {
 
     <!-- Varování na nezaevidované minulé tréninky -->
     <?php
-                            $wWhere  = ["pt.stav = 'planovany'", "pt.datum < ?"];
-$wParams = [$today];
-if ($filterJenMoje) {
-    $wWhere[] = 'pt.trener_id = ?';
-    $wParams[] = $trenerId;
-} elseif ($filterTrener) {
-    $wWhere[] = 'pt.trener_id = ?';
-    $wParams[] = $filterTrener;
-}
-if ($filterSkupina) {
-    $wWhere[] = 'pt.skupina_id = ?';
-    $wParams[] = $filterSkupina;
-}
-$stWarn = $pdo->prepare("SELECT pt.id,pt.datum FROM planovane_treninky pt WHERE " . implode(' AND ', $wWhere));
-$stWarn->execute($wParams);
-$warningPlans = $stWarn->fetchAll(PDO::FETCH_ASSOC);
-if ($filterTeam > 0) {
-    $warningPlans = trainingRosterBridgeFilterPlanRows($pdo, $warningPlans, $filterTeam);
-}
-$pocetNezaevidovanych = count($warningPlans);
-$oldestPendingDate = trainingPlannerOldestPendingDate($warningPlans);
+$pendingSummary = trainingPlannerPendingSummary(
+    $pdo, $today, $filterJenMoje, $trenerId, $filterTrener, $filterSkupina, $filterTeam
+);
+$pocetNezaevidovanych = $pendingSummary['count'];
+$oldestPendingDate = $pendingSummary['oldest_date'];
 ?>
     <?php if ($pocetNezaevidovanych > 0): ?>
     <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 py-2">

@@ -1,0 +1,208 @@
+{
+  "run_id": 42351458564,
+  "implementation_sha": "b98961ae77246f4a9cbd0bdd5015e1f29b79fef6",
+  "accepted_performance_measurement": false,
+  "reason": "R06-only baseline omitted preceding R05 seed; choices differ. Strict data/HTML comparison rejected.",
+  "versions": {
+    "10.3": {
+      "before_source_sha": "89edfdbee5fbddbe05e0134d94f79ba0cb4143d9",
+      "after_source_sha": "7aa0176fc43d20f3260d205e1dcc41cdca74f222",
+      "parity_cases": 84,
+      "transaction_locks_preserved": true,
+      "fresh_data": true,
+      "schema_removed": true,
+      "pairs": [
+        {
+          "participants": 10,
+          "revisions": 1,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 10,
+          "revisions": 12,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 10,
+          "revisions": 52,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 50,
+          "revisions": 1,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 50,
+          "revisions": 12,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 50,
+          "revisions": 52,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 200,
+          "revisions": 1,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 200,
+          "revisions": 12,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 200,
+          "revisions": 52,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        }
+      ]
+    },
+    "11.4": {
+      "before_source_sha": "89edfdbee5fbddbe05e0134d94f79ba0cb4143d9",
+      "after_source_sha": "7aa0176fc43d20f3260d205e1dcc41cdca74f222",
+      "parity_cases": 84,
+      "transaction_locks_preserved": true,
+      "fresh_data": true,
+      "schema_removed": true,
+      "pairs": [
+        {
+          "participants": 10,
+          "revisions": 1,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 10,
+          "revisions": 12,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 10,
+          "revisions": 52,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 50,
+          "revisions": 1,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 50,
+          "revisions": 12,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 50,
+          "revisions": 52,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 200,
+          "revisions": 1,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 200,
+          "revisions": 12,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        },
+        {
+          "participants": 200,
+          "revisions": 52,
+          "different_data_fields": [
+            "choices"
+          ],
+          "before_choices": 0,
+          "after_choices": 2,
+          "html_equal": false
+        }
+      ]
+    }
+  }
+}

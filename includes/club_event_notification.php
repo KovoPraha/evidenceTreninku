@@ -36,7 +36,8 @@ function clubEventNotificationEnqueuePromotion(PDO $pdo, int $registrationId, in
     try {
         $insert = $pdo->prepare(
             'INSERT INTO club_event_notifications '
-            . '(registration_id,registration_event_id,notification_type,recipient_email,recipient_name,subject_plain,body_plain) '
+            . ('(registration_id,registration_event_id,notification_type,recipient_email,recipient_name,' .
+    'subject_plain,body_plain) ')
             . "VALUES (?,?,'waitlist_promoted',?,?,?,?)"
         );
         $insert->execute([
@@ -49,7 +50,8 @@ function clubEventNotificationEnqueuePromotion(PDO $pdo, int $registrationId, in
             throw $exception;
         }
         $existing = $pdo->prepare(
-            "SELECT id FROM club_event_notifications WHERE registration_event_id=? AND notification_type='waitlist_promoted'"
+            ("SELECT id FROM club_event_notifications WHERE registration_event_id=? AND " .
+    "notification_type='waitlist_promoted'")
         );
         $existing->execute([$registrationEventId]);
         $id = (int)$existing->fetchColumn();
@@ -61,13 +63,17 @@ function clubEventNotificationEnqueuePromotion(PDO $pdo, int $registrationId, in
 }
 
 /** @return array<string,mixed>|null */
-function clubEventNotificationClaim(PDO $pdo, bool $staffOnly = false): ?array
+function clubEventNotificationClaim(PDO $pdo, bool $staffOnly = false, bool $shopOnly = false): ?array
 {
     require_once __DIR__ . "/notification_claim_retry.php";
-    return notificationClaimWithRetry($pdo, static fn (): ?array => clubEventNotificationClaimAttempt($pdo, $staffOnly));
+    return notificationClaimWithRetry($pdo, static fn (): ?array => clubEventNotificationClaimAttempt(
+        $pdo,
+        $staffOnly,
+        $shopOnly
+    ));
 }
 
-function clubEventNotificationClaimAttempt(PDO $pdo, bool $staffOnly = false): ?array
+function clubEventNotificationClaimAttempt(PDO $pdo, bool $staffOnly = false, bool $shopOnly = false): ?array
 {
     $pdo->beginTransaction();
     try {
@@ -76,11 +82,21 @@ function clubEventNotificationClaimAttempt(PDO $pdo, bool $staffOnly = false): ?
             ? 'CURRENT_TIMESTAMP - INTERVAL 15 MINUTE'
             : "datetime('now','-15 minutes')";
         $scope = $staffOnly ? " AND notification_type='staff_action'" : '';
+        if ($shopOnly) {
+            $scope .= ((" AND order_id IN (SELECT order_id FROM shop_order_documents) AND (notification_type LIKE " .
+    "'shop_refund_paid:%' OR ") .
+    "notification_type IN " .
+    ("('shop_order_placed','shop_guest_order_placed','shop_quick_program_order_placed'," .
+    "'shop_payment_received','shop_order_cancelled','shop_order_refunded','shop_invoice_issued'," .
+    "'shop_correction_issued','shop_order_ready','shop_ppl_dispatched','shop_packeta_dispatched'))"))
+            ;
+        }
         // An abandoned claim may already have reached the transport. Never resend it automatically.
         $pdo->exec(('UPDATE club_event_notifications SET status=\'failed\',claim_token=NULL,last_error=\'delivery_unknown: s'
  . 'právce musí ověřit doručení před ručním opakováním.\',updated_at=CURRENT_TIMESTAMP WHERE status=\'proc'
  . 'essing\' AND claimed_at<').$staleExpression . $scope);
-        $sql = "SELECT * FROM club_event_notifications WHERE status='pending' AND available_at<=CURRENT_TIMESTAMP" . $scope . ' ORDER BY id LIMIT 1';
+        $sql = "SELECT * FROM club_event_notifications WHERE status='pending' AND available_at<=CURRENT_TIMESTAMP" . $scope
+     . ' ORDER BY id LIMIT 1';
         if ($mysql) {
             $sql .= ' FOR UPDATE';
         }
@@ -140,18 +156,26 @@ function clubEventNotificationComplete(PDO $pdo, int $id, string $token, bool $s
 }
 
 /** @param callable(string,string,string):bool $sender */
-function clubEventNotificationProcessOne(PDO $pdo, callable $sender, bool $staffOnly = false): bool|string|null
+function clubEventNotificationProcessOne(PDO $pdo, callable $sender, bool $staffOnly = false, bool $shopOnly = false): bool
+|string|null
 {
-    $notification = clubEventNotificationClaim($pdo, $staffOnly);
+    $notification = clubEventNotificationClaim($pdo, $staffOnly, $shopOnly);
     if ($notification === null) {
         return null;
     }
+    $attachments = [];
     try {
+        if (in_array($notification['notification_type'], ['shop_invoice_issued','shop_correction_issued'], true)) {
+            require_once __DIR__.'/shop_document_automation.php';
+            $attachments = shopDocumentAttachments($pdo, $notification);
+        }
         if (($notification['notification_type'] ?? '') === 'staff_action') {
             require_once __DIR__ . '/staff_notifications.php';
             $invalid = staffNotificationDeliveryInvalidReason($pdo, $notification);
             if ($invalid !== null) {
-                $pdo->prepare("UPDATE club_event_notifications SET status='cancelled',claim_token=NULL,last_error=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='processing' AND claim_token=?")
+                $pdo->prepare((("UPDATE club_event_notifications SET status='cancelled',claim_token=NULL,last_error=?," .
+    "updated_at=CURRENT_TIMESTAMP WHERE id=? AND ") .
+    "status='processing' AND claim_token=?"))
                     ->execute([$invalid, $notification['id'], $notification['claim_token']]);
                 return 'cancelled';
             }
@@ -163,15 +187,20 @@ function clubEventNotificationProcessOne(PDO $pdo, callable $sender, bool $staff
             return false;
         }
     } catch (Throwable $exception) {
-        clubEventNotificationHold($pdo, $notification, 'delivery_validation_unavailable: správce musí ověřit schéma a případ.');
+        clubEventNotificationHold(
+            $pdo,
+            $notification,
+            'delivery_validation_unavailable: správce musí ověřit schéma a případ.'
+        );
         return false;
     }
     try {
-        $sent = $sender(
-            (string)$notification['recipient_email'],
-            (string)$notification['subject_plain'],
-            (string)$notification['body_plain']
-        );
+        $arguments = [(string)$notification['recipient_email'], (string)$notification['subject_plain'], (string)$notification
+    ['body_plain']];
+        if ($attachments !== []) {
+            $arguments[] = $attachments;
+        }
+        $sent = $sender(...$arguments);
         clubEventNotificationComplete(
             $pdo,
             (int)$notification['id'],
@@ -181,12 +210,16 @@ function clubEventNotificationProcessOne(PDO $pdo, callable $sender, bool $staff
         );
         return $sent;
     } catch (Throwable $exception) {
-        clubEventNotificationHold($pdo, $notification, 'delivery_unknown: transport nebo uložení výsledku selhalo; správce musí ověřit doručení.');
+        clubEventNotificationHold(
+            $pdo,
+            $notification,
+            'delivery_unknown: transport nebo uložení výsledku selhalo; správce musí ověřit doručení.'
+        );
         return false;
     }
 }
 
-function clubEventNotificationMailSender(string $recipient, string $subject, string $body): bool
+function clubEventNotificationMailSender(string $recipient, string $subject, string $body, array $attachments = []): bool
 {
     if (!filter_var($recipient, FILTER_VALIDATE_EMAIL)
         || preg_match('/[\r\n]/', $recipient . $subject) === 1
@@ -194,7 +227,32 @@ function clubEventNotificationMailSender(string $recipient, string $subject, str
         throw new ClubEventNotificationException('Oznámení obsahuje neplatnou e-mailovou hlavičku.');
     }
     $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    if ($attachments !== []) {
+        $mime = clubEventNotificationMime($body, $attachments);
+        return mail($recipient, $encodedSubject, $mime['body'], $mime['headers']);
+    }
     return mail($recipient, $encodedSubject, $body, "Content-Type: text/plain; charset=UTF-8\r\n");
+}
+
+/** Bounded, server-generated PDF attachments only; never a caller-supplied path or MIME header. */
+function clubEventNotificationMime(string $body, array $attachments): array
+{
+    if (count($attachments) > 2) {
+        throw new InvalidArgumentException('Příliš mnoho příloh.');
+    }
+    $boundary = 'kis_'.bin2hex(random_bytes(24));
+    $message = '--'.$boundary."\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n".
+    chunk_split(base64_encode($body));
+    foreach ($attachments as $file) {
+        if (!preg_match('/^doklad-[0-9]+\.pdf$/D', (string)$file['name']) || !is_string($file['bytes'])
+            || !str_starts_with($file['bytes'], '%PDF-') || strlen($file['bytes']) > 10000000) {
+            throw new InvalidArgumentException('Neplatná PDF příloha.');
+        }
+        $message .= '--'.$boundary."\r\nContent-Type: application/pdf\r\nContent-Disposition: attachment; filename=\"".$file
+    ['name']."\"\r\nContent-Transfer-Encoding: base64\r\n\r\n".chunk_split(base64_encode($file['bytes']));
+    }
+    return ['headers' => "MIME-Version: 1.0\r\nContent-Type: multipart/mixed; boundary=\"".$boundary."\"\r\n", 'body' =>
+    $message.'--'.$boundary."--\r\n"];
 }
 
 /** @return array{pending:int,processing:int,failed:int,sent:int,cancelled:int} */
@@ -222,7 +280,8 @@ function clubEventNotificationAdminList(PDO $pdo, string $status = '', int $limi
  . ' BY ne.id DESC LIMIT 1) AS last_action,')
         . ('(SELECT attempts_before FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER B'
  . 'Y ne.id DESC LIMIT 1) AS last_action_attempts,')
-        . '(SELECT reason FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER BY ne.id DESC LIMIT 1) AS last_action_reason,'
+        . ('(SELECT reason FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER BY ' .
+    'ne.id DESC LIMIT 1) AS last_action_reason,')
         . ('(SELECT actor_trainer_id FROM club_event_notification_events ne WHERE ne.notification_id=n.id ORDER '
  . 'BY ne.id DESC LIMIT 1) AS last_action_actor,')
         . 'e.name AS event_name,s.jmeno AS child_first_name,'
@@ -306,7 +365,9 @@ function clubEventNotificationAdminRetry(
             );
         }
         if (bookingNotificationInvalidReason($pdo, $notification) !== null) {
-            throw new ClubEventNotificationException('Příjemce nebo případ již není platný. Vyřešte kontakt či osobní předání v provozním přehledu.');
+            throw new ClubEventNotificationException(
+                'Příjemce nebo případ již není platný. Vyřešte kontakt či osobní předání v provozním přehledu.'
+            );
         }
         $alreadyReady = $notification['status'] === 'pending'
             && (int)$notification['attempts'] === 0
@@ -400,12 +461,18 @@ function clubEventNotificationResolveManually(
             '/^(manual_contact_required|delivery_blocked|delivery_unknown):/',
             (string)$row['last_error']
         )) {
-            throw new ClubEventNotificationException('Tento výsledek nelze vyřídit osobním předáním. Nejprve ověřte chybu fronty.');
+            throw new ClubEventNotificationException(
+                'Tento výsledek nelze vyřídit osobním předáním. Nejprve ověřte chybu fronty.'
+            );
         }
-        $q = $pdo->prepare('SELECT action,attempts_before FROM club_event_notification_events WHERE notification_id=? ORDER BY id DESC LIMIT 1');
+        $q = $pdo->prepare(
+            ('SELECT action,attempts_before FROM club_event_notification_events WHERE notification_id=? ' .
+    'ORDER BY id DESC LIMIT 1')
+        );
         $q->execute([$id]);
         $last = $q->fetch(PDO::FETCH_ASSOC);
-        if ($last && $last['action'] === 'manual_contact_resolved' && (int)$last['attempts_before'] === (int)$row['attempts']) {
+        if ($last && $last['action'] === 'manual_contact_resolved' && (int)$last['attempts_before'] === (int)$row['attempts'
+    ]) {
             $pdo->commit();
             return ['changed' => false];
         }

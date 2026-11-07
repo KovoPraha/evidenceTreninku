@@ -1,5 +1,10 @@
 # Roadmapa rozšíření — Evidence tréninků
 
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Externí shop/API a původní sezonní plán nejsou dnešní architektura; modulární monolit a bezsezonní plán mají přednost. Wallet a další záměry nejsou tímto uzavřené.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr C01/P06/P09. [CLAUDE.md](../CLAUDE.md) · [MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md) · [CLUB_IMPLEMENTATION_HANDOFF.md](CLUB_IMPLEMENTATION_HANDOFF.md)
+
+
 *Plánované změny nad rámec aktuálního stavu aplikace. Dokument slouží pro interní koordinaci i AI cowork.*
 
 ---

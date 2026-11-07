@@ -1,0 +1,25 @@
+{
+  "synthetic_only": true,
+  "production_mutations": false,
+  "browser": "Playwright CLI / Chromium",
+  "url": "http://127.0.0.1:18090/medical_clearance_admin.php",
+  "checks": {
+    "anonymous_denied_403": true,
+    "authenticated_page_and_navigation_200": true,
+    "find_person_by_number_10100": true,
+    "selection_preserved_after_search": true,
+    "selection_preserved_on_person_page_2": true,
+    "watch_form_post_303": true,
+    "selected_watch_detail_100_person_10100_200": true
+  },
+  "notes": [
+    "Existing watch was returned idempotently; no real document or message.",
+    "Initial development CSP script load failure corrected with the existing nonce; final selection/search/pagination/form flow passed.",
+    "Missing optional favicon returned 404; no new application or CSP error in the final flow."
+  ],
+  "files": {
+    "person-page-2.yml": "65dce51b81bfa96f0bb3425e2a7c2e816add8ded76c2355829d2f538608439af",
+    "person-picker.png": "5016b0ef09a4c590ff744765ea72b53b262b671fc1174e0db40ef034c4313ce1",
+    "submitted-person.yml": "77f286987fb734fa7ce5023a7ebe26d572047d4fddf44e114b7408e3aae90063"
+  }
+}

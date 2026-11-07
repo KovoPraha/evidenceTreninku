@@ -1,6 +1,11 @@
 # Plán Stripe integrace pro Evidence
 
-Stav: slice 1 je připravena lokálně za výchozím vypnutým flagem. Produkční
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Kód je v main; příslušné skutečné provozní spuštění/přejímka není doložené. Stripe je v posledním provozním snapshotu false, souhrny nemají schválený plán.
+> Evidence plánu: [katalog](PLAN_CATALOG.md), registr C03. [CURRENT_STATE.md](CURRENT_STATE.md) · [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md)
+
+
+Původní stav slice 1: připravena lokálně za výchozím vypnutým flagem. Produkční
 aktivace, Stripe účet ani ostré klíče nejsou součástí tohoto řezu.
 
 ## Rozhodnutí

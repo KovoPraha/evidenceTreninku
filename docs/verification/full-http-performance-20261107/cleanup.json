@@ -1,0 +1,15 @@
+{
+  "synthetic_only": true,
+  "schema_removed": true,
+  "web_user_removed": true,
+  "owned_config_removed": true,
+  "credentials_and_cookie_jars_removed": true,
+  "http_stopped": true,
+  "mariadb_stopped": true,
+  "browser_closed": true,
+  "ports_no_longer_listening": [
+    18094,
+    33449
+  ],
+  "runtime_retained_stopped": true
+}

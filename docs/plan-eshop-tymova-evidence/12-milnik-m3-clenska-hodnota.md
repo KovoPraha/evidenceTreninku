@@ -1,6 +1,11 @@
 # 12 – Milník M3: každodenní hodnota pro členy a klub
 
-Stav: kanonický pracovní plán třetího produktového milníku
+<!-- plan-catalog-status -->
+> Stav při auditu 7. 11. 2026: Technické řezy ICS/přehledů/souhrnů a normalizace existují; export ročního přehledu, progres, retence a řízený import nejsou automaticky dokončené.
+> [Katalog všech plánů](../PLAN_CATALOG.md), položky C01/C03 v [registru](../WORK_PLAN_CURRENT.md).
+
+
+Původní stav (5. 8. 2026): tehdejší pracovní plán třetího produktového milníku
 
 Aktualizováno: 5. 8. 2026
 
@@ -27,7 +32,7 @@ před dalším rozšiřováním M3.
 | M3.4 provozní přehled správce | technicky hotovo | 100 % | read-only akční seznam čekajících plateb, kapacit, přihlášek a výjimek s odkazy do existujících auditovaných obrazovek |
 | M3.5 datová kvalita sportovního progresu | probíhá | 92 % | M3.5a má admin-only read-only inventuru; M3.5b přidává aditivní `sports-measurement-v1`; M3.5c napojuje všechny čtyři formuláře a handlery na společný striktní zápis; M3.5d přidává read-only přípravu importu: pokrytí v1 a konkrétní seznam nejednoznačných legacy řádků k ručnímu rozhodnutí; M3.5e přidává deterministický rozpoznávací kontrakt historické textové tabulky `mereni` beze změny dat; zbývá schválená ochrana zátěžových testů a samotný řízený jednorázový import |
 
-Orientační technický stav M3: **70 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
+Historický orientační technický stav M3 k 5. 8. 2026: **70 %**. Procento nezahrnuje produkční aktivaci ani vlastníkovo přijetí.
 
 ## M3.1 – rodinný program
 
