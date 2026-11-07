@@ -6,6 +6,47 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-07-P15-S0
+
+- **Stav / datum:** PŘIJATÉ OMEZENÍ vlastníka, 7. 11. 2026: jiný Windows
+  počítač s Rikim; místní Codex má Evidence repo a převezme inventuru promptem.
+- **Soukromí:** KIS nesmí číst/zapisovat/indexovat žádná soukromá data Rikiho.
+  Žádné profily, DB, kontejnery, mounty, vault ani AI paměť se nepřebírají.
+- **Technický návrh:** samostatný nativní Windows účet/worker a scheduler;
+  nevyžaduje WSL/Docker ani dohled Rikiho. Jeho Interactive startovací úloha
+  nedokládá boot bez přihlášení. Živý stav cílového hostu zatím UNKNOWN.
+- **Varianta:** vlastní VM/správní hranice, pokud účet/ACL nestačí nebo nelze
+  doložit oddělení od širokých oprávnění Rikiho. Nevydávat společný host za
+  izolaci proti administrátorovi. Instalace/aktivace se nyní neprovádí.
+- **Kontrakt:** čtyři kolekce, jen přehledové údaje, UCI páruje server.
+  Platnost licence z tooltipu, Hostování z disabled checkboxu; platba `ano`
+  doložena, negativní varianta zůstává unknown. Bez jmenného fallbacku.
+- **Důkazy a předání:** [S0 stanice](CSC_SPORTSOFT_S0_STATION.md),
+  [kontrakt](CSC_SPORTSOFT_S0_CONTRACT_V1.md), [protokol](verification/csc-sportsoft-s0-20261107/RESULTS.md).
+  Upřesňuje D2026-11-07-P15; předchozí možný dohled Nanoclaw se nepoužije.
+
+## D2026-11-07-P15
+
+- **Stav / datum:** PŘIJATÝ SMĚR, 7. 11. 2026; explicitní zadání vlastníka.
+- **Volba:** první etapa čte ČSC a Sportsoft, páruje přes UCI ID a běží na
+  nonstop stanici. V tomto úkolu vzniká konkrétní plán a projektová dokumentace.
+- **Důvod:** skutečný DOM lze obsluhovat Playwrightem; ruční přihlášení je
+  dostupné. Oddělený worker nevyžaduje prohlížeč na stávajícím PHP hostingu.
+- **Varianty:** serverový worker může následovat; obecné AI klikání ani
+  nekonečný refresh relace nejsou základ provozu. Nanoclaw může dělat dohled.
+- **Technický návrh:** samostatné externí snímky a striktní UCI resolver.
+  Existující import dovoluje i shodu jména/data narození, proto se nepoužije
+  k automatickému spojování této integrace. Kanonické karty se nepřepisují.
+- **Hranice:** žádné přihlášky/licence/platby či jiné zápisy do portálů.
+  Nasazení, první produkční ingest KIS a pravidelná aktivace jsou samostatné
+  kroky; dnešní dokumentace je neprovedla. Detailní kontrakt je návrh.
+- **Podklady:** [P15](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), [průzkum](verification/csc-sportsoft-discovery-20261107/RESULTS.md),
+  [registr](WORK_PLAN_CURRENT.md). Vlastník Marek / vývoj KIS.
+
+
+Pracovní ID 09 v PR #371 kolidovalo s již přijatým pickerem #366.
+P15 proto před merge používá samostatné ID P15; historické commity se nemění.
+
 ## D2026-11-07-09
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník zadal optimalizovat výběr osob

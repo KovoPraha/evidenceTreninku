@@ -1,6 +1,8 @@
 # Aktuální stav projektu
 
 Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) a [úplný katalog](PLAN_CATALOG.md).
+- **P15 S0 ČÁSTEČNĚ:** [čtecí ČSC/Sportsoft](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), UCI ID, nonstop stanice.
+  Kontrakt a prompt hotové; cílová inventura otevřená. Samostatný Windows worker bez Riki dat; aktivace NOT RUN.
 - **P11 katalog a lekce NASAZENO:** release `269684c234698cb40ae661e4080e318d4a05cfd3`, deploy 42374036053 SUCCESS; [protokol](verification/attendance-lesson-release-20261107/RESULTS.md).
   #367 / dávkové lekce navazují na #364; klubové ceny #358 zahrnuté. Záloha, migrace, VS a HTTP smoke PASS; import/UAT false. [Plán R06](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md).
 - **P07 N1/N2 NASAZENO / ZAPNUTO:** [protokol](verification/shop-document-automation-20261107/RESULTS.md), #355 / `9460ee76`, deploy 42362258878 SUCCESS. 2337 testů / 43257 assertions, 11 CI PASS; migrace current, původní VS beze změny. Pověření 1 / vystavovatel TJ KOVO 1 aktivované během 42362688999. Import/UAT flag false; záloha 387 tabulek / 2 triggery ověřená. Status 42362771928 PASS: přirozený tick 10:13:03 UTC, fronta/chyby 0. Skutečné doručení nového PDF do schránky neověřené.
@@ -16,9 +18,7 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
 - **[Ostré Fio a SumUp zapnuté](verification/live-payments-20261105/ACTIVATION.md):** karta pro 223 aktivních produktů / nové objednávky, 8 starých plateb zachováno.
   **[Fio hostingový plán ověřený](verification/fio-followup-20261105/RESULTS.md):** dva skutečné importy, všech 45 pohybů bez shodného VS. Žádné vynucené přiřazení; skutečná placená úhrada stále nedoložená.
 - **[PR #305 sloučený a nasazený](verification/functional-round10-release-20261105/RESULTS.md):** vratky zachovávají objednávku a stránkují úplnou historii. Linux i deploy 2009/38764, HTTP před/po 48/48 a izolovaná obnova PASS. Přihlášený čtecí Chrome PASS v dostupném rozsahu; heslo/T07 vynechané.
-
 - **[Osmý funkční průchod](verification/functional-uat-round8-20261104/RESULTS.md):** příprava období, hierarchie ke dni lekce, věkové návrhy a stránkování. Skutečný místní browser, 25 kontrol HTTP/model/persistence a cílené 21/190 PASS; všech 12 doménových snapshotů shodných. Bez nové chyby runtime.
-
 - **[Pátý](verification/functional-uat-round5-20261104/RESULTS.md) a [šestý průchod](verification/functional-uat-round6-20261104/RESULTS.md):** 73 HTTP kontrol souhlasů, papírových podkladů a vyřízení osob; následný skutečný Chrome a 16 kontrol persistence PASS. Bez další chyby runtime; výsledky jsou v nasazeném PR #295, heslo/T07 vynechané.
 
 - **[Třetí funkční vlna sloučena a nasazena](verification/functional-round3-release-20261104/RESULTS.md):** opravené náhledy členství a české časové stavy rodinného přehledu. Přihlášený produkční náhled PASS bez potvrzení změny; rodinná stránka načtena, účet nemá propojené sportovce pro ověření štítků. Místní matice 119/119 PASS; úplné UAT všech rolí není uzavřené. Heslo/T07 nadále odložené.

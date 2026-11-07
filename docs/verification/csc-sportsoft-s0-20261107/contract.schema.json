@@ -1,0 +1,433 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KIS external read sync v1 / S0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "connection_id",
+    "lease_generation",
+    "collection",
+    "event_id",
+    "scope_id",
+    "adapter_version",
+    "observed_at",
+    "part_no",
+    "page",
+    "rows"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "connection_id": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 1
+    },
+    "lease_generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "collection": {
+      "enum": [
+        "csc_licenses",
+        "sportsoft_members",
+        "sportsoft_events",
+        "sportsoft_registrations"
+      ]
+    },
+    "event_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 80
+    },
+    "scope_id": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 1
+    },
+    "adapter_version": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "part_no": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "reported_total",
+        "row_offset",
+        "row_count"
+      ],
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reported_total": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "row_offset": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "row_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "rows": {
+      "type": "array",
+      "maxItems": 250
+    }
+  },
+  "$defs": {
+    "csc_licenses": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "license_id",
+        "uci_id_raw",
+        "display_name",
+        "license_status_raw",
+        "role_label",
+        "discipline_label",
+        "category_label",
+        "hosting_checked",
+        "validity_year_raw"
+      ],
+      "properties": {
+        "license_id": {
+          "type": "string",
+          "maxLength": 80,
+          "minLength": 1
+        },
+        "uci_id_raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 80
+        },
+        "display_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "license_status_raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 100
+        },
+        "role_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "discipline_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "category_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "hosting_checked": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "validity_year_raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 20
+        }
+      }
+    },
+    "sportsoft_members": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "member_id",
+        "uci_id_raw",
+        "display_name",
+        "birth_date_raw",
+        "nationality_label",
+        "role_label",
+        "source_label"
+      ],
+      "properties": {
+        "member_id": {
+          "type": "null"
+        },
+        "uci_id_raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 80
+        },
+        "display_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "birth_date_raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 40
+        },
+        "nationality_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 100
+        },
+        "role_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "source_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 50
+        }
+      }
+    },
+    "sportsoft_events": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "event_date_raw",
+        "event_name",
+        "venue_label",
+        "registration_action_label"
+      ],
+      "properties": {
+        "event_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 80
+        },
+        "event_date_raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 80
+        },
+        "event_name": {
+          "type": "string",
+          "maxLength": 300,
+          "minLength": 1
+        },
+        "venue_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 300
+        },
+        "registration_action_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 100
+        }
+      }
+    },
+    "sportsoft_registrations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registration_id",
+        "uci_id_raw",
+        "display_name",
+        "birth_date_raw",
+        "category_label",
+        "paid_raw"
+      ],
+      "properties": {
+        "registration_id": {
+          "type": "null"
+        },
+        "uci_id_raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 80
+        },
+        "display_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "birth_date_raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 40
+        },
+        "category_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "paid_raw": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 100
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "collection": {
+            "const": "csc_licenses"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/csc_licenses"
+            }
+          },
+          "event_id": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "collection": {
+            "const": "sportsoft_members"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/sportsoft_members"
+            }
+          },
+          "event_id": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "collection": {
+            "const": "sportsoft_events"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/sportsoft_events"
+            }
+          },
+          "event_id": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "collection": {
+            "const": "sportsoft_registrations"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/$defs/sportsoft_registrations"
+            }
+          },
+          "event_id": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}
