@@ -331,4 +331,3 @@ a ověření přesného okamžiku zápisu na obou portálech.
 Průzkum: PASS pouze v rozsahu [protokolu](verification/csc-sportsoft-discovery-20261107/RESULTS.md).
 Dokumentační kontrola PASS (4435 místních odkazů, 108 archivních bloků),
 git diff --check PASS. Konkrétní PR se doplní po publikaci větve.
-

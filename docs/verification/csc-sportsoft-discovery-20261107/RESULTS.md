@@ -81,4 +81,3 @@ po doplnění JSON katalogu a indexů opakovaná kontrola výše prošla.
 Runtime testy aplikace NOT RUN: změna je pouze dokumentační.
 Push/PR se doplní po publikaci větve; merge/deploy/aktivace nejsou tímto
 dokumentačním krokem prováděny.
-
