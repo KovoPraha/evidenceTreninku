@@ -89,3 +89,7 @@ analýze), potom nové celé HTTP/browser, mobil a souběh; další objemy R13/R
 Tyto větší UI etapy ani celé K0.2 nejsou tímto prohlášené za hotové.
 Výsledková dokumentace ve větvi `codex/performance-release-handoff-20261107`;
 sdílení přes samostatný dokumentační PR, bez dalšího deploye.
+
+## Souběžné předání priorit
+
+Při závěrečném merge převzatý dokumentační #368 / `8e9cdce1`: priority a závislosti zachované, přijaté DOC03 E22 ponechané, naše pracovní release událost E23. Další výběr osob už vlastní [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366); neduplikovat implementaci ani nasazení. Runtime se při řešení dokumentačních konfliktů neměnil.

@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `269684c2`; produkční stav se tím neověřuje.
+Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `269684c2`; produkční stav určují výsledkové protokoly.
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -21,6 +21,30 @@ zahrnuje i vložené ověřovací plány, historické prompty a podpůrné artef
 [Původní etapy 0–6 a R01–R44](plans/realization-20261022/README.md) jsou nyní
 sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešní stav.
 
+## Priority a závislosti
+
+DOC03, 7. 11. 2026: stručný přehled na žádost vlastníka. Pořadí níže je doporučení
+podle dopadu a závislostí, nikoli nové povolení plateb, importů nebo aktivací.
+„Samostatně“ znamená v již schváleném rozsahu; otevřený bod není automaticky chyba.
+Větev `codex/work-priorities-20261107`, vlastní worktree stejného tématu.
+
+| Pořadí | Oblast a skutečně otevřený krok | Lze dokončit samostatně | Co čeká na vlastníka / člověka |
+| --- | --- | --- | --- |
+| 1 | P11 / ROLE01-MOB: uzavřít technická předání. [Lekce #367](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) mají merge, schválené nasazení a čtecí kontrolu dokončené; [protokol](verification/attendance-lesson-release-20261107/RESULTS.md). U [mobilních karet](ACCESS_OVERVIEW_2026-11-07.md) zbývá cílený čtecí Chrome 390/360 px a desktop. | Výsledkové předání lekcí #369 sjednocuje dokumentaci; nový deploy není potřeba. Vývoj dokončí cílený Chrome mobilních karet v původní relaci. [Katalog už nasazený](verification/catalog-release-20261107/RESULTS.md); vydání `c70939d4` obsahuje také karty #361 a ceny #358, nepřipravovat jejich duplicitní deploy. | Žádné nové zadání pro tyto schválené kroky. Výběr osob už má [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366) a [plán ve větvi](https://github.com/KovoPraha/evidenceTreninku/blob/codex/attendance-person-picker-20261107/docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md), dosud mimo main; nepřipravovat duplicitní implementaci. |
+| 2 | P02: dokončit skutečný provoz BAR. [Plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [předání](SESSION_HANDOFF_BAR_2026-11-06.md). | Připravit a doprovodit přejímku; technická regrese hotová. | Lucka se přihlásí; vlastník/obsluha potvrdí fyzické zásoby, počáteční kasu a první prodej. |
+| 3 | P04 / P09: propojit BAR s účetnictvím a uzavřít účetní podklady. [Adaptér](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md), [D12–D14](CLUB_PILOT_D12_D14.md). Adaptér zatím není implementovaný. | Připravit technické mapování a testovací případy; účetní zápisy až po rozhodnutí. | Vlastník/účetní určí účty, DPH, ocenění, číselné řady, vazby úhrad a schválení. Doložit skutečné dohody/částky a dvě chybějící přílohy. |
+| 4 | P05 / P07: skutečné sjednání členství, úhrada, PDF a doručení. [Runbook](MONTHLY_MEMBERSHIP_RUNBOOK.md), [doklady objednávek](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md). | Lze připravit kontrolní scénář; automatika a doklady jsou aktivní, ranní čas už doložený. | Vlastník obnoví výslovně odložený skutečný test a poskytne vhodného ověřeného sportovce/objednávku; doložit platbu a příjem PDF ve schránce. |
+| 5 | P06: poslední rozdílová synchronizace evidence. [Pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md). | Po dodání podkladu připravit rozdílový náhled a kontroly. | Vlastník dodá nový export a obnoví odložený sync; E8 až po přejímce a bezpečné obnově. |
+| 6 | P08 / P09 / P12: lidské trenérské a klubové UAT. [Scénáře](TRAINER_UAT_POSTUP_2026-11-01.md), [balíček testerky](testing/chatgpt-tester-20261105/README.md), [pilot D12–D14](CLUB_PILOT_D12_D14.md). | Doprovodit testera a evidovat výsledky; technická příprava hotová. | Určit testerku/testera, roli, prostředí a scénáře, zajistit skutečný přístup a převzetí. Heslo/T07 zůstávají odložené. |
+| 7 | P14: zvážit izolovanou obnovu novější konkrétní zálohy. [Rozsah již ověřených obnov](verification/autonomous-p01-p14-20261106/RESULTS.md). | Vývoj/provoz může technicky ověřit novou dostupnou zálohu v izolaci. Předchozí tři generace už PASS; nejde o obnovu produkce. | Jen pokud chybí přístup k přesné záloze; starší PASS není důkaz nové generace. |
+| 8 | P10 / C04: prověřit zbývající technický dluh a staré WIP. [Inventura](verification/operations-inventory-20261106/RESULTS.md), [kandidáti](DOZOR_UKLID_2026-10-25.md). | Porovnat s main, reprodukovat aktuální nález a navrhnout malý ověřitelný řez. Lze souběžně při čekání na podklady. | Vlastník WIP před archivací/mazáním; vlastník rozhodne hosting/kapacitu, fyzická TV vyžaduje místní kontrolu. |
+| 9 | P13 / C01–C03: další upozornění, wallet, progres a nové integrace. [Typy upozornění](STAFF_NOTIFICATIONS_2026-11-06.md), [backlog](plan-eshop-tymova-evidence/11-backlog-hodnota-pro-cleny.md), koncepty níže. | Zpřesnit varianty a odhad; nic automaticky nezapínat. | Vlastník vybere konkrétní funkci, příjemce/scénář a podmínku přijetí; právní/retentní otázky řeší odpovědná osoba klubu. |
+
+Hotové: pracovní upozornění P01, zveřejnění nabídky P03, technické jádro ROLE01,
+[ranní audit 7. 11. PASS](verification/membership-scheduler-20261107/RESULTS.md)
+a katalog #364. Jejich opakování není další prioritou. Technické body 1, 7 a 8
+mohou běžet souběžně s dodáváním podkladů pro body 2–6; nečekají na nové produktové zadání.
+
 ## Aktivní návaznosti
 
 P07 N1/N2: [automatické doklady a komunikace](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md)
@@ -31,7 +55,7 @@ Skutečná bankovní platba, externí schránka a produkční přejímka členst
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
-| ROLE01-MOB | ČÁSTEČNĚ HOTOVO: mobilní karty implementované a sloučené #361 (`3b37e053`) | Dále schválený standardní deploy a nový čtecí Chrome 390/360 px; stávající role neměnit | Vývoj; [plán](ACCESS_OVERVIEW_2026-11-07.md), vlastní `codex/access-visual-uat-20261107` / PR #361 |
+| ROLE01-MOB | ČÁSTEČNĚ HOTOVO: karty #361 jsou v main a obsažené ve vydání katalogu `c70939d4` | Doložit cílený nový čtecí Chrome 390/360 px a desktop; stávající role neměnit, deploy neopakovat jen podle starého statusu | Vývoj; [plán](ACCESS_OVERVIEW_2026-11-07.md), [vydání](verification/catalog-release-20261107/RESULTS.md), vlastní `codex/access-visual-uat-20261107` / PR #361 |
 | P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | HOTOVO: nabídka BAR 1 / vydání 1 zveřejněná, 45 produktů a fotografií; novější doklad #335 nahrazuje původní koncept | Publikaci neopakovat a nezakládat další návrh. Úpravy nabídky až podle dalšího zadání; zásoby/kasa a skutečný prodej zůstávají P02. Přihlášené vytvoření tiskového PDF zatím NOT RUN. | Správce baru; [publikace](verification/bar-menu-publication-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) |
@@ -42,7 +66,7 @@ Skutečná bankovní platba, externí schránka a produkční přejímka členst
 | P08 | Trenérská obnova a syntetický pilot připravené; část UAT doložená | [Navazující syntetická regrese 6. 11. PASS](verification/offline-followup-20261106/RESULTS.md); dokončit asistované UAT a lidské převzetí. Heslo a T07 zůstávají na výslovné přání odložené. Pilot neprodlužovat automaticky. | Vlastník/tester; [pilot](TRAINER_PILOT_2026-10-31.md), [scénáře](TRAINER_UAT_POSTUP_2026-11-01.md) |
 | P09 | Technický refaktoring W6–W15 uzavřený; provozní přejímka není kompletní | Lidská/účetní D12–D14, vazby, dohody a skutečné ocenění; dořešit dvě známé chybějící přílohy původní Evidence. | Vlastník/účetní; [technické uzavření](REFACTORING_CLOSURE_2026-10-30.md), [rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot D12–D14](CLUB_PILOT_D12_D14.md), [obnova/přílohy](verification/bar-cutover-20261106/RESULTS.md) |
 | P10 | Lokální pracovní zbytky a staré větve nejsou frontou nasazení | Posoudit popisky legacy soupisek a staré dokumentační WIP proti main, archivovat už začleněné větve až po potvrzení zachování práce. Neprovádět plošný merge/reset/clean. | Vývoj/vlastník WIP; [inventura](verification/operations-inventory-20261106/RESULTS.md) |
-| P11 | [Celé HTTP/browser na feb8fe8c HOTOVO](verification/full-http-performance-20261107/RESULTS.md): 65 případů / 930 vzorků, 403 browser pozorování; role/filtry/revokace PASS. [Klubové ceny #358](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md) zahrnuté v nasazení: 500 produktů 2000 → 4 SQL; R13/R05/R06 zahrnuje ROLE01. K0.2 otevřené. | Dále R06 omezený výběr osob (10221 voleb, 1,37 MB, cca 6 s), R13/R05 objemy, mobil/souběh. [Katalog #364 nasazený](CATALOG_READ_PERFORMANCE_2026-11-07.md), vlastní větev `codex/catalog-read-performance-20261107`: parita a 480 párů 10.3/11.4 PASS; 5000 produktů 202/340 → 87/199 ms, PHP 71,6 → 16,8 MiB; release `c70939d4`, deploy 42372002993 SUCCESS; [protokol a meze](verification/catalog-release-20261107/RESULTS.md). Celé HTTP/browser novějšího main znovu nepřeměřeno; [lekce #367 a provozní výsledek](verification/attendance-lesson-release-20261107/RESULTS.md). | Vývoj/vlastník; [předání plného HTTP / PR #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md), [předání katalogu](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md), [předání cen](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) |
+| P11 | [Celé HTTP/browser na feb8fe8c HOTOVO](verification/full-http-performance-20261107/RESULTS.md): 65 případů / 930 vzorků, 403 browser pozorování; role/filtry/revokace PASS. [Klubové ceny #358](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md) zahrnuté v nasazení: 500 produktů 2000 → 4 SQL; R13/R05/R06 zahrnuje ROLE01. K0.2 otevřené. | Dále navázat na existující PR #366 pro omezený výběr osob (10221 voleb, 1,37 MB, cca 6 s), R13/R05 objemy, mobil/souběh. [Katalog #364 nasazený](CATALOG_READ_PERFORMANCE_2026-11-07.md), vlastní větev `codex/catalog-read-performance-20261107`: parita a 480 párů 10.3/11.4 PASS; 5000 produktů 202/340 → 87/199 ms, PHP 71,6 → 16,8 MiB; release `c70939d4`, deploy 42372002993 SUCCESS; [protokol a meze](verification/catalog-release-20261107/RESULTS.md). Celé HTTP/browser novějšího main znovu nepřeměřeno; [lekce #367 a provozní výsledek](verification/attendance-lesson-release-20261107/RESULTS.md). | Vývoj/vlastník; [předání plného HTTP / PR #363](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md), [předání katalogu](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md), [předání cen](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [komplexní plán](COMPREHENSIVE_REFACTORING_PLAN_2026-10-29.md) |
 | P11-R06-LESSONS | HOTOVO: dávkové lekce #367, parita 720 párů 10.3/11.4, 153 → 6 SQL; finální CI PASS | Další samostatný řez: omezený výběr osob a celé HTTP/browser; přihlášené produkční UAT tohoto helperu NOT RUN | Vývoj; [plán](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md), [protokol](verification/attendance-lesson-release-20261107/RESULTS.md) |
 | P12 | Technická příprava HOTOVO: soubory 00–06, 20 scénářů, hlášení, mapa a spojený podklad sjednocené 6. 11. proti 3ff0fd13; přenosový ZIP ověřený. [Důkazy](verification/offline-followup-20261106/RESULTS.md). Není to provedené lidské UAT ani sdílení projektu | Vlastník určí testerku, roli/prostředí a konkrétní scénáře; oprávněná osoba dokončí pozvánku/přístup a kontrolní otázky v jejím účtu. Nové ověření hlavní verze před použitím; žádné opakování technické aktualizace bez změny podkladů. | Vlastník/testerka; [balíček a hranice](testing/chatgpt-tester-20261105/README.md), [uživatelské testování](PRODUKCNI-UZIVATELSKE-TESTOVANI.md) |
 | P13 | Další pracovní upozornění jsou záměr, konkrétní typy nejsou vybrané | Určit události, příjemce, vznik/ukončení úkolu, bezpečný odkaz, deduplikaci a testy. Push a eskalace nejsou součástí dokončené první verze. | Vlastník/vývoj; [registr typů a hranice](STAFF_NOTIFICATIONS_2026-11-06.md) |
@@ -81,12 +105,12 @@ Tyto položky evidují existující návrhy; tento audit jim neuděluje schvále
 ## Stav souběžně začleněných změn
 
 - P11 katalogový výřez: [PR #364](https://github.com/KovoPraha/evidenceTreninku/pull/364)
-  sloučený, parita/měření a schválené nasazení dokončené; [výsledek](verification/catalog-release-20261107/RESULTS.md).
+  je sloučené a nasazené jako `c70939d4`; [protokol a meze](verification/catalog-release-20261107/RESULTS.md).
 
 - ROLE01: #356 a [výsledkové #359](https://github.com/KovoPraha/evidenceTreninku/pull/359) dokončené;
   [přehled a skutečná přejímka](verification/access-release-20261107/RESULTS.md) PASS, test neopakovat.
 - P11-PRICING: [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358),
-  dávkové klubové ceny sloučené v main `37d0ad68`, následně zahrnuté v nasazení; [důkazy](verification/catalog-release-20261107/RESULTS.md).
+  dávkové klubové ceny sloučené `37d0ad68`, následně obsažené ve vydání katalogu `c70939d4`.
 - P07-UAT: [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355)
   implementovalo a nasadilo automatické doklady/e-maily; pověření 1 aktivní, doložené #362. Při přejímce
   přezkoumat proti main; příprava šablon v původním [plánu](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md)
@@ -124,8 +148,8 @@ Větev `codex/plan-catalog-audit-20261107`; předání [PR #360](https://github.
 
 [Plán a přesný stav](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md),
 [předání](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md).
-Draft [PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347) zůstával
-při kontrole otevřený; výsledek nepředpokládat podle dnešního data.
+[PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347) je sloučené;
+[výsledek PASS](verification/membership-scheduler-20261107/RESULTS.md) doložil skutečný start s odchylkou 3 s.
 Místní úloha PAUSED, skutečné P05/P07 a export P06 dál odložené.
 
 

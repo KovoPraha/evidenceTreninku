@@ -15,5 +15,5 @@ Nové role/osoby/lekce ani účast se kvůli ověření nevytvářely.
 
 Původní WIP zachovaný; detaily izolovaných větví a výsledkového předání v plánu.
 Release/flags vlastní [CURRENT_STATE](CURRENT_STATE.md); nasazení neopakovat.
-Další P11 je výběr osob (10221 voleb), mobil a souběh s celým HTTP/browser;
+Další P11 je existující [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366) pro výběr osob; neduplikovat. Dále mobil a souběh s celým HTTP/browser;
 nejde o dokončení K0.2. [Registr](WORK_PLAN_CURRENT.md) zůstává otevřený.

@@ -54,8 +54,8 @@ Původní WIP zachovaný, zdroje/flags ani data původní kopie se nemění.
 - Původní WIP v `C:/xampp/htdocs/evidencePavel` zachovaný; hash
   `kis_rosters_admin.php` je stále `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
 
-Další P11: samostatně navrhnout omezený výběr osob místo 10221 voleb;
+Další P11: navázat na existující [PR #366](https://github.com/KovoPraha/evidenceTreninku/pull/366) pro omezený výběr osob místo 10221 voleb;
 zachovat výběr, rozsahy, zastupování a přístupnost a změřit celé HTTP/browser.
-Tento větší UI řez se nyní neimplementoval. Celé K0.2 a lidská přejímka otevřené.
+Tento větší UI řez se v této relaci neimplementoval; podle přijatého #368 pokračuje samostatně, neduplikovat. Celé K0.2 a lidská přejímka otevřené.
 Výsledkové předání: větev `codex/performance-release-handoff-20261107`,
 worktree `C:/Users/Marek/Documents/Codex/evidencePavel-performance-release-handoff-20261107`.
