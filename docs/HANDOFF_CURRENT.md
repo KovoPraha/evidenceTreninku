@@ -4,7 +4,25 @@ Stav nasazení, integrací, CI a otevřené provozní body jsou výhradně v
 [CURRENT_STATE.md](CURRENT_STATE.md). Dřívější snapshoty zachovává
 [CHANGELOG-PROVOZ.md](CHANGELOG-PROVOZ.md). Před změnou čti také [CLAUDE.md](../CLAUDE.md).
 
-## Poslední návaznost: P11 optimalizace docházky
+## Poslední návaznost: P11 celé HTTP a browser
+
+Vlastník zadal celé načtení, další role a filtry bez změn produkce/WIP.
+Větev `codex/full-http-performance-20261107`, vlastní kopie
+`C:/Users/Marek/Documents/Codex/evidencePavel-full-http-performance-20261107`.
+[Výsledky, úplná matice a důkazy](verification/full-http-performance-20261107/RESULTS.md),
+[datované předání](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md).
+**65 HTTP případů / 930 vzorků, 31 browser případů / 403 pozorování**, standardní
+login a skutečný bootstrap/navigace. Celé HTML v diagnostice shodné, 0 SQL zápisů,
+checksums shodné, 31 DOM kontrol a dvě čerstvé revokace PASS. Všech 11 aktuálních
+pozic pokryté pozitivně či odmítnutím, plus druhý trenér/anonym.
+R06 s 10221 osobami vrací cca 1,37 MB HTML, HTTP medián 0,81 s / Chrome load
+6,18 s; další priorita omezený výběr osob a kontroly lekcí (203 SQL).
+Místně 42 testů / 2852 assertions PASS; finální CI/merge samostatně ověřované.
+Žádný deploy. Vlastní DB/HTTP/browser zastavené, schéma/config/cookies uklizené,
+původní WIP otisk shodný. Další role/objemy a mobil/souběh/R01–R16 mají meze
+v protokolu; lokální vývojové časy nejsou produkční SLA.
+
+## Předchozí návaznost: P11 optimalizace docházky
 
 Pokyn vlastníka „ok, pokračuj“ navazuje R06 bez změn produkce a se zachováním WIP.
 Větev `codex/attendance-read-performance-20261107`, vlastní kopie

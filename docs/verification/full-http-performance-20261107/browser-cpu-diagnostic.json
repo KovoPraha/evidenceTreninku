@@ -1,0 +1,399 @@
+{
+  "complete": true,
+  "method": "CDP Timeline; single diagnostic run; nested durations are NOT additive or exclusive",
+  "cases": [
+    {
+      "path": "/planovac.php?jen_moje=0",
+      "status": 200,
+      "trace_events": 918,
+      "events": [
+        {
+          "name": "UpdateLayoutTree",
+          "count": 16,
+          "inclusive_ms": 290.566,
+          "max_ms": 252.448
+        },
+        {
+          "name": "Layout",
+          "count": 12,
+          "inclusive_ms": 86.318,
+          "max_ms": 52.1
+        },
+        {
+          "name": "V8.GC_MC_BACKGROUND_MARKING",
+          "count": 10,
+          "inclusive_ms": 26.916999999999998,
+          "max_ms": 8.786
+        },
+        {
+          "name": "ParseHTML",
+          "count": 8,
+          "inclusive_ms": 26.279000000000003,
+          "max_ms": 10.217
+        },
+        {
+          "name": "Paint",
+          "count": 21,
+          "inclusive_ms": 14.911999999999999,
+          "max_ms": 6.32
+        },
+        {
+          "name": "PrePaint",
+          "count": 21,
+          "inclusive_ms": 13.455,
+          "max_ms": 6.498
+        },
+        {
+          "name": "ParseAuthorStyleSheet",
+          "count": 4,
+          "inclusive_ms": 12.386,
+          "max_ms": 6.642
+        },
+        {
+          "name": "MajorGC",
+          "count": 1,
+          "inclusive_ms": 10.411,
+          "max_ms": 10.411
+        },
+        {
+          "name": "V8.GCFinalizeMC",
+          "count": 1,
+          "inclusive_ms": 10.349,
+          "max_ms": 10.349
+        },
+        {
+          "name": "V8.GC_MARK_COMPACTOR",
+          "count": 1,
+          "inclusive_ms": 10.333,
+          "max_ms": 10.333
+        },
+        {
+          "name": "EvaluateScript",
+          "count": 8,
+          "inclusive_ms": 10.145,
+          "max_ms": 3.613
+        },
+        {
+          "name": "BackgroundJSStreamManager::RunScriptStreamingTask",
+          "count": 3,
+          "inclusive_ms": 8.598999999999998,
+          "max_ms": 7.39
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "count": 3,
+          "inclusive_ms": 8.497,
+          "max_ms": 7.344
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "count": 3,
+          "inclusive_ms": 8.46,
+          "max_ms": 7.327
+        },
+        {
+          "name": "EventDispatch",
+          "count": 44,
+          "inclusive_ms": 8.362999999999998,
+          "max_ms": 5.372
+        },
+        {
+          "name": "LocalWindowProxy::Initialize",
+          "count": 2,
+          "inclusive_ms": 7.933,
+          "max_ms": 5.44
+        },
+        {
+          "name": "v8.callFunction",
+          "count": 12,
+          "inclusive_ms": 7.396000000000001,
+          "max_ms": 4.509
+        },
+        {
+          "name": "FunctionCall",
+          "count": 12,
+          "inclusive_ms": 7.313000000000001,
+          "max_ms": 4.499
+        },
+        {
+          "name": "V8.GCIncrementalMarking",
+          "count": 32,
+          "inclusive_ms": 6.558999999999999,
+          "max_ms": 1.691
+        },
+        {
+          "name": "V8.GC_MC_INCREMENTAL",
+          "count": 32,
+          "inclusive_ms": 6.467,
+          "max_ms": 1.689
+        },
+        {
+          "name": "v8.run",
+          "count": 8,
+          "inclusive_ms": 6.162000000000001,
+          "max_ms": 2.238
+        },
+        {
+          "name": "V8.GC_MC_BACKGROUND_SWEEPING",
+          "count": 3,
+          "inclusive_ms": 3.858,
+          "max_ms": 1.342
+        },
+        {
+          "name": "Layerize",
+          "count": 14,
+          "inclusive_ms": 3.801,
+          "max_ms": 1.113
+        },
+        {
+          "name": "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING",
+          "count": 32,
+          "inclusive_ms": 3.707999999999999,
+          "max_ms": 1.677
+        },
+        {
+          "name": "v8.compile",
+          "count": 8,
+          "inclusive_ms": 3.548,
+          "max_ms": 1.27
+        }
+      ],
+      "scripts": [
+        {
+          "location": "http://127.0.0.1:18094/assets/app-ui.js?v=1794041428:111",
+          "count": 1,
+          "inclusive_ms": 4.499
+        },
+        {
+          "location": "http://127.0.0.1:18094/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794041429:6",
+          "count": 5,
+          "inclusive_ms": 1.125
+        },
+        {
+          "location": "http://127.0.0.1:18094/assets/app-ui.js?v=1794041428:163",
+          "count": 1,
+          "inclusive_ms": 0.856
+        },
+        {
+          "location": "http://127.0.0.1:18094/planovac.php?jen_moje=0:2458",
+          "count": 1,
+          "inclusive_ms": 0.264
+        },
+        {
+          "location": "http://127.0.0.1:18094/assets/app-ui.js?v=1794041428:4",
+          "count": 1,
+          "inclusive_ms": 0.197
+        },
+        {
+          "location": "http://127.0.0.1:18094/planovac.php?jen_moje=0:764",
+          "count": 1,
+          "inclusive_ms": 0.173
+        },
+        {
+          "location": "http://127.0.0.1:18094/planovac.php?jen_moje=0:382",
+          "count": 1,
+          "inclusive_ms": 0.16
+        },
+        {
+          "location": "http://127.0.0.1:18094/assets/staff-notifications.js:8",
+          "count": 1,
+          "inclusive_ms": 0.039
+        }
+      ]
+    },
+    {
+      "path": "/training_closure_admin.php?id=101",
+      "status": 200,
+      "trace_events": 22089,
+      "events": [
+        {
+          "name": "UpdateLayoutTree",
+          "count": 28,
+          "inclusive_ms": 451.81,
+          "max_ms": 285.831
+        },
+        {
+          "name": "ParseHTML",
+          "count": 12,
+          "inclusive_ms": 307.919,
+          "max_ms": 231.171
+        },
+        {
+          "name": "Layout",
+          "count": 24,
+          "inclusive_ms": 239.94100000000003,
+          "max_ms": 96.552
+        },
+        {
+          "name": "EventDispatch",
+          "count": 20486,
+          "inclusive_ms": 87.58100000000461,
+          "max_ms": 39.9
+        },
+        {
+          "name": "PrePaint",
+          "count": 30,
+          "inclusive_ms": 84.64599999999999,
+          "max_ms": 45.341
+        },
+        {
+          "name": "v8.callFunction",
+          "count": 11,
+          "inclusive_ms": 45.901,
+          "max_ms": 39.284
+        },
+        {
+          "name": "FunctionCall",
+          "count": 11,
+          "inclusive_ms": 45.803000000000004,
+          "max_ms": 39.269
+        },
+        {
+          "name": "Paint",
+          "count": 45,
+          "inclusive_ms": 45.193999999999996,
+          "max_ms": 9.066
+        },
+        {
+          "name": "V8.GC_MC_BACKGROUND_MARKING",
+          "count": 9,
+          "inclusive_ms": 30.689999999999998,
+          "max_ms": 8.564
+        },
+        {
+          "name": "V8.GCIncrementalMarking",
+          "count": 158,
+          "inclusive_ms": 20.531999999999996,
+          "max_ms": 0.811
+        },
+        {
+          "name": "V8.GC_MC_INCREMENTAL",
+          "count": 158,
+          "inclusive_ms": 18.912000000000003,
+          "max_ms": 0.799
+        },
+        {
+          "name": "BackgroundJSStreamManager::RunScriptStreamingTask",
+          "count": 3,
+          "inclusive_ms": 18.617,
+          "max_ms": 14.158
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "count": 3,
+          "inclusive_ms": 18.428,
+          "max_ms": 14.132
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "count": 3,
+          "inclusive_ms": 18.224,
+          "max_ms": 14.082
+        },
+        {
+          "name": "ParseAuthorStyleSheet",
+          "count": 3,
+          "inclusive_ms": 17.465,
+          "max_ms": 10.432
+        },
+        {
+          "name": "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING",
+          "count": 158,
+          "inclusive_ms": 16.948000000000004,
+          "max_ms": 0.772
+        },
+        {
+          "name": "EvaluateScript",
+          "count": 7,
+          "inclusive_ms": 11.938999999999998,
+          "max_ms": 7.162
+        },
+        {
+          "name": "MajorGC",
+          "count": 1,
+          "inclusive_ms": 10.271,
+          "max_ms": 10.271
+        },
+        {
+          "name": "V8.GCFinalizeMC",
+          "count": 1,
+          "inclusive_ms": 10.199,
+          "max_ms": 10.199
+        },
+        {
+          "name": "V8.GC_MARK_COMPACTOR",
+          "count": 1,
+          "inclusive_ms": 10.178,
+          "max_ms": 10.178
+        },
+        {
+          "name": "LocalWindowProxy::Initialize",
+          "count": 2,
+          "inclusive_ms": 8.341000000000001,
+          "max_ms": 5.915
+        },
+        {
+          "name": "Layerize",
+          "count": 23,
+          "inclusive_ms": 7.913,
+          "max_ms": 1.093
+        },
+        {
+          "name": "v8.run",
+          "count": 7,
+          "inclusive_ms": 7.079999999999999,
+          "max_ms": 4.946
+        },
+        {
+          "name": "V8.GC_MC_BACKGROUND_SWEEPING",
+          "count": 5,
+          "inclusive_ms": 5.298,
+          "max_ms": 1.293
+        },
+        {
+          "name": "v8.compile",
+          "count": 7,
+          "inclusive_ms": 4.284,
+          "max_ms": 1.995
+        }
+      ],
+      "scripts": [
+        {
+          "location": "http://127.0.0.1:18094/assets/app-ui.js?v=1794041428:111",
+          "count": 1,
+          "inclusive_ms": 39.269
+        },
+        {
+          "location": "http://127.0.0.1:18094/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794041429:6",
+          "count": 5,
+          "inclusive_ms": 4.208
+        },
+        {
+          "location": "http://127.0.0.1:18094/assets/app-ui.js?v=1794041428:4",
+          "count": 1,
+          "inclusive_ms": 1.447
+        },
+        {
+          "location": "http://127.0.0.1:18094/assets/staff-notifications.js:8",
+          "count": 1,
+          "inclusive_ms": 0.362
+        },
+        {
+          "location": "http://127.0.0.1:18094/training_closure_admin.php?id=101:350",
+          "count": 1,
+          "inclusive_ms": 0.214
+        },
+        {
+          "location": "http://127.0.0.1:18094/assets/app-ui.js?v=1794041428:163",
+          "count": 1,
+          "inclusive_ms": 0.16
+        },
+        {
+          "location": "http://127.0.0.1:18094/training_closure_admin.php?id=101:732",
+          "count": 1,
+          "inclusive_ms": 0.143
+        }
+      ]
+    }
+  ]
+}

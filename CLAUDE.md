@@ -19,7 +19,8 @@ Závislosti určuje composer.lock. Webové requesty nesmějí provádět migrace
 
 - Veřejná homepage, katalog, kurzy, klubové akce, kalendáře a velodrom.
 - Rodinné účty, ověřované vazby na osoby, omezený sportovní účet a revokace session.
-- Osm pracovních pozic, oddělené agendy, explicitní delegace a svěření trenérů.
+- Pracovní pozice podle kanonického registru `includes/staff_workspaces.php`,
+  oddělené agendy, explicitní delegace a svěření trenérů.
 - Registrářské zpracování osob, verzované registrační texty/souhlasy, papírové
   podklady, soukromé soubory a historie. Hierarchie soupisek a časově platné členství.
 - Programy, přijetí, tréninky, omluvy, náhrady a uzavření skutečné účasti;

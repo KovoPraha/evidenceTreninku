@@ -408,3 +408,12 @@ Devět párů na MariaDB 10.3/11.4: celá data i HTML shodné, 200 osob
 první neplatné přípravy měření oddělené v kalibračním protokolu.
 [Předání R06](SESSION_HANDOFF_ATTENDANCE_READ_PERFORMANCE_2026-11-07.md) vede
 PR #354, plné HTTP, další role/propojené lekce a hierarchické filtry. Bez nasazení.
+
+Na samostatné zadání 7. 11. dokončené [celé HTTP/browser R05/R06/R13](verification/full-http-performance-20261107/RESULTS.md):
+65 případů / 930 HTTP vzorků, 403 Chrome pozorování, skutečný login/bootstrap/nav,
+další pozice, filtry a propojené lekce. Celé HTML, 31 DOM kontrol, revokace
+a checksums PASS, 0 SQL zápisů v diagnostických GET. Aplikace beze změny.
+Nový nález R06: 10221 osob ve výběru / cca 1,37 MB HTML a více sekund do load
+v tomto Chrome zátěžovém fixture; široké hledání lekcí 203 SQL. [Předání](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md)
+vede prioritu omezeného hledaného výběru při zachování dostupnosti osob,
+další objemy/mobil/souběh a R01–R16. Celé K0.2 ani produkční SLA tím uzavřené nejsou.

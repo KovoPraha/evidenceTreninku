@@ -1,0 +1,65 @@
+{
+  "complete": true,
+  "method": "native Page.navigate; no Playwright page.goto; warm assets; three observations",
+  "accessibility_flags": null,
+  "cases": [
+    {
+      "path": "/planovac.php?jen_moje=0",
+      "samples": [
+        {
+          "url": "http://127.0.0.1:18094/planovac.php?jen_moje=0",
+          "status": 200,
+          "ttfb_ms": 232,
+          "response_end_ms": 234,
+          "dom_content_loaded_ms": 1080.2999999970198,
+          "load_ms": 1088.2999999970198
+        },
+        {
+          "url": "http://127.0.0.1:18094/planovac.php?jen_moje=0",
+          "status": 200,
+          "ttfb_ms": 287.40000000596046,
+          "response_end_ms": 291,
+          "dom_content_loaded_ms": 579,
+          "load_ms": 588.7000000029802
+        },
+        {
+          "url": "http://127.0.0.1:18094/planovac.php?jen_moje=0",
+          "status": 200,
+          "ttfb_ms": 260.1000000089407,
+          "response_end_ms": 263.20000000298023,
+          "dom_content_loaded_ms": 598.9000000059605,
+          "load_ms": 608.1000000089407
+        }
+      ]
+    },
+    {
+      "path": "/training_closure_admin.php?id=102",
+      "samples": [
+        {
+          "url": "http://127.0.0.1:18094/training_closure_admin.php?id=102",
+          "status": 200,
+          "ttfb_ms": 666.2000000029802,
+          "response_end_ms": 690.2999999970198,
+          "dom_content_loaded_ms": 3764.5999999940395,
+          "load_ms": 3841
+        },
+        {
+          "url": "http://127.0.0.1:18094/training_closure_admin.php?id=102",
+          "status": 200,
+          "ttfb_ms": 552.5999999940395,
+          "response_end_ms": 558.2999999970198,
+          "dom_content_loaded_ms": 5672.0999999940395,
+          "load_ms": 5730.5999999940395
+        },
+        {
+          "url": "http://127.0.0.1:18094/training_closure_admin.php?id=102",
+          "status": 200,
+          "ttfb_ms": 639.6000000089407,
+          "response_end_ms": 646.5,
+          "dom_content_loaded_ms": 4162.29999999702,
+          "load_ms": 4233.600000008941
+        }
+      ]
+    }
+  ]
+}
