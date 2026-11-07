@@ -1,0 +1,107 @@
+{
+    "phase": "after",
+    "at_utc": "2026-11-07T12:24:57+00:00",
+    "method": "Five anonymous serial GETs, no cookies or POST. Hash main and shop navigation after removing scripts/nonces/CSRF values. No raw HTML/session stored.",
+    "cases": {
+        "home": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php",
+            "http": 200,
+            "total_ms": 1997.47,
+            "product_ids": [
+                247,
+                218,
+                221,
+                219,
+                220,
+                217,
+                216,
+                93,
+                67,
+                85,
+                124,
+                104
+            ],
+            "sha256": {
+                "main": "4e5cec774baf12141a6e49af345a38ccea5d54afc262abf45cc48a3b4037e800",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": null,
+            "same_public_content": false
+        },
+        "price": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price",
+            "http": 200,
+            "total_ms": 2424.73,
+            "product_ids": [
+                230,
+                229,
+                228,
+                93,
+                274,
+                92,
+                82,
+                83,
+                29,
+                85,
+                117,
+                87
+            ],
+            "sha256": {
+                "main": "342013f0d4e6758d0bf3219add69044852281a2085bde70c07d5b34a40553fd3",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": null,
+            "same_public_content": false
+        },
+        "page2": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2",
+            "http": 200,
+            "total_ms": 4008.04,
+            "product_ids": [
+                172,
+                287,
+                11,
+                269,
+                235,
+                7,
+                174,
+                73,
+                100,
+                117,
+                87,
+                173
+            ],
+            "sha256": {
+                "main": "23bceabd863a6314e5a88ebfbc1c36f22f94336df71338830be4c8f250c35b4a",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": null,
+            "same_public_content": false
+        },
+        "search": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?q=cyklo",
+            "http": 200,
+            "total_ms": 1692.62,
+            "product_ids": [],
+            "sha256": {
+                "main": "e992ef7b64f5593b66ad4f58d212ccb3977257d30619c7334fa2d12977268945",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": 222,
+            "same_public_content": true
+        },
+        "empty": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?q=__catalog_performance_no_match__",
+            "http": 200,
+            "total_ms": 1490.51,
+            "product_ids": [],
+            "sha256": {
+                "main": "7e04a6b98ff64f3014a95f8132877d060d515e1a666baad79f1f099e1e2ae7d4",
+                "navigation": "badd1a4ede6b48947ff2d94411aa56558e7cc5bcf0715470f28752240456408c"
+            },
+            "active_catalog_count": 222,
+            "same_public_content": true
+        }
+    },
+    "parity": false
+}
