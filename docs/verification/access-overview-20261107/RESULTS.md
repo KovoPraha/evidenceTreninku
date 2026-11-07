@@ -1,5 +1,8 @@
 # Lidé a přístupy — místní ověření 7. 11. 2026
 
+Následné schválené nasazení a produkční přejímka jsou doložené v
+[produkčním protokolu](../access-release-20261107/RESULTS.md); tento text zachovává původní místní rozsah.
+
 [Zadání, rozsah, větev a další krok](../../ACCESS_OVERVIEW_2026-11-07.md).
 Základ `89edfdbe`, PHP 8.2.12, SQLite; pouze syntetické účty LOCALHOST.
 
