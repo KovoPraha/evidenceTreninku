@@ -1,0 +1,120 @@
+name: Medical filter parity and performance
+
+on:
+  pull_request:
+    paths:
+      - 'includes/medical_clearance_state_read.php'
+      - 'includes/medical_clearance_read.php'
+      - 'includes/medical_clearance_filtered_read.php'
+      - 'tests/Support/MedicalFilter*'
+      - 'tests/Integration/MedicalFilterReadTest.php'
+      - '.github/workflows/medical-filter-performance.yml'
+  workflow_dispatch:
+    inputs:
+      baseline:
+        description: Exact pre-optimization commit with the current medical page
+        required: true
+        default: '35fdad4483ec4326e5da9b6ffbb908f77a4df85f'
+
+permissions:
+  contents: read
+
+jobs:
+  native-filter:
+    name: Medical filter native (MariaDB ${{ matrix.mariadb-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        mariadb-version: ['10.3', '11.4']
+    services:
+      mariadb:
+        image: mariadb:${{ matrix.mariadb-version }}
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.2'
+          extensions: mbstring, gd, zip, curl, pdo_mysql, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+      - name: Install locked dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Verify exact current-main parity on native PDO
+        env:
+          EVIDENCE_ROSTER_READ_MARIADB: '1'
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+        run: php vendor/bin/phpunit tests/Integration/MedicalFilterReadTest.php --log-junit medical-filter-tests.xml
+      - name: Measure paired filtered reads without SQL result caching
+        env:
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: php tests/Support/MedicalFilterProfile.php > medical-filter-comparison.json
+      - name: Preserve native parity and paired measurements
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: medical-filter-native-${{ matrix.mariadb-version }}
+          path: |
+            medical-filter-comparison.json
+            medical-filter-tests.xml
+          retention-days: 30
+
+  integrated-medical-filter:
+    name: Medical filter HTTP and Chrome (MariaDB 11.4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.2'
+          extensions: mbstring, gd, zip, curl, pdo_mysql, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+      - name: Prepare locked PHP dependencies and browser CLI
+        run: |
+          composer install --prefer-dist --no-interaction --no-progress
+          npm install --global @playwright/cli@0.1.23
+          if ! command -v google-chrome >/dev/null; then npx --yes playwright install --with-deps chrome; fi
+          google-chrome --version
+          playwright-cli --version
+      - name: Compare current main and medical list on one owned fixture
+        env:
+          MEDICAL_FILTER_BASE_SHA: ${{ inputs.baseline || '35fdad4483ec4326e5da9b6ffbb908f77a4df85f' }}
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: python3 tests/Support/MedicalFilterIntegratedProfile.py
+      - name: Preserve safe integrated measurements
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: medical-filter-integrated-http-browser
+          path: output/medical-filter-ci-safe/
+          if-no-files-found: warn
+          retention-days: 30

@@ -54,3 +54,7 @@ při regresi upravit variantu nebo zachovat konkrétní původní cestu a důvod
 Práva, writer, soukromé dokumenty, zdravotní rozhodnutí a integrační flags neměnit.
 DDL není součástí návrhu; před případnou další změnou indexů ověřit skutečný
 produkční inventář. Přihlášené produkční UAT/mobil/souběh a ostatní K0.2 samostatné.
+
+## Průběh implementace
+
+První implementace hotová lokálně, přesný současný baseline35fdad44 včetně jeho stavového readeru zmrazený nezávisle. Nová sada7/454 a společná regrese25/801 PASS, styl/lint PASS. Přímá osoba a transakce zachovávají SQL/bindingy; předchozí test požadující původní SQL i u q/data nahrazen novým kontraktem výsledků podle D15. Nativní profiler14případů×4objemy100/1k/10k/100k,17střídavých párů a4zahřátí s query cache OFF. Samostatné nativní joby nezvětšují rozpočet staré integrační sady. HTTP benchmark porovnává přesné dva původní aplikační soubory, všech30k/300k záznamů a rozložená data revizí na jednom seedu;15kladných/12záporných případů a6Chrome scénářů. Výkon zatím NOT RUN; implementace je kandidát k měření, nikoli k deployi.

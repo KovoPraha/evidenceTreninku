@@ -11,6 +11,20 @@ final class MedicalClearanceStateRead
         if ($pdo->inTransaction() || $params !== []) {
             return medicalClearanceStatePage($pdo, $base, $params, $filters, $on);
         }
+        return self::projectedPage($pdo, $base, $params, $filters, $on);
+    }
+
+    /** Used after the filtered reader has established a broad candidate set. */
+    public static function filteredPage(PDO $pdo, string $base, array $params, array $filters, string $on): array
+    {
+        if ($pdo->inTransaction() || str_contains($base, 'w.sportovec_id=?')) {
+            return medicalClearanceStatePage($pdo, $base, $params, $filters, $on);
+        }
+        return self::projectedPage($pdo, $base, $params, $filters, $on);
+    }
+
+    private static function projectedPage(PDO $pdo, string $base, array $params, array $filters, string $on): array
+    {
         $exactState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mr.state' : 'mr.state COLLATE BINARY';
         $verifiedOnly = in_array($filters['state'], ['valid', 'expired', 'not_yet_valid'], true);
         $latestId = $verifiedOnly ? 'NULL' : 'MAX(mr.id)';
@@ -20,6 +34,17 @@ final class MedicalClearanceStateRead
         $grouped = 'SELECT mr.watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id'
             . ' FROM medical_clearance_records mr'
             . ($verifiedOnly ? " WHERE $exactState='verified'" : '') . ' GROUP BY mr.watch_id';
+        $dateParams = [];
+        if ($filters['from'] !== '' || $filters['to'] !== '') {
+            // Scope history by review date, without repeating the person's text search or join.
+            $dates = $filters;
+            $dates['q'] = '';
+            $where = staffListWhere($dates, [], 'w.next_review_on', null, $dateParams);
+            $grouped = 'SELECT w.id watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id'
+                . ' FROM medical_clearance_watches w ' . ($verifiedOnly ? 'JOIN' : 'LEFT JOIN')
+                . ' medical_clearance_records mr ON mr.watch_id=w.id WHERE ' . $where
+                . ($verifiedOnly ? " AND $exactState='verified'" : '') . ' GROUP BY w.id';
+        }
         $headJoin = $verifiedOnly ? 'JOIN' : 'LEFT JOIN';
         $projection = self::join($base, $headJoin . ' (' . $grouped . ') mc ON mc.watch_id=w.id'
             . ' ' . $headJoin . ' medical_clearance_records mv ON mv.id=mc.verified_id'
@@ -64,7 +89,7 @@ final class MedicalClearanceStateRead
         $simpleStatus = 'CASE ' . $noVerified
             . "WHEN mv.issued_on>? THEN 'not_yet_valid' WHEN mv.valid_until<? THEN 'expired' ELSE 'valid' END";
         $predicate = '(NOT (' . $complex . ') AND (' . $simpleStatus . ')=?)';
-        $bindings = [$on, $on, $on, $filters['state']];
+        $bindings = [...$dateParams, ...$params, $on, $on, $on, $filters['state']];
         if ($matching !== []) {
             $predicate .= ' OR w.id IN (' . implode(',', array_fill(0, count($matching), '?')) . ')';
             array_push($bindings, ...$matching);
