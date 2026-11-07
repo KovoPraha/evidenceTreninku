@@ -28,9 +28,10 @@ function orderPublicMoney(int $minor, string $currency): string
 $paymentError = '';
 $qrError = false;
 $qr = null;
+$documents = null;
+$guestAccess = (string)($_GET['access'] ?? '');
+$isGuestAccess = $guestAccess !== '';
 try {
-    $guestAccess = (string)($_GET['access'] ?? '');
-    $isGuestAccess = $guestAccess !== '';
     if ($isGuestAccess) {
         $order = shopGuestOrderByCode($pdo, (string)($_GET['code'] ?? ''), $guestAccess);
     } elseif (isset($_SESSION['verejny_uzivatel_id'])) {
@@ -107,6 +108,10 @@ try {
     http_response_code(404);
     exit('Objednávka nebyla nalezena.');
 } catch (StripeGatewayException|SumUpGatewayException|InvalidArgumentException $exception) {
+    if (!isset($order)) {
+        http_response_code(404);
+        exit('Objednávka nebyla nalezena.');
+    }
     $reference = strtoupper(substr(bin2hex(random_bytes(6)), 0, 10));
     error_log('order_checkout ref='.$reference.' order_id='.(int)($order['id'] ?? 0).' account_id='.(int)($_SESSION['verejny_uzivatel_id'
     ] ?? 0).' error='.$exception->getMessage());
@@ -126,6 +131,10 @@ try {
             error_log('order_qr order_id='.(int)$order['id'].' error='.$exception->getMessage());
         }
     }
+}
+if (!isset($order)) {
+    http_response_code(404);
+    exit('Objednávka nebyla nalezena.');
 }
 $sumupAvailable = !$isGuestAccess && sumupIsEnabled() && shopPaymentPolicyAllowsSumUp($order['accepted_payment_methods']
     ?? null) && $order['status'] === 'placed' && $order['payment_record_status'] === 'pending';

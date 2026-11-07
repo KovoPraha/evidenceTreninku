@@ -1280,8 +1280,8 @@ function shopOrderAdminList(PDO $pdo, int $limit = 200, string $query = ''): arr
         .'LEFT JOIN shop_order_events e ON e.id=(SELECT MAX(e2.id) FROM shop_order_events e2 WHERE e2.order_id=o.id) ';
     $parameters = [];
     if ($query !== '') {
-        $sql .= ('WHERE o.public_code LIKE ? OR o.customer_name_snapshot LIKE ? OR o.customer_email_snapshot ' .
-    'LIKE ? OR p.variable_symbol LIKE ? ')
+        $sql .= ('WHERE o.public_code LIKE ? OR o.customer_name_snapshot LIKE ? OR ' .
+    'o.customer_email_snapshot LIKE ? OR p.variable_symbol LIKE ? ')
         ;
         $needle = '%'.$query.'%';
         $parameters = [$needle,$needle,$needle,$needle];

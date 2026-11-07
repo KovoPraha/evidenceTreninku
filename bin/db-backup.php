@@ -172,6 +172,7 @@ function ownedColumnsPresentInSnapshot(array $columns): array
  * jidlo_*, bar_*, results_* and legacy/archive tables are not owned here.
  */
 const EVIDENCE_TABLES = [
+    'shop_document_policies', 'shop_order_documents',
     'kis_bar_invoices',
     'kis_bar_invoice_receipts',
     'kis_bar_invoice_receipt_items',

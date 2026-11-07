@@ -42,7 +42,7 @@ final class ShopStorefrontWiringTest extends TestCase
         self::assertStringContainsString('clubProgramBirthDateWarning', $service);
         self::assertStringContainsString('Koho přihlašujete?', $page);
         self::assertStringContainsString('quick-athlete-name-fields', $page);
-        self::assertStringContainsString("\$_POST['jmeno']=(string)(\$_POST['parent_first_name']", $page);
+        self::assertStringContainsString("\$_POST['jmeno']=(string)(\$_POST['parent_first_name']", preg_replace('/\s+/', '', $page));
     }
 
     public function testUnavailableCartItemsAreExplainedBeforeCheckout(): void

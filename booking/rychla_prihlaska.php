@@ -7,6 +7,9 @@ header('Cache-Control: no-store, max-age=0');
 header('Pragma: no-cache');
 header('Referrer-Policy: no-referrer');
 require_once dirname(__DIR__).'/db.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Databázové připojení není dostupné.');
+}
 require_once dirname(__DIR__).'/csrf_helper.php';
 require_once dirname(__DIR__).'/includes/shop_storefront.php';
 require_once dirname(__DIR__).'/includes/shop_public_navigation.php';
@@ -270,15 +273,15 @@ shopDocumentBillingFields($pdo, $_POST); ?>
 <hr class="my-4">
 <h2 class="h5">Informace a podmínky objednávky</h2>
 <div class="border rounded p-3 small mb-3">
-<strong><?=quickProgramH($terms['member_data_notice']['version'])?> · <?=quickProgramH($terms['member_data_notice']['title'
-])?>
+<strong><?=quickProgramH($terms['member_data_notice']['version'])?> ·
+<?=quickProgramH($terms['member_data_notice']['title'])?>
 </strong>
 <p class="mb-0"><?=quickProgramH($terms['member_data_notice']['text'])?>
 </p>
 </div>
 <div class="border rounded p-3 small mb-3">
-<strong><?=quickProgramH($terms['birth_number_legal_notice']['version'])?> · <?=quickProgramH($terms['birth_number_legal_notice'
-]['title'])?>
+<strong><?=quickProgramH($terms['birth_number_legal_notice']['version'])?> ·
+<?=quickProgramH($terms['birth_number_legal_notice']['title'])?>
 </strong>
 <p class="mb-0"><?=quickProgramH($terms['birth_number_legal_notice']['text'])?>
 </p>
@@ -301,7 +304,8 @@ shopDocumentBillingFields($pdo, $_POST); ?>
 </div>
 <?php if (isset($terms['csc_birth_number_sharing'])):?>
 <div class="border rounded p-3 small mt-3">
-<strong><?=quickProgramH($terms['csc_birth_number_sharing']['title'])?> · <?=quickProgramH($terms['csc_birth_number_sharing'
+<strong><?=quickProgramH($terms['csc_birth_number_sharing']['title'])?> ·
+<?=quickProgramH($terms['csc_birth_number_sharing'
 ]['version'])?>
 </strong>
 <p><?=quickProgramH($terms['csc_birth_number_sharing']['text'])?>

@@ -7,6 +7,9 @@ header('Cache-Control: no-store, max-age=0');
 header('Pragma: no-cache');
 header('Referrer-Policy: no-referrer');
 require_once dirname(__DIR__) . '/db.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Databázové připojení není dostupné.');
+}
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/shop_storefront.php';
 require_once dirname(__DIR__) . '/includes/shop_public_navigation.php';
