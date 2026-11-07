@@ -38,6 +38,24 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
   nepokračuje ovládání desktopu. Serverové formulářové ověření neoznačovat
   za vizuální produkční Chrome UAT. [Plán a akceptace](ACCESS_OVERVIEW_2026-11-07.md).
 
+## D2026-11-07-03
+
+- **Stav / datum:** PŘIJATO, 7. 11. 2026. Vlastník zadal automatické doklady,
+  e-maily při vytvoření/stornu/vratce, ověření, sloučení a nasazení.
+- **Volba a důvod:** nové objednávky s výslovným finančním pověřením a adresou;
+  neměnný podklad při nákupu, faktura až po úhradě, opravný doklad při stornu.
+  Existující minutový worker, stejné účetní služby a unikátní události chrání
+  před duplicitami. PDF chyba neblokuje zaúčtování příjmu.
+- **Hranice:** samotné storno nevyplácí peníze. Potvrzení vratky až po evidované
+  výplatě. Nejasné doručení držet k prověření, neodesílat naslepo znovu.
+  Historické objednávky bez pověření zpětně nerozesílat; ruční doklady nepřepisovat.
+- **Varianty:** vystavení během platební transakce by spojilo PDF výpadek s penězi;
+  plošný nový odesílač by zasáhl staré zprávy. Zvolen omezený worker a verze pověření.
+- **Provozní cesta:** při nefunkčním Computer Use chráněná operace s přesným
+  vystavovatelem/IČ a existujícím platným finančním pověřením; bez falešné session.
+- **Realizace / akceptace:** [plán a provoz](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
+  [lokální důkazy a otevřené meze](verification/shop-document-automation-20261107/RESULTS.md).
+
 ## Starší rozhodnutí — zachovaná v původních souborech
 
 | Oblast | Trvalý zdroj | Jak číst |

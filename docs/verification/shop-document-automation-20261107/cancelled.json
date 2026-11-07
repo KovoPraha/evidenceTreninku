@@ -1,0 +1,102 @@
+{
+    "synthetic_only": true,
+    "phase": "cancelled",
+    "checked_at": "2026-11-07T10:18:08+01:00",
+    "worker": {
+        "documents": 1,
+        "sent": 2,
+        "failed": 0,
+        "attention": 0
+    },
+    "repeat": {
+        "documents": 0,
+        "sent": 0,
+        "failed": 0,
+        "attention": 0
+    },
+    "captured_mail": [
+        {
+            "email": "rodic@localhost.test",
+            "subject": "Objednávka KP261107BE5C4A205A byla zrušena",
+            "body": "Dobrý den,\n\nobjednávka KP261107BE5C4A205A byla zrušena.\nPlatbu evidujeme. Vrácení peněz musí klub ještě provést; potvrdíme je samostatným e-mailem.\n\nObjednávku a doklady najdete po přihlášení: http:\/\/127.0.0.1:18086\/booking\/objednavka.php?code=KP261107BE5C4A205A\n\nKlub KOVO Praha",
+            "attachments": []
+        },
+        {
+            "email": "rodic@localhost.test",
+            "subject": "Opravný doklad – objednávka KP261107BE5C4A205A",
+            "body": "Dobrý den,\n\nv příloze zasíláme opravný doklad ke stornu objednávky KP261107BE5C4A205A. Tento doklad sám nepotvrzuje vrácení peněz; skutečnou vratku potvrzujeme samostatně.\n\nObjednávku a doklady najdete po přihlášení: http:\/\/127.0.0.1:18086\/booking\/objednavka.php?code=KP261107BE5C4A205A\n\nKlub KOVO Praha",
+            "attachments": [
+                {
+                    "name": "doklad-2.pdf",
+                    "sha256": "3a514202642167436ded34fb7f00f95f35e26caf71167a7fc37033e4bc81ada6",
+                    "bytes": 23725
+                }
+            ]
+        }
+    ],
+    "order": [
+        {
+            "id": 2,
+            "status": "cancelled",
+            "payment_status": "refund_required",
+            "total_minor": 24900
+        }
+    ],
+    "documents": [
+        {
+            "id": 1,
+            "kind": "invoice",
+            "status": "issued",
+            "number": "FA-2026-000001",
+            "total_minor": 24900,
+            "pdf_sha256": "beb8f77c43b92e341dbf3e0cc1a71923da649666207e2c49c0516220ed6acdff"
+        },
+        {
+            "id": 2,
+            "kind": "correction",
+            "status": "issued",
+            "number": "OPR-2026-000001",
+            "total_minor": -24900,
+            "pdf_sha256": "3a514202642167436ded34fb7f00f95f35e26caf71167a7fc37033e4bc81ada6"
+        }
+    ],
+    "notifications": [
+        {
+            "notification_type": "shop_order_placed",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_payment_received",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_invoice_issued",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_order_cancelled",
+            "status": "sent",
+            "attempts": 1
+        },
+        {
+            "notification_type": "shop_correction_issued",
+            "status": "sent",
+            "attempts": 1
+        }
+    ],
+    "enrollments": [
+        {
+            "id": 2,
+            "sportovec_id": 1,
+            "status": "cancelled"
+        }
+    ],
+    "monthly_count": [
+        {
+            "total": 0
+        }
+    ]
+}

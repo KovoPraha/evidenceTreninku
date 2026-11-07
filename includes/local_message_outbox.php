@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -25,7 +26,10 @@ function localMessageOutboxSender(string $appHost, string $schema, string $direc
         throw new RuntimeException('Adresář testovacího outboxu není zapisovatelný.');
     }
 
-    return static function (string $recipient, string $subject, string $body) use ($resolved, $schema): bool {
+    return static function (string $recipient, string $subject, string $body, array $attachments = []) use (
+        $resolved,
+        $schema
+    ): bool {
         if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $recipient . $subject) === 1) {
             throw new InvalidArgumentException('Zpráva obsahuje neplatnou e-mailovou hlavičku.');
         }
@@ -35,6 +39,8 @@ function localMessageOutboxSender(string $appHost, string $schema, string $direc
             'original_recipient' => $recipient,
             'subject' => $subject,
             'body' => $body,
+            'attachments' => array_map(static fn (array $file): array => ['name' => $file['name'],'sha256' => hash('sha256', $file['bytes']),'base64' =>
+    base64_encode($file['bytes'])], $attachments),
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
         $path = $resolved . DIRECTORY_SEPARATOR . date('Ymd_His') . '_' . bin2hex(random_bytes(8)) . '.json';
         if (file_put_contents($path, $payload . PHP_EOL, LOCK_EX) === false) {
