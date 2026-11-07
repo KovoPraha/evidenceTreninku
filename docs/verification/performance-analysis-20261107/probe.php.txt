@@ -1,0 +1,106 @@
+<?php
+declare(strict_types=1);
+
+// CLI-only, synthetic SQLite in memory. Never reads application config or a network DB.
+if (PHP_SAPI !== 'cli') { exit(1); }
+$root = dirname(__DIR__, 3);
+require_once $root . '/tests/Support/QueryProfilePdo.php';
+require_once $root . '/tests/Support/StorefrontReadFixture.php';
+require_once $root . '/includes/coach_training_access.php';
+require_once $root . '/includes/shop_member_pricing.php';
+require_once $root . '/includes/shop_catalog_cards.php';
+date_default_timezone_set('Europe/Prague');
+
+function connection(bool $profile): PDO {
+    return $profile ? new Tests\Support\QueryProfilePdo('sqlite::memory:')
+        : new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+}
+function copyFixture(PDO $source, PDO $target): void {
+    foreach ($source->query("SELECT name,sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")->fetchAll() as $table) {
+        $target->exec($table['sql']);
+        foreach ($source->query('SELECT * FROM "' . $table['name'] . '"')->fetchAll(PDO::FETCH_NUM) as $row) {
+            $insert = $target->prepare('INSERT INTO "' . $table['name'] . '" VALUES(' . implode(',', array_fill(0, count($row), '?')) . ')');
+            $insert->execute($row);
+        }
+    }
+}
+function observe(PDO $plain, Tests\Support\QueryProfilePdo $instrument, callable $operation): array {
+    for ($i = 0; $i < 3; $i++) { $operation($plain); }
+    $times = []; $peaks = [];
+    for ($i = 0; $i < 20; $i++) {
+        memory_reset_peak_usage(); $before = memory_get_usage(); $start = hrtime(true);
+        $result = $operation($plain);
+        $times[] = (hrtime(true) - $start) / 1e6;
+        $peaks[] = max(0, memory_get_peak_usage() - $before);
+        unset($result);
+    }
+    $operation($instrument); // Warm schema availability just as on the plain connection.
+    $instrument->profile = []; $instrument->profiling = true;
+    $actual = $operation($instrument);
+    $instrument->profiling = false;
+    $expected = $operation($plain);
+    if ($actual !== $expected) { throw new RuntimeException('Instrumented data mismatch'); }
+    $queries = [];
+    foreach ($instrument->profile as $entry) {
+        $sql = preg_replace('/\s+/', ' ', trim($entry['sql']));
+        $queries[$sql] = ($queries[$sql] ?? 0) + 1;
+    }
+    $ordered = $times; sort($ordered);
+    return ['sql' => count($instrument->profile), 'fetched_rows' => array_sum(array_column($instrument->profile, 'fetched_rows')),
+        'median_ms' => ($ordered[9] + $ordered[10]) / 2, 'p95_ms' => $ordered[18], 'peak_increment_bytes' => max($peaks),
+        'output_items' => is_array($actual) ? count($actual) : null, 'samples_ms' => $times, 'queries' => $queries, 'parity' => true];
+}
+$results = [];
+foreach ([10, 50, 200] as $n) {
+    $plain = connection(false); $instrument = connection(true);
+    foreach ([$plain, $instrument] as $pdo) {
+        $pdo->exec("CREATE TABLE treneri(id INTEGER PRIMARY KEY,aktivni INTEGER); INSERT INTO treneri VALUES(8,1);
+            CREATE TABLE staff_user_positions(trainer_id INTEGER,position_code TEXT); INSERT INTO staff_user_positions VALUES(8,'coach');
+            CREATE TABLE sportovci(id INTEGER PRIMARY KEY)");
+        for ($id = 1; $id <= $n; $id++) { $pdo->exec('INSERT INTO sportovci VALUES(' . $id . ')'); }
+    }
+    $_SESSION = ['trener_id' => 8, 'staff_positions' => ['coach'], 'staff_active_position' => 'coach'];
+    $results['participant_check_' . $n] = observe($plain, $instrument, static function(PDO $pdo) use ($n): array {
+        coachTrainingAssertPeople($pdo, range(1, $n)); return [];
+    });
+}
+foreach ([12, 100, 500] as $n) {
+    $plain = connection(false); $instrument = connection(true);
+    foreach ([$plain, $instrument] as $pdo) {
+        $pdo->exec("CREATE TABLE treneri(id INTEGER PRIMARY KEY); INSERT INTO treneri VALUES(7);
+            CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,aktivni INTEGER,email_overeno INTEGER); INSERT INTO verejni_uzivatele VALUES(1,1,1);
+            CREATE TABLE shop_products(id INTEGER PRIMARY KEY); INSERT INTO shop_products VALUES(100);
+            CREATE TABLE club_teams(id INTEGER PRIMARY KEY,name TEXT,status TEXT); INSERT INTO club_teams VALUES(10,'Synthetic roster','active');
+            CREATE TABLE account_person_roles(id INTEGER PRIMARY KEY,account_id INTEGER,sportovec_id INTEGER,relation_role TEXT,status TEXT,valid_from TEXT,valid_to TEXT);
+            INSERT INTO account_person_roles VALUES(1,1,50,'guardian','approved','2020-01-01',NULL);
+            CREATE TABLE club_roster_members(id INTEGER PRIMARY KEY,team_id INTEGER,sportovec_id INTEGER,status TEXT,valid_from TEXT,valid_to TEXT);
+            INSERT INTO club_roster_members VALUES(1,10,50,'active','2026-01-01',NULL);
+            CREATE TABLE shop_product_categories(id INTEGER PRIMARY KEY,product_id INTEGER,category_path TEXT,is_default INTEGER,sort_order INTEGER);
+            INSERT INTO shop_product_categories VALUES(1,100,'Synthetic goods',1,0)");
+        $migration = require $root . '/migrations/20260805010000_shop_member_pricing.php'; $migration['up']($pdo);
+        $pdo->exec("INSERT INTO shop_member_category_rules(team_id,category_path,discount_type,value_minor_or_basis_points,active,created_by_trainer_id)
+            VALUES(10,'Synthetic goods','percentage',1000,1,7)");
+    }
+    $results['member_pricing_' . $n] = observe($plain, $instrument, static function(PDO $pdo) use ($n): array {
+        $items = [];
+        for ($id = 1; $id <= $n; $id++) {
+            $item = ['variant_id' => $id, 'product_id' => 100, 'amount_minor' => 10000 + $id, 'currency' => 'CZK'];
+            shopMemberPriceApplyToItem($pdo, 1, $item, '2026-11-07'); $items[] = $item;
+        }
+        return $items;
+    });
+}
+foreach ([12, 1000, 5000] as $n) {
+    $source = Tests\Support\storefrontReadFixture($n, false);
+    $plain = connection(false); $instrument = connection(true);
+    copyFixture($source, $plain); copyFixture($source, $instrument); unset($source);
+    $results['catalog_cards_' . $n] = observe($plain, $instrument, static fn(PDO $pdo): array => shopPublicCatalogCards($pdo));
+}
+$files = ['includes/coach_training_access.php', 'includes/shop_member_pricing.php', 'includes/shop_catalog_cards.php',
+    'includes/shop_public_navigation.php', 'includes/shop_storefront.php', 'includes/shop_storefront_read.php',
+    'tests/Support/StorefrontReadFixture.php', 'tests/Support/QueryProfilePdo.php', 'booking/eshop.php'];
+$hashes = [];
+foreach ($files as $file) { $hashes[$file] = hash_file('sha256', $root . '/' . $file); }
+echo json_encode(['method' => 'PHP CLI, in-process, 3 warmups + 20 plain PDO samples; separate warmed instrumented count; SQLite synthetic memory fixtures; not full HTTP or MariaDB',
+    'php' => PHP_VERSION, 'sqlite' => $plain->query('SELECT sqlite_version()')->fetchColumn(), 'platform' => PHP_OS_FAMILY,
+    'source_sha256' => $hashes, 'cases' => $results], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR), PHP_EOL;

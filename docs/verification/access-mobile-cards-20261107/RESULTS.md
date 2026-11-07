@@ -1,7 +1,7 @@
 # ROLE01-MOB — mobilní karty lidí a přístupů
 
 7. 11. 2026, [schválený plán](../../ACCESS_OVERVIEW_2026-11-07.md),
-[rozhodnutí](../../DECISION_LOG.md#d2026-11-07-04). Vlastní worktree
+[rozhodnutí](../../DECISION_LOG.md#d2026-11-07-05). Vlastní worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-access-overview-20261107`, větev
 `codex/access-visual-uat-20261107`, [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361).
 

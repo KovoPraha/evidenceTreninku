@@ -1,0 +1,43 @@
+[
+  {
+    "path": "/booking/eshop.php",
+    "headers": [
+      "HTTP/1.1 200 OK",
+      "Content-Type: text/html; charset=UTF-8",
+      "Expires: Thu, 19 Nov 1981 08:52:00 GMT",
+      "Cache-Control: no-store, no-cache, must-revalidate",
+      "Content-Encoding: gzip"
+    ],
+    "sets_cookie": true
+  },
+  {
+    "path": "/assets/app-ui.css",
+    "headers": [
+      "HTTP/1.1 200 OK",
+      "Content-Type: text/css",
+      "Content-Length: 6510",
+      "Last-Modified: Fri, 06 Nov 2026 17:48:54 GMT",
+      "ETag: \"6f90-65f9f39ceccc3-gzip\"",
+      "Cache-Control: max-age=604800",
+      "Expires: Sat, 14 Nov 2026 07:30:36 GMT",
+      "Vary: Accept-Encoding",
+      "Content-Encoding: gzip"
+    ],
+    "sets_cookie": false
+  },
+  {
+    "path": "/assets/vendor/bootstrap/bootstrap.min.css",
+    "headers": [
+      "HTTP/1.1 200 OK",
+      "Content-Type: text/css",
+      "Content-Length: 31248",
+      "Last-Modified: Fri, 06 Nov 2026 17:48:54 GMT",
+      "ETag: \"38d63-65f9f39cf1cf9-gzip\"",
+      "Cache-Control: max-age=604800",
+      "Expires: Sat, 14 Nov 2026 07:30:36 GMT",
+      "Vary: Accept-Encoding",
+      "Content-Encoding: gzip"
+    ],
+    "sets_cookie": false
+  }
+]

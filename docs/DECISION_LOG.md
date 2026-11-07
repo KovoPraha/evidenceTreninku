@@ -63,6 +63,26 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
 ## D2026-11-07-04
 
+- **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník výslovně zadal začít
+  klubovými cenami, změřit před/po, ověřit shodu a nic nenasazovat.
+- **Volba a důvod:** oddělený reader pro jednu cenovou prezentaci katalogu/detailu.
+  Společné soupisky a pravidla načíst dávkově, zachovat databázové kolace
+  a původní cenová rozhodnutí. Checkout a transakční cesta zůstanou kanonické.
+- **Varianty:** rozšíření na celý katalogový výřez nebo dlouhodobá cache
+  oprávnění nejsou potřeba k odstranění prokázaných opakovaných SQL.
+  Měření celého HTTP zůstává další samostatný krok.
+- **Dopad a důkazy:** [plán P11 cen](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+  [parita a měření](verification/member-pricing-read-performance-20261107/RESULTS.md),
+  [předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+  [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358).
+  Implementace/parita hotové, začlenění řídí PR; bez deploye a aktivace.
+
+Pracovní označení této volby ve starších commitech PR #358 bylo D2026-11-07-02.
+Při převzetí #356 je kolize s jeho již přijatým ROLE01 rozhodnutím vyřešena
+společným ID D2026-11-07-04; obsah ani původní commitové důkazy se nemění.
+
+## D2026-11-07-05
+
 - **Stav / datum:** PŘIJATO, 7. 11. 2026, výslovné zadání vlastníka po ROLE01-VIS.
 - **Volba:** pod 768 px samostatné sémantické karty osob se skupinami rolí,
   stavem a přímým tlačítkem editoru; nad breakpointem zůstává tabulka.
@@ -74,11 +94,12 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 - **Realizace / další krok:** [ROLE01-MOB](ACCESS_OVERVIEW_2026-11-07.md), PR #361;
   testy a vizuální produkční přejímka se zaznamenají samostatně.
 
+
 ## Starší rozhodnutí — zachovaná v původních souborech
 
 | Oblast | Trvalý zdroj | Jak číst |
 | --- | --- | --- |
-| ROLE01 — Lidé a přístupy: implementace, nasazení a technická produkční přejímka hotové | [Plán](ACCESS_OVERVIEW_2026-11-07.md), [důvod a oprávnění](#d2026-11-07-02), [produkční protokol](verification/access-release-20261107/RESULTS.md) | [Uzavření E2026-11-07-07/10](EVENT_LOG.md), #356; původní role přesně zachované, nové testovací účty deaktivované. Formuláře 16/16 PASS; [navazující skutečný Chrome průchod](verification/access-visual-20261107/RESULTS.md) dokončen s výhradou čitelnosti mobilní tabulky |
+| ROLE01 — Lidé a přístupy: implementace, nasazení a technická produkční přejímka hotové | [Plán](ACCESS_OVERVIEW_2026-11-07.md), [důvod a oprávnění](#d2026-11-07-02), [produkční protokol](verification/access-release-20261107/RESULTS.md) | [Uzavření E2026-11-07-07/14](EVENT_LOG.md), #356; původní role přesně zachované, nové testovací účty deaktivované. Formuláře 16/16 PASS; [navazující skutečný Chrome průchod](verification/access-visual-20261107/RESULTS.md) dokončen s výhradou čitelnosti mobilní tabulky |
 | Klubové dokončení a přejímka | [CLUB_COMPLETION_DECISIONS](CLUB_COMPLETION_DECISIONS.md) | D01–D20 a jejich skutečné podmínky; není to seznam všech hotových kroků |
 | Členská evidence bez sezon | [Pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [schválená mapa](MEMBER_EVIDENCE_APPROVED_MAP_2026-11-02.md) | D1–D8 a provozní rozhodnutí; E6–E8 ověřit v aktuálním registru |
 | Původní architektura a program | [Zadání a rozhodnutí](plan-eshop-tymova-evidence/02-zadani-a-rozhodnuti.md) | Historické programové D-xxx; dnešní stav a priority určuje registr |
@@ -91,6 +112,7 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 | Práce / rozsah | Plán, výsledek a důvody | Historie / další etapy |
 | --- | --- | --- |
+| P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-04) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); bez merge/deploye, katalog/HTTP dál otevřené |
 | DOC01 — souborová dokumentace a stručné předání | [Plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [důvod rozhodnutí](#d2026-11-07-01) | [Předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), [deník](EVENT_LOG.md); stav CI/přijetí určuje PR |
 | P11 R13 — implementace v main #352, bez deploye | [Plán a důkazy](verification/medical-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md), celé K0.2 otevřené |
 | P11 R05 — implementace v main #353, bez deploye | [Plán a důkazy](verification/planner-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md), hierarchický filtr/HTTP otevřené |

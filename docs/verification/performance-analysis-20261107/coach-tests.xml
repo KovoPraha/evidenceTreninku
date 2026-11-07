@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="CoachTrainingAccessTest" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\CoachTrainingAccessTest.php" tests="4" assertions="14" errors="0" failures="0" skipped="0" time="0.360340">
+    <testcase name="testCoachWithoutAnyGrantCanSelectAndValidateEveryActiveRosterAndParticipant" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\CoachTrainingAccessTest.php" line="34" class="CoachTrainingAccessTest" classname="CoachTrainingAccessTest" assertions="5" time="0.097394"/>
+    <testcase name="testOwnRosterIsFirstAndOtherRostersStaySelectable" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\CoachTrainingAccessTest.php" line="47" class="CoachTrainingAccessTest" classname="CoachTrainingAccessTest" assertions="4" time="0.006352"/>
+    <testcase name="testClosedRosterAndMissingParticipantCannotBeSubmitted" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\CoachTrainingAccessTest.php" line="60" class="CoachTrainingAccessTest" classname="CoachTrainingAccessTest" assertions="2" time="0.063213"/>
+    <testcase name="testRoleRevocationAndInactiveAccountBlockTrainingEvenWithCachedSession" file="C:\Users\Marek\Documents\Codex\evidencePavel-performance-analysis-20261107\tests\Integration\CoachTrainingAccessTest.php" line="73" class="CoachTrainingAccessTest" classname="CoachTrainingAccessTest" assertions="3" time="0.193381"/>
+  </testsuite>
+</testsuites>

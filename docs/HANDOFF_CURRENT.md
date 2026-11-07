@@ -12,9 +12,6 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   Vlastní větev `codex/access-visual-uat-20261107` / [PR #361](https://github.com/KovoPraha/evidenceTreninku/pull/361); dále implementace, CI, merge/deploy a Chrome.
 
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
-  #356 nasazeno jako `ebb8b2e3`; formuláře 16/16 PASS, původních 46 účtů beze změny.
-  Oba nové testovací účty deaktivované a bez rolí. Žádný další deploy ani opakování testu není potřeba.
-  Výsledkové předání: `codex/access-release-20261107`, stejný vlastní worktree jako implementace.
 
 - DOC01: [zadání, audit, plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
   Obsah a místní kontroly hotové; [GitHub předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), stav CI/merge u PR.
@@ -25,9 +22,12 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   [R05](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md),
   [R13](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md).
   Dále plné HTTP/bootstrap/nav, další role a propojená docházka podle P11.
+  Klubové ceny: [plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+  [předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
+  PR #358 – vlastník povolil merge bez deploye; po CI navazuje katalog.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
-  Místní tok a 2337 testů PASS; dále finální CI, schválený merge/deploy a shop_enable.
+  Místní tok a 2337 testů PASS; #355 v main, deploy a shop_enable vede vlastní plán.
   Browser blokovaný; skutečná banka a externí schránka zůstávají neověřené.
 - P02/P04: [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md),
   [účetní adaptér](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md); publikaci neopakovat.
