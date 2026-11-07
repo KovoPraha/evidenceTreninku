@@ -34,13 +34,12 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
   Výsledek nepředpokládat z data; číst důkaz. Místní úloha zůstává PAUSED.
 
 <!-- membership-morning-publish:start -->
-## Ranní audit 7. 11. — čeká na doložený výsledek
+## Ranní serverový výsledek PASS
 
-Termín 05:30 UTC již uplynul; výsledek **NEDOLOŽEN v Gitu**.
-Nejde o důkaz, že server neběžel. Výsledek má doplnit
-[výsledkový PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347).
-PC není potřeba. [Přesný postup a stav](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
+[Ranní serverový výsledek PASS](verification/membership-scheduler-20261107/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
 Skutečné P05/P07 a export P06 zůstávají odložené.
+
 <!-- membership-morning-publish:end -->
 
 <!-- membership-morning-preflight:start -->

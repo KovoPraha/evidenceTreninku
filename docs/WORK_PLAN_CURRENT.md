@@ -129,13 +129,12 @@ Místní úloha PAUSED, skutečné P05/P07 a export P06 dál odložené.
 
 
 <!-- membership-morning-publish:start -->
-## Ranní audit 7. 11. — čeká na doložený výsledek
+## Ranní serverový výsledek PASS
 
-Plánovaný termín 05:30 UTC (06:30 CET) již uplynul. Výsledek v Gitu zatím
-**NEDOLOŽEN**; původní předání uvádělo NOT RUN. Ověřit čtením
-[výsledkové PR #347](https://github.com/KovoPraha/evidenceTreninku/pull/347)
-a [serverový plán](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md), nevyvolávat apply/send.
+[Ranní serverový výsledek PASS](verification/membership-scheduler-20261107/RESULTS.md).
+Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
 Skutečné P05/P07 a export P06 zůstávají odložené.
+
 <!-- membership-morning-publish:end -->
 
 <!-- membership-morning-preflight:start -->
