@@ -1,7 +1,7 @@
 # Aktuální stav projektu
 
 Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) a [úplný katalog](PLAN_CATALOG.md).
-- **P15 S4 panel osoby / auditovaná řešení ROZPRACOVÁNO:** [registrářský čtecí přehled](CSC_SPORTSOFT_S4_REGISTRAR.md), [draft #380](https://github.com/KovoPraha/evidenceTreninku/pull/380), db7a174f / 11 CI PASS; bez deploye/aktivace.
+- **P15 S4 HOTOVO, syntetická přejímka PASS:** [přehled, panel a auditované řešení](CSC_SPORTSOFT_S4_REGISTRAR.md), [draft #382](https://github.com/KovoPraha/evidenceTreninku/pull/382), runtime 2918257b / 11 CI PASS; bez merge/deploye/aktivace.
   [S1 a 11 CI PASS](CSC_SPORTSOFT_S1_KIS.md) v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376); [prompt S2/S3](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md) pushnutý, cílové provedení NOT RUN.
 - **P11-R05-H NASAZENO:** release `e36c9ba6e461b7da842c53939c2fe20eed821f38`, deploy42394551344 SUCCESS; [protokol](verification/planner-hierarchy-release-20261107/RESULTS.md).
   Parita/měření/všech 12 CI PASS; [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md). Import/UAT false; přihlášené UAT NOT RUN.

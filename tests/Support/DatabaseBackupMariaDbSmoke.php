@@ -436,7 +436,7 @@ try {
     if ($externalSnapshot !== externalSyncBackupSnapshot($restore)) {
         throw new RuntimeException('External sync populated backup/restore differs from source.');
     }
-    echo "External sync populated backup/restore PASS (8 tables)\n";
+    echo 'External sync populated backup/restore PASS (' . count($externalSnapshot) . " tables)\n";
     if ($barSnapshot !== barAcceptanceDatabaseSnapshot($restore)) {
         throw new RuntimeException('Nonempty BAR restore differs from the original data snapshot.');
     }

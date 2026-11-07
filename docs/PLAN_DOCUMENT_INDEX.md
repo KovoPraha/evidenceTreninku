@@ -905,7 +905,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | PL-a2fca51079 | [anonymous-planner.php.txt](verification/planner-hierarchy-release-20261107/anonymous-planner.php.txt) | artifact / SUPPORT | P11-R05-H |
 
-| PL-85ea0f67d2 | [P15 S4 přehled registráře](CSC_SPORTSOFT_S4_REGISTRAR.md) | reference / SUPPORT | P15 |
+| PL-85ea0f67d2 | [P15 S4 přehled, panel a auditované řešení](CSC_SPORTSOFT_S4_REGISTRAR.md) | reference / SUPPORT | P15 |
 | PL-400959e0ab | [MEDICAL_PLANNER_SCALE_2026-11-07.md](MEDICAL_PLANNER_SCALE_2026-11-07.md) | plan / DONE | P11-SCALE |
 | PL-fc92c8ac29 | [SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md) | handoff / DONE | P11-SCALE |
 | PL-e7e4ef7ca6 | [RESULTS.md](verification/medical-planner-scale-20261107/RESULTS.md) | artifact / SUPPORT | P11-SCALE |

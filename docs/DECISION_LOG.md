@@ -354,3 +354,8 @@ nikoli výjimka z identity resolveru. Append-only revize, hash aktuálního
 kontextu, odmítnutí zastaralého formuláře a izolace po řádku snímku brání
 přenosu starého vyloučení na změněné údaje. Panel jen z přijatých snímků.
 Bez zapnutí, deploye, schválení baseline či přístupu k portálům/Rikimu.
+
+Doplnění D2026-11-07-P15-S4-REVIEW: implementace v draft #382 (runtime 2918257b),
+syntetické testy a nativní čekání na zámek obou MariaDB potvrzují zvolenou revizní
+kontrolu. Rozhodnutí zůstává oddělené od resolveru; S1 kontrakt se nemění.
+Plné provozní UAT, merge do main, deploy a aktivace nadále NOT RUN.

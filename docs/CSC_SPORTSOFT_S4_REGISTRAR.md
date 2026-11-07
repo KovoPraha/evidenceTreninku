@@ -1,6 +1,15 @@
-# P15 S4 — čtecí přehled pro registráře
+# P15 S4 — přehled, panel osoby a auditované řešení
 
-Datum: 7. 11. 2026. Stav: čtecí implementace a syntetická přejímka HOTOVO v draft #380; vlastník Marek / KIS Codex.
+Aktuální stav 7. 11. 2026: přehled, panel a auditované řešení IMPLEMENTOVÁNY
+v [draft #382](https://github.com/KovoPraha/evidenceTreninku/pull/382), runtime
+`2918257b061133f956be1fc943f24de8cdfd88b4`; všech 11 CI kontrol PASS. Vlastník Marek / KIS Codex.
+Větev `codex/csc-sportsoft-s4-review-20261107`; bez merge do main, deploye a aktivace.
+S1 kontrakt/prompt pro stanici zůstává beze změny. Podrobnosti současného řezu
+jsou od části „Navazující S4“ níže; předchozí čtecí přejímka zůstává historickým důkazem.
+
+## Historický čtecí řez #380
+
+Datum: 7. 11. 2026. Čtecí implementace a syntetická přejímka HOTOVO v draft #380.
 Navazuje na [hlavní plán P15](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md),
 [S1](CSC_SPORTSOFT_S1_KIS.md) v draft [#376](https://github.com/KovoPraha/evidenceTreninku/pull/376).
 Větev `codex/csc-sportsoft-s4-registrar-20261107`, vlastní worktree
@@ -35,9 +44,9 @@ stanice pokračuje na vlastní větvi, S4 nemění příjmový kontrakt.
 
 Požadovaný čtecí řez je hotový až po fungujícím přehledu, syntetických testech
 a sdílení větve s důkazy. Přístup k živým portálům, skutečný worker/pilot,
-provozní aktivace a lidská přejímka zůstávají NOT RUN. Širší S4 z hlavního plánu
-(panel na kartě osoby a auditovaná ruční rozhodnutí) zůstává otevřené;
-duplicitní UCI nelze v této obrazovce ručně potvrdit.
+provozní aktivace a lidská přejímka zůstávají NOT RUN. Při předání #380 byl panel
+osoby a auditované řešení ještě otevřený; navazující implementace je popsána níže.
+Duplicitní UCI nelze v této obrazovce ručně potvrdit.
 
 ## Průběžné výsledky
 
@@ -122,14 +131,14 @@ flagem S1. Zobrazení návrhu nikdy neposune ukazatel přijatého snímku.
 pushnutý v draft [#380](https://github.com/KovoPraha/evidenceTreninku/pull/380).
 Stanice může pokračovat podle [S2/S3 promptu](CSC_SPORTSOFT_S2_S3_STATION_PROMPT.md)
 v pushnuté větvi `codex/csc-sportsoft-s1-ingest-20261107` / #376.
-S4 příjmový kontrakt nemění. Širší S4 (osobní panel, auditovaná ruční
-rozhodnutí), skutečný worker/pilot a plné přihlášené UAT zůstávají otevřené.
+S4 příjmový kontrakt nemění. Tento historický bod předání předcházel doplnění
+panelu a rozhodnutí v #382; skutečný worker/pilot a plné přihlášené UAT zůstávají otevřené.
 Merge/deploy/aktivace a portálové operace NOT RUN. Riki ani jeho data nebyly
 použity; místní syntetické procesy jsou ukončené.
 
 ## Navazující S4 — panel osoby a auditovaná řešení (zadání 7. 11.)
 
-Stav: ROZPRACOVÁNO, vlastník Marek / KIS Codex. Nová větev
+Stav: HOTOVO — implementace a syntetická přejímka; vlastník Marek / KIS Codex. Nová větev
 `codex/csc-sportsoft-s4-review-20261107` ve stávajícím čistém izolovaném worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-csc-sportsoft-s4-20261107`.
 Base: aktuální main `6b1860d5` je předkem #380 / `ad80e3dc`; S1 a čtecí S4
@@ -163,7 +172,7 @@ Plán před implementací:
 
 Akceptace: panel a celé auditované řešení dostupné registráři, žádné vynucené
 párování, zápisy pouze integračních rozhodnutí/auditu a oprávněné historie
-osoby; kmenové údaje, licence, přihlášky a platby beze změny. Dosud NOT RUN.
+osoby; kmenové údaje, licence, přihlášky a platby beze změny. Výsledky níže.
 
 ### Průběžný výsledek implementace navazujícího S4
 
@@ -211,3 +220,70 @@ vlastní větve; konflikty pouze v dokumentačních přehledech, logy i katalog
 zachovávají oba výsledky. Nejde o merge PR do main ani o deploy.
 Browser dále PASS: filtr „Odloženo“ vrací jeden rozhodnutý řádek; panel na
 390/1440 px bez přetečení, původní UCI s nulami a licence zůstávají zobrazené.
+
+### Dokončený browser a aktuální kontroly
+
+Playwright na vlastní dočasné SQLite a localhostu: PASS skutečné GET/POST,
+odložení revize 1 → otevření revize 2, oba důvody/autor #7 v historii; filtr
+Odloženo vracel právě jeden řádek. Panel i detail 390/1440 px bez horizontálního
+přetečení, vizuální kontrola screenshotů PASS. Kmenová osoba #1 / UCI
+00000000001 nezměněná. Browser a PHP proces ukončené, dočasná DB/soubory
+odstraněné a neexistence adresáře potvrzená. Chybějící favicon byl jediný 404.
+Test používá skutečný modul panelu, nikoli celou přihlášenou kartu KIS; její
+integrační místo je záložka KIS. Plné přihlášené UAT zůstává NOT RUN.
+
+První PHPStan běh zjistil nový neověřený PDO bootstrap v historické kartě.
+Opraveno lokální podmínkou `isset` + `instanceof PDO`, žádná nová suppression.
+[PHP quality runtime 2918257b](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404028977)
+PASS; [dokumentace](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404028993)
+a [CodeQL](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404024934) PASS.
+Obnova zálohy a synchronizační sada MariaDB 11.4 už prošly; celá matrix pokračuje.
+
+### Postup registráře po budoucím samostatně povoleném nasazení
+
+1. V přehledu vybrat zdroj a přijatý snímek, případně dokončený návrh;
+   filtr „Stav řešení → K řešení“ ukáže dosud nevyřízené či zneplatněné případy.
+   Důvod nespárování je nezávislý na stavu práce: „Nespadá do KIS“ nevytváří shodu.
+2. Otevřít „Řešení a historie“, zkontrolovat původní pole a aktuální výsledek UCI.
+   Zvolit odložení nebo nespadá do KIS a napsat konkrétní důvod (10–1000 znaků).
+   Nesepisovat sem hesla ani přístupové údaje. Dosavadní rozhodnutí lze znovu otevřít.
+3. Opravu kmenové identity provádí oprávněný registrář samostatným existujícím
+   postupem. Po návratu detail obnovit. Pouze nová jednoznačná shoda zpřístupní
+   „Ověřeno po opravě“; při konfliktu nelze osobu vybrat ani vynutit vazbu.
+4. Po uložení vidět novou revizi/autora/čas/důvod. U ověřené osoby vznikne
+   referenční událost v její historii. Při 409 nic z odmítnutého zápisu nevzniklo;
+   otevřít aktuální detail a posoudit znovu. Historie zobrazuje vždy 20 revizí,
+   starší jsou dostupné odkazem, i když byl snímek mezitím nahrazen.
+5. Na kartě osoby v záložce KIS zkontrolovat přijaté údaje a jejich stáří.
+   Návrhy čekající na schválení sem nepatří. Tento panel nepotvrzuje platbu KIS
+   ani neodvozuje platnou licenci z pouhého roku. Ověření celého baseline,
+   provoz workeru a živé portály nejsou touto implementací povolené.
+
+### Finální syntetická přejímka navazujícího S4
+
+**HOTOVO / push / draft PR #382.** Runtime `2918257b061133f956be1fc943f24de8cdfd88b4`
+navazuje na převzatý main `eafe835b`; všech **11 CI kontrol PASS**. Následující
+předávací commit mění jen dokumentaci a diagnostický výpis počtu tabulek
+v testu obnovy, žádný aplikační kód, migraci, ingest ani konfiguraci.
+
+| Ověření | Výsledek | Důkaz |
+| --- | --- | --- |
+| Kompletní PHPUnit PHP 8.2 | PASS, 2402 testů / 48347 assertions; 2 očekávané SQLite skips pro MariaDB čekání | [Job](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404029006/job/128497776789) |
+| S1 + S4 na MariaDB 10.3 | PASS, 26 testů / 341 assertions, bez skipu; skutečné čekání na connection lock a revokace/identita/revize | [Job](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404029006/job/128497776809) |
+| S1 + S4 na MariaDB 11.4 | PASS, 26 testů / 341 assertions, bez skipu; stejný souběhový kontrakt | [Job](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404029006/job/128497776529) |
+| Úplné zálohy a obnova | PASS na obou MariaDB, 350 vlastněných tabulek; strict porovnání všech 9 neprázdných integračních tabulek včetně rozhodnutí | Oba joby výše |
+| Sdílené čtecí/projekční regrese | PASS na MariaDB 10.3 i 11.4 | [Matrix](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404029006) |
+| PHPStan level 5, suppression budget, styl a anonymous inventory | PASS, žádná nová suppression | [Quality](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404028977) |
+| Dokumentace a CodeQL | PASS | [Docs](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404028993), [CodeQL](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404024934) |
+| Lokální HTTP/browser | PASS, skutečný formulář, audit, oprávnění, CSRF, replay a panel; 390/1440 px, úklid PASS | Scénáře a meze výše |
+
+Starší log obnovy uváděl natvrdo „8 tables“, ale ověřovací funkce již vracela
+všech devět tabulek a kontrolovala přesnou shodu včetně neprázdného rozhodnutí.
+Finální předání nahrazuje pouze tento diagnostický literal skutečným počtem;
+PHP lint PASS. Nemění obsah ani podmínku úspěchu testu obnovy.
+
+Zbývá mimo tento dokončený řez: S0 inventura cílové stanice, S2/S3 syntetické
+adaptéry a propojení proti nezměněnému S1 kontraktu, následně samostatně
+povolený pilot / přihlášené UAT. Schválení baseline či případných změn portálů
+není součástí tohoto řešení. Bez merge do main, nasazení, aktivace scheduleru,
+portálových operací a jakéhokoli přístupu k soukromým datům Rikiho.
