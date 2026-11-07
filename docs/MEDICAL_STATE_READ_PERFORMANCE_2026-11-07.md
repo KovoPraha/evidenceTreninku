@@ -1,81 +1,84 @@
 # P11-R13-S — stavový filtr zdravotního přehledu
 
-7. 11. 2026, Europe/Prague. Stav: ROZPRACOVÁNO, plán před implementací.
-Vlastník: vývoj podle aktuálního zadání vlastníka aplikace. Registr P11-R13-S.
-[Analýza celého HTTP](verification/full-http-performance-20261107/RESULTS.md),
-[předchozí řez #352](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md),
-[rozhodnutí D14](DECISION_LOG.md#d2026-11-07-14).
+7. 11. 2026, Europe/Prague. **HOTOVO: technický řez, merge a schválený deploy.**
+Vlastník vývoj podle aktuálního výslovného zadání Marka; celé K0.2 zůstává otevřené.
+[Parita a měření](verification/medical-state-read-performance-20261107/RESULTS.md),
+[provozní důkaz a meze](verification/medical-state-release-20261107/RESULTS.md),
+[session handoff](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [registr](WORK_PLAN_CURRENT.md).
 
-## Zadání, izolace a rozsah
+## Zadání a původní plán
 
-Aktuální zadání: pokračovat optimalizací zdravotního přehledu, přesná parita,
-měření před/po a po úspěchu commit/merge/standardní deploy. Historický zákaz
-deploye v předání #352 není současný pokyn. Žádné nové produkční podklady,
-osoby, role, soukromé soubory, zdravotní rozhodnutí ani aktivace integrací.
-Větev `codex/medical-state-read-performance-20261107`, base `6b1860d5`, worktree
-`C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107`.
-Původní checkout a WIP `kis_rosters_admin.php` zachovat; převzatý SHA256
-`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
+Navázat na [analýzu celého HTTP](verification/full-http-performance-20261107/RESULTS.md)
+a [předchozí R13 řez](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md):
+ověřit přesnou shodu výsledků, změřit přínos před/po a po zelených kontrolách
+commit/merge/standardní deploy. Historický zákaz deploye #352 není současný pokyn.
+Plán před implementací uložený v553c6535, base6b1860d5. Původně scoped agregace,
+přesný počet/stránka v DB, kanonické složité řetězce a fallback, nativní parita,
+párový helper/HTTP/Chrome, archiv výsledků, teprve pak merge/deploy.
+[Volba D14](DECISION_LOG.md#d2026-11-07-14), události E47–53.
 
-Řez je čtecí filtr podle stavu: dnes streamuje všechna stavová metadata historie.
-Seznam bez stavu, výběr osoby, detail, writer, soukromé stahování a práva zůstávají
-kanonické. Výsledný počet, pořadí, stránky včetně ořezu a úplné stavy se nesmějí změnit.
+Implementační větev `codex/medical-state-read-performance-20261107` / [PR #381](https://github.com/KovoPraha/evidenceTreninku/pull/381),
+worktree `C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107`.
+Výsledkové předání `codex/medical-state-release-proof-20261107` ve stejném worktree.
+Původní checkout/WIP i untracked výstupy zachované; `kis_rosters_admin.php` SHA256
+`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` shodný před/po.
 
-## Navržený postup a důvod
+## Finální implementace a rozsah
 
-1. Zmrazit přesnou současnou čtecí implementaci jako referenci.
-2. SQL projekce aktuálního verified a nejnovějšího záznamu každého kandidáta,
-   včetně přesné case-sensitive rovnosti stavu i na MariaDB. Nezaměnit nejnovější
-   verified za nejnovější záznam; pending nesmí zneplatnit starší verified.
-3. Běžné stavy filtrovat/count/paginovat v DB. Výstupní status stále vytváří
-   kanonická čistá funkce; do PHP přenášet omezenou stránku stavových metadat.
-   Budoucí verified s odkazem na předchůdce vyhodnotit původní funkcí nad úplnou
-   historií v omezeném lokálním řezu. Po překročení limitu nebo v transakci původní
-   streaming cesta. Žádná cache práv/dat mezi voláními ani nové schéma.
-4. Rekurzivní SQL a persistentní přepočítané stavy odmítnuté kvůli složitosti,
-   denním hranicím a invalidaci. N+1 po sledování ani návrat dávky200 nechceme;
-   počet SQL omezený nezávisle na velikosti běžné historie.
-5. SQLite a nativní MariaDB10.3/11.4 parita: všechny stavy, filtry, první/další/
-   poslední/ořezaná stránka, žádný záznam, více verified, pending/revoked,
-   budoucí řetězce včetně cyklu/chybějícího/cizího předchůdce, hranice dat,
-   case/trailing-space data, čerstvá změna a transakční/fallback chování.
-6. Párové helper měření na stejných syntetických datech s prohozeným pořadím,
-   medián/p95, SQL a řádky vrácené PHP. Celý přihlášený GET a Chrome před/po,
-   přesné normalizované HTML, samostatná diagnostika a kontrolní součty bez zápisů.
-7. Povinné kontroly a aktuální docs; po přínosu a zelených kontrolách merge,
-   standardní deploy s import/UAT false, čtecí produkční ověření, výsledkové předání.
+Pouze čtecí stavový filtr bez doplňkových filtrů. SQL najde nejnovější přesný
+verified a případně poslední záznam; nezamění jej za novější pending/revoked.
+Case/trailing-space porovnání odpovídá PHP `===`. Jedna tenká agregace s
+COUNT/ROW_NUMBER vrátí přesný počet a oříznutou stránku včetně příliš velkého čísla.
+Nejvýše25 stavových projekcí a25 plných sledování; jména mimo pracovní okno.
+Výstupní stav stále tvoří kanonická čistá funkce, žádné nové zdravotní rozhodnutí.
 
-## Akceptace a průběžný stav
+Budoucí verified s explicitním předchůdcem: nejvýše128sledování/4096metadat,
+vyhodnocení původní funkcí nad celou jejich historií. Nad limitem původní stream;
+sonda historie se před fallbackem uvolní. Hledání/datum/osoba a transakce používají
+přesně původní SQL a bindingy. Seznam bez stavu, výběr osoby, detail, writer,
+soukromé dokumenty, práva a integrační flags nezměněné. Bez DDL/trvalé cache.
+SQL window funkce ověřené nativně na MariaDB10.3/11.4 i SQLite.
 
-Implementace lokálně hotová. Referenční36 původních kombinací i smíšená legacy data PASS;
-18 cílených testů /344 assertions PASS, nový kontrakt zvlášť7/185 PASS, styl/lint PASS.
-Nativní parita/měření a celé HTTP/Chrome připravené v CI. Merge/deploy/produkční smoke NOT RUN.
-Přihlášené produkční UAT a rows examined jsou samostatné; neslibovat je z SQL countu.
-Původní WIP hash ověřený shodný, nový worktree kompletně připravený z main.
-Konkrétní projekce používá MAX aktuálního verified a posledního záznamu pouze nad
-kandidáty danými filtrem. Nejvýše128 budoucích řetězců /4096 historických metadat;
-při překročení původní stream. Filtr konkrétní osoby je původní cesta bez režie.
-Další krok: PR, obě nativní MariaDB a celý HTTP/Chrome pár, archiv přínosu před merge.
-Průběžné [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md).
+## Ověření, výsledek a provozní stav
 
-První nativní celý HTTP prototyp a7b1bee9: parita/HTML PASS, výkon FAIL (Platné106→197ms, Čekající105→221ms). Nebude nasazený. [Protokol](verification/medical-state-read-performance-20261107/RESULTS.md). Další varianta odstraní opakovanou agregaci; znovu všechny kontroly a měření.
+Finální zdroj a1d7a70d:12CI SUCCESS, PHPUnit2377/47777, nativní cílené7/201
+na každé DB, lokální18/356; úplné výsledky/filtry/počty/pořadí/stránky,
+legacy řetězce/cykly/chybějící/cizí předchůdci, datumové hranice, čerstvé změny,
+nebufferovaný PDO po úspěchu/výjimce a fallback limity PASS.
+Pomocný profil21případů×17střídavých párů na každé DB, SQL query cache OFF,
+3checksumy stejné. Celé HTTP10k/100k:2160časů,48negativů,208Chrome;
+celé normalizované HTML a13doménových checksumů stejné, bez DML/DDL, úklid PASS.
 
-Druhá varianta: sonda budoucích záznamů bez agregace, kontrola nejnovějšího verified pomocí NOT EXISTS; hlavní agregace jednou, COUNT(*) OVER a ROW_NUMBER pro počet i přesně oříznutou stránku. Podpora [MariaDB window funkcí](https://mariadb.com/docs/server/reference/sql-functions/special-functions/window-functions/window-functions-overview) a [ROW_NUMBER](https://mariadb.com/docs/server/reference/sql-functions/special-functions/window-functions/row_number); musí projít nativně na10.3/11.4. Před fallbackem se uvolní načtená sonda historie.
+100k celý GET Platné1062,80→519,94ms (−51,1%), Čekající1047,26→473,69ms (−54,8%).
+Helper100k Platné10.3 471,00→313,91ms /11.4 922,91→580,86ms,
+přenos216691→74řádků. Hledání neutrální původní cestou. Malá100sada má asi0,5–1,5ms
+pevné režie navíc; celý GET SQL20→22, PHPpeak616168→711080B, alokovaný stále2MiB.
+Jde o syntetický přínos rychlosti/přenosu, nikoli snížení peaku nebo produkční SLA.
 
-V2 drží v pracovním okně pouze ID a stavová metadata; jména a plná sledování hydratuje teprve pro25 vybraných ID. Důvod: neopakovat agregaci a nezvětšovat řadicí pracovní data. Běžný přenos nejvýše50 řádků (25 projekce +25 plných), složité řetězce mají původní limity. Lokální parita po úpravě PASS; nativní přínos se musí znovu změřit.
+#381 sloučené na938e9c50 má přesně stejný celý strom a měřené zdrojové hashe.
+Deploy42405912779 SUCCESS: záloha/ověření, migrace, zachování VS, aktivace i smoke PASS;
+import/UAT false. Veřejné čtení5/5 celé DOM/ID/pořadí/porovnatelné údaje shodné,
+anonymní zdravotní GET403 před/po. Přihlášené produkční UAT NOT RUN.
+Aktuální release vlastní [CURRENT](CURRENT_STATE.md). Další deploy neopakovat.
 
-V2/64137a5b: parita celého HTTP PASS, výrazná regrese odstraněna; Platné64,85→64,80ms neutrální, Čekající63,65→58,61ms. Zatím neuzavřeno pro deploy. EXPLAIN ukazuje opakované vnitřní spojení lidí/sledování uvnitř souhrnu i pro neomezený seznam; pro ten nyní agregace jen nad records podle watch_id, vnější filtr a scoped varianta pro hledání/období zachované. Další nativní pár je podmínkou.
+## Varianty a převzetí
 
-V3 navíc využívá doménový invariant: valid/expired/not_yet_valid mohou vzniknout jen z verified hlavy (včetně explicitní budoucí náhrady). Agregace pro tyto filtry proto pracuje pouze s přesnými verified záznamy; pending/revoked/missing zachovávají i nejnovější libovolný záznam. Výstup a řetězce stále kanonické. Před nasazením vyžadována celá parita i přínos.
+Prototyp a7b1bee9 měl paritu, ale časovou regresi, zamítnut. V2/64137a5b odstranila
+regresi, Platné neutrální. V3/c6f7576e doložila objemový přínos; nativní scoped hledání
+mělo režii. V4/a1d7a70d scoped větev odstranila a zanechala původní doplňkové filtry.
+Finální profil explicitně vypíná SQL result cache; extrémní starší neřízené10.3
+poměry nejsou kauzální důkaz. [Historie a surové důkazy](verification/medical-state-read-performance-20261107/RESULTS.md).
+Nativní test opravil předpoklad boolfalse vs int0; nyní ověřuje vypnutí a přesné
+zachování skutečného typu PDO atributu po úspěchu/výjimce. Runtime tím nezměněný.
 
-Nativní test V2 odhalil nepřesný typový předpoklad v novém testu PDO: driver vrací0 místo boolfalse. Funkční paritní případy prošly, selhal jen assertFalse(0). Test nyní nejprve ověří vypnutí režimu a pak přísně porovnává původní hodnotu včetně typu po úspěchu/výjimce; runtime se tím nemění. Nativní běhy se opakují.
+Převzaté #375/eafe835b a [100k studie](MEDICAL_PLANNER_SCALE_2026-11-07.md), její metadata,
+důkazy a přijaté D13/E45/E46 zachované. Pracovní R13 ID nyní D14/E47–50;
+původní commity zůstaly v historii. Rekurzivní SQL a persistentní stavy zamítnuté
+kvůli složitosti/invalidaci; další prahová sonda pro malé sady nezavedená.
 
-## Převzetí větší studie a další ověření
+## Otevřené navazující úkoly
 
-Převzaté #375/eafe835b: studie 100k potvrzuje náklad stavového čtení. Její metadata, důkazy i přijaté D13/E45/E46 zachované. Toto rozhodnutí nyní D14, vlastní E47–50. V3 bude měřena v páru na 10k i 100k sledování/30k i 300k záznamů v celém HTTP a Chrome. Nativní pomocný profil 100/1k/10k všech šest případů, 100k valid/pending/person; 17 střídavých časových párů a čtyři rozehřátí. Rozšíření pouze vlastního syntetického schématu, žádná produkce.
-
-[Provozní předání](verification/medical-state-release-20261107/RESULTS.md): zatím příprava veřejného snímku/odmítnutí, merge a deploy NOT RUN. Lokální cílená sada po integraci znovu18/344 PASS; PHPStan/styl a dokumentační CI zelené, plná nativní měření běží.
-
-## Finální zúžení podle V3 měření
-
-V3 celý GET100k Platné690,82→321,14ms a Čekající680,90→284,76ms, HTML/checksumy PASS. Nativní11.4 mírná regrese hledání; V4 pro všechny doplňkové filtry používá přesně původní SQL/bindingy, doloženo12novýmiassertions. Samotná agregace tak potřebuje jen neomezenou historii; scoped větev odstraněna. Malá sada100 má asi0,7ms pevné režie navíc, podrobný protokol to přiznává. Finální profil obou DB explicitně vypíná SQL result cache; původní neřízené10.3 poměry neprezentovat jako přínos. Nové měření a CI před merge/deploy. Aktuální lokální sada18/356 PASS.
+Přihlášené produkční UAT zdravotního přehledu, skutečné rows examined, inventura
+produkčních indexů před další změnou, měřené scoped čtení, fyzický mobil/síť/CPU
+souběh a ostatní K0.2 zůstávají otevřené. #377 blokované UAT pickeru, P05/P07/P06
+ani heslo/T07 nejsou tímto řezem uzavřené. Výsledkové předání mění pouze dokumentaci.

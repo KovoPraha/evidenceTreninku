@@ -1,0 +1,62 @@
+[
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/runs/128498619166",
+    "name": "CodeQL",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404266532/job/128498467006",
+    "name": "MariaDB integra\u00c4\u0164n\u0102\u00ad smoke (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404266453/job/128498466723",
+    "name": "docs",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404266401/job/128498466168",
+    "name": "Medical state HTTP and Chrome (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404266457/job/128498466618",
+    "name": "PHPStan level 5 and changed-file style",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404266532/job/128498466763",
+    "name": "PHPUnit na PHP 8.2",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404266532/job/128498467021",
+    "name": "MariaDB integra\u00c4\u0164n\u0102\u00ad smoke (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404266532/job/128498467010",
+    "name": "MariaDB profily \u00c4\u0164ten\u0102\u00ad (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404266532/job/128498466935",
+    "name": "MariaDB profily \u00c4\u0164ten\u0102\u00ad (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404263578/job/128498461569",
+    "name": "Analyze (actions)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404263578/job/128498461761",
+    "name": "Analyze (javascript-typescript)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42404263578/job/128498461848",
+    "name": "Analyze (python)",
+    "state": "SUCCESS"
+  }
+]

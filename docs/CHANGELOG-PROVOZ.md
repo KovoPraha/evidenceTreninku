@@ -4327,3 +4327,7 @@ Aktualizováno 7. 11. 2026 (Europe/Prague) po nasazení dokladů jednorázových
 P11: [celé HTTP/browser a další kroky](SESSION_HANDOFF_FULL_HTTP_PERFORMANCE_2026-11-07.md); DOC01: [pravidla a audit](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)
 <!-- /archive -->
+
+## 7. 11. 2026 — zdravotní stavový filtr #381
+
+[Plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [finální důkazy](verification/medical-state-read-performance-20261107/RESULTS.md), [provozní předání](verification/medical-state-release-20261107/RESULTS.md), [session](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). #381/938e9c50 a deploy42405912779 SUCCESS. Parita12CI/oběDB/2160HTTP/208Chrome, celý GET100k Platné1062,80→519,94ms. Původní hledání/datum/osoba/transakce, malá pevná režie a meze v protokolu. WIP zachovaný; přihlášené UAT/rows examined/mobil/souběh a K0.2 otevřené. Další deploy neopakovat.
