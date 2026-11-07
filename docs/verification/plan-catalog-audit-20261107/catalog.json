@@ -9780,6 +9780,17 @@
         "docs/verification/attendance-person-picker-20261107/final/RESULTS.md",
         "docs/SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md"
       ]
+    },
+    {
+      "id": "PL-6e0dad4534",
+      "path": "docs/verification/attendance-person-picker-20261107/integrated/RESULTS.md",
+      "title": "Integrated picker HTTP/browser verification",
+      "primary": false,
+      "role": "evidence",
+      "status": "REFERENCE",
+      "registry": "P11",
+      "disposition": "Aktuální společné měření s #367, samostatná evidence neúspěšné Windows kalibrace; žádné produkční oprávnění samo o sobě.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",
