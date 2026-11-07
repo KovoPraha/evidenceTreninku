@@ -1,0 +1,145 @@
+{
+    "complete": true,
+    "synthetic_only": true,
+    "server": "10.3.39-MariaDB-1:10.3.39+maria~ubu2004",
+    "summary_parity_cases": 11,
+    "pending_parity_cases": 216,
+    "fresh_data": true,
+    "transaction_locks_preserved": true,
+    "summary_sql": [
+        {
+            "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+            "parameters": [
+                "training_rsvps"
+            ],
+            "execute_ms": 0.080802,
+            "fetch_ms": 0.001593,
+            "fetched_rows": 1
+        },
+        {
+            "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+            "parameters": [
+                "training_roster_links"
+            ],
+            "execute_ms": 0.070917,
+            "fetch_ms": 0.00029,
+            "fetched_rows": 1
+        },
+        {
+            "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+            "parameters": [
+                "club_roster_members"
+            ],
+            "execute_ms": 0.070927,
+            "fetch_ms": 0.00013,
+            "fetched_rows": 1
+        },
+        {
+            "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+            "parameters": [
+                "planovane_treninky"
+            ],
+            "execute_ms": 0.069485,
+            "fetch_ms": 0.000131,
+            "fetched_rows": 1
+        },
+        {
+            "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? LIMIT 1",
+            "parameters": [
+                "sportovci"
+            ],
+            "execute_ms": 0.073391,
+            "fetch_ms": 0.000211,
+            "fetched_rows": 1
+        },
+        {
+            "sql": "SELECT id,datum FROM planovane_treninky WHERE id IN (?,?,?,?,?,?)",
+            "parameters": [
+                101,
+                102,
+                103,
+                104,
+                105,
+                106
+            ],
+            "execute_ms": 0.101273,
+            "fetch_ms": 0.002073,
+            "fetched_rows": 6
+        },
+        {
+            "sql": "SELECT plan_id,team_id FROM training_roster_links WHERE plan_id IN (?,?,?,?,?,?)",
+            "parameters": [
+                101,
+                102,
+                103,
+                104,
+                105,
+                106
+            ],
+            "execute_ms": 0.070987,
+            "fetch_ms": 0.000581,
+            "fetched_rows": 6
+        },
+        {
+            "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+            "parameters": [
+                "club_team_edges"
+            ],
+            "execute_ms": 0.074623,
+            "fetch_ms": 0.00023,
+            "fetched_rows": 1
+        },
+        {
+            "sql": "SELECT parent_team_id,child_team_id,valid_from,valid_to FROM club_team_edges\n                    WHERE valid_from<=? AND (valid_to IS NULL OR valid_to>=?)",
+            "parameters": [
+                "2026-05-01",
+                "2026-01-01"
+            ],
+            "execute_ms": 0.064888,
+            "fetch_ms": 0.001312,
+            "fetched_rows": 5
+        },
+        {
+            "sql": "SELECT m.team_id,m.sportovec_id,m.valid_from,m.valid_to FROM club_roster_members m\n                    JOIN sportovci s ON s.id=m.sportovec_id WHERE m.team_id IN (?,?,?,?,?) AND m.valid_from<=?\n                    AND (m.valid_to IS NULL OR m.valid_to>=?) AND m.status<>'cancelled'\n                    AND (m.status<>'removed' OR m.valid_to IS NOT NULL)",
+            "parameters": [
+                1,
+                2,
+                4,
+                3,
+                99,
+                "2026-05-01",
+                "2026-01-01"
+            ],
+            "execute_ms": 0.064717,
+            "fetch_ms": 0.001662,
+            "fetched_rows": 7
+        },
+        {
+            "sql": "SELECT plan_id,sportovec_id,response FROM training_rsvps WHERE plan_id IN (?,?,?,?,?,?)",
+            "parameters": [
+                101,
+                102,
+                103,
+                104,
+                105,
+                106
+            ],
+            "execute_ms": 0.109195,
+            "fetch_ms": 0.001692,
+            "fetched_rows": 6
+        }
+    ],
+    "warning_sql": [
+        {
+            "sql": "SELECT COUNT(*) total,MIN(pt.datum) oldest_date FROM planovane_treninky pt WHERE pt.stav = 'planovany' AND pt.datum < ?",
+            "parameters": [
+                "2027-01-01"
+            ],
+            "execute_ms": 0.054582,
+            "fetch_ms": 0.000551,
+            "fetched_rows": 1
+        }
+    ],
+    "read_only_parity_session": true,
+    "schema_removed": true
+}

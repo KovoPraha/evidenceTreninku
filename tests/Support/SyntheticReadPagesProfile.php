@@ -305,6 +305,8 @@ function p11SeedClosure(PDO $pdo, int $participants, int $revisions): void
         $q->execute([$i, $snapshot]);
     }
     $pdo->prepare("INSERT INTO training_closures VALUES(101,?,?,'closed')")->execute([(int)$pdo->lastInsertId(), $revisions]);
+    // The audit timestamp is fixture data: identical across independent before/after seeds.
+    $pdo->exec("UPDATE training_closure_revisions SET closed_at=CONCAT(CURRENT_DATE,' 18:00:00') WHERE training_id=101");
     $pdo->query('ANALYZE TABLE training_closures,training_closure_revisions,trenink_sportovec')->fetchAll();
 }
 
@@ -387,7 +389,8 @@ $report['source_files_sha256'] = [];
 foreach (['planovac.php', 'training_closure_admin.php', 'medical_clearance_admin.php', 'includes/training_day_view.php',
     'includes/medical_clearance_admin_view.php', 'includes/medical_clearance.php', 'includes/medical_clearance_read.php',
     'assets/js/medical-person-picker.js', 'includes/training_planner_read.php', 'includes/training_planner_rsvp_read.php',
-    'includes/training_planner_view.php', 'includes/family_schema_read_scope.php'] as $file) {
+    'includes/training_planner_view.php', 'includes/family_schema_read_scope.php', 'includes/coach_training_access.php',
+    'includes/training_closure.php'] as $file) {
     $report['source_files_sha256'][$file] = hash('sha256', str_replace("\r\n", "\n", (string)file_get_contents(dirname(__DIR__, 2) . '/' . $file)));
 }
 try {
