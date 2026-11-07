@@ -371,7 +371,17 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertStringContainsString('output/playwright/tv-production-', $tvArtifact);
         self::assertStringNotContainsString('credentials.json', $tvArtifact);
         self::assertStringNotContainsString('browser-auth.json', $tvArtifact);
-        self::assertStringNotContainsString('upload-artifact', str_replace($tvArtifact, '', $workflow));
+        $accessArtifactStart = strpos($workflow, '      - name: Uchovat bezpecny vysledek kontroly pristupu');
+        $accessArtifactEnd = strpos($workflow, '      - name: Vytvorit vyhrazeny sifrovany TV pristup', $accessArtifactStart);
+        self::assertNotFalse($accessArtifactStart);
+        self::assertNotFalse($accessArtifactEnd);
+        $accessArtifact = substr($workflow, $accessArtifactStart, $accessArtifactEnd - $accessArtifactStart);
+        self::assertStringContainsString("if: always() && inputs.operace == 'overit-pracovni-pristupy'", $accessArtifact);
+        self::assertStringContainsString('path: output/staff-access-production/result.json', $accessArtifact);
+        self::assertStringNotContainsString('credentials', $accessArtifact);
+        self::assertStringNotContainsString('cookies', $accessArtifact);
+        self::assertStringNotContainsString('state.json', $accessArtifact);
+        self::assertStringNotContainsString('upload-artifact', str_replace([$tvArtifact, $accessArtifact], '', $workflow));
         self::assertStringNotContainsString('rsync', $workflow);
 
         self::assertStringContainsString("PHP_SAPI !== 'cli'", $cleanup);
