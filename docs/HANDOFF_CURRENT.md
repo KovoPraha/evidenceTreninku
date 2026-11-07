@@ -7,6 +7,10 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 
 ## Poslední práce a další krok
 
+- ROLE01: [plán a oprávnění](ACCESS_OVERVIEW_2026-11-07.md), [PR #356](https://github.com/KovoPraha/evidenceTreninku/pull/356).
+  Přehled a místní ověření hotové; následně schválený deploy a formulářový test
+  jen na nových technických účtech. Původní role lidí zachovat a porovnat otisk.
+  CI kódu prošlo; po převzetí #357 znovu CI/merge, baseline, deploy, ověření a úklid.
 - DOC01: [zadání, audit, plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md).
   Obsah a místní kontroly hotové; [GitHub předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), stav CI/merge u PR.
   Větev `codex/repo-documentation-policy-20261107`, vlastní worktree stejného tématu

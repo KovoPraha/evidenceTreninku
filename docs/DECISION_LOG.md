@@ -25,6 +25,21 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
 ## D2026-11-07-02
 
+- **Stav / datum:** PŘIJATO, 7. 11. 2026. Vlastník po přípravě přehledu výslovně
+  zadal nasazení a ověření změn rolí; stávající role lidí se nesmějí měnit.
+- **Volba a důvod:** zachovat současné role a audit, rozšířit dosavadní stránku
+  o společný přehled. Ověření zápisů jen na nových technických účtech, nikoli
+  na existujícím zaměstnanci nebo dosavadním testovacím účtu.
+- **Provozní ověření:** před nasazením čtecí otisk původních přístupů; následně
+  skutečné HTTPS formuláře a odvolání všech nových testovacích přístupů s
+  deaktivací účtů. Hesla jen v paměti procesu, bez e-mailů. Obnova úklidu má
+  vlastní chráněnou fázi a odmítá původní ID.
+- **Varianta a omezení:** Computer Use skončil kvůli neurčené URL prohlížeče;
+  nepokračuje ovládání desktopu. Serverové formulářové ověření neoznačovat
+  za vizuální produkční Chrome UAT. [Plán a akceptace](ACCESS_OVERVIEW_2026-11-07.md).
+
+## D2026-11-07-03
+
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník výslovně zadal začít
   klubovými cenami, změřit před/po, ověřit shodu a nic nenasazovat.
 - **Volba a důvod:** oddělený reader pro jednu cenovou prezentaci katalogu/detailu.
@@ -38,6 +53,10 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
   [předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md),
   [PR #358](https://github.com/KovoPraha/evidenceTreninku/pull/358).
   Implementace/parita hotové, začlenění řídí PR; bez deploye a aktivace.
+
+Pracovní označení této volby ve starších commitech PR #358 bylo D2026-11-07-02.
+Při převzetí #356 je kolize s jeho již přijatým ROLE01 rozhodnutím vyřešena
+společným ID D2026-11-07-03; obsah ani původní commitové důkazy se nemění.
 
 ## Starší rozhodnutí — zachovaná v původních souborech
 
@@ -55,7 +74,7 @@ Při každém dokončení doplň řádek nebo odkaz na datovanou část deníku.
 
 | Práce / rozsah | Plán, výsledek a důvody | Historie / další etapy |
 | --- | --- | --- |
-| P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-02) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); bez merge/deploye, katalog/HTTP dál otevřené |
+| P11 klubové ceny — implementace a párové měření hotové v PR #358 | [Plán](MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/member-pricing-read-performance-20261107/RESULTS.md), [volba](#d2026-11-07-03) | [Předání](SESSION_HANDOFF_MEMBER_PRICING_READ_PERFORMANCE_2026-11-07.md), [PR](https://github.com/KovoPraha/evidenceTreninku/pull/358); bez merge/deploye, katalog/HTTP dál otevřené |
 | DOC01 — souborová dokumentace a stručné předání | [Plán a ověření](DOCUMENTATION_GOVERNANCE_2026-11-07.md), [důvod rozhodnutí](#d2026-11-07-01) | [Předání #357](https://github.com/KovoPraha/evidenceTreninku/pull/357), [deník](EVENT_LOG.md); stav CI/přijetí určuje PR |
 | P11 R13 — implementace v main #352, bez deploye | [Plán a důkazy](verification/medical-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_MEDICAL_READ_PERFORMANCE_2026-11-06.md), celé K0.2 otevřené |
 | P11 R05 — implementace v main #353, bez deploye | [Plán a důkazy](verification/planner-read-performance-20261106/RESULTS.md) | [Předání](SESSION_HANDOFF_PLANNER_READ_PERFORMANCE_2026-11-06.md), hierarchický filtr/HTTP otevřené |
