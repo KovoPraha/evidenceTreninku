@@ -1,0 +1,8 @@
+{
+  "tested_head": "2362f3a4bab5a7c3c3b8cd6e531a6e6e78103dfe",
+  "release_sha": "519ff098961943f1aa58a70e40fed3ffba37cc96",
+  "tested_tree": "6322f04cd99076dc826beeff92108131d80a1da2",
+  "release_tree": "6322f04cd99076dc826beeff92108131d80a1da2",
+  "exact_tree_equal": true,
+  "measured_sources_equal": true
+}
