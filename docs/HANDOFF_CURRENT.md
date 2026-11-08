@@ -11,8 +11,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   Aktuální#374 také prověřené; oba vlastní runtime úklidy PASS, produkce bez našich změn.
   R13 stavový řez nyní uzavírá P11-R13-S; dále fyzický mobil/souběh, K0.2 otevřené.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
-  Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px a filtr Bar částečně PASS;
-  hledání/editor otevřené, nová karta ukázala login. [Nový čtecí protokol](verification/quality-uat-20261108/RESULTS.md).
+  Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
+  prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 - AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
 - P11 picker HOTOVO: [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání #366/#372](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
