@@ -10,9 +10,132 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2).'/includes/club_program_storefront.php';
+require_once dirname(__DIR__, 2).'/includes/club_program_year_offer.php';
 
 final class ClubProgramStorefrontTest extends TestCase
 {
+    public function testYearOfferPreviewAndCreationReuseProgramProductAndRoster(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE club_program_offers SET purchase_option='first_half',ends_on='2027-01-31' WHERE id=1");
+        $pdo->exec('UPDATE shop_variants SET amount_minor=800000 WHERE id=1');
+        \clubProgramCreatePaymentOption($pdo, 7, 1, $this->option(
+            'second_half',
+            'MORCATA-H2-2627',
+            'MORCATA-2627-H2',
+            'Morčata — 2. pololetí',
+            800000,
+            '2027-02-01',
+            '2027-06-30'
+        ), 'Druhé pololetí.', true);
+        $now = new DateTimeImmutable('2026-11-08 12:00:00', new DateTimeZone('Europe/Prague'));
+        $candidates = \clubProgramYearOfferCandidates($pdo, $now);
+        self::assertCount(1, $candidates);
+        $candidate = $candidates[0];
+        self::assertSame('', $candidate['problem']);
+        self::assertSame('2026-09-01', $candidate['starts_on']);
+        self::assertSame('2027-06-30', $candidate['ends_on']);
+        self::assertSame('2026-11-08T00:00', $candidate['sales_open_at']);
+
+        $created = \clubProgramYearOfferCreateBatch(
+            $pdo,
+            7,
+            [1 => 1500000],
+            [1 => $candidate['fingerprint']],
+            true,
+            $now
+        );
+        self::assertCount(1, $created);
+        self::assertSame(5, $created[0]['program_id']);
+        self::assertSame(501, $created[0]['product_id']);
+        $offer = $pdo->query("SELECT team_id,purchase_option,starts_on,ends_on FROM club_program_offers WHERE purchase_option='full_year'")->fetch(PDO::FETCH_ASSOC);
+        self::assertSame(10, (int)$offer['team_id']);
+        self::assertSame('2026-09-01', $offer['starts_on']);
+        self::assertSame('2027-06-30', $offer['ends_on']);
+        self::assertSame(1500000, (int)$pdo->query("SELECT amount_minor FROM shop_variants WHERE sku='KP-PROGRAM-YEAR-5-2026'")->fetchColumn());
+        self::assertSame([], \clubProgramYearOfferCandidates($pdo, $now));
+        try {
+            \clubProgramYearOfferCreateBatch($pdo, 7, [1 => 1500000], [1 => $candidate['fingerprint']], true, $now);
+            self::fail('A second full-year option must be refused.');
+        } catch (\ClubProgramYearOfferException $expected) {
+            self::assertSame(3, (int)$pdo->query('SELECT COUNT(*) FROM club_program_offers')->fetchColumn());
+        }
+    }
+
+    public function testYearOfferRejectsStalePreviewWithoutWriting(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE club_program_offers SET purchase_option='first_half',ends_on='2027-01-31' WHERE id=1");
+        \clubProgramCreatePaymentOption($pdo, 7, 1, $this->option(
+            'second_half',
+            'MORCATA-H2-2627',
+            'MORCATA-2627-H2',
+            'Morčata — 2. pololetí',
+            800000,
+            '2027-02-01',
+            '2027-06-30'
+        ), 'Druhé pololetí.', true);
+        $now = new DateTimeImmutable('2026-11-08 12:00:00', new DateTimeZone('Europe/Prague'));
+        $fingerprint = \clubProgramYearOfferCandidates($pdo, $now)[0]['fingerprint'];
+        $pdo->exec('UPDATE club_program_offers SET capacity=14 WHERE id=1');
+        $this->expectException(\ClubProgramYearOfferException::class);
+        try {
+            \clubProgramYearOfferCreateBatch($pdo, 7, [1 => 1500000], [1 => $fingerprint], true, $now);
+        } finally {
+            self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM club_program_offers WHERE purchase_option='full_year'")->fetchColumn());
+        }
+    }
+
+    public function testYearOfferBatchRollsBackWhenSecondGroupFails(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("UPDATE club_program_offers SET purchase_option='first_half',ends_on='2027-01-31' WHERE id=1");
+        \clubProgramCreatePaymentOption($pdo, 7, 1, $this->option(
+            'second_half',
+            'MORCATA-H2-2627',
+            'MORCATA-2627-H2',
+            'Morčata — 2. pololetí',
+            800000,
+            '2027-02-01',
+            '2027-06-30'
+        ), 'Druhé pololetí.', true);
+        $pdo->exec("INSERT INTO club_teams VALUES(11,1,'TEST2','Druhá soupiska','active')");
+        $pdo->exec("INSERT INTO club_programs VALUES(6,'TEST2','Druhá skupina','Popis','active',7)");
+        $pdo->exec("INSERT INTO shop_products VALUES(502,'manual','manual:502','Druhá skupina','program','active',7)");
+        foreach (['TEST2-H1','TEST2-H2'] as $sku) {
+            $insert = $pdo->prepare(
+                "INSERT INTO shop_variants(product_id,origin,created_by_trainer_id,sku,attributes_json,price_mode,"
+                . "amount_minor,currency,includes_vat,vat_rate_basis_points,unit_code,visible,catalog_status) "
+                . "VALUES(502,'manual',7,?,'{}','fixed',500000,'CZK',1,0,'person',1,'active')"
+            );
+            $insert->execute([$sku]);
+        }
+        $pdo->exec("INSERT INTO club_program_offers(program_id,season_id,team_id,product_id,variant_id,code,name,
+            starts_on,ends_on,capacity,birth_year_from,birth_year_to,status,created_by_trainer_id,purchase_option,is_featured) VALUES
+            (6,1,11,502,3,'TEST2-H1','Druhá skupina 1','2026-09-01','2027-01-31',15,2020,2022,'active',7,'first_half',0),
+            (6,1,11,502,4,'TEST2-H2','Druhá skupina 2','2027-02-01','2027-06-30',15,2020,2022,'active',7,'second_half',0)");
+        $pdo->exec("INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,status) VALUES
+            ('club_program','program:6','program_cancellation','v1','Storno podmínky.','active'),
+            ('club_program','program:6','program_consent','v1','Souhlas s účastí.','active')");
+        $now = new DateTimeImmutable('2026-11-08 12:00:00', new DateTimeZone('Europe/Prague'));
+        $candidates = \clubProgramYearOfferCandidates($pdo, $now);
+        self::assertCount(2, $candidates);
+        $fingerprints = [];
+        foreach ($candidates as $candidate) {
+            $fingerprints[(int)$candidate['base_offer_id']] = $candidate['fingerprint'];
+        }
+        $pdo->exec("CREATE TRIGGER fail_second_year BEFORE INSERT ON shop_variants
+            WHEN NEW.sku='KP-PROGRAM-YEAR-6-2026'
+            BEGIN SELECT RAISE(FAIL,'synthetic second failure'); END");
+        $this->expectException(\ShopManualCatalogException::class);
+        try {
+            \clubProgramYearOfferCreateBatch($pdo, 7, [1 => 1500000, 3 => 900000], $fingerprints, true, $now);
+        } finally {
+            self::assertSame(0, (int)$pdo->query("SELECT COUNT(*) FROM club_program_offers WHERE purchase_option='full_year'")->fetchColumn());
+            self::assertSame(4, (int)$pdo->query('SELECT COUNT(*) FROM shop_variants')->fetchColumn());
+        }
+    }
+
     public function testMostClubsCanSellTwoSemestersAndDiscountedYearIntoOneRoster(): void
     {
         $pdo = $this->database();

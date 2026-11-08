@@ -41,3 +41,5 @@ stejný EXISTS vlastnictví jako aktivní trenér a duplicitu přes hranici25/26
 lokálně2/819 PASS. Nové měření nutné, první profil se netvrdí jako finální.
 HTTP matice má nyní14kladných (včetně nulového cizího výsledku),2explicitně
 zamítnuté role a samostatnou čerstvou revokaci, v obou fázích přesně stejné.
+
+Převzatý nový main1c828fbf/#395: veškerý kód i UX01 plán/odkazy zachované, cizí otevřené PR se neslučují. Přijaté E22–26 zachované, vlastní zahájení nověE27. Vlastní aplikační zdroje a frozen původní route se nemění; celé aktuální CI po integraci znovu.

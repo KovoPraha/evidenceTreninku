@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 8. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
+Aktualizováno 8. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) včetně UX01 [celoročních nabídek](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
 - P11-RHC ROZPRACOVÁNO: [Moje tréninky / plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md).
   Lokálně2/819 PASS, SQLite10k930→35ms; nativní/HTTP/Chrome před release čekají. Výchozí produkce9681a56a, WIP zachovaný.
 - **P11-RH NASAZENO:** [správní historie / plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md).
