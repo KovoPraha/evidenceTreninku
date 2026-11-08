@@ -2,7 +2,7 @@
 
 Aktualizováno 8. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
 - P11-RHC ROZPRACOVÁNO: [Moje tréninky / plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md).
-  Další trenérská AJAX historie podle analýzy; parita a přínos před release. Výchozí produkce9681a56a/42488777710 SUCCESS; WIP zachovaný.
+  Lokálně2/829 PASS, SQLite10k930→35ms; nativní/HTTP/Chrome před release čekají. Výchozí produkce9681a56a, WIP zachovaný.
 - **P11-RH NASAZENO:** [správní historie / plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md).
   #394/`ab49947d`, deploy42486500282 SUCCESS; [protokol](verification/training-history-release-20261108/RESULTS.md). 14CI/parita PASS, GET398→16ms; import/UAT false, přihlášené UAT NOT RUN, WIP zachovaný.
 - P11-R05-H historie #374: [protokol](verification/planner-hierarchy-release-20261107/RESULTS.md); čtecí UAT našlo 360px přetékání, Q2 [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) sloučeno jako `5b9279f9`, 11 CI PASS; oprava zahrnutá již v deploy42483838259 a nynějším P11-RH; následné přihlášené UAT zde netvrzené.

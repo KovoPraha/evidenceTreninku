@@ -58,3 +58,16 @@ YEAR/MONTH sémantiku včetně měsíce bez roku zachovat; indexový řez z anal
 samostatně. Osobní profil, jeho měření/testy a další P11 nejsou tímto hotové.
 
 Další krok: implementace a lokální parita; měření, PR, merge a deploy NOT RUN.
+
+První implementace lokálně2testy/829assertions PASS, včetně původní násobnosti JOIN,
+cizího trenéra, všech filtrů a celých vazeb/účastníků přes všechny stránky.
+SQLite prototyp10k:930→35ms,26→8SQL,220000→10550řádků; malé výsledky neutrální
+či s malou režií. Zdroj po prvním profilování jen PSR-12/zalomení atributů;
+finální native/HTTP měření musí ověřit aktuální hash. PDO emulace odpovídá db.php
+(default MySQL true, původní opakovaný :q zachovaný), ne předstírané serverové prepares.
+Hotový vlastněný HTTP/Chrome runner:15kladných scénářů včetně prázdných omezených
+rolí +anonym403, čerstvá revokace trenéra, přesné otisky karet/ID/pořadí/celkového
+počtu. Chrome měří fetch→DOM a dvě renderovací smyčky skutečného AJAX,3cold+10warm
+pro default/vše/prázdné; další/předchozí, filtry, hledání a otevření/zrušení poznámky.
+Bezpečné syntetické screenshoty desktop/390px; žádné produkční zápisy.
+Další krok: push/PR a aktuální nativní i celé HTTP/Chrome CI; release zatím NOT RUN.

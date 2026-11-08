@@ -26,7 +26,10 @@ try {
 $rokDefault   = (int)date('Y');
 $mesicDefault = (int)date('n');
 
-function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s)
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 
 // Flash zprávy
 $flashError   = $_SESSION['flash_error'] ?? null;
@@ -40,7 +43,8 @@ unset($_SESSION['flash_success']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Moje tréninky</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .thumbnail { height: 70px; margin: 2px; object-fit: cover; border-radius: .375rem; }
         .muted-label { color:#6c757d; font-size: .9rem; }
@@ -91,7 +95,7 @@ unset($_SESSION['flash_success']);
                     <?php
                     $mesiceNames = ['','Leden','Únor','Březen','Duben','Květen','Červen',
                                     'Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
-                    for ($m = 1; $m <= 12; $m++): ?>
+for ($m = 1; $m <= 12; $m++): ?>
                         <option value="<?= $m ?>" <?= $m === $mesicDefault ? 'selected' : '' ?>><?= $mesiceNames[$m] ?></option>
                     <?php endfor; ?>
                 </select>
@@ -147,7 +151,11 @@ unset($_SESSION['flash_success']);
 
     let controller = null; // pro abort předchozího requestu
 
-    function load() {
+    let debounceTimer = null;
+
+    function load(page = 1) {
+        clearTimeout(debounceTimer);
+        debounceTimer = null;
         if (controller) controller.abort();
         controller = new AbortController();
 
@@ -157,6 +165,7 @@ unset($_SESSION['flash_success']);
             skupina_id: filterSkupina.value,
             team_id: filterTeam.value,
             q:          filterSearch.value.trim(),
+            history_page: String(page),
         });
 
         spinner.style.display = 'block';
@@ -175,7 +184,8 @@ unset($_SESSION['flash_success']);
                 });
 
                 // Počet výsledků
-                const count = listWrap.querySelectorAll('.accordion-item').length;
+                const count = Number(listWrap.querySelector('[data-coach-history]')?.dataset.historyTotal
+                    ?? listWrap.querySelectorAll('.accordion-item').length);
                 countLabel.textContent = count > 0 ? count + ' tréninků' : '';
 
                 // Inline editace poznámek
@@ -191,11 +201,21 @@ unset($_SESSION['flash_success']);
     }
 
     // Debounce – nespouštěj příliš rychle za sebou
-    let debounceTimer = null;
     function loadDebounced() {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(load, 200);
     }
+
+    listWrap.addEventListener('click', event => {
+        if (!(event.target instanceof Element)) return;
+        const link = event.target.closest('[data-coach-history] nav a');
+        if (!link) return;
+        event.preventDefault();
+        const requested = Number(new URL(link.href).searchParams.get('history_page')) || 1;
+        // A pending filter change starts at page one, even if a pager is clicked first.
+        load(debounceTimer === null ? requested : 1);
+        listWrap.scrollIntoView({block: 'start'});
+    });
 
     filterRok.addEventListener('change', loadDebounced);
     filterMesic.addEventListener('change', loadDebounced);
