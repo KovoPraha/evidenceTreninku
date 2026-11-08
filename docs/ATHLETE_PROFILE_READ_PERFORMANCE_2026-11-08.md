@@ -1,6 +1,6 @@
 # P11-RHA — historie a měření profilu sportovce
 
-8. 11. 2026: ROZPRACOVÁNO, implementace a ověřování v PR #404.
+8. 11. 2026: NASAZENO; technický řez hotový, přihlášené produkční UAT NOT RUN.
 Vlastník: vývoj podle nového zadání Marka; commit/merge/deploy po paritě,
 naměřeném přínosu a úspěšných kontrolách. [Předání](SESSION_HANDOFF_ATHLETE_PROFILE_2026-11-08.md),
 [výsledky](verification/athlete-profile-read-performance-20261108/RESULTS.md).
@@ -69,6 +69,8 @@ skutečných soukromých profilových dat do Gitu. Živý katalog se může měn
 kontrol; původní neshodu nezakrývat novějším vzorkem jako v předchozím protokolu.
 Další krok: implementace, datová parita a měření. PR/merge/deploy zatím NOT RUN.
 
+## Průběh iterací — historické stavy
+
 Průběžně: implementována UNION projekce historie po25, souhrny beze změny,
 poznámky/měření jen pro vybraná ID. Měření lazy,25řádků a globální přesný filtr.
 Zvolen úzký seřazený sloupec typů + původní PHP array_count_values místo
@@ -106,3 +108,23 @@ Malý roční výběr má <1ms režii; velká měření11.4 jsou téměř neutr�
 čeká na dokončení Bootstrap fade před screenshotem; aplikace se nemění.
 Další krok: aktuální úplné CI, shodný tested/merged tree, protected deploy,
 čtecí produkční kontrola a finální důkazy v main. UAT/merge/deploy zatím NOT RUN.
+
+Release průběžně: finální0bed50c5 má14/14CI SUCCESS (2403testů/54847assertions).
+PR #404 sloučený jako82efa16d; celý tested/merged tree i čtyři runtime sourcehashy
+jsou shodné. Nový úplný HTTP/Chrome/native průchod42520696813 PASS a desktop
+po fade zkontrolovaný. Protected deploy42521982178 spuštěn na přesném main,
+importovat_krouzky=false /uat_schvaleno=false; výsledek nasazení zatím čeká.
+Vlastní proof větev codex/athlete-profile-release-proof-20261108; WIP zachovaný.
+
+## Uzavření technického řezu
+
+[#404](https://github.com/KovoPraha/evidenceTreninku/pull/404) /82efa16d po14CI,
+celý tested/merged tree a čtyři měřené runtime sourcehashy přesně shodné.
+Deploy42521982178 SUCCESS20:54:55UTC,2403testů/54847assertions,389tabulek/2triggery
+záloha ověřená před aktivací; pending[], VS shodné, import/UATfalse, smoke PASS.
+[Produkční protokol a veřejné meze](verification/athlete-profile-release-20261108/RESULTS.md).
+Produkční anonymy404/403/403 shodné, aktuální veřejný DOM8/8stabilní; původní
+katalogový wholehash měl neúplnou normalizaci, jeho neshoda zůstává zachovaná.
+Žádné katalogové, rolové nebo WIP zápisy. Přihlášené produkční UAT NOT RUN.
+Dokumentační proof větev codex/athlete-profile-release-proof-20261108, sdílení
+finálních důkazů do main bez dalšího deploye. Ostatní P11 řezy zůstávají samostatné.

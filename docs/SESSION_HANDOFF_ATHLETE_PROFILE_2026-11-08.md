@@ -1,29 +1,33 @@
 # Předání P11-RHA — profil sportovce
 
-8. 11. 2026: implementace, parita a měření PASS; finální CI čeká.
+8. 11. 2026: **NASAZENO, technický řez hotový**.
 [Plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md),
-[výsledky a všechny vzorky](verification/athlete-profile-read-performance-20261108/RESULTS.md),
-[PR #404](https://github.com/KovoPraha/evidenceTreninku/pull/404).
+[parita/vzorky](verification/athlete-profile-read-performance-20261108/RESULTS.md),
+[produkční předání a meze](verification/athlete-profile-release-20261108/RESULTS.md).
 
-Větev codex/athlete-profile-history-performance-20261108, base69b69fa4,
-vlastní medical-state worktree; původní checkout a WIP hash zachované.
-Produkceda152282/deploy42494231010 SUCCESS zatím beze změny.
+PR #404 /82efa16decf5bc380bb73bf850d829e17d5002f0 po14CI na0bed50c5;
+celý tested/merged tree a4runtime sourcehashy přesně shodné.
+Deploy42521982178 SUCCESS20:54:55UTC, import/UATfalse;2403testů/54847assertions,
+záloha389tabulek/2triggery ověřená, current/pending[], VS shodné, smoke PASS.
 
-UNION členství, celkové roky/počty/hodiny,25karet před poznámkami/měřeními.
-Měření lazy a25řádků, úplné typy v původním pořadí, binární shoda case/mezer;
-číselné ID/ordinal v SQL okně a LIMIT před širokými hodnotami. Žádné DDL/cache,
-změny tokenů/rolí/writerů nebo dalších záložek. Stará pomalejší měření zachovaná.
+UNION členství, úplné roky/počty/hodiny;25karet před poznámkami/měřeními.
+Měření lazy a25řádků, úplné typy v původním pořadí, binární case/mezery;
+číselné ID/ordinal v SQL okně, LIMIT před širokými hodnotami. Žádné DDL/cache,
+změny přístupů/tokenů/rolí/writerů/CSRF nebo dalších záložek.
+SQLite3/611; native10.3/11.4 každá3/651,476HTTP/78Chrome a12rolí PASS;
+pravé login/bearer303, expirace a revokace, filtry/pager/savedtab/390px PASS.
+10k historie483→135ms /546→203ms; Měření90909→35řádků a211MB→76kB.
+ProfilGET129→53ms a6,1MB→12,8kB; historie111→33ms /Chrome1078→65ms.
+Malý roční výběr <1ms režie,11.4 typ neutrální; jde o syntetická data, nikoli SLA.
+První pomalejší iterace zachované, finální screenshoty po fade zkontrolované.
 
-SQLite3/611, MariaDB10.3/11.4 každá3/651 PASS. Runtime3c6d1395,
-CI42519956849 3/3SUCCESS, sourcehashy proti Git blobům shodné.
-10k historie483→135ms /546→203ms, PHP delta181→4,7MB.
-Měření90909→35SQLřádků a211MB→76kB;11.4 typ časově neutrální.
-Malý roční výběr <1ms režie přiznaný. ProfilGET129→53ms,6,1MB→12,8kB;
-historie111→33ms,8,6MB→208kB, ChromeVše1078→65ms.
-476časovanýchHTTP,78Chrome,12rolí, token/grant revokace, filtry/pager/savedtab
-PASS, checksumy/cleanup PASS. Desktop screenshot vyžaduje čekání na fade,
-poslední testovací doplnění nemění aplikaci. Přihlášené produkční UAT NOT RUN.
+Produkční čtení8/8 očekávaných stavů, profil404/AJAX403/403 shodné;
+nový současný DOM8/8stabilní. Původní katalogový wholehash neměl normalizaci
+nonce markerů/CSS verzí; jeho neshoda a omezení zůstávají v protokolu.
+Přihlášené produkční UAT, pozitivní nové uložení poznámky a fyzický mobil/souběh
+NOT RUN. Obnova této konkrétní zálohy NOT RUN. Ostatní P11 samostatné.
 
-Další krok: finální aktuální CI, freshmain, exacttree/sourceproof, merge,
-protected deploy import/UATfalse, záloha/VS/smoke a čtecí produkční kontrola.
-Finální release důkazy sdílet dokumentačním PR do main bez dalšího deploye.
+Původní checkout codex/fio-auto-reconciliation-recovery a WIP hash7a7afd75…
+shodné; vlastní medical-state worktree, aktuální proof větev
+codex/athlete-profile-release-proof-20261108. Finální důkazy sdílet dokumentačním
+PR do main, bez dalšího deploye; runtime82efa16d se dokumentací nemění.

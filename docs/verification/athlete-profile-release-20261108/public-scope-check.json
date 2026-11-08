@@ -1,0 +1,12 @@
+{
+  "runtime_changed": [
+    "ajax_sportovec_treninky.php",
+    "includes/athlete_measurement_list.php",
+    "includes/athlete_profile_read.php",
+    "sportovec_treninky.php"
+  ],
+  "catalog_source_unchanged": true,
+  "original_dom_comparison_valid": false,
+  "reason": "Normalizer omitted per-request data-app-csp-handler markers and release CSS filemtime versions; original full-hash mismatch retained. Two empty catalog pages exactly match the original hash after only three CSS versions are restored.",
+  "post_release_stability": true
+}

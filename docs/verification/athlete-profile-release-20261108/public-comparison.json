@@ -1,0 +1,46 @@
+{
+  "complete": false,
+  "method": "Anonymous GET without cookies, redirects or POST; normalized DOM hashes only, system curl.exe HTTP/1.1 with TLS verification; no raw HTML/session.",
+  "cases": {
+    "catalog": {
+      "before_http": 200,
+      "after_http": 200,
+      "dom_equal": false
+    },
+    "price": {
+      "before_http": 200,
+      "after_http": 200,
+      "dom_equal": false
+    },
+    "page2": {
+      "before_http": 200,
+      "after_http": 200,
+      "dom_equal": false
+    },
+    "search": {
+      "before_http": 200,
+      "after_http": 200,
+      "dom_equal": false
+    },
+    "empty": {
+      "before_http": 200,
+      "after_http": 200,
+      "dom_equal": false
+    },
+    "profile_denied": {
+      "before_http": 404,
+      "after_http": 404,
+      "dom_equal": true
+    },
+    "history_denied": {
+      "before_http": 403,
+      "after_http": 403,
+      "dom_equal": true
+    },
+    "measurements_denied": {
+      "before_http": 403,
+      "after_http": 403,
+      "dom_equal": true
+    }
+  }
+}

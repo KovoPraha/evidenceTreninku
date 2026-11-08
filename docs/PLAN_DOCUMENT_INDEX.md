@@ -928,7 +928,7 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 
 | PL-4de73dc0ed | [P11-RH anonymní guard kontrola](verification/training-history-release-20261108/anonymous-history.php.txt) | evidence / SUPPORT | P11-RH |
 
-| PL-10c1cb582e | [P11-RHC — trenérská historie](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) | plan / IN_PROGRESS | P11-RHC |
+| PL-10c1cb582e | [P11-RHC — trenérská historie](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) | plan / DONE | P11-RHC |
 
 | PL-145de4022b | [Předání P11-RHC](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md) | handoff / SUPPORT | P11-RHC |
 
@@ -942,8 +942,9 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 
 | PL-09ba489840 | [P11-RHC opakovaná kontrola současného veřejného stavu](verification/coach-history-release-20261108/recheck/snapshot.php.txt) | artifact / SUPPORT | P11-RHC |
 
-| PL-123e2d427d | [P11-RHA — historie a měření profilu](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md) | plan / IN_PROGRESS | P11-RHA |
+| PL-123e2d427d | [P11-RHA — historie a měření profilu](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md) | plan / DONE | P11-RHA |
 
 | PL-ebefcd049a | [Předání P11-RHA](SESSION_HANDOFF_ATHLETE_PROFILE_2026-11-08.md) | handoff / SUPPORT | P11-RHA |
 
 | PL-3aa241da26 | [P11-RHA — parita a výkon](verification/athlete-profile-read-performance-20261108/RESULTS.md) | evidence / SUPPORT | P11-RHA |
+| PL-d4a4e0b4a6 | [P11-RHA produkční předání a meze](verification/athlete-profile-release-20261108/RESULTS.md) | evidence / SUPPORT | P11-RHA |

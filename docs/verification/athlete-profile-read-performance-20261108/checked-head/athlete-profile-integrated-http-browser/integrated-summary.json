@@ -1,0 +1,111 @@
+{
+  "complete": true,
+  "baseline_sha": "69b69fa46349b0778980f3cbf3116be91b77cea6",
+  "optimized_sha": "0bed50c5d562e9f83dfa76e00df192f936657866",
+  "source_sha256": {
+    "ajax_sportovec_treninky.php": "f5d6d34f21dbd1d80b44903115caa3448c9fce7495db4618287af43866e7483c",
+    "sportovec_treninky.php": "3ff9e4e206db42a6bbfd27403c66cf73f273a9004d2b710d17268456f04f0d03",
+    "includes/athlete_profile_read.php": "f8cfb7c6b285aa08e6e7fe33cab4e52c648c32b57a952a4c89a514e51fa8530e",
+    "includes/athlete_measurement_list.php": "c3d036a98d92bab327c201760a8023af2084fe6529a1e96b78720deb0779f39c"
+  },
+  "cases": [
+    {
+      "id": "parent",
+      "before_median_ms": 82.088,
+      "after_median_ms": 31.675,
+      "before_bytes": 6104585,
+      "after_bytes": 12827
+    },
+    {
+      "id": "history_all",
+      "before_median_ms": 72.28,
+      "after_median_ms": 19.713,
+      "before_bytes": 8612127,
+      "after_bytes": 208186
+    },
+    {
+      "id": "history_year",
+      "before_median_ms": 24.043,
+      "after_median_ms": 19.476,
+      "before_bytes": 2679144,
+      "after_bytes": 208186
+    },
+    {
+      "id": "history_page2",
+      "before_median_ms": 70.929,
+      "after_median_ms": 19.464,
+      "before_bytes": 8612127,
+      "after_bytes": 215892
+    },
+    {
+      "id": "history_last",
+      "before_median_ms": 70.993,
+      "after_median_ms": 18.4,
+      "before_bytes": 8612127,
+      "after_bytes": 9169
+    },
+    {
+      "id": "history_empty",
+      "before_median_ms": 3.692,
+      "after_median_ms": 2.654,
+      "before_bytes": 82,
+      "after_bytes": 82
+    },
+    {
+      "id": "measurements_all",
+      "before_median_ms": 82.226,
+      "after_median_ms": 22.793,
+      "before_bytes": 6104585,
+      "after_bytes": 19362
+    },
+    {
+      "id": "measurements_exact_case",
+      "before_median_ms": 81.564,
+      "after_median_ms": 22.869,
+      "before_bytes": 6104585,
+      "after_bytes": 19029
+    },
+    {
+      "id": "measurements_exact_space",
+      "before_median_ms": 82.066,
+      "after_median_ms": 22.865,
+      "before_bytes": 6104585,
+      "after_bytes": 19080
+    },
+    {
+      "id": "measurements_unknown",
+      "before_median_ms": 82.366,
+      "after_median_ms": 22.863999999999997,
+      "before_bytes": 6104585,
+      "after_bytes": 19182
+    },
+    {
+      "id": "measurements_empty",
+      "before_median_ms": 81.15,
+      "after_median_ms": 22.701,
+      "before_bytes": 6104585,
+      "after_bytes": 2281
+    },
+    {
+      "id": "measurements_page2",
+      "before_median_ms": 81.94999999999999,
+      "after_median_ms": 23.028,
+      "before_bytes": 6104585,
+      "after_bytes": 19821
+    },
+    {
+      "id": "bearer_history",
+      "before_median_ms": 73.791,
+      "after_median_ms": 17.773,
+      "before_bytes": 8612127,
+      "after_bytes": 208186
+    },
+    {
+      "id": "bearer_measurements",
+      "before_median_ms": 80.28,
+      "after_median_ms": 21.201999999999998,
+      "before_bytes": 6104585,
+      "after_bytes": 19362
+    }
+  ]
+}

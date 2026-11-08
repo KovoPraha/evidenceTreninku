@@ -1,0 +1,56 @@
+<?php
+if (PHP_SAPI !== 'cli' || !in_array($argv[1] ?? '', ['before','after'], true)) { exit(1); }
+$report = ['phase' => $argv[1], 'at_utc' => gmdate('c'),
+    'method' => 'Anonymous GET without cookies, redirects or POST; normalized DOM hashes only, system curl.exe HTTP/1.1 with TLS verification; no raw HTML/session.', 'cases' => []];
+$paths = ['catalog' => 'eshop.php', 'price' => 'eshop.php?razeni=price', 'page2' => 'eshop.php?stranka=2',
+    'search' => 'eshop.php?q=cyklo', 'empty' => 'eshop.php?q=__catalog_performance_no_match__',
+    'profile_denied' => 'sportovec_treninky.php', 'history_denied' => 'ajax_sportovec_treninky.php',
+    'measurements_denied' => 'ajax_sportovec_treninky.php?view=measurements'];
+$reference = isset($argv[3]) ? json_decode(file_get_contents($argv[3]), true, 512, JSON_THROW_ON_ERROR) : null;
+foreach ($paths as $id => $path) {
+    $url = 'https://kis.kovopraha.cz/' . (str_contains($id, 'denied') ? '' : 'booking/') . $path;
+    $process = proc_open(['curl.exe', '--http1.1', '--silent', '--show-error', '--max-time', '30',
+        '--header', 'Cache-Control: no-cache', '--write-out', "\n%{http_code} %{time_total}", $url],
+        [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $response = stream_get_contents($pipes[1]); $error = stream_get_contents($pipes[2]);
+    fclose($pipes[1]); fclose($pipes[2]);
+    if (proc_close($process) !== 0) { throw new RuntimeException('Public transport failed: ' . $error); }
+    $position = strrpos($response, "\n");
+    $html = substr($response, 0, $position);
+    [$code, $seconds] = explode(' ', trim(substr($response, $position + 1)));
+    $status = (int) $code; $ms = (float) $seconds * 1000;
+    $doc = new DOMDocument(); libxml_use_internal_errors(true);
+    $doc->loadHTML('<?xml encoding="UTF-8">' . $html, LIBXML_NONET); libxml_clear_errors();
+    $xp = new DOMXPath($doc);
+    foreach ($xp->query('//script') as $n) { $n->parentNode->removeChild($n); }
+    foreach ($xp->query('//*[@nonce]') as $n) { $n->removeAttribute('nonce'); }
+    foreach ($xp->query('//input[@name="csrf_token"]') as $n) { $n->setAttribute('value', 'CSRF'); }
+    foreach ($xp->query('//text()') as $n) { $n->nodeValue = preg_replace('/\s+/u', ' ', trim($n->nodeValue)); }
+    $actualHash = hash('sha256', $doc->saveHTML());
+    $assets = [];
+    foreach ($xp->query('//link[@href]') as $n) {
+        if (preg_match('~/assets/[^?]+\.css\?v=([0-9]+)$~', $n->getAttribute('href'), $match)) {
+            $assets[] = ['node' => $n, 'href' => $n->getAttribute('href'), 'version' => $match[1]];
+        }
+    }
+    $matched = null;
+    if ($reference && count($assets) === 3) {
+        for ($candidate = strtotime('2026-11-08 15:19:30 UTC'); $candidate <= strtotime('2026-11-08 15:20:30 UTC'); $candidate++) {
+            foreach ($assets as $asset) {
+                $asset['node']->setAttribute('href', preg_replace('/([?]v=)[0-9]+$/', '${1}' . $candidate, $asset['href']));
+            }
+            if (hash('sha256', $doc->saveHTML()) === $reference['cases'][$id]['dom_sha256']) {
+                $matched = ['previous_version' => $candidate, 'only_three_asset_versions_changed' => true];
+                break;
+            }
+        }
+        foreach ($assets as $asset) { $asset['node']->setAttribute('href', $asset['href']); }
+        if (hash('sha256', $doc->saveHTML()) !== $actualHash) { throw new RuntimeException('DOM restoration failed'); }
+    }
+    $expected = str_contains($id, 'denied') ? ($id === 'profile_denied' ? 404 : 403) : 200;
+    $report['cases'][$id] = ['url' => $url, 'http' => $status, 'expected' => $expected,
+        'status_pass' => $status === $expected, 'total_ms' => $ms, 'dom_sha256' => $actualHash, 'asset_versions' => array_column($assets, 'version'), 'baseline_asset_proof' => $matched];
+}
+$report['complete'] = !in_array(false, array_column($report['cases'], 'status_pass'), true);
+file_put_contents($argv[2], json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+echo 'Anonymous checks: ' . count($report['cases']) . '; status pass=' . ($report['complete'] ? 'yes' : 'no') . PHP_EOL;
