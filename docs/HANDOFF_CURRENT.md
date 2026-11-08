@@ -25,7 +25,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 - P11-R13-S HOTOVO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [provozní důkaz](verification/medical-state-release-20261107/RESULTS.md).
   #381/938e9c50, deploy42405912779 SUCCESS; další deploy neopakovat. WIP zachovaný, přihlášené UAT NOT RUN.
 - P11-R13-F ROZPRACOVÁNO: [plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md).
-  PR #385: hledání přínos PASS, V1/V2 datumy regresní; V3 jednou vybere hlavy a metadata až po stránce, bez deploye. R05 uzavřené [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
+  PR #385: hledání přínos PASS, V4 lokálně26/813, rozšířené pending/legacy a nové nativní/HTTP měření, bez deploye. R05 uzavřené [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

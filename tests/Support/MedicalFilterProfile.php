@@ -62,6 +62,8 @@ foreach ([100, 1000, 10000, 100000] as $watches) {
         $cases = [
             'broad_search' => ['medical_q' => 'Synthetic', 'medical_state' => 'valid'],
             'half_search' => ['medical_q' => 'Žáková', 'medical_state' => 'valid'],
+            'broad_pending' => ['medical_q' => 'Synthetic', 'medical_state' => 'pending'],
+            'half_pending' => ['medical_q' => 'Žáková', 'medical_state' => 'pending'],
             'rare_search' => ['medical_q' => 'purpose ' . $watches, 'medical_state' => 'pending'],
             'empty_search' => ['medical_q' => '__no_such_person__', 'medical_state' => 'valid'],
             'date_day' => ['medical_from' => $day(1), 'medical_to' => $day(1), 'medical_state' => 'valid'],

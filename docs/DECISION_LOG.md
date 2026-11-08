@@ -283,3 +283,5 @@ PŘIJATO podle nového výslovného zadání Marka: [P11-R13-F](MEDICAL_FILTER_R
 D15 upřesnění8.11.2026: cc2a825e hledání přínos PASS, ale dva datumové smíšené profily regresní. Pro datum zkusit nejnovější verified/poslední záznam korelovaným indexovým lookupem, aby se neagregovala širší historie. Bez DDL a bez změny stavu; rozhodne nové párové měření. [Důkazy](verification/medical-filter-read-performance-20261107/RESULTS.md).
 
 D15/V3: korelované head lookupy V2 měřením zamítnuté i při existujícím owner/id indexu. Datumový kandidát/head se vypočte jednou s původním filtrem, vnější dotaz už jen spojuje vypočtené head ID a stránkuje. Žádné produkční DDL nebo nový indexový předpoklad. [Důkazy](verification/medical-filter-read-performance-20261107/RESULTS.md).
+
+D15/V4: po mírné regresi V3 datum_day zvolené latest-verified anti-join pro platnostní datumové stavy, a časné HAVING pro běžné skupiny bez verified. Budoucí missing/revoked s verified hlavičkou musí zůstat výjimkou podle matching ID. Nutné nové široké datumové legacy testy a pending hledání; měření rozhodne. Bez DDL.

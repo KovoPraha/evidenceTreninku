@@ -40,3 +40,22 @@ vyhodnocení téhož filtru mimo agregaci. Čistá stavová funkce/řetězce/lim
 V3 se musí nově změřit na obou DB i celém HTTP/Chrome; dosavadní produkce beze změny.
 
 V3 navíc ponechá v počítaném/řazeném okně jen watch/head ID; původní metadata doplní po ořezu stránky v témže SQL. Složité stavy a full watch hydratace zůstávají kanonické, žádná celá historie běžných vybraných sledování se nenačítá do PHP. Lokálně18/751 PASS. Nový přínos se teprve měří.
+
+## V3/a88cabc8 — většina režie odstraněná, datum_day ještě mírně regresní
+
+Nativní parita/cache-off/checksumy PASS.100k11.4 date_day253,72→267,98ms,
+date_from720,35→669,06ms, date_to691,34→694,10ms;10.3 date_day243,51→244,32ms,
+date_from662,88→545,55ms, date_to662,99→655,51ms. Široké hledání11.4 1000,15→633,12ms.
+Bezpečné profily/XML v iteration3. Neporovnávat časy s jinými runnery.
+V3 ještě nejde do produkce. Zastavení případných nedokončených CI zamítnutých variant
+není výsledek PASS pro jejich nedokončené HTTP; dokončené nativní důkazy zůstávají.
+
+V4: datumové platnostní stavy vyberou latest verified pomocí anti-join na novější
+verified, takže nepotřebují seskupit/watch head znovu dohledávat. U neplatnostních
+stavů zůstane jeden kandidátní průchod, ale HAVING vyřadí skupiny s verified,
+které nemohou požadovaný stav vytvořit. Výjimky budoucích explicitních řetězců
+se zachovají podle kanonicky vypočtených matching ID. Tenké okno a stránka stejné.
+Doplní se datumové rozbité/cizí/cyklické/revokované předchůdce a pending široké/poloviční hledání
+v nativním i HTTP měření. Znovu ověření před jakýmkoli merge/deploy; bez DDL.
+
+V4 lokální úplná cílená sada26/813 PASS, PSR-12/lint PASS. Datumové legacy výjimky mají12novýchpřesných porovnání. Benchmark rozšířený na16případů/4objemy/DB a17kladnýchHTTP/7Chrome scénářů; výkon V4 zatím NOT RUN.

@@ -59,6 +59,25 @@ final class MedicalFilterReadTest extends TestCase
         }
     }
 
+    public function testBroadDateFiltersKeepBrokenAndRevokedFutureGraphsCanonical(): void
+    {
+        $pdo = $this->seeded();
+        $future = date('Y-m-d', strtotime('+5 days'));
+        $pdo->exec("UPDATE medical_clearance_records SET issued_on='$future' WHERE watch_id=8;
+            UPDATE medical_clearance_records SET replaces_id=82 WHERE id=80;
+            INSERT INTO medical_clearance_records VALUES(82,8,'superseded','$future','$future',80,'PRIVATE MEDICAL SENTINEL');
+            UPDATE medical_clearance_records SET replaces_id=999999 WHERE id=441;
+            UPDATE medical_clearance_records SET replaces_id=90 WHERE id=201;
+            UPDATE medical_clearance_records SET state='revoked' WHERE id=320;");
+        foreach (['valid', 'expired', 'not_yet_valid', 'pending', 'revoked', 'missing'] as $state) {
+            foreach ([1, 999999] as $page) {
+                $input = ['medical_q' => 'Synthetic', 'medical_from' => date('Y-m-d'),
+                    'medical_to' => date('Y-m-d', strtotime('+3 days')), 'medical_state' => $state, 'medical_page' => $page];
+                self::assertSame(medicalFilterBaselineList($pdo, $input), \medicalClearanceList($pdo, $input), json_encode($input));
+            }
+        }
+    }
+
     public function testBroadProjectionAndEmptyResultsHaveBoundedReads(): void
     {
         $pdo = $this->seeded();

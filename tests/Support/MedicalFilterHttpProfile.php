@@ -86,6 +86,8 @@ $matrix = array_values(array_filter(fullHttpMatrix($credentials), static fn (arr
 $day = static fn (int $n): string => date('Y-m-d', strtotime(($n < 0 ? '' : '+') . $n . ' day'));
 $inputs = [
     'broad-search' => ['medical_q' => 'Synthetic', 'medical_state' => 'valid'],
+    'broad-pending' => ['medical_q' => 'Synthetic', 'medical_state' => 'pending'],
+    'half-pending' => ['medical_q' => 'Synthetic', 'medical_state' => 'pending', 'medical_to' => $day(1)],
     'half-search' => ['medical_q' => 'Synthetic', 'medical_state' => 'valid', 'medical_to' => $day(1)],
     'rare-search' => ['medical_q' => '10026', 'medical_state' => 'valid'],
     'empty-search' => ['medical_q' => '__no_such_person__', 'medical_state' => 'valid'],

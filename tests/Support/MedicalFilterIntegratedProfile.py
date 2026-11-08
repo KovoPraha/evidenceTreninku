@@ -122,15 +122,15 @@ def browser(variant, role):
     cli(session, "click", button[1])
     cli(session, "snapshot")
     cases = [c for c in read("matrix.json") if c["id"] in ["medical-filter-broad-search", "medical-filter-date-day", "medical-filter-rare-search",
-        "medical-filter-empty-search", "medical-filter-combined", "medical-filter-plain-empty"]]
-    assert len(cases) == 6
+        "medical-filter-empty-search", "medical-filter-combined", "medical-filter-plain-empty", "medical-filter-half-pending"]]
+    assert len(cases) == 7
     template = (root / "tests/Support/FullHttpBrowserProfile.js").read_text()
     template = template.replace("JSON.parse('__P11_CONFIG__')", json.dumps(dict(role=role, base_url="http://127.0.0.1:18099", cases=cases)))
     template = template.replace("  const context =", "  await page.setViewportSize({width:1036,height:703});\n  const context =", 1)
     script = runtime / (session + ".js")
     script.write_text(template)
     report = result(cli(session, "run-code", "--filename=" + str(script)))
-    assert report["complete"] and len(report["cases"]) == 6 and all(len(c["samples"]) == 13 for c in report["cases"])
+    assert report["complete"] and len(report["cases"]) == 7 and all(len(c["samples"]) == 13 for c in report["cases"])
     assert all(not s["console_errors"] and not s["failed_requests"] for c in report["cases"] for s in c["samples"])
     (output / f"browser-{role}-{variant}.json").write_text(json.dumps(report))
     cli(session, "close")

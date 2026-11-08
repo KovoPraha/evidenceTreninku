@@ -10493,6 +10493,39 @@
       "registry": "P11-R13-F",
       "disposition": "Podpůrná evidence konkrétního řezu, nikoli samostatná roadmapa.",
       "evidence": []
+    },
+    {
+      "id": "PL-9eaa0ccfa3",
+      "path": "docs/verification/medical-filter-release-20261108/RESULTS.md",
+      "title": "P11-R13-F provozní předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-R13-F",
+      "disposition": "Podpůrný bezpečný provozní důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-12d500fd6d",
+      "path": "docs/verification/medical-filter-release-20261108/snapshot.php.txt",
+      "title": "P11-R13-F veřejná čtecí sonda",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-R13-F",
+      "disposition": "Podpůrný bezpečný provozní důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-57d7a5d36a",
+      "path": "docs/verification/medical-filter-release-20261108/anonymous-medical-filter.php.txt",
+      "title": "P11-R13-F anonymní odmítnutí filtrů",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-R13-F",
+      "disposition": "Podpůrný bezpečný provozní důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",
