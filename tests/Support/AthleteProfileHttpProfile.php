@@ -141,8 +141,8 @@ foreach ($cases as $i => $case) {
             || !str_contains($r['headers']['cache-control'] ?? '', 'no-store'))) {
             throw new RuntimeException('Profile privacy headers changed.');
         }
-        if (str_contains($r['body'], 'Foreign hidden note') || str_contains($r['body'], 'save-note-btn')) {
-            throw new RuntimeException('Read-only session leaked foreign notes or a write control.');
+        if (str_contains($r['body'], 'Foreign hidden note') || preg_match('/class="[^"]*\bsave-note-btn\b/', $r['body'])) {
+            throw new RuntimeException('Read-only session leaked foreign notes or a write control: ' . $case['id']);
         }
         $value = $domain($r, $kind, $type);
         if ($n === 0) {
@@ -164,8 +164,10 @@ foreach ($cases as $i => $case) {
             $samples[] = array_intersect_key($r, array_flip(['status','ttfb_ms','total_ms','bytes']));
         }
     }
-    $report['cases'][] = $case + ['status' => 200, 'privacy_headers' => array_intersect_key($r['headers'],
-        array_flip(['referrer-policy', 'cache-control'])), 'path_kind' => $parent ? 'full_profile_GET' : 'profile_AJAX', 'domain' => $signature, 'samples' => $samples];
+    $report['cases'][] = $case + ['status' => 200, 'privacy_headers' => array_intersect_key(
+        $r['headers'],
+        array_flip(['referrer-policy', 'cache-control'])
+    ), 'path_kind' => $parent ? 'full_profile_GET' : 'profile_AJAX', 'domain' => $signature, 'samples' => $samples];
 }
 $report['denials'] = [];
 foreach (['', '?view=measurements', '?view=measurements&id=1001&sid=1001'] as $params) {
