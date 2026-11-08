@@ -32,6 +32,6 @@ Záloha389tabulek/2triggery, migrace current, VS shodné, aktivace/smoke PASS.
 katalog5/5HTTP200 a celý DOM shodný před/po; obě historie302/login, WIP shodný.
 
 Finální důkazy jsou na větvi `codex/training-history-release-proof-20261108`;
-po dokumentačním merge do main není potřeba další deploy. Neopakovat vydání ani writery.
+[PR #398](https://github.com/KovoPraha/evidenceTreninku/pull/398) předává důkazy do main; další deploy není potřeba. Neopakovat vydání ani writery.
 Další krok mimo uzavřený řez: přihlášené produkční UAT historií NOT RUN,
 ostatní AJAX/profilové historie a celé K0.2 otevřené; nepředstírat jejich přejímku.

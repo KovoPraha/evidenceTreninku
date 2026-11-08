@@ -50,5 +50,5 @@ WIP `kis_rosters_admin.php` SHA256
 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` shodný.
 Cizí větve/worktrees/nezařazené výstupy zachované.
 Finální bezpečné důkazy a aktuální stav sdílí dokumentační větev
-`codex/training-history-release-proof-20261108`; po jejím merge další deploy není potřeba.
+`codex/training-history-release-proof-20261108`, [PR #398](https://github.com/KovoPraha/evidenceTreninku/pull/398); po dokumentačním merge další deploy není potřeba.
 Další AJAX/profilové historie, fyzický mobil/souběh a celé K0.2 zůstávají otevřené.
