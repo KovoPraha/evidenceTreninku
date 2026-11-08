@@ -12,21 +12,34 @@ require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/includes/public_profile_token.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
 require_once __DIR__ . '/includes/sportovec_note_access.php';
+require_once __DIR__ . '/includes/athlete_profile_read.php';
 require_once __DIR__ . '/includes/sports_activity.php';
 
-function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s): string
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 
-function safePublicHtml($html): string {
+function safePublicHtml($html): string
+{
     $html = strip_tags((string)$html, '<p><br><b><strong><i><em><ul><ol><li><a>');
     return preg_replace_callback('~<\s*(/)?\s*([a-z0-9]+)([^>]*)>~i', function ($m) {
         $closing = $m[1] === '/';
         $tag = strtolower($m[2]);
         $allowed = ['p', 'br', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'a'];
-        if (!in_array($tag, $allowed, true)) return '';
-        if ($closing) return $tag === 'br' ? '' : "</{$tag}>";
-        if ($tag !== 'a') return "<{$tag}>";
+        if (!in_array($tag, $allowed, true)) {
+            return '';
+        }
+        if ($closing) {
+            return $tag === 'br' ? '' : "</{$tag}>";
+        }
+        if ($tag !== 'a') {
+            return "<{$tag}>";
+        }
         $attrs = $m[3] ?? '';
-        if (!preg_match('~href\s*=\s*(["\'])(.*?)\1~is', $attrs, $hm)) return '<a>';
+        if (!preg_match('~href\s*=\s*(["\'])(.*?)\1~is', $attrs, $hm)) {
+            return '<a>';
+        }
         $href = trim(html_entity_decode($hm[2], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
         $compact = preg_replace('/[\x00-\x20]+/', '', $href);
         if (preg_match('/^([a-z][a-z0-9+.-]*):/i', $compact, $sm)
@@ -37,32 +50,47 @@ function safePublicHtml($html): string {
     }, $html);
 }
 
-function fmtDate(?string $d): string {
-    if (!$d || $d === '0000-00-00') return '—';
+function fmtDate(?string $d): string
+{
+    if (!$d || $d === '0000-00-00') {
+        return '—';
+    }
     $ts = strtotime($d);
     return $ts ? date('d.m.Y', $ts) : h($d);
 }
 
-function renderMereniData(array $mz): string {
+function renderMereniData(array $mz): string
+{
     $typ   = $mz['typ'] ?? '';
     $parts = [];
     if ($typ === 'kolo' || $typ === 'beh') {
-        if (!empty($mz['vzdalenost']) && $mz['vzdalenost'] !== '0')
+        if (!empty($mz['vzdalenost']) && $mz['vzdalenost'] !== '0') {
             $parts[] = '<strong>' . h($mz['vzdalenost']) . '</strong> ' . h(sportsMeasurementDisplayUnit($mz['distance_unit'] ?? null));
-        if (!empty($mz['cas']))
+        }
+        if (!empty($mz['cas'])) {
             $parts[] = '⏱ ' . h($mz['cas']);
-        if (!empty($mz['prevod']) && $typ === 'kolo')
+        }
+        if (!empty($mz['prevod']) && $typ === 'kolo') {
             $parts[] = 'převod ' . h($mz['prevod']);
+        }
     } elseif ($typ === 'posilovna') {
         $cvik = $mz['cvik_nazev'] ?: ($mz['cvik_id'] ? '#' . (int)$mz['cvik_id'] : '—');
         $parts[] = '<strong>' . h($cvik) . '</strong>';
-        if (!empty($mz['vaha']) && $mz['vaha'] !== '0') $parts[] = h($mz['vaha']) . ' kg';
-        if (!empty($mz['opakovani']))                    $parts[] = (int)$mz['opakovani'] . '×';
-        if (!empty($mz['rpe']))                          $parts[] = 'RPE ' . h($mz['rpe']);
+        if (!empty($mz['vaha']) && $mz['vaha'] !== '0') {
+            $parts[] = h($mz['vaha']) . ' kg';
+        }
+        if (!empty($mz['opakovani'])) {
+            $parts[] = (int)$mz['opakovani'] . '×';
+        }
+        if (!empty($mz['rpe'])) {
+            $parts[] = 'RPE ' . h($mz['rpe']);
+        }
     } elseif ($typ === 'kolo_krouzek' || $typ === 'kolo_silnice' || $typ === 'kolo_mtb') {
         $segment = $mz['segment_nazev'] ?? ($mz['segment_id'] ? '#' . (int)$mz['segment_id'] : '—');
         $parts[] = '<strong>' . h($segment) . '</strong>';
-        if (!empty($mz['cas'])) $parts[] = '⏱ ' . h($mz['cas']);
+        if (!empty($mz['cas'])) {
+            $parts[] = '⏱ ' . h($mz['cas']);
+        }
     } else {
         return '<span class="text-muted">—</span>';
     }
@@ -74,7 +102,10 @@ function renderMereniData(array $mz): string {
 $legacyToken = trim((string)($_GET['hash'] ?? ''));
 if ($legacyToken !== '') {
     $resolved = public_profile_access_resolve($pdo, $legacyToken);
-    if ($resolved === null) { http_response_code(404); exit('Profil není dostupný.'); }
+    if ($resolved === null) {
+        http_response_code(404);
+        exit('Profil není dostupný.');
+    }
     public_profile_access_grant_session($resolved, $legacyToken);
     app_session_mark_authenticated();
     header('Location: sportovec_treninky.php', true, 303);
@@ -88,12 +119,18 @@ if (isset($_SESSION['trener_id']) && $staffRequestedId !== false) {
 } else {
     $sportovec_id = public_profile_access_session_athlete_id($pdo) ?? 0;
 }
-if ($sportovec_id < 1) { http_response_code(404); exit('Profil není dostupný.'); }
+if ($sportovec_id < 1) {
+    http_response_code(404);
+    exit('Profil není dostupný.');
+}
 
 $stmt = $pdo->prepare('SELECT * FROM sportovci WHERE id = ?');
 $stmt->execute([$sportovec_id]);
 $s = $stmt->fetch(PDO::FETCH_ASSOC);
-if (!$s) { http_response_code(404); exit('Profil není dostupný.'); }
+if (!$s) {
+    http_response_code(404);
+    exit('Profil není dostupný.');
+}
 
 $sportovec_id   = (int)$s['id'];
 $sportovec_name = trim(($s['jmeno'] ?? '') . ' ' . ($s['prijmeni'] ?? ''));
@@ -104,66 +141,26 @@ $odmena_default = $canViewOwnRewards && isset($s['odmena_za_trenink']) ? (float)
 // 2) Dostupné roky tréninků (pro dropdown)
 $rokyAvailable = [];
 try {
-    $stmtY = $pdo->prepare("
-        SELECT DISTINCT YEAR(t.datum) AS rok
-        FROM treninky t
-        LEFT JOIN trenink_sportovec ts ON ts.trenink_id = t.id AND ts.sportovec_id = :sid
-        LEFT JOIN trenink_mereni tm   ON tm.trenink_id  = t.id
-        LEFT JOIN mereni_zaznamy mz   ON mz.id = tm.mereni_id AND mz.sportovec_id = :sid
-        WHERE ts.sportovec_id IS NOT NULL OR mz.sportovec_id IS NOT NULL
-        ORDER BY rok DESC
-    ");
-    $stmtY->execute([':sid' => $sportovec_id]);
-    $rokyAvailable = array_column($stmtY->fetchAll(PDO::FETCH_ASSOC), 'rok');
+    $rokyAvailable = AthleteProfileRead::years($pdo, $sportovec_id);
 } catch (PDOException $e) {
     $rokyAvailable = [];
 }
 
 $defaultRok = !empty($rokyAvailable) ? (int)$rokyAvailable[0] : (int)date('Y');
 
-// 3) Všechna měření sportovce (pro záložku Měření)
-$mojeMereni = [];
+// 3) Počet měření; detaily se načtou až v otevřené záložce.
+$measurementCount = 0;
 try {
-    $sqlAll = "
-        SELECT
-            t.id AS trenink_id,
-            t.datum AS trenink_datum,
-            tm.poradi,
-            mz.id AS mereni_id, mz.typ,
-            mz.vzdalenost, mz.distance_unit, mz.cas, mz.prevod,
-            mz.cvik_id, mz.segment_id, mz.vaha, mz.opakovani, mz.rpe,
-            mz.poznamka AS mereni_poznamka,
-            c.nazev AS cvik_nazev,
-            seg.nazev AS segment_nazev
-        FROM trenink_mereni tm
-        JOIN mereni_zaznamy mz ON mz.id = tm.mereni_id
-        JOIN treninky t ON t.id = tm.trenink_id
-        LEFT JOIN cviky c ON c.id = mz.cvik_id
-        LEFT JOIN segmenty seg ON seg.id = mz.segment_id
-        WHERE mz.sportovec_id = ?
-        ORDER BY t.datum DESC, t.id DESC, tm.poradi ASC, mz.id ASC
-    ";
-    $stAll = $pdo->prepare($sqlAll);
-    $stAll->execute([$sportovec_id]);
-    $mojeMereni = $stAll->fetchAll(PDO::FETCH_ASSOC);
+    $measurementCount = AthleteProfileRead::countMeasurements($pdo, $sportovec_id);
 } catch (PDOException $e) {
-    $mojeMereni = [];
 }
 
 // 4) Statistiky celkové
 $statCelkem = count($rokyAvailable) > 0 ? null : 0;
 try {
-    $stStat = $pdo->prepare("
-        SELECT COUNT(DISTINCT t.id) AS pocet
-        FROM treninky t
-        LEFT JOIN trenink_sportovec ts ON ts.trenink_id = t.id AND ts.sportovec_id = :sid
-        LEFT JOIN trenink_mereni tm   ON tm.trenink_id  = t.id
-        LEFT JOIN mereni_zaznamy mz   ON mz.id = tm.mereni_id AND mz.sportovec_id = :sid
-        WHERE ts.sportovec_id IS NOT NULL OR mz.sportovec_id IS NOT NULL
-    ");
-    $stStat->execute([':sid' => $sportovec_id]);
-    $statCelkem = (int)$stStat->fetchColumn();
-} catch (PDOException $e) {}
+    $statCelkem = AthleteProfileRead::countTrainings($pdo, $sportovec_id);
+} catch (PDOException $e) {
+}
 
 // 5) Kredit a aktuální období
 $aktualniObdobi = null;
@@ -171,33 +168,37 @@ $pocetTrObdobi  = 0;
 $sazba_v_obdobi = $odmena_default;
 $castkaObdobi   = 0.0;
 
-if ($canViewOwnRewards) try {
-    $stmtOpen = $pdo->prepare("
+if ($canViewOwnRewards) {
+    try {
+        $stmtOpen = $pdo->prepare("
         SELECT * FROM sportovec_obdobi
         WHERE sportovec_id = ?
           AND (datum_do IS NULL OR datum_do = '0000-00-00') AND vyplaceno = 0
         ORDER BY datum_od DESC LIMIT 1
     ");
-    $stmtOpen->execute([$sportovec_id]);
-    $aktualniObdobi = $stmtOpen->fetch(PDO::FETCH_ASSOC);
+        $stmtOpen->execute([$sportovec_id]);
+        $aktualniObdobi = $stmtOpen->fetch(PDO::FETCH_ASSOC);
 
-    if ($aktualniObdobi) {
-        $od = $aktualniObdobi['datum_od'];
-        $sazba_v_obdobi = isset($aktualniObdobi['sazba_kc'])
-            ? (float)$aktualniObdobi['sazba_kc'] : $odmena_default;
+        if ($aktualniObdobi) {
+            $od = $aktualniObdobi['datum_od'];
+            $sazba_v_obdobi = isset($aktualniObdobi['sazba_kc'])
+                ? (float)$aktualniObdobi['sazba_kc'] : $odmena_default;
 
-        $stmtCount = $pdo->prepare("
+            $stmtCount = $pdo->prepare("
             SELECT COUNT(DISTINCT ts.trenink_id) AS pocet
             FROM trenink_sportovec ts
             JOIN treninky t ON t.id = ts.trenink_id
             WHERE ts.sportovec_id = :sid
               AND t.datum >= :od AND t.datum <= :do
         ");
-        $stmtCount->execute([':sid' => $sportovec_id, ':od' => $od, ':do' => date('Y-m-d')]);
-        $pocetTrObdobi = (int)($stmtCount->fetchColumn() ?? 0);
-        $castkaObdobi  = $pocetTrObdobi * $sazba_v_obdobi;
+            $stmtCount->execute([':sid' => $sportovec_id, ':od' => $od, ':do' => date('Y-m-d')]);
+            $pocetTrObdobi = (int)($stmtCount->fetchColumn() ?? 0);
+            $castkaObdobi  = $pocetTrObdobi * $sazba_v_obdobi;
+        }
+    } catch (PDOException $e) {
+        $aktualniObdobi = null;
     }
-} catch (PDOException $e) { $aktualniObdobi = null; }
+}
 
 // 6) Zátěžové testy
 $testy         = [];
@@ -220,7 +221,8 @@ try {
             $souboryByTest[(int)$row['test_id']][] = $row;
         }
     }
-} catch (PDOException $e) {}
+} catch (PDOException $e) {
+}
 
 // 7) Oznámení
 $oznameni = [];
@@ -258,16 +260,21 @@ try {
     ");
     $stO->execute($params);
     $oznameni = $stO->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {}
+} catch (PDOException $e) {
+}
 
 // 8) Kalendář
-function buildCalendarUrl(array $extra = []): string {
+function buildCalendarUrl(array $extra = []): string
+{
     $params = $_GET;
-    foreach ($extra as $k => $v) $params[$k] = $v;
+    foreach ($extra as $k => $v) {
+        $params[$k] = $v;
+    }
     return 'sportovec_treninky.php?' . http_build_query($params);
 }
 
-function ymToDate(string $ym, bool $start): DateTime {
+function ymToDate(string $ym, bool $start): DateTime
+{
     $d = DateTime::createFromFormat('Y-m', $ym) ?: new DateTime('first day of this month');
     $d->setTime(0, 0, 0);
     $d->modify($start ? 'first day of this month' : 'last day of this month');
@@ -294,12 +301,17 @@ try {
     ");
     $stmtPS->execute([$sportovec_id]);
     foreach ($stmtPS->fetchAll(PDO::FETCH_ASSOC) as $r) {
-        if ($r['podskupina_id'] > 0) $podskupinySportovce[(int)$r['podskupina_id']] = 1;
-        if ($r['skupina_id']    > 0) $skupinySportovce[(int)$r['skupina_id']]    = 1;
+        if ($r['podskupina_id'] > 0) {
+            $podskupinySportovce[(int)$r['podskupina_id']] = 1;
+        }
+        if ($r['skupina_id']    > 0) {
+            $skupinySportovce[(int)$r['skupina_id']]    = 1;
+        }
     }
     $podskupinySportovce = array_keys($podskupinySportovce);
     $skupinySportovce    = array_keys($skupinySportovce);
-} catch (PDOException $e) {}
+} catch (PDOException $e) {
+}
 
 // Kalendář - tréninky skupin sportovce
 $calTreninkyByDate = [];
@@ -349,7 +361,8 @@ if (!empty($podskupinySportovce)) {
                 $calTreninkMeta[(int)$r['trenink_id']]['tagy'][] = $r['nazev'];
             }
         }
-    } catch (PDOException $e) {}
+    } catch (PDOException $e) {
+    }
 }
 
 // 8b) Plánované tréninky skupin sportovce (nadcházející)
@@ -359,18 +372,19 @@ try {
     $stmtMaSkup = $pdo->prepare("SELECT COUNT(*) FROM sportovec_skupina WHERE sportovec_id = ?");
     $stmtMaSkup->execute([$sportovec_id]);
     $maSkupiny = (int)$stmtMaSkup->fetchColumn() > 0;
-} catch (PDOException $e) {}
+} catch (PDOException $e) {
+}
 
 $planovane   = [];
 $planKatMeta = [
-    'silnice'   => ['label'=>'Silnice',   'bgcls'=>'bg-success',          'icon'=>'bi-bicycle'],
-    'mtb'       => ['label'=>'MTB',       'bgcls'=>'bg-warning text-dark', 'icon'=>'bi-tree'],
-    'draha'     => ['label'=>'Dráha',     'bgcls'=>'bg-primary',           'icon'=>'bi-stopwatch'],
-    'cyklokros' => ['label'=>'Cyklokros', 'bgcls'=>'badge-orange',         'icon'=>'bi-tornado'],
-    'posilovna' => ['label'=>'Posilovna', 'bgcls'=>'bg-danger',            'icon'=>'bi-trophy'],
-    'atletika'  => ['label'=>'Atletika',  'bgcls'=>'bg-info text-dark',    'icon'=>'bi-person-walking'],
-    'cviceni'   => ['label'=>'Cvičení',   'bgcls'=>'bg-secondary',         'icon'=>'bi-heart-pulse'],
-    'plavani'   => ['label'=>'Plavání',   'bgcls'=>'badge-teal',           'icon'=>'bi-water'],
+    'silnice'   => ['label' => 'Silnice',   'bgcls' => 'bg-success',          'icon' => 'bi-bicycle'],
+    'mtb'       => ['label' => 'MTB',       'bgcls' => 'bg-warning text-dark', 'icon' => 'bi-tree'],
+    'draha'     => ['label' => 'Dráha',     'bgcls' => 'bg-primary',           'icon' => 'bi-stopwatch'],
+    'cyklokros' => ['label' => 'Cyklokros', 'bgcls' => 'badge-orange',         'icon' => 'bi-tornado'],
+    'posilovna' => ['label' => 'Posilovna', 'bgcls' => 'bg-danger',            'icon' => 'bi-trophy'],
+    'atletika'  => ['label' => 'Atletika',  'bgcls' => 'bg-info text-dark',    'icon' => 'bi-person-walking'],
+    'cviceni'   => ['label' => 'Cvičení',   'bgcls' => 'bg-secondary',         'icon' => 'bi-heart-pulse'],
+    'plavani'   => ['label' => 'Plavání',   'bgcls' => 'badge-teal',           'icon' => 'bi-water'],
 ];
 try {
     $stmtPl = $pdo->prepare("
@@ -414,12 +428,16 @@ try {
     if (!empty($podskupinySportovce)) {
         $in = implode(',', array_fill(0, count($podskupinySportovce), '?'));
         $cileneParts[] = "(gt.target_type = 'podskupina' AND gt.target_id IN ($in))";
-        foreach ($podskupinySportovce as $pid) $cileneParams[] = $pid;
+        foreach ($podskupinySportovce as $pid) {
+            $cileneParams[] = $pid;
+        }
     }
     if (!empty($skupinySportovce)) {
         $in = implode(',', array_fill(0, count($skupinySportovce), '?'));
         $cileneParts[] = "(gt.target_type = 'skupina' AND gt.target_id IN ($in))";
-        foreach ($skupinySportovce as $gid) $cileneParams[] = $gid;
+        foreach ($skupinySportovce as $gid) {
+            $cileneParams[] = $gid;
+        }
     }
 
     $where[] = "(l.viditelnost = 'cilene' AND (" . implode(' OR ', $cileneParts) . "))";
@@ -442,20 +460,24 @@ try {
         $cid = (int)$l['kategorie_id'];
         $gsLinksByCat[$cid][] = $l;
         $ts = $l['created_at'] ?? '';
-        if (!isset($lastByCat[$cid]) || $ts > $lastByCat[$cid]) $lastByCat[$cid] = $ts;
+        if (!isset($lastByCat[$cid]) || $ts > $lastByCat[$cid]) {
+            $lastByCat[$cid] = $ts;
+        }
     }
 
     $cats = [];
     foreach ($gsLinksByCat as $cid => $items) {
         $cats[] = ['id' => $cid, 'nazev' => $items[0]['kategorie_nazev'] ?? 'Kategorie', 'last_created' => $lastByCat[$cid] ?? '', 'count' => count($items)];
     }
-    usort($cats, fn($a, $b) => $b['last_created'] <=> $a['last_created']);
+    usort($cats, fn ($a, $b) => $b['last_created'] <=> $a['last_created']);
     $gsCatsOrdered = $cats;
     $gsLinksActive = !empty($allLinks);
-} catch (PDOException $e) {}
+} catch (PDOException $e) {
+}
 
 // Funkce pro vykreslení kalendáře
-function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $metaByTrenink, string $parentId): string {
+function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $metaByTrenink, string $parentId): string
+{
     $year  = (int)$monthStart->format('Y');
     $month = (int)$monthStart->format('m');
     $firstDay    = new DateTime(sprintf('%04d-%02d-01', $year, $month));
@@ -465,7 +487,9 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
     $weeks       = (int)ceil(($startDow - 1 + $daysInMonth) / 7);
 
     $html = '<table class="table table-bordered calendar-mini mb-0"><thead class="table-light"><tr>';
-    foreach (['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'] as $d) $html .= "<th>{$d}</th>";
+    foreach (['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'] as $d) {
+        $html .= "<th>{$d}</th>";
+    }
     $html .= '</tr></thead><tbody>';
 
     $day = 1;
@@ -489,13 +513,22 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
                     $title = !empty($t['napln']) ? mb_substr(trim($t['napln']), 0, 35) . (mb_strlen(trim($t['napln'])) > 35 ? '…' : '') : 'Trénink #' . $tid;
                     $cId   = 'cal_' . $parentId . '_' . $tid;
 
-                    $html .= '<button class="btn btn-outline-primary btn-sm text-start" type="button" data-bs-toggle="collapse" data-bs-target="#' . $cId . '">' . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</button>';
+                    $html .= '<button class="btn btn-outline-primary btn-sm text-start" type="button" data-bs-toggle="collapse" data-bs-target="#' . $cId . '">'
+                        . htmlspecialchars($title, ENT_QUOTES, 'UTF-8') . '</button>';
                     $html .= '<div class="collapse" id="' . $cId . '"><div class="card card-body p-2 small">';
                     $html .= '<div><strong>Datum:</strong> ' . date('d.m.Y', strtotime($dateKey)) . '</div>';
-                    if (!empty($t['delka'])) $html .= '<div><strong>Délka:</strong> ' . htmlspecialchars($t['delka'], ENT_QUOTES, 'UTF-8') . ' h</div>';
-                    if (!empty($meta['treneri'])) $html .= '<div><strong>Trenér:</strong> ' . htmlspecialchars(implode(', ', $meta['treneri']), ENT_QUOTES, 'UTF-8') . '</div>';
-                    if (!empty($meta['tagy']))    $html .= '<div><strong>Tagy:</strong> ' . htmlspecialchars(implode(', ', $meta['tagy']), ENT_QUOTES, 'UTF-8') . '</div>';
-                    if (!empty($t['napln']))      $html .= '<div class="mt-1">' . nl2br(htmlspecialchars($t['napln'], ENT_QUOTES, 'UTF-8')) . '</div>';
+                    if (!empty($t['delka'])) {
+                        $html .= '<div><strong>Délka:</strong> ' . htmlspecialchars($t['delka'], ENT_QUOTES, 'UTF-8') . ' h</div>';
+                    }
+                    if (!empty($meta['treneri'])) {
+                        $html .= '<div><strong>Trenér:</strong> ' . htmlspecialchars(implode(', ', $meta['treneri']), ENT_QUOTES, 'UTF-8') . '</div>';
+                    }
+                    if (!empty($meta['tagy'])) {
+                        $html .= '<div><strong>Tagy:</strong> ' . htmlspecialchars(implode(', ', $meta['tagy']), ENT_QUOTES, 'UTF-8') . '</div>';
+                    }
+                    if (!empty($t['napln'])) {
+                        $html .= '<div class="mt-1">' . nl2br(htmlspecialchars($t['napln'], ENT_QUOTES, 'UTF-8')) . '</div>';
+                    }
                     $html .= '</div></div>';
                 }
                 $html .= '</div>';
@@ -516,7 +549,8 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?= h($sportovec_name) ?> – karta sportovce</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <?php appUiAssets(); ?>
   <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
     .stat-pill {
@@ -553,7 +587,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
 <body>
 
 <div class="container py-4">
-  <?php $verifiedSports=sportsActivitySummary($pdo,$sportovec_id,date('Y-01-01'),date('Y-m-d')); ?>
+  <?php $verifiedSports = sportsActivitySummary($pdo, $sportovec_id, date('Y-01-01'), date('Y-m-d')); ?>
   <section class="alert alert-info"><strong>Ověřená činnost letos:</strong>
     <?= (int)$verifiedSports['training_count'] ?> uzavřených tréninků · <?= (int)$verifiedSports['training_minutes'] ?> doložených minut · <?= (int)$verifiedSports['race_count'] ?> doložených startů.
     Neuzavřené historické záznamy níže neprokazují skutečnou účast.</section>
@@ -572,9 +606,9 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
           <i class="bi bi-calendar-check me-1"></i><?= (int)$statCelkem ?> původních záznamů tréninků (včetně neověřených)
         </div>
       <?php endif; ?>
-      <?php if (!empty($mojeMereni)): ?>
+      <?php if ($measurementCount > 0): ?>
         <div class="stat-pill">
-          <i class="bi bi-speedometer2 me-1"></i><?= count($mojeMereni) ?> měření
+          <i class="bi bi-speedometer2 me-1"></i><?= $measurementCount ?> měření
         </div>
       <?php endif; ?>
     </div>
@@ -642,8 +676,8 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
     <li class="nav-item" role="presentation">
       <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pane-mereni" type="button">
         <i class="bi bi-speedometer2 me-1"></i>Měření
-        <?php if (!empty($mojeMereni)): ?>
-          <span class="badge bg-secondary ms-1"><?= count($mojeMereni) ?></span>
+        <?php if ($measurementCount > 0): ?>
+          <span class="badge bg-secondary ms-1"><?= $measurementCount ?></span>
         <?php endif; ?>
       </button>
     </li>
@@ -657,8 +691,8 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
     <?php endif; ?>
     <?php
     $zavodyPublicTab = [];
-    try {
-        $stmtZPT = $pdo->prepare("
+try {
+    $stmtZPT = $pdo->prepare("
             SELECT z.id, z.datum, z.kategorie, z.popis, zsp.poradi, zsp.cas, zsp.body
             FROM zavod_sportovec zsp
             JOIN zavody z ON zsp.zavod_id = z.id
@@ -666,10 +700,11 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
             ORDER BY z.datum DESC
             LIMIT 50
         ");
-        $stmtZPT->execute([':sid' => $sportovec_id]);
-        $zavodyPublicTab = $stmtZPT->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {}
-    if (!empty($zavodyPublicTab)): ?>
+    $stmtZPT->execute([':sid' => $sportovec_id]);
+    $zavodyPublicTab = $stmtZPT->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+}
+if (!empty($zavodyPublicTab)): ?>
     <li class="nav-item" role="presentation">
       <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pane-zavody" type="button">
         <i class="bi bi-trophy me-1"></i>Závody
@@ -729,24 +764,26 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
       <?php if (empty($planovane)): ?>
         <div class="alert alert-info mb-0">Zatím žádné naplánované tréninky.</div>
       <?php else:
-        $planovaneByDate = [];
-        foreach ($planovane as $pl) $planovaneByDate[$pl['datum']][] = $pl;
-        $denNazvy = [1=>'Pondělí',2=>'Úterý',3=>'Středa',4=>'Čtvrtek',5=>'Pátek',6=>'Sobota',7=>'Neděle'];
-      ?>
+          $planovaneByDate = [];
+          foreach ($planovane as $pl) {
+              $planovaneByDate[$pl['datum']][] = $pl;
+          }
+          $denNazvy = [1 => 'Pondělí',2 => 'Úterý',3 => 'Středa',4 => 'Čtvrtek',5 => 'Pátek',6 => 'Sobota',7 => 'Neděle'];
+          ?>
         <?php foreach ($planovaneByDate as $datum => $plans): ?>
           <?php
-            $dt  = new DateTime($datum);
+                $dt  = new DateTime($datum);
             $dow = (int)$dt->format('N');
             $den = $denNazvy[$dow] ?? '';
-          ?>
+            ?>
           <div class="mb-3">
             <div class="text-muted small fw-semibold mb-2 text-uppercase border-bottom pb-1">
               <?= h($den) ?>, <?= h(date('d.m.Y', strtotime($datum))) ?>
             </div>
             <?php foreach ($plans as $pl):
-              $kat = $pl['kategorie'] ?? '';
-              $km  = $planKatMeta[$kat] ?? ['label'=>h($kat),'bgcls'=>'bg-secondary','icon'=>'bi-calendar'];
-            ?>
+                $kat = $pl['kategorie'] ?? '';
+                $km  = $planKatMeta[$kat] ?? ['label' => h($kat),'bgcls' => 'bg-secondary','icon' => 'bi-calendar'];
+                ?>
             <div class="card plan-card mb-2 shadow-sm">
               <div class="card-body py-2 px-3">
                 <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
@@ -755,7 +792,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
                   </span>
                   <?php if (!empty($pl['cas_od'])): ?>
                     <span class="text-muted small">
-                      <i class="bi bi-clock me-1"></i><?= h(substr($pl['cas_od'],0,5)) ?><?= !empty($pl['cas_do']) ? '–'.h(substr($pl['cas_do'],0,5)) : '' ?>
+                      <i class="bi bi-clock me-1"></i><?= h(substr($pl['cas_od'], 0, 5)) ?><?= !empty($pl['cas_do']) ? '–'.h(substr($pl['cas_do'], 0, 5)) : '' ?>
                     </span>
                   <?php endif; ?>
                   <?php if (!empty($pl['skupina_nazev'])): ?>
@@ -827,62 +864,18 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
     <!-- ===== MĚŘENÍ ===== -->
     <div class="tab-pane fade" id="pane-mereni" role="tabpanel">
 
-      <?php if (empty($mojeMereni)): ?>
-        <div class="alert alert-info mb-0">Zatím nemáš žádná měření.</div>
-      <?php else: ?>
-
-        <!-- Type filter pills -->
-        <div class="d-flex gap-2 flex-wrap mb-3">
-          <button class="btn btn-sm btn-outline-secondary active mereni-filter-btn" data-typ="">Vše (<?= count($mojeMereni) ?>)</button>
-          <?php
-            $typCounts = array_count_values(array_column($mojeMereni, 'typ'));
-            $typLabels = ['kolo' => '🚴 Kolo', 'kolo_krouzek' => '🔄 Kroužek', 'kolo_silnice' => '🛣️ Silnice', 'kolo_mtb' => '🌲 MTB', 'beh' => '🏃 Běh', 'posilovna' => '💪 Posilovna'];
-            foreach ($typCounts as $typ => $cnt):
-          ?>
-          <button class="btn btn-sm btn-outline-secondary mereni-filter-btn" data-typ="<?= h($typ) ?>">
-            <?= $typLabels[$typ] ?? h($typ) ?> (<?= (int)$cnt ?>)
-          </button>
-          <?php endforeach; ?>
-        </div>
-
-        <div class="table-responsive">
-          <table class="table table-sm table-hover align-middle" id="mereniTable">
-            <thead class="table-dark">
-              <tr>
-                <th style="width:105px;">Datum</th>
-                <th style="width:90px;">Typ</th>
-                <th>Hodnoty</th>
-                <th style="width:200px;">Poznámka</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php foreach ($mojeMereni as $mz): ?>
-                <tr data-typ="<?= h($mz['typ'] ?? '') ?>">
-                  <td class="text-muted small"><?= fmtDate($mz['trenink_datum'] ?? '') ?></td>
-                  <td>
-                    <?php
-                      $typBadge = ['kolo' => 'mereni-typ-kolo', 'kolo_krouzek' => 'mereni-typ-kolo_krouzek', 'kolo_silnice' => 'mereni-typ-kolo_silnice', 'kolo_mtb' => 'mereni-typ-kolo_mtb', 'beh' => 'mereni-typ-beh', 'posilovna' => 'mereni-typ-posilovna'];
-                      $cls = $typBadge[$mz['typ'] ?? ''] ?? 'bg-secondary';
-                    ?>
-                    <span class="badge <?= $cls ?>"><?= h($mz['typ'] ?? '') ?></span>
-                  </td>
-                  <td><?= renderMereniData($mz) ?></td>
-                  <td class="text-muted small"><?= nl2br(h($mz['mereni_poznamka'] ?? '')) ?></td>
-                </tr>
-              <?php endforeach; ?>
-            </tbody>
-          </table>
-        </div>
-      <?php endif; ?>
+      <div id="measurementListWrap" aria-live="polite">
+        <div class="text-muted">Měření se načtou při otevření záložky.</div>
+      </div>
     </div>
 
     <!-- ===== ZÁTĚŽOVÉ TESTY ===== -->
     <?php if (!empty($testy)): ?>
     <div class="tab-pane fade" id="pane-testy" role="tabpanel">
       <?php foreach ($testy as $test):
-        $tid   = (int)$test['id'];
-        $files = $souboryByTest[$tid] ?? [];
-      ?>
+          $tid   = (int)$test['id'];
+          $files = $souboryByTest[$tid] ?? [];
+          ?>
         <div class="card mb-3">
           <div class="card-header d-flex justify-content-between align-items-center">
             <strong><?= fmtDate($test['datum']) ?></strong>
@@ -915,9 +908,9 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
     <?php if ($gsLinksActive): ?>
     <div class="tab-pane fade" id="pane-gs" role="tabpanel">
       <?php foreach ($gsCatsOrdered as $cat):
-        $cid   = (int)$cat['id'];
-        $items = $gsLinksByCat[$cid] ?? [];
-      ?>
+          $cid   = (int)$cat['id'];
+          $items = $gsLinksByCat[$cid] ?? [];
+          ?>
         <div class="card mb-3">
           <div class="card-header d-flex justify-content-between">
             <strong><?= h($cat['nazev']) ?></strong>
@@ -961,12 +954,12 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
 
     <!-- ===== ZÁVODY ===== -->
     <?php if (!empty($zavodyPublicTab)):
-    $zavKatMetaPublic = [
-        'silnice' => ['label'=>'Silnice','color'=>'success','icon'=>'bi-bicycle'],
-        'draha'   => ['label'=>'Dráha','color'=>'primary','icon'=>'bi-stopwatch'],
-        'mtb'     => ['label'=>'MTB','color'=>'warning','icon'=>'bi-tree'],
-    ];
-    ?>
+        $zavKatMetaPublic = [
+            'silnice' => ['label' => 'Silnice','color' => 'success','icon' => 'bi-bicycle'],
+            'draha'   => ['label' => 'Dráha','color' => 'primary','icon' => 'bi-stopwatch'],
+            'mtb'     => ['label' => 'MTB','color' => 'warning','icon' => 'bi-tree'],
+        ];
+        ?>
     <div class="tab-pane fade" id="pane-zavody" role="tabpanel">
       <div class="table-responsive">
         <table class="table table-sm align-middle mb-0">
@@ -983,7 +976,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
           <?php foreach ($zavodyPublicTab as $zp):
               $zpkat = $zp['kategorie'] ?? 'silnice';
               $zpmeta = $zavKatMetaPublic[$zpkat] ?? $zavKatMetaPublic['silnice'];
-          ?>
+              ?>
             <tr>
               <td><?= h(date('d.m.Y', strtotime($zp['datum']))) ?></td>
               <td><span class="badge bg-<?= $zpmeta['color'] ?>"><i class="bi <?= $zpmeta['icon'] ?> me-1"></i><?= $zpmeta['label'] ?></span></td>
@@ -1005,45 +998,76 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
 
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 (function () {
-    const CSRF_TOKEN  = <?= json_encode(csrf_token(),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
-    const DEFAULT_ROK = <?= json_encode($defaultRok,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
+    const CSRF_TOKEN  = <?= json_encode(csrf_token(), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    const DEFAULT_ROK = <?= json_encode($defaultRok, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
     // ── Tab persistence ──────────────────────────────────────────────
     const TAB_KEY = 'sp_treninky_tab';
     const tabEls  = document.querySelectorAll('#mainTabs button[data-bs-toggle="tab"]');
     const saved   = sessionStorage.getItem(TAB_KEY);
+    const wrap = document.getElementById('trainingListWrap');
+    const measurementWrap = document.getElementById('measurementListWrap');
+    const rokSel = document.getElementById('rokFilter');
+    const controllers = new Map();
+    let measurementsLoaded = false;
+    let measurementType = '';
+
+    async function loadFragment(target, params) {
+        const previous = controllers.get(target);
+        if (previous) previous.abort();
+        const controller = new AbortController();
+        controllers.set(target, controller);
+        target.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div>'
+            + '<div class="mt-2 text-muted small">Načítám…</div></div>';
+        try {
+            const response = await fetch('ajax_sportovec_treninky.php?' + new URLSearchParams(params), {signal: controller.signal});
+            const html = await response.text();
+            if (controllers.get(target) !== controller) return;
+            target.innerHTML = html;
+            if (target === wrap) bindNoteHandlers();
+            if (target === measurementWrap) measurementsLoaded = response.ok;
+        } catch (error) {
+            if (error.name !== 'AbortError' && controllers.get(target) === controller) {
+                target.innerHTML = '<div class="alert alert-danger">Chyba při načítání přehledu.</div>';
+            }
+        } finally {
+            if (controllers.get(target) === controller) controllers.delete(target);
+        }
+    }
+
+    function loadTrainings(rok, page = 1) {
+        return loadFragment(wrap, {rok: rok, profile_page: page});
+    }
+
+    function loadMeasurements(type = '', page = 1) {
+        measurementType = type;
+        return loadFragment(measurementWrap, {view: 'measurements', typ: type, profile_page: page});
+    }
+
+    [wrap, measurementWrap].forEach(target => target.addEventListener('click', event => {
+        const link = event.target.closest('.profile-pagination a');
+        if (!link || !target.contains(link)) return;
+        event.preventDefault();
+        const params = new URL(link.href).searchParams;
+        if (target === wrap) loadTrainings(rokSel ? rokSel.value : DEFAULT_ROK, params.get('profile_page'));
+        else loadMeasurements(measurementType, params.get('profile_page'));
+    }));
+    measurementWrap.addEventListener('click', event => {
+        const button = event.target.closest('.mereni-filter-btn');
+        if (button) loadMeasurements(button.dataset.typ);
+    });
+    tabEls.forEach(btn => btn.addEventListener('shown.bs.tab', e => {
+        const tab = e.target.getAttribute('data-bs-target');
+        sessionStorage.setItem(TAB_KEY, tab);
+        if (tab === '#pane-mereni' && !measurementsLoaded && !controllers.has(measurementWrap)) loadMeasurements();
+    }));
     if (saved) {
-        const el = document.querySelector('#mainTabs button[data-bs-target="' + saved + '"]');
+        const el = [...tabEls].find(btn => btn.getAttribute('data-bs-target') === saved);
         if (el) bootstrap.Tab.getOrCreateInstance(el).show();
     }
-    tabEls.forEach(btn => btn.addEventListener('shown.bs.tab', e => {
-        sessionStorage.setItem(TAB_KEY, e.target.getAttribute('data-bs-target'));
-    }));
-
-    // ── Rok filter + training list AJAX ─────────────────────────────
-    const wrap    = document.getElementById('trainingListWrap');
-    const rokSel  = document.getElementById('rokFilter');
-
-    function loadTrainings(rok) {
-        wrap.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><div class="mt-2 text-muted small">Načítám…</div></div>';
-
-        const url = 'ajax_sportovec_treninky.php?rok=' + encodeURIComponent(rok);
-        fetch(url)
-            .then(r => r.text())
-            .then(html => {
-                wrap.innerHTML = html;
-                bindNoteHandlers();
-            })
-            .catch(() => {
-                wrap.innerHTML = '<div class="alert alert-danger">Chyba při načítání tréninků.</div>';
-            });
-    }
-
-    if (rokSel) {
-        rokSel.addEventListener('change', () => loadTrainings(rokSel.value));
-    }
-
-    // Initial load
+    // Also cover a restored measurement tab whose Bootstrap transition is still pending.
+    if (document.querySelector('#pane-mereni.active') && !controllers.has(measurementWrap)) loadMeasurements();
+    if (rokSel) rokSel.addEventListener('change', () => loadTrainings(rokSel.value));
     loadTrainings(DEFAULT_ROK);
 
     // ── AJAX note save (delegated to wrap) ──────────────────────────
@@ -1087,19 +1111,6 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
         });
     }
 
-    // ── Měření type filter ──────────────────────────────────────────
-    document.querySelectorAll('.mereni-filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.mereni-filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const typ  = btn.dataset.typ;
-            const rows = document.querySelectorAll('#mereniTable tbody tr');
-            rows.forEach(row => {
-                row.style.display = (!typ || row.dataset.typ === typ) ? '' : 'none';
-            });
-        });
-    });
 
 })();
 </script>

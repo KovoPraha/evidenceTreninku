@@ -310,3 +310,5 @@ Uzavření D2026-11-08-RHC: #400/da152282 a deploy42494231010 SUCCESS po14CI a p
 ## D2026-11-08-RHA — omezené čtení historie a lazy měření profilu
 
 PŘIJATO podle nového zadání Marka: navázat na uzavřené RHC a prioritu4 analýzy. Zachovat kanonické přístupy/poznámky a přesné celé souhrny, odstranit násobení cizích měření při členství, detaily až pro stránku a měření až po otevření. UNION/window varianty jsou kandidáti k paritě a měření, nikoli předem tvrzený přínos. [Plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md). Historické RH zůstává v registru a trvalých protokolech.
+
+Upřesnění RHA: místo window/group agregace zvolen seřazený úzký sloupec typů a původní PHP počítání; zachovává case/mezery, PHP klíče a pořadí prvního výskytu. Počáteční GET čte pouze COUNT; souhrn typů zůstává lineární až při otevření měření.

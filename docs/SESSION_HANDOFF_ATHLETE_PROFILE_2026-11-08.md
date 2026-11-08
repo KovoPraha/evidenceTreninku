@@ -16,3 +16,11 @@ beze změny, žádné DDL/cache oprávnění. Nativní obě DB i skutečné HTTP
 Další krok implementace a ověření, vše měření/PR/merge/deploy zatím NOT RUN.
 Vlastník autorizoval celý ověřený release; neptat se na stejné oprávnění znovu.
 Soukromá skutečná profilová data/toky/credentials nikdy nepatří do Gitu.
+
+Průběžně: implementována UNION projekce historie po25, souhrny beze změny,
+poznámky/měření jen pro vybraná ID. Měření lazy,25řádků a globální přesný filtr.
+Zvolen úzký seřazený sloupec typů + původní PHP array_count_values místo
+ROW_NUMBER/GROUP BY: zachovává první výskyt, PHP klíče i case/mezery bez kolace;
+na počátečním profilu jen COUNT. Souhrn typů je stále lineární čtení, nikoli cache.
+SQLite parita všech stránek:2testy/605assertions PASS. Nativní a HTTP/Chrome NOT RUN;
+žádný release zatím. Další krok: vlastní CI fixture a původní skutečné route.
