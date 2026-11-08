@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__.'/includes/init.php';
 require_once __DIR__.'/csrf_helper.php';
 require_once __DIR__.'/includes/club_program_year_offer.php';
+/** @var PDO $pdo */
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('admin')) {
     header('Location: login.php');
     exit;

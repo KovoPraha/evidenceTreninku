@@ -126,7 +126,7 @@ function clubProgramYearOfferCandidates(PDO $pdo, ?DateTimeImmutable $now = null
  * The caller previews prices first and stores fingerprints in its session.
  * Re-read under program locks so a stale preview cannot publish changed data.
  *
- * @param array<int,int> $pricesByBaseOfferId price in haléře
+ * @param array<int,mixed> $pricesByBaseOfferId price in haléře; validated below
  * @param array<int,string> $fingerprintsByBaseOfferId
  * @return list<array{offer_id:int,variant_id:int,product_id:int,program_id:int}>
  */
@@ -142,7 +142,7 @@ function clubProgramYearOfferCreateBatch(
         throw new InvalidArgumentException('Vyberte alespoň jednu skupinu a potvrďte zveřejnění.');
     }
     foreach ($pricesByBaseOfferId as $id => $price) {
-        if (!is_int($id) || $id < 1 || !is_int($price) || $price < 1 || $price > 999999999
+        if ($id < 1 || !is_int($price) || $price < 1 || $price > 999999999
             || !isset($fingerprintsByBaseOfferId[$id])) {
             throw new InvalidArgumentException('Každá skupina potřebuje schválenou kladnou cenu.');
         }
