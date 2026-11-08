@@ -391,4 +391,4 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-edcee65e8b | [P11-RH — správní historie](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) | DONE / P11-RH | #394/ab49947d nasazeno, parita/přínos/14CI PASS; [protokol](verification/training-history-release-20261108/RESULTS.md), přihlášené UAT otevřené. |
 
-| PL-10c1cb582e | [P11-RHC — trenérská historie](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) | IN_PROGRESS / P11-RHC | Parita a přínos před release. |
+| PL-10c1cb582e | [P11-RHC — trenérská historie](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) | DONE / P11-RHC | #400/da152282 nasazeno, parita/přínos/14CI PASS; [protokol a veřejné meze](verification/coach-history-release-20261108/RESULTS.md), UAT samostatné. |

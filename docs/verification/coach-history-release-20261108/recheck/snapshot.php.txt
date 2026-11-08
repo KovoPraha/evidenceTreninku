@@ -1,0 +1,69 @@
+<?php
+declare(strict_types=1);
+if (PHP_SAPI !== 'cli') { http_response_code(404); exit; }
+$phase = $argv[1] ?? '';
+if (!in_array($phase, ['before', 'after'], true)) { throw new RuntimeException('CLI before|after required.'); }
+$cases = ['home' => '', 'price' => '?razeni=price', 'page2' => '?strana=2',
+    'search' => '?q=' . rawurlencode('cyklo'), 'empty' => '?q=__catalog_performance_no_match__'];
+$out = ['normalization_version' => 2, 'phase' => $phase, 'at_utc' => gmdate('c'), 'method' => 'Five anonymous serial GETs, no cookies or POST. Hash main and shop navigation after removing scripts/nonces/CSRF values. No raw HTML/session stored.', 'cases' => []];
+foreach ($cases as $key => $query) {
+    $url = 'https://kis.kovopraha.cz/booking/eshop.php' . $query;
+    $handle = curl_init($url);
+    curl_setopt_array($handle, [CURLOPT_RETURNTRANSFER => true, CURLOPT_FOLLOWLOCATION => false,
+        CURLOPT_CONNECTTIMEOUT => 15, CURLOPT_TIMEOUT => 45, CURLOPT_USERAGENT => 'KIS-authorized-read-verification']);
+    $html = curl_exec($handle);
+    $code = curl_getinfo($handle, CURLINFO_RESPONSE_CODE);
+    $elapsed = curl_getinfo($handle, CURLINFO_TOTAL_TIME);
+    $error = curl_error($handle);
+    curl_close($handle);
+    if (!is_string($html) || $code !== 200) { throw new RuntimeException("Public GET $key failed: HTTP $code $error"); }
+    $dom = new DOMDocument();
+    $previous = libxml_use_internal_errors(true);
+    $dom->loadHTML('<?xml encoding="UTF-8">' . $html, LIBXML_NONET);
+    libxml_clear_errors(); libxml_use_internal_errors($previous);
+    $xpath = new DOMXPath($dom);
+    foreach ($xpath->query('//script') as $node) { $node->parentNode->removeChild($node); }
+    foreach ($xpath->query('//*[@nonce]') as $node) { $node->removeAttribute('nonce'); }
+    foreach ($xpath->query('//*[@data-app-csp-handler]') as $node) { $node->removeAttribute('data-app-csp-handler'); }
+    foreach ($xpath->query('//input[@name]') as $node) {
+        if (preg_match('/csrf|token|checkout_key/i', $node->getAttribute('name'))) { $node->setAttribute('value', '<redacted>'); }
+    }
+    $fingerprints = [];
+    foreach (['main' => '//main', 'navigation' => '//nav[contains(concat(" ", normalize-space(@class), " "), " app-shop-nav ")]'] as $part => $selector) {
+        $parts = [];
+        foreach ($xpath->query($selector) as $node) { $parts[] = preg_replace('/\s+/u', ' ', $dom->saveHTML($node)); }
+        if ($parts === []) { throw new RuntimeException("Missing public $part."); }
+        $fingerprints[$part] = hash('sha256', implode('', $parts));
+    }
+    $productIds = [];
+    foreach ($xpath->query('//main//a[@href]') as $node) {
+        if (preg_match('/^produkt[.]php[?]id=(\d+)/D', $node->getAttribute('href'), $match)) { $productIds[] = (int) $match[1]; }
+    }
+    $mainText = preg_replace('/\s+/u', ' ', (string) $xpath->evaluate('string(//main)'));
+    preg_match('/V katalogu je\s+(\d+)\s+aktivních nabídek/u', $mainText, $activeCount);
+    $out['cases'][$key] = ['url' => $url, 'http' => $code, 'total_ms' => round($elapsed * 1000, 2),
+        'product_ids' => array_values(array_unique($productIds)), 'sha256' => $fingerprints,
+        'active_catalog_count' => isset($activeCount[1]) ? (int) $activeCount[1] : null];
+}
+if ($phase === 'after') {
+    $before = json_decode((string) file_get_contents(__DIR__ . '/before.json'), true, 512, JSON_THROW_ON_ERROR);
+    $out['baseline_normalization_version'] = $before['normalization_version'] ?? 1;
+    foreach ($out['cases'] as $key => &$case) {
+        $previous = $before['cases'][$key];
+        $case['same_product_ids_and_order'] = $case['product_ids'] === $previous['product_ids'];
+        $case['same_navigation'] = $case['sha256']['navigation'] === $previous['sha256']['navigation'];
+        $case['same_active_catalog_count'] = $case['active_catalog_count'] === ($previous['active_catalog_count'] ?? null);
+        $sameMain = $case['sha256']['main'] === $previous['sha256']['main'];
+        $case['complete_dom_match'] = $out['baseline_normalization_version'] === 2 ? $sameMain : ($sameMain ? true : null);
+        $case['same_comparable_public_fields'] = $case['same_product_ids_and_order'] && $case['same_navigation'] && $case['same_active_catalog_count'];
+    }
+    $out['complete_dom_before_after'] = in_array(null, array_column($out['cases'], 'complete_dom_match'), true)
+        ? null : !in_array(false, array_column($out['cases'], 'complete_dom_match'), true);
+    $out['limitation'] = $out['baseline_normalization_version'] === 1
+        ? 'Original baseline hashes retained random data-app-csp-handler nonces. Raw HTML was not stored; full DOM parity for product cards cannot be reconstructed. Compare only explicit public fields, and retain strict synthetic data parity as separate evidence.' : null;
+    unset($case);
+    $out['parity'] = !in_array(false, array_column($out['cases'], 'same_comparable_public_fields'), true);
+}
+file_put_contents(__DIR__ . '/' . $phase . '.json', json_encode($out, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . PHP_EOL);
+echo json_encode(['phase' => $phase, 'cases' => count($out['cases']), 'comparable_public_fields_parity' => $out['parity'] ?? null, 'complete_dom_parity' => $out['complete_dom_before_after'] ?? null], JSON_THROW_ON_ERROR) . PHP_EOL;
+if (($out['parity'] ?? true) !== true) { exit(1); }

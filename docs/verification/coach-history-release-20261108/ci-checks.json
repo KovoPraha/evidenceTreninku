@@ -1,0 +1,147 @@
+{
+  "headRefOid": "b4022c2a3b306d98ff0afdbba64f5ec342bb1e66",
+  "mergeable": "MERGEABLE",
+  "state": "OPEN",
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:12:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362405/job/128770292724",
+      "name": "Coach history native (MariaDB 10.3)",
+      "startedAt": "2026-11-08T15:09:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Coach history parity and performance"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:10:06Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493357524/job/128770280565",
+      "name": "Analyze (actions)",
+      "startedAt": "2026-11-08T15:09:28Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:09:38Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362359/job/128770292377",
+      "name": "docs",
+      "startedAt": "2026-11-08T15:09:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Current documentation"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:10:45Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362360/job/128770292441",
+      "name": "PHPStan level 5 and changed-file style",
+      "startedAt": "2026-11-08T15:09:31Z",
+      "status": "COMPLETED",
+      "workflowName": "PHP quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:15:36Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362380/job/128770292799",
+      "name": "PHPUnit na PHP 8.2",
+      "startedAt": "2026-11-08T15:09:30Z",
+      "status": "COMPLETED",
+      "workflowName": "Testy"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:11:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362405/job/128770293006",
+      "name": "Coach history native (MariaDB 11.4)",
+      "startedAt": "2026-11-08T15:09:30Z",
+      "status": "COMPLETED",
+      "workflowName": "Coach history parity and performance"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:10:21Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493357524/job/128770280473",
+      "name": "Analyze (javascript-typescript)",
+      "startedAt": "2026-11-08T15:09:28Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:10:22Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493357524/job/128770280313",
+      "name": "Analyze (python)",
+      "startedAt": "2026-11-08T15:09:28Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:14:26Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362405/job/128770293019",
+      "name": "Coach history HTTP and Chrome (MariaDB 11.4)",
+      "startedAt": "2026-11-08T15:09:31Z",
+      "status": "COMPLETED",
+      "workflowName": "Coach history parity and performance"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:17:51Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362380/job/128770293070",
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "startedAt": "2026-11-08T15:09:30Z",
+      "status": "COMPLETED",
+      "workflowName": "Testy"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:18:18Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362380/job/128770292908",
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "startedAt": "2026-11-08T15:09:30Z",
+      "status": "COMPLETED",
+      "workflowName": "Testy"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:15:33Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362380/job/128770292926",
+      "name": "MariaDB profily čtení (MariaDB 10.3)",
+      "startedAt": "2026-11-08T15:09:30Z",
+      "status": "COMPLETED",
+      "workflowName": "Testy"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:17:45Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42493362380/job/128770292895",
+      "name": "MariaDB profily čtení (MariaDB 11.4)",
+      "startedAt": "2026-11-08T15:09:30Z",
+      "status": "COMPLETED",
+      "workflowName": "Testy"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-11-08T15:09:59Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/runs/128770413215",
+      "name": "CodeQL",
+      "startedAt": "2026-11-08T15:09:56Z",
+      "status": "COMPLETED",
+      "workflowName": ""
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "tested_head": "b4022c2a3b306d98ff0afdbba64f5ec342bb1e66",
+  "merged_sha": "da152282ad4274690595c188a78dec0c90422f38",
+  "tested_tree": "3703cbc6eed9bae1014d8f1519bd65d7f09e9726",
+  "merged_tree": "3703cbc6eed9bae1014d8f1519bd65d7f09e9726",
+  "exact_tree_match": true,
+  "source_sha256": {
+    "ajax_treninky.php": "51afb299c7cec6761b18f3dae71da835e6d496703ce52c2c8b92160104633faf",
+    "moje_treninky.php": "dff4ec74386ca7b59a1e8a825151159f05969c7981834fed771dfe445877e1a2",
+    "includes/coach_history_read.php": "4405abc31a520cec7606d43b4caa022e8bbb89dc8c2c0a0453067be460822011",
+    "includes/training_history_read.php": "a759e461962c25427ea5d8d8ba24d5394ed6597072d5c2f178f80651473f2c5f"
+  },
+  "source_hashes_match": true,
+  "previous_deployed_sha": "1c828fbf35372568993aa43af309b96c9a202f1b",
+  "previous_deploy_run": 42492821311,
+  "baseline_routes_match_previous_deployed": true
+}
