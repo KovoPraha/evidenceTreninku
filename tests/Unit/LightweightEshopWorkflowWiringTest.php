@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -9,29 +10,30 @@ final class LightweightEshopWorkflowWiringTest extends TestCase
 {
     public function testCatalogUsesSeparateCreationAndWithdrawalWithProtectedSharedController(): void
     {
-        $root=dirname(__DIR__,2);
+        $root = dirname(__DIR__, 2);
         $source = (string)file_get_contents($root . '/includes/shop_admin_page.php');
-        $templates=(string)file_get_contents($root.'/includes/shop_admin_templates.php');
+        $templates = (string)file_get_contents($root.'/includes/shop_admin_templates.php');
         self::assertStringContainsString("\$type==='goods'?'product':'service'", $source);
         self::assertStringContainsString("\$input['visibility']='visible'", $source);
         self::assertStringContainsString("\$action==='publish'", $source);
         self::assertStringContainsString('shopCatalogPublicationActivate(', $source);
         self::assertStringContainsString("\$action==='unpublish'", $source);
         self::assertStringContainsString('shopCatalogPublicationDeactivate(', $source);
-        self::assertStringContainsString("\$screen==='new'",$templates);
-        self::assertStringContainsString("\$screen==='withdraw'",$templates);
-        self::assertStringContainsString('eshop_produkt_novy_admin.php',$source);
-        self::assertStringContainsString('eshop_produkt_stahnout_admin.php',$source);
+        self::assertStringContainsString("\$screen==='new'", $templates);
+        self::assertStringContainsString("\$screen==='withdraw'", $templates);
+        self::assertStringContainsString('eshop_produkt_novy_admin.php', $source);
+        self::assertStringContainsString('eshop_produkt_stahnout_admin.php', $source);
         self::assertStringNotContainsString('name="attributes_json"', $templates);
     }
 
     public function testClubProgramIsOneShortFormWithApprovedTermsFilledByTheSystem(): void
     {
         $source = (string)file_get_contents(dirname(__DIR__, 2) . '/club_program_wizard_admin.php');
+        $defaults = (string)file_get_contents(dirname(__DIR__, 2) . '/includes/club_program_wizard.php');
         self::assertSame(1, substr_count($source, '<form method="post"'));
-        self::assertStringContainsString("\$input['category_path'] = 'Kroužky'", $source);
-        self::assertStringContainsString("\$input[\$purpose . '_source'] = 'existing'", $source);
-        self::assertStringContainsString("\$input['team_mode'] = 'new'", $source);
+        self::assertStringContainsString("\$input['category_path'] = 'Kroužky'", $defaults);
+        self::assertStringContainsString("\$input[\$purpose . '_source'] = 'existing'", $defaults);
+        self::assertStringContainsString("\$input['team_mode'] = 'new'", $defaults);
         self::assertStringContainsString('Vypsat a zveřejnit kroužek', $source);
         self::assertStringNotContainsString('Sazba DPH', $source);
         self::assertStringNotContainsString('Auditní důvod', $source);
