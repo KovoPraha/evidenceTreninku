@@ -13,8 +13,12 @@ if (!isset($_SESSION['trener_id'])) {
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
+require_once __DIR__ . '/includes/coach_history_read.php';
 
-function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s)
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 
 $userId    = (int)$_SESSION['trener_id'];
 $skupinaId = $_GET['skupina_id'] ?? '';
@@ -23,8 +27,7 @@ $mesic     = $_GET['mesic'] ?? '';
 $rok       = $_GET['rok'] ?? '';
 
 // Základní dotaz
-$sql = "SELECT t.id, t.datum, t.delka, t.napln, t.poznamka, t.obrazky, t.mereni
-        FROM trenink_trener tt
+$from = "FROM trenink_trener tt
         JOIN treninky t ON tt.trenink_id = t.id";
 
 $where   = ['tt.trener_id = :uid', coachScopeTrainingPredicate($pdo)];
@@ -32,7 +35,7 @@ $params  = [':uid' => $userId];
 
 // Filtr skupiny
 if ($skupinaId !== '' && ctype_digit((string)$skupinaId)) {
-    $sql .= " JOIN trenink_skupina ts2 ON ts2.trenink_id = t.id";
+    $from .= " JOIN trenink_skupina ts2 ON ts2.trenink_id = t.id";
     $where[] = "ts2.skupina_id = :sid";
     $params[':sid'] = (int)$skupinaId;
 }
@@ -56,21 +59,23 @@ if ($q !== '') {
     $params[':q'] = '%' . $q . '%';
 }
 
-$sql .= " WHERE " . implode(' AND ', $where);
-$sql .= " ORDER BY t.datum DESC";
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute($params);
-$treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
-if ($teamId !== '' && ctype_digit((string)$teamId)) {
-    $treninky = trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$teamId);
-}
+$from .= " WHERE " . implode(' AND ', $where);
+$team = $teamId !== '' && ctype_digit((string)$teamId) ? (int)$teamId : 0;
+$historyPage = CoachHistoryRead::page($pdo, $from, $params, $team, TrainingHistoryRead::requested($_GET));
+$treninky = $historyPage['rows'];
 $canonicalLabels = trainingRosterBridgeTrainingLabels($pdo, $treninky);
 
 $czDays = [
-    'Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
-    'Thursday'=>'Čtvrtek','Friday'=>'Pátek','Saturday'=>'Sobota','Sunday'=>'Neděle'
+    'Monday' => 'Pondělí','Tuesday' => 'Úterý','Wednesday' => 'Středa',
+    'Thursday' => 'Čtvrtek','Friday' => 'Pátek','Saturday' => 'Sobota','Sunday' => 'Neděle'
 ];
+
+echo '<div data-coach-history data-history-total="' . (int)$historyPage['total']
+    . '" data-history-page="' . (int)$historyPage['page'] . '">';
+TrainingHistoryRead::navigation($historyPage, [
+    'skupina_id' => $skupinaId, 'team_id' => $teamId, 'rok' => $rok, 'mesic' => $mesic, 'q' => $q,
+]);
+echo '</div>';
 
 if (empty($treninky)) {
     echo '<div class="alert alert-info">Žádné tréninky neodpovídají filtru.</div>';
@@ -87,27 +92,38 @@ try {
     // Skupiny
     $r = $pdo->prepare("SELECT ts.trenink_id, s.nazev FROM trenink_skupina ts JOIN skupiny s ON s.id = ts.skupina_id WHERE ts.trenink_id IN ($in) ORDER BY s.nazev");
     $r->execute($ids);
-    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) $skupByTr[(int)$row['trenink_id']][] = $row['nazev'];
+    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $skupByTr[(int)$row['trenink_id']][] = $row['nazev'];
+    }
 
     // Podskupiny
     $r = $pdo->prepare("SELECT tp.trenink_id, p.nazev FROM trenink_podskupina tp JOIN podskupiny p ON p.id = tp.podskupina_id WHERE tp.trenink_id IN ($in) ORDER BY p.nazev");
     $r->execute($ids);
-    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) $psByTr[(int)$row['trenink_id']][] = $row['nazev'];
+    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $psByTr[(int)$row['trenink_id']][] = $row['nazev'];
+    }
 
     // Trenéři
     $r = $pdo->prepare("SELECT tt.trenink_id, tr.jmeno FROM trenink_trener tt JOIN treneri tr ON tr.id = tt.trener_id WHERE tt.trenink_id IN ($in) ORDER BY tr.jmeno");
     $r->execute($ids);
-    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) $trsByTr[(int)$row['trenink_id']][] = $row['jmeno'];
+    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $trsByTr[(int)$row['trenink_id']][] = $row['jmeno'];
+    }
 
     // Účastníci (příjmení + jméno)
-    $r = $pdo->prepare("SELECT ts.trenink_id, CONCAT(sp.prijmeni, ' ', sp.jmeno) AS jmeno FROM trenink_sportovec ts JOIN sportovci sp ON sp.id = ts.sportovec_id WHERE ts.trenink_id IN ($in) ORDER BY sp.prijmeni");
+    $r = $pdo->prepare("SELECT ts.trenink_id, CONCAT(sp.prijmeni, ' ', sp.jmeno) AS jmeno FROM trenink_sportovec ts
+        JOIN sportovci sp ON sp.id = ts.sportovec_id WHERE ts.trenink_id IN ($in) ORDER BY sp.prijmeni");
     $r->execute($ids);
-    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) $ucByTr[(int)$row['trenink_id']][] = $row['jmeno'];
+    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $ucByTr[(int)$row['trenink_id']][] = $row['jmeno'];
+    }
 
     // Tagy
     $r = $pdo->prepare("SELECT ttg.trenink_id, tg.nazev FROM trenink_tag ttg JOIN tagy tg ON tg.id = ttg.tag_id WHERE ttg.trenink_id IN ($in) ORDER BY tg.nazev");
     $r->execute($ids);
-    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) $tagyByTr[(int)$row['trenink_id']][] = $row['nazev'];
+    foreach ($r->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $tagyByTr[(int)$row['trenink_id']][] = $row['nazev'];
+    }
 } catch (PDOException $e) {
     error_log('ajax_treninky batch queries: ' . $e->getMessage());
 }
@@ -116,8 +132,11 @@ echo '<div class="accordion" id="accordionTreninky">';
 
 foreach ($treninky as $t) {
     $treninkId  = (int)$t['id'];
-    try { $dayEng = (new DateTime($t['datum']))->format('l'); }
-    catch (Exception $e) { $dayEng = ''; }
+    try {
+        $dayEng = (new DateTime($t['datum']))->format('l');
+    } catch (Exception $e) {
+        $dayEng = '';
+    }
     $dayCz      = $czDays[$dayEng] ?? $dayEng;
     $headingId  = "h{$treninkId}";
     $collapseId = "c{$treninkId}";
@@ -185,10 +204,13 @@ foreach ($treninky as $t) {
                             </div>
                             <div id="poznamka-status-<?= $treninkId ?>" class="small mt-1" role="status" aria-live="polite"></div>
                             <div id="poznamka-form-<?= $treninkId ?>" class="d-none mt-1">
-                                <textarea class="form-control form-control-sm" rows="3" id="poznamka-ta-<?= $treninkId ?>" aria-label="Poznámka k tréninku <?= h((string)$t['datum']) ?>"><?= h($t['poznamka'] ?? '') ?></textarea>
+                                <textarea class="form-control form-control-sm" rows="3" id="poznamka-ta-<?= $treninkId ?>"
+                                          aria-label="Poznámka k tréninku <?= h((string)$t['datum']) ?>"><?= h($t['poznamka'] ?? '') ?></textarea>
                                 <div class="mt-1 d-flex gap-2">
-                                    <button type="button" class="btn btn-sm btn-primary js-save-poznamka" data-id="<?= $treninkId ?>" aria-label="Uložit poznámku k tréninku <?= h((string)$t['datum']) ?>">Uložit</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary js-cancel-poznamka" data-id="<?= $treninkId ?>" aria-label="Zrušit úpravu poznámky k tréninku <?= h((string)$t['datum']) ?>">Zrušit</button>
+                                    <button type="button" class="btn btn-sm btn-primary js-save-poznamka" data-id="<?= $treninkId ?>"
+                                            aria-label="Uložit poznámku k tréninku <?= h((string)$t['datum']) ?>">Uložit</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary js-cancel-poznamka" data-id="<?= $treninkId ?>"
+                                            aria-label="Zrušit úpravu poznámky k tréninku <?= h((string)$t['datum']) ?>">Zrušit</button>
                                 </div>
                                 <div class="js-poznamka-msg mt-1 small"></div>
                             </div>

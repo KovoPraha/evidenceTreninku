@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 8. 11. 2026 / E2026-11-08-27 | P11-RHC zahájeno podle analýzy | Moje tréninky/AJAX stále neomezené; stránka před detaily, přesný celkový počet/filtry/rozsahy. Plán před implementací; produkce beze změny. | [Plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) |
 | 8. 11. 2026 / E2026-11-08-24 | UX01: vlastník povolil nasazení kódu | Převzato zadání „pokračuj a nasad“; PR #395 byl po 11/11 CI PASS v konfliktu s novým main #394. Konflikt v deníku vyřešen zachováním obou záznamů, nový main převzat do větve. Další krok aktuální CI, merge a deploy kódu s vypnutým importem kroužků i UAT příznakem. Žádná cena ani nabídka dosud založená. | [Release postup](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) |
 | 8. 11. 2026 / E2026-11-08-23 | UX01: kódové CI PR prošlo | [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395), kódový commit `56f1db82`: 11/11 checks PASS včetně PHPStan/style, PHPUnit, obou MariaDB smoke a profilů. Přihlášené UAT, merge, deploy a ostré ceny NOT RUN. | [Výsledky a meze](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) |
 | 8. 11. 2026 / E2026-11-08-22 | UX01: předání ke kontrole | Větev `codex/year-offer-ux-20261108` pushnutá, [draft PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) otevřený proti main. CI a přihlášené UAT čekají; merge/deploy/ostré ceny NOT RUN. | [Plán a lokální výsledky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) |
@@ -142,3 +143,7 @@ Při převzetí #385 zůstávají přijaté zdravotní E2026-11-08-08–12; prac
 Při převzetí #392 zůstává přijaté zdravotní E2026-11-08-13; pracovní Q01 E13–16 jsou nyní E14–17. Původní commity zachované.
 
 Při převzetí #390/#393 zachované přijaté E2026-11-08-14–18; pracovní P11-RH zahájení je nyní E2026-11-08-19. Původní commit85606e95 zachovaný.
+
+Při převzetí #396 zachované přijaté Q2 E2026-11-08-21; pracovní P11-RHC zahájení je E2026-11-08-22. Původní plánovací commit3ce5b9ce zachovaný.
+
+Při převzetí #395 zachované přijaté UX01 E2026-11-08-22–26; pracovní P11-RHC zahájení je nyní E2026-11-08-27. Původní commity zachované.
