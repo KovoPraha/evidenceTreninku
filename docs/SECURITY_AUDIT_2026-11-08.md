@@ -1,6 +1,6 @@
 # SEC01 — Bezpečnostní audit aplikace 8. 11. 2026
 
-- Stav: implementace a místní ověření HOTOVO, předání PR / CI otevřené; vlastník: vývoj / zadavatel.
+- Stav: implementace a místní ověření HOTOVO, předáno PR #391 / CI otevřené; vlastník: vývoj / zadavatel.
 - Oprávnění: přímé zadání auditu, oprav a dokumentace; předání přes PR.
 - Větev: `codex/security-audit-20261108`, worktree `/workspace/evidenceTreninku`.
 - Výchozí main: `a3cca282f4db5e9082313b8cf27b958b552ac897`.
@@ -89,6 +89,8 @@ reprodukovala obě příčiny bez aplikačního kódu. Po opravě pouze `/tmp` r
 prošlo cílených 9 testů / 72 assertions a následně celá sada 2 381 / 47 789.
 Nebyly měněny aplikační testy ani jejich očekávání kvůli prostředí.
 
-Předání: vlastní vzdálená větev `codex/security-audit-20261108`; obsah se ukládá
-přes GitHub connector do samostatného commitu s tímto protokolem. PR bude
-otevřen k revizi. Merge / deploy / provozní přejímka NOT RUN.
+Předání: [PR #391](https://github.com/KovoPraha/evidenceTreninku/pull/391),
+vlastní vzdálená větev `codex/security-audit-20261108`, implementační commit
+`b52a989106a62553778400158c5f74b62f0ee18c`. Obsah byl uložen přes GitHub
+connector, nikoli shellovým pushem. CI čeká na dokončení; merge / deploy /
+provozní přejímka NOT RUN. Lokální kopie odpovídá obsahu předání.
