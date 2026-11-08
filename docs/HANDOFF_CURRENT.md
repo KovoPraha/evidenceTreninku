@@ -1,10 +1,10 @@
 # Aktuální session handoff
 
+- P15-SEC380 audit HOTOVO (1 LOW; úplné HTTP NOT RUN): [audit PR #380](verification/pr380-security-audit-20261108/RESULTS.md); jen dokumentace, bez produkčních změn.
 Aktualizováno 7. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md)
 vlastní otevřené úkoly. Plány, koncepty a rozhodnutí jsou ve verzovaných souborech,
 které při pokračování znovu načti. Chat ani interní paměť nejsou projektovou evidencí.
-
 ## Poslední práce a další krok
 
 - P11-SCALE HOTOVO: [větší R13/R05](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md),2700HTTP/90parit.

@@ -207,3 +207,7 @@ do deníku; částečně dokončené etapy ponechat s dalším krokem.
 Postup včetně konceptů a GitHub předání určuje [pravidlo](WORK_DOCUMENTATION_POLICY.md).
 
 Aktuální pokračování pickeru po #370: #366 sloučené, nový celý HTTP/Chrome pár s #367 PASS; standardní schválené nasazení a čtecí ověření dokončené. [Ověřovací předání #372](https://github.com/KovoPraha/evidenceTreninku/pull/372), [průběžný protokol](verification/attendance-person-picker-20261107/integrated/RESULTS.md). Přijaté P14/AUTO01 a ostatní WIP zachované.
+
+## P15-SEC380 — audit registrářského přehledu
+
+Audit HOTOVO, oprava/G1 OTEVŘENÉ, 8. 11. 2026; Marek / Codex. [Rozsah a výsledky](verification/pr380-security-audit-20261108/RESULTS.md). Větev `codex/audit-pr380-20261108`, závislost PR #380; další krok v pracovním vlákně opravit F1 (LOW) a doplnit skutečný bootstrap test G1; předání vlastním dokumentačním PR. Bez implementace/deploye.
