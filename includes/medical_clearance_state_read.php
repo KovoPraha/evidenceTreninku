@@ -39,15 +39,13 @@ final class MedicalClearanceStateRead
             . ' ' . $headJoin . ' medical_clearance_records mv ON mv.id=mc.verified_id'
             . ($verifiedOnly ? '' : ' LEFT JOIN medical_clearance_records ml ON ml.id=mc.last_id AND mc.verified_id IS NULL'));
         if ($filters['from'] !== '' || $filters['to'] !== '') {
-            // Seek each eligible watch's head through its owner/id index, without a second candidate scan.
-            $headState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY rh.state' : 'rh.state COLLATE BINARY';
-            $joins = $headJoin . ' medical_clearance_records mv ON mv.id=(SELECT rh.id FROM medical_clearance_records rh'
-                . " WHERE rh.watch_id=w.id AND $headState='verified' ORDER BY rh.id DESC LIMIT 1)";
-            if (!$verifiedOnly) {
-                $joins .= ' LEFT JOIN medical_clearance_records ml ON ml.id=(SELECT rh.id FROM medical_clearance_records rh'
-                    . ' WHERE rh.watch_id=w.id AND mv.id IS NULL ORDER BY rh.id DESC LIMIT 1)';
-            }
-            $projection = self::join($base, $joins);
+            // Filter and aggregate candidates once; only head records are joined outside this projection.
+            $heads = 'SELECT w.id,MAX(w.next_review_on) next_review_on,' . $latestId . ' last_id,' . $verifiedId . ' verified_id '
+                . self::join($base, ($verifiedOnly ? 'JOIN' : 'LEFT JOIN') . ' medical_clearance_records mr ON mr.watch_id=w.id')
+                . ($verifiedOnly ? " AND $exactState='verified'" : '') . ' GROUP BY w.id';
+            $projection = 'FROM (' . $heads . ') w ' . $headJoin . ' medical_clearance_records mv ON mv.id=w.verified_id'
+                . ($verifiedOnly ? '' : ' LEFT JOIN medical_clearance_records ml ON ml.id=w.last_id AND w.verified_id IS NULL')
+                . ' WHERE 1=1';
         }
         $complex = 'mv.id IS NOT NULL AND mv.issued_on>? AND mv.replaces_id IS NOT NULL AND mv.replaces_id<>0';
         $futureState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mf.state' : 'mf.state COLLATE BINARY';
@@ -97,10 +95,27 @@ final class MedicalClearanceStateRead
         $filtered = $projection . ' AND (' . $predicate . ')';
         $select = 'w.id';
         $fields = ['id', 'state', 'issued_on', 'valid_until', 'replaces_id'];
+        $outerSelect = '*';
+        $outerJoin = '';
+        $thinWindow = $params !== [];
+        if ($thinWindow) {
+            // Sort only identities; hydrate record metadata after the exact page has been selected.
+            $select .= ',mv.id AS _medical_read_verified_id,' . ($verifiedOnly ? 'NULL' : 'ml.id') . ' AS _medical_read_last_id';
+            $outerSelect = 'mp.*';
+            $outerJoin = ' LEFT JOIN medical_clearance_records rmv ON rmv.id=mp._medical_read_verified_id';
+            if (!$verifiedOnly) {
+                $outerJoin .= ' LEFT JOIN medical_clearance_records rml ON rml.id=mp._medical_read_last_id';
+            }
+        }
         foreach (['mv', 'ml'] as $alias) {
             foreach ($fields as $field) {
-                $value = $verifiedOnly && $alias === 'ml' ? 'NULL' : $alias . '.' . $field;
-                $select .= ',' . $value . ' AS _medical_read_' . $alias . '_' . $field;
+                $value = $verifiedOnly && $alias === 'ml' ? 'NULL' : ($thinWindow ? 'r' : '') . $alias . '.' . $field;
+                $column = ',' . $value . ' AS _medical_read_' . $alias . '_' . $field;
+                if ($thinWindow) {
+                    $outerSelect .= $column;
+                } else {
+                    $select .= $column;
+                }
             }
         }
         // One aggregation for both the exact total and the clamped page, including an excessive page number.
@@ -109,7 +124,7 @@ final class MedicalClearanceStateRead
         $requestedStart = ($filters['page'] - 1) * 25 + 1;
         $start = 'CASE WHEN ' . $requestedStart . '>mp._medical_read_total'
             . ' THEN mp._medical_read_total-((mp._medical_read_total-1)%25) ELSE ' . $requestedStart . ' END';
-        $selected = self::read($pdo, 'SELECT * FROM (' . $window . ') mp WHERE mp._medical_read_number>=(' . $start
+        $selected = self::read($pdo, 'SELECT ' . $outerSelect . ' FROM (' . $window . ') mp' . $outerJoin . ' WHERE mp._medical_read_number>=(' . $start
             . ') AND mp._medical_read_number<(' . $start . ')+25 ORDER BY mp._medical_read_number', $bindings);
         $total = (int) ($selected[0]['_medical_read_total'] ?? 0);
         $pages = max(1, (int) ceil($total / 25));

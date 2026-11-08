@@ -24,3 +24,19 @@ Nová lokální sada7/454 a společná25/801 PASS. Dosavadní produkce938e9c50 n
 původní WIP SHA256 shodný. Nový merge/deploy NOT RUN.
 
 První varianta měla nativně7testů/466assertions PASS na každé DB. V2 mění pouze širokou datumovou stavovou projekci na korelovaný head lookup; aktuální měření čeká. Úplná původní historie a datum next_review_on se nesmějí zaměnit za ořez záznamů podle platnosti/vystavení.
+
+## V2/1c6ef34f — korelované datumové lookupy zamítnuté
+
+Nativní11.4 parita/cache-off/checksumy PASS, ale100k date_day184,02→240,49ms,
+date_from529,84→577,45ms, date_to502,30→748,19ms, kombinace389,47→457,43ms.
+[Bezpečný profil](iteration2/11.4-native.json.gz). Tato cesta se nenasazuje.
+CI/migrovaný model má watch_id index a PK id, takže samotná existence indexu
+nestačí; režie korelovaných lookupů zde převážila. Žádné produkční indexy ani DDL tím nejsou ověřené/provedené.
+
+V3 pro široké datumové filtry vytvoří hlavy jednou: původní kandidátní FROM/WHERE
+včetně textu/data, JOIN historie, GROUP BY id a MAX(next_review_on), potom
+připojí pouze vypočtené head záznamy. Žádný druhý JOIN lidí/sledování nebo druhé
+vyhodnocení téhož filtru mimo agregaci. Čistá stavová funkce/řetězce/limity stejné.
+V3 se musí nově změřit na obou DB i celém HTTP/Chrome; dosavadní produkce beze změny.
+
+V3 navíc ponechá v počítaném/řazeném okně jen watch/head ID; původní metadata doplní po ořezu stránky v témže SQL. Složité stavy a full watch hydratace zůstávají kanonické, žádná celá historie běžných vybraných sledování se nenačítá do PHP. Lokálně18/751 PASS. Nový přínos se teprve měří.
