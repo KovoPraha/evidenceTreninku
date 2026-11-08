@@ -77,6 +77,15 @@ function profileSignature(array $r): array
     return ['status' => 200, 'bytes' => strlen($r['body']), 'body_sha256' => hash('sha256', $r['body'])];
 }
 
+function profileLogin(array $runtime, string $output, string $variant, string $role, array $credential): void
+{
+    $cookie = $output . '/cookie-' . $variant . '-' . $role . '.txt';
+    if (is_file($cookie)) {
+        unlink($cookie);
+    }
+    fullHttpLogin(profileRuntime($runtime, $variant), $output, $variant . '-' . $role, $credential);
+}
+
 function profileGrant(array $runtime, string $output, string $variant, string $role): void
 {
     $r = fullHttpRequest(profileRuntime($runtime, $variant), $output, $variant . '-' . $role, '/sportovec_treninky.php?id=1001');
@@ -150,7 +159,7 @@ function profilePair(array $runtime, string $output, string $variant, string $co
 $credentials = json_decode(file_get_contents($output . '/credentials.json'), true, 512, JSON_THROW_ON_ERROR);
 foreach (['before', 'after'] as $variant) {
     foreach (['coach', 'parallel'] as $role) {
-        fullHttpLogin(profileRuntime($runtime, $variant), $output, $variant . '-' . $role, $credentials['coach']);
+        profileLogin($runtime, $output, $variant, $role, $credentials['coach']);
         profileGrant($runtime, $output, $variant, $role);
     }
 }
@@ -236,7 +245,7 @@ for ($i = -4; $i < 17; $i++) {
 }
 foreach (['before', 'after'] as $variant) {
     foreach ($credentials as $role => $credential) {
-        fullHttpLogin(profileRuntime($runtime, $variant), $output, $variant . '-' . $role, $credential);
+        profileLogin($runtime, $output, $variant, $role, $credential);
         $r = fullHttpRequest(profileRuntime($runtime, $variant), $output, $variant . '-' . $role, '/sportovec_treninky.php?id=1001');
         $expected = in_array($role, ['coach', 'sports_lead', 'registrar'], true) ? 200 : 403;
         if ($r['status'] !== $expected) {
@@ -294,8 +303,9 @@ foreach (['before', 'after'] as $variant) {
     if ($denied['status'] !== 403) {
         throw new RuntimeException('Completed read resurrected logged-out session.');
     }
-    $report['logout'][$variant] = ['csrf_accepted' => true, 'post_status' => $logout['short']['status'], 'subsequent_status' => 403];
-    fullHttpLogin(profileRuntime($runtime, $variant), $output, $variant . '-coach', $credentials['coach']);
+    $report['logout'][$variant] = ['logout_total_ms' => $logout['short']['total_ms'], 'read_total_ms' => $logout['long']['total_ms'],
+        'csrf_accepted' => true, 'post_status' => $logout['short']['status'], 'subsequent_status' => 403];
+    profileLogin($runtime, $output, $variant, 'coach', $credentials['coach']);
     profileGrant($runtime, $output, $variant, 'coach');
     $admin->exec('UPDATE treneri SET aktivni=0 WHERE id=7');
     try {

@@ -26,3 +26,7 @@ Skutečná dvojice odpovídá savedtab Měření+Historie aktuálního roku; pr�
 rok2099 izoluje čekání. Chrome používá existující UI v obou variantách.
 Lokální style helper hlásí staré untracked output/probe PHP; ty neměněny.
 Vlastní syntax/style ověřit samostatně a v čistém CI. Merge/deploy NOT RUN.
+
+PR[406](https://github.com/KovoPraha/evidenceTreninku/pull/406) otevřený.
+První native CI FAIL fixture/login, oprava a přesný popis ve výsledcích;
+žádný výkonový PASS ani merge/deploy. Lokálně33/819 PASS.
