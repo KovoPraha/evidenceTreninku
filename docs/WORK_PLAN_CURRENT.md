@@ -21,6 +21,29 @@ zahrnuje i vložené ověřovací plány, historické prompty a podpůrné artef
 [Původní etapy 0–6 a R01–R44](plans/realization-20261022/README.md) jsou nyní
 sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešní stav.
 
+## KONCEPT Q01 — další vývoj: doladění, úklid, příprava (8. 11. 2026)
+
+Vlastník: vývoj; produktové a provozní přijetí: vlastník klubu a dotčené role.
+Stav: **návrh pořadí**, nikoli souhlas s platbou, importem, změnou práv,
+nasazením nebo smazáním WIP. Podklad: `origin/main` `35fdad44`, tento registr,
+[aktuální stav](CURRENT_STATE.md), [předání](HANDOFF_CURRENT.md) a otevřené PR
+k 8. 11. Ověření bylo čtecí; žádná funkce tímto návrhem není implementována.
+Větev `codex/quality-roadmap-20261108`, samostatný worktree mimo `htdocs`.
+
+| Pořadí | Výstup dalšího řezu | Přijetí a závislost |
+| --- | --- | --- |
+| Q1 — uzavřít existující cesty | Cíleně projít nasazené mobilní karty rolí na 390/360 px a desktopu (ROLE01-MOB); zopakovat přihlášené čtecí UAT výběru osob v docházce, až nástroj bezpečně ověří URL a obsah stránky; u zdravotního přehledu a plánovače ověřit přihlášenou roli, filtry a mobilní čitelnost. | Pro každou cestu zapsat PASS/FAIL/NOT RUN, roli, zařízení a reprodukční kroky. Dosavadní technické PASS, nasazení a blokované UAT nezaměňovat za uživatelské přijetí. [P11](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [ROLE01](ACCESS_OVERVIEW_2026-11-07.md). |
+| Q2 — opravy podle výsledků | Opravit nejvýše několik reprodukovaných vad z Q1 a lidského UAT P08/P12; přednost mají ztráta dat, chybné oprávnění, nejasný stav platby/dokladu, nedokončitelný formulář a mobilní blokátor. | Každá oprava má scénář před/po, cílený test, kontrolu ostatních rolí a samostatný release důkaz. Skutečné P05/P07 a P06 zůstávají odložené do dodání podkladů. |
+| Q3 — měřitelný úklid | Z kandidátů C04/K0.2 vybrat jeden konkrétní problém: duplicitní čtení nebo nedosažitelný fallback po povinné migraci, případně test křehký na textové wiring. Nejprve potvrdit současné použití a změřit dopad; pak malý izolovaný řez. | Stejný výsledek dat, oprávnění a HTTP před/po; MariaDB 10.3/11.4 a dotčené testy PASS. Nemaže se plošně introspekce, historická dokumentace, větve ani worktrees. [C04](DOZOR_UKLID_2026-10-25.md), [inventura](verification/autonomous-priorities-20261107/RESULTS.md). |
+| Q4 — provozní připravenost | Pro BAR P02/P04 připravit přejímací scénář fyzické zásoby → kasa → prodej → uzávěrka a účetní mapu bez ostrých zápisů. Pro členství/doklady P05/P07 připravit jediný důkazový scénář od objednávky po úhradu, PDF a doručení; pro P06 rozdílový náhled až s novým exportem. | Skutečné hodnoty, účetní pravidla a reálný sportovec/platba jsou vstupem vlastníka. Technický scénář nezakládá zásobu, pokladní hotovost ani platbu. [BAR](SESSION_HANDOFF_BAR_2026-11-06.md), [doklady](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md). |
+| Q5 — příprava funkcí | Ze záměrů P13/C01–C03 vybrat jednu funkci podle potřeby konkrétní role; sepsat uživatelský scénář, vlastníka dat, oprávnění, retenci, chybové stavy, migraci a měřitelné přijetí. ČSC/Sportsoft P15 hodnotit zvlášť podle otevřených PR #371/#376/#380/#382/#386 a jejich závislostí. | Teprve odsouhlasený kontrakt a bezpečnostní review dávají podklad k implementaci. Žádná automatická aktivace importu, zápisů do osob, walletu, Stripe ani nového upozornění. |
+
+První proveditelný balík: Q1 v přihlášeném prostředí a čtecí inventura jednoho
+Q3 kandidáta. Následující balík vznikne z doložených vad a výsledků, nikoli
+z historického seznamu. Při každém převzetí ověřit nové PR, jejich CI a produkční
+release; otevřené #365, #378 a #385 se mohou mezitím změnit. Původní priorita
+DOC03 níže zůstává datovaným snímkem 7. 11.; Q01 ji pro nové plánování zpřesňuje.
+
 ## Priority a závislosti
 
 DOC03, 7. 11. 2026: stručný přehled na žádost vlastníka. Pořadí níže je doporučení
