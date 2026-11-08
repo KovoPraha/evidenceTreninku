@@ -389,4 +389,4 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-70d2e7ebb6 | [P11-R13-F — hledání a datum zdravotního přehledu](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md) | DONE / P11-R13-F | #385/519ff098 nasazeno; parita/výkon/index/čtecí kontrola PASS, přihlášené UAT NOT RUN. |
 
-| PL-edcee65e8b | [P11-RH — správní historie](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) | IN_PROGRESS / P11-RH | Parita a přínos před release. |
+| PL-edcee65e8b | [P11-RH — správní historie](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) | DONE / P11-RH | #394/ab49947d nasazeno, parita/přínos/14CI PASS; [protokol](verification/training-history-release-20261108/RESULTS.md), přihlášené UAT otevřené. |

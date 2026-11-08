@@ -298,3 +298,5 @@ D15 uzavření8.11.2026: V5 přijatá po přesné paritě, opakovaném nativním
 ## D2026-11-08-RH — stránka před podrobnostmi správní historie
 
 PŘIJATO podle nového zadání Marka: po dokončení cen/katalogu/docházky a R05/R13 zvolené zbývající pořadí4 analýzy. Tenké kandidáty a kanonická hierarchie před stránkou25, plné detaily až po ní; přesné celkové souhrny a dostupnost celé historie zachovat. Datové remízy zpřesnit idDESC, hledání potvrzovat serveru. Parita a naměřený přínos před release. [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md).
+
+Uzavření D2026-11-08-RH: po přesné paritě všech stránek a přínosu odstraněné nepoužité LEFT JOIN bez ztráty filtrů; malá režie jediného záznamu přiznaná. #394/ab49947d a deploy42486500282 SUCCESS po14CI. [Výsledky](verification/training-history-page-performance-20261108/RESULTS.md), [produkční protokol](verification/training-history-release-20261108/RESULTS.md). Technický řez hotový; přihlášené UAT a ostatní P11 otevřené.
