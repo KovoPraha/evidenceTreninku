@@ -108,10 +108,12 @@ final class AthleteProfileRead
         $binary = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mz.typ' : 'mz.typ COLLATE BINARY';
         // Aggregate only narrow ordered keys in SQL. Binary grouping preserves PHP's exact
         // case/space-sensitive keys; the first ordinal preserves the old filter-pill order.
-        $summary = self::read($pdo, 'SELECT kind AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position
-            FROM (SELECT ' . $binary . ' AS kind,ROW_NUMBER() OVER (' . $order . ') AS ordinal'
+        // Materialize only numeric measurement IDs/ordinals in the window, not padded type strings.
+        $summary = self::read($pdo, 'SELECT ' . $binary . ' AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position
+            FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER (' . $order . ') AS ordinal'
             . self::measurementFrom() . ' WHERE mz.sportovec_id=?) ordered_types
-            GROUP BY kind ORDER BY first_position', [$sid]);
+            JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id
+            GROUP BY ' . $binary . ' ORDER BY first_position', [$sid]);
         $counts = [];
         $all = 0;
         foreach ($summary as $row) {

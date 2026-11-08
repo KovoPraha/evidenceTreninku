@@ -25,3 +25,10 @@ První nativní iterace42518606301: obě verze PASS datové parity, historie10k
 binární ROW_NUMBER/GROUP BY se souhrnem prvního výskytu; úzká stránka ID před
 širokými měřeními. Původní výsledek zachovat; nová varianta vyžaduje novou paritu
 všech stránek a nativní/HTTP měření. Nasazení nadále NOT RUN.
+
+Druhá iterace: window/group vrací jen35řádků a75kB PHP peak, ale u90k měření na
+MariaDB11.4 zůstává izolovaná SQL režie. Další varianta materializuje v okně jen
+číselné ID/ordinal místo typu VARCHAR; typy se připojí až při malé agregaci.
+Žádné nastavení databázové paměti/DDL/cachování; parita zůstává povinná.
+HTTP baseline už ověřil role, anonymy a expiraci tokenu/grantu; neaktivní staff
+vrací kanonický302/login, test nyní uznává tento původní způsob odmítnutí.
