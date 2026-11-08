@@ -36,6 +36,18 @@ Dokumentační převzetí Q1 je sloučené v [#388](https://github.com/KovoPraha
 původní #365/#378 uzavřené po převzetí jejich obsahu. Q2 čeká na reprodukovaný
 nález; Q3 je místně ověřený a Q4/Q5 mají [připravený podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
 
+### Q01-Q2 — mobilní filtr plánovače
+
+Stav 8. 11.: reprodukovaná prezentační vada v produkčním Chrome, role
+`Superadmin · Trenér`, viewport 360 × 800: dokument má `clientWidth=345`,
+`scrollWidth=367`; filtr `team_id` s `style="width:auto"` přesahuje pravý okraj
+o 22 px. Při 390 px `clientWidth=scrollWidth=375`. [Čtecí průchod](verification/quality-uat-20261108/RESULTS.md).
+Opravit jen šířkové omezení tří obdobných selectů v `planovac.php`; zachovat
+hodnoty, pořadí, GET parametry, role a JS přepínání `Moje/Vše`.
+Akceptace: 360/390 px bez vodorovného posunu, filtry viditelné a použitelné,
+desktop zachovaný; PHP syntaxe, dokumentační kontrola a povinné CI PASS.
+Produkční opravu a lidské převzetí doložit odděleně.
+
 ### Q01-Q3 — první měřitelný úklid, rychlý nákup
 
 Stav 8. 11.: IMPLEMENTOVÁNO MÍSTNĚ na větvi `codex/guest-checkout-read-cleanup-20261108`,
