@@ -46,3 +46,5 @@ Staré výstupy/worktrees zachované.
 Akceptace: původní úplná datová množina a souhrny shodné se všemi stránkami,
 plné detaily a účastníci jen25tréninků, materiální přínos na větších datech.
 Další AJAX/profilové historie a ostatní K0.2 nejsou tímto řezem automaticky hotové.
+
+První implementace obou správních cest lokálně hotová:25ID, přesné souhrny/hierarchie před stránkou, účastníci/štítky pouze stránky. Lokální parita3/922 a styl7souborů/0chyb PASS; SQLite10k celé čtení798→83ms,140000→10350řádků,22→4SQL. Profil před formátováním, finální nativní a celé HTTP/Chrome důkazy čekají. Žádné produkční změny; další AJAX/profilové historie neuzavřené.
