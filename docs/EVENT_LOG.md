@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 8. 11. 2026 / E2026-11-08-32 | P11-RGS zahájeno podle dalšího zadání | Zbývající globální hledání a session: nejprve actual HTTP souběh, přesné JSON/role/session, potom úzké uzavření. Žádná produkční změna; WIP zachovaný. | [Plán](GLOBAL_SEARCH_SESSION_PERFORMANCE_2026-11-08.md) |
 | 8. 11. 2026 / E2026-11-08-31 | P11-RHA nasazeno po paritě a měření | #404/82efa16d,14CI, deploy42521982178 SUCCESS; profil129→53ms a6,1MB→12,8kB. Záloha389/2, pending[], VS/smoke PASS; původní publichash nedostatečně normalizovaný, nový8/8stabilní. UAT NOT RUN, WIP shodný. | [Plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md), [výsledky](verification/athlete-profile-read-performance-20261108/RESULTS.md), [release](verification/athlete-profile-release-20261108/RESULTS.md) |
 | 8. 11. 2026 / E2026-11-08-30 | P11-RHA parita a měření PASS v #404 | Native3/651 každá,476HTTP/78Chrome; profil129→53ms, historie111→33ms. Původní regrese zachované, číselné SQL okno ji odstranilo; finální CI/merge/deploy čeká. | [Plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md), [důkazy](verification/athlete-profile-read-performance-20261108/RESULTS.md) |
 | 8. 11. 2026 / E2026-11-08-29 | P11-RHA zahájeno podle zadání | Historie a měření profilu po stránkách/lazy, přesné souhrny a přístupy zachovat; plán před implementací, žádná produkční změna. | [Plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md) |

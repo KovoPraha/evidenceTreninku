@@ -948,3 +948,9 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 
 | PL-3aa241da26 | [P11-RHA — parita a výkon](verification/athlete-profile-read-performance-20261108/RESULTS.md) | evidence / SUPPORT | P11-RHA |
 | PL-d4a4e0b4a6 | [P11-RHA produkční předání a meze](verification/athlete-profile-release-20261108/RESULTS.md) | evidence / SUPPORT | P11-RHA |
+
+| PL-ba06686feb | [P11-RGS — globální hledání a session](GLOBAL_SEARCH_SESSION_PERFORMANCE_2026-11-08.md) | plan / IN_PROGRESS | P11-RGS |
+
+| PL-db8603204e | [P11-RGS session předání](SESSION_HANDOFF_GLOBAL_SEARCH_2026-11-08.md) | handoff / SUPPORT | P11-RGS |
+
+| PL-7517143363 | [P11-RGS parita a souběžné měření](verification/global-search-session-performance-20261108/RESULTS.md) | evidence / SUPPORT | P11-RGS |

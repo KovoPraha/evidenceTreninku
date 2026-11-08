@@ -10747,6 +10747,39 @@
       "registry": "P11-RHA",
       "disposition": "Bezpečný konkrétní důkaz, nikoli samostatná roadmapa.",
       "evidence": []
+    },
+    {
+      "id": "PL-ba06686feb",
+      "path": "docs/GLOBAL_SEARCH_SESSION_PERFORMANCE_2026-11-08.md",
+      "title": "P11-RGS — globální hledání a session",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P11-RGS",
+      "disposition": "Konkrétní řez, parita a skutečný souběh před release.",
+      "evidence": []
+    },
+    {
+      "id": "PL-db8603204e",
+      "path": "docs/SESSION_HANDOFF_GLOBAL_SEARCH_2026-11-08.md",
+      "title": "P11-RGS session předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-RGS",
+      "disposition": "Podpůrný důkaz, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-7517143363",
+      "path": "docs/verification/global-search-session-performance-20261108/RESULTS.md",
+      "title": "P11-RGS parita a souběžné měření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RGS",
+      "disposition": "Podpůrný důkaz, nikoli samostatná roadmapa.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",
