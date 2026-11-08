@@ -27,7 +27,9 @@ if ($normalize($identity['directory']) !== $normalize((string) getenv('EVIDENCE_
 }
 $admin->exec('SET GLOBAL innodb_buffer_pool_size=536870912');
 $report = ['complete' => false, 'synthetic_only' => true, 'server' => $identity['version'], 'php' => PHP_VERSION,
-    'method' => 'Two data-identical owned schemas: original indexes vs covering index. Four warmups and 17 rotating timed triplets: original code/original indexes, original code/covering index, optimized code/covering index. Separate diagnostics.',
+    'method' => 'Two data-identical owned schemas: original indexes vs covering index. '
+        . 'Four warmups and 17 rotating timed triplets: original code/original indexes, '
+        . 'original code/covering index, optimized code/covering index. Separate diagnostics.',
     'baseline' => '35fdad4483ec4326e5da9b6ffbb908f77a4df85f', 'query_cache_disabled' => true,
     'buffer_pool_bytes' => (int) $admin->query('SELECT @@innodb_buffer_pool_size')->fetchColumn(),
     'source_sha256' => [], 'cases' => [], 'indexes' => []];
