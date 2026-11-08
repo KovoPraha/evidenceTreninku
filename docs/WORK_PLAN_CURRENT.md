@@ -211,3 +211,5 @@ Aktuální pokračování pickeru po #370: #366 sloučené, nový celý HTTP/Chr
 ## P15-SEC380 — audit registrářského přehledu
 
 Audit HOTOVO, oprava/G1 OTEVŘENÉ, 8. 11. 2026; Marek / Codex. [Rozsah a výsledky](verification/pr380-security-audit-20261108/RESULTS.md). Větev `codex/audit-pr380-20261108`, závislost PR #380; další krok v pracovním vlákně opravit F1 (LOW) a doplnit skutečný bootstrap test G1; předání vlastním dokumentačním PR. Bez implementace/deploye.
+
+P15-SEC380 předání: [draft PR #386](https://github.com/KovoPraha/evidenceTreninku/pull/386), větev zveřejněna; merge/deploy NOT RUN.

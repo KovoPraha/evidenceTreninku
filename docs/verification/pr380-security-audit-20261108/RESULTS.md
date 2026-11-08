@@ -154,3 +154,5 @@ zadání takové omezení nedokládá, proto nejde o potvrzený nález cross-ten
 Doporučení pro pracovní vlákno: opravit F1 a přidat pravý bootstrap/header test,
 potom G1. Zachovat již existující guardy a syntetické testy. Nevydávat tento audit
 za produkční přejímku. Audit nepovoluje nasazení ani integraci s živými portály.
+
+Předání: větev zveřejněná přes GitHub konektor, dokumentační [draft PR #386](https://github.com/KovoPraha/evidenceTreninku/pull/386). Merge/deploy NOT RUN. Přímý git push neměl přihlašovací údaje; použito existující propojení GitHub. CI tohoto předání při zápisu neověřeno.
