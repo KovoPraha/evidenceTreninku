@@ -64,3 +64,8 @@ do společného baseline patří až jejím merge do main. Kvůli samotným důk
 se produkce znovu nenasazuje. Dokončené RHA/RHC/RAS znovu neimplementovat.
 Další nejprve diagnostický námět je parent profil při extrémní fixture
 (TTFB~2,7s); příčina/nová optimalizace zatím KONCEPT, nikoli implementace či SLA.
+
+[Souborové předání PR#407](https://github.com/KovoPraha/evidenceTreninku/pull/407).
+SHA256 manifest používá přesné Git bloby (kanonické LF), nikoli Windows CRLF
+pracovní kopii. První lokální kontrola odhalila4odlišné textové hashe kvůli CRLF;
+opraven pouze manifest, měřené gzip vzorky ani výsledky se neměnily.

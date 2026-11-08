@@ -102,3 +102,6 @@ Předání důkazů: vlastní release-proof větev, společný baseline po merge
 bez druhého deploye dokumentace. Nová diagnostická hypotéza: zbývající parent
 profil má při30kfixture~2,7sTTFB v obou variantách; příčinu nejprve změřit,
 čerstvou validaci/role necachovat. Námět je KONCEPT, bez implementace v RAS.
+
+Finální souborové důkazy: [PR#407](https://github.com/KovoPraha/evidenceTreninku/pull/407),
+jen dokumentace; po merge další deploy nespouštět.

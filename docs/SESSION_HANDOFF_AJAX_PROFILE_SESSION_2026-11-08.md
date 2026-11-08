@@ -31,3 +31,6 @@ Souborové důkazy v codex/ajax-profile-session-release-proof-20261108 patří d
 společného baseline po merge do main; další deploy pro dokumentaci nespouštět.
 RHA/RHC/RAS hotové. Další pouze KONCEPT: diagnostika parent profilu při30kfixture
 (~2,7sTTFB); před implementací nová baseline/měření, žádná cache čerstvých práv.
+
+Finální souborové důkazy: [PR#407](https://github.com/KovoPraha/evidenceTreninku/pull/407),
+jen dokumentace; po merge další deploy nespouštět.
