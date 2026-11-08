@@ -49,9 +49,11 @@ hodnoty, pořadí, GET parametry, role a JS přepínání `Moje/Vše`.
 Akceptace: 360/390 px bez vodorovného posunu, filtry viditelné a použitelné,
 desktop zachovaný; PHP syntaxe, dokumentační kontrola a povinné CI PASS.
 Produkční opravu a lidské převzetí doložit odděleně.
-PR [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) obsahuje
-místní opravu a syntetické měření. Profil s historickým HTML porovnává po
+PR [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) je sloučený
+jako `5b9279f9`; všech 11 CI PASS včetně MariaDB 10.3/11.4. Obsahuje
+opravu a syntetické měření. Profil s historickým HTML porovnává po
 normalizaci pouze tří očekávaných šířek; původní hash HTML zůstává zachovaný.
+Produkční nasazení a následné UAT této opravy dosud NOT RUN.
 Přihlášené hledání/editor ROLE01-MOB po obnoveném přihlášení cíleně PASS:
 prázdný stav 0/48 a deaktivovaný #64 čtecí, bez uložení,
 [protokol](verification/quality-uat-20261108/RESULTS.md).
