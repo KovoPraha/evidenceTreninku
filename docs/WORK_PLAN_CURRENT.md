@@ -230,6 +230,7 @@ Tyto položky evidují existující návrhy; tento audit jim neuděluje schvále
   implementovalo a nasadilo automatické doklady/e-maily; pověření 1 aktivní, doložené #362. Při přejímce
   přezkoumat proti main; příprava šablon v původním [plánu](ORDER_STATUS_EMAIL_PLAN_2026-10-21.md)
   sama nedokládá všechny producenty zpráv. Skutečné P07 zůstává odložené.
+  [Povinná reálná přejímka / checklist](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md#p07-uat--reálná-produkční-přejímka): OTEVŘENO / NOT RUN; vlastník/hospodář určí účet, produkt, částku a termín. Větev `codex/shop-real-acceptance-docs-20261108`; uzavřít až s důkazy banky, schránky/PDF, storna, skutečné vratky a opakování bez duplicit.
 
 ## Povinný záznam při každé další práci
 

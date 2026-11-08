@@ -122,6 +122,10 @@ HTML/data parita a relativní úspora zůstávají; vadné reporty jsou odmítan
 
 ## D2026-11-07-03
 
+- **Doplnění 8. 11. 2026:** vlastník výslovně požaduje evidovat nutnost reálné přejímky.
+  [P07-UAT](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md#p07-uat--reálná-produkční-přejímka) stanoví důkazy a vlastníky; CI/prázdný worker
+  nenahrazují bankovní pohyb ani příjem PDF ve schránce. Otevřené kroky zůstávají NOT RUN.
+
 - **Stav / datum:** PŘIJATO, 7. 11. 2026. Vlastník zadal automatické doklady,
   e-maily při vytvoření/stornu/vratce, ověření, sloučení a nasazení.
 - **Volba a důvod:** nové objednávky s výslovným finančním pověřením a adresou;

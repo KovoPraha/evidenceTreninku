@@ -111,3 +111,52 @@ hostingový běh v 10:13:03 UTC bez chyb i duplicit. [Produkční důkazy](verif
 Další krok pouze při skutečném nákupu: potvrdit bankovní úhradu podle běžných
 pravidel párování a doložit doručení PDF ve schránce. Tato lidská/finanční přejímka
 není nahrazena prázdným workerem. Není potřeba opakovat aktivaci nebo instalaci.
+
+
+## P07-UAT — reálná produkční přejímka
+
+Doplněno 8. 11. 2026 na výslovné zadání vlastníka. **OTEVŘENO / NOT RUN**;
+skutečná finanční operace zůstává odložená vlastníkem. Technicky dokončené
+N1/N2 nelze označit za úplně provozně převzaté bez následujících důkazů.
+Zápis tohoto seznamu není provedením platby, storna, vratky ani nové rozesílky.
+
+Vlastník přejímky: vlastník klubu / hospodář; zákazník nebo tester potvrzuje
+skutečné doručení do své schránky, vývojář doloží audit a stav systému.
+Další krok: určit konkrétní účet, produkt, částku, příjemce a termín reálného
+průchodu s vlastníkem. Použít novou jednorázovou objednávku s fakturačními údaji;
+pro sportovní produkt klubem ověřeného propojeného sportovce. Před průchodem
+ověřit aktuální nasazenou verzi, pověření a stav workeru podle CURRENT_STATE.
+
+| Krok | Podmínka přijetí / požadovaný důkaz | Stav |
+| --- | --- | --- |
+| Vytvoření objednávky | Přihlášený zákazník dokončí nákup, vidí správnou cenu, VS a objednávku; potvrzovací e-mail skutečně přijde do cílové schránky právě jednou. | NOT RUN |
+| Skutečná úhrada | Bankovní převod s předepsaným VS, částkou a měnou je dohledán v importu a jednoznačně spojen s toutéž objednávkou. Doložit přechod do zaplaceno a případné aktivace účasti. Shoda částky sama nestačí. | NOT RUN |
+| Doklad a e-maily po úhradě | Přirozený worker vystaví právě jednu fakturu; příjemce potvrdí přijetí potvrzení úhrady a zprávy s PDF. PDF lze otevřít a údaje, částka, číslování i vazba na objednávku souhlasí. | NOT RUN |
+| Přístup v aplikaci | Zákazník v přihlášeném účtu vidí správný stav a stáhne vlastní PDF; cizí účet jej nezíská. Zaznamenat skutečný průchod v prohlížeči, nikoli pouze HTTP 200. | NOT RUN |
+| Storno uhrazené objednávky | Hospodář provede sjednané storno; stav, případné zrušení účasti a opravný doklad odpovídají celé původní částce. Původní faktura zůstane neměnná a dostupná. Příjemce potvrdí oznámení storna i opravné PDF. | NOT RUN |
+| Skutečná vratka | Po skutečné výplatě a jejím zaúčtování souhlasí částka, vazba na objednávku a konečný stav. Příjemce potvrdí vrácení peněz a doručení e-mailu; samotné rozhodnutí ani opravný doklad nejsou důkazem výplaty. | NOT RUN |
+| Dílčí vratka | Na samostatném sjednaném případu ověřit oznámení skutečně vyplacené části a následného doplatku; součet a konečný stav souhlasí. Dílčí účetní opravu řídí hospodář. | NOT RUN |
+| Neuhrazené storno | Samostatná nezaplacená objednávka po stornu odešle oznámení, nevytvoří fakturu ani opravný doklad k neexistující úhradě. | NOT RUN |
+| Opakovaný běh | Po dalším přirozeném běhu/importu nevznikne druhá úhrada, doklad ani opakovaná zpráva pro stejnou událost; fronta nemá nevysvětlené chyby ani čekající položky. | NOT RUN |
+
+Protokol uložit pod `docs/verification/` a propojit z tohoto oddílu a registru.
+U každého kroku uvést PASS/FAIL/NOT RUN, datum a čas s pásmem, nasazené SHA,
+bezpečnou referenci objednávky/platby/dokladu/události, očekávaný a skutečný stav,
+kontrolující osobu/roli a odkaz na důkaz. Potvrzení doručení musí zahrnout příjem
+ve schránce a otevření přílohy; stav `sent` nebo přijetí transportem nestačí.
+Osobní faktury, bankovní výpisy, adresy, tokeny a úplné hlavičky zpráv ponechat
+v řízeném soukromém úložišti, do Gitu jen anonymizovaný výsledek a referenci.
+
+**Uzavření:** hospodář přijme věcnou správnost dokladů a peněžních pohybů,
+zákazník potvrdí příjem zpráv/PDF a peněz, všechny uvedené scénáře mají doložený
+PASS a žádnou nevysvětlenou duplicitu či chybu. Při omezeném rozsahu zapsat jen
+částečnou přejímku; zbývající NOT RUN neuzavírat. Měsíční členství P05 a karetní
+platba SumUp mají vlastní přejímku, bankovní test jednorázového nákupu je neuzavírá.
+
+Dokumentační změna: větev `codex/shop-real-acceptance-docs-20261108`, worktree
+`C:/Users/Marek/Documents/Codex/evidencePavel-shop-real-acceptance-20261108`,
+výchozí main `da152282`. Ověření: `php tools/check-current-docs.php` PASS (0 chyb), `git diff --check` PASS; žádné nové
+produkční UAT ani finanční operace nebyly v této dokumentační změně provedeny.
+
+Předání: [PR #402](https://github.com/KovoPraha/evidenceTreninku/pull/402) otevřený;
+commit a push hotové, merge zatím neproveden. Výsledek CI je dostupný v PR.

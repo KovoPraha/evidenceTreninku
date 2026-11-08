@@ -27,7 +27,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.
-  Browser blokovaný; skutečná banka a externí schránka zůstávají neověřené.
+  [P07-UAT: reálná přejímka](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md#p07-uat--reálná-produkční-přejímka) NOT RUN; domluvit konkrétní průchod s vlastníkem/hospodářem.
 - P02/P04: [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md),
   [účetní adaptér](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md); publikaci neopakovat.
 - P05: [serverové předání](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md)
