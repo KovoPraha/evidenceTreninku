@@ -25,6 +25,7 @@ byly dosud pouze v lokálním output; nyní jsou sdílené jako historické spec
 
 | Dokument | Účel |
 |---|---|
+| [Oprava průvodce kroužkem z existujícího produktu](verification/club-program-existing-product-fix-20261108/RESULTS.md) | Příčina prázdného názvu soupisky, oprava, syntetické ověření produktu ID 298 a hranice produkčního průchodu |
 | [Registr rozpracované a plánované práce](WORK_PLAN_CURRENT.md) | Jediný seznam P01–P14: doložený stav, další kroky, závislosti a odpovědnost |
 | [Automatické doklady a zprávy objednávek](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md) | Faktury a opravy, PDF přílohy, storna/vratky a [ověření celého toku](verification/shop-document-automation-20261107/RESULTS.md) |
 | [Závodní tým – aktuální ověření](verification/racing-team-status-20261106/RESULTS.md) | Schválený a zveřejněný tarif 2200 Kč/měsíc, cesta ke sjednání a podmínka ověřeného sportovce |
