@@ -6,6 +6,16 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-08-01
+
+SEC01: přímé zadání vlastníka 8. 11. 2026 autorizuje audit, opravy a dokumentaci.
+Zvolena kontrola skutečných cest soukromého úložiště a odmítnutí odkazů kategorií
+či souborů; samotné textové porovnání nestačí. Změna nevyžaduje migraci ani
+rotaci veřejných tokenů. Konfigurační relativní/tečkové cesty se odmítají, protože
+jejich význam závisí na pracovním adresáři. Alternativa ponechat pouze provozní
+preflight nechrání všechny zápisové a čtecí cesty. Bez produkčního zásahu.
+[Nálezy, důkazy a meze](SECURITY_AUDIT_2026-11-08.md).
+
 ## D2026-11-07-13
 
 PŘIJATO 7. 11. 2026 na přímé zadání vlastníka: [P11-SCALE](MEDICAL_PLANNER_SCALE_2026-11-07.md).
