@@ -24,6 +24,21 @@ produktu dál používá uživatelem zadaný název a popis.
   `ClubProgramTermDefaultsTest` a `LightweightEshopWorkflowWiringTest`.
 
 Testy používají izolovanou SQLite databázi. Skutečný produkt ID 298 nebyl
-upravován, objednávky ani skladové pohyby nebyly měněny. Produkční průchod
-vyžaduje samostatné nasazení změny a následnou kontrolu v přihlášeném KIS;
-výsledek syntetického testu není důkazem tohoto průchodu.
+upravován, objednávky ani skladové pohyby nebyly měněny.
+
+## Produkční vydání 8. 11. 2026
+
+- [PR #397](https://github.com/KovoPraha/evidenceTreninku/pull/397) sloučený jako
+  `9681a56a0c8f549f5d3eadbf90dffd96fcac4304` po zeleném PHPUnit,
+  MariaDB 10.3/11.4, PHP quality a dokumentační kontrole.
+- [Deploy 42488777710](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42488777710)
+  SUCCESS na přesném SHA. Před aktivací prošly testy, serverový preflight,
+  ověřená záloha a migrační krok; po aktivaci HTTP smoke a úklid kopie
+  konfigurace. `importovat_krouzky=false`, `uat_schvaleno=false`.
+- Následný anonymní HTTP GET: úvodní stránka 200; průvodce 302 na
+  `login.php`. To ověřuje dostupnost a přístupovou hranici, nikoli
+  přihlášený formulář nebo zápis.
+- Skutečné vypsání kroužku z produktu ID 298 v přihlášeném KIS: **NOT RUN**.
+  Název, veřejný popis, cena 36 Kč, kapacita 30, nová soupiska a absence
+  duplicitního produktu jsou produkčně neověřené. K provedení je nutná
+  přihlášená administrátorská session a vědomé vytvoření reálné nabídky.

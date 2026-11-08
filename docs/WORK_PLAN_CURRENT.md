@@ -21,6 +21,15 @@ zahrnuje i vložené ověřovací plány, historické prompty a podpůrné artef
 [Původní etapy 0–6 a R01–R44](plans/realization-20261022/README.md) jsou nyní
 sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešní stav.
 
+## KIS-CPW-298 — existující produkt do kroužku
+
+Vlastník: klubová správa KIS. Oprava #397 je sloučená a nasazená v release
+`9681a56a` ([protokol](verification/club-program-existing-product-fix-20261108/RESULTS.md)).
+Syntetické ověření názvu, popisu, ceny 36 Kč, kapacity 30 a soupisky PASS;
+živé vytvoření nabídky z produktu 298 NOT RUN. Další krok: přihlášený
+administrátor má vědomě vypsat skutečný kroužek a ověřit výslednou nabídku,
+soupisku a zachování původní ceny i historie. Import/UAT flag při deployi false.
+
 ## KONCEPT Q01 — další vývoj: doladění, úklid, příprava (8. 11. 2026)
 
 Vlastník: vývoj; produktové a provozní přijetí: vlastník klubu a dotčené role.
