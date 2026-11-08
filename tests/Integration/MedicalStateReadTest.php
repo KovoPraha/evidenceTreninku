@@ -95,8 +95,7 @@ final class MedicalStateReadTest extends TestCase
     public function testFreshChangesAndTransactionReadShapeArePreserved(): void
     {
         $pdo = $this->seeded();
-        foreach ([['medical_q' => 'Synthetic'], ['medical_from' => date('Y-m-d')],
-            ['medical_to' => date('Y-m-d')], ['person_id' => 1]] as $filter) {
+        foreach ([['person_id' => 1]] as $filter) {
             $input = ['medical_state' => 'valid'] + $filter;
             $pdo->profiling = true;
             $pdo->profile = [];

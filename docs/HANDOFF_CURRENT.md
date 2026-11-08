@@ -3,7 +3,7 @@
 Aktualizováno 8. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr a první Q01/Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup)
 vlastní otevřené úkoly; plány a rozhodnutí čti ve verzovaných souborech.
-Q1 převzalo #388; Q3 čeká na CI, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
+Q1 převzalo #388; Q3 #389 je v main, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
 
 ## Poslední práce a další krok
 
@@ -24,8 +24,8 @@ Q1 převzalo #388; Q3 čeká na CI, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_20
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
 - P11-R13-S HOTOVO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [provozní důkaz](verification/medical-state-release-20261107/RESULTS.md).
   #381/938e9c50, deploy42405912779 SUCCESS; další deploy neopakovat. WIP zachovaný, přihlášené UAT NOT RUN.
-- P11-R05-H HOTOVO: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
-  #374 v main a nasazeno; [provozní důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md) PASS. WIP zachovaný; R13/K0.2 a přihlášené UAT otevřené.
+- P11-R13-F ROZPRACOVÁNO: [plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md).
+  PR #385: V5 nativní i HTTP/Chrome PASS; sjednocení schématu starých benchmarků v CI, bez deploye. R05 uzavřené [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

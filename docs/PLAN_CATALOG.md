@@ -386,3 +386,5 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 | PL-400959e0ab | [P11-SCALE - vetsi zdravotni prehled a planovac](MEDICAL_PLANNER_SCALE_2026-11-07.md) | DONE / P11-SCALE | 2700HTTP/90parit a oba úklidy PASS; [důkazy](verification/medical-planner-scale-20261107/RESULTS.md), bez produkce. |
 | PL-fc92c8ac29 | [Předání většího R13/R05 měření](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md) | DONE / P11-SCALE | Hotové měření a přímá shoda aktuálního #374, bez produkce. |
 | PL-ab7b870cf9 | [P11-R13-S — stavový filtr zdravotního přehledu](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md) | DONE / P11-R13-S | #381 nasazené; [důkazy](verification/medical-state-release-20261107/RESULTS.md), UAT/K0.2 otevřené. |
+
+| PL-70d2e7ebb6 | [P11-R13-F — hledání a datum zdravotního přehledu](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md) | IN_PROGRESS / P11-R13-F | Parita/měření před merge/deploy. |

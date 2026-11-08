@@ -11,19 +11,24 @@ final class MedicalClearanceStateRead
         if ($pdo->inTransaction() || $params !== []) {
             return medicalClearanceStatePage($pdo, $base, $params, $filters, $on);
         }
+        return self::projectedPage($pdo, $base, $params, $filters, $on);
+    }
+
+    /** Used after the filtered reader has established a broad candidate set. */
+    public static function filteredPage(PDO $pdo, string $base, array $params, array $filters, string $on): array
+    {
+        if ($pdo->inTransaction() || str_contains($base, 'w.sportovec_id=?')) {
+            return medicalClearanceStatePage($pdo, $base, $params, $filters, $on);
+        }
+        return self::projectedPage($pdo, $base, $params, $filters, $on);
+    }
+
+    private static function projectedPage(PDO $pdo, string $base, array $params, array $filters, string $on): array
+    {
         $exactState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mr.state' : 'mr.state COLLATE BINARY';
         $verifiedOnly = in_array($filters['state'], ['valid', 'expired', 'not_yet_valid'], true);
         $latestId = $verifiedOnly ? 'NULL' : 'MAX(mr.id)';
         $verifiedId = $verifiedOnly ? 'MAX(mr.id)' : "MAX(CASE WHEN $exactState='verified' THEN mr.id END)";
-        // The unrestricted list needs no repeated person/watch joins inside the history aggregation.
-        // Missing watches still survive the outer LEFT JOIN with a null current record.
-        $grouped = 'SELECT mr.watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id'
-            . ' FROM medical_clearance_records mr'
-            . ($verifiedOnly ? " WHERE $exactState='verified'" : '') . ' GROUP BY mr.watch_id';
-        $headJoin = $verifiedOnly ? 'JOIN' : 'LEFT JOIN';
-        $projection = self::join($base, $headJoin . ' (' . $grouped . ') mc ON mc.watch_id=w.id'
-            . ' ' . $headJoin . ' medical_clearance_records mv ON mv.id=mc.verified_id'
-            . ($verifiedOnly ? '' : ' LEFT JOIN medical_clearance_records ml ON ml.id=mc.last_id AND mc.verified_id IS NULL'));
         $complex = 'mv.id IS NOT NULL AND mv.issued_on>? AND mv.replaces_id IS NOT NULL AND mv.replaces_id<>0';
         $futureState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mf.state' : 'mf.state COLLATE BINARY';
         $newerState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mn.state' : 'mn.state COLLATE BINARY';
@@ -58,13 +63,46 @@ final class MedicalClearanceStateRead
                 }
             }
         }
+        $headParams = $params;
+        if ($params !== [] && ($filters['from'] !== '' || $filters['to'] !== '' || !$verifiedOnly)) {
+            if ($verifiedOnly) {
+                // Latest verified is the row with no newer verified owner row; no per-watch grouping needed.
+                $verifiedState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mv.state' : 'mv.state COLLATE BINARY';
+                $projection = self::join($base, 'JOIN medical_clearance_records mv ON mv.watch_id=w.id'
+                    . " AND mv.id IS NOT NULL AND $verifiedState='verified'"
+                    . ' LEFT JOIN medical_clearance_records mn ON mn.watch_id=w.id AND mn.id>mv.id'
+                    . " AND $newerState='verified'") . ' AND mn.id IS NULL';
+            } else {
+                // Filter candidates once. Ordinary verified heads cannot yield pending/revoked/missing.
+                // Explicit future replacements are the exception, evaluated canonically above.
+                $heads = 'SELECT w.id,MAX(w.next_review_on) next_review_on,' . $latestId . ' last_id,' . $verifiedId . ' verified_id '
+                    . self::join($base, 'LEFT JOIN medical_clearance_records mr ON mr.watch_id=w.id')
+                    . ' GROUP BY w.id HAVING (' . $verifiedId . ' IS NULL';
+                if ($matching !== []) {
+                    $heads .= ' OR w.id IN (' . implode(',', array_fill(0, count($matching), '?')) . ')';
+                    $headParams = [...$headParams, ...$matching];
+                }
+                $heads .= ')';
+                $projection = 'FROM (' . $heads . ') w LEFT JOIN medical_clearance_records mv ON mv.id=w.verified_id'
+                    . ' LEFT JOIN medical_clearance_records ml ON ml.id=w.last_id AND w.verified_id IS NULL WHERE 1=1';
+            }
+        } else {
+            // Preserve the deployed unrestricted aggregation and broad validity search.
+            $grouped = 'SELECT mr.watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id'
+                . ' FROM medical_clearance_records mr'
+                . ($verifiedOnly ? " WHERE $exactState='verified'" : '') . ' GROUP BY mr.watch_id';
+            $headJoin = $verifiedOnly ? 'JOIN' : 'LEFT JOIN';
+            $projection = self::join($base, $headJoin . ' (' . $grouped . ') mc ON mc.watch_id=w.id'
+                . ' ' . $headJoin . ' medical_clearance_records mv ON mv.id=mc.verified_id'
+                . ($verifiedOnly ? '' : ' LEFT JOIN medical_clearance_records ml ON ml.id=mc.last_id AND mc.verified_id IS NULL'));
+        }
         $latestState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY ml.state' : 'ml.state COLLATE BINARY';
         $noVerified = $verifiedOnly ? '' : "WHEN mv.id IS NULL THEN CASE $latestState WHEN 'pending' THEN 'pending'"
             . " WHEN 'revoked' THEN 'revoked' ELSE 'missing' END ";
         $simpleStatus = 'CASE ' . $noVerified
             . "WHEN mv.issued_on>? THEN 'not_yet_valid' WHEN mv.valid_until<? THEN 'expired' ELSE 'valid' END";
         $predicate = '(NOT (' . $complex . ') AND (' . $simpleStatus . ')=?)';
-        $bindings = [$on, $on, $on, $filters['state']];
+        $bindings = [...$headParams, $on, $on, $on, $filters['state']];
         if ($matching !== []) {
             $predicate .= ' OR w.id IN (' . implode(',', array_fill(0, count($matching), '?')) . ')';
             array_push($bindings, ...$matching);
@@ -72,10 +110,27 @@ final class MedicalClearanceStateRead
         $filtered = $projection . ' AND (' . $predicate . ')';
         $select = 'w.id';
         $fields = ['id', 'state', 'issued_on', 'valid_until', 'replaces_id'];
+        $outerSelect = '*';
+        $outerJoin = '';
+        $thinWindow = $params !== [];
+        if ($thinWindow) {
+            // Sort only identities; hydrate record metadata after the exact page has been selected.
+            $select .= ',mv.id AS _medical_read_verified_id,' . ($verifiedOnly ? 'NULL' : 'ml.id') . ' AS _medical_read_last_id';
+            $outerSelect = 'mp.*';
+            $outerJoin = ' LEFT JOIN medical_clearance_records rmv ON rmv.id=mp._medical_read_verified_id';
+            if (!$verifiedOnly) {
+                $outerJoin .= ' LEFT JOIN medical_clearance_records rml ON rml.id=mp._medical_read_last_id';
+            }
+        }
         foreach (['mv', 'ml'] as $alias) {
             foreach ($fields as $field) {
-                $value = $verifiedOnly && $alias === 'ml' ? 'NULL' : $alias . '.' . $field;
-                $select .= ',' . $value . ' AS _medical_read_' . $alias . '_' . $field;
+                $value = $verifiedOnly && $alias === 'ml' ? 'NULL' : ($thinWindow ? 'r' : '') . $alias . '.' . $field;
+                $column = ',' . $value . ' AS _medical_read_' . $alias . '_' . $field;
+                if ($thinWindow) {
+                    $outerSelect .= $column;
+                } else {
+                    $select .= $column;
+                }
             }
         }
         // One aggregation for both the exact total and the clamped page, including an excessive page number.
@@ -84,7 +139,7 @@ final class MedicalClearanceStateRead
         $requestedStart = ($filters['page'] - 1) * 25 + 1;
         $start = 'CASE WHEN ' . $requestedStart . '>mp._medical_read_total'
             . ' THEN mp._medical_read_total-((mp._medical_read_total-1)%25) ELSE ' . $requestedStart . ' END';
-        $selected = self::read($pdo, 'SELECT * FROM (' . $window . ') mp WHERE mp._medical_read_number>=(' . $start
+        $selected = self::read($pdo, 'SELECT ' . $outerSelect . ' FROM (' . $window . ') mp' . $outerJoin . ' WHERE mp._medical_read_number>=(' . $start
             . ') AND mp._medical_read_number<(' . $start . ')+25 ORDER BY mp._medical_read_number', $bindings);
         $total = (int) ($selected[0]['_medical_read_total'] ?? 0);
         $pages = max(1, (int) ceil($total / 25));

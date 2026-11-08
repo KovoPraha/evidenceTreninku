@@ -185,6 +185,28 @@ jobs:
           done < <(jq -r '.warnings[]?' /tmp/preflight.json)
           echo '✅ Server, config.php a potřebná PHP rozšíření jsou dostupné.'
 
+      - name: Přečíst indexy zdravotního čtení před migrací
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SCP[@]}" bin/diagnose-medical-read-indexes.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/medical-read-index-$GITHUB_RUN_ID.php"
+          production_retry "${SCP[@]}" includes/medical_clearance_read_index.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/medical-read-index-definition-$GITHUB_RUN_ID.php"
+          cat > /tmp/run-medical-index-before.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('MEDICAL_INDEX_PHASE=before');
+          putenv('MEDICAL_INDEX_SOURCE_SHA=$GITHUB_SHA');
+          putenv('MEDICAL_READ_INDEX_HELPER=' . __DIR__ . '/medical-read-index-definition-$GITHUB_RUN_ID.php');
+          require __DIR__ . '/medical-read-index-$GITHUB_RUN_ID.php';
+          diagnoseMedicalReadIndexesMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-medical-index-before.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-medical-index-before-$GITHUB_RUN_ID.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-medical-index-before-$GITHUB_RUN_ID.php'" > /tmp/medical-index-before.json
+          jq -e '.ok == true and .read_only == true and .inventory.clinical_rows_read == false' /tmp/medical-index-before.json >/dev/null
+          cat /tmp/medical-index-before.json
+
       - name: Nahrát zálohovací nástroj mimo aplikaci
         run: |
           SCP=(scp -P "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts")
@@ -372,6 +394,37 @@ jobs:
           production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/run-vs-preservation.php'"
           rm -f /tmp/run-vs-preservation.php
 
+      - name: Ověřit index zdravotního čtení před aktivací
+        run: |
+          set -euo pipefail
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          cat > /tmp/run-medical-index-after.php <<EOF
+          <?php
+          putenv('APP_HOST=$APP_HOST');
+          putenv('APP_ROOT=$REMOTE_DIR');
+          putenv('MEDICAL_INDEX_PHASE=after');
+          putenv('MEDICAL_INDEX_SOURCE_SHA=$GITHUB_SHA');
+          putenv('MEDICAL_READ_INDEX_HELPER=' . __DIR__ . '/medical-read-index-definition-$GITHUB_RUN_ID.php');
+          require __DIR__ . '/medical-read-index-$GITHUB_RUN_ID.php';
+          diagnoseMedicalReadIndexesMain();
+          EOF
+          production_retry "${SCP[@]}" /tmp/run-medical-index-after.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-medical-index-after-$GITHUB_RUN_ID.php"
+          production_retry_capture "${SSH[@]}" "php '$DEPLOY_BASE/run-medical-index-after-$GITHUB_RUN_ID.php'" > /tmp/medical-index-after.json
+          jq -e '.ok == true and .read_only == true and .inventory.covering_index != null' /tmp/medical-index-after.json >/dev/null
+          cat /tmp/medical-index-after.json
+
+      - name: Uchovat neosobní indexové důkazy nasazení
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: medical-read-index-preflight
+          path: |
+            /tmp/medical-index-before.json
+            /tmp/medical-index-after.json
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Aktivovat ověřený release
         run: |
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
@@ -513,3 +566,13 @@ jobs:
           SSH=(ssh -p "$SSH_PORT" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$HOME/.ssh/known_hosts" "$SSH_USER@$SSH_HOST")
           "${SSH[@]}" "rm -f -- '$RELEASE_DIR/config.php' '$DEPLOY_BASE/run-club-catalog-import.php' '$DEPLOY_BASE/run-private-http-probe.php' '$DEPLOY_BASE/run-private-storage.php' '$DEPLOY_BASE/provision-production-private-storage.php'"
           rm -f /tmp/run-club-catalog-import.php /tmp/run-private-http-probe.php /tmp/private-http-probe.json /tmp/run-private-storage.php /tmp/private-storage-result.json
+
+      - name: Odstranit vlastní indexové diagnostické soubory
+        if: always()
+        continue-on-error: true
+        run: |
+          if [ -n "${SSH_HOST:-}" ] && [ -n "${SSH_USER:-}" ] && [ -n "${SSH_PORT:-}" ]; then
+            source .github/scripts/production-ssh-retry.sh
+            production_ssh_init
+            production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/medical-read-index-$GITHUB_RUN_ID.php' '$DEPLOY_BASE/medical-read-index-definition-$GITHUB_RUN_ID.php' '$DEPLOY_BASE/run-medical-index-before-$GITHUB_RUN_ID.php' '$DEPLOY_BASE/run-medical-index-after-$GITHUB_RUN_ID.php'"
+          fi
