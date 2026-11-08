@@ -50,7 +50,10 @@ nasazení. První běh CI v #390 potvrdil PHP, statiku a integrační smoke, ale
 syntetické profily MariaDB 10.3/11.4 odmítly očekávaný rozdíl HTML oproti
 historickému plánovači. Profil nyní zachovává hash skutečného HTML a zvlášť
 počítá porovnávací hash po odstranění přesně tří nových `max-width:100%`.
-Tak lze dál vyžadovat shodu dat a ostatního HTML; opakované CI je nutné.
-Místní server a prohlížeč
-byly ukončené; ignorované výstupy Playwright zůstaly v izolovaném worktree,
+Tak lze dál vyžadovat shodu dat a ostatního HTML. Finální běh
+[PR #390](https://github.com/KovoPraha/evidenceTreninku/pull/390) měl všech
+11 kontrol PASS včetně obou MariaDB profilů a integračních smoke; merge
+`5b9279f9e4c9d064988f04a12f7a37ff5d2686b8`. Produkční deploy opravy
+a její následné přihlášené UAT NOT RUN. Místní server a prohlížeč byly ukončené;
+ignorované výstupy Playwright zůstaly v izolovaném worktree,
 protože automatická kontrola odmítla jejich smazání.
