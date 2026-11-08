@@ -914,6 +914,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-9eaa0ccfa3 | [P11-R13-F provozní předání](verification/medical-filter-release-20261108/RESULTS.md) | evidence / SUPPORT | P11-R13-F |
 | PL-12d500fd6d | [P11-R13-F veřejná čtecí sonda](verification/medical-filter-release-20261108/snapshot.php.txt) | artifact / SUPPORT | P11-R13-F |
 | PL-57d7a5d36a | [P11-R13-F anonymní odmítnutí filtrů](verification/medical-filter-release-20261108/anonymous-medical-filter.php.txt) | artifact / SUPPORT | P11-R13-F |
+| PL-21751e863c | [Q01/Q2 produkční vydání mobilního filtru](verification/planner-mobile-release-20261108/RESULTS.md) | evidence / SUPPORT | Q01/Q2 |
 
 P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md), [výsledky](verification/training-history-page-performance-20261108/RESULTS.md).
 
