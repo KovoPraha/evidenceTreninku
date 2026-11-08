@@ -926,3 +926,9 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 | PL-84ec87c001 | [P11-RH veřejná kontrola GET](verification/training-history-release-20261108/snapshot.php.txt) | evidence / SUPPORT | P11-RH |
 
 | PL-4de73dc0ed | [P11-RH anonymní guard kontrola](verification/training-history-release-20261108/anonymous-history.php.txt) | evidence / SUPPORT | P11-RH |
+
+| PL-10c1cb582e | [P11-RHC — trenérská historie](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) | plan / IN_PROGRESS | P11-RHC |
+
+| PL-145de4022b | [Předání P11-RHC](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md) | handoff / SUPPORT | P11-RHC |
+
+| PL-bea81332ea | [P11-RHC — parita a přínos](verification/coach-history-page-performance-20261108/RESULTS.md) | evidence / SUPPORT | P11-RHC |

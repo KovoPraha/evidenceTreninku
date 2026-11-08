@@ -7,9 +7,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 
 ## Poslední práce a další krok
 
-- P11-SCALE HOTOVO: [větší R13/R05](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md),2700HTTP/90parit.
-  Aktuální#374 také prověřené; oba vlastní runtime úklidy PASS, produkce bez našich změn.
-  R13 stavový řez nyní uzavírá P11-R13-S; dále fyzický mobil/souběh, K0.2 otevřené.
+- P11-RHC ROZPRACOVÁNO: [plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md).
+  Moje tréninky/AJAX: další neomezená historie; parita/měření/CI před release. Vlastní větev a původní WIP zachované.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).

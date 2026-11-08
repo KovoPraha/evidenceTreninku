@@ -10609,6 +10609,39 @@
       "registry": "P11-RH",
       "disposition": "Bezpečný provozní důkaz konkrétního řezu; nikoli nová roadmapa.",
       "evidence": []
+    },
+    {
+      "id": "PL-10c1cb582e",
+      "path": "docs/COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md",
+      "title": "P11-RHC — trenérská historie",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P11-RHC",
+      "disposition": "Nový ověřený řez trenérské historie; parita a výkon před release.",
+      "evidence": []
+    },
+    {
+      "id": "PL-145de4022b",
+      "path": "docs/SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md",
+      "title": "Předání P11-RHC",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-RHC",
+      "disposition": "Podpůrný konkrétní podklad.",
+      "evidence": []
+    },
+    {
+      "id": "PL-bea81332ea",
+      "path": "docs/verification/coach-history-page-performance-20261108/RESULTS.md",
+      "title": "P11-RHC — parita a přínos",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHC",
+      "disposition": "Podpůrný konkrétní podklad.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",
