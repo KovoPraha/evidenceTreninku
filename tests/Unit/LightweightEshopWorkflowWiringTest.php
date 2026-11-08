@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -9,19 +10,19 @@ final class LightweightEshopWorkflowWiringTest extends TestCase
 {
     public function testCatalogUsesSeparateCreationAndWithdrawalWithProtectedSharedController(): void
     {
-        $root=dirname(__DIR__,2);
+        $root = dirname(__DIR__, 2);
         $source = (string)file_get_contents($root . '/includes/shop_admin_page.php');
-        $templates=(string)file_get_contents($root.'/includes/shop_admin_templates.php');
+        $templates = (string)file_get_contents($root.'/includes/shop_admin_templates.php');
         self::assertStringContainsString("\$type==='goods'?'product':'service'", $source);
         self::assertStringContainsString("\$input['visibility']='visible'", $source);
         self::assertStringContainsString("\$action==='publish'", $source);
         self::assertStringContainsString('shopCatalogPublicationActivate(', $source);
         self::assertStringContainsString("\$action==='unpublish'", $source);
         self::assertStringContainsString('shopCatalogPublicationDeactivate(', $source);
-        self::assertStringContainsString("\$screen==='new'",$templates);
-        self::assertStringContainsString("\$screen==='withdraw'",$templates);
-        self::assertStringContainsString('eshop_produkt_novy_admin.php',$source);
-        self::assertStringContainsString('eshop_produkt_stahnout_admin.php',$source);
+        self::assertStringContainsString("\$screen==='new'", $templates);
+        self::assertStringContainsString("\$screen==='withdraw'", $templates);
+        self::assertStringContainsString('eshop_produkt_novy_admin.php', $source);
+        self::assertStringContainsString('eshop_produkt_stahnout_admin.php', $source);
         self::assertStringNotContainsString('name="attributes_json"', $templates);
     }
 

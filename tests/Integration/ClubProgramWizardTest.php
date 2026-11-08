@@ -177,8 +177,14 @@ final class ClubProgramWizardTest extends TestCase
     public function testSimpleWizardUsesExistingVariantTextPriceAndCreatesNamedRoster(): void
     {
         $pdo = $this->database();
-        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(298,'manual','manual:298','Interní Aligátoři','Původní popis.','goods','visible','physical','active')");
-        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(398,298,'manual','ALIGATORI-298','{}','fixed',3600,'CZK',NULL,'piece',1,'active')");
+        $pdo->exec(
+            "INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) "
+            . "VALUES(298,'manual','manual:298','Interní Aligátoři','Původní popis.','goods','visible','physical','active')"
+        );
+        $pdo->exec(
+            "INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) "
+            . "VALUES(398,298,'manual','ALIGATORI-298','{}','fixed',3600,'CZK',NULL,'piece',1,'active')"
+        );
         $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(298,'active','Aligátoři','Veřejný popis Aligátorů.')");
 
         $input = $this->input();
