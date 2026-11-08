@@ -173,6 +173,37 @@ foreach (['', '?view=measurements', '?view=measurements&id=1001&sid=1001'] as $p
     }
     $report['denials'][] = ['status' => 403];
 }
+$credentials = json_decode(file_get_contents($output . '/credentials.json'), true, 512, JSON_THROW_ON_ERROR);
+$report['roles'] = [];
+foreach (array_keys($credentials) as $role) {
+    $expected = in_array($role, ['coach', 'sports_lead', 'registrar'], true) ? 200 : 403;
+    $r = fullHttpRequest($runtime, $output, $role, '/sportovec_treninky.php?id=1001');
+    if ($r['status'] !== $expected) {
+        throw new RuntimeException('Profile role matrix differs: ' . $role . ':' . $r['status']);
+    }
+    $report['roles'][$role] = $expected;
+}
+$admin->exec("UPDATE public_profile_access_tokens SET expires_at='2000-01-01' WHERE sportovec_id=1001");
+if (fullHttpRequest($runtime, $output, 'bearer', '/ajax_sportovec_treninky.php?view=measurements')['status'] !== 403) {
+    throw new RuntimeException('Expired bearer retained access.');
+}
+$admin->exec("UPDATE public_profile_access_tokens SET expires_at=DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 1 DAY) WHERE sportovec_id=1001");
+if (fullHttpRequest($runtime, $output, 'bearer', '/sportovec_treninky.php?hash=' . $issued['token'])['status'] !== 303) {
+    throw new RuntimeException('Synthetic bearer could not be reestablished through real exchange.');
+}
+$report['bearer_expiry'] = true;
+$admin->exec("UPDATE coach_scope_grants SET valid_to='2000-01-01' WHERE trainer_id=7 AND scope_kind='team' AND scope_id=2");
+try {
+    if (fullHttpRequest($runtime, $output, 'coach', '/ajax_sportovec_treninky.php?view=measurements')['status'] !== 403) {
+        throw new RuntimeException('Expired scope retained access.');
+    }
+    $report['scope_revocation'] = true;
+} finally {
+    $admin->exec("UPDATE coach_scope_grants SET valid_to=NULL WHERE trainer_id=7 AND scope_kind='team' AND scope_id=2");
+}
+if (fullHttpRequest($runtime, $output, 'coach', '/sportovec_treninky.php?id=1001')['status'] !== 200) {
+    throw new RuntimeException('Synthetic scoped profile could not be reestablished.');
+}
 $admin->exec('UPDATE public_profile_access_tokens SET revoked_at=CURRENT_TIMESTAMP WHERE sportovec_id=1001');
 foreach (['', '?view=measurements'] as $params) {
     if (fullHttpRequest($runtime, $output, 'bearer', '/ajax_sportovec_treninky.php' . $params)['status'] !== 403) {
