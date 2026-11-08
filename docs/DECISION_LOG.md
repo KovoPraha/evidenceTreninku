@@ -306,3 +306,13 @@ Uzavření D2026-11-08-RH: po přesné paritě všech stránek a přínosu odstr
 PŘIJATO podle nového zadání Marka: pokračování zbývající priority4 analýzy po uzavřeném RH. Moje tréninky stále načítají celou historii včetně účastníků; zvoleno před samostatným osobním profilem a plošným bootstrap/session zásahem. Zachovat veškeré výsledky a oprávnění, nejprve měřit celou cestu. [Plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md); převzaté ukončené P11-SCALE/R13-F zůstávají v registru a trvalých protokolech.
 
 Uzavření D2026-11-08-RHC: #400/da152282 a deploy42494231010 SUCCESS po14CI a přesné paritě. [Důkazy](verification/coach-history-page-performance-20261108/RESULTS.md), [provozní protokol](verification/coach-history-release-20261108/RESULTS.md). CSRF otáčení se normalizuje pouze v porovnání; žádné oslabení aplikace. Původní veřejný katalog má nově produkt298, výsledek neshody zůstává zachovaný, nový současný průchod stabilní; žádný rollback dat. Technický řez hotový, lidské UAT/ostatní P11 samostatné.
+
+## D2026-11-08-RHA — omezené čtení historie a lazy měření profilu
+
+PŘIJATO podle nového zadání Marka: navázat na uzavřené RHC a prioritu4 analýzy. Zachovat kanonické přístupy/poznámky a přesné celé souhrny, odstranit násobení cizích měření při členství, detaily až pro stránku a měření až po otevření. UNION/window varianty jsou kandidáti k paritě a měření, nikoli předem tvrzený přínos. [Plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md). Historické RH zůstává v registru a trvalých protokolech.
+
+Upřesnění RHA: místo window/group agregace zvolen seřazený úzký sloupec typů a původní PHP počítání; zachovává case/mezery, PHP klíče a pořadí prvního výskytu. Počáteční GET čte pouze COUNT; souhrn typů zůstává lineární až při otevření měření.
+
+RHA měření nahradilo první úzkou PHP agregaci: nativně se prokázala regrese až23% v záložce všech měření. Zvolena binární SQL window/group agregace se stejným prvním výskytem a LIMIT úzkých ID před širokými detaily; předchozí měření zůstane v důkazech.
+
+RHA finální varianta: pouze číselné ID/ordinal uvnitř window, binární typy agregovat až po připojení a detaily číst po LIMIT. Native3/651 obě verze a skutečné HTTP/Chrome PASS; finální časy i přiznané malé režie jsou v [protokolu](verification/athlete-profile-read-performance-20261108/RESULTS.md). Přenos35 místo90909 řádků a lazy HTML řeší celý profil, nikoli jen izolovaný helper. Uvolnění čeká na aktuální CI a exacttree.
