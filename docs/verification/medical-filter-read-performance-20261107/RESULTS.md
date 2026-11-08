@@ -204,3 +204,7 @@ Run42460613528 má obě nativní sady i celé HTTP/Chrome SUCCESS, Testy42460613
 | medical-filter-control-state | 579.75 | 599.43 |
 
 Před merge nově přijatý #388 obsahuje pouze dokumentaci o rolích a blokovaném UAT. Převzatý bez ztráty, původní stavová tvrzení opravena podle jeho důkazů; veškerý kód/testy/workflow jsou stejné jako plně zelený551b46d3. Další CI dokumentačního merge před release.
+
+## Produkční uzavření
+
+2362f3a4 po převzetí #389 všech15CI PASS, #385 sloučený519ff098. Deploy42477866185 SUCCESS; [index, záloha a čtecí produkční důkazy](../medical-filter-release-20261108/RESULTS.md). Přihlášené zdravotní UAT NOT RUN. Poslední kontrolní stav bez q/data měl HTTP579,75→599,43ms (+3,4%); jde o varianci kontrolní cesty, žádný slib nulové režie. Hlavní hledací/datumové scénáře opakovaně zlepšené.

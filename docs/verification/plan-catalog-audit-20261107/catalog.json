@@ -10478,10 +10478,13 @@
       "title": "P11-R13-F — hledání a datum zdravotního přehledu",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-R13-F",
-      "disposition": "Nové zadání vlastníka; parita a přínos před merge/deploy.",
-      "evidence": []
+      "disposition": "Technický optimalizační řez nasazený #385/519ff098; přihlášené UAT samostatné.",
+      "evidence": [
+        "docs/verification/medical-filter-release-20261108/RESULTS.md",
+        "docs/verification/medical-filter-read-performance-20261107/RESULTS.md"
+      ]
     },
     {
       "id": "PL-9ad623ea13",

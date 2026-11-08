@@ -24,8 +24,8 @@ Q1 převzalo #388; Q3 #389 je v main, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
 - P11-R13-S HOTOVO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [provozní důkaz](verification/medical-state-release-20261107/RESULTS.md).
   #381/938e9c50, deploy42405912779 SUCCESS; další deploy neopakovat. WIP zachovaný, přihlášené UAT NOT RUN.
-- P11-R13-F ROZPRACOVÁNO: [plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md).
-  PR #385: V5 nativní i HTTP/Chrome PASS; sjednocení schématu starých benchmarků v CI, bez deploye. R05 uzavřené [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
+- P11-R13-F TECHNICKY HOTOVO: [plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md).
+  #385/519ff098, deploy42477866185 SUCCESS; index, 5/5 veřejný DOM a anonym403 PASS; přihlášené UAT NOT RUN. R05 [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.
