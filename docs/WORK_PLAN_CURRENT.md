@@ -32,16 +32,22 @@ Větev `codex/quality-roadmap-20261108`, samostatný worktree mimo `htdocs`.
 
 ### Q01-Q3 — první měřitelný úklid, rychlý nákup
 
-Stav 8. 11.: ROZPRACOVÁNO na větvi `codex/guest-checkout-read-cleanup-20261108`,
+Stav 8. 11.: IMPLEMENTOVÁNO MÍSTNĚ na větvi `codex/guest-checkout-read-cleanup-20261108`,
 samostatný worktree mimo `htdocs`, základ main `7dc64481`; původní WIP zachované.
 Na `booking/rychly_nakup.php` běžné zboží volá
 `shopProductRequiresAthlete($pdo, $productId)` dvakrát za jeden požadavek.
 Klasifikace pro jeden produkt má být jedna konzistentní hodnota; opakované volání
 čte stejné tabulky. Nejdřív doložit počet příkazů nad syntetickými daty, potom
 odstranit druhé volání beze změny přesměrování programu a výběru varianty zboží.
-Akceptace: stejný výsledek pro program, běžné i historicky výjimečné zboží;
-menší počet SQL příkazů na cestě běžného zboží; dotčené unit/integration a CI
-obou MariaDB PASS. Žádná změna schématu, plateb, práv ani produkčního stavu.
+Změna odstraňuje druhé volání až po guardu, který sportovce vyžadující produkt
+přesměruje. Syntetický `CountingPDO` nad třemi druhy produktů naměřil pro
+opakovanou klasifikaci 8 → 4 připravené SELECTy u běžného importovaného zboží
+a 4 → 2 u kontrolované historické výjimky. Produkty vyžadující sportovce
+zůstávají přesměrované po prvním volání. Místní PHPUnit výběr
+`ShopPurchaseModeTest|ShopAnonymousCheckoutBootstrapTest|ShopCheckoutTest`
+PASS: 43 testů / 799 assertions, PHP lint PASS. Jde o měření volání klasifikační
+funkce nad syntetickými daty, nikoli o produkční HTTP profil. Přijetí PR vyžaduje
+CI včetně obou MariaDB; žádná změna schématu, plateb, práv ani produkčního stavu.
 
 | Pořadí | Výstup dalšího řezu | Přijetí a závislost |
 | --- | --- | --- |
