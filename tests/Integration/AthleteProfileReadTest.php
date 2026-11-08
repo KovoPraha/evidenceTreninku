@@ -64,6 +64,24 @@ final class AthleteProfileReadTest extends TestCase
         }
     }
 
+    public function testAttendanceOnlyMeasurementOnlyAndForeignOrOrphanLinks(): void
+    {
+        $pdo = $this->database();
+        Fixture::seed($pdo, 30);
+        // Attendance only, measurement only, foreign only, and neither.
+        $pdo->exec('DELETE FROM trenink_mereni WHERE trenink_id IN(1,3,4);
+            DELETE FROM trenink_sportovec WHERE sportovec_id=1 AND trenink_id IN(2,3,4)');
+        $old = Fixture::originalHistory($pdo, 1, 0);
+        $ids = array_map('intval', array_column($old['rows'], 'id'));
+        self::assertContains(1, $ids);
+        self::assertContains(2, $ids);
+        self::assertNotContains(3, $ids);
+        self::assertNotContains(4, $ids);
+        $new = \AthleteProfileRead::history($pdo, 1, 0, 1);
+        self::assertSame(Fixture::comparable(Fixture::subset($old, array_slice($old['rows'], 0, 25))), Fixture::comparable($new));
+        self::assertSame(count($ids), \AthleteProfileRead::countTrainings($pdo, 1));
+    }
+
     public function testNativeBindingsBoundedDetailsAndFreshData(): void
     {
         $pdo = $this->database();

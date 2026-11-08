@@ -18,6 +18,8 @@ require_once dirname(__DIR__, 2) . '/includes/public_profile_token.php';
 $admin->exec('USE `' . $runtime['schema'] . '`');
 if ($phase === 'prepare') {
     $admin->exec('SET GLOBAL query_cache_type=OFF');
+    $admin->exec("INSERT INTO coach_scope_grants(trainer_id,scope_kind,scope_id,valid_from,reason,created_by_trainer_id)
+        VALUES(7,'team',2,'2020-01-01','LOCALHOST synthetic athlete profile scope',7)");
     $admin->exec('CREATE TABLE IF NOT EXISTS trenink_mereni(trenink_id INT,mereni_id INT,poradi INT);
         CREATE TABLE IF NOT EXISTS segmenty(id INT PRIMARY KEY,nazev VARCHAR(100));
         CREATE TABLE IF NOT EXISTS sportovec_poznamka(trenink_id INT,sportovec_id INT,poznamka TEXT)');
