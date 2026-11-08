@@ -1,7 +1,7 @@
 # Aktuální session handoff
 
 Aktualizováno 7. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
-[CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr a návrh Q01 z 8. 11.](WORK_PLAN_CURRENT.md#koncept-q01--další-vývoj-doladění-úklid-příprava-8-11-2026)
+[CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr a první Q01/Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup)
 vlastní otevřené úkoly. Plány, koncepty a rozhodnutí jsou ve verzovaných souborech,
 které při pokračování znovu načti. Chat ani interní paměť nejsou projektovou evidencí.
 

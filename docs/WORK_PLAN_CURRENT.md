@@ -30,6 +30,19 @@ nasazením nebo smazáním WIP. Podklad: `origin/main` `35fdad44`, tento registr
 k 8. 11. Ověření bylo čtecí; žádná funkce tímto návrhem není implementována.
 Větev `codex/quality-roadmap-20261108`, samostatný worktree mimo `htdocs`.
 
+### Q01-Q3 — první měřitelný úklid, rychlý nákup
+
+Stav 8. 11.: ROZPRACOVÁNO na větvi `codex/guest-checkout-read-cleanup-20261108`,
+samostatný worktree mimo `htdocs`, základ main `7dc64481`; původní WIP zachované.
+Na `booking/rychly_nakup.php` běžné zboží volá
+`shopProductRequiresAthlete($pdo, $productId)` dvakrát za jeden požadavek.
+Klasifikace pro jeden produkt má být jedna konzistentní hodnota; opakované volání
+čte stejné tabulky. Nejdřív doložit počet příkazů nad syntetickými daty, potom
+odstranit druhé volání beze změny přesměrování programu a výběru varianty zboží.
+Akceptace: stejný výsledek pro program, běžné i historicky výjimečné zboží;
+menší počet SQL příkazů na cestě běžného zboží; dotčené unit/integration a CI
+obou MariaDB PASS. Žádná změna schématu, plateb, práv ani produkčního stavu.
+
 | Pořadí | Výstup dalšího řezu | Přijetí a závislost |
 | --- | --- | --- |
 | Q1 — uzavřít existující cesty | Cíleně projít nasazené mobilní karty rolí na 390/360 px a desktopu (ROLE01-MOB); zopakovat přihlášené čtecí UAT výběru osob v docházce, až nástroj bezpečně ověří URL a obsah stránky; u zdravotního přehledu a plánovače ověřit přihlášenou roli, filtry a mobilní čitelnost. | Pro každou cestu zapsat PASS/FAIL/NOT RUN, roli, zařízení a reprodukční kroky. Dosavadní technické PASS, nasazení a blokované UAT nezaměňovat za uživatelské přijetí. [P11](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [ROLE01](ACCESS_OVERVIEW_2026-11-07.md). |
