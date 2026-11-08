@@ -1,6 +1,6 @@
 # P11-R13-F — hledání a datumové filtry zdravotního přehledu
 
-7. 11. 2026, Europe/Prague. ROZPRACOVÁNO, plán7.11. před implementací; pokračování8.11.2026.
+8. 11. 2026, Europe/Prague. **TECHNICKY HOTOVO / NASAZENO**. Původní plán7.11. před implementací; níže průběh a zamítnuté varianty.
 Vlastník vývoj podle nového výslovného zadání Marka. Po přesné shodě, přínosu
 a zelených kontrolách commit/merge/standardní deploy; zachovat WIP.
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md),
@@ -78,3 +78,9 @@ V4 SQL-only datum/poloviční pending stále regredovaly. V5 měří neunikátn�
 V5 lokálně44 testů /1328 assertions PASS (medical + deploy kontrakt). Nativní profiler má512MB buffer pool jen vlastního CI serveru, dvě data-shodná schémata,16případů×4objemy×17rotujících trojic na každé DB; index-only odděluje přínos indexu od kódu. HTTP porovnává původní kód/staré indexy proti novému kódu/indexu,17kladných/12záporných případů,7Chrome scénářů. Před každou fází se mění pouze index syntetické DB při vypnutém PHP serveru. Produkční diagnostika čte pouze metadata v READ ONLY transakci, před zálohou a po migraci před aktivací. Nativní/HTTP přínos V5 zatím NOT RUN.
 
 V5/7c083f0a měření dokončené: nativní parita12/495 na každé DB, všechny64případy a3checksumy PASS; index-only odděleně. Na100k11.4 široké hledání985→518ms, datum od715→469ms, do674→454ms. Celé HTTP100k hledání1183→573ms, datum od883→509ms, do882→326ms;2040časovanýchHTTP vzorků/48zápornýchGET/364Chrome pozorování, úplné HTML/checksumy/úklid PASS. Malé sady mají režii sondy dojednotekms, původní široké seznamy bez stavu neutrální. Důkazy v iteration5. Současná aplikační/migrační SHA256 přesně shodná s měřením; fa902ba6 navíc přebírá dokumentační #387/Q01 bez ztráty obsahu, pracovní eventID posunuty za již přijaté E01. Aktuální CI běží; merge/deploy zatím NOT RUN.
+
+8.11.2026: PR #385 sloučený jako519ff098961943f1aa58a70e40fed3ffba37cc96 po všech15CI na2362f3a4. Stromy přesně shodné, měřené zdroje SHA256 shodné. Produkční workflow42477866185 spuštěné s import/UAT false; zatím příprava runneru, nasazení neprohlášeno za dokončené. Čerstvé před-GET5×200 a zdravotní anonym403. Finální provozní důkazy připravuje větev codex/medical-filter-release-proof-20261108.
+
+## Uzavření 8. 11. 2026
+
+PR #385 /519ff098 sloučený po15CI PASS; chráněný deploy42477866185 SUCCESS. Přesný strom a měřené zdroje shodné. Ověřená záloha389tabulek/2triggery, produkční inventář potvrdil nový krycí index po migraci před aktivací; VS zachované, migrace current. Veřejný DOM5/5 a anonymní zdravotní403 před/po PASS. [Provozní důkazy](verification/medical-filter-release-20261108/RESULTS.md). Celé syntetické100k GET hledání1214→586ms, datum od920→519ms, do915→344ms; malé sady/režie a variabilita kontrol explicitně v protokolu. Přihlášené produkční UAT NOT RUN, samostatná zbývající přejímka; technický optimalizační řez uzavřený. WIP zachovaný.

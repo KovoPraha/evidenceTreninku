@@ -1,0 +1,75 @@
+{
+    "contract": "medical-read-index-inventory-v1",
+    "read_only": true,
+    "source_sha": "519ff098961943f1aa58a70e40fed3ffba37cc96",
+    "phase": "before",
+    "at_utc": "2026-11-08T12:05:14+00:00",
+    "server": "10.3.39-MariaDB-0+deb10u2-log",
+    "definition_sha256": "cd2dab153c57afe74a739fc47a34a2fd096d80588b84c623d23fca831f4dd5a8",
+    "inventory": {
+        "table": "medical_clearance_records",
+        "exists": true,
+        "engine": "InnoDB",
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "id"
+                ],
+                "prefix_lengths": [
+                    null
+                ]
+            },
+            "replaces_id": {
+                "unique": true,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "replaces_id"
+                ],
+                "prefix_lengths": [
+                    null
+                ]
+            },
+            "watch_id": {
+                "unique": false,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "watch_id"
+                ],
+                "prefix_lengths": [
+                    null
+                ]
+            },
+            "recorded_by": {
+                "unique": false,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "recorded_by"
+                ],
+                "prefix_lengths": [
+                    null
+                ]
+            },
+            "verified_by": {
+                "unique": false,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "verified_by"
+                ],
+                "prefix_lengths": [
+                    null
+                ]
+            }
+        },
+        "covering_index": null,
+        "clinical_rows_read": false,
+        "ddl_executed": false
+    },
+    "ok": true
+}
