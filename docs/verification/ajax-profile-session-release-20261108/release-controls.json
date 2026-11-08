@@ -1,0 +1,18 @@
+{
+  "deploy_run": 42531190845,
+  "head_sha": "95cb33e5676480beea12af4e9049aea9b858c820",
+  "manual_confirmation": "NASADIT",
+  "uat_schvaleno": false,
+  "importovat_krouzky": false,
+  "unit_tests": 2403,
+  "assertions": 54847,
+  "backup_tables": 389,
+  "backup_triggers": 2,
+  "existing_configuration_preserved": true,
+  "config_appended": false,
+  "migrations_pending": [],
+  "variable_symbols_unchanged": true,
+  "authenticated_production_uat": "NOT RUN",
+  "production_session_handler": "NOT VERIFIED",
+  "public_http_and_normalized_dom_parity": true
+}

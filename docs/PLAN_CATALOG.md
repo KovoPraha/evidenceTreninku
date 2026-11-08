@@ -395,6 +395,6 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-123e2d427d | [P11-RHA — historie a měření profilu](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md) | DONE / P11-RHA | #404/82efa16d nasazeno, parita/přínos/14CI PASS; [provozní protokol a meze](verification/athlete-profile-release-20261108/RESULTS.md), UAT samostatné. |
 
-| PL-ba06686feb | [P11-RGS — globální hledání a session](GLOBAL_SEARCH_SESSION_PERFORMANCE_2026-11-08.md) | REJECTED / P11-RGS | Nejprve actual HTTP souběh a zachování session, release teprve po kontrolách. |
+| PL-ba06686feb | [P11-RGS — globální hledání a session](GLOBAL_SEARCH_SESSION_PERFORMANCE_2026-11-08.md) | REJECTED / P11-RGS | UI input vypnutý, neaktivovat; vybrán aktivní RAS, žádný globální release. |
 
-| PL-55c979f2b8 | [P11-RAS — souběh čtecího profilu/session](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md) | IN_PROGRESS / P11-RAS | Aktivní session souběh, nejprve native HTTP/parita. |
+| PL-55c979f2b8 | [P11-RAS — souběh čtecího profilu/session](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md) | DONE / P11-RAS | #406/95cb33e5 NASAZENO, parita/přínos/16CI PASS; [release](verification/ajax-profile-session-release-20261108/RESULTS.md), UAT samostatné. |

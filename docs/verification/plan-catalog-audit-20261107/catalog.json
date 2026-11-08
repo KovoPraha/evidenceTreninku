@@ -10789,10 +10789,12 @@
       "title": "P11-RAS — souběh čtecího profilu/session",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-RAS",
-      "disposition": "Aktivní profilová čtení; nejprve souběh/parita před release.",
-      "evidence": []
+      "disposition": "#406/95cb33e5 a deploy42531190845 SUCCESS; parita/16CI/HTTP/Chrome/čtecí produkce PASS, UAT samostatné.",
+      "evidence": [
+        "docs/verification/ajax-profile-session-release-20261108/RESULTS.md"
+      ]
     },
     {
       "id": "PL-42316f1454",
@@ -10814,6 +10816,17 @@
       "status": "SUPPORT",
       "registry": "P11-RAS",
       "disposition": "Podpůrný konkrétní důkaz, nikoli další roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-b4b13cc301",
+      "path": "docs/verification/ajax-profile-session-release-20261108/RESULTS.md",
+      "title": "P11-RAS produkční předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RAS",
+      "disposition": "Produkční technický protokol, ne samostatný plán.",
       "evidence": []
     }
   ],

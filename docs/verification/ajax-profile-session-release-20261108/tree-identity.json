@@ -1,0 +1,10 @@
+{
+  "tested_head": "b2a6c25b14d529fc531ffaf0746f0a4d58c658fe",
+  "merged_sha": "95cb33e5676480beea12af4e9049aea9b858c820",
+  "tested_tree": "42245ac3f83e3bb1758b1936f4ea9d314b3508fe",
+  "merged_tree": "42245ac3f83e3bb1758b1936f4ea9d314b3508fe",
+  "whole_tree_identical": true,
+  "measured_source_sha256": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+  "both_native_sources_identical": true,
+  "baseline_route_same_as_previous_production": true
+}
