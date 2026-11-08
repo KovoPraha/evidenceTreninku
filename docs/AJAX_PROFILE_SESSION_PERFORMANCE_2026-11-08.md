@@ -62,3 +62,14 @@ Produkční session handler ani skutečný lock wait zatím NEOVĚŘENÉ. Závě
 handler z vlastní fixture není produkční SLA. Přihlášené produkční UAT samostatné.
 Pokud běžící SQL nezpůsobuje prokazatelný wait nebo není čistý přínos celé cesty,
 tento kandidát neuvolnit. Další krok: vlastní fixture a první before/after páry.
+
+## Implementace 8. 11. 2026
+
+Lokálně přidáno guarded session_write_close po všech fresh přístupových kontrolách.
+Read SQL/HTML zůstávají stejné. Vlastní runner porovnává celý zmrazený route
+na basec548 proti nové verzi, dva čtyřworkerové servery a skutečné login/grant/
+bearer303, původní doménové checksumy, 3objemy a17párů po4zahřátích.
+Skutečná dvojice odpovídá savedtab Měření+Historie aktuálního roku; prázdný
+rok2099 izoluje čekání. Chrome používá existující UI v obou variantách.
+Lokální style helper hlásí staré untracked output/probe PHP; ty neměněny.
+Vlastní syntax/style ověřit samostatně a v čistém CI. Merge/deploy NOT RUN.

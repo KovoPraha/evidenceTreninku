@@ -15,3 +15,14 @@ Skutečné dvě worker skupiny, stejná data, alternující varianty a same/diff
 session, bez vloženého zpomalení. Oddělený SQL/filelock důkaz, Chrome a logout
 bez oživení session. Production handler neověřený, UAT NOT RUN.
 Další krok fixture/páry, implementace/CI/merge/deploy zatím NOT RUN.
+
+## Implementace 8. 11. 2026
+
+Lokálně přidáno guarded session_write_close po všech fresh přístupových kontrolách.
+Read SQL/HTML zůstávají stejné. Vlastní runner porovnává celý zmrazený route
+na basec548 proti nové verzi, dva čtyřworkerové servery a skutečné login/grant/
+bearer303, původní doménové checksumy, 3objemy a17párů po4zahřátích.
+Skutečná dvojice odpovídá savedtab Měření+Historie aktuálního roku; prázdný
+rok2099 izoluje čekání. Chrome používá existující UI v obou variantách.
+Lokální style helper hlásí staré untracked output/probe PHP; ty neměněny.
+Vlastní syntax/style ověřit samostatně a v čistém CI. Merge/deploy NOT RUN.
