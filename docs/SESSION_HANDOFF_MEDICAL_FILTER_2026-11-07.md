@@ -52,3 +52,5 @@ Merge/deploy V5 zatím **NOT RUN**. Přihlášené produkční zdravotní UAT **
 starší blokované UAT výběru osob a ostatní lidské přejímky zůstávají samostatné.
 
 Fa902ba6: společný historický SyntheticReadPages benchmark odmítl neshodný počet migrací mezi zmrazeným předchůdcem a HEAD. Oprava pouze testovacího prostředí: do všech tří vlastních historických worktrees kopírovat a skutečně aplikovat stejnou novou indexovou migraci i helper jako HEAD; kontroly ledgeru/parity se neoslabují, zmrazený aplikační kód se nemění. Přínos samotného indexu již odděleně měří V5 trojice. Nové CI nutné před merge.
+
+551b46d3 všech15CI PASS včetně opakovaného celého HTTP/Chrome a opravených historických srovnání. Důkazy v final/. Před merge přijatý čistě dokumentační #388 s opraveným stavem karet/čtecího UAT převzatý beze ztráty; přijaté E01–03 zůstávají, zdravotní E04–08. Aplikační/testové/workflow soubory jsou přesně stejné jako plně ověřený551b46d3. Nové CI dokumentačního merge před release.

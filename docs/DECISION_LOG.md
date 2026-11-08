@@ -169,6 +169,7 @@ společným ID D2026-11-07-04; obsah ani původní commitové důkazy se neměn�
 
 
 Následné výslovné potvrzení vlastníka: společně nasadit karty a cenovou optimalizaci #358. Tím je pro toto vydání schválen i deploy původně omezený v D2026-11-07-04.
+Realizace: #361 / `3b37e053`, deploy 42365946802 SUCCESS. [Výsledky](verification/access-mobile-cards-20261107/RESULTS.md): role zachované, nové karty vizuálně NOT RUN.
 
 ## Úplný rejstřík plánů a jejich výsledků
 

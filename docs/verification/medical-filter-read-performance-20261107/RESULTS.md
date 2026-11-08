@@ -178,3 +178,29 @@ EXPLAIN10.3 pro mr/mf/mn a datumové mv používá nový krycí index s `Using i
 Interpretace: hlavní hledací/datumové tvary na10k i100k zrychlené; kontrolní přímá osoba, celkový seznam, stav bez q/data a široké seznamy bez stavu neutrální v řádu0–2ms. Jde o vlastní syntetický Linux fixture, nikoli měření pacientských dat nebo záruku produkční latence. HTTP podporuje přijetí V5, zbývá zelené CI nad větví po převzetí dokumentačního #387 a standardní release.
 
 Společný historický SyntheticReadPages benchmark nafa902ba6 správně odmítl odlišný počet migrací (předchůdci bez nové indexové migrace). V63682e84 do všech tří izolovaných historických worktrees přidána stejná migrace/helper a skutečná aplikace jako naHEAD, aplikační kód předchůdců zmrazený. Kontroly ledgeru ani parity neoslabené; tento společný historický benchmark porovnává kód na shodných indexech, příspěvek indexu řeší samostatné V5 trojice. Nové CI před release.
+
+## Finální opakování na551b46d3 — všech15CI PASS
+
+Run42460613528 má obě nativní sady i celé HTTP/Chrome SUCCESS, Testy42460613422 a stavové HTTP42460613526 SUCCESS. Bezpečné výsledky v `final/`; zdroje5souborů nativně a všech aplikačních/migračních souborů HTTP přesně odpovídají HEAD. Znovu stejné výsledky/checksumy, nulové doménové DML/DDL a úklid PASS. Nativní100k10.3 hledání676,31→383,19ms, datum od505,32→316,56ms, do490,30→345,73ms;11.4 hledání533,72→289,70ms, datum od388,41→263,56ms, do379,74→257,83ms. Všechny hlavní tvary opakovaně zlepšené; malé/prázdné/stavové vzácné případy mají výše uvedenou malou režii/varianci, na10.3 do4,2ms.
+
+| Finální100k celý GET, medián ms | Před | Po |
+| --- | ---: | ---: |
+| medical-registrar-all | 217.30 | 216.94 |
+| medical-registrar-person | 83.41 | 83.07 |
+| medical-filter-broad-search | 1213.91 | 586.46 |
+| medical-filter-broad-pending | 1203.92 | 445.78 |
+| medical-filter-half-pending | 602.03 | 279.47 |
+| medical-filter-half-search | 611.38 | 394.40 |
+| medical-filter-rare-search | 230.29 | 227.80 |
+| medical-filter-empty-search | 234.19 | 231.54 |
+| medical-filter-date-day | 349.44 | 244.22 |
+| medical-filter-date-from | 919.93 | 518.62 |
+| medical-filter-date-to | 914.99 | 344.27 |
+| medical-filter-date-empty | 97.06 | 97.48 |
+| medical-filter-combined | 610.01 | 397.07 |
+| medical-filter-plain-search | 238.69 | 241.12 |
+| medical-filter-plain-date | 174.51 | 176.82 |
+| medical-filter-plain-empty | 414.98 | 231.82 |
+| medical-filter-control-state | 579.75 | 599.43 |
+
+Před merge nově přijatý #388 obsahuje pouze dokumentaci o rolích a blokovaném UAT. Převzatý bez ztráty, původní stavová tvrzení opravena podle jeho důkazů; veškerý kód/testy/workflow jsou stejné jako plně zelený551b46d3. Další CI dokumentačního merge před release.
