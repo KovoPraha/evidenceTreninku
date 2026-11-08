@@ -31,7 +31,8 @@ final class TrainingHistoryReadTest extends TestCase
     {
         $pdo = $this->seeded();
         foreach ([false, true] as $rich) {
-            foreach (['1=1' => [], 'tg.skupina_id=? AND tp.podskupina_id=?' => [2, 1],
+            foreach (['1=1' => [], 'tg.skupina_id=?' => [2], 'tp.podskupina_id=?' => [1],
+                'tg.skupina_id=? AND tp.podskupina_id=?' => [2, 1],
                 'tt.trener_id IN (?)' => [2], 't.kategorie=?' => ['mtb'],
                 '(t.napln LIKE ? OR t.poznamka LIKE ?)' => ['%session 12%', '%session 12%'],
                 't.id<0' => []] as $where => $params) {

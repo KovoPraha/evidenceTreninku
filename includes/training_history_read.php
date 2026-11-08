@@ -50,7 +50,21 @@ final class TrainingHistoryRead
         if ($from === false || $end === false || $end <= $from) {
             throw new InvalidArgumentException('Expected internal training history query.');
         }
-        return [substr($sql, 0, $from), substr($sql, $from, $end - $from)];
+        $body = substr($sql, $from, $end - $from);
+        $wherePosition = strpos($body, 'WHERE ');
+        if ($wherePosition === false) {
+            throw new InvalidArgumentException('Expected internal history predicates.');
+        }
+        $where = substr($body, $wherePosition);
+        // These LEFT JOINs contribute no projected fields. Unfiltered multiplicity is
+        // already removed by GROUP BY and DISTINCT, so omit them unless WHERE uses them.
+        foreach (['tg' => 'trenink_skupina', 'tp' => 'trenink_podskupina'] as $alias => $table) {
+            if (!str_contains($where, $alias . '.')) {
+                $body = preg_replace('~LEFT\s+JOIN\s+' . $table . '\s+' . $alias
+                    . '\s+ON\s+t\.id\s*=\s*' . $alias . '\.trenink_id~i', ' ', $body);
+            }
+        }
+        return [substr($sql, 0, $from), $body];
     }
 
     public static function requested(array $input): int
