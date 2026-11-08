@@ -2,7 +2,7 @@
 
 ## UX01 — doplnění celoroční nabídky ke stávajícím skupinám (8. 11. 2026)
 
-Stav: IMPLEMENTOVÁNO VE VĚTVI, [draft PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) otevřený; kódové CI PASS, UAT čeká. Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Větev `codex/year-offer-ux-20261108`, původně z `origin/main` `5b9279f9`, před PR rebase na `755b20a2`; cizí WIP zachované. Pověření vlastníka: implementovat zjednodušení administrace; nepřidávat ostré ceny, nabídky ani platby. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
+Stav: IMPLEMENTOVÁNO VE VĚTVI, [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) před merge; uživatel 8. 11. výslovně požádal pokračovat a nasadit kód. Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Větev `codex/year-offer-ux-20261108` nyní zahrnuje novější `origin/main` `ab49947d`; cizí WIP zachované. Původní pověření implementovat zjednodušení neobsahovalo ostré ceny, nabídky ani platby; nové pověření se vztahuje na nasazení kódu, neuvádí částky ani pokyn zveřejnit nabídky. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
 
 Produkční čtecí kontrola 8. 11. ukázala zveřejněné Točňáky úterý, čtvrtek a 2× týdně, každý s prvním i druhým pololetím a bez celoroční nabídky. Starší společná nabídka 1× týdně je skrytá/uzavřená. Běžné administrační založení další varianty nyní vyžaduje ruční název, kód, SKU, platnost, prodejní okno, cenu, kapacitu a věk pro každou skupinu zvlášť.
 
@@ -15,6 +15,8 @@ Realizace: v `club_program_offers_admin.php` je vstup „Doplnit celý rok“. `
 Lokální ověření 8. 11.: syntetické integrační testy kroužků a sdílené kapacity PASS (19 testů, 180 assertions), včetně shodné soupisky/produktu, odmítnutí opakování a rollbacku celé dávky; PHP lint pěti dotčených souborů PASS, samostatný php-cs-fixer `--dry-run` PASS, limit délky řádků a `git diff --check` PASS, `tools/check-current-docs.php` PASS. Kompletní `tools/check-php-style.php` lokálně skončil pouze na chybějícím `vendor/bin/php-cs-fixer` v napojených závislostech worktree; kontrolu stylu provede CI. Přihlášené UAT nového formuláře, objednávka, platba a ostré zveřejnění NOT RUN.
 
 CI pro kódový commit `56f1db82` v [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395): 11/11 PASS dne 8. 11. 2026, včetně PHPStan a changed-file style, PHPUnit na PHP 8.2, obou MariaDB 10.3/11.4 integračních smoke a čtecích profilů, docs a CodeQL. První běh PHPStanu odhalil čtyři statické chyby v nových souborech, opravené v `56f1db82`; následný úplný běh prošel. Produkční vydání a reálný nákup zůstávají NOT RUN.
+
+Release postup po novém pověření: vyřešit konflikt s aktuálním main, znovu ověřit CI přesného PR head, sloučit PR, na přesném main commitu spustit `deploy-production.yml` s `potvrzeni=NASADIT`, `uat_schvaleno=false` a `importovat_krouzky=false`. Po úspěšném deployi ověřit veřejnou stránku a přístup k novému administračnímu formuláři pouze čtením. Nevytvářet objednávky ani skutečné celoroční varianty bez schválených cen. Nasazení s sebou může zahrnovat již sloučené změny v main; před spuštěním přesně porovnat release commit a poslední nasazený stav.
 
 ## Doménový model
 
