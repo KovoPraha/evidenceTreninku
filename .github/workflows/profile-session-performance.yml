@@ -66,4 +66,3 @@ jobs:
           path: output/profile-session-ci-safe/
           if-no-files-found: warn
           retention-days: 30
-
