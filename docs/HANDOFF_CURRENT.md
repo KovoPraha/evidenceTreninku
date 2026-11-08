@@ -7,6 +7,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 
 ## Poslední práce a další krok
 
+- Kroužek z existujícího produktu #397 NASAZENO: `9681a56a`, deploy 42488777710 SUCCESS; [protokol](verification/club-program-existing-product-fix-20261108/RESULTS.md). Syntetický produkt 298/36 Kč/30 míst PASS, skutečné vypsání v přihlášeném KIS NOT RUN; původní produkt a historie nedotčené.
 - P11-SCALE HOTOVO: [větší R13/R05](SESSION_HANDOFF_MEDICAL_PLANNER_SCALE_2026-11-07.md),2700HTTP/90parit.
   Aktuální#374 také prověřené; oba vlastní runtime úklidy PASS, produkce bez našich změn.
   R13 stavový řez nyní uzavírá P11-R13-S; dále fyzický mobil/souběh, K0.2 otevřené.
