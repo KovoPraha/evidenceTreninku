@@ -1,6 +1,7 @@
 # P11-RAS — souběh čtecí historie a měření profilu
 
-8. 11. 2026: ROZPRACOVÁNO, plán před implementací.
+8. 11. 2026: **NASAZENO / technický řez HOTOVO**, #406/95cb33e5, deploy42531190845 SUCCESS.
+Původní plán vznikl před implementací; průběžné záznamy níže jsou historické.
 Vlastník: vývoj podle aktuálního zadání Marka; commit/merge/deploy při přesné
 shodě, skutečném přínosu a aktuálních kontrolách. [Předání](SESSION_HANDOFF_AJAX_PROFILE_SESSION_2026-11-08.md),
 [výsledky](verification/ajax-profile-session-performance-20261108/RESULTS.md).
@@ -73,3 +74,31 @@ Skutečná dvojice odpovídá savedtab Měření+Historie aktuálního roku; pr�
 rok2099 izoluje čekání. Chrome používá existující UI v obou variantách.
 Lokální style helper hlásí staré untracked output/probe PHP; ty neměněny.
 Vlastní syntax/style ověřit samostatně a v čistém CI. Merge/deploy NOT RUN.
+
+## Průběžné ověření
+
+PR[#406](https://github.com/KovoPraha/evidenceTreninku/pull/406), headb2a6c25b.
+Native10.3 PASS: skutečná dvojice při30k834→528ms, krátká kontrola499→6,9ms;
+celé fragmenty/role/revokace/logout/checksumy a cleanup PASS. 11.4/Chrome čekají.
+[Protokol](verification/ajax-profile-session-performance-20261108/RESULTS.md) zachovává
+původní neúspěšnou přípravu, přínos není tvrzením o rychlejším SQL/produkčním SLA.
+
+## Uzavření 8. 11. 2026
+
+[Produkční protokol](verification/ajax-profile-session-release-20261108/RESULTS.md).
+Všech16CI na b2a6c25b SUCCESS, celý tested/merged tree totožný a measured-source
+SHA256 na obouDB shodný. PR#406 sloučené jako95cb33e5 a deploy42531190845 SUCCESS,
+22:43:32UTC. Backup389/2,2403/54847, migrace/VS/config/HTTPsmoke PASS,
+import/UATfalse. Veřejné8/8HTTP i8/8normalizovanýchDOM shodné před/po.
+Parita/role/session/revokace/CSRF logout/fixture cleanup PASS, WIP byte-preserved.
+Native actualpair30k834→528 /1832→1128ms (−37/38%), Chrome warm1882→1538ms
+(−18%) a celá navigace4611→4277ms (−7%). Jde o odstranění session čekání,
+SQL práce nezměněná; malé kontrolní regrese a první failed CI ponechané.
+
+Přihlášené produkční UAT, produkční handler a jeho skutečný wait NOT RUN;
+nejde o produkční SLA/LCP. Technický řez má vlastní přesnou akceptaci, provozní
+UAT je samostatná položka. Žádná aktivace globálního hledání ani dalšího produktu.
+Předání důkazů: vlastní release-proof větev, společný baseline po merge do main,
+bez druhého deploye dokumentace. Nová diagnostická hypotéza: zbývající parent
+profil má při30kfixture~2,7sTTFB v obou variantách; příčinu nejprve změřit,
+čerstvou validaci/role necachovat. Námět je KONCEPT, bez implementace v RAS.

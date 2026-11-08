@@ -1,0 +1,24 @@
+{
+  "before": {
+    "domain_sql_running": true,
+    "session_lock_held": true,
+    "shutdown": {
+      "session_active_at_shutdown": true,
+      "handler": "files",
+      "identity_present": true,
+      "csrf_present": true,
+      "worker_pid": 7044
+    }
+  },
+  "after": {
+    "domain_sql_running": true,
+    "session_lock_held": false,
+    "shutdown": {
+      "session_active_at_shutdown": false,
+      "handler": "files",
+      "identity_present": true,
+      "csrf_present": true,
+      "worker_pid": 7047
+    }
+  }
+}

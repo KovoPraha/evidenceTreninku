@@ -1,0 +1,43 @@
+{
+  "samples_per_variant": 13,
+  "cold": 3,
+  "warm": 10,
+  "synthetic_only": true,
+  "browser": {
+    "before": {
+      "cold": {
+        "ajax_pair_render_ready_ms": 1877.4000000000233,
+        "navigation_to_both_ready_ms": 4610.199999999953,
+        "document_ttfb_ms": 2703.79999999993,
+        "document_load_ms": 2753.399999999907
+      },
+      "warm": {
+        "ajax_pair_render_ready_ms": 1882.0,
+        "navigation_to_both_ready_ms": 4611.200000000012,
+        "document_ttfb_ms": 2701.5499999999884,
+        "document_load_ms": 2738.1999999999534
+      }
+    },
+    "after": {
+      "cold": {
+        "ajax_pair_render_ready_ms": 1186.5999999999767,
+        "navigation_to_both_ready_ms": 3941.4000000000233,
+        "document_ttfb_ms": 2699.8000000000466,
+        "document_load_ms": 2767.5999999999767
+      },
+      "warm": {
+        "ajax_pair_render_ready_ms": 1538.2000000000116,
+        "navigation_to_both_ready_ms": 4277.150000000023,
+        "document_ttfb_ms": 2707.5999999999767,
+        "document_load_ms": 2745.6999999999534
+      }
+    }
+  },
+  "screenshots": {
+    "before-desktop": "46bdc8533f72e3e3bb2d9a87ff14527788ac03bae766550e4f7ceacae20337c5",
+    "before-mobile": "05354aef0e7f6eef632e3d7f43915b7b85afdfd87fadf775388199ed9da66b30",
+    "after-desktop": "46bdc8533f72e3e3bb2d9a87ff14527788ac03bae766550e4f7ceacae20337c5",
+    "after-mobile": "05354aef0e7f6eef632e3d7f43915b7b85afdfd87fadf775388199ed9da66b30"
+  },
+  "screenshots_identical": true
+}

@@ -1,0 +1,164 @@
+{
+  "complete": true,
+  "baseline_sha": "c548d1d3b49ef63645d8e9ff421f823ce55e1712",
+  "optimized_sha": "b2a6c25b14d529fc531ffaf0746f0a4d58c658fe",
+  "source_sha256": {
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871"
+  },
+  "handler": "files",
+  "workers_per_server": 4,
+  "method": "Actual PHP HTTP/DB/bootstrap. Same-data alternating before/after, and alternating same/different-session controls; 4 warmups +17 pairs. No injected SQL delay. Diagnostic lock probe separate.",
+  "cases": [
+    {
+      "trainings": 1000,
+      "measurements": 9000,
+      "before": {
+        "same": {
+          "short_median_ms": 14.987,
+          "long_median_ms": 17.636,
+          "pair_median_ms": 20.480362
+        },
+        "different": {
+          "short_median_ms": 3.549,
+          "long_median_ms": 18.403,
+          "pair_median_ms": 18.437826
+        },
+        "actual_same": {
+          "short_median_ms": 28.223000000000003,
+          "long_median_ms": 17.448,
+          "pair_median_ms": 33.703782
+        },
+        "actual_different": {
+          "short_median_ms": 17.087999999999997,
+          "long_median_ms": 19.542,
+          "pair_median_ms": 22.590944
+        },
+        "single_median_ms": 17.529
+      },
+      "after": {
+        "same": {
+          "short_median_ms": 3.464,
+          "long_median_ms": 18.692,
+          "pair_median_ms": 18.733378
+        },
+        "different": {
+          "short_median_ms": 3.375,
+          "long_median_ms": 18.911,
+          "pair_median_ms": 18.947317
+        },
+        "actual_same": {
+          "short_median_ms": 17.180999999999997,
+          "long_median_ms": 20.011999999999997,
+          "pair_median_ms": 22.720343
+        },
+        "actual_different": {
+          "short_median_ms": 21.761,
+          "long_median_ms": 23.516,
+          "pair_median_ms": 27.258891
+        },
+        "single_median_ms": 17.588
+      }
+    },
+    {
+      "trainings": 10000,
+      "measurements": 90000,
+      "before": {
+        "same": {
+          "short_median_ms": 160.792,
+          "long_median_ms": 161.864,
+          "pair_median_ms": 166.39764
+        },
+        "different": {
+          "short_median_ms": 5.23,
+          "long_median_ms": 164.84099999999998,
+          "pair_median_ms": 164.894567
+        },
+        "actual_same": {
+          "short_median_ms": 268.60499999999996,
+          "long_median_ms": 162.44400000000002,
+          "pair_median_ms": 274.178643
+        },
+        "actual_different": {
+          "short_median_ms": 115.557,
+          "long_median_ms": 168.071,
+          "pair_median_ms": 168.125629
+        },
+        "single_median_ms": 159.975
+      },
+      "after": {
+        "same": {
+          "short_median_ms": 4.634,
+          "long_median_ms": 158.445,
+          "pair_median_ms": 158.515803
+        },
+        "different": {
+          "short_median_ms": 4.8999999999999995,
+          "long_median_ms": 164.366,
+          "pair_median_ms": 164.420009
+        },
+        "actual_same": {
+          "short_median_ms": 115.488,
+          "long_median_ms": 172.71900000000002,
+          "pair_median_ms": 172.770392
+        },
+        "actual_different": {
+          "short_median_ms": 112.21499999999999,
+          "long_median_ms": 168.921,
+          "pair_median_ms": 168.990522
+        },
+        "single_median_ms": 159.499
+      }
+    },
+    {
+      "trainings": 30000,
+      "measurements": 270000,
+      "before": {
+        "same": {
+          "short_median_ms": 498.745,
+          "long_median_ms": 498.025,
+          "pair_median_ms": 504.301213
+        },
+        "different": {
+          "short_median_ms": 6.642,
+          "long_median_ms": 522.733,
+          "pair_median_ms": 522.804725
+        },
+        "actual_same": {
+          "short_median_ms": 828.437,
+          "long_median_ms": 506.52,
+          "pair_median_ms": 834.058458
+        },
+        "actual_different": {
+          "short_median_ms": 350.538,
+          "long_median_ms": 532.593,
+          "pair_median_ms": 532.654489
+        },
+        "single_median_ms": 531.707
+      },
+      "after": {
+        "same": {
+          "short_median_ms": 6.886,
+          "long_median_ms": 532.1759999999999,
+          "pair_median_ms": 532.232902
+        },
+        "different": {
+          "short_median_ms": 8.892000000000001,
+          "long_median_ms": 520.1360000000001,
+          "pair_median_ms": 520.200593
+        },
+        "actual_same": {
+          "short_median_ms": 347.81800000000004,
+          "long_median_ms": 528.4159999999999,
+          "pair_median_ms": 528.475306
+        },
+        "actual_different": {
+          "short_median_ms": 357.151,
+          "long_median_ms": 541.891,
+          "pair_median_ms": 541.95361
+        },
+        "single_median_ms": 506.212
+      }
+    }
+  ],
+  "observed_profile_worker_count": 14
+}

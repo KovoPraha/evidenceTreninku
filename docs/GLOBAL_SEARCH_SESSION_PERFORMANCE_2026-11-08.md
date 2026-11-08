@@ -1,5 +1,6 @@
 # P11-RGS — souběh globálního hledání a session
 
+**NEVYBRÁNO:** UI input je vypnutý, neaktivovat. Realizovaný/nasazený [RAS](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md). Původní plán níže je historický.
 8. 11. 2026: ROZPRACOVÁNO, plán před implementací.
 Vlastník: vývoj podle nového zadání Marka; commit/merge/deploy při shodě,
 naměřeném přínosu a aktuálních kontrolách. [Předání](SESSION_HANDOFF_GLOBAL_SEARCH_2026-11-08.md),

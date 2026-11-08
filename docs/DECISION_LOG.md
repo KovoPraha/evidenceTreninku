@@ -326,3 +326,16 @@ PŘIJATO podle nového zadání Marka: po uzavřených hlavních řezech1–4 ov
 ## D2026-11-08-RAS — aktuální aktivní cesta před teoretickou optimalizací
 
 RGS nevybrané po ověření aktuálníhlavicka.php: false guard vypíná input. Nezapínat funkci kvůli benchmarku. Session mechanismus analýzy6 zacílit na skutečná dvě profilová AJAX čtení, kde již existuje nativní profil vysokého objemu. [Plán](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md); změna až po fresh auth/profile/note gate, stejné SQL a výstupy. Předchozí koncept/důvody zůstávají verzované.
+
+## D2026-11-08-RAS-RELEASE
+
+PŘIJATO a technicky dokončeno podle podmíněné autorizace vlastníka: #406/95cb33e5,
+deploy42531190845 SUCCESS. Přesné celé fragmenty/16CI/SQLfilelock/souběžný logout
+a přínos actualpair +Chrome opravňují úzké early-close po fresh gates; žádné SQL
+změny/cachepráv či globální read_and_close. První kandidát RGS nevybrán kvůli
+vypnutému UI a nebyl aktivován. První fixture/login FAIL zachován.
+[Plán a akceptace](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md),
+[provozní důkaz a meze](verification/ajax-profile-session-release-20261108/RESULTS.md).
+Handler/lockwait produkce a přihlášené UAT NOT RUN; nevyvozovat produkční SLA.
+Parent profil~2,7sTTFB při extrémní fixture je další diagnostický KONCEPT,
+bez autorství nového release nebo cache čerstvých práv v tomto řezu.

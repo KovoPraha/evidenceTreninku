@@ -1,32 +1,33 @@
 # Předání P11-RAS — profilové AJAX/session
 
-8. 11. 2026: ROZPRACOVÁNO, plán před implementací.
+8. 11. 2026: **NASAZENO, technické ověření PASS**.
 [Plán](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md),
-[výsledky](verification/ajax-profile-session-performance-20261108/RESULTS.md).
-Basec548d1d3, skutečná produkce82efa16d/deploy42521982178 SUCCESS.
-Větev codex/ajax-profile-session-performance-20261108, vlastní medical-state
-worktree; původní WIP/hash zachované. RHA/RHC hotové, neopakovat.
-RGS nevybrané: globální hledací input má aktuálněfalse guard; nezapínat.
+[měření a parita](verification/ajax-profile-session-performance-20261108/RESULTS.md),
+[produkční protokol](verification/ajax-profile-session-release-20261108/RESULTS.md).
+PR[#406](https://github.com/KovoPraha/evidenceTreninku/pull/406) /95cb33e5,
+deploy42531190845 SUCCESS22:43:32UTC. Všech16CI na b2a6c25b, celý tested/merged
+tree a measured-source obouDB totožné. Jeden aplikační route,6řádků: close až
+po lifecycle/fresh identity/profile/person/note gates, před dvěma čteními.
+SQL/HTML/TTL/rotace/rodinný gate/writery a produkční handler beze změny.
 
-Aktivní profil při savedtab Měření načítá dvě AJAX projekce. Prověřit filelock
-na native HTTP, až po fresh profile/person/note gate uzavřít session před čistým
-čtením. Read SQL/HTML/oprávnění/TTL/CSRF/rotace a writery beze změny.
-Skutečné dvě worker skupiny, stejná data, alternující varianty a same/different
-session, bez vloženého zpomalení. Oddělený SQL/filelock důkaz, Chrome a logout
-bez oživení session. Production handler neověřený, UAT NOT RUN.
-Další krok fixture/páry, implementace/CI/merge/deploy zatím NOT RUN.
+Native10.3/11.4:1836časovanýchHTTP,72celofragmentových porovnání,12rolí,
+pravé login/bearer303, expirace/revokace/scope, CSRF logout bez oživení session,
+checksumy a úplný vlastní cleanup PASS. 30kactualpair834→528 /1832→1128ms,
+krátký same-session wait499→6,9 /1076→8,2ms; izolované SQL podobné.
+Chrome26navigací, warm fragmenty1882→1538ms a celá navigace4611→4277ms,
+filtry/stránky/záložky/390px/noerrors PASS; screenshoty před/po byte-identické.
+První FAIL fixture10.3/login zachovaný; neopakovat jako nevyřešenou chybu aplikace.
 
-## Implementace 8. 11. 2026
+Deploy2403/54847, záloha389tabulek/2triggery, migrace current/pending[], VS a
+konfigurace shodné, aktivace/HTTPsmoke/index/klíč PASS. Importfalse/UATfalse,
+produktový import SKIPPED. Veřejné8/8stavů i normalizovanýchDOM shodné před/po.
+Přihlášené produkční UAT, fyzický mobil, handler/lockwait produkce a skutečné
+uložení poznámky NOT RUN. Nejde o produkční SLA ani zrychlení samotného SQL.
 
-Lokálně přidáno guarded session_write_close po všech fresh přístupových kontrolách.
-Read SQL/HTML zůstávají stejné. Vlastní runner porovnává celý zmrazený route
-na basec548 proti nové verzi, dva čtyřworkerové servery a skutečné login/grant/
-bearer303, původní doménové checksumy, 3objemy a17párů po4zahřátích.
-Skutečná dvojice odpovídá savedtab Měření+Historie aktuálního roku; prázdný
-rok2099 izoluje čekání. Chrome používá existující UI v obou variantách.
-Lokální style helper hlásí staré untracked output/probe PHP; ty neměněny.
-Vlastní syntax/style ověřit samostatně a v čistém CI. Merge/deploy NOT RUN.
-
-PR[406](https://github.com/KovoPraha/evidenceTreninku/pull/406) otevřený.
-První native CI FAIL fixture/login, oprava a přesný popis ve výsledcích;
-žádný výkonový PASS ani merge/deploy. Lokálně33/819 PASS.
+Původní WIP/checkout codex/fio-auto-reconciliation-recovery byte-preserved:
+kis_rosters_admin.php SHA2567a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5.
+Globální hledání RGS nevybrané (UIfalse), neaktivovat; lokální prototyp uchovaný.
+Souborové důkazy v codex/ajax-profile-session-release-proof-20261108 patří do
+společného baseline po merge do main; další deploy pro dokumentaci nespouštět.
+RHA/RHC/RAS hotové. Další pouze KONCEPT: diagnostika parent profilu při30kfixture
+(~2,7sTTFB); před implementací nová baseline/měření, žádná cache čerstvých práv.
