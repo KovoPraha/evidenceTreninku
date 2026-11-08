@@ -23,7 +23,7 @@ sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešn�
 
 ## UX01 — celoroční nabídka stávajícího kroužku
 
-Stav: IMPLEMENTOVÁNO VE VĚTVI, [draft PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) otevřený; přímé zadání vlastníka 8. 11. 2026. Vlastník: vývoj; ceny a ostré zveřejnění určuje vedení klubu. [Plán a výsledky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [rozhodnutí](DECISION_LOG.md#d2026-11-08-01). Větev `codex/year-offer-ux-20261108` pushnutá, rebase na `origin/main` `755b20a2`; cizí WIP zachované. Syntetické testy 19/180 PASS, PHP lint a dokumentační kontrola PASS. Další krok: CI, přihlášené UAT; produkční nabídky bez schválených cen nevytvářet.
+Stav: IMPLEMENTOVÁNO VE VĚTVI, [draft PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) otevřený, kódové CI 11/11 PASS; přímé zadání vlastníka 8. 11. 2026. Vlastník: vývoj; ceny a ostré zveřejnění určuje vedení klubu. [Plán a výsledky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [rozhodnutí](DECISION_LOG.md#d2026-11-08-01). Větev `codex/year-offer-ux-20261108` pushnutá, rebase na `origin/main` `755b20a2`; cizí WIP zachované. Syntetické testy 19/180 PASS, PHP lint a dokumentační kontrola PASS. Další krok: přihlášené UAT a revize PR; produkční nabídky bez schválených cen nevytvářet.
 
 ## KONCEPT Q01 — další vývoj: doladění, úklid, příprava (8. 11. 2026)
 
