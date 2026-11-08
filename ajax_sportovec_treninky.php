@@ -85,6 +85,12 @@ if (!$stmt->fetchColumn()) {
 $canWriteNote = sportovecNoteCanWrite($pdo, $sportovec_id);
 $rok = isset($_GET['rok']) && ctype_digit($_GET['rok']) ? (int)$_GET['rok'] : 0;
 
+// Persist lifecycle and authorization updates before either read-only projection.
+// Concurrent profile reads and logout must not wait for rendering to finish.
+if (session_status() === PHP_SESSION_ACTIVE) {
+    session_write_close();
+}
+
 if (($_GET['view'] ?? '') === 'measurements') {
     $measurementType = isset($_GET['typ']) && is_string($_GET['typ']) ? $_GET['typ'] : '';
     $measurementPage = AthleteProfileRead::measurements($pdo, $sportovec_id, $measurementType, AthleteProfileRead::requested($_GET));

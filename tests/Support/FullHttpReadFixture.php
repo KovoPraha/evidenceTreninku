@@ -44,8 +44,15 @@ p11SeedMedical($pdo, 10000);
 
 // Legacy fields required by the real bootstrap/login, absent from the minimal GET fixture.
 w72LegacyColumns($pdo, 'verejni_uzivatele', ['heslo_hash' => 'VARCHAR(255) NULL']);
-$pdo->exec('ALTER TABLE verejni_uzivatele MODIFY id INT NOT NULL AUTO_INCREMENT,
-    MODIFY registrovan DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP');
+// MariaDB 10.3 rejects adding AUTO_INCREMENT to a referenced legacy key while
+// FK checks are active. Only this owned synthetic connection changes the flag.
+$pdo->exec('SET FOREIGN_KEY_CHECKS=0');
+try {
+    $pdo->exec('ALTER TABLE verejni_uzivatele MODIFY id INT NOT NULL AUTO_INCREMENT,
+        MODIFY registrovan DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP');
+} finally {
+    $pdo->exec('SET FOREIGN_KEY_CHECKS=1');
+}
 $pdo->exec('CREATE TABLE IF NOT EXISTS opravneni(klic VARCHAR(100) PRIMARY KEY,min_role VARCHAR(30) NOT NULL)');
 $pdo->exec("INSERT INTO opravneni VALUES('planovac','trener'),('oznameni','hlavni')");
 $pdo->exec('DELETE FROM staff_superadmins; DELETE FROM staff_user_positions');

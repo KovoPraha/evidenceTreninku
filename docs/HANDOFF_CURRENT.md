@@ -9,6 +9,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 
 - **P11-RHA NASAZENO:** [profil sportovce / plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_ATHLETE_PROFILE_2026-11-08.md).
   #404/`82efa16d`, deploy42521982178 SUCCESS;14CI/2403testů PASS, [protokol a veřejné meze](verification/athlete-profile-release-20261108/RESULTS.md). Profil129→53ms, historie111→33ms; UAT NOT RUN, WIP shodný.
+- P11-RAS ROZPRACOVÁNO: [profilové AJAX/session / plán](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_AJAX_PROFILE_SESSION_2026-11-08.md).
+  RGS nevybrán: input vypnutý. Aktivní dvě projekce profilu: změřit souběh a shodu stavu před změnou; produkce beze změny, WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).

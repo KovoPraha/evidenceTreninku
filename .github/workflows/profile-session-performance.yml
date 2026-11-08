@@ -1,0 +1,68 @@
+name: Profile read session parity and performance
+
+on:
+  pull_request:
+    paths:
+      - 'ajax_sportovec_treninky.php'
+      - 'tests/Support/ProfileSession*'
+      - '.github/workflows/profile-session-performance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-profile:
+    name: Profile read HTTP/session (MariaDB ${{ matrix.mariadb-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        mariadb-version: ['10.3', '11.4']
+    services:
+      mariadb:
+        image: mariadb:${{ matrix.mariadb-version }}
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.2'
+          extensions: mbstring, gd, zip, curl, pdo_mysql, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+      - name: Install locked dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Prepare Chrome and CLI
+        if: matrix.mariadb-version == '11.4'
+        run: |
+          command -v npx
+          npm install --global @playwright/cli@0.1.23
+          if ! command -v google-chrome >/dev/null; then npx --yes playwright install --with-deps chrome; fi
+          google-chrome --version
+      - name: Compare real profile HTML, session state and concurrent HTTP
+        env:
+          PROFILE_SESSION_BASE_SHA: c548d1d3b49ef63645d8e9ff421f823ce55e1712
+          PROFILE_SESSION_BROWSER: ${{ matrix.mariadb-version == '11.4' && '1' || '0' }}
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: python3 tests/Support/ProfileSessionIntegratedProfile.py
+      - name: Preserve safe native HTTP and session evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: profile-session-${{ matrix.mariadb-version }}
+          path: output/profile-session-ci-safe/
+          if-no-files-found: warn
+          retention-days: 30

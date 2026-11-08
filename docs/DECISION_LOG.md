@@ -318,3 +318,11 @@ RHA měření nahradilo první úzkou PHP agregaci: nativně se prokázala regre
 RHA finální varianta: pouze číselné ID/ordinal uvnitř window, binární typy agregovat až po připojení a detaily číst po LIMIT. Native3/651 obě verze a skutečné HTTP/Chrome PASS; finální časy i přiznané malé režie jsou v [protokolu](verification/athlete-profile-read-performance-20261108/RESULTS.md). Přenos35 místo90909 řádků a lazy HTML řeší celý profil, nikoli jen izolovaný helper. Uvolnění čeká na aktuální CI a exacttree.
 
 Uzavření D2026-11-08-RHA: #404/82efa16d a deploy42521982178 SUCCESS po14CI, přesné paritě a měřeném přínosu. Původní dvě regresní varianty zachované, finální číselné okno+LIMIT a lazy HTML výrazně omezují paměť/přenos. [Výsledky](verification/athlete-profile-read-performance-20261108/RESULTS.md), [release/meze](verification/athlete-profile-release-20261108/RESULTS.md). Původní veřejný wholehash neměl úplnou normalizaci nonce/asset verzí; neshoda zachovaná, nový současný8/8stabilní. Technický řez hotový, UAT a ostatní P11 samostatné.
+
+## D2026-11-08-RGS — souběh globálního hledání bez změny shod
+
+PŘIJATO podle nového zadání Marka: po uzavřených hlavních řezech1–4 ověřit mechanismus analýzy5/6 na skutečné HTTP cestě. Globální substringové SQL neměnit na prefix/fulltext kvůli paritě. Kandidát je bezpečné uzavření session až po čerstvých kontrolách a zápisech, před dlouhým čistým čtením. Syntetický souběh a session revokace/odhlášení musí prokázat přínos a zachování stavu; production handler není zatím doložený. [Plán](GLOBAL_SEARCH_SESSION_PERFORMANCE_2026-11-08.md). Starší RHC zůstává v registru a protokolu.
+
+## D2026-11-08-RAS — aktuální aktivní cesta před teoretickou optimalizací
+
+RGS nevybrané po ověření aktuálníhlavicka.php: false guard vypíná input. Nezapínat funkci kvůli benchmarku. Session mechanismus analýzy6 zacílit na skutečná dvě profilová AJAX čtení, kde již existuje nativní profil vysokého objemu. [Plán](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md); změna až po fresh auth/profile/note gate, stejné SQL a výstupy. Předchozí koncept/důvody zůstávají verzované.
