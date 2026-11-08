@@ -61,3 +61,12 @@ Produkční session handler a skutečný lock wait zatím NEOVĚŘENÉ; závěry
 budou výslovně pro ověřený syntetický handler. Žádná produkční SLA ani tvrzení
 že každý požadavek musí zrychlit. Přihlášené produkční UAT je samostatný důkaz.
 Další krok: fixture/baseline souběhu, potom úzká změna a párové ověření.
+
+## Uzavření výběru kandidáta — NEVYBRÁNO
+
+Aktuální c548d1d3 má v hlavicka.php řádek859 `if (false && $is_logged_in)`
+a JS ukončí hledání bez tohoto inputu. Globální hledání není v běžné hlavičce
+aktivní. Dílčí návrh byl vrácen pouze ve vlastní kopii; žádný runtime/produkční
+zásah nebyl sloučený ani nasazený. Koncepty zůstávají verzované.
+Mechanismus session se přesouvá na aktivní profilové AJAX v P11-RAS:
+[plán](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md). Původní WIP beze změny.

@@ -10754,10 +10754,12 @@
       "title": "P11-RGS — globální hledání a session",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "REJECTED",
       "registry": "P11-RGS",
-      "disposition": "Konkrétní řez, parita a skutečný souběh před release.",
-      "evidence": []
+      "disposition": "UI input v aktuálním main vypnutý; kandidát nevybraný, žádná aktivace/deploy. Nahrazen P11-RAS.",
+      "evidence": [
+        "docs/verification/global-search-session-performance-20261108/RESULTS.md"
+      ]
     },
     {
       "id": "PL-db8603204e",
@@ -10779,6 +10781,39 @@
       "status": "SUPPORT",
       "registry": "P11-RGS",
       "disposition": "Podpůrný důkaz, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-55c979f2b8",
+      "path": "docs/AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md",
+      "title": "P11-RAS — souběh čtecího profilu/session",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P11-RAS",
+      "disposition": "Aktivní profilová čtení; nejprve souběh/parita před release.",
+      "evidence": []
+    },
+    {
+      "id": "PL-42316f1454",
+      "path": "docs/SESSION_HANDOFF_AJAX_PROFILE_SESSION_2026-11-08.md",
+      "title": "P11-RAS session předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-RAS",
+      "disposition": "Podpůrný konkrétní důkaz, nikoli další roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-50843c60f1",
+      "path": "docs/verification/ajax-profile-session-performance-20261108/RESULTS.md",
+      "title": "P11-RAS parita a souběžné HTTP",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RAS",
+      "disposition": "Podpůrný konkrétní důkaz, nikoli další roadmapa.",
       "evidence": []
     }
   ],
