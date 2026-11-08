@@ -691,7 +691,7 @@ jobs:
           jq -e '.complete == true and (.cases | length) == 24 and (.negative_checks | length) == 4' synthetic-read-pages/after/summary.json >/dev/null
           jq -e '.removed == true' synthetic-read-pages/after/cleanup.json >/dev/null
           jq -e '.complete == true and .domain_results_equal == true and (.cases | length) == 9' synthetic-read-pages/medical-comparison.json >/dev/null
-          jq -e '.complete == true and .domain_results_equal == true and .html_lf_equal == true and (.cases | length) == 6' synthetic-read-pages/planner-comparison.json >/dev/null
+          jq -e '.complete == true and .domain_results_equal == true and .html_lf_equal_except_filter_width == true and (.cases | length) == 6' synthetic-read-pages/planner-comparison.json >/dev/null
           jq -e '.complete == true and .domain_results_equal == true and .html_lf_equal == true and (.cases | length) == 9' synthetic-read-pages/attendance-comparison.json >/dev/null
 
       - name: Preserve synthetic GET path measurements

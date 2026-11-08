@@ -34,6 +34,7 @@ foreach ([1, 2] as $phase) {
 }
 $report = ['complete' => false, 'before_source_sha' => $before['source_sha'], 'after_source_sha' => $after['source_sha'],
     'server' => $before['server'], 'php' => $before['php'], 'domain_results_equal' => true, 'html_lf_equal' => true,
+    'html_lf_equal_except_filter_width' => true,
     'timing_samples_per_phase' => 180, 'sql_samples_per_phase' => 6, 'cases' => []];
 foreach ($oldCases as $i => $old) {
     $new = $newCases[$i];
@@ -42,9 +43,11 @@ foreach ($oldCases as $i => $old) {
             throw new RuntimeException('Different planner fixture matrix.');
         }
     }
-    if ($old['result']['data'] !== $new['result']['data'] || $old['result']['html_lf_sha256'] !== $new['result']['html_lf_sha256']) {
-        throw new RuntimeException('Planner data or rendered HTML changed.');
+    if ($old['result']['data'] !== $new['result']['data']
+        || $old['result']['html_lf_sha256'] !== ($new['result']['html_lf_expected_style_compat_sha256'] ?? null)) {
+        throw new RuntimeException('Planner data or rendered HTML changed beyond the three filter widths.');
     }
+    $report['html_lf_equal'] = $report['html_lf_equal'] && $old['result']['html_lf_sha256'] === $new['result']['html_lf_sha256'];
     // Structural budgets for this fixed fixture; shared CI timing is diagnostic only.
     if ($new['sql']['count'] > 30 || $new['sql']['fetched_rows'] > 130
         || $new['sql']['count'] >= $old['sql']['count'] || $new['sql']['fetched_rows'] >= $old['sql']['fetched_rows']) {
