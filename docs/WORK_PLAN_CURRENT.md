@@ -57,7 +57,12 @@ PR [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) je sloučený
 jako `5b9279f9`; všech 11 CI PASS včetně MariaDB 10.3/11.4. Obsahuje
 opravu a syntetické měření. Profil s historickým HTML porovnává po
 normalizaci pouze tří očekávaných šířek; původní hash HTML zůstává zachovaný.
-Produkční #390 zahrnuté v755b20a2/deploy42483838259 a následném P11-RH; přihlášené UAT této opravy tímto nedoložené.
+Produkční nasazení na `755b20a2` v běhu 42483838259 SUCCESS a oprava je
+zahrnutá i v následném P11-RH. Cílené
+přihlášené Chrome UAT 360/390/1536 px v Moje/Vše PASS. Nová záloha před
+aktivací, standardní ochrany a veřejné HTTP doložené v
+[protokolu vydání](verification/planner-mobile-release-20261108/RESULTS.md).
+Úplné funkční UAT plánování a ostatních rolí zůstává otevřené.
 Přihlášené hledání/editor ROLE01-MOB po obnoveném přihlášení cíleně PASS:
 prázdný stav 0/48 a deaktivovaný #64 čtecí, bez uložení,
 [protokol](verification/quality-uat-20261108/RESULTS.md).
