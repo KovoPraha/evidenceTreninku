@@ -4,17 +4,6 @@
   "date": "2026-11-07",
   "entries": [
     {
-      "id": "PL-f0201ffc26",
-      "path": "docs/QUALITY_NEXT_SLICES_2026-11-08.md",
-      "title": "Q01: provozní přejímky a příprava další funkce",
-      "primary": true,
-      "role": "plan",
-      "status": "PLANNED",
-      "registry": "Q01-Q4/Q5",
-      "disposition": "Scénáře skutečné přejímky a návrh soukromého progresu; bez provozního provedení a aktivace.",
-      "evidence": []
-    },
-    {
       "id": "PL-a54ff182c7",
       "path": "AGENTS.md",
       "title": "Projektové instrukce pro všechny vývojáře a agenty",
@@ -1321,6 +1310,17 @@
       "status": "REFERENCE",
       "registry": "DOC02",
       "disposition": "Referenční podklad, nikoli samostatný schválený implementační plán.",
+      "evidence": []
+    },
+    {
+      "id": "PL-f0201ffc26",
+      "path": "docs/QUALITY_NEXT_SLICES_2026-11-08.md",
+      "title": "Q01: provozní přejímky a příprava další funkce",
+      "primary": true,
+      "role": "plan",
+      "status": "PLANNED",
+      "registry": "Q01-Q4/Q5",
+      "disposition": "Scénáře skutečné přejímky a návrh soukromého progresu; bez provozního provedení a aktivace.",
       "evidence": []
     },
     {
