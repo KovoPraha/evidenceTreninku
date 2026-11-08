@@ -1,0 +1,21 @@
+{
+    "at_utc": "2026-11-08T13:58:19+00:00",
+    "phase": "after",
+    "method": "Anonymous GET, no cookies, redirects or POST; no bodies or private headers stored.",
+    "cases": [
+        {
+            "url": "https://kis.kovopraha.cz/sprava_treninku.php?history_page=2",
+            "status": 302,
+            "redirect_path": "login.php",
+            "pass": true
+        },
+        {
+            "url": "https://kis.kovopraha.cz/sprava_vsech_treninku.php?history_page=2",
+            "status": 302,
+            "redirect_path": "login.php",
+            "pass": true
+        }
+    ],
+    "pass": true,
+    "limitation": "Authenticated staff production UAT NOT RUN."
+}

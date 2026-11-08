@@ -10547,10 +10547,13 @@
       "title": "P11-RH — správní historie tréninků",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-RH",
-      "disposition": "Nové zadání, parita a výkon před release.",
-      "evidence": []
+      "disposition": "Technický řez #394/ab49947d nasazený; přesná parita, přínos a čtecí kontrola PASS. Přihlášené UAT samostatné.",
+      "evidence": [
+        "docs/verification/training-history-page-performance-20261108/RESULTS.md",
+        "docs/verification/training-history-release-20261108/RESULTS.md"
+      ]
     },
     {
       "id": "PL-809730f2ad",
@@ -10572,6 +10575,39 @@
       "status": "SUPPORT",
       "registry": "P11-RH",
       "disposition": "Podpůrná evidence konkrétního řezu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-7a5f77c10a",
+      "path": "docs/verification/training-history-release-20261108/RESULTS.md",
+      "title": "P11-RH produkční předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RH",
+      "disposition": "Bezpečný provozní důkaz konkrétního řezu; nikoli nová roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-84ec87c001",
+      "path": "docs/verification/training-history-release-20261108/snapshot.php.txt",
+      "title": "P11-RH veřejná kontrola GET",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-RH",
+      "disposition": "Bezpečný provozní důkaz konkrétního řezu; nikoli nová roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-4de73dc0ed",
+      "path": "docs/verification/training-history-release-20261108/anonymous-history.php.txt",
+      "title": "P11-RH anonymní guard kontrola",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-RH",
+      "disposition": "Bezpečný provozní důkaz konkrétního řezu; nikoli nová roadmapa.",
       "evidence": []
     }
   ],
