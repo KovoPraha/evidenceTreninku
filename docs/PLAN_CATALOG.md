@@ -393,4 +393,4 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-10c1cb582e | [P11-RHC — trenérská historie](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) | DONE / P11-RHC | #400/da152282 nasazeno, parita/přínos/14CI PASS; [protokol a veřejné meze](verification/coach-history-release-20261108/RESULTS.md), UAT samostatné. |
 
-| PL-123e2d427d | [P11-RHA — historie a měření profilu](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md) | IN_PROGRESS / P11-RHA | Parita/přínos před release. |
+| PL-123e2d427d | [P11-RHA — historie a měření profilu](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md) | DONE / P11-RHA | #404/82efa16d nasazeno, parita/přínos/14CI PASS; [provozní protokol a meze](verification/athlete-profile-release-20261108/RESULTS.md), UAT samostatné. |

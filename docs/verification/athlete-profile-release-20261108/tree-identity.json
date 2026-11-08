@@ -1,0 +1,17 @@
+{
+  "tested_head": "0bed50c5d562e9f83dfa76e00df192f936657866",
+  "merged_sha": "82efa16decf5bc380bb73bf850d829e17d5002f0",
+  "tested_tree": "cb1ac88a970e7ba590fc1ba927dc6dd88a777d5e",
+  "merged_tree": "cb1ac88a970e7ba590fc1ba927dc6dd88a777d5e",
+  "exact_tree_match": true,
+  "source_sha256": {
+    "ajax_sportovec_treninky.php": "f5d6d34f21dbd1d80b44903115caa3448c9fce7495db4618287af43866e7483c",
+    "sportovec_treninky.php": "3ff9e4e206db42a6bbfd27403c66cf73f273a9004d2b710d17268456f04f0d03",
+    "includes/athlete_profile_read.php": "f8cfb7c6b285aa08e6e7fe33cab4e52c648c32b57a952a4c89a514e51fa8530e",
+    "includes/athlete_measurement_list.php": "c3d036a98d92bab327c201760a8023af2084fe6529a1e96b78720deb0779f39c"
+  },
+  "source_hashes_match": true,
+  "previous_deployed_sha": "da152282ad4274690595c188a78dec0c90422f38",
+  "previous_deploy_run": 42494231010,
+  "baseline_routes_match_previous_deployed": true
+}

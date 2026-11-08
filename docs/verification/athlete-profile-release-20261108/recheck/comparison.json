@@ -1,0 +1,14 @@
+{
+  "complete": true,
+  "scope": "Two post-release reads only, not replacement of original pre-release snapshot",
+  "cases_equal": {
+    "catalog": true,
+    "price": true,
+    "page2": true,
+    "search": true,
+    "empty": true,
+    "profile_denied": true,
+    "history_denied": true,
+    "measurements_denied": true
+  }
+}

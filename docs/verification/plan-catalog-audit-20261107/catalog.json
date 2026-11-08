@@ -10707,10 +10707,13 @@
       "title": "P11-RHA — historie a měření profilu",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-RHA",
-      "disposition": "Konkrétní nový řez, parita a přínos před release.",
-      "evidence": []
+      "disposition": "Technický řez #404/82efa16d nasazený; parita/přínos/14CI PASS, přihlášené UAT samostatné.",
+      "evidence": [
+        "docs/verification/athlete-profile-read-performance-20261108/RESULTS.md",
+        "docs/verification/athlete-profile-release-20261108/RESULTS.md"
+      ]
     },
     {
       "id": "PL-ebefcd049a",
@@ -10732,6 +10735,17 @@
       "status": "SUPPORT",
       "registry": "P11-RHA",
       "disposition": "Podpůrný konkrétní podklad.",
+      "evidence": []
+    },
+    {
+      "id": "PL-d4a4e0b4a6",
+      "path": "docs/verification/athlete-profile-release-20261108/RESULTS.md",
+      "title": "P11-RHA produkční předání a meze",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHA",
+      "disposition": "Bezpečný konkrétní důkaz, nikoli samostatná roadmapa.",
       "evidence": []
     }
   ],

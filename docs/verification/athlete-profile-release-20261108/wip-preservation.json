@@ -1,0 +1,9 @@
+{
+  "worktree": "C:\\xampp\\htdocs\\evidencePavel",
+  "branch": "codex/fio-auto-reconciliation-recovery",
+  "path": "kis_rosters_admin.php",
+  "sha256_before": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "sha256_after": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "unchanged": true,
+  "unrelated_worktrees_and_outputs_preserved": true
+}

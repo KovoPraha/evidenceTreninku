@@ -7,8 +7,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 
 ## Poslední práce a další krok
 
-- **P11-RHC NASAZENO:** [plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md).
-  #400/`da152282`, deploy42494231010 SUCCESS,14CI/parita PASS; [protokol](verification/coach-history-release-20261108/RESULTS.md). AJAX148→10ms; původní katalog222→223, nový5/5stabilní. UAT NOT RUN, WIP shodný.
+- **P11-RHA NASAZENO:** [profil sportovce / plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_ATHLETE_PROFILE_2026-11-08.md).
+  #404/`82efa16d`, deploy42521982178 SUCCESS;14CI/2403testů PASS, [protokol a veřejné meze](verification/athlete-profile-release-20261108/RESULTS.md). Profil129→53ms, historie111→33ms; UAT NOT RUN, WIP shodný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).
@@ -20,8 +20,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   Původní WIP a oba picker worktrees zachované; výsledky a kalibrace jsou v repu, nové aktivace žádné.
   [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
-- P11-RHA ROZPRACOVÁNO: [profil sportovce / plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_ATHLETE_PROFILE_2026-11-08.md).
-  #404, native/HTTP/Chrome parita PASS: profil129→53ms, historie111→33ms. Finální CI čeká; produkce zatím beze změny, WIP shodný.
+- P11-RHC zahrnuté: [Moje tréninky / plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md).
+  #400/da152282, deploy42494231010 SUCCESS; původní katalog222→223 a nový5/5stabilní zachované v [historickém protokolu](verification/coach-history-release-20261108/RESULTS.md). UAT samostatné.
 - P11-R13-F NASAZENO: #385/519ff098, deploy42477866185 SUCCESS; [protokol](verification/medical-filter-release-20261108/RESULTS.md), index/veřejný DOM/anonym403 PASS; přihlášené UAT nového vydání NOT RUN.
 - P11-R05-H zachováno: [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md); nalezené [360px přetékání](verification/quality-uat-20261108/RESULTS.md) opraveno Q2 [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) a [nasazeno / cíleně čtecí PASS](verification/planner-mobile-release-20261108/RESULTS.md). Oprava je i v následném P11-RH; úplné funkční UAT ostatních rolí otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),

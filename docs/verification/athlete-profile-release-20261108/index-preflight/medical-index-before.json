@@ -1,0 +1,85 @@
+{
+    "contract": "medical-read-index-inventory-v1",
+    "read_only": true,
+    "source_sha": "82efa16decf5bc380bb73bf850d829e17d5002f0",
+    "phase": "before",
+    "at_utc": "2026-11-08T20:51:20+00:00",
+    "server": "10.3.39-MariaDB-0+deb10u2-log",
+    "definition_sha256": "cd2dab153c57afe74a739fc47a34a2fd096d80588b84c623d23fca831f4dd5a8",
+    "inventory": {
+        "table": "medical_clearance_records",
+        "exists": true,
+        "engine": "InnoDB",
+        "indexes": {
+            "PRIMARY": {
+                "unique": true,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "id"
+                ],
+                "prefix_lengths": [
+                    null
+                ]
+            },
+            "replaces_id": {
+                "unique": true,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "replaces_id"
+                ],
+                "prefix_lengths": [
+                    null
+                ]
+            },
+            "recorded_by": {
+                "unique": false,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "recorded_by"
+                ],
+                "prefix_lengths": [
+                    null
+                ]
+            },
+            "verified_by": {
+                "unique": false,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "verified_by"
+                ],
+                "prefix_lengths": [
+                    null
+                ]
+            },
+            "idx_medical_clearance_read": {
+                "unique": false,
+                "type": "BTREE",
+                "usable": true,
+                "columns": [
+                    "watch_id",
+                    "id",
+                    "state",
+                    "issued_on",
+                    "valid_until",
+                    "replaces_id"
+                ],
+                "prefix_lengths": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            }
+        },
+        "covering_index": "idx_medical_clearance_read",
+        "clinical_rows_read": false,
+        "ddl_executed": false
+    },
+    "ok": true
+}

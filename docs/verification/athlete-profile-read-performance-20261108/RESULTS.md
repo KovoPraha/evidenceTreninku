@@ -1,6 +1,7 @@
 # P11-RHA — historie a měření profilu sportovce
 
-8. 11. 2026: **parita a měření PASS, finální CI čeká; merge/deploy NOT RUN**.
+8. 11. 2026: **NASAZENO, technické ověření PASS; přihlášené produkční UAT NOT RUN**.
+[Produkční release](../athlete-profile-release-20261108/RESULTS.md).
 [Plán](../../ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md),
 [předání](../../SESSION_HANDOFF_ATHLETE_PROFILE_2026-11-08.md),
 [PR #404](https://github.com/KovoPraha/evidenceTreninku/pull/404).
@@ -84,8 +85,10 @@ Jde o konkrétní syntetickou cestu; není to LCP ani produkční SLA.
 Další/předchozí bez překryvu, změna roku resetuje stránku, globální přesný typ,
 filtr zachovaný na další stránce, změna typu resetuje stránku, savedtab/lazy,
 read-only poznámky a390px pager PASS. Bez console errors/failed requests.
-Screenshot desktop byl po reloadu zachycen během Bootstrap fade; samotné hodnoty
-jsou správné, finální vizuální důkaz se zopakuje po dokončení přechodu.
+Průběžný screenshot desktop zachytil Bootstrap fade; finální0bed50c5 čeká na
+opacity1. [Desktop](checked-head/athlete-profile-integrated-http-browser/athlete-profile-after-desktop.png)
+a [390px](checked-head/athlete-profile-integrated-http-browser/athlete-profile-after-mobile.png)
+po dokončení přechodu vizuálně zkontrolované PASS.
 
 ## Přístupy a meze
 
@@ -108,4 +111,7 @@ Druhé okno s textovými typy snížilo paměť, ale90k na11.4 zůstalo pomalej�
 Finální číselné okno výše odstraňuje tuto regresi; žádný výsledek nebyl nahrazen
 novým PASS. HTTP kalibrace opravila pouze fixture (explicitní grant) a očekávání
 testů (parent policy, odlišení JS od skutečného writebutton, staff303/login).
-Autorizace aplikace se neoslabovala. Merge a produkční release teprve po aktuálním CI.
+Autorizace aplikace se neoslabovala. Finální0bed50c5 má14CI SUCCESS včetně nového
+[opakovaného celého průchodu](checked-head/athlete-profile-integrated-http-browser/integrated-summary.json);
+2403testů/54847assertions. #404/82efa16d a deploy42521982178 SUCCESS,
+[provozní důkazy a meze](../athlete-profile-release-20261108/RESULTS.md).
