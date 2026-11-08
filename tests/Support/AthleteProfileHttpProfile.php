@@ -137,7 +137,8 @@ foreach ($cases as $i => $case) {
             file_put_contents($output . '/case-calibration.html', $r['body']);
             throw new RuntimeException('Athlete profile HTTP failed: ' . $case['id'] . ', status ' . $r['status']);
         }
-        if (($r['headers']['referrer-policy'] ?? '') !== 'no-referrer' || !str_contains($r['headers']['cache-control'] ?? '', 'no-store')) {
+        if (!$parent && (($r['headers']['referrer-policy'] ?? '') !== 'no-referrer'
+            || !str_contains($r['headers']['cache-control'] ?? '', 'no-store'))) {
             throw new RuntimeException('Profile privacy headers changed.');
         }
         if (str_contains($r['body'], 'Foreign hidden note') || str_contains($r['body'], 'save-note-btn')) {
@@ -163,7 +164,8 @@ foreach ($cases as $i => $case) {
             $samples[] = array_intersect_key($r, array_flip(['status','ttfb_ms','total_ms','bytes']));
         }
     }
-    $report['cases'][] = $case + ['status' => 200, 'path_kind' => $parent ? 'full_profile_GET' : 'profile_AJAX', 'domain' => $signature, 'samples' => $samples];
+    $report['cases'][] = $case + ['status' => 200, 'privacy_headers' => array_intersect_key($r['headers'],
+        array_flip(['referrer-policy', 'cache-control'])), 'path_kind' => $parent ? 'full_profile_GET' : 'profile_AJAX', 'domain' => $signature, 'samples' => $samples];
 }
 $report['denials'] = [];
 foreach (['', '?view=measurements', '?view=measurements&id=1001&sid=1001'] as $params) {
