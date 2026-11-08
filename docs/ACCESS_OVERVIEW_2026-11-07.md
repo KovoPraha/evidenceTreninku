@@ -2,8 +2,8 @@
 
 > Aktualizace katalogu 7. 11. 2026: #361 sloučené jako `3b37e053`.
 > Původní přehled a čtecí vizuální kontrola dokončené; navazující mobilní
-> karty jsou implementované v main. Jejich následný deploy a nový produkční
-> Chrome průchod zůstávají nedoložené, viz registr ROLE01-MOB.
+> karty jsou nasazené a původní role zachované. Nový přihlášený Chrome průchod
+> karet zůstává NOT RUN, viz registr ROLE01-MOB.
 
 
 ID ROLE01; vlastník: vývoj a vlastník aplikace. **HOTOVO: implementace, nasazení
@@ -43,9 +43,9 @@ k trenérským funkcím, e-shopu a baru s jednoduchou změnou rolí.
 ### Mobilní karty ROLE01-MOB
 
 7. 11. vlastník výslovně schválil úpravu mobilního přehledu na karty, merge,
-nasazení a nové vizuální ověření. **ROZPRACOVÁNO**, vývoj; pokračuje vlastní větev
+nasazení a nové vizuální ověření. **NASAZENO, vizuální přejímka K OVĚŘENÍ**; implementační větev
 `codex/access-visual-uat-20261107`, stejný worktree, základ main `9460ee76`.
-Dosavadní dokumentační PR #361 se rozšiřuje o tuto implementaci.
+PR #361 sloučeno jako `3b37e053`; deploy `42365946802` SUCCESS, všech 11 CI PASS.
 Mobil pod 768 px: jedna karta na člověka, celé jméno/kontakt, stav, skupiny rolí,
 výchozí role, superadmin a samostatný grant spotřeby; tlačítko úpravy po ruce.
 Desktop zachová tabulku. Obě varianty čtou stejný filtrovaný seznam; bez změny
@@ -53,9 +53,13 @@ autorizace, ukládání, schématu či přiřazení. Varianta pouhého fixován�
 neřeší zalamování štítků, proto samostatné mobilní karty.
 Akceptace: 390/360 px bez vodorovného posunu, jméno a role pohromadě, filtry,
 prázdný výsledek a otevření editoru; desktop bez regrese. Produkční kontrola
-jen GET, žádné uložení, aktivace, grant ani nový účet. Další krok: implementace,
-cílená regrese, CI a merge, standardní deploy bez importu, vizuální Chrome.
-Výsledky a vydání budou odděleně doložené v navazujícím protokolu.
+jen GET, žádné uložení, aktivace, grant ani nový účet. Otisky před/po přesně shodné:
+48 účtů / 82 přiřazení / 5 superadminů / 1 grant. Vlastník následně schválil
+společný deploy s cenami #358. [Výsledky a hranice](verification/access-mobile-cards-20261107/RESULTS.md).
+Navazující @Chrome se připojil; čtení obsahu/snímků v nástroji však vyprší.
+Další krok: obnovit funkční čtení a dokončit Chrome 390/360 px a desktop.
+Nové karty vizuálně NOT RUN / BLOKOVÁNO nástrojem; další deploy není potřeba.
+Výsledkové předání `codex/access-mobile-release-20261107`, stejný worktree; [otevřený PR #365](https://github.com/KovoPraha/evidenceTreninku/pull/365).
 
 ### Navazující vizuální kontrola ROLE01-VIS
 
@@ -68,8 +72,8 @@ nový testovací účet. Snímky s osobními údaji zůstanou mimo Git; do proto
 patří bezpečný souhrn. [Výsledek skutečného Chrome průchodu](verification/access-visual-20261107/RESULTS.md):
 desktop přehledný, mobil 390/360 px s bočním posunem, editor čitelný.
 Filtr Bar 6/48, hledání neaktivního technického účtu 1/48, posun i otevření editoru PASS.
-Role ani stav účtů se neměnily. Mobilní karty jsou pouze doporučená další úprava;
-aplikační kód ani produkční vydání tento průchod nemění.
+Role ani stav účtů se neměnily. Tato historická kontrola předcházela mobilním
+kartám; jejich vydání a otevřenou vizuální přejímku popisuje oddíl výše.
 
 ### Původní technická přejímka před navazujícím vizuálním průchodem
 

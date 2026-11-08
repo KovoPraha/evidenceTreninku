@@ -10256,7 +10256,7 @@
       "role": "uat-handoff",
       "status": "BLOCKED",
       "registry": "P11",
-      "disposition": "Přihlášené produkční UAT blokované: dva CUA timeouty a následný automatický stop Windows Computer Use kvůli neověřenému aktuálnímu URL. Žádný scénář UAT neproveden, docházka ani role nezměněné. Další krok: funkční ověření URL/čtení stránky, poté původní čtecí scénáře.",
+      "disposition": "Opakovaný pokus po #377 obnovil ověření URL/čtení stránky. Docházka i rozcestník v kontrolní kartě přesměrovaly na login; UAT blokované chybějící přihlášenou relací. Funkční scénáře neprovedené, bez změn docházky/rolí. Další krok: vlastník se ručně přihlásí existujícím pracovním účtem, pak vývoj pokračuje čtecím UAT.",
       "evidence": [
         "docs/ATTENDANCE_PERSON_PICKER_2026-11-07.md",
         "docs/verification/attendance-picker-production-readonly-uat-20261107/RESULTS.md"
