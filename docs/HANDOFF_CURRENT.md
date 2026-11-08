@@ -1,7 +1,7 @@
 # Aktuální session handoff
 
 Aktualizováno 8. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
-[CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md)
+[CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr a návrh Q01 z 8. 11.](WORK_PLAN_CURRENT.md#koncept-q01--další-vývoj-doladění-úklid-příprava-8-11-2026)
 vlastní otevřené úkoly. Plány, koncepty a rozhodnutí jsou ve verzovaných souborech,
 které při pokračování znovu načti. Chat ani interní paměť nejsou projektovou evidencí.
 
@@ -25,7 +25,7 @@ které při pokračování znovu načti. Chat ani interní paměť nejsou projek
 - P11-R13-S HOTOVO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [provozní důkaz](verification/medical-state-release-20261107/RESULTS.md).
   #381/938e9c50, deploy42405912779 SUCCESS; další deploy neopakovat. WIP zachovaný, přihlášené UAT NOT RUN.
 - P11-R13-F ROZPRACOVÁNO: [plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md).
-  PR #385: hledání přínos PASS, V5 lokálně44/1328, rozšířené pending/legacy a nové nativní/HTTP měření, bez deploye. R05 uzavřené [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
+  PR #385: hledání přínos PASS, V5 lokálně44/1328, nativní přínos obou DB PASS, HTTP/Chrome čeká, bez deploye. R05 uzavřené [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.
