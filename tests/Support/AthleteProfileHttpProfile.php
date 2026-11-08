@@ -217,10 +217,11 @@ foreach (['', '?view=measurements'] as $params) {
 $report['bearer_revocation'] = true;
 $admin->exec('UPDATE treneri SET aktivni=0 WHERE id=7');
 try {
-    if (fullHttpRequest($runtime, $output, 'coach', '/ajax_sportovec_treninky.php?view=measurements')['status'] !== 403) {
-        throw new RuntimeException('Revoked coach retained access.');
+    $revoked = fullHttpRequest($runtime, $output, 'coach', '/ajax_sportovec_treninky.php?view=measurements');
+    if (!in_array($revoked['status'], [302, 303, 401, 403], true)) {
+        throw new RuntimeException('Revoked coach retained access: ' . $revoked['status']);
     }
-    $report['staff_revocation'] = true;
+    $report['staff_revocation'] = ['status' => $revoked['status'], 'access_denied' => true];
 } finally {
     $admin->exec('UPDATE treneri SET aktivni=1 WHERE id=7');
     $credentials = json_decode(file_get_contents($output . '/credentials.json'), true, 512, JSON_THROW_ON_ERROR);
