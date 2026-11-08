@@ -17,3 +17,11 @@ První HTTP fixture zastavena před porovnáním403: trenér neměl explicitní 
 účast na tréninku správně přístup neuděluje. Doplněn pouze syntetický team2 grant,
 bez zásahu do aplikace/autorizace. Lokální plný PHPUnit bez DB není důkaz release;
 rozhodující je plný CI. Native/HTTP/browser zatím čeká, merge/deploy NOT RUN.
+
+První nativní iterace42518606301: obě verze PASS datové parity, historie10k
+614→173ms (10.3),689→270ms (11.4), ale Měření vše473→486ms /574→708ms:
+časová regrese, nelze uvolnit. Úzkých90909typů se stále přenášelo do PHP a
+široké třídění detailů probíhalo před LIMIT. Návrat k původně plánované variantě:
+binární ROW_NUMBER/GROUP BY se souhrnem prvního výskytu; úzká stránka ID před
+širokými měřeními. Původní výsledek zachovat; nová varianta vyžaduje novou paritu
+všech stránek a nativní/HTTP měření. Nasazení nadále NOT RUN.

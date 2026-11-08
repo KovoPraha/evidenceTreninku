@@ -105,13 +105,23 @@ final class AthleteProfileRead
     public static function measurements(PDO $pdo, int $sid, string $type, int $requested): array
     {
         $order = ' ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC';
-        // Narrow ordered values preserve PHP's case/space-sensitive keys and first-occurrence pill order.
-        $types = array_column(self::read($pdo, 'SELECT mz.typ' . self::measurementFrom()
-            . ' WHERE mz.sportovec_id=?' . $order, [$sid]), 'typ');
-        $counts = array_count_values(array_filter($types, static fn ($v): bool => is_string($v) || is_int($v)));
-        $result = self::pagination($type === '' ? count($types) : ($counts[$type] ?? 0), $requested);
-        $result += ['types' => $counts, 'all' => count($types)];
-        unset($types);
+        $binary = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mz.typ' : 'mz.typ COLLATE BINARY';
+        // Aggregate only narrow ordered keys in SQL. Binary grouping preserves PHP's exact
+        // case/space-sensitive keys; the first ordinal preserves the old filter-pill order.
+        $summary = self::read($pdo, 'SELECT kind AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position
+            FROM (SELECT ' . $binary . ' AS kind,ROW_NUMBER() OVER (' . $order . ') AS ordinal'
+            . self::measurementFrom() . ' WHERE mz.sportovec_id=?) ordered_types
+            GROUP BY kind ORDER BY first_position', [$sid]);
+        $counts = [];
+        $all = 0;
+        foreach ($summary as $row) {
+            $all += (int) $row['num'];
+            if (is_string($row['typ']) || is_int($row['typ'])) {
+                $counts[$row['typ']] = (int) $row['num'];
+            }
+        }
+        $result = self::pagination($type === '' ? $all : ($counts[$type] ?? 0), $requested);
+        $result += ['types' => $counts, 'all' => $all];
         $params = [$sid];
         $filter = '';
         if ($type !== '') {
@@ -119,9 +129,13 @@ final class AthleteProfileRead
             $filter = ' AND ' . $binary . '=?';
             $params[] = $type;
         }
-        $result['rows'] = self::read($pdo, 'SELECT ' . self::measurementFields() . ',t.datum AS trenink_datum'
-            . self::measurementFrom() . self::labels() . ' WHERE mz.sportovec_id=?' . $filter . $order
-            . ' LIMIT ' . self::SIZE . ' OFFSET ' . (($result['page'] - 1) * self::SIZE), $params);
+        // LIMIT applies before fetching wide values/notes and joining display labels.
+        $result['rows'] = self::read($pdo, 'SELECT ' . self::measurementFields() . ',tm.trenink_datum'
+            . ' FROM (SELECT tm.trenink_id,tm.poradi,tm.mereni_id,t.datum AS trenink_datum'
+            . self::measurementFrom() . ' WHERE mz.sportovec_id=?' . $filter . $order
+            . ' LIMIT ' . self::SIZE . ' OFFSET ' . (($result['page'] - 1) * self::SIZE) . ') tm'
+            . ' JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id' . self::labels() . ' WHERE mz.sportovec_id=?'
+            . ' ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC', [...$params, $sid]);
         return $result;
     }
 
