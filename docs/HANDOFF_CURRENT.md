@@ -22,8 +22,8 @@ Q1 převzalo #388; Q3 #389 je v main, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_
   Původní WIP a oba picker worktrees zachované; výsledky a kalibrace jsou v repu, nové aktivace žádné.
   [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
-- P11-R13-S HOTOVO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [provozní důkaz](verification/medical-state-release-20261107/RESULTS.md).
-  #381/938e9c50, deploy42405912779 SUCCESS; další deploy neopakovat. WIP zachovaný, přihlášené UAT NOT RUN.
+- P11-RH ROZPRACOVÁNO: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md).
+  Další nejvyšší zbývající kandidát: správní historie; plán před implementací, parita/měření před autorizovaným release.
 - P11-R13-F TECHNICKY HOTOVO: [plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md).
   #385/519ff098, deploy42477866185 SUCCESS; index, 5/5 veřejný DOM a anonym403 PASS; přihlášené UAT NOT RUN. R05 [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
