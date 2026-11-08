@@ -10520,6 +10520,17 @@
       "evidence": []
     },
     {
+      "id": "PL-21751e863c",
+      "path": "docs/verification/planner-mobile-release-20261108/RESULTS.md",
+      "title": "Q01/Q2 produkční vydání mobilního filtru",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "Q01/Q2",
+      "disposition": "Podpůrný bezpečný provozní důkaz konkrétního řezu, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
       "id": "PL-12d500fd6d",
       "path": "docs/verification/medical-filter-release-20261108/snapshot.php.txt",
       "title": "P11-R13-F veřejná čtecí sonda",
