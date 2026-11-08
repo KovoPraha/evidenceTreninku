@@ -1,5 +1,6 @@
 # Aktuální stav projektu
 
+- P15-SEC380 audit HOTOVO (1 LOW; úplné HTTP NOT RUN): [audit PR #380](verification/pr380-security-audit-20261108/RESULTS.md); jen dokumentace, bez produkčních změn.
 Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) a [úplný katalog](PLAN_CATALOG.md).
 - **P11-R13-S NASAZENO:** release `938e9c50317be43e8b206da93294ca41d10065c0`, deploy42405912779 SUCCESS; [protokol](verification/medical-state-release-20261107/RESULTS.md).
   Parita/přínos/12CI PASS; [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). Import/UAT false; přihlášené UAT NOT RUN, WIP zachovaný.
@@ -34,7 +35,6 @@ Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   [Důkazy a meze](verification/member-evidence-cutover-20261102/RESULTS.md).
   Jedna poslední synchronizace čeká na nový export, počáteční den se neposouvá.
   Přihlášené UAT a E8 nejsou dokončené; převodní mapy a bod návratu zůstávají zachované.
-
 - [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
 
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,

@@ -275,3 +275,10 @@ D13 průběžně: první prototyp a7b1bee9 zamítnut pro deploy kvůli regresi c
 D14 upřesnění po měření V3: rychlá projekce pouze pro stav bez doplňkových filtrů; hledání/datum/osoba původní SQL, protože nativní11.4 profil doložil režii scoped větve. Žádný odhad velikosti ani další prahová sonda. Finální časování s explicitně vypnutou SQL query cache, malá pevná režie přiznaná. [Výsledky](verification/medical-state-read-performance-20261107/RESULTS.md).
 
 P11-R13-S — uzavřený technický řez podle D14: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [finální parita/přínos](verification/medical-state-read-performance-20261107/RESULTS.md), [merge/deploy/čtecí kontrola](verification/medical-state-release-20261107/RESULTS.md), [handoff](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). #381/938e9c50, deploy42405912779 SUCCESS. Malá pevná režie přiznaná; původní doplňkové filtry zachované. Přihlášené UAT/rows examined a celé K0.2 dál otevřené.
+
+## D2026-11-08-SEC380
+
+- Na přímé zadání vlastníka auditovat PR #380 a předat dokumenty; žádná oprava runtime ani produkční operace.
+- Zvolen samostatný dokumentační PR z main, aby audit byl dohledatelný i před integrací S1/S4. Auditovaná revize je pevně uvedená.
+- Oddělen potvrzený LOW nález od nedoložené celé HTTP přejímky; globální registrářský rozsah není bez důkazu požadavku na ACL označen za IDOR.
+- [Výsledek, otevřená oprava a testy](verification/pr380-security-audit-20261108/RESULTS.md).
