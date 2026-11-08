@@ -1,0 +1,115 @@
+name: Training history parity and performance
+
+on:
+  pull_request:
+    paths:
+      - 'sprava_treninku.php'
+      - 'sprava_vsech_treninku.php'
+      - 'includes/training_history_read.php'
+      - 'tests/Support/TrainingHistory*'
+      - 'tests/Integration/TrainingHistoryReadTest.php'
+      - '.github/workflows/training-history-performance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-history:
+    name: Training history native (MariaDB ${{ matrix.mariadb-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        mariadb-version: ['10.3', '11.4']
+    services:
+      mariadb:
+        image: mariadb:${{ matrix.mariadb-version }}
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.2'
+          extensions: mbstring, gd, zip, curl, pdo_mysql, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+      - name: Install locked dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Verify exact current-main parity on native PDO
+        env:
+          EVIDENCE_ROSTER_READ_MARIADB: '1'
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+        run: php vendor/bin/phpunit tests/Integration/TrainingHistoryReadTest.php --log-junit training-history-tests.xml
+      - name: Measure paired filtered reads without SQL result caching
+        env:
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: php -d memory_limit=512M tests/Support/TrainingHistoryProfile.php > training-history-comparison.json
+      - name: Preserve native parity and paired measurements
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: training-history-native-${{ matrix.mariadb-version }}
+          path: |
+            training-history-comparison.json
+            training-history-tests.xml
+          retention-days: 30
+
+  integrated-training-history:
+    name: Training history HTTP and Chrome (MariaDB 11.4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: '1'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: '8.2'
+          extensions: mbstring, gd, zip, curl, pdo_mysql, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+      - name: Prepare locked PHP dependencies and browser CLI
+        run: |
+          composer install --prefer-dist --no-interaction --no-progress
+          npm install --global @playwright/cli@0.1.23
+          if ! command -v google-chrome >/dev/null; then npx --yes playwright install --with-deps chrome; fi
+          google-chrome --version
+          playwright-cli --version
+      - name: Compare original and paged histories on one owned fixture
+        env:
+          TRAINING_HISTORY_BASE_SHA: cc80556131f855cb29ec75c335873574930577af
+          EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+          EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
+        run: python3 tests/Support/TrainingHistoryIntegratedProfile.py
+      - name: Preserve safe integrated measurements
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: training-history-integrated-http-browser
+          path: output/training-history-ci-safe/
+          if-no-files-found: warn
+          retention-days: 30

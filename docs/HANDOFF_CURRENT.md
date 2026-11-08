@@ -21,8 +21,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   Původní WIP a oba picker worktrees zachované; výsledky a kalibrace jsou v repu, nové aktivace žádné.
   [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
-- P11-R13-S HOTOVO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [provozní důkaz](verification/medical-state-release-20261107/RESULTS.md).
-  #381/938e9c50, deploy42405912779 SUCCESS; další deploy neopakovat. WIP zachovaný; [filtry částečně PASS při 0 záznamech](verification/quality-uat-20261108/RESULTS.md).
+- P11-RH ROZPRACOVÁNO: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md).
+  PR #394: implementace/parita3/922 a SQLite přínos PASS; nativní/HTTP/Chrome se připravují, zatím bez deploye.
 - P11-R13-F NASAZENO: #385/519ff098, deploy42477866185 SUCCESS; [protokol](verification/medical-filter-release-20261108/RESULTS.md), index/veřejný DOM/anonym403 PASS; přihlášené UAT nového vydání NOT RUN.
 - P11-R05-H zachováno: [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md); čtecí UAT našlo [360px přetékání](verification/quality-uat-20261108/RESULTS.md), Q2 [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) / `5b9279f9` sloučené, 11 CI PASS; deploy a produkční kontrola opravy NOT RUN.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),

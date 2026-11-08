@@ -294,3 +294,7 @@ D15/V4: po mírné regresi V3 datum_day zvolené latest-verified anti-join pro p
 D15/V5,8.11.: po čtyřech SQL-only měřeních zůstává datum/poloviční pending regresní. Schválený cíl optimalizace nyní řeší i krycí index bez změny klinických hodnot. Původní plán bezDDL nahrazen; samotný index i kód měřit odděleně. Produkční metadata přečíst před migrací, online ADD INDEX až po záloze a testech, ověřit před aktivací. [Online ADD INDEX/LOCK NONE a krátké metadata zámky — MariaDB](https://mariadb.com/docs/server/server-usage/storage-engines/innodb/innodb-online-ddl/innodb-online-ddl-operations-with-the-inplace-alter-algorithm); žádný slib nulového blokování. [Výsledky](verification/medical-filter-read-performance-20261107/RESULTS.md).
 
 D15 uzavření8.11.2026: V5 přijatá po přesné paritě, opakovaném nativním/HTTP přínosu a15CI; #385/519ff098 nasazeno42477866185. Produkční metadata potvrdila krycí index, klinická data beze změny. Přihlášené UAT zůstává samostatné. [Trvalé důkazy](verification/medical-filter-release-20261108/RESULTS.md).
+
+## D2026-11-08-RH — stránka před podrobnostmi správní historie
+
+PŘIJATO podle nového zadání Marka: po dokončení cen/katalogu/docházky a R05/R13 zvolené zbývající pořadí4 analýzy. Tenké kandidáty a kanonická hierarchie před stránkou25, plné detaily až po ní; přesné celkové souhrny a dostupnost celé historie zachovat. Datové remízy zpřesnit idDESC, hledání potvrzovat serveru. Parita a naměřený přínos před release. [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md).

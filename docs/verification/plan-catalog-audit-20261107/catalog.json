@@ -10540,6 +10540,39 @@
       "registry": "P11-R13-F",
       "disposition": "Podpůrný bezpečný provozní důkaz konkrétního řezu, nikoli samostatná roadmapa.",
       "evidence": []
+    },
+    {
+      "id": "PL-edcee65e8b",
+      "path": "docs/TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md",
+      "title": "P11-RH — správní historie tréninků",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P11-RH",
+      "disposition": "Nové zadání, parita a výkon před release.",
+      "evidence": []
+    },
+    {
+      "id": "PL-809730f2ad",
+      "path": "docs/SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md",
+      "title": "Předání P11-RH",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-RH",
+      "disposition": "Podpůrná evidence konkrétního řezu.",
+      "evidence": []
+    },
+    {
+      "id": "PL-30babc7778",
+      "path": "docs/verification/training-history-page-performance-20261108/RESULTS.md",
+      "title": "P11-RH — parita a výkon",
+      "primary": false,
+      "role": "verification",
+      "status": "SUPPORT",
+      "registry": "P11-RH",
+      "disposition": "Podpůrná evidence konkrétního řezu.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

@@ -10,24 +10,38 @@ if (!isset($_SESSION['trener_id']) || !canAccess('sprava_treninku')) {
 require_once 'csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';
+require_once __DIR__ . '/includes/training_history_read.php';
 
-function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s)
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 
 // ── Vstupní filtry (validace) ──────────────────────────────────────────────
 $filterGroup = $_GET['skupina_id'] ?? '';
 $filterSub   = $_GET['podskupina_id'] ?? '';
 $filterTeam  = $_GET['team_id'] ?? '';
 $filterTr    = $_GET['trenere'] ?? [];
-if (!is_array($filterTr)) $filterTr = [$filterTr];
+if (!is_array($filterTr)) {
+    $filterTr = [$filterTr];
+}
 
-if ($filterGroup !== '' && !ctype_digit((string)$filterGroup)) $filterGroup = '';
-if ($filterSub   !== '' && !ctype_digit((string)$filterSub))   $filterSub   = '';
-if ($filterTeam  !== '' && !ctype_digit((string)$filterTeam)) $filterTeam = '';
-$filterTr = array_map('intval', array_filter($filterTr, fn($v) => ctype_digit((string)$v)));
+if ($filterGroup !== '' && !ctype_digit((string)$filterGroup)) {
+    $filterGroup = '';
+}
+if ($filterSub   !== '' && !ctype_digit((string)$filterSub)) {
+    $filterSub   = '';
+}
+if ($filterTeam  !== '' && !ctype_digit((string)$filterTeam)) {
+    $filterTeam = '';
+}
+$filterTr = array_map('intval', array_filter($filterTr, fn ($v) => ctype_digit((string)$v)));
 
 // Flash zprávy
-$flashError   = $_SESSION['flash_error'] ?? null;   unset($_SESSION['flash_error']);
-$flashSuccess = $_SESSION['flash_success'] ?? null;  unset($_SESSION['flash_success']);
+$flashError   = $_SESSION['flash_error'] ?? null;
+unset($_SESSION['flash_error']);
+$flashSuccess = $_SESSION['flash_success'] ?? null;
+unset($_SESSION['flash_success']);
 
 // ── Načtení dat pro filtry ─────────────────────────────────────────────────
 $groups = $subs = $trainers = [];
@@ -49,6 +63,7 @@ if ($filterGroup !== '') {
 }
 
 // ── Hlavní dotaz ───────────────────────────────────────────────────────────
+$historyPage = ['rows' => [], 'total' => 0, 'page' => 1, 'pages' => 1, 'hours' => 0, 'categories' => []];
 $treninky = [];
 try {
     $sql = "SELECT t.id, t.datum, t.napln, t.poznamka, t.obrazky,
@@ -61,8 +76,14 @@ try {
             WHERE 1=1";
     $params = [];
 
-    if ($filterGroup !== '') { $sql .= ' AND tg.skupina_id = ?';     $params[] = (int)$filterGroup; }
-    if ($filterSub   !== '') { $sql .= ' AND tp.podskupina_id = ?';  $params[] = (int)$filterSub; }
+    if ($filterGroup !== '') {
+        $sql .= ' AND tg.skupina_id = ?';
+        $params[] = (int)$filterGroup;
+    }
+    if ($filterSub   !== '') {
+        $sql .= ' AND tp.podskupina_id = ?';
+        $params[] = (int)$filterSub;
+    }
     if (!empty($filterTr)) {
         $ph = implode(',', array_fill(0, count($filterTr), '?'));
         $sql .= " AND tt.trener_id IN ($ph)";
@@ -70,10 +91,8 @@ try {
     }
 
     $sql .= ' GROUP BY t.id ORDER BY t.datum DESC';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if ($filterTeam !== '') $treninky = trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$filterTeam);
+    $historyPage = TrainingHistoryRead::page($pdo, $sql, $params, (int)$filterTeam, TrainingHistoryRead::requested($_GET));
+    $treninky = $historyPage['rows'];
 } catch (PDOException $e) {
     error_log('sprava_treninku.php main query: ' . $e->getMessage());
     $flashError = 'Nepodařilo se načíst tréninky. Zkuste to znovu.';
@@ -102,15 +121,18 @@ if (!empty($treninky)) {
     }
 }
 
-$czDays = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
-           'Thursday'=>'Čtvrtek','Friday'=>'Pátek','Saturday'=>'Sobota','Sunday'=>'Neděle'];
+$historyFilters = ['skupina_id' => $filterGroup, 'podskupina_id' => $filterSub, 'team_id' => $filterTeam, 'trenere' => $filterTr];
+
+$czDays = ['Monday' => 'Pondělí','Tuesday' => 'Úterý','Wednesday' => 'Středa',
+           'Thursday' => 'Čtvrtek','Friday' => 'Pátek','Saturday' => 'Sobota','Sunday' => 'Neděle'];
 ?>
 <!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
     <title>Správa tréninků</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
 </head>
 <body class="bg-light">
 <?php include 'hlavicka.php'; ?>
@@ -176,6 +198,8 @@ $czDays = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
         </div>
     </form>
 
+    <?php TrainingHistoryRead::navigation($historyPage, $historyFilters); ?>
+
     <!-- Tabulka -->
     <div class="table-responsive">
         <table class="table table-striped table-bordered align-middle">
@@ -192,12 +216,15 @@ $czDays = ['Monday'=>'Pondělí','Tuesday'=>'Úterý','Wednesday'=>'Středa',
             <tbody>
                 <?php foreach ($treninky as $t):
                     $tid = (int)$t['id'];
-                    try { $dayEng = (new DateTime($t['datum']))->format('l'); }
-                    catch (Exception $e) { $dayEng = ''; }
+                    try {
+                        $dayEng = (new DateTime($t['datum']))->format('l');
+                    } catch (Exception $e) {
+                        $dayEng = '';
+                    }
                     $dayCz      = $czDays[$dayEng] ?? h($dayEng);
                     $ucastnici  = $ucastniciByTrenink[$tid] ?? [];
                     $thumbs     = array_filter(array_map('trim', explode(',', (string)($t['obrazky'] ?? ''))));
-                ?>
+                    ?>
                 <tr>
                     <td class="p-0" style="width:1px;">
                         <button class="btn btn-link p-2" data-bs-toggle="collapse"
