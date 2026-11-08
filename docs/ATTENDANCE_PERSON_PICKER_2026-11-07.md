@@ -149,3 +149,22 @@ pouze dokumentaci blokace; podrobný [protokol](verification/attendance-picker-p
 
 Dokumentační předání: první commit `648abf33` pushnutý, [PR #377](https://github.com/KovoPraha/evidenceTreninku/pull/377).
 Finální head/CI/merge ověř u PR; stav UAT zůstává BLOKOVANÉ i po sloučení dokumentace.
+
+### Opakovaný pokus — 7. 11. 2026 po #377
+
+Vlastník zadal nový pokus pouze při funkčním ověření URL a bez duplicitního UAT.
+Základ `b3d0f4bb`, větev `codex/attendance-picker-uat-retry-20261107`, stejný vlastní
+worktree. Main a aktuální stavy obou výkonových vláken dokončené přihlášené UAT
+nedokládají; řeší objemové měření a jiné nasazení. Rozsah i zákaz zápisů výše platí.
+Před funkčními scénáři znovu ověřit URL a čtení stránky podporovaným nástrojem.
+UAT zůstává BLOKOVANÉ do skutečného ověření předpokladů a provedení scénářů;
+průběh se doplní do stejného protokolu, nevzniká druhý plán.
+
+Nový pokus ověřil URL i čtení stránky: vlastní Chrome karta po otevření
+docházky i pracovního rozcestníku skončila na `https://kis.kovopraha.cz/login.php`.
+Aktuální stav **BLOKOVANÉ — chybí přihlášená relace**. Karta předána vlastníkovi
+k ručnímu přihlášení existujícím pracovním účtem bez změny role. Přihlašovací
+formulář nevyplněn ani neodeslán, funkční scénáře neprovedené. Další krok:
+po potvrzeném přihlášení obnovit čtení cílové stránky a pokračovat výše vymezeným UAT.
+Opakovaný pokus je pushnutý ve větvi výše a sdílený v [PR #378](https://github.com/KovoPraha/evidenceTreninku/pull/378).
+Aktuální head, CI a stav merge ověř přímo u PR; UAT tím není provedeno.
