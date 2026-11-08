@@ -383,7 +383,8 @@ function clubProgramCreatePaymentOption(
     int$baseOfferId,
     array$input,
     string$reason,
-    bool$confirmed
+    bool$confirmed,
+    bool $manageTransaction = true
 ): array {
     $reason = clubProgramText($reason, 1000, 'Důvod změny');
     if ($actorId < 1 || $baseOfferId < 1 || !$confirmed) {
@@ -400,7 +401,11 @@ function clubProgramCreatePaymentOption(
 
     'unit_code' => 'person','visible' => 1,
     ]);
-    $pdo->beginTransaction();
+    if ($manageTransaction) {
+        $pdo->beginTransaction();
+    } elseif (!$pdo->inTransaction()) {
+        throw new LogicException('Dávkové založení variant vyžaduje otevřenou transakci.');
+    }
     try {
         $sql = ('SELECT o.*,p.origin AS product_origin,p.catalog_status AS product_status,p.offer_type FROM ' .
 
@@ -469,12 +474,14 @@ function clubProgramCreatePaymentOption(
             ['purchase_option' => $option,'is_featured' => $featured,'base_offer_id' => $baseOfferId,'_audit_reason'
     => $reason]
         );
-        $pdo->commit();
+        if ($manageTransaction) {
+            $pdo->commit();
+        }
         return['offer_id' => (int)$offer['id'],'variant_id' => $variantId,'product_id' => (int)$base['product_id'],
 
     'program_id' => (int)$base['program_id']];
     } catch (Throwable$exception) {
-        if ($pdo->inTransaction()) {
+        if ($manageTransaction && $pdo->inTransaction()) {
             $pdo->rollBack();
         }
         if ($exception instanceof InvalidArgumentException || $exception instanceof ClubProgramStorefrontException

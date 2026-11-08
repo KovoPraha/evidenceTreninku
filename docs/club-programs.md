@@ -1,5 +1,19 @@
 # Kroužkové programy, období a účasti (M1.4)
 
+## UX01 — doplnění celoroční nabídky ke stávajícím skupinám (8. 11. 2026)
+
+Stav: LOKÁLNĚ IMPLEMENTOVÁNO, čeká PR a UAT. Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Větev `codex/year-offer-ux-20261108`, samostatný worktree z `origin/main` `5b9279f9`. Pověření vlastníka: implementovat zjednodušení administrace; nepřidávat ostré ceny, nabídky ani platby. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
+
+Produkční čtecí kontrola 8. 11. ukázala zveřejněné Točňáky úterý, čtvrtek a 2× týdně, každý s prvním i druhým pololetím a bez celoroční nabídky. Starší společná nabídka 1× týdně je skrytá/uzavřená. Běžné administrační založení další varianty nyní vyžaduje ruční název, kód, SKU, platnost, prodejní okno, cenu, kapacitu a věk pro každou skupinu zvlášť.
+
+Cíl: ze stránky Kroužky otevřít přehled způsobilých skupin stejného školního roku, vybrat jednu nebo více, zadat schválenou celoroční cenu pro každou z nich a před zápisem vidět přesný souhrn. Systém odvodí datum platnosti z obou pololetí, kopíruje jejich společnou soupisku/produkt/kapacitu/věk, vytvoří unikátní kód a SKU a použije stávající nákupní a platební cestu. Zápis vybraných skupin je atomický. Existující celoroční nabídku nelze vytvořit podruhé. Nejednoznačné nebo rozdílné pololetní údaje se nesmějí tiše převzít. Samotný rozvrh tréninků ani starší nabídky se nemění.
+
+Akceptace: čitelný souhrn a výslovné potvrzení, jedna i více skupin, stejné cílové soupisky, žádná duplicita při opakování/souběhu, rollback celé dávky při chybě, žádné přebírání ceny odhadem; lokální syntetické testy a PHP lint. Produkční UAT a zveřejnění skutečných cen jsou samostatné kroky. [Rozhodnutí](DECISION_LOG.md#d2026-11-08-01).
+
+Realizace: v `club_program_offers_admin.php` je vstup „Doplnit celý rok“. `club_program_year_offer_admin.php` ukáže způsobilé skupiny, ceny pololetí a přesný náhled před potvrzením. `includes/club_program_year_offer.php` odvozuje společná pole, blokuje nejednoznačnosti, znovu ověřuje otisk pololetí a klubových podmínek po zamčení programů a založí všechny vybrané varianty v jediné transakci přes stávající `clubProgramCreatePaymentOption()`. Schválenou celoroční cenu musí správce zadat sám. Nová databázová tabulka ani migrace nejsou potřeba.
+
+Lokální ověření 8. 11.: syntetické integrační testy kroužků a sdílené kapacity PASS (19 testů, 180 assertions), včetně shodné soupisky/produktu, odmítnutí opakování a rollbacku celé dávky; PHP lint pěti dotčených souborů PASS, samostatný php-cs-fixer `--dry-run` PASS, limit délky řádků a `git diff --check` PASS, `tools/check-current-docs.php` PASS. Kompletní `tools/check-php-style.php` lokálně skončil pouze na chybějícím `vendor/bin/php-cs-fixer` v napojených závislostech worktree; kontrolu stylu provede CI. Přihlášené UAT nového formuláře, objednávka, platba a ostré zveřejnění NOT RUN.
+
 ## Doménový model
 
 - `club_programs` je stabilní služba, například Cyklistická škola. Nemění se při novém pololetí.

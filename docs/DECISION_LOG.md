@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-08-01
+
+PŘIJATO 8. 11. 2026 na přímé zadání vlastníka: zjednodušit doplnění celoročních nabídek k existujícím kroužkům. Správce má vybrat současné skupiny a zadat schválené ceny, zatímco datum, vazby, kapacita, věk, kód a SKU se odvodí z obou pololetí. Zápis více skupin musí být atomický a opakování bez duplicit. Nový samostatný program nebo produkt pro stejnou skupinu by rozpojil existující soupisku; ruční vyplnění všech polí zůstane jako pokročilá cesta. [Plán](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026). Ceny a produkční zápis toto rozhodnutí neschvaluje.
+
 ## D2026-11-07-13
 
 PŘIJATO 7. 11. 2026 na přímé zadání vlastníka: [P11-SCALE](MEDICAL_PLANNER_SCALE_2026-11-07.md).

@@ -21,6 +21,10 @@ zahrnuje i vložené ověřovací plány, historické prompty a podpůrné artef
 [Původní etapy 0–6 a R01–R44](plans/realization-20261022/README.md) jsou nyní
 sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešní stav.
 
+## UX01 — celoroční nabídka stávajícího kroužku
+
+Stav: LOKÁLNĚ IMPLEMENTOVÁNO, čeká PR a UAT; přímé zadání vlastníka 8. 11. 2026. Vlastník: vývoj; ceny a ostré zveřejnění určuje vedení klubu. [Plán a výsledky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [rozhodnutí](DECISION_LOG.md#d2026-11-08-01). Větev `codex/year-offer-ux-20261108`, samostatný worktree z `origin/main` `5b9279f9`; cizí WIP zachované. Syntetické testy 19/180 PASS, PHP lint a dokumentační kontrola PASS. Další krok: PR, CI, přihlášené UAT; produkční nabídky bez schválených cen nevytvářet.
+
 ## KONCEPT Q01 — další vývoj: doladění, úklid, příprava (8. 11. 2026)
 
 Vlastník: vývoj; produktové a provozní přijetí: vlastník klubu a dotčené role.
