@@ -76,6 +76,7 @@ try {
             $sql = Tests\Support\TrainingHistoryFixture::sql($pdo, true, $where);
             $expected = Tests\Support\TrainingHistoryBaseline::read($pdo, $sql, $params, $team);
             ksort($expected['labels'], SORT_NUMERIC);
+            $expected['participants'] = Tests\Support\TrainingHistoryFixture::participantGroups($expected['participants']);
             $ids = array_column(array_slice($expected['rows'], 0, 25), 'id');
             $wanted = ['rows' => array_slice($expected['rows'], 0, 25),
                 'labels' => array_intersect_key($expected['labels'], array_flip($ids)),
@@ -97,6 +98,7 @@ try {
                     $peak = memory_get_peak_usage(false) - $usage;
                     // Labels are a lookup map; cross-training map insertion order is not rendered.
                     ksort($value['labels'], SORT_NUMERIC);
+                    $value['participants'] = Tests\Support\TrainingHistoryFixture::participantGroups($value['participants']);
                     if ($value !== ($variant === 'before' ? $expected : $wanted)) {
                         throw new RuntimeException('Changed history rows, labels or participants.');
                     }

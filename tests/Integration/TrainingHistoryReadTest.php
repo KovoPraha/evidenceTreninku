@@ -52,7 +52,7 @@ final class TrainingHistoryReadTest extends TestCase
                         foreach ($ids as $id) {
                             self::assertSame($old['labels'][$id] ?? null, $labels[$id] ?? null);
                         }
-                        self::assertSame(array_values(array_filter($old['participants'], static fn (array $p): bool => in_array($p['trenink_id'], $ids))), Fixture::participants($pdo, $ids));
+                        self::assertSame(Fixture::participantGroups(array_values(array_filter($old['participants'], static fn (array $p): bool => in_array($p['trenink_id'], $ids)))), Fixture::participantGroups(Fixture::participants($pdo, $ids)));
                         array_push($all, ...$new['rows']);
                         if ($rich) {
                             self::assertSame(array_sum(array_column($old['rows'], 'delka')), $new['hours']);

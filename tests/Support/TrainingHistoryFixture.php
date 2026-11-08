@@ -60,14 +60,23 @@ final class TrainingHistoryFixture
             . ' GROUP BY t.id ORDER BY t.datum DESC';
     }
 
+    /** Preserve rendered name order within each training; ignore unrendered cross-training interleaving. */
+    public static function participantGroups(array $rows): array
+    {
+        usort($rows, static fn (array $a, array $b): int => $a['trenink_id'] <=> $b['trenink_id']);
+        return $rows;
+    }
+
     public static function participants(PDO $pdo, array $ids): array
     {
         if ($ids === []) {
             return [];
         }
-        $q = $pdo->prepare('SELECT ts.trenink_id,sp.prijmeni,sp.jmeno FROM trenink_sportovec ts
+        $name = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql'
+            ? "CONCAT(sp.prijmeni, ' ', sp.jmeno)" : "sp.prijmeni || ' ' || sp.jmeno";
+        $q = $pdo->prepare('SELECT ts.trenink_id,' . $name . ' AS jmeno_cele FROM trenink_sportovec ts
             JOIN sportovci sp ON sp.id=ts.sportovec_id WHERE ts.trenink_id IN ('
-            . implode(',', array_fill(0, count($ids), '?')) . ') ORDER BY sp.prijmeni,sp.jmeno,ts.trenink_id');
+            . implode(',', array_fill(0, count($ids), '?')) . ') ORDER BY sp.prijmeni,sp.jmeno');
         $q->execute($ids);
         try {
             return $q->fetchAll(PDO::FETCH_ASSOC);
