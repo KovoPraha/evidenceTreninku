@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 8. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
+Aktualizováno 8. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) včetně UX01 [celoročních nabídek](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
 - **P11-R13-F NASAZENO:** release `519ff098961943f1aa58a70e40fed3ffba37cc96`, deploy42477866185 SUCCESS; [protokol](verification/medical-filter-release-20261108/RESULTS.md).
   Parita/přínos/15CI PASS, index ověřený; [plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md). Import/UAT false; přihlášené UAT nového vydání NOT RUN, předchozí čtecí filtr měl 0 záznamů, [meze](verification/quality-uat-20261108/RESULTS.md); WIP zachovaný.
 - **P11-RH NASAZENO:** [správní historie / plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md).

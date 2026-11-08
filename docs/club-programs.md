@@ -1,5 +1,23 @@
 # Kroužkové programy, období a účasti (M1.4)
 
+## UX01 — doplnění celoroční nabídky ke stávajícím skupinám (8. 11. 2026)
+
+Stav: IMPLEMENTOVÁNO VE VĚTVI, [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) před merge; uživatel 8. 11. výslovně požádal pokračovat a nasadit kód. Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Větev `codex/year-offer-ux-20261108` nyní zahrnuje novější `origin/main` `ab49947d`; cizí WIP zachované. Původní pověření implementovat zjednodušení neobsahovalo ostré ceny, nabídky ani platby; nové pověření se vztahuje na nasazení kódu, neuvádí částky ani pokyn zveřejnit nabídky. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
+
+Produkční čtecí kontrola 8. 11. ukázala zveřejněné Točňáky úterý, čtvrtek a 2× týdně, každý s prvním i druhým pololetím a bez celoroční nabídky. Starší společná nabídka 1× týdně je skrytá/uzavřená. Běžné administrační založení další varianty nyní vyžaduje ruční název, kód, SKU, platnost, prodejní okno, cenu, kapacitu a věk pro každou skupinu zvlášť.
+
+Cíl: ze stránky Kroužky otevřít přehled způsobilých skupin stejného školního roku, vybrat jednu nebo více, zadat schválenou celoroční cenu pro každou z nich a před zápisem vidět přesný souhrn. Systém odvodí datum platnosti z obou pololetí, kopíruje jejich společnou soupisku/produkt/kapacitu/věk, vytvoří unikátní kód a SKU a použije stávající nákupní a platební cestu. Zápis vybraných skupin je atomický. Existující celoroční nabídku nelze vytvořit podruhé. Nejednoznačné nebo rozdílné pololetní údaje se nesmějí tiše převzít. Samotný rozvrh tréninků ani starší nabídky se nemění.
+
+Akceptace: čitelný souhrn a výslovné potvrzení, jedna i více skupin, stejné cílové soupisky, žádná duplicita při opakování/souběhu, rollback celé dávky při chybě, žádné přebírání ceny odhadem; lokální syntetické testy a PHP lint. Produkční UAT a zveřejnění skutečných cen jsou samostatné kroky. [Rozhodnutí](DECISION_LOG.md#d2026-11-08-01).
+
+Realizace: v `club_program_offers_admin.php` je vstup „Doplnit celý rok“. `club_program_year_offer_admin.php` ukáže způsobilé skupiny, ceny pololetí a přesný náhled před potvrzením. `includes/club_program_year_offer.php` odvozuje společná pole, blokuje nejednoznačnosti, znovu ověřuje otisk pololetí a klubových podmínek po zamčení programů a založí všechny vybrané varianty v jediné transakci přes stávající `clubProgramCreatePaymentOption()`. Schválenou celoroční cenu musí správce zadat sám. Nová databázová tabulka ani migrace nejsou potřeba.
+
+Lokální ověření 8. 11.: syntetické integrační testy kroužků a sdílené kapacity PASS (19 testů, 180 assertions), včetně shodné soupisky/produktu, odmítnutí opakování a rollbacku celé dávky; PHP lint pěti dotčených souborů PASS, samostatný php-cs-fixer `--dry-run` PASS, limit délky řádků a `git diff --check` PASS, `tools/check-current-docs.php` PASS. Kompletní `tools/check-php-style.php` lokálně skončil pouze na chybějícím `vendor/bin/php-cs-fixer` v napojených závislostech worktree; kontrolu stylu provede CI. Přihlášené UAT nového formuláře, objednávka, platba a ostré zveřejnění NOT RUN.
+
+CI pro kódový commit `56f1db82` v [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395): 11/11 PASS dne 8. 11. 2026, včetně PHPStan a changed-file style, PHPUnit na PHP 8.2, obou MariaDB 10.3/11.4 integračních smoke a čtecích profilů, docs a CodeQL. První běh PHPStanu odhalil čtyři statické chyby v nových souborech, opravené v `56f1db82`; následný úplný běh prošel. Produkční vydání a reálný nákup zůstávají NOT RUN.
+
+Release postup po novém pověření: vyřešit konflikt s aktuálním main, znovu ověřit CI přesného PR head, sloučit PR, na přesném main commitu spustit `deploy-production.yml` s `potvrzeni=NASADIT`, `uat_schvaleno=false` a `importovat_krouzky=false`. Po úspěšném deployi ověřit veřejnou stránku a přístup k novému administračnímu formuláři pouze čtením. Nevytvářet objednávky ani skutečné celoroční varianty bez schválených cen. Nasazení s sebou může zahrnovat již sloučené změny v main; před spuštěním přesně porovnat release commit a poslední nasazený stav.
+
 ## Doménový model
 
 - `club_programs` je stabilní služba, například Cyklistická škola. Nemění se při novém pololetí.

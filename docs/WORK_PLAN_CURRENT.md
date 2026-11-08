@@ -21,6 +21,10 @@ zahrnuje i vložené ověřovací plány, historické prompty a podpůrné artef
 [Původní etapy 0–6 a R01–R44](plans/realization-20261022/README.md) jsou nyní
 sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešní stav.
 
+## UX01 — celoroční nabídka stávajícího kroužku
+
+Stav: IMPLEMENTOVÁNO VE VĚTVI, [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) před merge; uživatel 8. 11. povolil pokračovat a nasadit kód. Vlastník: vývoj; ceny a ostré zveřejnění určuje vedení klubu. [Plán, výsledky a release postup](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [rozhodnutí](DECISION_LOG.md#d2026-11-08-01). Větev `codex/year-offer-ux-20261108` zahrnuje `origin/main` `ab49947d`; cizí WIP zachované. Předchozí CI 11/11 PASS, po vyřešení konfliktu znovu ověřit aktuální head. Další krok: merge, workflow deploy kódu a čtecí UAT; produkční nabídky bez schválených cen nevytvářet.
+
 ## KONCEPT Q01 — další vývoj: doladění, úklid, příprava (8. 11. 2026)
 
 Vlastník: vývoj; produktové a provozní přijetí: vlastník klubu a dotčené role.
