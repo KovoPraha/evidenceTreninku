@@ -1313,6 +1313,17 @@
       "evidence": []
     },
     {
+      "id": "PL-f0201ffc26",
+      "path": "docs/QUALITY_NEXT_SLICES_2026-11-08.md",
+      "title": "Q01: provozní přejímky a příprava další funkce",
+      "primary": true,
+      "role": "plan",
+      "status": "PLANNED",
+      "registry": "Q01-Q4/Q5",
+      "disposition": "Scénáře skutečné přejímky a návrh soukromého progresu; bez provozního provedení a aktivace.",
+      "evidence": []
+    },
+    {
       "id": "PL-409e0b027b",
       "path": "docs/R11_OPERATIONAL_DELIVERY.md",
       "title": "R11 — provozní zprávy a dohled nad úlohami",
