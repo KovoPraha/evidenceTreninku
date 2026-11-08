@@ -1,0 +1,21 @@
+{
+    "at_utc": "2026-11-08T19:25:53+00:00",
+    "phase": "after",
+    "method": "Anonymous coach history GET, no cookies, redirects or POST; no bodies or private headers stored.",
+    "cases": [
+        {
+            "url": "https://kis.kovopraha.cz/ajax_treninky.php?history_page=2",
+            "status": 403,
+            "redirect_path": null,
+            "pass": true
+        },
+        {
+            "url": "https://kis.kovopraha.cz/moje_treninky.php?history_page=2",
+            "status": 302,
+            "redirect_path": "login.php",
+            "pass": true
+        }
+    ],
+    "pass": true,
+    "limitation": "Authenticated coach history production UAT NOT RUN."
+}

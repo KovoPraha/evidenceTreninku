@@ -933,3 +933,11 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 | PL-145de4022b | [Předání P11-RHC](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md) | handoff / SUPPORT | P11-RHC |
 
 | PL-bea81332ea | [P11-RHC — parita a přínos](verification/coach-history-page-performance-20261108/RESULTS.md) | evidence / SUPPORT | P11-RHC |
+
+| PL-be24eb966e | [P11-RHC produkční předání a meze](verification/coach-history-release-20261108/RESULTS.md) | evidence / SUPPORT | P11-RHC |
+
+| PL-c15954f6e3 | [P11-RHC veřejný čtecí probe](verification/coach-history-release-20261108/snapshot.php.txt) | artifact / SUPPORT | P11-RHC |
+
+| PL-c482806629 | [P11-RHC anonymní guard probe](verification/coach-history-release-20261108/anonymous-history.php.txt) | artifact / SUPPORT | P11-RHC |
+
+| PL-09ba489840 | [P11-RHC opakovaná kontrola současného veřejného stavu](verification/coach-history-release-20261108/recheck/snapshot.php.txt) | artifact / SUPPORT | P11-RHC |

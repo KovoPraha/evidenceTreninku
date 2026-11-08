@@ -1,6 +1,6 @@
 # P11-RHC — stránkovaná trenérská historie
 
-8. 11. 2026: ROZPRACOVÁNO, plán před implementací.
+8. 11. 2026: HOTOVO v technickém rozsahu / NASAZENO. Původní plán a průběh níže.
 Vlastník: vývoj podle nového zadání Marka; commit/merge/deploy po přesné paritě,
 naměřeném přínosu a úspěšných kontrolách. [Předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md),
 [výsledky](verification/coach-history-page-performance-20261108/RESULTS.md).
@@ -95,3 +95,20 @@ stejný název/přítomnost/neprázdnost pole a akce se dál kontrolují, všech
 ostatní části karty zůstávají striktní. Diagnostika případné další neshody
 vrátí jen jména/otisky syntetických sekcí, nikoli HTML či session.
 Nový celý HTTP/Chrome běh nutný před release, spolu s převzatým main #395.
+
+
+## Konečný stav
+
+#400/da152282 sloučené po14CI, celá hlavní sada2400/54217 PASS; celý tree a
+měřené zdroje shodné. Deploy42494231010 SUCCESS, záloha389/2, migrace current,
+VS shodné, aktivace/smoke PASS. [Trvalý produkční protokol](verification/coach-history-release-20261108/RESULTS.md).
+Obě MariaDB2/819,476HTTP/78Chrome a interakce PASS, všechny výsledky/vazby
+přes všechny stránky shodné;25detailů a celý počet zachované.
+10k čtení1056→43ms /565→24ms, skutečný AJAX148→10ms,12,16MB→308kB,
+Chrome fetch→DOM+2frames4636→44ms. Malý měsíční default přibližně neutrální.
+Původní katalog před/po222→223 a nový produkt298: přesná původní parita
+není splněná kvůli pozorované změně obsahu, kód katalogu se zde neměnil;
+nová kontrola současného stavu5/5stabilní. Žádný produkt se nevracel zpět.
+Přihlášené produkční UAT NOT RUN, původní WIP shodný. Finální dokumentační
+větev codex/coach-history-release-proof-20261108 předává důkazy bez druhého deploye.
+Další osobní profil/měření/testy a celé P11/K0.2 tím nejsou uzavřené.

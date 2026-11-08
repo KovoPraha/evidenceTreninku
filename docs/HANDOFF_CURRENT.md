@@ -7,8 +7,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 
 ## Poslední práce a další krok
 
-- P11-RHC ROZPRACOVÁNO: [plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md).
-  Moje tréninky/AJAX: lokálně2/819 PASS, SQLite10k930→35ms; další krok nativní/HTTP/Chrome CI. Vlastní větev a WIP zachované.
+- **P11-RHC NASAZENO:** [plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md).
+  #400/`da152282`, deploy42494231010 SUCCESS,14CI/parita PASS; [protokol](verification/coach-history-release-20261108/RESULTS.md). AJAX148→10ms; původní katalog222→223, nový5/5stabilní. UAT NOT RUN, WIP shodný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).

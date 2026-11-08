@@ -304,3 +304,5 @@ Uzavření D2026-11-08-RH: po přesné paritě všech stránek a přínosu odstr
 ## D2026-11-08-RHC — stránka před drahými trenérskými AJAX detaily
 
 PŘIJATO podle nového zadání Marka: pokračování zbývající priority4 analýzy po uzavřeném RH. Moje tréninky stále načítají celou historii včetně účastníků; zvoleno před samostatným osobním profilem a plošným bootstrap/session zásahem. Zachovat veškeré výsledky a oprávnění, nejprve měřit celou cestu. [Plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md); převzaté ukončené P11-SCALE/R13-F zůstávají v registru a trvalých protokolech.
+
+Uzavření D2026-11-08-RHC: #400/da152282 a deploy42494231010 SUCCESS po14CI a přesné paritě. [Důkazy](verification/coach-history-page-performance-20261108/RESULTS.md), [provozní protokol](verification/coach-history-release-20261108/RESULTS.md). CSRF otáčení se normalizuje pouze v porovnání; žádné oslabení aplikace. Původní veřejný katalog má nově produkt298, výsledek neshody zůstává zachovaný, nový současný průchod stabilní; žádný rollback dat. Technický řez hotový, lidské UAT/ostatní P11 samostatné.

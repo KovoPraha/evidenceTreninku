@@ -1,55 +1,38 @@
 # Předání P11-RHC — Moje tréninky
 
-8. 11. 2026: ROZPRACOVÁNO, plán uložený před implementací.
+8. 11. 2026: HOTOVO v technickém rozsahu / NASAZENO.
 [Plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md),
-[výsledky](verification/coach-history-page-performance-20261108/RESULTS.md).
-Větev codex/coach-history-page-performance-20261108, baseab60bfdb,
-vlastní medical-state worktree. Původní WIP a jeho hash zachované.
+[parita a měření](verification/coach-history-page-performance-20261108/RESULTS.md),
+[produkční protokol a meze](verification/coach-history-release-20261108/RESULTS.md).
 
-Další neomezená cesta priority4 analýzy: ajax_treninky.php/Moje tréninky.
-Úzké kandidáty, kanonická hierarchie před stránkou25, plné detaily/vazby pouze
-stránky, úplný počet a celá historie dál dosažitelné. Všechny filtry/práva,
-CSRF i poznámkové writery zachovat. Osobní profil a další P11 samostatné.
+#400 sloučené jako da152282ad4274690595c188a78dec0c90422f38 po14CI SUCCESS na
+b4022c2a3b306d98ff0afdbba64f5ec342bb1e66;2400testů/54217assertions PASS.
+Celý tested/merged tree i čtyři měřené sourcehashy přesně shodné.
+Deploy42494231010 SUCCESS15:25:47UTC, import/UAT false. Záloha389tabulek/2triggery,
+migrace current/pending[], VS shodné, aktivace/smoke PASS.
+Převzaté #396/#395, Q2 cílené přihlášené UAT PASS a jeho meze zachované.
 
-Další krok: zmrazená reference, implementace a úplná parita všech stránek,
-nativní profily a skutečné HTTP/Chrome. Před nasazením aktuální zelené CI.
-Vlastník již povolil celý ověřený release; nezjišťovat stejné oprávnění znovu.
-Měření/PR/merge/deploy zatím NOT RUN. Skutečná výchozí produkce9681a56a,
-deploy42488777710 SUCCESS, vlastní RH již zahrnuté; staré vydání neopakovat.
+Trenérská AJAX historie vybírá tenké kandidáty a historický filtr před stránkou25;
+plné detaily a pět vazeb jen stránky, úplný počet a celá historie zachované.
+Filtry/násobnost JOIN/CSRF/writery stejné; nové filtry začínají na1.
+Parita obě MariaDB2/819 PASS včetně duplicity přes hranici25/26.
+476časovanýchHTTP,4zamítnutéGET+2revokace,78Chrome, další/předchozí/filtry/
+hledání/accordion/otevření-zrušení poznámky a390px stránkování PASS.
+10k čtení1056→43ms /565→24ms,26→8SQL,220000→10550řádků.
+Celý AJAX1001tréninků148→10ms,12,16MB→308kB;
+Chrome warm fetch→DOM+2frames4636→44ms, malý default43,00→43,85ms neutrální.
 
-První implementace lokálně2testy/829assertions PASS, včetně původní násobnosti JOIN,
-cizího trenéra, všech filtrů a celých vazeb/účastníků přes všechny stránky.
-SQLite prototyp10k:930→35ms,26→8SQL,220000→10550řádků; malé výsledky neutrální
-či s malou režií. Zdroj po prvním profilování jen PSR-12/zalomení atributů;
-finální native/HTTP měření musí ověřit aktuální hash. PDO emulace odpovídá db.php
-(default MySQL true, původní opakovaný :q zachovaný), ne předstírané serverové prepares.
-Hotový vlastněný HTTP/Chrome runner:15kladných scénářů včetně prázdných omezených
-rolí +anonym403, čerstvá revokace trenéra, přesné otisky karet/ID/pořadí/celkového
-počtu. Chrome měří fetch→DOM a dvě renderovací smyčky skutečného AJAX,3cold+10warm
-pro default/vše/prázdné; další/předchozí, filtry, hledání a otevření/zrušení poznámky.
-Bezpečné syntetické screenshoty desktop/390px; žádné produkční zápisy.
-Další krok: push/PR a aktuální nativní i celé HTTP/Chrome CI; release zatím NOT RUN.
+Produkční anonym AJAX403 /Moje tréninky302login stejné před/po.
+Původní veřejný katalog není shodný: mezi15:19 a19:25UTC produkt298 a222→223
+nabídek. Kód katalogu beze změny; žádná naše mutace produktu ani rollback.
+Nový dvojí průchod současného stavu5/5DOM shodný; nenahrazuje původní neshodu.
+Přihlášené produkční UAT trenérské historie NOT RUN.
 
-Před prvním CI převzatý main069c5bc5/#396. Doložené přihlášené Q2 UAT PASS a jeho meze zachované; pracovní E22 za přijatým E21, původní plánovací commit zachovaný. Oba původní aplikační route soubory baselineab60bfdb se tím nemění.
-
-První CI124695b0: obě nativní MariaDB parita829 a profily PASS, původní artefakty
-uchované v iteration1 výsledků. HTTP před našlo chybný testový předpoklad:
-registrář je již bootstrapem403, nikoli prázdný200; test opravuje očekávání,
-produkční autorizace beze změny. PHPStan potvrzuje pokles staré pdo výjimky9→8,
-baseline snížená, žádná nová potlačení. Rozšířené nativní fixture nyní používá
-stejný EXISTS vlastnictví jako aktivní trenér a duplicitu přes hranici25/26;
-lokálně2/819 PASS. Nové měření nutné, první profil se netvrdí jako finální.
-HTTP matice má nyní14kladných (včetně nulového cizího výsledku),2explicitně
-zamítnuté role a samostatnou čerstvou revokaci, v obou fázích přesně stejné.
-
-Převzatý nový main1c828fbf/#395: veškerý kód i UX01 plán/odkazy zachované, cizí otevřené PR se neslučují. Přijaté E22–26 zachované, vlastní zahájení nověE27. Vlastní aplikační zdroje a frozen původní route se nemění; celé aktuální CI po integraci znovu.
-
-PR [#400](https://github.com/KovoPraha/evidenceTreninku/pull/400), další CI6ed85c8a:
-obě nativní MariaDB2/819 a profily PASS, PHPStan/style PASS. Skutečné původní
-HTTP i Chrome prošly, v nové HTTP fázi byl jiný otisk karty. Porovnání zatím
-nenormalizovalo hidden csrf_token formuláře Vytvořit Story; explicitní revokace
-na konci fáze otáčí session a token. Doplněný pouze marker hodnoty tokenu,
-stejný název/přítomnost/neprázdnost pole a akce se dál kontrolují, všechny
-ostatní části karty zůstávají striktní. Diagnostika případné další neshody
-vrátí jen jména/otisky syntetických sekcí, nikoli HTML či session.
-Nový celý HTTP/Chrome běh nutný před release, spolu s převzatým main #395.
+Vlastní původní větev codex/coach-history-page-performance-20261108;
+worktree C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107.
+Finální důkazy předává větev codex/coach-history-release-proof-20261108 do main;
+po dokumentačním merge další deploy neopakovat. Osobní profil, další P11,
+fyzický mobil/souběh a lidské UAT zůstávají samostatné.
+Původní checkout codex/fio-auto-reconciliation-recovery a WIP neměnit;
+kis_rosters_admin.php SHA256
+`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` shodný.

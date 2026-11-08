@@ -10627,10 +10627,13 @@
       "title": "P11-RHC — trenérská historie",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-RHC",
-      "disposition": "Nový ověřený řez trenérské historie; parita a výkon před release.",
-      "evidence": []
+      "disposition": "Technický řez #400/da152282 nasazený, přesná parita/přínos/CI PASS; veřejný obsah změněný, UAT samostatné.",
+      "evidence": [
+        "docs/verification/coach-history-page-performance-20261108/RESULTS.md",
+        "docs/verification/coach-history-release-20261108/RESULTS.md"
+      ]
     },
     {
       "id": "PL-145de4022b",
@@ -10652,6 +10655,50 @@
       "status": "SUPPORT",
       "registry": "P11-RHC",
       "disposition": "Podpůrný konkrétní podklad.",
+      "evidence": []
+    },
+    {
+      "id": "PL-be24eb966e",
+      "path": "docs/verification/coach-history-release-20261108/RESULTS.md",
+      "title": "P11-RHC produkční předání a meze",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHC",
+      "disposition": "Bezpečný konkrétní důkaz, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-c15954f6e3",
+      "path": "docs/verification/coach-history-release-20261108/snapshot.php.txt",
+      "title": "P11-RHC veřejný čtecí probe",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-RHC",
+      "disposition": "Bezpečný konkrétní důkaz, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-c482806629",
+      "path": "docs/verification/coach-history-release-20261108/anonymous-history.php.txt",
+      "title": "P11-RHC anonymní guard probe",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-RHC",
+      "disposition": "Bezpečný konkrétní důkaz, nikoli samostatná roadmapa.",
+      "evidence": []
+    },
+    {
+      "id": "PL-09ba489840",
+      "path": "docs/verification/coach-history-release-20261108/recheck/snapshot.php.txt",
+      "title": "P11-RHC opakovaná kontrola současného veřejného stavu",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P11-RHC",
+      "disposition": "Bezpečný konkrétní důkaz, nikoli samostatná roadmapa.",
       "evidence": []
     }
   ],

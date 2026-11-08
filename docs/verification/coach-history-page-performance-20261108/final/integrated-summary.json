@@ -1,0 +1,111 @@
+{
+  "complete": true,
+  "baseline_sha": "ab60bfdb827d7daee143541baaec222d99cf8ba3",
+  "optimized_sha": "b4022c2a3b306d98ff0afdbba64f5ec342bb1e66",
+  "source_sha256": {
+    "ajax_treninky.php": "51afb299c7cec6761b18f3dae71da835e6d496703ce52c2c8b92160104633faf",
+    "moje_treninky.php": "dff4ec74386ca7b59a1e8a825151159f05969c7981834fed771dfe445877e1a2",
+    "includes/coach_history_read.php": "4405abc31a520cec7606d43b4caa022e8bbb89dc8c2c0a0453067be460822011",
+    "includes/training_history_read.php": "a759e461962c25427ea5d8d8ba24d5394ed6597072d5c2f178f80651473f2c5f"
+  },
+  "cases": [
+    {
+      "id": "all",
+      "before_median_ms": 148.13899999999998,
+      "after_median_ms": 10.274999999999999,
+      "before_bytes": 12155924,
+      "after_bytes": 307864
+    },
+    {
+      "id": "group",
+      "before_median_ms": 149.091,
+      "after_median_ms": 13.089,
+      "before_bytes": 12143088,
+      "after_bytes": 307171
+    },
+    {
+      "id": "team",
+      "before_median_ms": 155.355,
+      "after_median_ms": 14.959,
+      "before_bytes": 12143088,
+      "after_bytes": 307171
+    },
+    {
+      "id": "year",
+      "before_median_ms": 50.876,
+      "after_median_ms": 9.523,
+      "before_bytes": 3789296,
+      "after_bytes": 307866
+    },
+    {
+      "id": "month_without_year",
+      "before_median_ms": 13.919,
+      "after_median_ms": 8.581999999999999,
+      "before_bytes": 826461,
+      "after_bytes": 307879
+    },
+    {
+      "id": "year_month",
+      "before_median_ms": 6.596,
+      "after_median_ms": 6.555,
+      "before_bytes": 97876,
+      "after_bytes": 99102
+    },
+    {
+      "id": "search",
+      "before_median_ms": 53.091,
+      "after_median_ms": 43.501,
+      "before_bytes": 1360074,
+      "after_bytes": 307209
+    },
+    {
+      "id": "wildcard",
+      "before_median_ms": 158.142,
+      "after_median_ms": 11.416,
+      "before_bytes": 12155924,
+      "after_bytes": 307865
+    },
+    {
+      "id": "rare",
+      "before_median_ms": 44.785,
+      "after_median_ms": 45.007,
+      "before_bytes": 12194,
+      "after_bytes": 12510
+    },
+    {
+      "id": "empty",
+      "before_median_ms": 22.794999999999998,
+      "after_median_ms": 22.446,
+      "before_bytes": 77,
+      "after_bytes": 263
+    },
+    {
+      "id": "page2",
+      "before_median_ms": 156.115,
+      "after_median_ms": 10.093,
+      "before_bytes": 12155924,
+      "after_bytes": 307318
+    },
+    {
+      "id": "last",
+      "before_median_ms": 149.684,
+      "after_median_ms": 6.787,
+      "before_bytes": 12155924,
+      "after_bytes": 12660
+    },
+    {
+      "id": "foreign",
+      "before_median_ms": 18.376,
+      "after_median_ms": 18.087,
+      "before_bytes": 77,
+      "after_bytes": 263
+    },
+    {
+      "id": "other_coach",
+      "before_median_ms": 20.079,
+      "after_median_ms": 20.471,
+      "before_bytes": 6400,
+      "after_bytes": 6716
+    }
+  ]
+}
