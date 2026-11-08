@@ -1,8 +1,9 @@
 # Přihlášené produkční UAT výběru osob — pouze čtením
 
-Stav: **BLOKOVANÉ**. ID P11-PICKER-PROD-RO, 7. 11. 2026.
-Aktuální blokátor opakovaného pokusu: chybí přihlášená relace v kontrolní kartě;
-ověření URL a čtení stránky už funguje. Ruční přihlášení předáno vlastníkovi.
+Stav: **ČÁSTEČNĚ PROVEDENO 8. 11.** ID P11-PICKER-PROD-RO.
+Původní blokace 7. 11. chybějící přihlášenou relací byla odstraněna ručním
+přihlášením vlastníka; [nový čtecí průchod](../quality-uat-20261108/RESULTS.md)
+ověřil hledání a stránkování, nikoli všechny scénáře ani DB stav.
 [Plán a hranice](../../ATTENDANCE_PERSON_PICKER_2026-11-07.md#přihlášené-produkční-uat-pouze-čtením--7-11-2026).
 Základ `69f49033`, větev `codex/attendance-picker-production-readonly-uat-20261107`,
 worktree `C:/Users/Marek/Documents/Codex/evidencePavel-picker-production-readonly-uat-20261107`.
@@ -25,7 +26,7 @@ Blokátor je čtení/ověření URL v ovládacím nástroji. Není doloženo, ž
 o chybu aplikace nebo chybějící přihlášení; nové přihlášení ani deploy se
 nepovažují za ověřenou opravu tohoto problému.
 
-## Stav scénářů
+## Stav scénářů původních pokusů 7. 11.
 
 | Scénář | Stav | Důkaz / mez |
 | --- | --- | --- |

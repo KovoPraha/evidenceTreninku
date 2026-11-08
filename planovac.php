@@ -488,7 +488,7 @@ try {
         <!-- Trenér select — viditelný jen při "Vše" -->
         <select name="trener_id" id="trenerSelect"
                 class="form-select form-select-sm <?= $filterJenMoje ? 'd-none' : '' ?>"
-                style="width:auto" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+                style="width:auto;max-width:100%" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
 ?>" onchange="this.form.submit()">
             <option value="">— všichni trenéři —</option>
             <?php foreach ($treneri as $tr): ?>
@@ -500,12 +500,12 @@ try {
         </select>
 
         <!-- Kanonická skupina / soupiska a oddělený historický filtr. -->
-        <select name="team_id" class="form-select form-select-sm" style="width:auto"
+        <select name="team_id" class="form-select form-select-sm" style="width:auto;max-width:100%"
                 data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
 ?>" onchange="this.form.submit()">
             <?= rosterTargetFilterOptionsHtml($pdo, $today, $filterTeam) ?>
         </select>
-        <select name="skupina_id" class="form-select form-select-sm" style="width:auto"
+        <select name="skupina_id" class="form-select form-select-sm" style="width:auto;max-width:100%"
                 data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
 ?>" onchange="this.form.submit()">
             <option value="">Původní skupiny (historie)</option>

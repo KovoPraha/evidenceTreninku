@@ -24,3 +24,23 @@ připojení je ověřit a případně vrátit. Žádná zapisující akce nebyla
 Q2 opravuje pouze konkrétní [šířkový problém](../../WORK_PLAN_CURRENT.md#q01-q2--mobilní-filtr-plánovače).
 Původní plná lidská přejímka rolí, docházky a zdravotních záznamů tím není
 nahrazena.
+
+## Q2: místní prezentační oprava
+
+`planovac.php` omezuje maximální šířku tří selectů (trenér, soupiska,
+historická skupina) na šířku rodičovského formuláře. Původní `width:auto`
+pro desktop i hodnoty filtrů zůstávají. V izolované statické ukázce se skutečným
+repozitářovým Bootstrap CSS a dlouhou syntetickou položkou ověřil Playwright:
+
+| Viewport | `clientWidth` / `scrollWidth` po opravě | Pravý okraj / šířka selectu soupisky |
+| --- | --- | --- |
+| 360 × 800 | 360 / 360 px | 344 / 328 px |
+| 390 × 800 | 390 / 390 px | 374 / 358 px |
+| 1280 × 800 | 1280 / 1280 px | 855 / 454 px |
+
+Vizuální snímek syntetické ukázky při 360 px ukázal všechny tři selecty čitelné
+bez vodorovného posuvníku. `php -l planovac.php` a `git diff --check` PASS.
+Ukázka ověřuje CSS omezení, nikoli celé PHP vykreslení nebo produkční stav po
+nasazení. Úplné CI a vydání se ověřují samostatně. Místní server a prohlížeč
+byly ukončené; ignorované výstupy Playwright zůstaly v izolovaném worktree,
+protože automatická kontrola odmítla jejich smazání.

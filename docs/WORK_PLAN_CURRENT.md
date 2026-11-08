@@ -30,11 +30,13 @@ nasazením nebo smazáním WIP. Podklad: `origin/main` `35fdad44`, tento registr
 k 8. 11. Ověření bylo čtecí; žádná funkce tímto návrhem není implementována.
 Větev `codex/quality-roadmap-20261108`, samostatný worktree mimo `htdocs`.
 Pokyn vlastníka 8. 11. schválil autonomní pokračování dle tohoto pořadí.
-Q1 je nyní **částečně ověřeno / přihlášené UAT NOT RUN**: URL i DOM v Chrome
-fungují, nová karta KIS skončila na loginu. [Protokol ROLE01-MOB](verification/access-mobile-cards-20261107/RESULTS.md).
+Q1 je nyní **částečně ověřeno** po přihlášení vlastníka: role, docházka,
+plánovač a zdravotní filtry mají [přesné výsledky](verification/quality-uat-20261108/RESULTS.md).
+Při 360 px je reprodukovaná vada plánovače; zbytek úplného UAT není uzavřený.
 Dokumentační převzetí Q1 je sloučené v [#388](https://github.com/KovoPraha/evidenceTreninku/pull/388),
-původní #365/#378 uzavřené po převzetí jejich obsahu. Q2 čeká na reprodukovaný
-nález; Q3 je místně ověřený a Q4/Q5 mají [připravený podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
+původní #365/#378 uzavřené po převzetí jejich obsahu. Q2 opravuje uvedenou
+vadu; Q3 je sloučený v [#389](https://github.com/KovoPraha/evidenceTreninku/pull/389)
+a Q4/Q5 mají [připravený podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
 
 ### Q01-Q2 — mobilní filtr plánovače
 
@@ -50,9 +52,11 @@ Produkční opravu a lidské převzetí doložit odděleně.
 
 ### Q01-Q3 — první měřitelný úklid, rychlý nákup
 
-Stav 8. 11.: IMPLEMENTOVÁNO MÍSTNĚ na větvi `codex/guest-checkout-read-cleanup-20261108`,
-samostatný worktree mimo `htdocs`, základ main `7dc64481`; původní WIP zachované.
-Na `booking/rychly_nakup.php` běžné zboží volá
+Stav 8. 11.: SLUČENO [#389](https://github.com/KovoPraha/evidenceTreninku/pull/389)
+jako `a3cca282`, všech 11 CI PASS včetně obou MariaDB. Větev
+`codex/guest-checkout-read-cleanup-20261108`, samostatný worktree mimo `htdocs`;
+původní WIP zachované. Produkční nasazení tohoto commitu nedoložené.
+Před #389 volalo `booking/rychly_nakup.php` pro běžné zboží
 `shopProductRequiresAthlete($pdo, $productId)` dvakrát za jeden požadavek.
 Klasifikace pro jeden produkt má být jedna konzistentní hodnota; opakované volání
 čte stejné tabulky. Nejdřív doložit počet příkazů nad syntetickými daty, potom
@@ -65,7 +69,8 @@ zůstávají přesměrované po prvním volání. Místní PHPUnit výběr
 `ShopPurchaseModeTest|ShopAnonymousCheckoutBootstrapTest|ShopCheckoutTest`
 PASS: 43 testů / 799 assertions, PHP lint PASS. Jde o měření volání klasifikační
 funkce nad syntetickými daty, nikoli o produkční HTTP profil. Přijetí PR vyžaduje
-CI včetně obou MariaDB; žádná změna schématu, plateb, práv ani produkčního stavu.
+CI včetně obou MariaDB PASS; žádná změna schématu, plateb, práv ani doložená
+produkční změna.
 
 | Pořadí | Výstup dalšího řezu | Přijetí a závislost |
 | --- | --- | --- |
