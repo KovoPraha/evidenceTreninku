@@ -27,7 +27,7 @@ final class CoachHistoryReadTest extends TestCase
     {
         $pdo = $this->seeded();
         // Exercise legacy multiplicity and a duplicate ID straddling a page boundary.
-        $pdo->exec('INSERT INTO trenink_trener VALUES(130,1),(130,1),(130,1)');
+        $pdo->exec('INSERT INTO trenink_trener VALUES(77,1),(77,1),(77,1)');
         $pdo->exec('DELETE FROM trenink_trener WHERE trenink_id=151 AND trener_id=1');
         foreach (Fixture::cases($pdo) as [$from, $params]) {
             foreach ([0, 1, 2, 3, 99] as $team) {

@@ -15,3 +15,13 @@ historický kořen597→87ms, měsíc bez roku289→22ms.
 Jediný výsledek0,16→0,19ms a prázdný1,78→1,83ms; přínos všech malých případů
 se netvrdí. Profil před posledním čistě stylistickým zalomením atributů.
 MariaDB/HTTP/Chrome a aktuální sourcehashy ještě NOT RUN; nejde o produkční SLA.
+
+První CI124695b0: obě nativní MariaDB parita829 a profily PASS, původní artefakty
+uchované v iteration1 výsledků. HTTP před našlo chybný testový předpoklad:
+registrář je již bootstrapem403, nikoli prázdný200; test opravuje očekávání,
+produkční autorizace beze změny. PHPStan potvrzuje pokles staré pdo výjimky9→8,
+baseline snížená, žádná nová potlačení. Rozšířené nativní fixture nyní používá
+stejný EXISTS vlastnictví jako aktivní trenér a duplicitu přes hranici25/26;
+lokálně2/819 PASS. Nové měření nutné, první profil se netvrdí jako finální.
+HTTP matice má nyní14kladných (včetně nulového cizího výsledku),2explicitně
+zamítnuté role a samostatnou čerstvou revokaci, v obou fázích přesně stejné.

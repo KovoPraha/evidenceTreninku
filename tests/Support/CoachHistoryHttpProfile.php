@@ -62,8 +62,8 @@ foreach (['all' => [], 'group' => ['skupina_id' => 1], 'team' => ['team_id' => 1
 }
 $cases[] = ['id' => 'other_coach', 'path' => '/ajax_treninky.php?q=ForeignOnlyNeedle', 'role' => 'other_coach',
     'status' => 200, 'page' => 1, 'expected_total' => 1];
-$cases[] = ['id' => 'registrar_empty_scope', 'path' => '/ajax_treninky.php', 'role' => 'registrar',
-    'status' => 200, 'page' => 1, 'expected_total' => 0];
+$cases[] = ['id' => 'registrar_denied', 'path' => '/ajax_treninky.php', 'role' => 'registrar',
+    'status' => 403, 'page' => 1, 'expected_total' => null];
 $cases[] = ['id' => 'anonymous_denied', 'path' => '/ajax_treninky.php?history_page=2', 'role' => 'guest',
     'status' => 403, 'page' => 1, 'expected_total' => null];
 file_put_contents($output . '/matrix.json', json_encode($cases, JSON_THROW_ON_ERROR));

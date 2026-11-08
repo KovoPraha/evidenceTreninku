@@ -80,7 +80,8 @@ async (page) => {
           document_load_ms:performance.getEntriesByType('navigation')[0].loadEventEnd}));
         value.status=response.status();value.console_errors=errors.slice(e0);value.failed_requests=failed.slice(f0);
         if (value.status!==200 || value.navigation_count!==1 || !value.ajax || value.console_errors.length || value.failed_requests.length
-          || value.url!==config.base_url+'/moje_treninky.php' || (name==='empty' && value.rows!==0)
+          || value.url!==config.base_url+'/moje_treninky.php' || value.count_label!==(value.total>0 ? value.total+' tréninků' : '')
+          || (name==='empty' && value.rows!==0)
           || (name==='all' && (value.total<1000 || (config.variant==='after' && value.rows!==25)))) {
           throw new Error('Actual coach AJAX/browser scenario failed: '+name);
         }

@@ -41,7 +41,7 @@ final class CoachHistoryFixture
         $year = $native ? 'YEAR(t.datum)' : "CAST(strftime('%Y',t.datum) AS INTEGER)";
         $month = $native ? 'MONTH(t.datum)' : "CAST(strftime('%m',t.datum) AS INTEGER)";
         $plain = 'FROM trenink_trener tt JOIN treninky t ON tt.trenink_id=t.id';
-        $scope = ' WHERE tt.trener_id=:uid';
+        $scope = ' WHERE tt.trener_id=:uid AND EXISTS(SELECT 1 FROM trenink_trener ctt WHERE ctt.trenink_id=t.id AND ctt.trener_id=:uid)';
         return [
             'all' => [$plain . $scope, [':uid' => 1]],
             'other_coach' => [$plain . $scope, [':uid' => 2]],

@@ -31,3 +31,13 @@ Bezpečné syntetické screenshoty desktop/390px; žádné produkční zápisy.
 Další krok: push/PR a aktuální nativní i celé HTTP/Chrome CI; release zatím NOT RUN.
 
 Před prvním CI převzatý main069c5bc5/#396. Doložené přihlášené Q2 UAT PASS a jeho meze zachované; pracovní E22 za přijatým E21, původní plánovací commit zachovaný. Oba původní aplikační route soubory baselineab60bfdb se tím nemění.
+
+První CI124695b0: obě nativní MariaDB parita829 a profily PASS, původní artefakty
+uchované v iteration1 výsledků. HTTP před našlo chybný testový předpoklad:
+registrář je již bootstrapem403, nikoli prázdný200; test opravuje očekávání,
+produkční autorizace beze změny. PHPStan potvrzuje pokles staré pdo výjimky9→8,
+baseline snížená, žádná nová potlačení. Rozšířené nativní fixture nyní používá
+stejný EXISTS vlastnictví jako aktivní trenér a duplicitu přes hranici25/26;
+lokálně2/819 PASS. Nové měření nutné, první profil se netvrdí jako finální.
+HTTP matice má nyní14kladných (včetně nulového cizího výsledku),2explicitně
+zamítnuté role a samostatnou čerstvou revokaci, v obou fázích přesně stejné.
