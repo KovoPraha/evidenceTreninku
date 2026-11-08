@@ -157,3 +157,6 @@ Dokumentační změna: větev `codex/shop-real-acceptance-docs-20261108`, worktr
 `C:/Users/Marek/Documents/Codex/evidencePavel-shop-real-acceptance-20261108`,
 výchozí main `da152282`. Ověření: `php tools/check-current-docs.php` PASS (0 chyb), `git diff --check` PASS; žádné nové
 produkční UAT ani finanční operace nebyly v této dokumentační změně provedeny.
+
+Předání: [PR #402](https://github.com/KovoPraha/evidenceTreninku/pull/402) otevřený;
+commit a push hotové, merge zatím neproveden. Výsledek CI je dostupný v PR.
