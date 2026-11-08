@@ -2,7 +2,7 @@
 
 ## UX01 — doplnění celoroční nabídky ke stávajícím skupinám (8. 11. 2026)
 
-Stav: LOKÁLNĚ IMPLEMENTOVÁNO, čeká PR a UAT. Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Větev `codex/year-offer-ux-20261108`, samostatný worktree z `origin/main` `5b9279f9`. Pověření vlastníka: implementovat zjednodušení administrace; nepřidávat ostré ceny, nabídky ani platby. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
+Stav: IMPLEMENTOVÁNO VE VĚTVI, [draft PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) otevřený; CI a UAT čekají. Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Větev `codex/year-offer-ux-20261108`, původně z `origin/main` `5b9279f9`, před PR rebase na `755b20a2`; cizí WIP zachované. Pověření vlastníka: implementovat zjednodušení administrace; nepřidávat ostré ceny, nabídky ani platby. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
 
 Produkční čtecí kontrola 8. 11. ukázala zveřejněné Točňáky úterý, čtvrtek a 2× týdně, každý s prvním i druhým pololetím a bez celoroční nabídky. Starší společná nabídka 1× týdně je skrytá/uzavřená. Běžné administrační založení další varianty nyní vyžaduje ruční název, kód, SKU, platnost, prodejní okno, cenu, kapacitu a věk pro každou skupinu zvlášť.
 
