@@ -3,7 +3,7 @@
 Aktualizováno 8. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr a první Q01/Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup)
 vlastní otevřené úkoly; plány a rozhodnutí čti ve verzovaných souborech.
-Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 nasazené (42483838259 a následné P11-RH); Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
+Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 je [nasazené a cíleně ověřené](verification/planner-mobile-release-20261108/RESULTS.md) v deploy42483838259 a následném P11-RH; Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
 
 ## Poslední práce a další krok
 
@@ -23,7 +23,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 - P11-RH technicky HOTOVO / NASAZENO: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md).
   #394/ab49947d, deploy42486500282 SUCCESS, 14CI/parita/přínos PASS; [protokol](verification/training-history-release-20261108/RESULTS.md). Přihlášené UAT NOT RUN, WIP zachovaný.
 - P11-R13-F NASAZENO: #385/519ff098, deploy42477866185 SUCCESS; [protokol](verification/medical-filter-release-20261108/RESULTS.md), index/veřejný DOM/anonym403 PASS; přihlášené UAT nového vydání NOT RUN.
-- P11-R05-H zachováno: [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md); čtecí UAT našlo [360px přetékání](verification/quality-uat-20261108/RESULTS.md), Q2 [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) / `5b9279f9` sloučené, 11 CI PASS; oprava v deploy42483838259 i P11-RH; následné přihlášené UAT zde netvrzené.
+- P11-R05-H zachováno: [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md); nalezené [360px přetékání](verification/quality-uat-20261108/RESULTS.md) opraveno Q2 [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) a [nasazeno / cíleně čtecí PASS](verification/planner-mobile-release-20261108/RESULTS.md). Oprava je i v následném P11-RH; úplné funkční UAT ostatních rolí otevřené.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

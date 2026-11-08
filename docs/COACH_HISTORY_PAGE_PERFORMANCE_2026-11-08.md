@@ -71,3 +71,5 @@ počtu. Chrome měří fetch→DOM a dvě renderovací smyčky skutečného AJAX
 pro default/vše/prázdné; další/předchozí, filtry, hledání a otevření/zrušení poznámky.
 Bezpečné syntetické screenshoty desktop/390px; žádné produkční zápisy.
 Další krok: push/PR a aktuální nativní i celé HTTP/Chrome CI; release zatím NOT RUN.
+
+Před prvním CI převzatý main069c5bc5/#396. Doložené přihlášené Q2 UAT PASS a jeho meze zachované; pracovní E22 za přijatým E21, původní plánovací commit zachovaný. Oba původní aplikační route soubory baselineab60bfdb se tím nemění.
