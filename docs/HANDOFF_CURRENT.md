@@ -12,7 +12,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   R13 stavový řez nyní uzavírá P11-R13-S; dále fyzický mobil/souběh, K0.2 otevřené.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px a filtr Bar částečně PASS;
-  hledání/editor otevřené. [Nový čtecí protokol](verification/quality-uat-20261108/RESULTS.md).
+  hledání/editor otevřené, nová karta ukázala login. [Nový čtecí protokol](verification/quality-uat-20261108/RESULTS.md).
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 - AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
 
@@ -25,7 +25,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 - P11-R13-S HOTOVO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [provozní důkaz](verification/medical-state-release-20261107/RESULTS.md).
   #381/938e9c50, deploy42405912779 SUCCESS; další deploy neopakovat. WIP zachovaný; [filtry částečně PASS při 0 záznamech](verification/quality-uat-20261108/RESULTS.md).
 - P11-R05-H HOTOVO: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
-  #374 v main a nasazeno; [provozní důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md) PASS. WIP zachovaný; přihlášené UAT našlo [360px přetékání](verification/quality-uat-20261108/RESULTS.md), Q2 místní oprava.
+  #374 v main a nasazeno; [provozní důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md) PASS. WIP zachovaný; přihlášené UAT našlo [360px přetékání](verification/quality-uat-20261108/RESULTS.md), Q2 [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) čeká na nové CI.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.

@@ -20,6 +20,9 @@ Po čtecím průchodu první pokus o návrat kontextu a reset viewportu vypršel
 Následná kontrola v další přihlášené kartě potvrdila původní pracovní kontext
 `Superadmin · Systém`; prohlížečový viewport byl resetován a ověřen na
 výchozích 1536 px. Žádná zapisující akce nebyla spuštěna.
+Při pokračování dalšího průchodu už původní karty Chrome nebyly dostupné a
+nově otevřený KIS zobrazil přihlašovací stránku. Hledání, prázdný výsledek a
+editor #64 proto zůstaly NOT RUN; přihlášení znovu neproběhlo.
 
 Q2 opravuje pouze konkrétní [šířkový problém](../../WORK_PLAN_CURRENT.md#q01-q2--mobilní-filtr-plánovače).
 Původní plná lidská přejímka rolí, docházky a zdravotních záznamů tím není
@@ -41,6 +44,11 @@ repozitářovým Bootstrap CSS a dlouhou syntetickou položkou ověřil Playwrig
 Vizuální snímek syntetické ukázky při 360 px ukázal všechny tři selecty čitelné
 bez vodorovného posuvníku. `php -l planovac.php` a `git diff --check` PASS.
 Ukázka ověřuje CSS omezení, nikoli celé PHP vykreslení nebo produkční stav po
-nasazení. Úplné CI a vydání se ověřují samostatně. Místní server a prohlížeč
+nasazení. První běh CI v #390 potvrdil PHP, statiku a integrační smoke, ale
+syntetické profily MariaDB 10.3/11.4 odmítly očekávaný rozdíl HTML oproti
+historickému plánovači. Profil nyní zachovává hash skutečného HTML a zvlášť
+počítá porovnávací hash po odstranění přesně tří nových `max-width:100%`.
+Tak lze dál vyžadovat shodu dat a ostatního HTML; opakované CI je nutné.
+Místní server a prohlížeč
 byly ukončené; ignorované výstupy Playwright zůstaly v izolovaném worktree,
 protože automatická kontrola odmítla jejich smazání.
