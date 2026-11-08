@@ -52,11 +52,34 @@ function privateStorageRoot(): string
         throw new RuntimeException('APP_PRIVATE_STORAGE_ROOT neni nastavena.');
     }
 
-    $normalizedRoot = strtolower(str_replace('\\', '/', $root));
-    $appRoot = strtolower(str_replace('\\', '/', realpath(dirname(__DIR__)) ?: dirname(__DIR__)));
+    // Configuration is a local absolute path, never a stream wrapper or a
+    // relative/dot path whose meaning can change with the working directory.
+    $portableRoot = str_replace('\\', '/', $root);
+    if (str_contains($root, "\0")
+        || preg_match('~^(?:/|[A-Za-z]:/)~', $portableRoot) !== 1
+        || preg_match('~(?:^|/)\.{1,2}(?:/|$)~', $portableRoot) === 1
+    ) {
+        throw new RuntimeException('Soukrome uloziste vyzaduje absolutni cestu bez teckovych segmentu.');
+    }
+
+    // Resolve existing ancestors too: the final directory may not exist yet,
+    // while an ancestor can already be a symlink into the public webroot.
+    $normalize = static fn (string $path): string => strtolower(rtrim(str_replace('\\', '/', $path), '/'));
+    $ancestor = $root;
+    $suffix = '';
+    while (($resolved = @realpath($ancestor)) === false) {
+        $parent = dirname($ancestor);
+        if ($parent === $ancestor) {
+            break;
+        }
+        $suffix = '/' . basename($ancestor) . $suffix;
+        $ancestor = $parent;
+    }
+    $normalizedRoot = $normalize(is_string($resolved) ? $resolved . $suffix : $root);
+    $appRoot = $normalize(realpath(dirname(__DIR__)) ?: dirname(__DIR__));
     $documentRoot = trim((string)($_SERVER['DOCUMENT_ROOT'] ?? ''));
     $normalizedDocumentRoot = $documentRoot !== ''
-        ? strtolower(str_replace('\\', '/', realpath($documentRoot) ?: $documentRoot))
+        ? $normalize(@realpath($documentRoot) ?: $documentRoot)
         : '';
     $inside = static fn (string $candidate, string $parent): bool =>
         $parent !== '' && ($candidate === $parent || str_starts_with($candidate . '/', rtrim($parent, '/') . '/'));
@@ -86,6 +109,9 @@ function privateStorageEnsureDirectory(string $category): string
         throw new InvalidArgumentException('Neplatna kategorie soukromeho souboru.');
     }
     $directory = privateStorageRoot() . DIRECTORY_SEPARATOR . $category;
+    if (is_link($directory)) {
+        throw new RuntimeException('Kategorie soukromeho uloziste nesmi byt symbolicky odkaz.');
+    }
     if (!is_dir($directory) && !mkdir($directory, 0700, true) && !is_dir($directory)) {
         throw new RuntimeException('Soukrome uloziste nelze vytvorit.');
     }
@@ -162,7 +188,17 @@ function privateStorageResolve(string $key): ?string
         return null;
     }
     $path = privateStorageRoot() . DIRECTORY_SEPARATOR . $match[1] . DIRECTORY_SEPARATOR . $match[2];
-    return is_file($path) ? $path : null;
+    if (is_link(dirname($path)) || is_link($path) || !is_file($path)) {
+        return null;
+    }
+    $root = @realpath(privateStorageRoot());
+    $resolved = @realpath($path);
+    if (!is_string($root) || !is_string($resolved)
+        || !str_starts_with($resolved, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)
+    ) {
+        return null;
+    }
+    return $resolved;
 }
 
 /**

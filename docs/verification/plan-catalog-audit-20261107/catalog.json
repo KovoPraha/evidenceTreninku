@@ -10471,6 +10471,19 @@
       "registry": "P11-R13-S",
       "disposition": "Podpůrný bezpečný důkaz konkrétního řezu, nikoli samostatná roadmapa.",
       "evidence": []
+    },
+    {
+      "id": "PL-eccc382df4",
+      "path": "docs/SECURITY_AUDIT_2026-11-08.md",
+      "title": "SEC01 — Bezpečnostní audit aplikace 8. 11. 2026",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "SEC01",
+      "disposition": "Audit současného kódu, syntetická reprodukce a opravy hranic soukromého úložiště; bez deploye.",
+      "evidence": [
+        "docs/SECURITY_AUDIT_2026-11-08.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",

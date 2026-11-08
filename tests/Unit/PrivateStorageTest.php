@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -56,6 +57,83 @@ final class PrivateStorageTest extends TestCase
         $this->previous === false
             ? putenv('APP_PRIVATE_STORAGE_ROOT')
             : putenv('APP_PRIVATE_STORAGE_ROOT=' . $this->previous);
+    }
+
+    public function testRejectsRelativeAndDotSegmentRoots(): void
+    {
+        foreach (['relative/private', $this->root . '/../private', $this->root . '/./private'] as $root) {
+            putenv('APP_PRIVATE_STORAGE_ROOT=' . $root);
+            try {
+                \privateStorageRoot();
+                self::fail('Unsafe private root was accepted.');
+            } catch (\RuntimeException $error) {
+                self::assertStringContainsString('absolutni cestu', $error->getMessage());
+            }
+        }
+    }
+
+    public function testRejectsRootSymlinkAndMissingChildPointingIntoWebroot(): void
+    {
+        if (DIRECTORY_SEPARATOR !== '/') {
+            self::markTestSkipped('Unix symlink boundary.');
+        }
+        mkdir($this->root, 0700);
+        $link = $this->root . '/public-link';
+        self::assertTrue(symlink(dirname(__DIR__, 2), $link));
+        try {
+            foreach ([$link, $link . '/not-created-private'] as $root) {
+                putenv('APP_PRIVATE_STORAGE_ROOT=' . $root);
+                try {
+                    \privateStorageRoot();
+                    self::fail('Webroot alias was accepted.');
+                } catch (\RuntimeException $error) {
+                    self::assertStringContainsString('mimo webroot', $error->getMessage());
+                }
+            }
+        } finally {
+            unlink($link);
+        }
+    }
+
+    public function testRejectsSymlinkCategoryForWritesAndReads(): void
+    {
+        if (DIRECTORY_SEPARATOR !== '/') {
+            self::markTestSkipped('Unix symlink boundary.');
+        }
+        mkdir($this->root, 0700);
+        mkdir($this->root . '/outside', 0700);
+        $name = str_repeat('a', 32) . '.pdf';
+        file_put_contents($this->root . '/outside/' . $name, '%PDF-1.4 synthetic');
+        $link = $this->root . '/receipts';
+        self::assertTrue(symlink($this->root . '/outside', $link));
+        try {
+            self::assertNull(\privateStorageResolve('private://receipts/' . $name));
+            $this->expectException(\RuntimeException::class);
+            \privateStorageEnsureDirectory(PRIVATE_STORAGE_RECEIPTS);
+        } finally {
+            unlink($link);
+        }
+    }
+
+    public function testRejectsSymlinkFileForReadsAndDeletion(): void
+    {
+        if (DIRECTORY_SEPARATOR !== '/') {
+            self::markTestSkipped('Unix symlink boundary.');
+        }
+        $directory = \privateStorageEnsureDirectory(PRIVATE_STORAGE_RECEIPTS);
+        $target = $this->root . '/outside.pdf';
+        file_put_contents($target, '%PDF-1.4 synthetic');
+        $name = str_repeat('b', 32) . '.pdf';
+        $link = $directory . '/' . $name;
+        self::assertTrue(symlink($target, $link));
+        try {
+            self::assertNull(\privateStorageResolve('private://receipts/' . $name));
+            \privateStorageSoftDelete('private://receipts/' . $name);
+            self::assertTrue(is_link($link));
+            self::assertSame('%PDF-1.4 synthetic', file_get_contents($target));
+        } finally {
+            unlink($link);
+        }
     }
 
     public function testStoresAllowedImageOutsideWebrootUnderOpaqueKey(): void

@@ -1,5 +1,11 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
+## SEC01 — bezpečnostní audit 8. 11. 2026
+
+Implementace a místní ověření HOTOVO na přímé zadání; vývoj, `codex/security-audit-20261108`.
+[Plán, rozsah, akceptace a další krok](SECURITY_AUDIT_2026-11-08.md).
+Dva potvrzené nálezy v soukromém úložišti opravené; PHPUnit 2381/47789, PHPStan, audit závislostí PASS. Předáno [PR #391](https://github.com/KovoPraha/evidenceTreninku/pull/391), CI čeká; bez merge/deploye.
+
 Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `e36c9ba6`; produkční stav určují výsledkové protokoly.
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí

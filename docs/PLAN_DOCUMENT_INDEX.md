@@ -8,6 +8,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-eccc382df4 | [SECURITY_AUDIT_2026-11-08.md](SECURITY_AUDIT_2026-11-08.md) | plan / IN_PROGRESS | SEC01 |
 | PL-a54ff182c7 | [AGENTS.md](../AGENTS.md) | reference / REFERENCE | DOC02 |
 | PL-6ebdb617a8 | [CLAUDE.md](../CLAUDE.md) | reference / REFERENCE | DOC02 |
 | PL-53413c7074 | [INSTALACE.txt](../INSTALACE.txt) | artifact / SUPPORT | DOC02 |
