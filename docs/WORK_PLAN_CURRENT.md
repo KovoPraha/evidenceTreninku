@@ -57,6 +57,10 @@ CI včetně obou MariaDB; žádná změna schématu, plateb, práv ani produkčn
 | Q4 — provozní připravenost | Pro BAR P02/P04 připravit přejímací scénář fyzické zásoby → kasa → prodej → uzávěrka a účetní mapu bez ostrých zápisů. Pro členství/doklady P05/P07 připravit jediný důkazový scénář od objednávky po úhradu, PDF a doručení; pro P06 rozdílový náhled až s novým exportem. | Skutečné hodnoty, účetní pravidla a reálný sportovec/platba jsou vstupem vlastníka. Technický scénář nezakládá zásobu, pokladní hotovost ani platbu. [BAR](SESSION_HANDOFF_BAR_2026-11-06.md), [doklady](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md). |
 | Q5 — příprava funkcí | Ze záměrů P13/C01–C03 vybrat jednu funkci podle potřeby konkrétní role; sepsat uživatelský scénář, vlastníka dat, oprávnění, retenci, chybové stavy, migraci a měřitelné přijetí. ČSC/Sportsoft P15 hodnotit zvlášť podle otevřených PR #371/#376/#380/#382/#386 a jejich závislostí. | Teprve odsouhlasený kontrakt a bezpečnostní review dávají podklad k implementaci. Žádná automatická aktivace importu, zápisů do osob, walletu, Stripe ani nového upozornění. |
 
+Q4 přejímací pořadí a Q5 návrh soukromého progresu C01/V5 jsou rozepsané v
+[navazujícím podkladu](QUALITY_NEXT_SLICES_2026-11-08.md). Jsou připravené
+scénáře a rozhodovací kontrakt, nikoli provedené provozní kroky nebo schválená funkce.
+
 První proveditelný balík: Q1 v přihlášeném prostředí a čtecí inventura jednoho
 Q3 kandidáta. Následující balík vznikne z doložených vad a výsledků, nikoli
 z historického seznamu. Při každém převzetí ověřit nové PR, jejich CI a produkční

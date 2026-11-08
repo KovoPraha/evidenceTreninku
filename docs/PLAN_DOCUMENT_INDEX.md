@@ -8,6 +8,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-f0201ffc26 | [QUALITY_NEXT_SLICES_2026-11-08.md](QUALITY_NEXT_SLICES_2026-11-08.md) | plan / PLANNED | Q01-Q4/Q5 |
 | PL-a54ff182c7 | [AGENTS.md](../AGENTS.md) | reference / REFERENCE | DOC02 |
 | PL-6ebdb617a8 | [CLAUDE.md](../CLAUDE.md) | reference / REFERENCE | DOC02 |
 | PL-53413c7074 | [INSTALACE.txt](../INSTALACE.txt) | artifact / SUPPORT | DOC02 |
