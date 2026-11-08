@@ -75,7 +75,13 @@ def cli(session, *args):
     with (runtime / "private-browser.log").open("a") as f:
         f.write(p.stdout)
     if p.returncode or "### Error" in p.stdout:
-        raise RuntimeError("Browser CLI failed at " + args[0] + "; private output excluded from artifact")
+        detail = ""
+        if args[0] == "run-code" and "### Error" in p.stdout:
+            detail = p.stdout.split("### Error", 1)[1].split("###", 1)[0].strip()[:1600]
+            for credential in read("credentials.json").values():
+                for value in [credential["login"], credential["password"]]:
+                    detail = detail.replace(value, "[REDACTED]")
+        raise RuntimeError("Browser CLI failed at " + args[0] + "; private output excluded from artifact; " + detail)
     return p.stdout
 
 

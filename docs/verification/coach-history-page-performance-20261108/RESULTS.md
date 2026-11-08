@@ -25,3 +25,13 @@ stejný EXISTS vlastnictví jako aktivní trenér a duplicitu přes hranici25/26
 lokálně2/819 PASS. Nové měření nutné, první profil se netvrdí jako finální.
 HTTP matice má nyní14kladných (včetně nulového cizího výsledku),2explicitně
 zamítnuté role a samostatnou čerstvou revokaci, v obou fázích přesně stejné.
+
+PR [#400](https://github.com/KovoPraha/evidenceTreninku/pull/400), další CI6ed85c8a:
+obě nativní MariaDB2/819 a profily PASS, PHPStan/style PASS. Skutečné původní
+HTTP i Chrome prošly, v nové HTTP fázi byl jiný otisk karty. Porovnání zatím
+nenormalizovalo hidden csrf_token formuláře Vytvořit Story; explicitní revokace
+na konci fáze otáčí session a token. Doplněný pouze marker hodnoty tokenu,
+stejný název/přítomnost/neprázdnost pole a akce se dál kontrolují, všechny
+ostatní části karty zůstávají striktní. Diagnostika případné další neshody
+vrátí jen jména/otisky syntetických sekcí, nikoli HTML či session.
+Nový celý HTTP/Chrome běh nutný před release, spolu s převzatým main #395.

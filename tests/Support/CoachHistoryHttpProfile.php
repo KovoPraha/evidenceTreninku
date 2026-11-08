@@ -76,7 +76,15 @@ $domain = static function (string $html): array {
     libxml_clear_errors();
     libxml_use_internal_errors($old);
     $xp = new DOMXPath($doc);
-    $rows = $dates = $order = [];
+    // The explicit revocation test rotates the session between phases. Compare the
+    // same CSRF field/action contract while excluding the ephemeral token value.
+    foreach ($xp->query('//input[@name="csrf_token"]') as $input) {
+        if ($input->getAttribute('value') === '') {
+            throw new RuntimeException('Missing synthetic CSRF value.');
+        }
+        $input->setAttribute('value', 'SYNTHETIC_CSRF');
+    }
+    $rows = $dates = $order = $parts = [];
     foreach ($xp->query('//div[contains(concat(" ",normalize-space(@class)," ")," accordion-item ")]') as $card) {
         $button = $xp->query('.//button[@aria-controls]', $card)->item(0);
         if (!$button || !preg_match('/^c([0-9]+)$/D', $button->getAttribute('aria-controls'), $match)) {
@@ -89,9 +97,14 @@ $domain = static function (string $html): array {
             $text->nodeValue = preg_replace('/\s+/u', ' ', trim($text->nodeValue));
         }
         $rows[$id] = hash('sha256', $doc->saveHTML($card));
+        $parts[$id] = [];
+        foreach ($xp->query('.//div[contains(concat(" ",normalize-space(@class)," ")," kv ")]', $card) as $section) {
+            $label = trim($xp->evaluate('string(./div[1])', $section));
+            $parts[$id][$label] = hash('sha256', $doc->saveHTML($section));
+        }
     }
     $meta = $xp->query('//*[@data-coach-history]')->item(0);
-    return ['rows' => $rows, 'order' => $order, 'dates' => $dates,
+    return ['rows' => $rows, 'order' => $order, 'dates' => $dates, 'parts' => $parts,
         'total' => $meta ? (int)$meta->getAttribute('data-history-total') : count($order),
         'page' => $meta ? (int)$meta->getAttribute('data-history-page') : 1,
         'pager' => $xp->query('//nav[@aria-label="Stránkování tréninků"]')->length];
@@ -118,7 +131,8 @@ foreach ($cases as $i => $case) {
                 $expected = array_slice($expected, ($page - 1) * 25, 25);
                 foreach ($signature['rows'] as $id => $hash) {
                     if (($old['rows'][$id] ?? null) !== $hash) {
-                        throw new RuntimeException('Coach card content differs: ' . $case['id'] . ':' . $id);
+                        throw new RuntimeException('Coach card content differs: ' . $case['id'] . ':' . $id . ', sections: '
+                            . json_encode(array_keys(array_diff_assoc($signature['parts'][$id], $old['parts'][$id] ?? [])), JSON_THROW_ON_ERROR));
                     }
                 }
                 if ($signature['order'] !== $expected || $signature['total'] !== $old['total']
