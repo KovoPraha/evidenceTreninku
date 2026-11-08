@@ -59,3 +59,24 @@ Doplní se datumové rozbité/cizí/cyklické/revokované předchůdce a pending
 v nativním i HTTP měření. Znovu ověření před jakýmkoli merge/deploy; bez DDL.
 
 V4 lokální úplná cílená sada26/813 PASS, PSR-12/lint PASS. Datumové legacy výjimky mají12novýchpřesných porovnání. Benchmark rozšířený na16případů/4objemy/DB a17kladnýchHTTP/7Chrome scénářů; výkon V4 zatím NOT RUN.
+
+## V4/feb2e522 — SQL-only datum/poloviční pending stále regresní
+
+Nativní parita a checksumy PASS,8/478 na každé DB.100k11.4 datum_day251,28→307,06ms,
+datum_from716,32→766,70ms, poloviční pending537,79→621,95ms.10.3 datum_day239,26→272,58ms,
+poloviční pending498,14→551,88ms. Bezpečné native/XML v iteration4; k nasazení nevhodné.
+EXPLAIN ukazuje owner/id index pro mr/mv/mn, který nekryje state a další metadata;
+mv/mn mají další čtení řádku pro stav a platnost. Odhady nejsou skutečné rows examined.
+
+## V5 plán — index a kód měřit odděleně i spolu
+
+Původní předpoklad bez DDL v D15 je po měření nahrazen experimentem s neunikátním
+krycím indexem (watch_id,id,state,issued_on,valid_until,replaces_id). Zachová pořadí
+owner/id a nezavádí zdravotní datový přechod. Nejprve pouze vlastní CI.
+Nativní srovnání tří variant: baseline/staré indexy, baseline/krycí index,
+nový reader/krycí index; dvě stejně naplněná vlastní schémata a stejné3checksumy,
+query cache OFF,4zahřátí a17střídavých trojic. HTTP na stejných datech před/po
+přidání indexu mezi variantami, nikoli během GET. Celé HTML a doménové součty stejné.
+Pokud vyhraje, nasazení před migrací přečte skutečné produkční indexy (bez dat),
+po záloze aplikuje idempotentní online ADD INDEX a před aktivací ověří výsledek.
+Žádné nové klinické hodnoty, role nebo přílohy. Nový přínos zatím NOT RUN.

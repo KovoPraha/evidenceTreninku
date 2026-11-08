@@ -6,6 +6,9 @@ on:
       - 'includes/medical_clearance_state_read.php'
       - 'includes/medical_clearance_read.php'
       - 'includes/medical_clearance_filtered_read.php'
+      - 'includes/medical_clearance_read_index.php'
+      - 'migrations/*medical*'
+      - 'bin/diagnose-medical-read-indexes.php'
       - 'tests/Support/MedicalFilter*'
       - 'tests/Integration/MedicalFilterReadTest.php'
       - '.github/workflows/medical-filter-performance.yml'
@@ -23,7 +26,7 @@ jobs:
   native-filter:
     name: Medical filter native (MariaDB ${{ matrix.mariadb-version }})
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:

@@ -45,6 +45,8 @@ source = {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in source
 source["includes/medical_clearance_state_read.php"] = hashlib.sha256((root / "includes/medical_clearance_state_read.php").read_bytes()).hexdigest()
 source["includes/medical_clearance_read.php"] = hashlib.sha256(original).hexdigest()
 source["includes/medical_clearance_filtered_read.php"] = hashlib.sha256((root / "includes/medical_clearance_filtered_read.php").read_bytes()).hexdigest()
+for p in ["includes/medical_clearance_read_index.php", "migrations/20261108070000_medical_read_covering_index.php"]:
+    source[p] = hashlib.sha256((root / p).read_bytes()).hexdigest()
 source["baseline_medical_state_read"] = hashlib.sha256(baseline_state).hexdigest()
 source["baseline_medical_read"] = hashlib.sha256(baseline).hexdigest()
 server = None
@@ -179,6 +181,7 @@ try:
         for variant, content in [("before", baseline), ("after", original)]:
             route.write_bytes(content)
             state_route.write_bytes(baseline_state if variant == "before" else original_state)
+            php("MedicalFilterHttpProfile.php", output, "index-" + variant)
             start_server()
             if size == "10000-watches" and variant == "before":
                 php("FullHttpReadProfile.php", "--login", output)
@@ -207,6 +210,7 @@ try:
         assert read("diagnostics-before.json")["core_checksums_before"] == read("diagnostics-after.json")["core_checksums_after"]
         names = [f"http-{v}.json" for v in ["before", "after"]] + [f"diagnostics-{v}.json" for v in ["before", "after"]]
         names += [f"browser-{role}-{v}.json" for role in ["registrar"] for v in ["before", "after"]]
+        names += ["index-before.json", "index-after.json"]
         for name in names:
             value = json.loads((output / name).read_text())
             (safe / (size + "-" + name + ".gz")).write_bytes(gzip.compress(json.dumps(value, ensure_ascii=False).encode(), mtime=0))

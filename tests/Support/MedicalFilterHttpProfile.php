@@ -8,8 +8,8 @@ if (PHP_SAPI !== 'cli') {
 }
 $output = realpath($argv[1] ?? '');
 $variant = $argv[2] ?? '';
-if ($output === false || !in_array($variant, ['before', 'after', 'prepare', 'expand'], true)) {
-    throw new RuntimeException('Owned output and before/after/prepare/expand required.');
+if ($output === false || !in_array($variant, ['before', 'after', 'prepare', 'expand', 'index-before', 'index-after'], true)) {
+    throw new RuntimeException('Owned output and a supported profiling phase required.');
 }
 $argv = [__FILE__, '--library'];
 require_once __DIR__ . '/FullHttpReadProfile.php';
@@ -17,6 +17,38 @@ require_once __DIR__ . '/FullHttpReadProfile.php';
 $identity['query_cache_type'] = (string) $admin->query('SELECT @@global.query_cache_type')->fetchColumn();
 if (!in_array(strtoupper($identity['query_cache_type']), ['OFF', '0'], true)) {
     throw new RuntimeException('Owned HTTP server must have SQL result caching disabled.');
+}
+if ($variant === 'index-before' || $variant === 'index-after') {
+    $admin->exec('USE `' . $runtime['schema'] . '`');
+    $migration = require dirname(__DIR__, 2) . '/migrations/20261108070000_medical_read_covering_index.php';
+    $restoredOwner = false;
+    if ($variant === 'index-before') {
+        $definitions = MedicalClearanceReadIndex::definitions($admin);
+        $cover = MedicalClearanceReadIndex::coveringName($definitions);
+        if ($cover !== null) {
+            if (!preg_match('/^idx_medical_clearance_read(?:_[0-9]+)?$/D', $cover)) {
+                throw new RuntimeException('Only the owned new fixture index may be removed.');
+            }
+            $otherOwner = array_filter($definitions, static fn (array $index, string $name): bool => $name !== $cover
+                && ($index['columns'][0] ?? '') === 'watch_id', ARRAY_FILTER_USE_BOTH);
+            if ($otherOwner === []) {
+                // InnoDB can replace its automatic FK index. Restore the original-equivalent owner/id access path first.
+                $admin->exec('CREATE INDEX idx_medical_fixture_owner ON medical_clearance_records(watch_id,id)');
+                $restoredOwner = true;
+            }
+            $admin->exec('ALTER TABLE medical_clearance_records DROP INDEX `' . $cover . '`, ALGORITHM=INPLACE, LOCK=NONE');
+        }
+    } else {
+        $migration['up']($admin);
+    }
+    if ($migration['verify']($admin) !== ($variant === 'index-after')) {
+        throw new RuntimeException('Owned before/after fixture index does not match its phase.');
+    }
+    $admin->query('ANALYZE TABLE medical_clearance_watches,medical_clearance_records,sportovci')->fetchAll();
+    file_put_contents($output . '/' . $variant . '.json', json_encode(['phase' => $variant,
+        'restored_equivalent_owner_index' => $restoredOwner,
+        'indexes' => MedicalClearanceReadIndex::definitions($admin)], JSON_THROW_ON_ERROR));
+    exit;
 }
 if ($variant === 'expand') {
     $admin->exec('USE `' . $runtime['schema'] . '`');

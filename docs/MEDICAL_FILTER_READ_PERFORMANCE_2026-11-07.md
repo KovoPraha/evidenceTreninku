@@ -28,7 +28,7 @@ Jeho staré bezpečné untracked výstupy zachovat. Původní checkout/WIP nedot
    JOIN lidí/hledání uvnitř. Datum omezí i agregovaná sledování, bez opakování
    textového hledání. Budoucí explicitní náhrady, limity a stavové vyhodnocení
    kanonické. Široký seznam bez stavu ponechat původní stránkovací cestou;
-   přijmout ji jen při doložené neutrální režii. Bez nové cache, rekurze nebo DDL.
+   přijmout ji jen při doložené neutrální režii. Bez nové cache nebo rekurze. Původní omezení bez DDL nahrazuje níže V5.
 4. Porovnat přesná pole/typy/pořadí/počty/stránky/filtry s baseline: všechny stavy,
    q prázdné/široké/vzácné/žádné, více slov, diakritika a doslovné !%_, data od/do
    samostatně i spolu, inkluzivní hranice, invalidní rozsah, kombinace a přehnaná
@@ -72,3 +72,7 @@ V3 doplnění: filtrované okno třídí pouze ID sledování a dvou head zázna
 V3 datum_day na11.4 253,72→267,98ms mírně regresní; V4 anti-join latest verified pro datum a HAVING pro stavy bez verified s explicitními budoucími výjimkami. Další2pending hledací případy v benchmarku a datumové legacy grafy v paritě. Bez DDL, nové indexy se nezavádějí; skutečné produkční indexy se tím neprohlašují za prověřené. Měření/testy V4 před release.
 
 V4 lokálně26/813 PASS včetně nových12datumových legacy kontrol; nativní profiler nyní16případů×4objemy×17párů/DB, celkem2176párů. HTTP17kladných/12záporných případů a7Chrome scénářů. Indexově závislá korelovaná V2 zamítnutá; do deploye jde až vítězná ověřená cesta bez DDL. Produkční indexový inventář zůstává NOT RUN.
+
+V4 SQL-only datum/poloviční pending stále regredovaly. V5 měří neunikátní krycí index (watch_id,id,state,issued_on,valid_until,replaces_id): zvlášť starý kód/staré indexy, starý kód/nový index a nový kód/nový index. D15 bezDDL tímto podloženě nahrazeno. Nativní dvě data-shodná schémata/query cache OFF, HTTP stejný fixture a index mezi fázemi. Produkční read-only inventura před migrací, ověřená záloha, idempotentní online ADD INDEX a kontrola před aktivací. Žádné klinické datové změny. Vše nejprve CI, nasadit jen po prokázaném přínosu.
+
+V5 lokálně44 testů /1328 assertions PASS (medical + deploy kontrakt). Nativní profiler má512MB buffer pool jen vlastního CI serveru, dvě data-shodná schémata,16případů×4objemy×17rotujících trojic na každé DB; index-only odděluje přínos indexu od kódu. HTTP porovnává původní kód/staré indexy proti novému kódu/indexu,17kladných/12záporných případů,7Chrome scénářů. Před každou fází se mění pouze index syntetické DB při vypnutém PHP serveru. Produkční diagnostika čte pouze metadata v READ ONLY transakci, před zálohou a po migraci před aktivací. Nativní/HTTP přínos V5 zatím NOT RUN.

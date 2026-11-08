@@ -15,6 +15,7 @@ require_once __DIR__ . '/QueryProfilePdo.php';
 require_once __DIR__ . '/MedicalStateFixture.php';
 require_once __DIR__ . '/MedicalFilterBaseline.php';
 require_once dirname(__DIR__, 2) . '/includes/medical_clearance.php';
+$indexMigration = require dirname(__DIR__, 2) . '/migrations/20261108070000_medical_read_covering_index.php';
 
 $dsn = 'mysql:host=127.0.0.1;port=' . getenv('EVIDENCE_MARIADB_SMOKE_PORT') . ';charset=utf8mb4';
 $admin = new PDO($dsn, 'root', '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
@@ -24,40 +25,61 @@ if ($normalize($identity['directory']) !== $normalize((string) getenv('EVIDENCE_
     || (int) $identity['port'] !== (int) getenv('EVIDENCE_MARIADB_SMOKE_PORT')) {
     throw new RuntimeException('Wrong owned database server.');
 }
+$admin->exec('SET GLOBAL innodb_buffer_pool_size=536870912');
 $report = ['complete' => false, 'synthetic_only' => true, 'server' => $identity['version'], 'php' => PHP_VERSION,
-    'method' => 'One seed per size, read-only session, 4 warmups and 17 alternating timed pairs; separate SQL/fetch diagnostics.',
-    'baseline' => '35fdad4483ec4326e5da9b6ffbb908f77a4df85f', 'source_sha256' => [
-        'includes/medical_clearance_filtered_read.php' => hash_file('sha256', dirname(__DIR__, 2) . '/includes/medical_clearance_filtered_read.php'),
-        'includes/medical_clearance_state_read.php' => hash_file('sha256', dirname(__DIR__, 2) . '/includes/medical_clearance_state_read.php'),
-        'includes/medical_clearance_read.php' => hash_file('sha256', dirname(__DIR__, 2) . '/includes/medical_clearance_read.php'),
-    ], 'cases' => []];
-$percentile = static function (array $samples, float $p): float {
-    sort($samples, SORT_NUMERIC);
-    return $samples[(int) ceil(count($samples) * $p) - 1];
+    'method' => 'Two data-identical owned schemas: original indexes vs covering index. Four warmups and 17 rotating timed triplets: original code/original indexes, original code/covering index, optimized code/covering index. Separate diagnostics.',
+    'baseline' => '35fdad4483ec4326e5da9b6ffbb908f77a4df85f', 'query_cache_disabled' => true,
+    'buffer_pool_bytes' => (int) $admin->query('SELECT @@innodb_buffer_pool_size')->fetchColumn(),
+    'source_sha256' => [], 'cases' => [], 'indexes' => []];
+foreach (['includes/medical_clearance_read.php', 'includes/medical_clearance_state_read.php',
+    'includes/medical_clearance_filtered_read.php', 'includes/medical_clearance_read_index.php',
+    'migrations/20261108070000_medical_read_covering_index.php'] as $file) {
+    $report['source_sha256'][$file] = hash_file('sha256', dirname(__DIR__, 2) . '/' . $file);
+}
+$percentile = static function (array $values, float $p): float {
+    sort($values, SORT_NUMERIC);
+    return $values[(int) ceil(count($values) * $p) - 1];
+};
+$checksum = static function (PDO $connection): array {
+    $values = [];
+    foreach ($connection->query('CHECKSUM TABLE medical_clearance_watches,medical_clearance_records,sportovci EXTENDED')->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $values[substr($row['Table'], strrpos($row['Table'], '.') + 1)] = $row['Checksum'];
+    }
+    return $values;
 };
 foreach ([100, 1000, 10000, 100000] as $watches) {
-    $schema = 'p11_medfilter_' . bin2hex(random_bytes(8));
-    $admin->exec('CREATE DATABASE `' . $schema . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+    $schemas = [];
+    $connections = [];
+    $originalChecksums = [];
     try {
-        $pdo = new Tests\Support\QueryProfilePdo($dsn . ';dbname=' . $schema, 'root', '');
-        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-        $pdo->exec('SET SESSION query_cache_type=OFF');
-        if (!in_array(strtoupper((string) $pdo->query('SELECT @@session.query_cache_type')->fetchColumn()), ['OFF', '0'], true)) {
-            throw new RuntimeException('SQL result cache must be disabled for timing.');
+        foreach (['before', 'after'] as $schemaVariant) {
+            $schema = 'p11_medfilter_' . bin2hex(random_bytes(8));
+            $admin->exec('CREATE DATABASE `' . $schema . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+            $schemas[] = $schema;
+            $pdo = new Tests\Support\QueryProfilePdo($dsn . ';dbname=' . $schema, 'root', '');
+            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            $pdo->exec('SET SESSION query_cache_type=OFF');
+            if (!in_array(strtoupper((string) $pdo->query('SELECT @@session.query_cache_type')->fetchColumn()), ['OFF', '0'], true)) {
+                throw new RuntimeException('SQL result caching must be disabled.');
+            }
+            Tests\Support\MedicalStateFixture::seed($pdo, $watches);
+            $pdo->exec('UPDATE medical_clearance_records SET replaces_id=NULL WHERE watch_id>100');
+            if ($schemaVariant === 'after') {
+                $indexMigration['up']($pdo);
+                $indexMigration['up']($pdo);
+            }
+            if ($indexMigration['verify']($pdo) !== ($schemaVariant === 'after')) {
+                throw new RuntimeException('Unexpected before/after index shape.');
+            }
+            $pdo->query('ANALYZE TABLE medical_clearance_watches,medical_clearance_records,sportovci')->fetchAll();
+            $report['indexes'][(string) $watches][$schemaVariant] = MedicalClearanceReadIndex::definitions($pdo);
+            $originalChecksums[$schemaVariant] = $checksum($pdo);
+            $pdo->exec('SET SESSION TRANSACTION READ ONLY');
+            $connections[$schemaVariant] = $pdo;
         }
-        Tests\Support\MedicalStateFixture::seed($pdo, $watches);
-        // A bounded number of future chains amid a growing ordinary history.
-        $pdo->exec('UPDATE medical_clearance_records SET replaces_id=NULL WHERE watch_id>100');
-        $pdo->query('ANALYZE TABLE medical_clearance_watches,medical_clearance_records,sportovci')->fetchAll();
-        $checksum = static fn (): array => $pdo->query(
-            'CHECKSUM TABLE medical_clearance_watches,medical_clearance_records,sportovci EXTENDED'
-        )->fetchAll(PDO::FETCH_KEY_PAIR);
-        $report['indexes'][(string) $watches] = [];
-        foreach (['medical_clearance_watches', 'medical_clearance_records', 'sportovci'] as $table) {
-            $report['indexes'][(string) $watches][$table] = $pdo->query('SHOW INDEX FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC);
+        if ($originalChecksums['before'] !== $originalChecksums['after']) {
+            throw new RuntimeException('Owned paired schemas must contain identical data.');
         }
-        $before = $checksum();
-        $pdo->exec('SET SESSION TRANSACTION READ ONLY');
         $day = static fn (int $n): string => date('Y-m-d', strtotime(($n < 0 ? '' : '+') . $n . ' day'));
         $cases = [
             'broad_search' => ['medical_q' => 'Synthetic', 'medical_state' => 'valid'],
@@ -78,59 +100,69 @@ foreach ([100, 1000, 10000, 100000] as $watches) {
             'control_state' => ['medical_state' => 'valid'],
         ];
         foreach ($cases as $name => $input) {
-            $expected = Tests\Support\medicalFilterBaselineList($pdo, $input);
-            $samples = ['before' => [], 'after' => []];
+            $expected = Tests\Support\medicalFilterBaselineList($connections['before'], $input);
+            $samples = ['before' => [], 'index_only' => [], 'after' => []];
             $diagnostics = [];
             for ($iteration = -4; $iteration < 17; $iteration++) {
-                $order = $iteration % 2 === 0 ? ['before', 'after'] : ['after', 'before'];
+                $order = ['before', 'index_only', 'after'];
+                $shift = ($iteration + 6) % 3;
+                $order = [...array_slice($order, $shift), ...array_slice($order, 0, $shift)];
                 foreach ($order as $variant) {
+                    $pdo = $connections[$variant === 'before' ? 'before' : 'after'];
                     $start = hrtime(true);
-                    $value = $variant === 'before'
-                        ? Tests\Support\medicalFilterBaselineList($pdo, $input) : medicalClearanceList($pdo, $input);
+                    $value = $variant === 'after' ? medicalClearanceList($pdo, $input)
+                        : Tests\Support\medicalFilterBaselineList($pdo, $input);
                     $ms = (hrtime(true) - $start) / 1e6;
                     if ($value !== $expected) {
-                        throw new RuntimeException('Frozen-main parity failed.');
+                        throw new RuntimeException('Original, index-only and optimized results must match exactly.');
                     }
                     if ($iteration >= 0) {
                         $samples[$variant][] = $ms;
                     }
                 }
             }
-            foreach (['before', 'after'] as $variant) {
+            foreach (['before', 'index_only', 'after'] as $variant) {
+                $pdo = $connections[$variant === 'before' ? 'before' : 'after'];
                 $pdo->profile = [];
                 $pdo->profiling = true;
-                $variant === 'before' ? Tests\Support\medicalFilterBaselineList($pdo, $input) : medicalClearanceList($pdo, $input);
+                $variant === 'after' ? medicalClearanceList($pdo, $input) : Tests\Support\medicalFilterBaselineList($pdo, $input);
                 $pdo->profiling = false;
-                foreach ($pdo->profile as $query) {
+                $queries = $pdo->profile;
+                $diagnostics[$variant] = ['sql_count' => count($queries),
+                    'fetched_rows' => array_sum(array_column($queries, 'fetched_rows')),
+                    'max_bindings' => max(array_map(static fn (array $q): int => count($q['parameters']), $queries)), 'queries' => []];
+                foreach ($queries as $query) {
                     if (!str_starts_with($query['sql'], 'SELECT')) {
-                        throw new RuntimeException('Read projection wrote data.');
+                        throw new RuntimeException('Timed reader wrote to the fixture.');
                     }
-                }
-                $diagnostics[$variant] = ['sql_count' => count($pdo->profile),
-                    'fetched_rows' => array_sum(array_column($pdo->profile, 'fetched_rows')),
-                    'max_bindings' => max(array_map(static fn (array $q): int => count($q['parameters']), $pdo->profile)),
-                    'queries' => []];
-                foreach ($pdo->profile as $query) {
                     $explain = $pdo->prepare('EXPLAIN ' . $query['sql']);
                     $explain->execute($query['parameters']);
-                    $diagnostics[$variant]['queries'][] = ['sql' => $query['sql'], 'explain_estimates' => $explain->fetchAll(PDO::FETCH_ASSOC)];
+                    $diagnostics[$variant]['queries'][] = array_intersect_key($query, array_flip(['sql', 'execute_ms', 'fetch_ms', 'fetched_rows']))
+                        + ['explain_estimates' => $explain->fetchAll(PDO::FETCH_ASSOC)];
                     $explain->closeCursor();
                 }
             }
             $report['cases'][] = ['watches' => $watches, 'case' => $name, 'input' => $input,
-                'result_sha256' => hash('sha256', json_encode($expected, JSON_THROW_ON_ERROR)),
-                'total' => $expected['total'], 'parity' => true, 'samples_ms' => $samples, 'diagnostics' => $diagnostics,
-                'before_median_ms' => $percentile($samples['before'], .5), 'after_median_ms' => $percentile($samples['after'], .5),
-                'before_p95_ms' => $percentile($samples['before'], .95), 'after_p95_ms' => $percentile($samples['after'], .95)];
+                'result_sha256' => hash('sha256', json_encode($expected, JSON_THROW_ON_ERROR)), 'total' => $expected['total'], 'parity' => true,
+                'samples_ms' => $samples, 'diagnostics' => $diagnostics,
+                'before_median_ms' => $percentile($samples['before'], .5), 'index_only_median_ms' => $percentile($samples['index_only'], .5),
+                'after_median_ms' => $percentile($samples['after'], .5),
+                'before_p95_ms' => $percentile($samples['before'], .95), 'index_only_p95_ms' => $percentile($samples['index_only'], .95),
+                'after_p95_ms' => $percentile($samples['after'], .95)];
         }
-        if ($before !== $checksum()) {
-            throw new RuntimeException('Synthetic source checksums changed.');
+        foreach ($connections as $variant => $connection) {
+            if ($originalChecksums[$variant] !== $checksum($connection)) {
+                throw new RuntimeException('Owned data changed during read-only comparisons.');
+            }
         }
     } finally {
-        $admin->exec('DROP DATABASE `' . $schema . '`');
+        $connections = [];
+        foreach ($schemas as $schema) {
+            $admin->exec('DROP DATABASE `' . $schema . '`');
+        }
     }
 }
 $report['complete'] = true;
+$report['paired_data_checksums_equal'] = true;
 $report['source_checksums_unchanged'] = true;
-$report['query_cache_disabled'] = true;
 echo json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT) . "\n";

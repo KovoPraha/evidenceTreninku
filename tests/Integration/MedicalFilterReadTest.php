@@ -21,12 +21,79 @@ final class MedicalFilterReadTest extends TestCase
 {
     use \Tests\Support\RosterReadDatabase;
 
-    private function seeded(int $size = 1200): QueryProfilePdo
+    private function seeded(int $size = 1200, bool $indexed = true): QueryProfilePdo
     {
         $pdo = $this->database();
         MedicalStateFixture::seed($pdo, $size);
         $pdo->exec('UPDATE medical_clearance_records SET replaces_id=NULL WHERE watch_id>100');
+        if ($indexed) {
+            $migration = require dirname(__DIR__, 2) . '/migrations/20261108070000_medical_read_covering_index.php';
+            $migration['up']($pdo);
+        }
         return $pdo;
+    }
+
+    public function testCoveringIndexMigrationIsIdempotentAndKeepsRecordValues(): void
+    {
+        $pdo = $this->seeded(60, false);
+        $migration = require dirname(__DIR__, 2) . '/migrations/20261108070000_medical_read_covering_index.php';
+        $before = $pdo->query('SELECT * FROM medical_clearance_records ORDER BY id')->fetchAll(PDO::FETCH_ASSOC);
+        self::assertFalse($migration['verify']($pdo));
+        $migration['up']($pdo);
+        self::assertTrue($migration['verify']($pdo));
+        $indexes = \MedicalClearanceReadIndex::definitions($pdo);
+        $name = \MedicalClearanceReadIndex::coveringName($indexes);
+        self::assertNotNull($name);
+        self::assertSame(\MedicalClearanceReadIndex::COLUMNS, array_slice($indexes[$name]['columns'], 0, 6));
+        $migration['up']($pdo);
+        self::assertSame($indexes, \MedicalClearanceReadIndex::definitions($pdo));
+        self::assertSame($before, $pdo->query('SELECT * FROM medical_clearance_records ORDER BY id')->fetchAll(PDO::FETCH_ASSOC));
+    }
+
+    public function testEquivalentIndexIsReusedInsteadOfDuplicated(): void
+    {
+        $pdo = $this->seeded(60, false);
+        $pdo->exec('CREATE INDEX existing_medical_cover ON medical_clearance_records(watch_id,id,state,issued_on,valid_until,replaces_id)');
+        $migration = require dirname(__DIR__, 2) . '/migrations/20261108070000_medical_read_covering_index.php';
+        $migration['up']($pdo);
+        self::assertSame('existing_medical_cover', \MedicalClearanceReadIndex::coveringName(\MedicalClearanceReadIndex::definitions($pdo)));
+        self::assertArrayNotHasKey(\MedicalClearanceReadIndex::NAME, \MedicalClearanceReadIndex::definitions($pdo));
+    }
+
+    public function testIndexNameCollisionDoesNotReplaceAnExistingIndex(): void
+    {
+        $pdo = $this->seeded(60, false);
+        $pdo->exec('CREATE INDEX ' . \MedicalClearanceReadIndex::NAME . ' ON medical_clearance_records(state)');
+        $migration = require dirname(__DIR__, 2) . '/migrations/20261108070000_medical_read_covering_index.php';
+        $migration['up']($pdo);
+        $indexes = \MedicalClearanceReadIndex::definitions($pdo);
+        self::assertSame(['state'], $indexes[\MedicalClearanceReadIndex::NAME]['columns']);
+        self::assertNotNull(\MedicalClearanceReadIndex::coveringName($indexes));
+        self::assertNotSame(\MedicalClearanceReadIndex::NAME, \MedicalClearanceReadIndex::coveringName($indexes));
+    }
+
+    public function testIndexInventoryReadsMetadataWithoutExposingRecordValues(): void
+    {
+        require_once dirname(__DIR__, 2) . '/bin/diagnose-medical-read-indexes.php';
+        $pdo = $this->seeded(60);
+        $before = $pdo->query('SELECT * FROM medical_clearance_records ORDER BY id')->fetchAll(PDO::FETCH_ASSOC);
+        $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+        $pdo->exec($mysql ? 'START TRANSACTION READ ONLY' : 'PRAGMA query_only=ON');
+        try {
+            $inventory = \medicalReadIndexInventory($pdo);
+            self::assertTrue($inventory['exists']);
+            self::assertNotNull($inventory['covering_index']);
+            self::assertFalse($inventory['clinical_rows_read']);
+            self::assertFalse($inventory['ddl_executed']);
+            self::assertStringNotContainsString('PRIVATE MEDICAL SENTINEL', json_encode($inventory));
+            self::assertSame($before, $pdo->query('SELECT * FROM medical_clearance_records ORDER BY id')->fetchAll(PDO::FETCH_ASSOC));
+        } finally {
+            if ($mysql) {
+                $pdo->rollBack();
+            } else {
+                $pdo->exec('PRAGMA query_only=OFF');
+            }
+        }
     }
 
     public function testAllStatesSearchDateAndPagesMatchCurrentMain(): void
