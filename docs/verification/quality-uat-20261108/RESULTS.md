@@ -16,10 +16,10 @@ nepřidělilo ani neuložilo žádné oprávnění. Snímky s osobními údaji n
 | Plánovač, `Superadmin · Trenér` | FAIL při 360 px | Dnešní stránka se načetla, filtry `Moje/Vše` a soupisky jsou vidět. Při 390 px `clientWidth=scrollWidth=375`; při 360 px `clientWidth=345`, `scrollWidth=367`, viditelný spodní vodorovný posuvník. Jediný prvek za pravým okrajem je select `team_id`: pravý okraj 367 px, vypočtená šířka 351 px, inline `width:auto`. Skutečné naplánování ani zápis nebyly zkoušeny. |
 | Zdravotní prohlídky, `Superadmin · Členové a KIS` | ČÁSTEČNÝ PASS | Role `Vedoucí sportu` byla na trase oprávněně odmítnuta, registrářská role stránku otevřela. Při 390/360 px jsou filtry a prázdný stav čitelné bez vodorovného přetékání (`345/345` při 360 px). Volba „Platné“ se propsala do URL i vybraného stavu. V této roli bylo 0 záznamů před i po filtru; správnost obsahu a další stavy nebyly ověřeny. |
 
-Po čtecím průchodu byl zahájen návrat k původnímu pracovnímu kontextu
-`Superadmin · Systém` a reset dočasného viewportu. Ovládání prohlížeče při
-tom vypršelo; konečný kontext a viewport nejsou potvrzené. Při dalším stabilním
-připojení je ověřit a případně vrátit. Žádná zapisující akce nebyla spuštěna.
+Po čtecím průchodu první pokus o návrat kontextu a reset viewportu vypršel.
+Následná kontrola v další přihlášené kartě potvrdila původní pracovní kontext
+`Superadmin · Systém`; prohlížečový viewport byl resetován a ověřen na
+výchozích 1536 px. Žádná zapisující akce nebyla spuštěna.
 
 Q2 opravuje pouze konkrétní [šířkový problém](../../WORK_PLAN_CURRENT.md#q01-q2--mobilní-filtr-plánovače).
 Původní plná lidská přejímka rolí, docházky a zdravotních záznamů tím není
