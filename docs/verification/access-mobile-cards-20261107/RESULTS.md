@@ -2,7 +2,8 @@
 
 7. 11. 2026, [plán](../../ACCESS_OVERVIEW_2026-11-07.md),
 [rozhodnutí](../../DECISION_LOG.md#d2026-11-07-06).
-**Implementace a nasazení HOTOVO; vizuální přejímka nových karet NOT RUN.**
+**Implementace a nasazení HOTOVO; čtecí vizuální kontrola nových karet ČÁSTEČNĚ PASS 8. 11.**
+[Nový přihlášený průchod a zbývající scénáře](../quality-uat-20261108/RESULTS.md).
 
 ## Implementace a předání
 

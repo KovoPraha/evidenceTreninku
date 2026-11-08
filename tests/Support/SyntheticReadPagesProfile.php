@@ -185,6 +185,12 @@ function p11Worker(array $arguments): void
             'html_sha256' => hash('sha256', $rendered['html']),
             'html_lf_sha256' => hash('sha256', str_replace("\r\n", "\n", $rendered['html'])),
             'result_sha256' => hash('sha256', json_encode([$rendered['data'], $rendered['html']], JSON_THROW_ON_ERROR))];
+        if ($route === 'R05') {
+            // Keep the raw HTML hash; compare the frozen baseline after only this known mobile CSS fix.
+            $comparableHtml = str_replace('style="width:auto;max-width:100%"', 'style="width:auto"', $rendered['html'], $styleCount);
+            p11Assert($styleCount === 3, 'Planner filter width change no longer matches the expected three selects.');
+            $result['html_lf_expected_style_compat_sha256'] = hash('sha256', str_replace("\r\n", "\n", $comparableHtml));
+        }
         unset($rendered);
         $reference ??= $result['result_sha256'];
         p11Assert($reference === $result['result_sha256'], 'Result changed between samples.');

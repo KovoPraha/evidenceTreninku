@@ -30,17 +30,40 @@ nasazením nebo smazáním WIP. Podklad: `origin/main` `35fdad44`, tento registr
 k 8. 11. Ověření bylo čtecí; žádná funkce tímto návrhem není implementována.
 Větev `codex/quality-roadmap-20261108`, samostatný worktree mimo `htdocs`.
 Pokyn vlastníka 8. 11. schválil autonomní pokračování dle tohoto pořadí.
-Q1 je nyní **částečně ověřeno / přihlášené UAT NOT RUN**: URL i DOM v Chrome
-fungují, nová karta KIS skončila na loginu. [Protokol ROLE01-MOB](verification/access-mobile-cards-20261107/RESULTS.md).
+Q1 je nyní **částečně ověřeno** po přihlášení vlastníka: role, docházka,
+plánovač a zdravotní filtry mají [přesné výsledky](verification/quality-uat-20261108/RESULTS.md).
+Při 360 px je reprodukovaná vada plánovače; zbytek úplného UAT není uzavřený.
 Dokumentační převzetí Q1 je sloučené v [#388](https://github.com/KovoPraha/evidenceTreninku/pull/388),
-původní #365/#378 uzavřené po převzetí jejich obsahu. Q2 čeká na reprodukovaný
-nález; Q3 je místně ověřený a Q4/Q5 mají [připravený podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
+původní #365/#378 uzavřené po převzetí jejich obsahu. Q2 opravuje uvedenou
+vadu; Q3 je sloučený v [#389](https://github.com/KovoPraha/evidenceTreninku/pull/389)
+a Q4/Q5 mají [připravený podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
+
+### Q01-Q2 — mobilní filtr plánovače
+
+Stav 8. 11.: reprodukovaná prezentační vada v produkčním Chrome, role
+`Superadmin · Trenér`, viewport 360 × 800: dokument má `clientWidth=345`,
+`scrollWidth=367`; filtr `team_id` s `style="width:auto"` přesahuje pravý okraj
+o 22 px. Při 390 px `clientWidth=scrollWidth=375`. [Čtecí průchod](verification/quality-uat-20261108/RESULTS.md).
+Opravit jen šířkové omezení tří obdobných selectů v `planovac.php`; zachovat
+hodnoty, pořadí, GET parametry, role a JS přepínání `Moje/Vše`.
+Akceptace: 360/390 px bez vodorovného posunu, filtry viditelné a použitelné,
+desktop zachovaný; PHP syntaxe, dokumentační kontrola a povinné CI PASS.
+Produkční opravu a lidské převzetí doložit odděleně.
+PR [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) obsahuje
+místní opravu a syntetické měření. Profil s historickým HTML porovnává po
+normalizaci pouze tří očekávaných šířek; původní hash HTML zůstává zachovaný.
+Přihlášené hledání/editor ROLE01-MOB po obnoveném přihlášení cíleně PASS:
+prázdný stav 0/48 a deaktivovaný #64 čtecí, bez uložení,
+[protokol](verification/quality-uat-20261108/RESULTS.md).
 
 ### Q01-Q3 — první měřitelný úklid, rychlý nákup
 
-Stav 8. 11.: IMPLEMENTOVÁNO MÍSTNĚ na větvi `codex/guest-checkout-read-cleanup-20261108`,
-samostatný worktree mimo `htdocs`, základ main `7dc64481`; původní WIP zachované.
-Na `booking/rychly_nakup.php` běžné zboží volá
+Stav 8. 11.: SLUČENO [#389](https://github.com/KovoPraha/evidenceTreninku/pull/389)
+jako `a3cca282`, všech 11 CI PASS včetně obou MariaDB. Větev
+`codex/guest-checkout-read-cleanup-20261108`, samostatný worktree mimo `htdocs`;
+původní WIP zachované. Kód je zahrnutý ve vydání #385 / deploy 42477866185;
+[provozní protokol](verification/medical-filter-release-20261108/RESULTS.md).
+Před #389 volalo `booking/rychly_nakup.php` pro běžné zboží
 `shopProductRequiresAthlete($pdo, $productId)` dvakrát za jeden požadavek.
 Klasifikace pro jeden produkt má být jedna konzistentní hodnota; opakované volání
 čte stejné tabulky. Nejdřív doložit počet příkazů nad syntetickými daty, potom
@@ -53,7 +76,8 @@ zůstávají přesměrované po prvním volání. Místní PHPUnit výběr
 `ShopPurchaseModeTest|ShopAnonymousCheckoutBootstrapTest|ShopCheckoutTest`
 PASS: 43 testů / 799 assertions, PHP lint PASS. Jde o měření volání klasifikační
 funkce nad syntetickými daty, nikoli o produkční HTTP profil. Přijetí PR vyžaduje
-CI včetně obou MariaDB; žádná změna schématu, plateb, práv ani produkčního stavu.
+CI včetně obou MariaDB PASS; žádná změna plateb ani práv. Tento řez sám
+nepřidal migraci, pozdější společné vydání #385 obsahovalo index zdravotního čtení.
 
 | Pořadí | Výstup dalšího řezu | Přijetí a závislost |
 | --- | --- | --- |

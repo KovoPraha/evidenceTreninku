@@ -9,6 +9,10 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 8. 11. 2026 / E2026-11-08-17 | Q01/Q1: dokončen cílený čtecí průchod přístupů | Po opětovném přihlášení prázdné hledání 0/48, `#64` jediný deaktivovaný účet, editor čtecí GET; žádné uložení/aktivace. Původní pracovní kontext zachovaný. Úplné role UAT všech účtů zůstává samostatné. | [Přesný protokol](verification/quality-uat-20261108/RESULTS.md) |
+| 8. 11. 2026 / E2026-11-08-16 | Q01/Q2: místní oprava přetékajícího filtru plánovače | Tři selecty mají `max-width:100%`; statický Playwright s repo Bootstrap CSS 360/390/1280 px bez přetékání, PHP lint PASS. Úplné CI a produkční vydání otevřené. | [Průchod a měření](verification/quality-uat-20261108/RESULTS.md), [plán](WORK_PLAN_CURRENT.md#q01-q2--mobilní-filtr-plánovače) |
+| 8. 11. 2026 / E2026-11-08-15 | Q01/Q3: úklid rychlého nákupu sloučený | #389 / `a3cca282`, 11 CI PASS včetně obou MariaDB. Úspora syntetických SELECTů a Q4/Q5 podklad jsou v registru; produkční deploy tohoto commitu zahrnut ve vydání #385. | [Q3 a meze](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup), [Q4/Q5](QUALITY_NEXT_SLICES_2026-11-08.md) |
+| 8. 11. 2026 / E2026-11-08-14 | Q01/Q1–Q2: přihlášené čtecí UAT a reprodukovaný mobilní filtr | Karty rolí 390/360 a desktop čitelné, docházka hledání/stránkování částečně PASS; zdravotní přehled v testované roli bez záznamů. Plánovač při 360 px přetéká o 22 px, Q2 cílí na šířku filtrů. Bez potvrzení docházky, zápisu zdraví či změny rolí. | [Přesný rozsah a meze](verification/quality-uat-20261108/RESULTS.md), [Q2](WORK_PLAN_CURRENT.md#q01-q2--mobilní-filtr-plánovače) |
 | 8. 11. 2026 / E2026-11-08-13 | P11-R13-F nasazeno | #385/519ff098, deploy42477866185 SUCCESS; 15CI, index, záloha389/2, DOM5/5 a anonym403 PASS. WIP zachovaný; přihlášené UAT NOT RUN. | [Plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [protokol](verification/medical-filter-release-20261108/RESULTS.md) |
 | 8. 11. 2026 / E2026-11-08-12 | P11-R13-F V5 nativní/HTTP/Chrome parita a přínos PASS | 100k GET hledání1183→573ms, datum-do882→326ms; 2040HTTP/48negative/364Chrome. Staré benchmarky musí skutečně aplikovat shodnou indexovou migraci, kontrola ledgeru zachovaná. Aktuální CI před merge/deploy. | [Plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [důkazy](verification/medical-filter-read-performance-20261107/RESULTS.md) |
 | 8. 11. 2026 / E2026-11-08-11 | P11-R13-F SQL-only varianty nestačí, V5 indexový experiment | V4 datum/poloviční pending regresní; krycí index, oddělené měření index/kód, produkční metadata před případnou migrací. Nejprve syntetické CI, žádná produkční změna. | [Plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [D15](DECISION_LOG.md#d2026-11-07-15), [důkazy](verification/medical-filter-read-performance-20261107/RESULTS.md) |
@@ -123,3 +127,7 @@ Při převzetí #387 zůstává přijaté Q01 E2026-11-08-01; pracovní zdravotn
 Při převzetí #388 zůstávají přijaté Q01/Q1 E2026-11-08-01–03; pracovní zdravotní E02–E06 jsou nyní E04–E08. Historické doklady zůstávají v commitech.
 
 Při převzetí #389 zůstávají přijaté Q01 E2026-11-08-01–07; pracovní zdravotní E04–E08 jsou nyní E08–E12. Původní commity zachované.
+
+Při převzetí #385 zůstávají přijaté zdravotní E2026-11-08-08–12; pracovní Q01 E08–10 jsou nyní E13–15. Původní commity zachované.
+
+Při převzetí #392 zůstává přijaté zdravotní E2026-11-08-13; pracovní Q01 E13–16 jsou nyní E14–17. Původní commity zachované.
