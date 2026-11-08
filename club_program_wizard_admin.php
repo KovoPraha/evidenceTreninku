@@ -25,62 +25,6 @@ function cpwMinor(string $value): int
     return ((int)$whole * 100) + (int)str_pad($fraction, 2, '0');
 }
 
-/** @param array<string,mixed> $input @param array<string,mixed> $reference @return array<string,mixed> */
-function cpwSimpleDefaults(array $input, string $requestKey, array $reference): array
-{
-    $name = trim((string)($input['name'] ?? ''));
-    $startsOn = (string)($input['starts_on'] ?? '');
-    $endsOn = (string)($input['ends_on'] ?? '');
-    $startYear = preg_match('/^(\d{4})-/', $startsOn, $match) === 1 ? (int)$match[1] : (int)date('Y');
-    $endYear = preg_match('/^(\d{4})-/', $endsOn, $match) === 1 ? (int)$match[1] : $startYear + 1;
-    $suffix = strtoupper(substr($requestKey, 0, 6));
-
-    $input['description'] = trim((string)($input['description'] ?? '')) ?: 'Kroužek ' . $name;
-    $input['currency'] = 'CZK';
-    $input['category_path'] = 'Kroužky';
-    $input['includes_vat'] = '';
-    $input['vat_rate_basis_points'] = '';
-    $input = array_replace($input, clubProgramWizardSalesWindow($input));
-    foreach (CLUB_PROGRAM_TERM_PURPOSES as $purpose) {
-        $terms = $reference['terms'][$purpose] ?? [];
-        if (is_array($terms) && $terms !== [] && (int)($terms[0]['id'] ?? 0) > 0) {
-            $input[$purpose . '_source'] = 'existing';
-            $input[$purpose . '_version_id'] = (string)$terms[0]['id'];
-            continue;
-        }
-        $text=trim((string)($input[$purpose.'_text']??''));
-        if($text===''||mb_strlen($text,'UTF-8')>4000||str_contains($text,CLUB_PROGRAM_TERM_DRAFT_MARKER)){
-            throw new ClubProgramWizardException('Před prvním zveřejněním vyplňte a zkontrolujte oba texty klubových podmínek. Vzorový text označený jako VZOR nelze zveřejnit.');
-        }
-        if(($input['terms_confirmed']??'')!=='1')throw new ClubProgramWizardException('Potvrďte, že jste zkontrolovali první znění klubových podmínek.');
-        $input[$purpose . '_source'] = 'new';
-        $input[$purpose . '_text'] = $text;
-    }
-    $input['reason'] = ($input['source_mode']??'new')==='existing'
-        ? 'Napojení existujícího produktu na kroužkový program.'
-        : 'Vypsání nového kroužku.';
-    $input['confirmed'] = true;
-
-    if ((int)($input['team_id'] ?? 0) > 0) {
-        $input['team_mode'] = 'existing';
-        return $input;
-    }
-
-    $input['team_mode'] = 'new';
-    $input['season_code'] = 'KROUZKY-' . $startYear . '-' . $endYear . '-' . $suffix;
-    $input['season_name'] = 'Kroužky ' . $startYear . '/' . $endYear;
-    $input['season_type'] = $startYear === $endYear ? 'calendar_year' : 'school_year';
-    $input['season_starts_on'] = $startsOn;
-    $input['season_ends_on'] = $endsOn;
-    $input['team_code'] = 'KROUZEK-' . $suffix;
-    $input['team_name'] = $name;
-    $input['team_discipline'] = 'Všeobecná cyklistická příprava';
-    $from = trim((string)($input['birth_year_from'] ?? ''));
-    $to = trim((string)($input['birth_year_to'] ?? ''));
-    $input['team_age_label'] = $from !== '' || $to !== '' ? 'Ročníky ' . ($from ?: 'bez omezení') . '–' . ($to ?: 'bez omezení') : 'Děti';
-    return $input;
-}
-
 $errors = [];
 $actorId = (int)$_SESSION['trener_id'];
 $reference = clubProgramWizardReferenceData($pdo);
@@ -170,7 +114,7 @@ $end = $start->modify('+9 months -1 day');
         <div class="card-body row g-3">
             <?= csrf_field() ?><input type="hidden" name="request_key" value="<?= cpwh($key) ?>">
             <div class="col-12"><fieldset><legend class="form-label fw-semibold">Co chcete udělat?</legend><div class="row g-2"><div class="col-md-6"><label class="border rounded p-3 d-block h-100"><input class="form-check-input me-2" type="radio" name="source_mode" value="existing" <?=$sourceMode==='existing'?'checked':''?> <?= $existingProducts===[]?'disabled':'' ?>><strong>Použít existující produkt</strong><span class="d-block small text-muted mt-1">Například už zveřejněný produkt 243. Nevznikne duplicita.</span></label></div><div class="col-md-6"><label class="border rounded p-3 d-block h-100"><input class="form-check-input me-2" type="radio" name="source_mode" value="new" <?=$sourceMode==='new'?'checked':''?>><strong>Vytvořit nový produkt</strong><span class="d-block small text-muted mt-1">Pro kroužek, který v katalogu ještě není.</span></label></div></div></fieldset></div>
-            <div class="col-12" data-existing-product><label class="form-label">Existující produkt a varianta</label><select class="form-select form-select-lg" name="existing_variant_id"><option value="">Vyberte produkt</option><?php foreach($existingProducts as$candidate):$candidateName=(string)($candidate['public_name']?:$candidate['name']);?><option value="<?=(int)$candidate['variant_id']?>" data-name="<?=cpwh($candidateName)?>" data-description="<?=cpwh((string)($candidate['public_summary']?:$candidate['short_description']))?>" data-amount="<?=cpwh(number_format((int)$candidate['amount_minor']/100,2,',',''))?>" <?= $old('existing_variant_id',$requestedVariantId)===(string)$candidate['variant_id']?'selected':'' ?>><?=cpwh('#'.(int)$candidate['product_id'].' · '.$candidateName.' · '.$candidate['sku'].' · '.number_format((int)$candidate['amount_minor']/100,2,',',' ').' Kč')?></option><?php endforeach;?></select><div class="form-text">Průvodce odstraní skladovou logiku, zachová cenu a veřejný text a připojí termín, kapacitu a soupisku.</div></div>
+            <div class="col-12" data-existing-product><label class="form-label">Existující produkt a varianta</label><select class="form-select form-select-lg" name="existing_variant_id"><option value="">Vyberte produkt</option><?php foreach($existingProducts as$candidate):$candidateName=clubProgramWizardProductText($candidate)['name'];?><option value="<?=(int)$candidate['variant_id']?>" data-name="<?=cpwh($candidateName)?>" data-description="<?=cpwh(clubProgramWizardProductText($candidate)['description'])?>" data-amount="<?=cpwh(number_format((int)$candidate['amount_minor']/100,2,',',''))?>" <?= $old('existing_variant_id',$requestedVariantId)===(string)$candidate['variant_id']?'selected':'' ?>><?=cpwh('#'.(int)$candidate['product_id'].' · '.$candidateName.' · '.$candidate['sku'].' · '.number_format((int)$candidate['amount_minor']/100,2,',',' ').' Kč')?></option><?php endforeach;?></select><div class="form-text">Průvodce odstraní skladovou logiku, zachová cenu a veřejný text a připojí termín, kapacitu a soupisku.</div></div>
             <div class="col-md-7" data-new-product><label class="form-label">Název kroužku</label><input class="form-control form-control-lg" name="name" maxlength="160" value="<?= cpwh($old('name')) ?>" required autofocus></div>
             <div class="col-md-5" data-new-product><label class="form-label">Cena v Kč</label><input class="form-control form-control-lg" name="amount" inputmode="decimal" value="<?= cpwh($old('amount')) ?>" placeholder="např. 2500" required></div>
             <div class="col-12" data-new-product><label class="form-label">Krátký popis <span class="text-muted">(nepovinné)</span></label><textarea class="form-control" name="description" maxlength="4000" rows="2"><?= cpwh($old('description')) ?></textarea></div>

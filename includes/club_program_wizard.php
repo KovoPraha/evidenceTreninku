@@ -37,6 +37,95 @@ function clubProgramWizardSalesWindow(array $input, ?DateTimeImmutable $now = nu
     return ['sales_open_at' => $open, 'sales_close_at' => $close];
 }
 
+/** @param array<string,mixed> $product @return array{name:string,description:string} */
+function clubProgramWizardProductText(array $product): array
+{
+    $name = trim((string)($product['public_name'] ?? ''));
+    if ($name === '') {
+        $name = trim((string)($product['name'] ?? ''));
+    }
+    $description = trim((string)($product['public_summary'] ?? ''));
+    if ($description === '') {
+        $description = trim((string)($product['short_description'] ?? ''));
+    }
+    return ['name' => $name, 'description' => $description !== '' ? $description : 'Kroužek ' . $name];
+}
+
+/** @param array<string,mixed> $input @param array<string,mixed> $reference @return array<string,mixed> */
+function cpwSimpleDefaults(array $input, string $requestKey, array $reference): array
+{
+    $sourceMode = (string)($input['source_mode'] ?? 'new');
+    if ($sourceMode === 'existing') {
+        $variantId = (int)($input['existing_variant_id'] ?? 0);
+        $selected = null;
+        foreach ($reference['products'] ?? [] as $product) {
+            if ((int)($product['variant_id'] ?? 0) === $variantId && $variantId > 0) {
+                $selected = $product;
+                break;
+            }
+        }
+        if ($selected === null) {
+            throw new ClubProgramWizardException('Vybraný produkt už není dostupný. Obnovte formulář a vyberte variantu znovu.');
+        }
+        $text = clubProgramWizardProductText($selected);
+        $input['name'] = $text['name'];
+        $input['description'] = $text['description'];
+    }
+    $name = trim((string)($input['name'] ?? ''));
+    $startsOn = (string)($input['starts_on'] ?? '');
+    $endsOn = (string)($input['ends_on'] ?? '');
+    $startYear = preg_match('/^(\d{4})-/', $startsOn, $match) === 1 ? (int)$match[1] : (int)date('Y');
+    $endYear = preg_match('/^(\d{4})-/', $endsOn, $match) === 1 ? (int)$match[1] : $startYear + 1;
+    $suffix = strtoupper(substr($requestKey, 0, 6));
+
+    $input['description'] = trim((string)($input['description'] ?? '')) ?: 'Kroužek ' . $name;
+    $input['currency'] = 'CZK';
+    $input['category_path'] = 'Kroužky';
+    $input['includes_vat'] = '';
+    $input['vat_rate_basis_points'] = '';
+    $input = array_replace($input, clubProgramWizardSalesWindow($input));
+    foreach (CLUB_PROGRAM_TERM_PURPOSES as $purpose) {
+        $terms = $reference['terms'][$purpose] ?? [];
+        if (is_array($terms) && $terms !== [] && (int)($terms[0]['id'] ?? 0) > 0) {
+            $input[$purpose . '_source'] = 'existing';
+            $input[$purpose . '_version_id'] = (string)$terms[0]['id'];
+            continue;
+        }
+        $text = trim((string)($input[$purpose . '_text'] ?? ''));
+        if ($text === '' || mb_strlen($text, 'UTF-8') > 4000 || str_contains($text, CLUB_PROGRAM_TERM_DRAFT_MARKER)) {
+            throw new ClubProgramWizardException('Před prvním zveřejněním vyplňte a zkontrolujte oba texty klubových podmínek. Vzorový text označený jako VZOR nelze zveřejnit.');
+        }
+        if (($input['terms_confirmed'] ?? '') !== '1') {
+            throw new ClubProgramWizardException('Potvrďte, že jste zkontrolovali první znění klubových podmínek.');
+        }
+        $input[$purpose . '_source'] = 'new';
+        $input[$purpose . '_text'] = $text;
+    }
+    $input['reason'] = $sourceMode === 'existing'
+        ? 'Napojení existujícího produktu na kroužkový program.'
+        : 'Vypsání nového kroužku.';
+    $input['confirmed'] = true;
+
+    if ((int)($input['team_id'] ?? 0) > 0) {
+        $input['team_mode'] = 'existing';
+        return $input;
+    }
+
+    $input['team_mode'] = 'new';
+    $input['season_code'] = 'KROUZKY-' . $startYear . '-' . $endYear . '-' . $suffix;
+    $input['season_name'] = 'Kroužky ' . $startYear . '/' . $endYear;
+    $input['season_type'] = $startYear === $endYear ? 'calendar_year' : 'school_year';
+    $input['season_starts_on'] = $startsOn;
+    $input['season_ends_on'] = $endsOn;
+    $input['team_code'] = 'KROUZEK-' . $suffix;
+    $input['team_name'] = $name;
+    $input['team_discipline'] = 'Všeobecná cyklistická příprava';
+    $from = trim((string)($input['birth_year_from'] ?? ''));
+    $to = trim((string)($input['birth_year_to'] ?? ''));
+    $input['team_age_label'] = $from !== '' || $to !== '' ? 'Ročníky ' . ($from ?: 'bez omezení') . '–' . ($to ?: 'bez omezení') : 'Děti';
+    return $input;
+}
+
 /** @return array{seasons:list<array<string,mixed>>,teams:list<array<string,mixed>>,categories:list<string>,terms:array<string,list<array<string,mixed>>>,products:list<array<string,mixed>>} */
 function clubProgramWizardReferenceData(PDO $pdo): array
 {
@@ -122,10 +211,9 @@ function clubProgramWizardCreate(
     }
     $existingProduct = $sourceMode === 'existing' ? clubProgramWizardExistingProduct($pdo, (int)($input['existing_variant_id']
     ?? 0)) : null;
-    $name = shopManualCatalogText($existingProduct !== null ? (string)($existingProduct['public_name'] ?: $existingProduct['name'])
-    : (string)($input['name'] ?? ''), 160, 'Název kroužku');
-    $description = shopManualCatalogText($existingProduct !== null ? (string)($existingProduct['public_summary'] ?: $existingProduct['short_description'])
-    : (string)($input['description'] ?? ''), 4000, 'Veřejný popis');
+    $existingText = $existingProduct !== null ? clubProgramWizardProductText($existingProduct) : null;
+    $name = shopManualCatalogText($existingText['name'] ?? (string)($input['name'] ?? ''), 160, 'Název kroužku');
+    $description = shopManualCatalogText($existingText['description'] ?? (string)($input['description'] ?? ''), 4000, 'Veřejný popis');
     if ($description === '') {
         throw new InvalidArgumentException('Veřejný popis je povinný.');
     }

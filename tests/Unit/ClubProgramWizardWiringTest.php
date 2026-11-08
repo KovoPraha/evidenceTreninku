@@ -22,7 +22,7 @@ final class ClubProgramWizardWiringTest extends TestCase
         self::assertStringNotContainsString('name="attribute_keys[]"', $page);
         self::assertStringNotContainsString('name="attribute_values[]"', $page);
         self::assertStringContainsString('cpwSimpleDefaults', $page);
-        self::assertStringContainsString("'_source'] = 'existing'", $page);
+        self::assertStringContainsString("'_source'] = 'existing'", $service);
         self::assertStringContainsString('Vytvořit novou automaticky', $page);
         self::assertStringContainsString('shopManualCatalogCreateInTransaction', $service);
         self::assertStringNotContainsString('kisRosterCreateSeasonInTransaction', $service);

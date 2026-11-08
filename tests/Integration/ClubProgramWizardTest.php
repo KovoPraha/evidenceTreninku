@@ -174,6 +174,60 @@ final class ClubProgramWizardTest extends TestCase
         self::assertFalse($pdo->inTransaction());
     }
 
+    public function testSimpleWizardUsesExistingVariantTextPriceAndCreatesNamedRoster(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec("INSERT INTO shop_products(id,origin,external_product_key,name,short_description,offer_type,visibility,item_type,catalog_status) VALUES(298,'manual','manual:298','Interní Aligátoři','Původní popis.','goods','visible','physical','active')");
+        $pdo->exec("INSERT INTO shop_variants(id,product_id,origin,sku,attributes_json,price_mode,amount_minor,currency,stock_quantity_decimal,unit_code,visible,catalog_status) VALUES(398,298,'manual','ALIGATORI-298','{}','fixed',3600,'CZK',NULL,'piece',1,'active')");
+        $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary) VALUES(298,'active','Aligátoři','Veřejný popis Aligátorů.')");
+
+        $input = $this->input();
+        unset($input['name'], $input['description'], $input['team_name']);
+        $input['source_mode'] = 'existing';
+        $input['existing_variant_id'] = 398;
+        $input['capacity'] = 30;
+        $input['terms_confirmed'] = '1';
+        $input = \cpwSimpleDefaults($input, $input['request_key'], \clubProgramWizardReferenceData($pdo));
+        $input['amount_minor'] = 0; // The form ignores the amount for an existing variant.
+
+        self::assertSame('Aligátoři', $input['team_name']);
+        self::assertSame('Veřejný popis Aligátorů.', $input['description']);
+        $result = \clubProgramWizardCreate($pdo, 7, $input, null, false);
+
+        self::assertSame(298, $result['product_id']);
+        self::assertSame(398, $result['variant_id']);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
+        self::assertSame('Aligátoři', $pdo->query('SELECT name FROM club_teams')->fetchColumn());
+        self::assertSame('Aligátoři', $pdo->query('SELECT name FROM club_programs')->fetchColumn());
+        self::assertSame('Veřejný popis Aligátorů.', $pdo->query('SELECT description FROM club_programs')->fetchColumn());
+        self::assertSame(30, (int)$pdo->query('SELECT capacity FROM club_program_offers')->fetchColumn());
+        self::assertSame(3600, (int)$pdo->query('SELECT amount_minor FROM shop_variants WHERE id=398')->fetchColumn());
+    }
+
+    public function testSimpleWizardKeepsNewProductDefaults(): void
+    {
+        $pdo = $this->database();
+        $input = $this->input();
+        unset($input['description'], $input['team_name']);
+        $input['terms_confirmed'] = '1';
+        $input = \cpwSimpleDefaults($input, $input['request_key'], \clubProgramWizardReferenceData($pdo));
+        self::assertSame('Rajčátka', $input['team_name']);
+        self::assertSame('Kroužek Rajčátka', $input['description']);
+        \clubProgramWizardCreate($pdo, 7, $input, null, false);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM shop_products')->fetchColumn());
+    }
+
+    public function testExistingProductWithoutPublicTextUsesInternalNameAndUsefulDescription(): void
+    {
+        self::assertSame(
+            ['name' => 'Aligátoři', 'description' => 'Kroužek Aligátoři'],
+            \clubProgramWizardProductText([
+                'public_name' => '  ', 'name' => 'Aligátoři',
+                'public_summary' => '', 'short_description' => '  ',
+            ])
+        );
+    }
+
     public function testSkuSlugDoesNotBreakCzechWordInside(): void
     {
         self::assertSame('RAJCATKA', \clubProgramWizardSlug('Rajčátka'));

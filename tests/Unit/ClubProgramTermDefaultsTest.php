@@ -31,9 +31,10 @@ final class ClubProgramTermDefaultsTest extends TestCase
     {
         $root=dirname(__DIR__,2);
         $wizard=(string)file_get_contents($root.'/club_program_wizard_admin.php');
+        $service=(string)file_get_contents($root.'/includes/club_program_wizard.php');
         $programs=(string)file_get_contents($root.'/club_programs_admin.php');
         self::assertStringNotContainsString('CLUB_PROGRAM_TERM_DEFAULTS',$wizard);
-        self::assertStringContainsString("'_source'] = 'existing'",$wizard);
+        self::assertStringContainsString("'_source'] = 'existing'",$service);
         self::assertStringContainsString('CLUB_PROGRAM_TERM_DEFAULTS',$programs);
     }
 }
