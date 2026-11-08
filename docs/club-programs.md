@@ -2,7 +2,7 @@
 
 ## UX01 — doplnění celoroční nabídky ke stávajícím skupinám (8. 11. 2026)
 
-Stav: IMPLEMENTOVÁNO VE VĚTVI, [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) před merge; uživatel 8. 11. výslovně požádal pokračovat a nasadit kód. Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Větev `codex/year-offer-ux-20261108` nyní zahrnuje novější `origin/main` `ab49947d`; cizí WIP zachované. Původní pověření implementovat zjednodušení neobsahovalo ostré ceny, nabídky ani platby; nové pověření se vztahuje na nasazení kódu, neuvádí částky ani pokyn zveřejnit nabídky. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
+Stav: **KÓD NASAZEN** z [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) jako `1c828fbf`, [deploy 42492821311](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42492821311) SUCCESS; [protokol](verification/year-offer-release-20261108/RESULTS.md). Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Pověření vlastníka k nasazení kódu neuvádělo částky ani pokyn zveřejnit nabídky. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
 
 Produkční čtecí kontrola 8. 11. ukázala zveřejněné Točňáky úterý, čtvrtek a 2× týdně, každý s prvním i druhým pololetím a bez celoroční nabídky. Starší společná nabídka 1× týdně je skrytá/uzavřená. Běžné administrační založení další varianty nyní vyžaduje ruční název, kód, SKU, platnost, prodejní okno, cenu, kapacitu a věk pro každou skupinu zvlášť.
 
@@ -17,6 +17,16 @@ Lokální ověření 8. 11.: syntetické integrační testy kroužků a sdílen�
 CI pro kódový commit `56f1db82` v [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395): 11/11 PASS dne 8. 11. 2026, včetně PHPStan a changed-file style, PHPUnit na PHP 8.2, obou MariaDB 10.3/11.4 integračních smoke a čtecích profilů, docs a CodeQL. První běh PHPStanu odhalil čtyři statické chyby v nových souborech, opravené v `56f1db82`; následný úplný běh prošel. Produkční vydání a reálný nákup zůstávají NOT RUN.
 
 Release postup po novém pověření: vyřešit konflikt s aktuálním main, znovu ověřit CI přesného PR head, sloučit PR, na přesném main commitu spustit `deploy-production.yml` s `potvrzeni=NASADIT`, `uat_schvaleno=false` a `importovat_krouzky=false`. Po úspěšném deployi ověřit veřejnou stránku a přístup k novému administračnímu formuláři pouze čtením. Nevytvářet objednávky ani skutečné celoroční varianty bez schválených cen. Nasazení s sebou může zahrnovat již sloučené změny v main; před spuštěním přesně porovnat release commit a poslední nasazený stav.
+
+## Postup pro testerku po nasazení
+
+1. Přihlásit se správcovským účtem a otevřít **Kroužky → Doplnit celý rok** (`club_program_offers_admin.php` → `club_program_year_offer_admin.php`).
+2. Vyhledat **Točňáci**. Pro školní rok 2026/27 zkontrolovat samostatně úterní 1× týdně, čtvrteční 1× týdně a 2× týdně. Formulář ukazuje jen skupiny se dvěma pololetními nabídkami bez celoroční varianty; nejednoznačný řádek označí důvodem a nedovolí jej vybrat.
+3. Vybrat požadované skupiny a pro každou zadat **schválenou celoroční cenu**. Cena se z pololetí neodhaduje ani nepřebírá.
+4. Kliknout na **Zkontrolovat vybrané nabídky**. V náhledu zkontrolovat název skupiny, období, prodejní okno, soupisku, kapacitu, ročníky a cenu. Do tohoto bodu se nic nepublikuje.
+5. Tlačítko **Zveřejnit** použít až po schválení cen a obsahu vedením. Pak systém vytvoří celoroční varianty v již existujících produktech a soupiskách, všechny vybrané skupiny v jedné transakci. Teprve poté ověřit jejich zobrazení a nákupní cestu v e-shopu.
+
+Pokud řádek chybí, je blokovaný, neodpovídají údaje v náhledu, nebo tlačítko není dostupné, testerka pošle název skupiny, školní rok, text chyby a snímek obrazovky. Nemá zakládat náhradní produkt nebo nový kroužek, aby problém obešla. Přihlášené ověření náhledu a skutečný nákup po vydání zatím NOT RUN.
 
 ## Doménový model
 
