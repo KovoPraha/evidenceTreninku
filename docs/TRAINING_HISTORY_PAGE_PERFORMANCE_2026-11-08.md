@@ -1,6 +1,6 @@
 # P11-RH — stránkované správní historie tréninků
 
-8. 11. 2026. ROZPRACOVÁNO. Vlastník: vývoj podle nového výslovného zadání Marka;
+8. 11. 2026. HOTOVO v technickém rozsahu / NASAZENO. Vlastník: vývoj podle nového výslovného zadání Marka;
 commit/merge/deploy po shodě výsledků, přínosu a zelených kontrolách.
 [Handoff](SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md), [výsledky](verification/training-history-page-performance-20261108/RESULTS.md).
 
@@ -62,3 +62,12 @@ První celé HTTP s doplněnými legacy sloupci ověřilo původní fázi i jedn
 Iterace1/a857fd18: native11.4 i celé HTTP/Chrome PASS, přesná data/statistiky,5checksumů a úklid. Na10k11.4 čtení1951→117ms,140000→10350řádků,22→4SQL. Bohatý skutečný GET1002tréninků313→145ms,8,4MB→253kB. Skutečné kliknutí další stránky/filtry/nové hledání PASS. Důkazy iteration1. Další lokální řez před implementací: bez filtru skupiny/podskupiny jsou LEFT JOIN legacy vazeb zbytečné, jejich násobnost již ruší GROUP BY/DISTINCT. Odstranit pouze JOIN aliasu nepoužitého ve WHERE, povinné coach/trainer JOIN zachovat; při filtraci konkrétní alias ponechat. Nová parita samostatných i společných legacy filtrů a nové měření/HTTP před release.
 
 Iterace2 lokálně3testy/5006assertions PASS, včetně samostatného filtru legacy skupiny a podskupiny. Ponechané JOIN aliasy použité ve WHERE, ostatní LEFT JOIN odstraněné jako nadbytečná násobnost; data, filtry, souhrny a celá stránkovaná množina přesně shodné s referencí. Nová nativní a HTTP/Chrome měření se teprve spouštějí.
+
+
+Finální varianta2a02e96f: nativní obě MariaDB3/5006, všechny stránky a hodnoty PASS; vlastní HTTP/Chrome408časů/12negative/78pozorování a interakce PASS. Čtení10k MariaDB10.3 2733→38ms,11.4 1850→39ms; bohatý GET1002 398→16ms,8,41MB→253kB. Zdrojové SHA a checksumy ověřené, cleanup PASS. Podrobnosti a malé režijní případy ve výsledcích. Celá regresní sada ještě dobíhá; merge/deploy zatím NOT RUN.
+
+
+Všech14CI na2a02e96f PASS (hlavní sada2392testů/53289assertions). #394 sloučené jakoab49947d9f673636d717fbbb4acb04f608eff477; celý Git tree a SHA256 měřených zdrojů přesně stejné jako testovaný HEAD. Standardní deploy42486500282 spuštěný na tomto přesném main, import/UAT false; výsledek zatím čeká. Finální dokumentační větev codex/training-history-release-proof-20261108.
+
+
+Finální vydání: #394/ab49947d, deploy42486500282 SUCCESS; záloha389/2,2392testů/53289assertions, migrace current, VS beze změny, aktivace/smoke PASS. Katalog5/5DOM a obě historie302/login před/po shodné. [Trvalý produkční protokol](verification/training-history-release-20261108/RESULTS.md). Přihlášené produkční UAT NOT RUN; další P11 řezy otevřené. Dokumentační předání vlastní release-proof větví bez druhého nasazení.

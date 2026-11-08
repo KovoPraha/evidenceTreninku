@@ -1,28 +1,37 @@
 # Předání P11-RH — správní historie tréninků
 
-8.11.2026 ROZPRACOVÁNO, plán před implementací.
+8. 11. 2026: HOTOVO v technickém rozsahu / NASAZENO.
 [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md),
-[výsledky](verification/training-history-page-performance-20261108/RESULTS.md).
-Další nejvyšší zbývající kandidát původní analýzy: neomezené správní seznamy,
-podrobnosti a účastníci celé historie. Po25ID, kanonický filtr hierarchie před stránkou,
-celkové souhrny zachované. Celá historie dále dostupná stránkami.
-Větev codex/training-history-page-performance-20261108, basecc805561,
-vlastní stávající medical-state worktree; původní WIP hash shodný.
-Další krok: zmrazit referenci a implementovat; parita/měření/merge/deploy NOT RUN.
-Vlastník již povolil celý ověřený release; nepoptávat znovu schválení.
+[parita a měření](verification/training-history-page-performance-20261108/RESULTS.md).
 
-První implementace obou správních cest lokálně hotová:25ID, přesné souhrny/hierarchie před stránkou, účastníci/štítky pouze stránky. Lokální parita3/922 a styl7souborů/0chyb PASS; SQLite10k celé čtení798→83ms,140000→10350řádků,22→4SQL. Profil před formátováním, finální nativní a celé HTTP/Chrome důkazy čekají. Žádné produkční změny; další AJAX/profilové historie neuzavřené.
+PR [#394](https://github.com/KovoPraha/evidenceTreninku/pull/394), HEAD
+`2a02e96fb00101866e8d0d05fe460c57b305ab53`, vlastní větev
+`codex/training-history-page-performance-20261108` ve worktree
+`C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107`.
+Base cc805561, přijatý main755b20a2 včetně #390/#393 zachovaný.
+Původní checkout a WIP neměnit; hash kis_rosters_admin.php
+`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` shodný.
 
-PR #394 otevřené; implementace3/922 a styl PASS. Doplněný vlastněný HTTP/Chrome runner: původní oba route soubory zcc805561 proti stránkování na stejném plně migrovaném fixture1000nových tréninků. Přesné otisky řádků/akcí/CSRF markerů a celkové statistiky,12kladných a6záporných případů,17časů po5zahřátích;3Chrome scénáře×13pozorování/fázi a skutečný klik další stránky +zachování filtrů/nové hledání. Funkční shoda celých dat přes všechny stránky nativně; wholeHTML se záměrně liší novou paginací. Doménové checksumy beze změny, cleanup a obnova obouzdrojů povinné. Výsledky nativního/HTTP měření ještě NOT RUN. CI doposud ručně spuštěné Testy42483015467; čeká i nový synchronizační běh PR.
+Obě správní historie načítají detaily/štítky/účastníky pouze25 tréninků;
+přesné souhrny a kanonický historický filtr před stránkou. Nepoužité legacy LEFT
+JOIN odstraněné pouze bez filtru příslušného aliasu. Všechny záznamy dosažitelné
+stránkami. Remízy data mají id DESC; hledání přes celou historii potvrdit Enter/Filtrovat.
 
-Před CI převzatý main755b20a2 (#390 mobilní plánovač a #393 přejímky). Zdravotní/role/picker skutečné čtecí meze zachované, naše E19 za již přijatými E14–18. Konflikt PR bránil pull_request workflow; po jeho vyřešení znovu nativní/HTTP a celé CI. Plánovač a jeho srovnávací harness jsou převzaté, nejsou druhou naší opravou.
+Nativní MariaDB10.3/11.4 po3 testech/5006assertions PASS. Všechny stránky a přesné
+hodnoty shodné s referencí; source SHA256 ověřeny proti Git. CI42485394262 všechny3úlohy PASS.
+Na10k trénincích čtení MariaDB10.3 2733→38ms /11.4 1850→39ms,
+22→4SQL a140000→10350řádků. Malý jediný výsledek +~0,4ms kvůli dalšímu SQL.
+Celý bohatý GET1002tréninků398→16ms,8,41MB→253kB;408HTTP/12negative/78Chrome,
+klik další stránky/filtry/reset hledání, pět checksumů a vlastní úklid PASS.
 
-První nativní CI66330773 našlo pouze nesprávné testové pořadí účastníků napříč různými tréninky při shodném jménu. Testový fixture přidá trenink_id jako poslední tie-break; pořadí jmen uvnitř každého tréninku a produkční SQL beze změny. HTTP fixture doplní chybějící legacy TEXT sloupce poznamka/obrazky (jen syntetické schéma). PHPStan našel pokles dvou starých pdo výjimek8→7; baseline snížená, nepotlačené chyby nepřibývají. Nová nativní/HTTP kontrola nutná, parita se neoslabuje.
+Všech14CI PASS, hlavní sada2392testů/53289assertions. #394 sloučené jako
+`ab49947d9f673636d717fbbb4acb04f608eff477`, celý tree i měřené zdroje přesně shodné.
+Standardní deploy42486500282 SUCCESS na tomto přesném main, import/UAT false.
+Záloha389tabulek/2triggery, migrace current, VS shodné, aktivace/smoke PASS.
+[Produkční protokol](verification/training-history-release-20261108/RESULTS.md):
+katalog5/5HTTP200 a celý DOM shodný před/po; obě historie302/login, WIP shodný.
 
-Upřesnění nativního srovnání: produkční pořadí účastníků nadále přesně ORDER BY příjmení,jméno; žádný dodatečný sort key v měřeném SQL. Fixture používá i stejnou CONCAT projekci. Při porovnání mimo časový/paměťový interval se pouze seskupí řádky podle trenink_id, jejich vzájemné prokládání mezi tréninky se nevykresluje; vnitřní pořadí jmen a plné hodnoty zůstávají striktně shodné. Štítky jsou mapy porovnané podle klíče. Lokálně3testy/3254assertions před touto úpravou PASS; finální nativní a HTTP měření ověří aktuální zdroje.
-
-První celé HTTP s doplněnými legacy sloupci ověřilo původní fázi i jednoduchou stránku. Bohatá statistika se musí porovnávat podle přesného páru štítek/hodnota (nikoli surová whitespace spojeného textu, po PSR-12 a změně remíz pořadí karet není datová hodnota). Nový kontrolní otisk má všechny původní počty/hodiny/kategorie jako striktní mapu, obsah řádků/akcí zůstává striktní. Případná další neshoda vypíše jen syntetické počty a statistiky, ne cookies/HTML.
-
-Iterace1/a857fd18: native11.4 i celé HTTP/Chrome PASS, přesná data/statistiky,5checksumů a úklid. Na10k11.4 čtení1951→117ms,140000→10350řádků,22→4SQL. Bohatý skutečný GET1002tréninků313→145ms,8,4MB→253kB. Skutečné kliknutí další stránky/filtry/nové hledání PASS. Důkazy iteration1. Další lokální řez před implementací: bez filtru skupiny/podskupiny jsou LEFT JOIN legacy vazeb zbytečné, jejich násobnost již ruší GROUP BY/DISTINCT. Odstranit pouze JOIN aliasu nepoužitého ve WHERE, povinné coach/trainer JOIN zachovat; při filtraci konkrétní alias ponechat. Nová parita samostatných i společných legacy filtrů a nové měření/HTTP před release.
-
-Iterace2 lokálně3testy/5006assertions PASS, včetně samostatného filtru legacy skupiny a podskupiny. Ponechané JOIN aliasy použité ve WHERE, ostatní LEFT JOIN odstraněné jako nadbytečná násobnost; data, filtry, souhrny a celá stránkovaná množina přesně shodné s referencí. Nová nativní a HTTP/Chrome měření se teprve spouštějí.
+Finální důkazy jsou na větvi `codex/training-history-release-proof-20261108`;
+po dokumentačním merge do main není potřeba další deploy. Neopakovat vydání ani writery.
+Další krok mimo uzavřený řez: přihlášené produkční UAT historií NOT RUN,
+ostatní AJAX/profilové historie a celé K0.2 otevřené; nepředstírat jejich přejímku.

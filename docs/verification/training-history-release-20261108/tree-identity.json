@@ -1,0 +1,15 @@
+{
+  "tested_head": "2a02e96fb00101866e8d0d05fe460c57b305ab53",
+  "merged_sha": "ab49947d9f673636d717fbbb4acb04f608eff477",
+  "tested_tree": "345c45a791fc69b3cd27c90880d4b9c9b8516564",
+  "merged_tree": "345c45a791fc69b3cd27c90880d4b9c9b8516564",
+  "exact_tree_match": true,
+  "source_sha256": {
+    "sprava_treninku.php": "bfc4eb822c3c071c2ca3670cc2fe54f4f0a634386dd292b9a31ccd4d644a44a7",
+    "sprava_vsech_treninku.php": "52f2d633b0fde1fe5756526ed3a4710d4c8e0f76f41bd42097861b002aa141b1",
+    "includes/training_history_read.php": "a759e461962c25427ea5d8d8ba24d5394ed6597072d5c2f178f80651473f2c5f"
+  },
+  "source_hashes_match": true,
+  "previous_deployed_sha": "755b20a22a4401f54fd8117d8098a89e8603b77c",
+  "baseline_routes_match_previous_deployed": true
+}
