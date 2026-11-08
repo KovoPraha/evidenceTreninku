@@ -80,3 +80,101 @@ přidání indexu mezi variantami, nikoli během GET. Celé HTML a doménové so
 Pokud vyhraje, nasazení před migrací přečte skutečné produkční indexy (bez dat),
 po záloze aplikuje idempotentní online ADD INDEX a před aktivací ověří výsledek.
 Žádné nové klinické hodnoty, role nebo přílohy. Nový přínos zatím NOT RUN.
+
+## V5 / 7c083f0a — nativní přínos, HTTP a aktuální CI ještě běží
+
+Bezpečné profily a XML v `iteration5/`, run42458893492. Obě DB: přesná parita všech64případů, párové3checksumy stejné před/po a mezi schématy, query cache OFF. Dvě data-shodná schémata a512MB buffer pool,4zahřátí a17rotujících trojic na případ. Třetí sloupec odděluje samotný index od nového kódu. Časy mezi různými runnery neporovnávat.
+
+| 100k sledování / medián ms | DB | Původní | Pouze index | Kód + index |
+| --- | --- | ---: | ---: | ---: |
+| broad_search | 10.3 | 679.39 | 596.46 | 394.86 |
+| half_search | 10.3 | 386.44 | 343.65 | 311.51 |
+| broad_pending | 10.3 | 680.33 | 595.68 | 523.83 |
+| half_pending | 10.3 | 375.37 | 335.38 | 354.70 |
+| rare_search | 10.3 | 115.26 | 121.22 | 118.00 |
+| empty_search | 10.3 | 89.34 | 94.01 | 92.57 |
+| date_day | 10.3 | 196.92 | 155.60 | 152.30 |
+| date_from | 10.3 | 512.76 | 426.88 | 324.42 |
+| date_to | 10.3 | 503.38 | 434.95 | 359.55 |
+| date_empty | 10.3 | 12.36 | 12.35 | 12.33 |
+| combined | 10.3 | 392.26 | 320.20 | 290.87 |
+| plain_search | 10.3 | 114.54 | 115.23 | 114.73 |
+| plain_date | 10.3 | 74.98 | 74.05 | 74.61 |
+| plain_rare | 10.3 | 273.18 | 274.51 | 113.72 |
+| plain_empty | 10.3 | 222.27 | 227.35 | 88.00 |
+| control_state | 10.3 | 436.37 | 381.11 | 379.02 |
+| broad_search | 11.4 | 984.81 | 853.37 | 517.80 |
+| half_search | 11.4 | 534.98 | 472.77 | 434.74 |
+| broad_pending | 11.4 | 984.04 | 851.89 | 660.71 |
+| half_pending | 11.4 | 535.79 | 473.14 | 496.56 |
+| rare_search | 11.4 | 211.96 | 211.79 | 212.14 |
+| empty_search | 11.4 | 161.81 | 161.28 | 159.78 |
+| date_day | 11.4 | 249.36 | 208.53 | 196.76 |
+| date_from | 11.4 | 715.08 | 595.11 | 469.25 |
+| date_to | 11.4 | 674.43 | 571.05 | 454.11 |
+| date_empty | 11.4 | 14.84 | 14.86 | 14.81 |
+| combined | 11.4 | 521.14 | 439.85 | 399.22 |
+| plain_search | 11.4 | 157.30 | 157.44 | 159.62 |
+| plain_date | 11.4 | 82.94 | 83.31 | 83.70 |
+| plain_rare | 11.4 | 436.38 | 438.22 | 211.88 |
+| plain_empty | 11.4 | 339.21 | 339.37 | 160.44 |
+| control_state | 11.4 | 584.11 | 462.79 | 461.36 |
+
+Na10k široké/poloviční stavové hledání i všechny neprázdné datumové stavové tvary zlepšené na obou DB. Malé100/1k sady mají kvůli kandidátní sondě režii: typicky0,3–0,9ms, u1k polovičního pending do2,2ms. Na100k původní široké seznamy bez stavu neutrální (+0–2,3ms), vzácné/prázdné se stavem neutrální (na10.3 do+3,2ms), bez stavu přínos51–60%. Index-only je u polovičního pending mírně rychlejší než nová projekce; kombinovaná cesta přesto zlepšuje původní čas5–7%, široký pending23–33%. Žádný příslib stejného zrychlení skutečné produkční DB. Index přidává údržbu při zápisu a místo; klinické hodnoty beze změny.
+
+EXPLAIN10.3 pro mr/mf/mn a datumové mv používá nový krycí index s `Using index`; jde o plán/odhady, nikoli skutečné rows examined. Úplná aktuální PHPUnit sada na727e1d53 **2389 testů /48273 assertions PASS**, PHPStan/styl PASS; původní dvě testovací chyby ze7c opravené. HTTP/Chrome a ostatní současné CI ještě běží, merge/deploy NOT RUN.
+
+### V5 celé HTTP a Chrome PASS — run42458893492
+
+2040 časovaných kladných HTTP vzorků (17případů×30×2objemy×2varianty),48záporných GET; všechna normalizovaná HTML/statusy přesně shodná. Třináct doménových tabulek/checksumů stejných před/po, GET bez doménového DML/DDL. Indexový přechod proběhl mezi fázemi při vypnutém PHP serveru. Chrome156:7scénářů×(3cold+10warm)×2objemy×2varianty=364pozorování; skutečné navigace, práva/status a DOM ověřené. Úklid vlastní DB, serveru, bridge účtu i obnova obou PHP souborů PASS. Bezpečné výsledky v `iteration5/integrated/`; zdrojové SHA256 veškerých měřených aplikačních/migračních souborů odpovídají fa902ba6.
+
+| Celý HTTP GET, medián ms | Objem | Před | Po |
+| --- | ---: | ---: | ---: |
+| medical-registrar-all | 10000-watches | 27.09 | 27.30 |
+| medical-registrar-person | 10000-watches | 14.19 | 15.22 |
+| medical-filter-broad-search | 10000-watches | 105.90 | 56.79 |
+| medical-filter-broad-pending | 10000-watches | 107.32 | 51.16 |
+| medical-filter-half-pending | 10000-watches | 62.37 | 35.70 |
+| medical-filter-half-search | 10000-watches | 61.46 | 44.25 |
+| medical-filter-rare-search | 10000-watches | 29.08 | 28.61 |
+| medical-filter-empty-search | 10000-watches | 29.18 | 29.00 |
+| medical-filter-date-day | 10000-watches | 37.80 | 30.93 |
+| medical-filter-date-from | 10000-watches | 81.80 | 54.13 |
+| medical-filter-date-to | 10000-watches | 80.51 | 41.06 |
+| medical-filter-date-empty | 10000-watches | 15.37 | 15.27 |
+| medical-filter-combined | 10000-watches | 63.56 | 44.47 |
+| medical-filter-plain-search | 10000-watches | 28.99 | 29.66 |
+| medical-filter-plain-date | 10000-watches | 24.09 | 24.15 |
+| medical-filter-plain-empty | 10000-watches | 46.11 | 29.15 |
+| medical-filter-control-state | 10000-watches | 55.96 | 56.08 |
+| medical-registrar-all | 100000-watches | 213.89 | 214.32 |
+| medical-registrar-person | 100000-watches | 83.95 | 83.78 |
+| medical-filter-broad-search | 100000-watches | 1182.86 | 572.95 |
+| medical-filter-broad-pending | 100000-watches | 1179.53 | 436.50 |
+| medical-filter-half-pending | 100000-watches | 587.51 | 273.63 |
+| medical-filter-half-search | 100000-watches | 588.06 | 388.91 |
+| medical-filter-rare-search | 100000-watches | 231.84 | 229.21 |
+| medical-filter-empty-search | 100000-watches | 235.24 | 232.70 |
+| medical-filter-date-day | 100000-watches | 335.27 | 237.68 |
+| medical-filter-date-from | 100000-watches | 882.55 | 508.70 |
+| medical-filter-date-to | 100000-watches | 882.43 | 325.78 |
+| medical-filter-date-empty | 100000-watches | 96.65 | 96.36 |
+| medical-filter-combined | 100000-watches | 599.25 | 391.72 |
+| medical-filter-plain-search | 100000-watches | 233.75 | 235.13 |
+| medical-filter-plain-date | 100000-watches | 172.70 | 174.43 |
+| medical-filter-plain-empty | 100000-watches | 412.63 | 232.68 |
+| medical-filter-control-state | 100000-watches | 574.73 | 574.40 |
+
+| Chrome100k, warm medián DCL ms | Před | Po |
+| --- | ---: | ---: |
+| medical-filter-broad-search | 1265.35 | 632.00 |
+| medical-filter-half-pending | 646.00 | 331.00 |
+| medical-filter-rare-search | 284.45 | 283.85 |
+| medical-filter-empty-search | 289.85 | 285.20 |
+| medical-filter-date-day | 393.35 | 295.10 |
+| medical-filter-combined | 655.00 | 452.95 |
+| medical-filter-plain-empty | 474.50 | 290.25 |
+
+Interpretace: hlavní hledací/datumové tvary na10k i100k zrychlené; kontrolní přímá osoba, celkový seznam, stav bez q/data a široké seznamy bez stavu neutrální v řádu0–2ms. Jde o vlastní syntetický Linux fixture, nikoli měření pacientských dat nebo záruku produkční latence. HTTP podporuje přijetí V5, zbývá zelené CI nad větví po převzetí dokumentačního #387 a standardní release.
+
+Společný historický SyntheticReadPages benchmark nafa902ba6 správně odmítl odlišný počet migrací (předchůdci bez nové indexové migrace). V63682e84 do všech tří izolovaných historických worktrees přidána stejná migrace/helper a skutečná aplikace jako naHEAD, aplikační kód předchůdců zmrazený. Kontroly ledgeru ani parity neoslabené; tento společný historický benchmark porovnává kód na shodných indexech, příspěvek indexu řeší samostatné V5 trojice. Nové CI před release.

@@ -3,7 +3,7 @@
 8. 11. 2026: PŘÍPRAVA, merge/deploy NOT RUN.
 [Plán](../../MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [parita/přínos](../medical-filter-read-performance-20261107/RESULTS.md), [předání](../../SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md).
 Aktuální zadání dovoluje merge a standardní deploy po shodě, přínosu a zelených CI.
-V1 a V2 měly datumové regrese, proto nešly do produkce. V4/feb2e522 je v CI, lokálně26/813 PASS. V3 byla nativně převážně neutrální, ale datum_day ještě mírně regresní.
+V1–V4 měly datumové/pending regrese, proto nešly do produkce. V5 s krycím indexem se měří odděleně i spolu se změnou readeru. Lokální medical + deploy kontrakt 44/1328 PASS, migrace 1/91 PASS; nativní a HTTP/Chrome V5 přínos/parita PASS; po převzetí #387/Q01 se dokončuje CI se sjednoceným schématem historických benchmarků.
 Dosavadní runtime938e9c50 zachovaný. Bez skutečných zdravotních/osobních/rolových změn.
 
 Připravované čtecí ověření: pět anonymních veřejných katalogových GET a anonymní

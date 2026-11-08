@@ -1,40 +1,54 @@
 # Předání P11-R13-F — hledání a datum zdravotního přehledu
 
-7. 11. 2026: ROZPRACOVÁNO, plán7.11. před implementací; pokračování8.11.2026.
-[Plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [výsledky](verification/medical-filter-read-performance-20261107/RESULTS.md).
-Nové zadání dovoluje commit/merge/deploy po shodě, přínosu a zelených kontrolách.
-Větev `codex/medical-filter-read-performance-20261107`, vlastní dřívější čistý worktree
+8. 11. 2026, Europe/Prague. ROZPRACOVÁNO / PR [#385](https://github.com/KovoPraha/evidenceTreninku/pull/385).
+[Plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md),
+[parita a výkon](verification/medical-filter-read-performance-20261107/RESULTS.md),
+[provozní důkazy](verification/medical-filter-release-20261108/RESULTS.md).
+Vlastník povolil commit, merge a standardní deploy po shodě výsledků, přínosu a zelených kontrolách.
+
+## Izolace a současný stav
+
+Větev `codex/medical-filter-read-performance-20261107`, worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107`.
-Base35fdad44, dosavadní produkce938e9c50/#381; její stavový řez a důkazy zachovat.
-Plán: bounded kandidáti, prázdné/vzácné výsledky původním čtením nad ID;
-široké stavové hledání bez vnitřních JOIN lidí, datum omezí i historii.
-Cache/rekurze neplánované; původní omezení bez DDL nahrazuje níže V5. Nezměnit přímou osobu/transakce/práva/writer/dokumenty.
-Další krok: zmrazená reference, implementace, parita SQLite/nativní obě DB,
-párové cache-off helper/HTTP/Chrome10k/100k, důkazy, kontroly, teprve pak release.
-Původní WIP SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` shodný;
-staré untracked výstupy původního checkoutu i tohoto worktree zachované.
-První implementace/testy/měření hotové, PR #385 otevřené; merge/deploy nového řezu NOT RUN.
+Reference `35fdad4483ec4326e5da9b6ffbb908f77a4df85f`; produkce stále `938e9c50` / #381.
+Původní checkout i staré výstupy jsou zachované. WIP `kis_rosters_admin.php` SHA256:
+`7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`, opakovaně shodný.
 
-## Průběh implementace
+V1–V4 měly přesnou paritu, ale některé datumové/pending profily regredovaly.
+Zamítnuté varianty a bezpečné profily jsou ve výsledkovém protokolu; nejsou schválené k nasazení.
+V5 přidává neunikátní krycí index `(watch_id,id,state,issued_on,valid_until,replaces_id)`.
+Změna původního omezení bez DDL je odůvodněná v [D15](DECISION_LOG.md#d2026-11-07-15).
+Nezměněné zůstávají kanonické zdravotní stavy, práva, writer, dokumenty a přímá osoba/transakce.
 
-První implementace hotová lokálně, přesný současný baseline35fdad44 včetně jeho stavového readeru zmrazený nezávisle. Nová sada7/454 a společná regrese25/801 PASS, styl/lint PASS. Přímá osoba a transakce zachovávají SQL/bindingy; předchozí test požadující původní SQL i u q/data nahrazen novým kontraktem výsledků podle D15. Nativní profiler14případů×4objemy100/1k/10k/100k,17střídavých párů a4zahřátí s query cache OFF. Samostatné nativní joby nezvětšují rozpočet staré integrační sady. HTTP benchmark porovnává přesné dva původní aplikační soubory, všech30k/300k záznamů a rozložená data revizí na jednom seedu;15kladných/12záporných případů a6Chrome scénářů. Výkon zatím NOT RUN; implementace je kandidát k měření, nikoli k deployi.
+## Ověření V5
 
-## Pokračování8.11.2026
+Lokálně medical + deploy kontrakt: **44 testů / 1328 assertions PASS**; migrační kontrakt navíc **1/91 PASS**.
+Nativní parita **12/495 na každé DB PASS**; nativní přínos a celé HTTP/Chrome **PASS** (run42458893492).
+Na100k celé GET: široké hledání1182,86→572,95ms; datum od882,55→508,70ms, do882,43→325,78ms.
+2040kladných HTTP vzorků,48záporných GET,364Chrome pozorování; přesné HTML/checksumy, úklid PASS.
+CI na 7c083f0a našlo jediný chybějící nový identifikátor v očekávaném seznamu migrací
+(celá migrace a idempotence prošly) a příliš dlouhý popis benchmarku.
+Opravy v `727e1d53`: úplná sada2389/48273 a PHPStan/styl PASS.
+Dokumentační #387 převzatý do `fa902ba6`, Q01 i původní ID zachované; nyní nové CI celé větve.
+Duplicitní starší integrační běhy zastavené, nejsou vydávané za PASS. Dokončené důkazy archivované.
+Aplikační/migrační zdroje všech měření mají SHA256 shodné s aktuálním HEAD.
+Anonymní inventář lokálně: 36 veřejných / 2 CLI / 260 chráněných, 0 chyb.
 
-cc2a825e má15CI PASS a celý GET100k hledání907,81→462,51ms. Smíšené nativní datum_day a date_to regredovaly, proto zatím nenasazovat. Bezpečný archiv v protokolu. Další varianta pouze pro široké datumové stavy použije korelované nejnovější verified/poslední ID přes existující watch_id/id index; původní pure status/future/fallback beze změny. Hledání a kandidátní sonda zachované. Znovu přesná parita a cache-off oba DB/HTTP/Chrome páry před release. WIP zachovaný.
+Nativní metoda: dvě data-shodná syntetická schémata, query cache OFF, buffer pool 512 MB,
+16 případů × 4 objemy (100/1k/10k/100k) × 17 rotujících trojic a 4 zahřátí.
+Trojice oddělují původní kód/staré indexy, původní kód/nový index a nový kód/nový index.
+HTTP: stejný fixture 10k/100k, 17 kladných a 12 záporných případů, 7 scénářů Chrome.
+Index se mění pouze v syntetické DB při vypnutém PHP serveru, nikdy během GET.
 
-Datumová varianta2 implementovaná: jeden korelovaný nejnovější verified přes watch_id/id; poslední libovolný záznam jen když verified chybí. Datum je next_review_on sledování, historie ani explicitní řetězec nejsou ořezané podle issued_on/valid_until. Vše v původním počtu SQL, bez N+1 síťových dotazů a bez DDL. První nativní7/466 na každé DB PASS; aktuální lokální a nové nativní/HTTP ověření V2 ještě běží.
+## Další krok
 
-V2 korelované datumové lookupy měly na nativním11.4 ještě vyšší režii (date_to502,30→748,19ms), zamítnuté. V3 použije jedinou agregaci kandidátů/head ID s původním WHERE a MAX(next_review_on), poté jen head records; vnější people/watch filtry se neopakují. Nejde o další korelovaný lookup ani o změnu indexů. Nativní i migrované CI indexy jsou zaznamenané; produkční indexový inventář NOT RUN. Nová parita/přínos před release.
+Bezpečné nativní JSON/XML i úplné HTTP/Chrome důkazy připravené v iteration5, zatím lokální.
+Dokončit zelené CI fa902ba6; finální důkazy sdílet přes dokumentační PR po release.
+Při regresi ponechat lepší změřenou cestu, jinak fresh main, ověřit shodu testovaného stromu a merge.
+Deploy nejprve čte pouze produkční indexová metadata v READ ONLY transakci, poté ověřuje zálohu,
+aplikuje idempotentní online ADD INDEX a znovu ověří index před aktivací.
+Po úspěchu ověřit pět veřejných GET a anonymní odmítnutí zdravotních filtrů, WIP a důkazy do main.
+Merge/deploy V5 zatím **NOT RUN**. Přihlášené produkční zdravotní UAT **NOT RUN**;
+starší blokované UAT výběru osob a ostatní lidské přejímky zůstávají samostatné.
 
-V3 doplnění: filtrované okno třídí pouze ID sledování a dvou head záznamů; metadata se připojí až vně okna pro vybranou stránku v témže SQL. Výchozí stavový seznam bez doplňkových filtrů zůstává původní. Menší pracovní sada je hypotéza k novému měření, nikoli tvrzení o skutečných rows examined nebo diskových tempech. Lokálně18/751 PASS, styl/lint PASS. Nová nativní/celá HTTP měření čekají; bez nasazení.
-
-V3 datum_day na11.4 253,72→267,98ms mírně regresní; V4 anti-join latest verified pro datum a HAVING pro stavy bez verified s explicitními budoucími výjimkami. Další2pending hledací případy v benchmarku a datumové legacy grafy v paritě. Bez DDL, nové indexy se nezavádějí; skutečné produkční indexy se tím neprohlašují za prověřené. Měření/testy V4 před release.
-
-V4 lokálně26/813 PASS včetně nových12datumových legacy kontrol; nativní profiler nyní16případů×4objemy×17párů/DB, celkem2176párů. HTTP17kladných/12záporných případů a7Chrome scénářů. Indexově závislá korelovaná V2 zamítnutá; do deploye jde až vítězná ověřená cesta bez DDL. Produkční indexový inventář zůstává NOT RUN.
-
-V4 SQL-only datum/poloviční pending stále regredovaly. V5 měří neunikátní krycí index (watch_id,id,state,issued_on,valid_until,replaces_id): zvlášť starý kód/staré indexy, starý kód/nový index a nový kód/nový index. D15 bezDDL tímto podloženě nahrazeno. Nativní dvě data-shodná schémata/query cache OFF, HTTP stejný fixture a index mezi fázemi. Produkční read-only inventura před migrací, ověřená záloha, idempotentní online ADD INDEX a kontrola před aktivací. Žádné klinické datové změny. Vše nejprve CI, nasadit jen po prokázaném přínosu.
-
-V5 lokálně44 testů /1328 assertions PASS (medical + deploy kontrakt). Nativní profiler má512MB buffer pool jen vlastního CI serveru, dvě data-shodná schémata,16případů×4objemy×17rotujících trojic na každé DB; index-only odděluje přínos indexu od kódu. HTTP porovnává původní kód/staré indexy proti novému kódu/indexu,17kladných/12záporných případů,7Chrome scénářů. Před každou fází se mění pouze index syntetické DB při vypnutém PHP serveru. Produkční diagnostika čte pouze metadata v READ ONLY transakci, před zálohou a po migraci před aktivací. Nativní/HTTP přínos V5 zatím NOT RUN.
-
-CI V5/7c083f0a: obě nativní paritní sady PASS, měření běží. Plná SQLite sada2389testů měla jedinou chybu v explicitním seznamu očekávaných migrací (nový index chyběl); migrace samotná i opakování prošly. Seznam doplněn, cílený migrační test1/91 PASS. Stylistická kontrola našla pouze příliš dlouhý popis benchmarku, rozdělený bez změny logiky. Opravy čekají na nové CI.
+Fa902ba6: společný historický SyntheticReadPages benchmark odmítl neshodný počet migrací mezi zmrazeným předchůdcem a HEAD. Oprava pouze testovacího prostředí: do všech tří vlastních historických worktrees kopírovat a skutečně aplikovat stejnou novou indexovou migraci i helper jako HEAD; kontroly ledgeru/parity se neoslabují, zmrazený aplikační kód se nemění. Přínos samotného indexu již odděleně měří V5 trojice. Nové CI nutné před merge.

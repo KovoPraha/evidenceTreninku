@@ -52,8 +52,8 @@ První implementace/parita a měření hotové, PR #385 otevřené; merge/deploy
 Původní plán uložený před implementací v7ae100b2. Přínos ověřit zvlášť pro široké/vzácné/prázdné dotazy a datum;
 při regresi upravit variantu nebo zachovat konkrétní původní cestu a důvod zapsat.
 Práva, writer, soukromé dokumenty, zdravotní rozhodnutí a integrační flags neměnit.
-DDL není součástí návrhu; před případnou další změnou indexů ověřit skutečný
-produkční inventář. Přihlášené produkční UAT/mobil/souběh a ostatní K0.2 samostatné.
+Původní návrh byl bez DDL; po zamítnutí V1–V4 jej nahrazuje níže V5 s krycím indexem.
+Před migrací ověřit skutečný produkční indexový inventář. Přihlášené produkční UAT/mobil/souběh a ostatní K0.2 samostatné.
 
 ## Průběh implementace
 
@@ -76,3 +76,5 @@ V4 lokálně26/813 PASS včetně nových12datumových legacy kontrol; nativní p
 V4 SQL-only datum/poloviční pending stále regredovaly. V5 měří neunikátní krycí index (watch_id,id,state,issued_on,valid_until,replaces_id): zvlášť starý kód/staré indexy, starý kód/nový index a nový kód/nový index. D15 bezDDL tímto podloženě nahrazeno. Nativní dvě data-shodná schémata/query cache OFF, HTTP stejný fixture a index mezi fázemi. Produkční read-only inventura před migrací, ověřená záloha, idempotentní online ADD INDEX a kontrola před aktivací. Žádné klinické datové změny. Vše nejprve CI, nasadit jen po prokázaném přínosu.
 
 V5 lokálně44 testů /1328 assertions PASS (medical + deploy kontrakt). Nativní profiler má512MB buffer pool jen vlastního CI serveru, dvě data-shodná schémata,16případů×4objemy×17rotujících trojic na každé DB; index-only odděluje přínos indexu od kódu. HTTP porovnává původní kód/staré indexy proti novému kódu/indexu,17kladných/12záporných případů,7Chrome scénářů. Před každou fází se mění pouze index syntetické DB při vypnutém PHP serveru. Produkční diagnostika čte pouze metadata v READ ONLY transakci, před zálohou a po migraci před aktivací. Nativní/HTTP přínos V5 zatím NOT RUN.
+
+V5/7c083f0a měření dokončené: nativní parita12/495 na každé DB, všechny64případy a3checksumy PASS; index-only odděleně. Na100k11.4 široké hledání985→518ms, datum od715→469ms, do674→454ms. Celé HTTP100k hledání1183→573ms, datum od883→509ms, do882→326ms;2040časovanýchHTTP vzorků/48zápornýchGET/364Chrome pozorování, úplné HTML/checksumy/úklid PASS. Malé sady mají režii sondy dojednotekms, původní široké seznamy bez stavu neutrální. Důkazy v iteration5. Současná aplikační/migrační SHA256 přesně shodná s měřením; fa902ba6 navíc přebírá dokumentační #387/Q01 bez ztráty obsahu, pracovní eventID posunuty za již přijaté E01. Aktuální CI běží; merge/deploy zatím NOT RUN.
