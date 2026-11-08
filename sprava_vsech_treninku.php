@@ -10,8 +10,12 @@ if (!isset($_SESSION['trener_id']) || !canAccess('sprava_treninku')) {
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';
+require_once __DIR__ . '/includes/training_history_read.php';
 
-function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s): string
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 
 // Flash zprávy jsou zpracovány centrálně v hlavicka.php (toast notifikace)
 
@@ -23,25 +27,35 @@ $filterTr    = $_GET['trenere'] ?? [];
 $filterKat   = $_GET['kategorie'] ?? '';
 $filterQ     = trim($_GET['q'] ?? '');
 
-if ($filterGroup !== '' && !ctype_digit($filterGroup)) $filterGroup = '';
-if ($filterSub   !== '' && !ctype_digit($filterSub))   $filterSub   = '';
-if ($filterTeam  !== '' && !ctype_digit((string)$filterTeam)) $filterTeam = '';
-if (!is_array($filterTr)) $filterTr = [$filterTr];
-$filterTr = array_values(array_filter(array_map('intval', $filterTr), fn($v) => $v > 0));
+if ($filterGroup !== '' && !ctype_digit($filterGroup)) {
+    $filterGroup = '';
+}
+if ($filterSub   !== '' && !ctype_digit($filterSub)) {
+    $filterSub   = '';
+}
+if ($filterTeam  !== '' && !ctype_digit((string)$filterTeam)) {
+    $filterTeam = '';
+}
+if (!is_array($filterTr)) {
+    $filterTr = [$filterTr];
+}
+$filterTr = array_values(array_filter(array_map('intval', $filterTr), fn ($v) => $v > 0));
 
 $validKategorie = ['silnice','mtb','draha','cyklokros','posilovna','atletika','cviceni','plavani'];
-if ($filterKat !== '' && !in_array($filterKat, $validKategorie)) $filterKat = '';
+if ($filterKat !== '' && !in_array($filterKat, $validKategorie)) {
+    $filterKat = '';
+}
 
 // Kategorie meta
 $kategorieMeta = [
-    'silnice'   => ['label'=>'Silnice',    'color'=>'success',  'icon'=>'bi-bicycle'],
-    'mtb'       => ['label'=>'MTB',        'color'=>'warning',  'icon'=>'bi-tree'],
-    'draha'     => ['label'=>'Dráha',      'color'=>'primary',  'icon'=>'bi-stopwatch'],
-    'cyklokros' => ['label'=>'Cyklokros',  'color'=>'orange',   'icon'=>'bi-signpost-split'],
-    'posilovna' => ['label'=>'Posilovna',  'color'=>'danger',   'icon'=>'bi-heart-pulse'],
-    'atletika'  => ['label'=>'Atletika',   'color'=>'info',     'icon'=>'bi-person-walking'],
-    'cviceni'   => ['label'=>'Cvičení',    'color'=>'secondary','icon'=>'bi-activity'],
-    'plavani'   => ['label'=>'Plavání',    'color'=>'teal',     'icon'=>'bi-water'],
+    'silnice'   => ['label' => 'Silnice',    'color' => 'success',  'icon' => 'bi-bicycle'],
+    'mtb'       => ['label' => 'MTB',        'color' => 'warning',  'icon' => 'bi-tree'],
+    'draha'     => ['label' => 'Dráha',      'color' => 'primary',  'icon' => 'bi-stopwatch'],
+    'cyklokros' => ['label' => 'Cyklokros',  'color' => 'orange',   'icon' => 'bi-signpost-split'],
+    'posilovna' => ['label' => 'Posilovna',  'color' => 'danger',   'icon' => 'bi-heart-pulse'],
+    'atletika'  => ['label' => 'Atletika',   'color' => 'info',     'icon' => 'bi-person-walking'],
+    'cviceni'   => ['label' => 'Cvičení',    'color' => 'secondary','icon' => 'bi-activity'],
+    'plavani'   => ['label' => 'Plavání',    'color' => 'teal',     'icon' => 'bi-water'],
 ];
 
 // Načtení dat pro filtry
@@ -59,7 +73,9 @@ if ($filterGroup !== '') {
         $s = $pdo->prepare('SELECT id, nazev FROM podskupiny WHERE skupina_id = ? ORDER BY poradi, nazev');
         $s->execute([(int)$filterGroup]);
         $subs = $s->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) { $subs = []; }
+    } catch (PDOException $e) {
+        $subs = [];
+    }
 }
 
 // Hlavní dotaz na tréninky
@@ -75,9 +91,18 @@ $sql    = "
 ";
 $params = [];
 
-if ($filterGroup !== '') { $sql .= ' AND tg.skupina_id = ?';    $params[] = (int)$filterGroup; }
-if ($filterSub   !== '') { $sql .= ' AND tp.podskupina_id = ?'; $params[] = (int)$filterSub; }
-if ($filterKat   !== '') { $sql .= ' AND t.kategorie = ?';      $params[] = $filterKat; }
+if ($filterGroup !== '') {
+    $sql .= ' AND tg.skupina_id = ?';
+    $params[] = (int)$filterGroup;
+}
+if ($filterSub   !== '') {
+    $sql .= ' AND tp.podskupina_id = ?';
+    $params[] = (int)$filterSub;
+}
+if ($filterKat   !== '') {
+    $sql .= ' AND t.kategorie = ?';
+    $params[] = $filterKat;
+}
 if ($filterQ     !== '') {
     $sql .= ' AND (t.napln LIKE ? OR t.poznamka LIKE ?)';
     $params[] = "%{$filterQ}%";
@@ -90,12 +115,11 @@ if (!empty($filterTr)) {
 }
 $sql .= ' GROUP BY t.id ORDER BY t.datum DESC';
 
+$historyPage = ['rows' => [], 'total' => 0, 'page' => 1, 'pages' => 1, 'hours' => 0, 'categories' => []];
 $treninky = [];
 try {
-    $stmt     = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if ($filterTeam !== '') $treninky = trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$filterTeam);
+    $historyPage = TrainingHistoryRead::page($pdo, $sql, $params, (int)$filterTeam, TrainingHistoryRead::requested($_GET));
+    $treninky = $historyPage['rows'];
 } catch (PDOException $e) {
     error_log('sprava_vsech_treninku main query: ' . $e->getMessage());
     $flashError = 'Chyba při načítání tréninků.';
@@ -125,14 +149,10 @@ if (!empty($treninky)) {
 }
 
 // Statistiky
-$totalHodin = array_sum(array_column($treninky, 'delka'));
-$kategorieCount = [];
-foreach ($treninky as $t) {
-    $k = $t['kategorie'] ?? '';
-    if ($k !== '') {
-        $kategorieCount[$k] = ($kategorieCount[$k] ?? 0) + 1;
-    }
-}
+$totalHodin = $historyPage['hours'];
+$kategorieCount = $historyPage['categories'];
+
+$historyFilters = ['skupina_id' => $filterGroup, 'podskupina_id' => $filterSub, 'team_id' => $filterTeam, 'trenere' => $filterTr, 'kategorie' => $filterKat, 'q' => $filterQ];
 
 $czDays = [
     'Monday' => 'Pondělí', 'Tuesday' => 'Úterý',   'Wednesday' => 'Středa',
@@ -148,8 +168,10 @@ $csrfToken = csrf_token();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Správa tréninků</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+"
+          crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         .badge-orange { background-color: #fd7e14; color: #fff; }
         .badge-teal   { background-color: #20c997; color: #fff; }
@@ -225,16 +247,17 @@ $csrfToken = csrf_token();
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                     <input type="text" name="q" id="searchBox" class="form-control"
-                           placeholder="Hledat v náplni a poznámce..."
+                           placeholder="Hledat v náplni a poznámce..." aria-describedby="historySearchHelp"
                            value="<?= h($filterQ) ?>">
                     <?php if ($filterQ !== ''): ?>
-                        <a href="?<?= http_build_query(array_diff_key($_GET, ['q'=>1])) ?>" class="btn btn-outline-secondary" title="Zrušit hledání">
+                        <a href="?<?= http_build_query(array_diff_key($_GET, ['q' => 1, 'history_page' => 1])) ?>" class="btn btn-outline-secondary" title="Zrušit hledání">
                             <i class="bi bi-x-lg"></i>
                         </a>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
+        <p id="historySearchHelp" class="form-text mb-0">Hledání v celé historii potvrďte tlačítkem Filtrovat nebo klávesou Enter.</p>
     </form>
 
     <!-- Stats řádek -->
@@ -242,7 +265,7 @@ $csrfToken = csrf_token();
         <div class="col-sm-4 col-lg-2">
             <div class="card text-center border-0 shadow-sm h-100">
                 <div class="card-body py-2">
-                    <div class="fs-4 fw-bold text-primary"><?= count($treninky) ?></div>
+                    <div class="fs-4 fw-bold text-primary"><?= $historyPage['total'] ?></div>
                     <div class="text-muted small"><i class="bi bi-calendar-check me-1"></i>Tréninků</div>
                 </div>
             </div>
@@ -257,8 +280,10 @@ $csrfToken = csrf_token();
         </div>
         <?php foreach ($kategorieCount as $kk => $cnt):
             $km = $kategorieMeta[$kk] ?? null;
-            if (!$km) continue;
-        ?>
+            if (!$km) {
+                continue;
+            }
+            ?>
         <div class="col-sm-4 col-lg-2">
             <div class="card text-center border-0 shadow-sm h-100">
                 <div class="card-body py-2">
@@ -270,6 +295,7 @@ $csrfToken = csrf_token();
         <?php endforeach; ?>
     </div>
 
+    <?php TrainingHistoryRead::navigation($historyPage, $historyFilters); ?>
     <?php if (empty($treninky)): ?>
         <div class="alert alert-info"><i class="bi bi-info-circle me-1"></i>Žádné tréninky neodpovídají filtru.</div>
     <?php else: ?>
@@ -290,15 +316,18 @@ $csrfToken = csrf_token();
             </thead>
             <tbody>
             <?php foreach ($treninky as $t):
-                try { $dayEng = (new DateTime($t['datum']))->format('l'); }
-                catch (Exception $e) { $dayEng = ''; }
+                try {
+                    $dayEng = (new DateTime($t['datum']))->format('l');
+                } catch (Exception $e) {
+                    $dayEng = '';
+                }
                 $dayCz     = $czDays[$dayEng] ?? '';
                 $ucastnici = $ucastniciByTrenink[(int)$t['id']] ?? [];
                 $colId     = 'detail' . (int)$t['id'];
                 $imgs      = array_filter(array_map('trim', explode(',', $t['obrazky'] ?? '')));
                 $kat       = $t['kategorie'] ?? '';
                 $km        = $kategorieMeta[$kat] ?? null;
-            ?>
+                ?>
                 <tr data-search="<?= h(strtolower(($t['napln'] ?? '') . ' ' . ($t['poznamka'] ?? '') . ' ' . ($t['trenere'] ?? ''))) ?>">
                     <td class="p-0 text-center">
                         <button class="btn btn-link btn-sm p-1 text-muted"
@@ -396,31 +425,6 @@ document.getElementById('skupinaFilter')?.addEventListener('change', function ()
         .catch(() => {});
 });
 
-// Client-side instant search (filtruje tabulku v reálném čase)
-(() => {
-    const box = document.getElementById('searchBox');
-    const table = document.getElementById('trainingsTable');
-    if (!box || !table) return;
-
-    let debounceTimer;
-    box.addEventListener('input', () => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            const q = box.value.trim().toLowerCase();
-            const rows = table.querySelectorAll('tbody > tr');
-            let visibleCount = 0;
-            for (let i = 0; i < rows.length; i += 2) {
-                const dataRow = rows[i];
-                const detailRow = rows[i + 1];
-                const searchText = dataRow.getAttribute('data-search') || '';
-                const show = q === '' || searchText.includes(q);
-                dataRow.style.display = show ? '' : 'none';
-                if (detailRow) detailRow.style.display = show ? '' : 'none';
-                if (show) visibleCount++;
-            }
-        }, 200);
-    });
-})();
 </script>
 </body>
 </html>

@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 8.11.2026 / E2026-11-08-19 | P11-RH zahájen podle analýzy a nového zadání | Neomezené správní historie, stránka25ID; souhrny/hierarchie zachovat. Plán před implementací, žádná produkční změna. | [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) |
 | 8. 11. 2026 / E2026-11-08-18 | Q01/Q2 sloučeno a ověřeno CI | #390 / `5b9279f9`, všech 11 CI PASS včetně obou MariaDB profilů a smoke. Oprava šířky filtrů je v main; produkční deploy a následné přihlášené UAT této opravy NOT RUN. Q1 cílený průchod rolí PASS, ostatní UAT částečné. | [Protokol Q1/Q2](verification/quality-uat-20261108/RESULTS.md), [plán](WORK_PLAN_CURRENT.md#q01-q2--mobilní-filtr-plánovače) |
 | 8. 11. 2026 / E2026-11-08-17 | Q01/Q1: dokončen cílený čtecí průchod přístupů | Po opětovném přihlášení prázdné hledání 0/48, `#64` jediný deaktivovaný účet, editor čtecí GET; žádné uložení/aktivace. Původní pracovní kontext zachovaný. Úplné role UAT všech účtů zůstává samostatné. | [Přesný protokol](verification/quality-uat-20261108/RESULTS.md) |
 | 8. 11. 2026 / E2026-11-08-16 | Q01/Q2: místní oprava přetékajícího filtru plánovače | Tři selecty mají `max-width:100%`; statický Playwright s repo Bootstrap CSS 360/390/1280 px bez přetékání, PHP lint PASS. Úplné CI a produkční vydání otevřené. | [Průchod a měření](verification/quality-uat-20261108/RESULTS.md), [plán](WORK_PLAN_CURRENT.md#q01-q2--mobilní-filtr-plánovače) |
@@ -132,3 +133,5 @@ Při převzetí #389 zůstávají přijaté Q01 E2026-11-08-01–07; pracovní z
 Při převzetí #385 zůstávají přijaté zdravotní E2026-11-08-08–12; pracovní Q01 E08–10 jsou nyní E13–15. Původní commity zachované.
 
 Při převzetí #392 zůstává přijaté zdravotní E2026-11-08-13; pracovní Q01 E13–16 jsou nyní E14–17. Původní commity zachované.
+
+Při převzetí #390/#393 zachované přijaté E2026-11-08-14–18; pracovní P11-RH zahájení je nyní E2026-11-08-19. Původní commit85606e95 zachovaný.
