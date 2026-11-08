@@ -2661,13 +2661,13 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 8
+			count: 7
 			path: sprava_treninku.php
 
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 8
+			count: 7
 			path: sprava_vsech_treninku.php
 
 		-

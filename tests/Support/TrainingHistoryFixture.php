@@ -67,7 +67,7 @@ final class TrainingHistoryFixture
         }
         $q = $pdo->prepare('SELECT ts.trenink_id,sp.prijmeni,sp.jmeno FROM trenink_sportovec ts
             JOIN sportovci sp ON sp.id=ts.sportovec_id WHERE ts.trenink_id IN ('
-            . implode(',', array_fill(0, count($ids), '?')) . ') ORDER BY sp.prijmeni,sp.jmeno');
+            . implode(',', array_fill(0, count($ids), '?')) . ') ORDER BY sp.prijmeni,sp.jmeno,ts.trenink_id');
         $q->execute($ids);
         try {
             return $q->fetchAll(PDO::FETCH_ASSOC);

@@ -48,6 +48,10 @@ final class TrainingHistoryReadTest extends TestCase
                         self::assertSame($expected, $new['rows']);
                         self::assertLessThanOrEqual(25, count($new['rows']));
                         $ids = array_column($new['rows'], 'id');
+                        $labels = \trainingRosterBridgeTrainingLabels($pdo, $new['rows']);
+                        foreach ($ids as $id) {
+                            self::assertSame($old['labels'][$id] ?? null, $labels[$id] ?? null);
+                        }
                         self::assertSame(array_values(array_filter($old['participants'], static fn (array $p): bool => in_array($p['trenink_id'], $ids))), Fixture::participants($pdo, $ids));
                         array_push($all, ...$new['rows']);
                         if ($rich) {

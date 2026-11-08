@@ -21,6 +21,12 @@ if ($phase === 'prepare') {
     if (!in_array('poradi', $columns, true)) {
         $admin->exec('ALTER TABLE skupiny ADD poradi INT DEFAULT 0');
     }
+    $trainingColumns = array_column($admin->query('SHOW COLUMNS FROM treninky')->fetchAll(PDO::FETCH_ASSOC), 'Field');
+    foreach (['poznamka', 'obrazky'] as $column) {
+        if (!in_array($column, $trainingColumns, true)) {
+            $admin->exec('ALTER TABLE treninky ADD ' . $column . ' TEXT NULL');
+        }
+    }
     $admin->exec('CREATE TABLE IF NOT EXISTS trenink_skupina(trenink_id INT,skupina_id INT);
         CREATE TABLE IF NOT EXISTS trenink_podskupina(trenink_id INT,podskupina_id INT)');
     $admin->exec("INSERT INTO opravneni(klic,min_role) VALUES('sprava_treninku','hlavni')
@@ -129,7 +135,7 @@ foreach ($cases as $i => $case) {
             $signature = $domain($r['body']);
             if ($phase === 'after') {
                 $old = $previous['cases'][$i]['domain'];
-                $expected = array_slice($old['rows'], ($case['page'] - 1) * 25, 25, true);
+
                 // Original same-day ordering was unspecified. Compare identities/content, unit tests enforce stable new order.
                 foreach ($signature['rows'] as $id => $hash) {
                     if (($old['rows'][$id] ?? null) !== $hash) {
@@ -141,6 +147,9 @@ foreach ($cases as $i => $case) {
                     throw new RuntimeException('History count/stats/pager differs: ' . $case['id']);
                 }
             }
+        }
+        if ($case['status'] === 200 && $n > 0 && $domain($r['body']) !== $signature) {
+            throw new RuntimeException('Unstable history domain within phase.');
         }
         if ($case['status'] !== 200 || $n >= 5) {
             $samples[] = array_intersect_key($r, array_flip(['status','ttfb_ms','total_ms','bytes']));
