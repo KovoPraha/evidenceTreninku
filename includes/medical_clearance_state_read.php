@@ -34,21 +34,21 @@ final class MedicalClearanceStateRead
         $grouped = 'SELECT mr.watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id'
             . ' FROM medical_clearance_records mr'
             . ($verifiedOnly ? " WHERE $exactState='verified'" : '') . ' GROUP BY mr.watch_id';
-        $dateParams = [];
-        if ($filters['from'] !== '' || $filters['to'] !== '') {
-            // Scope history by review date, without repeating the person's text search or join.
-            $dates = $filters;
-            $dates['q'] = '';
-            $where = staffListWhere($dates, [], 'w.next_review_on', null, $dateParams);
-            $grouped = 'SELECT w.id watch_id,' . $latestId . ' last_id,' . $verifiedId . ' verified_id'
-                . ' FROM medical_clearance_watches w ' . ($verifiedOnly ? 'JOIN' : 'LEFT JOIN')
-                . ' medical_clearance_records mr ON mr.watch_id=w.id WHERE ' . $where
-                . ($verifiedOnly ? " AND $exactState='verified'" : '') . ' GROUP BY w.id';
-        }
         $headJoin = $verifiedOnly ? 'JOIN' : 'LEFT JOIN';
         $projection = self::join($base, $headJoin . ' (' . $grouped . ') mc ON mc.watch_id=w.id'
             . ' ' . $headJoin . ' medical_clearance_records mv ON mv.id=mc.verified_id'
             . ($verifiedOnly ? '' : ' LEFT JOIN medical_clearance_records ml ON ml.id=mc.last_id AND mc.verified_id IS NULL'));
+        if ($filters['from'] !== '' || $filters['to'] !== '') {
+            // Seek each eligible watch's head through its owner/id index, without a second candidate scan.
+            $headState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY rh.state' : 'rh.state COLLATE BINARY';
+            $joins = $headJoin . ' medical_clearance_records mv ON mv.id=(SELECT rh.id FROM medical_clearance_records rh'
+                . " WHERE rh.watch_id=w.id AND $headState='verified' ORDER BY rh.id DESC LIMIT 1)";
+            if (!$verifiedOnly) {
+                $joins .= ' LEFT JOIN medical_clearance_records ml ON ml.id=(SELECT rh.id FROM medical_clearance_records rh'
+                    . ' WHERE rh.watch_id=w.id AND mv.id IS NULL ORDER BY rh.id DESC LIMIT 1)';
+            }
+            $projection = self::join($base, $joins);
+        }
         $complex = 'mv.id IS NOT NULL AND mv.issued_on>? AND mv.replaces_id IS NOT NULL AND mv.replaces_id<>0';
         $futureState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mf.state' : 'mf.state COLLATE BINARY';
         $newerState = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mn.state' : 'mn.state COLLATE BINARY';
@@ -89,7 +89,7 @@ final class MedicalClearanceStateRead
         $simpleStatus = 'CASE ' . $noVerified
             . "WHEN mv.issued_on>? THEN 'not_yet_valid' WHEN mv.valid_until<? THEN 'expired' ELSE 'valid' END";
         $predicate = '(NOT (' . $complex . ') AND (' . $simpleStatus . ')=?)';
-        $bindings = [...$dateParams, ...$params, $on, $on, $on, $filters['state']];
+        $bindings = [...$params, $on, $on, $on, $filters['state']];
         if ($matching !== []) {
             $predicate .= ' OR w.id IN (' . implode(',', array_fill(0, count($matching), '?')) . ')';
             array_push($bindings, ...$matching);

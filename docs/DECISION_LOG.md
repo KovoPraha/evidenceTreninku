@@ -279,3 +279,5 @@ P11-R13-S — uzavřený technický řez podle D14: [plán](MEDICAL_STATE_READ_P
 ## D2026-11-07-15
 
 PŘIJATO podle nového výslovného zadání Marka: [P11-R13-F](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md). Oddělit bounded výběr kandidátů od stavové historie; malé/prázdné dotazy neopakují plnou tabulku, široké dotazy neopakují textové hledání uvnitř agregace. Datum předfiltruje i historii. Přesná kanonická parita a cache-off měření všech tvarů před schváleným merge/deploy. D14/#381 zůstává historií, novým oprávněním jsou hledání a datum. Bez cache/DDL/rekurze, práva a writer zachované.
+
+D15 upřesnění8.11.2026: cc2a825e hledání přínos PASS, ale dva datumové smíšené profily regresní. Pro datum zkusit nejnovější verified/poslední záznam korelovaným indexovým lookupem, aby se neagregovala širší historie. Bez DDL a bez změny stavu; rozhodne nové párové měření. [Důkazy](verification/medical-filter-read-performance-20261107/RESULTS.md).

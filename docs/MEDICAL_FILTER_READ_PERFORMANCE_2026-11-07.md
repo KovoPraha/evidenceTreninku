@@ -1,6 +1,6 @@
 # P11-R13-F — hledání a datumové filtry zdravotního přehledu
 
-7. 11. 2026, Europe/Prague. ROZPRACOVÁNO, plán před implementací.
+7. 11. 2026, Europe/Prague. ROZPRACOVÁNO, plán7.11. před implementací; pokračování8.11.2026.
 Vlastník vývoj podle nového výslovného zadání Marka. Po přesné shodě, přínosu
 a zelených kontrolách commit/merge/standardní deploy; zachovat WIP.
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md),
@@ -48,8 +48,8 @@ hledání u prázdných výsledků. Výchozí stavový seznam bez doplňkových 
 
 ## Akceptace a meze
 
-Implementace, testy, měření, PR/merge/deploy zatím NOT RUN. Implementovat až po
-uložení tohoto plánu. Přínos ověřit zvlášť pro široké/vzácné/prázdné dotazy a datum;
+První implementace/parita a měření hotové, PR #385 otevřené; merge/deploy zatím NOT RUN.
+Původní plán uložený před implementací v7ae100b2. Přínos ověřit zvlášť pro široké/vzácné/prázdné dotazy a datum;
 při regresi upravit variantu nebo zachovat konkrétní původní cestu a důvod zapsat.
 Práva, writer, soukromé dokumenty, zdravotní rozhodnutí a integrační flags neměnit.
 DDL není součástí návrhu; před případnou další změnou indexů ověřit skutečný
@@ -58,3 +58,9 @@ produkční inventář. Přihlášené produkční UAT/mobil/souběh a ostatní 
 ## Průběh implementace
 
 První implementace hotová lokálně, přesný současný baseline35fdad44 včetně jeho stavového readeru zmrazený nezávisle. Nová sada7/454 a společná regrese25/801 PASS, styl/lint PASS. Přímá osoba a transakce zachovávají SQL/bindingy; předchozí test požadující původní SQL i u q/data nahrazen novým kontraktem výsledků podle D15. Nativní profiler14případů×4objemy100/1k/10k/100k,17střídavých párů a4zahřátí s query cache OFF. Samostatné nativní joby nezvětšují rozpočet staré integrační sady. HTTP benchmark porovnává přesné dva původní aplikační soubory, všech30k/300k záznamů a rozložená data revizí na jednom seedu;15kladných/12záporných případů a6Chrome scénářů. Výkon zatím NOT RUN; implementace je kandidát k měření, nikoli k deployi.
+
+## Pokračování8.11.2026
+
+cc2a825e má15CI PASS a celý GET100k hledání907,81→462,51ms. Smíšené nativní datum_day a date_to regredovaly, proto zatím nenasazovat. Bezpečný archiv v protokolu. Další varianta pouze pro široké datumové stavy použije korelované nejnovější verified/poslední ID přes existující watch_id/id index; původní pure status/future/fallback beze změny. Hledání a kandidátní sonda zachované. Znovu přesná parita a cache-off oba DB/HTTP/Chrome páry před release. WIP zachovaný.
+
+Datumová varianta2 implementovaná: jeden korelovaný nejnovější verified přes watch_id/id; poslední libovolný záznam jen když verified chybí. Datum je next_review_on sledování, historie ani explicitní řetězec nejsou ořezané podle issued_on/valid_until. Vše v původním počtu SQL, bez N+1 síťových dotazů a bez DDL. První nativní7/466 na každé DB PASS; aktuální lokální a nové nativní/HTTP ověření V2 ještě běží.
