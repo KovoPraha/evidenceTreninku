@@ -98,6 +98,7 @@ async (page) => {
     }
     await page.reload({waitUntil:'load'});await wait('measurements');
     if(!await page.locator('#pane-mereni').evaluate(el=>el.classList.contains('active'))) throw new Error('Saved measurement tab failed');
+    await page.waitForFunction(() => getComputedStyle(document.getElementById('pane-mereni')).opacity === '1');
     await page.screenshot({path:config.screenshot_dir+'/athlete-profile-after-desktop.png'});
     await page.setViewportSize({width:390,height:844});
     const pager=page.locator('#measurementListWrap .profile-pagination');await pager.scrollIntoViewIfNeeded();

@@ -1,40 +1,29 @@
 # Předání P11-RHA — profil sportovce
 
-8. 11. 2026: ROZPRACOVÁNO, implementace a ověřování v PR #404.
+8. 11. 2026: implementace, parita a měření PASS; finální CI čeká.
 [Plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md),
-[výsledky](verification/athlete-profile-read-performance-20261108/RESULTS.md).
+[výsledky a všechny vzorky](verification/athlete-profile-read-performance-20261108/RESULTS.md),
+[PR #404](https://github.com/KovoPraha/evidenceTreninku/pull/404).
+
 Větev codex/athlete-profile-history-performance-20261108, base69b69fa4,
-vlastní medical-state worktree; původní checkout/WIP a hash zachované.
-Výchozí produkceda152282/deploy42494231010 SUCCESS, RHC již uzavřené.
+vlastní medical-state worktree; původní checkout a WIP hash zachované.
+Produkceda152282/deploy42494231010 SUCCESS zatím beze změny.
 
-Historie a měření osobního profilu: stejná autorizovaná osoba a oprávnění,
-celé počty/roky/hodiny/typy zachovat; detaily po25, Měření lazy po otevření.
-Ověřit UNION členství a window souhrny proti původnímu čtení, celé stránky,
-přesné typové filtry, poznámky/odměny a čerstvou revokaci. Ostatní záložky/writery
-beze změny, žádné DDL/cache oprávnění. Nativní obě DB i skutečné HTTP/Chrome před/po.
+UNION členství, celkové roky/počty/hodiny,25karet před poznámkami/měřeními.
+Měření lazy a25řádků, úplné typy v původním pořadí, binární shoda case/mezer;
+číselné ID/ordinal v SQL okně a LIMIT před širokými hodnotami. Žádné DDL/cache,
+změny tokenů/rolí/writerů nebo dalších záložek. Stará pomalejší měření zachovaná.
 
-Další krok implementace a ověření, vše měření/PR/merge/deploy zatím NOT RUN.
-Vlastník autorizoval celý ověřený release; neptat se na stejné oprávnění znovu.
-Soukromá skutečná profilová data/toky/credentials nikdy nepatří do Gitu.
+SQLite3/611, MariaDB10.3/11.4 každá3/651 PASS. Runtime3c6d1395,
+CI42519956849 3/3SUCCESS, sourcehashy proti Git blobům shodné.
+10k historie483→135ms /546→203ms, PHP delta181→4,7MB.
+Měření90909→35SQLřádků a211MB→76kB;11.4 typ časově neutrální.
+Malý roční výběr <1ms režie přiznaný. ProfilGET129→53ms,6,1MB→12,8kB;
+historie111→33ms,8,6MB→208kB, ChromeVše1078→65ms.
+476časovanýchHTTP,78Chrome,12rolí, token/grant revokace, filtry/pager/savedtab
+PASS, checksumy/cleanup PASS. Desktop screenshot vyžaduje čekání na fade,
+poslední testovací doplnění nemění aplikaci. Přihlášené produkční UAT NOT RUN.
 
-Průběžně: implementována UNION projekce historie po25, souhrny beze změny,
-poznámky/měření jen pro vybraná ID. Měření lazy,25řádků a globální přesný filtr.
-Zvolen úzký seřazený sloupec typů + původní PHP array_count_values místo
-ROW_NUMBER/GROUP BY: zachovává první výskyt, PHP klíče i case/mezery bez kolace;
-na počátečním profilu jen COUNT. Souhrn typů je stále lineární čtení, nikoli cache.
-SQLite parita všech stránek:2testy/605assertions PASS. Nativní a HTTP/Chrome NOT RUN;
-žádný release zatím. Další krok: vlastní CI fixture a původní skutečné route.
-
-PR [#404](https://github.com/KovoPraha/evidenceTreninku/pull/404) sdílí implementaci.
-První HTTP fixture zastavena před porovnáním403: trenér neměl explicitní grant;
-účast na tréninku správně přístup neuděluje. Doplněn pouze syntetický team2 grant,
-bez zásahu do aplikace/autorizace. Lokální plný PHPUnit bez DB není důkaz release;
-rozhodující je plný CI. Native/HTTP/browser zatím čeká, merge/deploy NOT RUN.
-
-První nativní iterace42518606301: obě verze PASS datové parity, historie10k
-614→173ms (10.3),689→270ms (11.4), ale Měření vše473→486ms /574→708ms:
-časová regrese, nelze uvolnit. Úzkých90909typů se stále přenášelo do PHP a
-široké třídění detailů probíhalo před LIMIT. Návrat k původně plánované variantě:
-binární ROW_NUMBER/GROUP BY se souhrnem prvního výskytu; úzká stránka ID před
-širokými měřeními. Původní výsledek zachovat; nová varianta vyžaduje novou paritu
-všech stránek a nativní/HTTP měření. Nasazení nadále NOT RUN.
+Další krok: finální aktuální CI, freshmain, exacttree/sourceproof, merge,
+protected deploy import/UATfalse, záloha/VS/smoke a čtecí produkční kontrola.
+Finální release důkazy sdílet dokumentačním PR do main bez dalšího deploye.

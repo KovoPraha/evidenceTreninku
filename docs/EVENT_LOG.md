@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 8. 11. 2026 / E2026-11-08-30 | P11-RHA parita a měření PASS v #404 | Native3/651 každá,476HTTP/78Chrome; profil129→53ms, historie111→33ms. Původní regrese zachované, číselné SQL okno ji odstranilo; finální CI/merge/deploy čeká. | [Plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md), [důkazy](verification/athlete-profile-read-performance-20261108/RESULTS.md) |
 | 8. 11. 2026 / E2026-11-08-29 | P11-RHA zahájeno podle zadání | Historie a měření profilu po stránkách/lazy, přesné souhrny a přístupy zachovat; plán před implementací, žádná produkční změna. | [Plán](ATHLETE_PROFILE_READ_PERFORMANCE_2026-11-08.md) |
 | 8. 11. 2026 / E2026-11-08-28 | P11-RHC nasazeno po paritě a měření | #400/da152282,14CI PASS, deploy42494231010 SUCCESS; AJAX148→10ms,12,16MB→308kB. Záloha389/2 a anonymní odmítnutí PASS; původní veřejný katalog222→223 neshodný, nový5/5stabilní. WIP shodný, přihlášené UAT NOT RUN. | [Plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [výkon](verification/coach-history-page-performance-20261108/RESULTS.md), [release](verification/coach-history-release-20261108/RESULTS.md) |
 | 8. 11. 2026 / E2026-11-08-27 | P11-RHC zahájeno podle analýzy | Moje tréninky/AJAX stále neomezené; stránka před detaily, přesný celkový počet/filtry/rozsahy. Plán před implementací; produkce beze změny. | [Plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md) |

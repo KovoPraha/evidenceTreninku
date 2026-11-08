@@ -97,3 +97,12 @@ MariaDB11.4 zůstává izolovaná SQL režie. Další varianta materializuje v o
 Žádné nastavení databázové paměti/DDL/cachování; parita zůstává povinná.
 HTTP baseline už ověřil role, anonymy a expiraci tokenu/grantu; neaktivní staff
 vrací kanonický302/login, test nyní uznává tento původní způsob odmítnutí.
+
+Aktuální: runtime3c6d1395 — native3/651 každá verze a celý HTTP/Chrome PASS,
+[kompletní výsledky](verification/athlete-profile-read-performance-20261108/RESULTS.md).
+ProfilGET129→53ms a6,1MB→12,8kB; historie111→33ms /Chrome1078→65ms.
+Malý roční výběr má <1ms režii; velká měření11.4 jsou téměř neutrální a paměť
+211MB→76kB. První dvě pomalejší iterace zachované. Poslední testovací doplnění
+čeká na dokončení Bootstrap fade před screenshotem; aplikace se nemění.
+Další krok: aktuální úplné CI, shodný tested/merged tree, protected deploy,
+čtecí produkční kontrola a finální důkazy v main. UAT/merge/deploy zatím NOT RUN.

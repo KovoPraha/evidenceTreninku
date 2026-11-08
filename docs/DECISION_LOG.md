@@ -314,3 +314,5 @@ PŘIJATO podle nového zadání Marka: navázat na uzavřené RHC a prioritu4 an
 Upřesnění RHA: místo window/group agregace zvolen seřazený úzký sloupec typů a původní PHP počítání; zachovává case/mezery, PHP klíče a pořadí prvního výskytu. Počáteční GET čte pouze COUNT; souhrn typů zůstává lineární až při otevření měření.
 
 RHA měření nahradilo první úzkou PHP agregaci: nativně se prokázala regrese až23% v záložce všech měření. Zvolena binární SQL window/group agregace se stejným prvním výskytem a LIMIT úzkých ID před širokými detaily; předchozí měření zůstane v důkazech.
+
+RHA finální varianta: pouze číselné ID/ordinal uvnitř window, binární typy agregovat až po připojení a detaily číst po LIMIT. Native3/651 obě verze a skutečné HTTP/Chrome PASS; finální časy i přiznané malé režie jsou v [protokolu](verification/athlete-profile-read-performance-20261108/RESULTS.md). Přenos35 místo90909 řádků a lazy HTML řeší celý profil, nikoli jen izolovaný helper. Uvolnění čeká na aktuální CI a exacttree.
