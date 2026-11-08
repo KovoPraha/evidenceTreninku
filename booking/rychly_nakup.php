@@ -38,7 +38,8 @@ if ($product !== null && shopProductRequiresAthlete($pdo, $productId)) {
     header('Location: produkt.php?id='.$productId.'&variant_id='.$variantId.'#varianta-'.$variantId, true, 303);
     exit;
 }
-if ($product !== null && !shopProductRequiresAthlete($pdo, $productId)) {
+// The guard above already redirected athlete-bound products.
+if ($product !== null) {
     foreach ($product['variants'] as $candidate) {
         if ((int)$candidate['variant_id'] === $variantId && !clubProgramVariantHasOfferLink($pdo, $variantId)) {
             $variant = $candidate;

@@ -32,7 +32,28 @@ Větev `codex/quality-roadmap-20261108`, samostatný worktree mimo `htdocs`.
 Pokyn vlastníka 8. 11. schválil autonomní pokračování dle tohoto pořadí.
 Q1 je nyní **částečně ověřeno / přihlášené UAT NOT RUN**: URL i DOM v Chrome
 fungují, nová karta KIS skončila na loginu. [Protokol ROLE01-MOB](verification/access-mobile-cards-20261107/RESULTS.md).
-Q2 čeká na reprodukovaný nález; Q3–Q5 se připravují samostatně v tomto registru.
+Dokumentační převzetí Q1 je sloučené v [#388](https://github.com/KovoPraha/evidenceTreninku/pull/388),
+původní #365/#378 uzavřené po převzetí jejich obsahu. Q2 čeká na reprodukovaný
+nález; Q3 je místně ověřený a Q4/Q5 mají [připravený podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
+
+### Q01-Q3 — první měřitelný úklid, rychlý nákup
+
+Stav 8. 11.: IMPLEMENTOVÁNO MÍSTNĚ na větvi `codex/guest-checkout-read-cleanup-20261108`,
+samostatný worktree mimo `htdocs`, základ main `7dc64481`; původní WIP zachované.
+Na `booking/rychly_nakup.php` běžné zboží volá
+`shopProductRequiresAthlete($pdo, $productId)` dvakrát za jeden požadavek.
+Klasifikace pro jeden produkt má být jedna konzistentní hodnota; opakované volání
+čte stejné tabulky. Nejdřív doložit počet příkazů nad syntetickými daty, potom
+odstranit druhé volání beze změny přesměrování programu a výběru varianty zboží.
+Změna odstraňuje druhé volání až po guardu, který sportovce vyžadující produkt
+přesměruje. Syntetický `CountingPDO` nad třemi druhy produktů naměřil pro
+opakovanou klasifikaci 8 → 4 připravené SELECTy u běžného importovaného zboží
+a 4 → 2 u kontrolované historické výjimky. Produkty vyžadující sportovce
+zůstávají přesměrované po prvním volání. Místní PHPUnit výběr
+`ShopPurchaseModeTest|ShopAnonymousCheckoutBootstrapTest|ShopCheckoutTest`
+PASS: 43 testů / 799 assertions, PHP lint PASS. Jde o měření volání klasifikační
+funkce nad syntetickými daty, nikoli o produkční HTTP profil. Přijetí PR vyžaduje
+CI včetně obou MariaDB; žádná změna schématu, plateb, práv ani produkčního stavu.
 
 | Pořadí | Výstup dalšího řezu | Přijetí a závislost |
 | --- | --- | --- |
@@ -42,10 +63,14 @@ Q2 čeká na reprodukovaný nález; Q3–Q5 se připravují samostatně v tomto 
 | Q4 — provozní připravenost | Pro BAR P02/P04 připravit přejímací scénář fyzické zásoby → kasa → prodej → uzávěrka a účetní mapu bez ostrých zápisů. Pro členství/doklady P05/P07 připravit jediný důkazový scénář od objednávky po úhradu, PDF a doručení; pro P06 rozdílový náhled až s novým exportem. | Skutečné hodnoty, účetní pravidla a reálný sportovec/platba jsou vstupem vlastníka. Technický scénář nezakládá zásobu, pokladní hotovost ani platbu. [BAR](SESSION_HANDOFF_BAR_2026-11-06.md), [doklady](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md). |
 | Q5 — příprava funkcí | Ze záměrů P13/C01–C03 vybrat jednu funkci podle potřeby konkrétní role; sepsat uživatelský scénář, vlastníka dat, oprávnění, retenci, chybové stavy, migraci a měřitelné přijetí. ČSC/Sportsoft P15 hodnotit zvlášť podle otevřených PR #371/#376/#380/#382/#386 a jejich závislostí. | Teprve odsouhlasený kontrakt a bezpečnostní review dávají podklad k implementaci. Žádná automatická aktivace importu, zápisů do osob, walletu, Stripe ani nového upozornění. |
 
+Q4 přejímací pořadí a Q5 návrh soukromého progresu C01/V5 jsou rozepsané v
+[navazujícím podkladu](QUALITY_NEXT_SLICES_2026-11-08.md). Jsou připravené
+scénáře a rozhodovací kontrakt, nikoli provedené provozní kroky nebo schválená funkce.
+
 První proveditelný balík: Q1 v přihlášeném prostředí a čtecí inventura jednoho
 Q3 kandidáta. Následující balík vznikne z doložených vad a výsledků, nikoli
 z historického seznamu. Při každém převzetí ověřit nové PR, jejich CI a produkční
-release; otevřené #365, #378 a #385 se mohou mezitím změnit. Původní priorita
+release; stav souběžného #385 se může mezitím změnit. Původní priorita
 DOC03 níže zůstává datovaným snímkem 7. 11.; Q01 ji pro nové plánování zpřesňuje.
 
 ## Priority a závislosti

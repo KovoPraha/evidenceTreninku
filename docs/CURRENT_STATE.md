@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 7. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md), [návrh Q01 z 8. 11.](WORK_PLAN_CURRENT.md#koncept-q01--další-vývoj-doladění-úklid-příprava-8-11-2026) a [úplný katalog](PLAN_CATALOG.md). Q01 nemění release.
+Aktualizováno 8. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md), [Q01/Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [úplný katalog](PLAN_CATALOG.md). Q1 dokumentace #388 sloučená, Q3 zatím nemění produkční release.
 - **P11-R13-S NASAZENO:** release `938e9c50317be43e8b206da93294ca41d10065c0`, deploy42405912779 SUCCESS; [protokol](verification/medical-state-release-20261107/RESULTS.md).
   Parita/přínos/12CI PASS; [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). Import/UAT false; přihlášené UAT NOT RUN, WIP zachovaný.
 - **P11-R05-H zachováno / historické vydání:** release `e36c9ba6e461b7da842c53939c2fe20eed821f38`, deploy42394551344 SUCCESS; [protokol](verification/planner-hierarchy-release-20261107/RESULTS.md).
