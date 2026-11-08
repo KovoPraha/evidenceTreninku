@@ -78,3 +78,9 @@ aktuální produkci určuje pouze [CURRENT_STATE](CURRENT_STATE.md).
 #358 sloučený podle pokynu vlastníka: `37d0ad687211aa912a90e8ad105842847956890d`,
 head `02ad8016`, 11 kontrol PASS (Testy 42362702007). Bez deploye.
 Navazuje [katalogový plán](CATALOG_READ_PERFORMANCE_2026-11-07.md).
+
+## Následné společné vydání 7. 11. 2026
+
+Vlastník později schválil společné nasazení cen #358 a mobilních karet #361.
+Deploy 42365946802 SUCCESS / `3b37e053`; [důkazy a hranice](verification/access-mobile-cards-20261107/RESULTS.md).
+Původní rozhodnutí „bez deploye“ platilo jen při sloučení #358.

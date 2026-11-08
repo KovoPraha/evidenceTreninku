@@ -29,6 +29,10 @@ nasazením nebo smazáním WIP. Podklad: `origin/main` `35fdad44`, tento registr
 [aktuální stav](CURRENT_STATE.md), [předání](HANDOFF_CURRENT.md) a otevřené PR
 k 8. 11. Ověření bylo čtecí; žádná funkce tímto návrhem není implementována.
 Větev `codex/quality-roadmap-20261108`, samostatný worktree mimo `htdocs`.
+Pokyn vlastníka 8. 11. schválil autonomní pokračování dle tohoto pořadí.
+Q1 je nyní **částečně ověřeno / přihlášené UAT NOT RUN**: URL i DOM v Chrome
+fungují, nová karta KIS skončila na loginu. [Protokol ROLE01-MOB](verification/access-mobile-cards-20261107/RESULTS.md).
+Q2 čeká na reprodukovaný nález; Q3–Q5 se připravují samostatně v tomto registru.
 
 | Pořadí | Výstup dalšího řezu | Přijetí a závislost |
 | --- | --- | --- |
@@ -98,7 +102,7 @@ Skutečná bankovní platba, externí schránka a produkční přejímka členst
 
 | ID | Oblast a stav | Další krok a závislost | Vlastník / podklady |
 | --- | --- | --- | --- |
-| ROLE01-MOB | ČÁSTEČNĚ HOTOVO: karty #361 jsou v main a obsažené ve vydání katalogu `c70939d4` | Doložit cílený nový čtecí Chrome 390/360 px a desktop; stávající role neměnit, deploy neopakovat jen podle starého statusu | Vývoj; [plán](ACCESS_OVERVIEW_2026-11-07.md), [vydání](verification/catalog-release-20261107/RESULTS.md), vlastní `codex/access-visual-uat-20261107` / PR #361 |
+| ROLE01-MOB | Nasazeno #361 / `3b37e053`; otisky 48 účtů / 82 rolí / 5 superadminů / 1 grantu přesně zachované | Nové přihlášené čtecí Chrome 390/360 px a desktop NOT RUN; aktuální kontrolní karta skončila na loginu. Po obnovení relace projít filtry, prázdný výsledek a editor bez uložení. Deploy neopakovat. | Vývoj/vlastník; [plán](ACCESS_OVERVIEW_2026-11-07.md), [protokol vydání](verification/access-mobile-cards-20261107/RESULTS.md), původní PR #365 |
 | P01 | HOTOVO: pracovní upozornění #330 nasazená, minutový běh a přihlášený zvoneček ověřené; vlastník 6. 11. potvrdil doručení zprávy do schránky | Neposílat další kopie ani opakovat instalaci. Potvrzení se týká skutečně přijaté zprávy, nikoli všech 18 zásilek. Zdrojové žádosti neschvalovat kvůli testu. | Vlastník; [potvrzení](verification/membership-copy-wip-20261106/RESULTS.md), [produkční přejímka](verification/staff-notifications-release-20261106/RESULTS.md) |
 | P02 | BAR nasazený a převedený; technická provozní přejímka PASS | Skutečná Lucka se přihlásí původním heslem; vlastník potvrdí fyzické zásoby, počátek kasy a přejímku prvního prodeje. Nevytvářet odhadované zásoby. | Vlastník/obsluha; [plán B0–B7](BAR_INTEGRATION_PLAN_2026-11-05.md), [přejímka](verification/bar-acceptance-20261106/RESULTS.md) |
 | P03 | HOTOVO: nabídka BAR 1 / vydání 1 zveřejněná, 45 produktů a fotografií; novější doklad #335 nahrazuje původní koncept | Publikaci neopakovat a nezakládat další návrh. Úpravy nabídky až podle dalšího zadání; zásoby/kasa a skutečný prodej zůstávají P02. Přihlášené vytvoření tiskového PDF zatím NOT RUN. | Správce baru; [publikace](verification/bar-menu-publication-20261106/RESULTS.md), [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) |
