@@ -114,8 +114,17 @@ $domain = static function (string $html): array {
         }
         $rows[$id] = hash('sha256', implode('', $parts));
     }
-    $stats = $xp->query('//div[contains(@class,"row g-3 mb-3")]')->item(0);
-    return ['rows' => $rows,'stats' => $stats ? preg_replace('/\s+/u', ' ', trim($stats->textContent)) : null,
+    $stats = [];
+    foreach ($xp->query('//div[contains(@class,"row g-3 mb-3")]//div[contains(@class,"card-body")]') as $card) {
+        $values = $xp->query('./div', $card);
+        if ($values->length !== 2) {
+            throw new RuntimeException('Unexpected statistics card.');
+        }
+        $label = preg_replace('/\s+/u', ' ', trim($values->item(1)->textContent));
+        $stats[$label] = preg_replace('/\s+/u', ' ', trim($values->item(0)->textContent));
+    }
+    ksort($stats);
+    return ['rows' => $rows, 'stats' => $stats,
         'csrf_count' => $xp->query('//input[@name="csrf_token"]')->length,
         'pager' => $xp->query('//nav[@aria-label="Stránkování tréninků"]')->length];
 };
@@ -144,7 +153,10 @@ foreach ($cases as $i => $case) {
                 }
                 if (count($signature['rows']) !== min(25, max(0, count($old['rows']) - ($case['page'] - 1) * 25))
                     || $signature['stats'] !== $old['stats'] || $signature['pager'] !== 1) {
-                    throw new RuntimeException('History count/stats/pager differs: ' . $case['id']);
+                    throw new RuntimeException('History count/stats/pager differs: ' . json_encode([
+                        'case' => $case['id'], 'old_count' => count($old['rows']), 'new_count' => count($signature['rows']),
+                        'old_stats' => $old['stats'], 'new_stats' => $signature['stats'], 'pager' => $signature['pager']
+                    ], JSON_THROW_ON_ERROR));
                 }
             }
         }
