@@ -1,0 +1,96 @@
+{
+  "complete": true,
+  "baseline_sha": "cc80556131f855cb29ec75c335873574930577af",
+  "optimized_sha": "a857fd18cf4ed89719c3f1bc59d7144327ac878c",
+  "source_sha256": {
+    "sprava_treninku.php": "bfc4eb822c3c071c2ca3670cc2fe54f4f0a634386dd292b9a31ccd4d644a44a7",
+    "sprava_vsech_treninku.php": "52f2d633b0fde1fe5756526ed3a4710d4c8e0f76f41bd42097861b002aa141b1",
+    "includes/training_history_read.php": "7f61a63e99425550fdcd6767d1c9b2e249014f5c55091e88be8c659c5480462d"
+  },
+  "cases": [
+    {
+      "id": "sprava_treninku.php-all",
+      "before_median_ms": 268.489,
+      "after_median_ms": 143.19,
+      "before_bytes": 4804979,
+      "after_bytes": 162462
+    },
+    {
+      "id": "sprava_treninku.php-group",
+      "before_median_ms": 86.738,
+      "after_median_ms": 17.002,
+      "before_bytes": 4794464,
+      "after_bytes": 161451
+    },
+    {
+      "id": "sprava_treninku.php-team",
+      "before_median_ms": 274.34,
+      "after_median_ms": 148.19299999999998,
+      "before_bytes": 4794465,
+      "after_bytes": 161452
+    },
+    {
+      "id": "sprava_treninku.php-trainer",
+      "before_median_ms": 174.362,
+      "after_median_ms": 77.084,
+      "before_bytes": 4775005,
+      "after_bytes": 164589
+    },
+    {
+      "id": "sprava_treninku.php-page2",
+      "before_median_ms": 270.372,
+      "after_median_ms": 144.74,
+      "before_bytes": 4804979,
+      "after_bytes": 161583
+    },
+    {
+      "id": "sprava_vsech_treninku.php-all",
+      "before_median_ms": 312.88500000000005,
+      "after_median_ms": 144.519,
+      "before_bytes": 8414159,
+      "after_bytes": 253205
+    },
+    {
+      "id": "sprava_vsech_treninku.php-group",
+      "before_median_ms": 111.354,
+      "after_median_ms": 19.127000000000002,
+      "before_bytes": 8400918,
+      "after_bytes": 256667
+    },
+    {
+      "id": "sprava_vsech_treninku.php-team",
+      "before_median_ms": 319.82500000000005,
+      "after_median_ms": 149.68200000000002,
+      "before_bytes": 8400919,
+      "after_bytes": 256668
+    },
+    {
+      "id": "sprava_vsech_treninku.php-trainer",
+      "before_median_ms": 208.549,
+      "after_median_ms": 78.03999999999999,
+      "before_bytes": 8355033,
+      "after_bytes": 257111
+    },
+    {
+      "id": "sprava_vsech_treninku.php-page2",
+      "before_median_ms": 313.426,
+      "after_median_ms": 144.391,
+      "before_bytes": 8414159,
+      "after_bytes": 257221
+    },
+    {
+      "id": "rich-rare",
+      "before_median_ms": 37.553999999999995,
+      "after_median_ms": 37.704,
+      "before_bytes": 56657,
+      "after_bytes": 55941
+    },
+    {
+      "id": "rich-empty",
+      "before_median_ms": 22.333,
+      "after_median_ms": 22.467000000000002,
+      "before_bytes": 47141,
+      "after_bytes": 46425
+    }
+  ]
+}
