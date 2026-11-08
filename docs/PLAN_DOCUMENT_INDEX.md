@@ -906,3 +906,11 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-4b93cf122d | [P11-R13-S provozní předání](verification/medical-state-release-20261107/RESULTS.md) | evidence / SUPPORT | P11-R13-S |
 | PL-b3e0d886a7 | [Veřejná čtecí sonda R13](verification/medical-state-release-20261107/snapshot.php.txt) | artifact / SUPPORT | P11-R13-S |
 | PL-7e2f77ccde | [Anonymní odmítnutí R13](verification/medical-state-release-20261107/anonymous-medical.php.txt) | artifact / SUPPORT | P11-R13-S |
+
+| PL-70d2e7ebb6 | [P11-R13-F — hledání a datum zdravotního přehledu](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md) | plan / IN_PROGRESS | P11-R13-F |
+| PL-9ad623ea13 | [Předání P11-R13-F](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md) | handoff / SUPPORT | P11-R13-F |
+| PL-f0b922d073 | [P11-R13-F parita a měření](verification/medical-filter-read-performance-20261107/RESULTS.md) | evidence / SUPPORT | P11-R13-F |
+
+| PL-9eaa0ccfa3 | [P11-R13-F provozní předání](verification/medical-filter-release-20261108/RESULTS.md) | evidence / SUPPORT | P11-R13-F |
+| PL-12d500fd6d | [P11-R13-F veřejná čtecí sonda](verification/medical-filter-release-20261108/snapshot.php.txt) | artifact / SUPPORT | P11-R13-F |
+| PL-57d7a5d36a | [P11-R13-F anonymní odmítnutí filtrů](verification/medical-filter-release-20261108/anonymous-medical-filter.php.txt) | artifact / SUPPORT | P11-R13-F |

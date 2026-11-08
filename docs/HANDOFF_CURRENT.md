@@ -15,7 +15,6 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   hledání/editor otevřené, nová karta ukázala login. [Nový čtecí protokol](verification/quality-uat-20261108/RESULTS.md).
 - ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
 - AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
-
 - P11 picker HOTOVO: [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání #366/#372](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
   [Produkční protokol](verification/attendance-picker-release-20261107/RESULTS.md): schválené nasazení a čtecí kontrola dokončené, neopakovat.
   **Přihlášené UAT pickeru částečně PASS**: hledání a stránkování; omluva a výběr/verze otevřené. [Výsledek](verification/quality-uat-20261108/RESULTS.md).
@@ -24,6 +23,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
 - P11-R13-S HOTOVO: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md), [provozní důkaz](verification/medical-state-release-20261107/RESULTS.md).
   #381/938e9c50, deploy42405912779 SUCCESS; další deploy neopakovat. WIP zachovaný; [filtry částečně PASS při 0 záznamech](verification/quality-uat-20261108/RESULTS.md).
+- P11-R13-F v main: #385 / `519ff098`; [plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [vydání](verification/medical-filter-release-20261108/RESULTS.md). Produkční stav ověřit odděleně.
 - P11-R05-H HOTOVO: [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md).
   #374 v main a nasazeno; [provozní důkaz](verification/planner-hierarchy-release-20261107/RESULTS.md) PASS. WIP zachovaný; přihlášené UAT našlo [360px přetékání](verification/quality-uat-20261108/RESULTS.md), Q2 [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) čeká na nové CI.
 - P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),

@@ -35,6 +35,14 @@ final class DeployWorkflowContractTest extends TestCase
         self::assertLessThan($migrate, $vsBefore);
         self::assertLessThan($vsAfter, $migrate);
         self::assertLessThan($activate, $vsAfter);
+        $medicalBefore = strpos($workflow, '- name: Přečíst indexy zdravotního čtení před migrací');
+        $medicalAfter = strpos($workflow, '- name: Ověřit index zdravotního čtení před aktivací');
+        self::assertNotFalse($medicalBefore);
+        self::assertNotFalse($medicalAfter);
+        self::assertLessThan($backup, $medicalBefore);
+        self::assertLessThan($medicalAfter, $migrate);
+        self::assertLessThan($activate, $medicalAfter);
+
         self::assertStringContainsString('.ok == true and .unchanged == true', $workflow);
 
         // Hostingový omezený shell zakazuje `php -r`; validace configu proto

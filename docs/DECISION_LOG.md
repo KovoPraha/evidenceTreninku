@@ -276,3 +276,15 @@ D13 průběžně: první prototyp a7b1bee9 zamítnut pro deploy kvůli regresi c
 D14 upřesnění po měření V3: rychlá projekce pouze pro stav bez doplňkových filtrů; hledání/datum/osoba původní SQL, protože nativní11.4 profil doložil režii scoped větve. Žádný odhad velikosti ani další prahová sonda. Finální časování s explicitně vypnutou SQL query cache, malá pevná režie přiznaná. [Výsledky](verification/medical-state-read-performance-20261107/RESULTS.md).
 
 P11-R13-S — uzavřený technický řez podle D14: [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [finální parita/přínos](verification/medical-state-read-performance-20261107/RESULTS.md), [merge/deploy/čtecí kontrola](verification/medical-state-release-20261107/RESULTS.md), [handoff](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). #381/938e9c50, deploy42405912779 SUCCESS. Malá pevná režie přiznaná; původní doplňkové filtry zachované. Přihlášené UAT/rows examined a celé K0.2 dál otevřené.
+
+## D2026-11-07-15
+
+PŘIJATO podle nového výslovného zadání Marka: [P11-R13-F](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md). Oddělit bounded výběr kandidátů od stavové historie; malé/prázdné dotazy neopakují plnou tabulku, široké dotazy neopakují textové hledání uvnitř agregace. Datum předfiltruje i historii. Přesná kanonická parita a cache-off měření všech tvarů před schváleným merge/deploy. D14/#381 zůstává historií, novým oprávněním jsou hledání a datum. Bez cache/DDL/rekurze, práva a writer zachované.
+
+D15 upřesnění8.11.2026: cc2a825e hledání přínos PASS, ale dva datumové smíšené profily regresní. Pro datum zkusit nejnovější verified/poslední záznam korelovaným indexovým lookupem, aby se neagregovala širší historie. Bez DDL a bez změny stavu; rozhodne nové párové měření. [Důkazy](verification/medical-filter-read-performance-20261107/RESULTS.md).
+
+D15/V3: korelované head lookupy V2 měřením zamítnuté i při existujícím owner/id indexu. Datumový kandidát/head se vypočte jednou s původním filtrem, vnější dotaz už jen spojuje vypočtené head ID a stránkuje. Žádné produkční DDL nebo nový indexový předpoklad. [Důkazy](verification/medical-filter-read-performance-20261107/RESULTS.md).
+
+D15/V4: po mírné regresi V3 datum_day zvolené latest-verified anti-join pro platnostní datumové stavy, a časné HAVING pro běžné skupiny bez verified. Budoucí missing/revoked s verified hlavičkou musí zůstat výjimkou podle matching ID. Nutné nové široké datumové legacy testy a pending hledání; měření rozhodne. Bez DDL.
+
+D15/V5,8.11.: po čtyřech SQL-only měřeních zůstává datum/poloviční pending regresní. Schválený cíl optimalizace nyní řeší i krycí index bez změny klinických hodnot. Původní plán bezDDL nahrazen; samotný index i kód měřit odděleně. Produkční metadata přečíst před migrací, online ADD INDEX až po záloze a testech, ověřit před aktivací. [Online ADD INDEX/LOCK NONE a krátké metadata zámky — MariaDB](https://mariadb.com/docs/server/server-usage/storage-engines/innodb/innodb-online-ddl/innodb-online-ddl-operations-with-the-inplace-alter-algorithm); žádný slib nulového blokování. [Výsledky](verification/medical-filter-read-performance-20261107/RESULTS.md).

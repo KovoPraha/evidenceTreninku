@@ -3,6 +3,7 @@
 Aktualizováno 8. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md), [Q1/Q2 čtecí UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 dokumentace #388 a Q3 kód #389 sloučené; nové nasazení nedoložené.
 - **P11-R13-S NASAZENO:** release `938e9c50317be43e8b206da93294ca41d10065c0`, deploy42405912779 SUCCESS; [protokol](verification/medical-state-release-20261107/RESULTS.md).
   Parita/přínos/12CI PASS; [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_STATE_2026-11-07.md). Import/UAT false; přihlášené filtry částečně PASS při 0 záznamech, [meze](verification/quality-uat-20261108/RESULTS.md); WIP zachovaný.
+- P11-R13-F v main: [hledání a datum](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), #385 / `519ff098`; produkční vydání zvlášť doložit v [protokolu](verification/medical-filter-release-20261108/RESULTS.md).
 - **P11-R05-H zachováno / historické vydání:** release `e36c9ba6e461b7da842c53939c2fe20eed821f38`, deploy42394551344 SUCCESS; [protokol](verification/planner-hierarchy-release-20261107/RESULTS.md).
   Parita/měření/všech 12 CI PASS; [plán](PLANNER_HIERARCHY_READ_PERFORMANCE_2026-11-07.md). Import/UAT false; čtecí UAT našlo [přetékání filtru při 360 px](verification/quality-uat-20261108/RESULTS.md), Q2 místní oprava čeká na CI.
 - P11 měření: [Linux540HTTP/78Chrome](verification/attendance-person-picker-20261107/integrated/RESULTS.md) a [Windows9scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) dokončené. **Přihlášené produkční UAT částečně PASS:** hledání a stránkování existujícího tréninku; omluva, výběr/verze a plný před/po stav otevřené. [Protokol](verification/quality-uat-20261108/RESULTS.md).
@@ -36,7 +37,6 @@ Aktualizováno 8. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   Přihlášené UAT a E8 nejsou dokončené; převodní mapy a bod návratu zůstávají zachované.
 
 - [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
-
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).
   [Oddělený syntetický pilot](verification/trainer-pilot-20261101/RESULTS.md) je založen:
