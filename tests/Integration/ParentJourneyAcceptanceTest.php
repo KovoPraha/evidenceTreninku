@@ -41,7 +41,10 @@ final class ParentJourneyAcceptanceTest extends TestCase
         $offer = \clubProgramCreateOffer($pdo, 7, $programId, 1, 10, 501, 601, 'LOCALHOST-TERMS-OFFER', 'LOCALHOST období', '2026-09-01', '2027-08-31', null, null, 1, 'active');
         $beforeOptional = $this->quickFormVersions(\athleteRegistrationCurrentTerms($pdo));
         self::assertArrayNotHasKey('csc_birth_number_sharing', $beforeOptional);
-        $pdo->exec("INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id) VALUES('athlete_registration','athlete-registration-v1','csc_birth_number_sharing','csc-v1','Volitelný syntetický souhlas ČSC.','system',0)");
+        $pdo->exec("INSERT INTO club_event_term_versions"
+            . "(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id) "
+            . "VALUES('athlete_registration','athlete-registration-v1','csc_birth_number_sharing',"
+            . "'csc-v1','Volitelný syntetický souhlas ČSC.','system',0)");
         $terms = \athleteRegistrationCurrentTerms($pdo);
         $submitted = $this->quickFormVersions($terms);
         self::assertSame(array_map(static fn (array $term): string => $term['version'], $terms), $submitted);
@@ -66,14 +69,24 @@ final class ParentJourneyAcceptanceTest extends TestCase
         }
         self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM verejni_uzivatele')->fetchColumn());
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
-        $pdo->exec("INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id) VALUES('athlete_registration','athlete-registration-v1','member_data_notice','member-v2','Nová syntetická informace pro registraci.','system',0)");
+        $pdo->exec("INSERT INTO club_event_term_versions"
+            . "(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id) "
+            . "VALUES('athlete_registration','athlete-registration-v1','member_data_notice',"
+            . "'member-v2','Nová syntetická informace pro registraci.','system',0)");
         try {
             \shopProgramQuickCheckoutPlace($pdo, 601, $input, $submitted, $key, $access, self::BANK);
             self::fail('A previously rendered version must be rejected.');
         } catch (\AthleteRegistrationException $exception) {
             self::assertStringContainsString('Podmínky registrace se změnily', $exception->getMessage());
         }
-        foreach (['verejni_uzivatele' => 2,'account_person_claim_requests' => 0,'athlete_registration_consent_snapshots' => 0,'shop_orders' => 0,'shop_order_items' => 0,'payments' => 0] as $table => $expected) {
+        foreach ([
+            'verejni_uzivatele' => 2,
+            'account_person_claim_requests' => 0,
+            'athlete_registration_consent_snapshots' => 0,
+            'shop_orders' => 0,
+            'shop_order_items' => 0,
+            'payments' => 0,
+        ] as $table => $expected) {
             self::assertSame($expected, (int)$pdo->query('SELECT COUNT(*) FROM '.$table)->fetchColumn(), $table);
         }
         self::assertFalse($pdo->inTransaction());
@@ -86,7 +99,9 @@ final class ParentJourneyAcceptanceTest extends TestCase
         self::assertSame('quick_program', $order['checkout_mode']);
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());
-        self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM athlete_registration_consent_snapshots WHERE purpose='csc_birth_number_sharing' AND terms_version='csc-v1' AND accepted=0")->fetchColumn());
+        $optionalConsent = $pdo->query("SELECT COUNT(*) FROM athlete_registration_consent_snapshots "
+            . "WHERE purpose='csc_birth_number_sharing' AND terms_version='csc-v1' AND accepted=0");
+        self::assertSame(1, (int)$optionalConsent->fetchColumn());
     }
 
     /** Render the actual template fragment and decode its browser-submitted field names. */

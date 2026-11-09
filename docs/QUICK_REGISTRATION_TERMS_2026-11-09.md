@@ -14,4 +14,4 @@ Přejímka: čerstvý formulář odesílá přesné klíče a verze; čerstvá o
 
 ## Stav předání
 
-Úzká oprava HTML atributu hotová; [izolované výsledky](verification/quick-registration-terms-20261109/RESULTS.md) PASS. Testovací fixture doplněna o migraci pracovních upozornění, kterou nynější checkout potřebuje. PR, merge, deploy a skutečné rodičovské UAT zatím NOT RUN. Následuje kontrola dokumentace, PR a CI; živou přejímku produktu 298 je třeba provést v kontrolovaném provozním okně.
+Úzká oprava HTML atributu hotová; [izolované výsledky](verification/quick-registration-terms-20261109/RESULTS.md) PASS. Testovací fixture doplněna o migraci pracovních upozornění, kterou nynější checkout potřebuje. [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený, CI běží; merge, deploy a skutečné rodičovské UAT zatím NOT RUN. Živou přejímku produktu 298 je třeba provést v kontrolovaném provozním okně.
