@@ -9,6 +9,8 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 9. 11. 2026 / E2026-11-09-09 | P11-RHI první native/HTTP/Chrome | Run42621207366: historie−92/94%, PHP−89%, parita/fallbacky/checksumy PASS. Chrome default−31%, savedMěření+9.5%; neexistujícírok+13/16ms. Další iterace YEAR první a nový UI protokol. | [Důkazy](verification/athlete-profile-history-performance-20261109/RESULTS.md) |
+| 9. 11. 2026 / E2026-11-09-08 | P11-RHI zahájen | Aktuální pokyn vlastníka: optimalizace historie, podmíněný release po přesné shodě/přínosu. Main d666078e, WIP zachovaný. | [Plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-07 | Q2-TIME: oprava kontroly času a konceptů nového tréninku | 34/131 cíleně, 18 browser a 11 CI kontrol PASS; Linux 2409/54943. PR #412 otevřený; merge/nasazení NOT RUN. | [Výsledky](verification/training-form-resilience-20261109/RESULTS.md), [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026) |
 | 9. 11. 2026 / E2026-11-09-06 | P11-RAH NASAZENO / technické ověření PASS | #410/c47d4008,18CI/tree/source přesné, deploy42587406908 SUCCESS, testy2407/54929, backup389/2, migrace/VS/config/smoke PASS. Parent−66/68%, Chrome−30/37%, veřejné8/8HTTP/DOM shodné, UAT NOT RUN, WIP zachovaný. | [Release](verification/athlete-profile-header-release-20261109/RESULTS.md), [předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-05 | P11-RAH měření a parita PASS | Run42581044288: oběDB+52Chrome, parent−66%, Chrome−37/38%, shodnéHTML/AJAX/fallbacky/role/CSRF; první FAIL cookie izolace zachovaný. PHPStan bez navýšení suppression PASS; CodeQL download504 vyžaduje nový head. | [Důkazy](verification/athlete-profile-header-performance-20261109/RESULTS.md) |
@@ -162,3 +164,6 @@ Při převzetí #390/#393 zachované přijaté E2026-11-08-14–18; pracovní P1
 Při převzetí #396 zachované přijaté Q2 E2026-11-08-21; pracovní P11-RHC zahájení je E2026-11-08-22. Původní plánovací commit3ce5b9ce zachovaný.
 
 Při převzetí #395 zachované přijaté UX01 E2026-11-08-22–26; pracovní P11-RHC zahájení je nyní E2026-11-08-27. Původní commity zachované.
+
+Při převzetí #412 zachováno přijaté Q2-TIME E2026-11-09-07; pracovní P11-RHI E07–08
+jsou nyní E2026-11-09-08–09. Původní plánovací/měřicí commity zachované.
