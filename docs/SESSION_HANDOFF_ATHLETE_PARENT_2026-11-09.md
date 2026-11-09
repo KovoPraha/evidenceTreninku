@@ -15,3 +15,6 @@ aktuálního vlastníka platí, před release úplná parita/HTTP/Chrome a aktu�
 Diagnostika42570580742 obaDB PASS:94752nepoužitých řádků,649/1665ms, peak96,6MB.
 Zvolen nový reader3součtů se stejnými kanonickými aktivitami; full snapshot
 beze změny. PR#408, další krok přesná parita a prokládané HTTP/Chrome páry.
+
+61e84220: native10.3 celá parent route/12rolí/CSRF PASS,30k1981→888ms,
+SQL94771→15řádků a peak96,6→1,26MB. 11.4/Chrome čekají, bez merge/deploy.

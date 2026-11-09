@@ -6,6 +6,8 @@ on:
       - 'sportovec_treninky.php'
       - 'tests/Support/AthleteParent*'
       - 'includes/sports_activity_overview_read.php'
+      - 'includes/sports_activity.php'
+      - 'includes/training_closure.php'
       - 'tests/Integration/SportsActivityOverviewReadTest.php'
       - 'tests/Support/SportsActivityOverviewFixture.php'
       - '.github/workflows/athlete-parent-performance.yml'

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\SportsActivityOverviewReadTest" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/SportsActivityOverviewReadTest.php" tests="2" assertions="54" errors="0" failures="0" skipped="0" time="0.427513">
+    <testcase name="testOverviewExactlyMatchesCanonicalCurrentActivitiesAndLeavesFullSnapshotsIntact" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/SportsActivityOverviewReadTest.php" line="19" class="Tests\Integration\SportsActivityOverviewReadTest" classname="Tests.Integration.SportsActivityOverviewReadTest" assertions="46" time="0.315296"/>
+    <testcase name="testInvalidInputsAndCorruptCurrentJsonRemainRejected" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/SportsActivityOverviewReadTest.php" line="55" class="Tests\Integration\SportsActivityOverviewReadTest" classname="Tests.Integration.SportsActivityOverviewReadTest" assertions="8" time="0.112218"/>
+  </testsuite>
+</testsuites>
