@@ -46,6 +46,7 @@ register_shutdown_function(static function () use ($diagnosticId, $diagnosticDir
     }
     $reader = (new ReflectionClass(AthleteProfileRead::class))->getFileName();
     file_put_contents($diagnosticDirectory . '/' . $diagnosticId . '.json', json_encode([
+        'diagnostic_id' => $diagnosticId, 'history_year' => isset($_GET['rok']) ? (int) $_GET['rok'] : null,
         'status' => http_response_code(), 'bootstrap_preloaded' => false, 'timing_instrumented' => true,
         'peak_php_bytes' => $applicationPeak, 'queries' => $safe,
         'peak_includes_sql_profiler' => true, 'peak_excludes_later_explain_and_schema' => true,

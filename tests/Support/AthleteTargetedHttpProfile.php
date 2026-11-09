@@ -127,7 +127,7 @@ if ($mode === 'diagnose') {
                 null,
                 ['X-P11-Measure: targeted-' . $variant . '-parent-' . $person]
             ));
-            foreach (['history' => 'rok=0', 'measurements' => 'view=measurements'] as $view => $query) {
+            foreach (['history' => 'rok=' . date('Y'), 'measurements' => 'view=measurements'] as $view => $query) {
                 parentSignature(fullHttpRequest(
                     $rt,
                     $output,
