@@ -68,3 +68,14 @@ Head d220ec79: PHPStan FAIL, historický undefined-pdo baseline24 nově25.
 zaručuje bootstrap kontrakt, původní24položková výjimka odstraněna.
 Doménové chování a práva bez změny; native/HTTP měření běží dále pro první
 kandidát a zůstane oddělené. Širší lokální sada17/807 PASS.
+
+### První native42580408201 — dílčí PASS, celý běh FAIL
+
+D220ec79: oběDB2testy/30assertions PASS; všechna1k/10k/30k párová HTTP
+měření dokončena, shodné celé normalizované HTML. [Raw první vzorky](verification/athlete-profile-header-performance-20261109/first-attempt/native-10.3/parent-http-30000.json.gz).
+Celý job FAIL v druhém syntetickém fallback scénáři: opakované použití cookie
+header-fault-before => login302. Oprava pouze harness: unikátní cookie label
+pro každou chybějící tabulku a variantu; první fallback attendance už prošel.
+První vzorky a cleanup zůstávají uložené, nejde o plný PASS.
+Head07d90a18 PHPStan/style PASS; CodeQL JS stažení nástroje504 (infrastruktura).
+Nový head opakuje všechny aktuální kontroly a celý benchmark/Chrome.

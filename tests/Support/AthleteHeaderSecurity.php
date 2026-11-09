@@ -132,7 +132,7 @@ foreach (['trenink_sportovec', 'trenink_mereni'] as $table) {
         $signatures = [];
         foreach ($variants as $variant) {
             $rt = parentRuntime($runtime, $variant);
-            $label = 'header-fault-' . $variant;
+            $label = 'header-fault-' . $table . '-' . $variant;
             fullHttpLogin($rt, $output, $label, $credentials['coach']);
             $signatures[$variant] = parentSignature(fullHttpRequest($rt, $output, $label, '/sportovec_treninky.php?id=1001'));
         }
