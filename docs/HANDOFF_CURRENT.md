@@ -1,5 +1,6 @@
 # Aktuální session handoff
 
+QR01 připraveno k release kontrole: [rychlá přihláška a verze podmínek](QUICK_REGISTRATION_TERMS_2026-11-09.md), [celý syntetický průchod](verification/quick-registration-terms-20261109/RESULTS.md) PASS, [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený; následuje CI, produkční vydání a živé UAT.
 Aktualizováno 9. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md) vede i UX01 [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) a Q01/Q3
 vlastní otevřené úkoly včetně Q2-TIME; plány a rozhodnutí čti ve verzovaných souborech.
@@ -44,7 +45,6 @@ Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
 Skutečné P05/P07 a export P06 zůstávají odložené.
 
 <!-- membership-morning-publish:end -->
-
 <!-- membership-morning-preflight:start -->
 ## Serverový preflight
 
