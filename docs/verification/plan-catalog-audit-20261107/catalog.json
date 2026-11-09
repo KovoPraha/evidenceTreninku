@@ -10978,6 +10978,19 @@
       "evidence": [
         "docs/verification/athlete-profile-history-release-20261109/RESULTS.md"
       ]
+    },
+    {
+      "id": "PL-7a1aa43e34",
+      "path": "docs/QUICK_REGISTRATION_TERMS_2026-11-09.md",
+      "title": "QR01 — verze podmínek rychlé přihlášky",
+      "role": "plan",
+      "primary": true,
+      "status": "PARTIAL",
+      "registry": "QR01",
+      "disposition": "Implementace a izolované testy PASS; PR/CI, release a živé UAT otevřené.",
+      "evidence": [
+        "docs/verification/quick-registration-terms-20261109/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",

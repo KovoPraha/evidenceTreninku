@@ -36,6 +36,9 @@ final class ParentJourneyAcceptanceFixture
         $pdo->exec('CREATE TABLE child_access_accounts(id INTEGER PRIMARY KEY)');
         $migration=require dirname(__DIR__,2).'/migrations/20260804235900_password_reset_tokens.php';$migration['up']($pdo);
         ParentJourneyNotificationFixture::install($pdo);
+        $staffNotifications = require dirname(__DIR__, 2).'/migrations/20261106090000_staff_notifications.php';
+        $staffNotifications['up']($pdo);
+        \PHPUnit\Framework\Assert::assertTrue($staffNotifications['verify']($pdo));
         return $pdo;
     }
 }

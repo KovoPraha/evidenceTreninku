@@ -12,6 +12,7 @@ require_once dirname(__DIR__, 2) . '/includes/shop_program_quick_checkout.php';
 require_once dirname(__DIR__, 2) . '/includes/athlete_registration_admin.php';
 require_once dirname(__DIR__, 2) . '/includes/quick_account_password.php';
 require_once dirname(__DIR__, 2) . '/includes/club_event_notification.php';
+require_once dirname(__DIR__) . '/Support/ParentJourneyAcceptanceFixture.php';
 
 /** No persistent database, external payment provider or real mail transport. */
 final class ParentJourneyAcceptanceTest extends TestCase
@@ -28,6 +29,83 @@ final class ParentJourneyAcceptanceTest extends TestCase
     protected function tearDown(): void
     {
         $_SESSION = $this->sessionBackup;
+    }
+
+    public function testQuickFormSubmitsEveryCurrentVersionAndStaleTermsRollBackBeforeRefresh(): void
+    {
+        $pdo = ParentJourneyAcceptanceFixture::create();
+        $programId = (int)\clubProgramCreate($pdo, 7, 'LOCALHOST-TERMS', 'LOCALHOST NEPLATIT kroužek')['id'];
+        foreach (['program_cancellation','program_consent'] as $purpose) {
+            \clubProgramTermsConfigure($pdo, 7, 'program', $programId, $purpose, 'Syntetický schválený text pouze pro izolovaný test.', true);
+        }
+        $offer = \clubProgramCreateOffer($pdo, 7, $programId, 1, 10, 501, 601, 'LOCALHOST-TERMS-OFFER', 'LOCALHOST období', '2026-09-01', '2027-08-31', null, null, 1, 'active');
+        $beforeOptional = $this->quickFormVersions(\athleteRegistrationCurrentTerms($pdo));
+        self::assertArrayNotHasKey('csc_birth_number_sharing', $beforeOptional);
+        $pdo->exec("INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id) VALUES('athlete_registration','athlete-registration-v1','csc_birth_number_sharing','csc-v1','Volitelný syntetický souhlas ČSC.','system',0)");
+        $terms = \athleteRegistrationCurrentTerms($pdo);
+        $submitted = $this->quickFormVersions($terms);
+        self::assertSame(array_map(static fn (array $term): string => $term['version'], $terms), $submitted);
+        self::assertArrayHasKey('csc_birth_number_sharing', $submitted);
+
+        $programTerms = \clubProgramTermsEffective($pdo, $programId, (int)$offer['id']);
+        $input = [
+            'parent_first_name' => 'LOCALHOST','parent_last_name' => 'NEPLATIT','email' => 'quick-terms@example.test','contact_phone' => '+420 777 123 456',
+            'requested_role' => 'guardian','jmeno' => 'Dítě','prijmeni' => 'Syntetické','narozeni' => '2017-04-03','citizenship_country_code' => 'SK',
+            'address_street' => 'LOCALHOST','address_house_number' => '12','address_city' => 'Praha','address_postcode' => '19000',
+            'has_czech_birth_number' => '0','birth_number' => '','member_data_notice' => '1','birth_number_legal_notice' => '1',
+            'photo_internal' => '0','photo_public' => '0','program_terms_accepted' => '1',
+            'program_term_version' => array_map(static fn (array $term): string => $term['terms_version'], $programTerms),
+        ];
+        $key = bin2hex(random_bytes(16));
+        $access = bin2hex(random_bytes(32));
+        try {
+            \shopProgramQuickCheckoutPlace($pdo, 601, $input, $beforeOptional, $key, $access, self::BANK);
+            self::fail('A newly activated optional notice must require a refreshed form.');
+        } catch (\AthleteRegistrationException $exception) {
+            self::assertStringContainsString('Podmínky registrace se změnily', $exception->getMessage());
+        }
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM verejni_uzivatele')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        $pdo->exec("INSERT INTO club_event_term_versions(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id) VALUES('athlete_registration','athlete-registration-v1','member_data_notice','member-v2','Nová syntetická informace pro registraci.','system',0)");
+        try {
+            \shopProgramQuickCheckoutPlace($pdo, 601, $input, $submitted, $key, $access, self::BANK);
+            self::fail('A previously rendered version must be rejected.');
+        } catch (\AthleteRegistrationException $exception) {
+            self::assertStringContainsString('Podmínky registrace se změnily', $exception->getMessage());
+        }
+        foreach (['verejni_uzivatele' => 2,'account_person_claim_requests' => 0,'athlete_registration_consent_snapshots' => 0,'shop_orders' => 0,'shop_order_items' => 0,'payments' => 0] as $table => $expected) {
+            self::assertSame($expected, (int)$pdo->query('SELECT COUNT(*) FROM '.$table)->fetchColumn(), $table);
+        }
+        self::assertFalse($pdo->inTransaction());
+
+        $current = \athleteRegistrationCurrentTerms($pdo);
+        $refreshed = $this->quickFormVersions($current);
+        self::assertSame('member-v2', $refreshed['member_data_notice']);
+        self::assertSame('csc-v1', $refreshed['csc_birth_number_sharing']);
+        $order = \shopProgramQuickCheckoutPlace($pdo, 601, $input, $refreshed, $key, $access, self::BANK);
+        self::assertSame('quick_program', $order['checkout_mode']);
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM payments')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM athlete_registration_consent_snapshots WHERE purpose='csc_birth_number_sharing' AND terms_version='csc-v1' AND accepted=0")->fetchColumn());
+    }
+
+    /** Render the actual template fragment and decode its browser-submitted field names. */
+    private function quickFormVersions(array $terms): array
+    {
+        $source = (string)file_get_contents(dirname(__DIR__, 2).'/booking/rychla_prihlaska.php');
+        self::assertSame(1, preg_match('~<\?php foreach \(\$terms as \$purpose => \$term\):\?>.*?<\?php endforeach;\?>~s', $source, $match));
+        $escape = static fn (mixed $value): string => htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        ob_start();
+        eval('?>'.str_replace('quickProgramH(', '$escape(', $match[0]));
+        $html = (string)ob_get_clean();
+        $dom = new \DOMDocument();
+        $dom->loadHTML('<form>'.$html.'</form>');
+        $pairs = [];
+        foreach ($dom->getElementsByTagName('input') as $input) {
+            $pairs[] = rawurlencode($input->getAttribute('name')).'='.rawurlencode($input->getAttribute('value'));
+        }
+        parse_str(implode('&', $pairs), $post);
+        return $post['term_version'] ?? [];
     }
 
     public function testQuickParentJourneyReachesRosterThroughActualServicesExactlyOnce(): void

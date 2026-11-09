@@ -14,6 +14,8 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## Úplný katalog plánů
 
+QR01 — K OVĚŘENÍ release: [verze podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md), vlastník vývoj, větev `codex/quick-registration-terms-20261109`. HTML atribut opraven; [20 testů / 388 kontrol PASS](verification/quick-registration-terms-20261109/RESULTS.md), včetně objednávky a rollbacku. PR/CI, release a živé rodičovské UAT otevřené.
+
 [Katalog všech plánů a konceptů](PLAN_CATALOG.md) je součást tohoto registru:
 každý dokument má vlastní stabilní ID, stav, vazbu na P/C/DOC a důkaz nebo
 výslovně otevřenou podmínku. [Úplný index textových podkladů](PLAN_DOCUMENT_INDEX.md)
