@@ -3,7 +3,7 @@ async (page) => {
   const config = JSON.parse('__BOOTSTRAP_ASSETS_CONFIG__');
   const cdp = await page.context().newCDPSession(page);
   await cdp.send('Network.enable');
-  const errors = [], failed = [], samples = [], screenshots = [], styleSignatures = {}, optionalFaviconErrors = [];
+  const errors = [], failed = [], samples = [], screenshots = [], styleSignatures = {}, optionalFaviconErrors = [], interactions = [];
   const onError=e=>errors.push(String(e));
   const onConsole=m=>{
     if(m.type()!=='error')return;
@@ -112,12 +112,18 @@ async (page) => {
     }
   }
   // An actual Bootstrap interaction after timing; restore the closed state.
-  const toggle=page.locator('.navbar-toggler').first();
-  if (await toggle.count() && await toggle.isVisible()) {
+  const toggles=page.locator('.navbar-toggler');
+  for (let i=0;i<await toggles.count();i++) {
+    const toggle=toggles.nth(i);
+    if(!await toggle.isVisible())continue;
+    const kind=await toggle.getAttribute('data-bs-toggle'), target=await toggle.getAttribute('data-bs-target');
+    if(!['collapse','offcanvas'].includes(kind) || !/^#[a-zA-Z][\w-]*$/.test(target)) throw new Error('Unknown navigation toggle');
     await toggle.click();
-    await page.waitForFunction(()=>document.querySelector('.navbar-collapse')?.classList.contains('show'));
-    await toggle.click();
-    await page.waitForFunction(()=>!document.querySelector('.navbar-collapse')?.classList.contains('show'));
+    await page.waitForFunction(selector=>document.querySelector(selector)?.classList.contains('show'),target);
+    if(kind==='offcanvas')await page.locator(target+' [data-bs-dismiss="offcanvas"]').first().click();
+    else await toggle.click();
+    await page.waitForFunction(selector=>!document.querySelector(selector)?.classList.contains('show'),target);
+    interactions.push({kind,target,opened_and_closed:true});
   }
   if (errors.length || failed.length) throw new Error('Browser errors: '+JSON.stringify({errors,failed}));
   page.off('pageerror',onError);page.off('console',onConsole);page.off('requestfailed',onFailed);
@@ -125,5 +131,5 @@ async (page) => {
   return {complete:true,role:config.role,browser_version:page.context().browser().version(),
     method:'17 alternating pairs after 4 warmups, real network, no throttling/mocks; cold clears browser cache',
     samples,style_signatures:styleSignatures,screenshots,console_errors:errors,failed_requests:failed,
-    optional_favicon_errors:optionalFaviconErrors};
+    optional_favicon_errors:optionalFaviconErrors,interactions};
 }
