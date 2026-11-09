@@ -87,22 +87,15 @@ final class AthleteProfileRead
     {
         $from = ' FROM treninky t WHERE ';
         $params = self::scope($sid);
-        $measurementJoin = '';
-        $measurementYear = '';
         if ($year > 0) {
             $from .= 'YEAR(t.datum)=:year AND ';
             $params[':year'] = $year;
-            // Filter the materialized measurement ownership to the same year.
-            // Keep the outer YEAR and original scope, including partial-zero dates.
-            $measurementJoin = ' JOIN treninky selected_t ON selected_t.id=tm.trenink_id';
-            $measurementYear = ' AND YEAR(selected_t.datum)=:ownership_year';
-            $params[':ownership_year'] = $year;
         }
         $from .= '(
             EXISTS (SELECT 1 FROM trenink_sportovec ts
                 WHERE ts.trenink_id=t.id AND ts.sportovec_id=:attendance_sid)
-            OR EXISTS (SELECT 1 FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id' . $measurementJoin
-                . ' WHERE tm.trenink_id=t.id AND mz.sportovec_id=:measurement_sid' . $measurementYear . ')
+            OR EXISTS (SELECT 1 FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
+                WHERE tm.trenink_id=t.id AND mz.sportovec_id=:measurement_sid)
         )';
         $order = ' ORDER BY t.datum DESC,t.id DESC';
         $statement = $pdo->prepare('SELECT t.id,t.delka' . $from . $order);

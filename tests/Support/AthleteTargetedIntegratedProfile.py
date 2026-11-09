@@ -242,8 +242,8 @@ try:
     if diagnostic_only:
         for size in [1000,10000,30000]:
             php("ProfileSessionHttpProfile.php",output,"prepare",size)
-            php("AthleteTargetedCandidates.php",output,size)
-            name=f"candidate-selectors-{size}.json"
+            php("AthleteTargetedDateCandidates.php",output,size)
+            name=f"date-selectors-{size}.json"
             (safe/name).write_bytes((output/name).read_bytes())
     for size in ([] if diagnostic_only else [1000,10000,30000]):
         php("ProfileSessionHttpProfile.php",output,"prepare",size)

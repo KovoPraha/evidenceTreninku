@@ -269,3 +269,28 @@ Porovnat attendance EXISTS a attendance IN (index-only seznam), stejný rok
 v outer i derived MZ. Bez heuristik, nových indexů nebo změny0roku.
 Rozhodne opět všech45narrow scénářů na3velikostech, potom celéHTTP; zatím
 NEIMPLEMENTOVAT jako přijatý reader. Draft425 zůstává blokovaný gate.
+
+
+## Odložený DISTINCT nepřijatý; datový pokrývající index jako další koncept
+
+42712571429/c6 oběDB SUCCESS,45scénářů shodných.10.3 při30k baseline196ms,
+lazy83/86ms, ale při10k baseline4ms versus23ms a measurement-only31→48ms;
+11.4 measurement-only59→84ms. CASE nedává robustní přínos proti levnému
+původnímu plánu. Všechny CASE/anti/derived varianty NEVYBRÁNY. Reader v
+probe větvi se vrací k přesnému ff182971; b9 zůstává historicky v draftu425.
+
+Další koncept: nový malý pokrývající index treninky(datum,id,delka) a pro
+validní1–9999rok redundantní DATE interval YYYY-00-00 až YYYY-12-31 při
+zachování původního YEAR/EXISTS/scope. Pokrývá původní nejužší projekci,
+může omezit celoklubový průchod a řazení bez čtení napln/obrazky. Skutečná
+produkční inventura potvrdila, že treninky má jen PK, žádná duplicita
+existujícího datumového indexu. Jde o NEVYBRANÝ koncept, produkční DDLfalse.
+
+Nejdřív pouze syntetické schema OFF/ON probe všech1k/10k/30k,5profilů/3let,
+stejné doménové checksumy, fresh5stats před oběma fyzickými topologiemi.
+Porovnat původní SQL, YEAR+range a range+CASE/anti; přesná ordered projekce,
+index build/velikost a čistý INSERT+rollback. Pokud vyhraje, nová neměnná
+CLI migrace s LOCK=NONE/InnoDB/verify, bez odstranění původních indexů.
+Finální fyzický A/B bude17střídavých bloků s OFF/ON pouze v syntetické DB,
+čerstvé statistiky a4warmupy každého bloku, nezměněné20%/kontrolní gates.
+Původní WIP, public scope/auth/token/session a produkce beze změny.
