@@ -36,3 +36,36 @@ výběr prvního tuple jen pro tento typ a nejnovější datum. Řazení malého
 seznamu typů v PHP podle stejného tuple včetně NULL a signed64. Stále jeden
 SQL statement pro souhrn, stejný stránkový selector, žádné DB nastavení/DDL.
 Nativní parita a párové HTTP/Chrome musí znovu projít na aktuálním head.
+
+
+### Infrastrukturní chyba diagnostického spuštění
+
+42671198622 na 5355238b, pokusy 1/2: GitHub ukončil běh před vytvořením
+jakéhokoli jobu. Oficiální stránka běhu uvádí `Internal server error`,
+korelace a644b0f1-d288-4f77-a344-f32d3d856fa4. Žádný aplikační test se
+nespustil; nejde o PASS ani o zjištěnou chybu kandidáta. Zadat nové
+syntetické workflow_dispatch na stejný commit; žádná produkční operace.
+
+
+## Kandidát 2 — částečná diagnóza
+
+42671904703 opět bez jobů; diagnostika na vlastní PR větvi 42672189982
+(pokus1) vytvořila pouze MariaDB10.3. Tento job129348793610 SUCCESS,
+parita6/634 PASS, souhrn463.666 → 275.776ms, 17 → 17SQL. Bezpečné vzorky
+v `candidate2-partial-diagnostic/`; číselný přínos je pouze jednorázový,
+instrumentovaný, nikoli párový HTTP medián. Celý workflow FAILURE kvůli
+chybějící matrici11.4, není úplným PASS. Opakování na stejném head5355238b.
+Stejná infrastrukturní chyba před joby postihla dokumentaci, historii,
+measurement a část CodeQL/standardních matic aktuálního PR. Nesmí se
+převzít staré zelené kontroly. Bude nutná úplná aktuální sada.
+
+Selector od `$counts` po konec measurements je byte-shodný s main0b4592fa;
+reference obsahuje přesný baseline reader s jediným přejmenováním třídy.
+Deset parent/endpoint/token/session/CSRF/scope/canonical souborů beze změny
+ověřeno porovnáním s Git blob baseline (čtení canonical LF).
+
+
+Rerun42672189982/2 zachovává pouze původně vytvořený job10.3; nevytvoří
+chybějící11.4. Proto manual-only volba10.3/11.4/both; PR vždy oba backendy.
+Nový checkpoint zopakuje všechny aktuální CI; žádné chybějící kontroly
+se nenahrazují starým head ani jednorázovou diagnostikou.

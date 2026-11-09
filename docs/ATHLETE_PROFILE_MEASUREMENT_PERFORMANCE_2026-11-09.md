@@ -383,3 +383,12 @@ Draft [#422](https://github.com/KovoPraha/evidenceTreninku/pull/422), merge/depl
 
 Diagnostické kandidáty se pushují na `codex/athlete-measurement-summary-probe-20261109`
 bez dalšího PR; do #422 půjde až vybraný kandidát se všemi aktuálními CI.
+
+### RHMS ověřovací infrastruktura
+
+Pomocná větev i PR běhy na5355238b mají Internal server error již při
+vytváření matice; některé vůbec nemají joby, jiné pouze část. Desítková
+nativní diagnóza PASS (6/634,463.666→275.776ms,17SQL), jedenáctková chybí.
+Doplnit volbu jedné podporované DB pro ruční diagnostiku: PR nadále vždy
+obě10.3/11.4, release gate se nemění. Nový dokumentační checkpoint obnoví
+aktuální CI graf; pouze skutečně úspěšné aktuální kontroly umožní merge.

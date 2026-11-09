@@ -19,6 +19,11 @@ on:
         description: Full bootstrap SQL diagnosis only (owned synthetic database)
         type: boolean
         default: false
+      mariadb_version:
+        description: Manual run target (pull requests always verify both versions)
+        type: choice
+        options: ['both', '10.3', '11.4']
+        default: both
 
 permissions:
   contents: read
@@ -31,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mariadb-version: ['10.3', '11.4']
+        mariadb-version: ${{ fromJSON(github.event_name == 'workflow_dispatch' && inputs.mariadb_version == '10.3' && '["10.3"]' || github.event_name == 'workflow_dispatch' && inputs.mariadb_version == '11.4' && '["11.4"]' || '["10.3","11.4"]') }}
     services:
       mariadb:
         image: mariadb:${{ matrix.mariadb-version }}

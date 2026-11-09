@@ -7,7 +7,9 @@ před/po; při PASS commit/merge/protected deploy. [Postup a akceptace](ATHLETE_
 [nové důkazy](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
 Větev `codex/athlete-measurement-summary-performance-20261109`, base main
 `0b4592fa`; stejný izolovaný worktree mimo htdocs. Další krok: kandidát,
-První kandidát native6/634 PASS, ale diagnóza bez přínosu. Kandidát2 čeká.
+Kandidát2 na10.3 native6/634 PASS, souhrn464→276ms (jedna diagnóza).
+GitHub Internal server error nevytvořil11.4/část CI; doplnit ruční11.4,
+potom celé HTTP/Chrome a úplnou aktuální sadu. Gate se nesnižuje.
 Draft #422; kandidáty ověřuje dočasná větev `codex/athlete-measurement-summary-probe-20261109`.
 Do PR přijde vybraný kandidát; žádný nový merge/deploy. WIP zachovaný.
 
