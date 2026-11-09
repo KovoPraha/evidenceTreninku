@@ -375,3 +375,9 @@ neobnovuje automaticky jako nový zápis, protože by mohl duplikovat trénink.
 Přílohy nelze bezpečně obnovit z úložiště formulářových hodnot. Rozsah a důkazy:
 [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026),
 [protokol](verification/training-form-resilience-20261109/RESULTS.md).
+## D2026-11-09-RAH
+
+Zadání vlastníka 9. 11. vybírá zbývající tři header agregace po RAP.
+Zkusit jednu agregaci s nezávislým původním fallbackem; alternativou dvě SQL,
+pokud celé HTTP nezrychlí. Bez cache, DDL a změny práv/session.
+[Plán a akceptace](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md).

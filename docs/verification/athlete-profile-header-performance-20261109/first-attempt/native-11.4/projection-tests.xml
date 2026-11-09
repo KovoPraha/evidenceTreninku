@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\AthleteHeaderReadTest" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteHeaderReadTest.php" tests="2" assertions="30" errors="0" failures="0" skipped="0" time="4.492773">
+    <testcase name="testExactYearsTypesAndCountsWithDuplicatesOrphansAndFreshMutations" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteHeaderReadTest.php" line="20" class="Tests\Integration\AthleteHeaderReadTest" classname="Tests.Integration.AthleteHeaderReadTest" assertions="26" time="0.721256"/>
+    <testcase name="testLargeHistoryReturnsOnlyYearAggregatesAndEmptyProfileStaysEmpty" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteHeaderReadTest.php" line="64" class="Tests\Integration\AthleteHeaderReadTest" classname="Tests.Integration.AthleteHeaderReadTest" assertions="4" time="3.771518"/>
+  </testsuite>
+</testsuites>
