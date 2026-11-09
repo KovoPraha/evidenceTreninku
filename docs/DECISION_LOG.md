@@ -381,3 +381,9 @@ Bez nových suppression/cache/DDL a změny AJAX/writerů/práv/session.
 [Plán](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md),
 [release/meze](verification/athlete-profile-header-release-20261109/RESULTS.md).
 Produkční UAT samostatné; syntetické časy nejsou produkční SLA.
+
+## D2026-11-09-RHI
+
+Vlastník vybral načítání historie po RAH. Ověřit EXISTS membership/detail
+s omezenými klíči a postupný původní PHP součet; SQL SUM by měnil numerickou
+sémantiku. Bez cache/DDL/změny práv/session. [Plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md).
