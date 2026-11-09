@@ -10,8 +10,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 - **Q2-TIME NASAZENO:** #412 / `4f92b225`, deploy42622226704 SUCCESS; [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026).
   11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
   Přihlášené UAT NOT RUN: Computer Use nemohl bezpečně určit URL. Další krok: neplatný čas, reload a obnova konceptu; žádný skutečný trénink testem nevznikl.
-- **P11-RHMS ROZPRACOVÁNO / RHM NASAZENO:** [měření profilu — plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md).
-  Souhrn: nová větev `codex/athlete-measurement-summary-performance-20261109`, Draft #422; kandidát2 10.3 parita PASS / diagnóza464→276ms; 11.4/HTTP/CI čekají. Předchozí #418/5cc9cf83, deploy42654922651 SUCCESS;20CI/parita/HTTP/Chrome PASS, [důkazy a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md), veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
+- **P11-RHMS CI BLOKUJE:** [plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#p11-rhms--souhrn-měření-nové-zadání-9-11-2026), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md); [RHM release](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
+  Draft #422; 10.3 parita6/634 a Linux2418/55585 PASS, SQL diagnóza464→276ms. 11.4/HTTP/Chrome a úplné CI čekají (GitHub Internal server error). Produkce beze změny5cc9cf83/deploy42654922651; WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).

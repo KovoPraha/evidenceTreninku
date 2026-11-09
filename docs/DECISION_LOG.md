@@ -479,3 +479,11 @@ První přesný pevný klíč prokázal nativní paritu, ale plná bootstrap dia
 ukázala vysokou per-row režii. Není vybraný pro release. Měřit count/MAX-date
 po typech a první tuple nejnovějšího data; zachovat jeden SQL statement a
 původní stránkový selector. Surové důkazy zůstávají v [protokolu](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+
+### D2026-11-09-RHMS-GATE — chybějící job není PASS
+
+Přestože kandidát2 má přesnou nativní10.3 paritu a předběžný SQL přínos,
+GitHub Internal server error opakovaně nevytvořil11.4/část aktuálních CI.
+Podmíněný pokyn vlastníka nelze zatím naplnit merge/deployem; žádná změna
+produkce. Nevynechávat backend ani20%HTTPgate, neoznačovat diagnózu za
+párový medián. [Důkazy a další postup](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).

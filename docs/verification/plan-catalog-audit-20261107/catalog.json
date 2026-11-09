@@ -11000,9 +11000,10 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11-RHMS",
-      "disposition": "Nové zadání: souhrn ROZPRACOVÁNO; předchozí RHM #418/5cc9cf83 nasazené, důkazy zachované.",
+      "disposition": "RHMS draft#422: K OVĚŘENÍ, GitHub Internal server error; 10.3 parita/diagnóza a Linux PHPUnit PASS, 11.4/HTTP/Chrome/20CI čekají. RHM zůstává nasazené.",
       "evidence": [
-        "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md",
+        "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md"
       ]
     },
     {
@@ -11042,6 +11043,19 @@
       "disposition": "Protected release a čtecí ověření PASS; meze výslovné.",
       "evidence": [
         "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-b0695f2506",
+      "path": "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md",
+      "title": "P11-RHMS souhrn měření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHMS",
+      "disposition": "Průběžné nativní kandidáty a infrastruktura; finální párové ověření a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md"
       ]
     }
   ],

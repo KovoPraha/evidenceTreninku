@@ -69,3 +69,36 @@ Rerun42672189982/2 zachovává pouze původně vytvořený job10.3; nevytvoří
 chybějící11.4. Proto manual-only volba10.3/11.4/both; PR vždy oba backendy.
 Nový checkpoint zopakuje všechny aktuální CI; žádné chybějící kontroly
 se nenahrazují starým head ani jednorázovou diagnostikou.
+
+
+## Statické a integrační ochrany
+
+`composer validate --strict` PASS. `php vendor/bin/phpstan analyse
+--memory-limit=1G --no-progress` PASS bez chyb. Explicitní dry-run
+php-cs-fixer pro čtyři změněné PHP cesty PASS, 0 oprav. Výchozí místní
+check-php-style zahrnul také staré untracked output diagnostiky a skončil
+na jejich formátu/délce; tyto nesouvisející soubory se neupravují ani
+nestagují. Čistý CI checkout musí prokázat standardní changed-file check.
+
+Aktuální a297d4d7 opět: workflow42672778594 (manual11.4) a42672788552
+(PR measurement) Internal server error před vytvořením jobů, korelace
+3e4b1775-b68d-4fe4-b2fb-865f75f6fa06 / d8258124-a5d9-4097-83bc-e955defff3e6.
+Nejde o aplikační FAIL/PASS. Superseded header42672197174 aTesty42672197338
+zastavené; nespočítat jako zelené aktuální CI. Zachovat pouze aktuální běhy.
+Produkce ověřena stále5cc9cf83/deploy42654922651 SUCCESS; žádný nový deploy.
+
+
+## Aktuální hranice přijetí
+
+Linux PHPUnit129349525837 na a297d4d7 SUCCESS: **2418 testů / 55585 assertions**,
+navazující3/45 také PASS. 42673435146 manual11.4 opět FAILURE bez jobu.
+Souhrnné `ci-infrastructure.json` zachovává skutečné stavy a chybějící joby.
+`runtime-identity.json`: aktuální reader exact proti native10.3 kandidátu2,
+nezměněný selector/header/history/navigation a10chráněných souborů; frozen
+reference přesná kromě názvu třídy. Bezpečné JSON artefakty prošly kontrolou.
+
+**K OVĚŘENÍ / BLOKUJE CI:** shoda11.4 a finální párové HTTP/Chrome/role,
+celá aktuální sada20CI, merge a deploy nejsou dokončené. Žádné tvrzení o
+produkčním výkonu ani přihlášeném UAT. Podmínky přijetí se nesnižují.
+Původní WIP a nasazený5cc9cf83 zůstávají zachované. Přesný další krok
+v [plánu](../../ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#rhms-aktuální-předání--9-11-2026-1825-utc).

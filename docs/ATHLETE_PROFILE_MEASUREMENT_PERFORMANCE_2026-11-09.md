@@ -1,6 +1,6 @@
 # P11-RHM — načítání měření profilu sportovce
 
-9. 11. 2026. Vlastník vývoj/Codex. Stav RHM: HOTOVO / NASAZENO. Návazný P11-RHMS: ROZPRACOVÁNO (souhrn).
+9. 11. 2026. Vlastník vývoj/Codex. Stav RHM: HOTOVO / NASAZENO. Návazný P11-RHMS: K OVĚŘENÍ, blokuje GitHub CI (souhrn).
 Aktuální uzavření: #418/5cc9cf83, deploy42654922651 SUCCESS;
 HTTP30k −28.2/32.1 %, Chrome uloženéMěření warm−10.6/cold−22.4 %.
 [Produkční důkazy a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
@@ -392,3 +392,28 @@ nativní diagnóza PASS (6/634,463.666→275.776ms,17SQL), jedenáctková chybí
 Doplnit volbu jedné podporované DB pro ruční diagnostiku: PR nadále vždy
 obě10.3/11.4, release gate se nemění. Nový dokumentační checkpoint obnoví
 aktuální CI graf; pouze skutečně úspěšné aktuální kontroly umožní merge.
+
+## RHMS aktuální předání — 9. 11. 2026, 18:25 UTC
+
+Implementace kandidáta2 je commitnutá a pushnutá do draftu #422. Místní
+SQLite/profil9/930, PHPStan a explicitní style čtyř souborů PASS. Nativní
+MariaDB10.3 6/634 a aktuální Linux PHPUnit2418/55585 PASS. Samostatná
+jednorázová diagnóza souhrnu463.666→275.776ms (−40.5 %),17→17SQL;
+nejde o dokončený párový HTTP benchmark ani produkční výkon.
+
+GitHub opakovaně selhává Internal server error před vytvořením jobů,
+včetně samostatné11.4. Aplikační chyba tím prokázaná není, ale matice
+nejsou úplné a podmínky přijetí zatím nesplněné. [Běhy, identity a raw](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+Merge a nový deploy **NOT RUN**. Produkce zůstává5cc9cf83; původní WIP beze změny.
+
+Další konkrétní kroky po obnově GitHub Actions:
+1. Native11.4 diagnóza na aktuální větvi (manual diagnostic_only=true,
+   mariadb_version=11.4); bez chybějících jobů a přesná parita6/634.
+2. Celý measurement workflow bez diagnostic_only, oběDB: 9scénářů ×3velikosti,
+   17střídavých párů po4warmupech, úplné HTML/security/Chrome a cleanup.
+   HTTP20%gate a ostatní původní podmínky zůstávají.
+3. Uložit nové raw/metadata/zdrojové identity a kanonické hashmanifesty,
+   aktualizovat plán, registr a handoff; zelených všech20CI aktuálního head.
+4. Až při splnění všech podmínek ověřit čerstvý main, shodný testovaný strom,
+   merge, protected deploy s import/UATfalse a samostatné čtecí před/po.
+   Závěrečná dokumentace do main samostatně bez druhého deploye.

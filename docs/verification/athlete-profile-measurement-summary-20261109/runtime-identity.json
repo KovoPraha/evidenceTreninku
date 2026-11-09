@@ -1,0 +1,23 @@
+{
+  "baseline_sha": "0b4592fa63ee49a733b8d4a882c177ac73541e99",
+  "code_checkpoint": "a297d4d7a31d3281ca91a8e033399692001b30c4",
+  "source_sha256": {
+    "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+    "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+    "includes/public_profile_token.php": "41982d6a768066c42cca0f03a7761112eb7394563650556dde43a020d39a91f7",
+    "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+    "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6",
+    "includes/training_closure.php": "8db6369f248519586fd87c6c45c36e64e284c0d1b97cb61ce52c191f12ea72b8",
+    "includes/session_security.php": "61cf3b77cbb19393d22c4dcc21235871c33b2268060db680711f1b09426f139c",
+    "includes/auth_session.php": "d3cab5f9591eee05fd1af7142840556833235af1ab370a55b5f65aeb882067ec",
+    "includes/coach_scope.php": "055ae137254ffa0f4f171600e14f8e632e29715e6d2399f08c593c1d19cc1940",
+    "csrf_helper.php": "6f7868d616bbb52c2f633e2224f7c8718e951d3a96a2daeffdbe9ad66520fb2f"
+  },
+  "native_measured_reader_exact": true,
+  "frozen_reference_exact_except_class_name": true,
+  "unchanged_selector": true,
+  "ten_protected_files_unchanged": true,
+  "unchanged_header_history_and_navigation": true,
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5"
+}

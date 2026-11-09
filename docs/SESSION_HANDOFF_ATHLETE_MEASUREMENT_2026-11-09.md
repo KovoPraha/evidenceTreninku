@@ -1,17 +1,30 @@
-# Předání P11-RHM — 9. 11. 2026
+# Předání P11-RHMS / RHM — 9. 11. 2026
 
-**RHM HOTOVO / NASAZENO; návazný P11-RHMS ROZPRACOVÁNO**
+**RHMS K OVĚŘENÍ — blokuje GitHub CI. RHM zůstává nasazené.**
 
-Aktuální zadání: optimalizovat souhrn měření, ověřit úplnou shodu a změřit
-před/po; při PASS commit/merge/protected deploy. [Postup a akceptace](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#p11-rhms--souhrn-měření-nové-zadání-9-11-2026),
-[nové důkazy](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
-Větev `codex/athlete-measurement-summary-performance-20261109`, base main
-`0b4592fa`; stejný izolovaný worktree mimo htdocs. Další krok: kandidát,
-Kandidát2 na10.3 native6/634 PASS, souhrn464→276ms (jedna diagnóza).
-GitHub Internal server error nevytvořil11.4/část CI; doplnit ruční11.4,
-potom celé HTTP/Chrome a úplnou aktuální sadu. Gate se nesnižuje.
-Draft #422; kandidáty ověřuje dočasná větev `codex/athlete-measurement-summary-probe-20261109`.
-Do PR přijde vybraný kandidát; žádný nový merge/deploy. WIP zachovaný.
+Aktuální [plán a přesný další postup](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#rhms-aktuální-předání--9-11-2026-1825-utc),
+[protokol a identity](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+Draft [#422](https://github.com/KovoPraha/evidenceTreninku/pull/422), větev
+`codex/athlete-measurement-summary-performance-20261109`, base main0b4592fa.
+Stejný izolovaný worktree mimo htdocs; cizí WIP zachovaný.
+
+Kandidát2: COUNT/MAX date po přesném typu a skalární první tuple jen v
+nejnovějším datu. Pořadí filtrů v PHP nad přesnými signed64 a NULL hodnotami,
+jediný SQL statement pro souhrn. Původní stránkový selector a10bezpečnostních/
+canonical souborů byte-shodné. Kandidát1 nevhodný, raw zachované.
+
+PASS: SQLite/profil9/930, PHPStan, explicitní style4souborů, MariaDB10.3
+6/634, aktuální Linux PHPUnit2418/55585. Jedna instrumentovaná SQL diagnóza
+463.666→275.776ms,17→17SQL. Není to HTTP medián ani produkční přínos.
+MariaDB11.4, celé párové HTTP/Chrome/security a všech20aktuálních CI čekají.
+GitHub opakovaně vrací Internal server error při vytváření jobů; chybějící
+joby nejsou PASS. Dočasná probe větev nevyřešila infrastrukturu.
+
+Další akce: na aktuální PR větvi spustit `athlete-measurement-performance.yml`
+s `diagnostic_only=true`, `mariadb_version=11.4`; potom celý workflow obouDB.
+Uložit důkazy, přepočítat canonical Gitblob hashy a dokončit aktuální CI.
+Teprve při PASS podle pokynu vlastníka merge/protected deploy/import=false/
+UAT=false a veřejné čtecí ověření. Žádný nový merge/deploy zatím neproběhl.
 
 Níže předchozí dokončené RHM, jeho důkazy nepřepisovat.
 

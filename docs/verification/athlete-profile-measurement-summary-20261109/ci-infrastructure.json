@@ -1,0 +1,69 @@
+{
+  "runs": [
+    {
+      "attempt": 2,
+      "conclusion": "failure",
+      "databaseId": 42671198622,
+      "headSha": "5355238b317b862ce3f2a4a400985cbaa778197f",
+      "jobs": [],
+      "status": "completed",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42671198622"
+    },
+    {
+      "attempt": 1,
+      "conclusion": "failure",
+      "databaseId": 42671904703,
+      "headSha": "5355238b317b862ce3f2a4a400985cbaa778197f",
+      "jobs": [],
+      "status": "completed",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42671904703"
+    },
+    {
+      "attempt": 2,
+      "conclusion": "failure",
+      "databaseId": 42672189982,
+      "headSha": "5355238b317b862ce3f2a4a400985cbaa778197f",
+      "jobs": [
+        {
+          "databaseId": 129349040473,
+          "name": "Athlete measurement HTTP (MariaDB 10.3)",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42672189982"
+    },
+    {
+      "attempt": 1,
+      "conclusion": "failure",
+      "databaseId": 42672778594,
+      "headSha": "a297d4d7a31d3281ca91a8e033399692001b30c4",
+      "jobs": [],
+      "status": "completed",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42672778594"
+    },
+    {
+      "attempt": 1,
+      "conclusion": "failure",
+      "databaseId": 42672788552,
+      "headSha": "a297d4d7a31d3281ca91a8e033399692001b30c4",
+      "jobs": [],
+      "status": "completed",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42672788552"
+    },
+    {
+      "attempt": 1,
+      "conclusion": "failure",
+      "databaseId": 42673435146,
+      "headSha": "a297d4d7a31d3281ca91a8e033399692001b30c4",
+      "jobs": [],
+      "status": "completed",
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42673435146"
+    }
+  ],
+  "required_complete_ci": false,
+  "release_allowed": false,
+  "observed_error": "Internal server error before job creation",
+  "note": "Missing jobs are not successful tests"
+}
