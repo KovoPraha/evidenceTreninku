@@ -9,6 +9,9 @@ header('Referrer-Policy: no-referrer');
 header('Cache-Control: no-store, private');
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/db.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new LogicException('Database bootstrap must provide PDO.');
+}
 require_once __DIR__ . '/includes/public_profile_token.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
 require_once __DIR__ . '/includes/sportovec_note_access.php';
@@ -139,10 +142,17 @@ $sportovec_name = trim(($s['jmeno'] ?? '') . ' ' . ($s['prijmeni'] ?? ''));
 $canViewOwnRewards = sportovecNoteCanWrite($pdo, $sportovec_id);
 $odmena_default = $canViewOwnRewards && isset($s['odmena_za_trenink']) ? (float)$s['odmena_za_trenink'] : 0.0;
 
+// Jedna projekce pro roky a oba počty; při chybě zachovat nezávislé fallbacky.
+$profileHeader = null;
+try {
+    $profileHeader = AthleteProfileRead::header($pdo, $sportovec_id);
+} catch (PDOException $e) {
+}
+
 // 2) Dostupné roky tréninků (pro dropdown)
 $rokyAvailable = [];
 try {
-    $rokyAvailable = AthleteProfileRead::years($pdo, $sportovec_id);
+    $rokyAvailable = $profileHeader !== null ? $profileHeader['years'] : AthleteProfileRead::years($pdo, $sportovec_id);
 } catch (PDOException $e) {
     $rokyAvailable = [];
 }
@@ -152,14 +162,14 @@ $defaultRok = !empty($rokyAvailable) ? (int)$rokyAvailable[0] : (int)date('Y');
 // 3) Počet měření; detaily se načtou až v otevřené záložce.
 $measurementCount = 0;
 try {
-    $measurementCount = AthleteProfileRead::countMeasurements($pdo, $sportovec_id);
+    $measurementCount = $profileHeader !== null ? $profileHeader['measurements'] : AthleteProfileRead::countMeasurements($pdo, $sportovec_id);
 } catch (PDOException $e) {
 }
 
 // 4) Statistiky celkové
 $statCelkem = count($rokyAvailable) > 0 ? null : 0;
 try {
-    $statCelkem = AthleteProfileRead::countTrainings($pdo, $sportovec_id);
+    $statCelkem = $profileHeader !== null ? $profileHeader['trainings'] : AthleteProfileRead::countTrainings($pdo, $sportovec_id);
 } catch (PDOException $e) {
 }
 

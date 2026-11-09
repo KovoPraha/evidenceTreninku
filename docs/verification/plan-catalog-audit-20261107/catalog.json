@@ -10874,6 +10874,45 @@
       "registry": "P11-RAP",
       "disposition": "Technický produkční protokol, ne další plán.",
       "evidence": []
+    },
+    {
+      "id": "PL-4dd08bb660",
+      "path": "docs/ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md",
+      "title": "P11-RAH — agregace roků/počtů",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P11-RAH",
+      "disposition": "Zahájení; implementace a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-header-performance-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-0139edb577",
+      "path": "docs/SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md",
+      "title": "P11-RAH předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-RAH",
+      "disposition": "Zahájení; implementace a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-header-performance-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-daf43ed895",
+      "path": "docs/verification/athlete-profile-header-performance-20261109/RESULTS.md",
+      "title": "P11-RAH měření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RAH",
+      "disposition": "Zahájení; implementace a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-header-performance-20261109/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",

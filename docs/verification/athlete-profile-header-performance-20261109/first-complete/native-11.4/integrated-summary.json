@@ -1,0 +1,51 @@
+{
+  "complete": true,
+  "baseline_sha": "2c61df1495c570a5cfd9ba8032027595ab02de3c",
+  "optimized_sha": "1a0e7ff46147dbd270304010a26a95b8332ca5fd",
+  "source_sha256": {
+    "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+    "includes/athlete_profile_read.php": "b36bffa141aca7a0796bcd88e80128bb06e7e77ea6332cd5d681de531958180d",
+    "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+    "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+  },
+  "baseline_source_sha256": {
+    "sportovec_treninky.php": "37bf104c6dedeb3ad179c9b28ee43129d13b52eb91f06da1db0b6090196e9f34",
+    "includes/athlete_profile_read.php": "f8cfb7c6b285aa08e6e7fe33cab4e52c648c32b57a952a4c89a514e51fa8530e"
+  },
+  "comparison": true,
+  "cases": [
+    {
+      "size": 1000,
+      "before": {
+        "total_median_ms": 46.498999999999995,
+        "ttfb_median_ms": 46.428999999999995
+      },
+      "after": {
+        "total_median_ms": 20.924000000000003,
+        "ttfb_median_ms": 20.858
+      }
+    },
+    {
+      "size": 10000,
+      "before": {
+        "total_median_ms": 415.808,
+        "ttfb_median_ms": 415.772
+      },
+      "after": {
+        "total_median_ms": 143.368,
+        "ttfb_median_ms": 143.30200000000002
+      }
+    },
+    {
+      "size": 30000,
+      "before": {
+        "total_median_ms": 1282.707,
+        "ttfb_median_ms": 1282.621
+      },
+      "after": {
+        "total_median_ms": 430.537,
+        "ttfb_median_ms": 430.50300000000004
+      }
+    }
+  ]
+}
