@@ -35,3 +35,9 @@ přes dokumentační PR; další deploy pro dokumentaci nespouštět.
 RHA/RHC/RAS/RAP hotové, RGS vypnuté/nevybrané, neopakovat/neaktivovat.
 Další diagnostický KONCEPT: sdílet drahý UNION roků/počtu headeru; nejprve nová
 baseline a parita null/0dat i PHPtypů, žádná cache čerstvých práv.
+
+## Návaznost 9. 11. 2026 — agregace dokončené
+
+Header KONCEPT převzalo a dokončilo [P11-RAH](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md),
+#410/c47d4008/deploy42587406908 SUCCESS; [aktuální předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md).
+Historická RAP měření zůstávají původní, nové úspory se k nim nepřičítají.

@@ -1,50 +1,24 @@
-# Předání P11-RAH — agregace profilu, 9. 11. 2026
+# Předání P11-RAH — 9. 11. 2026
 
 [Plán](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md),
-[výsledky](verification/athlete-profile-header-performance-20261109/RESULTS.md).
-ROZPRACOVÁNO. Baseline main2c61df14, produkce ca5fc219; dosud bez změny produkce.
-Větev codex/athlete-header-performance-20261109 v izolovaném worktree dle plánu.
-Uživatel autorizoval po úspěchu testů/přínosu commit/merge/protected deploy.
-WIP v původním checkoutu zachovaný; další krok implementace + native/HTTP/Chrome.
+[měření](verification/athlete-profile-header-performance-20261109/RESULTS.md).
 
-## Pracovní checkpoint — kandidát
+## Uzavření 9. 11. 2026
 
-Implementován jeden seskupený read; původní tři metody byte-preserved.
-Parent při PDOException používá původní nezávislé fallbacky.
-Lokální SQLite2testy/20assertions PASS (nullable/0roky, typy, duplicity,
-orphans, cizí/nepřipojená měření, čerstvé změny a1SQL/početroků řádků).
-PSR12 dotčených6PHP PASS; Python AST PASS; docs4973odkazů/108archivů/0chyb.
-Lokální PyYAML není instalován, samostatný YAML parser NOT RUN; workflow
-ověří GitHub Actions. Native benchmark, Chrome, aktuální CI a release čekají.
-Nový runner zmrazí parent i reader z2c61df14. Vlastní HTTP servery,
-cacheOFF, cleanup; samostatná diagnostika neovlivňuje prosté HTTP časy.
-Původní výkonové protokoly/harness RAP beze změny. Paměť bez umělého prahu.
-
-### První CI — statická analýza
-
-Head d220ec79: PHPStan FAIL, historický undefined-pdo baseline24 nově25.
-Žádné navýšení potlačení: explicitní kontrola skutečného PDO po db.php
-zaručuje bootstrap kontrakt, původní24položková výjimka odstraněna.
-Doménové chování a práva bez změny; native/HTTP měření běží dále pro první
-kandidát a zůstane oddělené. Širší lokální sada17/807 PASS.
-
-### První native42580408201 — dílčí PASS, celý běh FAIL
-
-D220ec79: oběDB2testy/30assertions PASS; všechna1k/10k/30k párová HTTP
-měření dokončena, shodné celé normalizované HTML. [Raw první vzorky](verification/athlete-profile-header-performance-20261109/first-attempt/native-10.3/parent-http-30000.json.gz).
-Celý job FAIL v druhém syntetickém fallback scénáři: opakované použití cookie
-header-fault-before => login302. Oprava pouze harness: unikátní cookie label
-pro každou chybějící tabulku a variantu; první fallback attendance už prošel.
-První vzorky a cleanup zůstávají uložené, nejde o plný PASS.
-Head07d90a18 PHPStan/style PASS; CodeQL JS stažení nástroje504 (infrastruktura).
-Nový head opakuje všechny aktuální kontroly a celý benchmark/Chrome.
-
-## Úplný checkpoint před finálnímiCI
-
-1a0e7ff4/run42581044288 oběDB+Chrome PASS. Parent30k980→329 /1283→431ms,
-SQL17→15, paměť +12kB (neprezentovat jako úsporu). Chrome warm default
-2332→1469ms, savedMěření3251→2019ms. CeléHTML/JS i oba chybovéfallbacky,
-role/revokace/CSRF a rawAJAX přesné, PNG byte-identické/vizuálně PASS.
-[Bezpečné důkazy](verification/athlete-profile-header-performance-20261109/RESULTS.md).
-CodeQL stažení504 na managed workflow nelze rerun; nový checkpoint opakuje
-celéCI na novém headu. Merge a produkce ještě čekají. WIP zachovaný.
+#410/c47d4008, všech18CI na b8f91037 SUCCESS, celý tested/merged tree i sourcehashy
+přesné. Deploy42587406908 SUCCESS 2026-11-09T08:43:14Z; testy2407/54929, backup389/2,
+migrace/VS/config/index/smoke PASS, import/UATfalse. Veřejné8/8HTTP/DOM shodné.
+[Produkční důkazy](verification/athlete-profile-header-release-20261109/RESULTS.md).
+Finální parent30k1010→326 /1350→455ms (−68/66%), SQL17→15, paměť+12kB.
+Chrome warm default2425→1520ms (−37%), savedMěření3010→2110ms (−30%);
+samotnýAJAX neutrální. Syntetická čísla nejsou produkční SLA/LCP.
+Native2/30 každáDB,SQLite2/20, místní17/807;612časovanýchHTTP+52Chrome.
+PřesnéHTML/JS/rawAJAX,12rolí/bearer/freshrevokace/CSRF/2fallbacky,
+11checksumů/snímky/cleanup PASS. Původní FAIL/504 zachované odděleně.
+WIP v původním checkoutu i untracked soubory zachované; SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 přesný.
+Přihlášené produkční UAT/produkční výkon/obnova této zálohy/fyzický mobil NOT RUN.
+Finální důkazy: codex/athlete-header-release-proof-20261109, samostatný
+PR do main bez nového deploye dokumentace. Rozsah dokončen.
+Další pouze diagnostický KONCEPT: zbývající header~0.45s a historieAJAX~1s
+na30kfixture; nový zásah potřebuje vlastní plán/baseline. Žádné nové DDL/cache.
