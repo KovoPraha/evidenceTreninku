@@ -42,7 +42,7 @@ otevřené PR a neslučuje se s tímto řezem.
 
 ## Q2-TIME — odolný zápis tréninku (9. 11. 2026)
 
-Stav ROZPRACOVÁNO; vlastník vývoj, zadání vlastníka: chybný čas nesmí odeslat
+Stav IMPLEMENTOVÁNO / CI PASS, nasazení NOT RUN; vlastník vývoj, zadání vlastníka: chybný čas nesmí odeslat
 formulář ani vymazat text; uchovat koncept při přerušení. Větev
 `codex/training-form-resilience-20261109`, vlastní worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-training-resilience-20261109`, base `2c61df14`.
@@ -59,6 +59,6 @@ Merge a nasazení touto žádostí neprovedeny.
 Q2-TIME implementováno ve větvi: časová kontrola v novém zápisu i editaci,
 koncepty nového zápisu v prohlížeči a obnova při odmítnutí serverem.
 [Výsledky a omezení](verification/training-form-resilience-20261109/RESULTS.md):
-31/108 PHP a 18 browser kontrol PASS; plné CI čeká. Nasazení NOT RUN.
+34/131 cíleně, 18 browser kontrol a plné CI 2409/54943 PASS. Nasazení NOT RUN.
 
-Předání: [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412), commit/push hotové, CI běží; merge a deploy NOT RUN.
+Předání: [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412), kódový commit `9dad0dfc` má 11/11 CI PASS; merge a deploy NOT RUN.

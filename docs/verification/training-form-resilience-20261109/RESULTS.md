@@ -67,3 +67,19 @@ existující `trainingSubmissionFormUrl` zachovává plan_id i submission_key
 aktualizována na skutečné volání helperu; podmínky oprávnění a zápisu beze změny.
 Lokální širší sada před převzetím #410: 2407 testů / 54863 assertions,
 5 přeskočených kontrol na Windows, bez selhání. Aktuální rozsah uzavírá Linux CI.
+
+
+## Finální předání
+
+Kódová hlava `9dad0dfc`: [všech 11 CI kontrol PASS](ci-summary.json),
+[Linux / obě MariaDB 42589435512](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589435512)
+SUCCESS: **2409 testů / 54943 assertions**, samostatná kontrola privátního
+úložiště 3/45 PASS. Statická analýza/styl, CodeQL a dokumentace PASS.
+Cílená rozšířená sada 34/131 PASS, Node našeptávač 6/6 PASS; finální browser
+znovu 18/18 PASS. Vlastní testovací browser a PHP server 18519 ukončeny.
+
+[PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412) obsahuje kód,
+testy i souborové předání. Merge a nasazení **NOT RUN**; produkční formulář
+se touto prací zatím nezměnil. Tento závěrečný zápis mění pouze dokumentaci.
+Další krok: review a případně schválené nasazení, poté přihlášená produkční
+přejímka chyby času a obnovení skutečného rozepsaného formuláře.
