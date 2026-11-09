@@ -49,14 +49,23 @@ foreach ([1001, 1002, 1012, 1013, 1020] as $person) {
                 $templates['exists']
             );
             $templates['anti_not_exists'] = $templates['filtered_year'] . '';
-            $templates['anti_not_exists'] = str_replace(' AND YEAR(selected_t.datum)=:ownership_year',
+            $templates['anti_not_exists'] = str_replace(
+                ' AND YEAR(selected_t.datum)=:ownership_year',
                 ' AND YEAR(selected_t.datum)=:ownership_year AND NOT EXISTS (SELECT 1 FROM trenink_sportovec present'
-                    . ' WHERE present.trenink_id=selected_t.id AND present.sportovec_id=:present_sid)', $templates['filtered_year']);
-            $templates['anti_left'] = str_replace('JOIN treninky selected_t ON selected_t.id=tm.trenink_id',
+                    . ' WHERE present.trenink_id=selected_t.id AND present.sportovec_id=:present_sid)',
+                $templates['filtered_year']
+            );
+            $templates['anti_left'] = str_replace(
+                'JOIN treninky selected_t ON selected_t.id=tm.trenink_id',
                 'JOIN treninky selected_t ON selected_t.id=tm.trenink_id LEFT JOIN trenink_sportovec present'
-                    . ' ON present.trenink_id=selected_t.id AND present.sportovec_id=:present_sid', $templates['filtered_year']);
-            $templates['anti_left'] = str_replace(' AND YEAR(selected_t.datum)=:ownership_year',
-                ' AND YEAR(selected_t.datum)=:ownership_year AND present.trenink_id IS NULL', $templates['anti_left']);
+                    . ' ON present.trenink_id=selected_t.id AND present.sportovec_id=:present_sid',
+                $templates['filtered_year']
+            );
+            $templates['anti_left'] = str_replace(
+                ' AND YEAR(selected_t.datum)=:ownership_year',
+                ' AND YEAR(selected_t.datum)=:ownership_year AND present.trenink_id IS NULL',
+                $templates['anti_left']
+            );
             $templates['case'] = 'SELECT t.id,t.delka FROM treninky t WHERE ' . $filter . 'CASE WHEN
                 EXISTS (SELECT 1 FROM trenink_sportovec ts WHERE ts.trenink_id=t.id AND ts.sportovec_id=:attendance_sid)
                 THEN 1 ELSE EXISTS (SELECT 1 FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
@@ -72,6 +81,19 @@ foreach ([1001, 1002, 1012, 1013, 1020] as $person) {
             $templates['case_in_anti'] = $casePrefix . $caseSource
                 . ' LEFT JOIN trenink_sportovec present ON present.trenink_id=selected_t.id AND present.sportovec_id=:present_sid'
                 . $caseWhere . ' AND present.trenink_id IS NULL) END' . $order;
+        }
+        if ($year > 0) {
+            $prefix = 'SELECT t.id,t.delka FROM treninky t WHERE ' . $filter . 'CASE WHEN ';
+            $attendanceExists = 'EXISTS (SELECT 1 FROM trenink_sportovec ts WHERE ts.trenink_id=t.id AND ts.sportovec_id=:attendance_sid)';
+            $attendanceIn = 't.id IN (SELECT ts.trenink_id FROM trenink_sportovec ts WHERE ts.sportovec_id=:attendance_sid)';
+            $lazyMeasurement = ' THEN 1 ELSE EXISTS (SELECT 1 FROM (
+                SELECT DISTINCT tm.trenink_id FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
+                JOIN treninky selected_t ON selected_t.id=tm.trenink_id
+                WHERE mz.sportovec_id=:measurement_sid AND YEAR(selected_t.datum)=:ownership_year
+                ) owned_keys WHERE owned_keys.trenink_id=t.id) END' . $order;
+            $templates = ['exists' => $templates['exists'],
+                'lazy_exists' => $prefix . $attendanceExists . $lazyMeasurement,
+                'lazy_in' => $prefix . $attendanceIn . $lazyMeasurement];
         }
         $expected = null;
         $case = ['sid' => $person, 'year' => $year, 'parity' => true, 'samples_ms' => [], 'explain' => []];

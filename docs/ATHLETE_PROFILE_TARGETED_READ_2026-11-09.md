@@ -252,3 +252,20 @@ původní. Rozšířit syntetický scope o measurement-only velký SID1002: jeho
 attendance se odebere před oběma variantami, ale trenérský scope zůstává.
 Native probe i celé HTTP pak musí zahrnout tento kontrolní profil. Žádný
 změněný gate, index/DDL/cache nebo heuristika dle velikosti či verze DB.
+
+
+## CASE/IN-year nepřijatý, explicitní odložená materializace k ověření
+
+42711825852/0f59e7c3 oběDB SUCCESS a45scénářů přesná parita; všechny velikosti
+s fresh5table stats, measurement-only1002.10.3 při30k baseline25.889ms,
+CASE24.995ms, CASE-IN-year154.583ms, CASE-IN-anti37.291ms; sparseIN30ms
+versus8ms a measurement-only109/135ms versus62ms.11.4 také regressuje
+measurement-only (95/105 versus59ms). Žádná varianta není vybraná.
+
+Další omezený probe: CASE s EXISTS nad odvozenou DISTINCT tabulkou měřicích
+klíčů. Vnořený nezávislý DISTINCT brání opakovanému skenu MZ pro každý
+klubový řádek; CASE má odložit její načtení, když docházka postačuje.
+Porovnat attendance EXISTS a attendance IN (index-only seznam), stejný rok
+v outer i derived MZ. Bez heuristik, nových indexů nebo změny0roku.
+Rozhodne opět všech45narrow scénářů na3velikostech, potom celéHTTP; zatím
+NEIMPLEMENTOVAT jako přijatý reader. Draft425 zůstává blokovaný gate.
