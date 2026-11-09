@@ -405,5 +405,5 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-55898dcc11 | [P11-RHI — historie profilu](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md) | DONE / P11-RHI | #413/c3d34b87 NASAZENO,18CI/parita/HTTP/Chrome PASS; [release](verification/athlete-profile-history-release-20261109/RESULTS.md), UAT samostatné. |
 
-| PL-51594d6f16 | [P11-RHM — měření profilu](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) | DONE / P11-RHM | #418/5cc9cf83 NASAZENO,20CI/parita/HTTP/Chrome PASS; [release](verification/athlete-profile-measurement-release-20261109/RESULTS.md), UAT samostatné. |
+| PL-51594d6f16 | [P11-RHM — měření profilu](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) | PARTIAL / P11-RHMS | Souhrn ROZPRACOVÁNO dle nového zadání; #418/5cc9cf83 NASAZENO,20CI/parita/HTTP/Chrome PASS; [release](verification/athlete-profile-measurement-release-20261109/RESULTS.md), UAT samostatné. |
 | PL-7a1aa43e34 | [QR01 — verze podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md) | PARTIAL / QR01 | [#416](https://github.com/KovoPraha/evidenceTreninku/pull/416) v `main`, [#419](https://github.com/KovoPraha/evidenceTreninku/pull/419) vyžaduje nové potvrzení změněného textu; [syntetický průchod](verification/quick-registration-terms-20261109/RESULTS.md) PASS, CI #419, ruční deploy a živé UAT otevřené. |

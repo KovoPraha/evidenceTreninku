@@ -1,6 +1,15 @@
 # Předání P11-RHM — 9. 11. 2026
 
-**HOTOVO / NASAZENO**
+**RHM HOTOVO / NASAZENO; návazný P11-RHMS ROZPRACOVÁNO**
+
+Aktuální zadání: optimalizovat souhrn měření, ověřit úplnou shodu a změřit
+před/po; při PASS commit/merge/protected deploy. [Postup a akceptace](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#p11-rhms--souhrn-měření-nové-zadání-9-11-2026),
+[nové důkazy](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+Větev `codex/athlete-measurement-summary-performance-20261109`, base main
+`0b4592fa`; stejný izolovaný worktree mimo htdocs. Další krok: kandidát,
+lokální parita, native diagnóza; žádný nový merge/deploy. WIP zachovaný.
+
+Níže předchozí dokončené RHM, jeho důkazy nepřepisovat.
 
 [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [měření](verification/athlete-profile-measurement-performance-20261109/RESULTS.md), [release](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
 
@@ -19,11 +28,10 @@ WIP kis_rosters_admin.php SHA2567a7afd75bfa34f736f158096ab46a671b7fee6c6faedc370
 Přihlášené produkční UAT, produkční výkon, fyzický mobil, nový zápis poznámky a obnova této konkrétní zálohy NOT RUN. Syntetické časy nejsou SLA/LCP.
 Finální důkazy přes codex/athlete-measurement-release-proof-20261109 a samostatný dokumentační PR do main bez druhého deploye. Rozsah technicky dokončen.
 
-## Další pouze KONCEPT
+## Návaznost převzatá novým zadáním
 
 Dominantní zůstává původní numeric-window souhrn (cca446/911ms proti
 detailu4/7ms v diagnostice). Další variantu měřit se společnými obnovenými
 statistikami; staré GROUP_CONCAT pokusy nejsou univerzálním závěrem pro
 jiné varianty. Browser souběh historie/Měření zkoumat odděleně, příčinu
-čekání ResourceTiming sám nedokazuje. Žádná další implementace tímto
-konceptem nevzniká; aktuální technický rozsah dokončený.
+čekání ResourceTiming sám nedokazuje. Souhrn převzat do P11-RHMS; browser souběh zůstává konceptem.

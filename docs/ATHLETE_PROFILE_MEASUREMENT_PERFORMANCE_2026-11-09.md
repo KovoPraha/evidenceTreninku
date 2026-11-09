@@ -1,9 +1,10 @@
 # P11-RHM — načítání měření profilu sportovce
 
-9. 11. 2026. Vlastník vývoj/Codex. Stav: HOTOVO / NASAZENO; technické ověření PASS, produkční UAT NOT RUN.
+9. 11. 2026. Vlastník vývoj/Codex. Stav RHM: HOTOVO / NASAZENO. Návazný P11-RHMS: ROZPRACOVÁNO (souhrn).
 Aktuální uzavření: #418/5cc9cf83, deploy42654922651 SUCCESS;
 HTTP30k −28.2/32.1 %, Chrome uloženéMěření warm−10.6/cold−22.4 %.
 [Produkční důkazy a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
+[Aktuální návaznost P11-RHMS](#p11-rhms--souhrn-měření-nové-zadání-9-11-2026).
 Níže je původní plán a průběh pokusů; současný stav/flags vlastní CURRENT.
 
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md),
@@ -311,3 +312,50 @@ Přihlášené produkční UAT, produkční výkon, fyzický mobil, nový zápis
 Finální důkazy přes codex/athlete-measurement-release-proof-20261109 a samostatný dokumentační PR do main bez druhého deploye. Rozsah technicky dokončen.
 
 [Provozní důkazy](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
+
+## P11-RHMS — souhrn měření (nové zadání 9. 11. 2026)
+
+Stav: ROZPRACOVÁNO. Vlastník: vývoj/Codex. Navazuje na dokončené RHM;
+jeho původní výsledky ani zamítnuté pokusy se nepřepisují.
+Aktuální pokyn vlastníka povoluje implementaci souhrnu, ověření shody,
+párové měření a pouze při PASS commit, merge a chráněné nasazení.
+Bez importů, změny rolí, plateb nebo osobních produkčních zápisů.
+
+Baseline: main `0b4592fa63ee49a733b8d4a882c177ac73541e99`, runtime nasazeného
+`5cc9cf83193ca547d641e39afb0df41e4f8ee457`; rozdíl pouze dokumentace.
+Větev `codex/athlete-measurement-summary-performance-20261109`, worktree
+`C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107`.
+Původní checkout/větev a WIP zůstávají zachované; kontrolní SHA256 souboru
+`kis_rosters_admin.php`: `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
+
+Diagnóza: dominantní souhrn čísluje celý seřazený proud vazeb a znovu
+připojuje měření. Zkusit přesné binární počty bez okna a první řadicí klíč
+pro každý typ; alternativou je omezený agregační první klíč. Rozhodne
+skutečný EXPLAIN a celá HTTP odezva, nikoli izolovaný SQL odhad.
+Nepřenášet staré výsledky GROUP_CONCAT se zastaralou statistikou.
+
+Postup a akceptace:
+1. Zmrazit reader z aktuální baseline jako nezávislou referenci. Zapsat plán
+   a handoff před implementací; stage jen vlastní pojmenované soubory.
+2. Změnit pouze souhrn. Zachovat původní výběr stránek, veřejný návratový
+   objekt, přesné typy, pořadí filtrů, duplicity a započítání NULL typu.
+   Bez aplikačního DDL/ANALYZE, změny SQL/session nastavení nebo cache.
+3. Ověřit úplnou shodu na SQLite a MariaDB 10.3/11.4, native/emulated PDO,
+   stringify, NULL/zero datum, shodné časy, nullable/negative poradi,
+   signed64 klíče, orphan/foreign/unlinked a čerstvé změny. Rozšířit hranice
+   prvního výskytu typů a velkého počtu typů.
+4. Nejdřív samostatná plná bootstrap diagnóza. Potom před/po na stejném
+   migrovaném syntetickém datasetu, obnovené společné statistiky, cache OFF:
+   1k/10k/30k tréninků, 9 scénářů, 17 střídavých párů po 4 warmupech.
+   Nejméně 20 % celé hlavní HTTP odezvy na obou DB, bez významné regrese
+   malého/prázdného/starého profilu; zachovat surové vzorky i neúspěchy.
+5. Ověřit celé HTML/JS, role/token/revokaci/CSRF, canonical checksums,
+   skutečný Chrome default/uložené Měření, desktop/úzký viewport a konzoli.
+6. Zelené aktuální CI, přesný testovaný/sloučený strom a runtime identity;
+   potom protected deploy z main s import/UAT false. Ověřená záloha,
+   migrace/VS/config/smoke a veřejné čtecí před/po. Žádné druhé nasazení
+   kvůli závěrečné dokumentaci. Přihlášené UAT evidovat samostatně.
+
+Důkazy: [průběžný protokol](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+Další krok: implementovat kandidáta, lokální parita a nativní diagnóza.
+Merge/nasazení tohoto řezu: NOT RUN.

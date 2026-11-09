@@ -10998,9 +10998,9 @@
       "title": "P11-RHM — měření profilu",
       "primary": true,
       "role": "plan",
-      "status": "DONE",
-      "registry": "P11-RHM",
-      "disposition": "#418/5cc9cf83, deploy42654922651 SUCCESS;20CI/parita/HTTP/Chrome PASS, UAT a meze samostatně.",
+      "status": "PARTIAL",
+      "registry": "P11-RHMS",
+      "disposition": "Nové zadání: souhrn ROZPRACOVÁNO; předchozí RHM #418/5cc9cf83 nasazené, důkazy zachované.",
       "evidence": [
         "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
       ]

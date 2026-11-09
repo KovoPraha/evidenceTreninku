@@ -463,3 +463,12 @@ Typ/vlastník a původní souhrn zachované. Doplněn velký starý profil900MZ
 ## D2026-11-09-RHM-RELEASE
 
 Po přesné paritě, doloženém přínosu a20CI sloučeno#418/5cc9cf83, protecteddeploy42654922651 SUCCESS dle podmíněného pokynu vlastníka. Původní souhrn ponechaný, dvě agregace odmítnuté, pouze bounded selector dlouhých přehledů. Obnova statistik výhradně ve společné syntetické přípravě obou variant. [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [release a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
+
+## D2026-11-09-RHMS — nové zadání souhrnu
+
+Vlastník nyní výslovně převzal koncept souhrnu do implementace a podmíněně
+povolil release. Zachovat nasazený prefix64 selector. Porovnat přesné
+binární počty a první klíč typu s původním numeric-window souhrnem na
+stejných čerstvých statistikách, nejprve plný bootstrap a pak celé HTTP.
+Staré neúspěchy zůstávají historickými důkazy. Žádná změna SQL nastavení,
+cache, rolí, writerů nebo DDL. [Akceptace](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#p11-rhms--souhrn-měření-nové-zadání-9-11-2026).
