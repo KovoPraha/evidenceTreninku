@@ -10881,11 +10881,11 @@
       "title": "P11-RAH — agregace roků/počtů",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-RAH",
-      "disposition": "Zahájení; implementace a release čekají.",
+      "disposition": "#410/c47d4008 a deploy42587406908 SUCCESS; parita/18CI/HTTP/Chrome/čtecí produkce PASS, UAT samostatné.",
       "evidence": [
-        "docs/verification/athlete-profile-header-performance-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-header-release-20261109/RESULTS.md"
       ]
     },
     {
@@ -10896,9 +10896,9 @@
       "role": "handoff",
       "status": "SUPPORT",
       "registry": "P11-RAH",
-      "disposition": "Zahájení; implementace a release čekají.",
+      "disposition": "#410/c47d4008 a deploy42587406908 SUCCESS; parita/18CI/HTTP/Chrome/čtecí produkce PASS, UAT samostatné.",
       "evidence": [
-        "docs/verification/athlete-profile-header-performance-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-header-release-20261109/RESULTS.md"
       ]
     },
     {
@@ -10909,9 +10909,22 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-RAH",
-      "disposition": "Zahájení; implementace a release čekají.",
+      "disposition": "#410/c47d4008 a deploy42587406908 SUCCESS; parita/18CI/HTTP/Chrome/čtecí produkce PASS, UAT samostatné.",
       "evidence": [
-        "docs/verification/athlete-profile-header-performance-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-header-release-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-a6a2e101cf",
+      "path": "docs/verification/athlete-profile-header-release-20261109/RESULTS.md",
+      "title": "P11-RAH produkční předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RAH",
+      "disposition": "Protected deploy/čtecí ověření PASS; meze výslovné.",
+      "evidence": [
+        "docs/verification/athlete-profile-header-release-20261109/RESULTS.md"
       ]
     }
   ],

@@ -971,8 +971,10 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 
 | PL-0348d30542 | [P11-RAP produkční předání](verification/athlete-profile-parent-release-20261109/RESULTS.md) | evidence / SUPPORT | P11-RAP |
 
-| PL-4dd08bb660 | [P11-RAH — agregace roků/počtů](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md) | plan / IN_PROGRESS | P11-RAH |
+| PL-4dd08bb660 | [P11-RAH — agregace roků/počtů](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md) | plan / DONE | P11-RAH |
 
 | PL-0139edb577 | [P11-RAH předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md) | handoff / SUPPORT | P11-RAH |
 
 | PL-daf43ed895 | [P11-RAH měření](verification/athlete-profile-header-performance-20261109/RESULTS.md) | evidence / SUPPORT | P11-RAH |
+
+| PL-a6a2e101cf | [P11-RAH produkční předání](verification/athlete-profile-header-release-20261109/RESULTS.md) | evidence / SUPPORT | P11-RAH |

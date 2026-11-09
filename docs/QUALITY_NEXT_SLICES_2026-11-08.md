@@ -62,3 +62,11 @@ koncepty nového zápisu v prohlížeči a obnova při odmítnutí serverem.
 34/131 cíleně, 18 browser kontrol a plné CI 2409/54943 PASS. Nasazení NOT RUN.
 
 Předání: [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412), kódový commit `9dad0dfc` má 11/11 CI PASS; merge a deploy NOT RUN.
+
+
+9. 11. 2026 vlastník výslovně zadal sloučit #412, nasadit, ověřit funkčnost
+v produkci a uložit důkazy. Postup: převzít souběžné release docs, aktuální CI,
+merge, chráněný deploy přesného main s importem/UAT flagem false; poté ověřit
+nasazený JS a přihlášený formulář (neplatný čas, zachování konceptu, reload).
+Ostrý trénink kvůli validační zkoušce nevytvářet. Výsledek zapsat do release
+protokolu, CURRENT a handoffu. Souhlas nevyžaduje novou aktivaci automatizace.

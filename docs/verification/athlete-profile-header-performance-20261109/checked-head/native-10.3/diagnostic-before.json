@@ -1,0 +1,127 @@
+{
+  "status": 200,
+  "bootstrap_preloaded": true,
+  "timing_instrumented": true,
+  "peak_php_bytes": 1249920,
+  "queries": [
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.537802,
+      "fetch_ms": 0.005039,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.256208,
+      "fetch_ms": 0.002244,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.239616,
+      "fetch_ms": 0.001763,
+      "fetched_rows": 0,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.231741,
+      "fetch_ms": 0.002494,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.208549,
+      "fetch_ms": 0.002104,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM sportovci s WHERE s.id=? AND EXISTS(SELECT 1 FROM coach_scope_grants g JOIN treneri cg_t ON cg_t.id=g.trainer_id AND cg_t.aktivni=1 JOIN staff_user_positions cg_p ON cg_p.trainer_id=g.trainer_id AND cg_p.position_code='coach' WHERE g.trainer_id=7 AND g.revoked_at IS NULL AND g.valid_from<=CURRENT_TIMESTAMP AND (g.valid_to IS NULL OR g.valid_to>CURRENT_TIMESTAMP) AND ((g.scope_kind='team' AND EXISTS(SELECT 1 FROM club_roster_members cm JOIN club_teams ct ON ct.id=cm.team_id WHERE cm.sportovec_id=s.id AND cm.team_id=g.scope_id AND cm.status='active' AND ct.status='active' AND cm.valid_from<=CURRENT_DATE AND (cm.valid_to IS NULL OR cm.valid_to>=CURRENT_DATE)))))",
+      "execute_ms": 0.651583,
+      "fetch_ms": 0.002375,
+      "fetched_rows": 1,
+      "caller": "coachScopeCanViewPerson"
+    },
+    {
+      "sql": "SELECT * FROM sportovci WHERE id = ?",
+      "execute_ms": 0.238164,
+      "fetch_ms": 0.008085,
+      "fetched_rows": 1,
+      "caller": ""
+    },
+    {
+      "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele a ON a.id=r.account_id WHERE r.account_id=? AND r.sportovec_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND a.aktivni=1 AND a.email_overeno=1 LIMIT 1",
+      "execute_ms": 0.315357,
+      "fetch_ms": 0.001363,
+      "fetched_rows": 0,
+      "caller": "sportovecNoteCanWrite"
+    },
+    {
+      "sql": "SELECT DISTINCT YEAR(t.datum) AS rok FROM treninky t JOIN ( SELECT trenink_id FROM trenink_sportovec WHERE sportovec_id=:attendance_sid UNION SELECT tm.trenink_id FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id WHERE mz.sportovec_id=:measurement_sid ) owned ON owned.trenink_id=t.id ORDER BY rok DESC",
+      "execute_ms": 397.857384,
+      "fetch_ms": 0.013736,
+      "fetched_rows": 3,
+      "caller": "read"
+    },
+    {
+      "sql": "SELECT COUNT(*) AS total FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=?",
+      "execute_ms": 321.5816,
+      "fetch_ms": 0.008355,
+      "fetched_rows": 1,
+      "caller": "read"
+    },
+    {
+      "sql": "SELECT COUNT(*) AS total FROM treninky t JOIN ( SELECT trenink_id FROM trenink_sportovec WHERE sportovec_id=:attendance_sid UNION SELECT tm.trenink_id FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id WHERE mz.sportovec_id=:measurement_sid ) owned ON owned.trenink_id=t.id",
+      "execute_ms": 385.191449,
+      "fetch_ms": 0.010299,
+      "fetched_rows": 1,
+      "caller": "read"
+    },
+    {
+      "sql": "SELECT DISTINCT l.*, k.nazev AS kategorie_nazev, tr.jmeno AS trener_jmeno FROM gs_linky l JOIN gs_kategorie k ON k.id = l.kategorie_id LEFT JOIN treneri tr ON tr.id = l.vlozil_trener_id LEFT JOIN gs_link_targets gt ON gt.link_id = l.id WHERE ((l.viditelnost = 'verejny') OR (l.viditelnost = 'cilene' AND ((gt.target_type = 'sportovec' AND gt.target_id = ?)))) ORDER BY l.created_at DESC, l.id DESC",
+      "execute_ms": 0.834203,
+      "fetch_ms": 0.003267,
+      "fetched_rows": 0,
+      "caller": ""
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.513085,
+      "fetch_ms": 0.003576,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.252811,
+      "fetch_ms": 0.002124,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT r.* FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date,r.training_id",
+      "execute_ms": 0.839513,
+      "fetch_ms": 0.005591,
+      "fetched_rows": 1,
+      "caller": "trainingClosedActivitiesForPerson"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.250025,
+      "fetch_ms": 0.001763,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT r.*,p.event_id FROM sports_event_participation p JOIN sports_event_revisions r ON r.id=p.current_revision_id WHERE p.sportovec_id=? ORDER BY r.recorded_at DESC,r.id DESC",
+      "execute_ms": 0.67111,
+      "fetch_ms": 0.001693,
+      "fetched_rows": 0,
+      "caller": "sportsEventCurrent"
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
 Aktualizováno 9. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) včetně Q2-TIME a UX01 [celoročních nabídek](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
-- **P11-RAH ROZPRACOVÁNO:** [agregace roků/počtů — plán](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md).
-  [Předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md); PR#410; oběDB/Chrome/parita PASS, parent −66%, Chrome −37/38%; aktuální celé CI/release čekají.
+- **P11-RAH NASAZENO:** [agregace roků/počtů — plán](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md).
+  #410/c47d4008, deploy42587406908 SUCCESS;18CI PASS, parent−66/68%, Chrome−30/37%; [důkazy](verification/athlete-profile-header-release-20261109/RESULTS.md), veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
 - **P11-RAP NASAZENO:** [počáteční profil / plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md).
   #408/`ca5fc219`, deploy42574460894 SUCCESS;16CI/2405testů PASS, [důkazy](verification/athlete-profile-parent-release-20261109/RESULTS.md). Parent −54/55%, Chrome −41/42%, PHP96,6→1,26MB; veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
 - **Q01/Q2 NASAZENO, cílené přihlášené UAT PASS:** #390 / `5b9279f9` v release `755b20a2`, [deploy 42483838259](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42483838259) SUCCESS a následně zahrnuté v P11-RH. Chrome `Superadmin · Trenér`: Moje/Vše a filtry 360/390/1536 px bez přetékání; původní kontext Programy obnoven. [Protokol a meze](verification/planner-mobile-release-20261108/RESULTS.md); původní [P11-R05-H #374](verification/planner-hierarchy-release-20261107/RESULTS.md). Import/UAT flag false; úplné funkční UAT ostatních rolí otevřené.
