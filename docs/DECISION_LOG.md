@@ -459,3 +459,7 @@ s cizí historií. Před vydáním zvolen globálníprefix64tréninků; jen pln�
 Typ/vlastník a původní souhrn zachované. Doplněn velký starý profil900MZ
 1990 a gate bez podstatné regrese; případný fallback přidává1SQL.
 [Plán a důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+## D2026-11-09-RHM-RELEASE
+
+Po přesné paritě, doloženém přínosu a20CI sloučeno#418/5cc9cf83, protecteddeploy42654922651 SUCCESS dle podmíněného pokynu vlastníka. Původní souhrn ponechaný, dvě agregace odmítnuté, pouze bounded selector dlouhých přehledů. Obnova statistik výhradně ve společné syntetické přípravě obou variant. [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [release a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
