@@ -19,9 +19,10 @@ if os.name == "nt" or not re.fullmatch(r"[0-9a-f]{40}", base):
     raise RuntimeError("Linux CI and an exact baseline commit required")
 if os.environ.get("EVIDENCE_PERFORMANCE_CONFIRM") != "SYNTHETIC-ONLY":
     raise RuntimeError("Owned synthetic confirmation required")
+diagnostic_only = os.environ.get("ATHLETE_MEASUREMENT_DIAGNOSTIC_ONLY") == "1"
 runtime = Path(tempfile.mkdtemp(prefix="kis-athlete-measurement-"))
-output = root / "output/athlete-measurement-ci-private"
-safe = root / "output/athlete-measurement-ci-safe"
+output = root / ("output/athlete-measurement-diagnostic-private" if diagnostic_only else "output/athlete-measurement-ci-private")
+safe = root / ("output/athlete-measurement-diagnostic-safe" if diagnostic_only else "output/athlete-measurement-ci-safe")
 output.mkdir(parents=True, exist_ok=False)
 safe.mkdir(parents=True, exist_ok=False)
 (runtime / "sessions").mkdir()
@@ -134,10 +135,39 @@ def browser(variant, role):
     sessions.remove(session)
 
 
+def diagnostic_root(variant):
+    # Copy only routes, reader and db.php. All application sources stay unchanged.
+    target = runtime / ("diagnostic-" + variant)
+    target.mkdir()
+    for entry in root.iterdir():
+        if entry.name.startswith(".") or entry.name in {"output", "db.php", "sportovec_treninky.php", "ajax_sportovec_treninky.php", "includes"}:
+            continue
+        (target / entry.name).symlink_to(entry, target_is_directory=entry.is_dir())
+    (target / "includes").mkdir()
+    for entry in (root / "includes").iterdir():
+        if entry.name != "athlete_profile_read.php":
+            (target / "includes" / entry.name).symlink_to(entry, target_is_directory=entry.is_dir())
+    for route in routes:
+        (target / route).write_bytes(baselines[route] if variant == "before" else originals[route])
+    db = (root / "db.php").read_text()
+    needle = '$pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);'
+    assert db.count(needle) == 1
+    replacement = '$pdo = new \\Tests\\Support\\QueryProfilePdo("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);'
+    replacement += '\n    $pdo->profiling = true; $pdo->traceCallers = true;'
+    db = db.replace(needle, replacement)
+    guard = "if (!defined('DB_NAME') || !preg_match('/^p11_read_[a-f0-9]{16}$/D', DB_NAME) || !str_starts_with(DB_HOST, '127.0.0.1;port=')) { throw new RuntimeException('Owned diagnostic database required'); }"
+    marker = '    $pdo = new '
+    db = db.replace(marker, '    ' + guard + '\n' + marker, 1)
+    (target / "db.php").write_text(db)
+    return target
+
+
 def start_servers(instrument=False):
     if servers:
         raise RuntimeError("Owned workers already running")
     for variant, port, document_root in [("before",18099,baseline_root),("after",18100,root)]:
+        if instrument:
+            document_root = diagnostic_root(variant)
         args = ["php", "-d", "memory_limit=512M", "-d", "date.timezone=Europe/Prague", "-d", "display_errors=1",
                 "-d", "session.save_handler=files", "-d", "session.save_path="+str(runtime/"sessions")]
         if instrument:
@@ -205,15 +235,18 @@ try:
     reports=[]
     php("TrainingHistoryHttpProfile.php",output,"prepare")
     php("AthleteProfileHttpProfile.php",output,"prepare")
-    for size in [1000,10000,30000]:
+    if diagnostic_only:
+        php("ProfileSessionHttpProfile.php",output,"prepare",30000)
+    for size in ([] if diagnostic_only else [1000,10000,30000]):
         php("ProfileSessionHttpProfile.php",output,"prepare",size)
         php("AthleteMeasurementHttpProfile.php",output,"measure",size)
         report=read(f"measurement-http-{size}.json")
         reports.append(report)
         (safe/f"measurement-http-{size}.json.gz").write_bytes(gzip.compress((output/f"measurement-http-{size}.json").read_bytes(),mtime=0))
-    php("AthleteMeasurementHttpProfile.php",output,"security",30000)
-    (safe/"security.json").write_bytes((output/"parent-security.json").read_bytes())
-    if os.environ.get("ATHLETE_MEASUREMENT_BROWSER")=="1":
+    if not diagnostic_only:
+        php("AthleteMeasurementHttpProfile.php",output,"security",30000)
+        (safe/"security.json").write_bytes((output/"parent-security.json").read_bytes())
+    if not diagnostic_only and os.environ.get("ATHLETE_MEASUREMENT_BROWSER")=="1":
         browser("before","coach")
         browser("after","coach")
         for variant in ["before","after"]:
@@ -225,13 +258,15 @@ try:
     variants=["before","after"] if os.environ.get("ATHLETE_MEASUREMENT_COMPARE")=="1" else ["before"]
     for variant in variants:
         diagnostic=json.loads((runtime/"metrics"/("measurement-"+variant+".json")).read_text())
+        expected_reader = baselines["includes/athlete_profile_read.php"] if variant == "before" else originals["includes/athlete_profile_read.php"]
+        assert diagnostic["executed_reader_sha256"] == hashlib.sha256(expected_reader).hexdigest()
         (safe/("diagnostic-"+variant+".json")).write_text(json.dumps(diagnostic,indent=2))
         top=sorted(diagnostic["queries"],key=lambda q:q["execute_ms"]+q["fetch_ms"],reverse=True)[:5]
         print(json.dumps(dict(variant=variant,peak_php_bytes=diagnostic["peak_php_bytes"],top=top)))
-    summary=dict(complete=True,baseline_sha=base,optimized_sha=head,source_sha256=source,baseline_source_sha256={p:hashlib.sha256(v).hexdigest() for p,v in baselines.items()},comparison=os.environ.get("ATHLETE_MEASUREMENT_COMPARE")=="1",cases=[])
+    summary=dict(complete=True,diagnostic_only=diagnostic_only,baseline_sha=base,optimized_sha=head,source_sha256=source,baseline_source_sha256={p:hashlib.sha256(v).hexdigest() for p,v in baselines.items()},comparison=os.environ.get("ATHLETE_MEASUREMENT_COMPARE")=="1",cases=[])
     for r in reports:
         summary["cases"].append(dict(size=r["size"],**{v:dict(total_median_ms=median(s["total_ms"] for s in r["samples"][v]),ttfb_median_ms=median(s["ttfb_ms"] for s in r["samples"][v])) for v in variants}))
-    if summary["comparison"]:
+    if summary["comparison"] and not diagnostic_only:
         largest=summary["cases"][-1]
         assert largest["after"]["total_median_ms"] < largest["before"]["total_median_ms"]*.8,"No substantial measurement HTTP benefit"
 

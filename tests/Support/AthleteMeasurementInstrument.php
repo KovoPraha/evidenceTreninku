@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-// Separate owned diagnostic workers only. Never loaded by the plain timing workers.
+// Diagnostic clones only: preserve the normal bootstrap/authorization sequence.
 if (PHP_SAPI !== 'cli-server' || getenv('EVIDENCE_PERFORMANCE_CONFIRM') !== 'SYNTHETIC-ONLY'
     || ($_SERVER['REMOTE_ADDR'] ?? '') !== '127.0.0.1') {
     return;
@@ -12,26 +12,23 @@ $diagnosticDirectory = (string) getenv('P11_HTTP_METRICS');
 if (!preg_match('/^measurement-(before|after)$/D', $diagnosticId) || !is_dir($diagnosticDirectory)) {
     return;
 }
-require_once dirname(__DIR__, 2) . '/includes/session_security.php';
-app_session_start();
-require_once dirname(__DIR__, 2) . '/db.php';
-if (!defined('DB_NAME') || !preg_match('/^p11_read_[a-f0-9]{16}$/D', DB_NAME)
-    || !str_starts_with(DB_HOST, '127.0.0.1;port=')) {
-    throw new RuntimeException('Owned synthetic database required.');
-}
 require_once __DIR__ . '/QueryProfilePdo.php';
-$pdo = new Tests\Support\QueryProfilePdo('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4', DB_USER, DB_PASS);
-$pdo->traceCallers = true;
-$pdo->profiling = true;
-register_shutdown_function(static function () use ($pdo, $diagnosticId, $diagnosticDirectory): void {
+register_shutdown_function(static function () use ($diagnosticId, $diagnosticDirectory): void {
+    $connection = $GLOBALS['pdo'] ?? null;
+    if (!$connection instanceof Tests\Support\QueryProfilePdo) {
+        throw new RuntimeException('Expected owned diagnostic connection.');
+    }
     $safe = [];
-    foreach ($pdo->profile as $query) {
+    foreach ($connection->profile as $query) {
         $sql = preg_replace('/\s+/', ' ', trim($query['sql']));
         $safe[] = ['sql' => $sql, 'execute_ms' => $query['execute_ms'], 'fetch_ms' => $query['fetch_ms'],
             'fetched_rows' => $query['fetched_rows'], 'caller' => $query['caller'] ?? ''];
     }
+    $reader = (new ReflectionClass(AthleteProfileRead::class))->getFileName();
     file_put_contents($diagnosticDirectory . '/' . $diagnosticId . '.json', json_encode([
-        'status' => http_response_code(), 'bootstrap_preloaded' => true, 'timing_instrumented' => true,
+        'status' => http_response_code(), 'bootstrap_preloaded' => false, 'timing_instrumented' => true,
         'peak_php_bytes' => memory_get_peak_usage(), 'queries' => $safe,
+        'executed_reader_sha256' => hash_file('sha256', $reader),
+        'opcache_enable_cli' => ini_get('opcache.enable_cli'),
     ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 });

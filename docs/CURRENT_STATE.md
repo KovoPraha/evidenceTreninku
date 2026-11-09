@@ -2,7 +2,7 @@
 
 QR01 připraveno k release kontrole: [oprava verzí podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md), [syntetické testy](verification/quick-registration-terms-20261109/RESULTS.md) PASS, [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený. Produkční release zatím žádný.
 Aktualizováno 9. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) včetně Q2-TIME a UX01 [celoročních nabídek](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
-- **P11-RHM POKUS3 / dvě agregace odmítnuté:** [měření profilu — plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md).
+- **P11-RHM DIAGNÓZA / HTTP přínos nedoložen:** [měření profilu — plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md).
   Aktuální produkce c3d34b87/[release RHI](verification/athlete-profile-history-release-20261109/RESULTS.md) SUCCESS; nová parita/výkon/CI/release čekají, WIP zachovaný.
 - **Q2-TIME NASAZENO:** #412 / `4f92b225`, deploy42622226704 SUCCESS; [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026), [release a přejímka](verification/training-form-resilience-release-20261109/RESULTS.md).
   11 CI / 2409 testů PASS; 6 HTTP a přesná shoda produkčního JS PASS. Záloha389/2, schéma/VS PASS; přihlášené UAT NOT RUN (blokace Computer Use). Koncepty pouze nového zápisu; editace má kontrolu času.

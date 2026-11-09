@@ -129,3 +129,20 @@ pro stránky1–32. Získané typy/součty ani jejich pořadí se nepočítají 
 Čerstvé GROUP_CONCAT limity128/4/1048576 nadále pokryté paritou a nezměněnou
 SESSION hodnotou; původní souhrn se o limit neopírá. Detailní scope/type recheck
 zachovaný. Nové celé native/HTTP/Chrome měření a CI před případným release.
+
+## Pokus 3 — HTTP přínos zatím nedoložen, diagnóza celého bootstrapu
+
+[Run42636506112](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42636506112),
+headd34e5427. MariaDB10.3 native4/523 a shoda PASS, HTTP30k712.779→708.897ms
+(−0.5%),20%gate FAIL. Diagnostika detail217.575→5.160ms se do celéhoHTTP
+nepromítla. Tento kandidát se zatím neslučuje/nenasazuje.
+Samostatný instrument původně načetl db.php před profilovacím PDO, proto
+neviděl SQL bootstrapu. SQL úspory jsou dílčí diagnóza, ne přínos celé aplikace.
+
+Doplněn instrument pouze v izolovaných diagnostických kopiích db.php/readeru/
+endpointu. PDO se profiluje od samotného vytvoření ve stejném pořadí bootstrapu,
+bez přednačtení db.php; vypíše i SHA256 skutečně načtené třídy. Aplikace ani
+prosté časovací workers se tím nemění. Ruční diagnostic_only workflow používá
+jen syntetickou30kDB a přesné testy; nenahrazuje úplný HTTP/Chrome gate.
+Další krok: vysvětlit rozdíl, až poté případná další optimalizace a celý CI.
+Druhý pokus na11.4 také výkon FAIL; jeho původní raw/Chrome důkazy doplněné.
