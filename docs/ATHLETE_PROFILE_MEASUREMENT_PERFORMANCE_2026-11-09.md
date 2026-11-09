@@ -236,3 +236,20 @@ SID1012 (kolo/KOLO/kolo-space), prázdnýSID1020 zůstává0. Před každým
 měřením se společné profile_counts explicitně ověří12/0 a uloží do statistiky.
 Stejná data pro before/after, bez změny aplikace. Nový kompletní native/
 HTTP/Chrome běh na tomto head je rozhodující; předchozí vzorky zachované.
+
+## Finální data — první native10.3 PASS, souhrnný CodeQL check k obnově
+
+[Run42644225032](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42644225032),
+head345938af: MariaDB10.3 native4/619 PASS, celé fragmenty/role/checksumy/
+cleanup a20%gate PASS.30k primary458.363→324.314ms (−29.2%), exactcase−29.9%,
+space−30.2%, page2−29.1%. Last−0.4%, absent+0.1%, skutečný malý12−0.3%,
+empty+0.2%. Počty270000/12/0 povinně potvrzené. První úplné důkazy v
+first-validated/native-10.3/,11.4/Chrome ještě čekají. SQLite11/1199 PASS,
+sourceoutside measurements + původní souhrn byte-přesné.
+
+Všechny3CodeQLanalýzy345938af SUCCESS a API má správnýcommit/ref/config,
+error/warning prázdné; souhrnný check přesto NEUTRAL se zprávou chybějícíPY
+konfigurace. První metadata zachovaná v codeql-first-*.json. GitHub defaultsetup
+neumožnil job/run retry, checkrerequest404. Nový dokumentační head bez změny
+runtime obnoví kontrolu; nesmí se vydávat jako20SUCCESS, dokud nejsou skutečně
+zelené všechny kontroly aktuálního head. Produkce e3f29903, žádný RHMdeploy.

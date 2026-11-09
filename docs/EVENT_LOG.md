@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 9. 11. 2026 / E2026-11-09-24 | P11-RHM první finální native10.3 PASS |4/619, HTTP30k458→324ms (−29%), malé12/empty bez regrese, sourcehashes/cleanup PASS.11.4/Chrome čekají;3CodeQLanalýzy PASS, aggregateNEUTRAL vyžaduje obnovu novým head, bez deploye. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-23 | P11-RHM skutečný malý měřicí profil | Původní small měl12tréninků/0měření. Doplněno12syntetických měření a povinné profile_counts12/0, stejná data pro obě varianty, nová celá akceptace před release. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-22 | P11-RHM indexlookup a ochrana malých filtrů | Po společné obnově statistik detail293→7ms a320→21ms. Guard total>800/page<=32 zachovává původní malé/prázdné/pozdní výběry. Lokálně4/307 PASS; celé novéHTTP/Chrome/CI před release, WIP zachovaný. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-21 | P11-RHM zastaralé statistiky fixture | Metadata300křádků měla cardinality1–2. Pouze syntetická příprava obnoví statistiky společně pro before/after; první FAIL zachované, aplikace bez DDL,20%gate beze změny. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
