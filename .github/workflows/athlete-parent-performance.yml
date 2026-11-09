@@ -6,6 +6,8 @@ on:
       - 'sportovec_treninky.php'
       - 'tests/Support/AthleteParent*'
       - 'includes/sports_activity_overview_read.php'
+      - 'tests/Integration/SportsActivityOverviewReadTest.php'
+      - 'tests/Support/SportsActivityOverviewFixture.php'
       - '.github/workflows/athlete-parent-performance.yml'
   workflow_dispatch:
 
@@ -51,11 +53,11 @@ jobs:
           npm install --global @playwright/cli@0.1.23
           if ! command -v google-chrome >/dev/null; then npx --yes playwright install --with-deps chrome; fi
           google-chrome --version
-      - name: Compare real profile HTML, session state and concurrent HTTP
+      - name: Compare whole parent HTML, canonical totals, roles and real browser
         env:
           ATHLETE_PARENT_BASE_SHA: 02904936abb8eca3c859e6ad060dca57425783ab
-          ATHLETE_PARENT_BROWSER: '0'
-          ATHLETE_PARENT_COMPARE: '0'
+          ATHLETE_PARENT_BROWSER: ${{ matrix.mariadb-version == '11.4' && '1' || '0' }}
+          ATHLETE_PARENT_COMPARE: '1'
           EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
           EVIDENCE_MARIADB_SMOKE_PORT: '3306'
           EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql

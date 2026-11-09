@@ -38,24 +38,26 @@ async (page) => {
     {name,previous},{timeout:60000});
   const seq = async name => page.evaluate(n => window.__profileDone[n]?.sequence || 0,name);
   const report = {complete:false,variant:config.variant,browser_version:context.browser()?.version(),
-    method:'Saved measurements tab: real full navigation, both existing AJAX requests, DOM plus two frames; no request stubs.',samples:[]};
+    method:'Default and saved measurement tabs: real full navigation, both existing AJAX requests, DOM plus two frames; no request stubs.',samples:[]};
+  for(const scenario of ['default','measurements']) {
   for(const cache of ['cold','warm']) {
     await cdp.send('Network.setCacheDisabled',{cacheDisabled:cache==='cold'});
     for(let n=0;n<(cache==='cold'?3:11);n++) {
       if(cache==='cold') await cdp.send('Network.clearBrowserCache');
-      await page.evaluate(() => sessionStorage.setItem('sp_treninky_tab','#pane-mereni'));
+      await page.evaluate(s => sessionStorage.setItem('sp_treninky_tab',s==='measurements'?'#pane-mereni':'#pane-treninky'),scenario);
       await page.goto(config.base_url+'/sportovec_treninky.php?id=1001',{waitUntil:'load',timeout:60000});
-      await wait('history');await wait('measurements');
+      await wait('history');if(scenario==='measurements') await wait('measurements');
       const value=await page.evaluate(() => {
-        const nav=performance.getEntriesByType('navigation')[0],h=window.__profileDone.history,m=window.__profileDone.measurements;
+        const nav=performance.getEntriesByType('navigation')[0],h=window.__profileDone.history,m=window.__profileDone.measurements || null;
         return {document_ttfb_ms:nav.responseStart,document_load_ms:nav.loadEventEnd,history:h,measurements:m,
-          ajax_pair_render_ready_ms:Math.max(h.ready_ms,m.ready_ms)-Math.min(h.start_ms,m.start_ms),
-          navigation_to_both_ready_ms:Math.max(h.ready_ms,m.ready_ms),
+          ajax_pair_render_ready_ms:Math.max(h.ready_ms,m?.ready_ms || 0)-Math.min(h.start_ms,m?.start_ms ?? h.start_ms),
+          navigation_to_both_ready_ms:Math.max(h.ready_ms,m?.ready_ms || 0),
           write_controls:document.querySelectorAll('.save-note-btn').length};
       });
-      if(value.history.rows!==25 || value.measurements.rows!==25 || value.write_controls!==0) throw new Error('Saved-tab rows/permissions changed');
-      if(cache==='cold'||n>0) report.samples.push({cache,...value});
+      if(value.history.rows!==25 || (scenario==='measurements' && value.measurements?.rows!==25) || value.write_controls!==0) throw new Error('Saved-tab rows/permissions changed');
+      if(cache==='cold'||n>0) report.samples.push({scenario,cache,...value});
     }
+  }
   }
   {
     await page.evaluate(() => sessionStorage.removeItem('sp_treninky_tab'));

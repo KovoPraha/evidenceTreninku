@@ -34,7 +34,7 @@ routes = ["sportovec_treninky.php"]
 originals = {p: (root / p).read_bytes() for p in routes}
 baselines = {p: subprocess.check_output(["git", "show", base + ":" + p], cwd=root) for p in routes}
 head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
-source = {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in routes + ["includes/athlete_profile_read.php", "includes/sports_activity.php"]}
+source = {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in routes + ["includes/athlete_profile_read.php", "includes/sports_activity.php", "includes/sports_activity_overview_read.php"]}
 servers = []
 baseline_root = runtime / "baseline"
 baseline_root.mkdir()
@@ -124,7 +124,7 @@ def browser(variant, role):
     script = runtime / (session + ".js")
     script.write_text(template)
     report = result(cli(session, "run-code", "--filename=" + str(script)))
-    assert report["complete"] and len(report["samples"]) == 13
+    assert report["complete"] and len(report["samples"]) == 26
     assert not report["console_errors"] and not report["failed_requests"]
     (output / f"browser-{role}-{variant}.json").write_text(json.dumps(report))
     assert report["interactions"]["complete"]
@@ -184,6 +184,8 @@ def median(values):
 
 
 try:
+    env=os.environ | {"EVIDENCE_ROSTER_READ_MARIADB":"1"}
+    subprocess.run(["php","vendor/bin/phpunit","tests/Integration/SportsActivityOverviewReadTest.php","--log-junit",str(safe/"projection-tests.xml")],cwd=root,env=env,check=True)
     php("FullHttpReadFixture.php","--setup",output)
     database_alias()
     database_alias_created = True
@@ -202,6 +204,8 @@ try:
         report=read(f"parent-http-{size}.json")
         reports.append(report)
         (safe/f"parent-http-{size}.json.gz").write_bytes(gzip.compress((output/f"parent-http-{size}.json").read_bytes(),mtime=0))
+    php("AthleteParentHttpProfile.php",output,"security",30000)
+    (safe/"security.json").write_bytes((output/"parent-security.json").read_bytes())
     if os.environ.get("ATHLETE_PARENT_BROWSER")=="1":
         browser("before","coach")
         browser("after","coach")
@@ -220,6 +224,12 @@ try:
     summary=dict(complete=True,baseline_sha=base,optimized_sha=head,source_sha256=source,comparison=os.environ.get("ATHLETE_PARENT_COMPARE")=="1",cases=[])
     for r in reports:
         summary["cases"].append(dict(size=r["size"],**{v:dict(total_median_ms=median(s["total_ms"] for s in r["samples"][v]),ttfb_median_ms=median(s["ttfb_ms"] for s in r["samples"][v])) for v in variants}))
+    if summary["comparison"]:
+        largest=summary["cases"][-1]
+        assert largest["after"]["total_median_ms"] < largest["before"]["total_median_ms"]*.8,"No substantial parent HTTP benefit"
+        old=json.loads((safe/"diagnostic-before.json").read_text())
+        new=json.loads((safe/"diagnostic-after.json").read_text())
+        assert new["peak_php_bytes"] < old["peak_php_bytes"]*.5,"Unused wide snapshot still materialized"
     (safe/"integrated-summary.json").write_text(json.dumps(summary,indent=2))
     print(json.dumps(summary["cases"]))
 

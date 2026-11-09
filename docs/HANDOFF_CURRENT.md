@@ -8,7 +8,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 ## Poslední práce a další krok
 
 - P11-RAP ROZPRACOVÁNO: [počáteční profil / plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md).
-  Nejprve diagnostika zbylých2,7sTTFB na fixture; žádná aplikace/produkce změněna, WIP zachovaný.
+  Native diagnóza PASS: nepoužitý snapshot94752řádků/649–1665ms. Lokální49/324 PASS; párové HTTP/Chrome čekají, produkce beze změny, WIP zachovaný.
 - **P11-RAS NASAZENO:** [profilové AJAX/session / plán](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_AJAX_PROFILE_SESSION_2026-11-08.md).
   #406/`95cb33e5`, deploy42531190845 SUCCESS;16CI/2403testů PASS, [důkazy](verification/ajax-profile-session-release-20261108/RESULTS.md). 30k dvojice −37/38%, Chrome warm −18%; veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).

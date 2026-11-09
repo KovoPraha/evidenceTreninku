@@ -1,0 +1,34 @@
+{
+  "complete": true,
+  "baseline_sha": "02904936abb8eca3c859e6ad060dca57425783ab",
+  "optimized_sha": "40183284fce9dfdb5a05cd180fd1f24bc8016ca4",
+  "source_sha256": {
+    "sportovec_treninky.php": "3ff9e4e206db42a6bbfd27403c66cf73f273a9004d2b710d17268456f04f0d03",
+    "includes/athlete_profile_read.php": "f8cfb7c6b285aa08e6e7fe33cab4e52c648c32b57a952a4c89a514e51fa8530e",
+    "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd"
+  },
+  "comparison": false,
+  "cases": [
+    {
+      "size": 1000,
+      "before": {
+        "total_median_ms": 59.467,
+        "ttfb_median_ms": 59.375
+      }
+    },
+    {
+      "size": 10000,
+      "before": {
+        "total_median_ms": 889.2189999999999,
+        "ttfb_median_ms": 889.112
+      }
+    },
+    {
+      "size": 30000,
+      "before": {
+        "total_median_ms": 2978.714,
+        "ttfb_median_ms": 2978.681
+      }
+    }
+  ]
+}

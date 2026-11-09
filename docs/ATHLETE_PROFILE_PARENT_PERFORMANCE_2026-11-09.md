@@ -63,3 +63,10 @@ codex/fio-auto-reconciliation-recovery; kis_rosters_admin.php SHA256
 Přihlášené produkční UAT a produkční výkon nejsou nahrazené syntetickou
 fixture. Pokud není čistý přínos celé cesty nebo parita, kandidát neuvolnit.
 Další krok: samostatná diagnostika parent route, zatím žádná aplikace ani produkce změněna.
+
+## Rozhodnutí po diagnostice
+
+Run42570580742 na40183284: oba native PASS. Dominantní nepoužitý snapshot
+94752řádků,649/1665ms; PHP peak~96,6MB. Zvolena oddělená projekce3součtů,
+plný kanonický souhrn/export/hash beze změny. [Důkaz](verification/athlete-profile-parent-performance-20261109/RESULTS.md).
+PR[#408](https://github.com/KovoPraha/evidenceTreninku/pull/408), zatím bez release.

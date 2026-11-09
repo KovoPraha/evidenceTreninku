@@ -11,3 +11,7 @@ Větev codex/athlete-profile-parent-performance-20261109, původní WIP/hash sho
 RHA/RHC/RAS hotové, RGS vypnuté/nevybrané; neopakovat/neaktivovat.
 Diagnostika/implementace/CI/merge/deploy zatím NOT RUN; podmíněná autorizace
 aktuálního vlastníka platí, před release úplná parita/HTTP/Chrome a aktuální CI.
+
+Diagnostika42570580742 obaDB PASS:94752nepoužitých řádků,649/1665ms, peak96,6MB.
+Zvolen nový reader3součtů se stejnými kanonickými aktivitami; full snapshot
+beze změny. PR#408, další krok přesná parita a prokládané HTTP/Chrome páry.

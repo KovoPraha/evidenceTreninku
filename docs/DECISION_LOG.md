@@ -348,3 +348,8 @@ po RAS stále~2,7sTTFB na extrémní fixture. Nejprve SQL diagnostika; kandidát
 jsou vynechání nepoužitých measurement snapshotů v panelu3součtů nebo dávkové
 header agregace. Žádná předem deklarovaná úspora, kanonický export/hash se
 nesmí ochudit. [Plán a akceptace](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md).
+
+Upřesnění D2026-11-09-RAP: native diagnostika42570580742 potvrzuje nejdražší
+sportsActivityMeasurements (649/1665ms,94752řádků). Vybrána čistá3polová
+projekce; používá kanonické closure/event readers a paritu proti úplnému souhrnu,
+aniž by měnila legacy souhrn/writery nebo vydávala neúplný contract snapshot.
