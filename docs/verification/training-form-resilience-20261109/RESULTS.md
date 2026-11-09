@@ -59,3 +59,11 @@ testu: neobsahovala formulář, na který se nově připojuje obnova účastník
 Fixture doplněna o skutečný form boundary a regresi obnovy chipů/ID bez
 zdvojení; produkční kontrola nebyla oslabena. Lokální `composer analyse`
 překročil výchozí limit 300 s; rozhodující dokončení statické analýzy vede CI.
+
+Druhý CI běh 42589038957: PHPStan/styl PASS, PHPUnit 2409 testů měl jedinou
+chybu v source-wiring kontrole původní konstrukce retry URL. Přechod na
+existující `trainingSubmissionFormUrl` zachovává plan_id i submission_key
+(ověřeno behaviorálním testem), navíc udržuje duplikát. Kontrola napojení
+aktualizována na skutečné volání helperu; podmínky oprávnění a zápisu beze změny.
+Lokální širší sada před převzetím #410: 2407 testů / 54863 assertions,
+5 přeskočených kontrol na Windows, bez selhání. Aktuální rozsah uzavírá Linux CI.
