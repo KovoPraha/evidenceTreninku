@@ -15,6 +15,10 @@ on:
       - '.github/workflows/athlete-measurement-performance.yml'
   workflow_dispatch:
     inputs:
+      bootstrap_assets:
+        description: Verify duplicate Bootstrap assets on the owned synthetic fixture
+        type: boolean
+        default: false
       diagnostic_only:
         description: Full bootstrap SQL diagnosis only (owned synthetic database)
         type: boolean
@@ -69,6 +73,10 @@ jobs:
           google-chrome --version
       - name: Compare whole measurement HTML, canonical totals, roles and real browser
         env:
+          BOOTSTRAP_ASSET_PROFILE: ${{ github.event_name == 'workflow_dispatch' && inputs.bootstrap_assets && '1' || '0' }}
+          BOOTSTRAP_ASSET_BASE_SHA: ff18297178419a57899cd5bb614a6b0fa51c9e7f
+          BOOTSTRAP_ASSET_BROWSER: ${{ matrix.mariadb-version == '11.4' && '1' || '0' }}
+          BOOTSTRAP_ASSET_COMPARE: '1'
           ATHLETE_MEASUREMENT_BASE_SHA: 0b4592fa63ee49a733b8d4a882c177ac73541e99
           ATHLETE_MEASUREMENT_BROWSER: ${{ matrix.mariadb-version == '11.4' && '1' || '0' }}
           ATHLETE_MEASUREMENT_COMPARE: '1'
@@ -77,7 +85,9 @@ jobs:
           EVIDENCE_MARIADB_SMOKE_PORT: '3306'
           EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
         run: |
-          if [ "$ATHLETE_MEASUREMENT_DIAGNOSTIC_ONLY" = 1 ]; then
+          if [ "$BOOTSTRAP_ASSET_PROFILE" = 1 ]; then
+            python3 tests/Support/BootstrapAssetsIntegratedProfile.py
+          elif [ "$ATHLETE_MEASUREMENT_DIAGNOSTIC_ONLY" = 1 ]; then
             export ATHLETE_TARGETED_BASE_SHA=ff18297178419a57899cd5bb614a6b0fa51c9e7f
             export ATHLETE_TARGETED_DIAGNOSTIC_ONLY=1 ATHLETE_TARGETED_COMPARE=1
             python3 tests/Support/AthleteTargetedIntegratedProfile.py
@@ -89,6 +99,6 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: athlete-measurement-${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_only && 'diagnostic-' || '' }}${{ matrix.mariadb-version }}
-          path: output/${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_only && 'athlete-targeted-diagnostic' || 'athlete-measurement-ci' }}-safe/
+          path: output/${{ github.event_name == 'workflow_dispatch' && inputs.bootstrap_assets && 'bootstrap-assets-ci' || github.event_name == 'workflow_dispatch' && inputs.diagnostic_only && 'athlete-targeted-diagnostic' || 'athlete-measurement-ci' }}-safe/
           if-no-files-found: warn
           retention-days: 30

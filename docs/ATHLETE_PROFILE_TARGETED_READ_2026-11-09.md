@@ -322,3 +322,14 @@ indexu hledat z read-only metadat s fallbackem při nepřítomnosti; žádný
 pevný předpoklad o jméně ani webový DDL nebo persistentní cache. Gate bude
 na CELÉM parent HTTP ≥20% oběDB, historie/MZ kontrolní1.2+20ms zůstanou.
 Jde zatím o koncept, app reader je stále přesný ff182971. PR425 bez merge.
+
+
+## Uzavření výběrové diagnózy RIX
+
+Header42714638259 také bez20% přínosu:210→208ms10.3/399→395ms11.4;
+sparse links-first silně regresuje. Žádná z nových SQL/index variant nebyla
+přijata. Reader v probe je byte-shodný s ff182971, žádná nová migrace nebo
+produkční změna. Negativní výsledky a úplný FAIL b9 jsou trvale zachované.
+Další autorizovaná implementace je [P11-ASSET](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md)
+podle původní analýzy bod7. Root příznaky/release nadále17110a7f; samotná
+diagnóza neznamená úspěšně nasazenou optimalizaci.

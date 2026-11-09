@@ -409,3 +409,5 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 | PL-7a1aa43e34 | [QR01 — verze podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md) | PARTIAL / QR01 | [#416](https://github.com/KovoPraha/evidenceTreninku/pull/416) v `main`, [#419](https://github.com/KovoPraha/evidenceTreninku/pull/419) vyžaduje nové potvrzení změněného textu; [syntetický průchod](verification/quick-registration-terms-20261109/RESULTS.md) PASS, CI #419, ruční deploy a živé UAT otevřené. |
 
 | PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | PARTIAL / P11-RIX | Nejprve skutečné schéma a nativní diagnóza, pak cílená optimalizace dle nového pokynu. |
+
+| PL-29c9854bef | [P11-ASSET Bootstrap CSS právě jednou](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | PARTIAL / P11-ASSET | Canonical CSS shodné; dále HTTP/Chrome/CI, nic nového nasazeného. |

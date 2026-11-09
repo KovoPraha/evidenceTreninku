@@ -65,3 +65,8 @@ SQL anti/CASE/IN/derived nevybrané po45scénářích/3velikostech; proti levné
 PR425 zůstává b9 bez merge. Další krok42713608614/b6: DATE covering index
 (datum,id,delka) pouze v syntetické DB OFF/ON, původní YEAR/range/CASE.
 Velké staršíJSON jsou lossless gzip s SHA manifestem v důkazech.
+
+RIX diagnóza uzavřená bez přijaté app varianty; header také pod20%.
+Reader přesněff182971, žádný nový index/migrace. Aktivní implementace
+[P11-ASSET](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md), další krok odstranění
+3duplicitních CDN linků + Chrome/HTTP. RIX není deploy úspěch.

@@ -527,3 +527,15 @@ PlainJOIN/IN, summary join-order/narrow/HEX i pokrývající index nevybrané
 kvůli nedostatečnému přínosu nebo regresím; raw v [plánu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md).
 Pouze redundantní filtr stejného tréninku, žádná změna scope, sčítání či schématu.
 Commit/merge/deploy aplikace zůstává podmíněný celým HTTP/paritou/Chrome/CI.
+
+
+## D2026-11-10-ASSET — odstranit prokázaně identickou druhou kopii Bootstrap CSS
+
+Po nativním vyřazení RIX SQL/index variant zvolen bod7 původní analýzy:
+3stránky mají stejný CDN i lokální Bootstrap5.3.3. Canonical232803bytes a živé
+oba payloady mají shodný SHA384/SRI; appUiAssets poskytuje lokální kopii.
+Pouze3tagy odstranit, ostatní zdroje/SQL/roles/writery beze změny. Přínos
+primárně2→1Bootstrapstylesheet/30829CDNgzip bytes; FCP/cold/warm/ready změřit
+reálně bez mockování sítě a zachovat bez významné regrese. Úzká normalizace
+jediného známého resource rozdílu s negativními testy; data/HTML/UI jinak shodné.
+Nasadit jen po celé přejímce a aktuálním CI podle [plánu](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).

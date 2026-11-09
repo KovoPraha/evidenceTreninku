@@ -1,24 +1,23 @@
-name: Athlete targeted parity and performance
+name: Bootstrap assets parity and performance
 
 on:
   pull_request:
     paths:
       - 'sportovec_treninky.php'
       - 'ajax_sportovec_treninky.php'
-      - 'tests/Support/AthleteTargeted*'
+      - 'tests/Support/BootstrapAsset*'
+      - 'tests/Support/FullHttpReadProfile.php'
+      - 'moje_treninky.php'
+      - 'sprava_treninku.php'
       - 'includes/athlete_profile_read.php'
       - 'includes/sports_activity_overview_read.php'
       - 'includes/sports_activity.php'
       - 'includes/training_closure.php'
-      - 'tests/Integration/AthleteTargetedReadTest.php'
+      - 'tests/Integration/BootstrapAssetComparisonTest.php'
       - 'tests/Support/SportsActivityOverviewFixture.php'
-      - '.github/workflows/athlete-targeted-performance.yml'
+      - '.github/workflows/bootstrap-assets-performance.yml'
   workflow_dispatch:
     inputs:
-      diagnostic_only:
-        description: Full bootstrap SQL diagnosis only (owned synthetic database)
-        type: boolean
-        default: false
       mariadb_version:
         description: Manual run target (pull requests always verify both versions)
         type: choice
@@ -30,7 +29,7 @@ permissions:
 
 jobs:
   native-profile:
-    name: Athlete targeted HTTP (MariaDB ${{ matrix.mariadb-version }})
+    name: Bootstrap assets HTTP (MariaDB ${{ matrix.mariadb-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
@@ -67,21 +66,20 @@ jobs:
           npm install --global @playwright/cli@0.1.23
           if ! command -v google-chrome >/dev/null; then npx --yes playwright install --with-deps chrome; fi
           google-chrome --version
-      - name: Compare year history HTML, all controls, roles and real browser
+      - name: Compare CSS assets, unchanged HTML, native controls and real browser
         env:
-          ATHLETE_TARGETED_BASE_SHA: ff18297178419a57899cd5bb614a6b0fa51c9e7f
-          ATHLETE_TARGETED_BROWSER: ${{ matrix.mariadb-version == '11.4' && '1' || '0' }}
-          ATHLETE_TARGETED_COMPARE: '1'
-          ATHLETE_TARGETED_DIAGNOSTIC_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_only && '1' || '0' }}
+          BOOTSTRAP_ASSET_BASE_SHA: ff18297178419a57899cd5bb614a6b0fa51c9e7f
+          BOOTSTRAP_ASSET_BROWSER: ${{ matrix.mariadb-version == '11.4' && '1' || '0' }}
+          BOOTSTRAP_ASSET_COMPARE: '1'
           EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
           EVIDENCE_MARIADB_SMOKE_PORT: '3306'
           EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
-        run: python3 tests/Support/AthleteTargetedIntegratedProfile.py
+        run: python3 tests/Support/BootstrapAssetsIntegratedProfile.py
       - name: Preserve safe native HTTP and session evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: athlete-targeted-${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_only && 'diagnostic-' || '' }}${{ matrix.mariadb-version }}
-          path: output/athlete-targeted-${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_only && 'diagnostic' || 'ci' }}-safe/
+          name: bootstrap-assets-${{ matrix.mariadb-version }}
+          path: output/bootstrap-assets-ci-safe/
           if-no-files-found: warn
           retention-days: 30
