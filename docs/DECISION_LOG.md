@@ -339,3 +339,12 @@ vypnutému UI a nebyl aktivován. První fixture/login FAIL zachován.
 Handler/lockwait produkce a přihlášené UAT NOT RUN; nevyvozovat produkční SLA.
 Parent profil~2,7sTTFB při extrémní fixture je další diagnostický KONCEPT,
 bez autorství nového release nebo cache čerstvých práv v tomto řezu.
+
+## D2026-11-09-RAP
+
+Podle dalšího zadání vlastníka zvolen největší doložený zbývající úsek
+[analýzy4/6](verification/performance-analysis-20261107/RESULTS.md): parent profil
+po RAS stále~2,7sTTFB na extrémní fixture. Nejprve SQL diagnostika; kandidáti
+jsou vynechání nepoužitých measurement snapshotů v panelu3součtů nebo dávkové
+header agregace. Žádná předem deklarovaná úspora, kanonický export/hash se
+nesmí ochudit. [Plán a akceptace](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md).
