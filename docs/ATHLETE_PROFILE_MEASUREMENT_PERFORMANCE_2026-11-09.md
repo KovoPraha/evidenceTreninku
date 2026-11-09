@@ -180,3 +180,20 @@ a na11.4 materializaci všech300k vazeb i uvnitř EXISTS. Samotný join order
 neřeší vše. Doplněno SHOW COLUMNS/SHOW INDEX pro3syntetické tabulky,
 PDOrežim a rawEXPLAIN (10.3 může opakovat JSONklíče; parsovaná forma
 sama není úplný plán). Žádný RHM deploy,20%gate beze změny.
+
+## Příčina potvrzena — zastaralé statistiky syntetické DB
+
+[Run42640885861](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42640885861),
+head4d9d7edd, metadata obouDB PASS. Trenink_mereni má správný kompozitní
+PRIMARY(trenink_id,mereni_id), stejné INTtypy; u300křádků ovšem10.3 ukazuje
+cardinality2/2,11.4 jen1/1. Mereni_zaznamy PK1–2, tréninky2/1755 při30křádcích.
+Stará minimální fixture po velkém INSERT neobnovila persistentní statistiky;
+EXPLAIN proto volí ALL/BNL i u omezeného seznamu. Data i první výsledky
+zachované v stale-statistics/, nebyly změněny na PASS.
+
+Pouze vlastní syntetická příprava nyní provede ANALYZE těchto3tabulek před
+oběma variantami, zaznamená společné indexy, počty a stav analýzy. Žádný
+index/DDL/přepínač se nepřidává a aplikační request nic takového neprovádí.
+Původní i nový kód používají přesně stejná data a nově stejné obnovené
+statistiky; žádná změna20%gate. Nová nativní diagnostika/HTTP/Chrome/CI
+musí potvrdit přínos. Přihlášené produkční UAT a produkční výkon stále NOT RUN.

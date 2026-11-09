@@ -20,6 +20,18 @@ $admin->exec('USE `' . $runtime['schema'] . '`');
 if (!in_array(strtoupper((string) $admin->query('SELECT @@global.query_cache_type')->fetchColumn()), ['OFF', '0'], true)) {
     throw new RuntimeException('SQL result cache must be OFF.');
 }
+// Bulk inserts into the minimal migrated fixture leave cardinalities at 1–2.
+// Refresh statistics once for the shared owned dataset before either variant;
+// application requests never ANALYZE or change indexes/settings.
+$analysis = $admin->query('ANALYZE TABLE treninky,trenink_mereni,mereni_zaznamy')->fetchAll(PDO::FETCH_ASSOC);
+$statistics = ['shared_before_after_dataset' => true, 'analysis' => $analysis, 'tables' => []];
+foreach (['treninky', 'trenink_mereni', 'mereni_zaznamy'] as $table) {
+    $statistics['tables'][$table] = [
+        'rows' => (int) $admin->query('SELECT COUNT(*) FROM ' . $table)->fetchColumn(),
+        'indexes' => $admin->query('SHOW INDEX FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC),
+    ];
+}
+file_put_contents($output . '/measurement-statistics-' . $size . '.json', json_encode($statistics, JSON_THROW_ON_ERROR));
 $credentials = json_decode(file_get_contents($output . '/credentials.json'), true, 512, JSON_THROW_ON_ERROR);
 $variants = getenv('ATHLETE_MEASUREMENT_COMPARE') === '1' ? ['before', 'after'] : ['before'];
 

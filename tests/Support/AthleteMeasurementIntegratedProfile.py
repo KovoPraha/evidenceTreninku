@@ -243,6 +243,7 @@ try:
         php("AthleteMeasurementHttpProfile.php",output,"measure",size)
         report=read(f"measurement-http-{size}.json")
         reports.append(report)
+        (safe/f"measurement-statistics-{size}.json").write_bytes((output/f"measurement-statistics-{size}.json").read_bytes())
         (safe/f"measurement-http-{size}.json.gz").write_bytes(gzip.compress((output/f"measurement-http-{size}.json").read_bytes(),mtime=0))
     if not diagnostic_only:
         php("AthleteMeasurementHttpProfile.php",output,"security",30000)
@@ -256,6 +257,7 @@ try:
     stop_servers()
     start_servers(instrument=True)
     php("AthleteMeasurementHttpProfile.php",output,"diagnose",30000)
+    (safe/"measurement-statistics-diagnostic.json").write_bytes((output/"measurement-statistics-30000.json").read_bytes())
     variants=["before","after"] if os.environ.get("ATHLETE_MEASUREMENT_COMPARE")=="1" else ["before"]
     for variant in variants:
         diagnostic=json.loads((runtime/"metrics"/("measurement-"+variant+".json")).read_text())

@@ -1,0 +1,558 @@
+{
+  "status": 200,
+  "bootstrap_preloaded": false,
+  "timing_instrumented": true,
+  "peak_php_bytes": 719616,
+  "queries": [
+    {
+      "sql": "SELECT session_version FROM treneri WHERE id = :id AND aktivni = 1 LIMIT 1",
+      "execute_ms": 0.260278,
+      "fetch_ms": 0.002124,
+      "fetched_rows": 1,
+      "caller": "auth_session_active_version"
+    },
+    {
+      "sql": "SELECT session_version FROM verejni_uzivatele WHERE id = :id AND aktivni = 1 LIMIT 1",
+      "execute_ms": 0.230843,
+      "fetch_ms": 0.001633,
+      "fetched_rows": 1,
+      "caller": "auth_session_active_version"
+    },
+    {
+      "sql": "SELECT role FROM treneri WHERE id=? AND aktivni=1 LIMIT 1",
+      "execute_ms": 0.19157,
+      "fetch_ms": 0.001482,
+      "fetched_rows": 1,
+      "caller": "auth_session_refresh_trainer_authorization"
+    },
+    {
+      "sql": "SELECT klic,min_role FROM opravneni",
+      "execute_ms": 0.180438,
+      "fetch_ms": 0.003176,
+      "fetched_rows": 3,
+      "caller": "query"
+    },
+    {
+      "sql": "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN ('staff_positions','staff_user_positions','staff_superadmins')",
+      "execute_ms": 0.773332,
+      "fetch_ms": 0.001653,
+      "fetched_rows": 1,
+      "caller": "query"
+    },
+    {
+      "sql": "SELECT position_code,is_default FROM staff_user_positions WHERE trainer_id=? ORDER BY is_default DESC, position_code",
+      "execute_ms": 0.238006,
+      "fetch_ms": 0.002544,
+      "fetched_rows": 1,
+      "caller": "staffWorkspaceRefreshSession"
+    },
+    {
+      "sql": "SELECT 1 FROM staff_superadmins WHERE trainer_id=? LIMIT 1",
+      "execute_ms": 0.21292,
+      "fetch_ms": 0.001212,
+      "fetched_rows": 0,
+      "caller": "staffWorkspaceRefreshSession"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.23935,
+      "fetch_ms": 0.001703,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.214813,
+      "fetch_ms": 0.001583,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.212499,
+      "fetch_ms": 0.001173,
+      "fetched_rows": 0,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.249879,
+      "fetch_ms": 0.001603,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.217148,
+      "fetch_ms": 0.001543,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM sportovci s WHERE s.id=? AND EXISTS(SELECT 1 FROM coach_scope_grants g JOIN treneri cg_t ON cg_t.id=g.trainer_id AND cg_t.aktivni=1 JOIN staff_user_positions cg_p ON cg_p.trainer_id=g.trainer_id AND cg_p.position_code='coach' WHERE g.trainer_id=7 AND g.revoked_at IS NULL AND g.valid_from<=CURRENT_TIMESTAMP AND (g.valid_to IS NULL OR g.valid_to>CURRENT_TIMESTAMP) AND ((g.scope_kind='team' AND EXISTS(SELECT 1 FROM club_roster_members cm JOIN club_teams ct ON ct.id=cm.team_id WHERE cm.sportovec_id=s.id AND cm.team_id=g.scope_id AND cm.status='active' AND ct.status='active' AND cm.valid_from<=CURRENT_DATE AND (cm.valid_to IS NULL OR cm.valid_to>=CURRENT_DATE)))))",
+      "execute_ms": 0.460335,
+      "fetch_ms": 0.001672,
+      "fetched_rows": 1,
+      "caller": "coachScopeCanViewPerson"
+    },
+    {
+      "sql": "SELECT id FROM sportovci WHERE id = ?",
+      "execute_ms": 0.228028,
+      "fetch_ms": 0.001583,
+      "fetched_rows": 1,
+      "caller": ""
+    },
+    {
+      "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele a ON a.id=r.account_id WHERE r.account_id=? AND r.sportovec_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND a.aktivni=1 AND a.email_overeno=1 LIMIT 1",
+      "execute_ms": 0.241865,
+      "fetch_ms": 0.001202,
+      "fetched_rows": 0,
+      "caller": "sportovecNoteCanWrite"
+    },
+    {
+      "sql": "SELECT BINARY mz.typ AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER ( ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC) AS ordinal FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=?) ordered_types JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id GROUP BY BINARY mz.typ ORDER BY first_position",
+      "execute_ms": 605.697191,
+      "fetch_ms": 0.010099,
+      "fetched_rows": 9,
+      "caller": "read"
+    },
+    {
+      "sql": "SELECT tm.trenink_id,tm.poradi,mz.id AS mereni_id,mz.typ, mz.vzdalenost,mz.distance_unit,mz.cas,mz.prevod,mz.cvik_id,mz.segment_id, mz.vaha,mz.opakovani,mz.rpe,mz.poznamka AS mereni_poznamka, c.nazev AS cvik_nazev,seg.nazev AS segment_nazev,tm.trenink_datum FROM (SELECT tm.trenink_id,tm.poradi,tm.mereni_id,t.datum AS trenink_datum FROM (SELECT own_t.id FROM treninky own_t WHERE EXISTS ( SELECT 1 FROM trenink_mereni own_tm JOIN mereni_zaznamy own_mz ON own_mz.id=own_tm.mereni_id WHERE own_tm.trenink_id=own_t.id AND own_mz.sportovec_id=?) ORDER BY own_t.datum DESC,own_t.id DESC LIMIT 25) eligible STRAIGHT_JOIN treninky t ON t.id=eligible.id STRAIGHT_JOIN trenink_mereni tm ON tm.trenink_id=t.id STRAIGHT_JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id WHERE mz.sportovec_id=? ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC LIMIT 25 OFFSET 0) tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id LEFT JOIN cviky c ON c.id=mz.cvik_id LEFT JOIN segmenty seg ON seg.id=mz.segment_id WHERE mz.sportovec_id=? ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC",
+      "execute_ms": 248.635745,
+      "fetch_ms": 0.024346,
+      "fetched_rows": 25,
+      "caller": "read"
+    }
+  ],
+  "executed_reader_sha256": "390a9b1eaaaa216d581728a6af69942cd92be8bd03bfc98aa7f56b45589af9d4",
+  "opcache_enable_cli": "0",
+  "explain": {
+    "current": {
+      "raw_json": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"tm.trenink_datum desc, tm.trenink_id desc, tm.poradi, mz.`id`\",\n        \"table\": {\n          \"table_name\": \"<derived2>\",\n          \"access_type\": \"ALL\",\n          \"rows\": 25,\n          \"filtered\": 100,\n          \"materialized\": {\n            \"query_block\": {\n              \"select_id\": 2,\n              \"filesort\": {\n                \"sort_key\": \"t.datum desc, t.`id` desc, tm.poradi, mz.`id`\",\n                \"temporary_table\": {\n                  \"table\": {\n                    \"table_name\": \"<derived3>\",\n                    \"access_type\": \"ALL\",\n                    \"rows\": 25,\n                    \"filtered\": 100,\n                    \"materialized\": {\n                      \"query_block\": {\n                        \"select_id\": 3,\n                        \"read_sorted_file\": {\n                          \"filesort\": {\n                            \"sort_key\": \"own_t.datum desc, own_t.`id` desc\",\n                            \"table\": {\n                              \"table_name\": \"own_t\",\n                              \"access_type\": \"ALL\",\n                              \"possible_keys\": [\"PRIMARY\"],\n                              \"rows\": 29840,\n                              \"filtered\": 100\n                            }\n                          }\n                        },\n                        \"table\": {\n                          \"table_name\": \"<subquery4>\",\n                          \"access_type\": \"eq_ref\",\n                          \"possible_keys\": [\"distinct_key\"],\n                          \"key\": \"distinct_key\",\n                          \"key_length\": \"4\",\n                          \"used_key_parts\": [\"trenink_id\"],\n                          \"ref\": [\"func\"],\n                          \"rows\": 1,\n                          \"filtered\": 100,\n                          \"materialized\": {\n                            \"unique\": 1,\n                            \"query_block\": {\n                              \"select_id\": 4,\n                              \"table\": {\n                                \"table_name\": \"own_tm\",\n                                \"access_type\": \"index\",\n                                \"possible_keys\": [\"PRIMARY\"],\n                                \"key\": \"PRIMARY\",\n                                \"key_length\": \"8\",\n                                \"used_key_parts\": [\"trenink_id\", \"mereni_id\"],\n                                \"rows\": 300000,\n                                \"filtered\": 100,\n                                \"using_index\": true\n                              },\n                              \"table\": {\n                                \"table_name\": \"own_mz\",\n                                \"access_type\": \"eq_ref\",\n                                \"possible_keys\": [\"PRIMARY\"],\n                                \"key\": \"PRIMARY\",\n                                \"key_length\": \"4\",\n                                \"used_key_parts\": [\"id\"],\n                                \"ref\": [\n                                  \"p11_read_fb38c8e22e0cc702.own_tm.mereni_id\"\n                                ],\n                                \"rows\": 1,\n                                \"filtered\": 100,\n                                \"attached_condition\": \"own_mz.sportovec_id = '1001'\"\n                              }\n                            }\n                          }\n                        }\n                      }\n                    }\n                  },\n                  \"table\": {\n                    \"table_name\": \"t\",\n                    \"access_type\": \"eq_ref\",\n                    \"possible_keys\": [\"PRIMARY\"],\n                    \"key\": \"PRIMARY\",\n                    \"key_length\": \"4\",\n                    \"used_key_parts\": [\"id\"],\n                    \"ref\": [\"eligible.id\"],\n                    \"rows\": 1,\n                    \"filtered\": 100\n                  },\n                  \"table\": {\n                    \"table_name\": \"tm\",\n                    \"access_type\": \"ref\",\n                    \"possible_keys\": [\"PRIMARY\"],\n                    \"key\": \"PRIMARY\",\n                    \"key_length\": \"4\",\n                    \"used_key_parts\": [\"trenink_id\"],\n                    \"ref\": [\"eligible.id\"],\n                    \"rows\": 150000,\n                    \"filtered\": 100\n                  },\n                  \"table\": {\n                    \"table_name\": \"mz\",\n                    \"access_type\": \"eq_ref\",\n                    \"possible_keys\": [\"PRIMARY\"],\n                    \"key\": \"PRIMARY\",\n                    \"key_length\": \"4\",\n                    \"used_key_parts\": [\"id\"],\n                    \"ref\": [\"p11_read_fb38c8e22e0cc702.tm.mereni_id\"],\n                    \"rows\": 1,\n                    \"filtered\": 100,\n                    \"attached_condition\": \"mz.sportovec_id = '1001'\"\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    },\n    \"table\": {\n      \"table_name\": \"mz\",\n      \"access_type\": \"eq_ref\",\n      \"possible_keys\": [\"PRIMARY\"],\n      \"key\": \"PRIMARY\",\n      \"key_length\": \"4\",\n      \"used_key_parts\": [\"id\"],\n      \"ref\": [\"tm.mereni_id\"],\n      \"rows\": 1,\n      \"filtered\": 100,\n      \"attached_condition\": \"mz.sportovec_id = '1001'\"\n    },\n    \"table\": {\n      \"table_name\": \"c\",\n      \"access_type\": \"eq_ref\",\n      \"possible_keys\": [\"PRIMARY\"],\n      \"key\": \"PRIMARY\",\n      \"key_length\": \"4\",\n      \"used_key_parts\": [\"id\"],\n      \"ref\": [\"p11_read_fb38c8e22e0cc702.mz.cvik_id\"],\n      \"rows\": 1,\n      \"filtered\": 100,\n      \"attached_condition\": \"trigcond(c.`id` = mz.cvik_id and trigcond(mz.cvik_id is not null))\"\n    },\n    \"table\": {\n      \"table_name\": \"seg\",\n      \"access_type\": \"eq_ref\",\n      \"possible_keys\": [\"PRIMARY\"],\n      \"key\": \"PRIMARY\",\n      \"key_length\": \"4\",\n      \"used_key_parts\": [\"id\"],\n      \"ref\": [\"p11_read_fb38c8e22e0cc702.mz.segment_id\"],\n      \"rows\": 1,\n      \"filtered\": 100,\n      \"attached_condition\": \"trigcond(trigcond(mz.segment_id is not null))\"\n    }\n  }\n}",
+      "parsed": {
+        "query_block": {
+          "select_id": 1,
+          "read_sorted_file": {
+            "filesort": {
+              "sort_key": "tm.trenink_datum desc, tm.trenink_id desc, tm.poradi, mz.`id`",
+              "table": {
+                "table_name": "<derived2>",
+                "access_type": "ALL",
+                "rows": 25,
+                "filtered": 100,
+                "materialized": {
+                  "query_block": {
+                    "select_id": 2,
+                    "filesort": {
+                      "sort_key": "t.datum desc, t.`id` desc, tm.poradi, mz.`id`",
+                      "temporary_table": {
+                        "table": {
+                          "table_name": "mz",
+                          "access_type": "eq_ref",
+                          "possible_keys": [
+                            "PRIMARY"
+                          ],
+                          "key": "PRIMARY",
+                          "key_length": "4",
+                          "used_key_parts": [
+                            "id"
+                          ],
+                          "ref": [
+                            "p11_read_fb38c8e22e0cc702.tm.mereni_id"
+                          ],
+                          "rows": 1,
+                          "filtered": 100,
+                          "attached_condition": "mz.sportovec_id = '1001'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "table": {
+            "table_name": "seg",
+            "access_type": "eq_ref",
+            "possible_keys": [
+              "PRIMARY"
+            ],
+            "key": "PRIMARY",
+            "key_length": "4",
+            "used_key_parts": [
+              "id"
+            ],
+            "ref": [
+              "p11_read_fb38c8e22e0cc702.mz.segment_id"
+            ],
+            "rows": 1,
+            "filtered": 100,
+            "attached_condition": "trigcond(trigcond(mz.segment_id is not null))"
+          }
+        }
+      }
+    },
+    "rejected_bounded": {
+      "raw_json": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"tm.trenink_datum desc, tm.trenink_id desc, tm.poradi, mz.`id`\",\n        \"table\": {\n          \"table_name\": \"<derived2>\",\n          \"access_type\": \"ALL\",\n          \"rows\": 25,\n          \"filtered\": 100,\n          \"materialized\": {\n            \"query_block\": {\n              \"select_id\": 2,\n              \"filesort\": {\n                \"sort_key\": \"t.datum desc, t.`id` desc, tm.poradi, mz.`id`\",\n                \"temporary_table\": {\n                  \"table\": {\n                    \"table_name\": \"<derived3>\",\n                    \"access_type\": \"ALL\",\n                    \"rows\": 25,\n                    \"filtered\": 100,\n                    \"materialized\": {\n                      \"query_block\": {\n                        \"select_id\": 3,\n                        \"read_sorted_file\": {\n                          \"filesort\": {\n                            \"sort_key\": \"own_t.datum desc, own_t.`id` desc\",\n                            \"table\": {\n                              \"table_name\": \"own_t\",\n                              \"access_type\": \"ALL\",\n                              \"possible_keys\": [\"PRIMARY\"],\n                              \"rows\": 29840,\n                              \"filtered\": 100\n                            }\n                          }\n                        },\n                        \"table\": {\n                          \"table_name\": \"<subquery4>\",\n                          \"access_type\": \"eq_ref\",\n                          \"possible_keys\": [\"distinct_key\"],\n                          \"key\": \"distinct_key\",\n                          \"key_length\": \"4\",\n                          \"used_key_parts\": [\"trenink_id\"],\n                          \"ref\": [\"func\"],\n                          \"rows\": 1,\n                          \"filtered\": 100,\n                          \"materialized\": {\n                            \"unique\": 1,\n                            \"query_block\": {\n                              \"select_id\": 4,\n                              \"table\": {\n                                \"table_name\": \"own_tm\",\n                                \"access_type\": \"index\",\n                                \"possible_keys\": [\"PRIMARY\"],\n                                \"key\": \"PRIMARY\",\n                                \"key_length\": \"8\",\n                                \"used_key_parts\": [\"trenink_id\", \"mereni_id\"],\n                                \"rows\": 300000,\n                                \"filtered\": 100,\n                                \"using_index\": true\n                              },\n                              \"table\": {\n                                \"table_name\": \"own_mz\",\n                                \"access_type\": \"eq_ref\",\n                                \"possible_keys\": [\"PRIMARY\"],\n                                \"key\": \"PRIMARY\",\n                                \"key_length\": \"4\",\n                                \"used_key_parts\": [\"id\"],\n                                \"ref\": [\n                                  \"p11_read_fb38c8e22e0cc702.own_tm.mereni_id\"\n                                ],\n                                \"rows\": 1,\n                                \"filtered\": 100,\n                                \"attached_condition\": \"own_mz.sportovec_id = '1001'\"\n                              }\n                            }\n                          }\n                        }\n                      }\n                    }\n                  },\n                  \"table\": {\n                    \"table_name\": \"t\",\n                    \"access_type\": \"eq_ref\",\n                    \"possible_keys\": [\"PRIMARY\"],\n                    \"key\": \"PRIMARY\",\n                    \"key_length\": \"4\",\n                    \"used_key_parts\": [\"id\"],\n                    \"ref\": [\"eligible.id\"],\n                    \"rows\": 1,\n                    \"filtered\": 100\n                  },\n                  \"table\": {\n                    \"table_name\": \"tm\",\n                    \"access_type\": \"ref\",\n                    \"possible_keys\": [\"PRIMARY\"],\n                    \"key\": \"PRIMARY\",\n                    \"key_length\": \"4\",\n                    \"used_key_parts\": [\"trenink_id\"],\n                    \"ref\": [\"eligible.id\"],\n                    \"rows\": 150000,\n                    \"filtered\": 100\n                  },\n                  \"table\": {\n                    \"table_name\": \"mz\",\n                    \"access_type\": \"eq_ref\",\n                    \"possible_keys\": [\"PRIMARY\"],\n                    \"key\": \"PRIMARY\",\n                    \"key_length\": \"4\",\n                    \"used_key_parts\": [\"id\"],\n                    \"ref\": [\"p11_read_fb38c8e22e0cc702.tm.mereni_id\"],\n                    \"rows\": 1,\n                    \"filtered\": 100,\n                    \"attached_condition\": \"mz.sportovec_id = '1001'\"\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    },\n    \"table\": {\n      \"table_name\": \"mz\",\n      \"access_type\": \"eq_ref\",\n      \"possible_keys\": [\"PRIMARY\"],\n      \"key\": \"PRIMARY\",\n      \"key_length\": \"4\",\n      \"used_key_parts\": [\"id\"],\n      \"ref\": [\"tm.mereni_id\"],\n      \"rows\": 1,\n      \"filtered\": 100,\n      \"attached_condition\": \"mz.sportovec_id = '1001'\"\n    },\n    \"table\": {\n      \"table_name\": \"c\",\n      \"access_type\": \"eq_ref\",\n      \"possible_keys\": [\"PRIMARY\"],\n      \"key\": \"PRIMARY\",\n      \"key_length\": \"4\",\n      \"used_key_parts\": [\"id\"],\n      \"ref\": [\"p11_read_fb38c8e22e0cc702.mz.cvik_id\"],\n      \"rows\": 1,\n      \"filtered\": 100,\n      \"attached_condition\": \"trigcond(c.`id` = mz.cvik_id and trigcond(mz.cvik_id is not null))\"\n    },\n    \"table\": {\n      \"table_name\": \"seg\",\n      \"access_type\": \"eq_ref\",\n      \"possible_keys\": [\"PRIMARY\"],\n      \"key\": \"PRIMARY\",\n      \"key_length\": \"4\",\n      \"used_key_parts\": [\"id\"],\n      \"ref\": [\"p11_read_fb38c8e22e0cc702.mz.segment_id\"],\n      \"rows\": 1,\n      \"filtered\": 100,\n      \"attached_condition\": \"trigcond(trigcond(mz.segment_id is not null))\"\n    }\n  }\n}",
+      "parsed": {
+        "query_block": {
+          "select_id": 1,
+          "read_sorted_file": {
+            "filesort": {
+              "sort_key": "tm.trenink_datum desc, tm.trenink_id desc, tm.poradi, mz.`id`",
+              "table": {
+                "table_name": "<derived2>",
+                "access_type": "ALL",
+                "rows": 25,
+                "filtered": 100,
+                "materialized": {
+                  "query_block": {
+                    "select_id": 2,
+                    "filesort": {
+                      "sort_key": "t.datum desc, t.`id` desc, tm.poradi, mz.`id`",
+                      "temporary_table": {
+                        "table": {
+                          "table_name": "mz",
+                          "access_type": "eq_ref",
+                          "possible_keys": [
+                            "PRIMARY"
+                          ],
+                          "key": "PRIMARY",
+                          "key_length": "4",
+                          "used_key_parts": [
+                            "id"
+                          ],
+                          "ref": [
+                            "p11_read_fb38c8e22e0cc702.tm.mereni_id"
+                          ],
+                          "rows": 1,
+                          "filtered": 100,
+                          "attached_condition": "mz.sportovec_id = '1001'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "table": {
+            "table_name": "seg",
+            "access_type": "eq_ref",
+            "possible_keys": [
+              "PRIMARY"
+            ],
+            "key": "PRIMARY",
+            "key_length": "4",
+            "used_key_parts": [
+              "id"
+            ],
+            "ref": [
+              "p11_read_fb38c8e22e0cc702.mz.segment_id"
+            ],
+            "rows": 1,
+            "filtered": 100,
+            "attached_condition": "trigcond(trigcond(mz.segment_id is not null))"
+          }
+        }
+      }
+    }
+  },
+  "schema_metadata": {
+    "treninky": {
+      "columns": [
+        {
+          "Field": "id",
+          "Type": "int(11)",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "datum",
+          "Type": "date",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "napln",
+          "Type": "text",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "delka",
+          "Type": "decimal(5,2)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "kategorie",
+          "Type": "varchar(30)",
+          "Null": "YES",
+          "Key": "",
+          "Default": "draha",
+          "Extra": ""
+        },
+        {
+          "Field": "poznamka",
+          "Type": "text",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "obrazky",
+          "Type": "text",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        }
+      ],
+      "indexes": [
+        {
+          "Table": "treninky",
+          "Non_unique": 0,
+          "Key_name": "PRIMARY",
+          "Seq_in_index": 1,
+          "Column_name": "id",
+          "Collation": "A",
+          "Cardinality": 1755,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": ""
+        }
+      ]
+    },
+    "trenink_mereni": {
+      "columns": [
+        {
+          "Field": "trenink_id",
+          "Type": "int(11)",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "mereni_id",
+          "Type": "int(11)",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "poradi",
+          "Type": "int(11)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        }
+      ],
+      "indexes": [
+        {
+          "Table": "trenink_mereni",
+          "Non_unique": 0,
+          "Key_name": "PRIMARY",
+          "Seq_in_index": 1,
+          "Column_name": "trenink_id",
+          "Collation": "A",
+          "Cardinality": 2,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": ""
+        },
+        {
+          "Table": "trenink_mereni",
+          "Non_unique": 0,
+          "Key_name": "PRIMARY",
+          "Seq_in_index": 2,
+          "Column_name": "mereni_id",
+          "Collation": "A",
+          "Cardinality": 2,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": ""
+        }
+      ]
+    },
+    "mereni_zaznamy": {
+      "columns": [
+        {
+          "Field": "id",
+          "Type": "int(11)",
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "contract_version",
+          "Type": "varchar(40)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "distance_unit",
+          "Type": "varchar(4)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "distance_meters",
+          "Type": "decimal(12,2)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "duration_ms",
+          "Type": "bigint(20) unsigned",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "rpe_value",
+          "Type": "decimal(3,1)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "sportovec_id",
+          "Type": "int(11)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "typ",
+          "Type": "varchar(100)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "vzdalenost",
+          "Type": "varchar(100)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "cas",
+          "Type": "varchar(100)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "rpe",
+          "Type": "varchar(100)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "prevod",
+          "Type": "varchar(20)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "cvik_id",
+          "Type": "int(11)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "segment_id",
+          "Type": "int(11)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "vaha",
+          "Type": "varchar(30)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "opakovani",
+          "Type": "int(11)",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        },
+        {
+          "Field": "poznamka",
+          "Type": "text",
+          "Null": "YES",
+          "Key": "",
+          "Default": null,
+          "Extra": ""
+        }
+      ],
+      "indexes": [
+        {
+          "Table": "mereni_zaznamy",
+          "Non_unique": 0,
+          "Key_name": "PRIMARY",
+          "Seq_in_index": 1,
+          "Column_name": "id",
+          "Collation": "A",
+          "Cardinality": 2,
+          "Sub_part": null,
+          "Packed": null,
+          "Null": "",
+          "Index_type": "BTREE",
+          "Comment": "",
+          "Index_comment": ""
+        }
+      ]
+    }
+  },
+  "emulated_prepares": 1
+}

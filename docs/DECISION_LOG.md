@@ -443,3 +443,10 @@ nepřenesla do HTTP. Celý bootstrap17SQL ukázal pomalý detail i po omezení.
 Změna nyní nejprve provede bounded eligible seznam a zachová pořadí pomocí
 STRAIGHT_JOIN; ověřit EXPLAIN a celé HTTP, neměnit20%gate.
 [Plán a původní důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-STATS — reprezentativní statistiky fixture
+
+SHOW INDEX prokázal1–2cardinality při300křádcích a EXPLAIN ALL/BNL.
+Obnovit statistiky3vlastních tabulek před OBOU měřenými variantami, uložit
+metadata i původní FAIL; žádné aplikační ANALYZE/DDL, gate20% zachovaná.
+[Plán a důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).

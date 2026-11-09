@@ -106,3 +106,20 @@ Nová diagnostika ukládá EXPLAIN aktuálního i odmítnutého volného selecto
 nad stejnými parametry (parametry neukládá), až po renderu v samostatných
 workers. Hypotézu musí potvrdit plán a nové celé párové HTTP/Chrome měření;
 20%gate se nesnižuje. Žádný RHM merge/deploy, cizí WIP zachovaný.
+
+## Příčina potvrzena — zastaralé statistiky syntetické DB
+
+[Run42640885861](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42640885861),
+head4d9d7edd, metadata obouDB PASS. Trenink_mereni má správný kompozitní
+PRIMARY(trenink_id,mereni_id), stejné INTtypy; u300křádků ovšem10.3 ukazuje
+cardinality2/2,11.4 jen1/1. Mereni_zaznamy PK1–2, tréninky2/1755 při30křádcích.
+Stará minimální fixture po velkém INSERT neobnovila persistentní statistiky;
+EXPLAIN proto volí ALL/BNL i u omezeného seznamu. Data i první výsledky
+zachované v stale-statistics/, nebyly změněny na PASS.
+
+Pouze vlastní syntetická příprava nyní provede ANALYZE těchto3tabulek před
+oběma variantami, zaznamená společné indexy, počty a stav analýzy. Žádný
+index/DDL/přepínač se nepřidává a aplikační request nic takového neprovádí.
+Původní i nový kód používají přesně stejná data a nově stejné obnovené
+statistiky; žádná změna20%gate. Nová nativní diagnostika/HTTP/Chrome/CI
+musí potvrdit přínos. Přihlášené produkční UAT a produkční výkon stále NOT RUN.
