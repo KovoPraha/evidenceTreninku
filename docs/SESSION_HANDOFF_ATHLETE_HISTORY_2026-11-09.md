@@ -30,3 +30,12 @@ levný YEAR před EXISTS a přidá browser ResourceTiming pro rozlišení soubě
 [První bezpečné důkazy a meze](verification/athlete-profile-history-performance-20261109/RESULTS.md).
 Místní7/892 i composer validate --strict PASS. Nový head potřebuje vlastní
 celéCI/native/Chrome před merge a podmíněným release; WIP a produkce zachované.
+
+## Převzetí souběžného main #412
+
+Převzato origin/main4f92b225 (odolnost rozepsaného tréninku) včetně kódu,
+testů a Q2-TIME dokumentace, beze změny přijatého obsahu. Konflikty jen
+CURRENT/EVENT; oba plány zachované, vlastní eventy nověE08/09 kvůli Q2-TIME E07.
+Baseline d666078e pro3dotčené profilové soubory zůstává byte-identická s
+main4f92b225. Nový integratedhead znovu ověří celéCI i native/HTTP/Chrome.
+První benchf9acd99f zůstává pouze prvním měřením, ne důkazem nového headu.

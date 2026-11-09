@@ -1,0 +1,61 @@
+{
+  "checks": [
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589429125/job/129067129680",
+      "name": "Analyze (actions)"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589435500/job/129067143148",
+      "name": "docs"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589435505/job/129067143321",
+      "name": "PHPStan level 5 and changed-file style"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589435512/job/129067143581",
+      "name": "PHPUnit na PHP 8.2"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589429125/job/129067129278",
+      "name": "Analyze (javascript-typescript)"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589429125/job/129067129568",
+      "name": "Analyze (python)"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589435512/job/129067144002",
+      "name": "MariaDB integrační smoke (MariaDB 10.3)"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589435512/job/129067144113",
+      "name": "MariaDB integrační smoke (MariaDB 11.4)"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589435512/job/129067144094",
+      "name": "MariaDB profily čtení (MariaDB 10.3)"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589435512/job/129067143980",
+      "name": "MariaDB profily čtení (MariaDB 11.4)"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/KovoPraha/evidenceTreninku/runs/129067328155",
+      "name": "CodeQL"
+    }
+  ],
+  "headRefOid": "9dad0dfc95b7403e569d89150a78eca130b2fc5c",
+  "mergeable": "UNKNOWN"
+}

@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 9. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) včetně UX01 [celoročních nabídek](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
+Aktualizováno 9. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) včetně Q2-TIME a UX01 [celoročních nabídek](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
 - **P11-RHI ROZPRACOVÁNO:** [historie profilu — plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md).
   [Předání](SESSION_HANDOFF_ATHLETE_HISTORY_2026-11-09.md); PR#413, první historie−92/94%; doladění roku a opakování UI/souběhu před release; WIP zachovaný.
 - **P11-RAH NASAZENO:** [agregace roků/počtů — plán](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md).

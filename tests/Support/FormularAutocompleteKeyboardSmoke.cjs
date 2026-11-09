@@ -14,7 +14,7 @@ function environment(mode) {
     class Element {
         constructor(){this.listeners={};this.children=[];this.value='';this.parent=null;this.html='';}
         addEventListener(type,callback){(this.listeners[type]??=[]).push(callback);}
-        fire(type){const event={target:this,defaultPrevented:false,preventDefault(){this.defaultPrevented=true;}};
+        fire(type,detail){const event={target:this,detail,defaultPrevented:false,preventDefault(){this.defaultPrevented=true;}};
             for(const callback of this.listeners[type]??[])callback(event);return event;}
         appendChild(child){child.parent=this;this.children.push(child);}
         contains(target){return this===target||this.children.some(child=>child.contains(target));}
@@ -24,7 +24,8 @@ function environment(mode) {
         focus(){document.activeElement=this;this.fire('focus');}
     }
     const input=new Element(),sug=new Element(),wrap=new Element(),hidden=new Element();
-    const elements={ucastnici_input:input,ucastnici_suggestions:sug,ucastnici_selected:wrap,ucastnici:hidden};
+    const form=new Element();
+    const elements={treninkForm:form,ucastnici_input:input,ucastnici_suggestions:sug,ucastnici_selected:wrap,ucastnici:hidden};
     document.getElementById=id=>elements[id];document.createElement=()=>new Element();
     const row={querySelector:selector=>({'.js-sp-name':input,'.js-sp-sug':sug,'.js-sp-id':hidden})[selector]};
     const context={document,window:{},DUPLIKAT:null,AbortController,setTimeout:callback=>timers.push(callback),
@@ -39,7 +40,7 @@ function environment(mode) {
         code=source.slice(start,source.indexOf('    function addRow()',start))+'makeSportovecAutocomplete(row);';
     }
     vm.runInNewContext(code,context);
-    return {input,sug,wrap,hidden,context,document,flush:()=>{while(timers.length)timers.shift()();},outside:()=>new Element()};
+    return {input,sug,wrap,hidden,form,context,document,flush:()=>{while(timers.length)timers.shift()();},outside:()=>new Element()};
 }
 
 async function search(env){env.input.focus();env.input.value='TEST';env.input.fire('input');await new Promise(resolve=>setImmediate(resolve));assert.equal(env.sug.children.length,1);return env.sug.children[0];}
@@ -77,4 +78,15 @@ test('measurement: keyboard result selection survives blur, preserves ID/label a
 test('measurement: leaving without a selected identity clears free text, as before',()=>{
     const e=environment('measurement');e.input.focus();e.input.value='Unselected';
     e.input.fire('blur');e.outside().focus();e.flush();assert.equal(e.input.value,'');assert.equal(e.hidden.value,'');
+});
+
+
+test('participant: draft restoration updates chips and hidden identity without duplicating selection',()=>{
+    const e=environment('participants');
+    e.form.fire('training-draft-restore',{participants:[{id:123,label:'TEST Anna'}]});
+    assert.equal(e.hidden.value,'123:TEST Anna');assert.equal(e.wrap.children.length,1);
+    e.form.fire('training-draft-restore',{participants:[{id:123,label:'TEST Anna'}]});
+    assert.equal(e.context.window.__ucastniciSelected.length,1);assert.equal(e.wrap.children.length,1);
+    e.form.fire('training-draft-restore',{participants:[]});
+    assert.equal(e.hidden.value,'');assert.equal(e.wrap.children.length,0);
 });

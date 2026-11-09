@@ -818,7 +818,7 @@ foreach ($opts as $k => $lbl):
                     <div class="col-md-3">
                         <label class="form-label mb-1">Čas (mm:ss.xx)</label>
                         <input type="text" class="form-control js-cas" aria-label="Čas měření" placeholder="02:13.45"
-                            pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)"
+                            pattern="(?:[0-9]{1,5}:[0-5][0-9](?:[.][0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:[.][0-9]{1,3})?)"
                             title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                     </div>
                     <div class="col-md-3 ${typ === 'kolo' ? '' : 'd-none'}">
@@ -867,7 +867,7 @@ foreach ($opts as $k => $lbl):
                     <div class="col-md-3">
                         <label class="form-label mb-1">Čas (mm:ss.xx)</label>
                         <input type="text" class="form-control js-cas" aria-label="Čas měření" placeholder="02:13.45"
-                            pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)"
+                            pattern="(?:[0-9]{1,5}:[0-5][0-9](?:[.][0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:[.][0-9]{1,3})?)"
                             title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                     </div>
                     <div class="col-md-4">
@@ -1116,7 +1116,7 @@ foreach ($opts as $k => $lbl):
     let dirty = false, submitting = false;
     form.addEventListener('input',  () => { dirty = true; });
     form.addEventListener('change', () => { dirty = true; });
-    form.addEventListener('submit', () => { submitting = true; });
+    form.addEventListener('submit', e => { submitting = !e.defaultPrevented; });
     window.addEventListener('beforeunload', e => {
         if (dirty && !submitting) {
             e.preventDefault();
@@ -1127,5 +1127,6 @@ foreach ($opts as $k => $lbl):
 </script>
 
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script>
+<script nonce="<?= h(app_csp_nonce()) ?>" src="assets/training-form-resilience.js"></script>
 </body>
 </html>

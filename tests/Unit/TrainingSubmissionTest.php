@@ -10,6 +10,35 @@ require_once dirname(__DIR__, 2).'/includes/training_submission.php';
 
 final class TrainingSubmissionTest extends TestCase
 {
+    public function testDraftSurvivesRejectedInputButNotSuccessfulSave(): void
+    {
+        $session = [];
+        $key = \trainingSubmissionIssue($session, 10, 0);
+        $draft = ['version' => 1, 'key' => $key, 'fields' => ['napln' => ['Text'], 'csrf_token' => ['secret']],
+            'rows' => [['cas' => '13,456']]];
+        \trainingSubmissionRememberDraft($session, $key, json_encode($draft));
+        self::assertSame(['Text'], $session['training_submissions'][$key]['draft']['fields']['napln']);
+        self::assertArrayNotHasKey('csrf_token', $session['training_submissions'][$key]['draft']['fields']);
+        \trainingSubmissionBegin($session, $key, 10, 0);
+        \trainingSubmissionRetryAfterRollback($session, $key);
+        self::assertSame([['cas' => '13,456']], $session['training_submissions'][$key]['draft']['rows']);
+        \trainingSubmissionBegin($session, $key, 10, 0);
+        \trainingSubmissionComplete($session, $key, 42, 'index.php');
+        self::assertArrayNotHasKey('draft', $session['training_submissions'][$key]);
+        \trainingSubmissionRememberDraft($session, $key, json_encode($draft));
+        self::assertArrayNotHasKey('draft', $session['training_submissions'][$key]);
+    }
+
+    public function testDraftRejectsOtherSubmissionAndOversizedPayload(): void
+    {
+        $session = [];
+        $key = \trainingSubmissionIssue($session, 10, 0);
+        foreach (['null', '{', str_repeat('x', 262145), json_encode(['version' => 1, 'key' => 'wrong', 'fields' => [], 'rows' => []])] as $json) {
+            \trainingSubmissionRememberDraft($session, $key, $json);
+            self::assertArrayNotHasKey('draft', $session['training_submissions'][$key]);
+        }
+    }
+
     public function testIndependentOpenFormsHaveIndependentKeysAndRetriesKeepTheirKey(): void
     {
         $session = [];
