@@ -38,3 +38,13 @@ pro každou chybějící tabulku a variantu; první fallback attendance už pro�
 První vzorky a cleanup zůstávají uložené, nejde o plný PASS.
 Head07d90a18 PHPStan/style PASS; CodeQL JS stažení nástroje504 (infrastruktura).
 Nový head opakuje všechny aktuální kontroly a celý benchmark/Chrome.
+
+## Úplný checkpoint před finálnímiCI
+
+1a0e7ff4/run42581044288 oběDB+Chrome PASS. Parent30k980→329 /1283→431ms,
+SQL17→15, paměť +12kB (neprezentovat jako úsporu). Chrome warm default
+2332→1469ms, savedMěření3251→2019ms. CeléHTML/JS i oba chybovéfallbacky,
+role/revokace/CSRF a rawAJAX přesné, PNG byte-identické/vizuálně PASS.
+[Bezpečné důkazy](verification/athlete-profile-header-performance-20261109/RESULTS.md).
+CodeQL stažení504 na managed workflow nelze rerun; nový checkpoint opakuje
+celéCI na novém headu. Merge a produkce ještě čekají. WIP zachovaný.

@@ -36,3 +36,51 @@ pro každou chybějící tabulku a variantu; první fallback attendance už pro�
 První vzorky a cleanup zůstávají uložené, nejde o plný PASS.
 Head07d90a18 PHPStan/style PASS; CodeQL JS stažení nástroje504 (infrastruktura).
 Nový head opakuje všechny aktuální kontroly a celý benchmark/Chrome.
+
+## První úplný kandidát1a0e7ff4 — PASS, run42581044288
+
+[10.3](first-complete/native-10.3/integrated-summary.json),
+[11.4](first-complete/native-11.4/integrated-summary.json),
+[Chrome](first-complete/browser-summary.json). Obě native2testy/30assertions,
+SQLite2/20, širší místní17/807 PASS. Všechny4source SHA256 porovnané s Git bloby.
+Zmrazené parent i reader z2c61df14, obě verze na stejných vlastních datech,
+SQL cacheOFF;4warmup+17střídavých párů,1k/10k/30k,3profily/objem.
+612časovanýchHTTP (306/DB), diagnostické požadavky oddělené od časování.
+
+| Tréninky / vlastní měření | ParentHTTP10.3 před→po ms | ParentHTTP11.4 před→po ms |
+| --- | --- | --- |
+|1000 /9000|43.329→21.537|46.499→20.924|
+|10000 /90000|280.188→99.627|415.808→143.368|
+|30000 /270000|980.180→328.687 (−66.5%)|1282.707→430.537 (−66.4%)|
+
+Malé/prázdné profily jsou na téže globálně velkéDB, raw controls v gzip;
+žádná podstatná regrese. Celé normalizovanéHTML/JS shodné, jen náhodné
+nonce/CSRF normalizované. SQL17→15/vrácenéřádky15→13. PHPmanagedpeak
+1249920→1261976B /1249904→1261960B (+12056B); žádná podstatná paměťová
+úspora se neslibuje. Není to RSS ani paměť DB. Nový read vrací jen roky+součty.
+
+52Chrome navigací: default i uloženáMěření,3cold+10warm/variantu.
+Warm default TTFB1312.25→452.20ms, load1367.70→507.85ms,
+celá navigace do historie DOM+2frames2331.80→1469.10ms (−37.0%).
+Warm savedMěření TTFB1313.35→454.10ms, celá navigace3251.30→2019.20ms (−37.9%).
+Samotný default AJAX981.15→979.70ms neutrální; savedAJAX1897.60→1528.25ms
+je proměnlivá souběžná komponenta, SQL obou AJAX zdrojů byte-nezměněné.
+Cold hodnoty uložené zvlášť v JSON, nepovažovat za warm ani za LCP/SLA.
+Filtry/roky/typy/pagery/záložky/390px PASS, konzole/transport chyby0.
+[Desktop](first-complete/native-11.4/athlete-header-after-desktop.png),
+[390px pager](first-complete/native-11.4/athlete-header-after-mobile.png):
+vizuálně zkontrolované; oba PNG před/po byte-identické. Dlouhý syntetický
+text na úzkém viewportu není tímto změněn, není to úplné mobilní UX/UAT.
+
+12staffrolí,4povolené kontexty3staff+bearer,15rawfragmentvariant/DB shodné.
+Čerstvá revokace/expirace/scope/inactive303, invalid/validCSRF/logout PASS.
+Oba skutečné chybové scénáře (chybějící attendance či measurement link table)
+vrací200 a shodný celý DOM, tabulka obnovena finally.11doménovýchchecksumů
+shodných; vlastníschema/user/config/cookies/workers/bridgealias cleanup PASS.
+Žádné privátní configy, cookie, tokeny, rawbody ani logy v artefaktech.
+
+CodeQL actions na tomto headu FAIL výhradně při stažení CLI HTTP504;
+GitHub odmítá opakování managed workflow (403/re-request404). Nedělá se
+výjimka: tento výsledkový checkpoint vytvoří nový head se všemi novýmiCI.
+Původní neúplné měření a opravné commity zůstávají zachované.
+Aktuální merge/deploy čeká, produkční výkon/přihlášené UAT NOT RUN.
