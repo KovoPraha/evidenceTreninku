@@ -10998,11 +10998,11 @@
       "title": "P11-RHM — měření profilu",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-RHM",
-      "disposition": "Zahájení; implementace a release čekají.",
+      "disposition": "#418/5cc9cf83, deploy42654922651 SUCCESS;20CI/parita/HTTP/Chrome PASS, UAT a meze samostatně.",
       "evidence": [
-        "docs/verification/athlete-profile-measurement-performance-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
       ]
     },
     {
@@ -11013,9 +11013,9 @@
       "role": "handoff",
       "status": "SUPPORT",
       "registry": "P11-RHM",
-      "disposition": "Zahájení; implementace a release čekají.",
+      "disposition": "#418/5cc9cf83, deploy42654922651 SUCCESS;20CI/parita/HTTP/Chrome PASS, UAT a meze samostatně.",
       "evidence": [
-        "docs/verification/athlete-profile-measurement-performance-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
       ]
     },
     {
@@ -11026,9 +11026,22 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-RHM",
-      "disposition": "Zahájení; implementace a release čekají.",
+      "disposition": "#418/5cc9cf83, deploy42654922651 SUCCESS;20CI/parita/HTTP/Chrome PASS, UAT a meze samostatně.",
       "evidence": [
-        "docs/verification/athlete-profile-measurement-performance-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-767870cd22",
+      "path": "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md",
+      "title": "P11-RHM produkční předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHM",
+      "disposition": "Protected release a čtecí ověření PASS; meze výslovné.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
       ]
     }
   ],

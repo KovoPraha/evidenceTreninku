@@ -1,185 +1,98 @@
-# P11-RHM — výsledky a měření
+# P11-RHM — ověření shody a měření
 
-9. 11. 2026: zahájení, implementace/parita/měření/CI/release NOT RUN.
-[Plán](../../ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
-Baseline5ff9fa2a65123aa1eef58be3678943cb4bfc2b53. Předchozí RHA/RHI důkazy
-zachované; starší SQL/Chrome údaje nejsou měřením tohoto kandidáta.
+9. 11. 2026: finální bounded selector. [Plán](../../ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [předání](../../SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md).
 
-## Lokální kandidát
+Dvě agregace byly odmítnuty; původní vzorky jsou zachované v rejected-json/ a rejected-integer/. Finální kód ponechává původní souhrn, mění pouze výběr detailů dlouhých přehledů: globálníprefix64 a úplný původní fallback pro neplnou stránku, total>800/page<=32. Scope a přesný typ se kontrolují znovu.
 
-Implementována MariaDB agregace s jedním JSON klíčem na binární typ a COUNT,
-připojení reprezentantů až po agregaci. Typové filtry i stránka zůstávají
-původní. Podmíněná verze>=10.3.3 a SESSIONlimit>=128; bez nastavování DB.
-Původní window souhrn zachovaný pro SQLite/MySQL/krátký limit. Metadata dotaz
-přidává1SQL na MariaDB, případný přínos se musí projevit v celémHTTP.
+## Metoda
 
-Lokálně SQLite10testů/1139assertions PASS (původníprofil/historie/header + nové
-3testy/247), PSR12 všech6dotčenýchPHP, PythonAST a composer validate --strict PASS.
-Jde o portable/fallback paritu včetně64bitklíčů; skutečný novýSQLfastpath a
-limity128/4 musí prokázat nativní CI na MariaDB10.3/11.4. Zatím NOT RUN.
-Žádná změna readeru mimo measurements()/nový helper, parent/endpoint/UI/
-security/session/writery byte-nezměněné. Baseline3soubory zmrazené z5ff9fa2a.
-Vlastní runner připraven pro1k/10k/30k,8scénářů/3profily,4warmups+17párů,
-oddělenou SQL/PHP diagnostiku a52Chrome navigací obou režimů.
+Linux CI, PHP8.2, MariaDB10.3/11.4, cacheOFF. Zmrazený reader+parent+endpoint z5ff9fa2a65123aa1eef58be3678943cb4bfc2b53. Plně migrovaná izolovaná syntetická DB, stejné file-session, čtyři PHP workers na variantu. Skutečné přihlášení a explicitní trenérský rozsah; žádné podvržené session. 1k/10k/30k tréninků a až270k vlastních vazeb. Devět scénářů, čtyři warmups a17střídavých párů:918časovaných AJAX naDB,1836celkem. Výběr osoby přes parent před každým requestem není součástí časovaného AJAX. Raw vzorky obsahují celé signature a TTFB/total, nikoli těla odpovědí.
 
-## Pokus 1 — JSON agregace odmítnuta
+SQL/PHP diagnostika je samostatný request mimo časování. PHPmanagedpeak obsahuje SQLprofiler, ale v posledním běhu se zachytí před pozdějším EXPLAIN/schema; není to peak prostého requestu, RSS ani paměťDB. Chrome52měřených navigací: default i uložená záložkaMěření,3cold+10warm na scénář/variantu. DokumentTTFB, fetch→DOM+2frames a celá navigace odděleně; nejde o LCP ani produkční SLA.
 
-PR #418, commit3b7fbfba, [native run42632034781](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42632034781).
-Nativní přesná parita obou DB3testy/499assertions PASS; celé HTTP/role/Chrome
-provedeny, výkonnostní akceptace FAIL. Mediány30k celé odpovědi:
+## Párové HTTP mediány (ms)
 
-MariaDB10.3: 756.473 → 1215.773 ms (+60.7%).
-MariaDB11.4: 798.339 → 839.414 ms (+5.1%).
+| DB | Tréninky | Scénář | Před | Po | Změna |
+| --- | --- | --- | ---: | ---: | ---: |
+| 10.3 | 1000 | primary | 19.710 | 15.103 | -23.4% |
+| 10.3 | 10000 | primary | 163.592 | 115.982 | -29.1% |
+| 10.3 | 30000 | primary | 590.973 | 424.092 | -28.2% |
+| 10.3 | 30000 | exact_case | 623.782 | 429.092 | -31.2% |
+| 10.3 | 30000 | exact_space | 608.838 | 406.746 | -33.2% |
+| 10.3 | 30000 | page2 | 607.216 | 409.907 | -32.5% |
+| 10.3 | 30000 | last | 653.883 | 618.535 | -5.4% |
+| 10.3 | 30000 | absent | 613.394 | 596.162 | -2.8% |
+| 10.3 | 30000 | small | 335.916 | 318.400 | -5.2% |
+| 10.3 | 30000 | old | 333.789 | 346.895 | +3.9% |
+| 10.3 | 30000 | empty | 328.996 | 326.671 | -0.7% |
+| 11.4 | 1000 | primary | 45.601 | 33.938 | -25.6% |
+| 11.4 | 10000 | primary | 446.269 | 305.944 | -31.4% |
+| 11.4 | 30000 | primary | 1348.186 | 915.044 | -32.1% |
+| 11.4 | 30000 | exact_case | 1341.120 | 919.367 | -31.4% |
+| 11.4 | 30000 | exact_space | 1346.847 | 914.332 | -32.1% |
+| 11.4 | 30000 | page2 | 1343.842 | 916.256 | -31.8% |
+| 11.4 | 30000 | last | 1394.505 | 1395.052 | +0.0% |
+| 11.4 | 30000 | absent | 1334.649 | 1329.971 | -0.4% |
+| 11.4 | 30000 | small | 795.790 | 794.690 | -0.1% |
+| 11.4 | 30000 | old | 796.107 | 801.872 | +0.7% |
+| 11.4 | 30000 | empty | 795.753 | 792.517 | -0.4% |
 
-První bezpečné vzorky, diagnostika, testy, security a cleanup zachované v
-[rejected-json](verification/athlete-profile-measurement-performance-20261109/rejected-json/failed-run-identity.json).
-Souhrnný report nevznikl, protože gate před ním správně zastavila běh.
-Identita prvního pokusu odvozena z Gitblobs a označena jako odvozená;
-nový runner ukládá skutečné source-identity hned při startu. Zatím nic nasazeno.
+## SQL a PHP diagnostika
 
-## Pokus 2 — integer klíč a omezení prvních stránek
+| DB | Varianta | SQL | Vrácené řádky | PHP peak B | Souhrn ms | Detail ms |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| 10.3 | before | 17 | 48 | 683784 | 435.074 | 193.888 |
+| 10.3 | after | 17 | 48 | 717720 | 446.220 | 4.115 |
+| 11.4 | before | 17 | 48 | 683768 | 900.696 | 439.186 |
+| 11.4 | after | 17 | 48 | 683896 | 911.234 | 6.670 |
 
-JSON serializaci/parsování nahrazuje přesný integer tuple s oddělovačem `:`
-a tokenem `N` pro NULL pozici. Dekódování DECIMAL(65,0), původní verze/limit
-fallback zachovány. Tréninky pro stránky1–32 se nejdřív omezí na prvních
-page*25 s EXISTS vlastní vazby a přesně stejného typu. Každý takový trénink
-přispívá alespoň jednou vazbou; proto nemůže chybět žádná potřebná položka.
-Vlastník/typ se znovu ověří v detailním výběru. Pozdější stránky zůstávají původní.
-Test nově pokrývá80vazeb jednoho tréninku, přechod32/33 a prázdné/typové filtry.
-Lokálně nové4testy/271assertions PASS. Nativní přínos druhého pokusu čeká;
-release pouze po nové shodě, měření a celém CI.
+## Chrome
 
-## Pokus 2 odmítnut, pokus 3 — pouze bounded selector
+| Scénář | Cache | Metrika | Před ms | Po ms | Změna |
+| --- | --- | --- | ---: | ---: | ---: |
+| default | cold | document_ttfb_ms | 464.40 | 470.10 | +1.2% |
+| default | cold | ajax_pair_render_ready_ms | 544.30 | 544.50 | +0.0% |
+| default | cold | navigation_to_both_ready_ms | 1054.00 | 1052.30 | -0.2% |
+| default | warm | document_ttfb_ms | 468.45 | 471.20 | +0.6% |
+| default | warm | ajax_pair_render_ready_ms | 539.95 | 542.25 | +0.4% |
+| default | warm | navigation_to_both_ready_ms | 1049.20 | 1053.40 | +0.4% |
+| measurements | cold | document_ttfb_ms | 465.80 | 469.00 | +0.7% |
+| measurements | cold | ajax_pair_render_ready_ms | 1498.10 | 1052.10 | -29.8% |
+| measurements | cold | navigation_to_both_ready_ms | 2008.80 | 1559.40 | -22.4% |
+| measurements | cold | measurement_fetch_to_render_ready_ms | 1498.10 | 1052.10 | -29.8% |
+| measurements | warm | document_ttfb_ms | 466.80 | 469.20 | +0.5% |
+| measurements | warm | ajax_pair_render_ready_ms | 1688.70 | 1456.55 | -13.7% |
+| measurements | warm | navigation_to_both_ready_ms | 2191.60 | 1959.90 | -10.6% |
+| measurements | warm | measurement_fetch_to_render_ready_ms | 1441.80 | 988.35 | -31.5% |
 
-[Run42634946860](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42634946860),
-head3b127f98, MariaDB10.3 native4/523 PASS, sourcehashes přesné, HTTPparita PASS,
-výkon FAIL:30k primary519.448→914.333ms (+76.0%).
-Samostatná diagnostika: původní souhrn410.259→748.548ms, ale detail164.894→4.190ms.
-Druhá agregace je stále pomalejší; zamítnuta. První/nové vzorky se nenahrazují.
-[Zdrojová identita a vzorky](verification/athlete-profile-measurement-performance-20261109/rejected-integer/native-10.3/source-identity.json).
-MariaDB11.4 tohoto pokusu dosud běží, bezpečné výsledky budou doplněny.
+## Shoda a bezpečnost
 
-Třetí kandidát vrací původní numeric-window souhrn byte-přesně, odstraňuje
-nový helper/verzový probe/metadata SQL a ponechává jen bounded training selector
-pro stránky1–32. Získané typy/součty ani jejich pořadí se nepočítají jinak.
-Čerstvé GROUP_CONCAT limity128/4/1048576 nadále pokryté paritou a nezměněnou
-SESSION hodnotou; původní souhrn se o limit neopírá. Detailní scope/type recheck
-zachovaný. Nové celé native/HTTP/Chrome měření a CI před případným release.
+Nativní5testů/624assertions na každéDB, SQLite5/312 PASS: úplný návratový objekt a PHPtypy proti zmrazené referenci, native/emulated prepares, stringify obě varianty, exactcase/mezery/Unicode/numerické/NULLtypy, nulové/NULLdatum, duplicity/orphans/foreign, signed64klíče a pozice, čerstvé změny,900vazeb jednoho tréninku a hranice32/33. GROUP_CONCAT limity128/4/1048576 výsledek neovlivňují a SESSION se nemění.
 
-## Pokus 3 — HTTP přínos zatím nedoložen, diagnóza celého bootstrapu
+Celé AJAXfragmenty, parentHTML/JS,12staffrolí a4povolené kontexty, bearer303/retarget/expirace/revokace/scope/inaktivní účet, CSRF/logout,2nezávislé fallbacky parentu a11doménových checksumů PASS. Všechny vlastní workers/DB/uživatel/config/session/alias odstraněné. Zdrojové soubory po běhu beze změny. Žádné DDL/cache/session/UI/writer změny v aplikaci.
 
-[Run42636506112](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42636506112),
-headd34e5427. MariaDB10.3 native4/523 a shoda PASS, HTTP30k712.779→708.897ms
-(−0.5%),20%gate FAIL. Diagnostika detail217.575→5.160ms se do celéhoHTTP
-nepromítla. Tento kandidát se zatím neslučuje/nenasazuje.
-Samostatný instrument původně načetl db.php před profilovacím PDO, proto
-neviděl SQL bootstrapu. SQL úspory jsou dílčí diagnóza, ne přínos celé aplikace.
+Raw důkazy: [10.3 identita](checked-head/native-10.3/source-identity.json), [11.4 identita](checked-head/native-11.4/source-identity.json), souhrny, gzvzorky, diagnostika, security, cleanup, XML a PNG ve stejných adresářích. Source SHA256 ověřené proti Gitblobům testovaného head a sloučeného kódu.
 
-Doplněn instrument pouze v izolovaných diagnostických kopiích db.php/readeru/
-endpointu. PDO se profiluje od samotného vytvoření ve stejném pořadí bootstrapu,
-bez přednačtení db.php; vypíše i SHA256 skutečně načtené třídy. Aplikace ani
-prosté časovací workers se tím nemění. Ruční diagnostic_only workflow používá
-jen syntetickou30kDB a přesné testy; nenahrazuje úplný HTTP/Chrome gate.
-Další krok: vysvětlit rozdíl, až poté případná další optimalizace a celý CI.
-Druhý pokus na11.4 také výkon FAIL; jeho původní raw/Chrome důkazy doplněné.
+Přihlášené produkční UAT, produkční měření, fyzický mobil a obnova konkrétní produkční zálohy NOT RUN. Syntetické časy nejsou produkční SLA. Release se dokládá samostatně.
 
-## Přesná diagnóza spojení a pokus 4 — pevné pořadí joinů
+## Význam výsledku a kontrolní profily
 
-Ruční diagnostic_only run42638743078 nejprve FAIL kvůli chybě testovacího
-bootstrapu (chybějící profilovací třída při loginu), aplikace se neměnila.
-Bezpečné source/test/cleanup důkazy v diagnostic-first-failed/ zachované.
-Opravený [run42639130649](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42639130649)
-PASS oběDB, f0f451e5:17SQL od vytvoření PDO, skutečné readerSHA shodné.
-Metadata/autorizace jsou pod1ms; brzda zůstává SQL měření. Na10.3 detail
-287.696→259.713ms, na11.4 365.562→953.808ms. Původní4–5ms diagnostika
-nebyla reprezentativní pro spojení po běžném bootstrapu. Plné rawdůkazy
-v full-bootstrap/, nejde o PASS výkonnostní akceptace.
+Hlavní20%gate PASS na obouDB. Starý900MZprofil má kvůli úplnému fallbacku
+1MZSQL navíc: +13.106ms/+3.9 % na10.3, +5.765ms/+0.7 % na11.4 při30k.
+Kontrolní gate pro tento nový scénář v každé škále: after < before*1.2 +20ms;
+PASS. Malé12/prázdné0 a vzácné filtry drží původní SQL. Nejde o tvrzení, že
+všechny profily a stránky zrychlují. Hlavní17SQL→17SQL, detail194→4ms a439→7ms;
+typový numeric-window souhrn zůstává dominantní a je byte-původní.
 
-Pracovní hypotéza: volné pořadí joinů může načíst všechny vlastní vazby před
-omezeným klíčovým seznamem. Nový kandidát začíná bounded eligible tréninky,
-na MySQL/MariaDB spojuje pomocí STRAIGHT_JOIN t→tm→mz v tomto pořadí.
-SQLite používá běžné JOIN; původní souhrn i pozdější stránky beze změny.
-[Oficiální řízení pořadí](https://mariadb.com/docs/server/ha-and-performance/optimization-and-tuning/query-optimizations/index-hints-how-to-force-query-plans).
-Nová diagnostika ukládá EXPLAIN aktuálního i odmítnutého volného selectoru
-nad stejnými parametry (parametry neukládá), až po renderu v samostatných
-workers. Hypotézu musí potvrdit plán a nové celé párové HTTP/Chrome měření;
-20%gate se nesnižuje. Žádný RHM merge/deploy, cizí WIP zachovaný.
+Chrome uloženéMěření warm: fetch→DOM+2frames1441.80→988.35ms (−31.5 %),
+celá navigace2191.60→1959.90ms (−10.6 %). Cold celá navigace2008.80→1559.40ms
+(−22.4 %). Default/historie warm1049.20→1053.40ms (+0.4 %), dokumentTTFB
+přibližně stejný. Nepřičítat SQL úsporu celé navigaci ani historii.
+Desktop/390px before/after PNG jsou byte-identické a vizuálně zkontrolované;
+syntetické dlouhé poznámky mají na úzké tabulce původní ořez/scroll, žádné nové
+mobilní UX ani fyzické mobilní UAT se tím nepotvrzuje. Konzole/transport0.
 
-## Příčina potvrzena — zastaralé statistiky syntetické DB
-
-[Run42640885861](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42640885861),
-head4d9d7edd, metadata obouDB PASS. Trenink_mereni má správný kompozitní
-PRIMARY(trenink_id,mereni_id), stejné INTtypy; u300křádků ovšem10.3 ukazuje
-cardinality2/2,11.4 jen1/1. Mereni_zaznamy PK1–2, tréninky2/1755 při30křádcích.
-Stará minimální fixture po velkém INSERT neobnovila persistentní statistiky;
-EXPLAIN proto volí ALL/BNL i u omezeného seznamu. Data i první výsledky
-zachované v stale-statistics/, nebyly změněny na PASS.
-
-Pouze vlastní syntetická příprava nyní provede ANALYZE těchto3tabulek před
-oběma variantami, zaznamená společné indexy, počty a stav analýzy. Žádný
-index/DDL/přepínač se nepřidává a aplikační request nic takového neprovádí.
-Původní i nový kód používají přesně stejná data a nově stejné obnovené
-statistiky; žádná změna20%gate. Nová nativní diagnostika/HTTP/Chrome/CI
-musí potvrdit přínos. Přihlášené produkční UAT a produkční výkon stále NOT RUN.
-
-## Ochrana řídkých filtrů a malých profilů
-
-Bounded selector používat pouze při filtrovaném total>800 a stránce<=32.
-Při malém/prázdném/vzácném filtru by hledání prvních25vlastních tréninků
-mohlo procházet celý klub, zatímco přímý původní selector je vhodnější.
-Jejich SQL zůstává původní, včetně pozorování detailů po souhrnu. Nevkládá
-se předčasný prázdný return ani další SQL. Vysoké počty/typy stále zrychluje
-bounded strategie; velké pozdní stránky zůstávají původní.
-
-Paritní fixture zvýšené tak, aby nový guard skutečně procvičily:101tréninků
-s null/zero/date/position/typovými okraji,900vazeb jednoho tréninku a velký
-exact trailing-space typ v native/emulated+stringify režimech,32/33stránka,
-64bitklíče v profilu nad800vazbami. Nové přesné lokální/nativní a celéHTTP
-kontroly musí projít na novém head. Rozsah bez změny; gate20% zachovaná.
-
-## Zpřesnění malého měřicího profilu
-
-Kontrola rawsignature ukázala, že SID1012 měl12tréninků, ale0měření;
-dřívější small/empty fragmenty byly oba225bytů a shodné. Dosavadní přínos
-primary zůstává platný pro dané běhy, small nebylo ověření12měření.
-Vlastní příprava nyní vloží12skutečných měření k existujícím12tréninkům
-SID1012 (kolo/KOLO/kolo-space), prázdnýSID1020 zůstává0. Před každým
-měřením se společné profile_counts explicitně ověří12/0 a uloží do statistiky.
-Stejná data pro before/after, bez změny aplikace. Nový kompletní native/
-HTTP/Chrome běh na tomto head je rozhodující; předchozí vzorky zachované.
-
-## Finální data — první native10.3 PASS, souhrnný CodeQL check k obnově
-
-[Run42644225032](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42644225032),
-head345938af: MariaDB10.3 native4/619 PASS, celé fragmenty/role/checksumy/
-cleanup a20%gate PASS.30k primary458.363→324.314ms (−29.2%), exactcase−29.9%,
-space−30.2%, page2−29.1%. Last−0.4%, absent+0.1%, skutečný malý12−0.3%,
-empty+0.2%. Počty270000/12/0 povinně potvrzené. První úplné důkazy v
-first-validated/native-10.3/,11.4/Chrome ještě čekají. SQLite11/1199 PASS,
-sourceoutside measurements + původní souhrn byte-přesné.
-
-Všechny3CodeQLanalýzy345938af SUCCESS a API má správnýcommit/ref/config,
-error/warning prázdné; souhrnný check přesto NEUTRAL se zprávou chybějícíPY
-konfigurace. První metadata zachovaná v codeql-first-*.json. GitHub defaultsetup
-neumožnil job/run retry, checkrerequest404. Nový dokumentační head bez změny
-runtime obnoví kontrolu; nesmí se vydávat jako20SUCCESS, dokud nejsou skutečně
-zelené všechny kontroly aktuálního head. Produkce e3f29903, žádný RHMdeploy.
-
-## Pokus 5 — omezený globální prefix a původní fallback
-
-Závěrečná kontrola složitosti odhalila, že hledání prvních vlastních tréninků
-přes EXISTS může u dávno neaktivního, ale velkého profilu projít celý klub.
-Před release proto nahradit tento selector pevným prefixem64globálně posledních
-tréninků. Připojit vazby v daném pořadí, filtrovat přesný typ/vlastníka a provést
-původní LIMIT/OFFSET. Plnou25řádkovou stránku lze přijmout: globální prefix
-zaručuje, že žádné vynechané starší měření nemůže předcházet vráceným řádkům.
-Pokud stránka není plná, provést původní neomezený selector. Žádné zkrácené
-výsledky ani odhadované počty. Malé/vzácné/prázdné filtry a pozdní stránky
-zůstávají původní. Typový souhrn je byte-původní. Bez DDL/cache/settings.
-
-Doplnit oracle test starého velkého profilu za128novějšími cizími tréninky
-na všech relevantních stránkách. HTTP příprava dostaneSID1013 s900měřeními
-v roce1990 mimo současný globální prefix; úplná parita i výkon se ověří také
-na tomto9.scénáři. Nová akceptace918časovanýchAJAX/DB,1836celkem +52Chrome,
-20%gate pro hlavní scénář a kontrola starého profilu bez podstatné regrese.
-Předchozí PASS přísluší předchozímu selectoru; nic z něj se zatím nenasazuje.
+[Produkční předání](../athlete-profile-measurement-release-20261109/RESULTS.md):
+#418/5cc9cf83,20CI/source/tree PASS, protecteddeploy42654922651 SUCCESS,
+veřejné8/8HTTP/DOM shodné; konfigurace/VS zachované. Produkční výkon,
+přihlášenéUAT a obnova této zálohy NOT RUN.

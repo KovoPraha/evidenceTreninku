@@ -44,3 +44,7 @@ Převzato main fa8315eb, úplné produkční předání Q2-TIME včetně jeho p�
 Oba release záznamy zachované, vlastní uzavření nově eventE11 kvůli přijatémuE10.
 Změna jen dokumentace; runtime stále c3d34b87. Nový společný proof head
 znovu ověřuje celéCI před merge.61artifacthashů zůstává kanonicky shodných.
+
+## Návaznost — měření dokončená
+
+[P11-RHM](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), #418/5cc9cf83/deploy42654922651 SUCCESS; [aktuální předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md). Původní RHI výsledky se nepřepisují ani nesčítají s novým přínosem Měření.
