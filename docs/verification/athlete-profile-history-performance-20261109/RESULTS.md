@@ -63,3 +63,45 @@ filtry/stránky/roky/typy/záložky/390px PASS.12staffrolí/4povolené kontexty,
 2nezávisléfallbacky parentu,11checksumů a kompletní vlastní cleanup PASS.
 Přihlášené produkční UAT/produkční výkon NOT RUN. Nový head ještě potřebuje
 celé vlastníCI i nový párový výkon; produkce/WIP zůstávají zachované.
+
+## Finální integrovaný ecd47579 — run42623263818
+
+[10.3](checked-head/native-10.3/integrated-summary.json),
+[11.4](checked-head/native-11.4/integrated-summary.json),
+[Chrome](checked-head/browser-summary.json). Zahrnuje přijatý main#412;
+3baselineprofilové soubory z d666078e stejné jako v main/produkci4f92b225.
+Všech5measured-source SHA256 ověřeno proti Git blobům ecd47579.
+
+| Tréninky / vlastní měření | HistorieHTTP10.3 před→po ms | HistorieHTTP11.4 před→po ms |
+| --- | --- | --- |
+|1000 /9000|29.142→11.618|37.778→10.999|
+|10000 /90000|192.198→27.345|313.875→27.133|
+|30000 /270000|599.411→64.589 (−89.2%)|953.704→63.851 (−93.3%)|
+
+Kontroly aktuálníhoroku574→49 /940→49ms, page2/last rovněž výrazně rychlejší.
+Malý profil406→274 /757→443ms, prázdný405→283 /751→454ms na stejnévelkéDB.
+Dřívější drobná regrese neexistujícíhoroku odstraněná:11.068→11.219ms
+/10.699→10.953ms (neutrální). Pořadí levnéhoYEAR před EXISTS je doložené výsledkem.
+SQL12→12, vrácenéřádky30282→30282. PHPmanagedpeak14529656→1561032B
+/14529640→1561016B (−89.3%), oddělená instrumentace, ne RSS/DB paměť.
+Celé fragmenty/parentHTML/JS shodné, normalizují se jen náhodné nonce/CSRF.
+
+52Chrome navigací3cold+10warm/scénář/variantu, rawResourceTiming obou skutečných
+fetchů v gzip. Warm default TTFB476.25→477.70ms a load532.45→537.15ms neutrální;
+historie fetch→DOM+2frames1012.85→540.20ms (−46.7%), celá navigace1530.25→1058.25ms
+(−30.8%). SavedMěření2234.60→2051.90ms (−8.2%), společnáAJAXčást1700.05→1540.50ms.
+První savedMěření+9.5% zůstává zachované: výsledek záložky Měření je proměnlivý,
+SQL této projekce se nemění, neslibovat její vlastní stabilní zrychlení.
+Souběh/worker scheduling zůstává hypotéza; ResourceTiming sám příčinu nedokazuje.
+Default historie má v obou bězích konzistentní přínos kolem31% celé navigace.
+PNG v obou velikostech byte-identické před/po i vůči prvnímu vizuálně
+zkontrolovanému běhu; dlouhé syntetické texty na390px nejsou novéUX ani fyzický UAT.
+
+Native2/513 každáDB,SQLite2/261 a místnícelkem7/892, composer validate --strict,
+PSR12 PASS.1428časovanýchAJAXodpovědí (714/DB) +52Chrome;4warmups oddělené,
+7scénářů/3objemy/3scopedprofily, předchozí parentGET nejsou v časech.
+12staffrolí/4povolené kontexty,15rawfragmentvariant/DB, freshrevokace/expirace/
+scope/CSRF,2fallbacky parentu,11doménovýchchecksumů a kompletníowncleanup PASS.
+Konzole/transportchyby0; filtry/roky/typy/pagery/záložky/390px PASS.
+Přihlášené produkční UAT/produkční výkon/fyzický mobil NOT RUN, syntetická čísla
+nejsou produkční SLA/LCP. CeléCI a produkční release mají samostatný protokol.

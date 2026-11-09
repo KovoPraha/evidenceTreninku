@@ -3,7 +3,7 @@
 			273 text entry area (settable) Náplň tréninku *, ID: napln, Value: TEST Q2-TIME 2026-11-09 — NEUKLÁDAT
 Kontrola ztráty textu: rozjetí, 200 m, vyjetí.
 			625 text 
-			275 text Poznámka 
+			275 text Poznámka
 			276 text neveřejné
 			277 text entry area (settable) Poznámka neveřejné, Value: TESTOVACÍ KONCEPT — zachovat poznámku po obnovení i zavření okna., ID: poznamka
 		278 container

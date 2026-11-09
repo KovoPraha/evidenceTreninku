@@ -1,8 +1,8 @@
 # Aktuální stav projektu
 
 Aktualizováno 9. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) včetně Q2-TIME a UX01 [celoročních nabídek](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
-- **P11-RHI ROZPRACOVÁNO:** [historie profilu — plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md).
-  [Předání](SESSION_HANDOFF_ATHLETE_HISTORY_2026-11-09.md); PR#413, první historie−92/94%; doladění roku a opakování UI/souběhu před release; WIP zachovaný.
+- **P11-RHI NASAZENO:** [historie profilu — plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_HISTORY_2026-11-09.md).
+  #413/c3d34b87, deploy42625502461 SUCCESS;18CI PASS, historie−89/93%, PHP−89%, Chrome historie−31%; [důkazy](verification/athlete-profile-history-release-20261109/RESULTS.md), veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
 - **Q2-TIME NASAZENO:** #412 / `4f92b225`, deploy42622226704 SUCCESS; [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026), [release a přejímka](verification/training-form-resilience-release-20261109/RESULTS.md).
   11 CI / 2409 testů PASS; 6 HTTP a přesná shoda produkčního JS PASS. Záloha389/2, schéma/VS PASS; [Cílené přihlášené UAT 3/3 PASS](verification/training-form-uat-20261109/RESULTS.md): chybný čas, reload, zavření okna. Úklid konceptu neověřen po blokaci nástroje.
 - **Q01/Q2 NASAZENO, cílené přihlášené UAT PASS:** #390 / `5b9279f9` v release `755b20a2`, [deploy 42483838259](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42483838259) SUCCESS a následně zahrnuté v P11-RH. Chrome `Superadmin · Trenér`: Moje/Vše a filtry 360/390/1536 px bez přetékání; původní kontext Programy obnoven. [Protokol a meze](verification/planner-mobile-release-20261108/RESULTS.md); původní [P11-R05-H #374](verification/planner-hierarchy-release-20261107/RESULTS.md). Import/UAT flag false; úplné funkční UAT ostatních rolí otevřené.
