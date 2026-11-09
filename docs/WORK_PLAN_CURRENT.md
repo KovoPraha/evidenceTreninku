@@ -14,7 +14,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## Úplný katalog plánů
 
-QR01 — implementace HOTOVO v `main`, release otevřený: [verze podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md), vlastník vývoj, [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) → `5977897f`. HTML atribut opraven; [20/388 místních a 11 CI PASS](verification/quick-registration-terms-20261109/RESULTS.md). Ruční deploy čeká na potvrzení vlastníka, živé rodičovské UAT otevřené.
+QR01 — implementace ve dvou řezech, release otevřený: [verze podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md), vlastník vývoj, [#416](https://github.com/KovoPraha/evidenceTreninku/pull/416) → `5977897f` s 11 CI PASS; [#419](https://github.com/KovoPraha/evidenceTreninku/pull/419) zachovává povinnost znovu potvrdit změněný text, [20/395 místních kontrol PASS](verification/quick-registration-terms-20261109/RESULTS.md). CI #419, ruční deploy a živé rodičovské UAT otevřené.
 
 [Katalog všech plánů a konceptů](PLAN_CATALOG.md) je součást tohoto registru:
 každý dokument má vlastní stabilní ID, stav, vazbu na P/C/DOC a důkaz nebo

@@ -10987,7 +10987,7 @@
       "primary": true,
       "status": "PARTIAL",
       "registry": "QR01",
-      "disposition": "PR #416 sloučen jako 5977897f, 11 CI PASS; ruční deploy a živé UAT otevřené.",
+      "disposition": "#416 v main, #419 doplňuje nové potvrzení textu; CI #419, ruční deploy a živé UAT otevřené.",
       "evidence": [
         "docs/verification/quick-registration-terms-20261109/RESULTS.md"
       ]
