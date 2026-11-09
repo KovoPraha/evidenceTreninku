@@ -1,6 +1,7 @@
 # P11-RAP — počáteční načtení profilu sportovce
 
-9. 11. 2026: ROZPRACOVÁNO, plán před implementací. Vlastník: vývoj podle
+9. 11. 2026: **NASAZENO / technický řez HOTOVO**, #408/ca5fc219, deploy42574460894 SUCCESS.
+Původní plán vznikl před implementací, průběžné záznamy níže jsou historické. Vlastník: vývoj podle
 aktuálního zadání Marka. Autorizace: zachovat WIP, ověřit přesnou shodu a
 změřit před/po; po úspěšných kontrolách commit, merge a chráněné nasazení.
 [Předání](SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md),
@@ -70,3 +71,29 @@ Run42570580742 na40183284: oba native PASS. Dominantní nepoužitý snapshot
 94752řádků,649/1665ms; PHP peak~96,6MB. Zvolena oddělená projekce3součtů,
 plný kanonický souhrn/export/hash beze změny. [Důkaz](verification/athlete-profile-parent-performance-20261109/RESULTS.md).
 PR[#408](https://github.com/KovoPraha/evidenceTreninku/pull/408), zatím bez release.
+
+## Uzavření 9. 11. 2026
+
+[Finální měření](verification/athlete-profile-parent-performance-20261109/RESULTS.md),
+[produkční důkaz](verification/athlete-profile-parent-release-20261109/RESULTS.md).
+95305c2a všech16CI SUCCESS; tested/merged tree a4measured-sourceSHA256 přesné.
+#408 sloučeno jako ca5fc219; deploy42574460894 SUCCESS06:45:44UTC.
+2405/54909, záloha389/2, migrace/VS/config/index/smoke PASS, import/UATfalse.
+Veřejné8/8stavů i celého normalizovanéhoDOM před/po shodné. WIP byte-preserved.
+
+Native parita2/54 na obouDB/SQLite, širší lokální49/324,612časovanýchHTTP a52Chrome.
+30k parent1890→864 /3034→1356ms (−54/55%), PHP96,6→1,26MB,
+SQL22→17 a94771→15řádků. Chrome warm default4126→2433ms (−41%),
+savedMěření5074→2944ms (−42%); individuální AJAX SQL zůstává stejné.
+Celé HTML/JS i typy/filtry/role/tokeny/fresh revokace/CSRF přesné, PNGbyte-identické.
+Malé a prázdné profily na téže velké DB rovněž přeměřené, původní diagnóza
+ani první páry nepřepsané. Nejde o produkční SLA/LCP či měření paměti DB serveru.
+Plný kanonický souhrn/export/hash i všechny closure/notewritery byte-identické.
+Nová projekce nepředstírá neúplný objekt s původním snapshot contracttagem.
+
+Přihlášené produkční UAT, produkční výkon, fyzický mobil a nové uložení poznámky
+NOT RUN; technická přejímka je samostatná. Žádná aktivace produktu/provideru či role.
+Souborové důkazy předává release-proof větev do main, bez opakování deploye dokumentace.
+Další pouze diagnostický KONCEPT: tři header agregace jsou stále nákladné,
+roky a celkový počet opakují stejný UNION. Před implementací samostatná baseline,
+parita null/0roků a typů, nové páry; žádná cache čerstvých práv nebo DDL v requestu.

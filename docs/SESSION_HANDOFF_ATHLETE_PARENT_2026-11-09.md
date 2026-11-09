@@ -1,20 +1,37 @@
 # Předání P11-RAP — počáteční profil sportovce
 
-9. 11. 2026: plán před implementací, vlastní větev/worktree, WIP zachovaný.
+9. 11. 2026: **NASAZENO / technické ověření PASS**.
 [Plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md),
-[výsledky](verification/athlete-profile-parent-performance-20261109/RESULTS.md).
-Main02904936, produkce95cb33e5/deploy42531190845 SUCCESS.
-Další doložená rezerva: parent profil~2,7sTTFB při30kfixture. Nejdříve samostatný
-SQL profil celé route, potom pouze potřebná projekce; úplný kanonický souhrn/
-hash/export musí zůstat přesně stejný. Žádná cache čerstvých práv či nové DDL.
-Větev codex/athlete-profile-parent-performance-20261109, původní WIP/hash shodné.
-RHA/RHC/RAS hotové, RGS vypnuté/nevybrané; neopakovat/neaktivovat.
-Diagnostika/implementace/CI/merge/deploy zatím NOT RUN; podmíněná autorizace
-aktuálního vlastníka platí, před release úplná parita/HTTP/Chrome a aktuální CI.
+[měření a parita](verification/athlete-profile-parent-performance-20261109/RESULTS.md),
+[produkční protokol](verification/athlete-profile-parent-release-20261109/RESULTS.md).
+PR[#408](https://github.com/KovoPraha/evidenceTreninku/pull/408) /ca5fc219,
+deploy42574460894 SUCCESS06:45:44UTC. Všech16CI na95305c2a SUCCESS,
+celý tested/merged tree a4measured-sourceSHA256 obouDB přesné.
 
-Diagnostika42570580742 obaDB PASS:94752nepoužitých řádků,649/1665ms, peak96,6MB.
-Zvolen nový reader3součtů se stejnými kanonickými aktivitami; full snapshot
-beze změny. PR#408, další krok přesná parita a prokládané HTTP/Chrome páry.
+Parent panel nyní volá3polový SportsActivityOverviewRead se stejnými kanonickými
+closure/event readers. Plný sportsActivitySummary/export/hash, historie/AJAX,
+rights/session/CSRF/odměny a všechny writery byte-identické. Žádné DDL/cache.
+Samostatná původní diagnóza prokázala94752nepoužitých measurement snapshotů;
+výsledky této diagnózy i prvních párů zůstávají zachované, nesmí se míchat běhy.
 
-61e84220: native10.3 celá parent route/12rolí/CSRF PASS,30k1981→888ms,
-SQL94771→15řádků a peak96,6→1,26MB. 11.4/Chrome čekají, bez merge/deploy.
+Finální native10.3/11.4:30kparent1890→864 /3034→1356ms (−54/55%),
+SQL22→17,94771→15řádků a PHPpeak96,6→1,26MB. Parita2/54 na každéDB iSQLite,
+lokálně49/324,612časovanýchHTTP a52Chrome navigací. Warm default4126→2433ms,
+savedMěření5074→2944ms; vlastní AJAX SQL beze změny, komponenta v browseru proměnlivá.
+Celé normalizovanéHTML/JS,12rolí,bearer303,expiry/revokace/scope,CSRF/logout,
+15byte-shodných AJAX variant/DB,11doménovýchchecksumů a všechny own cleanupy PASS.
+Vizuální desktop/390px a UI interakce PASS; PNGpřed/po byte-identické.
+
+Deploy2405/54909, záloha389tabulek/2triggery, migrace current/pending[], VS a
+konfigurace shodné, index/aktivace/smoke/klíč PASS. Importfalse/UATfalse,
+produktový import SKIPPED. Veřejné8/8HTTP i normalizovanýchDOM shodné před/po.
+Přihlášené produkční UAT, fyzický mobil, produkční výkon a skutečné nové uložení
+poznámky NOT RUN. Syntetická čísla nejsou produkční SLA/LCP ani paměť DB serveru.
+
+Původní codex/fio-auto-reconciliation-recovery a WIP kis_rosters_admin.php
+SHA2567a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 shodné.
+Souborové důkazy: codex/athlete-parent-release-proof-20261109, předat do main
+přes dokumentační PR; další deploy pro dokumentaci nespouštět.
+RHA/RHC/RAS/RAP hotové, RGS vypnuté/nevybrané, neopakovat/neaktivovat.
+Další diagnostický KONCEPT: sdílet drahý UNION roků/počtu headeru; nejprve nová
+baseline a parita null/0dat i PHPtypů, žádná cache čerstvých práv.

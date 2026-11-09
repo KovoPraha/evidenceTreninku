@@ -1,0 +1,74 @@
+{
+  "synthetic_only": true,
+  "source_head": "95305c2a4f2a4569a92da03e3199da7e34e32f34",
+  "navigations": 52,
+  "browser": {
+    "before": {
+      "default": {
+        "cold": {
+          "document_ttfb_ms": 3085.5,
+          "document_load_ms": 3156.899999999965,
+          "ajax_pair_render_ready_ms": 1058.1999999999534,
+          "navigation_to_both_ready_ms": 4185.699999999953
+        },
+        "warm": {
+          "document_ttfb_ms": 3080.850000000006,
+          "document_load_ms": 3139.7999999999884,
+          "ajax_pair_render_ready_ms": 1019.2499999999709,
+          "navigation_to_both_ready_ms": 4126.300000000047
+        }
+      },
+      "measurements": {
+        "cold": {
+          "document_ttfb_ms": 3111.29999999993,
+          "document_load_ms": 3161.5,
+          "ajax_pair_render_ready_ms": 1566,
+          "navigation_to_both_ready_ms": 4713.5
+        },
+        "warm": {
+          "document_ttfb_ms": 3067.7000000000116,
+          "document_load_ms": 3120.2999999999884,
+          "ajax_pair_render_ready_ms": 1989.0,
+          "navigation_to_both_ready_ms": 5073.950000000012
+        }
+      }
+    },
+    "after": {
+      "default": {
+        "cold": {
+          "document_ttfb_ms": 1367.7000000000698,
+          "document_load_ms": 1429.3000000000466,
+          "ajax_pair_render_ready_ms": 1003.6999999999534,
+          "navigation_to_both_ready_ms": 2405
+        },
+        "warm": {
+          "document_ttfb_ms": 1371.600000000035,
+          "document_load_ms": 1434.25,
+          "ajax_pair_render_ready_ms": 1016.2999999999302,
+          "navigation_to_both_ready_ms": 2432.5999999999767
+        }
+      },
+      "measurements": {
+        "cold": {
+          "document_ttfb_ms": 1380,
+          "document_load_ms": 1444.5,
+          "ajax_pair_render_ready_ms": 1543.5,
+          "navigation_to_both_ready_ms": 2970.5
+        },
+        "warm": {
+          "document_ttfb_ms": 1359.9500000000698,
+          "document_load_ms": 1410.4500000000116,
+          "ajax_pair_render_ready_ms": 1555.0499999999884,
+          "navigation_to_both_ready_ms": 2944.149999999965
+        }
+      }
+    }
+  },
+  "screenshots": {
+    "before-desktop": "eae34af1c2aaece484a3b5196c189b20e9efc5b574dca0312cfac07ca5ecf2ab",
+    "before-mobile": "04837a003cdf18b874a02be4b29e7c338dea336801f2d288684c6928e533423a",
+    "after-desktop": "eae34af1c2aaece484a3b5196c189b20e9efc5b574dca0312cfac07ca5ecf2ab",
+    "after-mobile": "04837a003cdf18b874a02be4b29e7c338dea336801f2d288684c6928e533423a"
+  },
+  "screenshots_identical": true
+}

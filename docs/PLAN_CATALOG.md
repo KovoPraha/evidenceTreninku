@@ -399,4 +399,4 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-55c979f2b8 | [P11-RAS — souběh čtecího profilu/session](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md) | DONE / P11-RAS | #406/95cb33e5 NASAZENO, parita/přínos/16CI PASS; [release](verification/ajax-profile-session-release-20261108/RESULTS.md), UAT samostatné. |
 
-| PL-1f9749e6c2 | [P11-RAP — počáteční načtení profilu](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md) | IN_PROGRESS / P11-RAP | Diagnostika celé parent route před změnou, [předání](SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md). |
+| PL-1f9749e6c2 | [P11-RAP — počáteční načtení profilu](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md) | DONE / P11-RAP | #408/ca5fc219 NASAZENO, parita/přínos/16CI PASS; [release](verification/athlete-profile-parent-release-20261109/RESULTS.md), UAT samostatné. |

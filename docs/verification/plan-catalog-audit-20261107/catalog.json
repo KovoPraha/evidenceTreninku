@@ -10835,10 +10835,12 @@
       "title": "P11-RAP — počáteční načtení profilu",
       "primary": true,
       "role": "plan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-RAP",
-      "disposition": "Nejprve diagnostika, původní WIP zachovaný.",
-      "evidence": []
+      "disposition": "#408/ca5fc219 a deploy42574460894 SUCCESS; parita/16CI/HTTP/Chrome/čtecí produkce PASS, UAT samostatné.",
+      "evidence": [
+        "docs/verification/athlete-profile-parent-release-20261109/RESULTS.md"
+      ]
     },
     {
       "id": "PL-5cf8581ad7",
@@ -10860,6 +10862,17 @@
       "status": "SUPPORT",
       "registry": "P11-RAP",
       "disposition": "Nejprve diagnostika, původní WIP zachovaný.",
+      "evidence": []
+    },
+    {
+      "id": "PL-0348d30542",
+      "path": "docs/verification/athlete-profile-parent-release-20261109/RESULTS.md",
+      "title": "P11-RAP produkční předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RAP",
+      "disposition": "Technický produkční protokol, ne další plán.",
       "evidence": []
     }
   ],

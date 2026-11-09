@@ -1,16 +1,14 @@
 # Aktuální session handoff
 
-Aktualizováno 8. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
+Aktualizováno 9. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md) vede i UX01 [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) a Q01/Q3
 vlastní otevřené úkoly; plány a rozhodnutí čti ve verzovaných souborech.
 Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 je [nasazené a cíleně ověřené](verification/planner-mobile-release-20261108/RESULTS.md) v deploy42483838259 a následném P11-RH; Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
 
 ## Poslední práce a další krok
 
-- P11-RAP ROZPRACOVÁNO: [počáteční profil / plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md).
-  Native10.3 parita/role/CSRF PASS:30k parent1981→888ms, PHP96,6→1,26MB. 11.4/Chrome/finálníCI čekají; produkce beze změny, WIP zachovaný.
-- **P11-RAS NASAZENO:** [profilové AJAX/session / plán](AJAX_PROFILE_SESSION_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_AJAX_PROFILE_SESSION_2026-11-08.md).
-  #406/`95cb33e5`, deploy42531190845 SUCCESS;16CI/2403testů PASS, [důkazy](verification/ajax-profile-session-release-20261108/RESULTS.md). 30k dvojice −37/38%, Chrome warm −18%; veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
+- **P11-RAP NASAZENO:** [počáteční profil / plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md).
+  #408/`ca5fc219`, deploy42574460894 SUCCESS;16CI/2405testů PASS, [důkazy](verification/athlete-profile-parent-release-20261109/RESULTS.md). Parent −54/55%, Chrome −41/42%, PHP96,6→1,26MB; veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).
