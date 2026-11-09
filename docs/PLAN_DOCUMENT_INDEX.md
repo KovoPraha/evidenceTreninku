@@ -988,9 +988,9 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 
 | PL-23f3c61945 | [P11-RHI produkční předání](verification/athlete-profile-history-release-20261109/RESULTS.md) | evidence / SUPPORT | P11-RHI |
 
-| PL-51594d6f16 | [P11-RHM — měření profilu](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) | plan / PARTIAL | P11-RHMS |
+| PL-51594d6f16 | [P11-RHM/RHMS — měření profilu](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) | plan / DONE | P11-RHMS |
 
-| PL-a8d596365f | [P11-RHM předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md) | handoff / SUPPORT | P11-RHM |
+| PL-a8d596365f | [P11-RHMS předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md) | handoff / SUPPORT | P11-RHMS |
 
 | PL-93a9cfd474 | [P11-RHM měření](verification/athlete-profile-measurement-performance-20261109/RESULTS.md) | evidence / SUPPORT | P11-RHM |
 
@@ -999,3 +999,7 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 | PL-b0695f2506 | [P11-RHMS souhrn měření](verification/athlete-profile-measurement-summary-20261109/RESULTS.md) | evidence / SUPPORT | P11-RHMS |
 
 | PL-487787fb45 | [P11-RHMS celé párové HTTP a Chrome](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md) | evidence / SUPPORT | P11-RHMS |
+
+| PL-1895df6fa0 | [P11-RHMS aktuální měření](verification/athlete-profile-measurement-summary-20261109/checked-head/RESULTS.md) | evidence / SUPPORT | P11-RHMS |
+
+| PL-658df4cc60 | [P11-RHMS produkční důkazy](verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md) | evidence / SUPPORT | P11-RHMS |

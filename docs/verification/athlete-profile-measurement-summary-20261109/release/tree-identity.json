@@ -1,0 +1,31 @@
+{
+  "tested_head": "730de3d6d19d037c6df9f39b52cc20a7ac45ffbd",
+  "tested_tree": "82ce9fc77d44774e4e0943723a0630bf1e7e53f9",
+  "merged_sha": "17110a7f2f4338584ec36e5de835150abe17bb17",
+  "merged_tree": "82ce9fc77d44774e4e0943723a0630bf1e7e53f9",
+  "whole_tree_identical": true,
+  "measured_sources_sha256": {
+    "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+    "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+    "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+    "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+  },
+  "both_native_sources_identical": true,
+  "canonical_endpoint_parent_and_write_security_files_unchanged": [
+    "sportovec_treninky.php",
+    "ajax_sportovec_treninky.php",
+    "includes/public_profile_token.php",
+    "includes/sports_activity.php",
+    "includes/sports_activity_overview_read.php",
+    "includes/training_closure.php",
+    "includes/session_security.php",
+    "includes/auth_session.php",
+    "includes/coach_scope.php",
+    "csrf_helper.php",
+    "includes/sportovec_note_access.php"
+  ],
+  "unchanged_selector_header_history_navigation": true,
+  "baseline_three_sources_same_as_previous_production": true,
+  "previous_production_sha": "5cc9cf83193ca547d641e39afb0df41e4f8ee457"
+}

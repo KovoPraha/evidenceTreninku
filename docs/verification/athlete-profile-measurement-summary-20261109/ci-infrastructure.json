@@ -65,5 +65,8 @@
   "required_complete_ci": false,
   "release_allowed": false,
   "observed_error": "Internal server error before job creation",
-  "note": "Missing jobs are not successful tests"
+  "note": "Missing jobs are not successful tests",
+  "snapshot_of_superseded_heads": true,
+  "as_of_utc": "2026-11-09T18:25:00Z",
+  "current_release_state_reference": "release/RESULTS.md"
 }
