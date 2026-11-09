@@ -22,6 +22,7 @@ if ($size === 1000) {
 }
 $credentials = json_decode(file_get_contents($output . '/credentials.json'), true, 512, JSON_THROW_ON_ERROR);
 $variants = ['before','after'];
+$normalizedBodies = [];
 $report = ['size' => $size, 'complete' => false, 'samples' => [], 'signatures' => [], 'raw_signatures' => []];
 foreach ($variants as $variant) {
     $rt = $runtime;
@@ -47,8 +48,23 @@ foreach (range(-4, 16) as $round) {
                 throw new RuntimeException('Expected exact Bootstrap resource difference.');
             }
             $html = fullHttpNormalizedHtml($response);
+            $csrf = [];
+            preg_match_all('/name="csrf_token"\s+value="([a-f0-9]{64})"/i', $html, $csrfFields);
+            $csrf = $csrfFields[1];
+            if (preg_match('/const CSRF_TOKEN\s*=\s*"([a-f0-9]{64})"/i', $html, $csrfConstant)) {
+                $csrf[] = $csrfConstant[1];
+            }
+            $csrf = array_values(array_unique($csrf));
+            if (count($csrf) > 1) {
+                throw new RuntimeException('Inconsistent CSRF values within parent.');
+            }
+            if ($csrf !== []) {
+                // The same per-session token is also embedded in push JSON.
+                $html = str_replace($csrf[0], 'SYNTHETIC_CSRF', $html);
+            }
             $html = preg_replace('/(const CSRF_TOKEN\s*=\s*)"[^"]*"/', '$1"SYNTHETIC_CSRF"', $html);
             $html = preg_replace('/(name="csrf_token"\s+value=")[^"]*(")/', '$1SYNTHETIC_CSRF$2', $html);
+            $normalizedBodies[$case][$variant] = $html;
             $signature = ['status' => 200, 'bytes' => strlen($html), 'sha256' => hash('sha256', $html)];
             $report['signatures'][$case][$variant] ??= $signature;
             if ($signature !== $report['signatures'][$case][$variant]) {
@@ -63,6 +79,22 @@ foreach (range(-4, 16) as $round) {
 }
 foreach ($report['signatures'] as $case => $signatures) {
     if ($signatures['before'] !== $signatures['after']) {
+        $beforeHtml = $normalizedBodies[$case]['before'];
+        $afterHtml = $normalizedBodies[$case]['after'];
+        $offset = 0;
+        while ($offset < min(strlen($beforeHtml), strlen($afterHtml)) && $beforeHtml[$offset] === $afterHtml[$offset]) {
+            $offset++;
+        }
+        $difference = ['case' => $case, 'offset' => $offset];
+        foreach (['before' => $beforeHtml, 'after' => $afterHtml] as $variant => $body) {
+            $snippet = substr($body, max(0, $offset - 80), 240);
+            $snippet = preg_replace('/[a-f0-9]{32,}/i', '[OPAQUE]', $snippet);
+            foreach ($credentials as $credential) {
+                $snippet = str_replace([$credential['login'], $credential['password']], '[SYNTHETIC_ACCOUNT]', $snippet);
+            }
+            $difference[$variant] = $snippet;
+        }
+        file_put_contents($output . '/parent-difference.json', json_encode($difference, JSON_THROW_ON_ERROR));
         throw new RuntimeException('Parent HTML differs beyond allowed CSS link: ' . $case);
     }
 }

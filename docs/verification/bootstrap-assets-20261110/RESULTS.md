@@ -38,3 +38,12 @@ správně403 na moje_treninky, kterou vlastní coach. Měření nyní používá
 per-route existující identity: coach profil+Moje, sports_lead Správa, veřejný
 bearer samostatně. Doplněny negativní302/403 kontroly hranic pracovních pozic.
 Žádná změna/grant rolí ani route guardů; oba cleanup PASS,3/562 a1/6 PASS.
+
+
+Třetí42719230914/20 došel celým parent timingem, ale FAIL srovnání Moje:
+shared header má stejný per-session CSRF také ve dvou push JSON objektech.
+Původní normalizace formuláře/const je neobsáhla. Nová úzká normalizace vezme
+jediný ověřený64hexCSRF z explicitního pole/const a nahradí jeho výskyty,
+při více různýchCSRF v jednom parentu selže. Není to změna aplikace ani
+obecné ignorováníJS. Další případný rozdíl uloží jen bezpečný redigovaný
+snippet. OběDB model3/562/normalizátor1/6/cleanup PASS, app deploy NOT RUN.

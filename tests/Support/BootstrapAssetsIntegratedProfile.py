@@ -345,6 +345,8 @@ try:
     print(json.dumps(summary["cases"]))
 
 except Exception:
+    if (output/"parent-difference.json").exists():
+        (safe/"parent-difference.json").write_bytes((output/"parent-difference.json").read_bytes())
     private_log = runtime / "private-http.log"
     known_errors = []
     if private_log.exists():
