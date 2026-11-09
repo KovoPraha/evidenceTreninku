@@ -46,3 +46,17 @@ Druhý diagnostický běh42705556534 FAIL v syntetické topologii: historický H
 builder poznámek nemá produkční PK/id. Žádné naměřené přínosy; cleanup PASS.
 Vlastněný builder nově doplní chybějící note identity a PK před oběma variantami.
 Jeho změny jsou pouze v oddělené syntetické DB, produkční DDL stále false.
+
+
+## Nativní diagnóza c9 — PASS
+
+[42705957545](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42705957545),
+headc9efb111, baselineff182971. Oba runtime readery byte-shodné; jde o
+výběrovou diagnózu, nikoli hotový A/B přínos. Native measurement parita6/634
+oběDB; 24plných bootstrap protokolů, shodné produkční definice indexů pěti
+tabulek, bezpečné raw i source/checksum/cleanup v diagnostic-c9/native-10.3
+a diagnostic-c9/native-11.4. Syntetické typy/signed/null odchylky zveřejněné.
+HistorieJOIN není přijatá: husté all249→259/307→314ms; IN sparse zásadně
+regresuje. Souhrn měření je nejdražší (jednorázově288/1021ms), parentheader
+268/289ms, historie241/305ms. Sparse souhrn pod12ms; žádné produkční SLA.
+Další krok porovnání grouped summary join order a narrow materializace.

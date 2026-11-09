@@ -100,3 +100,20 @@ Fixture zůstává adversariální (VARCHAR typ proti produkční ENUM6, signed/
 hrany); samotná shoda indexů není úplnou replikou produkce. Diagnózu a
 zátěžové výsledky výslovně oddělit od produkčního výkonu. SQLite průzkum
 prostého UNION předvýběru ukázal regresi husté historie; není vybraným řešením.
+
+
+## Výběr po nativní diagnóze c9
+
+42705957545 SUCCESS oběDB, zdroje before/after stejné, 24 úplných bootstrap
+protokolů, topologie indexů shodná, cleanup PASS. [Bezpečné raw10.3](verification/athlete-profile-targeted-read-20261109/diagnostic-c9/native-10.3/integrated-summary.json),
+[raw11.4](verification/athlete-profile-targeted-read-20261109/diagnostic-c9/native-11.4/integrated-summary.json).
+Jednotlivý instrumentovaný velký souhrn288/1021ms, historie241/305ms,
+header268/289ms. Small/old/empty souhrny naopak 0–11ms: původní chybějící
+indexy skutečně zkreslovaly sparse případ. Nelze přenášet staré absolutní časy.
+
+SQL selector průzkum7párů/2warmupy: prostý ownedJOIN hustou all-historii
+nezrychlil (249→259 a307→314ms); IN zásadně regresuje sparse profil.
+Oba nevybrané. Největší zbývající náklad je velká agregace měření; další
+krok porovnat přesné stejné grouped SQL s owner-first/link-first pořadím
+spojování a narrow materializací. Zatím žádná app změna ani nový produkční
+index. Výběr zůstává podmíněný paritou a úplným párovým HTTP gate.

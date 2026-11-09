@@ -257,8 +257,11 @@ try:
         for variant in ["before","after"]:
             name=f"browser-coach-{variant}.json"
             (safe/(name+".gz")).write_bytes(gzip.compress((output/name).read_bytes(),mtime=0))
-    php("AthleteTargetedCandidates.php",output)
-    (safe/"candidate-selectors.json").write_bytes((output/"candidate-selectors.json").read_bytes())
+    if diagnostic_only:
+        php("AthleteTargetedCandidates.php",output)
+        (safe/"candidate-selectors.json").write_bytes((output/"candidate-selectors.json").read_bytes())
+        php("AthleteTargetedSummaryCandidates.php",output)
+        (safe/"candidate-summaries.json").write_bytes((output/"candidate-summaries.json").read_bytes())
     stop_servers()
     start_servers(instrument=True)
     php("AthleteTargetedHttpProfile.php",output,"diagnose",30000)

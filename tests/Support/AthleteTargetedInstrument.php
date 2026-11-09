@@ -25,12 +25,11 @@ register_shutdown_function(static function () use ($diagnosticId, $diagnosticDir
         $safe[] = ['sql' => $sql, 'execute_ms' => $query['execute_ms'], 'fetch_ms' => $query['fetch_ms'],
             'fetched_rows' => $query['fetched_rows'], 'caller' => $query['caller'] ?? ''];
     }
-    // EXPLAIN after the rendered response, on the same owned connection. Compare
-    // the rejected free join order with the current bounded order; retain no binds.
+    // EXPLAIN after rendering on the same owned connection; retain no bind values.
     $connection->profiling = false;
     $plans = [];
     foreach ($connection->profile as $number => $query) {
-        if (!str_contains($query['sql'], 'treninky')) {
+        if (!preg_match('/^\s*SELECT\b/i', $query['sql']) || !str_contains($query['sql'], 'treninky')) {
             continue;
         }
         $statement = $connection->prepare('EXPLAIN FORMAT=JSON ' . $query['sql']);

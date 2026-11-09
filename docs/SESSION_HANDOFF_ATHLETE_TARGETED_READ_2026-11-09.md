@@ -27,3 +27,8 @@ odhady měření jen17. Nová větev codex/athlete-targeted-read-optimization-20
 z ff182971. Probíhá syntetická nativní diagnóza s doplněnými shodnými indexy
 před oběma variantami. Samotný prostý ownership UNION není vybraný (SQLite
 regrese hustého profilu). Další krok nativní náklad parent/history/MZ pro4SID.
+
+Diagnóza42705957545/c9 PASS oběDB a cleanup, raw v diagnostic-c9. Největší
+souhrn288/1021ms; plainJOIN/IN historie nevybrané. Další krok grouped summary
+join order + narrow materializace, stále bez app změny/prod DDL. První dva
+přípravné FAIL zůstávají v RESULTS, nejsou PASS ani produkční incident.
