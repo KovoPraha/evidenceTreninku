@@ -962,3 +962,9 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 | PL-50843c60f1 | [P11-RAS parita a souběžné HTTP](verification/ajax-profile-session-performance-20261108/RESULTS.md) | evidence / SUPPORT | P11-RAS |
 
 | PL-b4b13cc301 | [P11-RAS produkční předání](verification/ajax-profile-session-release-20261108/RESULTS.md) | evidence / SUPPORT | P11-RAS |
+
+| PL-1f9749e6c2 | [P11-RAP — počáteční načtení profilu](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md) | plan / IN_PROGRESS | P11-RAP |
+
+| PL-5cf8581ad7 | [P11-RAP předání](SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md) | handoff / SUPPORT | P11-RAP |
+
+| PL-8d3ea67423 | [P11-RAP diagnostika a měření](verification/athlete-profile-parent-performance-20261109/RESULTS.md) | evidence / SUPPORT | P11-RAP |

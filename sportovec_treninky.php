@@ -14,6 +14,7 @@ require_once __DIR__ . '/includes/sports_measurement_contract.php';
 require_once __DIR__ . '/includes/sportovec_note_access.php';
 require_once __DIR__ . '/includes/athlete_profile_read.php';
 require_once __DIR__ . '/includes/sports_activity.php';
+require_once __DIR__ . '/includes/sports_activity_overview_read.php';
 
 function h($s): string
 {
@@ -587,7 +588,7 @@ function renderMonthTable(DateTime $monthStart, array $treninkyByDate, array $me
 <body>
 
 <div class="container py-4">
-  <?php $verifiedSports = sportsActivitySummary($pdo, $sportovec_id, date('Y-01-01'), date('Y-m-d')); ?>
+  <?php $verifiedSports = SportsActivityOverviewRead::totals($pdo, $sportovec_id, date('Y-01-01'), date('Y-m-d')); ?>
   <section class="alert alert-info"><strong>Ověřená činnost letos:</strong>
     <?= (int)$verifiedSports['training_count'] ?> uzavřených tréninků · <?= (int)$verifiedSports['training_minutes'] ?> doložených minut · <?= (int)$verifiedSports['race_count'] ?> doložených startů.
     Neuzavřené historické záznamy níže neprokazují skutečnou účast.</section>

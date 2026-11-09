@@ -10828,6 +10828,39 @@
       "registry": "P11-RAS",
       "disposition": "Produkční technický protokol, ne samostatný plán.",
       "evidence": []
+    },
+    {
+      "id": "PL-1f9749e6c2",
+      "path": "docs/ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md",
+      "title": "P11-RAP — počáteční načtení profilu",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P11-RAP",
+      "disposition": "Nejprve diagnostika, původní WIP zachovaný.",
+      "evidence": []
+    },
+    {
+      "id": "PL-5cf8581ad7",
+      "path": "docs/SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md",
+      "title": "P11-RAP předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-RAP",
+      "disposition": "Nejprve diagnostika, původní WIP zachovaný.",
+      "evidence": []
+    },
+    {
+      "id": "PL-8d3ea67423",
+      "path": "docs/verification/athlete-profile-parent-performance-20261109/RESULTS.md",
+      "title": "P11-RAP diagnostika a měření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RAP",
+      "disposition": "Nejprve diagnostika, původní WIP zachovaný.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",
