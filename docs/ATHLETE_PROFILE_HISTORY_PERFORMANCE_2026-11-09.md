@@ -71,3 +71,14 @@ emulated/native prepares i stringify režimy, finální výkon zatím NOT RUN.
 PSR12 dotčených6souborů PASS, PythonAST PASS. Header/měření/parent/AJAX
 endpoint/bezpečnost/writery jsou byte-nezměněné. Workflow zmrazí reader,
 parent i AJAX endpoint a měří celé fragmenty i skutečný Chrome.
+
+## První nativní měření — checkpoint
+
+f9acd99f/run42621207366 oběDB2/513 a celýHTTP/Chrome prošly, historie30k
+468→37 /758→48ms, PHPpeak14.5→1.56MB. Wholefragmenty/role/CSRF/cleanup přesné.
+První Chrome default1181→818ms, savedMěření1579→1729ms (+9.5%); netvrdit
+zrychlení všech záložek. Neexistujícírok7→20 /8→24ms. Další iterace přesune
+levný YEAR před EXISTS a přidá browser ResourceTiming pro rozlišení souběhu.
+[První bezpečné důkazy a meze](verification/athlete-profile-history-performance-20261109/RESULTS.md).
+Místní7/892 i composer validate --strict PASS. Nový head potřebuje vlastní
+celéCI/native/Chrome před merge a podmíněným release; WIP a produkce zachované.

@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 9. 11. 2026 / E2026-11-09-08 | P11-RHI první native/HTTP/Chrome | Run42621207366: historie−92/94%, PHP−89%, parita/fallbacky/checksumy PASS. Chrome default−31%, savedMěření+9.5%; neexistujícírok+13/16ms. Další iterace YEAR první a nový UI protokol. | [Důkazy](verification/athlete-profile-history-performance-20261109/RESULTS.md) |
 | 9. 11. 2026 / E2026-11-09-07 | P11-RHI zahájen | Aktuální pokyn vlastníka: optimalizace historie, podmíněný release po přesné shodě/přínosu. Main d666078e, WIP zachovaný. | [Plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-06 | P11-RAH NASAZENO / technické ověření PASS | #410/c47d4008,18CI/tree/source přesné, deploy42587406908 SUCCESS, testy2407/54929, backup389/2, migrace/VS/config/smoke PASS. Parent−66/68%, Chrome−30/37%, veřejné8/8HTTP/DOM shodné, UAT NOT RUN, WIP zachovaný. | [Release](verification/athlete-profile-header-release-20261109/RESULTS.md), [předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-05 | P11-RAH měření a parita PASS | Run42581044288: oběDB+52Chrome, parent−66%, Chrome−37/38%, shodnéHTML/AJAX/fallbacky/role/CSRF; první FAIL cookie izolace zachovaný. PHPStan bez navýšení suppression PASS; CodeQL download504 vyžaduje nový head. | [Důkazy](verification/athlete-profile-header-performance-20261109/RESULTS.md) |

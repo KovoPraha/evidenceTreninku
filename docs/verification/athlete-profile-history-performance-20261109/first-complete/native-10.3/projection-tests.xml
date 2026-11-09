@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\AthleteHistoryReadTest" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteHistoryReadTest.php" tests="2" assertions="513" errors="0" failures="0" skipped="0" time="1.081294">
+    <testcase name="testFrozenFullResultParityForEveryPageYearAndPdoMode" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteHistoryReadTest.php" line="20" class="Tests\Integration\AthleteHistoryReadTest" classname="Tests.Integration.AthleteHistoryReadTest" assertions="504" time="0.776802"/>
+    <testcase name="testLastPageClampingExactMultiplesAndFreshOwnership" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteHistoryReadTest.php" line="58" class="Tests\Integration\AthleteHistoryReadTest" classname="Tests.Integration.AthleteHistoryReadTest" assertions="9" time="0.304492"/>
+  </testsuite>
+</testsuites>

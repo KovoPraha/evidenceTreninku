@@ -85,17 +85,18 @@ final class AthleteProfileRead
 
     public static function history(PDO $pdo, int $sid, int $year, int $requested): array
     {
-        $from = ' FROM treninky t WHERE (
+        $from = ' FROM treninky t WHERE ';
+        $params = self::scope($sid);
+        if ($year > 0) {
+            $from .= 'YEAR(t.datum)=:year AND ';
+            $params[':year'] = $year;
+        }
+        $from .= '(
             EXISTS (SELECT 1 FROM trenink_sportovec ts
                 WHERE ts.trenink_id=t.id AND ts.sportovec_id=:attendance_sid)
             OR EXISTS (SELECT 1 FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
                 WHERE tm.trenink_id=t.id AND mz.sportovec_id=:measurement_sid)
         )';
-        $params = self::scope($sid);
-        if ($year > 0) {
-            $from .= ' AND YEAR(t.datum)=:year';
-            $params[':year'] = $year;
-        }
         $order = ' ORDER BY t.datum DESC,t.id DESC';
         $statement = $pdo->prepare('SELECT t.id,t.delka' . $from . $order);
         $minutes = 0;

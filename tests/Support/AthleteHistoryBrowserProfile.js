@@ -49,7 +49,11 @@ async (page) => {
       await wait('history');if(scenario==='measurements') await wait('measurements');
       const value=await page.evaluate(() => {
         const nav=performance.getEntriesByType('navigation')[0],h=window.__profileDone.history,m=window.__profileDone.measurements || null;
-        return {document_ttfb_ms:nav.responseStart,document_load_ms:nav.loadEventEnd,history:h,measurements:m,
+        const resources=performance.getEntriesByType('resource').filter(r=>r.name.includes('/ajax_sportovec_treninky.php'))
+          .map(r=>({view:new URL(r.name).searchParams.get('view')==='measurements'?'measurements':'history',
+            start_ms:r.startTime,request_start_ms:r.requestStart,response_start_ms:r.responseStart,response_end_ms:r.responseEnd,
+            duration_ms:r.duration}));
+        return {document_ttfb_ms:nav.responseStart,document_load_ms:nav.loadEventEnd,history:h,measurements:m,resources,
           ajax_pair_render_ready_ms:Math.max(h.ready_ms,m?.ready_ms || 0)-Math.min(h.start_ms,m?.start_ms ?? h.start_ms),
           navigation_to_both_ready_ms:Math.max(h.ready_ms,m?.ready_ms || 0),
           write_controls:document.querySelectorAll('.save-note-btn').length};
