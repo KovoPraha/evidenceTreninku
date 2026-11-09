@@ -301,3 +301,24 @@ Starší velké diagnostické JSON jsou lossless gzip pro přehledný code revie
 ověřuje rozbalení všech původních canonical Git blobů; nic se nezahazuje,
 původní raw navíc zůstává ve starších commitech. Metadata potřebná přímo
 pro reprodukční skripty zůstávají nekomprimovaná.
+
+
+## DATE cover nevybraný; zpět k dominantnímu header souhrnu
+
+42713608614/b6 oběDB SUCCESS/parita45scénářů a index/cleanup/checksum PASS.
+DATE index cca512KiB při30k, build15/129ms.10.3 range29.1→18.3ms, ale11.4
+294.4→292.8ms (bez přínosu); samotný index původní10.3query regredoval29→319ms.
+CASE+range zase regresuje sparse až137ms. DATE index NEVYBRÁN, žádná migrace.
+
+Po čerstvých statistikách je původní10.3 historie často již levná26ms,
+zatímco header zůstává stovky ms a platí ho každý parent před AJAX. Další
+největší měřitelný kandidát je jeho agregace. Header měřicí větev potřebuje
+pouze mz.id/sportovec_id, NIKOLI typ. Existující produkční idx_sportovec
+InnoDB s implicitním PK již tuto projekci pokrývá; žádný nový index není
+potřeba. Synteticky porovnat původní header, vynucený existující owner index
+ve volném/links-first/owner-first joinu a IN semijoin. Přesné celkové header
+array/PDOtypy,5SID/3velikosti, fresh5table stats. Pokud hint vyhraje, název
+indexu hledat z read-only metadat s fallbackem při nepřítomnosti; žádný
+pevný předpoklad o jméně ani webový DDL nebo persistentní cache. Gate bude
+na CELÉM parent HTTP ≥20% oběDB, historie/MZ kontrolní1.2+20ms zůstanou.
+Jde zatím o koncept, app reader je stále přesný ff182971. PR425 bez merge.
