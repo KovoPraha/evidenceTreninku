@@ -1,14 +1,14 @@
 // Real Chrome, real requests, no network mocks or artificial CDN delay.
 async (page) => {
   const config = JSON.parse('__BOOTSTRAP_ASSETS_CONFIG__');
-  const crypto = require('node:crypto');
   const cdp = await page.context().newCDPSession(page);
   await cdp.send('Network.enable');
   const errors = [], failed = [], samples = [], screenshots = [], styleSignatures = {};
-  page.on('pageerror', e => errors.push(String(e)));
-  page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
-  page.on('requestfailed', r => failed.push({url:r.url().split('?')[0],error:r.failure()?.errorText}));
-  const cases = config.role === 'coach'
+  const onError=e=>errors.push(String(e));
+  const onConsole=m=>{if(m.type()==='error')errors.push(m.text());};
+  const onFailed=r=>failed.push({url:r.url().split('?')[0],error:r.failure()?.errorText});
+  page.on('pageerror',onError);page.on('console',onConsole);page.on('requestfailed',onFailed);
+  const cases = config.role === 'staff'
     ? [{id:'profile',path:'/sportovec_treninky.php?id=1001'}, {id:'mine',path:'/moje_treninky.php'}, {id:'training',path:'/sprava_treninku.php'}]
     : [{id:'public-profile',path:'/sportovec_treninky.php'}];
   let requests = new Map();
@@ -27,9 +27,12 @@ async (page) => {
       encoded_data_length:e.encodedDataLength,duration_ms:(e.timestamp-requests.get(e.requestId).start)*1000});
   });
   for (const viewport of [{id:'desktop',width:1036,height:703},{id:'mobile',width:390,height:844}]) {
+    if (config.viewport_filter && viewport.id!==config.viewport_filter) continue;
     await page.setViewportSize({width:viewport.width,height:viewport.height});
     for (const item of cases) {
+      if(config.case_filter && item.id!==config.case_filter)continue;
       for (const cache of ['cold','warm']) {
+        if(config.cache_filter && cache!==config.cache_filter)continue;
         for (let round=-4; round<17; round++) {
           for (const variant of round%2===0 ? ['before','after'] : ['after','before']) {
             await cdp.send('Network.setCacheDisabled',{cacheDisabled:cache==='cold'});
@@ -72,7 +75,10 @@ async (page) => {
             if (variant==='after' && css.some(r=>r.url.includes('cdn.jsdelivr.net'))) throw new Error('CDN CSS retained');
             if (measurement.fcp_ms===null) throw new Error('Real FCP missing');
             const key=item.id+'-'+viewport.id;
-            const signature=crypto.createHash('sha256').update(JSON.stringify(measurement.shape)).digest('hex');
+            const signature=await page.evaluate(async value=>{
+              const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));
+              return Array.from(new Uint8Array(digest)).map(n=>n.toString(16).padStart(2,'0')).join('');
+            },JSON.stringify({shape:measurement.shape,overflow:measurement.overflow}));
             styleSignatures[key]??=signature;
             if (styleSignatures[key]!==signature) throw new Error('Computed style/geometry differs: '+key);
             if (config.role==='public' && await page.locator('.save-note-btn').count()!==0) throw new Error('Public writer exposed');
@@ -97,6 +103,8 @@ async (page) => {
     await page.waitForFunction(()=>!document.querySelector('.navbar-collapse')?.classList.contains('show'));
   }
   if (errors.length || failed.length) throw new Error('Browser errors: '+JSON.stringify({errors,failed}));
+  page.off('pageerror',onError);page.off('console',onConsole);page.off('requestfailed',onFailed);
+  await cdp.detach();
   return {complete:true,role:config.role,browser_version:page.context().browser().version(),
     method:'17 alternating pairs after 4 warmups, real network, no throttling/mocks; cold clears browser cache',
     samples,style_signatures:styleSignatures,screenshots,console_errors:errors,failed_requests:failed};

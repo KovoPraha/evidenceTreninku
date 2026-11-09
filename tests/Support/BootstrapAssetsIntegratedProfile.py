@@ -150,17 +150,31 @@ def asset_browser(role):
             refs[label]=match[1]
         button=re.search(r'button "Přihlásit se"[^\n]*\[ref=(e\d+)\]',initial)
         if not button: raise RuntimeError("Fresh asset login snapshot missing submit")
-        credential=read("credentials.json")["coach"]
+        credential=read("credentials.json")["sports_lead"]
         cli(session,"fill",refs["Jméno nebo e-mail"],credential["login"])
         cli(session,"fill",refs["Heslo"],credential["password"])
         cli(session,"click",button[1]); cli(session,"snapshot")
     template=(root/"tests/Support/BootstrapAssetsBrowser.js").read_text()
-    config=dict(role=role,urls=dict(before="http://127.0.0.1:18099",after="http://127.0.0.1:18100"),screenshot_dir=str(safe))
-    template=template.replace("JSON.parse('__BOOTSTRAP_ASSETS_CONFIG__')",json.dumps(config))
-    script=runtime/(session+".js"); script.write_text(template)
-    report=result(cli(session,"run-code","--filename="+str(script)))
-    assert report["complete"] and not report["console_errors"] and not report["failed_requests"]
-    assert len(report["samples"]) == (408 if role=="coach" else 136)
+    report=dict(complete=False,role=role,samples=[],style_signatures={},screenshots=[],console_errors=[],failed_requests=[])
+    for case in (["profile","mine","training"] if role=="staff" else ["public-profile"]):
+        for viewport in ["desktop","mobile"]:
+            for cache in ["cold","warm"]:
+                config=dict(role=role,urls=dict(before="http://127.0.0.1:18099",after="http://127.0.0.1:18100"),
+                    screenshot_dir=str(safe),case_filter=case,viewport_filter=viewport,cache_filter=cache)
+                script=runtime/(session+".js")
+                script.write_text(template.replace("JSON.parse('__BOOTSTRAP_ASSETS_CONFIG__')",json.dumps(config)))
+                part=result(cli(session,"run-code","--filename="+str(script)))
+                assert part["complete"] and len(part["samples"])==34
+                for key,value in part["style_signatures"].items():
+                    assert report["style_signatures"].get(key,value)==value,"Style drift across cache modes"
+                    report["style_signatures"][key]=value
+                for key in ["samples","screenshots","console_errors","failed_requests"]:
+                    report[key].extend(part[key])
+                report["browser_version"]=part["browser_version"];report["method"]=part["method"]
+                (safe/("asset-browser-"+role+"-partial.json.gz")).write_bytes(gzip.compress(json.dumps(report).encode(),mtime=0))
+    assert len(report["samples"]) == (408 if role=="staff" else 136)
+    assert not report["console_errors"] and not report["failed_requests"]
+    report["complete"]=True
     (safe/("asset-browser-"+role+".json.gz")).write_bytes(gzip.compress(json.dumps(report).encode(),mtime=0))
     for case in sorted(set((v["case"],v["viewport"],v["cache"]) for v in report["samples"])):
         old=[v for v in report["samples"] if (v["case"],v["viewport"],v["cache"])==case and v["variant"]=="before"]
@@ -301,7 +315,7 @@ try:
             assert median(v["total_ms"] for v in controls["after"]) < median(v["total_ms"] for v in controls["before"])*1.2+20,"Parent regression"
         (safe/f"asset-parents-{size}.json.gz").write_bytes(gzip.compress((output/f"asset-parents-{size}.json").read_bytes(),mtime=0))
         if size==1000 and os.environ.get("BOOTSTRAP_ASSET_BROWSER")=="1":
-            asset_browser("coach")
+            asset_browser("staff")
             asset_browser("public")
         php("AthleteTargetedHttpProfile.php",output,"measure",size)
         report=read(f"targeted-http-{size}.json")

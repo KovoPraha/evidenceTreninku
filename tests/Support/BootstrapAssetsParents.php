@@ -26,7 +26,7 @@ $report = ['size' => $size, 'complete' => false, 'samples' => [], 'signatures' =
 foreach ($variants as $variant) {
     $rt = $runtime;
     $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
-    fullHttpLogin($rt, $output, 'asset-parent-' . $variant, $credentials['coach']);
+    fullHttpLogin($rt, $output, 'asset-parent-' . $variant, $credentials['sports_lead']);
 }
 foreach (range(-4, 16) as $round) {
     foreach ($round % 2 === 0 ? $variants : array_reverse($variants) as $variant) {

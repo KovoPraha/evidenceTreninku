@@ -56,3 +56,10 @@ Ověřit také skutečný lokální/CDN payload přes HTTPS a skutečný Chrome.
 
 Další krok: přesný tag removal, úzký testovací normalizátor a nativní HTTP/
 Chrome profil. Implementace/CI/merge/deploy optimalizace dosud NOT RUN.
+
+
+První příprava42718340757/f9 selhala správným302 trenéra na hlavni-only stránce.
+Přejímka3stránek poběží pod existujícím sports_lead, veřejný bearer samostatně;
+žádná změna oprávnění. Model3/562 a normalizátor1/6 oběDB PASS, cleanup PASS.
+Časová měření a app merge/deploy pořád NOT RUN. CLI bloky34vzorků zachovají
+17střídavých párů/4warmupy každého cold/warm/viewport/route.

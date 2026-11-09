@@ -18,3 +18,16 @@ To je deterministický přenosový zisk, zatím ne naměřená úspora FCP.
 Úzký normalizátor1test/6assertions PASS, odmítá jinou verzi/SRI i chybějící/
 duplicitní/externí lokální kopii. Žádný app source edit nad rámec3tagů.
 Nativní HTTP/Chrome a finální aktuální CI následují.
+
+
+## První příprava f9 — FAIL testovací role, bez nasazení
+
+42718340757 oběDB zastavené před timingem: trenér dostal na sprava_treninku
+správnou302/login, tato legacy stránka vyžaduje hlavni. Zvolena existující
+syntetická sports_lead identita pro třístránkový profil; role ani guardy
+aplikace se nemění. [Důkazy](first-f9/native-10.3/runner-cleanup.json): cleanup
+PASS oběDB, native model3/562 a normalizátor1/6 PASS. Přenosová úspora,
+source edit a CSS identity ověřené; FCP/HTML kompletního běhu zatím NOT RUN.
+Browser měření rozdělené do34vzorkových bloků kvůli omezení CLI;17párů a
+4warmupy každého cold/warm viewport/route zůstávají. WebCrypto v reálném
+browseru místo závislosti na Node require; žádné request mocky.
