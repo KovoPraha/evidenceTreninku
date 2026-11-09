@@ -359,3 +359,14 @@ Postup a akceptace:
 Důkazy: [průběžný protokol](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
 Další krok: implementovat kandidáta, lokální parita a nativní diagnóza.
 Merge/nasazení tohoto řezu: NOT RUN.
+
+### RHMS kandidát 1 — přesný pevný řadicí klíč
+
+Před implementací zvolen MIN binárního pevně širokého klíče namísto
+ROW_NUMBER nebo GROUP_CONCAT. Klíč vyjadřuje přesně datum DESC (NULL poslední),
+training ID DESC, poradi ASC (NULL první), measurement ID ASC. Číselné díly
+používají DECIMAL(20,0) a 20 číslic: žádné plovoucí číslo ani JSON převod,
+žádný group_concat limit a žádná změna nastavení. Datum je DATE dle schématu,
+včetně nulového/částečně nulového data. Binární seskupení zachovává typy.
+Jedna agregace a původní stránkový selector, SQLite ponechá původní okno.
+Rozhodne nativní parita a plný bootstrap; při horším výkonu kandidáta zamítnout.

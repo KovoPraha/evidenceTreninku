@@ -30,15 +30,16 @@ register_shutdown_function(static function () use ($diagnosticId, $diagnosticDir
     $connection->profiling = false;
     $plans = [];
     foreach ($connection->profile as $query) {
-        if (!str_contains($query['sql'], 'tm.trenink_datum')) {
+        $summary = str_contains($query['sql'], 'AS first_position');
+        if (!$summary && !str_contains($query['sql'], 'tm.trenink_datum')) {
             continue;
         }
-        $templates = ['current' => $query['sql']];
+        $templates = [$summary ? 'current_summary' : 'current' => $query['sql']];
         $rejectedPath = dirname(__DIR__, 2) . '/docs/verification/athlete-profile-measurement-performance-20261109/'
             . 'rejected-bounded/native-10.3/diagnostic-after.json';
         $rejected = json_decode(file_get_contents($rejectedPath), true, 512, JSON_THROW_ON_ERROR);
         foreach ($rejected['queries'] as $old) {
-            if (str_contains($old['sql'], 'tm.trenink_datum') && substr_count($old['sql'], '?') === count($query['parameters'])) {
+            if (!$summary && str_contains($old['sql'], 'tm.trenink_datum') && substr_count($old['sql'], '?') === count($query['parameters'])) {
                 $templates['rejected_bounded'] = $old['sql'];
             }
         }

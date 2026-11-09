@@ -159,14 +159,7 @@ final class AthleteProfileRead
     {
         $order = ' ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC';
         $binary = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mz.typ' : 'mz.typ COLLATE BINARY';
-        // Aggregate only narrow ordered keys in SQL. Binary grouping preserves PHP's exact
-        // case/space-sensitive keys; the first ordinal preserves the old filter-pill order.
-        // Materialize only numeric measurement IDs/ordinals in the window, not padded type strings.
-        $summary = self::read($pdo, 'SELECT ' . $binary . ' AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position
-            FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER (' . $order . ') AS ordinal'
-            . self::measurementFrom() . ' WHERE mz.sportovec_id=?) ordered_types
-            JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id
-            GROUP BY ' . $binary . ' ORDER BY first_position', [$sid]);
+        $summary = self::measurementSummary($pdo, $sid, $binary, $order);
         $counts = [];
         $all = 0;
         foreach ($summary as $row) {
@@ -209,6 +202,30 @@ final class AthleteProfileRead
             $result['rows'] = $readPage(self::measurementFrom());
         }
         return $result;
+    }
+
+    private static function measurementSummary(PDO $pdo, int $sid, string $binary, string $order): array
+    {
+        if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) !== 'mysql') {
+            return self::read($pdo, 'SELECT ' . $binary . ' AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position
+                FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER (' . $order . ') AS ordinal'
+                . self::measurementFrom() . ' WHERE mz.sportovec_id=?) ordered_types
+                JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id
+                GROUP BY ' . $binary . ' ORDER BY first_position', [$sid]);
+        }
+        // Fixed-width decimal fields encode the original mixed-direction order.
+        // DECIMAL arithmetic preserves all signed 64-bit keys without float conversion.
+        // NULL dates sort last; NULL positions sort first, including before negative values.
+        $date = "IF(t.datum IS NULL,'100000000',CONCAT('0',LPAD(CAST(99991231-"
+            . "CAST(REPLACE(CAST(t.datum AS CHAR),'-','') AS UNSIGNED) AS CHAR),8,'0')))";
+        $training = "LPAD(CAST(9223372036854775807-CAST(t.id AS DECIMAL(20,0)) AS CHAR),20,'0')";
+        $position = "CONCAT(IF(tm.poradi IS NULL,'0','1'),LPAD(CAST(COALESCE("
+            . "CAST(tm.poradi AS DECIMAL(20,0))+9223372036854775808,0) AS CHAR),20,'0'))";
+        $measurement = "LPAD(CAST(CAST(mz.id AS DECIMAL(20,0))+9223372036854775808 AS CHAR),20,'0')";
+        return self::read($pdo, 'SELECT ' . $binary . ' AS typ,COUNT(*) AS num,MIN(BINARY CONCAT('
+            . $date . ',' . $training . ',' . $position . ',' . $measurement . ')) AS first_position'
+            . self::measurementFrom() . ' WHERE mz.sportovec_id=?'
+            . ' GROUP BY ' . $binary . ' ORDER BY first_position', [$sid]);
     }
 
     private static function pagination(int $total, int $requested): array
