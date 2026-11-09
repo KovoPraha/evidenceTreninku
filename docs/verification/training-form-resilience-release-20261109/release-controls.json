@@ -1,0 +1,45 @@
+{
+  "deploy_run": 42622226704,
+  "selected_nonpersonal_log_evidence": [
+    {
+      "step": "Nainstalovat závislosti a spustit testy",
+      "output": "2026-11-09T13:06:07.2401542Z OK (2409 tests, 54943 assertions)"
+    },
+    {
+      "step": "Vytvořit a ověřit produkční zálohu",
+      "output": "2026-11-09T13:07:55.5583989Z     \"sha256\": \"68121baae6520fa306dc7d4d3bb6fe9bd23f1c79265f103e92a88d21e1c5e99b\","
+    },
+    {
+      "step": "Vytvořit a ověřit produkční zálohu",
+      "output": "2026-11-09T13:07:55.5584391Z     \"tables\": 389,"
+    },
+    {
+      "step": "Vytvořit a ověřit produkční zálohu",
+      "output": "2026-11-09T13:07:55.5584616Z     \"triggers\": 2,"
+    },
+    {
+      "step": "Připravit soukromé úložiště dokumentů",
+      "output": "2026-11-09T13:08:19.2952770Z {\"ok\":true,\"storage_created\":false,\"existing_configuration_preserved\":true,\"config_appended\":false,\"private_config_backup_verified\":false,\"cli_write_read_delete_probe\":true,\"web_runtime_verified\":false,\"attachments_moved\":false,\"database_accessed\":false}"
+    },
+    {
+      "step": "Aplikovat migrace z připraveného release",
+      "output": "2026-11-09T13:08:54.4868183Z     \"current\": true,"
+    },
+    {
+      "step": "Aplikovat migrace z připraveného release",
+      "output": "2026-11-09T13:08:54.4869383Z     \"pending\": []"
+    },
+    {
+      "step": "Aplikovat migrace z připraveného release",
+      "output": "2026-11-09T13:09:01.1205263Z     \"current\": true,"
+    },
+    {
+      "step": "Aplikovat migrace z připraveného release",
+      "output": "2026-11-09T13:09:01.1206448Z     \"pending\": []"
+    },
+    {
+      "step": "Ověřit zachování dosavadních variabilních symbolů",
+      "output": "2026-11-09T13:09:11.0125176Z {\"ok\":true,\"target\":\"kis.kovopraha.cz\",\"unchanged\":true,\"snapshot\":{\"format\":1,\"bounds\":{\"payments\":15,\"member_fee_standing_orders\":0,\"member_payer_variable_symbols\":0},\"tables\":{\"payments\":{\"count\":8,\"sha256\":\"cf005f028f34611540fe72e8881d18261b79aef1a6e137619409970778e11e9b\"},\"member_fee_standing_orders\":{\"count\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},\"member_payer_variable_symbols\":{\"count\":0,\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}}}}"
+    }
+  ]
+}

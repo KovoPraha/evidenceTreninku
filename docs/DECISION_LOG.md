@@ -375,6 +375,12 @@ neobnovuje automaticky jako nový zápis, protože by mohl duplikovat trénink.
 Přílohy nelze bezpečně obnovit z úložiště formulářových hodnot. Rozsah a důkazy:
 [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026),
 [protokol](verification/training-form-resilience-20261109/RESULTS.md).
+
+Následné výslovné pověření vlastníka zahrnulo merge, deploy a ověření.
+[Produkční výsledek](verification/training-form-resilience-release-20261109/RESULTS.md)
+uzavírá technické vydání; přihlášené UAT ponecháno otevřené po blokaci
+Computer Use při zjištění URL. Blokace se neobchází výrobou session ani
+zápisem skutečného tréninku. Testerka má konkrétní přejímací scénář.
 ## D2026-11-09-RAH
 
 Zadání vlastníka 9. 11. vybírá zbývající tři header agregace po RAP.

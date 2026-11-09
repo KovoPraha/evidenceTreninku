@@ -6,11 +6,11 @@ vlastní otevřené úkoly včetně Q2-TIME; plány a rozhodnutí čti ve verzov
 Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 je [nasazené a cíleně ověřené](verification/planner-mobile-release-20261108/RESULTS.md) v deploy42483838259 a následném P11-RH; Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
 
 ## Poslední práce a další krok
-
+- **Q2-TIME NASAZENO:** #412 / `4f92b225`, deploy42622226704 SUCCESS; [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026).
+  11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
+  Přihlášené UAT NOT RUN: Computer Use nemohl bezpečně určit URL. Další krok: neplatný čas, reload a obnova konceptu; žádný skutečný trénink testem nevznikl.
 - **P11-RAH NASAZENO:** [agregace roků/počtů — plán](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md).
   #410/c47d4008, deploy42587406908 SUCCESS;18CI PASS, parent−66/68%, Chrome−30/37%; [důkazy](verification/athlete-profile-header-release-20261109/RESULTS.md), veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
-- **P11-RAP NASAZENO:** [počáteční profil / plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md).
-  #408/`ca5fc219`, deploy42574460894 SUCCESS;16CI/2405testů PASS, [důkazy](verification/athlete-profile-parent-release-20261109/RESULTS.md). Parent −54/55%, Chrome −41/42%, PHP96,6→1,26MB; veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).

@@ -42,7 +42,7 @@ otevřené PR a neslučuje se s tímto řezem.
 
 ## Q2-TIME — odolný zápis tréninku (9. 11. 2026)
 
-Stav IMPLEMENTOVÁNO / CI PASS, nasazení NOT RUN; vlastník vývoj, zadání vlastníka: chybný čas nesmí odeslat
+Stav NASAZENO / technické ověření PASS / přihlášené UAT K OVĚŘENÍ; vlastník vývoj. Chybný čas nesmí odeslat
 formulář ani vymazat text; uchovat koncept při přerušení. Větev
 `codex/training-form-resilience-20261109`, vlastní worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-training-resilience-20261109`, base `2c61df14`.
@@ -53,15 +53,15 @@ podle trenéra a formuláře, mazat až po potvrzeném úspěchu. Přílohy nelz
 Akceptace: chybný čas neodešle POST; text a měření přežijí reload/zavření,
 serverové odmítnutí; správný čas projde; jiný účet koncept neuvidí; nejasné
 odeslání vyžaduje kontrolu historie. Ověřit cíleně PHP i skutečný browser.
-Merge a nasazení touto žádostí neprovedeny.
+Původní implementační žádost neobsahovala nasazení; následné pověření a výsledek níže.
 
 
-Q2-TIME implementováno ve větvi: časová kontrola v novém zápisu i editaci,
+Q2-TIME implementováno: časová kontrola v novém zápisu i editaci,
 koncepty nového zápisu v prohlížeči a obnova při odmítnutí serverem.
 [Výsledky a omezení](verification/training-form-resilience-20261109/RESULTS.md):
-34/131 cíleně, 18 browser kontrol a plné CI 2409/54943 PASS. Nasazení NOT RUN.
+34/131 cíleně, 18 browser kontrol a plné CI 2409/54943 PASS.
 
-Předání: [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412), kódový commit `9dad0dfc` má 11/11 CI PASS; merge a deploy NOT RUN.
+Původní předání: [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412), kódový commit `9dad0dfc` měl 11/11 CI PASS. Finální head `3fb1af8b` znovu 11/11 PASS, sloučený tree přesně shodný.
 
 
 9. 11. 2026 vlastník výslovně zadal sloučit #412, nasadit, ověřit funkčnost
@@ -70,3 +70,10 @@ merge, chráněný deploy přesného main s importem/UAT flagem false; poté ov�
 nasazený JS a přihlášený formulář (neplatný čas, zachování konceptu, reload).
 Ostrý trénink kvůli validační zkoušce nevytvářet. Výsledek zapsat do release
 protokolu, CURRENT a handoffu. Souhlas nevyžaduje novou aktivaci automatizace.
+
+Výsledek: #412 sloučený a nasazený, [produkční protokol](verification/training-form-resilience-release-20261109/RESULTS.md).
+Deploy SUCCESS; 6 HTTP a přesný JS PASS. Předání důkazů vede
+`codex/training-resilience-release-proof-20261109` ve stejném vlastním worktree.
+Přihlášené UAT NOT RUN: Computer Use ukončil ovládání, protože nedokázal
+bezpečně určit URL Chrome. Další krok: testerka projde šest bodů v protokolu,
+zejména chybný čas, reload a znovuotevření konceptu. Otevřené UAT není PASS.
