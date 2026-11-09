@@ -58,6 +58,44 @@ final class AthleteTargetedReadTest extends TestCase
         }
     }
 
+    public function testMeasurementOnlySigned64BitOwnershipAndExtremeYears(): void
+    {
+        $pdo = $this->database();
+        Fixture::seed($pdo, 3);
+        $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+        $pdo->exec('DELETE FROM trenink_sportovec; DELETE FROM trenink_mereni; DELETE FROM mereni_zaznamy; DELETE FROM treninky');
+        if ($mysql) {
+            $pdo->exec("SET SESSION sql_mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+                ALTER TABLE treninky MODIFY id BIGINT NOT NULL;
+                ALTER TABLE trenink_mereni MODIFY trenink_id BIGINT,MODIFY mereni_id BIGINT;
+                ALTER TABLE mereni_zaznamy MODIFY id BIGINT NOT NULL");
+        }
+        $training = $pdo->prepare('INSERT INTO treninky(id,datum,delka) VALUES(?,?,?)');
+        $measurement = $pdo->prepare("INSERT INTO mereni_zaznamy(id,sportovec_id,typ) VALUES(?,1,'kolo')");
+        $link = $pdo->prepare('INSERT INTO trenink_mereni VALUES(?,?,0)');
+        foreach (['9223372036854775807', '9223372036854775806', '-9223372036854775808'] as $number => $id) {
+            $training->execute([$id, ['2026-00-00', '2026-01-00', '2025-12-31'][$number], ['1e-12', '-1e12', '0.1'][$number]]);
+            $measurement->execute([$id]);
+            $link->execute([$id, $id]);
+        }
+        foreach ($mysql ? [false, true] : [false] as $emulate) {
+            if ($mysql) {
+                $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $emulate);
+            }
+            foreach ([false, true] as $stringify) {
+                $pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, $stringify);
+                foreach ([0, 2026, 2025, 2099, 10000, PHP_INT_MAX] as $year) {
+                    foreach ([1, PHP_INT_MAX] as $page) {
+                        self::assertSame(
+                            \AthleteTargetedReference::history($pdo, 1, $year, $page),
+                            \AthleteProfileRead::history($pdo, 1, $year, $page)
+                        );
+                    }
+                }
+            }
+        }
+    }
+
     public function testLastPageClampingExactMultiplesAndFreshOwnership(): void
     {
         $pdo = $this->database();

@@ -1,6 +1,6 @@
 # P11-RIX — průběžná diagnóza a ověření
 
-9. 11. 2026. ROZPRACOVÁNO. [Plán](../../ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md).
+9. 11. 2026. K OVĚŘENÍ v draftu [#425](https://github.com/KovoPraha/evidenceTreninku/pull/425). [Plán](../../ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md).
 Base mainb66cc059/runtime17110a7f; WIP SHA2567a7afd75 ověřený beze změny.
 
 Zjistěno pouze ze zdrojů: poslední RHMS CI metadata mají PK-only pro
@@ -60,3 +60,37 @@ HistorieJOIN není přijatá: husté all249→259/307→314ms; IN sparse zásadn
 regresuje. Souhrn měření je nejdražší (jednorázově288/1021ms), parentheader
 268/289ms, historie241/305ms. Sparse souhrn pod12ms; žádné produkční SLA.
 Další krok porovnání grouped summary join order a narrow materializace.
+
+
+## Aktuální vybraný reader — úplný gate probíhá
+
+Po vyřazení summary order/narrow/HEX i indexových variant vybral nativní
+[42709050977](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42709050977)
+redundantní YEAR v measurement ownership historie. SQL probe7párů/2warmupy,
+12scénářů striktně stejných orderedid/delka; velký aktuální rok10.3
+382.575→160.521ms a11.4 386.842→171.171ms. Datumový interval nevybraný.
+[Raw10.3](history-year-probe/native-10.3/candidate-selectors.json),
+[raw11.4](history-year-probe/native-11.4/candidate-selectors.json).
+To zatím není celý HTTP ani měření produkce.
+
+Implementace v b9b4cda0, zmrazený celý ff182971 reader s jediným přejmenováním
+exact. Windows3/285 PASS; native rozšířené signed64/partial-zero/extreme-year
+potvrzení čeká nový checkpoint. [Úplný běh42709994135](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42709994135)
+17střídavých párů/4warmupy,1k/10k/30k,14scénářů/oběDB, skutečný Chrome a
+security/checksum/cleanup zatím probíhá. Nový dataset má actual small12/empty0
+historií, všech5tabulek společně ANALYZE; žádný nový produkční index.
+CI static/style/docs/CodeQL na b9 PASS, celé22CI ještě neuzavřené.
+Nový app merge/deploy NOT RUN. Staré nevybrané výsledky a WIP zachované.
+
+
+## První úplný běh b9 — VÝKON NEVYHOVĚL
+
+42709994135: celá11.4 SUCCESS,10.3 FAILURE. Shodné HTML/security/checksum/
+cleanup oběDB; nový native2/514 každá. Při30k10.3 36.221→157.399ms (regrese),
+11.4 239.224→106.124ms (−55.6%). Na10.3 10k116.467→59.251ms,1k9.062→12.985ms.
+[Raw10.3](first-b9/native-10.3/targeted-http-30000.json.gz),
+[raw11.4](first-b9/native-11.4/targeted-http-30000.json.gz).
+Rozdíl vůči probe: plně čerstvé TS/notes statistiky ovlivnily původní10.3plán.
+Výkonový gate nesnižujeme; PR425 bez merge/deploy. Další probe1k/10k/30k,
+fresh5tables, anti attendance v measurement větvi a CASE. Nová probe větev
+codex/athlete-targeted-probe-20261109. Místní PHPStan úplný PASS bez chyb.

@@ -1,6 +1,6 @@
 # P11-RIX — cílené čtení profilu podle skutečného schématu
 
-9. 11. 2026. Stav: ROZPRACOVÁNO, fáze diagnózy/výběru. Vlastník: vývoj/Codex.
+9. 11. 2026. Stav: K OVĚŘENÍ, ownership YEAR implementace v draftu #425. Vlastník: vývoj/Codex.
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_ATHLETE_TARGETED_READ_2026-11-09.md),
 [důkazy](verification/athlete-profile-targeted-read-20261109/RESULTS.md).
 
@@ -200,3 +200,36 @@ jejich attendance před OBOU variantami; pak small historie12tréninků podle
 signed64/freshness. Hlavní17párový HTTP gate aktuální rok, kontroly all-year,
 stránky/current/absent-year/small/old/empty i MZ; každá kontrola1.2+20ms.
 Stejné indexy/statistiky/cacheOFF, žádný fyzický indexový A/B už není potřeba.
+
+
+## Aktuálně: draft #425 / úplná přejímka
+
+[PR425](https://github.com/KovoPraha/evidenceTreninku/pull/425), app reader
+b9b4cda0, základff182971. Nová syntetická kontrola skutečné small12/empty0
+historie; společné čerstvé ANALYZE/statistiky všech5tabulek před oběma
+variantami. Nezaměňovat s dřívějšími3table probe. Windows3testy/285assertions
+PASS, frozen ff182971 oracle exact kromě názvu třídy. Test signed64/partial-zero/
+extrémních roků je doplněný k nativnímu potvrzení v dalším checkpointu.
+Statická CI/CodeQL/docs PASS na b9, celá22kontrolová sada včetně HTTP/Chrome
+probíhá. První úplný výsledek42709994135 zatím není uzavřený. Nový merge/deploy
+stále NOT RUN; žádná migrace a původní WIP SHA2567a7afd75 shodný.
+
+
+## První celé HTTP b9 — FAIL přínosu10.3, NENASAZOVAT
+
+42709994135:11.4 SUCCESS (239.224→106.124ms30k),10.3 FAILURE (36.221→157.399ms30k,
+regrese i page2/last). Celé normalizované HTML/shoda/security/checksum/cleanup
+PASS oběDB, ale to není PASS celého tasku. Na10.3 při10k116.467→59.251ms,
+při1k9.062→12.985ms. 11.4 všechny gates PASS. Raw v first-b9; nejde o fluktuaci
+jednoho SQL vzorku. Čerstvé společné statistiky5tabulek dovolily optimizeru
+původní10.3 při30k zvolit podstatně levnější plán. Záměrné3table probe s horšími
+TS statistikami nebyly dostatečnou predikcí; jejich důkazy zůstávají zachované.
+
+Draft425 zůstává bez merge/deploy. Nová izolovaná probe větev
+codex/athlete-targeted-probe-20261109 z b9b4cda0; současný reader není výkonově
+přijatý. Následuje SQL probe VŠECH1k/10k/30k se statistikami VŠECH5tabulek
+před variantami. Koncept: attendance OR (measurement AND NOT attendance),
+v měřicí větvi vynechat již attendance-vlastněné tréninky před širokým mz join.
+Porovnat anti EXISTS/LEFT JOIN a CASE bez změny významu/dvojího sčítání.
+Žádné snižování20%gate nebo kontrolních limitů; native3testy signed64 atd.
+se nyní přidávají. Žádné produkční DDL, WIP a runtime17110a7f zachované.

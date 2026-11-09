@@ -240,7 +240,11 @@ try:
     php("AthleteTargetedSchema.php",output)
     (safe/"fixture-schema.json").write_bytes((output/"fixture-schema.json").read_bytes())
     if diagnostic_only:
-        php("ProfileSessionHttpProfile.php",output,"prepare",30000)
+        for size in [1000,10000,30000]:
+            php("ProfileSessionHttpProfile.php",output,"prepare",size)
+            php("AthleteTargetedCandidates.php",output,size)
+            name=f"candidate-selectors-{size}.json"
+            (safe/name).write_bytes((output/name).read_bytes())
     for size in ([] if diagnostic_only else [1000,10000,30000]):
         php("ProfileSessionHttpProfile.php",output,"prepare",size)
         php("AthleteTargetedHttpProfile.php",output,"measure",size)
@@ -257,9 +261,6 @@ try:
         for variant in ["before","after"]:
             name=f"browser-coach-{variant}.json"
             (safe/(name+".gz")).write_bytes(gzip.compress((output/name).read_bytes(),mtime=0))
-    if diagnostic_only:
-        php("AthleteTargetedCandidates.php",output)
-        (safe/"candidate-selectors.json").write_bytes((output/"candidate-selectors.json").read_bytes())
     stop_servers()
     start_servers(instrument=True)
     php("AthleteTargetedHttpProfile.php",output,"diagnose",30000)

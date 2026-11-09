@@ -7,6 +7,10 @@ if (PHP_SAPI !== 'cli' || getenv('EVIDENCE_PERFORMANCE_CONFIRM') !== 'SYNTHETIC-
     exit;
 }
 $output = realpath($argv[1] ?? '');
+$size = (int) ($argv[2] ?? 0);
+if (!in_array($size, [1000,10000,30000], true)) {
+    throw new RuntimeException('Owned size required.');
+}
 if ($output === false) {
     throw new RuntimeException('Owned output required.');
 }
@@ -14,7 +18,8 @@ $argv = [__FILE__, '--library'];
 require_once __DIR__ . '/FullHttpReadProfile.php';
 [$runtime, $admin] = fullHttpEnvironment($output);
 $admin->exec('USE `' . $runtime['schema'] . '`');
-$report = ['synthetic_only' => true, 'selector_only' => true, 'pairs' => 7, 'warmups' => 2, 'cases' => []];
+$analysis = $admin->query('ANALYZE TABLE treninky,trenink_sportovec,trenink_mereni,mereni_zaznamy,sportovec_poznamka')->fetchAll(PDO::FETCH_ASSOC);
+$report = ['size' => $size, 'shared_analysis' => $analysis, 'synthetic_only' => true, 'selector_only' => true, 'pairs' => 7, 'warmups' => 2, 'cases' => []];
 $order = ' ORDER BY t.datum DESC,t.id DESC';
 $owned = '(SELECT trenink_id FROM trenink_sportovec WHERE sportovec_id=:attendance_sid
     UNION SELECT tm.trenink_id FROM trenink_mereni tm
@@ -43,18 +48,31 @@ foreach ([1001, 1012, 1013, 1020] as $person) {
                     . ' WHERE tm.trenink_id=t.id AND mz.sportovec_id=:measurement_sid AND YEAR(selected_t.datum)=:ownership_year',
                 $templates['exists']
             );
-            $templates['filtered_range'] = str_replace(
-                ' AND YEAR(selected_t.datum)=:ownership_year',
-                ' AND YEAR(selected_t.datum)=:ownership_year AND selected_t.datum>=:ownership_start AND selected_t.datum<=:ownership_end',
-                $templates['filtered_year']
-            );
+            $templates['anti_not_exists'] = $templates['filtered_year'] . '';
+            $templates['anti_not_exists'] = str_replace(' AND YEAR(selected_t.datum)=:ownership_year',
+                ' AND YEAR(selected_t.datum)=:ownership_year AND NOT EXISTS (SELECT 1 FROM trenink_sportovec present'
+                    . ' WHERE present.trenink_id=selected_t.id AND present.sportovec_id=:present_sid)', $templates['filtered_year']);
+            $templates['anti_left'] = str_replace('JOIN treninky selected_t ON selected_t.id=tm.trenink_id',
+                'JOIN treninky selected_t ON selected_t.id=tm.trenink_id LEFT JOIN trenink_sportovec present'
+                    . ' ON present.trenink_id=selected_t.id AND present.sportovec_id=:present_sid', $templates['filtered_year']);
+            $templates['anti_left'] = str_replace(' AND YEAR(selected_t.datum)=:ownership_year',
+                ' AND YEAR(selected_t.datum)=:ownership_year AND present.trenink_id IS NULL', $templates['anti_left']);
+            $templates['case'] = 'SELECT t.id,t.delka FROM treninky t WHERE ' . $filter . 'CASE WHEN
+                EXISTS (SELECT 1 FROM trenink_sportovec ts WHERE ts.trenink_id=t.id AND ts.sportovec_id=:attendance_sid)
+                THEN 1 ELSE EXISTS (SELECT 1 FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
+                    WHERE tm.trenink_id=t.id AND mz.sportovec_id=:measurement_sid) END' . $order;
+
         }
         $expected = null;
         $case = ['sid' => $person, 'year' => $year, 'parity' => true, 'samples_ms' => [], 'explain' => []];
+        $caseBindings = [];
         foreach ($templates as $name => $sql) {
             $bindings = $params;
             if (str_contains($sql, ':ownership_year')) {
                 $bindings[':ownership_year'] = $year;
+            }
+            if (str_contains($sql, ':present_sid')) {
+                $bindings[':present_sid'] = $person;
             }
             if (str_contains($sql, ':ownership_start')) {
                 $bindings[':ownership_start'] = sprintf('%04d-00-00', $year);
@@ -85,5 +103,5 @@ foreach ([1001, 1012, 1013, 1020] as $person) {
         $report['cases'][] = $case;
     }
 }
-file_put_contents($output . '/candidate-selectors.json', json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
+file_put_contents($output . '/candidate-selectors-' . $size . '.json', json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 echo 'Owned SQL candidate comparison complete.' . PHP_EOL;

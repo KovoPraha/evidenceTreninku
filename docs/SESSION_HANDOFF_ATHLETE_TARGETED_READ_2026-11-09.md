@@ -1,6 +1,6 @@
 # Předání P11-RIX — 9. 11. 2026
 
-ROZPRACOVÁNO, fáze skutečné schéma → diagnóza → optimalizace.
+K OVĚŘENÍ, ownership YEAR implementace v draftu #425.
 [Plán](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md),
 [důkazy](verification/athlete-profile-targeted-read-20261109/RESULTS.md).
 
@@ -48,3 +48,14 @@ SQL aktuální rok230/293ms, all SQL zůstane původní. Další krok nativní p
 implementace a fresh ff182971 oracle. Další krok full parity +17paired HTTP
 1k/10k/30k, všechny kontrolní gates,52Chrome, celá aktuální CI. Žádný app
 merge/deploy dosud. Syntetické sparse/empty kontroly nově skutečné12/0historií.
+
+První úplný běh42709994135/b9 běží,14HTTPscénářů ×17párů ×3velikosti/oběDB,
+52Chrome. Všech5tabulek má čerstvé společné statistiky. Lokální3/285 PASS,
+nový signed64/partial-zero/extreme-year test půjde do potvrzujícího checkpointu.
+Další krok: přečíst všechny výsledky a případné regrese; nic neslučovat bez
+celé aktuální22CI sady a finálního ověření stejných runtime zdrojů.
+
+Aktuálně NEPŘIJATO:42709994135/b9 celéHTTP10.3 při30k36.221→157.399ms,
+11.4 PASS239.224→106.124ms. Shoda a security/cleanup PASS nestačí. Žádný
+merge/deploy. Probe větev codex/athlete-targeted-probe-20261109; další krok
+1k/10k/30k/fresh5tables a anti attendance/CASE. Raw first-b9 zachované.
