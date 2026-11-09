@@ -364,3 +364,11 @@ Chrome PASS. [Plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md),
 [release/meze](verification/athlete-profile-parent-release-20261109/RESULTS.md).
 Syntetická data nejsou produkční SLA, přihlášené produkční UAT NOT RUN.
 Původní diagnóza/první páry zachované, další header agregace pouze KONCEPT.
+
+## D2026-11-09-RAH
+
+Zadání vlastníka 9. 11. vybírá zbývající tři header agregace po RAP.
+Zkusit jednu agregaci s nezávislým původním fallbackem; alternativou dvě SQL,
+pokud celé HTTP nezrychlí. Bez cache, DDL a změny práv/session.
+[Plán a akceptace](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md).
+

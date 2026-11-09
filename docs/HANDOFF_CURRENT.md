@@ -7,6 +7,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 
 ## Poslední práce a další krok
 
+- **P11-RAH ROZPRACOVÁNO:** [agregace roků/počtů — plán](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md).
+  [Předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md); baseline2c61df14, parita/měření/CI/release čekají; WIP zachovaný.
 - **P11-RAP NASAZENO:** [počáteční profil / plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_PARENT_2026-11-09.md).
   #408/`ca5fc219`, deploy42574460894 SUCCESS;16CI/2405testů PASS, [důkazy](verification/athlete-profile-parent-release-20261109/RESULTS.md). Parent −54/55%, Chrome −41/42%, PHP96,6→1,26MB; veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
