@@ -236,6 +236,7 @@ try:
     reports=[]
     php("TrainingHistoryHttpProfile.php",output,"prepare")
     php("AthleteProfileHttpProfile.php",output,"prepare")
+    php("AthleteMeasurementHttpProfile.php",output,"prepare",1000)
     if diagnostic_only:
         php("ProfileSessionHttpProfile.php",output,"prepare",30000)
     for size in ([] if diagnostic_only else [1000,10000,30000]):

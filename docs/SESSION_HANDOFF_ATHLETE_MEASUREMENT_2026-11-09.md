@@ -138,3 +138,14 @@ s null/zero/date/position/typovými okraji,900vazeb jednoho tréninku a velký
 exact trailing-space typ v native/emulated+stringify režimech,32/33stránka,
 64bitklíče v profilu nad800vazbami. Nové přesné lokální/nativní a celéHTTP
 kontroly musí projít na novém head. Rozsah bez změny; gate20% zachovaná.
+
+## Zpřesnění malého měřicího profilu
+
+Kontrola rawsignature ukázala, že SID1012 měl12tréninků, ale0měření;
+dřívější small/empty fragmenty byly oba225bytů a shodné. Dosavadní přínos
+primary zůstává platný pro dané běhy, small nebylo ověření12měření.
+Vlastní příprava nyní vloží12skutečných měření k existujícím12tréninkům
+SID1012 (kolo/KOLO/kolo-space), prázdnýSID1020 zůstává0. Před každým
+měřením se společné profile_counts explicitně ověří12/0 a uloží do statistiky.
+Stejná data pro before/after, bez změny aplikace. Nový kompletní native/
+HTTP/Chrome běh na tomto head je rozhodující; předchozí vzorky zachované.

@@ -225,3 +225,14 @@ Ruční statsdiagnóza42641457242 PASS:10.3detail293.279→7.067ms,
 parita4/307 PASS, očekávanou nativní4/619 musí potvrdit CI. Diagnostický
 PHPpeak nově zachycen před EXPLAIN/schema, obsahuje SQLprofiler; prosté
 request RAM neměřeno. Bez další změny aplikačního či DB chování.
+
+## Zpřesnění malého měřicího profilu
+
+Kontrola rawsignature ukázala, že SID1012 měl12tréninků, ale0měření;
+dřívější small/empty fragmenty byly oba225bytů a shodné. Dosavadní přínos
+primary zůstává platný pro dané běhy, small nebylo ověření12měření.
+Vlastní příprava nyní vloží12skutečných měření k existujícím12tréninkům
+SID1012 (kolo/KOLO/kolo-space), prázdnýSID1020 zůstává0. Před každým
+měřením se společné profile_counts explicitně ověří12/0 a uloží do statistiky.
+Stejná data pro before/after, bez změny aplikace. Nový kompletní native/
+HTTP/Chrome běh na tomto head je rozhodující; předchozí vzorky zachované.

@@ -9,7 +9,7 @@ if (PHP_SAPI !== 'cli') {
 $output = realpath($argv[1] ?? '');
 $mode = $argv[2] ?? '';
 $size = (int) ($argv[3] ?? 1000);
-if ($output === false || !in_array($mode, ['measure', 'diagnose', 'security'], true) || !in_array($size, [1000, 10000, 30000], true)) {
+if ($output === false || !in_array($mode, ['prepare', 'measure', 'diagnose', 'security'], true) || !in_array($size, [1000, 10000, 30000], true)) {
     throw new RuntimeException('Owned output, mode and size required.');
 }
 $argv = [__FILE__, '--library'];
@@ -19,6 +19,22 @@ require_once dirname(__DIR__, 2) . '/includes/public_profile_token.php';
 $admin->exec('USE `' . $runtime['schema'] . '`');
 if (!in_array(strtoupper((string) $admin->query('SELECT @@global.query_cache_type')->fetchColumn()), ['OFF', '0'], true)) {
     throw new RuntimeException('SQL result cache must be OFF.');
+}
+if ($mode === 'prepare') {
+    if ((int) $admin->query('SELECT COUNT(*) FROM mereni_zaznamy WHERE sportovec_id=1012')->fetchColumn() !== 0) {
+        throw new RuntimeException('Small measurement fixture must start empty.');
+    }
+    $measurement = $admin->prepare("INSERT INTO mereni_zaznamy(id,sportovec_id,typ,vzdalenost,distance_unit,cas,poznamka)
+        VALUES(?,1012,?,1,'km','00:01:00','Synthetic small measurement')");
+    $link = $admin->prepare('INSERT INTO trenink_mereni(trenink_id,mereni_id,poradi) VALUES(?,?,0)');
+    $admin->beginTransaction();
+    foreach (range(1, 12) as $number) {
+        $measurement->execute([83000000 + $number, ['kolo', 'KOLO', 'kolo '][$number % 3]]);
+        $link->execute([9000000 + $number, 83000000 + $number]);
+    }
+    $admin->commit();
+    echo 'Owned small measurement fixture: 12' . PHP_EOL;
+    exit;
 }
 // Bulk inserts into the minimal migrated fixture leave cardinalities at 1–2.
 // Refresh statistics once for the shared owned dataset before either variant;
@@ -30,6 +46,16 @@ foreach (['treninky', 'trenink_mereni', 'mereni_zaznamy'] as $table) {
         'rows' => (int) $admin->query('SELECT COUNT(*) FROM ' . $table)->fetchColumn(),
         'indexes' => $admin->query('SHOW INDEX FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC),
     ];
+}
+$statistics['profile_counts'] = [];
+foreach ([1001, 1012, 1020] as $person) {
+    $count = $admin->prepare('SELECT COUNT(*) FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
+        JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=?');
+    $count->execute([$person]);
+    $statistics['profile_counts'][$person] = (int) $count->fetchColumn();
+}
+if ($statistics['profile_counts'][1012] !== 12 || $statistics['profile_counts'][1020] !== 0) {
+    throw new RuntimeException('Expected a nonempty small measurement profile and an empty control.');
 }
 file_put_contents($output . '/measurement-statistics-' . $size . '.json', json_encode($statistics, JSON_THROW_ON_ERROR));
 $credentials = json_decode(file_get_contents($output . '/credentials.json'), true, 512, JSON_THROW_ON_ERROR);
