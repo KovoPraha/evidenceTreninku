@@ -353,3 +353,14 @@ Upřesnění D2026-11-09-RAP: native diagnostika42570580742 potvrzuje nejdražš
 sportsActivityMeasurements (649/1665ms,94752řádků). Vybrána čistá3polová
 projekce; používá kanonické closure/event readers a paritu proti úplnému souhrnu,
 aniž by měnila legacy souhrn/writery nebo vydávala neúplný contract snapshot.
+
+## D2026-11-09-RAP-RELEASE
+
+Podle podmíněné autorizace vlastníka po přesné paritě a doloženém přínosu
+sloučeno #408/ca5fc219, deploy42574460894 SUCCESS. Nová3polová projekce
+odstranila nevyužité measurement snapshoty; plný canonical/export/hash i
+writery zůstávají byte-identické.16CI/current whole-tree/source, oběDB a
+Chrome PASS. [Plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md),
+[release/meze](verification/athlete-profile-parent-release-20261109/RESULTS.md).
+Syntetická data nejsou produkční SLA, přihlášené produkční UAT NOT RUN.
+Původní diagnóza/první páry zachované, další header agregace pouze KONCEPT.

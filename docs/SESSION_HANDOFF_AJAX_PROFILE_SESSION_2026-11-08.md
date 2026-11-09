@@ -34,3 +34,6 @@ RHA/RHC/RAS hotové. Další pouze KONCEPT: diagnostika parent profilu při30kfi
 
 Finální souborové důkazy: [PR#407](https://github.com/KovoPraha/evidenceTreninku/pull/407),
 jen dokumentace; po merge další deploy nespouštět.
+
+Návaznost9.11.: původní parent KONCEPT realizován jako [RAP](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md),
+#408/ca5fc219 a deploy42574460894 SUCCESS; RAS se neopakovalo, jeho důkazy platí.
