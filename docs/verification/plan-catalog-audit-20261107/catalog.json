@@ -10926,6 +10926,45 @@
       "evidence": [
         "docs/verification/athlete-profile-header-release-20261109/RESULTS.md"
       ]
+    },
+    {
+      "id": "PL-55898dcc11",
+      "path": "docs/ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md",
+      "title": "P11-RHI — historie profilu",
+      "role": "plan",
+      "primary": true,
+      "status": "IN_PROGRESS",
+      "registry": "P11-RHI",
+      "disposition": "Zahájení; implementace a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-history-performance-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-9eb1fc007d",
+      "path": "docs/SESSION_HANDOFF_ATHLETE_HISTORY_2026-11-09.md",
+      "title": "P11-RHI předání",
+      "role": "handoff",
+      "primary": false,
+      "status": "SUPPORT",
+      "registry": "P11-RHI",
+      "disposition": "Zahájení; implementace a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-history-performance-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-ee13bfbc99",
+      "path": "docs/verification/athlete-profile-history-performance-20261109/RESULTS.md",
+      "title": "P11-RHI měření",
+      "role": "evidence",
+      "primary": false,
+      "status": "SUPPORT",
+      "registry": "P11-RHI",
+      "disposition": "Zahájení; implementace a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-history-performance-20261109/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",
