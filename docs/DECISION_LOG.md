@@ -371,3 +371,13 @@ Zadání vlastníka 9. 11. vybírá zbývající tři header agregace po RAP.
 Zkusit jednu agregaci s nezávislým původním fallbackem; alternativou dvě SQL,
 pokud celé HTTP nezrychlí. Bez cache, DDL a změny práv/session.
 [Plán a akceptace](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md).
+
+## D2026-11-09-RAH-RELEASE
+
+Po přesné paritě, přínosu celé stránky a18CI na b8f91037 dle podmíněného pokynu
+vlastníka sloučeno #410/c47d4008 a chráněně nasazeno42587406908 SUCCESS.
+Jedna agregace zachovává duplicity/null/0roky/PDOtypy i nezávislý fallback.
+Bez nových suppression/cache/DDL a změny AJAX/writerů/práv/session.
+[Plán](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md),
+[release/meze](verification/athlete-profile-header-release-20261109/RESULTS.md).
+Produkční UAT samostatné; syntetické časy nejsou produkční SLA.

@@ -84,3 +84,41 @@ GitHub odmítá opakování managed workflow (403/re-request404). Nedělá se
 výjimka: tento výsledkový checkpoint vytvoří nový head se všemi novýmiCI.
 Původní neúplné měření a opravné commity zůstávají zachované.
 Aktuální merge/deploy čeká, produkční výkon/přihlášené UAT NOT RUN.
+
+## Finální b8f91037 — opakované native/HTTP/Chrome PASS
+
+[Run42582085946](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42582085946),
+[10.3](checked-head/native-10.3/integrated-summary.json),
+[11.4](checked-head/native-11.4/integrated-summary.json),
+[Chrome](checked-head/browser-summary.json). Předchozí vzorky se nepřepisují.
+Všechny4measured-source a2baseline-source SHA256 přesně odpovídají Git blobům;
+baseline parent/reader2c61df14 je byte-identický s předchozí produkcí ca5fc219.
+Původní reader po vyjmutí nového header() je byte-identický s baseline.
+
+| Tréninky / vlastní měření | ParentHTTP10.3 před→po ms | ParentHTTP11.4 před→po ms |
+| --- | --- | --- |
+|1000 /9000|44.184→22.312|50.848→23.804|
+|10000 /90000|293.043→101.964|439.730→152.285|
+|30000 /270000|1009.892→326.150 (−67.7%)|1349.797→455.233 (−66.3%)|
+
+Kontrolní malý/prázdný profil stále ve stejné velkéDB; vzorky v rawgzip.
+Žádná podstatná regrese. SQL17→15, vrácenéřádky15→13; PHPmanagedpeak
+1249920→1262032B /1249856→1261960B (asi+12kB). Nejde o paměťovou optimalizaci.
+SQL diagnostika má oddělené instrumentované workers a není součástí HTTP časů.
+
+Finální warm Chrome default TTFB1376.60→475.35ms, load1437.50→532.40ms,
+navigace do historie2424.55→1520.05ms (−37.3%). SavedMěření TTFB1365.45→478.25ms,
+load1412.10→531.10ms, celá navigace3010.15→2110.40ms (−29.9%).
+Default AJAX1004.10→1006.70ms a savedAJAX1583.95→1573.25ms neutrální:
+nevydávat variabilitu prvního běhu za zrychlení SQL fragmentů.
+Oba screenshoty před/po i vůči vizuálně zkontrolovanému prvnímu úplnému běhu
+byte-identické; kontroly UI/390px, konzole/transport0 PASS.
+
+Opakování612časovanýchHTTP+52Chrome, přesný normalizovanýHTML/JS,
+15byte-shodnýchfragmentvariant/DB,12staffrolí,4povolené kontexty,
+revokace/expirace/scope/CSRF,2skutečné nezávislé chybovéfallbacky a11checksumů PASS.
+Vlastníschema/user/config/cookies/bridgealias/workergroups cleanup PASS.
+Native2/30 každáDB, širší místní17/807; samotný SQLite header2/20.
+CodeQL na finálním headu všechny3jazyky i souhrnná kontrola SUCCESS.
+Úplné obecné CI a release mají samostatný produkční protokol; produkční
+výkon/přihlášené UAT/fyzický mobil NOT RUN. Syntetická čísla nejsou SLA/LCP.

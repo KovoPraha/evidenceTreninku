@@ -1,6 +1,6 @@
 # P11-RAH — agregace roků a počtů profilu sportovce
 
-Datum: 9. 11. 2026. Stav: ROZPRACOVÁNO; implementace, CI, merge a deploy čekají.
+Datum: 9. 11. 2026. Stav: HOTOVO / NASAZENO; technické ověření PASS, produkční UAT NOT RUN.
 Vlastník: vývoj/Codex; zadavatel: vlastník aplikace, aktuální pokyn v této relaci.
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md),
 [důkazy](verification/athlete-profile-header-performance-20261109/RESULTS.md).
@@ -46,7 +46,7 @@ roky/počet a měření počítat zvlášť, pokud úplná agregace zpomalí cel
 8. Průběžné bezpečné důkazy a finální handoff přes PR do main. Dokumentace
    nevyžaduje druhý deploy. Produkční výkon a přihlášené UAT označit NOT RUN.
 
-Další krok: implementovat a lokálně ověřit kandidáta, spustit native páry.
+Výchozí další krok při zahájení splněný; aktuální uzavření níže.
 
 ## Pracovní checkpoint — kandidát
 
@@ -89,3 +89,32 @@ role/revokace/CSRF a rawAJAX přesné, PNG byte-identické/vizuálně PASS.
 [Bezpečné důkazy](verification/athlete-profile-header-performance-20261109/RESULTS.md).
 CodeQL stažení504 na managed workflow nelze rerun; nový checkpoint opakuje
 celéCI na novém headu. Merge a produkce ještě čekají. WIP zachovaný.
+
+## Release checkpoint — merge hotový, deploy běží
+
+Finálníb8f91037 všech18CI SUCCESS; celá tested/merged tree shodná.
+#410 sloučeno jako c47d4008cf2c3814779f5f4eed4651e1448182cf.
+Protected deploy42587406908 běží nad přesným SHA; import=false/UAT=false.
+Předprodukční8/8anonymníchGET PASS. Úspěch deploye a porovnání po něm
+zatím čekají; není to doklad dokončeného nasazení. Původní WIP zachovaný.
+Finální důkazy předá codex/athlete-header-release-proof-20261109 do main.
+
+## Uzavření 9. 11. 2026
+
+#410/c47d4008, všech18CI na b8f91037 SUCCESS, celý tested/merged tree i sourcehashy
+přesné. Deploy42587406908 SUCCESS 2026-11-09T08:43:14Z; testy2407/54929, backup389/2,
+migrace/VS/config/index/smoke PASS, import/UATfalse. Veřejné8/8HTTP/DOM shodné.
+[Produkční důkazy](verification/athlete-profile-header-release-20261109/RESULTS.md).
+Finální parent30k1010→326 /1350→455ms (−68/66%), SQL17→15, paměť+12kB.
+Chrome warm default2425→1520ms (−37%), savedMěření3010→2110ms (−30%);
+samotnýAJAX neutrální. Syntetická čísla nejsou produkční SLA/LCP.
+Native2/30 každáDB,SQLite2/20, místní17/807;612časovanýchHTTP+52Chrome.
+PřesnéHTML/JS/rawAJAX,12rolí/bearer/freshrevokace/CSRF/2fallbacky,
+11checksumů/snímky/cleanup PASS. Původní FAIL/504 zachované odděleně.
+WIP v původním checkoutu i untracked soubory zachované; SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 přesný.
+Přihlášené produkční UAT/produkční výkon/obnova této zálohy/fyzický mobil NOT RUN.
+Finální důkazy: codex/athlete-header-release-proof-20261109, samostatný
+PR do main bez nového deploye dokumentace. Rozsah dokončen.
+Další pouze diagnostický KONCEPT: zbývající header~0.45s a historieAJAX~1s
+na30kfixture; nový zásah potřebuje vlastní plán/baseline. Žádné nové DDL/cache.
