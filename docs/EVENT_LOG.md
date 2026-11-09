@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 9. 11. 2026 / E2026-11-09-22 | P11-RHM indexlookup a ochrana malých filtrů | Po společné obnově statistik detail293→7ms a320→21ms. Guard total>800/page<=32 zachovává původní malé/prázdné/pozdní výběry. Lokálně4/307 PASS; celé novéHTTP/Chrome/CI před release, WIP zachovaný. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-21 | P11-RHM zastaralé statistiky fixture | Metadata300křádků měla cardinality1–2. Pouze syntetická příprava obnoví statistiky společně pro before/after; první FAIL zachované, aplikace bez DDL,20%gate beze změny. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-20 | P11-RHM plný bootstrap a pokus4 | Diagnóza17SQL PASS, úzký detail stále pomalý. Další kandidát začíná eligible a zachová join order; doplněn EXPLAIN,20%gate zachovaná, bez RHM deploye. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-19 | P11-RHM HTTP přínos nedoložen | Bounded selector native/parita PASS, HTTP30k−0.5%,gate FAIL. Doplněna diagnóza celého bootstrapu v izolované kopii bez změny časovaných workers; žádný merge/deploy. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |

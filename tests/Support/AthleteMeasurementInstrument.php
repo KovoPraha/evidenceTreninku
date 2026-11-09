@@ -14,6 +14,7 @@ if (!preg_match('/^measurement-(before|after)$/D', $diagnosticId) || !is_dir($di
 }
 require_once __DIR__ . '/QueryProfilePdo.php';
 register_shutdown_function(static function () use ($diagnosticId, $diagnosticDirectory): void {
+    $applicationPeak = memory_get_peak_usage();
     $connection = $GLOBALS['pdo'] ?? null;
     if (!$connection instanceof Tests\Support\QueryProfilePdo) {
         throw new RuntimeException('Expected owned diagnostic connection.');
@@ -58,7 +59,8 @@ register_shutdown_function(static function () use ($diagnosticId, $diagnosticDir
     $reader = (new ReflectionClass(AthleteProfileRead::class))->getFileName();
     file_put_contents($diagnosticDirectory . '/' . $diagnosticId . '.json', json_encode([
         'status' => http_response_code(), 'bootstrap_preloaded' => false, 'timing_instrumented' => true,
-        'peak_php_bytes' => memory_get_peak_usage(), 'queries' => $safe,
+        'peak_php_bytes' => $applicationPeak, 'queries' => $safe,
+        'peak_includes_sql_profiler' => true, 'peak_excludes_later_explain_and_schema' => true,
         'executed_reader_sha256' => hash_file('sha256', $reader),
         'opcache_enable_cli' => ini_get('opcache.enable_cli'),
         'explain' => $plans,

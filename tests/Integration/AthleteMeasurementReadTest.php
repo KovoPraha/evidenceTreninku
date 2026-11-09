@@ -20,7 +20,7 @@ final class AthleteMeasurementReadTest extends TestCase
     public function testFrozenCountsOrderEveryFilterPageAndPdoMode(): void
     {
         $pdo = $this->database();
-        Fixture::seed($pdo, 51);
+        Fixture::seed($pdo, 101);
         $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
         if ($mysql) {
             $pdo->exec("SET SESSION sql_mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'");
@@ -95,15 +95,25 @@ final class AthleteMeasurementReadTest extends TestCase
         // the bounded-selector threshold while preserving duplicate links.
         $pdo->exec("INSERT INTO treninky(id,datum) VALUES(1001,'2035-01-01')");
         $insert = $pdo->prepare('INSERT INTO trenink_mereni VALUES(1001,10,?)');
-        for ($position = 0; $position < 80; ++$position) {
+        for ($position = 0; $position < 900; ++$position) {
             $insert->execute([$position]);
         }
-        foreach (['', 'kolo', 'KOLO', 'absent'] as $type) {
-            foreach ([1, 2, 31, 32, 33, 1000000] as $page) {
-                self::assertSame(
-                    \AthleteMeasurementReference::measurements($pdo, 1, $type, $page),
-                    \AthleteProfileRead::measurements($pdo, 1, $type, $page)
-                );
+        $pdo->exec("UPDATE mereni_zaznamy SET typ='KOLO ' WHERE id=10");
+        $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+        foreach ($mysql ? [false, true] : [false] as $emulate) {
+            if ($mysql) {
+                $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $emulate);
+            }
+            foreach ([false, true] as $stringify) {
+                $pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, $stringify);
+                foreach (['', 'KOLO ', 'KOLO', 'kolo ', 'absent'] as $type) {
+                    foreach ([1, 2, 31, 32, 33, 1000000] as $page) {
+                        self::assertSame(
+                            \AthleteMeasurementReference::measurements($pdo, 1, $type, $page),
+                            \AthleteProfileRead::measurements($pdo, 1, $type, $page)
+                        );
+                    }
+                }
             }
         }
     }
@@ -111,7 +121,7 @@ final class AthleteMeasurementReadTest extends TestCase
     public function testSigned64BitKeysAndPositionsRemainExact(): void
     {
         $pdo = $this->database();
-        Fixture::seed($pdo, 10);
+        Fixture::seed($pdo, 100);
         $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
         if ($mysql) {
             $pdo->exec('ALTER TABLE treninky MODIFY id BIGINT NOT NULL;

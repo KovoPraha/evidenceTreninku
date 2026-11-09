@@ -203,3 +203,25 @@ beze změny. Přijatý event15 zachovaný, vlastní RHM přeznačené16–20;
 statistiky event21. Neaktuální f0f451e5 a4d9d7edd PR běhy nahrazené
 novým head (vybrané běžící byly zrušené kvůli kapacitě); nejsou PASS
 výkonnostní akceptace. Hotové původní FAIL a diagnózy zůstávají v repu.
+
+## Ochrana řídkých filtrů a malých profilů
+
+Bounded selector používat pouze při filtrovaném total>800 a stránce<=32.
+Při malém/prázdném/vzácném filtru by hledání prvních25vlastních tréninků
+mohlo procházet celý klub, zatímco přímý původní selector je vhodnější.
+Jejich SQL zůstává původní, včetně pozorování detailů po souhrnu. Nevkládá
+se předčasný prázdný return ani další SQL. Vysoké počty/typy stále zrychluje
+bounded strategie; velké pozdní stránky zůstávají původní.
+
+Paritní fixture zvýšené tak, aby nový guard skutečně procvičily:101tréninků
+s null/zero/date/position/typovými okraji,900vazeb jednoho tréninku a velký
+exact trailing-space typ v native/emulated+stringify režimech,32/33stránka,
+64bitklíče v profilu nad800vazbami. Nové přesné lokální/nativní a celéHTTP
+kontroly musí projít na novém head. Rozsah bez změny; gate20% zachovaná.
+
+Ruční statsdiagnóza42641457242 PASS:10.3detail293.279→7.067ms,
+11.4 319.689→20.611ms; EXPLAIN ref/eq_ref místo ALL/BNL, cardinality
+32k/75k místo1–2. Jde o diagnózu, nikoli celéHTTPgate. Lokální rozšířená
+parita4/307 PASS, očekávanou nativní4/619 musí potvrdit CI. Diagnostický
+PHPpeak nově zachycen před EXPLAIN/schema, obsahuje SQLprofiler; prosté
+request RAM neměřeno. Bez další změny aplikačního či DB chování.

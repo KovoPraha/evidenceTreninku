@@ -186,9 +186,10 @@ final class AthleteProfileRead
         }
         $from = self::measurementFrom();
         $pageParams = $params;
-        // Bound the training candidates before sorting measurement links. For late
-        // pages retain the original selector instead of growing this intermediate set.
-        if ($result['page'] <= 32) {
+        // Bound long histories before sorting links. Small/absent filters retain
+        // direct selection; finding their sparse trainings could scan the whole club.
+        // Late pages also retain direct selection instead of growing the key set.
+        if ($result['total'] > 32 * self::SIZE && $result['page'] <= 32) {
             $typeScope = $type === '' ? '' : ' AND '
                 . ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY own_mz.typ' : 'own_mz.typ COLLATE BINARY') . '=?';
             $join = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' STRAIGHT_JOIN ' : ' JOIN ';

@@ -123,3 +123,18 @@ index/DDL/přepínač se nepřidává a aplikační request nic takového neprov
 Původní i nový kód používají přesně stejná data a nově stejné obnovené
 statistiky; žádná změna20%gate. Nová nativní diagnostika/HTTP/Chrome/CI
 musí potvrdit přínos. Přihlášené produkční UAT a produkční výkon stále NOT RUN.
+
+## Ochrana řídkých filtrů a malých profilů
+
+Bounded selector používat pouze při filtrovaném total>800 a stránce<=32.
+Při malém/prázdném/vzácném filtru by hledání prvních25vlastních tréninků
+mohlo procházet celý klub, zatímco přímý původní selector je vhodnější.
+Jejich SQL zůstává původní, včetně pozorování detailů po souhrnu. Nevkládá
+se předčasný prázdný return ani další SQL. Vysoké počty/typy stále zrychluje
+bounded strategie; velké pozdní stránky zůstávají původní.
+
+Paritní fixture zvýšené tak, aby nový guard skutečně procvičily:101tréninků
+s null/zero/date/position/typovými okraji,900vazeb jednoho tréninku a velký
+exact trailing-space typ v native/emulated+stringify režimech,32/33stránka,
+64bitklíče v profilu nad800vazbami. Nové přesné lokální/nativní a celéHTTP
+kontroly musí projít na novém head. Rozsah bez změny; gate20% zachovaná.
