@@ -32,7 +32,7 @@
     const status = document.getElementById('training-draft-status');
     const recovery = document.getElementById('training-draft-recovery');
     const snapshotField = document.getElementById('training_draft');
-    const excluded = new Set(['csrf_token', 'submission_key', 'plan_id', 'training_draft']);
+    const excluded = new Set(['csrf_token', 'submission_key', 'plan_id', 'duplikat', 'training_draft']);
     let dirty = false, pending = false, restoring = false, uncertain = false;
     function capture() {
         const fields = {};

@@ -60,3 +60,5 @@ Q2-TIME implementováno ve větvi: časová kontrola v novém zápisu i editaci,
 koncepty nového zápisu v prohlížeči a obnova při odmítnutí serverem.
 [Výsledky a omezení](verification/training-form-resilience-20261109/RESULTS.md):
 31/108 PHP a 18 browser kontrol PASS; plné CI čeká. Nasazení NOT RUN.
+
+Předání: [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412), commit/push hotové, CI běží; merge a deploy NOT RUN.

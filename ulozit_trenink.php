@@ -71,8 +71,7 @@ try {
     header('Location: moje_treninky.php', true, 303);
     exit;
 }
-$retryUrl = 'formular.php?' . http_build_query(['submission_key' => $submissionKey] + ($planId > 0 ? ['plan_id'
-    => $planId] : []));
+$retryUrl = trainingSubmissionFormUrl($submissionKey, $_POST);
 trainingSubmissionRememberDraft($_SESSION, $submissionKey, (string)($_POST['training_draft'] ?? ''));
 $submissionStarted = false;
 $commitAttempted = false;

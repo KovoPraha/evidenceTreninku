@@ -349,6 +349,7 @@ function h($s)
     <input type="hidden" name="training_draft" id="training_draft" value="">
     <?= csrf_field() ?>
     <input type="hidden" name="submission_key" value="<?= h($submissionKey) ?>">
+    <input type="hidden" name="duplikat" value="<?= (int)($_GET['duplikat'] ?? 0) ?>">
 
     <?php if ($planPrefill): ?>
     <!-- Info lišta — evidence z plánu -->
