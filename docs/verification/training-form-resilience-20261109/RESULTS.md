@@ -50,3 +50,12 @@ Koncept se při odeslání nemaže. Dokončené zápisy se odstraní při dalš�
 nového formuláře podle serverem potvrzených klíčů. Po vypršení session může
 nejistý koncept zůstat k ručnímu ověření historie, nikdy se automaticky neodešle.
 Původní dvouhodinová platnost submission klíče a kontrola duplicit zůstávají.
+
+
+## Průběžná kontrola CI
+
+První běh 42588826486 odhalil neúplnou DOM fixture staršího klávesnicového
+testu: neobsahovala formulář, na který se nově připojuje obnova účastníků.
+Fixture doplněna o skutečný form boundary a regresi obnovy chipů/ID bez
+zdvojení; produkční kontrola nebyla oslabena. Lokální `composer analyse`
+překročil výchozí limit 300 s; rozhodující dokončení statické analýzy vede CI.
