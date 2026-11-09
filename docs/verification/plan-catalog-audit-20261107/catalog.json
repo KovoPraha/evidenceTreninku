@@ -11000,7 +11000,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11-RHMS",
-      "disposition": "RHMS draft#422: K OVĚŘENÍ, GitHub Internal server error; 10.3 parita/diagnóza a Linux PHPUnit PASS, 11.4/HTTP/Chrome/20CI čekají. RHM zůstává nasazené.",
+      "disposition": "RHMS #422: oběDB shoda/HTTP/Chrome PASS, HTTP −36.7/41.6 %, aktuální20CI a release čekají; RHM zůstává nasazené.",
       "evidence": [
         "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md",
         "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md"
@@ -11056,6 +11056,19 @@
       "disposition": "Průběžné nativní kandidáty a infrastruktura; finální párové ověření a release čekají.",
       "evidence": [
         "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-487787fb45",
+      "path": "docs/verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md",
+      "title": "P11-RHMS celé párové HTTP a Chrome",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHMS",
+      "disposition": "OběDB nativní a celé HTTP/Chrome PASS; release samostatně.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md"
       ]
     }
   ],

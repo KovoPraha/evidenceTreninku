@@ -1,30 +1,33 @@
 # Předání P11-RHMS / RHM — 9. 11. 2026
 
-**RHMS K OVĚŘENÍ — blokuje GitHub CI. RHM zůstává nasazené.**
+**RHMS SHODA A HTTP/CHROME PASS — čeká kompletní aktuální CI a release.**
 
-Aktuální [plán a přesný další postup](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#rhms-aktuální-předání--9-11-2026-1825-utc),
-[protokol a identity](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+[Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#rhms--obě-db-a-celé-httpchrome-ověřené),
+[průběh](verification/athlete-profile-measurement-summary-20261109/RESULTS.md),
+[aktuální měření](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md).
 Draft [#422](https://github.com/KovoPraha/evidenceTreninku/pull/422), větev
 `codex/athlete-measurement-summary-performance-20261109`, base main0b4592fa.
-Stejný izolovaný worktree mimo htdocs; cizí WIP zachovaný.
+Izolovaný worktree mimo htdocs, WIP původního checkoutu beze změny.
 
-Kandidát2: COUNT/MAX date po přesném typu a skalární první tuple jen v
-nejnovějším datu. Pořadí filtrů v PHP nad přesnými signed64 a NULL hodnotami,
-jediný SQL statement pro souhrn. Původní stránkový selector a10bezpečnostních/
-canonical souborů byte-shodné. Kandidát1 nevhodný, raw zachované.
+Kandidát2: COUNT/MAX datum po binárním typu a skalární první tuple pouze
+v nejnovějším datu; přesné signed64/NULL řazení malého seznamu typů v PHP.
+Jeden SQL statement, původní selector/header/history/navigation a10chráněných
+souborů byte-shodné. Bez DDL/cache/session/writer změn.
 
-PASS: SQLite/profil9/930, PHPStan, explicitní style4souborů, MariaDB10.3
-6/634, aktuální Linux PHPUnit2418/55585. Jedna instrumentovaná SQL diagnóza
-463.666→275.776ms,17→17SQL. Není to HTTP medián ani produkční přínos.
-MariaDB11.4, celé párové HTTP/Chrome/security a všech20aktuálních CI čekají.
-GitHub opakovaně vrací Internal server error při vytváření jobů; chybějící
-joby nejsou PASS. Dočasná probe větev nevyřešila infrastrukturu.
+42674262677/d8d59d54 oba joby SUCCESS: native6/634 každý,1836časovaných AJAX,
+52měřených Chrome navigací. Celé objekty/PHPtypy/HTML/JS/role/token/revokace/
+CSRF/11checksumů/cleanup PASS. 30k HTTP400.914→253.962ms (−36.7 %,10.3),
+672.882→393.144ms (−41.6 %,11.4),20%gate obě PASS. Starý profil +4/+5ms,
+malý/prázdný neutrální. Chrome warm celá1243.60→943.50ms (−24.1 %).
+Snímky před/po byte-identické a vizuálně ověřené; úzké poznámky beze změny.
+SQLite9/930, PHPStan/style a Linux2418/55585 PASS. Produkční UAT NOT RUN.
 
-Další akce: na aktuální PR větvi spustit `athlete-measurement-performance.yml`
-s `diagnostic_only=true`, `mariadb_version=11.4`; potom celý workflow obouDB.
-Uložit důkazy, přepočítat canonical Gitblob hashy a dokončit aktuální CI.
-Teprve při PASS podle pokynu vlastníka merge/protected deploy/import=false/
-UAT=false a veřejné čtecí ověření. Žádný nový merge/deploy zatím neproběhl.
+GitHub dříve Internal server error nevytvořil části CI grafu. Na d8 má jen
+16checků (15SUCCESS/CodeQL NEUTRAL), chybějící nejsou PASS. Retry default
+CodeQL nepodporován; nový evidence checkpoint musí získat všech20aktuálních
+SUCCESS. Pak čerstvý main, whole-tree/source identity, ready/merge #422,
+protected deploy import/UATfalse a veřejné před/po. Závěrečné release důkazy
+samostatným docs PR do main bez druhého deploye. Zatím žádný nový merge/deploy.
 
 Níže předchozí dokončené RHM, jeho důkazy nepřepisovat.
 

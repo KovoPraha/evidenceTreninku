@@ -997,3 +997,5 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 | PL-767870cd22 | [P11-RHM produkční předání](verification/athlete-profile-measurement-release-20261109/RESULTS.md) | evidence / SUPPORT | P11-RHM |
 
 | PL-b0695f2506 | [P11-RHMS souhrn měření](verification/athlete-profile-measurement-summary-20261109/RESULTS.md) | evidence / SUPPORT | P11-RHMS |
+
+| PL-487787fb45 | [P11-RHMS celé párové HTTP a Chrome](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md) | evidence / SUPPORT | P11-RHMS |

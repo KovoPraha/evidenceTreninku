@@ -1,6 +1,6 @@
 # P11-RHM — načítání měření profilu sportovce
 
-9. 11. 2026. Vlastník vývoj/Codex. Stav RHM: HOTOVO / NASAZENO. Návazný P11-RHMS: K OVĚŘENÍ, blokuje GitHub CI (souhrn).
+9. 11. 2026. Vlastník vývoj/Codex. Stav RHM: HOTOVO / NASAZENO. Návazný P11-RHMS: shoda a HTTP/Chrome PASS, čeká kompletní aktuální CI a release.
 Aktuální uzavření: #418/5cc9cf83, deploy42654922651 SUCCESS;
 HTTP30k −28.2/32.1 %, Chrome uloženéMěření warm−10.6/cold−22.4 %.
 [Produkční důkazy a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
@@ -417,3 +417,21 @@ Další konkrétní kroky po obnově GitHub Actions:
 4. Až při splnění všech podmínek ověřit čerstvý main, shodný testovaný strom,
    merge, protected deploy s import/UATfalse a samostatné čtecí před/po.
    Závěrečná dokumentace do main samostatně bez druhého deploye.
+
+## RHMS — obě DB a celé HTTP/Chrome ověřené
+
+Běh42674262677 na d8d59d54 SUCCESS, obě nativní6/634. Všechny9scénáře,
+1836časovaných AJAX a52měřených Chrome navigací PASS. Úplné výsledky/PHPtypy,
+HTML/JS/role/token/revokace/CSRF/canonical checksumy/cleanup shodné.
+30k/270k HTTP10.3 400.914→253.962ms (−36.7 %),11.4 672.882→393.144ms
+(−41.6 %). Chrome warm celá uložená záložka1243.60→943.50ms (−24.1 %).
+Drobné režie starého/malého/prázdného profilu a samostatné default/cold/TTFB
+jsou výslovně v [protokolu](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md).
+Snímky před/po byte-identické, vizuálně ověřené; dlouhé poznámky v úzké
+stávající tabulce nejsou nově vyřešené. Přihlášené produkční UAT NOT RUN.
+
+Původní blokující stav výše je historický průběh. Aktuálně čeká nová úplná
+CI sada nad důkazovým checkpointem, aby měly skutečně všech20kontrol
+aktuálního head SUCCESS. Runtime je beze změny proti d8/535, pouze důkazy
+se doplňují. Při PASS přesná whole-tree/source identita, merge a chráněné
+nasazení podle původního aktuálního pokynu vlastníka. Žádný nový deploy zatím.

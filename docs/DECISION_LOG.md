@@ -487,3 +487,14 @@ GitHub Internal server error opakovaně nevytvořil11.4/část aktuálních CI.
 Podmíněný pokyn vlastníka nelze zatím naplnit merge/deployem; žádná změna
 produkce. Nevynechávat backend ani20%HTTPgate, neoznačovat diagnózu za
 párový medián. [Důkazy a další postup](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+
+### D2026-11-09-RHMS-ACCEPT — souhrn podle nejnovějšího data typu
+
+Kandidát2 má přesnou nativní paritu na obouDB a celé párové HTTP/Chrome
+PASS. Počty/MAX datum a první klíč jsou v jednom statementu; PHP řadí jen
+seznam typů. Oproti window přes všechny vazby HTTP −36.7/41.6 %, Chrome
+warm celá navigace −24.1 %. Původní selector a autorizace/canonical writer
+beze změny. Kandidát1 i infrastrukturní neúspěchy zůstávají doložené.
+Přijetí implementace ještě není release: čeká všech20aktuálních CI,
+whole-tree/source proof a chráněné nasazení dle aktuálního pokynu vlastníka.
+[Úplná metoda a hranice](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md).

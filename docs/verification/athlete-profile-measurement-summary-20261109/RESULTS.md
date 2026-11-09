@@ -1,6 +1,6 @@
 # P11-RHMS — průběžné ověření souhrnu měření
 
-9. 11. 2026. Stav: příprava; žádný nový výkonový výsledek ani release.
+9. 11. 2026. Shoda a párový přínos obou DB/Chrome PASS; aktuální úplné CI a release čekají.
 [Plán](../../ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#p11-rhms--souhrn-měření-nové-zadání-9-11-2026).
 
 Baseline main 0b4592fa / produkční runtime 5cc9cf83. Původní WIP SHA256
@@ -102,3 +102,56 @@ celá aktuální sada20CI, merge a deploy nejsou dokončené. Žádné tvrzení 
 produkčním výkonu ani přihlášeném UAT. Podmínky přijetí se nesnižují.
 Původní WIP a nasazený5cc9cf83 zůstávají zachované. Přesný další krok
 v [plánu](../../ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#rhms-aktuální-předání--9-11-2026-1825-utc).
+
+
+### Aktuální pokračování po checkpointu d8d59d54
+
+[42674262677](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42674262677)
+nyní vytvořil oba celé measurement joby: 10.3/129351851122 a11.4/129351854232.
+Nechat doběhnout, neukončovat kvůli již uloženému blokujícímu stavu.
+Kandidát/runtime je shodný s5355238b/a297d4d7; změnil se jen dokumentační checkpoint.
+Část aktuální CI opět chybí (docs bez jobu, default CodeQL nemá actions,
+standardní Testy nemají celou matici), takže merge/deploy zůstávají nepovolené.
+Pokud celé measurement testy projdou, uložit aktuální raw, Chrome snímky a
+párové tabulky a dokončit všechny chybějící aktuální CI před releasem.
+
+
+### Celé MariaDB 10.3 PASS — d8d59d54
+
+Job129351851122 SUCCESS. Raw v `validated-d8/native-10.3/`, reader SHA256
+přesně odpovídá současnému Git blobu. 918 časovaných AJAX a všech9scénářů,
+17 střídavých párů po4warmupech: úplné fragmenty a11checksumů shodné.
+Primary1k14.961→12.333ms (−17.6 %),10k111.860→80.260ms (−28.2 %),
+30k400.914→253.962ms (−36.7 %). Hlavní20%gate PASS. Malý311.850→297.108,
+prázdný295.615→295.443; starý306.782→310.550ms (+3.768ms/+1.2 %),
+původní no-regression gate PASS. Není správné tvrdit stejnou procentní
+úsporu všem profilům nebo stránkám. Nativní6/634, security a cleanup PASS.
+11.4/Chrome a úplná aktuální CI sada stále čekají.
+
+
+## Finální párové měření kandidáta2 — obě DB PASS
+
+[42674262677](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42674262677),
+head d8d59d54: oba joby SUCCESS, nativní6/634 každý. [Celé tabulky, raw,
+source identity a metoda](validated-d8/RESULTS.md).
+1k/10k/30k ×9scénářů ×17párů po4warmupech,1836časovaných AJAX celkem.
+30k/270k HTTP:10.3 **400.914→253.962ms (−36.7 %)**,
+11.4 **672.882→393.144ms (−41.6 %)**. Původní20%gate PASS na obou.
+Starý900profil +3.768/+5.460ms (+1.2/+0.9 %), gate PASS;
+malý/prázdný prakticky neutrální (11.4 +11.125/+3.625ms). Neplatí stejná
+procentní úspora pro všechny profily/stránky.
+
+Chrome warm uložené Měření: celá navigace1243.60→943.50ms (−24.1 %),
+fetch→DOM+2frames841.50→549.70ms (−34.7 %); cold celá1476.20→1201.70ms
+(−18.6 %). Default warm782.05→789.75ms (+1.0 %), dokument TTFB neutrální.
+52měřených navigací pluswarmupy/interakce, konzole/transport0chyb.
+Desktop i390px screenshot byte-identický a nové snímky vizuálně ověřené;
+stávající clipping dlouhých poznámek beze změny. Fyzický mobil NOT RUN.
+
+Celé HTML/JS, role/token/revokace/CSRF,11checksumů a cleanup PASS na obou DB.
+Source SHA256 přesné proti současnému Gitblobu. SQLite/profil9/930,
+PHPStan/style a Linux2418/55585 PASS. Všechny historické pokusy zachované.
+Chybějící docs/default-CodeQL-actions/část Testy nelze vydávat za zelené;
+403 retry failed-jobs bez vytvořeného jobu a zákaz retry default CodeQL
+potvrzené. Aktuální evidence checkpoint spustí novou úplnou CI sadu;
+merge/protected deploy až po všech20aktuálních SUCCESS. Produkce stále5cc.

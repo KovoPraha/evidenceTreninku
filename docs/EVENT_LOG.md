@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 9. 11. 2026 / E2026-11-09-30 | P11-RHMS oběDB/HTTP/Chrome PASS | 42674262677/d8,6/634 každáDB,1836AJAX/52Chrome, exact parity/security/checksum/cleanup PASS; HTTP −36.7/41.6 %, Chrome warm −24.1 %. Nový checkpoint musí doplnit20aktuálních CI před releasem. | [Celé výsledky](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md) |
 | 9. 11. 2026 / E2026-11-09-29 | P11-RHMS předání / blokuje GitHub | Draft#422, native10.3 6/634 a Linux2418/55585 PASS; SQL diagnóza464→276ms/17SQL. Opakované Internal server error před joby,11.4/HTTP/Chrome/úplné CI neověřené. Žádný merge/deploy, WIP zachovaný. | [Předání a postup](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-28 | P11-RHMS kandidát2 / infra retry | První přesný klíč nevybrán; count/MAX-date má 10.3 paritu6/634 a diagnózu464→276ms/17SQL. GitHub Internal server error brání vytvoření úplných matic; ruční11.4 a aktuální celá sada čekají, žádný merge/deploy. | [Průběžné důkazy](verification/athlete-profile-measurement-summary-20261109/RESULTS.md) |
 | 9. 11. 2026 / E2026-11-09-27 | P11-RHMS zahájen | Nové zadání souhrnu, baseline main0b4592fa/runtime5cc9cf83; samostatná větev, WIP zachovaný. Nejdřív parita/diagnóza a párový přínos, až poté release. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#p11-rhms--souhrn-měření-nové-zadání-9-11-2026) |

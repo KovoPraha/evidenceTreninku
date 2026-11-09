@@ -1,0 +1,490 @@
+{
+  "10.3": {
+    "cases": [
+      {
+        "size": 1000,
+        "case": "primary",
+        "before_ms": 14.961,
+        "after_ms": 12.333,
+        "change_pct": -17.565670743934227
+      },
+      {
+        "size": 1000,
+        "case": "exact_case",
+        "before_ms": 15.037,
+        "after_ms": 12.219000000000001,
+        "change_pct": -18.740440247389767
+      },
+      {
+        "size": 1000,
+        "case": "exact_space",
+        "before_ms": 15.063,
+        "after_ms": 12.314,
+        "change_pct": -18.25001659695944
+      },
+      {
+        "size": 1000,
+        "case": "page2",
+        "before_ms": 14.952,
+        "after_ms": 12.485,
+        "change_pct": -16.499464954521137
+      },
+      {
+        "size": 1000,
+        "case": "last",
+        "before_ms": 19.989,
+        "after_ms": 17.59,
+        "change_pct": -12.001600880484276
+      },
+      {
+        "size": 1000,
+        "case": "absent",
+        "before_ms": 19.830000000000002,
+        "after_ms": 17.179,
+        "change_pct": -13.368633383761996
+      },
+      {
+        "size": 1000,
+        "case": "small",
+        "before_ms": 12.705,
+        "after_ms": 13.275,
+        "change_pct": 4.4864226682408415
+      },
+      {
+        "size": 1000,
+        "case": "old",
+        "before_ms": 14.046,
+        "after_ms": 14.625,
+        "change_pct": 4.122170012815052
+      },
+      {
+        "size": 1000,
+        "case": "empty",
+        "before_ms": 12.451,
+        "after_ms": 12.625,
+        "change_pct": 1.3974781142076953
+      },
+      {
+        "size": 10000,
+        "case": "primary",
+        "before_ms": 111.86,
+        "after_ms": 80.25999999999999,
+        "change_pct": -28.249597711425
+      },
+      {
+        "size": 10000,
+        "case": "exact_case",
+        "before_ms": 111.607,
+        "after_ms": 79.163,
+        "change_pct": -29.069861209422353
+      },
+      {
+        "size": 10000,
+        "case": "exact_space",
+        "before_ms": 111.906,
+        "after_ms": 79.664,
+        "change_pct": -28.81168123246296
+      },
+      {
+        "size": 10000,
+        "case": "page2",
+        "before_ms": 111.607,
+        "after_ms": 79.822,
+        "change_pct": -28.47939645362746
+      },
+      {
+        "size": 10000,
+        "case": "last",
+        "before_ms": 163.195,
+        "after_ms": 134.30700000000002,
+        "change_pct": -17.70152271822052
+      },
+      {
+        "size": 10000,
+        "case": "absent",
+        "before_ms": 158.999,
+        "after_ms": 127.65299999999999,
+        "change_pct": -19.714589399933335
+      },
+      {
+        "size": 10000,
+        "case": "small",
+        "before_ms": 86.218,
+        "after_ms": 92.038,
+        "change_pct": 6.7503305574242
+      },
+      {
+        "size": 10000,
+        "case": "old",
+        "before_ms": 88.817,
+        "after_ms": 92.107,
+        "change_pct": 3.704245808797868
+      },
+      {
+        "size": 10000,
+        "case": "empty",
+        "before_ms": 87.11000000000001,
+        "after_ms": 88.218,
+        "change_pct": 1.271954999426006
+      },
+      {
+        "size": 30000,
+        "case": "primary",
+        "before_ms": 400.914,
+        "after_ms": 253.96200000000002,
+        "change_pct": -36.65424505006061
+      },
+      {
+        "size": 30000,
+        "case": "exact_case",
+        "before_ms": 385.229,
+        "after_ms": 249.719,
+        "change_pct": -35.17647944469393
+      },
+      {
+        "size": 30000,
+        "case": "exact_space",
+        "before_ms": 412.27000000000004,
+        "after_ms": 258.222,
+        "change_pct": -37.36580396342204
+      },
+      {
+        "size": 30000,
+        "case": "page2",
+        "before_ms": 412.294,
+        "after_ms": 253.25799999999998,
+        "change_pct": -38.57344516291773
+      },
+      {
+        "size": 30000,
+        "case": "last",
+        "before_ms": 587.955,
+        "after_ms": 489.15999999999997,
+        "change_pct": -16.803156704169552
+      },
+      {
+        "size": 30000,
+        "case": "absent",
+        "before_ms": 560.832,
+        "after_ms": 427.257,
+        "change_pct": -23.817292879150976
+      },
+      {
+        "size": 30000,
+        "case": "small",
+        "before_ms": 311.85,
+        "after_ms": 297.108,
+        "change_pct": -4.7272727272727355
+      },
+      {
+        "size": 30000,
+        "case": "old",
+        "before_ms": 306.782,
+        "after_ms": 310.55,
+        "change_pct": 1.2282337294887036
+      },
+      {
+        "size": 30000,
+        "case": "empty",
+        "before_ms": 295.615,
+        "after_ms": 295.443,
+        "change_pct": -0.05818378634373511
+      }
+    ],
+    "source": {
+      "baseline_sha": "0b4592fa63ee49a733b8d4a882c177ac73541e99",
+      "optimized_sha": "d8d59d5457daffbe5d74575babb8a03e982124e8",
+      "source_sha256": {
+        "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+        "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+        "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+        "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+        "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+      },
+      "baseline_source_sha256": {
+        "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+        "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+        "includes/athlete_profile_read.php": "07c930617d9816e32f0cffe58ea23172346e7e89c06b61cee25904bf9ed0cf65"
+      }
+    },
+    "tests": {
+      "name": "Tests\\Integration\\AthleteMeasurementReadTest",
+      "file": "/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php",
+      "tests": "6",
+      "assertions": "634",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "2.185333"
+    }
+  },
+  "11.4": {
+    "cases": [
+      {
+        "size": 1000,
+        "case": "primary",
+        "before_ms": 24.441000000000003,
+        "after_ms": 17.326,
+        "change_pct": -29.110920175115584
+      },
+      {
+        "size": 1000,
+        "case": "exact_case",
+        "before_ms": 23.987000000000002,
+        "after_ms": 17.279,
+        "change_pct": -27.96514778838538
+      },
+      {
+        "size": 1000,
+        "case": "exact_space",
+        "before_ms": 24.131,
+        "after_ms": 17.43,
+        "change_pct": -27.769259458787452
+      },
+      {
+        "size": 1000,
+        "case": "page2",
+        "before_ms": 24.244000000000003,
+        "after_ms": 17.568,
+        "change_pct": -27.5367101138426
+      },
+      {
+        "size": 1000,
+        "case": "last",
+        "before_ms": 33.777,
+        "after_ms": 26.827,
+        "change_pct": -20.576131687242793
+      },
+      {
+        "size": 1000,
+        "case": "absent",
+        "before_ms": 32.794999999999995,
+        "after_ms": 25.958,
+        "change_pct": -20.847690196676318
+      },
+      {
+        "size": 1000,
+        "case": "small",
+        "before_ms": 21.925,
+        "after_ms": 22.732,
+        "change_pct": 3.680729760547319
+      },
+      {
+        "size": 1000,
+        "case": "old",
+        "before_ms": 24.517,
+        "after_ms": 25.27,
+        "change_pct": 3.071338255088296
+      },
+      {
+        "size": 1000,
+        "case": "empty",
+        "before_ms": 21.87,
+        "after_ms": 21.958,
+        "change_pct": 0.4023776863282924
+      },
+      {
+        "size": 10000,
+        "case": "primary",
+        "before_ms": 226.237,
+        "after_ms": 135.02700000000002,
+        "change_pct": -40.31612866153635
+      },
+      {
+        "size": 10000,
+        "case": "exact_case",
+        "before_ms": 225.881,
+        "after_ms": 133.631,
+        "change_pct": -40.84008836511261
+      },
+      {
+        "size": 10000,
+        "case": "exact_space",
+        "before_ms": 225.797,
+        "after_ms": 133.803,
+        "change_pct": -40.74190533975208
+      },
+      {
+        "size": 10000,
+        "case": "page2",
+        "before_ms": 226.143,
+        "after_ms": 134.249,
+        "change_pct": -40.63535019876804
+      },
+      {
+        "size": 10000,
+        "case": "last",
+        "before_ms": 343.297,
+        "after_ms": 250.74699999999999,
+        "change_pct": -26.95916363964731
+      },
+      {
+        "size": 10000,
+        "case": "absent",
+        "before_ms": 326.22,
+        "after_ms": 235.951,
+        "change_pct": -27.671203482312556
+      },
+      {
+        "size": 10000,
+        "case": "small",
+        "before_ms": 198.368,
+        "after_ms": 203.48499999999999,
+        "change_pct": 2.5795491208259413
+      },
+      {
+        "size": 10000,
+        "case": "old",
+        "before_ms": 203.12199999999999,
+        "after_ms": 204.52300000000002,
+        "change_pct": 0.6897332637528342
+      },
+      {
+        "size": 10000,
+        "case": "empty",
+        "before_ms": 198.416,
+        "after_ms": 199.47,
+        "change_pct": 0.5312071607128432
+      },
+      {
+        "size": 30000,
+        "case": "primary",
+        "before_ms": 672.882,
+        "after_ms": 393.144,
+        "change_pct": -41.57311385948799
+      },
+      {
+        "size": 30000,
+        "case": "exact_case",
+        "before_ms": 673.25,
+        "after_ms": 395.13399999999996,
+        "change_pct": -41.30946899368735
+      },
+      {
+        "size": 30000,
+        "case": "exact_space",
+        "before_ms": 674.9889999999999,
+        "after_ms": 395.304,
+        "change_pct": -41.43549005983801
+      },
+      {
+        "size": 30000,
+        "case": "page2",
+        "before_ms": 676.7729999999999,
+        "after_ms": 397.003,
+        "change_pct": -41.338824096114934
+      },
+      {
+        "size": 30000,
+        "case": "last",
+        "before_ms": 1033.482,
+        "after_ms": 747.2919999999999,
+        "change_pct": -27.69182240232535
+      },
+      {
+        "size": 30000,
+        "case": "absent",
+        "before_ms": 980.232,
+        "after_ms": 704.23,
+        "change_pct": -28.156803695451682
+      },
+      {
+        "size": 30000,
+        "case": "small",
+        "before_ms": 592.2950000000001,
+        "after_ms": 603.42,
+        "change_pct": 1.87828700225392
+      },
+      {
+        "size": 30000,
+        "case": "old",
+        "before_ms": 599.937,
+        "after_ms": 605.3969999999999,
+        "change_pct": 0.9100955600337857
+      },
+      {
+        "size": 30000,
+        "case": "empty",
+        "before_ms": 590,
+        "after_ms": 593.625,
+        "change_pct": 0.6144067796610253
+      }
+    ],
+    "source": {
+      "baseline_sha": "0b4592fa63ee49a733b8d4a882c177ac73541e99",
+      "optimized_sha": "d8d59d5457daffbe5d74575babb8a03e982124e8",
+      "source_sha256": {
+        "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+        "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+        "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+        "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+        "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+      },
+      "baseline_source_sha256": {
+        "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+        "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+        "includes/athlete_profile_read.php": "07c930617d9816e32f0cffe58ea23172346e7e89c06b61cee25904bf9ed0cf65"
+      }
+    },
+    "tests": {
+      "name": "Tests\\Integration\\AthleteMeasurementReadTest",
+      "file": "/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php",
+      "tests": "6",
+      "assertions": "634",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "7.008846"
+    }
+  },
+  "browser": {
+    "before": {
+      "default_cold": {
+        "document_ttfb_ms": 347.10000000009313,
+        "ajax_pair_render_ready_ms": 411.60000000009313,
+        "navigation_to_both_ready_ms": 796.8000000000466
+      },
+      "default_warm": {
+        "document_ttfb_ms": 348.69999999995343,
+        "ajax_pair_render_ready_ms": 400.949999999837,
+        "navigation_to_both_ready_ms": 782.0500000000466
+      },
+      "measurements_cold": {
+        "document_ttfb_ms": 350.4000000001397,
+        "ajax_pair_render_ready_ms": 1083.5,
+        "navigation_to_both_ready_ms": 1476.2000000001863,
+        "measurement_fetch_to_render_ready_ms": 738.5
+      },
+      "measurements_warm": {
+        "document_ttfb_ms": 351.29999999993015,
+        "ajax_pair_render_ready_ms": 853.5,
+        "navigation_to_both_ready_ms": 1243.5999999999767,
+        "measurement_fetch_to_render_ready_ms": 841.5
+      }
+    },
+    "after": {
+      "default_cold": {
+        "document_ttfb_ms": 349.5,
+        "ajax_pair_render_ready_ms": 410.19999999995343,
+        "navigation_to_both_ready_ms": 796.5
+      },
+      "default_warm": {
+        "document_ttfb_ms": 353.8499999999767,
+        "ajax_pair_render_ready_ms": 404.2500000001164,
+        "navigation_to_both_ready_ms": 789.75
+      },
+      "measurements_cold": {
+        "document_ttfb_ms": 350.60000000009313,
+        "ajax_pair_render_ready_ms": 811.7999999998137,
+        "navigation_to_both_ready_ms": 1201.6999999999534,
+        "measurement_fetch_to_render_ready_ms": 451.89999999990687
+      },
+      "measurements_warm": {
+        "document_ttfb_ms": 349.39999999990687,
+        "ajax_pair_render_ready_ms": 562.4499999999534,
+        "navigation_to_both_ready_ms": 943.5,
+        "measurement_fetch_to_render_ready_ms": 549.6999999999534
+      }
+    }
+  }
+}
