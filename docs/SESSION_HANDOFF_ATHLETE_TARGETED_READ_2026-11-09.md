@@ -19,3 +19,11 @@ Aktuální pokyn dovoluje při plné shodě/párovém přínosu/aktuálních CI
 commit/merge/protected deploy optimalizace. Gate20% a kontrolní1.2+20ms,
 žádné role/importy/platby. Podpůrný audit sám úkol neuzavírá. Další krok:
 CLI metadata nástroj/testy a workflow. Nový app merge/deploy NOT RUN.
+
+
+Support #424/ff182971 a metadata42704641179 SUCCESS, úklid PASS. App deploy
+neproběhl. Inventura je v důkazech; indexy vlastníka/reverse v produkci existují,
+odhady měření jen17. Nová větev codex/athlete-targeted-read-optimization-20261109
+z ff182971. Probíhá syntetická nativní diagnóza s doplněnými shodnými indexy
+před oběma variantami. Samotný prostý ownership UNION není vybraný (SQLite
+regrese hustého profilu). Další krok nativní náklad parent/history/MZ pro4SID.

@@ -81,3 +81,22 @@ SQLite2/30 PASS, source/syntax/style a sanitizovaný invalid-target PASS.
 Native2DB testy jsou přidané do standardních smoke jobů. Support PR/CI/merge
 čekají; webové readery a produkční aplikace stále beze změny. Nesmí se
 zaměnit dokončení tohoto nástroje za dokončení uživatelské optimalizace.
+
+## Průběžný stav — inventura PASS, nová diagnóza
+
+Support [#424](https://github.com/KovoPraha/evidenceTreninku/pull/424) sloučený
+jako ff182971, všech11 CI SUCCESS včetně nativních metadatových testů obouDB.
+[Inventura42704641179](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42704641179)
+SUCCESS včetně přesného úklidu. Žádný app deploy. [Bezpečný JSON](verification/athlete-profile-targeted-read-20261109/production-schema.json)
+potvrdil idx_sportovec, idx_mereni, idx_trenink_poradi, fk_ts_sportovci,
+unique_note a trenink_id; treninky má jen PK. Server10.3.39, odhady1667/2495/17/17/10
+řádků; nejsou přesné počty. Doménové řádky se nečetly, DDLfalse.
+
+Nová větev codex/athlete-targeted-read-optimization-20261109 z ff182971;
+původní WIP zachovaný. Další krok: cílený syntetický diagnostický harness,
+indexy pěti tabulek podle inventury před oběma variantami, parent/historie/
+Měření pro velký/small/old/empty profil. Zachovat původní harness i výsledky.
+Fixture zůstává adversariální (VARCHAR typ proti produkční ENUM6, signed/null
+hrany); samotná shoda indexů není úplnou replikou produkce. Diagnózu a
+zátěžové výsledky výslovně oddělit od produkčního výkonu. SQLite průzkum
+prostého UNION předvýběru ukázal regresi husté historie; není vybraným řešením.

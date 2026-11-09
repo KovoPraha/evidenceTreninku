@@ -1,0 +1,461 @@
+{
+    "contract": "athlete-read-schema-v1",
+    "ok": true,
+    "read_only": true,
+    "source_sha": "ff18297178419a57899cd5bb614a6b0fa51c9e7f",
+    "at_utc": "2026-11-09T21:40:24+00:00",
+    "server": "10.3.39-MariaDB-0+deb10u2-log",
+    "probe_sha256": "3b44916eefa7a315e03eea3dc458de3e232f7a159e525469841698976f3dcb5b",
+    "tables": {
+        "treninky": {
+            "exists": true,
+            "engine": "InnoDB",
+            "rows_estimate": 1667,
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "datum",
+                    "Type": "date",
+                    "Null": "NO",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "updated_at",
+                    "Type": "timestamp",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": "on update current_timestamp()"
+                },
+                {
+                    "Field": "napln",
+                    "Type": "text",
+                    "Null": "NO",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "poznamka",
+                    "Type": "text",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "delka",
+                    "Type": "decimal(5,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "kategorie",
+                    "Type": "enum('silnice','mtb','draha','cyklokros','posilovna','atletika','cviceni','plavani')",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "obrazky",
+                    "Type": "text",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "mereni",
+                    "Type": "text",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "mereni_json",
+                    "Type": "longtext",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "column": "id",
+                    "sequence": 1,
+                    "non_unique": 0,
+                    "sub_part": null,
+                    "cardinality": 1667,
+                    "type": "BTREE"
+                }
+            ]
+        },
+        "trenink_sportovec": {
+            "exists": true,
+            "engine": "InnoDB",
+            "rows_estimate": 2495,
+            "columns": [
+                {
+                    "Field": "trenink_id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Extra": ""
+                },
+                {
+                    "Field": "sportovec_id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Extra": ""
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "column": "trenink_id",
+                    "sequence": 1,
+                    "non_unique": 0,
+                    "sub_part": null,
+                    "cardinality": 1247,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "PRIMARY",
+                    "column": "sportovec_id",
+                    "sequence": 2,
+                    "non_unique": 0,
+                    "sub_part": null,
+                    "cardinality": 2495,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "fk_ts_sportovci",
+                    "column": "sportovec_id",
+                    "sequence": 1,
+                    "non_unique": 1,
+                    "sub_part": null,
+                    "cardinality": 831,
+                    "type": "BTREE"
+                }
+            ]
+        },
+        "trenink_mereni": {
+            "exists": true,
+            "engine": "InnoDB",
+            "rows_estimate": 17,
+            "columns": [
+                {
+                    "Field": "trenink_id",
+                    "Type": "int(10) unsigned",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Extra": ""
+                },
+                {
+                    "Field": "mereni_id",
+                    "Type": "int(10) unsigned",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Extra": ""
+                },
+                {
+                    "Field": "poradi",
+                    "Type": "int(10) unsigned",
+                    "Null": "NO",
+                    "Key": "",
+                    "Extra": ""
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "column": "trenink_id",
+                    "sequence": 1,
+                    "non_unique": 0,
+                    "sub_part": null,
+                    "cardinality": 17,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "PRIMARY",
+                    "column": "mereni_id",
+                    "sequence": 2,
+                    "non_unique": 0,
+                    "sub_part": null,
+                    "cardinality": 17,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "idx_mereni",
+                    "column": "mereni_id",
+                    "sequence": 1,
+                    "non_unique": 1,
+                    "sub_part": null,
+                    "cardinality": 17,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "idx_trenink_poradi",
+                    "column": "trenink_id",
+                    "sequence": 1,
+                    "non_unique": 1,
+                    "sub_part": null,
+                    "cardinality": 17,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "idx_trenink_poradi",
+                    "column": "poradi",
+                    "sequence": 2,
+                    "non_unique": 1,
+                    "sub_part": null,
+                    "cardinality": 17,
+                    "type": "BTREE"
+                }
+            ]
+        },
+        "mereni_zaznamy": {
+            "exists": true,
+            "engine": "InnoDB",
+            "rows_estimate": 17,
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(10) unsigned",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "typ",
+                    "Type": "enum('kolo','beh','posilovna','kolo_krouzek','kolo_silnice','kolo_mtb')",
+                    "Null": "NO",
+                    "Key": "MUL",
+                    "Extra": ""
+                },
+                {
+                    "Field": "sportovec_id",
+                    "Type": "int(10) unsigned",
+                    "Null": "YES",
+                    "Key": "MUL",
+                    "Extra": ""
+                },
+                {
+                    "Field": "vzdalenost",
+                    "Type": "decimal(10,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "cas",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "prevod",
+                    "Type": "varchar(100)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "cvik_id",
+                    "Type": "int(10) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "segment_id",
+                    "Type": "int(10) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "vaha",
+                    "Type": "decimal(10,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "opakovani",
+                    "Type": "int(11)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "rpe",
+                    "Type": "varchar(50)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "poznamka",
+                    "Type": "text",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "created_at",
+                    "Type": "timestamp",
+                    "Null": "NO",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "contract_version",
+                    "Type": "varchar(40)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "distance_unit",
+                    "Type": "varchar(4)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "distance_meters",
+                    "Type": "decimal(12,2)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "duration_ms",
+                    "Type": "bigint(20) unsigned",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                },
+                {
+                    "Field": "rpe_value",
+                    "Type": "decimal(3,1)",
+                    "Null": "YES",
+                    "Key": "",
+                    "Extra": ""
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "column": "id",
+                    "sequence": 1,
+                    "non_unique": 0,
+                    "sub_part": null,
+                    "cardinality": 17,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "idx_typ",
+                    "column": "typ",
+                    "sequence": 1,
+                    "non_unique": 1,
+                    "sub_part": null,
+                    "cardinality": 17,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "idx_sportovec",
+                    "column": "sportovec_id",
+                    "sequence": 1,
+                    "non_unique": 1,
+                    "sub_part": null,
+                    "cardinality": 17,
+                    "type": "BTREE"
+                }
+            ]
+        },
+        "sportovec_poznamka": {
+            "exists": true,
+            "engine": "InnoDB",
+            "rows_estimate": 10,
+            "columns": [
+                {
+                    "Field": "id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "PRI",
+                    "Extra": "auto_increment"
+                },
+                {
+                    "Field": "sportovec_id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "MUL",
+                    "Extra": ""
+                },
+                {
+                    "Field": "trenink_id",
+                    "Type": "int(11)",
+                    "Null": "NO",
+                    "Key": "MUL",
+                    "Extra": ""
+                },
+                {
+                    "Field": "poznamka",
+                    "Type": "text",
+                    "Null": "NO",
+                    "Key": "",
+                    "Extra": ""
+                }
+            ],
+            "indexes": [
+                {
+                    "name": "PRIMARY",
+                    "column": "id",
+                    "sequence": 1,
+                    "non_unique": 0,
+                    "sub_part": null,
+                    "cardinality": 10,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "unique_note",
+                    "column": "sportovec_id",
+                    "sequence": 1,
+                    "non_unique": 0,
+                    "sub_part": null,
+                    "cardinality": 10,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "unique_note",
+                    "column": "trenink_id",
+                    "sequence": 2,
+                    "non_unique": 0,
+                    "sub_part": null,
+                    "cardinality": 10,
+                    "type": "BTREE"
+                },
+                {
+                    "name": "trenink_id",
+                    "column": "trenink_id",
+                    "sequence": 1,
+                    "non_unique": 1,
+                    "sub_part": null,
+                    "cardinality": 10,
+                    "type": "BTREE"
+                }
+            ]
+        }
+    },
+    "domain_rows_read": false,
+    "ddl_executed": false
+}

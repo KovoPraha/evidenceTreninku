@@ -23,3 +23,13 @@ Neplatný target odmítnut s exit1 a sanitizovaným error_type bez detailu DSN.
 PHP syntax/style cílených dvou souborů PASS, docs5107/108/0 PASS.
 Další krok: podpůrný PR, všechny aktuální kontroly, merge bez app deploye,
 pak chráněný read-only produkční workflow a odpovídající fixture/diagnóza.
+
+
+## Metadatová inventura — PASS
+
+Support #424/ff182971, 11 CI SUCCESS; native metadata test2/30 oběDB PASS.
+[Workflow42704641179](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42704641179)
+SUCCESS včetně cleanup. [Production schema](production-schema.json) neobsahuje
+žádné doménové hodnoty; read_onlytrue/domain_rows_readfalse/ddl_executedfalse.
+[HTTP CLI guard](cli-http-guard.json): skutečný lokální GET404,0bytes, config
+nenačtena. App runtime17110a7f zůstává. Nová nativní diagnóza teprve následuje.
