@@ -2,7 +2,7 @@
 
 Aktualizováno 9. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md) vede i UX01 [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) a Q01/Q3
-vlastní otevřené úkoly; plány a rozhodnutí čti ve verzovaných souborech.
+vlastní otevřené úkoly včetně Q2-TIME; plány a rozhodnutí čti ve verzovaných souborech.
 Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 je [nasazené a cíleně ověřené](verification/planner-mobile-release-20261108/RESULTS.md) v deploy42483838259 a následném P11-RH; Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
 
 ## Poslední práce a další krok

@@ -364,3 +364,14 @@ Chrome PASS. [Plán](ATHLETE_PROFILE_PARENT_PERFORMANCE_2026-11-09.md),
 [release/meze](verification/athlete-profile-parent-release-20261109/RESULTS.md).
 Syntetická data nejsou produkční SLA, přihlášené produkční UAT NOT RUN.
 Původní diagnóza/první páry zachované, další header agregace pouze KONCEPT.
+
+
+## D2026-11-09-TIME
+
+Vlastník 9. 11. zadal blokování chybného času a odolnost zápisu vůči ztrátě
+rozepsaných dat. Q2-TIME používá lokální koncept oddělený podle trenéra a
+formuláře plus session zálohu při odmítnutém POST. Nejasný výsledek odeslání
+neobnovuje automaticky jako nový zápis, protože by mohl duplikovat trénink.
+Přílohy nelze bezpečně obnovit z úložiště formulářových hodnot. Rozsah a důkazy:
+[plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026),
+[protokol](verification/training-form-resilience-20261109/RESULTS.md).
