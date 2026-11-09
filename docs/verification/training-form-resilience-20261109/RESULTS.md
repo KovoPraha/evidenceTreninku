@@ -69,7 +69,7 @@ Lokální širší sada před převzetím #410: 2407 testů / 54863 assertions,
 5 přeskočených kontrol na Windows, bez selhání. Aktuální rozsah uzavírá Linux CI.
 
 
-## Finální předání
+## Předání implementace před pověřením k nasazení
 
 Kódová hlava `9dad0dfc`: [všech 11 CI kontrol PASS](ci-summary.json),
 [Linux / obě MariaDB 42589435512](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42589435512)
@@ -83,3 +83,9 @@ testy i souborové předání. Merge a nasazení **NOT RUN**; produkční formul
 se touto prací zatím nezměnil. Tento závěrečný zápis mění pouze dokumentaci.
 Další krok: review a případně schválené nasazení, poté přihlášená produkční
 přejímka chyby času a obnovení skutečného rozepsaného formuláře.
+
+## Následné schválené vydání 9. 11.
+
+Výše uvedené NOT RUN je historický stav při předání implementace.
+#412 je nyní sloučený a nasazený; [produkční protokol a otevřená přejímka](../training-form-resilience-release-20261109/RESULTS.md)
+obsahují přesný commit, CI, deploy, HTTP, shodu JS a blokaci přihlášeného UAT.

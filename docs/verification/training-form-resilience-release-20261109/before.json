@@ -1,0 +1,61 @@
+{
+  "phase": "before",
+  "at_utc": "2026-11-09T12:55:09.593871+00:00",
+  "method": "Anonymous GET, TLS verified, no cookies, redirects or POST; no raw HTML or response headers stored.",
+  "cases": [
+    {
+      "path": "/",
+      "http": 200,
+      "expected": [
+        200,
+        302
+      ],
+      "pass": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "http": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "path": "/formular.php",
+      "http": 302,
+      "expected": [
+        302
+      ],
+      "pass": true
+    },
+    {
+      "path": "/edit_trenink.php",
+      "http": 302,
+      "expected": [
+        302
+      ],
+      "pass": true
+    },
+    {
+      "path": "/ulozit_trenink.php",
+      "http": 302,
+      "expected": [
+        302,
+        403,
+        405
+      ],
+      "pass": true
+    },
+    {
+      "path": "/config.private_archive_key.php",
+      "http": 404,
+      "expected": [
+        403,
+        404
+      ],
+      "pass": true
+    }
+  ],
+  "asset": null,
+  "pass": true
+}

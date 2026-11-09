@@ -1,0 +1,25 @@
+import datetime
+import hashlib
+import json
+import pathlib
+import subprocess
+import sys
+
+root = pathlib.Path(__file__).resolve().parents[1]
+phase = sys.argv[1]
+cases = []
+for path, expected in [('/', [200, 302]), ('/booking/eshop.php', [200]), ('/formular.php', [302]), ('/edit_trenink.php', [302]), ('/ulozit_trenink.php', [302, 403, 405]), ('/config.private_archive_key.php', [403, 404])]:
+    run = subprocess.run(['curl.exe', '--http1.1', '--silent', '--show-error', '--max-time', '25', '--output', 'NUL', '--write-out', '%{http_code}', 'https://kis.kovopraha.cz' + path], capture_output=True, text=True)
+    status = int(run.stdout or '0')
+    cases.append({'path': path, 'http': status, 'expected': expected, 'pass': run.returncode == 0 and status in expected})
+asset = None
+if phase == 'after':
+    run = subprocess.run(['curl.exe', '--http1.1', '--fail', '--silent', '--show-error', '--max-time', '25', 'https://kis.kovopraha.cz/assets/training-form-resilience.js'], capture_output=True)
+    source_sha = '4f92b225ec33464fd03c5fbf55e6922f12d74453'
+    local = subprocess.check_output(['git', 'show', source_sha + ':assets/training-form-resilience.js'], cwd=root)
+    asset = {'path': '/assets/training-form-resilience.js', 'source_sha': source_sha, 'source': 'Exact Git blob, not Windows checkout line endings', 'download_ok': run.returncode == 0, 'bytes': len(run.stdout), 'remote_sha256': hashlib.sha256(run.stdout).hexdigest(), 'git_blob_sha256': hashlib.sha256(local).hexdigest(), 'exact_match': run.returncode == 0 and run.stdout == local}
+result = {'phase': phase, 'at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(), 'method': 'Anonymous GET, TLS verified, no cookies, redirects or POST; no raw HTML or response headers stored.', 'cases': cases, 'asset': asset, 'pass': all(c['pass'] for c in cases) and (asset is None or asset['exact_match'])}
+output = root / 'output' / ('training-release-' + phase + '.json')
+output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+print(json.dumps(result, ensure_ascii=False, indent=2))
+sys.exit(0 if result['pass'] else 1)

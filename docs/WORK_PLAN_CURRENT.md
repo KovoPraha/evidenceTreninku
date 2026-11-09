@@ -27,7 +27,7 @@ Stav: IMPLEMENTOVÁNO VE VĚTVI, [PR #395](https://github.com/KovoPraha/evidence
 
 ## Q2-TIME — ochrana rozepsaného tréninku
 
-IMPLEMENTOVÁNO / CI PASS, vlastník vývoj; [plán a akceptace](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026), [výsledky](verification/training-form-resilience-20261109/RESULTS.md). Větev `codex/training-form-resilience-20261109`; 34/131 cíleně, 18 browser a 11 CI kontrol PASS (2409 testů). [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412); další krok review/případné schválené nasazení, zatím NOT RUN.
+NASAZENO / technické ověření PASS, přihlášená přejímka K OVĚŘENÍ. Vlastník vývoj; [plán a akceptace](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026), [implementační výsledky](verification/training-form-resilience-20261109/RESULTS.md), [release a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md). [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412) sloučený; 11 CI / 2409 testů, 6 HTTP a shoda produkčního JS PASS. Předání `codex/training-resilience-release-proof-20261109`. Další krok: testerka ověří chybný čas, reload a znovuotevření konceptu v přihlášené aplikaci; Computer Use blokoval určení URL, UAT NOT RUN.
 
 ## KONCEPT Q01 — další vývoj: doladění, úklid, příprava (8. 11. 2026)
 
