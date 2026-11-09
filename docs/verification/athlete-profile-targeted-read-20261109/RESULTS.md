@@ -41,3 +41,8 @@ výsledky nevznikly, cleanup PASS oběDB. Příprava přesunuta za všechny
 buildery; opravný běh následuje. SQL kandidáti EXISTS/owned JOIN/IN se
 nejprve porovnají na přesné uspořádané narrow projekci (7párů/2warmupy),
 nikoli jako přijatý HTTP přínos. Aplikační reader stále beze změny.
+
+Druhý diagnostický běh42705556534 FAIL v syntetické topologii: historický HTTP
+builder poznámek nemá produkční PK/id. Žádné naměřené přínosy; cleanup PASS.
+Vlastněný builder nově doplní chybějící note identity a PK před oběma variantami.
+Jeho změny jsou pouze v oddělené syntetické DB, produkční DDL stále false.

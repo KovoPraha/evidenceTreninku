@@ -106,13 +106,23 @@ if ($mode === 'diagnose') {
     foreach ($variants as $variant) {
         $rt = parentRuntime($runtime, $variant);
         foreach ([1001, 1012, 1013, 1020] as $person) {
-            parentSignature(fullHttpRequest($rt, $output, 'parent-' . $variant,
-                '/sportovec_treninky.php?id=' . $person, null,
-                ['X-P11-Measure: targeted-' . $variant . '-parent-' . $person]));
+            parentSignature(fullHttpRequest(
+                $rt,
+                $output,
+                'parent-' . $variant,
+                '/sportovec_treninky.php?id=' . $person,
+                null,
+                ['X-P11-Measure: targeted-' . $variant . '-parent-' . $person]
+            ));
             foreach (['history' => 'rok=0', 'measurements' => 'view=measurements'] as $view => $query) {
-                parentSignature(fullHttpRequest($rt, $output, 'parent-' . $variant,
-                    '/ajax_sportovec_treninky.php?' . $query, null,
-                    ['X-P11-Measure: targeted-' . $variant . '-' . $view . '-' . $person]));
+                parentSignature(fullHttpRequest(
+                    $rt,
+                    $output,
+                    'parent-' . $variant,
+                    '/ajax_sportovec_treninky.php?' . $query,
+                    null,
+                    ['X-P11-Measure: targeted-' . $variant . '-' . $view . '-' . $person]
+                ));
             }
         }
     }

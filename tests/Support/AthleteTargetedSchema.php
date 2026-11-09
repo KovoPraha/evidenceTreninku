@@ -23,6 +23,11 @@ foreach ($inventory['tables'] as $table => $metadata) {
     if (!in_array($table, ['treninky', 'trenink_sportovec', 'trenink_mereni', 'mereni_zaznamy', 'sportovec_poznamka'], true)) {
         throw new RuntimeException('Unexpected inventory target.');
     }
+    $columns = array_column($admin->query('SHOW COLUMNS FROM `' . $table . '`')->fetchAll(PDO::FETCH_ASSOC), 'Field');
+    if ($table === 'sportovec_poznamka' && !in_array('id', $columns, true)) {
+        // The legacy HTTP builder omits the unused note identity.
+        $admin->exec('ALTER TABLE sportovec_poznamka ADD id INT NOT NULL AUTO_INCREMENT PRIMARY KEY');
+    }
     $groups = [];
     foreach ($metadata['indexes'] as $index) {
         $groups[$index['name']]['columns'][] = $index['column'];
@@ -38,8 +43,8 @@ foreach ($inventory['tables'] as $table => $metadata) {
         if (in_array($definition, $existing, true)) {
             continue;
         }
-        if ($name === 'PRIMARY' || isset($existing[$name])) {
-            throw new RuntimeException('Synthetic key conflicts with inventory.');
+        if (isset($existing[$name])) {
+            throw new RuntimeException('Synthetic key conflicts with inventory: ' . $table . '.' . $name);
         }
         $columns = [];
         foreach ([$name, ...$definition['columns']] as $identifier) {
@@ -50,8 +55,12 @@ foreach ($inventory['tables'] as $table => $metadata) {
         foreach ($definition['columns'] as $column) {
             $columns[] = '`' . $column . '`';
         }
-        $admin->exec('CREATE ' . ($definition['non_unique'] === 0 ? 'UNIQUE ' : '')
-            . 'INDEX `' . $name . '` ON `' . $table . '` (' . implode(',', $columns) . ')');
+        if ($name === 'PRIMARY') {
+            $admin->exec('ALTER TABLE `' . $table . '` ADD PRIMARY KEY (' . implode(',', $columns) . ')');
+        } else {
+            $admin->exec('CREATE ' . ($definition['non_unique'] === 0 ? 'UNIQUE ' : '')
+                . 'INDEX `' . $name . '` ON `' . $table . '` (' . implode(',', $columns) . ')');
+        }
         $added[] = $name;
     }
     $report['tables'][$table] = ['added_synthetic_indexes' => $added,
