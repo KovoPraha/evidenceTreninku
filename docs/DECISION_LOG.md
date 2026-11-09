@@ -397,3 +397,12 @@ Produkční UAT samostatné; syntetické časy nejsou produkční SLA.
 Vlastník vybral načítání historie po RAH. Ověřit EXISTS membership/detail
 s omezenými klíči a postupný původní PHP součet; SQL SUM by měnil numerickou
 sémantiku. Bez cache/DDL/změny práv/session. [Plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md).
+
+## D2026-11-09-RHI-RELEASE
+
+Dle podmíněného pokynu vlastníka po přesné paritě a prokázaném přínosu historie
+sloučeno #413/c3d34b87,18CI SUCCESS, protected deploy42625502461 SUCCESS.
+EXISTS a postupné klíče zachovávají původní orderedPHPsoučet i opětovnou kontrolu
+vlastnictví/roku detailů. Bez DDL/cache/práv/session/writer změn. Přijaté #412 zachované.
+[Plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md),
+[release a meze včetně proměnlivého Měření](verification/athlete-profile-history-release-20261109/RESULTS.md).

@@ -7,8 +7,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 
 ## Poslední práce a další krok
 
-- **P11-RHI ROZPRACOVÁNO:** [historie profilu — plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md).
-  [Předání](SESSION_HANDOFF_ATHLETE_HISTORY_2026-11-09.md); PR#413, první historie−92/94%; doladění roku a opakování UI/souběhu před release; WIP zachovaný.
+- **P11-RHI NASAZENO:** [historie profilu — plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_HISTORY_2026-11-09.md).
+  #413/c3d34b87, deploy42625502461 SUCCESS;18CI PASS, historie−89/93%, PHP−89%, Chrome historie−31%; [důkazy](verification/athlete-profile-history-release-20261109/RESULTS.md), veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
 - **P11-RAH NASAZENO:** [agregace roků/počtů — plán](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_HEADER_2026-11-09.md).
   #410/c47d4008, deploy42587406908 SUCCESS;18CI PASS, parent−66/68%, Chrome−30/37%; [důkazy](verification/athlete-profile-header-release-20261109/RESULTS.md), veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).

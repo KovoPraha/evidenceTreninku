@@ -1,0 +1,89 @@
+{
+    "normalization_version": 2,
+    "phase": "before",
+    "at_utc": "2026-11-09T13:18:00+00:00",
+    "method": "Anonymous GET without cookies, redirects or POST; DOM hashes excluding scripts/nonces/CSP-handler markers/CSRF values and release asset versions, system curl.exe HTTP/1.1 with TLS verification; no raw HTML/session.",
+    "cases": {
+        "catalog": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php",
+            "http": 200,
+            "expected": 200,
+            "status_pass": true,
+            "total_ms": 1738.355,
+            "dom_sha256": "dc0ba13dedd6c6bb058543019485d405b85edda392724922d4d794ef0135a543",
+            "asset_versions": [],
+            "baseline_asset_proof": null
+        },
+        "price": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price",
+            "http": 200,
+            "expected": 200,
+            "status_pass": true,
+            "total_ms": 4563.861,
+            "dom_sha256": "83bb7d3741e3480f684a1e2a9e160529a63b8c22d995f4e7ae25972bdf7e22f9",
+            "asset_versions": [],
+            "baseline_asset_proof": null
+        },
+        "page2": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?stranka=2",
+            "http": 200,
+            "expected": 200,
+            "status_pass": true,
+            "total_ms": 1336.209,
+            "dom_sha256": "dc0ba13dedd6c6bb058543019485d405b85edda392724922d4d794ef0135a543",
+            "asset_versions": [],
+            "baseline_asset_proof": null
+        },
+        "search": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?q=cyklo",
+            "http": 200,
+            "expected": 200,
+            "status_pass": true,
+            "total_ms": 930.327,
+            "dom_sha256": "57827b6c5b1eea3a12a4fdfc8762d89ab24395f4e2dbc2575a625ca2463b6be8",
+            "asset_versions": [],
+            "baseline_asset_proof": null
+        },
+        "empty": {
+            "url": "https://kis.kovopraha.cz/booking/eshop.php?q=__catalog_performance_no_match__",
+            "http": 200,
+            "expected": 200,
+            "status_pass": true,
+            "total_ms": 859.966,
+            "dom_sha256": "d87c96dd20d8363e596808a8f2b15a87666348efab732de78dd37f7ef8c233b9",
+            "asset_versions": [],
+            "baseline_asset_proof": null
+        },
+        "profile_denied": {
+            "url": "https://kis.kovopraha.cz/sportovec_treninky.php",
+            "http": 404,
+            "expected": 404,
+            "status_pass": true,
+            "total_ms": 160.95100000000002,
+            "dom_sha256": "9578a0bfc4151fc8aedcc0add316bbb7168b2f0448ab59afb70b334a49a5802c",
+            "asset_versions": [],
+            "baseline_asset_proof": null
+        },
+        "history_denied": {
+            "url": "https://kis.kovopraha.cz/ajax_sportovec_treninky.php",
+            "http": 403,
+            "expected": 403,
+            "status_pass": true,
+            "total_ms": 152.001,
+            "dom_sha256": "12df4a3cf2c35a20f0991c6d890f737937527c18957b17184e8dd9d24ff8916f",
+            "asset_versions": [],
+            "baseline_asset_proof": null
+        },
+        "measurements_denied": {
+            "url": "https://kis.kovopraha.cz/ajax_sportovec_treninky.php?view=measurements",
+            "http": 403,
+            "expected": 403,
+            "status_pass": true,
+            "total_ms": 139.337,
+            "dom_sha256": "12df4a3cf2c35a20f0991c6d890f737937527c18957b17184e8dd9d24ff8916f",
+            "asset_versions": [],
+            "baseline_asset_proof": null
+        }
+    },
+    "complete": true
+}

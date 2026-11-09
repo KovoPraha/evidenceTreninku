@@ -10933,11 +10933,11 @@
       "title": "P11-RHI — historie profilu",
       "role": "plan",
       "primary": true,
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "registry": "P11-RHI",
-      "disposition": "Zahájení; implementace a release čekají.",
+      "disposition": "#413/c3d34b87, deploy42625502461 SUCCESS; parita/18CI/HTTP/Chrome PASS, UAT a meze samostatně.",
       "evidence": [
-        "docs/verification/athlete-profile-history-performance-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-history-release-20261109/RESULTS.md"
       ]
     },
     {
@@ -10948,9 +10948,9 @@
       "primary": false,
       "status": "SUPPORT",
       "registry": "P11-RHI",
-      "disposition": "Zahájení; implementace a release čekají.",
+      "disposition": "#413/c3d34b87, deploy42625502461 SUCCESS; parita/18CI/HTTP/Chrome PASS, UAT a meze samostatně.",
       "evidence": [
-        "docs/verification/athlete-profile-history-performance-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-history-release-20261109/RESULTS.md"
       ]
     },
     {
@@ -10961,9 +10961,22 @@
       "primary": false,
       "status": "SUPPORT",
       "registry": "P11-RHI",
-      "disposition": "Zahájení; implementace a release čekají.",
+      "disposition": "#413/c3d34b87, deploy42625502461 SUCCESS; parita/18CI/HTTP/Chrome PASS, UAT a meze samostatně.",
       "evidence": [
-        "docs/verification/athlete-profile-history-performance-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-history-release-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-23f3c61945",
+      "path": "docs/verification/athlete-profile-history-release-20261109/RESULTS.md",
+      "title": "P11-RHI produkční předání",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHI",
+      "disposition": "Protected release a čtecí ověření PASS; meze výslovné.",
+      "evidence": [
+        "docs/verification/athlete-profile-history-release-20261109/RESULTS.md"
       ]
     }
   ],
