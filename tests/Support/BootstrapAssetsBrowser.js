@@ -52,8 +52,16 @@ async (page) => {
             if (item.id.includes('profile')) {
               await page.waitForFunction(() => document.querySelectorAll('#trainingListWrap .trenink-card').length===25);
             } else if (item.id==='mine') {
-              await page.waitForFunction(() => document.querySelector('#listWrap')?.innerText.trim().length>10
-                && !document.querySelector('#listWrap .spinner-border'));
+              try {
+                await page.waitForFunction(() => document.querySelector('#listWrap [data-coach-history]')
+                  && getComputedStyle(document.querySelector('#spinner')).display==='none');
+              } catch {
+                const state=await page.evaluate(()=>({title:document.title,path:location.pathname,
+                  list:document.querySelector('#listWrap')?.innerText.slice(0,250),
+                  marker:!!document.querySelector('[data-coach-history]'),
+                  spinner:document.querySelector('#spinner')?.style.display}));
+                throw new Error('Mine content readiness: '+JSON.stringify({variant,state,errors,failed}));
+              }
             }
             const contentReady = await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve(performance.now())))));
             await page.waitForLoadState('networkidle');
