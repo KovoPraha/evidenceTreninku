@@ -37,3 +37,10 @@ PR do main bez opakovaného deploye dokumentace. Rozsah dokončen.
 Další pouze KONCEPT: změřit zbývající rozdíl mezi samotným HTTP readmodelem
 a browser fetchTTFB (bootstrap/čerstvé ověření/fronta). ResourceTiming sám
 příčinu nedokazuje; žádné cachování práv či další implementace tímto povolené.
+
+## Převzetí dokumentačního #414
+
+Převzato main fa8315eb, úplné produkční předání Q2-TIME včetně jeho přejímky.
+Oba release záznamy zachované, vlastní uzavření nově eventE11 kvůli přijatémuE10.
+Změna jen dokumentace; runtime stále c3d34b87. Nový společný proof head
+znovu ověřuje celéCI před merge.61artifacthashů zůstává kanonicky shodných.

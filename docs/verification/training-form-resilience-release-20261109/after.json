@@ -1,0 +1,70 @@
+{
+  "phase": "after",
+  "at_utc": "2026-11-09T13:10:36.191917+00:00",
+  "method": "Anonymous GET, TLS verified, no cookies, redirects or POST; no raw HTML or response headers stored.",
+  "cases": [
+    {
+      "path": "/",
+      "http": 200,
+      "expected": [
+        200,
+        302
+      ],
+      "pass": true
+    },
+    {
+      "path": "/booking/eshop.php",
+      "http": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "path": "/formular.php",
+      "http": 302,
+      "expected": [
+        302
+      ],
+      "pass": true
+    },
+    {
+      "path": "/edit_trenink.php",
+      "http": 302,
+      "expected": [
+        302
+      ],
+      "pass": true
+    },
+    {
+      "path": "/ulozit_trenink.php",
+      "http": 302,
+      "expected": [
+        302,
+        403,
+        405
+      ],
+      "pass": true
+    },
+    {
+      "path": "/config.private_archive_key.php",
+      "http": 404,
+      "expected": [
+        403,
+        404
+      ],
+      "pass": true
+    }
+  ],
+  "asset": {
+    "path": "/assets/training-form-resilience.js",
+    "source_sha": "4f92b225ec33464fd03c5fbf55e6922f12d74453",
+    "source": "Exact Git blob, not Windows checkout line endings",
+    "download_ok": true,
+    "bytes": 8293,
+    "remote_sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+    "git_blob_sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+    "exact_match": true
+  },
+  "pass": true
+}
