@@ -82,3 +82,25 @@ prosté časovací workers se tím nemění. Ruční diagnostic_only workflow po
 jen syntetickou30kDB a přesné testy; nenahrazuje úplný HTTP/Chrome gate.
 Další krok: vysvětlit rozdíl, až poté případná další optimalizace a celý CI.
 Druhý pokus na11.4 také výkon FAIL; jeho původní raw/Chrome důkazy doplněné.
+
+## Přesná diagnóza spojení a pokus 4 — pevné pořadí joinů
+
+Ruční diagnostic_only run42638743078 nejprve FAIL kvůli chybě testovacího
+bootstrapu (chybějící profilovací třída při loginu), aplikace se neměnila.
+Bezpečné source/test/cleanup důkazy v diagnostic-first-failed/ zachované.
+Opravený [run42639130649](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42639130649)
+PASS oběDB, f0f451e5:17SQL od vytvoření PDO, skutečné readerSHA shodné.
+Metadata/autorizace jsou pod1ms; brzda zůstává SQL měření. Na10.3 detail
+287.696→259.713ms, na11.4 365.562→953.808ms. Původní4–5ms diagnostika
+nebyla reprezentativní pro spojení po běžném bootstrapu. Plné rawdůkazy
+v full-bootstrap/, nejde o PASS výkonnostní akceptace.
+
+Pracovní hypotéza: volné pořadí joinů může načíst všechny vlastní vazby před
+omezeným klíčovým seznamem. Nový kandidát začíná bounded eligible tréninky,
+na MySQL/MariaDB spojuje pomocí STRAIGHT_JOIN t→tm→mz v tomto pořadí.
+SQLite používá běžné JOIN; původní souhrn i pozdější stránky beze změny.
+[Oficiální řízení pořadí](https://mariadb.com/docs/server/ha-and-performance/optimization-and-tuning/query-optimizations/index-hints-how-to-force-query-plans).
+Nová diagnostika ukládá EXPLAIN aktuálního i odmítnutého volného selectoru
+nad stejnými parametry (parametry neukládá), až po renderu v samostatných
+workers. Hypotézu musí potvrdit plán a nové celé párové HTTP/Chrome měření;
+20%gate se nesnižuje. Žádný RHM merge/deploy, cizí WIP zachovaný.

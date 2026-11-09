@@ -435,3 +435,11 @@ Zachovat první vzorky a změřit integer tuple + bounded training selector;
 Druhý native pokus izoloval přínos detailu165→4ms, ale regresi agregace.
 Obě GROUP_CONCAT varianty zamítnuté; další kandidát obsahuje jen bounded
 selector a původní souhrn, bez přidaného SQL. [Důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-4 — reprezentativní spojení a pořadí joinů
+
+Původní oddělený instrument přednačítal db.php; jeho dílčí SQL čísla se
+nepřenesla do HTTP. Celý bootstrap17SQL ukázal pomalý detail i po omezení.
+Změna nyní nejprve provede bounded eligible seznam a zachová pořadí pomocí
+STRAIGHT_JOIN; ověřit EXPLAIN a celé HTTP, neměnit20%gate.
+[Plán a původní důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).

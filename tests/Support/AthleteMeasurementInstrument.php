@@ -24,11 +24,35 @@ register_shutdown_function(static function () use ($diagnosticId, $diagnosticDir
         $safe[] = ['sql' => $sql, 'execute_ms' => $query['execute_ms'], 'fetch_ms' => $query['fetch_ms'],
             'fetched_rows' => $query['fetched_rows'], 'caller' => $query['caller'] ?? ''];
     }
+    // EXPLAIN after the rendered response, on the same owned connection. Compare
+    // the rejected free join order with the current bounded order; retain no binds.
+    $connection->profiling = false;
+    $plans = [];
+    foreach ($connection->profile as $query) {
+        if (!str_contains($query['sql'], 'tm.trenink_datum')) {
+            continue;
+        }
+        $templates = ['current' => $query['sql']];
+        $rejectedPath = dirname(__DIR__, 2) . '/docs/verification/athlete-profile-measurement-performance-20261109/'
+            . 'rejected-bounded/native-10.3/diagnostic-after.json';
+        $rejected = json_decode(file_get_contents($rejectedPath), true, 512, JSON_THROW_ON_ERROR);
+        foreach ($rejected['queries'] as $old) {
+            if (str_contains($old['sql'], 'tm.trenink_datum') && substr_count($old['sql'], '?') === count($query['parameters'])) {
+                $templates['rejected_bounded'] = $old['sql'];
+            }
+        }
+        foreach ($templates as $label => $sql) {
+            $statement = $connection->prepare('EXPLAIN FORMAT=JSON ' . $sql);
+            $statement->execute($query['parameters']);
+            $plans[$label] = json_decode($statement->fetchColumn(), true, 512, JSON_THROW_ON_ERROR);
+        }
+    }
     $reader = (new ReflectionClass(AthleteProfileRead::class))->getFileName();
     file_put_contents($diagnosticDirectory . '/' . $diagnosticId . '.json', json_encode([
         'status' => http_response_code(), 'bootstrap_preloaded' => false, 'timing_instrumented' => true,
         'peak_php_bytes' => memory_get_peak_usage(), 'queries' => $safe,
         'executed_reader_sha256' => hash_file('sha256', $reader),
         'opcache_enable_cli' => ini_get('opcache.enable_cli'),
+        'explain' => $plans,
     ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 });

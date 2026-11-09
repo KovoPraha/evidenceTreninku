@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 9. 11. 2026 / E2026-11-09-19 | P11-RHM plný bootstrap a pokus4 | Diagnóza17SQL PASS, úzký detail stále pomalý. Další kandidát začíná eligible a zachová join order; doplněn EXPLAIN,20%gate zachovaná, bez RHM deploye. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-18 | P11-RHM HTTP přínos nedoložen | Bounded selector native/parita PASS, HTTP30k−0.5%,gate FAIL. Doplněna diagnóza celého bootstrapu v izolované kopii bez změny časovaných workers; žádný merge/deploy. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-17 | P11-RHM integer agregace FAIL, pokus3 | Native4/523 a parita PASS,30kHTTP +76%. Detail165→4ms; ponechán jen bounded selector, původní souhrn obnoven, žádný deploy. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-16 | P11-RHM první výkon FAIL, pokus2 | JSON agregace má přesnou paritu, ale HTTP30k na10.3 +60.7%. Původní vzorky zachované; další kandidát integer tuple + omezení tréninků prvních32stránek, bez deploye. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |

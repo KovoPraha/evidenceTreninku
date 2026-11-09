@@ -191,10 +191,14 @@ final class AthleteProfileRead
         if ($result['page'] <= 32) {
             $typeScope = $type === '' ? '' : ' AND '
                 . ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY own_mz.typ' : 'own_mz.typ COLLATE BINARY') . '=?';
-            $from .= ' JOIN (SELECT own_t.id FROM treninky own_t WHERE EXISTS (
+            $join = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' STRAIGHT_JOIN ' : ' JOIN ';
+            $from = ' FROM (SELECT own_t.id FROM treninky own_t WHERE EXISTS (
                 SELECT 1 FROM trenink_mereni own_tm JOIN mereni_zaznamy own_mz ON own_mz.id=own_tm.mereni_id
                 WHERE own_tm.trenink_id=own_t.id AND own_mz.sportovec_id=?' . $typeScope . ')
-                ORDER BY own_t.datum DESC,own_t.id DESC LIMIT ' . ($result['page'] * self::SIZE) . ') eligible ON eligible.id=t.id';
+                ORDER BY own_t.datum DESC,own_t.id DESC LIMIT ' . ($result['page'] * self::SIZE) . ') eligible'
+                . $join . 'treninky t ON t.id=eligible.id'
+                . $join . 'trenink_mereni tm ON tm.trenink_id=t.id'
+                . $join . 'mereni_zaznamy mz ON mz.id=tm.mereni_id';
             $pageParams = [...$params, ...$params];
         }
         // LIMIT still precedes wide values/notes and display labels.
