@@ -109,4 +109,4 @@ async (page) => {
   return {complete:true,role:config.role,browser_version:page.context().browser().version(),
     method:'17 alternating pairs after 4 warmups, real network, no throttling/mocks; cold clears browser cache',
     samples,style_signatures:styleSignatures,screenshots,console_errors:errors,failed_requests:failed};
-};
+}
