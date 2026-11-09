@@ -10987,7 +10987,7 @@
       "primary": true,
       "status": "PARTIAL",
       "registry": "QR01",
-      "disposition": "#416 v main, #419 doplňuje nové potvrzení textu; CI #419, ruční deploy a živé UAT otevřené.",
+      "disposition": "#416/#419 v main, e3f2990 nasazeno v workflow 42637712723; místní testy a veřejné GET PASS, živé rodičovské UAT otevřené.",
       "evidence": [
         "docs/verification/quick-registration-terms-20261109/RESULTS.md"
       ]

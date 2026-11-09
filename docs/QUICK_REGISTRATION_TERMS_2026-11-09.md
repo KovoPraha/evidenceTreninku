@@ -1,6 +1,6 @@
 # QR01 — verze podmínek rychlé přihlášky
 
-Stav: implementace HOTOVO v `main`, produkční release a živé UAT otevřené. Vlastník: vývoj na přímé zadání 9. 11. 2026. Větev `codex/quick-registration-terms-20261109` z `origin/main`; izolovaný worktree `C:/xampp/htdocs/evidencePavel-quick-registration-terms-20261109`.
+Stav: implementace a produkční release HOTOVO; živé rodičovské UAT otevřené. Vlastník: vývoj na přímé zadání 9. 11. 2026. Větev důkazu vydání `codex/quick-registration-terms-release-proof-20261109`; izolovaný worktree `C:/xampp/htdocs/evidencePavel-quick-registration-terms-20261109`.
 
 ## Cíl a rozsah
 
@@ -14,4 +14,4 @@ Přejímka: čerstvý formulář odesílá přesné klíče a verze; čerstvá o
 
 ## Stav předání
 
-Úzká oprava HTML atributu hotová; [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) prošel všemi 11 kontrolami a byl sloučen jako `5977897f44b60acbf54a2722ade1c63db75b8ae6`. Před produkčním vydáním odhalen navazující případ: po odmítnutí staré verze stránka ponechá původní potvrzení zaškrtnuté. [PR #419](https://github.com/KovoPraha/evidenceTreninku/pull/419) doplňuje opětovné načtení verzí a ruší dřívější potvrzení při změně kterékoliv registrační nebo programové verze; [izolované výsledky](verification/quick-registration-terms-20261109/RESULTS.md) PASS. Produkční deploy je samostatný ruční workflow s povinným vstupem `NASADIT`; jeho spuštění čeká na dokončení #419 a potvrzení vlastníka. Živé rodičovské UAT produktu 298 ani skutečná platba zatím NOT RUN.
+Úzká oprava HTML atributu v [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) prošla 11 kontrolami a byla sloučena jako `5977897f44b60acbf54a2722ade1c63db75b8ae6`. Před vydáním odhalen navazující případ: po odmítnutí staré verze stránka ponechá původní potvrzení zaškrtnuté. [PR #419](https://github.com/KovoPraha/evidenceTreninku/pull/419) doplnil opětovné načtení verzí a zrušení dřívějšího potvrzení při změně kterékoliv registrační nebo programové verze; 11 kontrol PASS, merge `e3f299037517c35b96752edfbf40dfa0e8e41f94`. Vlastník schválil ruční produkční nasazení. [Workflow 42637712723](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42637712723) vydal přesně `e3f2990` s `uat_schvaleno=false` a `importovat_krouzky=false`; záloha, migrace a HTTP smoke PASS. Veřejný formulář produktu 298/varianty 952 vrací aktuální skrytá pole všech pěti registračních a dvou programových verzí. [Výsledkový protokol](verification/quick-registration-terms-20261109/RESULTS.md) odděluje syntetický celý proces a produkční čtení. Živé rodičovské vytvoření objednávky produktu 298 a skutečná platba zůstávají NOT RUN.

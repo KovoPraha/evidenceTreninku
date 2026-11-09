@@ -197,3 +197,9 @@ index/DDL/přepínač se nepřidává a aplikační request nic takového neprov
 Původní i nový kód používají přesně stejná data a nově stejné obnovené
 statistiky; žádná změna20%gate. Nová nativní diagnostika/HTTP/Chrome/CI
 musí potvrdit přínos. Přihlášené produkční UAT a produkční výkon stále NOT RUN.
+
+Převzat main620cc773/#420 s již dokončeným QR01release, runtimeprofilu
+beze změny. Přijatý event15 zachovaný, vlastní RHM přeznačené16–20;
+statistiky event21. Neaktuální f0f451e5 a4d9d7edd PR běhy nahrazené
+novým head (vybrané běžící byly zrušené kvůli kapacitě); nejsou PASS
+výkonnostní akceptace. Hotové původní FAIL a diagnózy zůstávají v repu.
