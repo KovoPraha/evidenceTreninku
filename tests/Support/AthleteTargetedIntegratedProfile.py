@@ -123,7 +123,7 @@ def browser(variant, role):
     cli(session, "click", button[1])
     cli(session, "snapshot")
     template = (root / "tests/Support/AthleteMeasurementBrowserProfile.js").read_text()
-    template = template.replace("JSON.parse('__ATHLETE_TARGETED_CONFIG__')", json.dumps(dict(variant=variant, base_url=base_url, screenshot_dir=str(safe))))
+    template = template.replace("JSON.parse('__ATHLETE_MEASUREMENT_CONFIG__')", json.dumps(dict(variant=variant, base_url=base_url, screenshot_dir=str(safe))))
     script = runtime / (session + ".js")
     script.write_text(template)
     report = result(cli(session, "run-code", "--filename=" + str(script)))
@@ -232,13 +232,13 @@ try:
             (baseline_root/"includes"/entry.name).symlink_to(entry,target_is_directory=entry.is_dir())
     for route in routes:
         (baseline_root/route).write_bytes(baselines[route])
-    php("AthleteTargetedSchema.php",output)
-    (safe/"fixture-schema.json").write_bytes((output/"fixture-schema.json").read_bytes())
     start_servers()
     reports=[]
     php("TrainingHistoryHttpProfile.php",output,"prepare")
     php("AthleteProfileHttpProfile.php",output,"prepare")
     php("AthleteTargetedHttpProfile.php",output,"prepare",1000)
+    php("AthleteTargetedSchema.php",output)
+    (safe/"fixture-schema.json").write_bytes((output/"fixture-schema.json").read_bytes())
     if diagnostic_only:
         php("ProfileSessionHttpProfile.php",output,"prepare",30000)
     for size in ([] if diagnostic_only else [1000,10000,30000]):
@@ -257,6 +257,8 @@ try:
         for variant in ["before","after"]:
             name=f"browser-coach-{variant}.json"
             (safe/(name+".gz")).write_bytes(gzip.compress((output/name).read_bytes(),mtime=0))
+    php("AthleteTargetedCandidates.php",output)
+    (safe/"candidate-selectors.json").write_bytes((output/"candidate-selectors.json").read_bytes())
     stop_servers()
     start_servers(instrument=True)
     php("AthleteTargetedHttpProfile.php",output,"diagnose",30000)

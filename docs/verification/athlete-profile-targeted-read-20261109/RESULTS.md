@@ -33,3 +33,11 @@ SUCCESS včetně cleanup. [Production schema](production-schema.json) neobsahuje
 žádné doménové hodnoty; read_onlytrue/domain_rows_readfalse/ddl_executedfalse.
 [HTTP CLI guard](cli-http-guard.json): skutečný lokální GET404,0bytes, config
 nenačtena. App runtime17110a7f zůstává. Nová nativní diagnóza teprve následuje.
+
+
+První nový diagnostický běh42705202126 FAIL v přípravě: vyrovnání indexů
+bylo před doplněním poradi existujícím syntetickým builderem. Žádné A/B
+výsledky nevznikly, cleanup PASS oběDB. Příprava přesunuta za všechny
+buildery; opravný běh následuje. SQL kandidáti EXISTS/owned JOIN/IN se
+nejprve porovnají na přesné uspořádané narrow projekci (7párů/2warmupy),
+nikoli jako přijatý HTTP přínos. Aplikační reader stále beze změny.
