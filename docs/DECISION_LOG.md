@@ -429,3 +429,9 @@ nastavení, cache nebo DDL. [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026
 Nativní parita sama nestačí: první JSON varianta má regresi HTTP, neuvolnit.
 Zachovat první vzorky a změřit integer tuple + bounded training selector;
 [plán a důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-3 — ponechat původní souhrn
+
+Druhý native pokus izoloval přínos detailu165→4ms, ale regresi agregace.
+Obě GROUP_CONCAT varianty zamítnuté; další kandidát obsahuje jen bounded
+selector a původní souhrn, bez přidaného SQL. [Důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).

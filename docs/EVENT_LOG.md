@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 9. 11. 2026 / E2026-11-09-15 | P11-RHM integer agregace FAIL, pokus3 | Native4/523 a parita PASS,30kHTTP +76%. Detail165→4ms; ponechán jen bounded selector, původní souhrn obnoven, žádný deploy. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-14 | P11-RHM první výkon FAIL, pokus2 | JSON agregace má přesnou paritu, ale HTTP30k na10.3 +60.7%. Původní vzorky zachované; další kandidát integer tuple + omezení tréninků prvních32stránek, bez deploye. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-13 | P11-RHM zahájen | Vlastník vybral měření profilu s podmíněným release po shodě/přínosu. Přímá agregace s prvním klíčem, původní fallback; bez DDL/cache. WIP zachovaný. | [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-12 | QR01 — odstraněn konec řádku z názvu skrytého pole verze | Syntetické HTML/POST, stará verze, nová verze, ČSC, atomický checkout a celý rodičovský scénář PASS 20/388; [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený, CI běží, produkční UAT otevřené. | [Plán](QUICK_REGISTRATION_TERMS_2026-11-09.md), [výsledky](verification/quick-registration-terms-20261109/RESULTS.md) |

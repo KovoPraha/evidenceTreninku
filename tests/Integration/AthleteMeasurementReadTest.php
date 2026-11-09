@@ -58,7 +58,7 @@ final class AthleteMeasurementReadTest extends TestCase
         self::assertSame(\AthleteMeasurementReference::measurements($pdo, 1, '', 1), \AthleteProfileRead::measurements($pdo, 1, '', 1));
     }
 
-    public function testMariaDbFastPathAndFreshConstrainedLimitFallback(): void
+    public function testWindowSummaryIgnoresFreshGroupConcatLimits(): void
     {
         $pdo = $this->database();
         Fixture::seed($pdo, 100);
@@ -81,8 +81,8 @@ final class AthleteMeasurementReadTest extends TestCase
             $pdo->profiling = false;
             self::assertSame($expected, $actual);
             $sql = implode("\n", array_column($pdo->profile, 'sql'));
-            self::assertSame($limit >= 128, str_contains($sql, 'GROUP_CONCAT(CONCAT_WS'));
-            self::assertSame($limit < 128, str_contains($sql, 'ROW_NUMBER()'));
+            self::assertStringNotContainsString('GROUP_CONCAT', $sql);
+            self::assertStringContainsString('ROW_NUMBER()', $sql);
             self::assertSame($limit, (int) $pdo->query('SELECT @@SESSION.group_concat_max_len')->fetchColumn());
         }
     }

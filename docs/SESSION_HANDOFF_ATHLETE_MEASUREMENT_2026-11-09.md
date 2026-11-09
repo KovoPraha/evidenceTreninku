@@ -50,3 +50,20 @@ Vlastník/typ se znovu ověří v detailním výběru. Pozdější stránky zůs
 Test nově pokrývá80vazeb jednoho tréninku, přechod32/33 a prázdné/typové filtry.
 Lokálně nové4testy/271assertions PASS. Nativní přínos druhého pokusu čeká;
 release pouze po nové shodě, měření a celém CI.
+
+## Pokus 2 odmítnut, pokus 3 — pouze bounded selector
+
+[Run42634946860](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42634946860),
+head3b127f98, MariaDB10.3 native4/523 PASS, sourcehashes přesné, HTTPparita PASS,
+výkon FAIL:30k primary519.448→914.333ms (+76.0%).
+Samostatná diagnostika: původní souhrn410.259→748.548ms, ale detail164.894→4.190ms.
+Druhá agregace je stále pomalejší; zamítnuta. První/nové vzorky se nenahrazují.
+[Zdrojová identita a vzorky](verification/athlete-profile-measurement-performance-20261109/rejected-integer/native-10.3/source-identity.json).
+MariaDB11.4 tohoto pokusu dosud běží, bezpečné výsledky budou doplněny.
+
+Třetí kandidát vrací původní numeric-window souhrn byte-přesně, odstraňuje
+nový helper/verzový probe/metadata SQL a ponechává jen bounded training selector
+pro stránky1–32. Získané typy/součty ani jejich pořadí se nepočítají jinak.
+Čerstvé GROUP_CONCAT limity128/4/1048576 nadále pokryté paritou a nezměněnou
+SESSION hodnotou; původní souhrn se o limit neopírá. Detailní scope/type recheck
+zachovaný. Nové celé native/HTTP/Chrome měření a CI před případným release.

@@ -159,7 +159,14 @@ final class AthleteProfileRead
     {
         $order = ' ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC';
         $binary = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mz.typ' : 'mz.typ COLLATE BINARY';
-        $summary = self::measurementSummary($pdo, $sid, $binary, $order);
+        // Aggregate only narrow ordered keys in SQL. Binary grouping preserves PHP's exact
+        // case/space-sensitive keys; the first ordinal preserves the old filter-pill order.
+        // Materialize only numeric measurement IDs/ordinals in the window, not padded type strings.
+        $summary = self::read($pdo, 'SELECT ' . $binary . ' AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position
+            FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER (' . $order . ') AS ordinal'
+            . self::measurementFrom() . ' WHERE mz.sportovec_id=?) ordered_types
+            JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id
+            GROUP BY ' . $binary . ' ORDER BY first_position', [$sid]);
         $counts = [];
         $all = 0;
         foreach ($summary as $row) {
@@ -198,33 +205,6 @@ final class AthleteProfileRead
             . ' JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id' . self::labels() . ' WHERE mz.sportovec_id=?'
             . ' ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC', [...$pageParams, $sid]);
         return $result;
-    }
-
-    /** Exact counts and first-occurrence type order, without ranking every link on MariaDB. */
-    private static function measurementSummary(PDO $pdo, int $sid, string $binary, string $order): array
-    {
-        $mariaDb = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql'
-            && preg_match('/(\d+\.\d+\.\d+)-MariaDB/i', (string) $pdo->getAttribute(PDO::ATTR_SERVER_VERSION), $version) === 1
-            && version_compare($version[1], '10.3.3', '>=');
-        // A key has only three integer/null fields (<128 bytes even for 64-bit IDs).
-        // Never alter connection settings or accept a truncated representative key.
-        if ($mariaDb && (int) self::read($pdo, 'SELECT @@SESSION.group_concat_max_len AS max_len', [])[0]['max_len'] >= 128) {
-            return self::read($pdo, 'SELECT BINARY mz.typ AS typ,grouped.num
-                FROM (SELECT COUNT(*) AS num,
-                    GROUP_CONCAT(CONCAT_WS(\':\',t.id,COALESCE(tm.poradi,\'N\'),mz.id)'
-                    . $order . ' LIMIT 1) AS first_key'
-                    . self::measurementFrom() . ' WHERE mz.sportovec_id=? GROUP BY BINARY mz.typ) grouped
-                JOIN treninky t ON t.id=CAST(SUBSTRING_INDEX(grouped.first_key,\':\',1) AS DECIMAL(65,0))
-                JOIN mereni_zaznamy mz ON mz.id=CAST(SUBSTRING_INDEX(grouped.first_key,\':\',-1) AS DECIMAL(65,0))
-                ORDER BY t.datum DESC,t.id DESC,
-                    CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(grouped.first_key,\':\',2),\':\',-1),\'N\') AS DECIMAL(65,0)) ASC,mz.id ASC', [$sid]);
-        }
-        // Preserve the portable projection for SQLite/MySQL and constrained connections.
-        return self::read($pdo, 'SELECT ' . $binary . ' AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position
-            FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER (' . $order . ') AS ordinal'
-            . self::measurementFrom() . ' WHERE mz.sportovec_id=?) ordered_types
-            JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id
-            GROUP BY ' . $binary . ' ORDER BY first_position', [$sid]);
     }
 
     private static function pagination(int $total, int $requested): array
