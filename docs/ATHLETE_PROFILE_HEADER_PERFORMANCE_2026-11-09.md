@@ -47,3 +47,16 @@ roky/počet a měření počítat zvlášť, pokud úplná agregace zpomalí cel
    nevyžaduje druhý deploy. Produkční výkon a přihlášené UAT označit NOT RUN.
 
 Další krok: implementovat a lokálně ověřit kandidáta, spustit native páry.
+
+## Pracovní checkpoint — kandidát
+
+Implementován jeden seskupený read; původní tři metody byte-preserved.
+Parent při PDOException používá původní nezávislé fallbacky.
+Lokální SQLite2testy/20assertions PASS (nullable/0roky, typy, duplicity,
+orphans, cizí/nepřipojená měření, čerstvé změny a1SQL/početroků řádků).
+PSR12 dotčených6PHP PASS; Python AST PASS; docs4973odkazů/108archivů/0chyb.
+Lokální PyYAML není instalován, samostatný YAML parser NOT RUN; workflow
+ověří GitHub Actions. Native benchmark, Chrome, aktuální CI a release čekají.
+Nový runner zmrazí parent i reader z2c61df14. Vlastní HTTP servery,
+cacheOFF, cleanup; samostatná diagnostika neovlivňuje prosté HTTP časy.
+Původní výkonové protokoly/harness RAP beze změny. Paměť bez umělého prahu.

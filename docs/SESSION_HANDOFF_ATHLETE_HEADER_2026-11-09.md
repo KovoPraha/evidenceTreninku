@@ -6,3 +6,16 @@ ROZPRACOVÁNO. Baseline main2c61df14, produkce ca5fc219; dosud bez změny produk
 Větev codex/athlete-header-performance-20261109 v izolovaném worktree dle plánu.
 Uživatel autorizoval po úspěchu testů/přínosu commit/merge/protected deploy.
 WIP v původním checkoutu zachovaný; další krok implementace + native/HTTP/Chrome.
+
+## Pracovní checkpoint — kandidát
+
+Implementován jeden seskupený read; původní tři metody byte-preserved.
+Parent při PDOException používá původní nezávislé fallbacky.
+Lokální SQLite2testy/20assertions PASS (nullable/0roky, typy, duplicity,
+orphans, cizí/nepřipojená měření, čerstvé změny a1SQL/početroků řádků).
+PSR12 dotčených6PHP PASS; Python AST PASS; docs4973odkazů/108archivů/0chyb.
+Lokální PyYAML není instalován, samostatný YAML parser NOT RUN; workflow
+ověří GitHub Actions. Native benchmark, Chrome, aktuální CI a release čekají.
+Nový runner zmrazí parent i reader z2c61df14. Vlastní HTTP servery,
+cacheOFF, cleanup; samostatná diagnostika neovlivňuje prosté HTTP časy.
+Původní výkonové protokoly/harness RAP beze změny. Paměť bez umělého prahu.

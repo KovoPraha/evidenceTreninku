@@ -21,6 +21,32 @@ final class AthleteProfileRead
         return [':attendance_sid' => $sid, ':measurement_sid' => $sid];
     }
 
+    /** The same years/counts as the independent projections, in one narrow read. */
+    public static function header(PDO $pdo, int $sid): array
+    {
+        $rows = self::read($pdo, 'SELECT YEAR(t.datum) AS rok,
+            COUNT(*) AS trainings,SUM(owned.measurements) AS measurements
+            FROM treninky t JOIN (
+                SELECT owned_keys.trenink_id,SUM(owned_keys.measurements) AS measurements FROM (
+                    SELECT DISTINCT ts.trenink_id,0 AS measurements
+                    FROM trenink_sportovec ts WHERE ts.sportovec_id=:attendance_sid
+                    UNION ALL
+                    SELECT tm.trenink_id,COUNT(*) AS measurements
+                    FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
+                    WHERE mz.sportovec_id=:measurement_sid GROUP BY tm.trenink_id
+                ) owned_keys GROUP BY owned_keys.trenink_id
+            ) owned ON owned.trenink_id=t.id
+            GROUP BY YEAR(t.datum) ORDER BY rok DESC', self::scope($sid));
+        $result = ['years' => [], 'trainings' => 0, 'measurements' => 0];
+        foreach ($rows as $row) {
+            // Preserve PDO year types/nulls; duplicate measurement links remain counted.
+            $result['years'][] = $row['rok'];
+            $result['trainings'] += (int) $row['trainings'];
+            $result['measurements'] += (int) $row['measurements'];
+        }
+        return $result;
+    }
+
     public static function years(PDO $pdo, int $sid): array
     {
         return array_column(self::read($pdo, 'SELECT DISTINCT YEAR(t.datum) AS rok'

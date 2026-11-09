@@ -4,3 +4,16 @@ Stav 9. 11. 2026: plán zapsán, měření kandidáta NOT RUN.
 [Plán](../../ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md).
 Baseline2c61df1495c570a5cfd9ba8032027595ab02de3c; předchozí RAP důkazy se nepřepisují.
 Bez produkčních osobních dat; pouze vlastní syntetické schéma a bezpečné výstupy.
+
+## Pracovní checkpoint — kandidát
+
+Implementován jeden seskupený read; původní tři metody byte-preserved.
+Parent při PDOException používá původní nezávislé fallbacky.
+Lokální SQLite2testy/20assertions PASS (nullable/0roky, typy, duplicity,
+orphans, cizí/nepřipojená měření, čerstvé změny a1SQL/početroků řádků).
+PSR12 dotčených6PHP PASS; Python AST PASS; docs4973odkazů/108archivů/0chyb.
+Lokální PyYAML není instalován, samostatný YAML parser NOT RUN; workflow
+ověří GitHub Actions. Native benchmark, Chrome, aktuální CI a release čekají.
+Nový runner zmrazí parent i reader z2c61df14. Vlastní HTTP servery,
+cacheOFF, cleanup; samostatná diagnostika neovlivňuje prosté HTTP časy.
+Původní výkonové protokoly/harness RAP beze změny. Paměť bez umělého prahu.
