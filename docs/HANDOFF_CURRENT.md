@@ -1,6 +1,6 @@
 # Aktuální session handoff
 
-QR01 připraveno k release kontrole: [rychlá přihláška a verze podmínek](QUICK_REGISTRATION_TERMS_2026-11-09.md), [celý syntetický průchod](verification/quick-registration-terms-20261109/RESULTS.md) PASS, [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený; následuje CI, produkční vydání a živé UAT.
+QR01: [rychlá přihláška a verze podmínek](QUICK_REGISTRATION_TERMS_2026-11-09.md), [20/395 místních kontrol](verification/quick-registration-terms-20261109/RESULTS.md) PASS; [#416](https://github.com/KovoPraha/evidenceTreninku/pull/416) v `main`, [#419](https://github.com/KovoPraha/evidenceTreninku/pull/419) přidává opětovné potvrzení nového textu. Následuje CI #419 a potvrzený ruční deploy; živé UAT otevřené.
 Aktualizováno 9. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md) vede i UX01 [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) a Q01/Q3
 vlastní otevřené úkoly včetně Q2-TIME; plány a rozhodnutí čti ve verzovaných souborech.
@@ -11,7 +11,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
   Přihlášené UAT NOT RUN: Computer Use nemohl bezpečně určit URL. Další krok: neplatný čas, reload a obnova konceptu; žádný skutečný trénink testem nevznikl.
 - **P11-RHM DIAGNÓZA / HTTP přínos nedoložen:** [měření profilu — plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md).
-  Aktuální produkce c3d34b87/[release RHI](verification/athlete-profile-history-release-20261109/RESULTS.md) SUCCESS; nová parita/výkon/CI/release čekají, WIP zachovaný.
+  Produkce e3f29903/deploy42637712723 SUCCESS (QR01); vlastní HTTP přínos nedoložen, bez RHM deploye, WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).

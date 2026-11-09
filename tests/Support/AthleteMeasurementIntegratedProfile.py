@@ -157,7 +157,8 @@ def diagnostic_root(variant):
     db = db.replace(needle, replacement)
     guard = "if (!defined('DB_NAME') || !preg_match('/^p11_read_[a-f0-9]{16}$/D', DB_NAME) || !str_starts_with(DB_HOST, '127.0.0.1;port=')) { throw new RuntimeException('Owned diagnostic database required'); }"
     marker = '    $pdo = new '
-    db = db.replace(marker, '    ' + guard + '\n' + marker, 1)
+    dependency = 'require_once ' + json.dumps(str(root / 'tests/Support/QueryProfilePdo.php')) + ';'
+    db = db.replace(marker, '    ' + dependency + '\n    ' + guard + '\n' + marker, 1)
     (target / "db.php").write_text(db)
     return target
 
@@ -272,6 +273,17 @@ try:
 
     (safe/"integrated-summary.json").write_text(json.dumps(summary,indent=2))
     print(json.dumps(summary["cases"]))
+
+except Exception:
+    private_log = runtime / "private-http.log"
+    known_errors = []
+    if private_log.exists():
+        log = private_log.read_text(errors="replace")
+        for marker in ["Class \"Tests\\Support\\QueryProfilePdo\" not found", "syntax error", "Owned diagnostic database required", "Expected owned diagnostic connection"]:
+            if marker in log:
+                known_errors.append(marker)
+    (safe / "runner-error.json").write_text(json.dumps(dict(diagnostic_only=diagnostic_only, known_errors=known_errors)))
+    raise
 
 finally:
     stop_servers()

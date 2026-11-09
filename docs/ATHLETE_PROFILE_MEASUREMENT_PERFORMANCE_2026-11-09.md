@@ -146,3 +146,8 @@ prosté časovací workers se tím nemění. Ruční diagnostic_only workflow po
 jen syntetickou30kDB a přesné testy; nenahrazuje úplný HTTP/Chrome gate.
 Další krok: vysvětlit rozdíl, až poté případná další optimalizace a celý CI.
 Druhý pokus na11.4 také výkon FAIL; jeho původní raw/Chrome důkazy doplněné.
+
+Převzat main e3f29903/#419, aktuální produkce dle Actions
+deploy42637712723 SUCCESS na e3f29903. Profilové runtime soubory proti
+baseline beze změny. Přijaté QR01 event13/14 zachované, vlastní RHM
+přeznačené15–18; katalogy sjednocené. Nová CI po vyřešení konfliktu.

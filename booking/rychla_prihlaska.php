@@ -14,6 +14,7 @@ require_once dirname(__DIR__).'/csrf_helper.php';
 require_once dirname(__DIR__).'/includes/shop_storefront.php';
 require_once dirname(__DIR__).'/includes/shop_public_navigation.php';
 require_once dirname(__DIR__).'/includes/shop_program_quick_checkout.php';
+require_once dirname(__DIR__).'/includes/shop_program_quick_terms.php';
 require_once dirname(__DIR__).'/includes/shop_bank_settings.php';
 require_once dirname(__DIR__).'/includes/auth_rate_limit.php';
 
@@ -102,6 +103,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         $errors[] = 'Přihlášku se nepodařilo bezpečně uložit. Zkuste to znovu.';
     }
     }
+}
+if ($errors !== []) {
+    $terms = athleteRegistrationCurrentTerms($pdo);
+    $programTerms = clubProgramTermsEffective($pdo, (int)$offer['program_id'], (int)$offer['id']);
+    $_POST = shopProgramQuickRetainedInput($_POST, $terms, $programTerms);
 }
 $value = static fn (string$key, string$default = ''): string => quickProgramH($_POST[$key] ?? $default);
 ?>

@@ -8,7 +8,7 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
 ## D2026-11-09-01
 
-PŘIJATO 9. 11. 2026 podle přímého zadání vlastníka: v [QR01](QUICK_REGISTRATION_TERMS_2026-11-09.md) opravit přesný HTML název `term_version[účel]` a zachovat serverové porovnání aktuálních verzí. Odstranění kontroly by dovolilo potvrdit zastaralý text. Při změně verze mezi GET a POST se požadavek odmítne; nový formulář načte současný text. [Izolovaný důkaz](verification/quick-registration-terms-20261109/RESULTS.md).
+PŘIJATO 9. 11. 2026 podle přímého zadání vlastníka: v [QR01](QUICK_REGISTRATION_TERMS_2026-11-09.md) opravit přesný HTML název `term_version[účel]` a zachovat serverové porovnání aktuálních verzí. Odstranění kontroly by dovolilo potvrdit zastaralý text. Při změně verze mezi GET a POST se požadavek odmítne; nový formulář načte současný text a dřívější potvrzení už neponechá zaškrtnuté. [Izolovaný důkaz](verification/quick-registration-terms-20261109/RESULTS.md).
 
 ## D2026-11-08-01
 
