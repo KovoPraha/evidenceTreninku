@@ -1003,3 +1003,9 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 | PL-1895df6fa0 | [P11-RHMS aktuální měření](verification/athlete-profile-measurement-summary-20261109/checked-head/RESULTS.md) | evidence / SUPPORT | P11-RHMS |
 
 | PL-658df4cc60 | [P11-RHMS produkční důkazy](verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md) | evidence / SUPPORT | P11-RHMS |
+
+| PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | plan / PARTIAL | P11-RIX |
+
+| PL-81e2dd1eff | [P11-RIX předání](SESSION_HANDOFF_ATHLETE_TARGETED_READ_2026-11-09.md) | handoff / SUPPORT | P11-RIX |
+
+| PL-362e27a035 | [P11-RIX průběžné ověření](verification/athlete-profile-targeted-read-20261109/RESULTS.md) | evidence / SUPPORT | P11-RIX |

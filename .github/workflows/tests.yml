@@ -147,6 +147,12 @@ jobs:
       - name: Nainstalovat závislosti pro účetní doklady a exporty
         run: composer install --prefer-dist --no-interaction --no-progress
 
+      - name: Ověřit čtecí metadatovou inventuru sportovních tabulek
+        env:
+          EVIDENCE_ROSTER_READ_MARIADB: '1'
+          EVIDENCE_MARIADB_SMOKE_PORT: '3306'
+        run: php vendor/bin/phpunit tests/Integration/AthleteReadSchemaInventoryTest.php
+
       - name: Ověřit přístup sportovce na MariaDB
         run: php tests/Support/ChildAccessMariaDbSmoke.php
 
