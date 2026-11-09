@@ -24,7 +24,7 @@ $order = ' ORDER BY t.datum DESC,t.id DESC';
 $owned = '(SELECT trenink_id FROM trenink_sportovec WHERE sportovec_id=:attendance_sid
     UNION SELECT tm.trenink_id FROM trenink_mereni tm
     JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id WHERE mz.sportovec_id=:measurement_sid)';
-foreach ([1001, 1012, 1013, 1020] as $person) {
+foreach ([1001, 1002, 1012, 1013, 1020] as $person) {
     foreach ([0, (int) date('Y'), 2099] as $year) {
         $filter = $year > 0 ? 'YEAR(t.datum)=:year AND ' : '';
         $params = [':attendance_sid' => $person, ':measurement_sid' => $person];
@@ -62,6 +62,16 @@ foreach ([1001, 1012, 1013, 1020] as $person) {
                 THEN 1 ELSE EXISTS (SELECT 1 FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
                     WHERE tm.trenink_id=t.id AND mz.sportovec_id=:measurement_sid) END' . $order;
 
+            $casePrefix = 'SELECT t.id,t.delka FROM treninky t WHERE ' . $filter . 'CASE WHEN
+                EXISTS (SELECT 1 FROM trenink_sportovec ts WHERE ts.trenink_id=t.id AND ts.sportovec_id=:attendance_sid)
+                THEN 1 ELSE t.id IN (';
+            $caseSource = 'SELECT tm.trenink_id FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
+                JOIN treninky selected_t ON selected_t.id=tm.trenink_id';
+            $caseWhere = ' WHERE mz.sportovec_id=:measurement_sid AND YEAR(selected_t.datum)=:ownership_year';
+            $templates['case_in_year'] = $casePrefix . $caseSource . $caseWhere . ') END' . $order;
+            $templates['case_in_anti'] = $casePrefix . $caseSource
+                . ' LEFT JOIN trenink_sportovec present ON present.trenink_id=selected_t.id AND present.sportovec_id=:present_sid'
+                . $caseWhere . ' AND present.trenink_id IS NULL) END' . $order;
         }
         $expected = null;
         $case = ['sid' => $person, 'year' => $year, 'parity' => true, 'samples_ms' => [], 'explain' => []];

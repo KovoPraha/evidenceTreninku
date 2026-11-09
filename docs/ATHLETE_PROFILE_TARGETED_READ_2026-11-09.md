@@ -222,7 +222,7 @@ regrese i page2/last). Celé normalizované HTML/shoda/security/checksum/cleanup
 PASS oběDB, ale to není PASS celého tasku. Na10.3 při10k116.467→59.251ms,
 při1k9.062→12.985ms. 11.4 všechny gates PASS. Raw v first-b9; nejde o fluktuaci
 jednoho SQL vzorku. Čerstvé společné statistiky5tabulek dovolily optimizeru
-původní10.3 při30k zvolit podstatně levnější plán. Záměrné3table probe s horšími
+původní10.3 při30k zvolit podstatně levnější plán. Předchozí3table probe s horšími
 TS statistikami nebyly dostatečnou predikcí; jejich důkazy zůstávají zachované.
 
 Draft425 zůstává bez merge/deploy. Nová izolovaná probe větev
@@ -233,3 +233,22 @@ v měřicí větvi vynechat již attendance-vlastněné tréninky před široký
 Porovnat anti EXISTS/LEFT JOIN a CASE bez změny významu/dvojího sčítání.
 Žádné snižování20%gate nebo kontrolních limitů; native3testy signed64 atd.
 se nyní přidávají. Žádné produkční DDL, WIP a runtime17110a7f zachované.
+
+
+## Fresh5tables anti probe — parita PASS, další varianta CASE/IN
+
+42711364512/3dfb601a oběDB SUCCESS, nový native3/562 každá. Všech1k/10k/30k,
+36scénářů přesně shodných orderedid/delka. Anti LEFT při30k SQL10.3
+324→35.9ms,11.4 227→20.0ms; sparse prakticky stejné. Samotný CASE s EXISTS
+hustý profil zrychlí ještě víc (20.6/13.4ms), ale sparse130.7/79.3ms
+zásadně regresuje, NEVYBRÁN. Původní10.3 plán se při ANALYZE může změnit
+na levný35ms, antiLEFT35.9ms by pak neměl20% přínos: zatím nepřijímat.
+
+Další koncept CASE s explicitním NEKORELOVANÝM IN seznamem měřicích klíčů,
+s filtrem stejného roku. Docházkou pokryté řádky nemají vyvolávat čtení MZ;
+pro sparse se má seznam vyrobit jednou místo závislé MZ sondy pro každý
+klubový trénink. Porovnat IN-year a IN-year/antiattendance, zachovat0rok
+původní. Rozšířit syntetický scope o measurement-only velký SID1002: jeho
+attendance se odebere před oběma variantami, ale trenérský scope zůstává.
+Native probe i celé HTTP pak musí zahrnout tento kontrolní profil. Žádný
+změněný gate, index/DDL/cache nebo heuristika dle velikosti či verze DB.

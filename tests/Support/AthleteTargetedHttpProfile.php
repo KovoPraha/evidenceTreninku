@@ -40,7 +40,7 @@ if ($mode === 'prepare') {
         $oldMeasurement->execute([84000000 + $number]);
         $link->execute([84000000, 84000000 + $number]);
     }
-    $admin->exec('DELETE FROM trenink_sportovec WHERE sportovec_id IN (1012,1020)');
+    $admin->exec('DELETE FROM trenink_sportovec WHERE sportovec_id IN (1002,1012,1020)');
     $admin->commit();
     echo 'Owned small/old measurement fixture: 12/900'  . PHP_EOL;
     exit;
@@ -57,7 +57,7 @@ foreach (['treninky', 'trenink_sportovec', 'trenink_mereni', 'mereni_zaznamy', '
     ];
 }
 $statistics['profile_counts'] = [];
-foreach ([1001, 1012, 1013, 1020] as $person) {
+foreach ([1001, 1002, 1012, 1013, 1020] as $person) {
     $count = $admin->prepare('SELECT COUNT(*) FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
         JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=?');
     $count->execute([$person]);
@@ -67,7 +67,7 @@ if ($statistics['profile_counts'][1012] !== 12 || $statistics['profile_counts'][
     throw new RuntimeException('Expected a nonempty small measurement profile and an empty control.');
 }
 $statistics['history_profile_counts'] = [];
-foreach ([1001, 1012, 1013, 1020] as $person) {
+foreach ([1001, 1002, 1012, 1013, 1020] as $person) {
     $count = $admin->prepare('SELECT COUNT(*) FROM treninky t WHERE EXISTS
         (SELECT 1 FROM trenink_sportovec ts WHERE ts.trenink_id=t.id AND ts.sportovec_id=?)
         OR EXISTS (SELECT 1 FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
@@ -151,6 +151,8 @@ if ($mode === 'security') {
 $report = ['complete' => false, 'size' => $size, 'samples' => [], 'signatures' => [], 'controls' => [], 'control_signatures' => []];
 $currentYear = (string) date('Y');
 $cases = ['primary' => [1001, 'rok=' . $currentYear], 'all_history' => [1001, 'rok=0'],
+    'measurement_only_year' => [1002, 'rok=' . $currentYear],
+    'measurement_only_all' => [1002, 'rok=0'],
     'year_page2' => [1001, 'rok=' . $currentYear . '&profile_page=2'],
     'year_last' => [1001, 'rok=' . $currentYear . '&profile_page=1000000'],
     'page2' => [1001, 'rok=0&profile_page=2'], 'last' => [1001, 'rok=0&profile_page=1000000'],
