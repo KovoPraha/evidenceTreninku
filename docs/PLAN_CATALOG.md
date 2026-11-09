@@ -404,3 +404,5 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 | PL-4dd08bb660 | [P11-RAH — agregace roků/počtů](ATHLETE_PROFILE_HEADER_PERFORMANCE_2026-11-09.md) | DONE / P11-RAH | #410/c47d4008 NASAZENO,18CI/parita/HTTP/Chrome PASS; [release](verification/athlete-profile-header-release-20261109/RESULTS.md), UAT samostatné. |
 
 | PL-55898dcc11 | [P11-RHI — historie profilu](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md) | DONE / P11-RHI | #413/c3d34b87 NASAZENO,18CI/parita/HTTP/Chrome PASS; [release](verification/athlete-profile-history-release-20261109/RESULTS.md), UAT samostatné. |
+
+| PL-51594d6f16 | [P11-RHM — měření profilu](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) | IN_PROGRESS / P11-RHM | Native shoda a výkon před podmíněným release. |

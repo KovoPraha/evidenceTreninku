@@ -412,3 +412,10 @@ EXISTS a postupné klíče zachovávají původní orderedPHPsoučet i opětovno
 vlastnictví/roku detailů. Bez DDL/cache/práv/session/writer změn. Přijaté #412 zachované.
 [Plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md),
 [release a meze včetně proměnlivého Měření](verification/athlete-profile-history-release-20261109/RESULTS.md).
+
+## D2026-11-09-RHM
+
+Podle aktuálního pokynu vlastníka ověřit přímý binární souhrn a první klíč
+MariaDB GROUP_CONCAT LIMIT1 místo číslování celé historie. Původní reference
+zůstává fallbackem při nepodporovaném backendu/krátkém limitu. Bez změny DB
+nastavení, cache nebo DDL. [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).

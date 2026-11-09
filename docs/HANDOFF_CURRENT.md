@@ -9,8 +9,8 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
 - **Q2-TIME NASAZENO:** #412 / `4f92b225`, deploy42622226704 SUCCESS; [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026).
   11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
   Přihlášené UAT NOT RUN: Computer Use nemohl bezpečně určit URL. Další krok: neplatný čas, reload a obnova konceptu; žádný skutečný trénink testem nevznikl.
-- **P11-RHI NASAZENO:** [historie profilu — plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_HISTORY_2026-11-09.md).
-  #413/c3d34b87, deploy42625502461 SUCCESS;18CI PASS, historie−89/93%, PHP−89%, Chrome historie−31%; [důkazy](verification/athlete-profile-history-release-20261109/RESULTS.md), veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.
+- **P11-RHM ROZPRACOVÁNO:** [měření profilu — plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md).
+  Aktuální produkce c3d34b87/[release RHI](verification/athlete-profile-history-release-20261109/RESULTS.md) SUCCESS; nová parita/výkon/CI/release čekají, WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).
