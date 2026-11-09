@@ -73,7 +73,7 @@ async (page) => {
             if (measurement.styles.length!==expected || css.length!==expected || !measurement.bootstrap_js)
               throw new Error('Bootstrap resource contract: '+JSON.stringify({case:item.id,variant,styles:measurement.styles,css}));
             if (css.some(r=>![200,304].includes(r.status))) throw new Error('Bootstrap resource failed');
-            if (variant==='after' && css.some(r=>r.url.includes('cdn.jsdelivr.net'))) throw new Error('CDN CSS retained');
+            if (variant==='after' && css.some(r=>new URL(r.url).hostname==='cdn.jsdelivr.net')) throw new Error('CDN CSS retained');
             if (measurement.fcp_ms===null) throw new Error('Real FCP missing');
             const key=item.id+'-'+viewport.id;
             const signature=await page.evaluate(async value=>{

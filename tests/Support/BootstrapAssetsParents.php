@@ -105,12 +105,13 @@ foreach ($report['signatures'] as $case => $signatures) {
 foreach ($variants as $variant) {
     $rt = $runtime;
     $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
-    foreach ([['coach','/sprava_treninku.php',302],['sports_lead','/moje_treninky.php',403]] as [$role,$path,$expected]) {
+    foreach ([['coach','/sprava_treninku.php',true],['sports_lead','/moje_treninky.php',false],
+        ['anonymous','/moje_treninky.php',true],['anonymous','/sprava_treninku.php',true]] as [$role,$path,$mustDeny]) {
         $denied = fullHttpRequest($rt, $output, 'asset-parent-' . $variant . '-' . $role, $path);
-        if (!in_array($denied['status'], [302,303,401,403], true)) {
+        if (!in_array($denied['status'], $mustDeny ? [302,303,401,403] : [200,302,303,401,403], true)) {
             throw new RuntimeException('Workspace boundary admitted a forbidden route: ' . $role . ':' . $denied['status']);
         }
-        $report['workspace_boundaries'][$variant][$role] = ['status' => $denied['status'], 'location' => $denied['headers']['location'] ?? null];
+        $report['workspace_boundaries'][$variant][$role . ':' . $path] = ['status' => $denied['status'], 'location' => $denied['headers']['location'] ?? null];
     }
 }
 if ($report['workspace_boundaries']['before'] !== $report['workspace_boundaries']['after']) {

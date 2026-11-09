@@ -56,3 +56,23 @@ nový test přijme jen odmítnutí a vyžaduje naprosto stejný status i Locatio
 před/po pro oba zakázané kontexty. Nikdy200. Staré cookiejary konkrétního
 parent testu se před loginem znovu založí, stejně jako v ostatních harness.
 Aplikace/role nezměněné; native model3/562, normalizátor1/6 a cleanup PASS.
+
+
+### Aktualizace 10. 11. — přejímka před merge
+Pátý běh42720302527/ce znovu dokončil shodu celéhoHTML všech3stránek,
+ale selhal chybný testovací předpoklad: sports_lead může po inicializaci
+kontextu dostat Moje200 již před změnou. Starší302/403 zde neprokazují
+univerzální zákaz. Nově se pro tento cross-context vyžaduje přesná shoda
+statusu/Location před/po, bez předem vymyšleného zákazu. Coach Správa a oba
+anonymní vstupy musejí zůstat odmítnuté a shodné. Role/guardy se nemění.
+
+PR CI b8 odhalilo statický SharedUiShell test požadující vlastníCSS i tam,
+kde je již zaručeně emituje hlavicka. Výjimka je úzce pro2měřené stránky;
+zároveň se ověřuje canonical Bootstrap v helperu a jeho volání v hlavičce.
+CodeQL našel nepřesný hostname substring v testu: nahrazen přesným URL.hostname.
+PHPStan PASS. PHPUnit má navíc4chyby/2selhání ShopDocumentAutomation mimo
+CSS změnu: konfigurace pravidla používá Europe/Prague, SQLite CURRENT_TIMESTAMP
+UTC. Běh23:23UTC překročil českou půlnoc. Nutné zvlášť ověřit baseline;
+produkční účetní kód se v rámci optimalizace nemění. Nic se neslučuje ani
+nenasazuje při červených kontrolách. Model3/562, normalizátor1/6 a cleanup
+pátého běhu PASS oběDB; kompletní Chrome a výkon dosud nejsou přijaty.

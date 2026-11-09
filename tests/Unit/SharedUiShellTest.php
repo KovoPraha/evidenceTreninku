@@ -72,11 +72,16 @@ final class SharedUiShellTest extends TestCase
         ));
     }
 
-    public function testEveryHlavickaIncludingPageHasOwnBootstrapCss(): void
+    public function testEveryHlavickaIncludingPageHasBootstrapCssFromPageOrSharedHeader(): void
     {
         $root = dirname(__DIR__, 2);
         $iterator = self::trackedPhpFiles($root);
         $missing = [];
+
+        $header = (string)file_get_contents($root . '/hlavicka.php');
+        self::assertStringContainsString('appUiAssets();', $header);
+        $sharedAssets = (string)file_get_contents($root . '/includes/ui_shell.php');
+        self::assertStringContainsString("appUiUrl('assets/vendor/bootstrap/bootstrap.min.css')", $sharedAssets);
 
         foreach ($iterator as $file) {
             if (!$file->isFile() || $file->getExtension() !== 'php') {
@@ -91,12 +96,15 @@ final class SharedUiShellTest extends TestCase
             if (!$this->includesSharedHeader($source)) {
                 continue;
             }
-            if (!str_contains($source, 'bootstrap.min.css') && !str_contains($source, 'appUiAssets();')) {
+            // These measured pages rely on the existing header's canonical assets.
+            // Keep the inventory guard for every other legacy page until migrated.
+            $verifiedSharedOnly = in_array($relative, ['moje_treninky.php','sprava_treninku.php'], true);
+            if (!str_contains($source, 'bootstrap.min.css') && !str_contains($source, 'appUiAssets();') && !$verifiedSharedOnly) {
                 $missing[] = $relative;
             }
         }
 
-        self::assertSame([], $missing, 'Pages including hlavicka.php without their own Bootstrap CSS link: ' .
+        self::assertSame([], $missing, 'Pages without verified Bootstrap CSS coverage: ' .
 
      implode(', ', $missing));
     }
