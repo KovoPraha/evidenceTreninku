@@ -507,3 +507,13 @@ COUNT/MAX datum a první tuple zachovává přesné pořadí/počty, původní s
 a canonical/autorizaci. Původní pokusy i infrastruktura zachované. Závěrečné
 důkazy samostatným docs PR bez druhého nasazení. [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md),
 [release a hranice](verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md).
+
+## D2026-11-09-RIX — ověřit skutečné schéma před další optimalizací
+
+Aktuální pokyn vlastníka dovoluje další optimalizaci a podmíněný release.
+Zbylý drahý profilový read je nejsilnější současný kandidát, ale PK-only
+fixture se liší od local-demo indexů. Neodvozovat produkční nedostatek ani
+produkční úsporu z neúplného schématu. Testovaný metadata-only support
+workflow nejprve přečte skutečné definice; potom obě A/B varianty dostanou
+stejné odpovídající indexy a rozhodne nový celý HTTP/Chrome výsledek.
+Support PR není dokončením optimalizace. [Postup a brány](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md).

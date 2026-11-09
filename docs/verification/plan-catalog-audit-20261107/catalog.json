@@ -11098,6 +11098,45 @@
       "evidence": [
         "docs/verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md"
       ]
+    },
+    {
+      "id": "PL-c6f66ca2b4",
+      "path": "docs/ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md",
+      "title": "P11-RIX cílené čtení profilu",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11-RIX",
+      "disposition": "Zahájeno: skutečné metadata, odpovídající fixture, poté měřená optimalizace; runtime zatím beze změny.",
+      "evidence": [
+        "docs/verification/athlete-profile-targeted-read-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-81e2dd1eff",
+      "path": "docs/SESSION_HANDOFF_ATHLETE_TARGETED_READ_2026-11-09.md",
+      "title": "P11-RIX předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-RIX",
+      "disposition": "Zahájeno: skutečné metadata, odpovídající fixture, poté měřená optimalizace; runtime zatím beze změny.",
+      "evidence": [
+        "docs/verification/athlete-profile-targeted-read-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-362e27a035",
+      "path": "docs/verification/athlete-profile-targeted-read-20261109/RESULTS.md",
+      "title": "P11-RIX průběžné ověření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RIX",
+      "disposition": "Zahájeno: skutečné metadata, odpovídající fixture, poté měřená optimalizace; runtime zatím beze změny.",
+      "evidence": [
+        "docs/verification/athlete-profile-targeted-read-20261109/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",
