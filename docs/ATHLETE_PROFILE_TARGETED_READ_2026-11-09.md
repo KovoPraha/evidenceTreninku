@@ -143,3 +143,14 @@ Případný finální indexový gate musí porovnat starou/novou fyzickou topolo
 stejná DB a checksumy; není správné dát nový index také baseline variantě.
 Gate20% i všechny kontrolní regrese zůstávají stejné. Browser má samostatné
 fáze index OFF/ON, žádné produkční měření ani kopie skutečných dat.
+
+
+Index-only probe42707779079 oběDB SUCCESS/parita/checksum/úklid PASS, ale
+výkon NEVYHOVĚL: nový index optimizer automaticky nepoužil (EXPLAIN stále
+PRIMARY na mz); summary390→394/412→429ms, opakování395→397/410→413ms.
+Index tedy zatím není vybraný. Další omezený syntetický probe ověří FORCE
+cover versus owner-first cover; případná aplikace musí index bezpečně
+najít z metadat a ponechat původní read při jeho nepřítomnosti. Žádný webový
+DDL, pevný předpoklad o názvu nebo odstranění cizího indexu. Samostatná
+migrace vznikne až při přínosu. Cena zápisu z prvního probe zahrnovala
+INSERT SELECT čtení; nové měření oddělí přípravu a čistý prepared INSERT VALUES.

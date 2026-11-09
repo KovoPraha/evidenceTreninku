@@ -48,35 +48,61 @@ try {
         }
         $admin->query('ANALYZE TABLE treninky,trenink_mereni,mereni_zaznamy')->fetchAll();
         $current = ['indexed' => $indexed, 'build_ms' => $indexed ? $buildMs : null, 'cases' => [], 'write_ms' => []];
-        foreach ([1001, 1012, 1013, 1020] as $person) {
-            $case = ['sid' => $person, 'samples_ms' => [], 'parity' => true];
-            $plan = $admin->prepare('EXPLAIN FORMAT=JSON ' . $baseline);
-            $plan->execute([$person, $person]);
-            $case['explain_raw'] = $plan->fetchColumn();
-            for ($round = -2; $round < 7; ++$round) {
-                $start = hrtime(true);
-                $statement = $admin->prepare($baseline);
-                $statement->execute([$person, $person]);
-                $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
-                $elapsed = (hrtime(true) - $start) / 1e6;
-                usort($rows, static fn (array $a, array $b): int => strcmp((string) $a['typ'], (string) $b['typ']));
-                $expected[$person] ??= $rows;
-                if ($rows !== $expected[$person]) {
-                    throw new RuntimeException('Indexed complete summary parity failed.');
-                }
-                if ($round >= 0) {
-                    $case['samples_ms'][] = $elapsed;
-                }
+        $templates = ['automatic' => $baseline];
+        if ($indexed) {
+            $templates['force_cover'] = str_replace(
+                'mereni_zaznamy mz ON',
+                'mereni_zaznamy mz FORCE INDEX (idx_rix_measurement_owner_cover) ON',
+                $baseline,
+                $replacements
+            );
+            if ($replacements !== 2) {
+                throw new RuntimeException('Expected two measurement joins.');
             }
-            $current['cases'][] = $case;
+            $source = 'FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id JOIN treninky t ON t.id=tm.trenink_id';
+            $replacement = 'FROM mereni_zaznamy mz FORCE INDEX (idx_rix_measurement_owner_cover)'
+                . ' STRAIGHT_JOIN trenink_mereni tm ON tm.mereni_id=mz.id STRAIGHT_JOIN treninky t ON t.id=tm.trenink_id';
+            $templates['owner_cover'] = str_replace($source, $replacement, $baseline);
         }
+        foreach ($templates as $variant => $sql) {
+            foreach ([1001, 1012, 1013, 1020] as $person) {
+                $case = ['sid' => $person, 'variant' => $variant, 'samples_ms' => [], 'parity' => true];
+                $plan = $admin->prepare('EXPLAIN FORMAT=JSON ' . $sql);
+                $plan->execute([$person, $person]);
+                $case['explain_raw'] = $plan->fetchColumn();
+                for ($round = -2; $round < 7; ++$round) {
+                    $start = hrtime(true);
+                    $statement = $admin->prepare($sql);
+                    $statement->execute([$person, $person]);
+                    $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+                    $elapsed = (hrtime(true) - $start) / 1e6;
+                    usort($rows, static fn (array $a, array $b): int => strcmp((string) $a['typ'], (string) $b['typ']));
+                    $expected[$person] ??= $rows;
+                    if ($rows !== $expected[$person]) {
+                        throw new RuntimeException('Indexed complete summary parity failed.');
+                    }
+                    if ($round >= 0) {
+                        $case['samples_ms'][] = $elapsed;
+                    }
+                }
+                $current['cases'][] = $case;
+            }
+        }
+        $writeRows = $admin->query('SELECT id,sportovec_id,typ,poznamka FROM mereni_zaznamy
+            WHERE sportovec_id=1001 ORDER BY id LIMIT 1000')->fetchAll(PDO::FETCH_NUM);
+        $writeParams = [];
+        foreach ($writeRows as $row) {
+            $writeParams = [...$writeParams, 100000000 + (int) $row[0], $row[1], $row[2], $row[3]];
+        }
+        $insert = $admin->prepare('INSERT INTO mereni_zaznamy(id,sportovec_id,typ,poznamka) VALUES '
+            . implode(',', array_fill(0, count($writeRows), '(?,?,?,?)')));
+        $current['write_rows'] = count($writeRows);
+        $current['write_method'] = 'Prepared INSERT VALUES only; row preparation, transaction start and rollback excluded';
         for ($round = -2; $round < 7; ++$round) {
             $admin->beginTransaction();
             try {
                 $start = hrtime(true);
-                $admin->exec('INSERT INTO mereni_zaznamy(id,sportovec_id,typ,poznamka)
-                    SELECT 100000000+id,sportovec_id,typ,poznamka FROM mereni_zaznamy
-                    WHERE sportovec_id=1001 ORDER BY id LIMIT 1000');
+                $insert->execute($writeParams);
                 $elapsed = (hrtime(true) - $start) / 1e6;
                 if ($round >= 0) {
                     $current['write_ms'][] = $elapsed;
