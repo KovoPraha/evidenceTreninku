@@ -273,7 +273,7 @@ try:
     database_alias()
     database_alias_created = True
     for entry in root.iterdir():
-        if entry.name.startswith(".") or entry.name in {"output","config.php","sportovec_treninky.php","ajax_sportovec_treninky.php","moje_treninky.php","sprava_treninku.php","includes"}:
+        if entry.name.startswith(".") or entry.name in {"output","config.php","db.php","sportovec_treninky.php","ajax_sportovec_treninky.php","moje_treninky.php","sprava_treninku.php","includes"}:
             continue
         (baseline_root/entry.name).symlink_to(entry,target_is_directory=entry.is_dir())
     (baseline_root/"includes").mkdir()
@@ -282,6 +282,11 @@ try:
             (baseline_root/"includes"/entry.name).symlink_to(entry,target_is_directory=entry.is_dir())
     for route in routes:
         (baseline_root/route).write_bytes(baselines[route])
+    # Route ownership resolves SCRIPT_FILENAME against db.php's __DIR__.
+    # A symlink would resolve to the other document root and skip that guard.
+    database_source = subprocess.check_output(["git", "show", base + ":db.php"], cwd=root)
+    assert database_source == (root/"db.php").read_bytes(), "Database bootstrap changed"
+    (baseline_root/"db.php").write_bytes(database_source)
     start_servers()
     reports=[]
     php("TrainingHistoryHttpProfile.php",output,"prepare")

@@ -105,7 +105,7 @@ foreach ($report['signatures'] as $case => $signatures) {
 foreach ($variants as $variant) {
     $rt = $runtime;
     $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
-    foreach ([['coach','/sprava_treninku.php',true],['sports_lead','/moje_treninky.php',false],
+    foreach ([['coach','/sprava_treninku.php',true],['sports_lead','/moje_treninky.php',true],
         ['anonymous','/moje_treninky.php',true],['anonymous','/sprava_treninku.php',true]] as [$role,$path,$mustDeny]) {
         $denied = fullHttpRequest($rt, $output, 'asset-parent-' . $variant . '-' . $role, $path);
         if (!in_array($denied['status'], $mustDeny ? [302,303,401,403] : [200,302,303,401,403], true)) {
@@ -114,6 +114,7 @@ foreach ($variants as $variant) {
         $report['workspace_boundaries'][$variant][$role . ':' . $path] = ['status' => $denied['status'], 'location' => $denied['headers']['location'] ?? null];
     }
 }
+file_put_contents($output . '/asset-workspace-boundaries.json', json_encode($report['workspace_boundaries'], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 if ($report['workspace_boundaries']['before'] !== $report['workspace_boundaries']['after']) {
     throw new RuntimeException('Workspace denial semantics changed.');
 }
