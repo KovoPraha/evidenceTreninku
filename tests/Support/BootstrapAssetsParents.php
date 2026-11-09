@@ -28,6 +28,10 @@ foreach ($variants as $variant) {
     $rt = $runtime;
     $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
     foreach (['coach','sports_lead'] as $role) {
+        $cookie = $output . '/cookie-asset-parent-' . $variant . '-' . $role . '.txt';
+        if (is_file($cookie)) {
+            unlink($cookie);
+        }
         fullHttpLogin($rt, $output, 'asset-parent-' . $variant . '-' . $role, $credentials[$role]);
     }
 }
@@ -103,11 +107,14 @@ foreach ($variants as $variant) {
     $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
     foreach ([['coach','/sprava_treninku.php',302],['sports_lead','/moje_treninky.php',403]] as [$role,$path,$expected]) {
         $denied = fullHttpRequest($rt, $output, 'asset-parent-' . $variant . '-' . $role, $path);
-        if ($denied['status'] !== $expected) {
-            throw new RuntimeException('Workspace boundary changed.');
+        if (!in_array($denied['status'], [302,303,401,403], true)) {
+            throw new RuntimeException('Workspace boundary admitted a forbidden route: ' . $role . ':' . $denied['status']);
         }
-        $report['workspace_boundaries'][$variant][$role] = $denied['status'];
+        $report['workspace_boundaries'][$variant][$role] = ['status' => $denied['status'], 'location' => $denied['headers']['location'] ?? null];
     }
+}
+if ($report['workspace_boundaries']['before'] !== $report['workspace_boundaries']['after']) {
+    throw new RuntimeException('Workspace denial semantics changed.');
 }
 $report['complete'] = true;
 file_put_contents($output . '/asset-parents-' . $size . '.json', json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));

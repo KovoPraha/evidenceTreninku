@@ -47,3 +47,12 @@ jediný ověřený64hexCSRF z explicitního pole/const a nahradí jeho výskyty,
 při více různýchCSRF v jednom parentu selže. Není to změna aplikace ani
 obecné ignorováníJS. Další případný rozdíl uloží jen bezpečný redigovaný
 snippet. OběDB model3/562/normalizátor1/6/cleanup PASS, app deploy NOT RUN.
+
+
+Čtvrtý42719770933/b8 dokončil shodu celéhoHTML všech3stránek na obouDB,
+ale FAIL na příliš konkrétním očekávání302/403 negativní workspace kontroly.
+Stávající kontrakt přijímá302/303/401/403 podle již inicializovaného kontextu;
+nový test přijme jen odmítnutí a vyžaduje naprosto stejný status i Location
+před/po pro oba zakázané kontexty. Nikdy200. Staré cookiejary konkrétního
+parent testu se před loginem znovu založí, stejně jako v ostatních harness.
+Aplikace/role nezměněné; native model3/562, normalizátor1/6 a cleanup PASS.
