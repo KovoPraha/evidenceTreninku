@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\AthleteMeasurementReadTest" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" tests="6" assertions="634" errors="0" failures="0" skipped="0" time="7.039892">
+    <testcase name="testFrozenCountsOrderEveryFilterPageAndPdoMode" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="20" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="481" time="1.225055"/>
+    <testcase name="testSummaryIgnoresFreshGroupConcatLimits" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="61" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="9" time="0.481116"/>
+    <testcase name="testDenseTrainingAndEarlyLatePageBoundaryRemainExact" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="89" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="120" time="2.624939"/>
+    <testcase name="testOldLargeProfileBehindNewerForeignTrainingsRetainsEveryPage" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="120" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="5" time="1.117347"/>
+    <testcase name="testSigned64BitKeysAndPositionsRemainExact" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="140" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="6" time="1.079300"/>
+    <testcase name="testFirstTypeOrderAcrossNullDatesAndSignedTupleBoundaries" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="171" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="13" time="0.512134"/>
+  </testsuite>
+</testsuites>

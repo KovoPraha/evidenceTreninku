@@ -123,3 +123,23 @@ vracet UNHEX(HEX(typ)); kódování je jednoznačné pro NULL/prázdné/bajty a
 trailing spaces. Nejde o změnu kolace nebo toleranci vstupu. Ověřit plnou
 shodu i Created_tmp_disk_tables, aby bylo jasné, zda BINARY skupina vyvolává
 diskovou temporary tabulku. Dokud nebude nativní důkaz, jde jen o hypotézu.
+
+
+## SQL varianty nevybrané; koncept pokrývajícího indexu
+
+42706823562 a42706996238 oběDB SUCCESS, úplná summary parita všech4SID.
+Žádná variantní SQL změna nedává20% přínos na obouDB. HEX hypotéza vyvrácená:
+324→761/532→983ms; baseline0 versus HEX2disk temporary tabulky. Links-first
+zásadně regresuje sparse; narrow materializace také pomalejší. Raw uložené
+v summary-orders a summary-hex, neměnit je na PASS výkonu.
+
+Další koncept: skutečně nový index mereni_zaznamy(sportovec_id,id,typ) jako
+pokrývající projekce čtení, produkce má zatím jen owner a type samostatně.
+Žádný nový produkční DDL není provedený ani index vybraný. Nejprve pouze
+syntetický probe: bez indexu / s indexem / bez / s, stejné úplné summary,
+výsledky4SID, EXPLAIN, přidání/index footprint a INSERT+rollback cena.
+Případný finální indexový gate musí porovnat starou/novou fyzickou topologii:
+17párových bloků s obnovou statistik a warmupů, pořadí before/after střídat,
+stejná DB a checksumy; není správné dát nový index také baseline variantě.
+Gate20% i všechny kontrolní regrese zůstávají stejné. Browser má samostatné
+fáze index OFF/ON, žádné produkční měření ani kopie skutečných dat.

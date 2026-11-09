@@ -258,10 +258,8 @@ try:
             name=f"browser-coach-{variant}.json"
             (safe/(name+".gz")).write_bytes(gzip.compress((output/name).read_bytes(),mtime=0))
     if diagnostic_only:
-        php("AthleteTargetedCandidates.php",output)
-        (safe/"candidate-selectors.json").write_bytes((output/"candidate-selectors.json").read_bytes())
-        php("AthleteTargetedSummaryCandidates.php",output)
-        (safe/"candidate-summaries.json").write_bytes((output/"candidate-summaries.json").read_bytes())
+        php("AthleteTargetedIndexCandidates.php",output)
+        (safe/"candidate-index.json").write_bytes((output/"candidate-index.json").read_bytes())
     stop_servers()
     start_servers(instrument=True)
     php("AthleteTargetedHttpProfile.php",output,"diagnose",30000)
