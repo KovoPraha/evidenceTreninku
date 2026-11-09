@@ -1,0 +1,74 @@
+{
+  "synthetic_only": true,
+  "source_head": "ecd47579823608a26754fe23baf75bbeb738b4dd",
+  "navigations": 52,
+  "browser": {
+    "before": {
+      "default": {
+        "cold": {
+          "document_ttfb_ms": 477.39999999990687,
+          "document_load_ms": 537.7999999999302,
+          "ajax_pair_render_ready_ms": 1018.1999999999534,
+          "navigation_to_both_ready_ms": 1535.6999999999534
+        },
+        "warm": {
+          "document_ttfb_ms": 476.2499999999418,
+          "document_load_ms": 532.4500000000116,
+          "ajax_pair_render_ready_ms": 1012.8499999999767,
+          "navigation_to_both_ready_ms": 1530.25
+        }
+      },
+      "measurements": {
+        "cold": {
+          "document_ttfb_ms": 476,
+          "document_load_ms": 523.4000000000233,
+          "ajax_pair_render_ready_ms": 2397.1999999999534,
+          "navigation_to_both_ready_ms": 2908
+        },
+        "warm": {
+          "document_ttfb_ms": 476.70000000001164,
+          "document_load_ms": 524.3000000000466,
+          "ajax_pair_render_ready_ms": 1700.0499999999884,
+          "navigation_to_both_ready_ms": 2234.5999999999767
+        }
+      }
+    },
+    "after": {
+      "default": {
+        "cold": {
+          "document_ttfb_ms": 475.9000000000233,
+          "document_load_ms": 541.4000000000233,
+          "ajax_pair_render_ready_ms": 549.8000000000466,
+          "navigation_to_both_ready_ms": 1068.9000000000233
+        },
+        "warm": {
+          "document_ttfb_ms": 477.70000000001164,
+          "document_load_ms": 537.1500000000233,
+          "ajax_pair_render_ready_ms": 540.1999999999534,
+          "navigation_to_both_ready_ms": 1058.25
+        }
+      },
+      "measurements": {
+        "cold": {
+          "document_ttfb_ms": 491.0999999999767,
+          "document_load_ms": 545.5999999999767,
+          "ajax_pair_render_ready_ms": 1509.9000000000233,
+          "navigation_to_both_ready_ms": 2040.2999999999302
+        },
+        "warm": {
+          "document_ttfb_ms": 476.55000000004657,
+          "document_load_ms": 524.6500000000233,
+          "ajax_pair_render_ready_ms": 1540.4999999999418,
+          "navigation_to_both_ready_ms": 2051.9000000000233
+        }
+      }
+    }
+  },
+  "screenshots": {
+    "before-desktop": "eae34af1c2aaece484a3b5196c189b20e9efc5b574dca0312cfac07ca5ecf2ab",
+    "before-mobile": "04837a003cdf18b874a02be4b29e7c338dea336801f2d288684c6928e533423a",
+    "after-desktop": "eae34af1c2aaece484a3b5196c189b20e9efc5b574dca0312cfac07ca5ecf2ab",
+    "after-mobile": "04837a003cdf18b874a02be4b29e7c338dea336801f2d288684c6928e533423a"
+  },
+  "screenshots_identical": true
+}

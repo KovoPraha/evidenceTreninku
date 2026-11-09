@@ -22,3 +22,9 @@ Finální důkazy: codex/athlete-header-release-proof-20261109, samostatný
 PR do main bez nového deploye dokumentace. Rozsah dokončen.
 Další pouze diagnostický KONCEPT: zbývající header~0.45s a historieAJAX~1s
 na30kfixture; nový zásah potřebuje vlastní plán/baseline. Žádné nové DDL/cache.
+
+## Návaznost — historie dokončená
+
+Zdejší KONCEPT historie převzalo a dokončilo [P11-RHI](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md),
+#413/c3d34b87/deploy42625502461 SUCCESS; [aktuální předání](SESSION_HANDOFF_ATHLETE_HISTORY_2026-11-09.md).
+Původní RAH měření se nepřepisují ani nesčítají s novými úsporami historie.
