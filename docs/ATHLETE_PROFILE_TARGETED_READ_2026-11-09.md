@@ -73,3 +73,11 @@ nejsou výkonem produkce. Všechny staré raw/schema/statistiky zachovat.
 Další krok: implementovat/testovat metadatový nástroj, CI/merge a read-only
 produkční inventura; poté konkrétní nativní diagnóza a výběr optimalizace.
 Nový app merge/deploy: NOT RUN. Původní produkce a WIP zachované.
+
+## Průběžný stav — metadatový support
+
+Implementovaný CLI guard + metadata-only export a chráněný main-only workflow.
+SQLite2/30 PASS, source/syntax/style a sanitizovaný invalid-target PASS.
+Native2DB testy jsou přidané do standardních smoke jobů. Support PR/CI/merge
+čekají; webové readery a produkční aplikace stále beze změny. Nesmí se
+zaměnit dokončení tohoto nástroje za dokončení uživatelské optimalizace.
