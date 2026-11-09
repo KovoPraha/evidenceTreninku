@@ -36,13 +36,22 @@ foreach ([
         throw new RuntimeException('Frozen grouped source mismatch.');
     }
 }
-$templates['narrow_owner'] = str_replace($source . ' WHERE mz.sportovec_id=?',
+$templates['narrow_owner'] = str_replace(
+    $source . ' WHERE mz.sportovec_id=?',
     'FROM (SELECT id,typ FROM mereni_zaznamy WHERE sportovec_id=? LIMIT 18446744073709551615) mz'
-    . ' STRAIGHT_JOIN trenink_mereni tm ON tm.mereni_id=mz.id STRAIGHT_JOIN treninky t ON t.id=tm.trenink_id', $baseline, $replacements);
+    . ' STRAIGHT_JOIN trenink_mereni tm ON tm.mereni_id=mz.id STRAIGHT_JOIN treninky t ON t.id=tm.trenink_id',
+    $baseline,
+    $replacements
+);
 if ($replacements !== 1) {
     throw new RuntimeException('Frozen grouped filter mismatch.');
 }
-$report = ['synthetic_only' => true, 'summary_only' => true, 'pairs' => 7, 'warmups' => 2, 'cases' => []];
+$templates['hex_group'] = str_replace(
+    ['SELECT BINARY mz.typ AS typ,COUNT(*)', 'GROUP BY BINARY mz.typ'],
+    ['SELECT UNHEX(HEX(mz.typ)) AS typ,COUNT(*)', 'GROUP BY HEX(mz.typ)'],
+    $baseline
+);
+$report = ['synthetic_only'  => true, 'summary_only' => true, 'pairs' => 7, 'warmups' => 2, 'cases' => []];
 foreach ([1001, 1012, 1013, 1020] as $person) {
     $expected = null;
     $case = ['sid' => $person, 'parity' => true, 'samples_ms' => [], 'explain' => []];
@@ -53,11 +62,13 @@ foreach ([1001, 1012, 1013, 1020] as $person) {
     }
     for ($round = -2; $round < 7; ++$round) {
         foreach ($round % 2 === 0 ? array_keys($templates) : array_reverse(array_keys($templates)) as $name) {
+            $diskBefore = (int) $admin->query("SHOW SESSION STATUS LIKE 'Created_tmp_disk_tables'")->fetch(PDO::FETCH_NUM)[1];
             $start = hrtime(true);
             $statement = $admin->prepare($templates[$name]);
             $statement->execute([$person, $person]);
             $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
             $elapsed = (hrtime(true) - $start) / 1e6;
+            $diskAfter = (int) $admin->query("SHOW SESSION STATUS LIKE 'Created_tmp_disk_tables'")->fetch(PDO::FETCH_NUM)[1];
             usort($rows, static fn (array $a, array $b): int => strcmp((string) $a['typ'], (string) $b['typ']));
             $expected ??= $rows;
             if ($rows !== $expected) {
@@ -65,6 +76,7 @@ foreach ([1001, 1012, 1013, 1020] as $person) {
             }
             if ($round >= 0) {
                 $case['samples_ms'][$name][] = $elapsed;
+                $case['disk_temporary_tables'][$name][] = $diskAfter - $diskBefore;
             }
         }
     }

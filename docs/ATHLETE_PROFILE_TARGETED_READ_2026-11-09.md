@@ -117,3 +117,9 @@ Oba nevybrané. Největší zbývající náklad je velká agregace měření; d
 krok porovnat přesné stejné grouped SQL s owner-first/link-first pořadím
 spojování a narrow materializací. Zatím žádná app změna ani nový produkční
 index. Výběr zůstává podmíněný paritou a úplným párovým HTTP gate.
+
+Doplňující koncept k ověření: přesnou skupinu typu reprezentovat HEX(typ),
+vracet UNHEX(HEX(typ)); kódování je jednoznačné pro NULL/prázdné/bajty a
+trailing spaces. Nejde o změnu kolace nebo toleranci vstupu. Ověřit plnou
+shodu i Created_tmp_disk_tables, aby bylo jasné, zda BINARY skupina vyvolává
+diskovou temporary tabulku. Dokud nebude nativní důkaz, jde jen o hypotézu.
