@@ -69,8 +69,8 @@ Po vyřazení summary order/narrow/HEX i indexových variant vybral nativní
 redundantní YEAR v measurement ownership historie. SQL probe7párů/2warmupy,
 12scénářů striktně stejných orderedid/delka; velký aktuální rok10.3
 382.575→160.521ms a11.4 386.842→171.171ms. Datumový interval nevybraný.
-[Raw10.3](history-year-probe/native-10.3/candidate-selectors.json),
-[raw11.4](history-year-probe/native-11.4/candidate-selectors.json).
+[Raw10.3](history-year-probe/native-10.3/candidate-selectors.json.gz),
+[raw11.4](history-year-probe/native-11.4/candidate-selectors.json.gz).
 To zatím není celý HTTP ani měření produkce.
 
 Implementace v b9b4cda0, zmrazený celý ff182971 reader s jediným přejmenováním

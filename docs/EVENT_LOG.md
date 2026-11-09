@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 9. 11. 2026 / E2026-11-09-35 | P11-RIX gate FAIL a pokračování probe | Celé b9 HTTP10.3 regrese36→157ms, žádný merge/deploy. Rozšířené fresh5table/measurement-only probe vyřadily CASE/anti/derived; reader v probe obnoven naff182971, zkoumá se DATE cover. Raw bezeztrátově archivované s SHA manifestem, WIP zachované. | [Aktuální plán](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-34 | P11-RIX vybraný SQL kandidát | Po zamítnutí summary/index variant nativní ownership YEAR probe42709050977 PASS,12scénářů shodné, aktuální rok SQL−58.0/55.8%. Následuje reader a celé HTTP/Chrome/CI; žádný app deploy. | [Volba a brány](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-33 | P11-RIX metadata PASS | Support #424/11 CI sloučený, chráněná inventura42704641179 SUCCESS včetně úklidu. Indexy owner/reverse existují, měření odhadem17; žádné doménové čtení/DDL/app deploy. Další krok odpovídající syntetická diagnóza obouDB. | [Plán](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-32 | P11-RIX zahájen | Nové zadání největší další optimalizace; fixture postrádá indexy z referenčního schématu. Nejprve lehký produkční read-only metadatový audit, poté reprezentativní diagnóza a konkrétní změna. WIP/runtime zachované. | [Plán](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) |

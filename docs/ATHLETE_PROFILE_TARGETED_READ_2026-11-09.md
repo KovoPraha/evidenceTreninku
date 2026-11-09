@@ -294,3 +294,10 @@ CLI migrace s LOCK=NONE/InnoDB/verify, bez odstranění původních indexů.
 Finální fyzický A/B bude17střídavých bloků s OFF/ON pouze v syntetické DB,
 čerstvé statistiky a4warmupy každého bloku, nezměněné20%/kontrolní gates.
 Původní WIP, public scope/auth/token/session a produkce beze změny.
+
+
+Starší velké diagnostické JSON jsou lossless gzip pro přehledný code review.
+[Manifest původních a gzip SHA256](verification/athlete-profile-targeted-read-20261109/ARCHIVED_JSON_MANIFEST.json)
+ověřuje rozbalení všech původních canonical Git blobů; nic se nezahazuje,
+původní raw navíc zůstává ve starších commitech. Metadata potřebná přímo
+pro reprodukční skripty zůstávají nekomprimovaná.

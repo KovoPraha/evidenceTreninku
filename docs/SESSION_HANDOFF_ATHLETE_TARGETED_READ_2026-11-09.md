@@ -59,3 +59,9 @@ Aktuálně NEPŘIJATO:42709994135/b9 celéHTTP10.3 při30k36.221→157.399ms,
 11.4 PASS239.224→106.124ms. Shoda a security/cleanup PASS nestačí. Žádný
 merge/deploy. Probe větev codex/athlete-targeted-probe-20261109; další krok
 1k/10k/30k/fresh5tables a anti attendance/CASE. Raw first-b9 zachované.
+
+SQL anti/CASE/IN/derived nevybrané po45scénářích/3velikostech; proti levnému
+10.3plánu nebo measurement-only regresují. Probe reader vrácen přesněff182971,
+PR425 zůstává b9 bez merge. Další krok42713608614/b6: DATE covering index
+(datum,id,delka) pouze v syntetické DB OFF/ON, původní YEAR/range/CASE.
+Velké staršíJSON jsou lossless gzip s SHA manifestem v důkazech.
