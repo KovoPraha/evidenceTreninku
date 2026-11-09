@@ -1,0 +1,23 @@
+{
+  "viewports": {
+    "desktop": "1036x703",
+    "mobile": "390x844"
+  },
+  "screenshots": {
+    "desktop": {
+      "before_sha256": "eae34af1c2aaece484a3b5196c189b20e9efc5b574dca0312cfac07ca5ecf2ab",
+      "after_sha256": "eae34af1c2aaece484a3b5196c189b20e9efc5b574dca0312cfac07ca5ecf2ab",
+      "byte_identical": true,
+      "after_visually_inspected": true
+    },
+    "mobile": {
+      "before_sha256": "04837a003cdf18b874a02be4b29e7c338dea336801f2d288684c6928e533423a",
+      "after_sha256": "04837a003cdf18b874a02be4b29e7c338dea336801f2d288684c6928e533423a",
+      "byte_identical": true,
+      "after_visually_inspected": true
+    }
+  },
+  "existing_mobile_long_notes_clipping_unchanged": true,
+  "physical_mobile_uat": "NOT RUN",
+  "authenticated_production_uat": "NOT RUN"
+}

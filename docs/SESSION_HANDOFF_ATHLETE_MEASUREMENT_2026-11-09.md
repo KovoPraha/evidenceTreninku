@@ -1,57 +1,30 @@
-# Předání P11-RHMS / RHM — 9. 11. 2026
+# Předání P11-RHMS — 9. 11. 2026
 
-**RHMS SHODA A HTTP/CHROME PASS — čeká kompletní aktuální CI a release.**
+**HOTOVO / NASAZENO.**
+[Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#rhms--uzavření-a-nasazení),
+[aktuální měření](verification/athlete-profile-measurement-summary-20261109/checked-head/RESULTS.md),
+[release a hranice](verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md).
 
-[Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#rhms--obě-db-a-celé-httpchrome-ověřené),
-[průběh](verification/athlete-profile-measurement-summary-20261109/RESULTS.md),
-[aktuální měření](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md).
-Draft [#422](https://github.com/KovoPraha/evidenceTreninku/pull/422), větev
-`codex/athlete-measurement-summary-performance-20261109`, base main0b4592fa.
-Izolovaný worktree mimo htdocs, WIP původního checkoutu beze změny.
+#422 / 17110a7f, testovaný 730de3d6, všech 20 CI SUCCESS; celý strom a runtime shodné.
+Deploy42679050552 SUCCESS; skutečné flags a stav vlastní [CURRENT](CURRENT_STATE.md).
+2418 testů / 55585 assertions, úplná ověřená záloha
+389 tabulek / 2 triggerů, migrace/VS/config/index/smoke PASS.
+Veřejné 8/8 HTTP a normalizované DOM shodné. Žádný další deploy kvůli dokumentaci.
 
-Kandidát2: COUNT/MAX datum po binárním typu a skalární první tuple pouze
-v nejnovějším datu; přesné signed64/NULL řazení malého seznamu typů v PHP.
-Jeden SQL statement, původní selector/header/history/navigation a10chráněných
-souborů byte-shodné. Bez DDL/cache/session/writer změn.
+HTTP: 535.915→342.364 ms (-36.1 %, 10.3); 875.862→546.464 ms (-37.6 %, 11.4).
+Chrome warm celá navigace 1542.55→1209.30 ms (-21.6 %).
+Malý profil +26/+14 ms, starý +10/+5 ms; rozdílné scénáře jsou samostatně v tabulce.
+Obě DB 6/634, 1836 časovaných AJAX, 52 Chrome navigací, úplné objekty/PHPtypy/
+HTML/JS/role/revokace/CSRF/checksumy/cleanup PASS. PNG shodné a vizuálně ověřené;
+stávající clipping dlouhých poznámek v úzké tabulce beze změny.
 
-42674262677/d8d59d54 oba joby SUCCESS: native6/634 každý,1836časovaných AJAX,
-52měřených Chrome navigací. Celé objekty/PHPtypy/HTML/JS/role/token/revokace/
-CSRF/11checksumů/cleanup PASS. 30k HTTP400.914→253.962ms (−36.7 %,10.3),
-672.882→393.144ms (−41.6 %,11.4),20%gate obě PASS. Starý profil +4/+5ms,
-malý/prázdný neutrální. Chrome warm celá1243.60→943.50ms (−24.1 %).
-Snímky před/po byte-identické a vizuálně ověřené; úzké poznámky beze změny.
-SQLite9/930, PHPStan/style a Linux2418/55585 PASS. Produkční UAT NOT RUN.
+Pouze souhrn COUNT/MAX date + první tuple typu v jednom statementu. Původní
+selector/header/history/navigation a 11 bezpečnostních/canonical souborů beze změny.
+Předchozí pokusy, infra chyby a celé potvrzující d8 měření zachované v protokolu.
+Žádné aplikační DDL/cache/session/writer změny. WIP a původní větev zachované,
+SHA256 kis_rosters_admin.php 7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5.
 
-GitHub dříve Internal server error nevytvořil části CI grafu. Na d8 má jen
-16checků (15SUCCESS/CodeQL NEUTRAL), chybějící nejsou PASS. Retry default
-CodeQL nepodporován; nový evidence checkpoint musí získat všech20aktuálních
-SUCCESS. Pak čerstvý main, whole-tree/source identity, ready/merge #422,
-protected deploy import/UATfalse a veřejné před/po. Závěrečné release důkazy
-samostatným docs PR do main bez druhého deploye. Zatím žádný nový merge/deploy.
-
-Níže předchozí dokončené RHM, jeho důkazy nepřepisovat.
-
-[Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [měření](verification/athlete-profile-measurement-performance-20261109/RESULTS.md), [release](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
-
-#418/5cc9cf83, tested 54a2b1c1, všech20CI SUCCESS; celý testovaný/sloučený strom a5měřených runtime Gitblobů shodné. Přijaté #416/#419/#420 zachované.
-Deploy42654922651 SUCCESS 2026-11-09T16:31:28Z, testy2417/55578, úplná ověřená záloha389/2, migrace/VS/config/index/smoke PASS, import=false/UAT=false. Veřejné8/8HTTP a normalizovanéDOM shodné.
-
-Celé HTTP měření30k/270k: 590.973→424.092ms (-28.2%,10.3); 1348.186→915.044ms (-32.1%,11.4).
-Chrome warm uloženéMěření: celá navigace 2191.60→1959.90ms (-10.6%), fetch→DOM+2frames 1441.80→988.35ms. Default/historie a cold/TTFB samostatně v tabulce výsledků; nepřičítat jim úsporu Měření.
-
-Změna pouze measurement selector: total>800/page<=32, nejprve prefix64globálních posledních tréninků a pak vazby; neplná stránka vždy přejde na původní selector. Přesný typ/vlastník ověřen znovu. Původní souhrn, malé/prázdné/vzácné filtry i pozdní stránky zůstávají původní. Žádné aplikační DDL/indexy/ANALYZE/cache/settings/session/UI/writer změny.
-Původní dvě agregace, nevyhovující plány/statistiky i nahrazené kandidáty jsou zachované v původních vzorcích. Jen syntetická příprava obnoví společné statistiky před OBOU variantami;20%gate zachovaná. EXPLAIN+metadata dokládají indexové lookupy.
-
-Nativní5/624 na každéDB, SQLite5/312, místní12/1204 PASS.1836časovaných AJAX a52měřených Chrome navigací (+warmupy/interakce). Úplný návratový objekt/PHPtypy, pořadí, počty, přesné typy, PDOrežimy,900vazeb jednoho tréninku,32/33stránka a velký starý profil, signed64 a čerstvé změny PASS. Celé fragmenty/parentDOM/12staffrolí/bearer/freshrevokace/CSRF/logout/2fallbacky/11checksumů a cleanup PASS. PNG ověřené zvlášť; žádná nová UI změna. Diagnostický PHPpeak zahrnuje SQLprofiler, není RAM prostého requestu ani RSS/DBpaměť.
-
-WIP kis_rosters_admin.php SHA2567a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 a původní checkout/větev/untracked soubory zachované.
-Přihlášené produkční UAT, produkční výkon, fyzický mobil, nový zápis poznámky a obnova této konkrétní zálohy NOT RUN. Syntetické časy nejsou SLA/LCP.
-Finální důkazy přes codex/athlete-measurement-release-proof-20261109 a samostatný dokumentační PR do main bez druhého deploye. Rozsah technicky dokončen.
-
-## Návaznost převzatá novým zadáním
-
-Dominantní zůstává původní numeric-window souhrn (cca446/911ms proti
-detailu4/7ms v diagnostice). Další variantu měřit se společnými obnovenými
-statistikami; staré GROUP_CONCAT pokusy nejsou univerzálním závěrem pro
-jiné varianty. Browser souběh historie/Měření zkoumat odděleně, příčinu
-čekání ResourceTiming sám nedokazuje. Souhrn převzat do P11-RHMS; browser souběh zůstává konceptem.
+Technický rozsah dokončený. Přihlášené produkční UAT, produkční výkon, fyzický
+mobil, nový zápis poznámky a obnova této konkrétní zálohy NOT RUN.
+Finální důkazy přes codex/athlete-measurement-summary-release-proof-20261109
+a samostatný docs PR do main. Předchozí RHM viz [původní release](verification/athlete-profile-measurement-release-20261109/RESULTS.md).

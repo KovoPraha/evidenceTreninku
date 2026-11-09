@@ -498,3 +498,12 @@ beze změny. Kandidát1 i infrastrukturní neúspěchy zůstávají doložené.
 Přijetí implementace ještě není release: čeká všech20aktuálních CI,
 whole-tree/source proof a chráněné nasazení dle aktuálního pokynu vlastníka.
 [Úplná metoda a hranice](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md).
+
+## D2026-11-09-RHMS-RELEASE
+
+Po přesné paritě, doloženém přínosu a všech20CI sloučeno #422/17110a7f;
+protected deploy42679050552 SUCCESS dle podmíněného pokynu vlastníka. Souhrn
+COUNT/MAX datum a první tuple zachovává přesné pořadí/počty, původní selector
+a canonical/autorizaci. Původní pokusy i infrastruktura zachované. Závěrečné
+důkazy samostatným docs PR bez druhého nasazení. [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md),
+[release a hranice](verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md).

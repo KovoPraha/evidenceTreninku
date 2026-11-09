@@ -1,0 +1,72 @@
+{
+  "complete": true,
+  "cases": {
+    "catalog": {
+      "before_http": 200,
+      "after_http": 200,
+      "status_pass": true,
+      "dom_sha256_before": "dc0ba13dedd6c6bb058543019485d405b85edda392724922d4d794ef0135a543",
+      "dom_sha256_after": "dc0ba13dedd6c6bb058543019485d405b85edda392724922d4d794ef0135a543",
+      "normalized_dom_equal": true
+    },
+    "price": {
+      "before_http": 200,
+      "after_http": 200,
+      "status_pass": true,
+      "dom_sha256_before": "83bb7d3741e3480f684a1e2a9e160529a63b8c22d995f4e7ae25972bdf7e22f9",
+      "dom_sha256_after": "83bb7d3741e3480f684a1e2a9e160529a63b8c22d995f4e7ae25972bdf7e22f9",
+      "normalized_dom_equal": true
+    },
+    "page2": {
+      "before_http": 200,
+      "after_http": 200,
+      "status_pass": true,
+      "dom_sha256_before": "dc0ba13dedd6c6bb058543019485d405b85edda392724922d4d794ef0135a543",
+      "dom_sha256_after": "dc0ba13dedd6c6bb058543019485d405b85edda392724922d4d794ef0135a543",
+      "normalized_dom_equal": true
+    },
+    "search": {
+      "before_http": 200,
+      "after_http": 200,
+      "status_pass": true,
+      "dom_sha256_before": "57827b6c5b1eea3a12a4fdfc8762d89ab24395f4e2dbc2575a625ca2463b6be8",
+      "dom_sha256_after": "57827b6c5b1eea3a12a4fdfc8762d89ab24395f4e2dbc2575a625ca2463b6be8",
+      "normalized_dom_equal": true
+    },
+    "empty": {
+      "before_http": 200,
+      "after_http": 200,
+      "status_pass": true,
+      "dom_sha256_before": "d87c96dd20d8363e596808a8f2b15a87666348efab732de78dd37f7ef8c233b9",
+      "dom_sha256_after": "d87c96dd20d8363e596808a8f2b15a87666348efab732de78dd37f7ef8c233b9",
+      "normalized_dom_equal": true
+    },
+    "profile_denied": {
+      "before_http": 404,
+      "after_http": 404,
+      "status_pass": true,
+      "dom_sha256_before": "9578a0bfc4151fc8aedcc0add316bbb7168b2f0448ab59afb70b334a49a5802c",
+      "dom_sha256_after": "9578a0bfc4151fc8aedcc0add316bbb7168b2f0448ab59afb70b334a49a5802c",
+      "normalized_dom_equal": true
+    },
+    "history_denied": {
+      "before_http": 403,
+      "after_http": 403,
+      "status_pass": true,
+      "dom_sha256_before": "12df4a3cf2c35a20f0991c6d890f737937527c18957b17184e8dd9d24ff8916f",
+      "dom_sha256_after": "12df4a3cf2c35a20f0991c6d890f737937527c18957b17184e8dd9d24ff8916f",
+      "normalized_dom_equal": true
+    },
+    "measurements_denied": {
+      "before_http": 403,
+      "after_http": 403,
+      "status_pass": true,
+      "dom_sha256_before": "12df4a3cf2c35a20f0991c6d890f737937527c18957b17184e8dd9d24ff8916f",
+      "dom_sha256_after": "12df4a3cf2c35a20f0991c6d890f737937527c18957b17184e8dd9d24ff8916f",
+      "normalized_dom_equal": true
+    }
+  },
+  "anonymous_get_only": true,
+  "no_cookies_no_redirects_no_post": true,
+  "normalization_version": 2
+}

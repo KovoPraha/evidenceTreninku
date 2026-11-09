@@ -10995,28 +10995,30 @@
     {
       "id": "PL-51594d6f16",
       "path": "docs/ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md",
-      "title": "P11-RHM — měření profilu",
+      "title": "P11-RHM/RHMS — měření profilu",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11-RHMS",
-      "disposition": "RHMS #422: oběDB shoda/HTTP/Chrome PASS, HTTP −36.7/41.6 %, aktuální20CI a release čekají; RHM zůstává nasazené.",
+      "disposition": "#422/17110a7f, deploy42679050552 SUCCESS;20CI/parita/HTTP/Chrome/čtecí produkce PASS, UAT samostatné.",
       "evidence": [
         "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md",
-        "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md",
+        "docs/verification/athlete-profile-measurement-summary-20261109/checked-head/RESULTS.md",
+        "docs/verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md"
       ]
     },
     {
       "id": "PL-a8d596365f",
       "path": "docs/SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md",
-      "title": "P11-RHM předání",
+      "title": "P11-RHMS předání",
       "primary": false,
       "role": "handoff",
       "status": "SUPPORT",
-      "registry": "P11-RHM",
-      "disposition": "#418/5cc9cf83, deploy42654922651 SUCCESS;20CI/parita/HTTP/Chrome PASS, UAT a meze samostatně.",
+      "registry": "P11-RHMS",
+      "disposition": "#422/17110a7f, deploy42679050552 SUCCESS;20CI/parita/HTTP/Chrome/čtecí produkce PASS, UAT samostatné.",
       "evidence": [
-        "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md"
       ]
     },
     {
@@ -11053,9 +11055,9 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-RHMS",
-      "disposition": "Průběžné nativní kandidáty a infrastruktura; finální párové ověření a release čekají.",
+      "disposition": "#422/17110a7f, deploy42679050552 SUCCESS;20CI/parita/HTTP/Chrome/čtecí produkce PASS, UAT samostatné.",
       "evidence": [
-        "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md"
       ]
     },
     {
@@ -11069,6 +11071,32 @@
       "disposition": "OběDB nativní a celé HTTP/Chrome PASS; release samostatně.",
       "evidence": [
         "docs/verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-1895df6fa0",
+      "path": "docs/verification/athlete-profile-measurement-summary-20261109/checked-head/RESULTS.md",
+      "title": "P11-RHMS aktuální měření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHMS",
+      "disposition": "Ověřeno, skutečný rozsah a hranice v protokolu.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-summary-20261109/checked-head/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-658df4cc60",
+      "path": "docs/verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md",
+      "title": "P11-RHMS produkční důkazy",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHMS",
+      "disposition": "Ověřeno, skutečný rozsah a hranice v protokolu.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md"
       ]
     }
   ],

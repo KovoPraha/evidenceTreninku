@@ -1,0 +1,490 @@
+{
+  "10.3": {
+    "cases": [
+      {
+        "size": 1000,
+        "case": "primary",
+        "before_ms": 20.645,
+        "after_ms": 16.448,
+        "change_pct": -20.329377573262285
+      },
+      {
+        "size": 1000,
+        "case": "exact_case",
+        "before_ms": 20.747999999999998,
+        "after_ms": 16.427,
+        "change_pct": -20.82610372084056
+      },
+      {
+        "size": 1000,
+        "case": "exact_space",
+        "before_ms": 21.245,
+        "after_ms": 16.256,
+        "change_pct": -23.483172511179106
+      },
+      {
+        "size": 1000,
+        "case": "page2",
+        "before_ms": 20.908,
+        "after_ms": 16.697,
+        "change_pct": -20.140616032140812
+      },
+      {
+        "size": 1000,
+        "case": "last",
+        "before_ms": 28.594,
+        "after_ms": 24.299,
+        "change_pct": -15.020633699377495
+      },
+      {
+        "size": 1000,
+        "case": "absent",
+        "before_ms": 27.348000000000003,
+        "after_ms": 22.803,
+        "change_pct": -16.61913119789382
+      },
+      {
+        "size": 1000,
+        "case": "small",
+        "before_ms": 17.180999999999997,
+        "after_ms": 18.023999999999997,
+        "change_pct": 4.906582853151731
+      },
+      {
+        "size": 1000,
+        "case": "old",
+        "before_ms": 19.812,
+        "after_ms": 20.28,
+        "change_pct": 2.3622047244094446
+      },
+      {
+        "size": 1000,
+        "case": "empty",
+        "before_ms": 16.945999999999998,
+        "after_ms": 17.569000000000003,
+        "change_pct": 3.676383807388195
+      },
+      {
+        "size": 10000,
+        "case": "primary",
+        "before_ms": 162.145,
+        "after_ms": 111.203,
+        "change_pct": -31.41755835825959
+      },
+      {
+        "size": 10000,
+        "case": "exact_case",
+        "before_ms": 162.226,
+        "after_ms": 109.793,
+        "change_pct": -32.32095964888488
+      },
+      {
+        "size": 10000,
+        "case": "exact_space",
+        "before_ms": 160.52700000000002,
+        "after_ms": 111.342,
+        "change_pct": -30.639705470107835
+      },
+      {
+        "size": 10000,
+        "case": "page2",
+        "before_ms": 161.14999999999998,
+        "after_ms": 110.751,
+        "change_pct": -31.27458889233632
+      },
+      {
+        "size": 10000,
+        "case": "last",
+        "before_ms": 238.813,
+        "after_ms": 188.946,
+        "change_pct": -20.88119155992345
+      },
+      {
+        "size": 10000,
+        "case": "absent",
+        "before_ms": 226.59199999999998,
+        "after_ms": 177.733,
+        "change_pct": -21.562544132184712
+      },
+      {
+        "size": 10000,
+        "case": "small",
+        "before_ms": 121.267,
+        "after_ms": 127.354,
+        "change_pct": 5.0195024202792204
+      },
+      {
+        "size": 10000,
+        "case": "old",
+        "before_ms": 124.246,
+        "after_ms": 128.72,
+        "change_pct": 3.600920753988057
+      },
+      {
+        "size": 10000,
+        "case": "empty",
+        "before_ms": 122.828,
+        "after_ms": 124.169,
+        "change_pct": 1.0917706060507237
+      },
+      {
+        "size": 30000,
+        "case": "primary",
+        "before_ms": 535.9150000000001,
+        "after_ms": 342.364,
+        "change_pct": -36.11598854295926
+      },
+      {
+        "size": 30000,
+        "case": "exact_case",
+        "before_ms": 539.6189999999999,
+        "after_ms": 346.775,
+        "change_pct": -35.737066337545556
+      },
+      {
+        "size": 30000,
+        "case": "exact_space",
+        "before_ms": 542.276,
+        "after_ms": 345.188,
+        "change_pct": -36.34459205275542
+      },
+      {
+        "size": 30000,
+        "case": "page2",
+        "before_ms": 534.215,
+        "after_ms": 346.434,
+        "change_pct": -35.15082878616287
+      },
+      {
+        "size": 30000,
+        "case": "last",
+        "before_ms": 817.079,
+        "after_ms": 623.651,
+        "change_pct": -23.673108720209434
+      },
+      {
+        "size": 30000,
+        "case": "absent",
+        "before_ms": 766.9209999999999,
+        "after_ms": 565.895,
+        "change_pct": -26.212087033736196
+      },
+      {
+        "size": 30000,
+        "case": "small",
+        "before_ms": 404.07500000000005,
+        "after_ms": 430.51800000000003,
+        "change_pct": 6.544082162964782
+      },
+      {
+        "size": 30000,
+        "case": "old",
+        "before_ms": 414.881,
+        "after_ms": 424.914,
+        "change_pct": 2.41828379704061
+      },
+      {
+        "size": 30000,
+        "case": "empty",
+        "before_ms": 412.071,
+        "after_ms": 407.902,
+        "change_pct": -1.0117188542751232
+      }
+    ],
+    "source": {
+      "baseline_sha": "0b4592fa63ee49a733b8d4a882c177ac73541e99",
+      "optimized_sha": "730de3d6d19d037c6df9f39b52cc20a7ac45ffbd",
+      "source_sha256": {
+        "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+        "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+        "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+        "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+        "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+      },
+      "baseline_source_sha256": {
+        "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+        "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+        "includes/athlete_profile_read.php": "07c930617d9816e32f0cffe58ea23172346e7e89c06b61cee25904bf9ed0cf65"
+      }
+    },
+    "tests": {
+      "name": "Tests\\Integration\\AthleteMeasurementReadTest",
+      "file": "/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php",
+      "tests": "6",
+      "assertions": "634",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "14.407188"
+    }
+  },
+  "11.4": {
+    "cases": [
+      {
+        "size": 1000,
+        "case": "primary",
+        "before_ms": 32.701,
+        "after_ms": 24.552999999999997,
+        "change_pct": -24.916669215008724
+      },
+      {
+        "size": 1000,
+        "case": "exact_case",
+        "before_ms": 32.266999999999996,
+        "after_ms": 24.660999999999998,
+        "change_pct": -23.572070536461396
+      },
+      {
+        "size": 1000,
+        "case": "exact_space",
+        "before_ms": 32.483,
+        "after_ms": 24.547,
+        "change_pct": -24.431240956808164
+      },
+      {
+        "size": 1000,
+        "case": "page2",
+        "before_ms": 32.675999999999995,
+        "after_ms": 24.509,
+        "change_pct": -24.99387929979189
+      },
+      {
+        "size": 1000,
+        "case": "last",
+        "before_ms": 44.852000000000004,
+        "after_ms": 37.011,
+        "change_pct": -17.48194060465531
+      },
+      {
+        "size": 1000,
+        "case": "absent",
+        "before_ms": 45.448,
+        "after_ms": 37.288000000000004,
+        "change_pct": -17.954585460306273
+      },
+      {
+        "size": 1000,
+        "case": "small",
+        "before_ms": 29.163999999999998,
+        "after_ms": 30.176000000000002,
+        "change_pct": 3.4700315457413478
+      },
+      {
+        "size": 1000,
+        "case": "old",
+        "before_ms": 32.499,
+        "after_ms": 33.908,
+        "change_pct": 4.335518015938944
+      },
+      {
+        "size": 1000,
+        "case": "empty",
+        "before_ms": 29.022,
+        "after_ms": 29.406000000000002,
+        "change_pct": 1.3231341740748581
+      },
+      {
+        "size": 10000,
+        "case": "primary",
+        "before_ms": 292.113,
+        "after_ms": 184.493,
+        "change_pct": -36.84190707020913
+      },
+      {
+        "size": 10000,
+        "case": "exact_case",
+        "before_ms": 291.993,
+        "after_ms": 185.062,
+        "change_pct": -36.621083382135865
+      },
+      {
+        "size": 10000,
+        "case": "exact_space",
+        "before_ms": 291.15999999999997,
+        "after_ms": 185.13,
+        "change_pct": -36.41640335210881
+      },
+      {
+        "size": 10000,
+        "case": "page2",
+        "before_ms": 290.98,
+        "after_ms": 184.763,
+        "change_pct": -36.503196095951616
+      },
+      {
+        "size": 10000,
+        "case": "last",
+        "before_ms": 436.625,
+        "after_ms": 329.549,
+        "change_pct": -24.523561408531357
+      },
+      {
+        "size": 10000,
+        "case": "absent",
+        "before_ms": 433.621,
+        "after_ms": 327.688,
+        "change_pct": -24.429859254971507
+      },
+      {
+        "size": 10000,
+        "case": "small",
+        "before_ms": 252.351,
+        "after_ms": 257.761,
+        "change_pct": 2.1438393348946594
+      },
+      {
+        "size": 10000,
+        "case": "old",
+        "before_ms": 256.717,
+        "after_ms": 260.33099999999996,
+        "change_pct": 1.4077758777174765
+      },
+      {
+        "size": 10000,
+        "case": "empty",
+        "before_ms": 252.94,
+        "after_ms": 253.93500000000003,
+        "change_pct": 0.3933739226694266
+      },
+      {
+        "size": 30000,
+        "case": "primary",
+        "before_ms": 875.8620000000001,
+        "after_ms": 546.4639999999999,
+        "change_pct": -37.60843603216033
+      },
+      {
+        "size": 30000,
+        "case": "exact_case",
+        "before_ms": 874.564,
+        "after_ms": 547.674,
+        "change_pct": -37.37748180807808
+      },
+      {
+        "size": 30000,
+        "case": "exact_space",
+        "before_ms": 874.4960000000001,
+        "after_ms": 547.101,
+        "change_pct": -37.43813579478923
+      },
+      {
+        "size": 30000,
+        "case": "page2",
+        "before_ms": 875.518,
+        "after_ms": 547.125,
+        "change_pct": -37.50842358466645
+      },
+      {
+        "size": 30000,
+        "case": "last",
+        "before_ms": 1322.356,
+        "after_ms": 992.598,
+        "change_pct": -24.937157618674554
+      },
+      {
+        "size": 30000,
+        "case": "absent",
+        "before_ms": 1314.2259999999999,
+        "after_ms": 984.818,
+        "change_pct": -25.06479098724268
+      },
+      {
+        "size": 30000,
+        "case": "small",
+        "before_ms": 760.164,
+        "after_ms": 774.533,
+        "change_pct": 1.8902499986845012
+      },
+      {
+        "size": 30000,
+        "case": "old",
+        "before_ms": 770.159,
+        "after_ms": 775.639,
+        "change_pct": 0.7115413830131256
+      },
+      {
+        "size": 30000,
+        "case": "empty",
+        "before_ms": 760.12,
+        "after_ms": 761.636,
+        "change_pct": 0.19944219333789537
+      }
+    ],
+    "source": {
+      "baseline_sha": "0b4592fa63ee49a733b8d4a882c177ac73541e99",
+      "optimized_sha": "730de3d6d19d037c6df9f39b52cc20a7ac45ffbd",
+      "source_sha256": {
+        "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+        "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+        "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+        "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+        "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+      },
+      "baseline_source_sha256": {
+        "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+        "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+        "includes/athlete_profile_read.php": "07c930617d9816e32f0cffe58ea23172346e7e89c06b61cee25904bf9ed0cf65"
+      }
+    },
+    "tests": {
+      "name": "Tests\\Integration\\AthleteMeasurementReadTest",
+      "file": "/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php",
+      "tests": "6",
+      "assertions": "634",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "time": "8.673800"
+    }
+  },
+  "browser": {
+    "before": {
+      "default_cold": {
+        "document_ttfb_ms": 450.79999999993015,
+        "ajax_pair_render_ready_ms": 514.5,
+        "navigation_to_both_ready_ms": 1015.5999999999767
+      },
+      "default_warm": {
+        "document_ttfb_ms": 449.30000000004657,
+        "ajax_pair_render_ready_ms": 519.4999999999418,
+        "navigation_to_both_ready_ms": 1015.0000000000582
+      },
+      "measurements_cold": {
+        "document_ttfb_ms": 450.5,
+        "ajax_pair_render_ready_ms": 1070.5999999999767,
+        "navigation_to_both_ready_ms": 1569.3000000000466,
+        "measurement_fetch_to_render_ready_ms": 1034.6999999999534
+      },
+      "measurements_warm": {
+        "document_ttfb_ms": 449.1500000000233,
+        "ajax_pair_render_ready_ms": 1052.0999999999185,
+        "navigation_to_both_ready_ms": 1542.5499999999884,
+        "measurement_fetch_to_render_ready_ms": 1042.4499999999534
+      }
+    },
+    "after": {
+      "default_cold": {
+        "document_ttfb_ms": 449.4000000000233,
+        "ajax_pair_render_ready_ms": 522.5999999999767,
+        "navigation_to_both_ready_ms": 1015.9000000000233
+      },
+      "default_warm": {
+        "document_ttfb_ms": 450.5,
+        "ajax_pair_render_ready_ms": 519.25,
+        "navigation_to_both_ready_ms": 1009.5999999999767
+      },
+      "measurements_cold": {
+        "document_ttfb_ms": 450,
+        "ajax_pair_render_ready_ms": 749.0999999999767,
+        "navigation_to_both_ready_ms": 1241.5,
+        "measurement_fetch_to_render_ready_ms": 715.2999999999302
+      },
+      "measurements_warm": {
+        "document_ttfb_ms": 453.75,
+        "ajax_pair_render_ready_ms": 711.8500000000349,
+        "navigation_to_both_ready_ms": 1209.3000000000466,
+        "measurement_fetch_to_render_ready_ms": 696.1499999999651
+      }
+    }
+  }
+}
