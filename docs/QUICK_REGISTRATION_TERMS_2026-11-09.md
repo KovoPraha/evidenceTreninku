@@ -1,6 +1,6 @@
 # QR01 — verze podmínek rychlé přihlášky
 
-Stav: K OVĚŘENÍ release / implementace a izolované testy hotové. Vlastník: vývoj na přímé zadání 9. 11. 2026. Větev `codex/quick-registration-terms-20261109` z `origin/main`; izolovaný worktree `C:/xampp/htdocs/evidencePavel-quick-registration-terms-20261109`.
+Stav: implementace HOTOVO v `main`, produkční release a živé UAT otevřené. Vlastník: vývoj na přímé zadání 9. 11. 2026. Větev `codex/quick-registration-terms-20261109` z `origin/main`; izolovaný worktree `C:/xampp/htdocs/evidencePavel-quick-registration-terms-20261109`.
 
 ## Cíl a rozsah
 
@@ -14,4 +14,4 @@ Přejímka: čerstvý formulář odesílá přesné klíče a verze; čerstvá o
 
 ## Stav předání
 
-Úzká oprava HTML atributu hotová; [izolované výsledky](verification/quick-registration-terms-20261109/RESULTS.md) PASS. Testovací fixture doplněna o migraci pracovních upozornění, kterou nynější checkout potřebuje. [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený, CI běží; merge, deploy a skutečné rodičovské UAT zatím NOT RUN. Živou přejímku produktu 298 je třeba provést v kontrolovaném provozním okně.
+Úzká oprava HTML atributu hotová; [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) prošel všemi 11 kontrolami a byl sloučen jako `5977897f44b60acbf54a2722ade1c63db75b8ae6`. Před produkčním vydáním odhalen navazující případ: po odmítnutí staré verze stránka ponechá původní potvrzení zaškrtnuté. [PR #419](https://github.com/KovoPraha/evidenceTreninku/pull/419) doplňuje opětovné načtení verzí a ruší dřívější potvrzení při změně kterékoliv registrační nebo programové verze; [izolované výsledky](verification/quick-registration-terms-20261109/RESULTS.md) PASS. Produkční deploy je samostatný ruční workflow s povinným vstupem `NASADIT`; jeho spuštění čeká na dokončení #419 a potvrzení vlastníka. Živé rodičovské UAT produktu 298 ani skutečná platba zatím NOT RUN.

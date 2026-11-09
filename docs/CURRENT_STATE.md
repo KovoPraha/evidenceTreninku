@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-QR01 připraveno k release kontrole: [oprava verzí podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md), [syntetické testy](verification/quick-registration-terms-20261109/RESULTS.md) PASS, [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený. Produkční release zatím žádný.
+QR01: [oprava verzí podmínek](QUICK_REGISTRATION_TERMS_2026-11-09.md) v `main` jako `5977897f` ([#416](https://github.com/KovoPraha/evidenceTreninku/pull/416), 11 CI PASS); [#419](https://github.com/KovoPraha/evidenceTreninku/pull/419) doplňuje nové potvrzení po změně verze, [20/395 místních kontrol PASS](verification/quick-registration-terms-20261109/RESULTS.md). Produkční deploy čeká na CI a samostatné potvrzení.
 Aktualizováno 9. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) včetně Q2-TIME a UX01 [celoročních nabídek](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
 - **P11-RHI NASAZENO:** [historie profilu — plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_HISTORY_2026-11-09.md).
   #413/c3d34b87, deploy42625502461 SUCCESS;18CI PASS, historie−89/93%, PHP−89%, Chrome historie−31%; [důkazy](verification/athlete-profile-history-release-20261109/RESULTS.md), veřejné8/8shodné, UAT NOT RUN, WIP zachovaný.

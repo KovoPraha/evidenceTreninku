@@ -12,6 +12,7 @@ require_once dirname(__DIR__, 2) . '/includes/shop_program_quick_checkout.php';
 require_once dirname(__DIR__, 2) . '/includes/athlete_registration_admin.php';
 require_once dirname(__DIR__, 2) . '/includes/quick_account_password.php';
 require_once dirname(__DIR__, 2) . '/includes/club_event_notification.php';
+require_once dirname(__DIR__, 2) . '/includes/shop_program_quick_terms.php';
 require_once dirname(__DIR__) . '/Support/ParentJourneyAcceptanceFixture.php';
 
 /** No persistent database, external payment provider or real mail transport. */
@@ -57,10 +58,15 @@ final class ParentJourneyAcceptanceTest extends TestCase
             'address_street' => 'LOCALHOST','address_house_number' => '12','address_city' => 'Praha','address_postcode' => '19000',
             'has_czech_birth_number' => '0','birth_number' => '','member_data_notice' => '1','birth_number_legal_notice' => '1',
             'photo_internal' => '0','photo_public' => '0','program_terms_accepted' => '1',
+            'registration_acknowledged' => '1',
             'program_term_version' => array_map(static fn (array $term): string => $term['terms_version'], $programTerms),
         ];
         $key = bin2hex(random_bytes(16));
         $access = bin2hex(random_bytes(32));
+        $oldInput = $input + ['term_version' => $beforeOptional, 'csc_birth_number_sharing' => '1'];
+        $retained = \shopProgramQuickRetainedInput($oldInput, $terms, $programTerms);
+        self::assertArrayNotHasKey('registration_acknowledged', $retained);
+        self::assertArrayNotHasKey('csc_birth_number_sharing', $retained);
         try {
             \shopProgramQuickCheckoutPlace($pdo, 601, $input, $beforeOptional, $key, $access, self::BANK);
             self::fail('A newly activated optional notice must require a refreshed form.');
@@ -73,6 +79,11 @@ final class ParentJourneyAcceptanceTest extends TestCase
             . "(scope_type,scope_key,consent_purpose,terms_version,consent_text_plain,actor_type,actor_id) "
             . "VALUES('athlete_registration','athlete-registration-v1','member_data_notice',"
             . "'member-v2','Nová syntetická informace pro registraci.','system',0)");
+        $current = \athleteRegistrationCurrentTerms($pdo);
+        $oldInput['term_version'] = $submitted;
+        $retained = \shopProgramQuickRetainedInput($oldInput, $current, $programTerms);
+        self::assertArrayNotHasKey('registration_acknowledged', $retained);
+        self::assertArrayNotHasKey('csc_birth_number_sharing', $retained);
         try {
             \shopProgramQuickCheckoutPlace($pdo, 601, $input, $submitted, $key, $access, self::BANK);
             self::fail('A previously rendered version must be rejected.');
@@ -91,10 +102,19 @@ final class ParentJourneyAcceptanceTest extends TestCase
         }
         self::assertFalse($pdo->inTransaction());
 
-        $current = \athleteRegistrationCurrentTerms($pdo);
         $refreshed = $this->quickFormVersions($current);
         self::assertSame('member-v2', $refreshed['member_data_notice']);
         self::assertSame('csc-v1', $refreshed['csc_birth_number_sharing']);
+        $freshInput = $input + ['term_version' => $refreshed];
+        self::assertSame('1', \shopProgramQuickRetainedInput($freshInput, $current, $programTerms)['registration_acknowledged']);
+        $staleProgram = $programTerms;
+        $staleProgram['program_consent']['terms_version'] = 'new-program-version';
+        self::assertArrayNotHasKey(
+            'registration_acknowledged',
+            \shopProgramQuickRetainedInput($freshInput, $current, $staleProgram)
+        );
+        $page = (string)file_get_contents(dirname(__DIR__, 2).'/booking/rychla_prihlaska.php');
+        self::assertStringContainsString('$_POST = shopProgramQuickRetainedInput($_POST, $terms, $programTerms)', $page);
         $order = \shopProgramQuickCheckoutPlace($pdo, 601, $input, $refreshed, $key, $access, self::BANK);
         self::assertSame('quick_program', $order['checkout_mode']);
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn());
