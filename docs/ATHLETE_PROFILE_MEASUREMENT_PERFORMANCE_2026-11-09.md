@@ -108,3 +108,7 @@ Vlastník/typ se znovu ověří v detailním výběru. Pozdější stránky zůs
 Test nově pokrývá80vazeb jednoho tréninku, přechod32/33 a prázdné/typové filtry.
 Lokálně nové4testy/271assertions PASS. Nativní přínos druhého pokusu čeká;
 release pouze po nové shodě, měření a celém CI.
+
+Převzat main5977897f/#416 (oprava rychlé přihlášky), runtime profilu beze změny.
+Konflikty registrů sjednoceny; přijatý QR01 event12 zachován, vlastní RHM
+události přeznačeny13/14. Nový celý CI a native běh na merge head.

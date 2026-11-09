@@ -1,5 +1,6 @@
 # Aktuální stav projektu
 
+QR01 připraveno k release kontrole: [oprava verzí podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md), [syntetické testy](verification/quick-registration-terms-20261109/RESULTS.md) PASS, [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený. Produkční release zatím žádný.
 Aktualizováno 9. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.md) včetně Q2-TIME a UX01 [celoročních nabídek](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [Q1/Q2 UAT](verification/quality-uat-20261108/RESULTS.md), [Q3 úklid](WORK_PLAN_CURRENT.md#q01-q3--první-měřitelný-úklid-rychlý-nákup) a [katalog](PLAN_CATALOG.md). Q1 #388 sloučené, Q3 #389 zahrnuté ve vydání P11-R13-F.
 - **P11-RHM POKUS2 / první výkon FAIL:** [měření profilu — plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md).
   Aktuální produkce c3d34b87/[release RHI](verification/athlete-profile-history-release-20261109/RESULTS.md) SUCCESS; nová parita/výkon/CI/release čekají, WIP zachovaný.
@@ -35,7 +36,6 @@ Aktualizováno 9. 11. 2026 (Europe/Prague). [Registr práce](WORK_PLAN_CURRENT.m
   [Důkazy a meze](verification/member-evidence-cutover-20261102/RESULTS.md).
   Jedna poslední synchronizace čeká na nový export, počáteční den se neposouvá.
   Přihlášené UAT a E8 nejsou dokončené; převodní mapy a bod návratu zůstávají zachované.
-
 - [Druhá funkční vlna nasazena](verification/functional-round2-release-20261102/RESULTS.md): oprava přípravy localhost dema, [35 syntetických PASS](verification/functional-uat-round2-20261102/RESULTS.md). Seed se v produkci nespouštěl.
 - **Trenérská obnova hesla nasazena:** samostatný režim obnovy, šifrovaná fronta,
   odvolání relací a výhradně trenérský worker. [Příprava pilotu](TRAINER_READINESS_2026-10-31.md).

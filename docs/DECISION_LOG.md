@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-09-01
+
+PŘIJATO 9. 11. 2026 podle přímého zadání vlastníka: v [QR01](QUICK_REGISTRATION_TERMS_2026-11-09.md) opravit přesný HTML název `term_version[účel]` a zachovat serverové porovnání aktuálních verzí. Odstranění kontroly by dovolilo potvrdit zastaralý text. Při změně verze mezi GET a POST se požadavek odmítne; nový formulář načte současný text. [Izolovaný důkaz](verification/quick-registration-terms-20261109/RESULTS.md).
+
 ## D2026-11-08-01
 
 PŘIJATO 8. 11. 2026 na přímé zadání vlastníka: zjednodušit doplnění celoročních nabídek k existujícím kroužkům. Správce má vybrat současné skupiny a zadat schválené ceny, zatímco datum, vazby, kapacita, věk, kód a SKU se odvodí z obou pololetí. Zápis více skupin musí být atomický a opakování bez duplicit. Nový samostatný program nebo produkt pro stejnou skupinu by rozpojil existující soupisku; ruční vyplnění všech polí zůstane jako pokročilá cesta. [Plán](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026). Ceny a produkční zápis toto rozhodnutí neschvaluje.

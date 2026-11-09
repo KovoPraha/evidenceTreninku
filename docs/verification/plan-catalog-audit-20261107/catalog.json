@@ -10980,6 +10980,19 @@
       ]
     },
     {
+      "id": "PL-7a1aa43e34",
+      "path": "docs/QUICK_REGISTRATION_TERMS_2026-11-09.md",
+      "title": "QR01 — verze podmínek rychlé přihlášky",
+      "role": "plan",
+      "primary": true,
+      "status": "PARTIAL",
+      "registry": "QR01",
+      "disposition": "Implementace a izolované testy PASS; PR #416 otevřený, CI běží, release a živé UAT otevřené.",
+      "evidence": [
+        "docs/verification/quick-registration-terms-20261109/RESULTS.md"
+      ]
+    },
+    {
       "id": "PL-51594d6f16",
       "path": "docs/ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md",
       "title": "P11-RHM — měření profilu",

@@ -406,3 +406,4 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 | PL-55898dcc11 | [P11-RHI — historie profilu](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md) | DONE / P11-RHI | #413/c3d34b87 NASAZENO,18CI/parita/HTTP/Chrome PASS; [release](verification/athlete-profile-history-release-20261109/RESULTS.md), UAT samostatné. |
 
 | PL-51594d6f16 | [P11-RHM — měření profilu](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) | IN_PROGRESS / P11-RHM | Native shoda a výkon před podmíněným release. |
+| PL-7a1aa43e34 | [QR01 — verze podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md) | PARTIAL / QR01 | Oprava a [syntetický celý průchod](verification/quick-registration-terms-20261109/RESULTS.md) PASS; [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený, CI běží, release a živé UAT otevřené. |

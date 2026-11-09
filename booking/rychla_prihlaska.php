@@ -156,8 +156,7 @@ shopPublicNavigation($pdo, $product['categories'][0] ?? null);?>
 <input type="hidden" name="variant_id" value="<?=$variantId?>">
 <input type="hidden" name="photo_public" value="0">
 <input type="hidden" name="photo_internal" value="0"><?php foreach ($terms as $purpose => $term):?>
-<input type="hidden" name="term_version[
-    <?=quickProgramH($purpose)?>]"
+<input type="hidden" name="term_version[<?=quickProgramH($purpose)?>]"
  value="<?=quickProgramH($term['version'])?>"><?php endforeach;?>
 <?php foreach ($programTerms as $purpose => $term):?>
 <input type="hidden" name="program_term_version[<?=quickProgramH($purpose)?>]"

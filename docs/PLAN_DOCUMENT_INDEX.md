@@ -15,6 +15,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-7bf4926593 | [bin/deploy-delete-manifest.txt](../bin/deploy-delete-manifest.txt) | artifact / SUPPORT | DOC02 |
 | PL-fd576aa984 | [database/README.md](../database/README.md) | reference / REFERENCE | DOC02 |
 | PL-6b161a4eb3 | [A10-PERSON-AUDIT-TIMELINE.md](A10-PERSON-AUDIT-TIMELINE.md) | reference / REFERENCE | DOC02 |
+| PL-7a1aa43e34 | [QUICK_REGISTRATION_TERMS_2026-11-09.md](QUICK_REGISTRATION_TERMS_2026-11-09.md) | plan / PARTIAL | QR01 |
 | PL-f72bce19e1 | [ACCESS_OVERVIEW_2026-11-07.md](ACCESS_OVERVIEW_2026-11-07.md) | plan / PARTIAL | ROLE01 |
 | PL-18045cf53e | [ACCOUNTING_LEDGER_R13_R16.md](ACCOUNTING_LEDGER_R13_R16.md) | reference / REFERENCE | DOC02 |
 | PL-5f6a8c268c | [ADMIN-PRACOVNI-POZICE.md](ADMIN-PRACOVNI-POZICE.md) | reference / REFERENCE | DOC02 |
