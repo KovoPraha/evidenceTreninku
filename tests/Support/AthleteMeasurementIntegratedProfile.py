@@ -273,6 +273,9 @@ try:
     if summary["comparison"] and not diagnostic_only:
         largest=summary["cases"][-1]
         assert largest["after"]["total_median_ms"] < largest["before"]["total_median_ms"]*.8,"No substantial measurement HTTP benefit"
+        for report in reports:
+            old = report["controls"]["old"]
+            assert median(v["total_ms"] for v in old["after"]) < median(v["total_ms"] for v in old["before"])*1.2+20, "Old sparse profile regression"
 
     (safe/"integrated-summary.json").write_text(json.dumps(summary,indent=2))
     print(json.dumps(summary["cases"]))

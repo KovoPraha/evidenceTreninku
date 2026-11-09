@@ -118,6 +118,26 @@ final class AthleteMeasurementReadTest extends TestCase
         }
     }
 
+    public function testOldLargeProfileBehindNewerForeignTrainingsRetainsEveryPage(): void
+    {
+        $pdo = $this->database();
+        Fixture::seed($pdo, 100);
+        $training = $pdo->prepare("INSERT INTO treninky(id,datum) VALUES(?,'2036-01-01')");
+        $measurement = $pdo->prepare("INSERT INTO mereni_zaznamy(id,sportovec_id,typ) VALUES(?,2,'foreign')");
+        $link = $pdo->prepare('INSERT INTO trenink_mereni VALUES(?,?,0)');
+        for ($number = 1; $number <= 128; ++$number) {
+            $training->execute([10000 + $number]);
+            $measurement->execute([1000000 + $number]);
+            $link->execute([10000 + $number, 1000000 + $number]);
+        }
+        foreach ([1, 2, 32, 33, 1000000] as $page) {
+            self::assertSame(
+                \AthleteMeasurementReference::measurements($pdo, 1, '', $page),
+                \AthleteProfileRead::measurements($pdo, 1, '', $page)
+            );
+        }
+    }
+
     public function testSigned64BitKeysAndPositionsRemainExact(): void
     {
         $pdo = $this->database();

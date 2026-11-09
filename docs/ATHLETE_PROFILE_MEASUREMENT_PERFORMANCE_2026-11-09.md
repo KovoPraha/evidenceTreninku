@@ -253,3 +253,27 @@ konfigurace. První metadata zachovaná v codeql-first-*.json. GitHub defaultset
 neumožnil job/run retry, checkrerequest404. Nový dokumentační head bez změny
 runtime obnoví kontrolu; nesmí se vydávat jako20SUCCESS, dokud nejsou skutečně
 zelené všechny kontroly aktuálního head. Produkce e3f29903, žádný RHMdeploy.
+
+## Pokus 5 — omezený globální prefix a původní fallback
+
+Závěrečná kontrola složitosti odhalila, že hledání prvních vlastních tréninků
+přes EXISTS může u dávno neaktivního, ale velkého profilu projít celý klub.
+Před release proto nahradit tento selector pevným prefixem64globálně posledních
+tréninků. Připojit vazby v daném pořadí, filtrovat přesný typ/vlastníka a provést
+původní LIMIT/OFFSET. Plnou25řádkovou stránku lze přijmout: globální prefix
+zaručuje, že žádné vynechané starší měření nemůže předcházet vráceným řádkům.
+Pokud stránka není plná, provést původní neomezený selector. Žádné zkrácené
+výsledky ani odhadované počty. Malé/vzácné/prázdné filtry a pozdní stránky
+zůstávají původní. Typový souhrn je byte-původní. Bez DDL/cache/settings.
+
+Doplnit oracle test starého velkého profilu za128novějšími cizími tréninky
+na všech relevantních stránkách. HTTP příprava dostaneSID1013 s900měřeními
+v roce1990 mimo současný globální prefix; úplná parita i výkon se ověří také
+na tomto9.scénáři. Nová akceptace918časovanýchAJAX/DB,1836celkem +52Chrome,
+20%gate pro hlavní scénář a kontrola starého profilu bez podstatné regrese.
+Předchozí PASS přísluší předchozímu selectoru; nic z něj se zatím nenasazuje.
+
+Předchozí3ba1b041 dosáhl20CI SUCCESS, uložené superseded-owned-selector/
+(nejde o aktuální prefix64). Nebyl sloučen ani nasazen; devátý historický
+profil a omezená práce se přidávají před uvolněním. Lokální nováparita5/312
+PASS, celá nativní akceptace nového prefixu64 teprve čeká.

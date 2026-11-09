@@ -185,30 +185,29 @@ final class AthleteProfileRead
             $params[] = $type;
         }
         $from = self::measurementFrom();
-        $pageParams = $params;
-        // Bound long histories before sorting links. Small/absent filters retain
-        // direct selection; finding their sparse trainings could scan the whole club.
-        // Late pages also retain direct selection instead of growing the key set.
-        if ($result['total'] > 32 * self::SIZE && $result['page'] <= 32) {
-            $typeScope = $type === '' ? '' : ' AND '
-                . ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY own_mz.typ' : 'own_mz.typ COLLATE BINARY') . '=?';
+        $bounded = $result['total'] > 32 * self::SIZE && $result['page'] <= 32;
+        if ($bounded) {
+            // Probe only a fixed global prefix. Searching for owned trainings
+            // without this cap could traverse the whole club for an old profile.
             $join = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' STRAIGHT_JOIN ' : ' JOIN ';
-            $from = ' FROM (SELECT own_t.id FROM treninky own_t WHERE EXISTS (
-                SELECT 1 FROM trenink_mereni own_tm JOIN mereni_zaznamy own_mz ON own_mz.id=own_tm.mereni_id
-                WHERE own_tm.trenink_id=own_t.id AND own_mz.sportovec_id=?' . $typeScope . ')
-                ORDER BY own_t.datum DESC,own_t.id DESC LIMIT ' . ($result['page'] * self::SIZE) . ') eligible'
-                . $join . 'treninky t ON t.id=eligible.id'
+            $from = ' FROM (SELECT id FROM treninky ORDER BY datum DESC,id DESC LIMIT 64) recent'
+                . $join . 'treninky t ON t.id=recent.id'
                 . $join . 'trenink_mereni tm ON tm.trenink_id=t.id'
                 . $join . 'mereni_zaznamy mz ON mz.id=tm.mereni_id';
-            $pageParams = [...$params, ...$params];
         }
         // LIMIT still precedes wide values/notes and display labels.
-        $result['rows'] = self::read($pdo, 'SELECT ' . self::measurementFields() . ',tm.trenink_datum'
+        $readPage = static fn (string $source): array => self::read($pdo, 'SELECT ' . self::measurementFields() . ',tm.trenink_datum'
             . ' FROM (SELECT tm.trenink_id,tm.poradi,tm.mereni_id,t.datum AS trenink_datum'
-            . $from . ' WHERE mz.sportovec_id=?' . $filter . $order
+            . $source . ' WHERE mz.sportovec_id=?' . $filter . $order
             . ' LIMIT ' . self::SIZE . ' OFFSET ' . (($result['page'] - 1) * self::SIZE) . ') tm'
             . ' JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id' . self::labels() . ' WHERE mz.sportovec_id=?'
-            . ' ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC', [...$pageParams, $sid]);
+            . ' ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC', [...$params, $sid]);
+        $result['rows'] = $readPage($from);
+        // A full page is the exact prefix of the original ordered stream. If
+        // the bounded probe is insufficient, retain the original complete read.
+        if ($bounded && count($result['rows']) !== self::SIZE) {
+            $result['rows'] = $readPage(self::measurementFrom());
+        }
         return $result;
     }
 

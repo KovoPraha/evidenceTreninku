@@ -32,8 +32,16 @@ if ($mode === 'prepare') {
         $measurement->execute([83000000 + $number, ['kolo', 'KOLO', 'kolo '][$number % 3]]);
         $link->execute([9000000 + $number, 83000000 + $number]);
     }
+    $admin->exec("INSERT INTO treninky(id,datum,napln,poznamka,obrazky,kategorie,delka)
+        VALUES(84000000,'1990-01-01','Synthetic old profile','','','mtb',1)");
+    $oldMeasurement = $admin->prepare("INSERT INTO mereni_zaznamy(id,sportovec_id,typ,vzdalenost,distance_unit,cas,poznamka)
+        VALUES(?,1013,'kolo',1,'km','00:01:00','Synthetic old measurement')");
+    foreach (range(1, 900) as $number) {
+        $oldMeasurement->execute([84000000 + $number]);
+        $link->execute([84000000, 84000000 + $number]);
+    }
     $admin->commit();
-    echo 'Owned small measurement fixture: 12' . PHP_EOL;
+    echo 'Owned small/old measurement fixture: 12/900'  . PHP_EOL;
     exit;
 }
 // Bulk inserts into the minimal migrated fixture leave cardinalities at 1–2.
@@ -48,13 +56,13 @@ foreach (['treninky', 'trenink_mereni', 'mereni_zaznamy'] as $table) {
     ];
 }
 $statistics['profile_counts'] = [];
-foreach ([1001, 1012, 1020] as $person) {
+foreach ([1001, 1012, 1013, 1020] as $person) {
     $count = $admin->prepare('SELECT COUNT(*) FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
         JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=?');
     $count->execute([$person]);
     $statistics['profile_counts'][$person] = (int) $count->fetchColumn();
 }
-if ($statistics['profile_counts'][1012] !== 12 || $statistics['profile_counts'][1020] !== 0) {
+if ($statistics['profile_counts'][1012] !== 12 || $statistics['profile_counts'][1013] !== 900 || $statistics['profile_counts'][1020] !== 0) {
     throw new RuntimeException('Expected a nonempty small measurement profile and an empty control.');
 }
 file_put_contents($output . '/measurement-statistics-' . $size . '.json', json_encode($statistics, JSON_THROW_ON_ERROR));
@@ -117,7 +125,7 @@ $report = ['complete' => false, 'size' => $size, 'samples' => [], 'signatures' =
 $cases = ['primary' => [1001, 'view=measurements'], 'exact_case' => [1001, 'view=measurements&typ=KOLO'],
     'exact_space' => [1001, 'view=measurements&typ=kolo%20'], 'page2' => [1001, 'view=measurements&profile_page=2'],
     'last' => [1001, 'view=measurements&profile_page=1000000'], 'absent' => [1001, 'view=measurements&typ=absent'],
-    'small' => [1012, 'view=measurements'], 'empty' => [1020, 'view=measurements']];
+    'small' => [1012, 'view=measurements'], 'old' => [1013, 'view=measurements'], 'empty' => [1020, 'view=measurements']];
 for ($i = -4; $i < 17; $i++) {
     foreach ($i % 2 === 0 ? $variants : array_reverse($variants) as $variant) {
         $rt = parentRuntime($runtime, $variant);

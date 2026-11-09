@@ -450,3 +450,12 @@ SHOW INDEX prokázal1–2cardinality při300křádcích a EXPLAIN ALL/BNL.
 Obnovit statistiky3vlastních tabulek před OBOU měřenými variantami, uložit
 metadata i původní FAIL; žádné aplikační ANALYZE/DDL, gate20% zachovaná.
 [Plán a důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-PREFIX — omezený pokus s úplným fallbackem
+
+Hledání vlastních25tréninků přes celý klub může u starého profilu škálovat
+s cizí historií. Před vydáním zvolen globálníprefix64tréninků; jen plná
+25řádková stránka je přesný prefix původního pořadí, jinak původní selector.
+Typ/vlastník a původní souhrn zachované. Doplněn velký starý profil900MZ
+1990 a gate bez podstatné regrese; případný fallback přidává1SQL.
+[Plán a důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
