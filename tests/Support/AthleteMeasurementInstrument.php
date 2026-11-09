@@ -44,8 +44,16 @@ register_shutdown_function(static function () use ($diagnosticId, $diagnosticDir
         foreach ($templates as $label => $sql) {
             $statement = $connection->prepare('EXPLAIN FORMAT=JSON ' . $sql);
             $statement->execute($query['parameters']);
-            $plans[$label] = json_decode($statement->fetchColumn(), true, 512, JSON_THROW_ON_ERROR);
+            $rawPlan = $statement->fetchColumn();
+            $plans[$label] = ['raw_json' => $rawPlan, 'parsed' => json_decode($rawPlan, true, 512, JSON_THROW_ON_ERROR)];
         }
+    }
+    $schema = [];
+    foreach (['treninky', 'trenink_mereni', 'mereni_zaznamy'] as $table) {
+        $schema[$table] = [
+            'columns' => $connection->query('SHOW COLUMNS FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC),
+            'indexes' => $connection->query('SHOW INDEX FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC),
+        ];
     }
     $reader = (new ReflectionClass(AthleteProfileRead::class))->getFileName();
     file_put_contents($diagnosticDirectory . '/' . $diagnosticId . '.json', json_encode([
@@ -54,5 +62,7 @@ register_shutdown_function(static function () use ($diagnosticId, $diagnosticDir
         'executed_reader_sha256' => hash_file('sha256', $reader),
         'opcache_enable_cli' => ini_get('opcache.enable_cli'),
         'explain' => $plans,
+        'schema_metadata' => $schema,
+        'emulated_prepares' => $connection->getAttribute(PDO::ATTR_EMULATE_PREPARES),
     ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 });

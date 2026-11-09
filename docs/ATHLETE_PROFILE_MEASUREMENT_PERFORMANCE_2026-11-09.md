@@ -173,3 +173,10 @@ Nová diagnostika ukládá EXPLAIN aktuálního i odmítnutého volného selecto
 nad stejnými parametry (parametry neukládá), až po renderu v samostatných
 workers. Hypotézu musí potvrdit plán a nové celé párové HTTP/Chrome měření;
 20%gate se nesnižuje. Žádný RHM merge/deploy, cizí WIP zachovaný.
+
+Diagnostika pořadí run42639932929 PASS (nejde o performancegate):
+10.3detail214→189ms,11.4 352→703ms. EXPLAIN ukazuje ALLscan tm
+a na11.4 materializaci všech300k vazeb i uvnitř EXISTS. Samotný join order
+neřeší vše. Doplněno SHOW COLUMNS/SHOW INDEX pro3syntetické tabulky,
+PDOrežim a rawEXPLAIN (10.3 může opakovat JSONklíče; parsovaná forma
+sama není úplný plán). Žádný RHM deploy,20%gate beze změny.
