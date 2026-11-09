@@ -58,3 +58,16 @@ header agregace i HTML zachovat. Změna pouze history readmodelu.
    samostatným dokumentačním PR bez druhého deploye dokumentace.
 
 Další krok: kandidát a přesné testy, native diagnóza/pairedHTTP/Chrome.
+
+## Kandidát — lokální checkpoint
+
+Upraveno pouze history(): EXISTS zachovává deduplikované vlastnictví,
+detail znovu ověřuje scope i rok na vybraných25id; první výsledky se čtou
+postupně, drží se nejvýše dvě stránky klíčů. Výpočet minut zůstává stejnýPHP
+ve stejném pořadí. PDO buffering beze změny, paměť se teprve změří.
+Reference celého readeru zmrazená z d666078e (jen přejmenovaná testovací třída).
+SQLite původní3testy/611assertions a nové2/261 PASS. Nativní testy ověří navíc
+emulated/native prepares i stringify režimy, finální výkon zatím NOT RUN.
+PSR12 dotčených6souborů PASS, PythonAST PASS. Header/měření/parent/AJAX
+endpoint/bezpečnost/writery jsou byte-nezměněné. Workflow zmrazí reader,
+parent i AJAX endpoint a měří celé fragmenty i skutečný Chrome.

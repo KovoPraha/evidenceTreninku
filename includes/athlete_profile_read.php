@@ -85,24 +85,50 @@ final class AthleteProfileRead
 
     public static function history(PDO $pdo, int $sid, int $year, int $requested): array
     {
-        $from = self::membership();
+        $from = ' FROM treninky t WHERE (
+            EXISTS (SELECT 1 FROM trenink_sportovec ts
+                WHERE ts.trenink_id=t.id AND ts.sportovec_id=:attendance_sid)
+            OR EXISTS (SELECT 1 FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
+                WHERE tm.trenink_id=t.id AND mz.sportovec_id=:measurement_sid)
+        )';
         $params = self::scope($sid);
         if ($year > 0) {
-            $from .= ' WHERE YEAR(t.datum)=:year';
+            $from .= ' AND YEAR(t.datum)=:year';
             $params[':year'] = $year;
         }
         $order = ' ORDER BY t.datum DESC,t.id DESC';
-        $candidates = self::read($pdo, 'SELECT t.id,t.delka' . $from . $order, $params);
+        $statement = $pdo->prepare('SELECT t.id,t.delka' . $from . $order);
         $minutes = 0;
-        foreach ($candidates as $row) {
-            if (!empty($row['delka'])) {
-                $minutes += (float) str_replace(',', '.', $row['delka']) * 60;
+        $total = 0;
+        $ids = [];
+        $lastIds = [];
+        $requested = max(1, $requested);
+        try {
+            $statement->execute($params);
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                // Keep the requested page and the current last page for clamping.
+                // Preserve the original ordered PHP duration conversion and additions.
+                if ($total % self::SIZE === 0) {
+                    $lastIds = [];
+                }
+                $lastIds[] = $row['id'];
+                if (intdiv($total, self::SIZE) + 1 === $requested) {
+                    $ids[] = $row['id'];
+                }
+                $total++;
+                if (!empty($row['delka'])) {
+                    $minutes += (float) str_replace(',', '.', $row['delka']) * 60;
+                }
             }
+        } finally {
+            $statement->closeCursor();
         }
-        $result = self::pagination(count($candidates), $requested);
+        unset($statement);
+        $result = self::pagination($total, $requested);
         $result['minutes'] = $minutes;
-        $ids = array_column(array_slice($candidates, ($result['page'] - 1) * self::SIZE, self::SIZE), 'id');
-        unset($candidates);
+        if ($result['page'] !== $requested) {
+            $ids = $lastIds;
+        }
         $result += ['rows' => [], 'notes' => [], 'measurements' => []];
         if ($ids === []) {
             return $result;
@@ -113,7 +139,7 @@ final class AthleteProfileRead
             $params[':id' . $i] = $id;
         }
         $result['rows'] = self::read($pdo, 'SELECT t.id,t.datum,t.delka,t.napln,t.obrazky' . $from
-            . ($year > 0 ? ' AND' : ' WHERE') . ' t.id IN (' . implode(',', $marks) . ')' . $order, $params);
+            . ' AND t.id IN (' . implode(',', $marks) . ')' . $order, $params);
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         foreach (self::read($pdo, 'SELECT trenink_id,poznamka FROM sportovec_poznamka
             WHERE sportovec_id=? AND trenink_id IN (' . $placeholders . ')', [$sid, ...$ids]) as $row) {
