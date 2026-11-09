@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\AthleteMeasurementReadTest" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" tests="4" assertions="619" errors="0" failures="0" skipped="0" time="6.428626">
+    <testcase name="testFrozenCountsOrderEveryFilterPageAndPdoMode" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="20" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="481" time="3.280889"/>
+    <testcase name="testWindowSummaryIgnoresFreshGroupConcatLimits" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="61" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="12" time="0.464335"/>
+    <testcase name="testDenseTrainingAndEarlyLatePageBoundaryRemainExact" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="90" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="120" time="2.177866"/>
+    <testcase name="testSigned64BitKeysAndPositionsRemainExact" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="121" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="6" time="0.505535"/>
+  </testsuite>
+</testsuites>

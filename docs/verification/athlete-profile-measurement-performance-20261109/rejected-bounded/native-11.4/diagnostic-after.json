@@ -1,0 +1,78 @@
+{
+  "status": 200,
+  "bootstrap_preloaded": true,
+  "timing_instrumented": true,
+  "peak_php_bytes": 679640,
+  "queries": [
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.244857,
+      "fetch_ms": 0.002424,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.193251,
+      "fetch_ms": 0.001652,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.192139,
+      "fetch_ms": 0.001243,
+      "fetched_rows": 0,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.192559,
+      "fetch_ms": 0.001613,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.194193,
+      "fetch_ms": 0.001623,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM sportovci s WHERE s.id=? AND EXISTS(SELECT 1 FROM coach_scope_grants g JOIN treneri cg_t ON cg_t.id=g.trainer_id AND cg_t.aktivni=1 JOIN staff_user_positions cg_p ON cg_p.trainer_id=g.trainer_id AND cg_p.position_code='coach' WHERE g.trainer_id=7 AND g.revoked_at IS NULL AND g.valid_from<=CURRENT_TIMESTAMP AND (g.valid_to IS NULL OR g.valid_to>CURRENT_TIMESTAMP) AND ((g.scope_kind='team' AND EXISTS(SELECT 1 FROM club_roster_members cm JOIN club_teams ct ON ct.id=cm.team_id WHERE cm.sportovec_id=s.id AND cm.team_id=g.scope_id AND cm.status='active' AND ct.status='active' AND cm.valid_from<=CURRENT_DATE AND (cm.valid_to IS NULL OR cm.valid_to>=CURRENT_DATE)))))",
+      "execute_ms": 0.448639,
+      "fetch_ms": 0.001663,
+      "fetched_rows": 1,
+      "caller": "coachScopeCanViewPerson"
+    },
+    {
+      "sql": "SELECT id FROM sportovci WHERE id = ?",
+      "execute_ms": 0.162934,
+      "fetch_ms": 0.001573,
+      "fetched_rows": 1,
+      "caller": ""
+    },
+    {
+      "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele a ON a.id=r.account_id WHERE r.account_id=? AND r.sportovec_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND a.aktivni=1 AND a.email_overeno=1 LIMIT 1",
+      "execute_ms": 0.21401,
+      "fetch_ms": 0.001252,
+      "fetched_rows": 0,
+      "caller": "sportovecNoteCanWrite"
+    },
+    {
+      "sql": "SELECT BINARY mz.typ AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER ( ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC) AS ordinal FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=?) ordered_types JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id GROUP BY BINARY mz.typ ORDER BY first_position",
+      "execute_ms": 929.30713,
+      "fetch_ms": 0.015899,
+      "fetched_rows": 9,
+      "caller": "read"
+    },
+    {
+      "sql": "SELECT tm.trenink_id,tm.poradi,mz.id AS mereni_id,mz.typ, mz.vzdalenost,mz.distance_unit,mz.cas,mz.prevod,mz.cvik_id,mz.segment_id, mz.vaha,mz.opakovani,mz.rpe,mz.poznamka AS mereni_poznamka, c.nazev AS cvik_nazev,seg.nazev AS segment_nazev,tm.trenink_datum FROM (SELECT tm.trenink_id,tm.poradi,tm.mereni_id,t.datum AS trenink_datum FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id JOIN treninky t ON t.id=tm.trenink_id JOIN (SELECT own_t.id FROM treninky own_t WHERE EXISTS ( SELECT 1 FROM trenink_mereni own_tm JOIN mereni_zaznamy own_mz ON own_mz.id=own_tm.mereni_id WHERE own_tm.trenink_id=own_t.id AND own_mz.sportovec_id=?) ORDER BY own_t.datum DESC,own_t.id DESC LIMIT 25) eligible ON eligible.id=t.id WHERE mz.sportovec_id=? ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC LIMIT 25 OFFSET 0) tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id LEFT JOIN cviky c ON c.id=mz.cvik_id LEFT JOIN segmenty seg ON seg.id=mz.segment_id WHERE mz.sportovec_id=? ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC",
+      "execute_ms": 6.869816,
+      "fetch_ms": 0.033432,
+      "fetched_rows": 25,
+      "caller": "read"
+    }
+  ]
+}

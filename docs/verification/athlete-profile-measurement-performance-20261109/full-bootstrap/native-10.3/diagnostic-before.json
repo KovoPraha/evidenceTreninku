@@ -1,0 +1,129 @@
+{
+  "status": 200,
+  "bootstrap_preloaded": false,
+  "timing_instrumented": true,
+  "peak_php_bytes": 761744,
+  "queries": [
+    {
+      "sql": "SELECT session_version FROM treneri WHERE id = :id AND aktivni = 1 LIMIT 1",
+      "execute_ms": 0.235251,
+      "fetch_ms": 0.002053,
+      "fetched_rows": 1,
+      "caller": "auth_session_active_version"
+    },
+    {
+      "sql": "SELECT session_version FROM verejni_uzivatele WHERE id = :id AND aktivni = 1 LIMIT 1",
+      "execute_ms": 0.190304,
+      "fetch_ms": 0.000851,
+      "fetched_rows": 1,
+      "caller": "auth_session_active_version"
+    },
+    {
+      "sql": "SELECT role FROM treneri WHERE id=? AND aktivni=1 LIMIT 1",
+      "execute_ms": 0.190614,
+      "fetch_ms": 0.000891,
+      "fetched_rows": 1,
+      "caller": "auth_session_refresh_trainer_authorization"
+    },
+    {
+      "sql": "SELECT klic,min_role FROM opravneni",
+      "execute_ms": 0.1882,
+      "fetch_ms": 0.002444,
+      "fetched_rows": 3,
+      "caller": "query"
+    },
+    {
+      "sql": "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN ('staff_positions','staff_user_positions','staff_superadmins')",
+      "execute_ms": 0.632222,
+      "fetch_ms": 0.000972,
+      "fetched_rows": 1,
+      "caller": "query"
+    },
+    {
+      "sql": "SELECT position_code,is_default FROM staff_user_positions WHERE trainer_id=? ORDER BY is_default DESC, position_code",
+      "execute_ms": 0.174455,
+      "fetch_ms": 0.001683,
+      "fetched_rows": 1,
+      "caller": "staffWorkspaceRefreshSession"
+    },
+    {
+      "sql": "SELECT 1 FROM staff_superadmins WHERE trainer_id=? LIMIT 1",
+      "execute_ms": 0.125728,
+      "fetch_ms": 0.000631,
+      "fetched_rows": 0,
+      "caller": "staffWorkspaceRefreshSession"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.189052,
+      "fetch_ms": 0.001182,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.139818,
+      "fetch_ms": 0.000501,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.137065,
+      "fetch_ms": 0.000451,
+      "fetched_rows": 0,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.138497,
+      "fetch_ms": 0.00055,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.134109,
+      "fetch_ms": 0.00038,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM sportovci s WHERE s.id=? AND EXISTS(SELECT 1 FROM coach_scope_grants g JOIN treneri cg_t ON cg_t.id=g.trainer_id AND cg_t.aktivni=1 JOIN staff_user_positions cg_p ON cg_p.trainer_id=g.trainer_id AND cg_p.position_code='coach' WHERE g.trainer_id=7 AND g.revoked_at IS NULL AND g.valid_from<=CURRENT_TIMESTAMP AND (g.valid_to IS NULL OR g.valid_to>CURRENT_TIMESTAMP) AND ((g.scope_kind='team' AND EXISTS(SELECT 1 FROM club_roster_members cm JOIN club_teams ct ON ct.id=cm.team_id WHERE cm.sportovec_id=s.id AND cm.team_id=g.scope_id AND cm.status='active' AND ct.status='active' AND cm.valid_from<=CURRENT_DATE AND (cm.valid_to IS NULL OR cm.valid_to>=CURRENT_DATE)))))",
+      "execute_ms": 0.384884,
+      "fetch_ms": 0.001002,
+      "fetched_rows": 1,
+      "caller": "coachScopeCanViewPerson"
+    },
+    {
+      "sql": "SELECT id FROM sportovci WHERE id = ?",
+      "execute_ms": 0.138467,
+      "fetch_ms": 0.001563,
+      "fetched_rows": 1,
+      "caller": ""
+    },
+    {
+      "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele a ON a.id=r.account_id WHERE r.account_id=? AND r.sportovec_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND a.aktivni=1 AND a.email_overeno=1 LIMIT 1",
+      "execute_ms": 0.183303,
+      "fetch_ms": 0.000952,
+      "fetched_rows": 0,
+      "caller": "sportovecNoteCanWrite"
+    },
+    {
+      "sql": "SELECT BINARY mz.typ AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER ( ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC) AS ordinal FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=?) ordered_types JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id GROUP BY BINARY mz.typ ORDER BY first_position",
+      "execute_ms": 694.747852,
+      "fetch_ms": 0.011296,
+      "fetched_rows": 9,
+      "caller": "read"
+    },
+    {
+      "sql": "SELECT tm.trenink_id,tm.poradi,mz.id AS mereni_id,mz.typ, mz.vzdalenost,mz.distance_unit,mz.cas,mz.prevod,mz.cvik_id,mz.segment_id, mz.vaha,mz.opakovani,mz.rpe,mz.poznamka AS mereni_poznamka, c.nazev AS cvik_nazev,seg.nazev AS segment_nazev,tm.trenink_datum FROM (SELECT tm.trenink_id,tm.poradi,tm.mereni_id,t.datum AS trenink_datum FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=? ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC LIMIT 25 OFFSET 0) tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id LEFT JOIN cviky c ON c.id=mz.cvik_id LEFT JOIN segmenty seg ON seg.id=mz.segment_id WHERE mz.sportovec_id=? ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC",
+      "execute_ms": 287.668929,
+      "fetch_ms": 0.02718,
+      "fetched_rows": 25,
+      "caller": "read"
+    }
+  ],
+  "executed_reader_sha256": "79aad0711f4bea6415a8f54d5c325913ddbd3e4189cf022c696e9521b89c70cc",
+  "opcache_enable_cli": "0"
+}

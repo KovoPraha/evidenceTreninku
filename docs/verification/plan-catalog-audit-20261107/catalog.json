@@ -10991,6 +10991,45 @@
       "evidence": [
         "docs/verification/quick-registration-terms-20261109/RESULTS.md"
       ]
+    },
+    {
+      "id": "PL-51594d6f16",
+      "path": "docs/ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md",
+      "title": "P11-RHM — měření profilu",
+      "primary": true,
+      "role": "plan",
+      "status": "IN_PROGRESS",
+      "registry": "P11-RHM",
+      "disposition": "Zahájení; implementace a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-performance-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-a8d596365f",
+      "path": "docs/SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md",
+      "title": "P11-RHM předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-RHM",
+      "disposition": "Zahájení; implementace a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-performance-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-93a9cfd474",
+      "path": "docs/verification/athlete-profile-measurement-performance-20261109/RESULTS.md",
+      "title": "P11-RHM měření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHM",
+      "disposition": "Zahájení; implementace a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-performance-20261109/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",

@@ -1,0 +1,13 @@
+{
+  "optimized_sha": "3b7fbfba620dbc0efddd8af2fa43eeca2c03730b",
+  "baseline_sha": "5ff9fa2a65123aa1eef58be3678943cb4bfc2b53",
+  "source_sha256_from_git": {
+    "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+    "includes/athlete_profile_read.php": "4ca944dc405126bcfb505afc7f46fd1f6fd9b5e68633374f70e779b22a477346",
+    "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+    "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+  },
+  "measured_source_hash_report_available": false,
+  "reason": "Performance gate failed before integrated-summary output; Git-derived source hashes only."
+}

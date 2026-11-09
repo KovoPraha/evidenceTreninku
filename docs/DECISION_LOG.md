@@ -416,3 +416,46 @@ EXISTS a postupné klíče zachovávají původní orderedPHPsoučet i opětovno
 vlastnictví/roku detailů. Bez DDL/cache/práv/session/writer změn. Přijaté #412 zachované.
 [Plán](ATHLETE_PROFILE_HISTORY_PERFORMANCE_2026-11-09.md),
 [release a meze včetně proměnlivého Měření](verification/athlete-profile-history-release-20261109/RESULTS.md).
+
+## D2026-11-09-RHM
+
+Podle aktuálního pokynu vlastníka ověřit přímý binární souhrn a první klíč
+MariaDB GROUP_CONCAT LIMIT1 místo číslování celé historie. Původní reference
+zůstává fallbackem při nepodporovaném backendu/krátkém limitu. Bez změny DB
+nastavení, cache nebo DDL. [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-2 — odmítnutí pomalejšího kandidáta
+
+Nativní parita sama nestačí: první JSON varianta má regresi HTTP, neuvolnit.
+Zachovat první vzorky a změřit integer tuple + bounded training selector;
+[plán a důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-3 — ponechat původní souhrn
+
+Druhý native pokus izoloval přínos detailu165→4ms, ale regresi agregace.
+Obě GROUP_CONCAT varianty zamítnuté; další kandidát obsahuje jen bounded
+selector a původní souhrn, bez přidaného SQL. [Důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-4 — reprezentativní spojení a pořadí joinů
+
+Původní oddělený instrument přednačítal db.php; jeho dílčí SQL čísla se
+nepřenesla do HTTP. Celý bootstrap17SQL ukázal pomalý detail i po omezení.
+Změna nyní nejprve provede bounded eligible seznam a zachová pořadí pomocí
+STRAIGHT_JOIN; ověřit EXPLAIN a celé HTTP, neměnit20%gate.
+[Plán a původní důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-STATS — reprezentativní statistiky fixture
+
+SHOW INDEX prokázal1–2cardinality při300křádcích a EXPLAIN ALL/BNL.
+Obnovit statistiky3vlastních tabulek před OBOU měřenými variantami, uložit
+metadata i původní FAIL; žádné aplikační ANALYZE/DDL, gate20% zachovaná.
+[Plán a důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-PREFIX — omezený pokus s úplným fallbackem
+
+Hledání vlastních25tréninků přes celý klub může u starého profilu škálovat
+s cizí historií. Před vydáním zvolen globálníprefix64tréninků; jen plná
+25řádková stránka je přesný prefix původního pořadí, jinak původní selector.
+Typ/vlastník a původní souhrn zachované. Doplněn velký starý profil900MZ
+1990 a gate bez podstatné regrese; případný fallback přidává1SQL.
+[Plán a důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
