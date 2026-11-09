@@ -31,3 +31,10 @@ source edit a CSS identity ověřené; FCP/HTML kompletního běhu zatím NOT RU
 Browser měření rozdělené do34vzorkových bloků kvůli omezení CLI;17párů a
 4warmupy každého cold/warm viewport/route zůstávají. WebCrypto v reálném
 browseru místo závislosti na Node require; žádné request mocky.
+
+
+Druhý běh42718778899/3f také před timingem FAIL testovacího kontextu: sports_lead
+správně403 na moje_treninky, kterou vlastní coach. Měření nyní používá přesné
+per-route existující identity: coach profil+Moje, sports_lead Správa, veřejný
+bearer samostatně. Doplněny negativní302/403 kontroly hranic pracovních pozic.
+Žádná změna/grant rolí ani route guardů; oba cleanup PASS,3/562 a1/6 PASS.

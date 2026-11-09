@@ -63,3 +63,8 @@ Přejímka3stránek poběží pod existujícím sports_lead, veřejný bearer sa
 žádná změna oprávnění. Model3/562 a normalizátor1/6 oběDB PASS, cleanup PASS.
 Časová měření a app merge/deploy pořád NOT RUN. CLI bloky34vzorků zachovají
 17střídavých párů/4warmupy každého cold/warm/viewport/route.
+
+Druhý42718778899 zastaven na správném403 vedoucího sportu u trenérských Moje.
+Oprava měřicího scénáře respektuje samostatné pracovní pozice: coach profil/
+Moje, sports_lead Správa, samostatný public bearer; žádné slučování rolí.
+Negativní302/403 se nově ověřují před/po. Stále žádné app merge/deploy.

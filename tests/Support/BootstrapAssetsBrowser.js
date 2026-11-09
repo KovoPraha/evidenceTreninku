@@ -8,8 +8,9 @@ async (page) => {
   const onConsole=m=>{if(m.type()==='error')errors.push(m.text());};
   const onFailed=r=>failed.push({url:r.url().split('?')[0],error:r.failure()?.errorText});
   page.on('pageerror',onError);page.on('console',onConsole);page.on('requestfailed',onFailed);
-  const cases = config.role === 'staff'
-    ? [{id:'profile',path:'/sportovec_treninky.php?id=1001'}, {id:'mine',path:'/moje_treninky.php'}, {id:'training',path:'/sprava_treninku.php'}]
+  const cases = config.role === 'coach'
+    ? [{id:'profile',path:'/sportovec_treninky.php?id=1001'}, {id:'mine',path:'/moje_treninky.php'}]
+    : config.role === 'sports_lead' ? [{id:'training',path:'/sprava_treninku.php'}]
     : [{id:'public-profile',path:'/sportovec_treninky.php'}];
   let requests = new Map();
   cdp.on('Network.requestWillBeSent', e => {

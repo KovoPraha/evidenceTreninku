@@ -26,14 +26,17 @@ $report = ['size' => $size, 'complete' => false, 'samples' => [], 'signatures' =
 foreach ($variants as $variant) {
     $rt = $runtime;
     $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
-    fullHttpLogin($rt, $output, 'asset-parent-' . $variant, $credentials['sports_lead']);
+    foreach (['coach','sports_lead'] as $role) {
+        fullHttpLogin($rt, $output, 'asset-parent-' . $variant . '-' . $role, $credentials[$role]);
+    }
 }
 foreach (range(-4, 16) as $round) {
     foreach ($round % 2 === 0 ? $variants : array_reverse($variants) as $variant) {
         $rt = $runtime;
         $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
         foreach (['profile' => '/sportovec_treninky.php?id=1001', 'mine' => '/moje_treninky.php', 'training' => '/sprava_treninku.php'] as $case => $path) {
-            $response = fullHttpRequest($rt, $output, 'asset-parent-' . $variant, $path);
+            $role = $case === 'training' ? 'sports_lead' : 'coach';
+            $response = fullHttpRequest($rt, $output, 'asset-parent-' . $variant . '-' . $role, $path);
             if ($response['status'] !== 200 || preg_match('/Fatal error|Warning:/', $response['body'])) {
                 throw new RuntimeException('Asset parent unavailable: ' . $case . ':' . $response['status']);
             }
@@ -61,6 +64,17 @@ foreach (range(-4, 16) as $round) {
 foreach ($report['signatures'] as $case => $signatures) {
     if ($signatures['before'] !== $signatures['after']) {
         throw new RuntimeException('Parent HTML differs beyond allowed CSS link: ' . $case);
+    }
+}
+foreach ($variants as $variant) {
+    $rt = $runtime;
+    $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
+    foreach ([['coach','/sprava_treninku.php',302],['sports_lead','/moje_treninky.php',403]] as [$role,$path,$expected]) {
+        $denied = fullHttpRequest($rt, $output, 'asset-parent-' . $variant . '-' . $role, $path);
+        if ($denied['status'] !== $expected) {
+            throw new RuntimeException('Workspace boundary changed.');
+        }
+        $report['workspace_boundaries'][$variant][$role] = $denied['status'];
     }
 }
 $report['complete'] = true;
