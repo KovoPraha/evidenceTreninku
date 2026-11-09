@@ -1,0 +1,42 @@
+{
+  "at_utc": "2026-11-09T14:00:27.969Z",
+  "environment": "Production KIS, Chrome, Superadmin in coach context",
+  "invalid_time": {
+    "value": "13,456",
+    "blocked": true,
+    "message": "Zadejte čas např. 00:13.456 (13,456 sekundy) nebo 02:13.45. Čas musí být větší než nula."
+  },
+  "reload": {
+    "text_and_note_restored": true,
+    "athlete": "TEST-COACH-20261031 TEST Alfa",
+    "distance": 200,
+    "unit": "m",
+    "time": "13,456"
+  },
+  "window_close": {
+    "dedicated_window_closed": true,
+    "new_form_offered_restore": true,
+    "restore_clicked": true,
+    "values": {
+      "date": "2026-11-09",
+      "note": "TESTOVACÍ KONCEPT — zachovat poznámku po obnovení i zavření okna.",
+      "text": "TEST Q2-TIME 2026-11-09 — NEUKLÁDAT\nKontrola ztráty textu: rozjetí, 200 m, vyjetí."
+    },
+    "measurement_restored": true
+  },
+  "correct_time": {
+    "value": "00:13.456",
+    "valid": true,
+    "validationMessage": ""
+  },
+  "valid_submission_attempted": false,
+  "browser_process_terminated": false,
+  "cleanup": {
+    "discard_clicked": true,
+    "confirmation_accepted": true,
+    "dialog_absent_afterwards": true,
+    "removal_verified": false,
+    "reason": "CDP timeouts followed by Computer Use URL policy stop",
+    "coach_context_restored_to_system": false
+  }
+}

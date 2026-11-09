@@ -51,6 +51,10 @@ Původní checkout a cizí WIP zůstávají mimo rozsah této změny.
 
 ## Přihlášená produkční přejímka — NOT RUN / blokace nástroje
 
+Historický stav při vydání. **Nový pokus 9. 11.: [cílené UAT 3/3 PASS](../training-form-uat-20261109/RESULTS.md)**
+pro chybný čas, reload a zavření samostatného okna. Úplný rozsah a úklid
+nepřebírat jako hotový; přesné omezení uvádí nový protokol.
+
 9. 11. 2026 Computer Use při výběru otevřeného Chrome ukončil ovládání:
 „Computer Use has been stopped for this turn because it could not determine
 the current browser URL on Windows with enough confidence to enforce policy.“
