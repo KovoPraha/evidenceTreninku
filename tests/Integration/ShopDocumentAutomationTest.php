@@ -33,6 +33,10 @@ final class ShopDocumentAutomationTest extends TestCase
         putenv('APP_PRIVATE_STORAGE_ROOT='.$this->private);
         $base = new ShopCheckoutTest('testCheckoutUsesCurrentServerPriceThenKeepsImmutableSnapshotAndIsIdempotent');
         $p = $this->pdo = (new \ReflectionMethod($base, 'database'))->invoke($base);
+        // SQLite's UTC clock otherwise predates today's Prague mandate after midnight.
+        // Match the business timezone explicitly in this isolated synthetic database.
+        $p->sqliteCreateFunction('current_timestamp', static fn (): string =>
+            (new \DateTimeImmutable('now', new \DateTimeZone('Europe/Prague')))->format('Y-m-d H:i:s'), 0);
         $p->exec(("ALTER TABLE treneri ADD COLUMN aktivni INT DEFAULT 1;
             CREATE TABLE staff_user_positions(trainer_id INT,position_code " .
     "TEXT);

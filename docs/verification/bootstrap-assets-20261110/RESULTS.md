@@ -91,3 +91,17 @@ model/CSS/source/cleanup důkazy zůstávají, timing se musí zopakovat s oprav
 RIX pokusy s odděleným symlink baseline jsou rovněž pouze zamítnutá diagnóza,
 nikoli důkaz ke sloučení. Čerstvý main PHPUnit42721710594 má stejné účetní
 selhání během české půlnoci jako PR. Čeká ověření přesného logu a fixture času.
+
+
+### Ověření půlnočního selhání a korekce fixture
+Main ff182971 run42721710594 reprodukoval přesně stejné6účetní případy:
+2420testů/55582assert/4errors/2failures. Není to regrese CSS. SQLite fixture
+nově definuje vlastní CURRENT_TIMESTAMP v Europe/Prague shodně s testovaným
+obchodním mandátem; žádný globální ani produkční čas/kód/DB se nemění.
+Stejný cílený test během stejného půlnočního intervalu nyní12/233 PASS.
+SharedUiShell+normalizátor16/98 PASS lokálně. [Záznam](midnight-test-isolation.json).
+
+Sedmý run42722027988 byl zrušen během přípravy runneru před profilem: k fyzické
+baseline kopii db.php doplněn symlink POUZE na vlastní syntetický config.php.
+Osmý42722121950/6db běží se správným kořenem/guardy/configem; app zdroje pořád
+přesně3smazané linky. Bez celého CI/browser/gate nic neslučovat ani nenasadit.

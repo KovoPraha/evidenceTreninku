@@ -32,3 +32,7 @@ model/CSS/source/cleanup důkazy zůstávají, timing se musí zopakovat s oprav
 RIX pokusy s odděleným symlink baseline jsou rovněž pouze zamítnutá diagnóza,
 nikoli důkaz ke sloučení. Čerstvý main PHPUnit42721710594 má stejné účetní
 selhání během české půlnoci jako PR. Čeká ověření přesného logu a fixture času.
+
+Main půlnoční selhání potvrzeno; oprava pouze soukromé SQLite test fixture
+CURRENT_TIMESTAMP na Europe/Prague: cíleně12/233 PASS. Osmýrun42722121950
+se správným baseline db.php/config probíhá, PR425 aktualizován na6db.
