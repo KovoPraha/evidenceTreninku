@@ -287,6 +287,7 @@ try:
     database_source = subprocess.check_output(["git", "show", base + ":db.php"], cwd=root)
     assert database_source == (root/"db.php").read_bytes(), "Database bootstrap changed"
     (baseline_root/"db.php").write_bytes(database_source)
+    (baseline_root/"config.php").symlink_to(root/"config.php")
     start_servers()
     reports=[]
     php("TrainingHistoryHttpProfile.php",output,"prepare")
