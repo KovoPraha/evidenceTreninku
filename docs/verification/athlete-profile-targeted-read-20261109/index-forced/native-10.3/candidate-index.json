@@ -1,0 +1,854 @@
+{
+    "synthetic_only": true,
+    "production_ddl": false,
+    "summary_only": true,
+    "warmups": 2,
+    "samples": 7,
+    "blocks": [
+        {
+            "indexed": false,
+            "build_ms": null,
+            "cases": [
+                {
+                    "sid": 1001,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        349.388898,
+                        354.225929,
+                        346.17967,
+                        347.498647,
+                        345.960259,
+                        343.242485,
+                        352.037486
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 115596,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"ALL\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"rows\": 28899,\n                \"filtered\": 100\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_trenink_poradi\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"trenink_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                \"rows\": 4,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id = '1001'\"\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1001' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1012,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        11.5757,
+                        11.519856,
+                        11.612346,
+                        12.099653,
+                        11.617504,
+                        11.693989,
+                        11.332322
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 12,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                \"key\": \"idx_sportovec\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 12,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1012'\"\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1012' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1013,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        5.829112,
+                        5.775031,
+                        5.938258,
+                        5.892058,
+                        5.801574,
+                        5.727623,
+                        5.817038
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 900,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                \"key\": \"idx_sportovec\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 900,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1013'\"\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1013' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1020,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        0.266143,
+                        0.287495,
+                        0.268636,
+                        0.25743,
+                        0.260925,
+                        0.300564,
+                        0.254986
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 2,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                \"key\": \"idx_sportovec\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1020'\"\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1020' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                }
+            ],
+            "write_ms": [
+                8.692017,
+                8.737084,
+                8.609391,
+                8.708462,
+                8.592586,
+                8.758096,
+                9.019782
+            ],
+            "write_rows": 1000,
+            "write_method": "Prepared INSERT VALUES only; row preparation, transaction start and rollback excluded",
+            "indexes": [
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 0,
+                    "Key_name": "PRIMARY",
+                    "Seq_in_index": 1,
+                    "Column_name": "id",
+                    "Collation": "A",
+                    "Cardinality": 294400,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_typ",
+                    "Seq_in_index": 1,
+                    "Column_name": "typ",
+                    "Collation": "A",
+                    "Cardinality": 12,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_sportovec",
+                    "Seq_in_index": 1,
+                    "Column_name": "sportovec_id",
+                    "Collation": "A",
+                    "Cardinality": 6,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                }
+            ],
+            "table_bytes_estimate": {
+                "data": 97140736,
+                "indexes": 12615680
+            }
+        },
+        {
+            "indexed": true,
+            "build_ms": 241.632348,
+            "cases": [
+                {
+                    "sid": 1001,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        341.612265,
+                        340.368824,
+                        337.175044,
+                        333.060791,
+                        337.786478,
+                        353.851096,
+                        338.011269
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 115824,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"ALL\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"rows\": 28956,\n                \"filtered\": 100\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_trenink_poradi\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"trenink_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                \"rows\": 4,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\n                  \"PRIMARY\",\n                  \"idx_sportovec\",\n                  \"idx_rix_measurement_owner_cover\"\n                ],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id = '1001'\"\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1001' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1012,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        11.83492,
+                        11.716051,
+                        11.490149,
+                        11.571992,
+                        12.354737,
+                        11.537831,
+                        11.642659
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 12,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\n                  \"PRIMARY\",\n                  \"idx_sportovec\",\n                  \"idx_rix_measurement_owner_cover\"\n                ],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 12,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1012'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1012' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1013,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        5.623155,
+                        5.605368,
+                        5.613741,
+                        5.702525,
+                        5.721984,
+                        5.691308,
+                        5.663947
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 900,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\n                  \"PRIMARY\",\n                  \"idx_sportovec\",\n                  \"idx_rix_measurement_owner_cover\"\n                ],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 900,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1013'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1013' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1020,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        0.27782,
+                        0.337961,
+                        0.269187,
+                        0.273824,
+                        0.293323,
+                        0.298511,
+                        0.289167
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 2,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\n                  \"PRIMARY\",\n                  \"idx_sportovec\",\n                  \"idx_rix_measurement_owner_cover\"\n                ],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1020'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1020' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1001,
+                    "variant": "force_cover",
+                    "samples_ms": [
+                        433.447274,
+                        435.789176,
+                        432.277345,
+                        434.916126,
+                        432.587634,
+                        433.594767,
+                        434.303319
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 115824,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"ALL\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"rows\": 28956,\n                \"filtered\": 100\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_trenink_poradi\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"trenink_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                \"rows\": 4,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"9\",\n                \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                  \"key\": \"idx_rix_measurement_owner_cover\",\n                  \"key_length\": \"9\",\n                  \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                  \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"cast(mz.typ as char charset binary) <=> grouped.typ\",\n                  \"using_index\": true\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1012,
+                    "variant": "force_cover",
+                    "samples_ms": [
+                        11.123695,
+                        11.091796,
+                        11.105006,
+                        11.086529,
+                        11.517139,
+                        11.084385,
+                        11.099027
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 12,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 12,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1012'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                  \"key\": \"idx_rix_measurement_owner_cover\",\n                  \"key_length\": \"9\",\n                  \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                  \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"cast(mz.typ as char charset binary) <=> grouped.typ\",\n                  \"using_index\": true\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1013,
+                    "variant": "force_cover",
+                    "samples_ms": [
+                        5.651437,
+                        5.728084,
+                        5.748214,
+                        5.722906,
+                        5.685219,
+                        5.672971,
+                        6.456094
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 900,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 900,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1013'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                  \"key\": \"idx_rix_measurement_owner_cover\",\n                  \"key_length\": \"9\",\n                  \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                  \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"cast(mz.typ as char charset binary) <=> grouped.typ\",\n                  \"using_index\": true\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1020,
+                    "variant": "force_cover",
+                    "samples_ms": [
+                        0.262066,
+                        0.244369,
+                        0.2646,
+                        0.282096,
+                        0.286974,
+                        0.27746,
+                        0.296098
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 2,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1020'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                  \"key\": \"idx_rix_measurement_owner_cover\",\n                  \"key_length\": \"9\",\n                  \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                  \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"cast(mz.typ as char charset binary) <=> grouped.typ\",\n                  \"using_index\": true\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1001,
+                    "variant": "owner_cover",
+                    "samples_ms": [
+                        392.669655,
+                        389.936459,
+                        392.961326,
+                        395.567239,
+                        379.181596,
+                        380.740035,
+                        384.191036
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 147200,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 147200,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1001'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1001' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1012,
+                    "variant": "owner_cover",
+                    "samples_ms": [
+                        11.600712,
+                        12.369215,
+                        11.67129,
+                        11.594734,
+                        11.410906,
+                        11.416664,
+                        11.604619
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 12,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 12,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1012'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1012' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1013,
+                    "variant": "owner_cover",
+                    "samples_ms": [
+                        5.738983,
+                        5.718612,
+                        5.69712,
+                        5.759264,
+                        5.65152,
+                        5.671642,
+                        5.69753
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 900,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 900,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1013'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1013' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1020,
+                    "variant": "owner_cover",
+                    "samples_ms": [
+                        0.249888,
+                        0.246713,
+                        0.248496,
+                        0.252993,
+                        0.24482,
+                        0.238902,
+                        0.247494
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 2,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1020'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1020' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                }
+            ],
+            "write_ms": [
+                10.090768,
+                10.27712,
+                10.010156,
+                9.965978,
+                9.9072,
+                9.936254,
+                9.908302
+            ],
+            "write_rows": 1000,
+            "write_method": "Prepared INSERT VALUES only; row preparation, transaction start and rollback excluded",
+            "indexes": [
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 0,
+                    "Key_name": "PRIMARY",
+                    "Seq_in_index": 1,
+                    "Column_name": "id",
+                    "Collation": "A",
+                    "Cardinality": 294400,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_typ",
+                    "Seq_in_index": 1,
+                    "Column_name": "typ",
+                    "Collation": "A",
+                    "Cardinality": 10,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_sportovec",
+                    "Seq_in_index": 1,
+                    "Column_name": "sportovec_id",
+                    "Collation": "A",
+                    "Cardinality": 6,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_rix_measurement_owner_cover",
+                    "Seq_in_index": 1,
+                    "Column_name": "sportovec_id",
+                    "Collation": "A",
+                    "Cardinality": 6,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_rix_measurement_owner_cover",
+                    "Seq_in_index": 2,
+                    "Column_name": "id",
+                    "Collation": "A",
+                    "Cardinality": 294400,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_rix_measurement_owner_cover",
+                    "Seq_in_index": 3,
+                    "Column_name": "typ",
+                    "Collation": "A",
+                    "Cardinality": 294400,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                }
+            ],
+            "table_bytes_estimate": {
+                "data": 97124352,
+                "indexes": 20463616
+            }
+        },
+        {
+            "indexed": false,
+            "build_ms": null,
+            "cases": [
+                {
+                    "sid": 1001,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        336.281498,
+                        348.672866,
+                        335.153731,
+                        336.34928,
+                        355.816094,
+                        333.271744,
+                        356.0184
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 144780,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"ALL\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"rows\": 28956,\n                \"filtered\": 100\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"trenink_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                \"rows\": 5,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id = '1001'\"\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1001' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1012,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        11.870951,
+                        11.478978,
+                        11.64513,
+                        11.571829,
+                        11.385818,
+                        11.388652,
+                        11.499349
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 12,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                \"key\": \"idx_sportovec\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 12,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1012'\"\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1012' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1013,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        5.930063,
+                        5.881449,
+                        5.861068,
+                        5.885195,
+                        5.989392,
+                        5.862621,
+                        5.809079
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 900,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                \"key\": \"idx_sportovec\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 900,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1013'\"\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1013' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1020,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        0.292342,
+                        0.296398,
+                        0.267805,
+                        0.264501,
+                        0.292493,
+                        0.267595,
+                        0.28441
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 2,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                \"key\": \"idx_sportovec\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1020'\"\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28956,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 5,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_sportovec\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1020' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                }
+            ],
+            "write_ms": [
+                9.230196,
+                9.077855,
+                9.064044,
+                9.05517,
+                9.003472,
+                9.140971,
+                9.123254
+            ],
+            "write_rows": 1000,
+            "write_method": "Prepared INSERT VALUES only; row preparation, transaction start and rollback excluded",
+            "indexes": [
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 0,
+                    "Key_name": "PRIMARY",
+                    "Seq_in_index": 1,
+                    "Column_name": "id",
+                    "Collation": "A",
+                    "Cardinality": 286745,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_typ",
+                    "Seq_in_index": 1,
+                    "Column_name": "typ",
+                    "Collation": "A",
+                    "Cardinality": 10,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_sportovec",
+                    "Seq_in_index": 1,
+                    "Column_name": "sportovec_id",
+                    "Collation": "A",
+                    "Cardinality": 6,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                }
+            ],
+            "table_bytes_estimate": {
+                "data": 97124352,
+                "indexes": 12582912
+            }
+        },
+        {
+            "indexed": true,
+            "build_ms": 226.792015,
+            "cases": [
+                {
+                    "sid": 1001,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        372.383982,
+                        349.23475,
+                        339.96134,
+                        346.327031,
+                        340.469971,
+                        352.636497,
+                        337.265703
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 115596,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"ALL\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"rows\": 28899,\n                \"filtered\": 100\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"trenink_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                \"rows\": 4,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\n                  \"PRIMARY\",\n                  \"idx_sportovec\",\n                  \"idx_rix_measurement_owner_cover\"\n                ],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id = '1001'\"\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1001' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1012,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        11.399676,
+                        11.496864,
+                        11.421689,
+                        11.36906,
+                        11.535572,
+                        11.549373,
+                        11.411815
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 12,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\n                  \"PRIMARY\",\n                  \"idx_sportovec\",\n                  \"idx_rix_measurement_owner_cover\"\n                ],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 12,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1012'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1012' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1013,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        5.678942,
+                        5.613793,
+                        5.697419,
+                        5.640293,
+                        5.682096,
+                        5.709919,
+                        5.617348
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 900,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\n                  \"PRIMARY\",\n                  \"idx_sportovec\",\n                  \"idx_rix_measurement_owner_cover\"\n                ],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 900,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1013'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1013' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1020,
+                    "variant": "automatic",
+                    "samples_ms": [
+                        0.273173,
+                        0.287845,
+                        0.279953,
+                        0.276329,
+                        0.283208,
+                        0.263098,
+                        0.260854
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 2,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\n                  \"PRIMARY\",\n                  \"idx_sportovec\",\n                  \"idx_rix_measurement_owner_cover\"\n                ],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1020'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1020' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1001,
+                    "variant": "force_cover",
+                    "samples_ms": [
+                        427.09243,
+                        423.148853,
+                        424.403241,
+                        423.923926,
+                        424.339565,
+                        424.319724,
+                        423.828602
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 115596,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"ALL\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"rows\": 28899,\n                \"filtered\": 100\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"trenink_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                \"rows\": 4,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"9\",\n                \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                  \"key\": \"idx_rix_measurement_owner_cover\",\n                  \"key_length\": \"9\",\n                  \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                  \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"cast(mz.typ as char charset binary) <=> grouped.typ\",\n                  \"using_index\": true\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1012,
+                    "variant": "force_cover",
+                    "samples_ms": [
+                        11.066512,
+                        11.129908,
+                        11.162458,
+                        11.194306,
+                        11.107214,
+                        10.966291,
+                        11.172703
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 12,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 12,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1012'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                  \"key\": \"idx_rix_measurement_owner_cover\",\n                  \"key_length\": \"9\",\n                  \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                  \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"cast(mz.typ as char charset binary) <=> grouped.typ\",\n                  \"using_index\": true\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1013,
+                    "variant": "force_cover",
+                    "samples_ms": [
+                        5.847928,
+                        5.85017,
+                        5.680905,
+                        5.668135,
+                        5.798542,
+                        5.766584,
+                        5.710729
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 900,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 900,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1013'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                  \"key\": \"idx_rix_measurement_owner_cover\",\n                  \"key_length\": \"9\",\n                  \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                  \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"cast(mz.typ as char charset binary) <=> grouped.typ\",\n                  \"using_index\": true\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1020,
+                    "variant": "force_cover",
+                    "samples_ms": [
+                        0.273373,
+                        0.268055,
+                        0.249077,
+                        0.240984,
+                        0.265552,
+                        0.249608,
+                        0.254835
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 2,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1020'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                  \"key\": \"idx_rix_measurement_owner_cover\",\n                  \"key_length\": \"9\",\n                  \"used_key_parts\": [\"sportovec_id\", \"id\"],\n                  \"ref\": [\"const\", \"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"cast(mz.typ as char charset binary) <=> grouped.typ\",\n                  \"using_index\": true\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1001,
+                    "variant": "owner_cover",
+                    "samples_ms": [
+                        392.309926,
+                        395.888299,
+                        404.051693,
+                        388.555422,
+                        389.953536,
+                        388.884559,
+                        391.580966
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 147200,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 147200,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1001'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1001' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1012,
+                    "variant": "owner_cover",
+                    "samples_ms": [
+                        11.315491,
+                        11.429943,
+                        11.947616,
+                        11.91038,
+                        11.92359,
+                        11.569754,
+                        11.753643
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 12,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 12,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1012'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1012' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1013,
+                    "variant": "owner_cover",
+                    "samples_ms": [
+                        5.66736,
+                        5.73393,
+                        5.686699,
+                        5.62749,
+                        5.582912,
+                        5.71336,
+                        5.72669
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 900,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 900,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1013'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1013' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                },
+                {
+                    "sid": 1020,
+                    "variant": "owner_cover",
+                    "samples_ms": [
+                        0.286463,
+                        0.29099,
+                        0.279232,
+                        0.296858,
+                        0.286333,
+                        0.274104,
+                        0.300104
+                    ],
+                    "parity": true,
+                    "explain_raw": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"table\": {\n      \"table_name\": \"<derived3>\",\n      \"access_type\": \"ALL\",\n      \"rows\": 2,\n      \"filtered\": 100,\n      \"materialized\": {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"filesort\": {\n            \"sort_key\": \"cast(mz.typ as char charset binary)\",\n            \"temporary_table\": {\n              \"table\": {\n                \"table_name\": \"mz\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"idx_rix_measurement_owner_cover\"],\n                \"key\": \"idx_rix_measurement_owner_cover\",\n                \"key_length\": \"5\",\n                \"used_key_parts\": [\"sportovec_id\"],\n                \"ref\": [\"const\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"attached_condition\": \"mz.sportovec_id <=> '1020'\",\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"tm\",\n                \"access_type\": \"ref\",\n                \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                \"key\": \"idx_mereni\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"mereni_id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.mz.id\"],\n                \"rows\": 1,\n                \"filtered\": 100,\n                \"using_index\": true\n              },\n              \"table\": {\n                \"table_name\": \"t\",\n                \"access_type\": \"eq_ref\",\n                \"possible_keys\": [\"PRIMARY\"],\n                \"key\": \"PRIMARY\",\n                \"key_length\": \"4\",\n                \"used_key_parts\": [\"id\"],\n                \"ref\": [\"p11_read_6c90aaa741680a8a.tm.trenink_id\"],\n                \"rows\": 1,\n                \"filtered\": 100\n              }\n            }\n          }\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"expression_cache\": {\n          \"state\": \"uninitialized\",\n          \"query_block\": {\n            \"select_id\": 2,\n            \"filesort\": {\n              \"sort_key\": \"t.`id` desc, tm.poradi, mz.`id`\",\n              \"temporary_table\": {\n                \"table\": {\n                  \"table_name\": \"t\",\n                  \"access_type\": \"ALL\",\n                  \"possible_keys\": [\"PRIMARY\"],\n                  \"rows\": 28899,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"t.datum <=> grouped.newest\"\n                },\n                \"table\": {\n                  \"table_name\": \"tm\",\n                  \"access_type\": \"ref\",\n                  \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"trenink_id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.t.id\"],\n                  \"rows\": 4,\n                  \"filtered\": 100\n                },\n                \"table\": {\n                  \"table_name\": \"mz\",\n                  \"access_type\": \"eq_ref\",\n                  \"possible_keys\": [\n                    \"PRIMARY\",\n                    \"idx_sportovec\",\n                    \"idx_rix_measurement_owner_cover\"\n                  ],\n                  \"key\": \"PRIMARY\",\n                  \"key_length\": \"4\",\n                  \"used_key_parts\": [\"id\"],\n                  \"ref\": [\"p11_read_6c90aaa741680a8a.tm.mereni_id\"],\n                  \"rows\": 1,\n                  \"filtered\": 100,\n                  \"attached_condition\": \"mz.sportovec_id = '1020' and cast(mz.typ as char charset binary) <=> grouped.typ\"\n                }\n              }\n            }\n          }\n        }\n      }\n    ]\n  }\n}"
+                }
+            ],
+            "write_ms": [
+                10.266014,
+                10.344563,
+                10.370942,
+                25.296401,
+                10.80602,
+                10.302208,
+                43.908064
+            ],
+            "write_rows": 1000,
+            "write_method": "Prepared INSERT VALUES only; row preparation, transaction start and rollback excluded",
+            "indexes": [
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 0,
+                    "Key_name": "PRIMARY",
+                    "Seq_in_index": 1,
+                    "Column_name": "id",
+                    "Collation": "A",
+                    "Cardinality": 294400,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_typ",
+                    "Seq_in_index": 1,
+                    "Column_name": "typ",
+                    "Collation": "A",
+                    "Cardinality": 10,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_sportovec",
+                    "Seq_in_index": 1,
+                    "Column_name": "sportovec_id",
+                    "Collation": "A",
+                    "Cardinality": 6,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_rix_measurement_owner_cover",
+                    "Seq_in_index": 1,
+                    "Column_name": "sportovec_id",
+                    "Collation": "A",
+                    "Cardinality": 6,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_rix_measurement_owner_cover",
+                    "Seq_in_index": 2,
+                    "Column_name": "id",
+                    "Collation": "A",
+                    "Cardinality": 294400,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                },
+                {
+                    "Table": "mereni_zaznamy",
+                    "Non_unique": 1,
+                    "Key_name": "idx_rix_measurement_owner_cover",
+                    "Seq_in_index": 3,
+                    "Column_name": "typ",
+                    "Collation": "A",
+                    "Cardinality": 294400,
+                    "Sub_part": null,
+                    "Packed": null,
+                    "Null": "YES",
+                    "Index_type": "BTREE",
+                    "Comment": "",
+                    "Index_comment": ""
+                }
+            ],
+            "table_bytes_estimate": {
+                "data": 97124352,
+                "indexes": 20463616
+            }
+        }
+    ],
+    "complete": true,
+    "probe_index_removed": true,
+    "domain_checksum_unchanged": true
+}

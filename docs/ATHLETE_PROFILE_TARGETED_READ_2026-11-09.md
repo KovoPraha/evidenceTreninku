@@ -154,3 +154,24 @@ najít z metadat a ponechat původní read při jeho nepřítomnosti. Žádný w
 DDL, pevný předpoklad o názvu nebo odstranění cizího indexu. Samostatná
 migrace vznikne až při přínosu. Cena zápisu z prvního probe zahrnovala
 INSERT SELECT čtení; nové měření oddělí přípravu a čistý prepared INSERT VALUES.
+
+
+## Index nevybraný, další kandidát: historie vybraného roku
+
+42708406091 oběDB SUCCESS a přesná summary parita/checksum/cleanup. FORCE
+cover proti baseline10.3 347→434ms,11.4 536→511ms, ownercover390/489ms;
+opakování potvrdilo výsledek. Výkonové20%gate nesplněné, index NEVYBRÁN.
+Čistý INSERT1000 VALUES8.7→10.0/10.9→12.1ms; všechny transakce rollback.
+Žádný nový produkční index/migrace/app změna se nezavádí.
+
+Další nejdražší čtení podle diagnózy a výchozí navigace je historie aktuálního
+roku (SQL230/293ms při10529z30001tréninků). Předchozí IN varianta pomáhala
+hustému roku, ale hrubě regresovala sparse a je zamítnutá. Nový koncept:
+ponechat původní EXISTS a přidat do measurement ownership poddotazu join
+na stejný trénink se STEJNÝM year filtrem. To dovoluje filtrovat materializaci
+vlastněných měření podle roku a volný optimizer si zachová owner index pro
+sparse profil. All-year SQL zůstane původní. Volitelně redundantní datumový
+interval pro validní1–9999rok, včetně YYYY-00-00 a YYYY-12-31; outer YEAR
+zůstává. Nejprve porovnat plné seřazené id/delka včetně chybějících let.
+Pokud vyhraje, ověřit celý reader/HTML a hlavní HTTP20%gate pro výchozí rok,
+all-year/page/empty/sparse/MZ kontrolní brány zachovat. Žádná schématová změna.

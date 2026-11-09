@@ -38,3 +38,7 @@ zrychlení (42706823562/42706996238/42707779079), raw uložené a nevybrané.
 Další krok pouze syntetický FORCE cover probe; dosud žádná app/migrační
 implementace. Žádný nový app merge/deploy. Zápisový probe bude čistý INSERT
 VALUES, starý INSERT SELECT zahrnoval i čtení. Všechny WIP zachované.
+
+FORCE index42708406091 nevybraný (10.3 regrese,11.4 pod20%). Žádná migrace
+nevznikne. Další koncept ownership historie se stejným filtrem roku; základní
+SQL aktuální rok230/293ms, all SQL zůstane původní. Další krok nativní probe.
