@@ -81,3 +81,30 @@ limity128/4 musí prokázat nativní CI na MariaDB10.3/11.4. Zatím NOT RUN.
 security/session/writery byte-nezměněné. Baseline3soubory zmrazené z5ff9fa2a.
 Vlastní runner připraven pro1k/10k/30k,8scénářů/3profily,4warmups+17párů,
 oddělenou SQL/PHP diagnostiku a52Chrome navigací obou režimů.
+
+## Pokus 1 — JSON agregace odmítnuta
+
+PR #418, commit3b7fbfba, [native run42632034781](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42632034781).
+Nativní přesná parita obou DB3testy/499assertions PASS; celé HTTP/role/Chrome
+provedeny, výkonnostní akceptace FAIL. Mediány30k celé odpovědi:
+
+MariaDB10.3: 756.473 → 1215.773 ms (+60.7%).
+MariaDB11.4: 798.339 → 839.414 ms (+5.1%).
+
+První bezpečné vzorky, diagnostika, testy, security a cleanup zachované v
+[rejected-json](verification/athlete-profile-measurement-performance-20261109/rejected-json/failed-run-identity.json).
+Souhrnný report nevznikl, protože gate před ním správně zastavila běh.
+Identita prvního pokusu odvozena z Gitblobs a označena jako odvozená;
+nový runner ukládá skutečné source-identity hned při startu. Zatím nic nasazeno.
+
+## Pokus 2 — integer klíč a omezení prvních stránek
+
+JSON serializaci/parsování nahrazuje přesný integer tuple s oddělovačem `:`
+a tokenem `N` pro NULL pozici. Dekódování DECIMAL(65,0), původní verze/limit
+fallback zachovány. Tréninky pro stránky1–32 se nejdřív omezí na prvních
+page*25 s EXISTS vlastní vazby a přesně stejného typu. Každý takový trénink
+přispívá alespoň jednou vazbou; proto nemůže chybět žádná potřebná položka.
+Vlastník/typ se znovu ověří v detailním výběru. Pozdější stránky zůstávají původní.
+Test nově pokrývá80vazeb jednoho tréninku, přechod32/33 a prázdné/typové filtry.
+Lokálně nové4testy/271assertions PASS. Nativní přínos druhého pokusu čeká;
+release pouze po nové shodě, měření a celém CI.

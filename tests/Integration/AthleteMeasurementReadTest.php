@@ -81,9 +81,30 @@ final class AthleteMeasurementReadTest extends TestCase
             $pdo->profiling = false;
             self::assertSame($expected, $actual);
             $sql = implode("\n", array_column($pdo->profile, 'sql'));
-            self::assertSame($limit >= 128, str_contains($sql, 'GROUP_CONCAT(JSON_ARRAY'));
+            self::assertSame($limit >= 128, str_contains($sql, 'GROUP_CONCAT(CONCAT_WS'));
             self::assertSame($limit < 128, str_contains($sql, 'ROW_NUMBER()'));
             self::assertSame($limit, (int) $pdo->query('SELECT @@SESSION.group_concat_max_len')->fetchColumn());
+        }
+    }
+
+    public function testDenseTrainingAndEarlyLatePageBoundaryRemainExact(): void
+    {
+        $pdo = $this->database();
+        Fixture::seed($pdo, 100);
+        // More than one page belongs to a single training; later pages cross
+        // the bounded-selector threshold while preserving duplicate links.
+        $pdo->exec("INSERT INTO treninky(id,datum) VALUES(1001,'2035-01-01')");
+        $insert = $pdo->prepare('INSERT INTO trenink_mereni VALUES(1001,10,?)');
+        for ($position = 0; $position < 80; ++$position) {
+            $insert->execute([$position]);
+        }
+        foreach (['', 'kolo', 'KOLO', 'absent'] as $type) {
+            foreach ([1, 2, 31, 32, 33, 1000000] as $page) {
+                self::assertSame(
+                    \AthleteMeasurementReference::measurements($pdo, 1, $type, $page),
+                    \AthleteProfileRead::measurements($pdo, 1, $type, $page)
+                );
+            }
         }
     }
 

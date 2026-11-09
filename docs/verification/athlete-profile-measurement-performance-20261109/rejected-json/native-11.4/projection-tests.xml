@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\AthleteMeasurementReadTest" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" tests="3" assertions="499" errors="0" failures="0" skipped="0" time="1.910594">
+    <testcase name="testFrozenCountsOrderEveryFilterPageAndPdoMode" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="20" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="481" time="1.589047"/>
+    <testcase name="testMariaDbFastPathAndFreshConstrainedLimitFallback" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="61" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="12" time="0.241032"/>
+    <testcase name="testSigned64BitKeysAndPositionsRemainExact" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteMeasurementReadTest.php" line="90" class="Tests\Integration\AthleteMeasurementReadTest" classname="Tests.Integration.AthleteMeasurementReadTest" assertions="6" time="0.080516"/>
+  </testsuite>
+</testsuites>

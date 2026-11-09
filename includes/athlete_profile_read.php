@@ -177,13 +177,26 @@ final class AthleteProfileRead
             $filter = ' AND ' . $binary . '=?';
             $params[] = $type;
         }
-        // LIMIT applies before fetching wide values/notes and joining display labels.
+        $from = self::measurementFrom();
+        $pageParams = $params;
+        // Bound the training candidates before sorting measurement links. For late
+        // pages retain the original selector instead of growing this intermediate set.
+        if ($result['page'] <= 32) {
+            $typeScope = $type === '' ? '' : ' AND '
+                . ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY own_mz.typ' : 'own_mz.typ COLLATE BINARY') . '=?';
+            $from .= ' JOIN (SELECT own_t.id FROM treninky own_t WHERE EXISTS (
+                SELECT 1 FROM trenink_mereni own_tm JOIN mereni_zaznamy own_mz ON own_mz.id=own_tm.mereni_id
+                WHERE own_tm.trenink_id=own_t.id AND own_mz.sportovec_id=?' . $typeScope . ')
+                ORDER BY own_t.datum DESC,own_t.id DESC LIMIT ' . ($result['page'] * self::SIZE) . ') eligible ON eligible.id=t.id';
+            $pageParams = [...$params, ...$params];
+        }
+        // LIMIT still precedes wide values/notes and display labels.
         $result['rows'] = self::read($pdo, 'SELECT ' . self::measurementFields() . ',tm.trenink_datum'
             . ' FROM (SELECT tm.trenink_id,tm.poradi,tm.mereni_id,t.datum AS trenink_datum'
-            . self::measurementFrom() . ' WHERE mz.sportovec_id=?' . $filter . $order
+            . $from . ' WHERE mz.sportovec_id=?' . $filter . $order
             . ' LIMIT ' . self::SIZE . ' OFFSET ' . (($result['page'] - 1) * self::SIZE) . ') tm'
             . ' JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id' . self::labels() . ' WHERE mz.sportovec_id=?'
-            . ' ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC', [...$params, $sid]);
+            . ' ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC', [...$pageParams, $sid]);
         return $result;
     }
 
@@ -198,13 +211,13 @@ final class AthleteProfileRead
         if ($mariaDb && (int) self::read($pdo, 'SELECT @@SESSION.group_concat_max_len AS max_len', [])[0]['max_len'] >= 128) {
             return self::read($pdo, 'SELECT BINARY mz.typ AS typ,grouped.num
                 FROM (SELECT COUNT(*) AS num,
-                    GROUP_CONCAT(JSON_ARRAY(t.id,tm.poradi,mz.id)'
+                    GROUP_CONCAT(CONCAT_WS(\':\',t.id,COALESCE(tm.poradi,\'N\'),mz.id)'
                     . $order . ' LIMIT 1) AS first_key'
                     . self::measurementFrom() . ' WHERE mz.sportovec_id=? GROUP BY BINARY mz.typ) grouped
-                JOIN treninky t ON t.id=CAST(JSON_UNQUOTE(JSON_EXTRACT(grouped.first_key,\'$[0]\')) AS DECIMAL(65,0))
-                JOIN mereni_zaznamy mz ON mz.id=CAST(JSON_UNQUOTE(JSON_EXTRACT(grouped.first_key,\'$[2]\')) AS DECIMAL(65,0))
+                JOIN treninky t ON t.id=CAST(SUBSTRING_INDEX(grouped.first_key,\':\',1) AS DECIMAL(65,0))
+                JOIN mereni_zaznamy mz ON mz.id=CAST(SUBSTRING_INDEX(grouped.first_key,\':\',-1) AS DECIMAL(65,0))
                 ORDER BY t.datum DESC,t.id DESC,
-                    CAST(NULLIF(JSON_UNQUOTE(JSON_EXTRACT(grouped.first_key,\'$[1]\')),\'null\') AS DECIMAL(65,0)) ASC,mz.id ASC', [$sid]);
+                    CAST(NULLIF(SUBSTRING_INDEX(SUBSTRING_INDEX(grouped.first_key,\':\',2),\':\',-1),\'N\') AS DECIMAL(65,0)) ASC,mz.id ASC', [$sid]);
         }
         // Preserve the portable projection for SQLite/MySQL and constrained connections.
         return self::read($pdo, 'SELECT ' . $binary . ' AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position

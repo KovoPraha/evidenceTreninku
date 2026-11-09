@@ -35,6 +35,8 @@ originals = {p: (root / p).read_bytes() for p in routes}
 baselines = {p: subprocess.check_output(["git", "show", base + ":" + p], cwd=root) for p in routes}
 head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
 source = {p: hashlib.sha256((root / p).read_bytes()).hexdigest() for p in routes + ["includes/athlete_profile_read.php", "includes/sports_activity.php", "includes/sports_activity_overview_read.php"]}
+(safe / "source-identity.json").write_text(json.dumps(dict(baseline_sha=base, optimized_sha=head,
+    source_sha256=source, baseline_source_sha256={p:hashlib.sha256(v).hexdigest() for p,v in baselines.items()}),indent=2))
 servers = []
 baseline_root = runtime / "baseline"
 baseline_root.mkdir()

@@ -1,0 +1,85 @@
+{
+  "status": 200,
+  "bootstrap_preloaded": true,
+  "timing_instrumented": true,
+  "peak_php_bytes": 679944,
+  "queries": [
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.191981,
+      "fetch_ms": 0.003325,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.095533,
+      "fetch_ms": 0.000591,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.116394,
+      "fetch_ms": 0.000631,
+      "fetched_rows": 0,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.090355,
+      "fetch_ms": 0.000511,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=?",
+      "execute_ms": 0.084816,
+      "fetch_ms": 0.000341,
+      "fetched_rows": 1,
+      "caller": "{closure}"
+    },
+    {
+      "sql": "SELECT 1 FROM sportovci s WHERE s.id=? AND EXISTS(SELECT 1 FROM coach_scope_grants g JOIN treneri cg_t ON cg_t.id=g.trainer_id AND cg_t.aktivni=1 JOIN staff_user_positions cg_p ON cg_p.trainer_id=g.trainer_id AND cg_p.position_code='coach' WHERE g.trainer_id=7 AND g.revoked_at IS NULL AND g.valid_from<=CURRENT_TIMESTAMP AND (g.valid_to IS NULL OR g.valid_to>CURRENT_TIMESTAMP) AND ((g.scope_kind='team' AND EXISTS(SELECT 1 FROM club_roster_members cm JOIN club_teams ct ON ct.id=cm.team_id WHERE cm.sportovec_id=s.id AND cm.team_id=g.scope_id AND cm.status='active' AND ct.status='active' AND cm.valid_from<=CURRENT_DATE AND (cm.valid_to IS NULL OR cm.valid_to>=CURRENT_DATE)))))",
+      "execute_ms": 0.317544,
+      "fetch_ms": 0.000921,
+      "fetched_rows": 1,
+      "caller": "coachScopeCanViewPerson"
+    },
+    {
+      "sql": "SELECT id FROM sportovci WHERE id = ?",
+      "execute_ms": 0.083975,
+      "fetch_ms": 0.00039,
+      "fetched_rows": 1,
+      "caller": ""
+    },
+    {
+      "sql": "SELECT 1 FROM account_person_roles r JOIN verejni_uzivatele a ON a.id=r.account_id WHERE r.account_id=? AND r.sportovec_id=? AND r.relation_role IN ('self','guardian') AND r.status='approved' AND r.valid_from<=CURRENT_TIMESTAMP AND (r.valid_to IS NULL OR r.valid_to>CURRENT_TIMESTAMP) AND a.aktivni=1 AND a.email_overeno=1 LIMIT 1",
+      "execute_ms": 0.115693,
+      "fetch_ms": 0.000511,
+      "fetched_rows": 0,
+      "caller": "sportovecNoteCanWrite"
+    },
+    {
+      "sql": "SELECT @@SESSION.group_concat_max_len AS max_len",
+      "execute_ms": 0.078978,
+      "fetch_ms": 0.002313,
+      "fetched_rows": 1,
+      "caller": "read"
+    },
+    {
+      "sql": "SELECT BINARY mz.typ AS typ,grouped.num FROM (SELECT COUNT(*) AS num, GROUP_CONCAT(JSON_ARRAY(t.id,tm.poradi,mz.id) ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC LIMIT 1) AS first_key FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=? GROUP BY BINARY mz.typ) grouped JOIN treninky t ON t.id=CAST(JSON_UNQUOTE(JSON_EXTRACT(grouped.first_key,'$[0]')) AS DECIMAL(65,0)) JOIN mereni_zaznamy mz ON mz.id=CAST(JSON_UNQUOTE(JSON_EXTRACT(grouped.first_key,'$[2]')) AS DECIMAL(65,0)) ORDER BY t.datum DESC,t.id DESC, CAST(NULLIF(JSON_UNQUOTE(JSON_EXTRACT(grouped.first_key,'$[1]')),'null') AS DECIMAL(65,0)) ASC,mz.id ASC",
+      "execute_ms": 605.994099,
+      "fetch_ms": 0.012388,
+      "fetched_rows": 9,
+      "caller": "read"
+    },
+    {
+      "sql": "SELECT tm.trenink_id,tm.poradi,mz.id AS mereni_id,mz.typ, mz.vzdalenost,mz.distance_unit,mz.cas,mz.prevod,mz.cvik_id,mz.segment_id, mz.vaha,mz.opakovani,mz.rpe,mz.poznamka AS mereni_poznamka, c.nazev AS cvik_nazev,seg.nazev AS segment_nazev,tm.trenink_datum FROM (SELECT tm.trenink_id,tm.poradi,tm.mereni_id,t.datum AS trenink_datum FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id JOIN treninky t ON t.id=tm.trenink_id WHERE mz.sportovec_id=? ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC LIMIT 25 OFFSET 0) tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id LEFT JOIN cviky c ON c.id=mz.cvik_id LEFT JOIN segmenty seg ON seg.id=mz.segment_id WHERE mz.sportovec_id=? ORDER BY tm.trenink_datum DESC,tm.trenink_id DESC,tm.poradi ASC,mz.id ASC",
+      "execute_ms": 264.974995,
+      "fetch_ms": 0.024767,
+      "fetched_rows": 25,
+      "caller": "read"
+    }
+  ]
+}

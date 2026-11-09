@@ -419,3 +419,9 @@ Podle aktuálního pokynu vlastníka ověřit přímý binární souhrn a první
 MariaDB GROUP_CONCAT LIMIT1 místo číslování celé historie. Původní reference
 zůstává fallbackem při nepodporovaném backendu/krátkém limitu. Bez změny DB
 nastavení, cache nebo DDL. [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
+
+### D2026-11-09-RHM-2 — odmítnutí pomalejšího kandidáta
+
+Nativní parita sama nestačí: první JSON varianta má regresi HTTP, neuvolnit.
+Zachovat první vzorky a změřit integer tuple + bounded training selector;
+[plán a důkazy](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md).
