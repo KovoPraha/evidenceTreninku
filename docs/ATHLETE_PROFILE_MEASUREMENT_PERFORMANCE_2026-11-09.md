@@ -370,3 +370,16 @@ používají DECIMAL(20,0) a 20 číslic: žádné plovoucí číslo ani JSON p�
 včetně nulového/částečně nulového data. Binární seskupení zachovává typy.
 Jedna agregace a původní stránkový selector, SQLite ponechá původní okno.
 Rozhodne nativní parita a plný bootstrap; při horším výkonu kandidáta zamítnout.
+
+### RHMS kandidát 2 — skupiny a první klíč nejnovějšího data
+
+První per-row klíč nativně přesný (obě DB6/634), ale diagnóza nemá potřebný
+přínos; nevybrán. [Surové výsledky](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+Nová varianta agreguje COUNT/MAX datum v přesných typech a vrací JSON tuple
+prvního záznamu jen v nejnovějším datu každého typu. Vše v jednom SQL statementu,
+bez konkurenční mezery mezi počty a pořadím. PHP řadí pouze typy podle původního
+čtyřdílného klíče, explicitní NULL pořadí, integer signed64 bez floatů.
+Draft [#422](https://github.com/KovoPraha/evidenceTreninku/pull/422), merge/deploy čekají.
+
+Diagnostické kandidáty se pushují na `codex/athlete-measurement-summary-probe-20261109`
+bez dalšího PR; do #422 půjde až vybraný kandidát se všemi aktuálními CI.

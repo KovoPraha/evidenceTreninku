@@ -7,7 +7,9 @@ před/po; při PASS commit/merge/protected deploy. [Postup a akceptace](ATHLETE_
 [nové důkazy](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
 Větev `codex/athlete-measurement-summary-performance-20261109`, base main
 `0b4592fa`; stejný izolovaný worktree mimo htdocs. Další krok: kandidát,
-SQLite 9/930 PASS, native diagnóza čeká; žádný nový merge/deploy. WIP zachovaný.
+První kandidát native6/634 PASS, ale diagnóza bez přínosu. Kandidát2 čeká.
+Draft #422; kandidáty ověřuje dočasná větev `codex/athlete-measurement-summary-probe-20261109`.
+Do PR přijde vybraný kandidát; žádný nový merge/deploy. WIP zachovaný.
 
 Níže předchozí dokončené RHM, jeho důkazy nepřepisovat.
 

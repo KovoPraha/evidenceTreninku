@@ -472,3 +472,10 @@ binární počty a první klíč typu s původním numeric-window souhrnem na
 stejných čerstvých statistikách, nejprve plný bootstrap a pak celé HTTP.
 Staré neúspěchy zůstávají historickými důkazy. Žádná změna SQL nastavení,
 cache, rolí, writerů nebo DDL. [Akceptace](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#p11-rhms--souhrn-měření-nové-zadání-9-11-2026).
+
+### D2026-11-09-RHMS-2 — neskládat klíč pro každou vazbu
+
+První přesný pevný klíč prokázal nativní paritu, ale plná bootstrap diagnóza
+ukázala vysokou per-row režii. Není vybraný pro release. Měřit count/MAX-date
+po typech a první tuple nejnovějšího data; zachovat jeden SQL statement a
+původní stránkový selector. Surové důkazy zůstávají v [protokolu](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
