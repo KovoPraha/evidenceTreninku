@@ -463,3 +463,38 @@ Typ/vlastník a původní souhrn zachované. Doplněn velký starý profil900MZ
 ## D2026-11-09-RHM-RELEASE
 
 Po přesné paritě, doloženém přínosu a20CI sloučeno#418/5cc9cf83, protecteddeploy42654922651 SUCCESS dle podmíněného pokynu vlastníka. Původní souhrn ponechaný, dvě agregace odmítnuté, pouze bounded selector dlouhých přehledů. Obnova statistik výhradně ve společné syntetické přípravě obou variant. [Plán](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md), [release a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
+
+## D2026-11-09-RHMS — nové zadání souhrnu
+
+Vlastník nyní výslovně převzal koncept souhrnu do implementace a podmíněně
+povolil release. Zachovat nasazený prefix64 selector. Porovnat přesné
+binární počty a první klíč typu s původním numeric-window souhrnem na
+stejných čerstvých statistikách, nejprve plný bootstrap a pak celé HTTP.
+Staré neúspěchy zůstávají historickými důkazy. Žádná změna SQL nastavení,
+cache, rolí, writerů nebo DDL. [Akceptace](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#p11-rhms--souhrn-měření-nové-zadání-9-11-2026).
+
+### D2026-11-09-RHMS-2 — neskládat klíč pro každou vazbu
+
+První přesný pevný klíč prokázal nativní paritu, ale plná bootstrap diagnóza
+ukázala vysokou per-row režii. Není vybraný pro release. Měřit count/MAX-date
+po typech a první tuple nejnovějšího data; zachovat jeden SQL statement a
+původní stránkový selector. Surové důkazy zůstávají v [protokolu](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+
+### D2026-11-09-RHMS-GATE — chybějící job není PASS
+
+Přestože kandidát2 má přesnou nativní10.3 paritu a předběžný SQL přínos,
+GitHub Internal server error opakovaně nevytvořil11.4/část aktuálních CI.
+Podmíněný pokyn vlastníka nelze zatím naplnit merge/deployem; žádná změna
+produkce. Nevynechávat backend ani20%HTTPgate, neoznačovat diagnózu za
+párový medián. [Důkazy a další postup](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+
+### D2026-11-09-RHMS-ACCEPT — souhrn podle nejnovějšího data typu
+
+Kandidát2 má přesnou nativní paritu na obouDB a celé párové HTTP/Chrome
+PASS. Počty/MAX datum a první klíč jsou v jednom statementu; PHP řadí jen
+seznam typů. Oproti window přes všechny vazby HTTP −36.7/41.6 %, Chrome
+warm celá navigace −24.1 %. Původní selector a autorizace/canonical writer
+beze změny. Kandidát1 i infrastrukturní neúspěchy zůstávají doložené.
+Přijetí implementace ještě není release: čeká všech20aktuálních CI,
+whole-tree/source proof a chráněné nasazení dle aktuálního pokynu vlastníka.
+[Úplná metoda a hranice](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md).

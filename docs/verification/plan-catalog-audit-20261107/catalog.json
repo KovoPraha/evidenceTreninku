@@ -10998,11 +10998,12 @@
       "title": "P11-RHM — měření profilu",
       "primary": true,
       "role": "plan",
-      "status": "DONE",
-      "registry": "P11-RHM",
-      "disposition": "#418/5cc9cf83, deploy42654922651 SUCCESS;20CI/parita/HTTP/Chrome PASS, UAT a meze samostatně.",
+      "status": "PARTIAL",
+      "registry": "P11-RHMS",
+      "disposition": "RHMS #422: oběDB shoda/HTTP/Chrome PASS, HTTP −36.7/41.6 %, aktuální20CI a release čekají; RHM zůstává nasazené.",
       "evidence": [
-        "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
+        "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md",
+        "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md"
       ]
     },
     {
@@ -11042,6 +11043,32 @@
       "disposition": "Protected release a čtecí ověření PASS; meze výslovné.",
       "evidence": [
         "docs/verification/athlete-profile-measurement-release-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-b0695f2506",
+      "path": "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md",
+      "title": "P11-RHMS souhrn měření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHMS",
+      "disposition": "Průběžné nativní kandidáty a infrastruktura; finální párové ověření a release čekají.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-summary-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-487787fb45",
+      "path": "docs/verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md",
+      "title": "P11-RHMS celé párové HTTP a Chrome",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-RHMS",
+      "disposition": "OběDB nativní a celé HTTP/Chrome PASS; release samostatně.",
+      "evidence": [
+        "docs/verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md"
       ]
     }
   ],

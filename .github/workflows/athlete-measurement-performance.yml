@@ -19,6 +19,11 @@ on:
         description: Full bootstrap SQL diagnosis only (owned synthetic database)
         type: boolean
         default: false
+      mariadb_version:
+        description: Manual run target (pull requests always verify both versions)
+        type: choice
+        options: ['both', '10.3', '11.4']
+        default: both
 
 permissions:
   contents: read
@@ -31,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mariadb-version: ['10.3', '11.4']
+        mariadb-version: ${{ fromJSON(github.event_name == 'workflow_dispatch' && inputs.mariadb_version == '10.3' && '["10.3"]' || github.event_name == 'workflow_dispatch' && inputs.mariadb_version == '11.4' && '["11.4"]' || '["10.3","11.4"]') }}
     services:
       mariadb:
         image: mariadb:${{ matrix.mariadb-version }}
@@ -64,7 +69,7 @@ jobs:
           google-chrome --version
       - name: Compare whole measurement HTML, canonical totals, roles and real browser
         env:
-          ATHLETE_MEASUREMENT_BASE_SHA: 5ff9fa2a65123aa1eef58be3678943cb4bfc2b53
+          ATHLETE_MEASUREMENT_BASE_SHA: 0b4592fa63ee49a733b8d4a882c177ac73541e99
           ATHLETE_MEASUREMENT_BROWSER: ${{ matrix.mariadb-version == '11.4' && '1' || '0' }}
           ATHLETE_MEASUREMENT_COMPARE: '1'
           ATHLETE_MEASUREMENT_DIAGNOSTIC_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_only && '1' || '0' }}

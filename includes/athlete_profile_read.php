@@ -159,14 +159,7 @@ final class AthleteProfileRead
     {
         $order = ' ORDER BY t.datum DESC,t.id DESC,tm.poradi ASC,mz.id ASC';
         $binary = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'BINARY mz.typ' : 'mz.typ COLLATE BINARY';
-        // Aggregate only narrow ordered keys in SQL. Binary grouping preserves PHP's exact
-        // case/space-sensitive keys; the first ordinal preserves the old filter-pill order.
-        // Materialize only numeric measurement IDs/ordinals in the window, not padded type strings.
-        $summary = self::read($pdo, 'SELECT ' . $binary . ' AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position
-            FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER (' . $order . ') AS ordinal'
-            . self::measurementFrom() . ' WHERE mz.sportovec_id=?) ordered_types
-            JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id
-            GROUP BY ' . $binary . ' ORDER BY first_position', [$sid]);
+        $summary = self::measurementSummary($pdo, $sid, $binary, $order);
         $counts = [];
         $all = 0;
         foreach ($summary as $row) {
@@ -209,6 +202,41 @@ final class AthleteProfileRead
             $result['rows'] = $readPage(self::measurementFrom());
         }
         return $result;
+    }
+
+    private static function measurementSummary(PDO $pdo, int $sid, string $binary, string $order): array
+    {
+        if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) !== 'mysql') {
+            return self::read($pdo, 'SELECT ' . $binary . ' AS typ,COUNT(*) AS num,MIN(ordinal) AS first_position
+                FROM (SELECT mz.id AS mereni_id,ROW_NUMBER() OVER (' . $order . ') AS ordinal'
+                . self::measurementFrom() . ' WHERE mz.sportovec_id=?) ordered_types
+                JOIN mereni_zaznamy mz ON mz.id=ordered_types.mereni_id
+                GROUP BY ' . $binary . ' ORDER BY first_position', [$sid]);
+        }
+        // Count each exact type once, then find its first tuple only at its
+        // newest date. One statement keeps the counts and ordering consistent.
+        $summary = self::read($pdo, 'SELECT grouped.typ,grouped.num,
+            (SELECT JSON_ARRAY(t.datum,t.id,tm.poradi,mz.id)
+             FROM treninky t STRAIGHT_JOIN trenink_mereni tm ON tm.trenink_id=t.id
+             STRAIGHT_JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
+             WHERE mz.sportovec_id=? AND BINARY mz.typ <=> grouped.typ AND t.datum <=> grouped.newest
+             ORDER BY t.id DESC,tm.poradi ASC,mz.id ASC LIMIT 1) AS first_position
+            FROM (SELECT BINARY mz.typ AS typ,COUNT(*) AS num,MAX(t.datum) AS newest'
+            . self::measurementFrom() . ' WHERE mz.sportovec_id=? GROUP BY BINARY mz.typ) grouped', [$sid, $sid]);
+        foreach ($summary as &$row) {
+            // Database integer fields remain exact signed 64-bit JSON integers.
+            $row['first_position'] = json_decode($row['first_position'], true, 512, JSON_THROW_ON_ERROR);
+        }
+        unset($row);
+        usort($summary, static function (array $left, array $right): int {
+            $a = $left['first_position'];
+            $b = $right['first_position'];
+            $date = $a[0] === null ? ($b[0] === null ? 0 : 1) : ($b[0] === null ? -1 : strcmp($b[0], $a[0]));
+            $training = $b[1] <=> $a[1];
+            $position = $a[2] === null ? ($b[2] === null ? 0 : -1) : ($b[2] === null ? 1 : ($a[2] <=> $b[2]));
+            return $date ?: ($training ?: ($position ?: ($a[3] <=> $b[3])));
+        });
+        return $summary;
     }
 
     private static function pagination(int $total, int $requested): array

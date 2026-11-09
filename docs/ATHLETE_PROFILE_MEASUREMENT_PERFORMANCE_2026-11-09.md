@@ -1,9 +1,10 @@
 # P11-RHM — načítání měření profilu sportovce
 
-9. 11. 2026. Vlastník vývoj/Codex. Stav: HOTOVO / NASAZENO; technické ověření PASS, produkční UAT NOT RUN.
+9. 11. 2026. Vlastník vývoj/Codex. Stav RHM: HOTOVO / NASAZENO. Návazný P11-RHMS: shoda a HTTP/Chrome PASS, čeká kompletní aktuální CI a release.
 Aktuální uzavření: #418/5cc9cf83, deploy42654922651 SUCCESS;
 HTTP30k −28.2/32.1 %, Chrome uloženéMěření warm−10.6/cold−22.4 %.
 [Produkční důkazy a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
+[Aktuální návaznost P11-RHMS](#p11-rhms--souhrn-měření-nové-zadání-9-11-2026).
 Níže je původní plán a průběh pokusů; současný stav/flags vlastní CURRENT.
 
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md),
@@ -311,3 +312,126 @@ Přihlášené produkční UAT, produkční výkon, fyzický mobil, nový zápis
 Finální důkazy přes codex/athlete-measurement-release-proof-20261109 a samostatný dokumentační PR do main bez druhého deploye. Rozsah technicky dokončen.
 
 [Provozní důkazy](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
+
+## P11-RHMS — souhrn měření (nové zadání 9. 11. 2026)
+
+Stav: ROZPRACOVÁNO. Vlastník: vývoj/Codex. Navazuje na dokončené RHM;
+jeho původní výsledky ani zamítnuté pokusy se nepřepisují.
+Aktuální pokyn vlastníka povoluje implementaci souhrnu, ověření shody,
+párové měření a pouze při PASS commit, merge a chráněné nasazení.
+Bez importů, změny rolí, plateb nebo osobních produkčních zápisů.
+
+Baseline: main `0b4592fa63ee49a733b8d4a882c177ac73541e99`, runtime nasazeného
+`5cc9cf83193ca547d641e39afb0df41e4f8ee457`; rozdíl pouze dokumentace.
+Větev `codex/athlete-measurement-summary-performance-20261109`, worktree
+`C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107`.
+Původní checkout/větev a WIP zůstávají zachované; kontrolní SHA256 souboru
+`kis_rosters_admin.php`: `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
+
+Diagnóza: dominantní souhrn čísluje celý seřazený proud vazeb a znovu
+připojuje měření. Zkusit přesné binární počty bez okna a první řadicí klíč
+pro každý typ; alternativou je omezený agregační první klíč. Rozhodne
+skutečný EXPLAIN a celá HTTP odezva, nikoli izolovaný SQL odhad.
+Nepřenášet staré výsledky GROUP_CONCAT se zastaralou statistikou.
+
+Postup a akceptace:
+1. Zmrazit reader z aktuální baseline jako nezávislou referenci. Zapsat plán
+   a handoff před implementací; stage jen vlastní pojmenované soubory.
+2. Změnit pouze souhrn. Zachovat původní výběr stránek, veřejný návratový
+   objekt, přesné typy, pořadí filtrů, duplicity a započítání NULL typu.
+   Bez aplikačního DDL/ANALYZE, změny SQL/session nastavení nebo cache.
+3. Ověřit úplnou shodu na SQLite a MariaDB 10.3/11.4, native/emulated PDO,
+   stringify, NULL/zero datum, shodné časy, nullable/negative poradi,
+   signed64 klíče, orphan/foreign/unlinked a čerstvé změny. Rozšířit hranice
+   prvního výskytu typů a velkého počtu typů.
+4. Nejdřív samostatná plná bootstrap diagnóza. Potom před/po na stejném
+   migrovaném syntetickém datasetu, obnovené společné statistiky, cache OFF:
+   1k/10k/30k tréninků, 9 scénářů, 17 střídavých párů po 4 warmupech.
+   Nejméně 20 % celé hlavní HTTP odezvy na obou DB, bez významné regrese
+   malého/prázdného/starého profilu; zachovat surové vzorky i neúspěchy.
+5. Ověřit celé HTML/JS, role/token/revokaci/CSRF, canonical checksums,
+   skutečný Chrome default/uložené Měření, desktop/úzký viewport a konzoli.
+6. Zelené aktuální CI, přesný testovaný/sloučený strom a runtime identity;
+   potom protected deploy z main s import/UAT false. Ověřená záloha,
+   migrace/VS/config/smoke a veřejné čtecí před/po. Žádné druhé nasazení
+   kvůli závěrečné dokumentaci. Přihlášené UAT evidovat samostatně.
+
+Důkazy: [průběžný protokol](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+Další krok: implementovat kandidáta, lokální parita a nativní diagnóza.
+Merge/nasazení tohoto řezu: NOT RUN.
+
+### RHMS kandidát 1 — přesný pevný řadicí klíč
+
+Před implementací zvolen MIN binárního pevně širokého klíče namísto
+ROW_NUMBER nebo GROUP_CONCAT. Klíč vyjadřuje přesně datum DESC (NULL poslední),
+training ID DESC, poradi ASC (NULL první), measurement ID ASC. Číselné díly
+používají DECIMAL(20,0) a 20 číslic: žádné plovoucí číslo ani JSON převod,
+žádný group_concat limit a žádná změna nastavení. Datum je DATE dle schématu,
+včetně nulového/částečně nulového data. Binární seskupení zachovává typy.
+Jedna agregace a původní stránkový selector, SQLite ponechá původní okno.
+Rozhodne nativní parita a plný bootstrap; při horším výkonu kandidáta zamítnout.
+
+### RHMS kandidát 2 — skupiny a první klíč nejnovějšího data
+
+První per-row klíč nativně přesný (obě DB6/634), ale diagnóza nemá potřebný
+přínos; nevybrán. [Surové výsledky](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+Nová varianta agreguje COUNT/MAX datum v přesných typech a vrací JSON tuple
+prvního záznamu jen v nejnovějším datu každého typu. Vše v jednom SQL statementu,
+bez konkurenční mezery mezi počty a pořadím. PHP řadí pouze typy podle původního
+čtyřdílného klíče, explicitní NULL pořadí, integer signed64 bez floatů.
+Draft [#422](https://github.com/KovoPraha/evidenceTreninku/pull/422), merge/deploy čekají.
+
+Diagnostické kandidáty se pushují na `codex/athlete-measurement-summary-probe-20261109`
+bez dalšího PR; do #422 půjde až vybraný kandidát se všemi aktuálními CI.
+
+### RHMS ověřovací infrastruktura
+
+Pomocná větev i PR běhy na5355238b mají Internal server error již při
+vytváření matice; některé vůbec nemají joby, jiné pouze část. Desítková
+nativní diagnóza PASS (6/634,463.666→275.776ms,17SQL), jedenáctková chybí.
+Doplnit volbu jedné podporované DB pro ruční diagnostiku: PR nadále vždy
+obě10.3/11.4, release gate se nemění. Nový dokumentační checkpoint obnoví
+aktuální CI graf; pouze skutečně úspěšné aktuální kontroly umožní merge.
+
+## RHMS aktuální předání — 9. 11. 2026, 18:25 UTC
+
+Implementace kandidáta2 je commitnutá a pushnutá do draftu #422. Místní
+SQLite/profil9/930, PHPStan a explicitní style čtyř souborů PASS. Nativní
+MariaDB10.3 6/634 a aktuální Linux PHPUnit2418/55585 PASS. Samostatná
+jednorázová diagnóza souhrnu463.666→275.776ms (−40.5 %),17→17SQL;
+nejde o dokončený párový HTTP benchmark ani produkční výkon.
+
+GitHub opakovaně selhává Internal server error před vytvořením jobů,
+včetně samostatné11.4. Aplikační chyba tím prokázaná není, ale matice
+nejsou úplné a podmínky přijetí zatím nesplněné. [Běhy, identity a raw](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
+Merge a nový deploy **NOT RUN**. Produkce zůstává5cc9cf83; původní WIP beze změny.
+
+Další konkrétní kroky po obnově GitHub Actions:
+1. Native11.4 diagnóza na aktuální větvi (manual diagnostic_only=true,
+   mariadb_version=11.4); bez chybějících jobů a přesná parita6/634.
+2. Celý measurement workflow bez diagnostic_only, oběDB: 9scénářů ×3velikosti,
+   17střídavých párů po4warmupech, úplné HTML/security/Chrome a cleanup.
+   HTTP20%gate a ostatní původní podmínky zůstávají.
+3. Uložit nové raw/metadata/zdrojové identity a kanonické hashmanifesty,
+   aktualizovat plán, registr a handoff; zelených všech20CI aktuálního head.
+4. Až při splnění všech podmínek ověřit čerstvý main, shodný testovaný strom,
+   merge, protected deploy s import/UATfalse a samostatné čtecí před/po.
+   Závěrečná dokumentace do main samostatně bez druhého deploye.
+
+## RHMS — obě DB a celé HTTP/Chrome ověřené
+
+Běh42674262677 na d8d59d54 SUCCESS, obě nativní6/634. Všechny9scénáře,
+1836časovaných AJAX a52měřených Chrome navigací PASS. Úplné výsledky/PHPtypy,
+HTML/JS/role/token/revokace/CSRF/canonical checksumy/cleanup shodné.
+30k/270k HTTP10.3 400.914→253.962ms (−36.7 %),11.4 672.882→393.144ms
+(−41.6 %). Chrome warm celá uložená záložka1243.60→943.50ms (−24.1 %).
+Drobné režie starého/malého/prázdného profilu a samostatné default/cold/TTFB
+jsou výslovně v [protokolu](verification/athlete-profile-measurement-summary-20261109/validated-d8/RESULTS.md).
+Snímky před/po byte-identické, vizuálně ověřené; dlouhé poznámky v úzké
+stávající tabulce nejsou nově vyřešené. Přihlášené produkční UAT NOT RUN.
+
+Původní blokující stav výše je historický průběh. Aktuálně čeká nová úplná
+CI sada nad důkazovým checkpointem, aby měly skutečně všech20kontrol
+aktuálního head SUCCESS. Runtime je beze změny proti d8/535, pouze důkazy
+se doplňují. Při PASS přesná whole-tree/source identita, merge a chráněné
+nasazení podle původního aktuálního pokynu vlastníka. Žádný nový deploy zatím.

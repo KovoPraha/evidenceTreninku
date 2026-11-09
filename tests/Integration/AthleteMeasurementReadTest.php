@@ -58,7 +58,7 @@ final class AthleteMeasurementReadTest extends TestCase
         self::assertSame(\AthleteMeasurementReference::measurements($pdo, 1, '', 1), \AthleteProfileRead::measurements($pdo, 1, '', 1));
     }
 
-    public function testWindowSummaryIgnoresFreshGroupConcatLimits(): void
+    public function testSummaryIgnoresFreshGroupConcatLimits(): void
     {
         $pdo = $this->database();
         Fixture::seed($pdo, 100);
@@ -82,7 +82,6 @@ final class AthleteMeasurementReadTest extends TestCase
             self::assertSame($expected, $actual);
             $sql = implode("\n", array_column($pdo->profile, 'sql'));
             self::assertStringNotContainsString('GROUP_CONCAT', $sql);
-            self::assertStringContainsString('ROW_NUMBER()', $sql);
             self::assertSame($limit, (int) $pdo->query('SELECT @@SESSION.group_concat_max_len')->fetchColumn());
         }
     }
@@ -167,5 +166,66 @@ final class AthleteMeasurementReadTest extends TestCase
                 self::assertSame(\AthleteMeasurementReference::measurements($pdo, 1, $type, 1), \AthleteProfileRead::measurements($pdo, 1, $type, 1));
             }
         }
+    }
+
+    public function testFirstTypeOrderAcrossNullDatesAndSignedTupleBoundaries(): void
+    {
+        $pdo = $this->database();
+        Fixture::seed($pdo, 1);
+        $pdo->exec('DELETE FROM trenink_mereni; DELETE FROM mereni_zaznamy; DELETE FROM treninky');
+        $mysql = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+        if ($mysql) {
+            $pdo->exec("SET SESSION sql_mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+                ALTER TABLE treninky MODIFY id BIGINT NOT NULL;
+                ALTER TABLE trenink_mereni MODIFY trenink_id BIGINT,MODIFY mereni_id BIGINT,MODIFY poradi BIGINT;
+                ALTER TABLE mereni_zaznamy MODIFY id BIGINT NOT NULL");
+        }
+        $training = $pdo->prepare('INSERT INTO treninky(id,datum) VALUES(?,?)');
+        $measurement = $pdo->prepare('INSERT INTO mereni_zaznamy(id,sportovec_id,typ) VALUES(?,1,?)');
+        $link = $pdo->prepare('INSERT INTO trenink_mereni VALUES(?,?,?)');
+        $dates = [null, '0000-00-00', '0000-01-01', '1000-00-00', '1000-01-01', '9999-12-31'];
+        $positions = [null, '-9223372036854775808', '-1', '0', '9223372036854775807'];
+        $id = 1;
+        foreach ($dates as $n => $date) {
+            $training->execute([$n + 1, $date]);
+            foreach ($positions as $position) {
+                foreach (['a', 'A', 'a ', 'á'] as $type) {
+                    $measurement->execute([$id, $type . '-' . $id]);
+                    $link->execute([$n + 1, $id, $position]);
+                    // The same type also occurs earlier in the input but later
+                    // in display order; insertion order cannot determine pills.
+                    $link->execute([1, $id, $position]);
+                    ++$id;
+                }
+            }
+        }
+        foreach (['-9223372036854775808', '9223372036854775807'] as $trainingId) {
+            $training->execute([$trainingId, '9999-12-31']);
+            foreach (['-9223372036854775808', '9223372036854775807'] as $position) {
+                $measurement->execute([$id, 'edge-' . $id]);
+                $link->execute([$trainingId, $id, $position]);
+                ++$id;
+            }
+        }
+        foreach ($mysql ? [false, true] : [false] as $emulate) {
+            if ($mysql) {
+                $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $emulate);
+            }
+            foreach ([false, true] as $stringify) {
+                $pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, $stringify);
+                foreach ([1, 2, 1000000] as $page) {
+                    self::assertSame(
+                        \AthleteMeasurementReference::measurements($pdo, 1, '', $page),
+                        \AthleteProfileRead::measurements($pdo, 1, '', $page)
+                    );
+                }
+            }
+        }
+        // A changed first occurrence must reorder the summary immediately.
+        $pdo->exec("UPDATE treninky SET datum='9999-12-31' WHERE id=1;
+            UPDATE mereni_zaznamy SET typ=NULL WHERE id=1;
+            UPDATE mereni_zaznamy SET typ='0' WHERE id=2;
+            UPDATE mereni_zaznamy SET typ='' WHERE id=3");
+        self::assertSame(\AthleteMeasurementReference::measurements($pdo, 1, '', 1), \AthleteProfileRead::measurements($pdo, 1, '', 1));
     }
 }
