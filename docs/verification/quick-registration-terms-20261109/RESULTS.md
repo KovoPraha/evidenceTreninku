@@ -14,3 +14,5 @@ Prostředí: izolovaný worktree z `origin/main` `fa8315eb`, PHP 8.2.12, PHPUnit
 Příkaz: `php vendor/bin/phpunit --configuration phpunit.xml.dist tests/Integration/ParentJourneyAcceptanceTest.php tests/Integration/AthleteRegistrationTest.php tests/Integration/RegistrationTextsTest.php` — 20 testů / 388 kontrol PASS. PHP lint upravené stránky a testu, `php tools/check-php-style.php`, `php tools/check-current-docs.php` a `git diff --check` PASS. [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) otevřený; CI běží.
 
 Omezení: skutečná přihláška produktu 298 v produkčním prohlížeči, vytvoření skutečné objednávky a reálná platba nebyly provedeny. Syntetický průchod používá stejné PHP služby a skutečný HTML fragment skrytých polí, ale netestuje živé nasazení ani dopravu e-mailu.
+
+Merge: [PR #416](https://github.com/KovoPraha/evidenceTreninku/pull/416) měl všech 11 kontrol PASS a byl sloučen do `main` jako `5977897f44b60acbf54a2722ade1c63db75b8ae6`. Produkční deploy a živé UAT zatím NOT RUN; ruční workflow vyžaduje potvrzení `NASADIT`.
