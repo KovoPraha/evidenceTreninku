@@ -3,13 +3,14 @@
 9. 11. 2026. Vlastník vývoj/Codex. RHM i RHMS HOTOVO / NASAZENO; produkční UAT NOT RUN.
 Předchozí RHM uzavření: #418/5cc9cf83, deploy42654922651 SUCCESS;
 HTTP30k −28.2/32.1 %, Chrome uloženéMěření warm−10.6/cold−22.4 %.
-[Produkční důkazy a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
-[Aktuální návaznost P11-RHMS](#p11-rhms--souhrn-měření-nové-zadání-9-11-2026).
+[Předchozí RHM produkční důkazy a meze](verification/athlete-profile-measurement-release-20261109/RESULTS.md).
+[Původní zadání P11-RHMS](#p11-rhms--souhrn-měření-nové-zadání-9-11-2026).
 [Aktuální RHMS uzavření](#rhms--uzavření-a-nasazení).
 Níže je původní plán a průběh pokusů; současný stav/flags vlastní CURRENT.
 
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_ATHLETE_MEASUREMENT_2026-11-09.md),
-[důkazy](verification/athlete-profile-measurement-performance-20261109/RESULTS.md).
+[předchozí RHM důkazy](verification/athlete-profile-measurement-performance-20261109/RESULTS.md),
+[aktuální RHMS protokol](verification/athlete-profile-measurement-summary-20261109/RESULTS.md).
 
 ## Rozsah a oprávnění
 

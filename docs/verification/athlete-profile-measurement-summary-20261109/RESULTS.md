@@ -1,11 +1,17 @@
 # P11-RHMS — průběžné ověření souhrnu měření
 
 9. 11. 2026. HOTOVO / NASAZENO #422/17110a7f, deploy42679050552 SUCCESS; produkční UAT NOT RUN.
-[Plán](../../ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#p11-rhms--souhrn-měření-nové-zadání-9-11-2026).
+[Aktuální uzavření](#aktuální-uzavření), [měření](checked-head/RESULTS.md),
+[release](release/RESULTS.md), [plán](../../ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md#rhms--uzavření-a-nasazení).
+
+Níže je chronologický průběh. Dřívější čekající a blokující stavy jsou
+historické; současný výsledek určuje uzavření a release protokol.
+
+## Zahájení — historický stav
 
 Baseline main 0b4592fa / produkční runtime 5cc9cf83. Původní WIP SHA256
 7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 shodný.
-Parita, párové měření, CI, merge a nasazení nového řezu: NOT RUN.
+V okamžiku zahájení: parita, párové měření, CI, merge a nasazení nového řezu NOT RUN.
 Původní RHM důkazy zůstávají beze změny v sousedních protokolech.
 
 ## Kandidát 1 — místní ověření
