@@ -39,7 +39,9 @@ foreach (range(-4, 16) as $round) {
     foreach ($round % 2 === 0 ? $variants : array_reverse($variants) as $variant) {
         $rt = $runtime;
         $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
-        foreach (['profile' => '/sportovec_treninky.php?id=1001', 'mine' => '/moje_treninky.php', 'training' => '/sprava_treninku.php'] as $case => $path) {
+        $paths = ['profile' => '/sportovec_treninky.php?id=1001', 'mine' => '/moje_treninky.php',
+            'training' => '/sprava_treninku.php', 'mine_ajax' => '/ajax_treninky.php?rok=' . date('Y') . '&mesic=' . date('n')];
+        foreach ($paths as $case => $path) {
             $role = $case === 'training' ? 'sports_lead' : 'coach';
             $response = fullHttpRequest($rt, $output, 'asset-parent-' . $variant . '-' . $role, $path);
             if ($response['status'] !== 200 || preg_match('/Fatal error|Warning:/', $response['body'])) {
@@ -48,7 +50,8 @@ foreach (range(-4, 16) as $round) {
             $raw = $response['body'];
             $local = preg_match_all('~href="/(?!/)[^"]*assets/vendor/bootstrap/bootstrap\.min\.css\?v=[0-9]+"~', $raw);
             $cdn = substr_count($raw, 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
-            if ($local !== 1 || $cdn !== ($variant === 'before' ? 1 : 0)) {
+            $fragment = $case === 'mine_ajax';
+            if ($local !== ($fragment ? 0 : 1) || $cdn !== (!$fragment && $variant === 'before' ? 1 : 0)) {
                 throw new RuntimeException('Expected exact Bootstrap resource difference.');
             }
             $html = fullHttpNormalizedHtml($response);

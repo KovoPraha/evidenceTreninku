@@ -291,6 +291,7 @@ try:
     start_servers()
     reports=[]
     php("TrainingHistoryHttpProfile.php",output,"prepare")
+    php("CoachHistoryHttpProfile.php",output,"prepare")
     php("AthleteProfileHttpProfile.php",output,"prepare")
     php("AthleteTargetedHttpProfile.php",output,"prepare",1000)
     assert originals["includes/athlete_profile_read.php"] == baselines["includes/athlete_profile_read.php"], "Reader must remain unchanged"
