@@ -1,6 +1,8 @@
 # P11-RIX — průběžná diagnóza a ověření
 
-9. 11. 2026. K OVĚŘENÍ v draftu [#425](https://github.com/KovoPraha/evidenceTreninku/pull/425). [Plán](../../ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md).
+10. 11. 2026. DIAGNÓZA UZAVŘENA: žádná SQL/index optimalizace přijata ani nasazena.
+Aktivní [P11-ASSET](../../BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) v [#425](https://github.com/KovoPraha/evidenceTreninku/pull/425).
+Níže průběžné historické důkazy včetně zamítnutých variant. [Plán](../../ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md).
 Base mainb66cc059/runtime17110a7f; WIP SHA2567a7afd75 ověřený beze změny.
 
 Zjistěno pouze ze zdrojů: poslední RHMS CI metadata mají PK-only pro

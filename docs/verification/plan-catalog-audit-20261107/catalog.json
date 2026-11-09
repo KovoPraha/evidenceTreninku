@@ -11105,9 +11105,9 @@
       "title": "P11-RIX cílené čtení profilu",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11-RIX",
-      "disposition": "Zahájeno: skutečné metadata, odpovídající fixture, poté měřená optimalizace; runtime zatím beze změny.",
+      "disposition": "Diagnóza uzavřena bez přijaté SQL/index varianty; reader obnoven, aktivní P11-ASSET.",
       "evidence": [
         "docs/verification/athlete-profile-targeted-read-20261109/RESULTS.md"
       ]

@@ -117,3 +117,19 @@ Sedmý run42722027988 byl zrušen během přípravy runneru před profilem: k fy
 baseline kopii db.php doplněn symlink POUZE na vlastní syntetický config.php.
 Osmý42722121950/6db běží se správným kořenem/guardy/configem; app zdroje pořád
 přesně3smazané linky. Bez celého CI/browser/gate nic neslučovat ani nenasadit.
+
+
+### HTTP10.3 PASS, další izolované testovací opravy
+Osmý42722121950/6db: MariaDB10.3 komplet PASS, whole HTML3parent/16AJAX
+scénářů ×3velikosti, shodné role odmítnutí, security i checksumy, cleanup.
+11.4 skončil na CLI callback syntax (trailingsemicolon u výrazu), opraveno.
+Devátý42722418721/d9 došel reálným Chrome prvním blokem, ale skončil na
+console404. Doplněna URL do každé chyby a úzké oddělení pouze automatického
+Chromium favicon.ico404 (soubor není v repu ani uveden v HTML). Ostatní chyby
+se nezakrývají, žádný síťový mock ani změna app. Kompletní Chrome nepřijat.
+PHPStan/style d9 PASS. PHPUnit2424/55907 má1selhání: PHP UTC retry versus
+Prague SQLite clock. Fixture teď nastaví i PHPtimezone a vždy obnoví původní;
+při explicitním -d date.timezone=UTC cíleně12/233 PASS. Produkční kód beze změny.
+Osmé/deváté safe artefakty zachované. Staré queued/in-progress PR běhy6db/9e
+zrušené jako překonané po d9, nepočítají se jako PASS. Nový aktuální head musí
+prokázat celé CI i Chrome; merge/deploy dosud NOT RUN.

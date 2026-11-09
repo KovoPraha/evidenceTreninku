@@ -1,7 +1,7 @@
 # Aktuální session handoff
 
 QR01: [rychlá přihláška a verze podmínek](QUICK_REGISTRATION_TERMS_2026-11-09.md) sloučená v #416/#419 a nasazená jako `e3f2990` ([workflow 42637712723](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42637712723) SUCCESS). [20/395 místních kontrol a veřejný GET produktu 298](verification/quick-registration-terms-20261109/RESULTS.md) PASS; živá objednávka, platba a rodičovská přejímka otevřené. Release flags a důkazy vlastní CURRENT.
-Aktualizováno 9. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
+Aktualizováno 10. 11. 2026, Europe/Prague. Stručný bod převzetí pro všechny vývojáře.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md) vede i UX01 [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) a Q01/Q3
 vlastní otevřené úkoly včetně Q2-TIME; plány a rozhodnutí čti ve verzovaných souborech.
 Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 je [nasazené a cíleně ověřené](verification/planner-mobile-release-20261108/RESULTS.md) v deploy42483838259 a následném P11-RH; Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
@@ -11,7 +11,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
   Přihlášené UAT NOT RUN: Computer Use nemohl bezpečně určit URL. Další krok: neplatný čas, reload a obnova konceptu; žádný skutečný trénink testem nevznikl.
 - **P11-ASSET ROZPRACOVÁNO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md), [předání](SESSION_HANDOFF_BOOTSTRAP_ASSETS_2026-11-10.md); [RIX nevybrané varianty](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md).
-  Reader obnoven přesně, následuje odstranění duplicitního CSS a měření Chrome. Produkce17110a7f/deploy42679050552 zachovaná, import/UATfalse; nový deploy NOT RUN.
+  Reader přesně ff182971, odstraněny3duplicitní CSS tagy; běží whole HTTP/Chrome a CI425. Produkce17110a7f/deploy42679050552 zachovaná, import/UATfalse; nový deploy NOT RUN.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).

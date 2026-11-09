@@ -155,7 +155,7 @@ def asset_browser(role):
         cli(session,"fill",refs["Heslo"],credential["password"])
         cli(session,"click",button[1]); cli(session,"snapshot")
     template=(root/"tests/Support/BootstrapAssetsBrowser.js").read_text()
-    report=dict(complete=False,role=role,samples=[],style_signatures={},screenshots=[],console_errors=[],failed_requests=[])
+    report=dict(complete=False,role=role,samples=[],style_signatures={},screenshots=[],console_errors=[],failed_requests=[],optional_favicon_errors=[])
     for case in (["profile","mine"] if role=="coach" else ["training"] if role=="sports_lead" else ["public-profile"]):
         for viewport in ["desktop","mobile"]:
             for cache in ["cold","warm"]:
@@ -168,7 +168,7 @@ def asset_browser(role):
                 for key,value in part["style_signatures"].items():
                     assert report["style_signatures"].get(key,value)==value,"Style drift across cache modes"
                     report["style_signatures"][key]=value
-                for key in ["samples","screenshots","console_errors","failed_requests"]:
+                for key in ["samples","screenshots","console_errors","failed_requests","optional_favicon_errors"]:
                     report[key].extend(part[key])
                 report["browser_version"]=part["browser_version"];report["method"]=part["method"]
                 (safe/("asset-browser-"+role+"-partial.json.gz")).write_bytes(gzip.compress(json.dumps(report).encode(),mtime=0))

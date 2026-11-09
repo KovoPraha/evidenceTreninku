@@ -18,12 +18,15 @@ final class ShopDocumentAutomationTest extends TestCase
     private array $session;
     private string|false $oldRoot;
     private string $private;
+    private string $oldTimezone;
     private const BILLING = ['billing_street' => 'LOCALHOST 12','billing_city' => 'Praha','billing_postcode' => '19000'];
     private const BANK = ['iban' => 'CZ6508000000192000145399','bic' => 'GIBACZPX','account_label' => 'LOCALHOST NEPLATIT'
     ,'due_days' => 7];
 
     protected function setUp(): void
     {
+        $this->oldTimezone = date_default_timezone_get();
+        date_default_timezone_set('Europe/Prague');
         $this->session = $_SESSION ?? [];
         $_SESSION = ['trener_id' => 7,'staff_positions' => ['finance_manager'],'staff_active_position' => 'finance_manager'
     ];
@@ -63,6 +66,7 @@ final class ShopDocumentAutomationTest extends TestCase
 
     protected function tearDown(): void
     {
+        date_default_timezone_set($this->oldTimezone);
         $_SESSION = $this->session;
         $this->oldRoot === false ? putenv('APP_PRIVATE_STORAGE_ROOT') : putenv(
             'APP_PRIVATE_STORAGE_ROOT='.$this->oldRoot

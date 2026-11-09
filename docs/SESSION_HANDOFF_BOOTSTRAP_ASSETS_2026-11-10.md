@@ -36,3 +36,19 @@ selhání během české půlnoci jako PR. Čeká ověření přesného logu a f
 Main půlnoční selhání potvrzeno; oprava pouze soukromé SQLite test fixture
 CURRENT_TIMESTAMP na Europe/Prague: cíleně12/233 PASS. Osmýrun42722121950
 se správným baseline db.php/config probíhá, PR425 aktualizován na6db.
+
+
+### HTTP10.3 PASS, další izolované testovací opravy
+Osmý42722121950/6db: MariaDB10.3 komplet PASS, whole HTML3parent/16AJAX
+scénářů ×3velikosti, shodné role odmítnutí, security i checksumy, cleanup.
+11.4 skončil na CLI callback syntax (trailingsemicolon u výrazu), opraveno.
+Devátý42722418721/d9 došel reálným Chrome prvním blokem, ale skončil na
+console404. Doplněna URL do každé chyby a úzké oddělení pouze automatického
+Chromium favicon.ico404 (soubor není v repu ani uveden v HTML). Ostatní chyby
+se nezakrývají, žádný síťový mock ani změna app. Kompletní Chrome nepřijat.
+PHPStan/style d9 PASS. PHPUnit2424/55907 má1selhání: PHP UTC retry versus
+Prague SQLite clock. Fixture teď nastaví i PHPtimezone a vždy obnoví původní;
+při explicitním -d date.timezone=UTC cíleně12/233 PASS. Produkční kód beze změny.
+Osmé/deváté safe artefakty zachované. Staré queued/in-progress PR běhy6db/9e
+zrušené jako překonané po d9, nepočítají se jako PASS. Nový aktuální head musí
+prokázat celé CI i Chrome; merge/deploy dosud NOT RUN.

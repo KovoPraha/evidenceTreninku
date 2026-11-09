@@ -1,6 +1,8 @@
 # Předání P11-RIX — 9. 11. 2026
 
-K OVĚŘENÍ, ownership YEAR implementace v draftu #425.
+DIAGNÓZA UZAVŘENA 10. 11., bez přijaté SQL/index varianty.
+Aktivní práce [P11-ASSET](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md); PR425 obsahuje CSS, reader přesně ff182971.
+Níže je historická posloupnost, poslední stav má přednost.
 [Plán](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md),
 [důkazy](verification/athlete-profile-targeted-read-20261109/RESULTS.md).
 

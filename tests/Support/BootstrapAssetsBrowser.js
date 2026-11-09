@@ -3,9 +3,17 @@ async (page) => {
   const config = JSON.parse('__BOOTSTRAP_ASSETS_CONFIG__');
   const cdp = await page.context().newCDPSession(page);
   await cdp.send('Network.enable');
-  const errors = [], failed = [], samples = [], screenshots = [], styleSignatures = {};
+  const errors = [], failed = [], samples = [], screenshots = [], styleSignatures = {}, optionalFaviconErrors = [];
   const onError=e=>errors.push(String(e));
-  const onConsole=m=>{if(m.type()==='error')errors.push(m.text());};
+  const onConsole=m=>{
+    if(m.type()!=='error')return;
+    const url=m.location().url;
+    // Chromium probes this optional file even though the page never references it.
+    if(url && new URL(url).pathname==='/favicon.ico' && m.text().includes('404')) {
+      optionalFaviconErrors.push({url,message:m.text()});return;
+    }
+    errors.push({message:m.text(),url});
+  };
   const onFailed=r=>failed.push({url:r.url().split('?')[0],error:r.failure()?.errorText});
   page.on('pageerror',onError);page.on('console',onConsole);page.on('requestfailed',onFailed);
   const cases = config.role === 'coach'
@@ -108,5 +116,6 @@ async (page) => {
   await cdp.detach();
   return {complete:true,role:config.role,browser_version:page.context().browser().version(),
     method:'17 alternating pairs after 4 warmups, real network, no throttling/mocks; cold clears browser cache',
-    samples,style_signatures:styleSignatures,screenshots,console_errors:errors,failed_requests:failed};
+    samples,style_signatures:styleSignatures,screenshots,console_errors:errors,failed_requests:failed,
+    optional_favicon_errors:optionalFaviconErrors};
 }

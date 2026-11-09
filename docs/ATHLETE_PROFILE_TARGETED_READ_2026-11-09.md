@@ -1,6 +1,8 @@
 # P11-RIX — cílené čtení profilu podle skutečného schématu
 
-9. 11. 2026. Stav: K OVĚŘENÍ, ownership YEAR implementace v draftu #425. Vlastník: vývoj/Codex.
+10. 11. 2026. Stav: DIAGNÓZA UZAVŘENA, žádná SQL/index varianta přijata. Vlastník: vývoj/Codex.
+Aktivní změna je [P11-ASSET](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md); reader přesně ff182971.
+Následující průběžné záznamy zachycují i později zamítnuté varianty.
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_ATHLETE_TARGETED_READ_2026-11-09.md),
 [důkazy](verification/athlete-profile-targeted-read-20261109/RESULTS.md).
 

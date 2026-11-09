@@ -408,6 +408,6 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 | PL-51594d6f16 | [P11-RHM/RHMS — měření profilu](ATHLETE_PROFILE_MEASUREMENT_PERFORMANCE_2026-11-09.md) | DONE / P11-RHMS | #422/17110a7f NASAZENO,20CI/parita/HTTP/Chrome PASS; [release](verification/athlete-profile-measurement-summary-20261109/release/RESULTS.md), produkční UAT samostatné. |
 | PL-7a1aa43e34 | [QR01 — verze podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md) | PARTIAL / QR01 | [#416](https://github.com/KovoPraha/evidenceTreninku/pull/416) v `main`, [#419](https://github.com/KovoPraha/evidenceTreninku/pull/419) vyžaduje nové potvrzení změněného textu; [syntetický průchod](verification/quick-registration-terms-20261109/RESULTS.md) PASS, CI #419, ruční deploy a živé UAT otevřené. |
 
-| PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | PARTIAL / P11-RIX | Nejprve skutečné schéma a nativní diagnóza, pak cílená optimalizace dle nového pokynu. |
+| PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | DONE / P11-RIX | Diagnóza uzavřena bez přijaté SQL/index varianty; pokračuje P11-ASSET. |
 
 | PL-29c9854bef | [P11-ASSET Bootstrap CSS právě jednou](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | PARTIAL / P11-ASSET | Canonical CSS shodné; dále HTTP/Chrome/CI, nic nového nasazeného. |
