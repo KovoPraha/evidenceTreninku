@@ -175,3 +175,28 @@ interval pro validní1–9999rok, včetně YYYY-00-00 a YYYY-12-31; outer YEAR
 zůstává. Nejprve porovnat plné seřazené id/delka včetně chybějících let.
 Pokud vyhraje, ověřit celý reader/HTML a hlavní HTTP20%gate pro výchozí rok,
 all-year/page/empty/sparse/MZ kontrolní brány zachovat. Žádná schématová změna.
+
+
+## Vybraný kandidát: redundantní přesný YEAR v ownership historie
+
+42709050977/5e8d1772 oběDB SUCCESS,12scénářů přesné ordered id/delka parity,
+7párů/2warmupy. Aktuální rok velký profil:382.575→160.521ms10.3 a
+386.842→171.171ms11.4 (−58.0/55.8%). Sparse/empty-year bez významné regrese;
+raw v history-year-probe. Datumový interval nic nepřidal, NEVYBRÁN.
+
+Implementovat pouze JOIN stejného treninky selected_t v měřicí větvi EXISTS
+při year>0 a YEAR(selected_t.datum)=:ownership_year. Outer YEAR i oba
+ownership filtry zůstanou; parametry jedinečné i pro nativní prepare.
+Zachovat all-year původní cestu, PHP float/minutes pořadí, všechny detaily,
+MZ summary/selector, header, scope/auth/token/session/writery i schéma.
+Nezavádět nový index nebo persistentní cache. Výsledek SQL probe zatím
+není plný HTTP gate ani produkční přínos.
+
+Před kompletním měřením narovnat syntetické kontroly: SID1012 má po starém
+builderu1000attendances, SID1020 jednu. Jen v nové vlastněné fixture odebrat
+jejich attendance před OBOU variantami; pak small historie12tréninků podle
+12MZ a skutečná empty historie0. Původní raw s1001/1řádky zůstávají zachované.
+Čerstvý celý oracle z ff182971; PHPtypy/filtry/stránky/null/zero/partial-zero,
+signed64/freshness. Hlavní17párový HTTP gate aktuální rok, kontroly all-year,
+stránky/current/absent-year/small/old/empty i MZ; každá kontrola1.2+20ms.
+Stejné indexy/statistiky/cacheOFF, žádný fyzický indexový A/B už není potřeba.

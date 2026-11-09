@@ -41,10 +41,13 @@ foreach ([1001, 1012, 1013, 1020] as $person) {
                 'WHERE tm.trenink_id=t.id AND mz.sportovec_id=:measurement_sid',
                 'JOIN treninky selected_t ON selected_t.id=tm.trenink_id'
                     . ' WHERE tm.trenink_id=t.id AND mz.sportovec_id=:measurement_sid AND YEAR(selected_t.datum)=:ownership_year',
-                $templates['exists']);
-            $templates['filtered_range'] = str_replace(' AND YEAR(selected_t.datum)=:ownership_year',
+                $templates['exists']
+            );
+            $templates['filtered_range'] = str_replace(
+                ' AND YEAR(selected_t.datum)=:ownership_year',
                 ' AND YEAR(selected_t.datum)=:ownership_year AND selected_t.datum>=:ownership_start AND selected_t.datum<=:ownership_end',
-                $templates['filtered_year']);
+                $templates['filtered_year']
+            );
         }
         $expected = null;
         $case = ['sid' => $person, 'year' => $year, 'parity' => true, 'samples_ms' => [], 'explain' => []];

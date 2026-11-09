@@ -67,7 +67,7 @@ jobs:
           npm install --global @playwright/cli@0.1.23
           if ! command -v google-chrome >/dev/null; then npx --yes playwright install --with-deps chrome; fi
           google-chrome --version
-      - name: Compare whole measurement HTML, canonical totals, roles and real browser
+      - name: Compare year history HTML, all controls, roles and real browser
         env:
           ATHLETE_TARGETED_BASE_SHA: ff18297178419a57899cd5bb614a6b0fa51c9e7f
           ATHLETE_TARGETED_BROWSER: ${{ matrix.mariadb-version == '11.4' && '1' || '0' }}

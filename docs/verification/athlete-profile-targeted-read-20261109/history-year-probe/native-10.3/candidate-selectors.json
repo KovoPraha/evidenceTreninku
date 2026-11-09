@@ -1,0 +1,408 @@
+{
+    "synthetic_only": true,
+    "selector_only": true,
+    "pairs": 7,
+    "warmups": 2,
+    "cases": [
+        {
+            "sid": 1001,
+            "year": 0,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    408.210082,
+                    415.9568,
+                    403.443203,
+                    397.813985,
+                    397.586668,
+                    390.945677,
+                    398.157795
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 150456,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 20600,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 30001
+        },
+        {
+            "sid": 1001,
+            "year": 2026,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    436.133987,
+                    383.790541,
+                    389.497412,
+                    369.701892,
+                    379.338484,
+                    382.574609,
+                    375.61596
+                ],
+                "filtered_year": [
+                    168.27374,
+                    159.816398,
+                    160.521044,
+                    159.934629,
+                    171.325628,
+                    164.822915,
+                    153.080763
+                ],
+                "filtered_range": [
+                    164.730247,
+                    164.884843,
+                    164.285462,
+                    172.686801,
+                    164.50125,
+                    170.555349,
+                    160.524729
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 150456,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 20600,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_year": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"ALL\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"rows\": 29841,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2026'\"\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_trenink_poradi\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"trenink_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.selected_t.id\"],\n            \"rows\": 5,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.mereni_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"mz.sportovec_id = '1001'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 20600,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_range": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"ALL\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"rows\": 29841,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2026' and selected_t.datum >= '2026-00-00' and selected_t.datum <= '2026-12-31'\"\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_trenink_poradi\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"trenink_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.selected_t.id\"],\n            \"rows\": 5,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.mereni_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"mz.sportovec_id = '1001'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 20600,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 10529
+        },
+        {
+            "sid": 1001,
+            "year": 2099,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    6.047006,
+                    6.104154,
+                    6.050934,
+                    6.037538,
+                    6.07005,
+                    6.004647,
+                    5.990471
+                ],
+                "filtered_year": [
+                    6.07028,
+                    6.136304,
+                    6.028192,
+                    6.07017,
+                    6.014577,
+                    5.999628,
+                    6.003525
+                ],
+                "filtered_range": [
+                    6.095747,
+                    6.100824,
+                    6.077403,
+                    6.060522,
+                    6.053238,
+                    6.037218,
+                    6.023814
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 150456,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 20600,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_year": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"ALL\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"rows\": 29841,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2099'\"\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_trenink_poradi\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"trenink_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.selected_t.id\"],\n            \"rows\": 5,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.mereni_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"mz.sportovec_id = '1001'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 20600,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_range": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"ALL\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"rows\": 29841,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2099' and selected_t.datum >= '2099-00-00' and selected_t.datum <= '2099-12-31'\"\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_trenink_poradi\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"trenink_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.selected_t.id\"],\n            \"rows\": 5,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.mereni_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"mz.sportovec_id = '1001'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 20600,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 0
+        },
+        {
+            "sid": 1012,
+            "year": 0,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    14.47427,
+                    14.31925,
+                    14.443612,
+                    14.778889,
+                    14.695774,
+                    14.588173,
+                    14.466886
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 12,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1001,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 1001
+        },
+        {
+            "sid": 1012,
+            "year": 2026,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    10.624859,
+                    10.626592,
+                    10.591115,
+                    10.43307,
+                    10.503622,
+                    10.522484,
+                    10.395731
+                ],
+                "filtered_year": [
+                    10.667057,
+                    10.45435,
+                    10.462305,
+                    10.385672,
+                    10.416289,
+                    10.752187,
+                    10.686985
+                ],
+                "filtered_range": [
+                    10.646579,
+                    10.515183,
+                    10.481621,
+                    10.377847,
+                    10.657069,
+                    10.58302,
+                    10.566149
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 12,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1001,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_year": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 12,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2026'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1001,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_range": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 12,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2026' and selected_t.datum >= '2026-00-00' and selected_t.datum <= '2026-12-31'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1001,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 313
+        },
+        {
+            "sid": 1012,
+            "year": 2099,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    6.033752,
+                    6.008124,
+                    5.999979,
+                    6.025366,
+                    6.080529,
+                    6.013905,
+                    5.987215
+                ],
+                "filtered_year": [
+                    6.039783,
+                    6.033642,
+                    6.012262,
+                    6.007813,
+                    6.150189,
+                    6.055583,
+                    6.017501
+                ],
+                "filtered_range": [
+                    6.076561,
+                    6.066954,
+                    6.018814,
+                    6.045985,
+                    6.00019,
+                    6.028131,
+                    6.610329
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 12,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1001,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_year": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 12,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2099'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1001,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_range": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 12,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2099' and selected_t.datum >= '2099-00-00' and selected_t.datum <= '2099-12-31'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1001,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 0
+        },
+        {
+            "sid": 1013,
+            "year": 0,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    15.694188,
+                    15.559978,
+                    15.584694,
+                    15.683399,
+                    15.763226,
+                    15.767977,
+                    15.616664
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 900,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 2
+        },
+        {
+            "sid": 1013,
+            "year": 2026,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    11.775368,
+                    11.152645,
+                    11.24665,
+                    11.44471,
+                    11.627201,
+                    11.568181,
+                    11.705968
+                ],
+                "filtered_year": [
+                    10.381252,
+                    10.103014,
+                    10.018566,
+                    10.103043,
+                    10.29338,
+                    10.380322,
+                    10.441175
+                ],
+                "filtered_range": [
+                    10.200646,
+                    10.132479,
+                    10.114305,
+                    10.172173,
+                    10.372868,
+                    10.578432,
+                    10.487201
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 900,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_year": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 900,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2026'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_range": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 900,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2026' and selected_t.datum >= '2026-00-00' and selected_t.datum <= '2026-12-31'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 1
+        },
+        {
+            "sid": 1013,
+            "year": 2099,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    6.034784,
+                    6.003235,
+                    6.082292,
+                    6.371653,
+                    7.260203,
+                    6.046435,
+                    6.040124
+                ],
+                "filtered_year": [
+                    6.054551,
+                    6.012442,
+                    6.033341,
+                    6.071793,
+                    6.158845,
+                    6.190756,
+                    6.065902
+                ],
+                "filtered_range": [
+                    6.131455,
+                    6.052627,
+                    6.044822,
+                    6.05963,
+                    6.448847,
+                    7.101206,
+                    6.196776
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 900,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_year": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 900,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2099'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_range": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 900,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2099' and selected_t.datum >= '2099-00-00' and selected_t.datum <= '2099-12-31'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 0
+        },
+        {
+            "sid": 1020,
+            "year": 0,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    12.154666,
+                    12.378786,
+                    10.968221,
+                    11.741585,
+                    10.958982,
+                    10.945597,
+                    11.245267
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 1
+        },
+        {
+            "sid": 1020,
+            "year": 2026,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    9.077097,
+                    10.495808,
+                    11.560666,
+                    9.294182,
+                    9.185079,
+                    9.005634,
+                    9.015251
+                ],
+                "filtered_year": [
+                    9.010763,
+                    9.029378,
+                    9.352582,
+                    10.552854,
+                    8.931455,
+                    8.993932,
+                    9.071917
+                ],
+                "filtered_range": [
+                    9.066437,
+                    9.099319,
+                    9.554619,
+                    11.275414,
+                    9.045959,
+                    8.933529,
+                    9.111922
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_year": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2026'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_range": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2026' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2026' and selected_t.datum >= '2026-00-00' and selected_t.datum <= '2026-12-31'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 1
+        },
+        {
+            "sid": 1020,
+            "year": 2099,
+            "parity": true,
+            "samples_ms": {
+                "exists": [
+                    6.053639,
+                    6.048539,
+                    6.06471,
+                    6.103433,
+                    6.143469,
+                    6.025556,
+                    6.013023
+                ],
+                "filtered_year": [
+                    6.101506,
+                    6.03259,
+                    6.078576,
+                    6.051536,
+                    6.031538,
+                    6.060582,
+                    6.040985
+                ],
+                "filtered_range": [
+                    6.106447,
+                    6.072784,
+                    6.069869,
+                    6.077514,
+                    6.054611,
+                    6.035635,
+                    6.030586
+                ]
+            },
+            "explain": {
+                "exists": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_year": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2099'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}",
+                "filtered_range": "{\n  \"query_block\": {\n    \"select_id\": 1,\n    \"read_sorted_file\": {\n      \"filesort\": {\n        \"sort_key\": \"t.datum desc, t.`id` desc\",\n        \"table\": {\n          \"table_name\": \"t\",\n          \"access_type\": \"ALL\",\n          \"rows\": 29841,\n          \"filtered\": 100,\n          \"attached_condition\": \"year(t.datum) = '2099' and (<in_optimizer>(t.`id`,t.`id` in (subquery#2)) or <in_optimizer>(t.`id`,t.`id` in (subquery#3)))\"\n        }\n      }\n    },\n    \"subqueries\": [\n      {\n        \"query_block\": {\n          \"select_id\": 3,\n          \"table\": {\n            \"table_name\": \"mz\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_typ\", \"idx_sportovec\"],\n            \"key\": \"idx_sportovec\",\n            \"key_length\": \"5\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"tm\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"idx_mereni\", \"idx_trenink_poradi\"],\n            \"key\": \"idx_mereni\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"mereni_id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.mz.id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          },\n          \"table\": {\n            \"table_name\": \"selected_t\",\n            \"access_type\": \"eq_ref\",\n            \"possible_keys\": [\"PRIMARY\"],\n            \"key\": \"PRIMARY\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"id\"],\n            \"ref\": [\"p11_read_1e5eb1b0e0ee33ec.tm.trenink_id\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"attached_condition\": \"year(selected_t.datum) = '2099' and selected_t.datum >= '2099-00-00' and selected_t.datum <= '2099-12-31'\"\n          }\n        }\n      },\n      {\n        \"query_block\": {\n          \"select_id\": 2,\n          \"table\": {\n            \"table_name\": \"ts\",\n            \"access_type\": \"ref\",\n            \"possible_keys\": [\"PRIMARY\", \"fk_ts_sportovci\"],\n            \"key\": \"fk_ts_sportovci\",\n            \"key_length\": \"4\",\n            \"used_key_parts\": [\"sportovec_id\"],\n            \"ref\": [\"const\"],\n            \"rows\": 1,\n            \"filtered\": 100,\n            \"using_index\": true\n          }\n        }\n      }\n    ]\n  }\n}"
+            },
+            "rows": 0
+        }
+    ]
+}

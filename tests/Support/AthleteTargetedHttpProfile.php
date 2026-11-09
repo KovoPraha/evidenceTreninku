@@ -40,6 +40,7 @@ if ($mode === 'prepare') {
         $oldMeasurement->execute([84000000 + $number]);
         $link->execute([84000000, 84000000 + $number]);
     }
+    $admin->exec('DELETE FROM trenink_sportovec WHERE sportovec_id IN (1012,1020)');
     $admin->commit();
     echo 'Owned small/old measurement fixture: 12/900'  . PHP_EOL;
     exit;
@@ -47,9 +48,9 @@ if ($mode === 'prepare') {
 // Bulk inserts into the minimal migrated fixture leave cardinalities at 1–2.
 // Refresh statistics once for the shared owned dataset before either variant;
 // application requests never ANALYZE or change indexes/settings.
-$analysis = $admin->query('ANALYZE TABLE treninky,trenink_mereni,mereni_zaznamy')->fetchAll(PDO::FETCH_ASSOC);
+$analysis = $admin->query('ANALYZE TABLE treninky,trenink_sportovec,trenink_mereni,mereni_zaznamy,sportovec_poznamka')->fetchAll(PDO::FETCH_ASSOC);
 $statistics = ['shared_before_after_dataset' => true, 'analysis' => $analysis, 'tables' => []];
-foreach (['treninky', 'trenink_mereni', 'mereni_zaznamy'] as $table) {
+foreach (['treninky', 'trenink_sportovec', 'trenink_mereni', 'mereni_zaznamy', 'sportovec_poznamka'] as $table) {
     $statistics['tables'][$table] = [
         'rows' => (int) $admin->query('SELECT COUNT(*) FROM ' . $table)->fetchColumn(),
         'indexes' => $admin->query('SHOW INDEX FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC),
@@ -64,6 +65,18 @@ foreach ([1001, 1012, 1013, 1020] as $person) {
 }
 if ($statistics['profile_counts'][1012] !== 12 || $statistics['profile_counts'][1013] !== 900 || $statistics['profile_counts'][1020] !== 0) {
     throw new RuntimeException('Expected a nonempty small measurement profile and an empty control.');
+}
+$statistics['history_profile_counts'] = [];
+foreach ([1001, 1012, 1013, 1020] as $person) {
+    $count = $admin->prepare('SELECT COUNT(*) FROM treninky t WHERE EXISTS
+        (SELECT 1 FROM trenink_sportovec ts WHERE ts.trenink_id=t.id AND ts.sportovec_id=?)
+        OR EXISTS (SELECT 1 FROM trenink_mereni tm JOIN mereni_zaznamy mz ON mz.id=tm.mereni_id
+            WHERE tm.trenink_id=t.id AND mz.sportovec_id=?)');
+    $count->execute([$person, $person]);
+    $statistics['history_profile_counts'][$person] = (int) $count->fetchColumn();
+}
+if ($statistics['history_profile_counts'][1012] !== 12 || $statistics['history_profile_counts'][1020] !== 0) {
+    throw new RuntimeException('Actual small/empty history controls required.');
 }
 file_put_contents($output . '/measurement-statistics-' . $size . '.json', json_encode($statistics, JSON_THROW_ON_ERROR));
 $credentials = json_decode(file_get_contents($output . '/credentials.json'), true, 512, JSON_THROW_ON_ERROR);
@@ -132,14 +145,19 @@ if ($mode === 'diagnose') {
     exit;
 }
 if ($mode === 'security') {
-    require __DIR__ . '/AthleteMeasurementSecurity.php';
+    require __DIR__ . '/AthleteHistorySecurity.php';
     exit;
 }
 $report = ['complete' => false, 'size' => $size, 'samples' => [], 'signatures' => [], 'controls' => [], 'control_signatures' => []];
-$cases = ['primary' => [1001, 'view=measurements'], 'exact_case' => [1001, 'view=measurements&typ=KOLO'],
-    'exact_space' => [1001, 'view=measurements&typ=kolo%20'], 'page2' => [1001, 'view=measurements&profile_page=2'],
-    'last' => [1001, 'view=measurements&profile_page=1000000'], 'absent' => [1001, 'view=measurements&typ=absent'],
-    'small' => [1012, 'view=measurements'], 'old' => [1013, 'view=measurements'], 'empty' => [1020, 'view=measurements']];
+$currentYear = (string) date('Y');
+$cases = ['primary' => [1001, 'rok=' . $currentYear], 'all_history' => [1001, 'rok=0'],
+    'year_page2' => [1001, 'rok=' . $currentYear . '&profile_page=2'],
+    'year_last' => [1001, 'rok=' . $currentYear . '&profile_page=1000000'],
+    'page2' => [1001, 'rok=0&profile_page=2'], 'last' => [1001, 'rok=0&profile_page=1000000'],
+    'empty_year' => [1001, 'rok=2099'], 'small' => [1012, 'rok=' . $currentYear],
+    'old' => [1013, 'rok=0'], 'empty' => [1020, 'rok=' . $currentYear],
+    'mz_large' => [1001, 'view=measurements'], 'mz_small' => [1012, 'view=measurements'],
+    'mz_old' => [1013, 'view=measurements'], 'mz_empty' => [1020, 'view=measurements']];
 for ($i = -4; $i < 17; $i++) {
     foreach ($i % 2 === 0 ? $variants : array_reverse($variants) as $variant) {
         $rt = parentRuntime($runtime, $variant);
@@ -149,7 +167,7 @@ for ($i = -4; $i < 17; $i++) {
             $signature = parentSignature($r);
             $report['control_signatures'][$case][$variant] ??= $signature;
             if ($report['control_signatures'][$case][$variant] !== $signature) {
-                throw new RuntimeException('Unstable whole measurement fragment.');
+                throw new RuntimeException('Unstable whole targeted fragment.');
             }
             if ($i >= 0) {
                 $sample = ['ttfb_ms' => $r['ttfb_ms'], 'total_ms' => $r['total_ms'], 'bytes' => $r['bytes']];
@@ -174,5 +192,5 @@ if ($checksums() !== $before) {
 }
 $report['complete'] = true;
 $report['domain_checksums_unchanged'] = true;
-file_put_contents($output . '/measurement-http-' . $size . '.json', json_encode($report, JSON_THROW_ON_ERROR));
-echo 'Measurement whole HTTP complete: ' . $size . PHP_EOL;
+file_put_contents($output . '/targeted-http-' . $size . '.json', json_encode($report, JSON_THROW_ON_ERROR));
+echo 'Targeted whole HTTP complete: ' . $size . PHP_EOL;

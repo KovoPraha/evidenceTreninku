@@ -42,3 +42,9 @@ VALUES, starý INSERT SELECT zahrnoval i čtení. Všechny WIP zachované.
 FORCE index42708406091 nevybraný (10.3 regrese,11.4 pod20%). Žádná migrace
 nevznikne. Další koncept ownership historie se stejným filtrem roku; základní
 SQL aktuální rok230/293ms, all SQL zůstane původní. Další krok nativní probe.
+
+42709050977 PASS: filtered YEAR historie382.575→160.521/386.842→171.171ms,
+12scénářů přesná shoda. Vybraný jednoduchý YEAR bez intervalů/indexů; reader
+implementace a fresh ff182971 oracle. Další krok full parity +17paired HTTP
+1k/10k/30k, všechny kontrolní gates,52Chrome, celá aktuální CI. Žádný app
+merge/deploy dosud. Syntetické sparse/empty kontroly nově skutečné12/0historií.

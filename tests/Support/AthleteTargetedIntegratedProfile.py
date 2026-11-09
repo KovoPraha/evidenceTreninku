@@ -218,7 +218,7 @@ def median(values):
 
 try:
     env=os.environ | {"EVIDENCE_ROSTER_READ_MARIADB":"1"}
-    subprocess.run(["php","vendor/bin/phpunit","tests/Integration/AthleteMeasurementReadTest.php","--log-junit",str(safe/"projection-tests.xml")],cwd=root,env=env,check=True)
+    subprocess.run(["php","vendor/bin/phpunit","tests/Integration/AthleteTargetedReadTest.php","--log-junit",str(safe/"projection-tests.xml")],cwd=root,env=env,check=True)
     php("FullHttpReadFixture.php","--setup",output)
     database_alias()
     database_alias_created = True
@@ -244,10 +244,10 @@ try:
     for size in ([] if diagnostic_only else [1000,10000,30000]):
         php("ProfileSessionHttpProfile.php",output,"prepare",size)
         php("AthleteTargetedHttpProfile.php",output,"measure",size)
-        report=read(f"measurement-http-{size}.json")
+        report=read(f"targeted-http-{size}.json")
         reports.append(report)
         (safe/f"measurement-statistics-{size}.json").write_bytes((output/f"measurement-statistics-{size}.json").read_bytes())
-        (safe/f"measurement-http-{size}.json.gz").write_bytes(gzip.compress((output/f"measurement-http-{size}.json").read_bytes(),mtime=0))
+        (safe/f"targeted-http-{size}.json.gz").write_bytes(gzip.compress((output/f"targeted-http-{size}.json").read_bytes(),mtime=0))
     if not diagnostic_only:
         php("AthleteTargetedHttpProfile.php",output,"security",30000)
         (safe/"security.json").write_bytes((output/"parent-security.json").read_bytes())
@@ -280,10 +280,10 @@ try:
         summary["cases"].append(dict(size=r["size"],**{v:dict(total_median_ms=median(s["total_ms"] for s in r["samples"][v]),ttfb_median_ms=median(s["ttfb_ms"] for s in r["samples"][v])) for v in variants}))
     if summary["comparison"] and not diagnostic_only:
         largest=summary["cases"][-1]
-        assert largest["after"]["total_median_ms"] < largest["before"]["total_median_ms"]*.8,"No substantial measurement HTTP benefit"
+        assert largest["after"]["total_median_ms"] < largest["before"]["total_median_ms"]*.8,"No substantial current-year history HTTP benefit"
         for report in reports:
-            old = report["controls"]["old"]
-            assert median(v["total_ms"] for v in old["after"]) < median(v["total_ms"] for v in old["before"])*1.2+20, "Old sparse profile regression"
+            for case, controls in report["controls"].items():
+                assert median(v["total_ms"] for v in controls["after"]) < median(v["total_ms"] for v in controls["before"])*1.2+20, "Control regression: " + case
 
     (safe/"integrated-summary.json").write_text(json.dumps(summary,indent=2))
     print(json.dumps(summary["cases"]))

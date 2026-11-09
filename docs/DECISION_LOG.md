@@ -517,3 +517,13 @@ produkční úsporu z neúplného schématu. Testovaný metadata-only support
 workflow nejprve přečte skutečné definice; potom obě A/B varianty dostanou
 stejné odpovídající indexy a rozhodne nový celý HTTP/Chrome výsledek.
 Support PR není dokončením optimalizace. [Postup a brány](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md).
+
+
+## D2026-11-09-RIX-H — filtrovat materializaci ownership stejným rokem
+
+Vývoj/Codex podle pokynu vlastníka vybral po nativním42709050977 kandidáta
+YEAR v measurement EXISTS: SQL −58.0/55.8%, úplná shoda12scénářů oběDB.
+PlainJOIN/IN, summary join-order/narrow/HEX i pokrývající index nevybrané
+kvůli nedostatečnému přínosu nebo regresím; raw v [plánu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md).
+Pouze redundantní filtr stejného tréninku, žádná změna scope, sčítání či schématu.
+Commit/merge/deploy aplikace zůstává podmíněný celým HTTP/paritou/Chrome/CI.
