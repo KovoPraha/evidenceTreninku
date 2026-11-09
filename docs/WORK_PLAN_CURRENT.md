@@ -27,7 +27,7 @@ Stav: IMPLEMENTOVÁNO VE VĚTVI, [PR #395](https://github.com/KovoPraha/evidence
 
 ## Q2-TIME — ochrana rozepsaného tréninku
 
-NASAZENO / technické ověření PASS, přihlášená přejímka K OVĚŘENÍ. Vlastník vývoj; [plán a akceptace](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026), [implementační výsledky](verification/training-form-resilience-20261109/RESULTS.md), [release a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md). [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412) sloučený; 11 CI / 2409 testů, 6 HTTP a shoda produkčního JS PASS. Předání `codex/training-resilience-release-proof-20261109`. Další krok: testerka ověří chybný čas, reload a znovuotevření konceptu v přihlášené aplikaci; Computer Use blokoval určení URL, UAT NOT RUN.
+NASAZENO / technické ověření PASS, cílená přihlášená přejímka 3/3 PASS. Vlastník vývoj; [plán a akceptace](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026), [implementační výsledky](verification/training-form-resilience-20261109/RESULTS.md), [release a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md). [PR #412](https://github.com/KovoPraha/evidenceTreninku/pull/412) sloučený; 11 CI / 2409 testů, 6 HTTP a shoda produkčního JS PASS. Předání `codex/training-resilience-release-proof-20261109`. [Q2-TIME-UAT a důkazy](verification/training-form-uat-20261109/RESULTS.md), větev `codex/training-form-uat-20261109`: chybný čas, reload i zavření samostatného okna PASS. Otevřené: ověřit úklid vlastního TEST konceptu po závěrečné blokaci nástroje; úplné uložení a výpadek při POST NOT RUN.
 
 ## KONCEPT Q01 — další vývoj: doladění, úklid, příprava (8. 11. 2026)
 

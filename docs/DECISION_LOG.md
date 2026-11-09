@@ -376,6 +376,11 @@ Přílohy nelze bezpečně obnovit z úložiště formulářových hodnot. Rozsa
 [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026),
 [protokol](verification/training-form-resilience-20261109/RESULTS.md).
 
+Následný přihlášený [produkční pokus 9. 11.](verification/training-form-uat-20261109/RESULTS.md)
+převzal tři výslovně vyžádané scénáře PASS. Otevřené zůstává potvrzení úklidu
+testovacího konceptu po závěrečné blokaci nástroje a širší uložení/výpadky.
+Zavření pouze vlastního testovacího okna nenahrazuje test restartu celého Chrome.
+
 Následné výslovné pověření vlastníka zahrnulo merge, deploy a ověření.
 [Produkční výsledek](verification/training-form-resilience-release-20261109/RESULTS.md)
 uzavírá technické vydání; přihlášené UAT ponecháno otevřené po blokaci
