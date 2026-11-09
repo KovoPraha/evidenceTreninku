@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /** A no-store browser Back reload must return to the same submission, not issue a new one. */
@@ -19,11 +20,15 @@ function trainingSubmissionIssue(array &$session, int $actor, int $plan, ?string
     $now ??= time();
     $session['training_submissions'] ??= [];
     foreach ($session['training_submissions'] as $key => $entry) {
-        if ((int)($entry['issued_at'] ?? 0) < $now - 7200) unset($session['training_submissions'][$key]);
+        if ((int)($entry['issued_at'] ?? 0) < $now - 7200) {
+            unset($session['training_submissions'][$key]);
+        }
     }
     if ($retry !== null) {
         $entry = trainingSubmissionEntry($session, $retry, $actor, $plan, $now);
-        if ($entry['state'] !== 'issued') throw new RuntimeException('Tento formulář již byl odeslán. Nejprve ověřte výsledek v přehledu tréninků.');
+        if ($entry['state'] !== 'issued') {
+            throw new RuntimeException('Tento formulář již byl odeslán. Nejprve ověřte výsledek v přehledu tréninků.');
+        }
         return $retry;
     }
     while (count($session['training_submissions']) >= 50) {
@@ -47,22 +52,33 @@ function trainingSubmissionEntry(array $session, string $key, int $actor, int $p
 function trainingSubmissionBegin(array &$session, string $key, int $actor, int $plan): void
 {
     $entry = trainingSubmissionEntry($session, $key, $actor, $plan);
-    if ($entry['state'] !== 'issued') throw new RuntimeException('Výsledek předchozího odeslání je nejistý nebo se právě ukládá. Zápis se neopakuje; ověřte přehled tréninků.');
+    if ($entry['state'] !== 'issued') {
+        throw new RuntimeException('Výsledek předchozího odeslání je nejistý nebo se právě ukládá. Zápis se neopakuje; ověřte přehled tréninků.');
+    }
     $session['training_submissions'][$key]['state'] = 'pending';
 }
 
 /** Persist pending before any DB write. Keep the session lock during the transaction. */
 function trainingSubmissionPersistPending(string $key, int $actor, int $plan): void
 {
-    if (session_status() !== PHP_SESSION_ACTIVE || !session_write_close()) throw new RuntimeException('Ochranu odeslání se nepodařilo uložit. Trénink nebyl zapsán.');
-    if (!session_start()) throw new RuntimeException('Přihlášení se nepodařilo obnovit. Trénink nebyl zapsán.');
+    if (session_status() !== PHP_SESSION_ACTIVE || !session_write_close()) {
+        throw new RuntimeException('Ochranu odeslání se nepodařilo uložit. Trénink nebyl zapsán.');
+    }
+    if (!session_start()) {
+        throw new RuntimeException('Přihlášení se nepodařilo obnovit. Trénink nebyl zapsán.');
+    }
     $entry = trainingSubmissionEntry($_SESSION, $key, $actor, $plan);
-    if ((int)($_SESSION['trener_id'] ?? 0) !== $actor || $entry['state'] !== 'pending') throw new RuntimeException('Přihlášení nebo formulář se mezitím změnil. Trénink nebyl zapsán.');
+    if ((int)($_SESSION['trener_id'] ?? 0) !== $actor || $entry['state'] !== 'pending') {
+        throw new RuntimeException('Přihlášení nebo formulář se mezitím změnil. Trénink nebyl zapsán.');
+    }
 }
 
 function trainingSubmissionComplete(array &$session, string $key, int $trainingId, string $redirect): void
 {
-    if (($session['training_submissions'][$key]['state'] ?? null) !== 'pending') throw new LogicException('Chybí rozpracované odeslání.');
+    if (($session['training_submissions'][$key]['state'] ?? null) !== 'pending') {
+        throw new LogicException('Chybí rozpracované odeslání.');
+    }
+    unset($session['training_submissions'][$key]['draft']);
     $session['training_submissions'][$key]['state'] = 'completed';
     $session['training_submissions'][$key]['training_id'] = $trainingId;
     $session['training_submissions'][$key]['redirect'] = $redirect;
@@ -71,5 +87,22 @@ function trainingSubmissionComplete(array &$session, string $key, int $trainingI
 /** Call only after a known rollback before attempting commit. */
 function trainingSubmissionRetryAfterRollback(array &$session, string $key): void
 {
-    if (($session['training_submissions'][$key]['state'] ?? null) === 'pending') $session['training_submissions'][$key]['state'] = 'issued';
+    if (($session['training_submissions'][$key]['state'] ?? null) === 'pending') {
+        $session['training_submissions'][$key]['state'] = 'issued';
+    }
+}
+
+/** Retain the browser snapshot only for this authenticated, issued submission. Never a write payload. */
+function trainingSubmissionRememberDraft(array &$session, string $key, string $json): void
+{
+    if (($session['training_submissions'][$key]['state'] ?? '') !== 'issued' || strlen($json) > 262144) {
+        return;
+    }
+    $draft = json_decode($json, true);
+    if (!is_array($draft) || ($draft['version'] ?? null) !== 1 || ($draft['key'] ?? '') !== $key
+        || !is_array($draft['fields'] ?? null) || !is_array($draft['rows'] ?? null)) {
+        return;
+    }
+    unset($draft['fields']['csrf_token'], $draft['fields']['submission_key'], $draft['fields']['training_draft']);
+    $session['training_submissions'][$key]['draft'] = $draft;
 }

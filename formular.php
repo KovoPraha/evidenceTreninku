@@ -344,8 +344,12 @@ function h($s)
     <?php endif; ?>
 
     <form id="treninkForm" action="ulozit_trenink.php" method="post" enctype="multipart/form-data">
+    <div id="training-draft-recovery"></div>
+    <p id="training-draft-status" class="text-muted small" role="status">Rozepsané údaje se průběžně ukládají v tomto prohlížeči.</p>
+    <input type="hidden" name="training_draft" id="training_draft" value="">
     <?= csrf_field() ?>
     <input type="hidden" name="submission_key" value="<?= h($submissionKey) ?>">
+    <input type="hidden" name="duplikat" value="<?= (int)($_GET['duplikat'] ?? 0) ?>">
 
     <?php if ($planPrefill): ?>
     <!-- Info lišta — evidence z plánu -->
@@ -906,6 +910,11 @@ if (PLAN_PREFILL) {
         if (!sug.contains(e.target) && e.target !== input) close();
     });
 
+    document.getElementById('treninkForm').addEventListener('training-draft-restore', event => {
+        window.__ucastniciSelected = [];
+        (event.detail.participants || []).forEach(sp => addParticipant(sp.id, sp.label));
+        render(); syncHidden();
+    });
     syncHidden();
 
     // Předvyplnění z duplikátu
@@ -996,7 +1005,7 @@ if (PLAN_PREFILL) {
                         <span class="text-muted fw-normal" style="font-size:.78rem;">mm:ss.xx</span>
                     </label>
                     <input type="text" class="form-control form-control-sm js-cas" aria-label="Čas měření" placeholder="02:13.45"
-                        pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)"
+                        pattern="(?:[0-9]{1,5}:[0-5][0-9](?:[.][0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:[.][0-9]{1,3})?)"
                         title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                     <small class="text-muted" style="font-size:.76rem;">např. 2 min 13,45 s → 02:13.45</small>
                 </div>
@@ -1046,7 +1055,7 @@ if (PLAN_PREFILL) {
                         <span class="text-muted fw-normal" style="font-size:.78rem;">mm:ss.xx</span>
                     </label>
                     <input type="text" class="form-control form-control-sm js-cas" aria-label="Čas měření" placeholder="02:13.45"
-                        pattern="(?:[0-9]{1,5}:[0-5][0-9](?:\.[0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,3})?)"
+                        pattern="(?:[0-9]{1,5}:[0-5][0-9](?:[.][0-9]{1,3})?|[0-9]{1,3}:[0-5][0-9]:[0-5][0-9](?:[.][0-9]{1,3})?)"
                         title="MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm">
                 </div>
                 <div class="col-md-4">
@@ -1294,6 +1303,18 @@ if (PLAN_PREFILL) {
         }
     });
 
+    form.addEventListener('training-draft-restore', event => {
+        rowsWrap.replaceChildren();
+        (event.detail.rows || []).forEach(values => {
+            addRow();
+            const row = rowsWrap.lastElementChild;
+            const type = row.querySelector('.js-typ');
+            type.value = values[2]?.value || '';
+            renderFieldsByType(row);
+            row.querySelectorAll('input,select,textarea').forEach((field, i) => { field.value = values[i]?.value || ''; });
+        });
+        syncHidden();
+    });
     addRow(); // 1 prázdný řádek
 })();
 
@@ -1307,6 +1328,10 @@ if (PLAN_PREFILL) {
     if (!input || !sug || !wrap || !hid) return;
 
     let selected = [];
+    document.getElementById('treninkForm').addEventListener('training-draft-restore', event => {
+        try { selected = JSON.parse(event.detail.fields?.tagy_json?.[0] || '[]'); } catch (_) { selected = []; }
+        render(); sync();
+    });
 
     function escapeHtml(s) {
         return String(s).replace(/[&<>"']/g, m =>
@@ -1472,5 +1497,22 @@ if (PLAN_PREFILL) {
 })();
 </script>
 <script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script>
+<?php
+$draftEntry = $_SESSION['training_submissions'][$submissionKey] ?? [];
+$draftRetry = $draftEntry['draft'] ?? null;
+if (is_array($draftRetry)) {
+    $draftRetry['pending'] = false;
+}
+$draftCompleted = array_keys(array_filter(
+    $_SESSION['training_submissions'] ?? [],
+    static fn (array $entry): bool => ($entry['actor'] ?? 0) === $currentTrener && ($entry['state'] ?? '') === 'completed'
+));
+?>
+<script type="application/json" id="training-draft-config" nonce="<?= h(app_csp_nonce()) ?>"><?= json_encode([
+    'actor' => $currentTrener, 'key' => $submissionKey,
+    'context' => (int)($_GET['plan_id'] ?? 0) . ':' . (int)($_GET['duplikat'] ?? 0),
+    'retry' => $draftRetry, 'completed' => $draftCompleted,
+], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?></script>
+<script nonce="<?= h(app_csp_nonce()) ?>" src="assets/training-form-resilience.js"></script>
 </body>
 </html>

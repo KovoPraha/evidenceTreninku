@@ -37,8 +37,7 @@ final class TrainingCalendarWiringTest extends TestCase
 
         $save = (string)file_get_contents($root . '/ulozit_trenink.php');
         self::assertStringContainsString('venueCalendarCreateTrainingReservation', $save);
-        self::assertMatchesRegularExpression('/\[\s*\x27plan_id\x27\s*=>\s*\$planId\s*\]/', $save);
-        self::assertMatchesRegularExpression('/\[\s*\x27submission_key\x27\s*=>\s*\$submissionKey\s*\]/', $save);
+        self::assertStringContainsString('trainingSubmissionFormUrl($submissionKey, $_POST)', $save);
     }
 
     public function testGroupOnlyCalendarAndWeekCopyVisibilityAreWired(): void
