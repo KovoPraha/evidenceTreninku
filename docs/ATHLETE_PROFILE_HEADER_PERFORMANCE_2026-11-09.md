@@ -60,3 +60,11 @@ ověří GitHub Actions. Native benchmark, Chrome, aktuální CI a release čeka
 Nový runner zmrazí parent i reader z2c61df14. Vlastní HTTP servery,
 cacheOFF, cleanup; samostatná diagnostika neovlivňuje prosté HTTP časy.
 Původní výkonové protokoly/harness RAP beze změny. Paměť bez umělého prahu.
+
+### První CI — statická analýza
+
+Head d220ec79: PHPStan FAIL, historický undefined-pdo baseline24 nově25.
+Žádné navýšení potlačení: explicitní kontrola skutečného PDO po db.php
+zaručuje bootstrap kontrakt, původní24položková výjimka odstraněna.
+Doménové chování a práva bez změny; native/HTTP měření běží dále pro první
+kandidát a zůstane oddělené. Širší lokální sada17/807 PASS.

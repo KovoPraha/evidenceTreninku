@@ -9,6 +9,9 @@ header('Referrer-Policy: no-referrer');
 header('Cache-Control: no-store, private');
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/db.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new LogicException('Database bootstrap must provide PDO.');
+}
 require_once __DIR__ . '/includes/public_profile_token.php';
 require_once __DIR__ . '/includes/sports_measurement_contract.php';
 require_once __DIR__ . '/includes/sportovec_note_access.php';
