@@ -34,6 +34,8 @@ Souběh 10. 11.: do main přibyla schválená ASSET5 změna #439 / `8182489e` (j
 
 Následný main `d0f5fee7` / #441 doplnil pouze společné předání trenérských soupisek a testerky. Vyřešeny dva souběžné řádky katalogu/indexu: zachované novější důkazy COACH i položka BAR. Head `7acf051d` znovu prochází přísným CI proti aktuálnímu main; auto-merge repozitář nepovoluje a nebylo zapnuto. Opakovaný Computer Use pokus přečetl inventář, ale otevření nové Chrome karty vypršelo a nativní snímek neodpovídal cílovému oknu; žádný další vstup nebyl odeslán. Nesouvisející snímek se neukládá do repozitáře, TV vizuální přejímka stále NOT RUN.
 
+Průběžné doplnění důkazů je pushnuté do `codex/bar-display-stock-release-20261110` odděleně od ověřovaného aplikačního PR #440. Po jeho sloučení bude dokumentační rozdíl přenesen na čerstvý main a předán vlastním PR. Nová úplná záloha/obnova [42860986643](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42860986643) spuštěná po vypršení prvního hodinového bodu; výsledek zatím čeká, skladový zápis se neprovedl.
+
 Sloučení a nasazení této změny, skutečné čtení/změna skladových zásob a nové přepnutí starých TV URL jsou zatím NOT RUN. Níže budou připojené skutečné běhy a výsledky; testovací úspěch není doklad produkčního převodu.
 
 Předání implementace: [PR #440](https://github.com/KovoPraha/evidenceTreninku/pull/440). Souběžná změna #438 je zachovaná; její vydání má samostatné schválení podle svého protokolu. Žádné prod zásoby zatím nebyly měněné.
