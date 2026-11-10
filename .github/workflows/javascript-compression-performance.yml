@@ -1,0 +1,44 @@
+name: JavaScript compression parity and performance
+
+on:
+  pull_request:
+    paths:
+      - 'assets/**'
+      - '.htaccess'
+      - 'sw.js'
+      - 'tests/Support/JavascriptCompression*'
+      - '.github/workflows/javascript-compression-performance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apache-browser:
+    name: Apache gzip and real Chrome
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: Prepare real Apache and Chrome CLI
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y apache2
+          npm install --global @playwright/cli@0.1.23
+          if ! command -v google-chrome >/dev/null; then npx --yes playwright install --with-deps chrome; fi
+          google-chrome --version
+      - name: Verify unchanged bytes, encoding, caching, controls and browser timing
+        env:
+          JS_COMPRESSION_BROWSER: '1'
+        run: python3 tests/Support/JavascriptCompressionProfile.py
+      - name: Preserve safe public-asset evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: javascript-compression
+          path: output/javascript-compression-safe/
+          if-no-files-found: warn
+          retention-days: 30

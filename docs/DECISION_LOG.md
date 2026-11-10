@@ -561,3 +561,22 @@ Produkční /bin vrací stávající Apache403 před PHP, stejné jako migrate.p
 nativní PHP404/0 zůstává backstop. Přijato skutečné hostingové odmítnutí bez
 uvolnění přístupu; nebylo nutné měnit aplikaci nebo rewrite pravidla.
 Dokumentace426 neměníruntime9dbd9eaf a nevyžaduje druhý deploy.
+
+
+## D2026-11-10-HJS — měřit cachovatelný společný staff JavaScript
+
+Podle nového zadání vybrán neuzavřený bod7 původní analýzy:14.7kB stejného
+kódu v každém staff HTML. P11-ASSET ani zamítnuté RIX varianty se neopakují.
+Pouze kandidát do měření, nikoli slíbené zrychlení: nový studený request musí
+projít bezregresním gate a úspora teplého HTML/cache být skutečně doložená.
+Šest serverových hodnot zůstane čerstvých/soukromých, nikdy ve statickém JS;
+stejný JS/pořadí/SQL a žádná aktivace hledání nebo push. [Plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md).
+
+
+## D2026-11-10-JSZ — přednost skutečné kompresi před novým inline assetem
+
+ProdukčníGET obou stávajícíchJS ukázaly89282bytes identity a max-age30; CSSgzip
+není důkazem kompreseJS. HJS by přidal nový nekomprimovaný cold request, proto
+není přijat. Prototyp zachovat vevlastnívětvi, novýslice JSZ ověří gzip stejného
+veřejnéhoJS podassets skutečnýmApache. Žádná změnaTTL, SWroot, privátníhoHTML,
+JSbytes, práv nebo zápisů. [Doklad](verification/shared-header-script-20261110/production-js-transport.json).
