@@ -571,3 +571,12 @@ Pouze kandidát do měření, nikoli slíbené zrychlení: nový studený reques
 projít bezregresním gate a úspora teplého HTML/cache být skutečně doložená.
 Šest serverových hodnot zůstane čerstvých/soukromých, nikdy ve statickém JS;
 stejný JS/pořadí/SQL a žádná aktivace hledání nebo push. [Plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md).
+
+
+## D2026-11-10-JSZ — přednost skutečné kompresi před novým inline assetem
+
+ProdukčníGET obou stávajícíchJS ukázaly89282bytes identity a max-age30; CSSgzip
+není důkazem kompreseJS. HJS by přidal nový nekomprimovaný cold request, proto
+není přijat. Prototyp zachovat vevlastnívětvi, novýslice JSZ ověří gzip stejného
+veřejnéhoJS podassets skutečnýmApache. Žádná změnaTTL, SWroot, privátníhoHTML,
+JSbytes, práv nebo zápisů. [Doklad](verification/shared-header-script-20261110/production-js-transport.json).

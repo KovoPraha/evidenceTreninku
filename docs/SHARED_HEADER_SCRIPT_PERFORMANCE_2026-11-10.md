@@ -1,6 +1,6 @@
 # P11-HJS — sdílený JavaScript přihlášené hlavičky
 
-10. 11. 2026, Europe/Prague. ROZPRACOVÁNO, plán před implementací.
+10. 11. 2026, Europe/Prague. NEVYBRÁNO po ověření produkčního transportu.
 Vlastník: vývoj/Codex podle aktuálního zadání Marka. Při plném PASS je povolený
 commit, merge a chráněné nasazení; import a lidské UAT se tím nepovolují.
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_SHARED_HEADER_SCRIPT_2026-11-10.md),
@@ -67,3 +67,25 @@ osobního HTML, konfigurace, migrací ani dlouhodobé cache práv.
 
 Další krok: úzká implementace a kontrakty mechanické shody, potom nativní
 HTTP/Chrome před/po. Implementace, nový CI/merge/deploy: NOT RUN.
+
+
+## Uzavření výběru — NEVYBRÁNO, prototyp zachovaný
+
+Nové skutečné HTTPS GET obou existujících JS s Accept-Encoding:gzip prokázaly
+identity přenos, nikoli gzip: Bootstrap80721 + app-ui8561 =89282bytes. Oba
+mají Cache-Control:max-age=30. CSS má gzip/604800, tato politika se na JS
+nevztahuje. [Bezpečná měření](verification/shared-header-script-20261110/production-js-transport.json).
+Offline gzip6 odhad obou JS je26809bytes; není to ještě změřený nový HTTP zisk.
+
+Přesun14.7kB inline JS do nového nekomprimovaného assetu může zvýšit cold
+přenos, protože HTML už gzip má; krátká30s cache omezuje zisk navigací.
+Proto se kandidát HJS nepřijímá do runtime. Mechanická shoda prefix/suffix,
+JS a všech PHP hodnot PASS, srovnávací JS7případů a normalizátor1/8 PASS.
+Native/browser výkon prototypu nebyl přijat ani nasazen. Vlastní prototyp
+zůstane commitnutý pouze na codex/shared-header-assets-performance-20261110.
+
+Přednost má menší a šířeji působící zásah: povolit gzip pro existující veřejné
+JS pod assets, beze změny jejich dekódovaných bytes, HTML nebo počtu požadavků.
+Zachovat30s cache, rootSW i ostatní typy a soukromé cesty. Nový řez P11-JSZ
+bude mít samostatný plán, skutečný Apache/nativeHTTP/Chrome a release gate.
+Zadání merge/deploy platí až pro plně přijatý JSZ; HJS se do produkce neslučuje.
