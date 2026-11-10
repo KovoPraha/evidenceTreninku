@@ -440,6 +440,6 @@ verzí a6 pixelových párů shodných po8182489e; CSS53957→31248 B, control s
 [receipt](verification/public-calendar-assets-20261110/release/release-controls.json).
 Lidské přihlášené UAT, fyzický telefon a obnova této zálohy NOT RUN. WIP7a7afd75
 zachovaný; runtime/flags vlastní CURRENT. Finální doklady ve větvi
-codex/public-calendar-assets-release-docs-20261110, PR bude doplněn při otevření.
+codex/public-calendar-assets-release-docs-20261110, [PR #442](https://github.com/KovoPraha/evidenceTreninku/pull/442).
 Další krok: po úplném CI sloučit doklady bez druhého deploye. Žádný další
 implementační řez není v tomto zadání rozpracovaný.

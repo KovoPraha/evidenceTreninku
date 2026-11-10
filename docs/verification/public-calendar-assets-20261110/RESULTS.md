@@ -123,5 +123,5 @@ raw HTML, cookies, hesla, privátní konfigurace ani dumpy.
 
 Přihlášené lidské produkční UAT, fyzický telefon a obnova této konkrétní zálohy
 NOT RUN. Původní fio větev a WIP7a7afd75 zachované. Finální doklady: větev
-codex/public-calendar-assets-release-docs-20261110, PR bude doplněn při otevření.
+codex/public-calendar-assets-release-docs-20261110, [PR #442](https://github.com/KovoPraha/evidenceTreninku/pull/442).
 Dokumentační PR po všech CI sloučit; kvůli dokladům neopakovat deploy.

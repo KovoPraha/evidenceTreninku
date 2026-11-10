@@ -30,7 +30,7 @@ Původní větev codex/fio-auto-reconciliation-recovery a WIP kis_rosters_admin.
 SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`
 zachované, nestashovat/neresetovat. Vlastní doklady ve worktree
 C:/Users/Marek/Documents/Codex/evidencePavel-calendar-assets-performance-20261110,
-větev codex/public-calendar-assets-release-docs-20261110; PR bude doplněn při otevření.
+větev codex/public-calendar-assets-release-docs-20261110; [PR #442](https://github.com/KovoPraha/evidenceTreninku/pull/442).
 Další krok: po všech CI sloučit dokumentační PR, **neopakovat deploy**.
 
 Historie ASSET1–4 zůstává v [tematickém plánu](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).

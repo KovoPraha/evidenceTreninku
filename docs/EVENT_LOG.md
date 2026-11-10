@@ -228,3 +228,5 @@ uzavření E10 je nyní E2026-11-09-11. Původní proof commit411cb96a zachovan�
 - E2026-11-10-22 — P11-ASSET5 zahájeno dle vlastníka: kalendář lekcí/velodrom CDN CSS duplicity, klubový kalendář control; izolovaný worktree a nový baseline proti37f1ba8f. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset5--veřejný-kalendář-a-velodrom-10-11-2026). WIP zachovat, release podmíněn novými PASS.
 
 - E2026-11-10-23 — P11-ASSET5 NASAZENO: #439/8182489e,13CI a native42853530222/2DB PASS; deploy42855987339 SUCCESS, backup389/2/config/migrace/VS/index/smoke/cleanup PASS. Živé6HTML/pixelpárů shodných, CSS53957→31248 B, control beze změny. [Měření a meze](verification/public-calendar-assets-20261110/RESULTS.md). WIP7a7afd75 zachovaný; finální doklady bez dalšího deploye, lidské UAT NOT RUN.
+
+Finální ASSET5 doklady sdílí [PR #442](https://github.com/KovoPraha/evidenceTreninku/pull/442), větev codex/public-calendar-assets-release-docs-20261110. Pouze dokumentace/evidence, po všech CI sloučit bez dalšího produkčního nasazení.
