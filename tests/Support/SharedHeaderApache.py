@@ -33,6 +33,9 @@ class SharedHeaderApache:
             # Physical copies: the new asset must not leak into the old variant.
             shutil.copytree(self.root / 'assets', public / 'assets',
                             ignore=shutil.ignore_patterns('staff-header.js') if variant == 'before' else None)
+            for name in ['sw.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-72.png']:
+                if (self.root / name).exists():
+                    shutil.copy2(self.root / name, public / name)
             rules = (self.root / '.htaccess').read_text()
             rules += f'''\n<IfModule mod_rewrite.c>
 RewriteEngine On

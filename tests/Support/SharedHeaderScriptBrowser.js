@@ -91,7 +91,7 @@ async (page) => {
             const css = Array.from(requests.values()).filter(r=>new URL(r.url).pathname.endsWith('/bootstrap.min.css'));
             const scripts = Array.from(requests.values()).filter(r=>new URL(r.url).pathname.endsWith('/assets/staff-header.js'));
             const expectedScript = config.role!=='public' && variant==='after';
-            if(measurement.styles.length!==1 || css.length!==1 || !measurement.bootstrap_js)throw new Error('Bootstrap changed');
+            if(measurement.styles.length!==1 || css.length!==1 || !measurement.bootstrap_js)throw new Error('Bootstrap changed: '+JSON.stringify({variant,case:item.id,title:measurement.title,url:page.url(),styles:measurement.styles,css,bootstrap:measurement.bootstrap_js,errors,failed}));
             if(scripts.length!==(expectedScript?1:0) || measurement.staff_config!==expectedScript || !measurement.context_csrf_matches)
               throw new Error('Staff context/resource contract: '+JSON.stringify({variant,case:item.id,scripts,config:measurement.staff_config,csrf:measurement.context_csrf_matches}));
             if(css.concat(scripts).some(r=>![200,304].includes(r.status)))throw new Error('Local asset failed');

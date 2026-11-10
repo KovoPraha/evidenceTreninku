@@ -1,5 +1,16 @@
 (function () {
     const staffHeaderContext = JSON.parse(document.getElementById('appStaffHeaderConfig').textContent);
+    // Treat the DOM data block as data, with same-origin root paths only.
+    for (const key of ['serviceWorkerUrl', 'appBaseUrl', 'pushEndpoint', 'searchUrl']) {
+        const value = staffHeaderContext[key];
+        if (typeof value !== 'string' || !/^\/(?![\\/])/.test(value) || /[\\\u0000-\u0020]/.test(value)) {
+            throw new Error('Invalid staff header path');
+        }
+    }
+    if (typeof staffHeaderContext.pushPublicKey !== 'string' || !/^[a-f0-9]{64}$/.test(staffHeaderContext.csrfToken)) {
+        throw new Error('Invalid staff header context');
+    }
+
 // ── Web Push — registrace Service Workeru a subscribe ───────────────────────
 (function() {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
@@ -344,7 +355,7 @@ window.appConfirm = function (message) {
     var base = staffHeaderContext.appBaseUrl;
     var link = document.createElement('link');
     link.rel = 'manifest';
-    link.href = base + 'manifest.json';
+    link.href = location.origin + '/' + base.slice(1) + 'manifest.json';
     document.head.appendChild(link);
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register(base + 'sw.js', { scope: base }).catch(function () {});

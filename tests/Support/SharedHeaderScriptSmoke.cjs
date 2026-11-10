@@ -19,6 +19,8 @@ class Element {
   querySelectorAll(){return [];}
   contains(){return false;}
   closest(selector){return selector==='#pushToggleBtn'&&this.id==='pushToggleBtn'?this:null;}
+  set href(value){this._href=new URL(value,'https://example.test/').href;}
+  get href(){return this._href;}
   set textContent(value){this.innerHTML=String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 }
 async function exercise(source,options={}) {

@@ -24,6 +24,10 @@ assert len(expressions) == 9
 iterator = iter(fields)
 expected = re.sub(r'<\?=\s*(.*?)\s*\?>', lambda m:'staffHeaderContext.'+next(iterator), body, flags=re.S)
 prefix = "(function () {\n    const staffHeaderContext = JSON.parse(document.getElementById('appStaffHeaderConfig').textContent);"
+# The new DOM context boundary is fail-closed; one manifest URL is explicitly
+# rooted at the current origin. All other legacy body bytes remain exact.
+expected = expected.replace("    link.href = base + 'manifest.json';", "    link.href = location.origin + '/' + base.slice(1) + 'manifest.json';")
+prefix += "\n    // Treat the DOM data block as data, with same-origin root paths only.\n    for (const key of ['serviceWorkerUrl', 'appBaseUrl', 'pushEndpoint', 'searchUrl']) {\n        const value = staffHeaderContext[key];\n        if (typeof value !== 'string' || !/^\\/(?![\\\\/])/.test(value) || /[\\\\\\u0000-\\u0020]/.test(value)) {\n            throw new Error('Invalid staff header path');\n        }\n    }\n    if (typeof staffHeaderContext.pushPublicKey !== 'string' || !/^[a-f0-9]{64}$/.test(staffHeaderContext.csrfToken)) {\n        throw new Error('Invalid staff header context');\n    }\n"
 assert asset == prefix + expected + '\n})();\n', 'Javascript changed beyond explicit context substitution'
 region = header.split('<?= json_encode([\n',1)[1].split('\n], JSON_HEX_TAG',1)[0]
 values = dict(re.findall(r"^    '(\w+)' => (.*),$", region, re.M))
@@ -45,7 +49,7 @@ $r[]=[$t[0],$t[1]];}else{$r[]=$t;}}$out[]=$r;}echo json_encode($out,JSON_THROW_O
 tokens=json.loads(subprocess.check_output([php,'-r',code],input=json.dumps(old_values+new_values).encode()))
 assert tokens[:9] == tokens[9:], 'Server-side value expressions changed'
 result=dict(baseline_sha=metadata['baseline_sha'],prefix_suffix_unchanged=True,js_core_unchanged=True,
-            php_value_expressions_unchanged=True,interpolations=9,distinct_context_values=6,
+            php_value_expressions_unchanged=True,context_paths_validated=True,manifest_same_origin=True,interpolations=9,distinct_context_values=6,
             reference_block_bytes=len(reference.encode()),asset_bytes=len(asset.encode()),
             asset_sha256=hashlib.sha256(asset.encode()).hexdigest())
 if __name__ == '__main__':
