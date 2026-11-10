@@ -1,0 +1,11 @@
+{
+  "baseline_sha": "faed76c0ee94d210c99f67a20a92604da8f61206",
+  "prefix_suffix_unchanged": true,
+  "js_core_unchanged": true,
+  "php_value_expressions_unchanged": true,
+  "interpolations": 9,
+  "distinct_context_values": 6,
+  "reference_block_bytes": 14812,
+  "asset_bytes": 14602,
+  "asset_sha256": "4d430c9482dd4f25ad9b5546dc1bbf00fc4b2fb5e6c4d26cc4173ff9585ec080"
+}

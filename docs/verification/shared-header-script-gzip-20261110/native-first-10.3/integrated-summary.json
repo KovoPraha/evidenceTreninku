@@ -1,0 +1,162 @@
+{
+  "complete": true,
+  "diagnostic_only": false,
+  "baseline_sha": "faed76c0ee94d210c99f67a20a92604da8f61206",
+  "optimized_sha": "3d93f8ad9a690fdecacd774e04d6693dcd223592",
+  "source_sha256": {
+    "sportovec_treninky.php": "ee975e1c20c5b8ebd9cedb44c0c3f807a70470545c24650ce3ca184d63322f2e",
+    "moje_treninky.php": "fac85dd390a9cd14ffa2b410e80521d1bdb0f3553f3296b5480a3b7273596a35",
+    "sprava_treninku.php": "4ba0cdf2aeadde44efc257d22079869aeed16a958da4d1eb13e58ed12942125c",
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+    "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+    "hlavicka.php": "3485711e5cf927d47008bf6bdbd194f7354bf9e59bcddb5ed9b7cf3d47715d5a",
+    "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+    "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+  },
+  "baseline_source_sha256": {
+    "sportovec_treninky.php": "ee975e1c20c5b8ebd9cedb44c0c3f807a70470545c24650ce3ca184d63322f2e",
+    "moje_treninky.php": "fac85dd390a9cd14ffa2b410e80521d1bdb0f3553f3296b5480a3b7273596a35",
+    "sprava_treninku.php": "4ba0cdf2aeadde44efc257d22079869aeed16a958da4d1eb13e58ed12942125c",
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+    "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+    "hlavicka.php": "3012d42d1200d391b07ef395da89039d8f7cabc57d6ae75d044f8e046a516637"
+  },
+  "comparison": true,
+  "cases": [
+    {
+      "size": 1000,
+      "pages": {
+        "workspace": {
+          "before": {
+            "total_median_ms": 6.741,
+            "ttfb_median_ms": 6.593
+          },
+          "after": {
+            "total_median_ms": 6.694,
+            "ttfb_median_ms": 6.596
+          }
+        },
+        "mine": {
+          "before": {
+            "total_median_ms": 7.213,
+            "ttfb_median_ms": 7.029999999999999
+          },
+          "after": {
+            "total_median_ms": 7.202,
+            "ttfb_median_ms": 7.0920000000000005
+          }
+        },
+        "training": {
+          "before": {
+            "total_median_ms": 14.690999999999999,
+            "ttfb_median_ms": 14.264000000000001
+          },
+          "after": {
+            "total_median_ms": 14.702,
+            "ttfb_median_ms": 14.427000000000001
+          }
+        },
+        "mine_ajax": {
+          "before": {
+            "total_median_ms": 8.975,
+            "ttfb_median_ms": 8.674
+          },
+          "after": {
+            "total_median_ms": 8.954,
+            "ttfb_median_ms": 8.665000000000001
+          }
+        }
+      }
+    },
+    {
+      "size": 10000,
+      "pages": {
+        "workspace": {
+          "before": {
+            "total_median_ms": 6.6610000000000005,
+            "ttfb_median_ms": 6.526
+          },
+          "after": {
+            "total_median_ms": 6.723,
+            "ttfb_median_ms": 6.597
+          }
+        },
+        "mine": {
+          "before": {
+            "total_median_ms": 7.314,
+            "ttfb_median_ms": 7.144
+          },
+          "after": {
+            "total_median_ms": 7.203,
+            "ttfb_median_ms": 7.061999999999999
+          }
+        },
+        "training": {
+          "before": {
+            "total_median_ms": 14.281,
+            "ttfb_median_ms": 13.867
+          },
+          "after": {
+            "total_median_ms": 14.338,
+            "ttfb_median_ms": 13.991999999999999
+          }
+        },
+        "mine_ajax": {
+          "before": {
+            "total_median_ms": 10.290000000000001,
+            "ttfb_median_ms": 9.922
+          },
+          "after": {
+            "total_median_ms": 10.293999999999999,
+            "ttfb_median_ms": 9.991999999999999
+          }
+        }
+      }
+    },
+    {
+      "size": 30000,
+      "pages": {
+        "workspace": {
+          "before": {
+            "total_median_ms": 6.806,
+            "ttfb_median_ms": 6.644
+          },
+          "after": {
+            "total_median_ms": 6.734999999999999,
+            "ttfb_median_ms": 6.656
+          }
+        },
+        "mine": {
+          "before": {
+            "total_median_ms": 7.403,
+            "ttfb_median_ms": 7.223
+          },
+          "after": {
+            "total_median_ms": 7.235,
+            "ttfb_median_ms": 7.1240000000000006
+          }
+        },
+        "training": {
+          "before": {
+            "total_median_ms": 14.408000000000001,
+            "ttfb_median_ms": 14.036
+          },
+          "after": {
+            "total_median_ms": 14.587,
+            "ttfb_median_ms": 14.211
+          }
+        },
+        "mine_ajax": {
+          "before": {
+            "total_median_ms": 10.228,
+            "ttfb_median_ms": 9.934
+          },
+          "after": {
+            "total_median_ms": 10.224,
+            "ttfb_median_ms": 9.959000000000001
+          }
+        }
+      }
+    }
+  ]
+}

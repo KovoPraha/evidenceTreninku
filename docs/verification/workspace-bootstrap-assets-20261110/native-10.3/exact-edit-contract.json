@@ -1,0 +1,8 @@
+{
+  "baseline_sha": "faed76c0ee94d210c99f67a20a92604da8f61206",
+  "sole_html_change": "known duplicate CSS link deleted",
+  "php_tokens_except_literal_guard_braces_identical": true,
+  "other_literal_html_unchanged": true,
+  "formatting_has_no_output": true,
+  "source_sha256": "ca7aea1e0305178b431a445a2e01cfdcb4fbc643ecbff623190cfd0f8cef1d4b"
+}

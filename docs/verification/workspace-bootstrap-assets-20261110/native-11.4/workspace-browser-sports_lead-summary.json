@@ -1,0 +1,94 @@
+[
+  {
+    "case": "training",
+    "viewport": "desktop",
+    "cache": "cold",
+    "before": {
+      "document_encoded_bytes": 13092,
+      "document_decoded_bytes": 157965,
+      "css_network_payload": 31248,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 44340,
+      "fcp_ms": 72,
+      "ready_ms": 92.60000000003492
+    },
+    "after": {
+      "document_encoded_bytes": 13092,
+      "document_decoded_bytes": 157965,
+      "css_network_payload": 31248,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 44340,
+      "fcp_ms": 68,
+      "ready_ms": 92.39999999996508
+    }
+  },
+  {
+    "case": "training",
+    "viewport": "desktop",
+    "cache": "warm",
+    "before": {
+      "document_encoded_bytes": 13093,
+      "document_decoded_bytes": 157965,
+      "css_network_payload": 0,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 13093,
+      "fcp_ms": 56,
+      "ready_ms": 68.10000000003492
+    },
+    "after": {
+      "document_encoded_bytes": 13092,
+      "document_decoded_bytes": 157965,
+      "css_network_payload": 0,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 13092,
+      "fcp_ms": 56,
+      "ready_ms": 60.59999999997672
+    }
+  },
+  {
+    "case": "training",
+    "viewport": "mobile",
+    "cache": "cold",
+    "before": {
+      "document_encoded_bytes": 13093,
+      "document_decoded_bytes": 157965,
+      "css_network_payload": 31248,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 44341,
+      "fcp_ms": 64,
+      "ready_ms": 93.10000000003492
+    },
+    "after": {
+      "document_encoded_bytes": 13092,
+      "document_decoded_bytes": 157965,
+      "css_network_payload": 31248,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 44340,
+      "fcp_ms": 64,
+      "ready_ms": 92.70000000001164
+    }
+  },
+  {
+    "case": "training",
+    "viewport": "mobile",
+    "cache": "warm",
+    "before": {
+      "document_encoded_bytes": 13091,
+      "document_decoded_bytes": 157965,
+      "css_network_payload": 0,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 13091,
+      "fcp_ms": 52,
+      "ready_ms": 68.40000000002328
+    },
+    "after": {
+      "document_encoded_bytes": 13093,
+      "document_decoded_bytes": 157965,
+      "css_network_payload": 0,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 13093,
+      "fcp_ms": 52,
+      "ready_ms": 67.30000000004657
+    }
+  }
+]

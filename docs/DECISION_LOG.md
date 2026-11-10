@@ -607,3 +607,13 @@ APItrue/chyby0. HJS2výběr tedy uzavřít bezrelease, všechnycommity/prototyp 
 JednaodstraněnáduplicitníCSSodpověď v centrálním pracovnímrozcestníku má větší
 přímýpayloadpřínos a menší sémantickýrozsah nežnováDOMJSONhranice. Ostatnínálezy
 bezaktuálníhoHTTP/browserdůkazu nerozšiřovat. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset2--pracovní-rozcestník-nový-řez-10-11-2026).
+
+
+### ASSET2 — přijetí a release
+
+13CI i oběnativníDB, skutečnýApache/Chrome/cold/warm, source/wholeHTML/pixels/
+role/security/checksum/cleanup PASS; přesnýmergedtree nasazen42790212078.
+BootstrapCSS2→1, cold−31248gzipB; coldFCPmedian−13,3%desktop/−7,1%mobile,
+warmFCP/payload bezezměny, žádné produkčníSLA. Prod8GET/DOM i CSS/SRI/cache
+shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované.
+[Trvalérelease](verification/workspace-bootstrap-assets-20261110/release/RESULTS.md).

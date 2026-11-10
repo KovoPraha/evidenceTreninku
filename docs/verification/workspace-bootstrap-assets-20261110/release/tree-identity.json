@@ -1,0 +1,105 @@
+{
+  "tested_head": "156a9597ccdc183ae6e0bf1cf8598612f1285a88",
+  "merged_sha": "706a8d429197c779c36ffc333751b77ee1f9ba14",
+  "tested_merged_tree": "573f4504c7923ba43c69af43ecd8173a4bac637a",
+  "whole_tested_merge_tree_identical": true,
+  "original_branch": "codex/fio-auto-reconciliation-recovery",
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "workspace_canonical_source_sha256": "ca7aea1e0305178b431a445a2e01cfdcb4fbc643ecbff623190cfd0f8cef1d4b",
+  "original_wip_sha256_verified_after_deploy": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "native_source_hashes_verified": [
+    {
+      "platform": "10.3",
+      "path": "sportovec_treninky.php",
+      "sha256": "ee975e1c20c5b8ebd9cedb44c0c3f807a70470545c24650ce3ca184d63322f2e"
+    },
+    {
+      "platform": "10.3",
+      "path": "moje_treninky.php",
+      "sha256": "fac85dd390a9cd14ffa2b410e80521d1bdb0f3553f3296b5480a3b7273596a35"
+    },
+    {
+      "platform": "10.3",
+      "path": "sprava_treninku.php",
+      "sha256": "4ba0cdf2aeadde44efc257d22079869aeed16a958da4d1eb13e58ed12942125c"
+    },
+    {
+      "platform": "10.3",
+      "path": "ajax_sportovec_treninky.php",
+      "sha256": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871"
+    },
+    {
+      "platform": "10.3",
+      "path": "includes/athlete_profile_read.php",
+      "sha256": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359"
+    },
+    {
+      "platform": "10.3",
+      "path": "hlavicka.php",
+      "sha256": "3012d42d1200d391b07ef395da89039d8f7cabc57d6ae75d044f8e046a516637"
+    },
+    {
+      "platform": "10.3",
+      "path": "pracovni_pozice.php",
+      "sha256": "ca7aea1e0305178b431a445a2e01cfdcb4fbc643ecbff623190cfd0f8cef1d4b"
+    },
+    {
+      "platform": "10.3",
+      "path": "includes/sports_activity.php",
+      "sha256": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd"
+    },
+    {
+      "platform": "10.3",
+      "path": "includes/sports_activity_overview_read.php",
+      "sha256": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+    },
+    {
+      "platform": "11.4",
+      "path": "sportovec_treninky.php",
+      "sha256": "ee975e1c20c5b8ebd9cedb44c0c3f807a70470545c24650ce3ca184d63322f2e"
+    },
+    {
+      "platform": "11.4",
+      "path": "moje_treninky.php",
+      "sha256": "fac85dd390a9cd14ffa2b410e80521d1bdb0f3553f3296b5480a3b7273596a35"
+    },
+    {
+      "platform": "11.4",
+      "path": "sprava_treninku.php",
+      "sha256": "4ba0cdf2aeadde44efc257d22079869aeed16a958da4d1eb13e58ed12942125c"
+    },
+    {
+      "platform": "11.4",
+      "path": "ajax_sportovec_treninky.php",
+      "sha256": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871"
+    },
+    {
+      "platform": "11.4",
+      "path": "includes/athlete_profile_read.php",
+      "sha256": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359"
+    },
+    {
+      "platform": "11.4",
+      "path": "hlavicka.php",
+      "sha256": "3012d42d1200d391b07ef395da89039d8f7cabc57d6ae75d044f8e046a516637"
+    },
+    {
+      "platform": "11.4",
+      "path": "pracovni_pozice.php",
+      "sha256": "ca7aea1e0305178b431a445a2e01cfdcb4fbc643ecbff623190cfd0f8cef1d4b"
+    },
+    {
+      "platform": "11.4",
+      "path": "includes/sports_activity.php",
+      "sha256": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd"
+    },
+    {
+      "platform": "11.4",
+      "path": "includes/sports_activity_overview_read.php",
+      "sha256": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+    }
+  ],
+  "runtime_files_changed": [
+    "pracovni_pozice.php"
+  ]
+}

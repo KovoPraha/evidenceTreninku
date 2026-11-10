@@ -11144,11 +11144,11 @@
       "title": "P11-ASSET Bootstrap CSS právě jednou",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11-ASSET/P11-ASSET2",
-      "disposition": "PůvodníASSETnasazen, novýASSET2plán pro skutečnou duplicitu rozcestníku.",
+      "disposition": "ASSET i novýASSET2 nasazené; PR430/deploy42790212078 SUCCESS, CSS2→1, strictparita/pixely/liveDOM PASS.",
       "evidence": [
-        "docs/verification/bootstrap-assets-20261110/RESULTS.md"
+        "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md"
       ]
     },
     {
@@ -11159,9 +11159,9 @@
       "role": "handoff",
       "status": "SUPPORT",
       "registry": "P11-ASSET/P11-ASSET2",
-      "disposition": "PůvodníASSETnasazen, novýASSET2plán pro skutečnou duplicitu rozcestníku.",
+      "disposition": "ASSET i novýASSET2 nasazené; PR430/deploy42790212078 SUCCESS, CSS2→1, strictparita/pixely/liveDOM PASS.",
       "evidence": [
-        "docs/verification/bootstrap-assets-20261110/RESULTS.md"
+        "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md"
       ]
     },
     {
@@ -11172,9 +11172,9 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-ASSET/P11-ASSET2",
-      "disposition": "PůvodníASSETnasazen, novýASSET2plán pro skutečnou duplicitu rozcestníku.",
+      "disposition": "ASSET i novýASSET2 nasazené; PR430/deploy42790212078 SUCCESS, CSS2→1, strictparita/pixely/liveDOM PASS.",
       "evidence": [
-        "docs/verification/bootstrap-assets-20261110/RESULTS.md"
+        "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md"
       ]
     },
     {
@@ -11276,7 +11276,7 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-HJS2",
-      "disposition": "Nová přejímka po gzip; zatím NOT RUN.",
+      "disposition": "HJS2nevybrán, native10.3diagnostika zachovaná, žádný jehoappmerge/deploy; navázalASSET2.",
       "evidence": [
         "docs/verification/shared-header-script-gzip-20261110/RESULTS.md"
       ]
@@ -11289,9 +11289,22 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-ASSET2",
-      "disposition": "Nový plán a následná wholeHTTP/browser přejímka.",
+      "disposition": "ASSET2 dokončeno:13CI/oběDB/Chrome/release/live PASS, WIP zachovaný.",
       "evidence": [
-        "docs/verification/workspace-bootstrap-assets-20261110/RESULTS.md"
+        "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-b70af66e59",
+      "path": "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md",
+      "title": "P11-ASSET2 finální release",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-ASSET2",
+      "disposition": "Nasazeno/technickéověřeníPASS, productionUATNOTRUN.",
+      "evidence": [
+        "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md"
       ]
     }
   ],

@@ -42,5 +42,7 @@ rozlišení relativní URL. Nová přejímka/CodeQL čekají; merge/deploy NOT R
 /assets/vendor/bootstrap/bootstrap.min.css a stejná?v=1794299668. Oba200gzip,
 BootstrapAPItrue, bezJS/networkchyb. Přesnějši další kandidát ASSET2 odstraní
 jeden celý duplicitníCSS přenos; HJS2 zůstává vlastní commitnuté/pushnuté WIP.
-Žádný jeho app merge/deploy. Úplný Chrome/14.3gate nepřijatý. Nativní10.3pár
+Žádný jeho app merge/deploy. Úplný Chrome/11.4gate nepřijatý. Nativní10.3pár
 PASS a úspory offlinegzip nejsou přeznačené na finální výkonový výsledek.
+
+Původní nevybraný [native10.3pár](native-first-10.3/integrated-summary.json) je zachovaný; přijat a nasazen až samostatný [ASSET2](../workspace-bootstrap-assets-20261110/release/RESULTS.md).
