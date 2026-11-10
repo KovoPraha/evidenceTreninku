@@ -92,7 +92,10 @@ foreach (range(-4, 16) as $round) {
             if ($signature !== $report['signatures'][$case][$variant]) {
                 throw new RuntimeException('Unstable normalized parent HTML: ' . $case);
             }
-            $report['raw_signatures'][$case][$variant] ??= ['bytes' => strlen($raw), 'sha256' => hash('sha256', $raw), 'local_bootstrap' => $local, 'cdn_bootstrap' => $cdn, 'staff_bundles' => $bundles, 'gzip_bytes' => strlen(gzencode($raw, 6))];
+            $report['raw_signatures'][$case][$variant] ??= [
+                'bytes' => strlen($raw), 'sha256' => hash('sha256', $raw), 'local_bootstrap' => $local,
+                'cdn_bootstrap' => $cdn, 'staff_bundles' => $bundles, 'gzip_bytes' => strlen(gzencode($raw, 6)),
+            ];
             if ($round >= 0) {
                 $report['samples'][$case][$variant][] = ['total_ms' => $response['total_ms'], 'ttfb_ms' => $response['ttfb_ms']];
             }
