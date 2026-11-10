@@ -27,3 +27,10 @@ nových 7 dní platí jen pro obsahově adresovaný staff soubor. Ostatní JS 30
 
 Implementace `7de1c569` pushnutá v [#449](https://github.com/KovoPraha/evidenceTreninku/pull/449); lokální PASS výše.
 Aktuální native2DB/Chrome/ostatní CI probíhají; merge/deploy NOT RUN.
+
+První native běh42916624735: FAIL při přípravě porovnávacího stromu, chyběla
+skrytá vývojová `.php-cs-fixer.dist.php` v kopii, zatímco kontrola všech PHP ji
+správně požadovala. Aplikace ani měření ještě neběžely. Oprava kopíruje i skryté
+kořenové PHP soubory; porovnání všech ostatních PHP zůstává přesné. Obě izolované
+DB/config/účty byly uklizené. Apache gzip/browser samostatný běh42916624824 PASS;
+aktuální celek musí projít znovu na opraveném HEAD, nejde o release PASS.

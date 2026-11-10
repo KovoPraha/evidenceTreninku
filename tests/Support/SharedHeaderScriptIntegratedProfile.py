@@ -243,7 +243,7 @@ try:
     database_alias()
     database_alias_created = True
     for entry in root.iterdir():
-        if entry.name.startswith('.') or entry.name in {'output','config.php','booking','includes'}:continue
+        if (entry.name.startswith('.') and entry.suffix!='.php') or entry.name in {'output','config.php','booking','includes'}:continue
         if entry.is_file() and entry.suffix=='.php':shutil.copy2(entry,baseline_root/entry.name)
         else:(baseline_root/entry.name).symlink_to(entry,target_is_directory=entry.is_dir())
     for name in ['booking','includes']:
