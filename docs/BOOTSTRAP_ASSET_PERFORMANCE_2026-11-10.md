@@ -395,3 +395,5 @@ nové celé HTTP, dvourelease Chrome a skutečná invalidace NOT RUN, release ne
 Runtime zůstává beead425 / deploy42810948814, oba flags false. Další krok:
 nový izolovaný profil, potom vyhodnotit shodu a naměřený přínos; teprve při
 splnění přejímky commit/merge/deploy. Původní WIP zachovaný, nic nestashovat.
+
+ASSET4 checkpoint: implementace commit 3ec3b0f5 push / draft PR #435. Místní 18/5706 a doplňkové 17/101 PASS. MariaDB 10.3 celé HTTP PASS. První CI odhalilo dvě chyby testovacích nástrojů (manifest zaměněný za ruční JS include; dotfile ve vývojové kopii); opravené bez oslabení runtime kontraktu. Nový čtecí PublicCatalogProbe: 5 skutečných pohledů včetně strana=2, celý HTML a per-card otisky, repeat PASS. Historické hashy nadále nevysvětlené; produkce beze změny.

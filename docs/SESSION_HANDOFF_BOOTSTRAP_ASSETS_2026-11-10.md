@@ -113,3 +113,5 @@ nové celé HTTP, dvourelease Chrome a skutečná invalidace NOT RUN, release ne
 Runtime zůstává beead425 / deploy42810948814, oba flags false. Další krok:
 nový izolovaný profil, potom vyhodnotit shodu a naměřený přínos; teprve při
 splnění přejímky commit/merge/deploy. Původní WIP zachovaný, nic nestashovat.
+
+ASSET4 push / draft PR #435 (3ec3b0f5), CI a browser běží, nenasazeno. Nový katalogový probe 5/5 repeat PASS; historické rozdíly otevřené. První CI opravy testovacích nástrojů připravené, další krok dokončit dvourelease měření a vyhodnotit přejímku.

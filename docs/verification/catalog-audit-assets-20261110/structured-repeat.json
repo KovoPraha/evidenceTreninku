@@ -1,0 +1,302 @@
+{
+    "captured_utc": "2026-11-10T14:11:10+00:00",
+    "method": "anonymous GET; full HTML and per-card hashes, explicit nonce/CSRF/five asset versions only",
+    "complete": true,
+    "parity": "PASS",
+    "cases": {
+        "catalog": {
+            "http": 200,
+            "total_ms": 1701.3020000000001,
+            "sections": {
+                "whole_html_sha256": "e32de20dad3708aa6ba45755f276d796823076dc1af2408b4664532d880c9bd4",
+                "cards": [
+                    {
+                        "html_sha256": "f5d188b00a04c069773528d6a3949c0aa85321e3772bdcfa81d4277cb450a447",
+                        "text_sha256": "2d99c3abd22fb8a665f3c0f3aa0ee1804bf573d7d661101f460173ba32ee69b5",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/f42d7624017439bd8293818aa031b773.jpg"
+                    },
+                    {
+                        "html_sha256": "8786657c6277025591031d650068d0732e235b144fa410eb16633a4e50e40868",
+                        "text_sha256": "bac363f0fbce425737ec0c1ffb874767ca5d2b0332188d2f90da9091b0556aa9",
+                        "image_path": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017"
+                    },
+                    {
+                        "html_sha256": "5d1b3ebe300bf7ece6f90cd46748d061d8294e28dd087f513a543fc8f2f258d8",
+                        "text_sha256": "a97c3123e8e18df382657c65dc89db723aaa2254cc9938c6f2fe3e6d6fa9ba2c",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/794eec11d8f074735dad40eabfdfc67e.jpg"
+                    },
+                    {
+                        "html_sha256": "6d06c2a395a7e26fd6773a2acd73ca532341f6baa39a66b041894a8f9513a12e",
+                        "text_sha256": "5935759be044e03d01a0e03c86dbad96e7ab2e2f20bb61e660753c3993c51b9d",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/a08c31254e17808d3373d57291f43339.jpg"
+                    },
+                    {
+                        "html_sha256": "5f247834c00f728a5ee9eb402a2752a566cdd5b4e8c318fe66531a46bb4dc145",
+                        "text_sha256": "85707d4cb270d16b15c5570d3780a58bc9800901aff286db9bee98ef0f0c59cb",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/4a65da0471cc01bad4f0d4292044553e.jpg"
+                    },
+                    {
+                        "html_sha256": "a6a9345bbee69d6d6c01360ebbd77ec914fa319da4138a664b5efe9bb4ba2e61",
+                        "text_sha256": "3e6b54f1a557beced21aa91922475cf22e54ce5e949e5543424502c8ed7325c9",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/765955f81f54caed18de06fb02176b73.jpg"
+                    },
+                    {
+                        "html_sha256": "dbb12ff04b6ed272e9fd30007daac18ec1c6fc9145f0c41efdd61e508d9a455b",
+                        "text_sha256": "d4a939ac88c5c7d9a64c9d7cce6a04014baf855b112d414bd62614a2d8c508ff",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/afe438c20c67e908544c62be2c32a063.jpg"
+                    },
+                    {
+                        "html_sha256": "dbb1dc38e4a9f6a74c0a677dc3885085f7debcd3ea047dc8743c2d66044f69de",
+                        "text_sha256": "e8eaa522080d7df73d89723338dd5ac787b51da6a3672163463d03d64bf45395",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/06a344f5a14e7b3979cf71e8976cc3d7.jpg"
+                    },
+                    {
+                        "html_sha256": "4f4aa34e05a3ac8135854556ecd70d7b55fb45c2069fdcedaa804c855cc4a529",
+                        "text_sha256": "e99eac5edbfb16799cbe4960d86f21cba853f961bb23fee10df0cdc05fb2a750",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/cdf9d56ca4373e8d41aea9e5d97be49a.jpg"
+                    },
+                    {
+                        "html_sha256": "d96f72e7868e9fd6656a9d1777192b9151fc32cf5c36d1f9922a873238f26661",
+                        "text_sha256": "b93a67f7995b124a211bcc415f7be60d55240f81fe719930a93de85cbd98e768",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/fa70b96469911c83491573da0c721ca5.jpg"
+                    },
+                    {
+                        "html_sha256": "069abd3da92af97d793e30d0f86cfd8fca79433709dcfe10031bfd015335585b",
+                        "text_sha256": "774eb2fae2cdc98acad554a5c4bf5f5008b4a3f3cb683a34cc477ca1b3cec399",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/edf942653cd7cade7aa84587dfc0830f.jpg"
+                    },
+                    {
+                        "html_sha256": "2471a5a4984bdaba10b8595105cd0f113530b6cf8db566426c11b4e0f7a27682",
+                        "text_sha256": "f059865af15354749b2452442820e16221d483a12200f4190314971fd360e24c",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/a759c94cd08472af12556d3b7705818b.jpg"
+                    }
+                ],
+                "main_text_sha256": "7ce6195b41fe36e4cfd3daebbb14eb9f2115572010521174c3f85c4d80e9a499"
+            },
+            "equal": true
+        },
+        "price": {
+            "http": 200,
+            "total_ms": 1894.241,
+            "sections": {
+                "whole_html_sha256": "9948faaffb6997d15793b871eb2d24ff6629e4a2a4f54c57d8ca1d9ac3a92b8a",
+                "cards": [
+                    {
+                        "html_sha256": "2651e8503a4aba12dd18dedbed6945b494127e6ffa6d9b550c60cd57e243a6c5",
+                        "text_sha256": "a26cbccb54a8492f7a8e520b7b904b11490d740f289d3dc45e8b0069a7a2cf81",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/4b61582218614eef9e6e84eee732630b.jpg"
+                    },
+                    {
+                        "html_sha256": "53fed3cc9c052eee6f55d470252d71062ed0ee6ba3e486057d4f2a841b44fa22",
+                        "text_sha256": "cb600ed1ea6031c9d8aba3f9996c7adcec665d501cf07a8c61ebc74010a33dee",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/4b61582218614eef9e6e84eee732630b.jpg"
+                    },
+                    {
+                        "html_sha256": "5c510e9e2af75265b40a59fca219732052c006958e5e00e2e4ee8e8e73724b54",
+                        "text_sha256": "8e676e30d1b3ed1ab09b29da678859734407336c39b7d37a7fcf259f15a4a0e4",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/4b61582218614eef9e6e84eee732630b.jpg"
+                    },
+                    {
+                        "html_sha256": "8786657c6277025591031d650068d0732e235b144fa410eb16633a4e50e40868",
+                        "text_sha256": "bac363f0fbce425737ec0c1ffb874767ca5d2b0332188d2f90da9091b0556aa9",
+                        "image_path": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017"
+                    },
+                    {
+                        "html_sha256": "4f4aa34e05a3ac8135854556ecd70d7b55fb45c2069fdcedaa804c855cc4a529",
+                        "text_sha256": "e99eac5edbfb16799cbe4960d86f21cba853f961bb23fee10df0cdc05fb2a750",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/cdf9d56ca4373e8d41aea9e5d97be49a.jpg"
+                    },
+                    {
+                        "html_sha256": "c10ad0bafee931b3e44f208f5c5033164e16f5146d3e98634a9a85e7f82d1d32",
+                        "text_sha256": "e54a6078082de521ce50f562c54faa33ce786d004897025e798d87ab68822be5",
+                        "image_path": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017"
+                    },
+                    {
+                        "html_sha256": "14f0973aa4fbf00eb4fb091b94864a68595a7e0aa7e6aa02da269b65f4ff57bf",
+                        "text_sha256": "745cda9153db47985893b4cac89c5eb3c12480dcd061b716e66d8c8351357409",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/aeae628637af55ee191180d1e7ec7a91.jpg"
+                    },
+                    {
+                        "html_sha256": "8ba63cd0a15f933feb66cd722ef2de90688b140693ec6990e980f8b633f52691",
+                        "text_sha256": "d1df51688841401160b5e2ff06f0c35e92559b23604aa9d0e84eaa1e4763e9e4",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/0a8bd502b77caa7898cb6503b9c5865b.jpg"
+                    },
+                    {
+                        "html_sha256": "b25315b9298be5911854efef413ecd9fd3eb88747b9188a9238d6736aba2f9cc",
+                        "text_sha256": "af3c006ed379a175d93032b2a02f0de78f6b962bd30cf0d19d87ef96719249c2",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/bdb2ce1afe8459afa4e1530bd158f396.jpg"
+                    },
+                    {
+                        "html_sha256": "121c7d4746615b6f46ec21dafabb8c1470201b9e2caae704a9274bdbc34ef91b",
+                        "text_sha256": "d4abf7e51d50447308ef359039dbc333b44d0aa80d41444be738dcfa368f4a45",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/d39de2b7487240cb48a861ec87db8b6f.jpg"
+                    },
+                    {
+                        "html_sha256": "069abd3da92af97d793e30d0f86cfd8fca79433709dcfe10031bfd015335585b",
+                        "text_sha256": "774eb2fae2cdc98acad554a5c4bf5f5008b4a3f3cb683a34cc477ca1b3cec399",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/edf942653cd7cade7aa84587dfc0830f.jpg"
+                    },
+                    {
+                        "html_sha256": "ecc091daf06d1e2c1c482a63e7b641ffe5442ac0a8b145752f27a63b937d52c3",
+                        "text_sha256": "8e75f765dc2eadffbeccfe2a098298b628324702455107ea5377ce97eb63363f",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/a10e9a41f965b4cc581c1f60c64cd62d.jpg"
+                    }
+                ],
+                "main_text_sha256": "28abb580fbe629d6b6976214e4142702431065390f54aec2e9363b65d72cdfb8"
+            },
+            "equal": true
+        },
+        "page2": {
+            "http": 200,
+            "total_ms": 1864.326,
+            "sections": {
+                "whole_html_sha256": "16f574fad844fdded94df46be1ee8108a8792ce121f653f75adda67af10a4703",
+                "cards": [
+                    {
+                        "html_sha256": "e85aa8962fad5dbbfd90ac6384d332c320f4a0ad45b27d35e9c3e3da1010f0d2",
+                        "text_sha256": "4ebb9e25cb6f030242a353df4cbfc9e83c616b47a907dcd65f77093defc4db52",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/96a0225380494d85001dcd4c67aec7dd.jpg"
+                    },
+                    {
+                        "html_sha256": "d5dc20948030675536ddc29e97b14e2eb7c6476f667f8591ccc663a0a3500bf0",
+                        "text_sha256": "f35767584fa1d9e25a40eeed24849c7458bb178ed066f5a71ea81e8c41d8b05f",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/9d5556107feffdc15d15284127cbb868.jpg"
+                    },
+                    {
+                        "html_sha256": "42a4ad770424326943ad9d568527422c6472af90cada8d7ccb78c484aa691397",
+                        "text_sha256": "f4f10bde49f1869db56e17b1f33d127413cac6271a6a92bdafc5dcce503a1988",
+                        "image_path": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017"
+                    },
+                    {
+                        "html_sha256": "b7820ea7f2ac04fef68a46587f373ee0858485614fe8b6091e7886cf6539eb04",
+                        "text_sha256": "723732842582e866eb2046f87990daa9a55a2363a1aad95e418f6239ea96cfaa",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/5027d26efd6e8023c9ea28ca2b2fde1b.jpg"
+                    },
+                    {
+                        "html_sha256": "978cb3c96ebd5e2093f0bd1fbcc299ed6670267d182a06d161c8648d5cdb37bf",
+                        "text_sha256": "78e9d3506cd6cc3f636264b04df4316bdd518c879ec9097c82a4fdbe98768529",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/97a46b84f2d0380e3b0edc91945ed6ac.jpg"
+                    },
+                    {
+                        "html_sha256": "3060f70f2ae10132c5b5a898c8f47a9c9bd2e5f3c2dcb687c28f03674ef70dec",
+                        "text_sha256": "1ec6bb49d924c60ce302b2c056b3544069ec22a0825b4031e07b2516ae4425b9",
+                        "image_path": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017"
+                    },
+                    {
+                        "html_sha256": "11ff9c03d364e8f05661435479db67a35d4db62a7a4572c1add0c47d04dfb37d",
+                        "text_sha256": "3709a8dd82d7c20573d483c642c48398c6f6bde57a044bc020929087d5f2ca63",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/275f6e70d5b95d19a9576fb50a65ece0.jpg"
+                    },
+                    {
+                        "html_sha256": "dd36b5d551da6887a422e447210b8e357613778a9123ddc774637f2ac8ded2fc",
+                        "text_sha256": "b4cb579c110b6523bd5a0f7ce67626779da5f6b98b02469dbccd6bb9b44daa6c",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/83c48dd54d78b4776d2c2572885cf0d0.jpg"
+                    },
+                    {
+                        "html_sha256": "2df926b7ff551b0c6807875f7465083bd5b5884a307bac00b1a74ecffd06fb23",
+                        "text_sha256": "084cffb40deeb81c6aea83963ec145fb1a147a2a8b5a57df66baddd2f8495086",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/52d42adf56c3ad41b23be24d618887f8.jpg"
+                    },
+                    {
+                        "html_sha256": "ec154589947a9a49cfa080cefafb1738261c106bdf4a252a562639b48610ef48",
+                        "text_sha256": "9f8ee905e89befdf9f77cba9fd1faf25f70d1cef48385130b3cc815710223047",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/bd788ab2dbc42a2b4522bed505454859.jpg"
+                    },
+                    {
+                        "html_sha256": "ecc091daf06d1e2c1c482a63e7b641ffe5442ac0a8b145752f27a63b937d52c3",
+                        "text_sha256": "8e75f765dc2eadffbeccfe2a098298b628324702455107ea5377ce97eb63363f",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/a10e9a41f965b4cc581c1f60c64cd62d.jpg"
+                    },
+                    {
+                        "html_sha256": "870992a4e5222e7792f0b38a143badc2ea0f0d32b7b9f17cd4b55338fca5654b",
+                        "text_sha256": "b9858b414ffb07ffc717a5f60295182e2e707a7380dd7e1e40d0967cc8ee2502",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/f766eddfc5b23839d76bbf8ee217e290.jpg"
+                    }
+                ],
+                "main_text_sha256": "cac468326264a599765b74d4bab215d31f2cec1247f348c62cc06b75ae99c410"
+            },
+            "equal": true
+        },
+        "search": {
+            "http": 200,
+            "total_ms": 1816.6970000000001,
+            "sections": {
+                "whole_html_sha256": "c193013f3c524fe7138f2e11e7a09396cd3b3652c253412a950218fd72818e13",
+                "cards": [
+                    {
+                        "html_sha256": "11ff9c03d364e8f05661435479db67a35d4db62a7a4572c1add0c47d04dfb37d",
+                        "text_sha256": "3709a8dd82d7c20573d483c642c48398c6f6bde57a044bc020929087d5f2ca63",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/275f6e70d5b95d19a9576fb50a65ece0.jpg"
+                    },
+                    {
+                        "html_sha256": "dd36b5d551da6887a422e447210b8e357613778a9123ddc774637f2ac8ded2fc",
+                        "text_sha256": "b4cb579c110b6523bd5a0f7ce67626779da5f6b98b02469dbccd6bb9b44daa6c",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/83c48dd54d78b4776d2c2572885cf0d0.jpg"
+                    },
+                    {
+                        "html_sha256": "2df926b7ff551b0c6807875f7465083bd5b5884a307bac00b1a74ecffd06fb23",
+                        "text_sha256": "084cffb40deeb81c6aea83963ec145fb1a147a2a8b5a57df66baddd2f8495086",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/52d42adf56c3ad41b23be24d618887f8.jpg"
+                    },
+                    {
+                        "html_sha256": "ec154589947a9a49cfa080cefafb1738261c106bdf4a252a562639b48610ef48",
+                        "text_sha256": "9f8ee905e89befdf9f77cba9fd1faf25f70d1cef48385130b3cc815710223047",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/bd788ab2dbc42a2b4522bed505454859.jpg"
+                    },
+                    {
+                        "html_sha256": "ecc091daf06d1e2c1c482a63e7b641ffe5442ac0a8b145752f27a63b937d52c3",
+                        "text_sha256": "8e75f765dc2eadffbeccfe2a098298b628324702455107ea5377ce97eb63363f",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/a10e9a41f965b4cc581c1f60c64cd62d.jpg"
+                    },
+                    {
+                        "html_sha256": "870992a4e5222e7792f0b38a143badc2ea0f0d32b7b9f17cd4b55338fca5654b",
+                        "text_sha256": "b9858b414ffb07ffc717a5f60295182e2e707a7380dd7e1e40d0967cc8ee2502",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/f766eddfc5b23839d76bbf8ee217e290.jpg"
+                    },
+                    {
+                        "html_sha256": "ecfbef2de93a79d5a179e64ab5ec37c295d1d341116748c9050551c763a637ba",
+                        "text_sha256": "c4e20a9a18dc0d3b81478a65dd8b5210de004c1887cb7434060234c185d24035",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/acd6bdbfa2fca8a8e136ad3b4448718e.jpg"
+                    },
+                    {
+                        "html_sha256": "a6dab30004b118d6815bc09b7cc6328afd940b8a0097d292bb467224651139fc",
+                        "text_sha256": "46a02978cdb54e2ba293ceafe20407ca21c838cf7d591f3abc7ece05b94e8d91",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/ade638d2c6881a0f2e02b54ecfdb65b1.jpg"
+                    },
+                    {
+                        "html_sha256": "e63e9bcc1b7ce26119cdb29d7a7311570f75176c0aba7794d4207857eab6e33f",
+                        "text_sha256": "16d299d2a72d618ce55739d91d40668f6724ccb0210166a88d0cf1c27b58d857",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/d270f4f1535d8bb5735dff1550e314b1.jpg"
+                    },
+                    {
+                        "html_sha256": "9ebc4d1f10519962022db69dcdef310a10e5fe6fd5eb733632e0fcc90e473c7e",
+                        "text_sha256": "80655f4d9e345131805f7499dfefdeabff1983e59eec3796bad56b8572ad9198",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/adc94bbd4f478798e14f472ebceb976f.jpg"
+                    },
+                    {
+                        "html_sha256": "0ba9db7851d817762972004c4ef88a5ec906088792ffbfdf89c46362e02bac54",
+                        "text_sha256": "e05d1eaafed7fc00584ea20300bade99bf0035bcaaeed452ec13c9752a650f3e",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/d9e9b5fe78978dd4f181a6afa96db945.jpg"
+                    },
+                    {
+                        "html_sha256": "b70c62b259e2778ac6a8c26ea523d30571796e05ed66ebe7c0bf58de88cc6dfb",
+                        "text_sha256": "2b67bdcf56566bbb8a5c0852cdea7e329675386a431bf6d16161a16f359109d0",
+                        "image_path": "https://kis.kovopraha.cz/uploads/shop-products/901853195b7609f636e465ccba7e3aa9.jpg"
+                    }
+                ],
+                "main_text_sha256": "d4126729231f7df3c0d7080617243e4fa71f223580bf1a11664eb1151f45e178"
+            },
+            "equal": true
+        },
+        "empty": {
+            "http": 200,
+            "total_ms": 2187.3830000000003,
+            "sections": {
+                "whole_html_sha256": "2f22fbc6cc33121acd61cea54e5104b86989c50e9be9eba1a068165fbef3d653",
+                "cards": [],
+                "main_text_sha256": "285c5d33ab29079fb9a61997433425e9d1183f46d9369e9c77c8108390351088"
+            },
+            "equal": true
+        }
+    }
+}

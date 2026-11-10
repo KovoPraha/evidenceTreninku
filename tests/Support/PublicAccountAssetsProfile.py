@@ -143,7 +143,7 @@ try:
     verified_shared=[]
     for path in shared_files:
         relative=path.relative_to(root).as_posix()
-        if relative in routes or relative=='config.php':continue
+        if relative in routes or relative=='config.php' or path.name.startswith('.'):continue
         assert (baseline_root/relative).read_bytes()==path.read_bytes(),relative
         verified_shared.append(relative)
     (safe/'shared-context.json').write_text(json.dumps(dict(shared_context_sha=head,exact_shared_php_files=verified_shared),indent=2))

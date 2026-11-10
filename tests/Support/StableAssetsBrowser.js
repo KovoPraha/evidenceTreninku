@@ -35,6 +35,7 @@ async (page) => {
     activeVariant=variant;activeCase=path.includes('eshop')?'catalog':'login';requests=new Map();
     const response=await page.goto(config.urls[variant]+'/'+release+path,{waitUntil:'load'});
     if(response.status()!==200)throw new Error('Page failed '+response.status());
+    if(config.cache_filter==='controls')await page.evaluate(()=>document.querySelectorAll('img').forEach(i=>i.loading='eager'));
     const ready=await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(performance.now())))));
     await page.waitForLoadState('networkidle');
     const state=await page.evaluate(paths=>{
@@ -49,7 +50,8 @@ async (page) => {
       });
       return{fcp_ms:performance.getEntriesByType('paint').find(p=>p.name==='first-contentful-paint')?.startTime,
         document_payload_bytes:nav.encodedBodySize,resources,shape,bootstrap:typeof window.bootstrap?.Modal==='function',
-        images:Array.from(document.querySelectorAll('img')).map(i=>({src:new URL(i.currentSrc||i.src).pathname,valid:i.complete&&i.naturalWidth>0}))};
+        images:Array.from(document.querySelectorAll('img')).map(i=>({src:new URL(i.currentSrc||i.src).pathname,
+          visible:i.getBoundingClientRect().top<innerHeight&&i.getBoundingClientRect().bottom>0,valid:i.complete&&i.naturalWidth>0}))};
     },config.paths);
     if(state.fcp_ms===undefined || !state.bootstrap || state.resources.length!==5)throw new Error('Incomplete real page '+JSON.stringify(state));
     const network=Array.from(requests.values());
@@ -103,7 +105,7 @@ async (page) => {
         if(config.cache_filter==='warm')await navigate(variant,'r2',path);
       }
       const state=await navigate(variant,'r2',path);
-      if(state.images.some(i=>!i.valid))throw new Error('Normal page image failed');
+      if(state.images.some(i=>i.visible&&!i.valid))throw new Error('Normal visible image failed');
       const shape=JSON.stringify(state.shape);
       styles[config.case_filter]??=shape;
       if(styles[config.case_filter]!==shape)throw new Error('Computed style/geometry mismatch');

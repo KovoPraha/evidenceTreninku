@@ -153,6 +153,10 @@ try:
     assert all((root/p).read_bytes()==body for p,body in originals.items())
 finally:
     front.stop();stop_servers()
+    for document in roots.values():
+        config=document/'config.php'
+        assert config.resolve().is_relative_to(runtime.resolve())
+        if config.exists(): config.unlink()
     if os.environ.get('STABLE_ASSETS_BROWSER')=='1':
         subprocess.run(['playwright-cli','--session','stable-assets','close'],cwd=root,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     if (root/'config.php').exists():
