@@ -39,3 +39,13 @@ skutečný neprázdný stav vůbec vykreslený; query/writer/ochrana beze změny
 Revokační fixture navíc ve finally obnovuje i původní updated_at vazby
 (ON UPDATE v migrovaném schématu), checksum kontrakt se nesnižuje. Nový celý
 native2DB/Chrome běh se opakuje, dosavadní FAIL zůstávají FAIL.
+
+
+ASSET7 úplný PHPUnit na f111d30e: jediný FAIL LoggedInUxWiringTest vyžaduje
+přesný jednořádkový zápis athleteRegistrationTermsReady(athleteRegistrationCurrentTerms($pdo)).
+Formátování jej rozdělilo; výraz nyní opět na jednom řádku pod200znaků.
+Původní test ani registrační guard se neupravují, source token/literal kontrakt
+stále PASS. Nová lokální unit sada824testů/28734assertions,3platformní skip;
+bez selhání, style/diff PASS. Native42901718648 na předchozím f111d30e:
+10.3celáHTTP/350checksumů/CSRF/revokace PASS,11.4Chrome ještě běží; kvůli
+novému finálnímu SHA se aktuální CI/native2DB/browser zopakují celé.

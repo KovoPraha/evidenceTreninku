@@ -3,7 +3,7 @@
     "baseline_sha": "4d1e99412d83c7bb70da77694f32e31b93ff8284",
     "routes": {
         "booking\/moje_osoby.php": {
-            "source_sha256": "dbb87a1f1190e1ace641718ea4540e6192ffa9b3c475d3a5e27d4dc756e7d113",
+            "source_sha256": "07d698c91bd3e2cdba0c57cc03d1ce348af944862eaf0ab01a525bc43aaf4a89",
             "whole_literal_html_except_exact_duplicate_equal": true,
             "php_tokens_except_exact_listed_guard_braces_equal": true,
             "brace_insertions": []

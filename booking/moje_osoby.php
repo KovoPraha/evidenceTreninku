@@ -78,9 +78,7 @@ $success = (string)($_SESSION['flash_claim_success'] ?? '');
 unset($_SESSION['flash_claim_success']);
 $claims = accountPersonClaimListForAccount($pdo, $accountId);
 $participants = accountPersonEligibleParticipants($pdo, $accountId);
-$newAthleteRegistrationOpen = athleteRegistrationTermsReady(athleteRegistrationCurrentTerms(
-    $pdo
-));
+$newAthleteRegistrationOpen = athleteRegistrationTermsReady(athleteRegistrationCurrentTerms($pdo));
 $statusLabels = [
     'pending' => ['warning', 'Čeká na kontrolu'],
     'approved' => ['success', 'Schváleno'],
