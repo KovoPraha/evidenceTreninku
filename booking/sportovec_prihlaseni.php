@@ -62,7 +62,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Přihlášení sportovce — Kovopraha</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
@@ -70,12 +69,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <main class="container py-5" style="max-width:440px">
     <div class="card border-0 shadow-sm"><div class="card-body p-4">
         <h1 class="h4 text-center mb-2">Přihlášení sportovce</h1>
-        <p class="text-muted text-center small">Jen vlastní tréninky, soupisky, události a platby. Z tohoto režimu nelze spravovat rodinu ani objednávky.</p>
+        <p class="text-muted text-center small">Jen vlastní tréninky, soupisky, události a platby. Z tohoto režimu nelze spravovat rodinu an<?php
+?>i objednávky.</p>
         <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= childLoginH($error) ?></div><?php endforeach; ?>
         <form method="post">
             <?= csrf_field() ?>
-            <div class="mb-3"><label for="athlete-login" class="form-label">Přihlašovací jméno</label><input id="athlete-login" class="form-control" name="login" value="<?= childLoginH($_POST['login'] ?? '') ?>" autocomplete="username" required autofocus></div>
-            <div class="mb-3"><label for="athlete-password" class="form-label">Heslo</label><input id="athlete-password" class="form-control" type="password" name="heslo" autocomplete="current-password" required></div>
+            <div class="mb-3"><label for="athlete-login" class="form-label">Přihlašovací jméno</label><input id="athlete-login" class="form-<?php
+?>control" name="login" value="<?= childLoginH($_POST['login'] ?? '') ?>" autocomplete="username" required autofocus></div>
+            <div class="mb-3"><label for="athlete-password" class="form-label">Heslo</label><input id="athlete-password" class="form-control<?php
+?>" type="password" name="heslo" autocomplete="current-password" required></div>
             <button class="btn btn-primary w-100">Přihlásit se</button>
         </form>
         <p class="text-center small mt-3 mb-0"><a href="zapomenute_heslo.php">Zapomenuté heslo</a></p>

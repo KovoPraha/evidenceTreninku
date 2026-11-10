@@ -235,3 +235,45 @@ Produkční8GET/DOM a CSSbytes/SRI/cache shodné; authenticatedproductionUAT NOT
 kvůli2timeoutům browserAPI bezUIzměn. WIP7a7afd75 zachovaný, HJSprototypybezmerge.
 Tento řez je technicky hotový; finální docsbez druhéhonasazení. Dalšíkandidát
 musí znovu doložit aktuální waterfall a respektovat nejslabší cold/control gate.
+
+
+## P11-ASSET3 — veřejné vstupy k účtu, 10. 11. 2026
+
+ROZPRACOVÁNO před implementací. Vlastník po opravě omylem položené otázky
+výslovně pokračuje v optimalizaci; platí ověřit shodu, změřit před/po a po PASS
+commit/merge/deploy. Vlastník práce Vývoj/Codex. Base main
+01b2ca386a221f34ed6300148192c9af2cf4e7d9; dosavadní runtime706a8d42,
+deploy42790212078 SUCCESS. Větev codex/public-account-assets-20261110,
+izolovaný worktree C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107.
+Původní kis_rosters_admin.php/WIP7a7afd75 zachovat; HJS/RIX prototypy nepřebírat.
+
+Rozsah: booking/prihlaseni.php, registrace.php, sportovec_prihlaseni.php,
+zapomenute_heslo.php. Každá má explicitní Bootstrap5.3.3 CDN CSS se SRI a zároveň
+appUiAssets() s verzovanou lokální kopií. Obnova zahrnuje i ?pro=trener.
+Odstranit jen přesně tuto duplicitu, ponechat ostatní pořadí stylů a skriptů.
+Při povinném formátování zachovat všechny významové PHP tokeny a emitted HTML;
+nutné legacy guard závorky uvést jednotlivě v source contractu.
+
+Důvod: další současné veřejné duplicity z bodu7 původní analýzy; čtyři vstupy
+mají větší zásah než jednotlivá interní error stránka, menší riziko než defer
+společného JS s inline závislostmi. Kalendář/velodrom zatím mimo tento řez.
+Ověření skutečného produkčního waterfallu a canonical CSS/SRI je první gate.
+
+Akceptace: jediná známá smazaná CSS značka, jinak identické source tokeny a
+literal HTML; stejný wholeHTTP po normalizaci pouze té značky, nonce/CSRF.
+Vlastní izolovaná MariaDB10.3/11.4, skutečné PHP a Apache/gzip; opakované
+střídavé páry GET/variant účelů a chybějící CSRF bez doménových zápisů.
+Chrome desktop/mobile cold/warm,17párů/4warmupy, skutečné CDN bez mocků či
+umělých zpoždění, lokální payload stejný jako CDN/SRI. CSS2→1 vs control1→1,
+nižší cold přenos, stejné computed styles/geometrie/pixely a navigace/formuláře.
+FCP/ready bez regrese přes20%+20ms; neprokázané zrychlení netvrdit.
+Celé CI, identický tested/merged tree, protected deploy pouze main, flags
+importovat_krouzky=false / uat_schvaleno=false; backup/config/migrace/VS/index/smoke
+a nezávislé live GET/CSS/Chrome před/po. Žádné přihlašování ani odesílání
+produkčních formulářů. Lidská přejímka odděleně; finální docs bez druhého deploye.
+
+Závislosti: stávající syntetická FullHttp fixture, Apache front, skutečné CDN,
+Chrome CLI, GitHub CI a chráněné nasazení. Další krok: zachytit živý before,
+implementovat přesné odstranění, uložit výsledky do
+[ověření ASSET3](verification/public-account-assets-20261110/RESULTS.md).
+Implementace, nové testy a nový deploy zatím NOT RUN.

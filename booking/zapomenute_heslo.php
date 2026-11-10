@@ -51,8 +51,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Obnova hesla — Kovopraha</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
- integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
@@ -69,7 +67,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 </div>
 <?php endforeach; ?>
 <?php if ($submitted): ?>
-<div class="alert alert-success">Pokud účet existuje a lze jej bezpečně ověřit, zařadili jsme další postup k odeslání na příslušný e-mail.</div>
+<div class="alert alert-success">Pokud účet existuje a lze jej bezpečně ověřit, zařadili jsme další postup k odeslání na příslušný e-mail.</<?php
+    ?>div>
 <?php if ($localResetLink !== null): ?>
 <div class="alert alert-warning">
 <strong>Jen localhost:</strong> <a class="alert-link" href="<?= htmlspecialchars($localResetLink, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">Otevřít testovací odkaz pro obnovu</a>.</div>
