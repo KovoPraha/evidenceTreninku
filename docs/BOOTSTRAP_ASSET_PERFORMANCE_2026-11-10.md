@@ -220,3 +220,18 @@ celého dotčeného souboru. Formátování proto pouze uvnitř PHP, bez změny 
 HTML; explicitní závorky dosavadního if/continue guardu. WorkspaceAssetsSourceContract
 ověří všechny PHP tokeny a ostatní literalHTML, nativní wholeHTML gate beze změny.
 První201e CI nepřijatý (fixture tuple/style), nový gate následuje; žádný release.
+
+
+### P11-ASSET2 — finální stav
+
+NASAZENO / TECHNICKÉ OVĚŘENÍ PASS: PR430 /706a8d429197c779c36ffc333751b77ee1f9ba14,
+celý tree shodný s156a9597 /13CI SUCCESS; PHPUnit2425/55914. Deploy42790212078
+SUCCESS, import/UATfalse, backup389/2, config/VS/migrace/index/smoke PASS.
+Syntetický Apache/Chrome2→1BootstrapCSS, cold−31248gzipB, FCPdesktop60→52ms,
+mobile56→52ms; warm FCP/payload bezezměny, výrazný ready-time zisk neprokázaný.
+Strict source/wholeHTML, oběMariaDB, 544+128Chrome,8pixelpairs/24UIscénářů PASS.
+[Finální release a meze](verification/workspace-bootstrap-assets-20261110/release/RESULTS.md).
+Produkční8GET/DOM a CSSbytes/SRI/cache shodné; authenticatedproductionUAT NOTRUN
+kvůli2timeoutům browserAPI bezUIzměn. WIP7a7afd75 zachovaný, HJSprototypybezmerge.
+Tento řez je technicky hotový; finální docsbez druhéhonasazení. Dalšíkandidát
+musí znovu doložit aktuální waterfall a respektovat nejslabší cold/control gate.

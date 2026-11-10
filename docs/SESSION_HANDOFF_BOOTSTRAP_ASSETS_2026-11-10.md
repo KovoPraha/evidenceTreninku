@@ -26,11 +26,18 @@ jen docs: po sloučení se runtime znovu nenasazuje. Technická práce uzavřen�
 lidské přihlášené produkční UAT, fyzický mobil a obnova této zálohy NOT RUN.
 
 
-## P11-ASSET2 — nový pracovní rozcestník
+## P11-ASSET2 — nasazeno a technicky ověřeno
 
-ROZPRACOVÁNO, basefaed76c0, codex/workspace-bootstrap-assets-20261110.
+10. 11. 2026. PR430 /706a8d42, celý tree shodný s156a9597,13CI SUCCESS.
+Deploy42790212078 SUCCESS, flags vlastní CURRENT: import/UATfalse, backup389/2,
+config/migrace/VS/index/smoke PASS. Syntetický Chrome544+128 a8pixelpairs/24UI
+scénářů, oběMariaDBwholeHTML/source/security/checksum/cleanup PASS.
+ColdBootstrapCSS62496→31248gzipB; FCPdesktop60→52/mobile56→52ms, warmbezezměny;
+není to produkčníSLA ani výrazný ready-time zisk.
 [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset2--pracovní-rozcestník-nový-řez-10-11-2026),
-[důkazy](verification/workspace-bootstrap-assets-20261110/RESULTS.md).
-Reálný Chrome odhalil dvě totožné lokálníBootstrapCSS na pracovnímrozcestníku;
-přednost odstranění1ručnílinky před HJS2. HJS2/PR429/WIP zachovatbezmerge/deploy.
-Dalšíkrok1linka + novýcelýHTTP/Apache/Chrome aCI; release ažpoPASS.
+[release a meze](verification/workspace-bootstrap-assets-20261110/release/RESULTS.md).
+8anonymníchprodukčníchstatus/DOM i canonicalCSS/SRI/cache shodné. Přihlášené
+produkčníUAT NOTRUN:2timeouty připojeného browserAPI, žádné UIzápisy nebo role.
+PůvodníWIP7a7afd75 po deployi shodný. HJS/HJS2 větve/PR429 zachovanébezmerge.
+Finálnídocs větev codex/workspace-assets-release-docs-20261110, žádný druhý deploy.
+Dalšíkrok: nový waterfall aktivní stránky a další měřitelný řez; ASSET2hotovo.

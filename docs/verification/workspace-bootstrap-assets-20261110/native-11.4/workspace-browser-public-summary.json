@@ -1,0 +1,94 @@
+[
+  {
+    "case": "public-profile",
+    "viewport": "desktop",
+    "cache": "cold",
+    "before": {
+      "document_encoded_bytes": 4043,
+      "document_decoded_bytes": 12610,
+      "css_network_payload": 31248,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 35291,
+      "fcp_ms": 56,
+      "ready_ms": 112.40000000002328
+    },
+    "after": {
+      "document_encoded_bytes": 4043,
+      "document_decoded_bytes": 12610,
+      "css_network_payload": 31248,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 35291,
+      "fcp_ms": 56,
+      "ready_ms": 111.19999999995343
+    }
+  },
+  {
+    "case": "public-profile",
+    "viewport": "desktop",
+    "cache": "warm",
+    "before": {
+      "document_encoded_bytes": 4043,
+      "document_decoded_bytes": 12610,
+      "css_network_payload": 0,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 4043,
+      "fcp_ms": 52,
+      "ready_ms": 92.90000000002328
+    },
+    "after": {
+      "document_encoded_bytes": 4044,
+      "document_decoded_bytes": 12610,
+      "css_network_payload": 0,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 4044,
+      "fcp_ms": 48,
+      "ready_ms": 91.80000000004657
+    }
+  },
+  {
+    "case": "public-profile",
+    "viewport": "mobile",
+    "cache": "cold",
+    "before": {
+      "document_encoded_bytes": 4044,
+      "document_decoded_bytes": 12610,
+      "css_network_payload": 31248,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 35292,
+      "fcp_ms": 84,
+      "ready_ms": 122.5
+    },
+    "after": {
+      "document_encoded_bytes": 4043,
+      "document_decoded_bytes": 12610,
+      "css_network_payload": 31248,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 35291,
+      "fcp_ms": 64,
+      "ready_ms": 122.30000000004657
+    }
+  },
+  {
+    "case": "public-profile",
+    "viewport": "mobile",
+    "cache": "warm",
+    "before": {
+      "document_encoded_bytes": 4043,
+      "document_decoded_bytes": 12610,
+      "css_network_payload": 0,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 4043,
+      "fcp_ms": 48,
+      "ready_ms": 103.30000000004657
+    },
+    "after": {
+      "document_encoded_bytes": 4043,
+      "document_decoded_bytes": 12610,
+      "css_network_payload": 0,
+      "css_decoded_bytes": 232803,
+      "combined_payload_bytes": 4043,
+      "fcp_ms": 52,
+      "ready_ms": 103.30000000004657
+    }
+  }
+]

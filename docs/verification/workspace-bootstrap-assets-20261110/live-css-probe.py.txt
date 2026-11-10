@@ -1,0 +1,51 @@
+"""Read-only production CSS control. Run from repository root; no cookies or redirects."""
+import base64,gzip,hashlib,json,os,re,subprocess,sys,tempfile,time
+from pathlib import Path
+phase,destination=sys.argv[1:3]
+assert phase in ['before','after']
+baseline=json.loads(Path(sys.argv[3]).read_text()) if phase=='after' else None
+host='https://kis.kovopraha.cz'
+def get(path,encoding='gzip'):
+    assert path.startswith('/') and not path.startswith('//')
+    with tempfile.TemporaryDirectory(prefix='workspace-css-') as tmp:
+        owned=Path(tmp).resolve()
+        assert owned.parent==Path(tempfile.gettempdir()).resolve() and owned.name.startswith('workspace-css-')
+        h,b=owned/'headers',owned/'body'
+        status=int(subprocess.check_output(['curl.exe' if os.name=='nt' else 'curl','-sS','--proto','=https',
+          '--max-time','30','--connect-timeout','10','--retry','2','--retry-all-errors','--retry-delay','1',
+          '-H','Accept-Encoding: '+encoding,'-D',str(h),'-o',str(b),'-w','%{http_code}',host+path]))
+        headers={k.lower():v.strip() for line in h.read_text(encoding='iso8859-1').strip().split('\n\n')[-1].splitlines()[1:] if ':' in line for k,v in [line.split(':',1)]}
+        wire=b.read_bytes();body=gzip.decompress(wire) if headers.get('content-encoding')=='gzip' else wire
+        meta=dict(status=status,wire_bytes=len(wire),decoded_bytes=len(body),sha256=hashlib.sha256(body).hexdigest(),
+          headers={k:v for k,v in headers.items() if k in ['content-type','content-encoding','cache-control','vary','location']})
+        return meta,body
+report=dict(phase=phase,captured_utc=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),cookies=False,redirects=False,writes=False,complete=False,cases={})
+try:
+    meta,html=get('/booking/eshop.php');assert meta['status']==200
+    match=re.search(rb'href="(/assets/vendor/bootstrap/bootstrap\.min\.css\?v=[0-9]+)"',html)
+    assert match,'Current canonical stylesheet URL not found'
+    versioned=match[1].decode()
+    canonical=subprocess.check_output(['git','show','HEAD:assets/vendor/bootstrap/bootstrap.min.css'])
+    digest=hashlib.sha256(canonical).hexdigest()
+    report['canonical_css_sha384']=base64.b64encode(hashlib.sha384(canonical).digest()).decode()
+    assert len(canonical)==232803
+    for name,path in [('unversioned','/assets/vendor/bootstrap/bootstrap.min.css'),('versioned',versioned)]:
+        pair={}
+        for encoding in ['gzip','identity']:
+            meta,body=get(path,encoding);assert meta['status']==200 and body==canonical
+            assert meta['headers']['cache-control']=='max-age=604800'
+            assert meta['headers'].get('content-encoding')==('gzip' if encoding=='gzip' else None)
+            pair[encoding]=meta
+            if baseline:
+                old=baseline['cases'][name][encoding]
+                assert all(old[k]==meta[k] for k in ['status','wire_bytes','decoded_bytes','sha256'])
+                assert old['headers']==meta['headers']
+        report['cases'][name]=dict(url=path,**pair)
+    denied,_=get('/pracovni_pozice.php','identity');assert denied['status'] in [302,303,401,403]
+    report['anonymous_workspace']=denied
+    if baseline:assert baseline['anonymous_workspace']==denied
+    report['authenticated_production_workspace_uat']='NOT RUN: connected browser inventory timed out twice; no UI actions'
+    report['complete']=True
+finally:
+    Path(destination).write_text(json.dumps(report,indent=2)+'\n')
+print(json.dumps(dict(phase=phase,complete=report['complete'],css_wire_bytes=report['cases'].get('unversioned',{}).get('gzip',{}).get('wire_bytes'),canonical_css_bytes=232803)))

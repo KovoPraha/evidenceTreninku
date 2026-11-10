@@ -1,0 +1,75 @@
+{
+  "phase": "after",
+  "captured_utc": "2026-11-10T09:29:55Z",
+  "cookies": false,
+  "redirects": false,
+  "writes": false,
+  "complete": true,
+  "cases": {
+    "unversioned": {
+      "url": "/assets/vendor/bootstrap/bootstrap.min.css",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 31248,
+        "decoded_bytes": 232803,
+        "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+        "headers": {
+          "content-type": "text/css",
+          "cache-control": "max-age=604800",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 232803,
+        "decoded_bytes": 232803,
+        "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+        "headers": {
+          "content-type": "text/css",
+          "cache-control": "max-age=604800",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    "versioned": {
+      "url": "/assets/vendor/bootstrap/bootstrap.min.css?v=1794302581",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 31248,
+        "decoded_bytes": 232803,
+        "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+        "headers": {
+          "content-type": "text/css",
+          "cache-control": "max-age=604800",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 232803,
+        "decoded_bytes": 232803,
+        "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+        "headers": {
+          "content-type": "text/css",
+          "cache-control": "max-age=604800",
+          "vary": "Accept-Encoding"
+        }
+      }
+    }
+  },
+  "canonical_css_sha384": "QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH",
+  "anonymous_workspace": {
+    "status": 302,
+    "wire_bytes": 0,
+    "decoded_bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "headers": {
+      "content-type": "text/html; charset=UTF-8",
+      "cache-control": "no-store, no-cache, must-revalidate",
+      "location": "login.php"
+    }
+  },
+  "authenticated_production_workspace_uat": "NOT RUN: connected browser inventory timed out twice; no UI actions"
+}
