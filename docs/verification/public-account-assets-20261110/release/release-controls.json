@@ -1,0 +1,78 @@
+{
+  "deploy_run": 42810948814,
+  "head_sha": "beead42591c1f84c66f42c411ce6f1681c02a16a",
+  "conclusion": "success",
+  "actual_checkout_sha_verified": true,
+  "manual_confirmation": "NASADIT",
+  "uat_schvaleno": false,
+  "importovat_krouzky": false,
+  "unit_tests": 2425,
+  "assertions": 55924,
+  "backup_tables": 389,
+  "backup_triggers": 2,
+  "backup_sha256": "ec738b60f3dffa91a415033f290c774b9345962c0db9dcb5b91f83e95e9aa634",
+  "backup_verified": true,
+  "existing_configuration_preserved": true,
+  "config_appended": false,
+  "private_key_backup_and_web_copy_verified": true,
+  "migrations_pending": [],
+  "variable_symbols_unchanged": true,
+  "medical_covering_index_unchanged": true,
+  "http_smoke": {
+    "ok": true,
+    "http": 200,
+    "via": "direct runner GET; server fallback unnecessary"
+  },
+  "private_key_http": 403,
+  "public_target_cases": 6,
+  "public_target_whole_html_equal_after_exact_five_version_replay": true,
+  "public_bootstrap_requests": "2 to 1 on five target variants; control 1 to 1",
+  "production_bootstrap_encoded_before": 53957,
+  "production_bootstrap_encoded_after": 31248,
+  "live_five_versioned_assets_canonical_bytes_and_cache_equal": true,
+  "additional_public_controls": {
+    "catalog": {
+      "status_equal": true,
+      "dom_hash_equal": false,
+      "after_repeat_stable": true
+    },
+    "price": {
+      "status_equal": true,
+      "dom_hash_equal": false,
+      "after_repeat_stable": true
+    },
+    "page2": {
+      "status_equal": true,
+      "dom_hash_equal": false,
+      "after_repeat_stable": true
+    },
+    "search": {
+      "status_equal": true,
+      "dom_hash_equal": true,
+      "after_repeat_stable": true
+    },
+    "empty": {
+      "status_equal": true,
+      "dom_hash_equal": true,
+      "after_repeat_stable": true
+    },
+    "profile_denied": {
+      "status_equal": true,
+      "dom_hash_equal": true,
+      "after_repeat_stable": true
+    },
+    "history_denied": {
+      "status_equal": true,
+      "dom_hash_equal": true,
+      "after_repeat_stable": true
+    },
+    "measurements_denied": {
+      "status_equal": true,
+      "dom_hash_equal": true,
+      "after_repeat_stable": true
+    }
+  },
+  "authenticated_production_uat": "NOT RUN: public anonymous scope; no forms submitted",
+  "production_restore_this_backup": "NOT RUN",
+  "original_wip_sha256_verified_after_deploy": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5"
+}

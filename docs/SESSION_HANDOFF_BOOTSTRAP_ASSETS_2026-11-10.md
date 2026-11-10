@@ -43,8 +43,22 @@ Finálnídocs větev codex/workspace-assets-release-docs-20261110, žádný druh
 Dalšíkrok: nový waterfall aktivní stránky a další měřitelný řez; ASSET2hotovo.
 
 
-## Aktuální pokračování P11-ASSET3
+## Aktuální předání P11-ASSET3
 
-ROZPRACOVÁNO; [plán ASSET3](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset3--veřejné-vstupy-k-účtu-10-11-2026). Větev codex/public-account-assets-20261110 z01b2ca38. Čtyři veřejné vstupy k účtu, nejprve live before, pak přesné CSS odstranění a wholeHTTP/Chrome před/po. Po všech PASS commit/merge/protecteddeploy, flagsfalse; WIP7a7afd75 zachovat. Nové výsledky/release NOT RUN.
 
-Průběžně PR432: první nativní10.3 PASS (340 měřených +80warmup GET,10CSRF odpovědí,350tabulek shodných). První de6c CI nepřijato: style nebyl po zalomení šablon idempotentní a jedno zalomení rozdělilo literal minlength ve stávajícím testu. Opraveny pouze hranice formátování; testy a source/wholeHTML gate nezměněné. Nově místně exact source4/4, style dry-run6/6, password policy10/35 a další8/88 kontrol PASS. Nový celý CI následuje, release NOT RUN.
+
+NASAZENO / CÍLOVÉ TECHNICKÉ OVĚŘENÍ PASS. PR432/beead425,13CI a deploy42810948814
+SUCCESS, import/UATfalse; záloha389/2, config/VS/migrace/index/smoke200 PASS.
+OběDB wholeHTTP/350checksums/CSRF, Chrome816+192nav/12pixelpairs/48UI PASS.
+Produkční5cílových variant CSS53957→31248B (−42,09%); control1→1. Šest celých
+HTMLhashů po přesném replay5známých asset verzí shodných,10old/newassetGET canonical
+bytes/cache shodných. Cílové UI/zdroj neměněné mimo4CSSlinky a povinný PHPstyle.
+[Release a meze](verification/public-account-assets-20261110/release/RESULTS.md).
+Doplňkový8GETcatalog probe:8stavů shodných, DOM5/8;3cataloghashy odlišné a after
+stabilní, příčina zpětně nedoložená. Neprohlašovat katalogovou paritu za PASS.
+Auth/lidsképrodUAT NOTRUN, WIP7a7afd75 zachovaný; finální docs bez druhého deploye.
+Další kandidáti: čerstvý waterfall veřejného kalendáře/velodromu a stabilní
+assetverze místo filemtime (vlastní nový gate). Před dalším katalogovým řezem
+nová strukturovaná baseline s dílčími otisky, nikoliv pouze starým agregovaným hashem.
+
+Finální důkazy předány v [PR433](https://github.com/KovoPraha/evidenceTreninku/pull/433); docs větev codex/public-account-assets-release-docs-20261110. Merge až po celémCI; bez druhého nasazení.

@@ -1,0 +1,18 @@
+{
+  "complete": true,
+  "baseline_sha": "01b2ca386a221f34ed6300148192c9af2cf4e7d9",
+  "optimized_sha": "58e97f557e691fad436325d6d7c80a6ea2fae163",
+  "source_sha256": {
+    "booking/prihlaseni.php": "7e5d328c64081b06eb0e89273e2c99fb407a16916c037e63450ffef51ae57100",
+    "booking/registrace.php": "255a57c209a19cbaf5637085d9f57385c53fc3076641ca52d44c6c620ce267db",
+    "booking/sportovec_prihlaseni.php": "cd4fbe10527c0d3b719e6c3cea4d7965623eb9a0e274cb8ce0ce1a980524bae9",
+    "booking/zapomenute_heslo.php": "080760a5c59d9131df860d0d9ae0504f04623aa36ffd93969e9feeb0cbce44d8",
+    "db.php": "bae8ae992697fce593292f06a27db353f4735764d5c4afbebfe1fefcb419ff9e",
+    "includes/ui_shell.php": "15ac46d46549563c6757fc2832872fbbad22ebd0352150ec19a00de03a7cd4ff",
+    "assets/.htaccess": "0eafb0a3bdc0f9d958094e4ccd86a4b20ab2ec1078aed39e4e8935f0f845aae0",
+    "assets/vendor/bootstrap/bootstrap.min.css": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    "assets/vendor/bootstrap/bootstrap.bundle.min.js": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+    "assets/app-ui.css": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+    "assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+  }
+}

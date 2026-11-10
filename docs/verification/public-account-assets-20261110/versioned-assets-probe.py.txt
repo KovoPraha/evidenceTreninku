@@ -1,0 +1,20 @@
+from pathlib import Path
+import subprocess,json,tempfile,os,gzip,hashlib
+root=Path(__file__).resolve().parents[1]
+paths=['assets/vendor/bootstrap/bootstrap.min.css','assets/vendor/bootstrap/bootstrap.bundle.min.js','assets/vendor/bootstrap-icons/font/bootstrap-icons.css','assets/app-ui.css','assets/app-ui.js']
+rows=[]
+for path in paths:
+ canonical=subprocess.check_output(['git','show','beead42591c1f84c66f42c411ce6f1681c02a16a:'+path],cwd=root)
+ variants={}
+ for version in ['1794302581','1794311532']:
+  with tempfile.TemporaryDirectory(prefix='account-version-get-') as tmp:
+   body=Path(tmp)/'body';header=Path(tmp)/'headers'
+   code=subprocess.check_output(['curl.exe','-sS','--proto','=https','--max-time','30','--retry','2','--retry-all-errors','-H','Accept-Encoding: gzip','-D',str(header),'-o',str(body),'-w','%{http_code}','https://kis.kovopraha.cz/'+path+'?v='+version],text=True)
+   headers={k.lower():v.strip() for line in header.read_text(encoding='iso8859-1').strip().split('\n\n')[-1].splitlines()[1:] if ':' in line for k,v in [line.split(':',1)]}
+   wire=body.read_bytes();decoded=gzip.decompress(wire) if headers.get('content-encoding')=='gzip' else wire
+   assert code=='200' and decoded==canonical,(path,version,code)
+   variants[version]=dict(http=200,decoded_bytes=len(decoded),wire_bytes=len(wire),sha256=hashlib.sha256(decoded).hexdigest(),headers={k:v for k,v in headers.items() if k in ['content-type','content-encoding','cache-control','vary']})
+ assert variants['1794302581']==variants['1794311532']
+ rows.append(dict(path=path,canonical_git_sha256=hashlib.sha256(canonical).hexdigest(),variants=variants))
+(root/'output/public-account-versioned-assets.json').write_text(json.dumps(dict(complete=True,read_only=True,exact_versions=['1794302581','1794311532'],assets=rows),indent=2),encoding='utf-8')
+print('Five exact old/new versioned assets:10 GET, canonical bytes and cache headers PASS')

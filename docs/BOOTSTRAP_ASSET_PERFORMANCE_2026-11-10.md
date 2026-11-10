@@ -279,3 +279,27 @@ implementovat přesné odstranění, uložit výsledky do
 Implementace, nové testy a nový deploy zatím NOT RUN.
 
 Průběžně PR432: první nativní10.3 PASS (340 měřených +80warmup GET,10CSRF odpovědí,350tabulek shodných). První de6c CI nepřijato: style nebyl po zalomení šablon idempotentní a jedno zalomení rozdělilo literal minlength ve stávajícím testu. Opraveny pouze hranice formátování; testy a source/wholeHTML gate nezměněné. Nově místně exact source4/4, style dry-run6/6, password policy10/35 a další8/88 kontrol PASS. Nový celý CI následuje, release NOT RUN.
+
+
+### P11-ASSET3 — měření přijato, nasazování
+
+PR432/beead425, celý tree identický s58e97f55,13CI PASS; PHPUnit2425/55924. OběDB wholeHTTP/350checksumů/CSRF a cleanup PASS. Chrome816+192nav/12pixelpairs/48UIscénářů bez chyb; coldCI CSS64454→31248B (−51,52%), produkčníbefore53957B kvůli jiné CDNbr reprezentaci. Časový zisk omezený, viz [aktuální výsledky](verification/public-account-assets-20261110/RESULTS.md). Deploy42810948814 běží na mergedSHA, flagsfalse; WIP zachovaný. Další krok živé GET/CSS/Chrome a finální samostatný docsPR.
+
+
+### P11-ASSET3 — finální stav
+
+NASAZENO / CÍLOVÉ TECHNICKÉ OVĚŘENÍ PASS. PR432/beead425,13CI a deploy42810948814
+SUCCESS, import/UATfalse; záloha389/2, config/VS/migrace/index/smoke200 PASS.
+OběDB wholeHTTP/350checksums/CSRF, Chrome816+192nav/12pixelpairs/48UI PASS.
+Produkční5cílových variant CSS53957→31248B (−42,09%); control1→1. Šest celých
+HTMLhashů po přesném replay5známých asset verzí shodných,10old/newassetGET canonical
+bytes/cache shodných. Cílové UI/zdroj neměněné mimo4CSSlinky a povinný PHPstyle.
+[Release a meze](verification/public-account-assets-20261110/release/RESULTS.md).
+Doplňkový8GETcatalog probe:8stavů shodných, DOM5/8;3cataloghashy odlišné a after
+stabilní, příčina zpětně nedoložená. Neprohlašovat katalogovou paritu za PASS.
+Auth/lidsképrodUAT NOTRUN, WIP7a7afd75 zachovaný; finální docs bez druhého deploye.
+Další kandidáti: čerstvý waterfall veřejného kalendáře/velodromu a stabilní
+assetverze místo filemtime (vlastní nový gate). Před dalším katalogovým řezem
+nová strukturovaná baseline s dílčími otisky, nikoliv pouze starým agregovaným hashem.
+
+Finální důkazy předány v [PR433](https://github.com/KovoPraha/evidenceTreninku/pull/433); docs větev codex/public-account-assets-release-docs-20261110. Merge až po celémCI; bez druhého nasazení.
