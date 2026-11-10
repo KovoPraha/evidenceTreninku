@@ -275,11 +275,17 @@ try:
     for entry in root.iterdir():
         if entry.name.startswith(".") or entry.name in {"output","config.php","db.php","sportovec_treninky.php","ajax_sportovec_treninky.php","moje_treninky.php","sprava_treninku.php","includes"}:
             continue
-        (baseline_root/entry.name).symlink_to(entry,target_is_directory=entry.is_dir())
+        if entry.is_file() and entry.suffix == ".php":
+            shutil.copy2(entry, baseline_root/entry.name)
+        else:
+            (baseline_root/entry.name).symlink_to(entry,target_is_directory=entry.is_dir())
     (baseline_root/"includes").mkdir()
     for entry in (root/"includes").iterdir():
         if entry.name != "athlete_profile_read.php":
-            (baseline_root/"includes"/entry.name).symlink_to(entry,target_is_directory=entry.is_dir())
+            if entry.is_file() and entry.suffix == ".php":
+                shutil.copy2(entry, baseline_root/"includes"/entry.name)
+            else:
+                (baseline_root/"includes"/entry.name).symlink_to(entry,target_is_directory=entry.is_dir())
     for route in routes:
         (baseline_root/route).write_bytes(baselines[route])
     # Route ownership resolves SCRIPT_FILENAME against db.php's __DIR__.
@@ -287,6 +293,8 @@ try:
     database_source = subprocess.check_output(["git", "show", base + ":db.php"], cwd=root)
     assert database_source == (root/"db.php").read_bytes(), "Database bootstrap changed"
     (baseline_root/"db.php").write_bytes(database_source)
+    header_source = subprocess.check_output(["git", "show", base + ":hlavicka.php"], cwd=root)
+    assert header_source == (baseline_root/"hlavicka.php").read_bytes(), "Shared header changed"
     (baseline_root/"config.php").symlink_to(root/"config.php")
     start_servers()
     reports=[]
