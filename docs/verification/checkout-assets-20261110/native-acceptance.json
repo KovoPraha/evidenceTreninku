@@ -1,0 +1,297 @@
+{
+  "complete": true,
+  "run": 42878204242,
+  "head_sha": "d6af0a09f921e78ea676ea5439519481e7eea57d",
+  "native": [
+    {
+      "version": "10.3",
+      "timed_get": 340,
+      "warmup_get": 80,
+      "checksum_tables": 350,
+      "cleanup": {
+        "owned_schema_user_config_removed": true,
+        "owned_ports_closed": true,
+        "bridge_account_removed": true,
+        "source_unchanged": true,
+        "private_artifacts_excluded": true
+      }
+    },
+    {
+      "version": "11.4",
+      "timed_get": 340,
+      "warmup_get": 80,
+      "checksum_tables": 350,
+      "cleanup": {
+        "owned_schema_user_config_removed": true,
+        "owned_ports_closed": true,
+        "bridge_account_removed": true,
+        "source_unchanged": true,
+        "private_artifacts_excluded": true
+      }
+    }
+  ],
+  "browser_timed_navigations": 408,
+  "browser_warmup_navigations": 96,
+  "functional_records": 24,
+  "decoded_pixel_pairs_equal": 6,
+  "browser_summary": [
+    {
+      "case": "guest",
+      "viewport": "desktop",
+      "cache": "cold",
+      "before": {
+        "fcp_ms": 72,
+        "ready_ms": 93.10000000000582,
+        "document_encoded_bytes": 2946,
+        "css_network_payload": 64454,
+        "combined_payload_bytes": 67400,
+        "css_decoded_bytes": 465606
+      },
+      "after": {
+        "fcp_ms": 56,
+        "ready_ms": 76.70000000001164,
+        "document_encoded_bytes": 2809,
+        "css_network_payload": 31248,
+        "combined_payload_bytes": 34057,
+        "css_decoded_bytes": 232803
+      },
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "guest",
+      "viewport": "desktop",
+      "cache": "warm",
+      "before": {
+        "fcp_ms": 44,
+        "ready_ms": 60.40000000002328,
+        "document_encoded_bytes": 2947,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 2947,
+        "css_decoded_bytes": 465606
+      },
+      "after": {
+        "fcp_ms": 44,
+        "ready_ms": 60.5,
+        "document_encoded_bytes": 2809,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 2809,
+        "css_decoded_bytes": 232803
+      }
+    },
+    {
+      "case": "guest",
+      "viewport": "mobile",
+      "cache": "cold",
+      "before": {
+        "fcp_ms": 68,
+        "ready_ms": 93.59999999997672,
+        "document_encoded_bytes": 2947,
+        "css_network_payload": 64454,
+        "combined_payload_bytes": 67401,
+        "css_decoded_bytes": 465606
+      },
+      "after": {
+        "fcp_ms": 52,
+        "ready_ms": 76.79999999998836,
+        "document_encoded_bytes": 2809,
+        "css_network_payload": 31248,
+        "combined_payload_bytes": 34057,
+        "css_decoded_bytes": 232803
+      },
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "guest",
+      "viewport": "mobile",
+      "cache": "warm",
+      "before": {
+        "fcp_ms": 44,
+        "ready_ms": 60.20000000001164,
+        "document_encoded_bytes": 2947,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 2947,
+        "css_decoded_bytes": 465606
+      },
+      "after": {
+        "fcp_ms": 44,
+        "ready_ms": 60.59999999997672,
+        "document_encoded_bytes": 2809,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 2809,
+        "css_decoded_bytes": 232803
+      }
+    },
+    {
+      "case": "program",
+      "viewport": "desktop",
+      "cache": "cold",
+      "before": {
+        "fcp_ms": 96,
+        "ready_ms": 123.70000000001164,
+        "document_encoded_bytes": 4576,
+        "css_network_payload": 64454,
+        "combined_payload_bytes": 69030,
+        "css_decoded_bytes": 465606
+      },
+      "after": {
+        "fcp_ms": 76,
+        "ready_ms": 109.40000000002328,
+        "document_encoded_bytes": 4431,
+        "css_network_payload": 31248,
+        "combined_payload_bytes": 35679,
+        "css_decoded_bytes": 232803
+      },
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "program",
+      "viewport": "desktop",
+      "cache": "warm",
+      "before": {
+        "fcp_ms": 68,
+        "ready_ms": 77.39999999996508,
+        "document_encoded_bytes": 4576,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 4576,
+        "css_decoded_bytes": 465606
+      },
+      "after": {
+        "fcp_ms": 64,
+        "ready_ms": 77.30000000004657,
+        "document_encoded_bytes": 4432,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 4432,
+        "css_decoded_bytes": 232803
+      }
+    },
+    {
+      "case": "program",
+      "viewport": "mobile",
+      "cache": "cold",
+      "before": {
+        "fcp_ms": 88,
+        "ready_ms": 125.20000000001164,
+        "document_encoded_bytes": 4575,
+        "css_network_payload": 64454,
+        "combined_payload_bytes": 69029,
+        "css_decoded_bytes": 465606
+      },
+      "after": {
+        "fcp_ms": 76,
+        "ready_ms": 109.30000000004657,
+        "document_encoded_bytes": 4431,
+        "css_network_payload": 31248,
+        "combined_payload_bytes": 35679,
+        "css_decoded_bytes": 232803
+      },
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "program",
+      "viewport": "mobile",
+      "cache": "warm",
+      "before": {
+        "fcp_ms": 64,
+        "ready_ms": 93,
+        "document_encoded_bytes": 4575,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 4575,
+        "css_decoded_bytes": 465606
+      },
+      "after": {
+        "fcp_ms": 64,
+        "ready_ms": 77.40000000002328,
+        "document_encoded_bytes": 4431,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 4431,
+        "css_decoded_bytes": 232803
+      }
+    },
+    {
+      "case": "control",
+      "viewport": "desktop",
+      "cache": "cold",
+      "before": {
+        "fcp_ms": 68,
+        "ready_ms": 92.90000000002328,
+        "document_encoded_bytes": 3949,
+        "css_network_payload": 31248,
+        "combined_payload_bytes": 35197,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 68,
+        "ready_ms": 92.59999999997672,
+        "document_encoded_bytes": 3950,
+        "css_network_payload": 31248,
+        "combined_payload_bytes": 35198,
+        "css_decoded_bytes": 232803
+      },
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "control",
+      "viewport": "desktop",
+      "cache": "warm",
+      "before": {
+        "fcp_ms": 56,
+        "ready_ms": 76.10000000003492,
+        "document_encoded_bytes": 3950,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 3950,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 56,
+        "ready_ms": 76.20000000001164,
+        "document_encoded_bytes": 3949,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 3949,
+        "css_decoded_bytes": 232803
+      }
+    },
+    {
+      "case": "control",
+      "viewport": "mobile",
+      "cache": "cold",
+      "before": {
+        "fcp_ms": 68,
+        "ready_ms": 93.19999999995343,
+        "document_encoded_bytes": 3948,
+        "css_network_payload": 31248,
+        "combined_payload_bytes": 35196,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 68,
+        "ready_ms": 92.90000000002328,
+        "document_encoded_bytes": 3950,
+        "css_network_payload": 31248,
+        "combined_payload_bytes": 35198,
+        "css_decoded_bytes": 232803
+      },
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "control",
+      "viewport": "mobile",
+      "cache": "warm",
+      "before": {
+        "fcp_ms": 52,
+        "ready_ms": 76.29999999993015,
+        "document_encoded_bytes": 3948,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 3948,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 52,
+        "ready_ms": 76.69999999995343,
+        "document_encoded_bytes": 3951,
+        "css_network_payload": 0,
+        "combined_payload_bytes": 3951,
+        "css_decoded_bytes": 232803
+      }
+    }
+  ]
+}

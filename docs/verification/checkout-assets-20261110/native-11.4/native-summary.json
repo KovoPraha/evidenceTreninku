@@ -1,0 +1,102 @@
+{
+  "guest": {
+    "before": {
+      "total_ms": 13.431000000000001,
+      "ttfb_ms": 13.396
+    },
+    "after": {
+      "total_ms": 13.671000000000001,
+      "ttfb_ms": 13.647
+    }
+  },
+  "guest-unknown-stock": {
+    "before": {
+      "total_ms": 3.417,
+      "ttfb_ms": 3.386
+    },
+    "after": {
+      "total_ms": 3.4250000000000003,
+      "ttfb_ms": 3.392
+    }
+  },
+  "guest-empty-stock": {
+    "before": {
+      "total_ms": 3.388,
+      "ttfb_ms": 3.366
+    },
+    "after": {
+      "total_ms": 3.423,
+      "ttfb_ms": 3.376
+    }
+  },
+  "guest-missing-variant": {
+    "before": {
+      "total_ms": 3.366,
+      "ttfb_ms": 3.305
+    },
+    "after": {
+      "total_ms": 3.287,
+      "ttfb_ms": 3.26
+    }
+  },
+  "guest-club-guard": {
+    "before": {
+      "total_ms": 8.485,
+      "ttfb_ms": 8.452
+    },
+    "after": {
+      "total_ms": 8.529,
+      "ttfb_ms": 8.491999999999999
+    }
+  },
+  "program": {
+    "before": {
+      "total_ms": 27.591,
+      "ttfb_ms": 27.557000000000002
+    },
+    "after": {
+      "total_ms": 27.654999999999998,
+      "ttfb_ms": 27.599
+    }
+  },
+  "program-missing-terms": {
+    "before": {
+      "total_ms": 8.65,
+      "ttfb_ms": 8.614
+    },
+    "after": {
+      "total_ms": 8.67,
+      "ttfb_ms": 8.635
+    }
+  },
+  "program-goods-guard": {
+    "before": {
+      "total_ms": 3.385,
+      "ttfb_ms": 3.367
+    },
+    "after": {
+      "total_ms": 3.422,
+      "ttfb_ms": 3.3890000000000002
+    }
+  },
+  "program-account-redirect": {
+    "before": {
+      "total_ms": 16.892999999999997,
+      "ttfb_ms": 16.861
+    },
+    "after": {
+      "total_ms": 16.569,
+      "ttfb_ms": 16.517
+    }
+  },
+  "control": {
+    "before": {
+      "total_ms": 20.866,
+      "ttfb_ms": 20.816000000000003
+    },
+    "after": {
+      "total_ms": 20.614,
+      "ttfb_ms": 20.573
+    }
+  }
+}

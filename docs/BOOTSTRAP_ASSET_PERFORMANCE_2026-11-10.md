@@ -575,3 +575,13 @@ První živý Chrome158 before6/6 GET200, desktop/mobile bez JS/network chyby
 a přetékání. Target Bootstrap53957 B (22709CDN+31248local), control31248 B.
 Pět obsahových URL a celé HTML zůstávají v nové baseline; před nasazením se
 obnoví čerstvý before. Produkce beze zápisu; nejde o produkční časový benchmark.
+
+
+### ASSET6 — checkpoint přijatého headu a release
+
+D6af0a09:13aktuálních CI SUCCESS, native42878204242/oběDB a skutečný Chrome
+PASS; úplné exporty v [protokolu](verification/checkout-assets-20261110/RESULTS.md).
+PR #445 sloučen jako c9e5501a, celý tree97fa16dc shodný s testovaným headem.
+Deploy42881039034 spuštěný jednou na c9e5501a, UAT/importfalse; zatím běží.
+Živá čerstvá before6GET/6canonicalpayloads z19:01UTC, after/receipt NOT RUN.
+WIP7a7afd75 zachovaný, dokumentační větev codex/checkout-assets-release-docs-20261110.
