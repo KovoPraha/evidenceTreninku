@@ -11249,11 +11249,12 @@
       "title": "P11-HJS sdílený staff JavaScript",
       "primary": true,
       "role": "plan",
-      "status": "REJECTED",
-      "registry": "P11-HJS/P11-HJS2",
-      "disposition": "HJS/HJS2 nevybrané; prototypy zachované, skutečná duplicitaCSS vede naASSET2.",
+      "status": "PARTIAL",
+      "registry": "P11-HJS/P11-HJS2/P11-HJS3",
+      "disposition": "HJS/HJS2 nevybrané zachované; HJS3 nový runtime/VM/native/browser gate po odstranění staff CSS duplicit, zatím NOT RUN.",
       "evidence": [
-        "docs/verification/shared-header-script-20261110/RESULTS.md"
+        "docs/verification/shared-header-script-20261110/RESULTS.md",
+        "docs/verification/shared-header-cache-20261110/RESULTS.md"
       ]
     },
     {

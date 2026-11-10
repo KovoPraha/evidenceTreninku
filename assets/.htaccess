@@ -1,7 +1,13 @@
-# Compress public JavaScript without changing its existing cache policy.
+# Compress public JavaScript; existing files keep their cache policy.
 # Keep the root service worker and other asset types under their own policy.
 <IfModule mod_deflate.c>
     <FilesMatch "\.js$">
         SetOutputFilter DEFLATE
+    </FilesMatch>
+</IfModule>
+# Only public content-addressed staff code is immutable; HTML context stays private.
+<IfModule mod_headers.c>
+    <FilesMatch "^staff-header\.[0-9a-f]{64}\.js$">
+        Header set Cache-Control "public, max-age=604800, immutable"
     </FilesMatch>
 </IfModule>

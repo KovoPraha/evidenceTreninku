@@ -1,0 +1,46 @@
+# P11-HJS3 — průběžné ověření společného pracovního skriptu
+
+ROZPRACOVÁNO. [Plán](../../SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs3--společný-skript-po-odstranění-duplicitních-stylů-10-11-2026).
+Čerstvý main5d6434dc: původní hlavička byte-shodná s referencí HJS2, žádné top-level JS deklarace.
+
+## Lokální kontrola implementace
+
+- PASS: prefix/suffix hlavičky, původní JS mimo vyjmenovaný validační prefix,
+  same-origin manifest a 9 interpolací; všech 6 PHP výrazů tokenově shodných.
+- Veřejný soubor 15 271 B, SHA256
+  `222b64217870ab726e3ac50483b00fd54e4e0d79251917dfb5162b5de275c8ee`;
+  obsahový název a SHA384 SRI kontrolované mechanicky. Původní blok 14 812 B.
+- PASS: 8 Node VM porovnání (push subscribe/unsubscribe, fresh CSRF, chybné
+  cesty/context, hledání a escaping, fallback confirm). Žádná reálná oznámení.
+- PASS: porovnávací PHPUnit 1 test / 16 assertions, včetně odmítnutí jiné URL,
+  hashe, SRI, nonce, dalšího skriptu/CSS/whitespace a nesouhlasného CSRF formuláře.
+- PASS: PHP style 4 soubory / 0 oprav / 0 chyb; Python syntax, JS syntax,
+  aktuální dokumentace 80 řádků / 5 317 odkazů / 0 chyb.
+- Native/browser/úspora celého gzip přenosu/aktuální CI/merge/deploy: NOT RUN.
+  Dokud neprojdou, žádné nasazení. Původní WIP a staré prototypy zachované.
+
+Porovnání celých stránek používá pouze nonce z CSP a ověřený session CSRF;
+neodstraňuje CSS, další skripty, verze ani whitespace. Obě větve fixture mají
+fyzicky stejný aktuální PHP kontext mimo hlavičku; celé syntetické schéma se
+kontroluje checksumy. Apache před variantou používá původní assets/.htaccess;
+nových 7 dní platí jen pro obsahově adresovaný staff soubor. Ostatní JS 30 s.
+
+Implementace `7de1c569` pushnutá v [#449](https://github.com/KovoPraha/evidenceTreninku/pull/449); lokální PASS výše.
+Aktuální native2DB/Chrome/ostatní CI probíhají; merge/deploy NOT RUN.
+
+První native běh42916624735: FAIL při přípravě porovnávacího stromu, chyběla
+skrytá vývojová `.php-cs-fixer.dist.php` v kopii, zatímco kontrola všech PHP ji
+správně požadovala. Aplikace ani měření ještě neběžely. Oprava kopíruje i skryté
+kořenové PHP soubory; porovnání všech ostatních PHP zůstává přesné. Obě izolované
+DB/config/účty byly uklizené. Apache gzip/browser samostatný běh42916624824 PASS;
+aktuální celek musí projít znovu na opraveném HEAD, nejde o release PASS.
+
+Obsahově adresované JS mají v `.gitattributes` vynucené LF stejně jako již
+verzované UI payloady. Checkout na Windows tak nezmění obsah proti SHA/SRI.
+
+Běh42916928473: 10.3 HTTP 1k/10k/30k, 357 checksumů a security PASS.
+11.4 se zastavilo v klientském ovladači: `Shift+/` posílal `/` místo `?`,
+čekání na modal proto vypršelo už na původní before variantě. Oprava pouze
+ovladače používá skutečné `?` a Bootstrap shown/hidden události podle již
+ověřené WorkspaceAssetsBrowser kontroly; žádná změna appJS ani potlačení
+funkční zkoušky. Neúplný běh není přijímací výkonový důkaz.

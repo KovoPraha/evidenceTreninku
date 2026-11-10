@@ -1,25 +1,21 @@
-# Předání P11-HJS — 10. 11. 2026
+# Předání P11-HJS3 —10.11.2026
 
-NEVYBRÁNO. [Plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md),
-[skutečné JS přenosy](verification/shared-header-script-20261110/production-js-transport.json).
-Prototyp na codex/shared-header-assets-performance-20261110 zachovaný mimo main.
-Mechanická shoda a Node7/normalizátor1/8 PASS; nativní výkon ani deploy nepřijaty.
-Hosting JS neposílá gzip a cache má30s, proto by nový14.6kB asset mohl zhoršit
-cold přenos. Další zvolený řez P11-JSZ: gzip existujících veřejných JS, obsah
-identický, bez novéhoHTTP requestu/cache změny. Vlastní nový plán bude v repu.
-Runtime9dbd9eaf/deploy42727693090 a původnífio WIP7a7afd75 zachované.
-
-
-## P11-HJS2 — nový běh po gzip
-
-10. 11. 2026 ROZPRACOVÁNO, basefaed76c0, vlastní větev
-codex/shared-header-script-gzip-20261110. [Nový plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs2--nové-posouzení-po-nasazení-gzip-10-11-2026)
-a [nové důkazy](verification/shared-header-script-gzip-20261110/RESULTS.md).
-Původní zamítnutí a prototyp4c6ffea0 zachované; reálný Apache/gzip před nativním
-PHP/DB a Chrome, žádné převzetí starých měření. Nový merge/deploy až po PASS.
-Další krok: prověřit jednotlivé soubory prototypu a přidat komprimovaný transport.
-
-
-HJS2 finálně NEVYBRÁNO: browserodhalil větší konkrétní duplicitu BootstrapCSS
-v pracovni_pozice.php. Přednost P11-ASSET2; PR429/prototyp zachovat bezmerge/deploy.
-Native10.3shoda PASS, úplný Chrome gate nepřijatý; nové běhy nejsou releasePASS.
+ROZPRACOVÁNO. [Plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs3--společný-skript-po-odstranění-duplicitních-stylů-10-11-2026),
+[výsledky](verification/shared-header-cache-20261110/RESULTS.md).
+Base5d6434dc, runtimec29642f1/deploy42905781826, flags vlastní CURRENT.
+Větev codex/header-cache-performance-20261110, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-header-cache-performance-20261110.
+Původní fio/d1221f35 a WIP7a7afd75 beze změny. HJS/HJS2/RIX prototypy zachovat.
+Vybraný společný inlineJS≈14,8kB: přesun do obsahově adresovaného veřejného
+staff-header.<SHA256>.js, cache7d/immutable pouze pro tento soubor. Dynamických
+6hodnot zůstává na každém privátním HTML; žádná cache práv/session/tokenů.
+Ostatní JS30s/payloady/SQL/writery/API/pořadí beze změny. Source/VM/CodeQL,
+2DB/wholeHTTP/checksumy, gzip/cache/security,544měřenýchChrome a8pixelpárů
+nově ověřit;17párů/4warmupy, cold gate5%+1024B, warm skutečný síťový přínos.
+Source/VM PASS (8 zkoušek), PHPUnit parity PASS (1/16), style/docs PASS.
+[#449](https://github.com/KovoPraha/evidenceTreninku/pull/449) otevřené; native/Chrome/CI běží, release NOT RUN.
+Další krok převzít doklady obou MariaDB a porovnat celé HTTP/Chrome. Selektivně převzaté HJS2 zdroje, celá stará větev zachovaná.
+Staré HJS/HJS2 nevybrání zůstává historicky platné. ASSET1–7 nasazené,
+ASSET4/6 LIMIT zachované; EVENTREAD0karet odložený bez runtime helperu.
+Při všech aktuálních PASS merge/deploy autorizovaný; UAT/importfalse,
+přihlášené živé UAT podle dostupnosti, finální doklady bez redeploye.
