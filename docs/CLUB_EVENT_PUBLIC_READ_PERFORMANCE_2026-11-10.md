@@ -1,6 +1,6 @@
 # P11-EVENTREAD — dávkové veřejné karty klubových akcí
 
-10.11.2026, Europe/Prague. ROZPRACOVÁNO / výběrové měření před implementací.
+10.11.2026, Europe/Prague. ODLOŽENO / nevybráno pro aktuální release.
 Vlastník Vývoj/Codex, zadavatel Marek. Přímé zadání: další nejpřínosnější
 optimalizace podle analýzy, přesná shoda/před-po; po všech PASS commit/merge/deploy.
 Původní i souběžné WIP zachovat. Vlastní větev
@@ -55,3 +55,30 @@ NOT RUN, pokud se neprovedou. Výsledky/plán/handoff průběžně do repa.
 Výběrové měření, nová implementace/native/browser/release zatím NOT RUN.
 Další krok: základní diagnostický probe a bezpečná produkční veřejná baseline;
 po prokázání růstu implementovat projekci a rozhodnout podle nového měření.
+
+
+## Výběrové měření a odložení pro aktuální vydání
+
+Stav **NEVYBRÁNO PRO RELEASE / prototyp ODLOŽENÝ**. Lokální syntetická SQLite
+strict pole/PDO typy PASS na0/1/12/100/201/500 free + stejném počtu paid eventů,
+dvě varianty každého paid. Při500+500:6506→17 SQL, median301,319→62,068 ms.
+Při100+100:1306→9 SQL,57,383→10,577 ms. Jde jen o SQLite tohoto stroje,
+NE o produkční nebo nativní MariaDB latenci.17 střídavých párů po4warmupech.
+Indexované fixture mají stejné fyzické indexy obou variant; první unindexovaný
+časový probe není použitý jako přijaté měření. Počet SQL byl v něm stejný.
+[Bezpečné výsledky](verification/club-event-public-read-20261110/sqlite-comparison.json).
+
+Produkční GET booking/krouzky.php i calendar control200, ale0 veřejných karet.
+V prázdném scénáři nová projekce šetří jen2 metadata SQL (6→4). Větší objemový
+přínos nyní neodpovídá zveřejněné nabídce. Naopak rychlá přihláška298/952 a
+rychlý nákup218/784 vracejí200 a2Bootstrap CSS. Pro aktuální vydání vybrán
+samostatný P11-ASSET6, s okamžitou úsporou celé duplicitní CSS odpovědi při GET.
+Reference: [veřejný probe](verification/club-event-public-read-20261110/production-public-probe.json),
+[kandidáti](verification/club-event-public-read-20261110/checkout-candidates.json).
+
+Prototyp includes/club_event_public_read.php zůstává pouze ve vlastní větvi
+codex/club-event-public-read-performance-20261110; žádné view ho nevolá.
+Žádný PR merge ani produkční deploy. Native2DB/celéHTTP/Chrome/CodeQL a
+finální výkonová přejímka NOT RUN. HJS/RIX i původní WIP zachované.
+Podmínka návratu: zveřejněné akce nebo jiný doložený aktuální pracovní objem;
+nejdřív znovu porovnat kandidáty a nativně ověřit celý původní akceptační plán.

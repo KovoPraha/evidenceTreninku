@@ -236,3 +236,5 @@ Finální ASSET5 doklady sdílí [PR #442](https://github.com/KovoPraha/evidence
 ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Strict ochrana vyžaduje nové3required checks na aktuálním základu; merge405 nic nezměnil. Main převzatý bez konfliktu, všech11CI se zopakuje; vlastní diff pouze docs, žádný další deploy. [Předání](SESSION_HANDOFF_BOOTSTRAP_ASSETS_2026-11-10.md).
 
 10.11.2026 — Zahájen P11-EVENTREAD: čerstvý nález opakovaných read dotazů pro veřejné akce/varianty; nejprve výběrové měření. Vlastní větev/WIP zachované, žádný nový release. [Plán](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md).
+
+10.11.2026 — P11-EVENTREAD nevybrán pro aktuální release: SQLite strict parita/6506→17SQL při1000eventech, ale produkční veřejná nabídka0karet. Prototyp zachovaný pouze ve vlastní větvi, bez view změny a deploye; pokračuje samostatný ASSET6 pro2ověřené CSS duplicity checkout formulářů.

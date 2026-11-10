@@ -1,0 +1,28 @@
+<?php
+declare(strict_types=1);
+require __DIR__ . '/event-read-probe.php';
+require dirname(__DIR__) . '/includes/club_event_public_read.php';
+$result=[];
+foreach ([0,1,12,100,201,500] as $size) {
+    $pdo=eventProbeFixture($size);
+    $samples=['before'=>[],'after'=>[]];$hash=null;$sql=[];
+    for ($round=0;$round<21;++$round) {
+        foreach ($round%2===0?['before','after']:['after','before'] as $mode) {
+            $start=hrtime(true);
+            $value=$mode==='before'?['free'=>clubEventOpenFreeList($pdo),'paid'=>clubEventOpenPaidList($pdo)]:clubEventPublicOpenLists($pdo);
+            $elapsed=(hrtime(true)-$start)/1e6;$current=hash('sha256',serialize($value));$hash??=$current;
+            if($hash!==$current){throw new RuntimeException('Strict array/type parity failure '.$size.' '.$mode);}
+            if($round>=4){$samples[$mode][]=$elapsed;}
+        }
+    }
+    foreach (['before','after'] as $mode) {
+        $pdo->profile=[];$pdo->profiling=true;
+        $value=$mode==='before'?['free'=>clubEventOpenFreeList($pdo),'paid'=>clubEventOpenPaidList($pdo)]:clubEventPublicOpenLists($pdo);
+        $pdo->profiling=false;
+        $sql[$mode]=['queries'=>count($pdo->profile),'fetched_rows'=>array_sum(array_column($pdo->profile,'fetched_rows'))];
+        sort($samples[$mode]);$sql[$mode]['median_ms']=$samples[$mode][8];
+    }
+    $row=['synthetic_sqlite_only'=>true,'free_events'=>$size,'paid_events'=>$size,'equal_arrays_and_pdo_types'=>true,'baseline_sha'=>'966f701380c792973015f9aa9d00ec863f7e9f9e','before'=>$sql['before'],'after'=>$sql['after'],'samples_ms'=>$samples,'result_sha256'=>$hash];
+    $result[]=$row;unset($row['samples_ms']);echo json_encode($row,JSON_THROW_ON_ERROR)."\n";
+}
+file_put_contents(__DIR__.'/event-read-sqlite-comparison.json',json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)."\n");
