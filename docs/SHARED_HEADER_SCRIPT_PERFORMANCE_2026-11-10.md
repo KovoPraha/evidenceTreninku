@@ -150,3 +150,72 @@ VM8/8 PASS, finální bezpečnostní/performance přejímka HJS2 se netvrdí.
 Všechny implementační commity v codex/shared-header-script-gzip-20261110 /PR429
 zachovat, neslučovat do vybraného řezu. Nové PHP/JS/bezpečnostní hranice ani
 JSZhelper změny se nepřimíchají do ASSET2. Původní WIP7a7afd75 zachovaný.
+
+
+## P11-HJS3 — společný skript po odstranění duplicitních stylů, 10. 11. 2026
+
+ROZPRACOVÁNO. Vlastník Vývoj/Codex, zadavatel Marek. Nové přímé zadání:
+další nejpřínosnější optimalizace podle analýzy, přesná shoda a měření před/po,
+při všech PASS commit/merge/deploy, WIP zachovat, průběžný plán/handoff v repu.
+Base5d6434dc6d4338d47e283d715a4b2c568950c986, runtimec29642f1,
+deploy42905781826 SUCCESS. Větev codex/header-cache-performance-20261110,
+worktree C:/Users/Marek/Documents/Codex/evidencePavel-header-cache-performance-20261110.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA2567a7afd75 zachovat beze změny.
+
+### Výběr a nové vymezení
+
+Bod7 analýzy: pracovní hlavička stále opakuje přibližně14,8kB JS v každém
+staff HTML. Čerstvá kontrola: celý hlavicka.php a původní scriptblock jsou
+identické s HJS2 immutable referencí; žádné top-level globální deklarace v bloku.
+Hlavní staff CSS duplicity už ASSET1/2 odstranily, ASSET1–7 jsou nasazené.
+Zbylé CSS jsou menší množinou vstupů/odlišných autentizací; HJS3 zasahuje
+společnou hlavičku všech pracovníků. Návštěvnost neznáme, absolutní souhrnný
+produkční přínos netvrdíme. EVENTREAD při0veřejných kartách zůstává odložený,
+RIX a oba starší HJS/HJS2 prototypy zachované a neslučují se jako celé větve.
+
+Z HJS2 prověřit jednotlivé soubory a opakovat novou přejímku. Jeho staré
+10.3PASS ani offlinegzip nejsou aktuální výkonový důkaz; HJS2 nevybrání dál platí.
+Nový HJS3 obsahově adresovaný veřejný soubor staff-header.<SHA256>.js umožní
+cache7d/immutable pouze této třídy souborů. Tím úspora nepřestává po původních
+30s obecného JS cache. Ostatní JS/asset policy beze změny. Aktuálních6hodnot
+včetně CSRF/push/URL zůstává v novém necacheovaném JSON konkrétního HTML.
+Veřejný asset nesmí obsahovat osobní data, oprávnění, session nebo token.
+
+### Akceptace zapsaná před implementací
+
+1. Runtime jen přesun původního scriptu do souboru s obsahem v názvu + JSON
+data. Stejná synchronnost, pořadí a veřejné JS API; bez defer/minifikace,
+nové aktivace hledání/push, změny SQL/session/práv/flash/CSRF/writerů.
+Prefix/suffix hlavičky stejné. TěloJS doslovně stejné mimo9explicitních
+interpolací6PHPvýrazů a již prověřený fail-closed validační prefix/context
+manifest URL konstrukci. VM včetně chybných dat, search escaping, confirm,
+toast, shortcuts a push kontextu. Source SHA musí odpovídat názvu i SRI.
+2. Cache pouze content-addressed staff soubor7d/immutable; všechny dřívější
+JS zůstanou30s, CSS/rootSW/private cesty pod dosavadní politikou. Skutečný
+Apache gzip/identity/q0/ETag/range/security, decodedbyte/hash/SRI i živý TLS
+payload. Nepotlačovat CodeQL ani původní regresní testy; zachovat bezpečnost
+nové DOMJSON hranice a ochranu proti externím/síťovým/neudaným URL cestám.
+3. Nové native MariaDB10.3/11.4, plně migrovaná izolovaná syntetická DB;
+celé HTTP všech rolí/revokace/CSRF a domainchecksumy, přesný normalizátor
+pouze známého původního scriptu proti právě tomuto JSON+assetu. Žádné obecné
+odstranění scriptů, textu, whitespace či verzí. Celý ostatní aktuální PHP kontext
+stejný mezi fyzickými before/after kopiemi, nikoli symlink na změněný baseline.
+4. Skutečný Chrome/Apache: coach Moje/Pracovní pozice, lead Správa a public
+profilcontrol, desktop/mobile cold/warm,17střídavých párů po4warmupech, skutečné
+requesty/payloady, FCP/ready, computedstyle/pixely a bezpečné klientské ovladače.
+Přijmout staffHTMLdecoded úsporu≥12kB a prokázanou warmgzip celkovou úsporu;
+cold HTML+novýJS nesmí regresovat více než5%+1024B, FCP/ready gate20%+20ms.
+Publiccontrol beze změny. Časový zisk uvádět jen jako měření runneru, ne SLA.
+5. Všechno aktuální CI, strict main a tested/merged tree shoda; až při PASS
+chráněný deploymain s UAT/importfalse, backup/config/migrace/VS/index/smoke/
+cleanup. Živé veřejné GET a novýJS/hash/SRI/gzip/cache před/po. Přihlášené
+produkční UAT pouze s dostupnou schválenou relací, jinak výslovně NOT RUN.
+Žádné reálné notifikace/push, formuláře, zápisy, objednávky/platby/změny rolí.
+6. Průběžně [výsledky](verification/shared-header-cache-20261110/RESULTS.md),
+registr/CURRENT/handoff/logy. Bezpečné výsledky přes PR, finální dokumentace
+po všech CI sloučit bez druhého deploye. Původní i prototypový WIP zachovat,
+stage jen vlastní cesty; historické ASSET4/6 LIMIT se nepřepisují na PASS.
+
+Nové implementace/VM/native/browser/release zatím NOT RUN. Další krok:
+selektivní obnova a kontrola prototypu, content adresování/cache kontrakty,
+nová celá přejímka. Při neprokázané paritě/přínosu nevydávat. Flags vlastní CURRENT.

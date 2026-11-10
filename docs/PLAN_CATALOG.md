@@ -415,6 +415,6 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | NASAZENO / ASSET1–7 technicky s mezemi | ASSET7 #447/c29642f1, deploy42905781826,13CI/native2DB/10pixelpárů PASS;5živýchanonymníchGET/payloadů stejné, přihlášené UAT a ASSET4/6 LIMIT zachované. |
 
-| PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | REJECTED / P11-HJS/P11-HJS2 | Oba nevybrané; skutečná duplicitníCSSvede naASSET2, prototypy zachované. |
+| PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | ROZPRACOVÁNO / P11-HJS3 | HJS/HJS2 historicky nevybrané; po ASSET1–7 nová přejímka content-addressed JS/cache7d, čerstvý kontext, native/browser NOT RUN. |
 
 | PL-5088402eb8 | [P11-JSZ komprese JavaScriptů](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md) | DONE / P11-JSZ | PR427/deploy42774356221 SUCCESS; produkční13JS−69 %, decodedbytes/8DOM PASS. |
