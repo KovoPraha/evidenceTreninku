@@ -1,0 +1,62 @@
+from pathlib import Path
+import json,subprocess,hashlib,re,sys,datetime,base64
+root=Path(__file__).resolve().parents[1]
+phase=sys.argv[1];assert phase in ['before','after']
+private=root/f'output/header-live-{phase}-private';private.mkdir(exist_ok=True)
+metadata=json.loads((root/'tests/Support/SharedHeaderScriptReference.json').read_text())
+curl='C:/Windows/System32/curl.exe'
+def get(path,index,encoding='gzip'):
+ body=private/f'{index}.body';headers=private/f'{index}.headers'
+ p=subprocess.run([curl,'--silent','--show-error','--compressed','--connect-timeout','15','--max-time','60','-H','Accept-Encoding: '+encoding,'-D',str(headers),'-o',str(body),'-w','%{http_code} %{size_download}','https://kis.kovopraha.cz'+path],check=True,capture_output=True)
+ status,size=p.stdout.decode().split()
+ h={}
+ for line in headers.read_text(encoding='utf-8').splitlines():
+  if ':' in line:
+   key,value=line.split(':',1)
+   if key.lower() in ['location','cache-control','content-security-policy','content-type','content-encoding','vary','etag','last-modified','x-frame-options','x-content-type-options']:h[key.lower()]=value.strip()
+ return int(status),int(size),h,body.read_bytes()
+rows=[];urls=[]
+paths=['/pracovni_pozice.php','/moje_treninky.php','/sprava_treninku.php','/planovac.php','/booking/prihlaseni.php']
+for index,path in enumerate(paths):
+ status,size,h,body=get(path,index)
+ assert status==(302 if index<4 else 200),(path,status)
+ html=body.decode().replace('\r\n','\n')
+ nonce=re.search("nonce-([^']+)",h.get('content-security-policy',''))
+ if nonce:
+  html=html.replace(nonce[1],'REQUEST_NONCE');h['content-security-policy']=h['content-security-policy'].replace(nonce[1],'REQUEST_NONCE')
+ html=re.sub(r'(name="csrf_token"\s+value=")[a-f0-9]{64}(\")',r'\1REQUEST_CSRF\2',html)
+ if index==4:
+  assert html.count('bootstrap.min.css')==1
+  urls=list(dict.fromkeys(re.findall(r'(?:href|src)="([^"]*/assets/[^\"]+\?v=[a-f0-9]{64})"',html)))
+  assert len(urls)==5
+ rows.append(dict(path=path,status=status,headers=h,normalized_whole_body_sha256=hashlib.sha256(html.encode()).hexdigest()))
+assets=[];policies=[]
+for index,url in enumerate(urls):
+ assert url.startswith('/') and not url.startswith('//')
+ status,size,h,payload=get(url,'control-'+str(index))
+ relative=url.lstrip('/').split('?',1)[0]
+ canonical=subprocess.check_output(['git','show','5d6434dc:'+relative],cwd=root)
+ assert status==200 and payload==canonical
+ expected='max-age=30' if relative.endswith('.js') else 'max-age=604800'
+ assert h.get('cache-control')==expected,(relative,h)
+ policies.append(dict(path=relative,cache_control=h['cache-control']))
+ assets.append(dict(path=relative,decoded_bytes=len(payload),sha256=hashlib.sha256(payload).hexdigest()))
+staff=[]
+for encoding in (['gzip'] if phase=='before' else ['gzip','identity','gzip;q=0, identity']):
+ status,size,h,payload=get('/'+metadata['asset_path'],'staff-'+str(len(staff)),encoding)
+ if phase=='before':assert status==404,status
+ else:
+  canonical=subprocess.check_output(['git','show','HEAD:'+metadata['asset_path']],cwd=root)
+  assert status==200 and payload==canonical
+  assert hashlib.sha256(payload).hexdigest()==metadata['asset_sha256']
+  assert 'sha384-'+base64.b64encode(hashlib.sha384(payload).digest()).decode()==metadata['asset_sri']
+  assert h.get('cache-control')=='public, max-age=604800, immutable',h
+  if encoding=='gzip':assert h.get('content-encoding')=='gzip' and size<len(payload) and 'accept-encoding' in h.get('vary','').lower(),h
+  else:assert not h.get('content-encoding'),h
+ staff.append(dict(accept_encoding=encoding,status=status,headers=h,wire_payload_bytes=size,decoded_bytes=len(payload),sha256=hashlib.sha256(payload).hexdigest()))
+result=dict(complete=True,captured_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),phase=phase,read_only_anonymous_get=True,authenticated_production_uat='NOT RUN',rows=rows,canonical_static_payloads=assets,control_cache_policies=policies,staff_asset=staff,method='TLS verified; anonymous GET only, no redirects, no POST. Exact known controls, only CSP nonce and form CSRF normalised. Redirects do not execute private templates.')
+if phase=='after':
+ before=json.loads((root/'output/header-live-before.json').read_text(encoding='utf-8'))
+ assert rows==before['rows'] and assets==before['canonical_static_payloads'] and policies==before['control_cache_policies']
+(root/f'output/header-live-{phase}.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print(json.dumps(dict(complete=True,phase=phase,anonymous_controls=len(rows),canonical_payloads=len(assets),staff_variants=len(staff),authenticated_production_uat='NOT RUN')))

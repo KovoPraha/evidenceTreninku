@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\SharedHeaderScriptComparisonTest" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/SharedHeaderScriptComparisonTest.php" tests="1" assertions="16" errors="0" failures="0" skipped="0" time="0.007650">
+    <testcase name="testOnlyTheExactPackagingChangeNormalizesToTheSameContext" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/SharedHeaderScriptComparisonTest.php" line="13" class="Tests\Integration\SharedHeaderScriptComparisonTest" classname="Tests.Integration.SharedHeaderScriptComparisonTest" assertions="16" time="0.007650"/>
+  </testsuite>
+</testsuites>

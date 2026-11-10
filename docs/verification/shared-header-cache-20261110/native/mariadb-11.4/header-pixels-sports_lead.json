@@ -1,0 +1,12 @@
+[
+  {
+    "case": "training",
+    "viewport": "desktop",
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "training",
+    "viewport": "mobile",
+    "decoded_pixels_equal": true
+  }
+]

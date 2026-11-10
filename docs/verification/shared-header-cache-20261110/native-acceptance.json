@@ -1,0 +1,459 @@
+{
+  "complete": true,
+  "baseline_sha": "5d6434dc6d4338d47e283d715a4b2c568950c986",
+  "tested_sha": "dd44cff7a657d79c7bb4f2aa7e959c779f3be8d9",
+  "native_run": 42917624902,
+  "compression_run": 42917624810,
+  "native_domain_comparisons": [
+    {
+      "mariadb": "10.3",
+      "size": 1000,
+      "tables": 357,
+      "all_checksums_unchanged": true,
+      "exact_html_and_security_headers_equal": true
+    },
+    {
+      "mariadb": "10.3",
+      "size": 10000,
+      "tables": 357,
+      "all_checksums_unchanged": true,
+      "exact_html_and_security_headers_equal": true
+    },
+    {
+      "mariadb": "10.3",
+      "size": 30000,
+      "tables": 357,
+      "all_checksums_unchanged": true,
+      "exact_html_and_security_headers_equal": true
+    },
+    {
+      "mariadb": "11.4",
+      "size": 1000,
+      "tables": 357,
+      "all_checksums_unchanged": true,
+      "exact_html_and_security_headers_equal": true
+    },
+    {
+      "mariadb": "11.4",
+      "size": 10000,
+      "tables": 357,
+      "all_checksums_unchanged": true,
+      "exact_html_and_security_headers_equal": true
+    },
+    {
+      "mariadb": "11.4",
+      "size": 30000,
+      "tables": 357,
+      "all_checksums_unchanged": true,
+      "exact_html_and_security_headers_equal": true
+    }
+  ],
+  "browser_version": "156.0.8078.79",
+  "timed_navigations": 544,
+  "warmup_navigations": 128,
+  "functional_cases": 24,
+  "pixel_pairs": [
+    {
+      "case": "workspace",
+      "viewport": "desktop",
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "workspace",
+      "viewport": "mobile",
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "mine",
+      "viewport": "desktop",
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "mine",
+      "viewport": "mobile",
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "training",
+      "viewport": "desktop",
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "training",
+      "viewport": "mobile",
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "public-profile",
+      "viewport": "desktop",
+      "decoded_pixels_equal": true
+    },
+    {
+      "case": "public-profile",
+      "viewport": "mobile",
+      "decoded_pixels_equal": true
+    }
+  ],
+  "decoded_staff_html_saved_bytes": 13899,
+  "body_measurement": "Median gzip encoded HTML body plus actual uncached staff script body; excludes HTTP headers and unchanged resources.",
+  "browser_summary": [
+    {
+      "case": "mine",
+      "viewport": "desktop",
+      "cache": "cold",
+      "before": {
+        "document_encoded_bytes": 12275,
+        "document_decoded_bytes": 50212,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 12275,
+        "fcp_ms": 76,
+        "ready_ms": 124.19999999998254
+      },
+      "after": {
+        "document_encoded_bytes": 9160,
+        "document_decoded_bytes": 36313,
+        "staff_network_payload": 4379,
+        "combined_payload_bytes": 13539,
+        "fcp_ms": 72,
+        "ready_ms": 124.20000000001164
+      }
+    },
+    {
+      "case": "mine",
+      "viewport": "desktop",
+      "cache": "warm",
+      "before": {
+        "document_encoded_bytes": 12274,
+        "document_decoded_bytes": 50212,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 12274,
+        "fcp_ms": 60,
+        "ready_ms": 108.29999999998836
+      },
+      "after": {
+        "document_encoded_bytes": 9160,
+        "document_decoded_bytes": 36313,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 9160,
+        "fcp_ms": 56,
+        "ready_ms": 107.19999999995343
+      }
+    },
+    {
+      "case": "mine",
+      "viewport": "mobile",
+      "cache": "cold",
+      "before": {
+        "document_encoded_bytes": 12275,
+        "document_decoded_bytes": 50212,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 12275,
+        "fcp_ms": 72,
+        "ready_ms": 124.80000000004657
+      },
+      "after": {
+        "document_encoded_bytes": 9160,
+        "document_decoded_bytes": 36313,
+        "staff_network_payload": 4379,
+        "combined_payload_bytes": 13539,
+        "fcp_ms": 72,
+        "ready_ms": 125.40000000002328
+      }
+    },
+    {
+      "case": "mine",
+      "viewport": "mobile",
+      "cache": "warm",
+      "before": {
+        "document_encoded_bytes": 12275,
+        "document_decoded_bytes": 50212,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 12275,
+        "fcp_ms": 56,
+        "ready_ms": 108.29999999998836
+      },
+      "after": {
+        "document_encoded_bytes": 9160,
+        "document_decoded_bytes": 36313,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 9160,
+        "fcp_ms": 52,
+        "ready_ms": 108
+      }
+    },
+    {
+      "case": "workspace",
+      "viewport": "desktop",
+      "cache": "cold",
+      "before": {
+        "document_encoded_bytes": 11317,
+        "document_decoded_bytes": 45567,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 11317,
+        "fcp_ms": 64,
+        "ready_ms": 91.69999999999709
+      },
+      "after": {
+        "document_encoded_bytes": 7930,
+        "document_decoded_bytes": 31668,
+        "staff_network_payload": 4379,
+        "combined_payload_bytes": 12309,
+        "fcp_ms": 64,
+        "ready_ms": 91.90000000000873
+      }
+    },
+    {
+      "case": "workspace",
+      "viewport": "desktop",
+      "cache": "warm",
+      "before": {
+        "document_encoded_bytes": 11316,
+        "document_decoded_bytes": 45567,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 11316,
+        "fcp_ms": 48,
+        "ready_ms": 59.5
+      },
+      "after": {
+        "document_encoded_bytes": 7929,
+        "document_decoded_bytes": 31668,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 7929,
+        "fcp_ms": 48,
+        "ready_ms": 61.30000000001746
+      }
+    },
+    {
+      "case": "workspace",
+      "viewport": "mobile",
+      "cache": "cold",
+      "before": {
+        "document_encoded_bytes": 11316,
+        "document_decoded_bytes": 45567,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 11316,
+        "fcp_ms": 60,
+        "ready_ms": 91.89999999999418
+      },
+      "after": {
+        "document_encoded_bytes": 7929,
+        "document_decoded_bytes": 31668,
+        "staff_network_payload": 4379,
+        "combined_payload_bytes": 12308,
+        "fcp_ms": 60,
+        "ready_ms": 92.09999999997672
+      }
+    },
+    {
+      "case": "workspace",
+      "viewport": "mobile",
+      "cache": "warm",
+      "before": {
+        "document_encoded_bytes": 11316,
+        "document_decoded_bytes": 45567,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 11316,
+        "fcp_ms": 44,
+        "ready_ms": 59.60000000000582
+      },
+      "after": {
+        "document_encoded_bytes": 7930,
+        "document_decoded_bytes": 31668,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 7930,
+        "fcp_ms": 44,
+        "ready_ms": 59.60000000000582
+      }
+    },
+    {
+      "case": "training",
+      "viewport": "desktop",
+      "cache": "cold",
+      "before": {
+        "document_encoded_bytes": 13363,
+        "document_decoded_bytes": 158235,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 13363,
+        "fcp_ms": 88,
+        "ready_ms": 107.69999999995343
+      },
+      "after": {
+        "document_encoded_bytes": 9939,
+        "document_decoded_bytes": 144336,
+        "staff_network_payload": 4379,
+        "combined_payload_bytes": 14318,
+        "fcp_ms": 88,
+        "ready_ms": 107.5
+      }
+    },
+    {
+      "case": "training",
+      "viewport": "desktop",
+      "cache": "warm",
+      "before": {
+        "document_encoded_bytes": 13363,
+        "document_decoded_bytes": 158235,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 13363,
+        "fcp_ms": 68,
+        "ready_ms": 75.70000000001164
+      },
+      "after": {
+        "document_encoded_bytes": 9939,
+        "document_decoded_bytes": 144336,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 9939,
+        "fcp_ms": 68,
+        "ready_ms": 76.20000000001164
+      }
+    },
+    {
+      "case": "training",
+      "viewport": "mobile",
+      "cache": "cold",
+      "before": {
+        "document_encoded_bytes": 13362,
+        "document_decoded_bytes": 158235,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 13362,
+        "fcp_ms": 84,
+        "ready_ms": 108.20000000001164
+      },
+      "after": {
+        "document_encoded_bytes": 9939,
+        "document_decoded_bytes": 144336,
+        "staff_network_payload": 4379,
+        "combined_payload_bytes": 14318,
+        "fcp_ms": 84,
+        "ready_ms": 108.20000000001164
+      }
+    },
+    {
+      "case": "training",
+      "viewport": "mobile",
+      "cache": "warm",
+      "before": {
+        "document_encoded_bytes": 13364,
+        "document_decoded_bytes": 158235,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 13364,
+        "fcp_ms": 68,
+        "ready_ms": 75.80000000004657
+      },
+      "after": {
+        "document_encoded_bytes": 9940,
+        "document_decoded_bytes": 144336,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 9940,
+        "fcp_ms": 64,
+        "ready_ms": 87.89999999996508
+      }
+    },
+    {
+      "case": "public-profile",
+      "viewport": "desktop",
+      "cache": "cold",
+      "before": {
+        "document_encoded_bytes": 4293,
+        "document_decoded_bytes": 12880,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 4293,
+        "fcp_ms": 72,
+        "ready_ms": 132.89999999996508
+      },
+      "after": {
+        "document_encoded_bytes": 4294,
+        "document_decoded_bytes": 12880,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 4294,
+        "fcp_ms": 72,
+        "ready_ms": 136
+      }
+    },
+    {
+      "case": "public-profile",
+      "viewport": "desktop",
+      "cache": "warm",
+      "before": {
+        "document_encoded_bytes": 4294,
+        "document_decoded_bytes": 12880,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 4294,
+        "fcp_ms": 60,
+        "ready_ms": 117.69999999995343
+      },
+      "after": {
+        "document_encoded_bytes": 4294,
+        "document_decoded_bytes": 12880,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 4294,
+        "fcp_ms": 60,
+        "ready_ms": 119.59999999997672
+      }
+    },
+    {
+      "case": "public-profile",
+      "viewport": "mobile",
+      "cache": "cold",
+      "before": {
+        "document_encoded_bytes": 4294,
+        "document_decoded_bytes": 12880,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 4294,
+        "fcp_ms": 72,
+        "ready_ms": 150.69999999995343
+      },
+      "after": {
+        "document_encoded_bytes": 4294,
+        "document_decoded_bytes": 12880,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 4294,
+        "fcp_ms": 72,
+        "ready_ms": 135.90000000002328
+      }
+    },
+    {
+      "case": "public-profile",
+      "viewport": "mobile",
+      "cache": "warm",
+      "before": {
+        "document_encoded_bytes": 4294,
+        "document_decoded_bytes": 12880,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 4294,
+        "fcp_ms": 56,
+        "ready_ms": 115.90000000002328
+      },
+      "after": {
+        "document_encoded_bytes": 4294,
+        "document_decoded_bytes": 12880,
+        "staff_network_payload": 0,
+        "combined_payload_bytes": 4294,
+        "fcp_ms": 60,
+        "ready_ms": 117.20000000006985
+      }
+    }
+  ],
+  "first_navigation_extra_gzip_bytes": [
+    1264,
+    1264,
+    992,
+    992,
+    955,
+    956
+  ],
+  "warm_gzip_body_saving_percent": [
+    25.371,
+    25.377,
+    29.931,
+    29.922,
+    25.623,
+    25.621
+  ],
+  "timing_claim": "Gates passed; small runner differences do not establish a production latency improvement or SLA.",
+  "authenticated_production_uat": "NOT RUN; user Chrome observed login page",
+  "private_html_context_uncached": true,
+  "static_asset_cache_seconds": 604800,
+  "other_javascript_cache_seconds": 30,
+  "synthetic_only": true
+}

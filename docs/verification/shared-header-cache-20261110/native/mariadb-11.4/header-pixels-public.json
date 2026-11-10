@@ -1,0 +1,12 @@
+[
+  {
+    "case": "public-profile",
+    "viewport": "desktop",
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "public-profile",
+    "viewport": "mobile",
+    "decoded_pixels_equal": true
+  }
+]

@@ -11251,10 +11251,11 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11-HJS/P11-HJS2/P11-HJS3",
-      "disposition": "HJS/HJS2 nevybrané zachované; HJS3 nový runtime/VM/native/browser gate po odstranění staff CSS duplicit, zatím NOT RUN.",
+      "disposition": "HJS3 #449/b753f6e7 nasazen deploy42920002806;14CI/native2DB/544Chrome/24funkčních/8pixelpárů PASS. Warm gzip−25–30%, cold+955–1264B; živé GET/hash/SRI/cache PASS. Přihlášené produkční UAT NOT RUN; staré HJS/HJS2 nevybrání a WIP zachované. Doklady#450 bez redeploye.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md",
-        "docs/verification/shared-header-cache-20261110/RESULTS.md"
+        "docs/verification/shared-header-cache-20261110/RESULTS.md",
+        "docs/verification/shared-header-cache-20261110/release/release-controls.json"
       ]
     },
     {

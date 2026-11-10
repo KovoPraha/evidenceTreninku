@@ -226,3 +226,9 @@ bez nasazení do jejich dokončení. Podrobnosti v průběžných výsledcích.
 
 Implementace `7de1c569` pushnutá v [#449](https://github.com/KovoPraha/evidenceTreninku/pull/449); lokální PASS výše.
 Aktuální native2DB/Chrome/ostatní CI probíhají; merge/deploy NOT RUN.
+
+HJS3 přejímka dokončena: #449/b753f6e7,14CI/native2DB/544Chrome/24funkčních/8pixelpárů PASS. Warm gzip těla−25–30%, cold+955–1264B přiznané. Deploy42920002806 běží; receipt/live čekají. Přihlášené produkční UAT NOT RUN. Podrobnosti ve výsledcích.
+
+### HJS3 konečné vydání — 11. 11. 2026
+
+NASAZENO / technická přejímka PASS. [Deploy42920002806](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42920002806) SUCCESS na b753f6e7; 2456 testů/56289 assertions, záloha389tabulek/2triggery, migrace/config/VS/index/HTTP200/cleanup PASS; UAT/importfalse. Native42917624902,544měření/24funkčních/8pixelpárů a14CI PASS. Každé staff HTML−13 899B, warm gzip−25,37–29,93%, cold+955–1264B (předem zapsaná brána splněná, návratnost druhou pracovní stránkou). Živé TLS GET/hash/SRI/gzip/identity/q0/cache PASS; dosavadní UI payloady/politiky shodné. Přihlášené produkční UAT, fyzický mobil a reálné push NOT RUN. Historické HJS/HJS2 nevybrání i ASSET4/6 LIMIT zachované. Doklady [#450](https://github.com/KovoPraha/evidenceTreninku/pull/450) jsou samostatné dokumentační vydání bez dalšího deploye; [úplné výsledky](verification/shared-header-cache-20261110/RESULTS.md).

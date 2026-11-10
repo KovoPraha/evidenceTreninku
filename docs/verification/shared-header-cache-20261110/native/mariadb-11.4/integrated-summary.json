@@ -1,0 +1,162 @@
+{
+  "complete": true,
+  "diagnostic_only": false,
+  "baseline_sha": "5d6434dc6d4338d47e283d715a4b2c568950c986",
+  "optimized_sha": "dd44cff7a657d79c7bb4f2aa7e959c779f3be8d9",
+  "source_sha256": {
+    "sportovec_treninky.php": "ee975e1c20c5b8ebd9cedb44c0c3f807a70470545c24650ce3ca184d63322f2e",
+    "moje_treninky.php": "fac85dd390a9cd14ffa2b410e80521d1bdb0f3553f3296b5480a3b7273596a35",
+    "sprava_treninku.php": "4ba0cdf2aeadde44efc257d22079869aeed16a958da4d1eb13e58ed12942125c",
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+    "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+    "hlavicka.php": "1d2f59c11696fe6b4846770f4a9275bd5d29373331a558d8bd22a7dd4aa22105",
+    "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+    "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+  },
+  "baseline_source_sha256": {
+    "sportovec_treninky.php": "ee975e1c20c5b8ebd9cedb44c0c3f807a70470545c24650ce3ca184d63322f2e",
+    "moje_treninky.php": "fac85dd390a9cd14ffa2b410e80521d1bdb0f3553f3296b5480a3b7273596a35",
+    "sprava_treninku.php": "4ba0cdf2aeadde44efc257d22079869aeed16a958da4d1eb13e58ed12942125c",
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+    "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+    "hlavicka.php": "3012d42d1200d391b07ef395da89039d8f7cabc57d6ae75d044f8e046a516637"
+  },
+  "comparison": true,
+  "cases": [
+    {
+      "size": 1000,
+      "pages": {
+        "workspace": {
+          "before": {
+            "total_median_ms": 6.6290000000000004,
+            "ttfb_median_ms": 6.5
+          },
+          "after": {
+            "total_median_ms": 6.63,
+            "ttfb_median_ms": 6.525
+          }
+        },
+        "mine": {
+          "before": {
+            "total_median_ms": 7.136,
+            "ttfb_median_ms": 6.948
+          },
+          "after": {
+            "total_median_ms": 7.143,
+            "ttfb_median_ms": 7.016
+          }
+        },
+        "training": {
+          "before": {
+            "total_median_ms": 14.963000000000001,
+            "ttfb_median_ms": 14.667
+          },
+          "after": {
+            "total_median_ms": 14.98,
+            "ttfb_median_ms": 14.71
+          }
+        },
+        "mine_ajax": {
+          "before": {
+            "total_median_ms": 8.915,
+            "ttfb_median_ms": 8.62
+          },
+          "after": {
+            "total_median_ms": 8.788,
+            "ttfb_median_ms": 8.545
+          }
+        }
+      }
+    },
+    {
+      "size": 10000,
+      "pages": {
+        "workspace": {
+          "before": {
+            "total_median_ms": 6.756,
+            "ttfb_median_ms": 6.656
+          },
+          "after": {
+            "total_median_ms": 6.681,
+            "ttfb_median_ms": 6.597
+          }
+        },
+        "mine": {
+          "before": {
+            "total_median_ms": 7.343,
+            "ttfb_median_ms": 7.204999999999999
+          },
+          "after": {
+            "total_median_ms": 7.222,
+            "ttfb_median_ms": 7.0889999999999995
+          }
+        },
+        "training": {
+          "before": {
+            "total_median_ms": 15.094,
+            "ttfb_median_ms": 14.811
+          },
+          "after": {
+            "total_median_ms": 15.100000000000001,
+            "ttfb_median_ms": 14.75
+          }
+        },
+        "mine_ajax": {
+          "before": {
+            "total_median_ms": 10.011000000000001,
+            "ttfb_median_ms": 9.709000000000001
+          },
+          "after": {
+            "total_median_ms": 10.101,
+            "ttfb_median_ms": 9.782
+          }
+        }
+      }
+    },
+    {
+      "size": 30000,
+      "pages": {
+        "workspace": {
+          "before": {
+            "total_median_ms": 6.742,
+            "ttfb_median_ms": 6.595
+          },
+          "after": {
+            "total_median_ms": 6.762,
+            "ttfb_median_ms": 6.634
+          }
+        },
+        "mine": {
+          "before": {
+            "total_median_ms": 7.258,
+            "ttfb_median_ms": 7.119000000000001
+          },
+          "after": {
+            "total_median_ms": 7.3,
+            "ttfb_median_ms": 7.184
+          }
+        },
+        "training": {
+          "before": {
+            "total_median_ms": 15.249,
+            "ttfb_median_ms": 14.951
+          },
+          "after": {
+            "total_median_ms": 15.291,
+            "ttfb_median_ms": 14.908
+          }
+        },
+        "mine_ajax": {
+          "before": {
+            "total_median_ms": 10.177999999999999,
+            "ttfb_median_ms": 9.880999999999998
+          },
+          "after": {
+            "total_median_ms": 10.22,
+            "ttfb_median_ms": 10.004000000000001
+          }
+        }
+      }
+    }
+  ]
+}

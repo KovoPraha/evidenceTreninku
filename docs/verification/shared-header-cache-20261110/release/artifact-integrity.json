@@ -1,0 +1,346 @@
+{
+  "complete": true,
+  "method": "SHA256 of canonical staged Git blobs; excludes this self-referential manifest; text uses canonical LF.",
+  "files": [
+    {
+      "path": "docs/verification/shared-header-cache-20261110/RESULTS.md",
+      "bytes": 10624,
+      "sha256": "107181929ab1bf6f80a22866b0e90c356b9e11d9450f4b3f2aa1650c48d3c7ec"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/compression/browser-summary.json",
+      "bytes": 1351,
+      "sha256": "68f85989c84ee1b6c90ca75f7239ac9d0f97b8be0b317874a769ac2a490b8617"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/compression/browser.json",
+      "bytes": 97025,
+      "sha256": "3c539bf89a6b69e9f4a38f6e97bfb5de8f44e9685f6b4798ee885e72b3de37af"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/compression/cleanup.json",
+      "bytes": 83,
+      "sha256": "bbac6cadbb8497aa1addd093bc6bb9092b8becda7e1eb51083ebf7d3f977cdfd"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/compression/native.json",
+      "bytes": 61675,
+      "sha256": "5a3b09394aaa5c28a90d1526747964e3ab09462266c5ad44d603f99375db8d6a"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native-acceptance.json",
+      "bytes": 12264,
+      "sha256": "78a05c7f4224bb968613461bf5fee7134392d6d4abf3429ef45bbee4e6bd22ce"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/comparison-tests.xml",
+      "bytes": 704,
+      "sha256": "acc0b6a4f85c3e77185ca0f78bdc2f153dbb188363e158c7239542626fe6a6b9"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/css-payload.json",
+      "bytes": 114,
+      "sha256": "98aa496df2a1acb9eb3df9bb7cba2494f63c8390c89929040dee16726654c8fb"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/exact-edit-contract.json",
+      "bytes": 620,
+      "sha256": "4496409f4da9973aead15e40d2869db1616f0b23c7d0a18bb9cc5889e98e2b5e"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/fixture-schema.json",
+      "bytes": 18875,
+      "sha256": "f2272de84770d310e55e72df1c5e9bfdb9449e053fe2a39426f366dcbb338623"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/header-parents-1000.json.gz",
+      "bytes": 2772,
+      "sha256": "bd0aef060c88f4309e8c6a1d2406a6b6cf756288ac970e21f656944783cf02bd"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/header-parents-10000.json.gz",
+      "bytes": 2756,
+      "sha256": "4901e80db133eaac81297bae5dbdba3f6a7dbe3eab4f5da3dfdd17e294c4c53f"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/header-parents-30000.json.gz",
+      "bytes": 2757,
+      "sha256": "26bee0ca5adcc1dabda342dc9faab1d8ecf4f6b35820b6451c8234d27181f5bb"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/integrated-summary.json",
+      "bytes": 4931,
+      "sha256": "d0e3438c5713b145da496c5153c69cfc0b42f7ee8892e623ee427fba31186e45"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/projection-tests.xml",
+      "bytes": 1310,
+      "sha256": "3b67a2180b17f25fc694b17db20e0981b9f2763682bff568172a776eb2ff2409"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/runner-cleanup.json",
+      "bytes": 164,
+      "sha256": "fe45661187b8e6c44c867afe22592b5b8b99ed387105fa55a261586d75a309a9"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/security.json",
+      "bytes": 5772,
+      "sha256": "3576fcb29ffac792fdf6dd14e281cd1aad4e4f226ebc05f814543bde433c9f7a"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/shared-context.json",
+      "bytes": 23524,
+      "sha256": "67484dcf655e37daf198fd010392a65696131d74e3302d36f4e843421bb3b532"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-10.3/source-identity.json",
+      "bytes": 1580,
+      "sha256": "8aba97132e78002f18dd5c1065aa1caea2e259900e61ece54397862fc7750fd0"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/comparison-tests.xml",
+      "bytes": 704,
+      "sha256": "afd547d639ad15ada9bbbadfc220e3b77e5f7582bd663ff889a5b9aadc319b7a"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/css-payload.json",
+      "bytes": 114,
+      "sha256": "98aa496df2a1acb9eb3df9bb7cba2494f63c8390c89929040dee16726654c8fb"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/exact-edit-contract.json",
+      "bytes": 620,
+      "sha256": "4496409f4da9973aead15e40d2869db1616f0b23c7d0a18bb9cc5889e98e2b5e"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/fixture-schema.json",
+      "bytes": 19482,
+      "sha256": "57da91ef4108a0a8e9942c8f89e897b3801ef53c0ef5ce6c5e14d251263ab618"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-browser-coach-summary.json",
+      "bytes": 4278,
+      "sha256": "152e56abd19d8f55ce08604c31a417d9b0d4c1d7a4d3282c48ab3bec140e8392"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-browser-coach.json.gz",
+      "bytes": 20705,
+      "sha256": "44ae0880a1d259b87123729f95efcfca6405d94968913c8556cc21f862e486c6"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-browser-public-summary.json",
+      "bytes": 2157,
+      "sha256": "bd0ecdb116dc3055601d5d7df5d819eb61c8891877bb88b6f591a0a24a084839"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-browser-public.json.gz",
+      "bytes": 8267,
+      "sha256": "dc031ad71efa6398b72461a69fddfbd906c073da108f72c4dafc76ee6581a199"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-browser-sports_lead-summary.json",
+      "bytes": 2155,
+      "sha256": "8a33bccbebc7e09944f4db3668f89cceb56b14c5555c16f91efe88ebe58b689a"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-browser-sports_lead.json.gz",
+      "bytes": 10972,
+      "sha256": "945072822c03455659b282e3091d7777bb2e14701c4b97612c7939e779571d0c"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-parents-1000.json.gz",
+      "bytes": 2746,
+      "sha256": "e45b24f19953c484c423b0b4b91aae4b3df96a85478a910268e0ca91e8784ca4"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-parents-10000.json.gz",
+      "bytes": 2780,
+      "sha256": "4877c88a25399dc6350f57a119709cb32b9961f7ff12f8cfd3e37147c484c11e"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-parents-30000.json.gz",
+      "bytes": 2749,
+      "sha256": "dc121f88b29cb31dd047a4611b5c4c874a1162137830202aeabd38bb0ded4986"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-pixels-coach.json",
+      "bytes": 366,
+      "sha256": "98c5d107953aeedd45f12e87be0ede62426a6b0511bbbd3517ae9da7a7c9ef8d"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-pixels-public.json",
+      "bytes": 199,
+      "sha256": "656007e1bf5993d49a026f894e0bf616d7cadcdf0302c6d2378fcb6dbad5e094"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/header-pixels-sports_lead.json",
+      "bytes": 187,
+      "sha256": "eb4f51256fc9c73330911a239f62225f779b613d094d7581851768487594f343"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/integrated-summary.json",
+      "bytes": 4963,
+      "sha256": "0628f7276e0be733787eddbbcf175373a8a11fa7590ba3ee4837c91843a5b80a"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/projection-tests.xml",
+      "bytes": 1310,
+      "sha256": "19f7834742c8539621b9099218eb9d03ffcff66b0f950b375d6a5e85a0c2c7de"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/runner-cleanup.json",
+      "bytes": 164,
+      "sha256": "fe45661187b8e6c44c867afe22592b5b8b99ed387105fa55a261586d75a309a9"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/security.json",
+      "bytes": 5772,
+      "sha256": "3576fcb29ffac792fdf6dd14e281cd1aad4e4f226ebc05f814543bde433c9f7a"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-context.json",
+      "bytes": 23524,
+      "sha256": "67484dcf655e37daf198fd010392a65696131d74e3302d36f4e843421bb3b532"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-coach-mine-desktop-after.png",
+      "bytes": 99143,
+      "sha256": "5eeff265fcd491a70cec9c0340e09488960117d2902df1f2d82775e9b2eea957"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-coach-mine-desktop-before.png",
+      "bytes": 99143,
+      "sha256": "5eeff265fcd491a70cec9c0340e09488960117d2902df1f2d82775e9b2eea957"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-coach-mine-mobile-after.png",
+      "bytes": 58929,
+      "sha256": "77e05ba970c5f7bf0303267efc63749d2a7b0202b6dc885ff56f140c262f4986"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-coach-mine-mobile-before.png",
+      "bytes": 58929,
+      "sha256": "77e05ba970c5f7bf0303267efc63749d2a7b0202b6dc885ff56f140c262f4986"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-coach-workspace-desktop-after.png",
+      "bytes": 83805,
+      "sha256": "367f4238a086c34ba28f4fe379be484b92a13190017401de67280a18b886c275"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-coach-workspace-desktop-before.png",
+      "bytes": 83805,
+      "sha256": "367f4238a086c34ba28f4fe379be484b92a13190017401de67280a18b886c275"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-coach-workspace-mobile-after.png",
+      "bytes": 53646,
+      "sha256": "b20b33704e2f04a5f2e3160f454e87b7670420a9cd85848adbd98b37cd78b0f3"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-coach-workspace-mobile-before.png",
+      "bytes": 53646,
+      "sha256": "b20b33704e2f04a5f2e3160f454e87b7670420a9cd85848adbd98b37cd78b0f3"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-public-public-profile-desktop-after.png",
+      "bytes": 65648,
+      "sha256": "05cabd949d8cc4c187c0320a3278c88cd21f7a6fb0a43be4fab06c1fe4735643"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-public-public-profile-desktop-before.png",
+      "bytes": 65648,
+      "sha256": "05cabd949d8cc4c187c0320a3278c88cd21f7a6fb0a43be4fab06c1fe4735643"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-public-public-profile-mobile-after.png",
+      "bytes": 60752,
+      "sha256": "a5107365d673dc55aeadb3e6ce87b4f151683b0ec3494f168a0a668b17f75eaa"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-public-public-profile-mobile-before.png",
+      "bytes": 60752,
+      "sha256": "a5107365d673dc55aeadb3e6ce87b4f151683b0ec3494f168a0a668b17f75eaa"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-sports_lead-training-desktop-after.png",
+      "bytes": 86711,
+      "sha256": "4df70acd3f2d37802ca221590614d5ad36181a5a42b5899e20ff8f209059efb8"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-sports_lead-training-desktop-before.png",
+      "bytes": 86711,
+      "sha256": "4df70acd3f2d37802ca221590614d5ad36181a5a42b5899e20ff8f209059efb8"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-sports_lead-training-mobile-after.png",
+      "bytes": 48098,
+      "sha256": "c56c227a1861f75c11cbbb605d811a20bd6c1e38021a2513cf854d5afe394313"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/shared-header-sports_lead-training-mobile-before.png",
+      "bytes": 48098,
+      "sha256": "c56c227a1861f75c11cbbb605d811a20bd6c1e38021a2513cf854d5afe394313"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/native/mariadb-11.4/source-identity.json",
+      "bytes": 1580,
+      "sha256": "8aba97132e78002f18dd5c1065aa1caea2e259900e61ece54397862fc7750fd0"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/app-checks.json",
+      "bytes": 2488,
+      "sha256": "ae49584744f32c30d9122b541ad7c6d7df0d57207407d7c1826affb78ad17c33"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/deploy-summary.json",
+      "bytes": 8328,
+      "sha256": "442953982d577827d41356c4d27bd7f740b121611120d02875ec009123df7b70"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/index-preflight/medical-index-after.json",
+      "bytes": 2438,
+      "sha256": "2dbfd6885b1ed5d01c94e83ff0ab68793e4442d17e90738762bbc62a61deed54"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/index-preflight/medical-index-before.json",
+      "bytes": 2439,
+      "sha256": "072508f80dcd210ffde27dfb7934227a5a6ebb6fa27cb2ffa43ea01f22148057"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/live-after.json",
+      "bytes": 9275,
+      "sha256": "ccfed2dd44826b7aa832b35f9b2c9f5cd6c7999e29a88218b870878544d7398a"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/live-before.json",
+      "bytes": 8071,
+      "sha256": "f539fbb3a48d6657cd03d4e7a0e705f48f11e3c2a19dbf9fa2f3eaa8e26451fb"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/live-http-probe.py.txt",
+      "bytes": 4672,
+      "sha256": "957340b953c85aa5f8b200de8841446b701a207a3f83c5ad409389ebf9a5aa26"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/merge.json",
+      "bytes": 248,
+      "sha256": "b9b32e6b639cc32ae71f5a41e554ea7bbcdb5ea4b5f1604e950f703dbd951c8f"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/premerge-gate.json",
+      "bytes": 2948,
+      "sha256": "36fd82102bdd94d583277e8fed926a692719fdac96a9aed8fd168bcbf8bd198f"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/production-session.json",
+      "bytes": 561,
+      "sha256": "1b707c9a222b0943d354fd3c99d6bea2615f3d9b0731d7666d4a517303205baa"
+    },
+    {
+      "path": "docs/verification/shared-header-cache-20261110/release/release-controls.json",
+      "bytes": 1738,
+      "sha256": "7b4ab2afa9fe7a18fdd6958d4dd42eb0c05cd6e024b21750207e9c4c3f8dcadb"
+    }
+  ]
+}

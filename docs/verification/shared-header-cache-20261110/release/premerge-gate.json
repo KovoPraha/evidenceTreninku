@@ -1,0 +1,82 @@
+{
+  "complete": true,
+  "head_sha": "dd44cff7a657d79c7bb4f2aa7e959c779f3be8d9",
+  "base_sha": "5d6434dc6d4338d47e283d715a4b2c568950c986",
+  "merge_state": "CLEAN",
+  "checks": [
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624867/job/130184018353",
+      "name": "MariaDB integrační smoke (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624836/job/130184017975",
+      "name": "docs",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624867/job/130184018266",
+      "name": "MariaDB profily čtení (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624861/job/130184017894",
+      "name": "PHPStan level 5 and changed-file style",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624902/job/130184018110",
+      "name": "Shared header script HTTP (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624902/job/130184017720",
+      "name": "Shared header script HTTP (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624867/job/130184018259",
+      "name": "PHPUnit na PHP 8.2",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624867/job/130184018209",
+      "name": "MariaDB integrační smoke (MariaDB 11.4)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624867/job/130184017774",
+      "name": "MariaDB profily čtení (MariaDB 10.3)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917624810/job/130184017457",
+      "name": "Apache gzip and real Chrome",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/runs/130184310238",
+      "name": "CodeQL",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917618003/job/130184009291",
+      "name": "Analyze (python)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917618003/job/130184008731",
+      "name": "Analyze (javascript-typescript)",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42917618003/job/130184009229",
+      "name": "Analyze (actions)",
+      "state": "SUCCESS"
+    }
+  ],
+  "strict_required_checks": true,
+  "required_checks_actions_app_id": 15368,
+  "native_acceptance_complete": true,
+  "wip_preserved": true
+}

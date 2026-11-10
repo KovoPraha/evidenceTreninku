@@ -1,0 +1,86 @@
+[
+  {
+    "case": "training",
+    "viewport": "desktop",
+    "cache": "cold",
+    "before": {
+      "document_encoded_bytes": 13363,
+      "document_decoded_bytes": 158235,
+      "staff_network_payload": 0,
+      "combined_payload_bytes": 13363,
+      "fcp_ms": 88,
+      "ready_ms": 107.69999999995343
+    },
+    "after": {
+      "document_encoded_bytes": 9939,
+      "document_decoded_bytes": 144336,
+      "staff_network_payload": 4379,
+      "combined_payload_bytes": 14318,
+      "fcp_ms": 88,
+      "ready_ms": 107.5
+    }
+  },
+  {
+    "case": "training",
+    "viewport": "desktop",
+    "cache": "warm",
+    "before": {
+      "document_encoded_bytes": 13363,
+      "document_decoded_bytes": 158235,
+      "staff_network_payload": 0,
+      "combined_payload_bytes": 13363,
+      "fcp_ms": 68,
+      "ready_ms": 75.70000000001164
+    },
+    "after": {
+      "document_encoded_bytes": 9939,
+      "document_decoded_bytes": 144336,
+      "staff_network_payload": 0,
+      "combined_payload_bytes": 9939,
+      "fcp_ms": 68,
+      "ready_ms": 76.20000000001164
+    }
+  },
+  {
+    "case": "training",
+    "viewport": "mobile",
+    "cache": "cold",
+    "before": {
+      "document_encoded_bytes": 13362,
+      "document_decoded_bytes": 158235,
+      "staff_network_payload": 0,
+      "combined_payload_bytes": 13362,
+      "fcp_ms": 84,
+      "ready_ms": 108.20000000001164
+    },
+    "after": {
+      "document_encoded_bytes": 9939,
+      "document_decoded_bytes": 144336,
+      "staff_network_payload": 4379,
+      "combined_payload_bytes": 14318,
+      "fcp_ms": 84,
+      "ready_ms": 108.20000000001164
+    }
+  },
+  {
+    "case": "training",
+    "viewport": "mobile",
+    "cache": "warm",
+    "before": {
+      "document_encoded_bytes": 13364,
+      "document_decoded_bytes": 158235,
+      "staff_network_payload": 0,
+      "combined_payload_bytes": 13364,
+      "fcp_ms": 68,
+      "ready_ms": 75.80000000004657
+    },
+    "after": {
+      "document_encoded_bytes": 9940,
+      "document_decoded_bytes": 144336,
+      "staff_network_payload": 0,
+      "combined_payload_bytes": 9940,
+      "fcp_ms": 64,
+      "ready_ms": 87.89999999996508
+    }
+  }
+]
