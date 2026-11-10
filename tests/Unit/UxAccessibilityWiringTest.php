@@ -255,12 +255,13 @@ final class UxAccessibilityWiringTest extends TestCase
         self::assertStringContainsString("publicVelodromeStatusLabel((string)\$reservation['stav'])", $velodromePage);
     }
 
-    public function testSharedUiAssetsAreCacheBustedAfterDeployment(): void
+    public function testSharedUiAssetsAreVersionedByTheirCurrentContent(): void
     {
         $shell = (string)file_get_contents($this->root . 'includes/ui_shell.php');
 
-        self::assertStringContainsString("filemtime(\$root . '/assets/app-ui.css')", $shell);
-        self::assertStringContainsString("filemtime(\$root . '/assets/app-ui.js')", $shell);
+        $versions = require $this->root . 'includes/ui_asset_versions.php';
+        self::assertSame(hash_file('sha256', $this->root . 'assets/app-ui.css'), $versions['assets/app-ui.css']);
+        self::assertSame(hash_file('sha256', $this->root . 'assets/app-ui.js'), $versions['assets/app-ui.js']);
         self::assertStringContainsString("'?v=' . rawurlencode", $shell);
     }
 

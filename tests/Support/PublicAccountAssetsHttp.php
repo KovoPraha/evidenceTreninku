@@ -51,7 +51,7 @@ foreach (range(-4, 16) as $round) {
             if ($response['status'] !== 200 || preg_match('/Fatal error|Warning:/', $body)) {
                 throw new RuntimeException('Account route failed: ' . $case . ':' . $response['status']);
             }
-            $local = preg_match_all('~href="/(?!/)[^"]*assets/vendor/bootstrap/bootstrap\.min\.css\?v=[0-9]+"~', $body);
+            $local = preg_match_all('~href="/(?!/)[^"]*assets/vendor/bootstrap/bootstrap\.min\.css\?v=(?:[0-9]+|[a-f0-9]{64})"~', $body);
             $cdn = substr_count($body, 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
             if ($local !== 1 || $cdn !== ($variant === 'before' && $case !== 'control' ? 1 : 0)) {
                 throw new RuntimeException('Unexpected CSS resources: ' . $case . ':' . $variant);

@@ -155,7 +155,7 @@ final class SharedUiShellTest extends TestCase
             }
             $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
             if (preg_match('#^(vendor|tests|migrations|scripts|docs|var|\.agents)/#', $relative) === 1
-                || $relative === 'includes/ui_shell.php'
+                || in_array($relative, ['includes/ui_shell.php', 'includes/ui_asset_versions.php', 'tools/build-ui-asset-versions.php'], true)
             ) {
                 continue;
             }

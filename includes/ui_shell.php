@@ -19,14 +19,17 @@ function appUiUrl(string $path): string
 function appUiAssets(): void
 {
     static $rendered = false;
-    if ($rendered) return;
+    if ($rendered) {
+        return;
+    }
     $rendered = true;
     $root = dirname(__DIR__);
-    $bootstrapCssVersion = (string)(filemtime($root . '/assets/vendor/bootstrap/bootstrap.min.css') ?: '1');
-    $bootstrapJsVersion = (string)(filemtime($root . '/assets/vendor/bootstrap/bootstrap.bundle.min.js') ?: '1');
-    $iconsVersion = (string)(filemtime($root . '/assets/vendor/bootstrap-icons/font/bootstrap-icons.css') ?: '1');
-    $cssVersion = (string)(filemtime($root . '/assets/app-ui.css') ?: '1');
-    $jsVersion = (string)(filemtime($root . '/assets/app-ui.js') ?: '1');
+    $versions = require $root . '/includes/ui_asset_versions.php';
+    $bootstrapCssVersion = $versions['assets/vendor/bootstrap/bootstrap.min.css'];
+    $bootstrapJsVersion = $versions['assets/vendor/bootstrap/bootstrap.bundle.min.js'];
+    $iconsVersion = $versions['assets/vendor/bootstrap-icons/font/bootstrap-icons.css'];
+    $cssVersion = $versions['assets/app-ui.css'];
+    $jsVersion = $versions['assets/app-ui.js'];
     $bootstrapCss = htmlspecialchars(appUiUrl('assets/vendor/bootstrap/bootstrap.min.css') . '?v=' . rawurlencode($bootstrapCssVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $bootstrapJs = htmlspecialchars(appUiUrl('assets/vendor/bootstrap/bootstrap.bundle.min.js') . '?v=' . rawurlencode($bootstrapJsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     $icons = htmlspecialchars(appUiUrl('assets/vendor/bootstrap-icons/font/bootstrap-icons.css') . '?v=' . rawurlencode($iconsVersion), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -62,7 +65,9 @@ function publicShellNav(string $active = ''): void
     ?>
     <nav class="app-public-nav navbar navbar-expand-xxl bg-white border-bottom shadow-sm" aria-label="Klubový portál">
       <div class="container">
-        <a class="navbar-brand app-brand-link" href="<?= publicShellH(appUiUrl('index.php')) ?>" aria-label="KOVO Praha – úvodní stránka"><span class="app-brand-logo" aria-hidden="true"><img src="<?= publicShellH(appUiUrl('assets/kovo-praha-logo.png')) ?>" alt="" width="500" height="167"></span></a>
+        <a class="navbar-brand app-brand-link" href="<?=
+ publicShellH(appUiUrl('index.php')) ?>" aria-label="KOVO Praha – úvodní stránka"><span class="app-brand-logo" aria-hidden="true"><img src="<?=
+ publicShellH(appUiUrl('assets/kovo-praha-logo.png')) ?>" alt="" width="500" height="167"></span></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#appPublicNav"
                 aria-controls="appPublicNav" aria-expanded="false" aria-label="Otevřít hlavní nabídku">
           <span class="navbar-toggler-icon"></span>
@@ -70,7 +75,11 @@ function publicShellNav(string $active = ''): void
         <div class="collapse navbar-collapse" id="appPublicNav">
           <ul class="navbar-nav me-auto mb-2 mb-xxl-0">
             <?php foreach ($items as $key => [$label, $href]): ?>
-              <li class="nav-item"><a class="nav-link<?= $active === $key ? ' active fw-semibold' : '' ?>" href="<?= publicShellH(appUiUrl($href)) ?>"<?= $active === $key ? ' aria-current="page"' : '' ?>><?= publicShellH($label) ?></a></li>
+              <li class="nav-item"><a class="nav-link<?=
+ $active === $key ? ' active fw-semibold' : '' ?>" href="<?=
+ publicShellH(appUiUrl($href)) ?>"<?=
+ $active === $key ? ' aria-current="page"' : '' ?>><?=
+ publicShellH($label) ?></a></li>
             <?php endforeach; ?>
           </ul>
           <div class="d-flex flex-column flex-xxl-row align-items-stretch align-items-xxl-center gap-2 ms-xxl-2 pb-2 pb-xxl-0">
@@ -96,9 +105,13 @@ function publicShellNav(string $active = ''): void
             <?php if (!$customer && !$athlete && !$trainer): ?>
               <a class="btn btn-primary btn-sm" href="<?= publicShellH(appUiUrl('booking/prihlaseni.php')) ?>">Přihlásit se</a>
             <?php elseif ($athlete && !$customer && !$trainer): ?>
-              <form method="post" action="<?= publicShellH(appUiUrl('booking/sportovec_odhlaseni.php')) ?>" class="d-inline"><?= csrf_field() ?><button class="btn btn-outline-danger btn-sm w-100">Odhlásit</button></form>
+              <form method="post" action="<?=
+ publicShellH(appUiUrl('booking/sportovec_odhlaseni.php')) ?>" class="d-inline"><?=
+ csrf_field() ?><button class="btn btn-outline-danger btn-sm w-100">Odhlásit</button></form>
             <?php else: ?>
-              <form method="post" action="<?= publicShellH(appUiUrl('booking/odhlaseni.php')) ?>" class="d-inline"><?= csrf_field() ?><button class="btn btn-outline-danger btn-sm w-100">Odhlásit</button></form>
+              <form method="post" action="<?=
+ publicShellH(appUiUrl('booking/odhlaseni.php')) ?>" class="d-inline"><?=
+ csrf_field() ?><button class="btn btn-outline-danger btn-sm w-100">Odhlásit</button></form>
             <?php endif; ?>
           </div>
         </div>
@@ -113,7 +126,12 @@ function publicShellFooter(): void
     <footer class="app-public-footer border-top mt-5 py-4">
       <div class="container d-flex flex-wrap justify-content-between gap-2 small text-muted">
         <span>Klubový portál Kovopraha</span>
-        <span><a href="<?= publicShellH(appUiUrl('index.php')) ?>">Domů</a> · <a href="<?= publicShellH(appUiUrl('booking/cyklisticke_krouzky.php')) ?>">Kroužky</a> · <a href="<?= publicShellH(appUiUrl('booking/kalendar.php')) ?>">Individuální lekce</a> · <a href="<?= publicShellH(appUiUrl('booking/treninky.php')) ?>">Veřejné tréninky</a> · <a href="<?= publicShellH(appUiUrl('booking/eshop.php')) ?>">E-shop</a></span>
+        <span><a href="<?=
+ publicShellH(appUiUrl('index.php')) ?>">Domů</a> · <a href="<?=
+ publicShellH(appUiUrl('booking/cyklisticke_krouzky.php')) ?>">Kroužky</a> · <a href="<?=
+ publicShellH(appUiUrl('booking/kalendar.php')) ?>">Individuální lekce</a> · <a href="<?=
+ publicShellH(appUiUrl('booking/treninky.php')) ?>">Veřejné tréninky</a> · <a href="<?=
+ publicShellH(appUiUrl('booking/eshop.php')) ?>">E-shop</a></span>
       </div>
     </footer>
     <?php

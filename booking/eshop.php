@@ -498,8 +498,7 @@ foreach ($products as $product): $variantCount = count($product['variants']);
     shopPublicH($imageUrl)
     ?>" alt="<?=
     shopPublicH($product['public_name'])
-    ?>" class="card-img-top app-product-image p-2" style="height:220px" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-app-csp-handler="
-    <?=
+    ?>" class="card-img-top app-product-image p-2" style="height:220px" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-app-csp-handler="<?=
 
 
 

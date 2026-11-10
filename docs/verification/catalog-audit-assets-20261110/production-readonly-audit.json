@@ -1,0 +1,829 @@
+{
+  "ok": true,
+  "read_only_transaction": true,
+  "rolled_back": true,
+  "configuration_unchanged": true,
+  "captured_utc": "2026-11-10T13:40:33+00:00",
+  "window_utc": [
+    "2026-11-10 00:00:00",
+    "2026-11-11 00:00:00"
+  ],
+  "public_events": [
+    {
+      "event_id": 471,
+      "product_id": 247,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:02:59",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 0
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/f42d7624017439bd8293818aa031b773.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 472,
+      "product_id": 269,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:09:24",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/97a46b84f2d0380e3b0edc91945ed6ac.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 473,
+      "product_id": 269,
+      "variant_id": null,
+      "action": "remove_image",
+      "at_utc": "2026-11-10 11:09:41",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": null
+        },
+        "image_url": {
+          "before": "uploads/shop-products/bf3beff2a9d91e35d7bf5ad5e8079843.jpg",
+          "after": null
+        }
+      }
+    },
+    {
+      "event_id": 474,
+      "product_id": 293,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:12:36",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 0
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/719239a036a975f8da9e9dc4d151132d.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 475,
+      "product_id": 294,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:12:53",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 0
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/2fe8f6d5848e56ac472e11f24aeb5c92.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 476,
+      "product_id": 252,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:13:41",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/f2ecaf7686377cd6f6c8e7d59681bbf6.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 477,
+      "product_id": 252,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:13:58",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 478,
+      "product_id": 248,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:14:33",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/2051cdc1e1511fb92f1913db55112045.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 479,
+      "product_id": 248,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:14:39",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 480,
+      "product_id": 255,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:15:13",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/a46a7c4129bb8f19bb14e8567302b982.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 481,
+      "product_id": 255,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:15:21",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 482,
+      "product_id": 265,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:16:04",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/a18033de7cfe685e521db6c34d069703.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 483,
+      "product_id": 265,
+      "variant_id": null,
+      "action": "remove_image",
+      "at_utc": "2026-11-10 11:16:13",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": null
+        },
+        "image_url": {
+          "before": "uploads/shop-products/19775cc467b3568dc724b131edcf1abe.jpg",
+          "after": null
+        }
+      }
+    },
+    {
+      "event_id": 484,
+      "product_id": 257,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:16:46",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/9a69f0a880b351a6b0ddc72c6760bd9d.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 485,
+      "product_id": 257,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:16:54",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 486,
+      "product_id": 261,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:17:31",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/d1c12c9cb6e9131d4df24e104445df2e.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 487,
+      "product_id": 261,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:17:39",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 488,
+      "product_id": 256,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:18:25",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/f42bccb7f9bffed7c83e8ea725f202d3.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 489,
+      "product_id": 256,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:18:31",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 490,
+      "product_id": 260,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:19:18",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/6a4bd5287ffa1161b30ee691f02435e2.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 491,
+      "product_id": 260,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:19:25",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 492,
+      "product_id": 259,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:20:29",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 493,
+      "product_id": 259,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:20:43",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/5dcdc1ec74c320d7c19ba04a00c48c4e.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 494,
+      "product_id": 249,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:21:40",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/d352626cc3b7a0922fd949b129275ca6.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 495,
+      "product_id": 249,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:21:46",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 496,
+      "product_id": 258,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:22:35",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 497,
+      "product_id": 258,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:22:41",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/ee1c7ca8c821fd4bfb6dbcdd49782f0c.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 498,
+      "product_id": 268,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:23:29",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/6e89b5894f12f87cfb0470c9e77394c1.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 499,
+      "product_id": 268,
+      "variant_id": null,
+      "action": "remove_image",
+      "at_utc": "2026-11-10 11:23:39",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": null
+        },
+        "image_url": {
+          "before": "uploads/shop-products/e7ffa079915dafde1d0f7be23369dd13.jpg",
+          "after": null
+        }
+      }
+    },
+    {
+      "event_id": 500,
+      "product_id": 266,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:31:07",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/9470fa6660e047154e4a569725dec83a.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 501,
+      "product_id": 266,
+      "variant_id": null,
+      "action": "remove_image",
+      "at_utc": "2026-11-10 11:31:14",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": null
+        },
+        "image_url": {
+          "before": "uploads/shop-products/0f5abc24b2da2e2ccee398567e57a8c5.jpg",
+          "after": null
+        }
+      }
+    },
+    {
+      "event_id": 502,
+      "product_id": 262,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:32:43",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/cac3d994dfaa729cfd2d877fc6b2efb8.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 503,
+      "product_id": 262,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:33:58",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 504,
+      "product_id": 267,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:35:14",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/36a31d2ccb065ae9d2595d01f6767412.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 505,
+      "product_id": 267,
+      "variant_id": null,
+      "action": "remove_image",
+      "at_utc": "2026-11-10 11:35:32",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": null
+        },
+        "image_url": {
+          "before": "uploads/shop-products/c6f422992f2892c86611cbab28fedd49.jpg",
+          "after": null
+        }
+      }
+    },
+    {
+      "event_id": 506,
+      "product_id": 253,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:36:16",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/8e947a94d8796660e97df7421ab290f9.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 507,
+      "product_id": 253,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:36:23",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 508,
+      "product_id": 263,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:37:05",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/b338a282f11764965116e3bddd4be983.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 509,
+      "product_id": 263,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:37:12",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 510,
+      "product_id": 251,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:38:07",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/9fbd8175cb55c3e38b8b87741fc630df.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 511,
+      "product_id": 251,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:38:12",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 512,
+      "product_id": 292,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:38:59",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 0
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/059f6b240516e59b60094fc3bda388e1.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 513,
+      "product_id": 291,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:39:33",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 0
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/ffc81e1b18441546854eb2bb9da50450.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 514,
+      "product_id": 271,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:40:12",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/6eb4b6cad579a42d775708466f8e5acf.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 515,
+      "product_id": 271,
+      "variant_id": null,
+      "action": "remove_image",
+      "at_utc": "2026-11-10 11:40:23",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": null
+        },
+        "image_url": {
+          "before": "uploads/shop-products/5f1f6f3374dc908c78df4aae3fffc630.jpg",
+          "after": null
+        }
+      }
+    },
+    {
+      "event_id": 516,
+      "product_id": 250,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:41:06",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/7c7052bc19025d4c7ce002786eeed7b8.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 517,
+      "product_id": 250,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:41:12",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 518,
+      "product_id": 264,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:41:51",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/b1bee9f673a902b48323cdbf865d2fcc.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 519,
+      "product_id": 264,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:42:01",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    },
+    {
+      "event_id": 520,
+      "product_id": 254,
+      "variant_id": null,
+      "action": "add_image",
+      "at_utc": "2026-11-10 11:42:52",
+      "public_changes": {
+        "sort_order": {
+          "before": null,
+          "after": 1
+        },
+        "image_url": {
+          "before": null,
+          "after": "uploads/shop-products/c8766d9db44a1bc63534aa39d34964b0.jpg"
+        }
+      }
+    },
+    {
+      "event_id": 521,
+      "product_id": 254,
+      "variant_id": null,
+      "action": "reorder_image",
+      "at_utc": "2026-11-10 11:42:57",
+      "public_changes": {
+        "sort_order": {
+          "before": 0,
+          "after": 2
+        }
+      }
+    }
+  ],
+  "stock_activity": {
+    "shop_inventory_movements": {
+      "available": true,
+      "groups": []
+    },
+    "shop_stock_movements": {
+      "available": false
+    }
+  },
+  "source_sha256": {
+    "booking/eshop.php": "7c5379385cb7665cb181b88db678371e9f4fee1561c9579ad967abf0c3d1c34c",
+    "includes/ui_shell.php": "15ac46d46549563c6757fc2832872fbbad22ebd0352150ec19a00de03a7cd4ff",
+    "includes/shop_catalog_page_read.php": "8f1a12dfd99cd742ee4cb1a1e29a9cad4118d5438d9d2ed73e1ff6d4746fa73b",
+    "includes/shop_catalog_cards.php": "a4bedfad0f3336fb9091736cffdb1f61c1fd9b91d1a7eec5a1073173e98ef9c9",
+    "includes/shop_storefront.php": "8dfd5ea626905f5802436e4800efd1a3e01d634180d8be3d37ef8967913386a6",
+    "includes/shop_member_pricing_read.php": "3bba57a10b4116556ac6b954afc11e2ed0f6b369e15f071ff71e9e29c7f8b2bf"
+  }
+}
