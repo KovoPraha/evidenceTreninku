@@ -11176,6 +11176,45 @@
       "evidence": [
         "docs/verification/bootstrap-assets-20261110/RESULTS.md"
       ]
+    },
+    {
+      "id": "PL-7528f205dd",
+      "path": "docs/SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md",
+      "title": "P11-HJS sdílený staff JavaScript",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11-HJS",
+      "disposition": "Plán před implementací, transport/cache a funkční shoda se musí změřit.",
+      "evidence": [
+        "docs/verification/shared-header-script-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-4a78e33bd1",
+      "path": "docs/SESSION_HANDOFF_SHARED_HEADER_SCRIPT_2026-11-10.md",
+      "title": "P11-HJS předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-HJS",
+      "disposition": "Plán před implementací, transport/cache a funkční shoda se musí změřit.",
+      "evidence": [
+        "docs/verification/shared-header-script-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-98c103e306",
+      "path": "docs/verification/shared-header-script-20261110/RESULTS.md",
+      "title": "P11-HJS ověření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-HJS",
+      "disposition": "Plán před implementací, transport/cache a funkční shoda se musí změřit.",
+      "evidence": [
+        "docs/verification/shared-header-script-20261110/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",
