@@ -10,6 +10,10 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
 COACH-ROSTER-01: trenérská agenda čte pouze přímo svěřené `club_teams` a jejich aktuální `club_roster_members`. Varianta dědění jmen z rodičovské skupiny byla odmítnuta, protože grant rodiče neopravňuje ke každé podřízené soupisce. Registrátorská projekce `memberRosterRead()` vrací širší osobní údaje a je vázána na editační pracovní roli; místo ní je úzká čtecí projekce jméno/příjmení. Čekající a ukončená jména vyžadují zvláštní oprávnění, proto první etapa ukazuje jen aktivní členství. [Plán](COACH_GROUP_ROSTERS_2026-11-10.md), [testy](verification/coach-group-rosters-20261110/RESULTS.md).
 
+## D2026-11-10-BAR02
+
+Technické provedení schváleného přesného kopírování: počáteční zůstatky mohou zachovat i případné záporné celé hodnoty původního signed INT skladu, v mezích původního maxima. Je to volba vývoje pro zachování dat, nikoli nový pokyn vlastníka ani povolení nových prodejů do mínusu. Nulování/zaokrouhlení by měnilo požadovaná data; běžné skladové služby zůstávají beze změny. Neplatné/zlomkové/nadlimitní hodnoty se nekopírují. Diagnostika nejprve doloží skutečná data; bez konkrétního platného snímku není zápis. [Plán](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md#navazující-preflight-zásob).
+
 ## D2026-11-10-BAR01
 
 Výslovný pokyn vlastníka: původní formát, velikosti a grafika TV lístků se při začlenění nemění; převzít také zásobu stánku i předskladu podle původních ID. Dřívější nulový počátek byl proveden podle tehdejšího zadání, nový navazující převod jej doplní bez opakování katalogového importu. Nové cílové pohyby mají přednost a konflikt převod zastaví. [Plán](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md).

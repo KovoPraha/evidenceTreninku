@@ -76,4 +76,31 @@ final class BarOpeningStockTest extends TestCase
         $this->expectException(\DomainException::class);
         \barApplyOpeningStocks($this->pdo, $plan, str_repeat('d', 64), 'LOCALHOST forbidden stock');
     }
+
+    public function testSignedLegacyBalancesAreCopiedWithoutRoundingOrReplacingWithZero(): void
+    {
+        $source = [['id' => 91, 'sklad' => -2, 'predsklad' => 0], ['id' => 92, 'sklad' => 3, 'predsklad' => -4]];
+        $summary = \barOpeningStockSourceSummary($source);
+        self::assertTrue($summary['valid']);
+        self::assertSame(1, $summary['negative_stall']);
+        self::assertSame(1, $summary['negative_office']);
+        $result = \barApplyOpeningStocks($this->pdo, \barOpeningStockPlan($this->pdo, $source), str_repeat('e', 64), 'LOCALHOST exact opening balance');
+        self::assertSame(1, $result['stall_total']);
+        self::assertSame(-4, $result['office_total']);
+        self::assertSame(-2, (int)$this->pdo->query('SELECT stock_stall FROM kis_bar_products WHERE id=1')->fetchColumn());
+        self::assertSame(-4, (int)$this->pdo->query('SELECT stock_office FROM kis_bar_products WHERE id=2')->fetchColumn());
+        self::assertSame(2, (int)$this->pdo->query('SELECT COUNT(*) FROM kis_bar_stock_movements WHERE quantity_after<0')->fetchColumn());
+    }
+
+    public function testInvalidSourceQuantitiesAreDiagnosedWithoutInventingTotals(): void
+    {
+        $summary = \barOpeningStockSourceSummary([['id' => 91, 'sklad' => '1.5', 'predsklad' => null],
+            ['id' => 92, 'sklad' => 1000001, 'predsklad' => 0]]);
+        self::assertFalse($summary['valid']);
+        self::assertCount(3, $summary['invalid']);
+        self::assertNull($summary['stall_total']);
+        self::assertNull($summary['office_total']);
+        $this->expectException(\InvalidArgumentException::class);
+        \barOpeningStockQuantity('1.5');
+    }
 }

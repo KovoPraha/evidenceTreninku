@@ -17,3 +17,9 @@ Stav: ROZPRACOVÁNO. Větev `codex/bar-display-stock-parity-20261110`, worktree 
 Původní `public/obrazovka.php` je celoobrazovkový textový ceník; `public/obrazovka2.php` je tříkartová střídající prezentace. Současný `includes/bar/menu_view.php` oba nahradil posuvnou dvousloupcovou galerií, čímž původní vzhled nezachoval. Nová oprava vychází z původních šablon, nikoli z nového grafického návrhu.
 
 Průběžné výsledky a další krok: [protokol](verification/bar-display-stock-20261110/RESULTS.md), [PR #440](https://github.com/KovoPraha/evidenceTreninku/pull/440). Implementace je ve větvi; skutečný převod a nasazení čekají na ověření přesného headu.
+
+## Navazující preflight zásob
+
+Obrazovky nasazené přes #440, 2 stránky / 4 přesná aktiva / 45 fotografií živě PASS; viz protokol. První pouze čtecí inspect zásob skončil `InvalidArgumentException`, `committed=false`. Nesmí následovat odhad, vynulování nebo zaokrouhlení zdrojových hodnot.
+
+Technické doplnění v rámci schváleného kopírování: ve větvi `codex/bar-stock-preflight-20261110` doplnit bezpečnou fázovou diagnostiku a souhrny skutečných celých počtů bez konfigurace/hesel. Počáteční zůstatek smí zachovat i původní záporné celé číslo v mezích původního skladu; nejde o povolení nového prodeje do mínusu. Běžné skladové služby, nulový cílový stav, rezervace, historie a úplný bod obnovy zůstávají hlídané. Neplatné, zlomkové nebo nadlimitní hodnoty nadále odmítnout. Teprve nový konkrétní čtecí výsledek určí možnost zápisu. Nasazený web se kvůli diagnostice nemění; chráněný workflow nahraje prověřeného pomocníka mimo webroot.
