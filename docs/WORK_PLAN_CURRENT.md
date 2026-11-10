@@ -18,9 +18,9 @@ ROZPRACOVÁNO, vlastník vývoj / vedení baru. Výslovný pokyn zachovat původ
 
 ## Úplný katalog plánů
 
-TESTER-20261110 — VYDÁNÍ PŘIPRAVOVÁNO: [řazení objednávek a maskovaná kontrola registrace](verification/tester-orders-registration-20261110.md), vlastník vývoj; [PR #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) sloučen jako `f39f3157`, 11 CI PASS. Spolu s COACH-ROSTER-01 vydat podle výslovného požadavku vlastníka; lidské UAT oddělené.
+TESTER-20261110 — NASAZENO, PŘIHLÁŠENÉ UAT OTEVŘENÉ: [řazení objednávek a maskovaná kontrola registrace](verification/tester-orders-registration-20261110.md), #438 `f39f3157`, [společné vydání](verification/coach-group-rosters-20261110/RESULTS.md). Ověřit smíšené platby, masku, audit a zákaz přístupu běžného trenéra pod příslušnými účty.
 
-COACH-ROSTER-01 — PŘED VYDÁNÍM: [trenérské skupiny a soupisky](COACH_GROUP_ROSTERS_2026-11-10.md), [PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436); přímé scope granty, aktivní členství a [syntetické ověření](verification/coach-group-rosters-20261110/RESULTS.md) PASS. Živé Aligátory a přihlášené UAT ověřit po nasazení.
+COACH-ROSTER-01 — NASAZENO, PŘIHLÁŠENÉ UAT OTEVŘENÉ: [trenérské skupiny a soupisky](COACH_GROUP_ROSTERS_2026-11-10.md), #436 `4e3df207`; [syntetické a produkční technické ověření](verification/coach-group-rosters-20261110/RESULTS.md) PASS. Pověřený trenér a registrář mají ověřit skutečné Aligátory po schválení a přidělení přímého grantu.
 
 QR01 — implementace a release hotové; živé UAT otevřené: [verze podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md), vlastník vývoj; #416/#419 sloučené, `e3f2990` nasazené, [20/395 místních kontrol a veřejné čtení produktu 298 PASS](verification/quick-registration-terms-20261109/RESULTS.md). Další krok vlastníka/testera: přihlášené rodičovské UAT se skutečnou objednávkou a platbou podle provozního scénáře.
 
