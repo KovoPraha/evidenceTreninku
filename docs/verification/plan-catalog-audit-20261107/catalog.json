@@ -11208,12 +11208,13 @@
       "primary": true,
       "role": "plan",
       "status": "PARTIAL",
-      "registry": "P11-ASSET/P11-ASSET2/P11-ASSET3/P11-ASSET4/P11-ASSET5/P11-ASSET6",
-      "disposition": "ASSET1–6 nasazené; ASSET6 #445/c9e5501a, deploy42881039034,13CI/native2DB/6HTML+4targetpixelpairs PASS; controlfoto LIMIT. Lidské UAT a historický ASSET4 LIMIT zachované.",
+      "registry": "P11-ASSET/P11-ASSET2/P11-ASSET3/P11-ASSET4/P11-ASSET5/P11-ASSET6/P11-ASSET7",
+      "disposition": "ASSET1–6 nasazené, ASSET7 čtyři rodinné CSS duplicity; nová přejímka NOT RUN. Historické ASSET4/6 LIMIT zachované.",
       "evidence": [
         "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md",
         "docs/verification/public-calendar-assets-20261110/RESULTS.md",
-        "docs/verification/checkout-assets-20261110/RESULTS.md"
+        "docs/verification/checkout-assets-20261110/RESULTS.md",
+        "docs/verification/family-assets-20261110/RESULTS.md"
       ]
     },
     {

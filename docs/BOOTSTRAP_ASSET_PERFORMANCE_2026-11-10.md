@@ -612,3 +612,61 @@ fyzický telefon a obnova nové zálohy NOT RUN. Finální doklady ve větvi
 codex/checkout-assets-release-docs-20261110, [PR #446](https://github.com/KovoPraha/evidenceTreninku/pull/446).
 Doklady jsou předané přes PR #446; jeho sloučením jsou součástí main.
 Další produkční krok není potřeba, kvůli dokladům neopakovat deploy.
+
+
+## P11-ASSET7 — stránky rodinného účtu, 10. 11. 2026
+
+ROZPRACOVÁNO. Vlastník Vývoj/Codex, zadavatel Marek. Přímé nové zadání:
+nejpřínosnější další optimalizace podle analýzy; shoda výsledků a měření před/po,
+při všech PASS commit/merge/deploy, zachování WIP a průběžný plán/handoff v repu.
+Base4d1e99412d83c7bb70da77694f32e31b93ff8284; poslední ověřený runtimec9e5501a,
+deploy42881039034 SUCCESS. Vlastní větev codex/family-assets-performance-20261110,
+worktree C:/Users/Marek/Documents/Codex/evidencePavel-family-assets-performance-20261110.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA2567a7afd75 zachovat beze změny.
+
+### Výběr a hranice
+
+Nová inventura bodu7 analýzy: čtyři stránky stejného rodinného účtu mají
+explicitní CDN Bootstrap CSS i appUiAssets(): moje_osoby.php, moje_objednavky.php,
+moje_programy.php a moje_rezervace.php. Cíl odebrat jednu celou identickou CSS
+odpověď při první návštěvě každé stránky, bez změny dat a zápisových cest.
+Objemová úspora bude přijata až po skutečném native/Chrome baseline, ne pouze
+podle textového výskytu. Bez návštěvnosti netvrdíme absolutní globální pořadí.
+Můj sport má odlišnou athlete autentizaci a PHP echo tag: samostatně nevybraný,
+do tohoto rodinného řezu nepatří. HJS2 zůstává nevybraný WIP: menší inlineJS
+úspora, nový transport/DOM bezpečnostní kontrakt. EVENTREAD má nyní0veřejných
+karet a zůstává odložený; jeho runtime helper nepřebírat. RIX WIP zachovat.
+
+### Akceptace zapsaná před implementací
+
+1. Přesně čtyři známé jednorázové CDN tagy pryč; celé PHP tokeny a literal
+HTML/JS jinak shodné mimo vyjmenované povinné PSR12 guard závorky. Dlouhé HTML
+řádky dělit nulovými PHP hranicemi bez výstupu. Žádné jiné runtime úpravy.
+2. Beze změny SQL, identit/vazeb, schvalování osob, objednávek, cen, plateb,
+programů/účastí, rezervací/storna, verzí souhlasů, CSRF, flash a writerů.
+Shared CSS/JS payloady/verze/TTL stejné. Neprovádět skutečný produkční POST.
+3. Native MariaDB10.3/11.4, plně migrovaná izolovaná syntetická DB: skutečný
+customer login, všechny čtyři celé GET včetně neprázdných doménových dat a
+neověřeného/prázdného účtu, anonymní přesné denial redirecty, neplatný CSRF,
+revokace účtu/vazby dle původního kontraktu. Všechny checksumy po fixture a
+loginu stejné. Celé status/Location/HTML shodné; pouze konkrétní tag a request
+nonce/CSRF, žádná obecná whitespace/script/asset-version normalizace.
+4. Skutečný Apache/Chrome desktop1036×703/mobile390×844, cold/warm,
+17střídavých párů po4warmupech; target2→1CSS, control1→1. ResourceTiming/CDP,
+decoded SHA/SRI, computedstyle/geometrie, přesné pixely a bezpečné klientské
+ovladače/form draft bez skutečného odeslání. Zachovat příslušné domain kontroly.
+Měřit encoded/decoded bytes, FCP/ready; gate čas20%+20ms, bez umělé latence.
+Warm network hlásit podle skutečnosti. Časový zisk nepřenášet na produkční SLA.
+5. Všechno aktuální CI, strict main, tested/merged tree shoda; až při PASS
+chráněný deploymain s UAT/importfalse, backup/config/migrace/VS/index/smoke/
+cleanup. Čerstvé produkční anonymní redirecty a veřejný control před i po,
+canonical payloady. Přihlášené živé UAT jen při dostupné schválené session;
+jinak výslovně NOT RUN, nikoli tvrzená náhrada nativní fixture za produkci.
+6. Průběžně [výsledky](verification/family-assets-20261110/RESULTS.md), registr,
+CURRENT/handoff/logy; finální bezpečné doklady přes PR po celém CI bez druhého
+deploye. Původní WIP nestashovat/neresetovat/neuklízet, stage jen vlastní cesty.
+Historický ASSET4 LIMIT i ASSET6 controlfoto LIMIT zůstávají zachované.
+
+Native/browser/implementace/release zatím NOT RUN. Další krok: baseline fixture,
+přesná odstranění a nové párové přejímky; při neprokázané paritě nebo přínosu
+nevydávat. Runtime/flags vlastní CURRENT.
