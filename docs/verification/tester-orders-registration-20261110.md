@@ -1,6 +1,6 @@
 # Reporting testerky: objednávky a registrační podklady
 
-Datum: 10. 11. 2026. Stav: [PR #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) sloučen do `main` jako `f39f3157` po 11 úspěšných CI kontrolách; produkční vydání a přihlášené UAT otevřené.
+Datum: 10. 11. 2026. Stav: [PR #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) sloučen jako `f39f3157` po 11 CI kontrolách a nasazen s #436 ve [workflow 42852365591](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42852365591); přihlášené UAT otevřené.
 
 ## Převzetí
 
@@ -54,11 +54,11 @@ Pověřený registrář po přihlášení otevře čekající registraci dítět
 případnou fotografii; správce ověří odpovídající záznamy
 `osoba_citlive_pristupy` s `masked_view` a případně `photo_view`. Samostatně se
 ověří odmítnutí běžného trenéra. V přehledu objednávek se ověří pořadí při
-smíšených stavech platby. Tento krok zatím nebyl proveden; do produkce se v
-tomto lokálním řezu nezapisovalo.
+smíšených stavech platby. Tento přihlášený krok zatím nebyl proveden; produkční
+ověření vydání je [zapsané u společného release](coach-group-rosters-20261110/RESULTS.md).
 
 ## Společné vydání obou reportů
 
-Vlastník 10. 11. 2026 výslovně požádal „nasadit všechny změny“. Rozsah tvoří dvě opravy v tomto souboru a čtecí trenérská agenda [COACH-ROSTER-01 v draft PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436). Cizí rozpracovanou větev a další otevřené PR do tohoto požadavku nezahrnovat.
+Vlastník 10. 11. 2026 výslovně požádal „nasadit všechny změny“. Rozsah tvoří dvě opravy v tomto souboru a čtecí trenérská agenda [COACH-ROSTER-01 v PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436). Cizí rozpracovanou větev a další otevřené PR do tohoto požadavku nezahrnovat.
 
-Postup: dokončit PR/CI tohoto řezu, sloučit oba schválené řezy do aktuálního `main`, ověřit shodu konečného stromu a dokončení CI. Před produkčním vydáním ověřit syntetický scénář Aligátorů: dítě až po schválení a kanonickém členství, cizí trenér odmítnut. Oddělené testovací KIS pro přihlášené UAT není doložené; skutečný přihlášený průchod a audit proto vykázat samostatně, bez tvrzení o PASS. Standardní workflow `deploy-production.yml` spustit na přesném SHA s `potvrzeni=NASADIT`, `uat_schvaleno=false`, `importovat_krouzky=false`; požadavek na nasazení není schválení lidského UAT ani autorizace nového importu. Po dokončení ověřit workflow, verzi produkce, veřejné HTTP a přihlášené čtení podle dostupného přístupu. Skutečné rodné číslo, účetní údaje a hesla neukládat do důkazů.
+Obě PR prošla CI a byla sloučena do `main`. Před produkčním vydáním prošel syntetický scénář Aligátorů: dítě až po kanonickém členství a cizí trenér odmítnut. Oddělené testovací KIS pro přihlášené UAT není doložené. Standardní `deploy-production.yml` běžel na přesném SHA `4e3df207` s `potvrzeni=NASADIT`, `uat_schvaleno=false`, `importovat_krouzky=false`; výsledek a veřejné HTTP jsou v [release protokolu](coach-group-rosters-20261110/RESULTS.md). Požadavek na nasazení není schválením lidského UAT ani autorizací nového importu. Skutečný přihlášený průchod a audit zůstávají samostatně otevřené; rodná čísla, účetní údaje ani hesla se do důkazů neukládají.
