@@ -11,7 +11,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
   Přihlášené UAT NOT RUN: Computer Use nemohl bezpečně určit URL. Další krok: neplatný čas, reload a obnova konceptu; žádný skutečný trénink testem nevznikl.
 - **P11-JSZ ROZPRACOVÁNO:** [plán](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md), [předání](SESSION_HANDOFF_JAVASCRIPT_COMPRESSION_2026-11-10.md); komprese stávajících JS pod assets.
-  Produkční základ 89282 B bez gzip / cache30s; nový Apache/Chrome gate před merge/deploy. HJS nevybrán, WIP zachovaný; potvrzený runtime9dbd9eaf, flagsfalse.
+  PR #427: Apache Windows/Linux a Chrome shoda PASS, 89282→26618 B (−70 %), časový zisk neprokázaný; ostatní CI běží. Runtime9dbd9eaf, flagsfalse; WIP zachovaný.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).

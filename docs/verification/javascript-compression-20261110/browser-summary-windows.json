@@ -1,0 +1,66 @@
+[
+  {
+    "viewport": "desktop",
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 112,
+      "load_ms": 105,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882
+    },
+    "after": {
+      "fcp_ms": 112,
+      "load_ms": 105.30000001192093,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218
+    }
+  },
+  {
+    "viewport": "desktop",
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 112,
+      "load_ms": 66.1000000089407,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0
+    },
+    "after": {
+      "fcp_ms": 112,
+      "load_ms": 67.20000000298023,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0
+    }
+  },
+  {
+    "viewport": "mobile",
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 152,
+      "load_ms": 136.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882
+    },
+    "after": {
+      "fcp_ms": 144,
+      "load_ms": 177.70000000298023,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218
+    }
+  },
+  {
+    "viewport": "mobile",
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 100,
+      "load_ms": 60.3999999910593,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0
+    },
+    "after": {
+      "fcp_ms": 104,
+      "load_ms": 70.1000000089407,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0
+    }
+  }
+]

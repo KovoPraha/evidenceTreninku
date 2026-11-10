@@ -79,3 +79,13 @@ Kontrakt proto přijme bezpečný200 nebo304, kontroluje skutečný status i has
 identity304, Vary, TTL a negotiation zůstávají povinné. Původní očekávání všech
 komprimovaných304 se neopíralo o Apache chování; nyní je opravené před release.
 Nativní úplná sada a Chrome stále běží; výkon/CI/merge/deploy zatím NOT RUN.
+
+## Průběžné přijetí lokálního a Linux testu
+
+Windows2.4.58 i Linux2.4.66 + Chrome PASS, přesné zdroje/DOM/style/pixely,
+136+32 navigací/platformu, skutečná úspora hlavních JS70,19 %. Časový zisk
+na loopback síti neprokázaný. [Podrobnosti](verification/javascript-compression-20261110/RESULTS.md).
+[PR #427](https://github.com/KovoPraha/evidenceTreninku/pull/427) DRAFT, ostatní CI
+běží, release NOT RUN. Přidán anonymní TLS curl live probe (GET/HEAD, bez cookies,
+redirectů a zápisů); přímé PythonTLS hosting zavíral, bez oslabeníTLS opraveno
+na stejný native curl jako stávající release kontroly. Původní WIP hash shodný.

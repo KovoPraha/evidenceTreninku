@@ -257,6 +257,8 @@ def main():
                     assert "max-age=30" in responses[variant]["headers"]["cache-control"]
             before, after = responses["before"], responses["after"]
             assert before["headers"].get("cache-control") == after["headers"].get("cache-control"), path
+            for header in ["content-type", "x-content-type-options", "x-frame-options", "referrer-policy", "permissions-policy"]:
+                assert before["headers"].get(header) == after["headers"].get(header), (path, header)
             if path.endswith(".js") and path.startswith("assets/"):
                 assert "content-encoding" not in before["headers"] and after["headers"]["content-encoding"] == "gzip", path
                 assert "accept-encoding" in after["headers"]["vary"].lower(), path
@@ -291,3 +293,6 @@ finally:
             process.kill()
             process.wait(timeout=10)
         log.close()
+    if SERVERS:
+        (SAFE / "cleanup.json").write_text(json.dumps(dict(all_owned_apache_processes_stopped=all(
+            process.poll() is not None for process, _ in SERVERS), user_apache_service_untouched=True)), encoding="utf8")
