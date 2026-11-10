@@ -366,7 +366,7 @@ system-curl transport bez změny obsahové kontroly. Přihlášené lidské UAT,
 fyzický mobil a obnova této zálohy NOT RUN; flags a runtime vlastní CURRENT.
 
 Finální evidence ve větvi codex/stable-ui-assets-release-docs-20261110;
-PR bude doplněn při otevření. Žádný druhý deploy kvůli dokladům/test helperu.
+[PR #437](https://github.com/KovoPraha/evidenceTreninku/pull/437). Žádný druhý deploy kvůli dokladům/test helperu.
 WIP původní fio větve / kis_rosters_admin.php SHA-256 `7a7afd75` zachovaný.
 Další kandidát KONCEPT: duplicitní Bootstrap CSS veřejného kalendáře a velodromu,
 samostatná nativní/pixelová přejímka; fotografie se bez přijaté shody nemění.

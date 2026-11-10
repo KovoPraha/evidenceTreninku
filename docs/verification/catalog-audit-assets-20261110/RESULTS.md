@@ -156,5 +156,6 @@ Jde o doplnění testovacího nástroje; aplikace se kvůli němu znovu nenasazu
 Přihlášené lidské produkční UAT, fyzický telefon a obnova této konkrétní zálohy
 NOT RUN. Původní fio větev a WIP kis_rosters_admin.php s otiskem 7a7afd75
 zachované; žádný stash/clean/reset ani převzetí HJS/RIX prototypů.
-Finální doklady: větev codex/stable-ui-assets-release-docs-20261110, PR bude
-doplněn při otevření. Po sloučení dokumentačního PR neopakovat deploy.
+Finální doklady: větev codex/stable-ui-assets-release-docs-20261110, [PR #437](https://github.com/KovoPraha/evidenceTreninku/pull/437). Po sloučení dokumentačního PR neopakovat deploy.
+
+Doplňkový živý čtecí průchod po kartách: [12/12 fotografií nebo jejich kanonických placeholderů načtených, žádné chyby](release/live-chrome/catalog-images-after.json). [Chrome skutečně používá HTTP/2 a dostal200](release/live-chrome/protocol.json); explicitní transportní alternativa tedy nemění požadovanou dostupnost aplikace pro prohlížeč.

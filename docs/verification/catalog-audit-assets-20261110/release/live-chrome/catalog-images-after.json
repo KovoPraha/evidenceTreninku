@@ -1,0 +1,59 @@
+{
+  "complete": true,
+  "http": 200,
+  "protocol": "h2",
+  "visible_card_count": 12,
+  "all_product_images_loaded": [
+    {
+      "path": "/uploads/shop-products/f42d7624017439bd8293818aa031b773.jpg",
+      "valid": true
+    },
+    {
+      "path": "/assets/product-placeholder.svg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/794eec11d8f074735dad40eabfdfc67e.jpg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/a08c31254e17808d3373d57291f43339.jpg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/4a65da0471cc01bad4f0d4292044553e.jpg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/765955f81f54caed18de06fb02176b73.jpg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/afe438c20c67e908544c62be2c32a063.jpg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/06a344f5a14e7b3979cf71e8976cc3d7.jpg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/cdf9d56ca4373e8d41aea9e5d97be49a.jpg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/fa70b96469911c83491573da0c721ca5.jpg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/edf942653cd7cade7aa84587dfc0830f.jpg",
+      "valid": true
+    },
+    {
+      "path": "/uploads/shop-products/a759c94cd08472af12556d3b7705818b.jpg",
+      "valid": true
+    }
+  ],
+  "errors": [],
+  "failed": [],
+  "read_only": true
+}

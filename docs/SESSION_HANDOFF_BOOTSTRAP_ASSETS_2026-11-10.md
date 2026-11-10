@@ -27,7 +27,7 @@ Lidské přihlášené produkční UAT, fyzický telefon a obnova této zálohy 
 Původní větev codex/fio-auto-reconciliation-recovery a WIP kis_rosters_admin.php
 SHA-256 `7a7afd75` zachované. HJS/RIX prototypy nepřebírat; nestashovat/neresetovat.
 
-Doklady: codex/stable-ui-assets-release-docs-20261110; PR bude doplněn při otevření.
+Doklady: codex/stable-ui-assets-release-docs-20261110; [PR #437](https://github.com/KovoPraha/evidenceTreninku/pull/437).
 Po sloučení finálního PR **neopakovat deploy**. Další kandidát KONCEPT: duplicita
 CSS veřejného kalendáře/velodromu, ověřit vlastní před/po a všechny negativní kontroly.
 
