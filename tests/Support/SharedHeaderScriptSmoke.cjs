@@ -64,9 +64,9 @@ for(const [name,options] of [
 test('DOM context rejects external paths, malformed tokens and wrong types before use',async()=>{
   for(const key of ['serviceWorkerUrl','appBaseUrl','pushEndpoint','searchUrl']) {
     for(const value of ['https://attacker.example/','//attacker.example/','javascript:alert(1)','/\\attacker.example/','/bad path/',42]) {
-      await assert.rejects(()=>exercise(bundle,{config:{[key]:value}}),/Invalid staff header path/);
+      await assert.rejects(()=>exercise(()=>bundle,{config:{[key]:value}}),/Invalid staff header path/);
     }
   }
-  await assert.rejects(()=>exercise(bundle,{config:{csrfToken:'invalid'}}),/Invalid staff header context/);
-  await assert.rejects(()=>exercise(bundle,{config:{pushPublicKey:42}}),/Invalid staff header context/);
+  await assert.rejects(()=>exercise(()=>bundle,{config:{csrfToken:'invalid'}}),/Invalid staff header context/);
+  await assert.rejects(()=>exercise(()=>bundle,{config:{pushPublicKey:42}}),/Invalid staff header context/);
 });
