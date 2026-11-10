@@ -5,7 +5,9 @@ require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
 require_once dirname(__DIR__) . '/includes/booking_return.php';
 $returnTo = bookingPurchaseReturn($_POST['return'] ?? $_GET['return'] ?? '');
-$pageTarget = 'moje_osoby.php' . ($returnTo !== '' ? '?return=' . rawurlencode($returnTo) : '');
+$pageTarget = 'moje_osoby.php' . ($returnTo !== '' ? '?return=' . rawurlencode(
+    $returnTo
+) : '');
 if (!isset($_SESSION['verejny_uzivatel_id'])) {
     header('Location: prihlaseni.php?redirect=' . rawurlencode($pageTarget));
     exit;
@@ -17,7 +19,8 @@ require_once dirname(__DIR__) . '/includes/athlete_registration.php';
 
 function claimPageH(mixed $value): string
 {
-    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+    ;
 }
 
 function claimPageReturn(mixed $value): string
@@ -47,19 +50,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ? 'Žádost byla odeslána ke kontrole administrátorovi.'
                     : 'Stejná žádost již čeká na vyřízení.';
             } elseif ($action === 'cancel') {
-                $result = accountPersonClaimCancel($pdo, (int)($_POST['request_id'] ?? 0), $accountId);
+                $result = accountPersonClaimCancel($pdo, (int)(
+                    $_POST['request_id'] ?? 0
+                ), $accountId);
                 $_SESSION['flash_claim_success'] = $result['changed']
                     ? 'Žádost byla zrušena.'
                     : 'Žádost už byla zrušena.';
             } else {
                 throw new InvalidArgumentException('Neplatná akce.');
             }
-            header('Location: moje_osoby.php' . ($returnTo !== '' ? '?return=' . rawurlencode($returnTo) : ''), true, 303);
+            header('Location: moje_osoby.php' . ($returnTo !== '' ? '?return=' . rawurlencode(
+                $returnTo
+            ) : ''), true, 303);
             exit;
         } catch (PDOException $exception) {
             error_log('booking/moje_osoby.php: ' . $exception->getMessage());
-            $errors[] = 'Databázová operace selhala. Nebyla uložena částečná změna.';
-        } catch (InvalidArgumentException | AccountPersonClaimException $exception) {
+            $errors[] = 'Databázová operace selhala. Nebyla uložena částečná změna.'
+            ;
+        } catch (InvalidArgumentException | AccountPersonClaimException $exception
+        ) {
             $errors[] = $exception->getMessage();
         }
     }
@@ -83,42 +92,147 @@ $statusLabels = [
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Moje osoby — Kovopraha</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <?php appUiAssets(); ?>
+    <?php
+?>
+
+    <?php
+appUiAssets();
+?>
 </head>
 <body class="bg-light">
-<?php publicShellNav(); ?>
+<?php
+publicShellNav();
+?>
 <main class="container py-4" style="max-width:900px">
     <h1 class="h4 mb-1"><i class="bi bi-people me-2 text-primary"></i>Moje osoby</h1>
     <p class="text-muted">Děti a sportovci, které budete moci přihlašovat na kroužky, kurzy a akce.</p>
-    <?php if ($returnTo !== ''): ?><p><a class="btn btn-outline-primary btn-sm" href="<?=claimPageH($returnTo)?>">← Zpět k rozpracovanému nákupu</a> <span class="small text-muted">Pokud je propojení teprve ke schválení, nákup dokončíte po jeho potvrzení.</span></p><?php endif; ?>
-    <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2"><span>Kvůli ochraně osobních údajů se osoby nepřipojují automaticky. Pokud už je sportovec v evidenci klubu, požádejte níže o propojení; administrátor vazbu ověří.</span><a class="btn btn-primary btn-sm" href="#propojeni">Propojit existujícího sportovce</a></div>
-    <?php if ($newAthleteRegistrationOpen): ?><p><a class="btn btn-outline-primary btn-sm" href="registrace_sportovce.php<?=$returnTo !== '' ? '?return=' . rawurlencode($returnTo) : ''?>"><i class="bi bi-person-plus me-1"></i>Registrovat nového sportovce</a></p><?php else: ?><p class="small text-muted">Registrace nového sportovce je dočasně pozastavena, dokud klub neschválí konečné informace o zpracování údajů. Pokud sportovec ještě není v evidenci, <a href="mailto:velodromtrebesin@gmail.com?subject=Registrace%20nov%C3%A9ho%20sportovce">napište klubu</a>.</p><?php endif; ?>
-    <?php foreach ($errors as $error): ?><div class="alert alert-danger"><?= claimPageH($error) ?></div><?php endforeach; ?>
-    <?php if ($success !== ''): ?><div class="alert alert-success"><?= claimPageH($success) ?></div><?php endif; ?>
+    <?php
+if ($returnTo !== ''):
+    ?><p><a class="btn btn-outline-primary btn-sm" href="<?=
+    claimPageH($returnTo)
+    ?>">← Zpět k rozpracovanému nákupu</a> <span class="small text-muted">Pokud je propojení teprve ke schválení, nákup dokončíte po jeho<?php
+    ?> potvrzení.</span></p><?php
+endif;
+?>
+    <div class="alert alert-info d-flex flex-wrap justify-content-between align-items-center gap-2"><span>Kvůli ochraně osobních údajů se<?php
+?> osoby nepřipojují automaticky. Pokud už je sportovec v evidenci klubu, požádejte níže o propojení; administrátor vazbu ověří.</span><a<?php
+?> class="btn btn-primary btn-sm" href="#propojeni">Propojit existujícího sportovce</a></div>
+    <?php
+if ($newAthleteRegistrationOpen):
+    ?><p><a class="btn btn-outline-primary btn-sm" href="registrace_sportovce.php<?=
+    $returnTo !== '' ? '?return=' . rawurlencode($returnTo) : ''
+    ?>"><i class="bi bi-person-plus me-1"></i>Registrovat nového sportovce</a></p><?php else:
+        ?><p class="small text-muted">Registrace nového sportovce je dočasně pozastavena, dokud klub neschválí konečné informace o zpracování<?php
+        ?> údajů. Pokud sportovec ještě není v evidenci, <a<?php
+        ?> href="mailto:velodromtrebesin@gmail.com?subject=Registrace%20nov%C3%A9ho%20sportovce">napište klubu</a>.</p><?php
+    endif;
+?>
+    <?php
+foreach ($errors as $error):
+    ?><div class="alert alert-danger"><?=
+     claimPageH($error)
+    ?></div><?php
+endforeach;
+?>
+    <?php
+if ($success !== ''):
+    ?><div class="alert alert-success"><?=
+     claimPageH($success)
+    ?></div><?php
+endif;
+?>
 
     <section class="card border-0 shadow-sm mb-3"><div class="card-header bg-white fw-semibold">Schválené osoby</div><div class="card-body">
-        <?php if ($participants === []): ?><div class="text-muted">Zatím nemáte žádnou schválenou osobu.</div><?php endif; ?>
-        <?php foreach ($participants as $person): ?><div class="d-flex justify-content-between border-bottom py-2"><span><strong><?= claimPageH($person['prijmeni'] . ' ' . $person['jmeno']) ?></strong><span class="text-muted ms-2"><?= claimPageH($person['narozeni']) ?></span></span><span class="badge bg-success"><?= $person['relation_role'] === 'guardian' ? 'rodič / zástupce' : 'vlastní profil' ?></span></div><?php endforeach; ?>
+        <?php
+if ($participants === []):
+    ?><div class="text-muted">Zatím nemáte žádnou schválenou osobu.</div><?php
+endif;
+?>
+        <?php
+foreach ($participants as $person):
+    ?><div class="d-flex justify-content-between border-bottom py-2"><span><strong><?=
+     claimPageH($person['prijmeni'] . ' ' . $person['jmeno'])
+    ?></strong><span class="text-muted ms-2"><?=
+     claimPageH($person['narozeni'])
+    ?></span></span><span class="badge bg-success"><?=
+     $person['relation_role'] === 'guardian' ? 'rodič / zástupce' : 'vlastní profil'
+    ?></span></div><?php
+endforeach;
+?>
     </div></section>
 
-    <section class="card border-0 shadow-sm mb-3" id="propojeni"><div class="card-header bg-white fw-semibold">Požádat o propojení osoby</div><div class="card-body">
+    <section class="card border-0 shadow-sm mb-3" id="propojeni"><div class="card-header bg-white fw-semibold">Požádat o propojení<?php
+?> osoby</div><div class="card-body">
         <form method="post" class="row g-3">
-            <?= csrf_field() ?><input type="hidden" name="action" value="submit"><input type="hidden" name="return" value="<?=claimPageH($returnTo)?>">
-            <div class="col-md-4"><label for="claim-role" class="form-label">Vztah</label><select id="claim-role" class="form-select" name="requested_role" required><option value="guardian">Jsem rodič / zástupce</option><option value="self">Je to můj vlastní profil</option></select></div>
-            <div class="col-md-4"><label for="claim-first-name" class="form-label">Jméno osoby</label><input id="claim-first-name" class="form-control" name="jmeno" maxlength="100" required></div>
-            <div class="col-md-4"><label for="claim-last-name" class="form-label">Příjmení osoby</label><input id="claim-last-name" class="form-control" name="prijmeni" maxlength="100" required></div>
-            <div class="col-md-4"><label for="claim-birth-date" class="form-label">Datum narození</label><input id="claim-birth-date" class="form-control" type="date" name="narozeni" max="<?= date('Y-m-d') ?>" required></div>
-            <div class="col-md-8"><label for="claim-message" class="form-label">Poznámka pro ověření <span class="text-muted">(nepovinná)</span></label><input id="claim-message" class="form-control" name="message" maxlength="1000" placeholder="Např. kroužek nebo skupina, kam dítě chodí"></div>
+            <?=
+ csrf_field()
+?><input type="hidden" name="action" value="submit"><input type="hidden" name="return" value="<?=
+claimPageH($returnTo)
+?>">
+            <div class="col-md-4"><label for="claim-role" class="form-label">Vztah</label><select id="claim-role" class="form-select"<?php
+?> name="requested_role" required><option value="guardian">Jsem rodič / zástupce</option><option value="self">Je to můj vlastní<?php
+?> profil</option></select></div>
+            <div class="col-md-4"><label for="claim-first-name" class="form-label">Jméno osoby</label><input id="claim-first-name"<?php
+?> class="form-control" name="jmeno" maxlength="100" required></div>
+            <div class="col-md-4"><label for="claim-last-name" class="form-label">Příjmení osoby</label><input id="claim-last-name"<?php
+?> class="form-control" name="prijmeni" maxlength="100" required></div>
+            <div class="col-md-4"><label for="claim-birth-date" class="form-label">Datum narození</label><input id="claim-birth-date"<?php
+?> class="form-control" type="date" name="narozeni" max="<?=
+ date('Y-m-d')
+?>" required></div>
+            <div class="col-md-8"><label for="claim-message" class="form-label">Poznámka pro ověření <span<?php
+?> class="text-muted">(nepovinná)</span></label><input id="claim-message" class="form-control" name="message" maxlength="1000"<?php
+?> placeholder="Např. kroužek nebo skupina, kam dítě chodí"></div>
             <div class="col-12"><button class="btn btn-primary"><i class="bi bi-send me-1"></i>Odeslat žádost</button></div>
         </form>
     </div></section>
 
-    <section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Historie žádostí</div><div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Osoba</th><th>Vztah</th><th>Stav</th><th>Rozhodnutí</th><th></th></tr></thead><tbody>
-    <?php foreach ($claims as $claim): [$color, $label] = $statusLabels[$claim['status']] ?? ['secondary', $claim['status']]; ?><tr><td><?= claimPageH($claim['claimed_prijmeni'] . ' ' . $claim['claimed_jmeno']) ?><div class="small text-muted"><?= claimPageH($claim['claimed_narozeni']) ?></div></td><td><?= $claim['requested_role'] === 'guardian' ? 'rodič / zástupce' : 'vlastní profil' ?></td><td><span class="badge bg-<?= $color ?>"><?= claimPageH($label) ?></span><div class="small text-muted"><?= claimPageH($claim['created_at']) ?></div></td><td class="small"><?= claimPageH($claim['decision_note'] ?? '') ?><?php if ($claim['status'] === 'approved' && $claim['matched_sportovec_id']): ?><div class="text-success">Propojeno: <?= claimPageH($claim['matched_prijmeni'] . ' ' . $claim['matched_jmeno']) ?></div><?php endif; ?></td><td><?php if ($claim['status'] === 'pending'): ?><form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="cancel"><input type="hidden" name="request_id" value="<?= (int)$claim['id'] ?>"><button class="btn btn-sm btn-outline-danger">Zrušit</button></form><?php endif; ?></td></tr><?php endforeach; ?>
-    <?php if ($claims === []): ?><tr><td colspan="5" class="text-center text-muted py-3">Zatím jste žádnou žádost neposlali.</td></tr><?php endif; ?>
+    <section class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Historie žádostí</div><div<?php
+?> class="table-responsive"><table class="table table-sm align-middle<?php
+?> mb-0"><thead><tr><th>Osoba</th><th>Vztah</th><th>Stav</th><th>Rozhodnutí</th><th></th></tr></thead><tbody>
+    <?php
+foreach ($claims as $claim): [$color, $label] = $statusLabels[$claim['status']] ?? ['secondary'
+, $claim['status']];
+    ?><tr><td><?=
+     claimPageH($claim['claimed_prijmeni'] . ' ' . $claim['claimed_jmeno'])
+    ?><div class="small text-muted"><?=
+     claimPageH($claim['claimed_narozeni'])
+    ?></div></td><td><?=
+     $claim['requested_role'] === 'guardian' ? 'rodič / zástupce' : 'vlastní profil'
+    ?></td><td><span class="badge bg-<?=
+     $color
+    ?>"><?=
+     claimPageH($label)
+    ?></span><div class="small text-muted"><?=
+     claimPageH($claim['created_at'])
+    ?></div></td><td class="small"><?=
+     claimPageH($claim['decision_note'] ?? '')
+    ?><?php
+if ($claim['status'] === 'approved' && $claim['matched_sportovec_id']):
+    ?><div class="text-success">Propojeno: <?=
+     claimPageH($claim['matched_prijmeni'] . ' ' . $claim['matched_jmeno'])
+    ?></div><?php
+endif;
+    ?></td><td><?php
+if ($claim['status'] === 'pending'):
+    ?><form method="post"><?=
+     csrf_field()
+    ?><input type="hidden" name="action" value="cancel"><input type="hidden" name="request_id" value="<?=
+     (int)$claim['id']
+    ?>"><button class="btn btn-sm btn-outline-danger">Zrušit</button></form><?php
+endif;
+    ?></td></tr><?php
+endforeach;
+?>
+    <?php
+if ($claims === []):
+    ?><tr><td colspan="5" class="text-center text-muted py-3">Zatím jste žádnou žádost neposlali.</td></tr><?php
+endif;
+?>
     </tbody></table></div></section>
 </main>
-<?php publicShellFooter(); ?>
+<?php
+publicShellFooter();
+?>
 </body>
 </html>

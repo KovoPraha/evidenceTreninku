@@ -1,41 +1,63 @@
-# Předání P11-ASSET6 —10.11.2026
+# Předání P11-ASSET7 —10.11.2026
 
-**NASAZENO / cílové formuláře technicky PASS; controlfoto LIMIT.**
-[Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset6--rychlý-nákup-a-přihláška-10-11-2026),
-[měření a meze](verification/checkout-assets-20261110/RESULTS.md),
-[receipt](verification/checkout-assets-20261110/release/release-controls.json).
+ROZPRACOVÁNO. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset7--stránky-rodinného-účtu-10-11-2026),
+[výsledky](verification/family-assets-20261110/RESULTS.md).
+Čtyři rodinné stránky: moje_osoby/objednavky/programy/rezervace.php.
+Base4d1e9941, větev codex/family-assets-performance-20261110, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-family-assets-performance-20261110.
+Poslední ověřený runtimec9e5501a/deploy42881039034, flags vlastní CURRENT.
+Původní fio/d1221f35 a WIP7a7afd75 zachované. Native2DB/Chrome/release NOT RUN.
+Další krok: párová baseline se skutečným syntetickým loginem, neprázdné i
+prázdné účty/denials/CSRF/revokace, source kontrakt a17párů cold/warm.
+Pouze čtyři tagy, žádné změny cen/plateb/vazeb/programů/rezervací/writerů.
+Při všech PASS merge/deploy autorizovaný, UAT/importfalse; doklady bez redeploye.
+Můj sport jiná autentizace, HJS2 a RIX nevybrané WIP, EVENTREAD odložený
+prototyp bez runtime helperu. [ASSET1–6 historie](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
+Historické3 ASSET4 hashy a ASSET6 mobilní controlfoto zůstávají LIMIT.
 
-PR #445 →c9e5501a, celý tree97fa16dc totožný s testovaným d6af0a09;13CI PASS.
-Odstraněné dvě CDN Bootstrap CSS duplicity rychlého nákupu/přihlášky.
-Source kontrakt proti58848900: PHP tokeny a literal HTML/JS mimo2tagy stejné,
-0vložených závorek. Payloady/manifest/TTL, SQL, ceny/stock/terms/CSRF/writery stejné.
-Lokálně21/412, native42878204242/2DB desetHTTP/350checksumů naDB, denials,
-408měřených+96warmup Chrome,24funkčních záznamů,6pixelpárů a cleanup PASS.
-První fixture FAIL pro login302/stock404 zůstávají v historii, guardy nezměněné.
 
-Cold CSS64454→31248 B v CI, decoded465606→232803 B; warm network0→0 B.
-FCP goods72→56/68→52 ms, program96→76/88→76 ms, control68→68 ms;
-mediány nejsou produkční SLA, backend zrychlení neprokázané.
-Deploy42881039034 SUCCESS/c9e5501a, 2454/56238, backup389/2,
-config/migrace/VS/index/HTTP200/cleanup PASS (runner0, servercurl200). Živých6celých HTML,
-všech5assetverzí a CSP/privacy hlavičky shodné; CSS53957→31248 B, controlstejný.
-PětUI+CDNpayload canonicalGit před/po stejné, JS/network errors0/overflowfalse.
-Přesných5/6pixelpárů včetně všech4 upravených formulářů. Mobilní controlfotka
-má RGB≤4 rozdíly pouze v obrázku; přesná příčina neprokázaná, striktní test
-zůstává LIMIT. Diagnostika/čtyři opakované GET/PNG zachované, nic nemaskováno.
-Runtime/flags vlastní [CURRENT](CURRENT_STATE.md), UAT/importfalse.
-Lidské přihlášené UAT, fyzický telefon a obnova této zálohy NOT RUN.
+ASSET7 checkpoint: implementovaná přesně čtyři odstranění. Source kontrakt
+proti4d1e9941 PASS: všechny PHP tokeny/literal HTML/JS zachované mimo konkrétní
+tagy a4přesně pinované guard závorky v moje_programy.php (PSR12). Nulové PHP
+hranice dělí dlouhé HTML řádky bez výstupu; whitespace není obecně maskovaný.
+Lokálních19testů/188assertions včetně negativních mutací porovnávače a account
+claims/role/program overview PASS; style/line200/lint/diff PASS. Nový runner:
+17celýchHTTP scénářů (main/empty/unverified/anonymous/control), CSRF a čerstvá
+revokace vazby/účtu,350checksumů a20Chrome kombinací. Native/baseline/Chrome
+přínos a release zatím NOT RUN; další krok nová přejímka, ne hotový výsledek.
 
-Původní codex/fio-auto-reconciliation-recovery/d1221f35 a kis_rosters_admin.php
-SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` zachované.
-Vlastní worktree C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261110,
-doklady codex/checkout-assets-release-docs-20261110, [PR #446](https://github.com/KovoPraha/evidenceTreninku/pull/446).
-Závěrečné doklady PR #446: sloučením jsou součástí main.
-Žádný další runtime krok, **neopakovat deploy**.
 
-[EVENTREAD](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) odložený nevybraný
-prototyp d8274970: SQLite potenciál6506→17SQL, produkční veřejná nabídka0karet;
-native/Chrome nepřijaté, helper nepřebírat. RIX/HJS2 WIP zachované.
-ASSET1–5 zůstávají v historii plánu; tři historické ASSET4 katalogové hashy
-nadále LIMIT (chybí beforeHTML), žádné dodatečné PASS. BAR #444 zachovaný.
-Žádný další implementační řez není v tomto zadání rozpracovaný.
+ASSET7 / [PR #447](https://github.com/KovoPraha/evidenceTreninku/pull/447), větev codex/family-assets-performance-20261110; native/browser běh připravený.
+
+
+ASSET7 native kalibrace:42900569649/964df9a6 a42900622889/5926e376 obě DB
+FAIL před HTTP maticí na chybně očekávaném login302 neověřeného účtu.
+Neměněné prihlaseni.php výslovně odmítá email_overeno=0:200 a „Email není
+ověřen.“, účet vůbec nepřihlásí. Fixture nyní přesně kontroluje toto odmítnutí
+apak302 denials čtyř soukromých stránek. Revokace aktivního přihlášeného účtu
+se proto ověřuje na prázdném ověřeném účtu12: podle db.php přesně303 na
+session=expired. Žádné rozšíření tolerovaných stavů ani změna autentizace;
+první FAIL zůstává v historii, nová plná native/Chrome přejímka se opakuje.
+Produkční anonymní before:4redirecty302 a login200,5canonicalUIpayloadů PASS;
+přihlášené živé UAT NOT RUN. Žádné produkční POST, WIP zachovaný.
+
+
+ASSET7 druhý native checkpoint42901157327/ee01c130: loginové denials už podle
+původního kontraktu prošly; obě DB FAIL na neprázdném main-orders ještě při
+before. Kapacitní základ fixture vytváří objednávky bez kanonických payments,
+zatímco skutečné shopOrderListForAccount používá INNER JOIN payments.
+Doplněné pouze syntetické payment řádky bez reálného IBAN/platby, aby byl
+skutečný neprázdný stav vůbec vykreslený; query/writer/ochrana beze změny.
+Revokační fixture navíc ve finally obnovuje i původní updated_at vazby
+(ON UPDATE v migrovaném schématu), checksum kontrakt se nesnižuje. Nový celý
+native2DB/Chrome běh se opakuje, dosavadní FAIL zůstávají FAIL.
+
+
+ASSET7 úplný PHPUnit na f111d30e: jediný FAIL LoggedInUxWiringTest vyžaduje
+přesný jednořádkový zápis athleteRegistrationTermsReady(athleteRegistrationCurrentTerms($pdo)).
+Formátování jej rozdělilo; výraz nyní opět na jednom řádku pod200znaků.
+Původní test ani registrační guard se neupravují, source token/literal kontrakt
+stále PASS. Nová lokální unit sada824testů/28734assertions,3platformní skip;
+bez selhání, style/diff PASS. Native42901718648 na předchozím f111d30e:
+10.3celáHTTP/350checksumů/CSRF/revokace PASS,11.4Chrome ještě běží; kvůli
+novému finálnímu SHA se aktuální CI/native2DB/browser zopakují celé.

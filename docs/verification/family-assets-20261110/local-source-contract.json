@@ -1,0 +1,55 @@
+{
+    "complete": true,
+    "baseline_sha": "4d1e99412d83c7bb70da77694f32e31b93ff8284",
+    "routes": {
+        "booking\/moje_osoby.php": {
+            "source_sha256": "07d698c91bd3e2cdba0c57cc03d1ce348af944862eaf0ab01a525bc43aaf4a89",
+            "whole_literal_html_except_exact_duplicate_equal": true,
+            "php_tokens_except_exact_listed_guard_braces_equal": true,
+            "brace_insertions": []
+        },
+        "booking\/moje_objednavky.php": {
+            "source_sha256": "f982cf91c783d9ff0a29ebba007113a2f596a9a5f676fecda8cfaf74ab043f16",
+            "whole_literal_html_except_exact_duplicate_equal": true,
+            "php_tokens_except_exact_listed_guard_braces_equal": true,
+            "brace_insertions": []
+        },
+        "booking\/moje_programy.php": {
+            "source_sha256": "44f2dffcf948c693b1e1f9a6a32f592bc3f0b4539e5fe034a723e570d8dca9ef",
+            "whole_literal_html_except_exact_duplicate_equal": true,
+            "php_tokens_except_exact_listed_guard_braces_equal": true,
+            "brace_insertions": [
+                [
+                    125,
+                    [
+                        "{"
+                    ]
+                ],
+                [
+                    131,
+                    [
+                        "}"
+                    ]
+                ],
+                [
+                    132,
+                    [
+                        "{"
+                    ]
+                ],
+                [
+                    223,
+                    [
+                        "}"
+                    ]
+                ]
+            ]
+        },
+        "booking\/moje_rezervace.php": {
+            "source_sha256": "f550c4c820de415232c95f6cc4921e78f22432443dd8b649e52ff6e5b75f5ae6",
+            "whole_literal_html_except_exact_duplicate_equal": true,
+            "php_tokens_except_exact_listed_guard_braces_equal": true,
+            "brace_insertions": []
+        }
+    }
+}
