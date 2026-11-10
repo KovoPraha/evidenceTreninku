@@ -60,3 +60,5 @@ Auth/lidsképrodUAT NOTRUN, WIP7a7afd75 zachovaný; finální docs bez druhého 
 Další kandidáti: čerstvý waterfall veřejného kalendáře/velodromu a stabilní
 assetverze místo filemtime (vlastní nový gate). Před dalším katalogovým řezem
 nová strukturovaná baseline s dílčími otisky, nikoliv pouze starým agregovaným hashem.
+
+Finální důkazy předány v [PR433](https://github.com/KovoPraha/evidenceTreninku/pull/433); docs větev codex/public-account-assets-release-docs-20261110. Merge až po celémCI; bez druhého nasazení.

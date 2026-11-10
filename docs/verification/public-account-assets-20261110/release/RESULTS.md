@@ -61,6 +61,6 @@ Syntetické816+192Chrome,12pixelpairs/48UIscénářů a obě nativní DB PASS.
 WIP kis_rosters_admin.php SHA256
 7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 a původní
 větev codex/fio-auto-reconciliation-recovery zachované. HJS/RIX prototypy nepřevzaté.
-Finální důkazy jsou v samostatné docs větvi codex/public-account-assets-release-docs-20261110,
+Finální důkazy předány v [PR433](https://github.com/KovoPraha/evidenceTreninku/pull/433), samostatné docs větvi codex/public-account-assets-release-docs-20261110,
 bez druhého nasazení. [Plán](../../../BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset3--veřejné-vstupy-k-účtu-10-11-2026),
 [předání](../../../SESSION_HANDOFF_BOOTSTRAP_ASSETS_2026-11-10.md).
