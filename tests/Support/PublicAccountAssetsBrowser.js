@@ -109,7 +109,7 @@ async (page) => {
             },JSON.stringify({shape:measurement.shape,overflow:measurement.overflow}));
             styleSignatures[key]??=signature;
             if (styleSignatures[key]!==signature) throw new Error('Computed style/geometry differs: '+key);
-            
+
             const cssNetwork=measurement.css_resources.reduce((n,r)=>n+(r.transfer>0?r.encoded:0),0);
             if(!response.headers()['content-encoding']?.includes('gzip'))throw new Error('HTML gzip missing');
             (round>=0?samples:warmups).push({case:item.id,viewport:viewport.id,cache,round,variant,
