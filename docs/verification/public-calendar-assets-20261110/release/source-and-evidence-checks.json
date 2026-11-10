@@ -1,0 +1,100 @@
+{
+  "complete": true,
+  "canonical_git_source_checks": [
+    {
+      "version": "10.3",
+      "path": "booking/kalendar.php",
+      "sha256": "0eb444237cc38b4fce60a61fa285eaba36a5c8df450d3b9aa8ce62cd802e8ae8"
+    },
+    {
+      "version": "10.3",
+      "path": "booking/velodrom.php",
+      "sha256": "4652ecd6a57a822c98a6c0d0051fa9b35c6a7fa9a9683195b189dfe68b1b4148"
+    },
+    {
+      "version": "10.3",
+      "path": "db.php",
+      "sha256": "bae8ae992697fce593292f06a27db353f4735764d5c4afbebfe1fefcb419ff9e"
+    },
+    {
+      "version": "10.3",
+      "path": "includes/ui_shell.php",
+      "sha256": "b721636ae3465c990c79e51080569f34df1846040055d220a7eafb31d76d4a64"
+    },
+    {
+      "version": "10.3",
+      "path": "assets/.htaccess",
+      "sha256": "0eafb0a3bdc0f9d958094e4ccd86a4b20ab2ec1078aed39e4e8935f0f845aae0"
+    },
+    {
+      "version": "10.3",
+      "path": "assets/vendor/bootstrap/bootstrap.min.css",
+      "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+    },
+    {
+      "version": "10.3",
+      "path": "assets/vendor/bootstrap/bootstrap.bundle.min.js",
+      "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c"
+    },
+    {
+      "version": "10.3",
+      "path": "assets/app-ui.css",
+      "sha256": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769"
+    },
+    {
+      "version": "10.3",
+      "path": "assets/app-ui.js",
+      "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+    },
+    {
+      "version": "11.4",
+      "path": "booking/kalendar.php",
+      "sha256": "0eb444237cc38b4fce60a61fa285eaba36a5c8df450d3b9aa8ce62cd802e8ae8"
+    },
+    {
+      "version": "11.4",
+      "path": "booking/velodrom.php",
+      "sha256": "4652ecd6a57a822c98a6c0d0051fa9b35c6a7fa9a9683195b189dfe68b1b4148"
+    },
+    {
+      "version": "11.4",
+      "path": "db.php",
+      "sha256": "bae8ae992697fce593292f06a27db353f4735764d5c4afbebfe1fefcb419ff9e"
+    },
+    {
+      "version": "11.4",
+      "path": "includes/ui_shell.php",
+      "sha256": "b721636ae3465c990c79e51080569f34df1846040055d220a7eafb31d76d4a64"
+    },
+    {
+      "version": "11.4",
+      "path": "assets/.htaccess",
+      "sha256": "0eafb0a3bdc0f9d958094e4ccd86a4b20ab2ec1078aed39e4e8935f0f845aae0"
+    },
+    {
+      "version": "11.4",
+      "path": "assets/vendor/bootstrap/bootstrap.min.css",
+      "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+    },
+    {
+      "version": "11.4",
+      "path": "assets/vendor/bootstrap/bootstrap.bundle.min.js",
+      "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c"
+    },
+    {
+      "version": "11.4",
+      "path": "assets/app-ui.css",
+      "sha256": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769"
+    },
+    {
+      "version": "11.4",
+      "path": "assets/app-ui.js",
+      "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+    }
+  ],
+  "deployed_sha": "8182489e43d9f5013e02c58f2a8ccbc257b168ef",
+  "raw_native_reports_final": true,
+  "production_whole_html_and_pixel_pairs": 6,
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "method": "Source checks use canonical Git blobs, not Windows working-tree line endings."
+}
