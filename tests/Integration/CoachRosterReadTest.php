@@ -40,8 +40,9 @@ final class CoachRosterReadTest extends TestCase
         $migration = require dirname(__DIR__, 2) . '/migrations/20261022214000_coach_scope.php';
         $migration['up']($pdo);
         $pdo->exec("INSERT INTO coach_scope_grants(trainer_id,scope_kind,scope_id,valid_from,reason,created_by_trainer_id) "
-            . "VALUES(8,'team',20,'2026-01-01','Test',8),"
-            . "(8,'team',21,'2026-01-01','Test',8),(8,'team',23,'2026-01-01','Test',8)");
+            . "VALUES(8,'team',20,datetime('now','-1 day'),'Test',8),"
+            . "(8,'team',21,datetime('now','-1 day'),'Test',8),"
+            . "(8,'team',23,datetime('now','-1 day'),'Test',8)");
         $this->coach();
         return $pdo;
     }
