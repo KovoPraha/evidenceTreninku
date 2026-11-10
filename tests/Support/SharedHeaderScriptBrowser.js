@@ -148,14 +148,26 @@ async (page) => {
     await page.locator('#toastContainer .toast').last().locator('[data-bs-dismiss="toast"]').click();
     result.toast=true;
     await page.locator('h1').first().click();
-    await page.keyboard.press('Shift+/');
-    await page.locator('#shortcutsModal.show').waitFor({state:'visible'});
+    await page.evaluate(()=>{
+      window.__workspaceKeys=[];window.__shortcutShown=false;window.__shortcutHidden=false;
+      document.addEventListener('keydown',e=>window.__workspaceKeys.push({key:e.key,target:e.target.tagName}),{once:true});
+      const modal=document.getElementById('shortcutsModal');
+      modal.addEventListener('shown.bs.modal',()=>window.__shortcutShown=true,{once:true});
+      modal.addEventListener('hidden.bs.modal',()=>window.__shortcutHidden=true,{once:true});
+    });
+    await page.keyboard.press('?');
+    try { await page.waitForFunction(()=>window.__shortcutShown,undefined,{timeout:5000}); }
+    catch { throw new Error('Shortcut modal: '+JSON.stringify({variant,case:config.case_filter,state:await page.evaluate(()=>({keys:window.__workspaceKeys,active:document.activeElement?.tagName,modal:!!document.getElementById('shortcutsModal'),bootstrap:typeof window.bootstrap?.Modal})),errors,failed})); }
     await page.keyboard.press('Escape');
-    await page.waitForFunction(()=>!document.getElementById('shortcutsModal').classList.contains('show'));
+    await page.waitForFunction(()=>window.__shortcutHidden,undefined,{timeout:5000});
     result.shortcuts=true;
     for(const accept of [false,true]) {
-      await page.evaluate(()=>{window.__hjsConfirmResult=undefined;window.appConfirm('Syntetická kontrola potvrzení').then(value=>window.__hjsConfirmResult=value);});
-      await page.locator('#appConfirmModal.show').waitFor({state:'visible'});
+      await page.evaluate(()=>{
+        window.__hjsConfirmResult=undefined;window.__confirmShown=false;
+        document.getElementById('appConfirmModal').addEventListener('shown.bs.modal',()=>window.__confirmShown=true,{once:true});
+        window.appConfirm('Syntetická kontrola potvrzení').then(value=>window.__hjsConfirmResult=value);
+      });
+      await page.waitForFunction(()=>window.__confirmShown,undefined,{timeout:5000});
       if(accept)await page.locator('#appConfirmModalOk').click();
       else await page.locator('#appConfirmModal [data-bs-dismiss="modal"]').first().click();
       await page.waitForFunction(value=>window.__hjsConfirmResult===value,accept);

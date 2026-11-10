@@ -37,3 +37,10 @@ aktuální celek musí projít znovu na opraveném HEAD, nejde o release PASS.
 
 Obsahově adresované JS mají v `.gitattributes` vynucené LF stejně jako již
 verzované UI payloady. Checkout na Windows tak nezmění obsah proti SHA/SRI.
+
+Běh42916928473: 10.3 HTTP 1k/10k/30k, 357 checksumů a security PASS.
+11.4 se zastavilo v klientském ovladači: `Shift+/` posílal `/` místo `?`,
+čekání na modal proto vypršelo už na původní before variantě. Oprava pouze
+ovladače používá skutečné `?` a Bootstrap shown/hidden události podle již
+ověřené WorkspaceAssetsBrowser kontroly; žádná změna appJS ani potlačení
+funkční zkoušky. Neúplný běh není přijímací výkonový důkaz.
