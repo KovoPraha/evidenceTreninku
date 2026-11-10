@@ -89,3 +89,5 @@ JS pod assets, beze změny jejich dekódovaných bytes, HTML nebo počtu požada
 Zachovat30s cache, rootSW i ostatní typy a soukromé cesty. Nový řez P11-JSZ
 bude mít samostatný plán, skutečný Apache/nativeHTTP/Chrome a release gate.
 Zadání merge/deploy platí až pro plně přijatý JSZ; HJS se do produkce neslučuje.
+
+Nástupnický [JSZ řez](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md) nasazen v PR427; HJS prototyp4c6ffea0 nadále pouze ve vlastní větvi.

@@ -1022,8 +1022,10 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 
 | PL-98c103e306 | [P11-HJS ověření](verification/shared-header-script-20261110/RESULTS.md) | evidence / SUPPORT | P11-HJS |
 
-| PL-5088402eb8 | [P11-JSZ komprese JavaScriptů](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md) | plan / PARTIAL | P11-JSZ |
+| PL-5088402eb8 | [P11-JSZ komprese JavaScriptů](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md) | plan / DONE | P11-JSZ |
 
 | PL-df678aa47e | [P11-JSZ předání](SESSION_HANDOFF_JAVASCRIPT_COMPRESSION_2026-11-10.md) | handoff / SUPPORT | P11-JSZ |
 
 | PL-4782fd7bd2 | [P11-JSZ ověření](verification/javascript-compression-20261110/RESULTS.md) | evidence / SUPPORT | P11-JSZ |
+
+| PL-4c43f93691 | [P11-JSZ finální release](verification/javascript-compression-20261110/release/RESULTS.md) | evidence / SUPPORT | P11-JSZ |

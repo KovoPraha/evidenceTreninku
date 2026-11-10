@@ -1,0 +1,13 @@
+{
+  "tested_head": "d27b82cd96997d72c549a5b3d2bd5d0fdfad47b9",
+  "merged_sha": "f682cc46de7d6dbb6876f79187b069589b134614",
+  "tested_and_merged_tree": "a7fa5de144b961446dc35d4a9969eddd555409c2",
+  "whole_tested_merge_tree_identical": true,
+  "original_branch": "codex/fio-auto-reconciliation-recovery",
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "original_wip_sha256_verified_after_deploy": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "canonical_unchanged_source_files": 16,
+  "new_runtime_file": "assets/.htaccess",
+  "new_runtime_config_sha256": "0eafb0a3bdc0f9d958094e4ccd86a4b20ab2ec1078aed39e4e8935f0f845aae0",
+  "public_js_source_files_verified_live": 13
+}

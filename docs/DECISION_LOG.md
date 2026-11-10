@@ -580,3 +580,13 @@ není důkazem kompreseJS. HJS by přidal nový nekomprimovaný cold request, pr
 není přijat. Prototyp zachovat vevlastnívětvi, novýslice JSZ ověří gzip stejného
 veřejnéhoJS podassets skutečnýmApache. Žádná změnaTTL, SWroot, privátníhoHTML,
 JSbytes, práv nebo zápisů. [Doklad](verification/shared-header-script-20261110/production-js-transport.json).
+
+
+### P11-JSZ — přijetí a uzavření
+
+Úzký7řádkový assets/.htaccess prošel12CI, nativním Apache2.4.58/2.4.66,
+Chrome a produkčním ověřením po deploy42774356221. Rozbalenébytes13JS i8DOM
+shodné, skutečný payload−69 % (hlavní2−70 %); časové zrychlení stránky
+neprokázané. Cache30s zachovaná, standardní gzipETag revalidace200 přiznaná,
+žádné oslabeníETag nebo force-gzip. PHP/SQL/JS/rootSW/práva beze změny.
+HJS4c6ffea0 zůstává pouze prototypem; původní WIP zachovaný. [Release](verification/javascript-compression-20261110/release/RESULTS.md).

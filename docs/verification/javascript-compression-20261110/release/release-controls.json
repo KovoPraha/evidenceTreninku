@@ -1,0 +1,32 @@
+{
+  "deploy_run": 42774356221,
+  "head_sha": "f682cc46de7d6dbb6876f79187b069589b134614",
+  "conclusion": "success",
+  "actual_checkout_sha_verified": true,
+  "manual_confirmation": "NASADIT",
+  "uat_schvaleno": false,
+  "importovat_krouzky": false,
+  "unit_tests": 2424,
+  "assertions": 55908,
+  "backup_tables": 389,
+  "backup_triggers": 2,
+  "backup_sha256": "74bd3e7016a5e7afa81c836cdedd69d77b0de1ec5e82463ab35d76b03c5887fd",
+  "backup_verified": true,
+  "existing_configuration_preserved": true,
+  "config_appended": false,
+  "private_key_backup_and_web_copy_verified": true,
+  "migrations_pending": [],
+  "variable_symbols_unchanged": true,
+  "medical_covering_index_unchanged": true,
+  "http_smoke": {
+    "ok": true,
+    "http": 200,
+    "via": "direct runner curl"
+  },
+  "private_key_http": 403,
+  "public_http_and_normalized_dom_parity": true,
+  "public_cases": 8,
+  "live_js_transport_and_canonical_hashes": "PASS",
+  "authenticated_production_uat": "NOT RUN",
+  "production_restore_this_backup": "NOT RUN"
+}

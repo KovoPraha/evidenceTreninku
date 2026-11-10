@@ -1,0 +1,510 @@
+{
+  "mode": "before",
+  "host": "kis.kovopraha.cz",
+  "cookies": false,
+  "redirects": false,
+  "writes": false,
+  "captured_utc": "2026-11-10T07:19:31Z",
+  "cases": [
+    {
+      "path": "assets/app-ui.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 8561,
+        "decoded_bytes": 8561,
+        "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+        "total_ms": 526.1336999974446,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "8561",
+          "etag": "\"2171-65fe1106b5233\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 8561,
+        "decoded_bytes": 8561,
+        "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+        "total_ms": 401.27299999585375,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "8561",
+          "etag": "\"2171-65fe1106b5233\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "q0": {
+        "status": 200,
+        "wire_bytes": 8561,
+        "decoded_bytes": 8561,
+        "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+        "total_ms": 484.2882999946596,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "8561",
+          "etag": "\"2171-65fe1106b5233\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "head": {
+        "status": 200,
+        "wire_bytes": 0,
+        "decoded_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "total_ms": 424.9816999945324,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "8561",
+          "etag": "\"2171-65fe1106b5233\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/bar-requests.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 9642,
+        "decoded_bytes": 9642,
+        "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+        "total_ms": 419.35719999310095,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "9642",
+          "etag": "\"25aa-65fe1106b5233\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 9642,
+        "decoded_bytes": 9642,
+        "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+        "total_ms": 400.9460999950534,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "9642",
+          "etag": "\"25aa-65fe1106b5233\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/js/medical-person-picker.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 578,
+        "decoded_bytes": 578,
+        "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+        "total_ms": 339.25710000039544,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "578",
+          "etag": "\"242-65fe1106b90b3\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 578,
+        "decoded_bytes": 578,
+        "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+        "total_ms": 350.3947999997763,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "578",
+          "etag": "\"242-65fe1106b90b3\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/js/stress-athlete-picker.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 5771,
+        "decoded_bytes": 5771,
+        "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+        "total_ms": 535.1771999994526,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "5771",
+          "etag": "\"168b-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 5771,
+        "decoded_bytes": 5771,
+        "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+        "total_ms": 532.2599000064656,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "5771",
+          "etag": "\"168b-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/public-profile-access.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 1036,
+        "decoded_bytes": 1036,
+        "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+        "total_ms": 307.4780000024475,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1036",
+          "etag": "\"40c-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 1036,
+        "decoded_bytes": 1036,
+        "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+        "total_ms": 242.66660001012497,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1036",
+          "etag": "\"40c-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/roster-target-selector.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 1556,
+        "decoded_bytes": 1556,
+        "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+        "total_ms": 312.2953999991296,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1556",
+          "etag": "\"614-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 1556,
+        "decoded_bytes": 1556,
+        "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+        "total_ms": 238.86230000061914,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1556",
+          "etag": "\"614-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/shop-admin.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 4477,
+        "decoded_bytes": 4477,
+        "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+        "total_ms": 322.6889000070514,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "4477",
+          "etag": "\"117d-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 4477,
+        "decoded_bytes": 4477,
+        "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+        "total_ms": 262.27380000636913,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "4477",
+          "etag": "\"117d-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/staff-notifications.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 1896,
+        "decoded_bytes": 1896,
+        "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+        "total_ms": 386.701900002663,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1896",
+          "etag": "\"768-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 1896,
+        "decoded_bytes": 1896,
+        "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+        "total_ms": 351.3695000001462,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1896",
+          "etag": "\"768-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/training-form-resilience.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 8293,
+        "decoded_bytes": 8293,
+        "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+        "total_ms": 659.2492000054335,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "8293",
+          "etag": "\"2065-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 8293,
+        "decoded_bytes": 8293,
+        "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+        "total_ms": 424.4258999970043,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "8293",
+          "etag": "\"2065-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/tv-canvas.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 2623,
+        "decoded_bytes": 2623,
+        "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+        "total_ms": 380.788800001028,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "2623",
+          "etag": "\"a3f-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 2623,
+        "decoded_bytes": 2623,
+        "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+        "total_ms": 419.96019998623524,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "2623",
+          "etag": "\"a3f-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/tv-editor.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 18693,
+        "decoded_bytes": 18693,
+        "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+        "total_ms": 463.2571999973152,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "18693",
+          "etag": "\"4905-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 18693,
+        "decoded_bytes": 18693,
+        "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+        "total_ms": 442.37089999660384,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "18693",
+          "etag": "\"4905-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/tv-player.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 3740,
+        "decoded_bytes": 3740,
+        "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+        "total_ms": 433.11359999643173,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "3740",
+          "etag": "\"e9c-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 3740,
+        "decoded_bytes": 3740,
+        "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+        "total_ms": 327.53200001025107,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "3740",
+          "etag": "\"e9c-65fe1106b94f7\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.bundle.min.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 80721,
+        "decoded_bytes": 80721,
+        "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+        "total_ms": 1093.6778000032064,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "80721",
+          "etag": "\"13b51-65fe1106b9be4\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 80721,
+        "decoded_bytes": 80721,
+        "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+        "total_ms": 940.3456000000006,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "80721",
+          "etag": "\"13b51-65fe1106b9be4\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "q0": {
+        "status": 200,
+        "wire_bytes": 80721,
+        "decoded_bytes": 80721,
+        "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+        "total_ms": 784.2137999978149,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "80721",
+          "etag": "\"13b51-65fe1106b9be4\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "head": {
+        "status": 200,
+        "wire_bytes": 0,
+        "decoded_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "total_ms": 601.2491000001319,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "80721",
+          "etag": "\"13b51-65fe1106b9be4\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    },
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.min.css",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 31248,
+        "decoded_bytes": 232803,
+        "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+        "total_ms": 304.0792999963742,
+        "headers": {
+          "content-type": "text/css",
+          "content-length": "31248",
+          "etag": "\"38d63-65fe1106b9c6b-gzip\"",
+          "cache-control": "max-age=604800",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 232803,
+        "decoded_bytes": 232803,
+        "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+        "total_ms": 384.0143999987049,
+        "headers": {
+          "content-type": "text/css",
+          "content-length": "232803",
+          "etag": "\"38d63-65fe1106b9c6b\"",
+          "cache-control": "max-age=604800",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "sw.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 1611,
+        "decoded_bytes": 1611,
+        "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+        "total_ms": 416.80340000311844,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1611",
+          "etag": "\"64b-65fe110721c7b\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 1611,
+        "decoded_bytes": 1611,
+        "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+        "total_ms": 507.28890000027604,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1611",
+          "etag": "\"64b-65fe110721c7b\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    }
+  ],
+  "denial": {
+    "assets/.htaccess": 403,
+    ".htaccess": 403,
+    "config.php": 403,
+    "bin/diagnose-athlete-read-schema.php": 403,
+    "bin/migrate.php": 403
+  },
+  "complete": true,
+  "target_wire_bytes": 89282,
+  "all_js_wire_bytes": 147587
+}
