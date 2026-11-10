@@ -9,7 +9,7 @@ on:
         type: choice
         options: [inspect, apply, status]
       target_status_run:
-        description: 'Uspesny cerstvy status skutecneho prevodu katalogu a opravneni'
+        description: 'Cerstry status prevodu katalogu nebo navazujiciho prevodu zasob'
         required: true
         type: string
       catalog_prepare_run:
@@ -69,17 +69,26 @@ jobs:
           TMP=/tmp/kis-bar-url-$GITHUB_RUN_ID
           install -d -m 700 "$TMP"
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$TARGET_RUN" > "$TMP/target-run.json"
-          jq -e '.conclusion == "success" and .head_branch == "main" and .event == "workflow_dispatch" and .path == ".github/workflows/bar-cutover-production.yml"' "$TMP/target-run.json" >/dev/null
+          jq -e '.conclusion == "success" and .head_branch == "main" and .event == "workflow_dispatch" and (.path == ".github/workflows/bar-cutover-production.yml" or .path == ".github/workflows/bar-stock-production.yml")' "$TMP/target-run.json" >/dev/null
           if [ "$MODE" != status ]; then
             jq -e '(.updated_at | fromdateiso8601) > now - 3600' "$TMP/target-run.json" >/dev/null
           fi
-          gh run download "$TARGET_RUN" --repo "$GITHUB_REPOSITORY" --name "bar-cutover-result-$TARGET_RUN" --dir "$TMP/target"
-          jq -e '.ok and .mode == "status" and .catalog_committed and .permissions_committed and .verification.ok and .verification.catalog_exact and .verification.images_exact and .verification.operator_only and .verification.zero_stock and .verification.zero_operational_history and all(.permission_state[]; . == true)' "$TMP/target/result.json" >/dev/null
-          HASH=$(jq -er '.bundle_sha256 | select(test("^[a-f0-9]{64}$"))' "$TMP/target/result.json")
+          TARGET_KIND=$(jq -r '.path' "$TMP/target-run.json")
+          if [ "$TARGET_KIND" = .github/workflows/bar-stock-production.yml ]; then
+            gh run download "$TARGET_RUN" --repo "$GITHUB_REPOSITORY" --name "bar-stock-result-$TARGET_RUN" --dir "$TMP/target"
+            jq -e '.ok and .mode == "status" and .mismatches == 0 and .products > 0' "$TMP/target/result.json" >/dev/null
+          else
+            gh run download "$TARGET_RUN" --repo "$GITHUB_REPOSITORY" --name "bar-cutover-result-$TARGET_RUN" --dir "$TMP/target"
+            jq -e '.ok and .mode == "status" and .catalog_committed and .permissions_committed and .verification.ok and .verification.catalog_exact and .verification.images_exact and .verification.operator_only and .verification.zero_stock and .verification.zero_operational_history and all(.permission_state[]; . == true)' "$TMP/target/result.json" >/dev/null
+          fi
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$CATALOG_RUN" > "$TMP/catalog-run.json"
           jq -e '.conclusion == "success" and .head_branch == "main" and .event == "workflow_dispatch" and .path == ".github/workflows/bar-transfer-prepare.yml"' "$TMP/catalog-run.json" >/dev/null
           gh run download "$CATALOG_RUN" --repo "$GITHUB_REPOSITORY" --name "bar-transfer-prepare-$CATALOG_RUN" --dir "$TMP/catalog"
+          HASH=$(jq -er '.bundle_sha256 | select(test("^[a-f0-9]{64}$"))' "$TMP/catalog/prepare.json")
           jq -e --arg hash "$HASH" '.ok and .source_stable and .bundle_sha256 == $hash' "$TMP/catalog/prepare.json" >/dev/null
+          if [ "$TARGET_KIND" = .github/workflows/bar-cutover-production.yml ]; then
+            jq -e --arg hash "$HASH" '.bundle_sha256 == $hash' "$TMP/target/result.json" >/dev/null
+          fi
           if [ "$MODE" = inspect ]; then PREPARE_RUN=$GITHUB_RUN_ID; else
             [[ "$PREPARE_RUN" =~ ^[1-9][0-9]{0,19}$ ]]
             gh api "repos/$GITHUB_REPOSITORY/actions/runs/$PREPARE_RUN" > "$TMP/source-run.json"

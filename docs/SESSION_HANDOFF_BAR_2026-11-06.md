@@ -1,5 +1,7 @@
 # Session handoff BAR — 6. 11. 2026
 
+Aktualizace 10. 11.: [obnovení původního vzhledu obrazovek a řízený převod zásob](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) jsou nové zadání vlastníka; dřívější nulový sklad je historický počátek, nikoli trvalý požadavek. Starší nedokončená přejímka zůstává zachovaná.
+
 Navazuje na [hlavní handoff](HANDOFF_CURRENT.md), [aktuální provozní stav](CURRENT_STATE.md)
 a [plán začlenění](BAR_INTEGRATION_PLAN_2026-11-05.md). Souhrn další práce celého projektu je v [průběžném plánu](WORK_PLAN_CURRENT.md). Jde o datované předání této session;
 nejnovější nasazení a aktivace mají souhrn výhradně v CURRENT_STATE.

@@ -4,8 +4,14 @@ declare(strict_types=1);
 require_once __DIR__ . '/web.php';
 require_once __DIR__ . '/offers.php';
 require_once dirname(__DIR__) . '/session_security.php';
+require_once __DIR__ . '/screen_view.php';
 
-function barMenuHtml(array $menu, bool $pdf = false): string
+function barMenuHtml(array $menu, bool $pdf = false, ?string $view = null): string
+{
+    return $pdf ? barMenuPrintHtml($menu, true) : barScreenHtml($menu, $view ?? ($menu['offer']['layout'] ?? 'text'));
+}
+
+function barMenuPrintHtml(array $menu, bool $pdf = false): string
 {
     ob_start();
     ?>

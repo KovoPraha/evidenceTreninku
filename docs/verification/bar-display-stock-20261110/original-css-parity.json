@@ -1,0 +1,16 @@
+[
+  {
+    "source": "public/obrazovka.php",
+    "asset": "assets/bar-screen.css",
+    "source_sha256": "d93ddd6c800a5e59e8c33d92648e0d27918db06b2b46f166dffb88380788649f",
+    "target_sha256": "d93ddd6c800a5e59e8c33d92648e0d27918db06b2b46f166dffb88380788649f",
+    "identical": true
+  },
+  {
+    "source": "public/obrazovka2.php",
+    "asset": "assets/bar-photos.css",
+    "source_sha256": "94010d4c200cce9d6f3cde52115ba83554f71b986ae7738572d87f2f036a908c",
+    "target_sha256": "94010d4c200cce9d6f3cde52115ba83554f71b986ae7738572d87f2f036a908c",
+    "identical": true
+  }
+]

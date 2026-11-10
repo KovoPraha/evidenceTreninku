@@ -9,6 +9,15 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
 }
 header('Cache-Control: no-store');
 header('X-Robots-Tag: noindex, nofollow');
-header("Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; frame-ancestors 'self'");
+header("Content-Security-Policy: default-src 'none'; style-src 'self'; script-src 'self' 'nonce-" . app_csp_nonce()
+    . "'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'");
 header('X-Content-Type-Options: nosniff');
-echo barMenuHtml(barPublicMenu($pdo));
+$view = $_GET['view'] ?? null;
+if ($view !== null && !in_array($view, ['text', 'photos'], true)) {
+    http_response_code(400);
+    exit('Neplatné zobrazení.');
+}
+$menu = barPublicMenu($pdo);
+$setting = $pdo->query("SELECT hodnota FROM nastaveni WHERE klic='bar_display_settings'")->fetchColumn();
+$menu['display_settings'] = $setting === false ? [] : json_decode((string)$setting, true, 8, JSON_THROW_ON_ERROR);
+echo barMenuHtml($menu, false, $view);
