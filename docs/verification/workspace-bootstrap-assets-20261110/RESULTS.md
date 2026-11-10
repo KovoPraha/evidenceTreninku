@@ -30,3 +30,12 @@ Shift+/ neotevřelo shortcutsModal. Opraven testovací klávesový vstup na expl
 Nic z neúplného browserového běhu se nepočítá jako kompletní přijetí.
 Přihlášené production UI bylo zkusenojeninventurou připojenébrowserovérelace;
 dvakrát timeout/reset nástroje, bez UI akcí/formulářů/rolí. UAT NOT RUN.
+
+
+## Třetí běh — skutečná animace modalu
+
+42786982393/6b5eb812:10.3celýpár PASS.11.4už otevřelo shortcutsModal explicitním
+'?', ale Escape přišel po přidání .show a před koncem300ms animace, kdy Bootstrap
+hide ignoruje _isTransitioning. Test nyní předakcí přihlásí skutečné shown/hidden
+události a čeká na ně (totéž confirm); žádný umělýspánek ani změna runtime.
+Neúplná měření nejsou přijatýPASS. Všechny gate včetně zavření Escape zůstávají.
