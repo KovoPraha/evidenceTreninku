@@ -143,8 +143,10 @@ async (page) => {
     await page.locator('#toastContainer .toast').last().locator('[data-bs-dismiss="toast"]').click();
     result.toast=true;
     await page.locator('h1').first().click();
-    await page.keyboard.press('Shift+/');
-    await page.locator('#shortcutsModal.show').waitFor({state:'visible'});
+    await page.evaluate(()=>{window.__workspaceKeys=[];document.addEventListener('keydown',e=>window.__workspaceKeys.push({key:e.key,target:e.target.tagName}),{once:true});});
+    await page.keyboard.press('?');
+    try { await page.locator('#shortcutsModal.show').waitFor({state:'visible',timeout:5000}); }
+    catch { throw new Error('Shortcut modal: '+JSON.stringify({variant,case:config.case_filter,state:await page.evaluate(()=>({keys:window.__workspaceKeys,active:document.activeElement?.tagName,modal:!!document.getElementById('shortcutsModal'),bootstrap:typeof window.bootstrap?.Modal})),errors,failed})); }
     await page.keyboard.press('Escape');
     await page.waitForFunction(()=>!document.getElementById('shortcutsModal').classList.contains('show'));
     result.shortcuts=true;
