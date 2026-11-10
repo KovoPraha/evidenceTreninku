@@ -549,3 +549,13 @@ Souběžný main06ad54e4 /#444 převzatý bez konfliktu se zachováním dokonče
 BARu a všech jeho věcných záznamů. Žádná aplikativní změna proti58848900;
 source oracle dvou formulářů zůstává58848900, celý ostatní PHP kontext je v A/B
 páru vždy čerstvý a byte-shodný. Nové CI ověřuje společný head před release.
+
+
+ASSET6 native kalibrace: první42876038779/d9c62776 obě DB skončily před
+HTTP maticí na očekávání customer login303. Skutečný neměněný veřejný login
+prihlaseni.php používá header Location bez status argumentu, tedy302; login
+byl úspěšný. Test nyní očekává přesně302, nikoli obecnou libovolnou3xx.
+Následný ověřený-account guard rychlé přihlášky zůstává přesně303 a celý
+Location/body kontrakt je dál kontrolovaný. Source/aplikace se nemění.
+Cleanup vlastního schema/user/config a workerů proběhl, žádná produkční akce.
+Nová plná native2DB/browser přejímka se opakuje, neoznačovat první FAIL za PASS.

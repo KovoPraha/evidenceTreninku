@@ -71,11 +71,11 @@ foreach (['before', 'after'] as $variant) {
     $post = fullHttpRequest($rt, $output, 'checkout-account-' . $variant, '/booking/prihlaseni.php', [
         'csrf_token' => $token[1], 'email' => $credential['email'], 'heslo' => $credential['password'],
     ]);
-    if ($post['status'] !== 303) {
+    if ($post['status'] !== 302) {
         file_put_contents($output . '/login-failure-private.html', $post['body']);
         throw new RuntimeException('Synthetic customer login failed: ' . $post['status']);
     }
-    $login[$variant] = 303;
+    $login[$variant] = 302;
 }
 $checksums = static function () use ($admin): array {
     $result = [];
