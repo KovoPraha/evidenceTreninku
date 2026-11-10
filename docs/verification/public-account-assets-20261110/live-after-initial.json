@@ -1,0 +1,185 @@
+{
+  "complete": true,
+  "read_only": true,
+  "browser": "158.0.8127.18",
+  "rows": [
+    {
+      "path": "/booking/prihlaseni.php",
+      "status": 200,
+      "normalized_html_sha256": "715948fab180685142552dc708590b5b5d837e3b758330712756dae3a71ca3ed",
+      "raw_html_bytes": 5167,
+      "css": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "status": 200,
+          "encoding": "gzip",
+          "cache_control": "max-age=604800",
+          "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+        }
+      ],
+      "browser": {
+        "title": "Přihlášení — Rezervace Kovopraha",
+        "bootstrap": true,
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "transfer": 31548,
+            "decoded": 232803
+          }
+        ],
+        "fcp": 540
+      }
+    },
+    {
+      "path": "/booking/registrace.php",
+      "status": 200,
+      "normalized_html_sha256": "8e1592a1430012e8a86ea934f6417d0b9cb4259434640a3861461d118f3eb0a7",
+      "raw_html_bytes": 10441,
+      "css": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "status": 200,
+          "encoding": "gzip",
+          "cache_control": "max-age=604800",
+          "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+        }
+      ],
+      "browser": {
+        "title": "Registrace — Rezervace Kovopraha",
+        "bootstrap": true,
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "transfer": 31548,
+            "decoded": 232803
+          }
+        ],
+        "fcp": 412
+      }
+    },
+    {
+      "path": "/booking/sportovec_prihlaseni.php",
+      "status": 200,
+      "normalized_html_sha256": "7d67f6d7d48cdffd3b808d613f204a83f18ca70ccd728752c2f82d793fb221eb",
+      "raw_html_bytes": 4390,
+      "css": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "status": 200,
+          "encoding": "gzip",
+          "cache_control": "max-age=604800",
+          "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+        }
+      ],
+      "browser": {
+        "title": "Přihlášení sportovce — Kovopraha",
+        "bootstrap": true,
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "transfer": 31548,
+            "decoded": 232803
+          }
+        ],
+        "fcp": 380
+      }
+    },
+    {
+      "path": "/booking/zapomenute_heslo.php",
+      "status": 200,
+      "normalized_html_sha256": "6568a39fc4f78e6fa1c78a6e8391d997f267f5938ad8d504a3813d753da4dd78",
+      "raw_html_bytes": 4033,
+      "css": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "status": 200,
+          "encoding": "gzip",
+          "cache_control": "max-age=604800",
+          "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+        }
+      ],
+      "browser": {
+        "title": "Obnova hesla — Kovopraha",
+        "bootstrap": true,
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "transfer": 31548,
+            "decoded": 232803
+          }
+        ],
+        "fcp": 1152
+      }
+    },
+    {
+      "path": "/booking/zapomenute_heslo.php?pro=trener",
+      "status": 200,
+      "normalized_html_sha256": "69d621ef41db5809eb2c405a2bf02956b263cea53e048556a9650ceb24d34dac",
+      "raw_html_bytes": 4120,
+      "css": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "status": 200,
+          "encoding": "gzip",
+          "cache_control": "max-age=604800",
+          "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+        }
+      ],
+      "browser": {
+        "title": "Obnova hesla — Kovopraha",
+        "bootstrap": true,
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "transfer": 31548,
+            "decoded": 232803
+          }
+        ],
+        "fcp": 552
+      }
+    },
+    {
+      "path": "/booking/znovu_overit_email.php",
+      "status": 200,
+      "normalized_html_sha256": "45e6dccb30cdadd7e9d2cb1647e53cda88a0c4df94ce25f1aa82c46119bc79b2",
+      "raw_html_bytes": 4058,
+      "css": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "status": 200,
+          "encoding": "gzip",
+          "cache_control": "max-age=604800",
+          "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+        }
+      ],
+      "browser": {
+        "title": "Nový ověřovací odkaz — KOVO Praha",
+        "bootstrap": true,
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "transfer": 31548,
+            "decoded": 232803
+          }
+        ],
+        "fcp": 436
+      }
+    }
+  ],
+  "errors": [],
+  "failed": [],
+  "optional": [
+    "optional favicon 404",
+    "optional favicon 404",
+    "optional favicon 404",
+    "optional favicon 404",
+    "optional favicon 404",
+    "optional favicon 404"
+  ]
+}

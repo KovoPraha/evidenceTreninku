@@ -1,0 +1,30 @@
+{
+  "baseline_sha": "01b2ca386a221f34ed6300148192c9af2cf4e7d9",
+  "complete": true,
+  "routes": {
+    "booking/prihlaseni.php": {
+      "source_sha256": "7e5d328c64081b06eb0e89273e2c99fb407a16916c037e63450ffef51ae57100",
+      "literal_html_except_one_tag_equal": true,
+      "php_tokens_except_listed_guard_braces_equal": true,
+      "guard_braces_count": 0
+    },
+    "booking/registrace.php": {
+      "source_sha256": "255a57c209a19cbaf5637085d9f57385c53fc3076641ca52d44c6c620ce267db",
+      "literal_html_except_one_tag_equal": true,
+      "php_tokens_except_listed_guard_braces_equal": true,
+      "guard_braces_count": 4
+    },
+    "booking/sportovec_prihlaseni.php": {
+      "source_sha256": "cd4fbe10527c0d3b719e6c3cea4d7965623eb9a0e274cb8ce0ce1a980524bae9",
+      "literal_html_except_one_tag_equal": true,
+      "php_tokens_except_listed_guard_braces_equal": true,
+      "guard_braces_count": 0
+    },
+    "booking/zapomenute_heslo.php": {
+      "source_sha256": "080760a5c59d9131df860d0d9ae0504f04623aa36ffd93969e9feeb0cbce44d8",
+      "literal_html_except_one_tag_equal": true,
+      "php_tokens_except_listed_guard_braces_equal": true,
+      "guard_braces_count": 0
+    }
+  }
+}

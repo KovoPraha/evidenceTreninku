@@ -1,0 +1,102 @@
+{
+  "login": {
+    "before": {
+      "total_ms": 1.5510000000000002,
+      "ttfb_ms": 1.496
+    },
+    "after": {
+      "total_ms": 1.472,
+      "ttfb_ms": 1.41
+    }
+  },
+  "expired": {
+    "before": {
+      "total_ms": 1.494,
+      "ttfb_ms": 1.443
+    },
+    "after": {
+      "total_ms": 1.397,
+      "ttfb_ms": 1.3370000000000002
+    }
+  },
+  "return": {
+    "before": {
+      "total_ms": 1.479,
+      "ttfb_ms": 1.421
+    },
+    "after": {
+      "total_ms": 1.4,
+      "ttfb_ms": 1.33
+    }
+  },
+  "registration-family": {
+    "before": {
+      "total_ms": 1.633,
+      "ttfb_ms": 1.5759999999999998
+    },
+    "after": {
+      "total_ms": 1.395,
+      "ttfb_ms": 1.3370000000000002
+    }
+  },
+  "registration-shop": {
+    "before": {
+      "total_ms": 1.595,
+      "ttfb_ms": 1.529
+    },
+    "after": {
+      "total_ms": 1.398,
+      "ttfb_ms": 1.343
+    }
+  },
+  "registration-sport": {
+    "before": {
+      "total_ms": 1.606,
+      "ttfb_ms": 1.5610000000000002
+    },
+    "after": {
+      "total_ms": 1.389,
+      "ttfb_ms": 1.332
+    }
+  },
+  "athlete": {
+    "before": {
+      "total_ms": 1.518,
+      "ttfb_ms": 1.452
+    },
+    "after": {
+      "total_ms": 1.381,
+      "ttfb_ms": 1.327
+    }
+  },
+  "reset": {
+    "before": {
+      "total_ms": 1.482,
+      "ttfb_ms": 1.423
+    },
+    "after": {
+      "total_ms": 1.374,
+      "ttfb_ms": 1.3179999999999998
+    }
+  },
+  "trainer-reset": {
+    "before": {
+      "total_ms": 1.498,
+      "ttfb_ms": 1.4400000000000002
+    },
+    "after": {
+      "total_ms": 1.393,
+      "ttfb_ms": 1.3290000000000002
+    }
+  },
+  "control": {
+    "before": {
+      "total_ms": 1.379,
+      "ttfb_ms": 1.321
+    },
+    "after": {
+      "total_ms": 1.382,
+      "ttfb_ms": 1.325
+    }
+  }
+}

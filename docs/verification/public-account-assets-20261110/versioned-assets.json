@@ -1,0 +1,160 @@
+{
+  "complete": true,
+  "read_only": true,
+  "exact_versions": [
+    "1794302581",
+    "1794311532"
+  ],
+  "assets": [
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.min.css",
+      "canonical_git_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+      "variants": {
+        "1794302581": {
+          "http": 200,
+          "decoded_bytes": 232803,
+          "wire_bytes": 31248,
+          "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+          "headers": {
+            "content-type": "text/css",
+            "cache-control": "max-age=604800",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        },
+        "1794311532": {
+          "http": 200,
+          "decoded_bytes": 232803,
+          "wire_bytes": 31248,
+          "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+          "headers": {
+            "content-type": "text/css",
+            "cache-control": "max-age=604800",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        }
+      }
+    },
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.bundle.min.js",
+      "canonical_git_sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+      "variants": {
+        "1794302581": {
+          "http": 200,
+          "decoded_bytes": 80721,
+          "wire_bytes": 23799,
+          "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+          "headers": {
+            "content-type": "text/javascript",
+            "cache-control": "max-age=30",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        },
+        "1794311532": {
+          "http": 200,
+          "decoded_bytes": 80721,
+          "wire_bytes": 23799,
+          "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+          "headers": {
+            "content-type": "text/javascript",
+            "cache-control": "max-age=30",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        }
+      }
+    },
+    {
+      "path": "assets/vendor/bootstrap-icons/font/bootstrap-icons.css",
+      "canonical_git_sha256": "4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+      "variants": {
+        "1794302581": {
+          "http": 200,
+          "decoded_bytes": 98255,
+          "wire_bytes": 14132,
+          "sha256": "4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+          "headers": {
+            "content-type": "text/css",
+            "cache-control": "max-age=604800",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        },
+        "1794311532": {
+          "http": 200,
+          "decoded_bytes": 98255,
+          "wire_bytes": 14132,
+          "sha256": "4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+          "headers": {
+            "content-type": "text/css",
+            "cache-control": "max-age=604800",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        }
+      }
+    },
+    {
+      "path": "assets/app-ui.css",
+      "canonical_git_sha256": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+      "variants": {
+        "1794302581": {
+          "http": 200,
+          "decoded_bytes": 28560,
+          "wire_bytes": 6510,
+          "sha256": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+          "headers": {
+            "content-type": "text/css",
+            "cache-control": "max-age=604800",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        },
+        "1794311532": {
+          "http": 200,
+          "decoded_bytes": 28560,
+          "wire_bytes": 6510,
+          "sha256": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+          "headers": {
+            "content-type": "text/css",
+            "cache-control": "max-age=604800",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        }
+      }
+    },
+    {
+      "path": "assets/app-ui.js",
+      "canonical_git_sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+      "variants": {
+        "1794302581": {
+          "http": 200,
+          "decoded_bytes": 8561,
+          "wire_bytes": 2819,
+          "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+          "headers": {
+            "content-type": "text/javascript",
+            "cache-control": "max-age=30",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        },
+        "1794311532": {
+          "http": 200,
+          "decoded_bytes": 8561,
+          "wire_bytes": 2819,
+          "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+          "headers": {
+            "content-type": "text/javascript",
+            "cache-control": "max-age=30",
+            "vary": "Accept-Encoding",
+            "content-encoding": "gzip"
+          }
+        }
+      }
+    }
+  ]
+}
