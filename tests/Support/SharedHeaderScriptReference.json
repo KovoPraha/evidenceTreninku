@@ -1,0 +1,10 @@
+{
+  "baseline_sha": "5d6434dc6d4338d47e283d715a4b2c568950c986",
+  "header_sha256": "3012d42d1200d391b07ef395da89039d8f7cabc57d6ae75d044f8e046a516637",
+  "prefix_sha256": "71d3dc0c353f801f211b5727cb8e523114707f207b479adc7b4a85b5d9d7d258",
+  "suffix_sha256": "cabe0ced8e7039331c8157ed29a488720bd3b937e05240f1b869662fcf5f3b33",
+  "script_sha256": "929d448e191a170939e77dd8d4283438d68a5c4d109a42277af2e8d591331571",
+  "asset_path": "assets/staff-header.222b64217870ab726e3ac50483b00fd54e4e0d79251917dfb5162b5de275c8ee.js",
+  "asset_sha256": "222b64217870ab726e3ac50483b00fd54e4e0d79251917dfb5162b5de275c8ee",
+  "asset_sri": "sha384-l6R7kkGPXehg6IQcj844whVo0+4vy/vxYBcsa5h4bdRDGk7PHltoFyg3iYLlkyfv"
+}

@@ -12,8 +12,9 @@ staff-header.<SHA256>.js, cache7d/immutable pouze pro tento soubor. Dynamických
 Ostatní JS30s/payloady/SQL/writery/API/pořadí beze změny. Source/VM/CodeQL,
 2DB/wholeHTTP/checksumy, gzip/cache/security,544měřenýchChrome a8pixelpárů
 nově ověřit;17párů/4warmupy, cold gate5%+1024B, warm skutečný síťový přínos.
-Native/browser/release zatím NOT RUN. Další krok selektivně prověřit HJS2
-zdroje a přidat fingerprint/cache/SRI; neslučovat celou starou větev.
+Source/VM PASS (8 zkoušek), PHPUnit parity PASS (1/16), style/docs PASS.
+Native/browser/release zatím NOT RUN. Další krok aktuální PR, dvě MariaDB,
+celé HTTP a Chrome. Selektivně převzaté HJS2 zdroje, celá stará větev zachovaná.
 Staré HJS/HJS2 nevybrání zůstává historicky platné. ASSET1–7 nasazené,
 ASSET4/6 LIMIT zachované; EVENTREAD0karet odložený bez runtime helperu.
 Při všech aktuálních PASS merge/deploy autorizovaný; UAT/importfalse,

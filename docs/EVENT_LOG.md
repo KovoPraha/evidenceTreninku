@@ -254,3 +254,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 - 10. 11. 2026 — P11-ASSET7 NASAZENO #447/c29642f1, deploy42905781826 SUCCESS;13CI/2455testů, native2DB/680Chrome/10pixelpárů PASS, backup/config/migrace/VS/index/smoke/cleanup PASS. Pět živých anonymníchGET a canonicalpayloadů shodných, přihlášené produkční UAT NOT RUN. WIP zachovaný; doklady #448 bez redeploye. [Metoda a meze](verification/family-assets-20261110/RESULTS.md).
 
 - 10. 11. 2026 — P11-HJS3 zahájeno z5d6434dc, nový samostatný řez po ASSET1–7: obsahově adresovaný společný staffJS a cache7d pouze pro něj, čerstvý HTML kontext. Native/browser NOT RUN, WIP zachovaný. [Plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs3--společný-skript-po-odstranění-duplicitních-stylů-10-11-2026).
+
+- 10.11.2026 P11-HJS3: implementován obsahově adresovaný staffJS (15 271 B), SRI, 7d cache jen nového assetu; source/8VM/1PHPUnit parity/style/docs PASS; native a release čekají. [Výsledky](verification/shared-header-cache-20261110/RESULTS.md).

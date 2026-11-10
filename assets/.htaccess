@@ -5,3 +5,11 @@
         SetOutputFilter DEFLATE
     </FilesMatch>
 </IfModule>
+
+
+# Only public content-addressed staff code is immutable; HTML context stays private.
+<IfModule mod_headers.c>
+    <FilesMatch "^staff-header\.[0-9a-f]{64}\.js$">
+        Header set Cache-Control "public, max-age=604800, immutable"
+    </FilesMatch>
+</IfModule>

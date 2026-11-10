@@ -251,9 +251,15 @@ def main():
                 partial = request(port, path, "identity", extra={"Range": "bytes=0-9"})
                 assert partial["status"] == 206 and partial["body"] == source[:10], path
                 if path.endswith(".js") and path.startswith("assets/"):
-                    assert "max-age=30" in responses[variant]["headers"]["cache-control"]
+                    fingerprinted_staff = re.fullmatch(r"assets/staff-header\.[a-f0-9]{64}\.js", path) is not None
+                    if fingerprinted_staff and variant == "after":
+                        assert responses[variant]["headers"]["cache-control"] == "public, max-age=604800, immutable"
+                        assert path.split(".")[-2] == digest(source), "Content address does not match canonical bytes"
+                    else:
+                        assert "max-age=30" in responses[variant]["headers"]["cache-control"]
             before, after = responses["before"], responses["after"]
-            assert before["headers"].get("cache-control") == after["headers"].get("cache-control"), path
+            if not re.fullmatch(r"assets/staff-header\.[a-f0-9]{64}\.js", path):
+                assert before["headers"].get("cache-control") == after["headers"].get("cache-control"), path
             for header in ["content-type", "x-content-type-options", "x-frame-options", "referrer-policy", "permissions-policy"]:
                 assert before["headers"].get(header) == after["headers"].get(header), (path, header)
             if path.endswith(".js") and path.startswith("assets/"):

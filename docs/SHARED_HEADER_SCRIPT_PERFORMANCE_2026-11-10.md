@@ -219,3 +219,7 @@ stage jen vlastní cesty; historické ASSET4/6 LIMIT se nepřepisují na PASS.
 Nové implementace/VM/native/browser/release zatím NOT RUN. Další krok:
 selektivní obnova a kontrola prototypu, content adresování/cache kontrakty,
 nová celá přejímka. Při neprokázané paritě/přínosu nevydávat. Flags vlastní CURRENT.
+
+HJS3 checkpoint: source/8VM/1PHPUnit (16 assertions)/style/docs PASS; implementace
+15 271 B s obsahovým názvem a SRI. Native/browser/přínos/release NOT RUN,
+bez nasazení do jejich dokončení. Podrobnosti v průběžných výsledcích.
