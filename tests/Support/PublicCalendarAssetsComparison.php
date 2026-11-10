@@ -9,11 +9,18 @@ function publicCalendarAssetsComparisonHtml(string $html): string
     if (preg_match_all($local, $html) !== 1) {
         return $html;
     }
-    $cdn = '~(?:^[ \t]*)?<link href="https://cdn\.jsdelivr\.net/npm/bootstrap@5\.3\.3/dist/css/bootstrap\.min\.css" rel="stylesheet"\s+'
-        . 'integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW\+ALEwIH"\s+'
-        . 'crossorigin="anonymous">[ \t]*(?:\r?\n)?~m';
-    if (preg_match_all($cdn, $html) !== 1) {
+    $cdn = '<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"'
+        . ' integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">';
+    if (substr_count($html, $cdn) !== 1) {
         return $html;
     }
-    return (string) preg_replace($cdn, '', $html, 1);
+    // PHP's previous closing tag consumes its newline, so this source-owned
+    // four-space line can occur after inline SEO markup in the HTTP response.
+    foreach (["\r\n", "\n"] as $newline) {
+        $sourceLine = '    ' . $cdn . $newline;
+        if (str_contains($html, $sourceLine)) {
+            return str_replace($sourceLine, '', $html);
+        }
+    }
+    return str_replace($cdn, '', $html);
 }

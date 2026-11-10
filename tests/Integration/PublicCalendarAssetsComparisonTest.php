@@ -19,6 +19,11 @@ final class PublicCalendarAssetsComparisonTest extends TestCase
         foreach ([$tag . $local . $data, '    ' . $tag . "\n" . $local . $data] as $html) {
             self::assertSame($local . $data, \publicCalendarAssetsComparisonHtml($html));
         }
+        $seo = '<meta property="og:url" content="https://example.invalid/booking/kalendar.php">';
+        self::assertSame(
+            $seo . '    ' . $local . $data,
+            \publicCalendarAssetsComparisonHtml($seo . '    ' . $tag . "\n    " . $local . $data)
+        );
         foreach ([$tag . $tag . $local, $tag, str_replace('sha384-QWT', 'sha384-BAD', $tag) . $local,
             str_replace('5.3.3', '5.3.4', $tag) . $local, $tag . $local . $local,
             $tag . str_replace(str_repeat('a', 64), str_repeat('a', 63), $local)] as $negative) {
