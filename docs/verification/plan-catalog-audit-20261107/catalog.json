@@ -4,6 +4,45 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-e9b0541560",
+      "path": "docs/CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md",
+      "title": "P11-EVENTREAD — veřejné karty akcí",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11-EVENTREAD",
+      "disposition": "Nový výběrový probe a dávková čtecí projekce; implementace/přejímka/release zatím NOT RUN.",
+      "evidence": [
+        "docs/verification/club-event-public-read-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-e91566d185",
+      "path": "docs/SESSION_HANDOFF_CLUB_EVENT_PUBLIC_READ_2026-11-10.md",
+      "title": "P11-EVENTREAD — předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-EVENTREAD",
+      "disposition": "Nový výběrový probe a dávková čtecí projekce; implementace/přejímka/release zatím NOT RUN.",
+      "evidence": [
+        "docs/verification/club-event-public-read-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-b6f3287c42",
+      "path": "docs/verification/club-event-public-read-20261110/RESULTS.md",
+      "title": "P11-EVENTREAD — ověření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-EVENTREAD",
+      "disposition": "Nový výběrový probe a dávková čtecí projekce; implementace/přejímka/release zatím NOT RUN.",
+      "evidence": [
+        "docs/verification/club-event-public-read-20261110/RESULTS.md"
+      ]
+    },
+    {
       "id": "PL-81ad8711f2",
       "path": "docs/COACH_GROUP_ROSTERS_2026-11-10.md",
       "title": "COACH-ROSTER-01 — Moje skupiny a soupisky",

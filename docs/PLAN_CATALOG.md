@@ -17,6 +17,7 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 | ID | Soubor | Stav / registr | Dispozice a důkaz |
 | --- | --- | --- | --- |
+| PL-e9b0541560 | [P11-EVENTREAD — veřejné karty akcí](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) | ROZPRACOVÁNO | Nový probe N+1 veřejných akcí, parita a před/po před podmíněným release. |
 | PL-81ad8711f2 | [COACH-ROSTER-01 — Moje skupiny a soupisky](COACH_GROUP_ROSTERS_2026-11-10.md) | PARTIAL / COACH-ROSTER-01 | [PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436) sloučen, [deploy 42852365591](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42852365591) SUCCESS; technické testy PASS, přihlášené Aligátoří UAT otevřené. [Protokol](verification/coach-group-rosters-20261110/RESULTS.md). |
 | PL-9bdeb21ac9 | [Původní obrazovky a převod zásob](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) | PARTIAL / P02 BAR-DISPLAY-STOCK | [Rozsah a akceptace](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) |
 | PL-f0201ffc26 | [Q01: provozní přejímky a příprava další funkce](QUALITY_NEXT_SLICES_2026-11-08.md) | PLANNED / Q01-Q4/Q5 | Připravené scénáře BAR, P05/P07 a P06 a návrh soukromého progresu C01/V5; skutečné vstupy, produktové a retenční rozhodnutí chybí. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) |
