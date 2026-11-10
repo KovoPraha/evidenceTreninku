@@ -20,7 +20,8 @@ require_once dirname(__DIR__).'/includes/auth_rate_limit.php';
 
 function quickProgramH(mixed $value): string
 {
-    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+    ;
 }
 function quickProgramMoney(int $minor, string $currency): string
 {
@@ -48,14 +49,20 @@ if ($product === null || $variant === null || !is_array($offer)) {
     exit('Kroužek není dostupný pro rychlou přihlášku.');
 }
 if (isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: produkt.php?id='.$productId.'&variant_id='.$variantId.'#varianta-'.$variantId, true, 303);
+    header('Location: produkt.php?id='.$productId.'&variant_id='.$variantId.'#varianta-'
+.$variantId, true, 303);
     exit;
 }
 $terms = athleteRegistrationCurrentTerms($pdo);
-$programTerms = clubProgramTermsEffective($pdo, (int)$offer['program_id'], (int)$offer['id']);
+$programTerms = clubProgramTermsEffective(
+    $pdo,
+    (int)$offer['program_id'],
+    (int)$offer['id']
+);
 if (!athleteRegistrationTermsReady($terms)) {
     http_response_code(409);
-    exit('Přihlášku nelze dokončit, dokud klub neschválí konečné informace k registraci sportovce a rodnému číslu.');
+    exit('Přihlášku nelze dokončit, dokud klub neschválí konečné informace k registraci sportovce a rodnému číslu.'
+    );
 }
 if (!clubProgramTermsComplete($programTerms)) {
     http_response_code(409);
@@ -63,7 +70,9 @@ if (!clubProgramTermsComplete($programTerms)) {
 }
 $keyName = 'shop_quick_program_'.$variantId;
 if (!isset($_SESSION[$keyName]) || !is_array($_SESSION[$keyName])) {
-    $_SESSION[$keyName] = ['idempotency_key' => bin2hex(random_bytes(16)),'access_token' => bin2hex(random_bytes(32))];
+    $_SESSION[$keyName] = ['idempotency_key' => bin2hex(random_bytes(16)),'access_token' => bin2hex(random_bytes(
+        32
+    ))];
 }
 $errors = [];
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
@@ -76,11 +85,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $_POST['prijmeni'] = (string)($_POST['parent_last_name'] ?? '');
             }
             if ((string)($_POST['registration_acknowledged'] ?? '') !== '1') {
-                throw new InvalidArgumentException('Potvrďte přečtení informací a podmínek kroužku.');
+                throw new InvalidArgumentException(
+                    'Potvrďte přečtení informací a podmínek kroužku.'
+                );
             }
             $email = strtolower(trim((string)($_POST['email'] ?? '')));
             if (!auth_rate_limit_reserve_attempt($pdo, 'quick_program_checkout', $email, auth_rate_limit_request_ip())) {
-                throw new ShopCheckoutException('Příliš mnoho pokusů. Zkuste přihlášku dokončit později.');
+                throw new ShopCheckoutException(
+                    'Příliš mnoho pokusů. Zkuste přihlášku dokončit později.'
+                );
             }
             // One visible acknowledgment, separate purpose/version records in the order and registration request.
             $checkoutInput = $_POST;
@@ -92,7 +105,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $_POST['term_version'] ?? null
             ) ? $_POST['term_version'] : [], (string)$keys['idempotency_key'], (string)$keys['access_token'], shopBankSettingsEffective($pdo));
             unset($_SESSION[$keyName]);
-            header('Location: objednavka.php?code='.rawurlencode((string)$order['public_code']).'&access='.rawurlencode((string)
+            header('Location: objednavka.php?code='.rawurlencode(
+                (string)$order['public_code']
+            ).'&access='.rawurlencode((string)
     $keys['access_token']), true, 303);
             exit;
         } catch (InvalidArgumentException|ShopCheckoutException|ShopProgramQuickCheckoutException|AthleteRegistrationException
@@ -106,10 +121,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 }
 if ($errors !== []) {
     $terms = athleteRegistrationCurrentTerms($pdo);
-    $programTerms = clubProgramTermsEffective($pdo, (int)$offer['program_id'], (int)$offer['id']);
+    $programTerms = clubProgramTermsEffective(
+        $pdo,
+        (int)$offer['program_id'],
+        (int)$offer['id']
+    );
     $_POST = shopProgramQuickRetainedInput($_POST, $terms, $programTerms);
 }
-$value = static fn (string$key, string$default = ''): string => quickProgramH($_POST[$key] ?? $default);
+$value = static fn (string$key, string$default = ''): string => quickProgramH(
+    $_POST[$key] ?? $default
+);
 ?>
 <!doctype html>
 <html lang="cs">
@@ -117,70 +138,134 @@ $value = static fn (string$key, string$default = ''): string => quickProgramH($_
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<title>Rychlá přihláška – <?=quickProgramH($product['public_name'])?>
+<title>Rychlá přihláška – <?=
+quickProgramH($product['public_name'])
+?>
 </title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-crossorigin="anonymous"><?php appUiAssets();?>
+<?php
+appUiAssets();
+?>
 </head>
-<body class="bg-light"><?php publicShellNav('shop');
-shopPublicNavigation($pdo, $product['categories'][0] ?? null);?>
+<body class="bg-light"><?php
+publicShellNav('shop');
+shopPublicNavigation($pdo, $product['categories'][0] ?? null);
+?>
 <main class="container py-4" style="max-width:980px">
-<a class="btn btn-sm btn-outline-secondary mb-3" href="produkt.php?id=<?=$productId?>&amp;variant_id=<?=$variantId?>#varianta-
-    <?=$variantId?>">← Zpět na vybraný termín</a>
+<a class="btn btn-sm btn-outline-secondary mb-3" href="produkt.php?id=<?=
+$productId
+?>&amp;variant_id=<?=
+$variantId
+?>#varianta-
+    <?=
+$variantId
+?>">← Zpět na vybraný termín</a>
 <div class="row g-4">
 <aside class="col-lg-4">
 <div class="card border-0 shadow-sm sticky-lg-top" style="top:1rem">
 <div class="card-body">
 <div class="small text-uppercase text-primary fw-semibold">Rychlá přihláška a nákup</div>
-<h1 class="h4 mt-1"><?=quickProgramH($product['public_name'])?>
+<h1 class="h4 mt-1"><?=
+quickProgramH($product['public_name'])
+?>
 </h1>
-<div><?=quickProgramH($offer['name'])?>
+<div><?=
+quickProgramH($offer['name'])
+?>
 </div>
-<div class="small text-muted"><?=quickProgramH($offer['starts_on'].' – '.$offer['ends_on'])?>
+<div class="small text-muted"><?=
+quickProgramH($offer['starts_on'].' – '.$offer['ends_on'])
+?>
 </div>
-<div class="h5 text-primary mt-3"><?=quickProgramMoney((int)$variant['amount_minor'], (string)$variant['currency'])?>
+<div class="h5 text-primary mt-3"><?=
+quickProgramMoney((int)$variant['amount_minor'], (string)$variant['currency'])
+?>
 </div>
-<div class="small"><?php if ($offer['capacity'] !== null):?>Volná místa: <strong><?=(int)$offer['available_count']?>
+<div class="small"><?php
+if ($offer['capacity'] !== null):
+    ?>Volná místa: <strong><?=
+    (int)$offer['available_count']
+    ?>
 </strong> z
-    <?=(int)$offer['capacity']?>
-<?php else:?>Kapacita není omezena.<?php endif;?>
+    <?=
+    (int)$offer['capacity']
+    ?>
+<?php else:
+        ?>Kapacita není omezena.<?php
+    endif;
+?>
 </div>
 <hr>
 <p class="small text-muted mb-2">Máte účet? Přihlášení předvyplní evidované osoby a vrátí vás k tomuto termínu.</p>
-<a class="btn btn-outline-primary btn-sm w-100" href="prihlaseni.php?redirect=<?=rawurlencode('produkt.php?id='.$productId
-    .'&variant_id='.$variantId.'#varianta-'.$variantId)?>">Přihlásit se</a>
+<a class="btn btn-outline-primary btn-sm w-100" href="prihlaseni.php?redirect=<?=
+rawurlencode('produkt.php?id='.$productId
+    .'&variant_id='.$variantId.'#varianta-'.$variantId)
+?>">Přihlásit se</a>
 </div>
 </div>
 </aside>
-<section class="col-lg-8"><?php foreach ($errors as $error):?>
-<div class="alert alert-danger"><?=quickProgramH($error)?>
+<section class="col-lg-8"><?php
+foreach ($errors as $error):
+    ?>
+<div class="alert alert-danger"><?=
+    quickProgramH($error)
+    ?>
 </div>
-    <?php endforeach;?>
+    <?php
+endforeach;
+?>
 <form method="post" class="card border-0 shadow-sm" autocomplete="on">
-<div class="card-body p-4"><?=csrf_field()?>
-<input type="hidden" name="product_id" value="<?=$productId?>">
-<input type="hidden" name="variant_id" value="<?=$variantId?>">
+<div class="card-body p-4"><?=
+csrf_field()
+?>
+<input type="hidden" name="product_id" value="<?=
+$productId
+?>">
+<input type="hidden" name="variant_id" value="<?=
+$variantId
+?>">
 <input type="hidden" name="photo_public" value="0">
-<input type="hidden" name="photo_internal" value="0"><?php foreach ($terms as $purpose => $term):?>
-<input type="hidden" name="term_version[<?=quickProgramH($purpose)?>]"
- value="<?=quickProgramH($term['version'])?>"><?php endforeach;?>
-<?php foreach ($programTerms as $purpose => $term):?>
-<input type="hidden" name="program_term_version[<?=quickProgramH($purpose)?>]"
- value="<?=quickProgramH($term['terms_version'])?>"><?php endforeach;?>
+<input type="hidden" name="photo_internal" value="0"><?php
+foreach ($terms as $purpose => $term):
+    ?>
+<input type="hidden" name="term_version[<?=
+    quickProgramH($purpose)
+    ?>]"
+ value="<?=
+    quickProgramH($term['version'])
+    ?>"><?php
+endforeach;
+?>
+<?php
+foreach ($programTerms as $purpose => $term):
+    ?>
+<input type="hidden" name="program_term_version[<?=
+    quickProgramH($purpose)
+    ?>]"
+ value="<?=
+    quickProgramH($term['terms_version'])
+    ?>"><?php
+endforeach;
+?>
 <fieldset class="mb-4">
 <legend class="h5">Koho přihlašujete?</legend>
 <div class="d-flex flex-column flex-sm-row gap-2">
 <label class="form-check border rounded p-3 flex-fill">
-<input class="form-check-input" type="radio" name="requested_role" value="guardian" <?=$value('requested_role', 'guardian'
-) === 'guardian' ? 'checked' : ''?> required> <span class="form-check-label">
+<input class="form-check-input" type="radio" name="requested_role" value="guardian" <?=
+$value(
+    'requested_role',
+    'guardian'
+) === 'guardian' ? 'checked' : ''
+?> required> <span class="form-check-label">
 <strong>Dítě</strong>
 <br>
 <span class="small text-muted">Vyplním kontakt rodiče a údaje dítěte.</span>
 </span>
 </label>
 <label class="form-check border rounded p-3 flex-fill">
-<input class="form-check-input" type="radio" name="requested_role" value="self" <?=$value('requested_role') === 'self' ?
-'checked' : ''?> required> <span class="form-check-label">
+<input class="form-check-input" type="radio" name="requested_role" value="self" <?=
+$value('requested_role') === 'self' ?
+'checked' : ''
+?> required> <span class="form-check-label">
 <strong>Sebe jako dospělého</strong>
 <br>
 <span class="small text-muted">Jméno stačí zadat pouze jednou.</span>
@@ -192,45 +277,65 @@ shopPublicNavigation($pdo, $product['categories'][0] ?? null);?>
 <div class="row g-3">
 <div class="col-sm-6">
 <label class="form-label">Jméno</label>
-<input class="form-control" name="parent_first_name" maxlength="100" value="<?=$value('parent_first_name')?>" autocomplete="given-name" required>
+<input class="form-control" name="parent_first_name" maxlength="100" value="<?=
+$value('parent_first_name')
+?>" autocomplete="given-name" required>
 </div>
 <div class="col-sm-6">
 <label class="form-label">Příjmení</label>
-<input class="form-control" name="parent_last_name" maxlength="100" value="<?=$value('parent_last_name')?>" autocomplete="family-name" required>
+<input class="form-control" name="parent_last_name" maxlength="100" value="<?=
+$value('parent_last_name')
+?>" autocomplete="family-name" required>
 </div>
 <div class="col-sm-7">
 <label class="form-label">E-mail</label>
-<input class="form-control" type="email" name="email" maxlength="254" value="<?=$value('email')?>" autocomplete="email" required>
+<input class="form-control" type="email" name="email" maxlength="254" value="<?=
+$value('email')
+?>" autocomplete="email" required>
 </div>
 <div class="col-sm-5">
 <label class="form-label">Telefon</label>
-<input class="form-control" type="tel" name="contact_phone" maxlength="50" value="<?=$value('contact_phone')?>" autocomplete="tel" required>
+<input class="form-control" type="tel" name="contact_phone" maxlength="50" value="<?=
+$value('contact_phone')
+?>" autocomplete="tel" required>
 </div>
 </div>
-<?php require_once dirname(__DIR__).'/includes/shop_document_automation.php';
-shopDocumentBillingFields($pdo, $_POST); ?>
+<?php
+require_once dirname(__DIR__).'/includes/shop_document_automation.php';
+shopDocumentBillingFields($pdo, $_POST);
+?>
 <hr class="my-4">
 <h2 class="h5" id="quick-athlete-title">Údaje dítěte</h2>
 <div class="row g-3">
 <div class="row g-3 m-0 p-0" id="quick-athlete-name-fields">
 <div class="col-sm-6">
 <label class="form-label">Jméno dítěte</label>
-<input class="form-control" name="jmeno" maxlength="100" value="<?=$value('jmeno')?>" required>
+<input class="form-control" name="jmeno" maxlength="100" value="<?=
+$value('jmeno')
+?>" required>
 </div>
 <div class="col-sm-6">
 <label class="form-label">Příjmení dítěte</label>
-<input class="form-control" name="prijmeni" maxlength="100" value="<?=$value('prijmeni')?>" required>
+<input class="form-control" name="prijmeni" maxlength="100" value="<?=
+$value('prijmeni')
+?>" required>
 </div>
 </div>
 <div class="col-sm-6">
 <label class="form-label">Datum narození</label>
-<input class="form-control" id="quick-birth-date" type="date" name="narozeni" min="1900-01-01" max="<?=date('Y-m-d')?>" value="
-    <?=$value('narozeni')?>" required>
+<input class="form-control" id="quick-birth-date" type="date" name="narozeni" min="1900-01-01" max="<?=
+date('Y-m-d')
+?>" value="
+    <?=
+$value('narozeni')
+?>" required>
 </div>
 <div class="col-sm-6">
 <label class="form-label">Státní občanství</label>
 <input class="form-control text-uppercase" name="citizenship_country_code" maxlength="2" pattern="[A-Za-z]{2}" value="<?=
-    $value('citizenship_country_code', 'CZ')?>" required>
+
+    $value('citizenship_country_code', 'CZ')
+?>" required>
 </div>
 <div class="col-12">
 <div id="quick-age-warning" class="alert alert-warning py-2 mb-0 d-none">
@@ -243,30 +348,45 @@ shopDocumentBillingFields($pdo, $_POST); ?>
 </div>
 <div class="col-sm-7">
 <label class="form-label">Ulice</label>
-<input class="form-control" name="address_street" maxlength="200" value="<?=$value('address_street')?>" autocomplete="address-line1" required>
+<input class="form-control" name="address_street" maxlength="200" value="<?=
+$value('address_street')
+?>" autocomplete="address-line1" required>
 </div>
 <div class="col-sm-3">
 <label class="form-label">Číslo popisné</label>
-<input class="form-control" name="address_house_number" maxlength="20" value="<?=$value('address_house_number')?>" required>
+<input class="form-control" name="address_house_number" maxlength="20" value="<?=
+$value('address_house_number')
+?>" required>
 </div>
 <div class="col-sm-2">
 <label class="form-label">Orientační</label>
-<input class="form-control" name="address_orientation_number" maxlength="20" value="<?=$value('address_orientation_number'
-)?>">
+<input class="form-control" name="address_orientation_number" maxlength="20" value="<?=
+$value(
+    'address_orientation_number'
+)
+?>">
 </div>
 <div class="col-sm-8">
 <label class="form-label">Obec</label>
-<input class="form-control" name="address_city" maxlength="100" value="<?=$value('address_city')?>" autocomplete="address-level2" required>
+<input class="form-control" name="address_city" maxlength="100" value="<?=
+$value('address_city')
+?>" autocomplete="address-level2" required>
 </div>
 <div class="col-sm-4">
 <label class="form-label">PSČ</label>
-<input class="form-control" name="address_postcode" maxlength="10" value="<?=$value('address_postcode')?>" autocomplete="postal-code" required>
+<input class="form-control" name="address_postcode" maxlength="10" value="<?=
+$value('address_postcode')
+?>" autocomplete="postal-code" required>
 </div>
 <div class="col-sm-6">
 <label class="form-label">Bylo přiděleno české rodné číslo?</label>
 <select class="form-select" name="has_czech_birth_number" required>
-<option value="1" <?=$value('has_czech_birth_number', '1') === '1' ? 'selected' : ''?>>Ano</option>
-<option value="0" <?=$value('has_czech_birth_number') === '0' ? 'selected' : ''?>>Ne, české RČ nebylo přiděleno</option>
+<option value="1" <?=
+$value('has_czech_birth_number', '1') === '1' ? 'selected' : ''
+?>>Ano</option>
+<option value="0" <?=
+$value('has_czech_birth_number') === '0' ? 'selected' : ''
+?>>Ne, české RČ nebylo přiděleno</option>
 </select>
 </div>
 <div class="col-sm-6">
@@ -278,63 +398,108 @@ shopDocumentBillingFields($pdo, $_POST); ?>
 <hr class="my-4">
 <h2 class="h5">Informace a podmínky objednávky</h2>
 <div class="border rounded p-3 small mb-3">
-<strong><?=quickProgramH($terms['member_data_notice']['version'])?> ·
-<?=quickProgramH($terms['member_data_notice']['title'])?>
+<strong><?=
+quickProgramH($terms['member_data_notice']['version'])
+?> ·
+<?=
+quickProgramH($terms['member_data_notice']['title'])
+?>
 </strong>
-<p class="mb-0"><?=quickProgramH($terms['member_data_notice']['text'])?>
+<p class="mb-0"><?=
+quickProgramH($terms['member_data_notice']['text'])
+?>
 </p>
 </div>
 <div class="border rounded p-3 small mb-3">
-<strong><?=quickProgramH($terms['birth_number_legal_notice']['version'])?> ·
-<?=quickProgramH($terms['birth_number_legal_notice']['title'])?>
+<strong><?=
+quickProgramH($terms['birth_number_legal_notice']['version'])
+?> ·
+<?=
+quickProgramH($terms['birth_number_legal_notice']['title'])
+?>
 </strong>
-<p class="mb-0"><?=quickProgramH($terms['birth_number_legal_notice']['text'])?>
+<p class="mb-0"><?=
+quickProgramH($terms['birth_number_legal_notice']['text'])
+?>
 </p>
 </div>
 <div class="border border-primary rounded p-3 small">
 <details open>
 <summary class="fw-semibold">Storno podmínky</summary>
-<p class="mt-2 mb-3"><?=nl2br(quickProgramH($programTerms['program_cancellation']['consent_text_plain']))?>
+<p class="mt-2 mb-3"><?=
+nl2br(quickProgramH($programTerms['program_cancellation']['consent_text_plain']))
+?>
 </p>
 </details>
 <details>
 <summary class="fw-semibold">Souhlas s účastí</summary>
-<p class="mt-2 mb-3"><?=nl2br(quickProgramH($programTerms['program_consent']['consent_text_plain']))?>
+<p class="mt-2 mb-3"><?=
+nl2br(quickProgramH($programTerms['program_consent']['consent_text_plain']))
+?>
 </p>
 </details>
 <label class="form-check">
-<input class="form-check-input" type="checkbox" name="registration_acknowledged" value="1" <?=$value('registration_acknowledged'
-) === '1' ? 'checked' : ''?> required> <span class="form-check-label">Potvrzuji, že jsem četl/a obě informace a storno podmínky, a souhlasím s přihlášením do kroužku.</span>
+<input class="form-check-input" type="checkbox" name="registration_acknowledged" value="1" <?=
+$value(
+    'registration_acknowledged'
+) === '1' ? 'checked' : ''
+?> required> <span class="form-check-label">Potvrzuji, že jsem četl/a obě informace a storno podmínky, a souhlasím s přihlášením do kroužku.</span>
 </label>
 </div>
-<?php if (isset($terms['csc_birth_number_sharing'])):?>
+<?php
+if (isset($terms['csc_birth_number_sharing'])):
+    ?>
 <div class="border rounded p-3 small mt-3">
-<strong><?=quickProgramH($terms['csc_birth_number_sharing']['title'])?> ·
-<?=quickProgramH($terms['csc_birth_number_sharing'
-]['version'])?>
+<strong><?=
+    quickProgramH($terms['csc_birth_number_sharing']['title'])
+    ?> ·
+<?=
+    quickProgramH($terms['csc_birth_number_sharing'
+    ]['version'])
+    ?>
 </strong>
-<p><?=quickProgramH($terms['csc_birth_number_sharing']['text'])?>
+<p><?=
+    quickProgramH($terms['csc_birth_number_sharing']['text'])
+    ?>
 </p>
 <label class="form-check">
-<input class="form-check-input" type="checkbox" name="csc_birth_number_sharing" value="1" <?=$value('csc_birth_number_sharing'
-) === '1' ? 'checked' : ''?>> <span class="form-check-label">Samostatně souhlasím s předáním rodného čísla Českému svazu cyklistiky. Není to podmínkou přihlášení.</span>
+<input class="form-check-input" type="checkbox" name="csc_birth_number_sharing" value="1" <?=
+    $value(
+        'csc_birth_number_sharing'
+    ) === '1' ? 'checked' : ''
+    ?>> <span class="form-check-label">Samostatně souhlasím s předáním rodného čísla Českému svazu cyklistiky. Není to podmínkou přihlášení.</span>
 </label>
-</div><?php endif;?>
-<?php clubConsentFields($pdo, $_POST);?>
+</div><?php
+endif;
+?>
+<?php
+clubConsentFields($pdo, $_POST);
+?>
 <button class="btn btn-primary btn-lg w-100 mt-4">Objednat a zobrazit platbu</button>
 <p class="small text-muted text-center mt-2 mb-0">Místo rezervujeme hned. E-mail a sportovce zkontrolujeme následně; platbu tím nezdržujeme.</p>
 </div>
 </form>
 </section>
 </div>
-</main><?php publicShellFooter();?>
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">(()=>{const input=document.getElementById('quick-birth-date');
+</main><?php
+publicShellFooter();
+?>
+<script nonce="<?=
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>">(()=>{const input=document.getElementById('quick-birth-date');
 const box=document.getElementById('quick-age-warning');
 const text=box?.querySelector('span');
 const from=
-    <?=json_encode($offer['birth_year_from'] !== null ? (int)$offer['birth_year_from'] : null)?>;
-const to=<?=json_encode(
-    $offer['birth_year_to'] !== null ? (int)$offer['birth_year_to'] : null)?>;
+    <?=
+json_encode(
+    $offer['birth_year_from'] !== null ? (int)$offer['birth_year_from'] : null
+)
+?>;
+const to=<?=
+json_encode(
+    $offer['birth_year_to'] !== null ? (int)$offer['birth_year_to'] : null
+)
+?>;
 const update=()=>{if(!input||!box||!text||!input.value||(!from&&!to)){box?.classList.add('d-none');
 return;
 }const year=Number(input.value.slice(0,4));

@@ -236,3 +236,9 @@ uzavření E10 je nyní E2026-11-09-11. Původní proof commit411cb96a zachovan�
 Finální ASSET5 doklady sdílí [PR #442](https://github.com/KovoPraha/evidenceTreninku/pull/442), větev codex/public-calendar-assets-release-docs-20261110. Pouze dokumentace/evidence, po všech CI sloučit bez dalšího produkčního nasazení.
 
 ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Strict ochrana vyžaduje nové3required checks na aktuálním základu; merge405 nic nezměnil. Main převzatý bez konfliktu, všech11CI se zopakuje; vlastní diff pouze docs, žádný další deploy. [Předání](SESSION_HANDOFF_BOOTSTRAP_ASSETS_2026-11-10.md).
+
+10.11.2026 — P11-ASSET6 zahájen před implementací: živé rychlé formuláře200/2CSS, control1CSS. EVENTREAD SQLite6506→17SQL odložen pro současnou0nabídku; jeho prototyp pouze vlastní větev d8274970. Nová2DB/HTTP/Chrome a release teprve po PASS; WIP zachovaný. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset6--rychlý-nákup-a-přihláška-10-11-2026).
+
+10.11.2026 — ASSET6 implementované2tagy; strict source0brace/PHP/HTML/JS a21/412 lokálních kontrol PASS. Starý form test zachoval skutečné vykreslení/DOM/verze/rollback a přijal jen PHP whitespace. Nové native2DB/Chrome a širšíCI zatím čekají, produkce beze změny.
+
+10.11.2026 — ASSET6 [PR #445](https://github.com/KovoPraha/evidenceTreninku/pull/445): main#444/06ad54e4 převzatý bez konfliktu, BAR doklady zachované. Source0braces/2tags a lokální21/412 PASS; nové společné CI/native přejímka čekají.

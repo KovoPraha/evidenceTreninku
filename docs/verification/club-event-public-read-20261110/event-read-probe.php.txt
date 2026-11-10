@@ -1,0 +1,63 @@
+<?php
+declare(strict_types=1);
+require dirname(__DIR__) . '/tests/Support/QueryProfilePdo.php';
+require dirname(__DIR__) . '/includes/club_event_shop.php';
+
+function eventProbeFixture(int $size): Tests\Support\QueryProfilePdo
+{
+    $pdo = new Tests\Support\QueryProfilePdo('sqlite::memory:');
+    $pdo->exec('CREATE TABLE club_events(id INTEGER PRIMARY KEY,name TEXT,status TEXT,event_type TEXT,pricing_policy TEXT,capacity INTEGER,registration_starts_at TEXT,registration_ends_at TEXT,planning_status TEXT,visibility TEXT)');
+    $pdo->exec('CREATE TABLE club_event_sessions(id INTEGER PRIMARY KEY,event_id INTEGER,starts_at TEXT,ends_at TEXT,location TEXT,capacity_override INTEGER,status TEXT)');
+    $pdo->exec('CREATE TABLE club_event_registrations(id INTEGER PRIMARY KEY,event_id INTEGER,sportovec_id INTEGER,status TEXT)');
+    $pdo->exec('CREATE TABLE club_event_planned_participants(id INTEGER PRIMARY KEY,event_id INTEGER,sportovec_id INTEGER,status TEXT)');
+    $pdo->exec('CREATE TABLE shop_product_event_links(product_id INTEGER PRIMARY KEY,event_id INTEGER)');
+    $pdo->exec('CREATE TABLE shop_products(id INTEGER PRIMARY KEY,catalog_status TEXT)');
+    $pdo->exec('CREATE TABLE shop_variants(id INTEGER PRIMARY KEY,product_id INTEGER,sku TEXT,amount_minor INTEGER,catalog_status TEXT,price_mode TEXT,currency TEXT,visible INTEGER)');
+    $pdo->exec('CREATE INDEX sessions_event_status ON club_event_sessions(event_id,status,starts_at,id)');
+    $pdo->exec('CREATE INDEX registrations_event_status ON club_event_registrations(event_id,status,sportovec_id)');
+    $pdo->exec('CREATE INDEX planned_event_status ON club_event_planned_participants(event_id,status,sportovec_id)');
+    $pdo->exec('CREATE INDEX links_event ON shop_product_event_links(event_id)');
+    $pdo->exec('CREATE INDEX variants_product ON shop_variants(product_id)');
+    for ($id=1; $id<=$size*2; ++$id) {
+        $pricing=$id<=$size?'free':'product_variants';
+        $pdo->prepare("INSERT INTO club_events VALUES(?,?,'open','club_event',?,50,NULL,NULL,'confirmed','public')")->execute([$id,'Synthetic '.$id,$pricing]);
+        $pdo->prepare("INSERT INTO club_event_sessions VALUES(?,?,'2099-09-01 09:00:00','2099-09-01 10:00:00','SYNTHETIC',NULL,'scheduled'),(?,?,'2099-09-02 09:00:00','2099-09-02 10:00:00','SYNTHETIC',40,'scheduled')")->execute([$id*2,$id,$id*2+1,$id]);
+        foreach (['confirmed','payment_pending','waitlisted','cancelled'] as $n=>$status) {
+            $pdo->prepare('INSERT INTO club_event_registrations VALUES(?,?,?,?)')->execute([$id*10+$n,$id,$n+1,$status]);
+        }
+        $pdo->prepare("INSERT INTO club_event_planned_participants VALUES(?,?,1,'confirmed'),(?,?,5,'confirmed'),(?,?,6,'waitlisted')")->execute([$id*10,$id,$id*10+1,$id,$id*10+2,$id]);
+        if ($id>$size) {
+            $product=10000+$id;
+            $pdo->prepare("INSERT INTO shop_products VALUES(?,'active')")->execute([$product]);
+            $pdo->prepare('INSERT INTO shop_product_event_links VALUES(?,?)')->execute([$product,$id]);
+            foreach ([1,2] as $variant) {
+                $pdo->prepare("INSERT INTO shop_variants VALUES(?,?,?,?,'active','fixed','CZK',1)")->execute([100000+$id*3+$variant,$product,'SYNTH-'.$variant,10000+$variant]);
+            }
+        }
+    }
+    return $pdo;
+}
+
+if (realpath((string)($_SERVER['SCRIPT_FILENAME']??''))===__FILE__) {
+    $result=[];
+    foreach ([0,12,100,500] as $size) {
+        $pdo=eventProbeFixture($size);
+        $hash=null;$samples=[];
+        for ($n=0;$n<24;++$n) {
+            $start=hrtime(true);
+            $value=['free'=>clubEventOpenFreeList($pdo),'paid'=>clubEventOpenPaidList($pdo)];
+            $elapsed=(hrtime(true)-$start)/1e6;
+            $current=hash('sha256',serialize($value));$hash??=$current;
+            if ($hash!==$current) {throw new RuntimeException('Unstable baseline');}
+            if ($n>=4) {$samples[]=$elapsed;}
+        }
+        $pdo->profile=[];$pdo->profiling=true;
+        $value=['free'=>clubEventOpenFreeList($pdo),'paid'=>clubEventOpenPaidList($pdo)];
+        $pdo->profiling=false;sort($samples);
+        $result[]=['synthetic_sqlite_only'=>true,'free_events'=>$size,'paid_events'=>$size,'paid_variant_rows'=>count($value['paid']),
+            'sql'=>count($pdo->profile),'fetched_rows'=>array_sum(array_column($pdo->profile,'fetched_rows')),
+            'median_ms'=>($samples[9]+$samples[10])/2,'samples_ms'=>$samples,'result_sha256'=>$hash];
+    }
+    file_put_contents(__DIR__.'/event-read-before.json',json_encode($result,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)."\n");
+    foreach ($result as $row) {unset($row['samples_ms']);echo json_encode($row,JSON_THROW_ON_ERROR)."\n";}
+}

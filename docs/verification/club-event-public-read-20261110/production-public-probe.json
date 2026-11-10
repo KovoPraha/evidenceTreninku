@@ -1,0 +1,20 @@
+[
+  {
+    "case": "events",
+    "http": 200,
+    "whole_html_sha256": "97d471758d7141d81b3d7faf26a190051d233d0ee1477d67b4f7a6d1e7c472d1",
+    "event_card_ids": [],
+    "bootstrap_css_links": 2,
+    "total_ms": 3406.1789999999996,
+    "method": "single read-only system curl GET; not a benchmark; private raw HTML and headers excluded from Git"
+  },
+  {
+    "case": "calendar-control",
+    "http": 200,
+    "whole_html_sha256": "ec4379150213b77f21b9392dfa82e33f2d4dcb68ea8f1937090399347e95530f",
+    "event_card_ids": [],
+    "bootstrap_css_links": 1,
+    "total_ms": 209.82600000000002,
+    "method": "single read-only system curl GET; not a benchmark; private raw HTML and headers excluded from Git"
+  }
+]

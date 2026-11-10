@@ -1,0 +1,43 @@
+{
+  "complete": true,
+  "rows": [
+    {
+      "path": "booking/rychla_prihlaska.php?product_id=298&variant_id=952",
+      "http": 200,
+      "bootstrap_css_links": 2,
+      "body_sha256": "c060d41b9a5ff3ccdccd835e22d4ccea173a2403d7fd9d6b4362440ab2fabf09"
+    },
+    {
+      "path": "booking/eshop.php",
+      "http": 200,
+      "bootstrap_css_links": 1,
+      "body_sha256": "5739a2de8fcd635c80e8b570ba95731977b550327e671e67104284c8b88b78db"
+    },
+    {
+      "path": "booking/produkt.php?id=247",
+      "http": 200,
+      "bootstrap_css_links": 1,
+      "body_sha256": "551383503b5a01487fdce900582b69440a323d235cb219913cd2885a12a8c323"
+    },
+    {
+      "path": "booking/produkt.php?id=298",
+      "http": 200,
+      "bootstrap_css_links": 1,
+      "body_sha256": "8e1dc638b1ac077e044ecdb6b408cd2f3e4a1c7450c1f9f9e360e4936829531c"
+    },
+    {
+      "path": "booking/produkt.php?id=218",
+      "http": 200,
+      "bootstrap_css_links": 1,
+      "body_sha256": "19990b54eaf8fbe669da7094955846caaa51239ff456e6f177d8353d28a22171"
+    },
+    {
+      "path": "booking/rychly_nakup.php?product_id=218&variant_id=784",
+      "http": 200,
+      "bootstrap_css_links": 2,
+      "body_sha256": "43845709060202ff71dcc04d367b694cf6e978874d965b55b75ef9fcdacfc8bf"
+    }
+  ],
+  "guest_path": "rychly_nakup.php?product_id=218&variant_id=784",
+  "method": "Public read-only HTTPS GET; no form submission, cookie reuse or production writes; raw HTML private."
+}

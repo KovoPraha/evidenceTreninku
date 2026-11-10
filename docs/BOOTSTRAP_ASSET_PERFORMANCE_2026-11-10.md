@@ -460,3 +460,118 @@ BAR, bez konfliktu a se zachováním jeho věcných dokladů; proti novému main
 zůstává náš PR pouze docs. Všech11 CI se zopakuje na společném finálním head.
 Naše produkční přejímka se týká8182489e/deploy42855987339, nikoli dodatečně
 kódu BAR. Kvůli těmto dokladům se žádný další deploy nespouští.
+
+
+## P11-ASSET6 — rychlý nákup a přihláška, 10. 11. 2026
+
+ROZPRACOVÁNO. Vlastník Vývoj/Codex, zadavatel Marek. Přímé zadání: další
+nejpřínosnější optimalizace podle analýzy; shoda/před-po, při všech PASS
+commit/merge/deploy, zachovat WIP a průběžný plán/handoff v repozitáři.
+Base main588489003aff40963c3a64959d566406c687d08f; poslední ověřený deploy42863352343/9ef52268 SUCCESS.
+Větev codex/checkout-assets-performance-20261110, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261110.
+Původní fio větev/d1221f35 a kis_rosters_admin.php SHA2567a7afd75 beze změny.
+CURRENT vlastní runtime/flags; pro vlastní vydání UAT/importfalse.
+
+### Čerstvé posouzení kandidátů
+
+[P11-EVENTREAD](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) prototyp má
+SQLite strict paritu a při1000syntetických akcích6506→17SQL. Produkční GET ale
+vrací0veřejných karet; prázdná projekce jen6→4SQL. Native/Chrome přejímka NOT RUN,
+prototyp nevybraný/odložený pouze na d8274970 ve vlastní větvi, bez view změny
+a deploye. Podmínka návratu v jeho plánu, žádný jeho PHP helper se nepřebírá.
+RIX/HJS2 zůstávají nevybrané, původní důvody a WIP platí.
+
+Podle bodu7 [analýzy](verification/performance-analysis-20261107/RESULTS.md)
+vybrány další dvě ověřené duplicity CDN Bootstrap5.3.3 + appUiAssets():
+booking/rychly_nakup.php a booking/rychla_prihlaska.php. Produkční veřejné
+formuláře218/784 a298/952 oba200 a2CSS; katalog/produkt control200 a1CSS.
+Změna má okamžitý přenosový přínos na dostupných formulářích. Bez údajů o
+návštěvnosti netvrdíme absolutní celkový produkční zisk. Samostatné měření níže.
+
+### Rozsah a akceptace před implementací
+
+1. Odstranit právě jeden známý CDNtag na každém ze dvou formulářů; společný
+lokální CSS payload/SRI, manifest verzí, TTL a všechny jiné assety beze změny.
+Přesný source kontrakt proti immutablebase: celé PHP tokeny a literal HTML/JS
+mimo konkrétní tag a vyjmenované povinné guard závorky/formátování stejné.
+2. Žádná změna SQL, účtů, identit, stock/dopravy, cen, term/version/consent,
+CSRF, rate limit, idempotence, transakcí, plateb, rezervací nebo importu.
+Zachovat guard přesměrování klubového produktu, stale verze a atomický rollback.
+3. Native MariaDB10.3/11.4 celé HTTP s plně migrovaným syntetickým schématem:
+validní goods/program formulář, varianty/neplatná či nedostupná nabídka,
+chybějící podmínky, přihlášený redirect, invalid CSRF a control produkt.
+Přesná shoda celé odpovědi mimo právě jeden tag a request nonce/CSRF; všechna
+data, skripty, ceny i term_version/program_term_version zachované. Negativní
+mutace porovnávače. Domain checksumy, žádný testovací produkční POST.
+4. Skutečný Apache/Chrome desktop/mobile cold/warm,17 střídavých párů po4warmupech,
+ResourceTiming/CDP, skutečné decoded CSS SHA/SRI,6pixelových párů, computedstyle,
+form/select/guardian-self/terms a mobilní navigace. Žádné mocky či umělá latence.
+Cíle CSS2→1 a decoded465606→232803 B, control1→1; měřit skutečný encoded přenos,
+FCP/ready gate20%+20ms. Časové zrychlení nepřipisovat změně, pokud control kolísá.
+5. Všechno aktuální CI, shodný tested/merged tree a chráněný deploy po PASS;
+backup/config/migrace/VS/indexy/smoke/cleanup a čerstvá veřejná produkční GET/
+Chrome baseline před nasazením i after. Bez reálné objednávky/platby/pošty nebo
+změny role. Lidské přihlášené UAT/fyzický telefon/obnova zálohy označit NOT RUN.
+6. Výsledky průběžně do [protokolu](verification/checkout-assets-20261110/RESULTS.md), registru/CURRENT/handoff/logů.
+Finální doklady sloučit po úplném CI bez druhého deploye. Cizí WIP nestashovat,
+neresetovat ani neuklízet; stage jen vlastní soubory, žádné secrets/raw HTML Git.
+
+Nová implementace/native/browser/release zatím NOT RUN. Další krok: živá
+baseline a přesná dvě odstranění, nové kontrakty/fixture a měřená přejímka.
+
+
+### ASSET6 checkpoint před novým CI
+
+Obě přesná odstranění implementovaná. Source kontrakt proti58848900 PASS:
+celé PHP tokeny a veškerý literal HTML/JS mimo2známé tagy stejné;0vložených
+guard závorek. Povinné formátování dlouhých šablonových řádků používá nulové
+PHP hranice, které nic nevypisují. Payloady/manifest/TTL i všechny služby stejné.
+Lokální21 testů/412 assertions PASS, včetně stale/refresh/atomického rollbacku
+rychlé přihlášky a17negativních assertion porovnávače. Style/line200/lint PASS.
+
+První lokální běh odhalil křehký zdrojový regex starého testu rodičovského
+průchodu: vyžadoval přesné mezery PHP foreach značek. Nyní přijímá pouze PHP
+whitespace; skutečný fragment stále vykresluje, HTML/atributy nijak nenormalizuje,
+dekóduje odeslané názvy/verze a zachovává všechny stale/rollback assertion.
+Nejde o zásah do registračního/platebního guardu nebo jeho vypnutí.
+
+Nový izolovaný native/Apache/Chrome runner:10HTTP scénářů včetně validních
+formulářů, empty-stock404, variant404, club303, neúplných terms409, customer303,
+product control; invalidCSRF obou formulářů a checksumy plné migrované DB.
+Chrome goods quantity, guardian/self synchronizace, věková poznámka, ack/CSC,
+přesné hidden verze a mobilní navigace,6pixelpairs. Nová native přejímka zatím
+NOT RUN, včetně backend/schema kalibrace fixture. Žádné produkční zápisy.
+
+
+ASSET6 / [PR #445](https://github.com/KovoPraha/evidenceTreninku/pull/445).
+Souběžný main06ad54e4 /#444 převzatý bez konfliktu se zachováním dokončeného
+BARu a všech jeho věcných záznamů. Žádná aplikativní změna proti58848900;
+source oracle dvou formulářů zůstává58848900, celý ostatní PHP kontext je v A/B
+páru vždy čerstvý a byte-shodný. Nové CI ověřuje společný head před release.
+
+
+ASSET6 native kalibrace: první42876038779/d9c62776 obě DB skončily před
+HTTP maticí na očekávání customer login303. Skutečný neměněný veřejný login
+prihlaseni.php používá header Location bez status argumentu, tedy302; login
+byl úspěšný. Test nyní očekává přesně302, nikoli obecnou libovolnou3xx.
+Následný ověřený-account guard rychlé přihlášky zůstává přesně303 a celý
+Location/body kontrakt je dál kontrolovaný. Source/aplikace se nemění.
+Cleanup vlastního schema/user/config a workerů proběhl, žádná produkční akce.
+Nová plná native2DB/browser přejímka se opakuje, neoznačovat první FAIL za PASS.
+
+
+ASSET6 druhá kalibrace42876825180/c3a48460: login302 už prošel. Původní
+varianta ještě před změnou správně vracela404 pro NULL sklad, test ji chybně
+nazval unlimited. Současný shopStorefrontReadRows při dostupném inventory
+schématu NULL zásobu vylučuje; nyní explicitní unknown-stock404 i zero-stock404.
+Totéž existující veřejný filtr skrývá program bez účinných program terms (404).
+Očekávání jsou přesná podle neměněných guardů, žádná tolerance dalších stavů.
+Samostatně doplněn409 pro chybějící povinné athlete notice: jen vlastní fixture
+dočasně změní text a ve finally obnoví přesný obsah; checksumy se dál ověřují.
+Nové plné native2DB/Chrome měření se opakuje, předchozí FAIL zůstává v historii.
+
+První živý Chrome158 before6/6 GET200, desktop/mobile bez JS/network chyby
+a přetékání. Target Bootstrap53957 B (22709CDN+31248local), control31248 B.
+Pět obsahových URL a celé HTML zůstávají v nové baseline; před nasazením se
+obnoví čerstvý before. Produkce beze zápisu; nejde o produkční časový benchmark.
