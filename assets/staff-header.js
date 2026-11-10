@@ -355,7 +355,9 @@ window.appConfirm = function (message) {
     var base = staffHeaderContext.appBaseUrl;
     var link = document.createElement('link');
     link.rel = 'manifest';
-    link.href = location.origin + '/' + base.slice(1) + 'manifest.json';
+    var manifestUrl = new URL(location.origin);
+    manifestUrl.pathname = base + 'manifest.json';
+    link.href = manifestUrl.href;
     document.head.appendChild(link);
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register(base + 'sw.js', { scope: base }).catch(function () {});
