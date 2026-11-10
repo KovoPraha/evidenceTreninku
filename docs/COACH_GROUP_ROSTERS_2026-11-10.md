@@ -1,6 +1,6 @@
 # COACH-ROSTER-01 — Moje skupiny a soupisky
 
-Datum: 10. 11. 2026. Stav: IMPLEMENTOVÁNO MÍSTNĚ, ČEKÁ NA PR/CI A PŘIJETÍ. Vlastník: vývoj KIS; provozní přijetí: pověřený trenér a registrář. Větev `codex/coach-groups-rosters-20261110`, samostatný worktree z `origin/main` `fb593ad4`.
+Datum: 10. 11. 2026. Stav: DRAFT PR #436, ČEKÁ NA CI A PŘIJETÍ. Vlastník: vývoj KIS; provozní přijetí: pověřený trenér a registrář. Větev `codex/coach-groups-rosters-20261110`, samostatný worktree z `origin/main` `fb593ad4`.
 
 ## Zadání a dosavadní stav
 
@@ -27,4 +27,4 @@ Testerka žádá přehled přidělených kroužků a soupisek s aktuálními dě
 
 Nová `moje_soupisky.php`, čtecí služba `includes/coach_roster_read.php` a položka trenérského rozcestníku. [Místní protokol](verification/coach-group-rosters-20261110/RESULTS.md) obsahuje syntetické testy a meze. Legacy `podskupiny` mají vlastní historickou obrazovku; tato etapa pracuje s kanonickými `club_teams` a soupiskami. Pro Aligátory je nutné ověřit konkrétní grant `scope_kind=team` na cílovou soupisku. Bez tohoto přidělení se jména bezpečně nezobrazí.
 
-CI/PR/merge/deploy a přihlášené UAT jsou samostatné kroky. Před nasazením je třeba v testovacím prostředí ověřit Aligátory po schválení registrace a propojení s kanonickou soupiskou. Skutečný počet dětí, cena a personální přidělení se z názvu skupiny neodvozují.
+[Draft PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436) otevřen; CI běží. Merge/deploy a přihlášené UAT jsou samostatné kroky. Před nasazením je třeba v testovacím prostředí ověřit Aligátory po schválení registrace a propojení s kanonickou soupiskou. Skutečný počet dětí, cena a personální přidělení se z názvu skupiny neodvozují.
