@@ -1,0 +1,336 @@
+{
+  "complete": true,
+  "method": "SHA256 of canonical staged Git blobs; excludes this self-referential manifest; text uses canonical LF.",
+  "files": [
+    {
+      "path": "docs/verification/family-assets-20261110/RESULTS.md",
+      "bytes": 8597,
+      "sha256": "a0c5923751395fb16af7c34882389849af609fa748d9197047f17c4925bde9c7"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/local-source-contract.json",
+      "bytes": 1951,
+      "sha256": "944abce5ba465c086d531d26b15ce2f8729eb3b1570f733004f1d2fe543a1727"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "b7ada947c8eb144af1b6a343b6ed3d77340b1e68b2edf47cedd322a54c83eb20"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-10.3/exact-source-contract.json",
+      "bytes": 1572,
+      "sha256": "b563fb8cea52880f13f5b1f3ee304d5e00181d06af8d4623dda26a9f4a4e01c5"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-10.3/native-summary.json",
+      "bytes": 3159,
+      "sha256": "1d1c9b1dc6fa170e67cd3c960ed43db080407f018876bbc55ad8c37aed2876a4"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-10.3/shared-context.json",
+      "bytes": 23382,
+      "sha256": "4a57a0eecb1b435b3a2bba971a32684908304a98a38741798b04fbd8da0be3eb"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-10.3/source-identity.json",
+      "bytes": 1272,
+      "sha256": "4bfffded89afce6f1b8958041adf6ebc74f237743656523c4f431cd34c5e2eda"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-10.3/whole-http.json.gz",
+      "bytes": 4438,
+      "sha256": "cbe1e876f6b7ea9c444ebc1840b746ddb08abc3615d15ec11566de251a00e83d"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-control-desktop-cold.json.gz",
+      "bytes": 2854,
+      "sha256": "9948ba266a0d49f0963185eb7b85a0ad9676e41fe5881628669f8d07fe4053f9"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-control-desktop-warm.json.gz",
+      "bytes": 2708,
+      "sha256": "5219217bb07b4e3acd01eaf71cc724fc194405f8e09a0d14175ee6ed9a247b78"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-control-mobile-cold.json.gz",
+      "bytes": 2895,
+      "sha256": "10498bed0e8e90386c74de815fbd130ee9cee6eb442f61c9b7a7609bc8bac20d"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-control-mobile-warm.json.gz",
+      "bytes": 2681,
+      "sha256": "78a5344bb0c95a55461ef89fbddfa76786b243a7b525adb470e27f5050a75d63"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-orders-desktop-cold.json.gz",
+      "bytes": 3602,
+      "sha256": "1e74b74a5574d4a78c031e2dd46a21b1d8b51ab6ddf52d3aaf9b6519d8e78222"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-orders-desktop-warm.json.gz",
+      "bytes": 3281,
+      "sha256": "e1594e39c03c1e943264d1db8ec777ecbe03f6e331ce2543e7c69b672263ce18"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-orders-mobile-cold.json.gz",
+      "bytes": 3584,
+      "sha256": "961e5569ca959405a2248fdbdaeba572bbd7611486052b5d77a8c6658c34147f"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-orders-mobile-warm.json.gz",
+      "bytes": 3299,
+      "sha256": "eac816149b141412d7a14314b4df57b6a5c7b924150ebaff8f9e4fd9e4566175"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-people-desktop-cold.json.gz",
+      "bytes": 3563,
+      "sha256": "851d16319f7c22d645b8bb9a5f676cd95f94130d346631a5a8f0fc37b8afcbdd"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-people-desktop-warm.json.gz",
+      "bytes": 3330,
+      "sha256": "1b03a9e50b34df4ef21f418f975ac94a958dea33a29044515fd87a325a18f69b"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-people-mobile-cold.json.gz",
+      "bytes": 3557,
+      "sha256": "5b911303c91c6275234dce6857ce57f064e9f149cf38e6904b429fc231ddb747"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-people-mobile-warm.json.gz",
+      "bytes": 3278,
+      "sha256": "495b098af2e196a6403df11c6038d6cacf263475c180cf311d3f93a4b5a6884b"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-programs-desktop-cold.json.gz",
+      "bytes": 3661,
+      "sha256": "b4a217ef7cac68eabcce2dc85c3b6c0f477322327fc309e9b609b7d7b36677a1"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-programs-desktop-warm.json.gz",
+      "bytes": 3347,
+      "sha256": "5160423603ae07eb5dcc6eb73b2aec6a0ab298b8fdcd1fe994fb6a032aca08ba"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-programs-mobile-cold.json.gz",
+      "bytes": 3630,
+      "sha256": "96535b067af4c1c6366fd8657995b396ed61aef80772db3000ea2da7150f9628"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-programs-mobile-warm.json.gz",
+      "bytes": 3347,
+      "sha256": "ff9ce3c079549e056bd7838d8eee7a05db3d8a9f20d8869369122c27101b439e"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-reservations-desktop-cold.json.gz",
+      "bytes": 3591,
+      "sha256": "ac8a279d262a7eff64cd47a5fe88c813bbf6cc6ec302bb8646faea2774bc377d"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-reservations-desktop-warm.json.gz",
+      "bytes": 3349,
+      "sha256": "699f51bcfb30e6ea88b7904eb7930d2b8f86ca5e15592f679cd36653b85dc51d"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-reservations-mobile-cold.json.gz",
+      "bytes": 3553,
+      "sha256": "358b3fd764857278b9c80dcea2376838b2b89edc93239d4911aaab3e2e2202fc"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-reservations-mobile-warm.json.gz",
+      "bytes": 3320,
+      "sha256": "1c3d2b4bc7d9b4142a1fdbfc0e030dc942a7cc490d8ae03d98953bd301c91894"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/browser-summary.json",
+      "bytes": 10778,
+      "sha256": "0c80e0c39955e6686d3a27cde953b3c1cc74173ace073ec9a32e03dd6309f1ae"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "b7ada947c8eb144af1b6a343b6ed3d77340b1e68b2edf47cedd322a54c83eb20"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/exact-source-contract.json",
+      "bytes": 1572,
+      "sha256": "b563fb8cea52880f13f5b1f3ee304d5e00181d06af8d4623dda26a9f4a4e01c5"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-control-desktop-after.png",
+      "bytes": 121137,
+      "sha256": "adcdf626dee0e8479d30ded26aeaf42a60963401d5d32bb7d426a878865a4f0b"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-control-desktop-before.png",
+      "bytes": 121137,
+      "sha256": "adcdf626dee0e8479d30ded26aeaf42a60963401d5d32bb7d426a878865a4f0b"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-control-mobile-after.png",
+      "bytes": 79856,
+      "sha256": "ecb152e021afc15660204f4c180ac7d073edff549166c81d4e71b9bc0a66ab72"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-control-mobile-before.png",
+      "bytes": 79856,
+      "sha256": "ecb152e021afc15660204f4c180ac7d073edff549166c81d4e71b9bc0a66ab72"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-orders-desktop-after.png",
+      "bytes": 98911,
+      "sha256": "bea4de552fb09ee1f9c8aa7eefe47c6d2e5b17e99186b7659c662d94b63aac8d"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-orders-desktop-before.png",
+      "bytes": 98911,
+      "sha256": "bea4de552fb09ee1f9c8aa7eefe47c6d2e5b17e99186b7659c662d94b63aac8d"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-orders-mobile-after.png",
+      "bytes": 56250,
+      "sha256": "b1839221b8c4309600a7883397de27c424f46aaa8b210a6a49a0d3200f47d486"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-orders-mobile-before.png",
+      "bytes": 56250,
+      "sha256": "b1839221b8c4309600a7883397de27c424f46aaa8b210a6a49a0d3200f47d486"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-people-desktop-after.png",
+      "bytes": 76199,
+      "sha256": "35cae0462bc1dda15774050fe1224969605da598f946b59d83aed34a6664a294"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-people-desktop-before.png",
+      "bytes": 76199,
+      "sha256": "35cae0462bc1dda15774050fe1224969605da598f946b59d83aed34a6664a294"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-people-mobile-after.png",
+      "bytes": 69458,
+      "sha256": "20ec811f86e2c14cde0a8eb08776b6733786d5abd78da47eee0ccc93ca7c7398"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-people-mobile-before.png",
+      "bytes": 69458,
+      "sha256": "20ec811f86e2c14cde0a8eb08776b6733786d5abd78da47eee0ccc93ca7c7398"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-programs-desktop-after.png",
+      "bytes": 101398,
+      "sha256": "d132b5d402d19beca42e761287188ee862ec46b542082070aca15b560b018986"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-programs-desktop-before.png",
+      "bytes": 101398,
+      "sha256": "d132b5d402d19beca42e761287188ee862ec46b542082070aca15b560b018986"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-programs-mobile-after.png",
+      "bytes": 57515,
+      "sha256": "288dc5b1f85264a5a8b82acab4ba01f9dbae4bbe2810b2fef9130c144acf98c4"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-programs-mobile-before.png",
+      "bytes": 57515,
+      "sha256": "288dc5b1f85264a5a8b82acab4ba01f9dbae4bbe2810b2fef9130c144acf98c4"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-reservations-desktop-after.png",
+      "bytes": 26605,
+      "sha256": "eaa2fa0cd9faa75d7900c4920e747edf7dbb7b9540a09e9e64feb1c2d58a8266"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-reservations-desktop-before.png",
+      "bytes": 26605,
+      "sha256": "eaa2fa0cd9faa75d7900c4920e747edf7dbb7b9540a09e9e64feb1c2d58a8266"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-reservations-mobile-after.png",
+      "bytes": 24726,
+      "sha256": "2734a764774d29a9af22a5c5a70095f94d13439d9ebe1a10adce8fe017192099"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/family-assets-reservations-mobile-before.png",
+      "bytes": 24726,
+      "sha256": "2734a764774d29a9af22a5c5a70095f94d13439d9ebe1a10adce8fe017192099"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/native-summary.json",
+      "bytes": 3008,
+      "sha256": "988668604989ffdeb9f579fd402a3409b9331fd4487cdaf9a77b89ed573ef6f4"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/shared-context.json",
+      "bytes": 23382,
+      "sha256": "4a57a0eecb1b435b3a2bba971a32684908304a98a38741798b04fbd8da0be3eb"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/source-identity.json",
+      "bytes": 1272,
+      "sha256": "4bfffded89afce6f1b8958041adf6ebc74f237743656523c4f431cd34c5e2eda"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-11.4/whole-http.json.gz",
+      "bytes": 4725,
+      "sha256": "12ec80aa48cfc11f1c8979b725c201acb0cb5f00d95af5f082e4aa9b4ec25f36"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/native-acceptance.json",
+      "bytes": 12142,
+      "sha256": "ff8c76f6cf383ee68cb9c3a9e2bc52e926e379a59889d341184ec8427c45983f"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/REPRODUCE.md",
+      "bytes": 2620,
+      "sha256": "2c5f49eeaba7476c61222713398d8bd77af3470f0a79f340a943fb0e19bc04f0"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/app-checks.json",
+      "bytes": 2332,
+      "sha256": "e53f6c688b667796bae442289a84f417c901c0a5312c9c60759d4100f6bb2bb3"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/deploy-summary.json",
+      "bytes": 8411,
+      "sha256": "fa7fa73d86e81517d3d771ce5011728c16095bc8ff151b7f8a8fe665f0faf9eb"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/index-preflight/medical-index-after.json",
+      "bytes": 2438,
+      "sha256": "9cf5c24bd8bf6e65d5d2099854c548b70bfbea766d26ecb606468b2b39e152aa"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/index-preflight/medical-index-before.json",
+      "bytes": 2439,
+      "sha256": "6ec82a8818a2c774553a4f79647cd3ee46b6fbcf8a7f0d8f50211b67bbdcfc14"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/live-after.json",
+      "bytes": 7811,
+      "sha256": "32c7c45c39eef6b02bc88ec4d3333e27f3e3a3d1e91f61cfe310833e696f653f"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/live-before.json",
+      "bytes": 7812,
+      "sha256": "3673f89229b886e74282c751413a700d1ab0dc45fdb71c571be7eb8dda58deda"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/live-http-probe.py.txt",
+      "bytes": 3425,
+      "sha256": "df26e6a2da8b810d4d6f57698b925d8ee3d5c7f09eef98560875545642e13c75"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/production-session.json",
+      "bytes": 454,
+      "sha256": "47e837703155d1016fe43febb9736a4675ec5c55c8293a99972297b4985572a0"
+    },
+    {
+      "path": "docs/verification/family-assets-20261110/release/release-controls.json",
+      "bytes": 1410,
+      "sha256": "ceb615a94b43154db4b43233017806dd6b45b1bc88832c788b0b3f932ae95335"
+    }
+  ]
+}

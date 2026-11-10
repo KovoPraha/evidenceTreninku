@@ -413,7 +413,7 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | DONE / P11-RIX | Diagnóza uzavřena bez přijaté SQL/index varianty; pokračuje P11-ASSET. |
 
-| PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | ROZPRACOVÁNO / ASSET7; ASSET1–6 nasazené | Čtyři rodinné CSS duplicity, nový native/browser před-po; historické ASSET4/6 LIMIT zachované. |
+| PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | NASAZENO / ASSET1–7 technicky s mezemi | ASSET7 #447/c29642f1, deploy42905781826,13CI/native2DB/10pixelpárů PASS;5živýchanonymníchGET/payloadů stejné, přihlášené UAT a ASSET4/6 LIMIT zachované. |
 
 | PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | REJECTED / P11-HJS/P11-HJS2 | Oba nevybrané; skutečná duplicitníCSSvede naASSET2, prototypy zachované. |
 

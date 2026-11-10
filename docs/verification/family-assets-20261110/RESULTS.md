@@ -1,7 +1,6 @@
 # P11-ASSET7 — ověření stylů čtyř rodinných stránek
 
-Implementace/native2DB/Chrome/13CI PASS; PR #447 sloučen jakoc29642f1.
-Deploy42905781826 běží, produkční receipt a after zatím NOT RUN.
+NASAZENO / technická přejímka PASS; přihlášené produkční UAT NOT RUN.
 [Plán](../../BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset7--stránky-rodinného-účtu-10-11-2026),
 [PR #447](https://github.com/KovoPraha/evidenceTreninku/pull/447).
 
@@ -88,3 +87,35 @@ odložený prototyp zachované, jeho PHP helper se nepřebírá. Historický ASS
 LIMIT i ASSET6 controlfoto LIMIT se nepřepisují na PASS. Původní WIP7a7afd75
 zachovaný. Živá přihlášená produkční relace není dostupná (CUA končí na loginu),
 autentizované produkční UAT NOT RUN; native není tvrzená náhrada za živé UAT.
+
+
+## Produkční vydání a hranice přejímky
+
+PR #447 sloučen jako `c29642f137aaa963d805fddd14cd01826542fb38`, celý tree `1acec2cfafdead818596c71d5a70cd381162503f` totožný s testovaným b65137a0;
+[všech13CI](release/app-checks.json) SUCCESS. [Deploy42905781826](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42905781826) SUCCESS nac29642f1,
+2455testů/56279assertions, backup389tabulek/2triggerů,
+config/migrace/VS/index/HTTP200/cleanup PASS. Přímý runnerHTTP0,
+předepsaný serverový curl fallback200; UAT/importfalse a import přeskočený.
+
+Záloha ověřená, SHA256 `3e158f9ce1f0d1022d4d0dd9f214fdd2ed8159b5639cf1ced4b4409fd948fe3d`. Stávající konfigurace zachovaná bez
+doplnění, soukromý archivní klíč/záloha/webcopy PASS; pending migrace [], dosavadní
+VS a definice/inventory zdravotního indexu stejné. [Receipt](release/release-controls.json),
+[workflow](release/deploy-summary.json), [indexy](release/index-preflight/medical-index-before.json).
+
+Čerstvé produkční [before](release/live-before.json) a [after](release/live-after.json):
+čtyři soukromé anonymní GET302 se shodným Location/celým tělem/hlavičkami, veřejný
+login200/1CSS/celéHTML/CSP shodné; všech5UIpayloadů byte-shodných s canonical
+Git4d1e9941 před/po. Žádný POST, objednávka, platba ani změna role. CUA v dostupném
+uživatelském Chrome končí na loginu: [doklad](release/production-session.json).
+**Přihlášené produkční UAT NOT RUN**: anonymní redirect neprovádí soukromou šablonu,
+proto zde netvrdíme živou vizuální shodu ani produkční soukromý waterfall.
+Časový a přenosový přínos patří výhradně skutečnému nativnímu Chrome páru:
+cold Bootstrap[64454]→31248 B, decoded−50 %, FCP zisk8–24ms
+v osmi targetkombinacích; warm síť0→0 B, control stejný. Fyzický telefon a
+obnova této konkrétní zálohy NOT RUN. Celé soukromé HTTP/role/CSRF/revokace,
+10pixelpárů a40funkčních záznamů na izolovaných datech PASS podle výše uvedené metody.
+
+Původní fio/d1221f35 a WIP SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` zachované, ostatní worktrees/WIP
+se neuklízejí. Finální doklady ve větvi codex/family-assets-release-docs-20261110,
+[PR #448](https://github.com/KovoPraha/evidenceTreninku/pull/448); jeho
+sloučením jsou součástí main, další deploy kvůli dokumentaci se neprovádí.
