@@ -93,10 +93,14 @@ foreach (['before','after'] as $variant) {
         $post = fullHttpRequest($rt, $output, $role, '/booking/prihlaseni.php', [
             'csrf_token' => $token[1],'email' => $account['email'],'heslo' => $account['password'],
         ]);
-        if ($post['status'] !== 302) {
-            throw new RuntimeException('Synthetic family login status '.$post['status']);
+        $expectedLogin = $cohort === 'unverified' ? 200 : 302;
+        if ($post['status'] !== $expectedLogin) {
+            throw new RuntimeException('Synthetic family login '.$cohort.' status '.$post['status']);
         }
-        $login[$variant][$cohort] = 302;
+        if ($cohort === 'unverified' && !str_contains($post['body'], 'Email není ověřen.')) {
+            throw new RuntimeException('Unverified email login denial absent.');
+        }
+        $login[$variant][$cohort] = $expectedLogin;
     }
 }
 $checksums = static function () use ($admin): array {
@@ -115,7 +119,7 @@ $paths = ['people' => '/booking/moje_osoby.php','orders' => '/booking/moje_objed
 $cases = [];
 foreach (['main','empty','unverified'] as $cohort) {
     foreach ($paths as $name => $path) {
-        $cases[$cohort.'-'.$name] = [$path,200,$cohort,true];
+        $cases[$cohort.'-'.$name] = [$path,$cohort === 'unverified' ? 302 : 200,$cohort,$cohort !== 'unverified'];
     }
 }
 foreach ($paths as $name => $path) {
@@ -212,18 +216,18 @@ if ($report['relation_revocation']['before'] !== $report['relation_revocation'][
     throw new RuntimeException('Relation revocation parity failed.');
 }
 try {
-    $admin->exec('UPDATE verejni_uzivatele SET aktivni=0 WHERE id=13');
+    $admin->exec('UPDATE verejni_uzivatele SET aktivni=0 WHERE id=12');
     foreach (['before','after'] as $variant) {
         $rt = $runtime;
         $rt['base_url'] = 'http://127.0.0.1:'.($variant === 'before' ? 18099 : 18100);
-        $r = fullHttpRequest($rt, $output, 'family-unverified-'.$variant, $paths['people']);
-        if ($r['status'] !== 302) {
-            throw new RuntimeException('Account revocation expected exact302, got'.$r['status']);
+        $r = fullHttpRequest($rt, $output, 'family-empty-'.$variant, $paths['people']);
+        if ($r['status'] !== 303) {
+            throw new RuntimeException('Account revocation expected exact303, got'.$r['status']);
         }
         $report['account_revocation'][$variant] = $signature($r);
     }
 } finally {
-    $admin->exec('UPDATE verejni_uzivatele SET aktivni=1 WHERE id=13');
+    $admin->exec('UPDATE verejni_uzivatele SET aktivni=1 WHERE id=12');
 }
 if ($report['account_revocation']['before'] !== $report['account_revocation']['after']) {
     throw new RuntimeException('Account revocation parity failed.');

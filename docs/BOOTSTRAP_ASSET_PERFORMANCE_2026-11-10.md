@@ -684,3 +684,15 @@ přínos a release zatím NOT RUN; další krok nová přejímka, ne hotový vý
 
 
 ASSET7 / [PR #447](https://github.com/KovoPraha/evidenceTreninku/pull/447), větev codex/family-assets-performance-20261110; native/browser běh připravený.
+
+
+ASSET7 native kalibrace:42900569649/964df9a6 a42900622889/5926e376 obě DB
+FAIL před HTTP maticí na chybně očekávaném login302 neověřeného účtu.
+Neměněné prihlaseni.php výslovně odmítá email_overeno=0:200 a „Email není
+ověřen.“, účet vůbec nepřihlásí. Fixture nyní přesně kontroluje toto odmítnutí
+apak302 denials čtyř soukromých stránek. Revokace aktivního přihlášeného účtu
+se proto ověřuje na prázdném ověřeném účtu12: podle db.php přesně303 na
+session=expired. Žádné rozšíření tolerovaných stavů ani změna autentizace;
+první FAIL zůstává v historii, nová plná native/Chrome přejímka se opakuje.
+Produkční anonymní before:4redirecty302 a login200,5canonicalUIpayloadů PASS;
+přihlášené živé UAT NOT RUN. Žádné produkční POST, WIP zachovaný.
