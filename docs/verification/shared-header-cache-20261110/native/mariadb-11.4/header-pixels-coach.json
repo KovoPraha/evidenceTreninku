@@ -1,0 +1,22 @@
+[
+  {
+    "case": "workspace",
+    "viewport": "desktop",
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "workspace",
+    "viewport": "mobile",
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "mine",
+    "viewport": "desktop",
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "mine",
+    "viewport": "mobile",
+    "decoded_pixels_equal": true
+  }
+]

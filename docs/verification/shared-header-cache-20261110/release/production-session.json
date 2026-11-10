@@ -1,0 +1,11 @@
+{
+  "checked_utc": "2026-11-10T22:53:40.962461+00:00",
+  "method": "User Chrome profile, read-only GET of staff workspace; browser navigation timed out but exact returned tab subsequently observed.",
+  "requested_path": "/pracovni_pozice.php",
+  "observed_url": "https://kis.kovopraha.cz/login.php",
+  "observed_title": "Přihlášení – Evidence tréninků",
+  "login_form_observed": true,
+  "authenticated_production_uat": "NOT RUN; user browser profile has no authenticated staff session",
+  "post_submitted": false,
+  "roles_or_accounts_changed": false
+}

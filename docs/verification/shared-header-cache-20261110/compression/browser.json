@@ -1,0 +1,4090 @@
+{
+  "complete": true,
+  "scope": "Synthetic public static fixture; real Apache and unchanged production JS. No authenticated UAT.",
+  "samples": [
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 0,
+      "fcp_ms": 24,
+      "load_ms": 22.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 0,
+      "fcp_ms": 24,
+      "load_ms": 24.10000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 1,
+      "fcp_ms": 28,
+      "load_ms": 26.09999999999127,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 1,
+      "fcp_ms": 28,
+      "load_ms": 22.89999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 2,
+      "fcp_ms": 28,
+      "load_ms": 24.19999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 2,
+      "fcp_ms": 28,
+      "load_ms": 25.59999999999127,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 3,
+      "fcp_ms": 28,
+      "load_ms": 23.5,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 3,
+      "fcp_ms": 24,
+      "load_ms": 22.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 4,
+      "fcp_ms": 24,
+      "load_ms": 22.69999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 4,
+      "fcp_ms": 28,
+      "load_ms": 23.90000000000873,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 5,
+      "fcp_ms": 28,
+      "load_ms": 24,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 5,
+      "fcp_ms": 24,
+      "load_ms": 22.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 6,
+      "fcp_ms": 24,
+      "load_ms": 22.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 6,
+      "fcp_ms": 28,
+      "load_ms": 25.30000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 7,
+      "fcp_ms": 24,
+      "load_ms": 24,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 7,
+      "fcp_ms": 28,
+      "load_ms": 23.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 8,
+      "fcp_ms": 24,
+      "load_ms": 22.19999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 8,
+      "fcp_ms": 28,
+      "load_ms": 23.69999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 9,
+      "fcp_ms": 28,
+      "load_ms": 24.70000000001164,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 9,
+      "fcp_ms": 24,
+      "load_ms": 22.60000000000582,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 10,
+      "fcp_ms": 28,
+      "load_ms": 23.60000000000582,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 10,
+      "fcp_ms": 24,
+      "load_ms": 23.60000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 11,
+      "fcp_ms": 24,
+      "load_ms": 22.89999999999418,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 11,
+      "fcp_ms": 28,
+      "load_ms": 23.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 12,
+      "fcp_ms": 24,
+      "load_ms": 22.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 12,
+      "fcp_ms": 24,
+      "load_ms": 23,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 13,
+      "fcp_ms": 28,
+      "load_ms": 24.10000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 13,
+      "fcp_ms": 24,
+      "load_ms": 21.89999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 14,
+      "fcp_ms": 28,
+      "load_ms": 23.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 14,
+      "fcp_ms": 28,
+      "load_ms": 25,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 15,
+      "fcp_ms": 24,
+      "load_ms": 23.5,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 15,
+      "fcp_ms": 24,
+      "load_ms": 21.90000000000873,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 16,
+      "fcp_ms": 24,
+      "load_ms": 22.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": 16,
+      "fcp_ms": 28,
+      "load_ms": 23.60000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 0,
+      "fcp_ms": 20,
+      "load_ms": 15.900000000008731,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 0,
+      "fcp_ms": 20,
+      "load_ms": 17,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 1,
+      "fcp_ms": 20,
+      "load_ms": 14.69999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 1,
+      "fcp_ms": 20,
+      "load_ms": 15.30000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 2,
+      "fcp_ms": 24,
+      "load_ms": 16.30000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 2,
+      "fcp_ms": 20,
+      "load_ms": 16.19999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 3,
+      "fcp_ms": 20,
+      "load_ms": 15.400000000008731,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 3,
+      "fcp_ms": 20,
+      "load_ms": 16.30000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 4,
+      "fcp_ms": 20,
+      "load_ms": 15.60000000000582,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 4,
+      "fcp_ms": 20,
+      "load_ms": 15.80000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 5,
+      "fcp_ms": 20,
+      "load_ms": 15.799999999988358,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 5,
+      "fcp_ms": 28,
+      "load_ms": 23.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 6,
+      "fcp_ms": 28,
+      "load_ms": 15.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 6,
+      "fcp_ms": 20,
+      "load_ms": 16,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 7,
+      "fcp_ms": 20,
+      "load_ms": 14.10000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 7,
+      "fcp_ms": 20,
+      "load_ms": 15.89999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 8,
+      "fcp_ms": 20,
+      "load_ms": 14,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 8,
+      "fcp_ms": 20,
+      "load_ms": 14,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 9,
+      "fcp_ms": 20,
+      "load_ms": 14.10000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 9,
+      "fcp_ms": 20,
+      "load_ms": 14,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 10,
+      "fcp_ms": 20,
+      "load_ms": 14.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 10,
+      "fcp_ms": 20,
+      "load_ms": 15.599999999991269,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 11,
+      "fcp_ms": 20,
+      "load_ms": 13.10000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 11,
+      "fcp_ms": 20,
+      "load_ms": 12.30000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 12,
+      "fcp_ms": 20,
+      "load_ms": 14.200000000011642,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 12,
+      "fcp_ms": 20,
+      "load_ms": 15.400000000008731,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 13,
+      "fcp_ms": 20,
+      "load_ms": 14.19999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 13,
+      "fcp_ms": 20,
+      "load_ms": 14.19999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 14,
+      "fcp_ms": 20,
+      "load_ms": 15.099999999991269,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 14,
+      "fcp_ms": 20,
+      "load_ms": 14.5,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 15,
+      "fcp_ms": 20,
+      "load_ms": 14,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 15,
+      "fcp_ms": 24,
+      "load_ms": 17.29999999998836,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 16,
+      "fcp_ms": 20,
+      "load_ms": 14.69999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": 16,
+      "fcp_ms": 20,
+      "load_ms": 14,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 0,
+      "fcp_ms": 24,
+      "load_ms": 21.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 0,
+      "fcp_ms": 24,
+      "load_ms": 23.69999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 1,
+      "fcp_ms": 24,
+      "load_ms": 23.90000000000873,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 1,
+      "fcp_ms": 24,
+      "load_ms": 23.60000000000582,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 2,
+      "fcp_ms": 24,
+      "load_ms": 22.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 2,
+      "fcp_ms": 24,
+      "load_ms": 23.19999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 3,
+      "fcp_ms": 28,
+      "load_ms": 22.10000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 3,
+      "fcp_ms": 24,
+      "load_ms": 21.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 4,
+      "fcp_ms": 24,
+      "load_ms": 22.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 4,
+      "fcp_ms": 24,
+      "load_ms": 23,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 5,
+      "fcp_ms": 24,
+      "load_ms": 22.90000000000873,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 5,
+      "fcp_ms": 24,
+      "load_ms": 22.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 6,
+      "fcp_ms": 24,
+      "load_ms": 23.10000000000582,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 6,
+      "fcp_ms": 24,
+      "load_ms": 23,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 7,
+      "fcp_ms": 24,
+      "load_ms": 22.10000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 7,
+      "fcp_ms": 24,
+      "load_ms": 22.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 8,
+      "fcp_ms": 28,
+      "load_ms": 24.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 8,
+      "fcp_ms": 24,
+      "load_ms": 22.70000000001164,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 9,
+      "fcp_ms": 24,
+      "load_ms": 23,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 9,
+      "fcp_ms": 24,
+      "load_ms": 23.30000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 10,
+      "fcp_ms": 24,
+      "load_ms": 21.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 10,
+      "fcp_ms": 28,
+      "load_ms": 24.20000000001164,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 11,
+      "fcp_ms": 24,
+      "load_ms": 23.39999999999418,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 11,
+      "fcp_ms": 24,
+      "load_ms": 22.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 12,
+      "fcp_ms": 24,
+      "load_ms": 21.60000000000582,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 12,
+      "fcp_ms": 28,
+      "load_ms": 23.5,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 13,
+      "fcp_ms": 28,
+      "load_ms": 22.59999999999127,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 13,
+      "fcp_ms": 24,
+      "load_ms": 23.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 14,
+      "fcp_ms": 28,
+      "load_ms": 25.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 14,
+      "fcp_ms": 28,
+      "load_ms": 23.80000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 15,
+      "fcp_ms": 28,
+      "load_ms": 24.09999999999127,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 15,
+      "fcp_ms": 24,
+      "load_ms": 24.60000000000582,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 16,
+      "fcp_ms": 24,
+      "load_ms": 23.20000000001164,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": 16,
+      "fcp_ms": 28,
+      "load_ms": 25.5,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 0,
+      "fcp_ms": 20,
+      "load_ms": 16.09999999999127,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 0,
+      "fcp_ms": 20,
+      "load_ms": 14.60000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 1,
+      "fcp_ms": 24,
+      "load_ms": 17,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 1,
+      "fcp_ms": 20,
+      "load_ms": 15.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 2,
+      "fcp_ms": 20,
+      "load_ms": 14.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 2,
+      "fcp_ms": 20,
+      "load_ms": 16.69999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 3,
+      "fcp_ms": 20,
+      "load_ms": 17,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 3,
+      "fcp_ms": 20,
+      "load_ms": 15.69999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 4,
+      "fcp_ms": 20,
+      "load_ms": 15.299999999988358,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 4,
+      "fcp_ms": 20,
+      "load_ms": 15.200000000011642,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 5,
+      "fcp_ms": 20,
+      "load_ms": 15.799999999988358,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 5,
+      "fcp_ms": 20,
+      "load_ms": 15.200000000011642,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 6,
+      "fcp_ms": 20,
+      "load_ms": 14.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 6,
+      "fcp_ms": 20,
+      "load_ms": 14.89999999999418,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 7,
+      "fcp_ms": 20,
+      "load_ms": 15.80000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 7,
+      "fcp_ms": 20,
+      "load_ms": 16.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 8,
+      "fcp_ms": 20,
+      "load_ms": 15,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 8,
+      "fcp_ms": 20,
+      "load_ms": 16.5,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 9,
+      "fcp_ms": 20,
+      "load_ms": 16.5,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 9,
+      "fcp_ms": 20,
+      "load_ms": 14.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 10,
+      "fcp_ms": 20,
+      "load_ms": 16.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 10,
+      "fcp_ms": 20,
+      "load_ms": 15.200000000011642,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 11,
+      "fcp_ms": 20,
+      "load_ms": 15.60000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 11,
+      "fcp_ms": 20,
+      "load_ms": 15.599999999991269,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 12,
+      "fcp_ms": 20,
+      "load_ms": 16.09999999999127,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 12,
+      "fcp_ms": 20,
+      "load_ms": 15.69999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 13,
+      "fcp_ms": 20,
+      "load_ms": 15.19999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 13,
+      "fcp_ms": 20,
+      "load_ms": 16.30000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 14,
+      "fcp_ms": 24,
+      "load_ms": 15,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 14,
+      "fcp_ms": 20,
+      "load_ms": 16.30000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 15,
+      "fcp_ms": 20,
+      "load_ms": 16.30000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 15,
+      "fcp_ms": 20,
+      "load_ms": 15.19999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 16,
+      "fcp_ms": 20,
+      "load_ms": 16.69999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": 16,
+      "fcp_ms": 20,
+      "load_ms": 15.39999999999418,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    }
+  ],
+  "warmups": [
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": -4,
+      "fcp_ms": 32,
+      "load_ms": 27.10000000000582,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": -4,
+      "fcp_ms": 32,
+      "load_ms": 27.10000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": -3,
+      "fcp_ms": 28,
+      "load_ms": 25.19999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": -3,
+      "fcp_ms": 24,
+      "load_ms": 22.69999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": -2,
+      "fcp_ms": 28,
+      "load_ms": 23.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": -2,
+      "fcp_ms": 28,
+      "load_ms": 23.80000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": -1,
+      "fcp_ms": 28,
+      "load_ms": 24.69999999999709,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "cold",
+      "round": -1,
+      "fcp_ms": 28,
+      "load_ms": 25,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": -4,
+      "fcp_ms": 24,
+      "load_ms": 22.39999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": -4,
+      "fcp_ms": 24,
+      "load_ms": 23.29999999998836,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        },
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": -3,
+      "fcp_ms": 24,
+      "load_ms": 17.30000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": -3,
+      "fcp_ms": 24,
+      "load_ms": 18.09999999999127,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": -2,
+      "fcp_ms": 20,
+      "load_ms": 15.400000000008731,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": -2,
+      "fcp_ms": 20,
+      "load_ms": 16,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": -1,
+      "fcp_ms": 20,
+      "load_ms": 17,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "cache": "warm",
+      "round": -1,
+      "fcp_ms": 20,
+      "load_ms": 16.89999999999418,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": -4,
+      "fcp_ms": 24,
+      "load_ms": 22.30000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": -4,
+      "fcp_ms": 28,
+      "load_ms": 24.30000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": -3,
+      "fcp_ms": 24,
+      "load_ms": 23.10000000000582,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": -3,
+      "fcp_ms": 24,
+      "load_ms": 21.80000000000291,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": -2,
+      "fcp_ms": 28,
+      "load_ms": 24.10000000000582,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": -2,
+      "fcp_ms": 28,
+      "load_ms": 24,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": -1,
+      "fcp_ms": 28,
+      "load_ms": 24.80000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "cold",
+      "round": -1,
+      "fcp_ms": 24,
+      "load_ms": 22,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": -4,
+      "fcp_ms": 24,
+      "load_ms": 23.09999999999127,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 89882,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 81021
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 8861
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": -4,
+      "fcp_ms": 24,
+      "load_ms": 22.80000000000291,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 27218,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": -3,
+      "fcp_ms": 24,
+      "load_ms": 18.5,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": -3,
+      "fcp_ms": 20,
+      "load_ms": 16.59999999999127,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": -2,
+      "fcp_ms": 20,
+      "load_ms": 14.19999999999709,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": -2,
+      "fcp_ms": 20,
+      "load_ms": 16.89999999999418,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": -1,
+      "fcp_ms": 20,
+      "load_ms": 15.89999999999418,
+      "js_encoded_bytes": 26618,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "cache": "warm",
+      "round": -1,
+      "fcp_ms": 24,
+      "load_ms": 16.5,
+      "js_encoded_bytes": 89282,
+      "js_transfer_bytes": 0,
+      "resources": [
+        {
+          "path": "/assets/vendor/bootstrap/bootstrap.bundle.min.js",
+          "encoded": 80721,
+          "decoded": 80721,
+          "transfer": 0
+        },
+        {
+          "path": "/assets/app-ui.js",
+          "encoded": 8561,
+          "decoded": 8561,
+          "transfer": 0
+        }
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "variant": "before",
+      "viewport": "desktop",
+      "bootstrap_collapse": true,
+      "toast": true,
+      "accessible_labels": true,
+      "cancelled_form_unlocked": true,
+      "pixels_equal": true
+    },
+    {
+      "variant": "after",
+      "viewport": "desktop",
+      "bootstrap_collapse": true,
+      "toast": true,
+      "accessible_labels": true,
+      "cancelled_form_unlocked": true,
+      "pixels_equal": true
+    },
+    {
+      "variant": "before",
+      "viewport": "mobile",
+      "bootstrap_collapse": true,
+      "toast": true,
+      "accessible_labels": true,
+      "cancelled_form_unlocked": true,
+      "pixels_equal": true
+    },
+    {
+      "variant": "after",
+      "viewport": "mobile",
+      "bootstrap_collapse": true,
+      "toast": true,
+      "accessible_labels": true,
+      "cancelled_form_unlocked": true,
+      "pixels_equal": true
+    }
+  ],
+  "decoded_sha256": {
+    "desktop": {
+      "/assets/vendor/bootstrap/bootstrap.bundle.min.js": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+      "/assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+    },
+    "mobile": {
+      "/assets/vendor/bootstrap/bootstrap.bundle.min.js": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+      "/assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+    }
+  },
+  "errors": [],
+  "failed": []
+}

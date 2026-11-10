@@ -1,0 +1,118 @@
+{
+  "complete": true,
+  "captured_utc": "2026-11-10T22:42:51.540897+00:00",
+  "phase": "before",
+  "read_only_anonymous_get": true,
+  "authenticated_production_uat": "NOT RUN",
+  "rows": [
+    {
+      "path": "/pracovni_pozice.php",
+      "status": 302,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate",
+        "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "location": "login.php"
+      },
+      "normalized_whole_body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/moje_treninky.php",
+      "status": 302,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate",
+        "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "location": "login.php"
+      },
+      "normalized_whole_body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/sprava_treninku.php",
+      "status": 302,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate",
+        "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "location": "login.php"
+      },
+      "normalized_whole_body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/planovac.php",
+      "status": 302,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate",
+        "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "location": "login.php"
+      },
+      "normalized_whole_body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/booking/prihlaseni.php",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store",
+        "content-security-policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-REQUEST_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "vary": "Accept-Encoding",
+        "content-encoding": "gzip"
+      },
+      "normalized_whole_body_sha256": "593ac7cebd4c69b23c7c3248d0920dc0a761fa2bdb19d888dace260b6890753a"
+    }
+  ],
+  "canonical_static_payloads": [
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.min.css",
+      "decoded_bytes": 232803,
+      "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+    },
+    {
+      "path": "assets/vendor/bootstrap-icons/font/bootstrap-icons.css",
+      "decoded_bytes": 98255,
+      "sha256": "4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d"
+    },
+    {
+      "path": "assets/app-ui.css",
+      "decoded_bytes": 28560,
+      "sha256": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769"
+    },
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.bundle.min.js",
+      "decoded_bytes": 80721,
+      "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c"
+    },
+    {
+      "path": "assets/app-ui.js",
+      "decoded_bytes": 8561,
+      "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+    }
+  ],
+  "staff_asset": [
+    {
+      "accept_encoding": "gzip",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=iso-8859-1",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "content-encoding": "gzip"
+      },
+      "wire_payload_bytes": 247,
+      "decoded_bytes": 326,
+      "sha256": "f5ca0de38f1097555c6820875880190cf4ce900318266f05b85cb560355a0572"
+    }
+  ],
+  "method": "TLS verified; anonymous GET only, no redirects, no POST. Exact known controls, only CSP nonce and form CSRF normalised. Redirects do not execute private templates."
+}

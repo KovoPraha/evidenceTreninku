@@ -226,3 +226,5 @@ bez nasazení do jejich dokončení. Podrobnosti v průběžných výsledcích.
 
 Implementace `7de1c569` pushnutá v [#449](https://github.com/KovoPraha/evidenceTreninku/pull/449); lokální PASS výše.
 Aktuální native2DB/Chrome/ostatní CI probíhají; merge/deploy NOT RUN.
+
+HJS3 přejímka dokončena: #449/b753f6e7,14CI/native2DB/544Chrome/24funkčních/8pixelpárů PASS. Warm gzip těla−25–30%, cold+955–1264B přiznané. Deploy42920002806 běží; receipt/live čekají. Přihlášené produkční UAT NOT RUN. Podrobnosti ve výsledcích.
