@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/requests.php';
+// Protected production operations also load this file from outside webroot,
+// after loading the deployed request service from the verified application root.
+if (!function_exists('barRunRequest')) {
+    require_once __DIR__ . '/requests.php';
+}
 
 /** Separate from the original zero-stock catalogue import. Never guesses identities from names. */
 function barOpeningStockPlan(PDO $pdo, array $source): array
