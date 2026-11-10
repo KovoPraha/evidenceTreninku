@@ -1,6 +1,6 @@
 # COACH-ROSTER-01 — Moje skupiny a soupisky
 
-Datum: 10. 11. 2026. Stav: DRAFT PR #436, CI PASS, ČEKÁ NA PŘIJETÍ. Vlastník: vývoj KIS; provozní přijetí: pověřený trenér a registrář. Větev `codex/coach-groups-rosters-20261110`, samostatný worktree z `origin/main` `fb593ad4`.
+Datum: 10. 11. 2026. Stav: PR #436 po přenosu na `main` s opravou #438, před vydáním. Vlastník: vývoj KIS; provozní přijetí: pověřený trenér a registrář. Větev `codex/coach-groups-rosters-20261110`, samostatný worktree původně z `fb593ad4`.
 
 ## Zadání a dosavadní stav
 
@@ -27,4 +27,4 @@ Testerka žádá přehled přidělených kroužků a soupisek s aktuálními dě
 
 Nová `moje_soupisky.php`, čtecí služba `includes/coach_roster_read.php` a položka trenérského rozcestníku. [Místní protokol](verification/coach-group-rosters-20261110/RESULTS.md) obsahuje syntetické testy a meze. Legacy `podskupiny` mají vlastní historickou obrazovku; tato etapa pracuje s kanonickými `club_teams` a soupiskami. Pro Aligátory je nutné ověřit konkrétní grant `scope_kind=team` na cílovou soupisku. Bez tohoto přidělení se jména bezpečně nezobrazí.
 
-[Draft PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436) otevřen; všech 11 kontrol CI na `69fe3a56` PASS. Merge/deploy a přihlášené UAT jsou samostatné kroky. Před nasazením je třeba v testovacím prostředí ověřit Aligátory po schválení registrace a propojení s kanonickou soupiskou. Skutečný počet dětí, cena a personální přidělení se z názvu skupiny neodvozují.
+[PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436) měl všech 11 kontrol CI na `8ad1365f` PASS; po přenosu na `f39f3157` se kontroly opakují. Vlastník výslovně požádal o nasazení obou reportů. Před vydáním proběhl syntetický scénář Aligátorů; skutečné přihlášené ověření Aligátorů po schválení registrace a propojení s kanonickou soupiskou zůstává provozní UAT. Skutečný počet dětí, cena a personální přidělení se z názvu skupiny neodvozují.

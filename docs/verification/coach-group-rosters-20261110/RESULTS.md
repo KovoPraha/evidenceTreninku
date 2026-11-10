@@ -15,7 +15,7 @@ Datum: 10. 11. 2026. Větev `codex/coach-groups-rosters-20261110` z `fb593ad4`. 
 | Syntetický prohlížeč při 390/1280 px | PASS | Playwright CLI nad vygenerovanou šablonou: šířka dokumentu 390/1280 při stejně širokém viewportu, 2 děti a karty čitelné. Náhled `output/playwright/coach_roster_mobile.png` je místní necommitovaný artefakt. Favicon 404 pouze v testovacím serveru. |
 | Sdílené UI styly | PASS | Stránka volá `appUiAssets()` jednou v `<head>`; opakované volání z `hlavicka.php` je idempotentní. Syntetická šablona používá stejnou verzi Bootstrap CSS pro mobilní kontrolu. |
 | Anonymní HTTP proti izolované větvi | NOT RUN | Místní MySQL na `127.0.0.1` odmítá spojení; `db.php` vrátil 503 ještě před autorizační kontrolou. Trasa je v inventáři anonymního CI sweepu. |
-| Skutečný trenér, registrátor a Aligátoři po reálném schválení | NOT RUN | Vyžaduje testovací přihlášení, existující aktuální grant na cílovou soupisku a bezpečné provozní prostředí. Před nasazením. |
+| Skutečný trenér, registrátor a Aligátoři po reálném schválení | NOT RUN | Vyžaduje testovací přihlášení a existující aktuální grant na cílovou soupisku. Po výslovné žádosti vlastníka o nasazení zůstává provozním UAT, nikoli tvrzeným výsledkem syntetického testu. |
 | Produkční UAT, docházka z nové stránky | NOT RUN | Produkční release neproběhl; docházka je další etapa. |
 
 Aktuální stránka zobrazuje pouze aktivní členství. Čekající a ukončená jména zůstávají skryta; jejich stav mění počet aktivních dětí. Pokud má kroužek více současných nabídek s různou kapacitou, stránka kapacitu nevypíše, aby netvrdila zavádějící součet. Počet dětí a volná místa jsou odlišné údaje: druhý zohledňuje kanonické rezervace kapacity.
