@@ -179,6 +179,19 @@ final class PersonSensitiveTest extends TestCase
         self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM osoba_citlive_pristupy')->fetchColumn());
     }
 
+    public function testExistingAdminMayStillReadMaskedValueOutsideRegistrarPosition(): void
+    {
+        $pdo = $this->database();
+        $config = $this->config('v1');
+        $digits = $this->syntheticBirthNumber('2010-01-02', 50);
+        $recordId = \personSensitiveStoreBirthNumber($pdo, 301, $digits, '2010-01-02', $config);
+        $_SESSION['staff_positions'] = ['coach'];
+        $_SESSION['staff_active_position'] = 'coach';
+
+        self::assertSame(substr($digits, 0, 6) . '/****', \personSensitiveAdminMaskedView($pdo, $recordId, $config));
+        self::assertSame(1, (int)$pdo->query("SELECT COUNT(*) FROM osoba_citlive_pristupy WHERE action='masked_view'")->fetchColumn());
+    }
+
     /** @return array{keys:array<string,string>,active_version:string,index_key:string} */
     private function config(string $active, bool $includeV2 = false): array
     {

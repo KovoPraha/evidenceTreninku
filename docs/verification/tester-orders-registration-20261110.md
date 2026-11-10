@@ -1,6 +1,6 @@
 # Reporting testerky: objednávky a registrační podklady
 
-Datum: 10. 11. 2026. Stav: lokální oprava a syntetické testy; produkční UAT otevřené.
+Datum: 10. 11. 2026. Stav: oprava po rebase na `94c10708`, před PR/CI a vydáním; produkční UAT otevřené.
 
 ## Převzetí
 
@@ -25,6 +25,9 @@ Oprava je připravena v samostatné větvi
    tlačítko odhalení se ostatním nezobrazuje. Schválení registrace zůstává
    samostatnou akcí stránky s vlastními kontrolami a auditem.
 
+Dosavadní administrátor s rolí `admin` má nadále maskovaný náhled i mimo aktivní
+registrátorskou pozici. Odhalení celého RČ zůstává vyhrazené právě této roli.
+
 Přiřazení pozice `registrar` spravuje vedením pověřený správce systému podle
 `docs/ADMIN-PRACOVNI-POZICE.md`; samotná role `sports_lead` nestačí.
 
@@ -38,6 +41,8 @@ Přiřazení pozice `registrar` spravuje vedením pověřený správce systému 
 - PHP lint změněných PHP souborů, kontrola stylu PR souborů a `git diff --check`:
   úspěch.
 - PHPStan podle `phpstan.neon.dist`: bez chyby.
+- Po rebase doplněn regresní test dosavadního administrátora; `PersonSensitiveTest`,
+  `ShopOrderAdminListSortTest` a `AthleteRegistrationAdminTest`: 13/168 PASS.
 - Plná sada `composer test` byla ukončena po 366 z 2 427 testů bez dosavadního
   selhání; její úplný výsledek není k dispozici. Cílená sada výše je dokončená.
 
@@ -50,3 +55,9 @@ případnou fotografii; správce ověří odpovídající záznamy
 ověří odmítnutí běžného trenéra. V přehledu objednávek se ověří pořadí při
 smíšených stavech platby. Tento krok zatím nebyl proveden; do produkce se v
 tomto lokálním řezu nezapisovalo.
+
+## Společné vydání obou reportů
+
+Vlastník 10. 11. 2026 výslovně požádal „nasadit všechny změny“. Rozsah tvoří dvě opravy v tomto souboru a čtecí trenérská agenda [COACH-ROSTER-01 v draft PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436). Cizí rozpracovanou větev a další otevřené PR do tohoto požadavku nezahrnovat.
+
+Postup: dokončit PR/CI tohoto řezu, sloučit oba schválené řezy do aktuálního `main`, ověřit shodu konečného stromu a dokončení CI. Před produkčním vydáním ověřit syntetický scénář Aligátorů: dítě až po schválení a kanonickém členství, cizí trenér odmítnut. Oddělené testovací KIS pro přihlášené UAT není doložené; skutečný přihlášený průchod a audit proto vykázat samostatně, bez tvrzení o PASS. Standardní workflow `deploy-production.yml` spustit na přesném SHA s `potvrzeni=NASADIT`, `uat_schvaleno=false`, `importovat_krouzky=false`; požadavek na nasazení není schválení lidského UAT ani autorizace nového importu. Po dokončení ověřit workflow, verzi produkce, veřejné HTTP a přihlášené čtení podle dostupného přístupu. Skutečné rodné číslo, účetní údaje a hesla neukládat do důkazů.

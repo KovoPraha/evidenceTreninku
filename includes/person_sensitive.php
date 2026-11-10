@@ -276,7 +276,7 @@ function personSensitiveRequireMaskedReader(): int
     $trainerId = filter_var($_SESSION['trener_id'] ?? null, FILTER_VALIDATE_INT, [
         'options' => ['min_range' => 1],
     ]);
-    if ($trainerId === false || !staffActivePositionIs('registrar')) {
+    if ($trainerId === false || ((string)($_SESSION['role'] ?? '') !== 'admin' && !staffActivePositionIs('registrar'))) {
         throw new PersonSensitiveException('Přístup k citlivému údaji je odepřen.');
     }
     return (int)$trainerId;
