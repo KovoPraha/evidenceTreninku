@@ -24,3 +24,13 @@ WIP původní fio větve / kis_rosters_admin7a7afd75 zachovaný bez stash/clean/
 Doklady sdílí [PR #426](https://github.com/KovoPraha/evidenceTreninku/pull/426),
 jen docs: po sloučení se runtime znovu nenasazuje. Technická práce uzavřená;
 lidské přihlášené produkční UAT, fyzický mobil a obnova této zálohy NOT RUN.
+
+
+## P11-ASSET2 — nový pracovní rozcestník
+
+ROZPRACOVÁNO, basefaed76c0, codex/workspace-bootstrap-assets-20261110.
+[Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset2--pracovní-rozcestník-nový-řez-10-11-2026),
+[důkazy](verification/workspace-bootstrap-assets-20261110/RESULTS.md).
+Reálný Chrome odhalil dvě totožné lokálníBootstrapCSS na pracovnímrozcestníku;
+přednost odstranění1ručnílinky před HJS2. HJS2/PR429/WIP zachovatbezmerge/deploy.
+Dalšíkrok1linka + novýcelýHTTP/Apache/Chrome aCI; release ažpoPASS.

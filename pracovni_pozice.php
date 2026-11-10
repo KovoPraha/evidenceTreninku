@@ -79,7 +79,6 @@ function staffDashboardH(mixed $value): string
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title><?= staffDashboardH($active['label']) ?> – pracovní rozcestník</title>
-    <link href="<?=staffDashboardH(appUiUrl('assets/vendor/bootstrap/bootstrap.min.css'))?>" rel="stylesheet">
     <?php appUiAssets(); ?>
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
         body{background:#f3f5f8}.workspace-hero{background:linear-gradient(135deg,#173b67,#156b63);color:#fff;border-radius:1rem}
