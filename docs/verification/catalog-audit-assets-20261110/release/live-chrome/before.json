@@ -1,0 +1,220 @@
+{
+  "complete": true,
+  "phase": "before",
+  "rows": [
+    {
+      "case": "catalog",
+      "viewport": "desktop",
+      "http": 200,
+      "resources": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "encoded": 31248,
+          "decoded": 232803,
+          "transfer": 31548
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "encoded": 14132,
+          "decoded": 98255,
+          "transfer": 14432
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+          "encoded": 6510,
+          "decoded": 28560,
+          "transfer": 6810
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ],
+      "images": [
+        {
+          "path": "/assets/kovo-praha-logo.png",
+          "valid": true
+        }
+      ],
+      "overflow": false,
+      "bootstrap": true,
+      "screenshot": "C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110/output/stable-live/before-catalog-desktop.png"
+    },
+    {
+      "case": "login",
+      "viewport": "desktop",
+      "http": 200,
+      "resources": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "encoded": 31248,
+          "decoded": 232803,
+          "transfer": 31548
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "encoded": 14132,
+          "decoded": 98255,
+          "transfer": 14432
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+          "encoded": 6510,
+          "decoded": 28560,
+          "transfer": 6810
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ],
+      "images": [
+        {
+          "path": "/assets/kovo-praha-logo.png",
+          "valid": true
+        }
+      ],
+      "overflow": false,
+      "bootstrap": true,
+      "screenshot": "C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110/output/stable-live/before-login-desktop.png"
+    },
+    {
+      "case": "catalog",
+      "viewport": "mobile",
+      "http": 200,
+      "resources": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "encoded": 31248,
+          "decoded": 232803,
+          "transfer": 31548
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "encoded": 14132,
+          "decoded": 98255,
+          "transfer": 14432
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+          "encoded": 6510,
+          "decoded": 28560,
+          "transfer": 6810
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ],
+      "images": [
+        {
+          "path": "/assets/kovo-praha-logo.png",
+          "valid": true
+        }
+      ],
+      "overflow": true,
+      "bootstrap": true,
+      "screenshot": "C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110/output/stable-live/before-catalog-mobile.png"
+    },
+    {
+      "case": "login",
+      "viewport": "mobile",
+      "http": 200,
+      "resources": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "encoded": 31248,
+          "decoded": 232803,
+          "transfer": 31548
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "encoded": 14132,
+          "decoded": 98255,
+          "transfer": 14432
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+          "encoded": 6510,
+          "decoded": 28560,
+          "transfer": 6810
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ],
+      "images": [
+        {
+          "path": "/assets/kovo-praha-logo.png",
+          "valid": true
+        }
+      ],
+      "overflow": false,
+      "bootstrap": true,
+      "screenshot": "C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110/output/stable-live/before-login-mobile.png"
+    }
+  ],
+  "errors": [],
+  "failed": [],
+  "knownBeforeCspErrors": [
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+    "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked."
+  ],
+  "browser": "158.0.8127.18",
+  "method": "anonymous read-only live cold verification; single captures, not timing benchmark"
+}

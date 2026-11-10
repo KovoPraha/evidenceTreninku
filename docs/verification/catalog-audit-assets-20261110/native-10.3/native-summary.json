@@ -1,0 +1,92 @@
+{
+  "login": {
+    "before": {
+      "total_ms": 1.7489999999999999,
+      "ttfb_ms": 1.66
+    },
+    "after": {
+      "total_ms": 1.693,
+      "ttfb_ms": 1.6440000000000001
+    }
+  },
+  "registration": {
+    "before": {
+      "total_ms": 1.613,
+      "ttfb_ms": 1.5590000000000002
+    },
+    "after": {
+      "total_ms": 1.6139999999999999,
+      "ttfb_ms": 1.547
+    }
+  },
+  "athlete": {
+    "before": {
+      "total_ms": 1.527,
+      "ttfb_ms": 1.47
+    },
+    "after": {
+      "total_ms": 1.546,
+      "ttfb_ms": 1.487
+    }
+  },
+  "reset": {
+    "before": {
+      "total_ms": 1.503,
+      "ttfb_ms": 1.4580000000000002
+    },
+    "after": {
+      "total_ms": 1.5230000000000001,
+      "ttfb_ms": 1.4729999999999999
+    }
+  },
+  "catalog": {
+    "before": {
+      "total_ms": 12.475,
+      "ttfb_ms": 12.379
+    },
+    "after": {
+      "total_ms": 12.28,
+      "ttfb_ms": 12.211
+    }
+  },
+  "price": {
+    "before": {
+      "total_ms": 12.43,
+      "ttfb_ms": 12.376
+    },
+    "after": {
+      "total_ms": 12.38,
+      "ttfb_ms": 12.311
+    }
+  },
+  "page2": {
+    "before": {
+      "total_ms": 12.395,
+      "ttfb_ms": 12.306
+    },
+    "after": {
+      "total_ms": 12.413,
+      "ttfb_ms": 12.319999999999999
+    }
+  },
+  "search": {
+    "before": {
+      "total_ms": 12.25,
+      "ttfb_ms": 12.200000000000001
+    },
+    "after": {
+      "total_ms": 12.139000000000001,
+      "ttfb_ms": 12.101
+    }
+  },
+  "empty": {
+    "before": {
+      "total_ms": 12.363000000000001,
+      "ttfb_ms": 12.323
+    },
+    "after": {
+      "total_ms": 12.091,
+      "ttfb_ms": 12.037
+    }
+  }
+}

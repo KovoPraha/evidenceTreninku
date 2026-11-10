@@ -9,7 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
-| 10. 11. 2026 / E2026-11-10-17 | P11-ASSET4 zahájen před implementací | Vlastník žádá diagnózu3katalogových rozdílů a další nejpřínosnější řez. Čtecí baseline/waterfall před výběrem; WIP7a7afd75 zachovaný. | [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset4--katalogová-diagnóza-a-další-měřený-řez-10-11-2026) |
+| 10. 11. 2026 / E2026-11-10-17 | P11-ASSET4 zahájen před implementací | Vlastník žádá diagnózu3katalogových rozdílů a další nejpřínosnější řez. Čtecí baseline/waterfall před výběrem; WIP `7a7afd75` zachovaný. | [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset4--katalogová-diagnóza-a-další-měřený-řez-10-11-2026) |
 | 10. 11. 2026 / E2026-11-10-16 | P11-ASSET3 nasazen, cílové technické ověření PASS | PR432/beead425,13CI/deploy42810948814 SUCCESS; backup389/2/config/VS/migrace/index/smoke200 PASS. Live6targetHTML po přesném versionreplay a10assetGET canonical; CSS−42%. DoplňkovýcatalogDOM5/8,3hashy neobjasněné; neoznačovat zaPASS. AuthUAT NOTRUN, WIP zachovaný; docs bez dalšího deploye. | [Release a meze](verification/public-account-assets-20261110/release/RESULTS.md) |
 | 10. 11. 2026 / E2026-11-10-15 | P11-ASSET3 přijat a sloučen, nasazování | PR432/beead425, celý tree shodný s58e97f55,13CI/2425testů PASS. OběDB/816+192Chrome/12pixelpairs/48UI PASS. Deploy42810948814 běží, flagsfalse; WIP zachovaný. | [Výsledky](verification/public-account-assets-20261110/RESULTS.md) |
 | 10. 11. 2026 / E2026-11-10-14 | P11-ASSET3 zahájen před implementací | Čtyři veřejné account vstupy mají CDN+appUiAssets; nový live before, source/wholeHTTP/Chrome gate. Po PASS autorizovaný release; původní WIP zachovat. | [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset3--veřejné-vstupy-k-účtu-10-11-2026) |
@@ -214,4 +214,7 @@ jsou nyní E2026-11-09-08–09. Původní plánovací/měřicí commity zachovan
 Při převzetí #414 zůstalo přijaté Q2-TIME E2026-11-09-10; pracovní P11-RHI
 uzavření E10 je nyní E2026-11-09-11. Původní proof commit411cb96a zachovaný.
 
-- E2026-11-10-18 — P11-ASSET4: audit #434 sloučen, chráněný read-only běh42826637716 a úklid PASS. Historické rozdíly bez původního HTML nejsou vysvětlené. Izolovaná implementace manifestu a dvourelease měření rozpracovaná; produkční runtime beze změny. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
+- E2026-11-10-18 — P11-ASSET4: audit #434 sloučen, chráněný read-only běh 42826637716 a úklid PASS. Historické rozdíly bez původního HTML nejsou vysvětlené. Izolovaná implementace manifestu a dvourelease měření rozpracovaná; produkční runtime beze změny. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
+
+- E2026-11-10-19 — P11-ASSET4: #435 sloučen jako `94c10708`, 19 CI PASS, testovaný/sloučený tree `0aa9d163` shodný. Native42833762133: 345 checksumů, celé HTTP, skutečná invalidace/fallback a cold/warm/release PASS.
+- E2026-11-10-20 — P11-ASSET4 NASAZENO: deploy 42837011604 SUCCESS; 2432/55977, záloha 389/2, config/migrace/VS/indexy/HTTP i úklidy PASS. Živá nová katalogová5/5 parita a 4 pixelové páry shodné; staré tři hashy LIMIT. [Výsledky](verification/catalog-audit-assets-20261110/RESULTS.md). Doklady/test helper v oddělené větvi, bez dalšího deploye; WIP `7a7afd75` zachovaný.

@@ -1,0 +1,195 @@
+{
+  "complete": true,
+  "phase": "after",
+  "rows": [
+    {
+      "case": "catalog",
+      "viewport": "desktop",
+      "http": 200,
+      "resources": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+          "encoded": 31248,
+          "decoded": 232803,
+          "transfer": 31548
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+          "encoded": 14132,
+          "decoded": 98255,
+          "transfer": 14432
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+          "encoded": 6510,
+          "decoded": 28560,
+          "transfer": 6810
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ],
+      "images": [
+        {
+          "path": "/assets/kovo-praha-logo.png",
+          "valid": true
+        }
+      ],
+      "overflow": false,
+      "bootstrap": true,
+      "screenshot": "C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110/output/stable-live/after-catalog-desktop.png"
+    },
+    {
+      "case": "login",
+      "viewport": "desktop",
+      "http": 200,
+      "resources": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+          "encoded": 31248,
+          "decoded": 232803,
+          "transfer": 31548
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+          "encoded": 14132,
+          "decoded": 98255,
+          "transfer": 14432
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+          "encoded": 6510,
+          "decoded": 28560,
+          "transfer": 6810
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ],
+      "images": [
+        {
+          "path": "/assets/kovo-praha-logo.png",
+          "valid": true
+        }
+      ],
+      "overflow": false,
+      "bootstrap": true,
+      "screenshot": "C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110/output/stable-live/after-login-desktop.png"
+    },
+    {
+      "case": "catalog",
+      "viewport": "mobile",
+      "http": 200,
+      "resources": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+          "encoded": 31248,
+          "decoded": 232803,
+          "transfer": 31548
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+          "encoded": 14132,
+          "decoded": 98255,
+          "transfer": 14432
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+          "encoded": 6510,
+          "decoded": 28560,
+          "transfer": 6810
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ],
+      "images": [
+        {
+          "path": "/assets/kovo-praha-logo.png",
+          "valid": true
+        }
+      ],
+      "overflow": true,
+      "bootstrap": true,
+      "screenshot": "C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110/output/stable-live/after-catalog-mobile.png"
+    },
+    {
+      "case": "login",
+      "viewport": "mobile",
+      "http": 200,
+      "resources": [
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+          "encoded": 31248,
+          "decoded": 232803,
+          "transfer": 31548
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+          "encoded": 14132,
+          "decoded": 98255,
+          "transfer": 14432
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+          "encoded": 6510,
+          "decoded": 28560,
+          "transfer": 6810
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+          "encoded": 23799,
+          "decoded": 80721,
+          "transfer": 24099
+        },
+        {
+          "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+          "encoded": 2819,
+          "decoded": 8561,
+          "transfer": 3119
+        }
+      ],
+      "images": [
+        {
+          "path": "/assets/kovo-praha-logo.png",
+          "valid": true
+        }
+      ],
+      "overflow": false,
+      "bootstrap": true,
+      "screenshot": "C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110/output/stable-live/after-login-mobile.png"
+    }
+  ],
+  "errors": [],
+  "failed": [],
+  "knownBeforeCspErrors": [],
+  "browser": "158.0.8127.18",
+  "method": "anonymous read-only live cold verification; single captures, not timing benchmark"
+}

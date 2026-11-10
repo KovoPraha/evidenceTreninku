@@ -1,0 +1,22 @@
+[
+  {
+    "case": "login",
+    "viewport": "desktop",
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "login",
+    "viewport": "mobile",
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "catalog",
+    "viewport": "desktop",
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "catalog",
+    "viewport": "mobile",
+    "decoded_pixels_equal": true
+  }
+]
