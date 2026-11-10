@@ -11378,8 +11378,10 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P02 BAR-DISPLAY-STOCK",
-      "disposition": "Nový výslovný pokyn 10. 11.; implementace a řízený převod obou skladů.",
-      "evidence": []
+      "disposition": "Technické nasazení, přesný převod 68 produktů / obou skladů a 44 URL dokončené. Vizuální přejímka blokovaná Computer Use; fyzická a lidská P02/P04 otevřené.",
+      "evidence": [
+        "docs/verification/bar-display-stock-20261110/RESULTS.md"
+      ]
     }
   ],
   "checked_main": "3b37e053",

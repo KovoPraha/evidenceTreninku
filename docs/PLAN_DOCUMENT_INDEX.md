@@ -13,7 +13,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-e9b0541560 | [P11-EVENTREAD — odložená veřejná čtecí projekce](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) | plan / DEFERRED | P11-EVENTREAD |
 | PL-81ad8711f2 | [COACH-ROSTER-01 — Moje skupiny a soupisky](COACH_GROUP_ROSTERS_2026-11-10.md) | plan / PARTIAL | COACH-ROSTER-01 |
 | PL-9bb4072064 | [COACH-ROSTER-01 ověření a společné vydání](verification/coach-group-rosters-20261110/RESULTS.md) | evidence / SUPPORT | COACH-ROSTER-01 |
-| PL-9bdeb21ac9 | [Původní obrazovky a převod zásob](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) | plan / PARTIAL | [Rozsah a akceptace](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) |
+| PL-9bdeb21ac9 | [Původní obrazovky a převod zásob](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) | plan / PARTIAL | P02 BAR-DISPLAY-STOCK |
 | PL-a54ff182c7 | [AGENTS.md](../AGENTS.md) | reference / REFERENCE | DOC02 |
 | PL-6ebdb617a8 | [CLAUDE.md](../CLAUDE.md) | reference / REFERENCE | DOC02 |
 | PL-53413c7074 | [INSTALACE.txt](../INSTALACE.txt) | artifact / SUPPORT | DOC02 |
