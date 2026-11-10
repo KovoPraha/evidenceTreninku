@@ -213,3 +213,10 @@ FinálnídocsPR bezdruhéhonasazení; původní WIP7a7afd75 vždyshodný.
 
 Nové výsledky/implementace/PR/release zatím NOT RUN.
 [Důkazy ASSET2](verification/workspace-bootstrap-assets-20261110/RESULTS.md).
+
+
+ASSET2 průběžně: repository style vyžaduje opravu starých dlouhých řádků
+celého dotčeného souboru. Formátování proto pouze uvnitř PHP, bez změny emitted
+HTML; explicitní závorky dosavadního if/continue guardu. WorkspaceAssetsSourceContract
+ověří všechny PHP tokeny a ostatní literalHTML, nativní wholeHTML gate beze změny.
+První201e CI nepřijatý (fixture tuple/style), nový gate následuje; žádný release.

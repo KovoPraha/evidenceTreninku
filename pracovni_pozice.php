@@ -18,7 +18,9 @@ if ($activeCode === '' || !isset($definitions[$activeCode])) {
     exit('Účet nemá přiřazenou pracovní pozici. Obraťte se na správce systému.');
 }
 $active = $definitions[$activeCode];
-$isLocal=defined('JE_LOKALNE')&&JE_LOKALNE===true;$activeGroups=staffPositionPrimaryMenuGroups($activeCode,$isLocal);$advancedGroups=staffPositionAdvancedMenuGroups($activeCode,$isLocal);
+$isLocal = defined('JE_LOKALNE') && JE_LOKALNE === true;
+$activeGroups = staffPositionPrimaryMenuGroups($activeCode, $isLocal);
+$advancedGroups = staffPositionAdvancedMenuGroups($activeCode, $isLocal);
 $available = staffAvailablePositions();
 $trainerName = trim((string)($_SESSION['trener_jmeno'] ?? ''));
 if ($trainerName === '') {
@@ -114,23 +116,69 @@ function staffDashboardH(mixed $value): string
 
     <?php if ($vehicleConflictCount > 0 && in_array($activeCode, staffRouteAllowedPositions('club_calendar.php'), true)): ?>
         <div class="alert alert-danger border-3 shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-3">
-            <div><strong><i class="bi bi-exclamation-octagon-fill me-2"></i>Kolize klubových vozidel: <?= $vehicleConflictCount ?></strong><div class="small">Překryv může být domluvený mimo systém, ale musí být zkontrolován.</div></div>
+            <div><strong><i class="bi bi-exclamation-octagon-fill me-2"></i>Kolize klubových vozidel: <?=
+$vehicleConflictCount
+        ?></strong><div class="small">Překryv může být domluvený mimo systém, ale musí být zkontrolován.</div></div>
             <a class="btn btn-danger" href="<?= staffDashboardH(appUiUrl('club_calendar.php')) ?>">Otevřít klubový kalendář</a>
         </div>
     <?php endif; ?>
 
     <?php if ($activeCode === 'coach'): ?>
     <section class="card border-0 shadow-sm mb-4" aria-labelledby="today-work-title">
-        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2"><strong id="today-work-title"><i class="bi bi-sun me-2 text-warning"></i>Dnes a vyžaduje pozornost</strong><span class="small text-muted"><?=staffDashboardH((new DateTimeImmutable('today'))->format('j. n. Y'))?></span></div>
+        <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2"><?php
+        ?><strong id="today-work-title"><i class="bi bi-sun me-2 text-warning"></i>Dnes a vyžaduje pozornost</strong><span class="small text-muted"><?=
+        staffDashboardH((new DateTimeImmutable('today'))->format('j. n. Y'))
+        ?></span></div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-lg-7"><h2 class="h6">Dnešní tréninky</h2>
-                    <?php if($todayPlans===[]):?><p class="text-muted small">Na dnešek nemáte naplánovaný žádný trénink.</p><?php else:?><div class="list-group list-group-flush"><?php foreach($todayPlans as$plan):?><a class="list-group-item list-group-item-action px-0 d-flex justify-content-between gap-3" href="<?=staffDashboardH(appUiUrl('formular.php?plan_id='.(int)$plan['id']))?>"><div><strong><?=staffDashboardH($plan['nazev'] ?: 'Trénink')?></strong><div class="small text-muted"><?=staffDashboardH($plan['skupina'] ?: 'Bez skupiny')?><?=trim((string)$plan['sportoviste'])!==''?' · '.staffDashboardH($plan['sportoviste']):''?></div></div><span class="text-nowrap"><?=staffDashboardH(substr((string)$plan['cas_od'],0,5))?><?=trim((string)$plan['cas_do'])!==''?'–'.staffDashboardH(substr((string)$plan['cas_do'],0,5)):''?> <i class="bi bi-chevron-right ms-1"></i></span></a><?php endforeach;?></div><?php endif;?>
-                    <div class="d-flex flex-wrap gap-2 mt-3"><a class="btn btn-primary btn-sm" href="<?=staffDashboardH(appUiUrl('formular.php'))?>"><i class="bi bi-plus-circle me-1"></i>Zadat trénink</a><a class="btn btn-outline-primary btn-sm" href="<?=staffDashboardH(appUiUrl('planovac.php'))?>"><i class="bi bi-calendar-week me-1"></i>Otevřít plánovač</a></div>
+                    <?php
+if ($todayPlans === []):
+    ?><p class="text-muted small">Na dnešek nemáte naplánovaný žádný trénink.</p><?php else:
+        ?><div class="list-group list-group-flush"><?php
+foreach ($todayPlans as $plan):
+    ?><a class="list-group-item list-group-item-action px-0 d-flex justify-content-between gap-3" href="<?=
+    staffDashboardH(appUiUrl('formular.php?plan_id='.(int)$plan['id']))
+    ?>"><div><strong><?=
+    staffDashboardH($plan['nazev'] ?: 'Trénink')
+    ?></strong><div class="small text-muted"><?=
+    staffDashboardH($plan['skupina'] ?: 'Bez skupiny')
+    ?><?=
+    trim((string)$plan['sportoviste']) !== '' ? ' · '.staffDashboardH($plan['sportoviste']) : ''
+    ?></div></div><span class="text-nowrap"><?=
+    staffDashboardH(substr((string)$plan['cas_od'], 0, 5))
+    ?><?=
+    trim((string)$plan['cas_do']) !== '' ? '–'.staffDashboardH(substr((string)$plan['cas_do'], 0, 5)) : ''
+    ?> <i class="bi bi-chevron-right ms-1"></i></span></a><?php
+endforeach;
+        ?></div><?php
+    endif;
+?>
+                    <div class="d-flex flex-wrap gap-2 mt-3"><a class="btn btn-primary btn-sm" href="<?=
+staffDashboardH(appUiUrl('formular.php'))
+?>"><i class="bi bi-plus-circle me-1"></i>Zadat trénink</a><a class="btn btn-outline-primary btn-sm" href="<?=
+staffDashboardH(appUiUrl('planovac.php'))
+?>"><i class="bi bi-calendar-week me-1"></i>Otevřít plánovač</a></div>
                 </div>
                 <div class="col-lg-5"><h2 class="h6">Úkoly</h2><div class="list-group">
-                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="<?=staffDashboardH(appUiUrl($overduePlanUrl))?>"><span><i class="bi bi-exclamation-triangle me-2 <?=$overduePlanCount>0?'text-danger':'text-success'?>"></i>Proběhlé tréninky bez evidence</span><span class="badge <?=$overduePlanCount>0?'text-bg-danger':'text-bg-success'?>"><?=$overduePlanCount?></span></a>
-                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="<?=staffDashboardH(appUiUrl('individualni_lekce_sprava.php'))?>"><span><i class="bi bi-hourglass-split me-2 <?=$pendingLessonCount>0?'text-warning':'text-success'?>"></i>Rezervace čekající na potvrzení</span><span class="badge <?=$pendingLessonCount>0?'text-bg-warning':'text-bg-success'?>"><?=$pendingLessonCount?></span></a>
+                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="<?=
+staffDashboardH(appUiUrl($overduePlanUrl))
+?>"><span><i class="bi bi-exclamation-triangle me-2 <?=
+$overduePlanCount > 0 ? 'text-danger' : 'text-success'
+?>"></i>Proběhlé tréninky bez evidence</span><span class="badge <?=
+$overduePlanCount > 0 ? 'text-bg-danger' : 'text-bg-success'
+?>"><?=
+$overduePlanCount
+?></span></a>
+                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="<?=
+staffDashboardH(appUiUrl('individualni_lekce_sprava.php'))
+?>"><span><i class="bi bi-hourglass-split me-2 <?=
+$pendingLessonCount > 0 ? 'text-warning' : 'text-success'
+?>"></i>Rezervace čekající na potvrzení</span><span class="badge <?=
+$pendingLessonCount > 0 ? 'text-bg-warning' : 'text-bg-success'
+?>"><?=
+$pendingLessonCount
+?></span></a>
                 </div></div>
             </div>
         </div>
@@ -145,7 +193,9 @@ function staffDashboardH(mixed $value): string
                 <div class="small text-muted">Menu se neslučují. Po přepnutí uvidíte pouze vybranou agendu.</div>
             </div>
             <div class="d-flex flex-wrap gap-2">
-                <?php foreach ($available as $code): if ($code === $activeCode) continue; $position = $definitions[$code]; ?>
+                <?php foreach ($available as $code): if ($code === $activeCode) {
+                    continue;
+                } $position = $definitions[$code]; ?>
                 <form method="post" action="prepnout_pracovni_pozici.php">
                     <?= csrf_field() ?>
                     <input type="hidden" name="position" value="<?= staffDashboardH($code) ?>">
@@ -159,7 +209,13 @@ function staffDashboardH(mixed $value): string
 
     <?php foreach ($activeGroups as $group): ?>
     <section class="mb-4" aria-labelledby="group-<?= staffDashboardH(md5((string)$group['label'])) ?>">
-        <h2 class="h5 mb-3" id="group-<?= staffDashboardH(md5((string)$group['label'])) ?>"><i class="bi bi-<?= staffDashboardH($group['icon']) ?> me-2 text-primary"></i><?= staffDashboardH($group['label']) ?></h2>
+        <h2 class="h5 mb-3" id="group-<?=
+staffDashboardH(md5((string)$group['label']))
+        ?>"><i class="bi bi-<?=
+        staffDashboardH($group['icon'])
+        ?> me-2 text-primary"></i><?=
+        staffDashboardH($group['label'])
+        ?></h2>
         <div class="row g-3">
             <?php foreach ($group['items'] as $item): ?>
             <div class="col-md-6 col-xl-3">
@@ -178,11 +234,27 @@ function staffDashboardH(mixed $value): string
     </section>
     <?php endforeach; ?>
 
-    <?php if($advancedGroups!==[]):?>
+    <?php if ($advancedGroups !== []):?>
     <details class="card border-0 shadow-sm mt-4 mb-3">
         <summary class="card-header bg-white fw-semibold py-3" style="cursor:pointer"><i class="bi bi-tools me-2 text-secondary"></i>Další agendy a nástroje</summary>
         <div class="card-body"><p class="small text-muted">Další pracovní postupy vaší pozice, související evidence a jednorázová nastavení.</p>
-        <?php foreach($advancedGroups as$group):?><h2 class="h6 mt-3"><?=staffDashboardH($group['label'])?></h2><div class="d-flex flex-wrap gap-2"><?php foreach($group['items']as$item):?><a class="btn btn-sm btn-outline-secondary" href="<?=staffDashboardH(appUiUrl((string)$item['route']))?>"><i class="bi bi-<?=staffDashboardH($item['icon'])?> me-1"></i><?=staffDashboardH($item['label'])?></a><?php endforeach;?></div><?php endforeach;?>
+        <?php
+foreach ($advancedGroups as $group):
+    ?><h2 class="h6 mt-3"><?=
+    staffDashboardH($group['label'])
+    ?></h2><div class="d-flex flex-wrap gap-2"><?php
+foreach ($group['items'] as $item):
+    ?><a class="btn btn-sm btn-outline-secondary" href="<?=
+    staffDashboardH(appUiUrl((string)$item['route']))
+    ?>"><i class="bi bi-<?=
+    staffDashboardH($item['icon'])
+    ?> me-1"></i><?=
+    staffDashboardH($item['label'])
+    ?></a><?php
+endforeach;
+    ?></div><?php
+endforeach;
+        ?>
         </div>
     </details>
     <?php endif;?>

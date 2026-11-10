@@ -259,7 +259,7 @@ try:
     assert database_source == (root/"db.php").read_bytes(), "Database bootstrap changed"
     (baseline_root/"db.php").write_bytes(database_source)
     header_source = subprocess.check_output(["git", "show", base + ":hlavicka.php"], cwd=root)
-    assert header_source == baselines["hlavicka.php", "pracovni_pozice.php"], "Frozen shared header mismatch"
+    assert header_source == baselines["hlavicka.php"], "Frozen shared header mismatch"
     (baseline_root/"config.php").symlink_to(root/"config.php")
     start_servers()
     front.start()
@@ -272,10 +272,8 @@ try:
         if route != "pracovni_pozice.php":
             assert originals[route] == baselines[route], "Unrelated application source changed: "+route
     assert (root/'hlavicka.php').read_bytes()==baselines['hlavicka.php'], 'Shared header changed'
-    old=subprocess.check_output(['git','show',base+':pracovni_pozice.php'],cwd=root)
-    deleted=b'    <link href="<?=staffDashboardH(appUiUrl(\'assets/vendor/bootstrap/bootstrap.min.css\'))?>" rel="stylesheet">\n'
-    assert old.count(deleted)==1 and originals['pracovni_pozice.php']==old.replace(deleted,b''), 'Only the duplicate link may change'
-    (safe/'exact-edit-contract.json').write_text(json.dumps(dict(one_line_removed=True,header_unchanged=True,canonical_css_unchanged=True)))
+    contract=json.loads(subprocess.check_output(['php','tests/Support/WorkspaceAssetsSourceContract.php'],cwd=root))
+    (safe/'exact-edit-contract.json').write_text(json.dumps(contract,indent=2))
     asset=(root/"assets/vendor/bootstrap/bootstrap.min.css").read_bytes()
     import base64
     digest=base64.b64encode(hashlib.sha384(asset).digest()).decode()
