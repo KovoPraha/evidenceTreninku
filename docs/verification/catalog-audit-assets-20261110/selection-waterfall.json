@@ -1,0 +1,773 @@
+{
+  "method": "read-only live cold triage, no mocks/latency; not paired benchmark",
+  "browser": "158.0.8127.18",
+  "rows": [
+    {
+      "path": "/booking/eshop.php",
+      "status": 200,
+      "errors": [
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 404 ()",
+          "url": "https://kis.kovopraha.cz/favicon.ico"
+        }
+      ],
+      "failed": [],
+      "data": {
+        "title": "E-shop KOVO Praha – cyklistické zboží a klubové služby",
+        "styles": [
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532"
+        ],
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "decoded": 232803,
+            "transfer": 31548
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+            "encoded": 14132,
+            "decoded": 98255,
+            "transfer": 14432
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+            "encoded": 6510,
+            "decoded": 28560,
+            "transfer": 6810
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+            "encoded": 23799,
+            "decoded": 80721,
+            "transfer": 24099
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+            "encoded": 2819,
+            "decoded": 8561,
+            "transfer": 3119
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6",
+            "encoded": 130396,
+            "decoded": 130396,
+            "transfer": 130696
+          }
+        ],
+        "images": [
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/f42d7624017439bd8293818aa031b773.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/f42d7624017439bd8293818aa031b773.jpg",
+            "complete": true,
+            "width": 423
+          },
+          {
+            "src": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "currentSrc": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "complete": true,
+            "width": 231
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/794eec11d8f074735dad40eabfdfc67e.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/794eec11d8f074735dad40eabfdfc67e.jpg",
+            "complete": true,
+            "width": 1024
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/a08c31254e17808d3373d57291f43339.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/a08c31254e17808d3373d57291f43339.jpg",
+            "complete": true,
+            "width": 1024
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/4a65da0471cc01bad4f0d4292044553e.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/4a65da0471cc01bad4f0d4292044553e.jpg",
+            "complete": true,
+            "width": 1024
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/765955f81f54caed18de06fb02176b73.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/765955f81f54caed18de06fb02176b73.jpg",
+            "complete": true,
+            "width": 1024
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/afe438c20c67e908544c62be2c32a063.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/06a344f5a14e7b3979cf71e8976cc3d7.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/cdf9d56ca4373e8d41aea9e5d97be49a.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/fa70b96469911c83491573da0c721ca5.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/edf942653cd7cade7aa84587dfc0830f.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/a759c94cd08472af12556d3b7705818b.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          }
+        ],
+        "fcp_ms": 1476,
+        "core_assets": [
+          "/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "/assets/app-ui.css?v=1794311532",
+          "/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "/assets/app-ui.js?v=1794311532"
+        ]
+      }
+    },
+    {
+      "path": "/booking/eshop.php?razeni=price",
+      "status": 200,
+      "errors": [
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?razeni=price"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 404 ()",
+          "url": "https://kis.kovopraha.cz/favicon.ico"
+        }
+      ],
+      "failed": [],
+      "data": {
+        "title": "E-shop KOVO Praha – cyklistické zboží a klubové služby",
+        "styles": [
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532"
+        ],
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "decoded": 232803,
+            "transfer": 31548
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+            "encoded": 14132,
+            "decoded": 98255,
+            "transfer": 14432
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+            "encoded": 6510,
+            "decoded": 28560,
+            "transfer": 6810
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+            "encoded": 23799,
+            "decoded": 80721,
+            "transfer": 24099
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+            "encoded": 2819,
+            "decoded": 8561,
+            "transfer": 3119
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6",
+            "encoded": 130396,
+            "decoded": 130396,
+            "transfer": 130696
+          }
+        ],
+        "images": [
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/4b61582218614eef9e6e84eee732630b.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/4b61582218614eef9e6e84eee732630b.jpg",
+            "complete": true,
+            "width": 1024
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/4b61582218614eef9e6e84eee732630b.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/4b61582218614eef9e6e84eee732630b.jpg",
+            "complete": true,
+            "width": 1024
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/4b61582218614eef9e6e84eee732630b.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/4b61582218614eef9e6e84eee732630b.jpg",
+            "complete": true,
+            "width": 1024
+          },
+          {
+            "src": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "currentSrc": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "complete": true,
+            "width": 231
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/cdf9d56ca4373e8d41aea9e5d97be49a.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/cdf9d56ca4373e8d41aea9e5d97be49a.jpg",
+            "complete": true,
+            "width": 1024
+          },
+          {
+            "src": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "currentSrc": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "complete": true,
+            "width": 231
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/aeae628637af55ee191180d1e7ec7a91.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/0a8bd502b77caa7898cb6503b9c5865b.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/bdb2ce1afe8459afa4e1530bd158f396.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/d39de2b7487240cb48a861ec87db8b6f.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/edf942653cd7cade7aa84587dfc0830f.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/a10e9a41f965b4cc581c1f60c64cd62d.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          }
+        ],
+        "fcp_ms": 928,
+        "core_assets": [
+          "/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "/assets/app-ui.css?v=1794311532",
+          "/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "/assets/app-ui.js?v=1794311532"
+        ]
+      }
+    },
+    {
+      "path": "/booking/eshop.php?strana=2",
+      "status": 200,
+      "errors": [
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Executing inline event handler violates the following Content Security Policy directive 'script-src-attr 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked.",
+          "url": "https://kis.kovopraha.cz/booking/eshop.php?strana=2"
+        },
+        {
+          "text": "Failed to load resource: the server responded with a status of 404 ()",
+          "url": "https://kis.kovopraha.cz/favicon.ico"
+        }
+      ],
+      "failed": [],
+      "data": {
+        "title": "E-shop KOVO Praha – cyklistické zboží a klubové služby",
+        "styles": [
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532"
+        ],
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "decoded": 232803,
+            "transfer": 31548
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+            "encoded": 14132,
+            "decoded": 98255,
+            "transfer": 14432
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+            "encoded": 6510,
+            "decoded": 28560,
+            "transfer": 6810
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+            "encoded": 23799,
+            "decoded": 80721,
+            "transfer": 24099
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+            "encoded": 2819,
+            "decoded": 8561,
+            "transfer": 3119
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6",
+            "encoded": 130396,
+            "decoded": 130396,
+            "transfer": 130696
+          }
+        ],
+        "images": [
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/96a0225380494d85001dcd4c67aec7dd.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/96a0225380494d85001dcd4c67aec7dd.jpg",
+            "complete": true,
+            "width": 2825
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/9d5556107feffdc15d15284127cbb868.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/9d5556107feffdc15d15284127cbb868.jpg",
+            "complete": true,
+            "width": 3000
+          },
+          {
+            "src": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "currentSrc": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "complete": true,
+            "width": 231
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/5027d26efd6e8023c9ea28ca2b2fde1b.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/5027d26efd6e8023c9ea28ca2b2fde1b.jpg",
+            "complete": true,
+            "width": 1024
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/97a46b84f2d0380e3b0edc91945ed6ac.jpg",
+            "currentSrc": "https://kis.kovopraha.cz/uploads/shop-products/97a46b84f2d0380e3b0edc91945ed6ac.jpg",
+            "complete": true,
+            "width": 423
+          },
+          {
+            "src": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "currentSrc": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "complete": true,
+            "width": 231
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/275f6e70d5b95d19a9576fb50a65ece0.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/83c48dd54d78b4776d2c2572885cf0d0.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/52d42adf56c3ad41b23be24d618887f8.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/bd788ab2dbc42a2b4522bed505454859.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/a10e9a41f965b4cc581c1f60c64cd62d.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/f766eddfc5b23839d76bbf8ee217e290.jpg",
+            "currentSrc": "",
+            "complete": false,
+            "width": 0
+          }
+        ],
+        "fcp_ms": 920,
+        "core_assets": [
+          "/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "/assets/app-ui.css?v=1794311532",
+          "/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "/assets/app-ui.js?v=1794311532"
+        ]
+      }
+    },
+    {
+      "path": "/booking/kalendar.php",
+      "status": 200,
+      "errors": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 404 ()",
+          "url": "https://kis.kovopraha.cz/favicon.ico"
+        }
+      ],
+      "failed": [],
+      "data": {
+        "title": "Rezervace — Listopad 2026",
+        "styles": [
+          "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532"
+        ],
+        "resources": [
+          {
+            "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+            "encoded": 22709,
+            "decoded": 232803,
+            "transfer": 23009
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "decoded": 232803,
+            "transfer": 31548
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+            "encoded": 14132,
+            "decoded": 98255,
+            "transfer": 14432
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+            "encoded": 6510,
+            "decoded": 28560,
+            "transfer": 6810
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+            "encoded": 23799,
+            "decoded": 80721,
+            "transfer": 24099
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+            "encoded": 2819,
+            "decoded": 8561,
+            "transfer": 3119
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6",
+            "encoded": 130396,
+            "decoded": 130396,
+            "transfer": 130696
+          }
+        ],
+        "images": [],
+        "fcp_ms": 620,
+        "core_assets": [
+          "/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "/assets/app-ui.css?v=1794311532",
+          "/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "/assets/app-ui.js?v=1794311532"
+        ]
+      }
+    },
+    {
+      "path": "/booking/velodrom.php",
+      "status": 200,
+      "errors": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 404 ()",
+          "url": "https://kis.kovopraha.cz/favicon.ico"
+        }
+      ],
+      "failed": [],
+      "data": {
+        "title": "Veřejné hodiny velodromu — KOVO Praha",
+        "styles": [
+          "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532"
+        ],
+        "resources": [
+          {
+            "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+            "encoded": 22709,
+            "decoded": 232803,
+            "transfer": 23009
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "decoded": 232803,
+            "transfer": 31548
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+            "encoded": 14132,
+            "decoded": 98255,
+            "transfer": 14432
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+            "encoded": 6510,
+            "decoded": 28560,
+            "transfer": 6810
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+            "encoded": 23799,
+            "decoded": 80721,
+            "transfer": 24099
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+            "encoded": 2819,
+            "decoded": 8561,
+            "transfer": 3119
+          }
+        ],
+        "images": [],
+        "fcp_ms": 580,
+        "core_assets": [
+          "/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "/assets/app-ui.css?v=1794311532",
+          "/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "/assets/app-ui.js?v=1794311532"
+        ]
+      }
+    },
+    {
+      "path": "/booking/prihlaseni.php",
+      "status": 200,
+      "errors": [
+        {
+          "text": "Failed to load resource: the server responded with a status of 404 ()",
+          "url": "https://kis.kovopraha.cz/favicon.ico"
+        }
+      ],
+      "failed": [],
+      "data": {
+        "title": "Přihlášení — Rezervace Kovopraha",
+        "styles": [
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532"
+        ],
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "encoded": 31248,
+            "decoded": 232803,
+            "transfer": 31548
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+            "encoded": 14132,
+            "decoded": 98255,
+            "transfer": 14432
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+            "encoded": 6510,
+            "decoded": 28560,
+            "transfer": 6810
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+            "encoded": 23799,
+            "decoded": 80721,
+            "transfer": 24099
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+            "encoded": 2819,
+            "decoded": 8561,
+            "transfer": 3119
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6",
+            "encoded": 130396,
+            "decoded": 130396,
+            "transfer": 130696
+          }
+        ],
+        "images": [],
+        "fcp_ms": 424,
+        "core_assets": [
+          "/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+          "/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+          "/assets/app-ui.css?v=1794311532",
+          "/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+          "/assets/app-ui.js?v=1794311532"
+        ]
+      }
+    }
+  ]
+}

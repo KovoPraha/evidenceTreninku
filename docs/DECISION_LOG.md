@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-10-07
+
+P11-ASSET4: před další změnou nejprve zjistit povahu tří katalogových rozdílů a vytvořit bezpečné dílčí otisky. Starý agregovaný hash bez beforeHTML neopravňuje libovolně normalizovat obsah. Varianty další optimalizace vybírat podle aktuálních přenosů, nikoliv starých časů. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset4--katalogová-diagnóza-a-další-měřený-řez-10-11-2026).
+
 ## D2026-11-10-06
 
 P11-ASSET3: další řez z bodu7 analýzy zúžen na čtyři veřejné vstupy k účtu. Explicitní CDN Bootstrap je shodná verze/SRI jako společná lokální CSS. Přednost před defer společného JS kvůli nezměněnému spouštění inline skriptů; rozhodující skutečný cold přenos a přesná vizuální/source/HTTP shoda. Kalendář a další nalezené linky mimo rozsah. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset3--veřejné-vstupy-k-účtu-10-11-2026).
