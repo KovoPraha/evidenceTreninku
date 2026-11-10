@@ -12,6 +12,10 @@ Následné zadání vlastníka 6. 11.: pokračovat plně autonomně přes P01–
 Aktivní průchod a bezpečně doložené výsledky vede [protokol](verification/autonomous-p01-p14-20261106/RESULTS.md).
 Dřívější dokumentační rozsah je historický; chybějící skutečné podklady se nedoplňují odhadem.
 
+## BAR-DISPLAY-STOCK — oprava obrazovek a převod zásob (10. 11. 2026)
+
+ROZPRACOVÁNO, vlastník vývoj / vedení baru. Výslovný pokyn zachovat původní vzhled a převzít skutečné skladové zásoby nahrazuje dřívější nulový počátek pro tuto další operaci. [Plán a akceptace](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md), větev `codex/bar-display-stock-parity-20261110`, vlastní worktree mimo htdocs; starší WIP zachované. Další krok: ověřit původní TV šablony a bezpečný převod obou skladů, CI, řízené nasazení a nezávislá inventura. Lidská finanční přejímka zůstává zvlášť.
+
 ## Úplný katalog plánů
 
 TESTER-20261110 — NASAZENO, PŘIHLÁŠENÉ UAT OTEVŘENÉ: [řazení objednávek a maskovaná kontrola registrace](verification/tester-orders-registration-20261110.md), #438 `f39f3157`, [společné vydání](verification/coach-group-rosters-20261110/RESULTS.md). Ověřit smíšené platby, masku, audit a zákaz přístupu běžného trenéra pod příslušnými účty.

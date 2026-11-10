@@ -108,7 +108,7 @@ function barPublicMenu(PDO $pdo): array
     if ($offer === null || $offer['products'] === []) {
         return ['offer' => $offer, 'products' => []];
     }
-    $query = $pdo->prepare('SELECT p.id,p.name,p.description,p.price_minor,p.sold_out,c.name AS category,c.color_index,a.id AS image_id '
+    $query = $pdo->prepare('SELECT p.id,p.name,p.description,p.price_minor,p.sold_out,c.id AS category_id,c.name AS category,c.color_index,a.id AS image_id '
         . 'FROM kis_bar_products p JOIN kis_bar_categories c ON c.id=p.category_id LEFT JOIN kis_bar_assets a ON a.source_name=p.image_name '
         . 'WHERE p.archived=0 AND p.on_terminal=1 AND p.id IN (' . implode(',', array_fill(0, count($offer['products']), '?')) . ') ORDER BY c.sort_order,c.id,p.sort_order,p.id');
     $query->execute($offer['products']);

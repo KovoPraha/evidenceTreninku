@@ -52,6 +52,9 @@ jobs:
       - name: Ověřit ruční obnovu barového potvrzení po ztrátě odpovědi
         run: node --test tests/Support/BarRequestRecoveryJavascriptSmoke.cjs
 
+      - name: Ověřit původní střídání tří karet barové obrazovky
+        run: node --test tests/Support/BarScreenJavascriptSmoke.cjs
+
       - name: Ověřit TV přehrávač a přebírání zveřejněných změn
         run: node --test tests/Support/TvPlayerSmoke.cjs
 

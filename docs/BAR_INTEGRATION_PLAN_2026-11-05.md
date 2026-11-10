@@ -1,5 +1,7 @@
 # Začlenění baru do KIS
 
+Aktualizace 10. 11.: [obnovení původního vzhledu obrazovek a řízený převod zásob](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) jsou nové zadání vlastníka; dřívější nulový sklad je historický počátek, nikoli trvalý požadavek. Starší nedokončená přejímka zůstává zachovaná.
+
 Výchozí schválení vlastníka 5. 11. 2026: připravit plán a zahájit implementaci včetně potřebného refaktoringu, tehdy bez produkčního nasazení. Vlastník následně výslovně povolil nasazení a pokračování převodu; [6. 11. je dokončený katalog, schválené přístupy i přepnutí domény](verification/bar-cutover-20261106/RESULTS.md). Původní větev `codex/bar-kis-integration-20261105` vznikla od `0ced6664`, práce pokračuje ve stejném izolovaném worktree. Samostatný sedmietapový refaktoring baru nahrazuje tento plán.
 
 Aktuální pokračování: [technická provozní přejímka](verification/bar-acceptance-20261106/RESULTS.md) a [zveřejnění nabídky 1 / vydání 1](verification/bar-menu-publication-20261106/RESULTS.md) dokončené. [Session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) vede zbývající skutečné provozní kroky a účetní propojení; [pravidlo souborového zápisu](WORK_DOCUMENTATION_POLICY.md) platí i pro další etapy. Datované odstavce průběhu níže zachovávají historické pořadí a oprávnění, nikoli dnešní neprovedené úkoly.

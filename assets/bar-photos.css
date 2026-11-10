@@ -1,0 +1,27 @@
+:root{
+    --pozadi:#000;--text:#fff;--tlumene:#c8c8c8;
+    --k0:#ffbe3d;--k1:#50c8ff;--k2:#78df8b;--k3:#ff7e79;--k4:#d49cff;--k5:#ff9ed2;
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;background:var(--pozadi);color:var(--text)}
+body{overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+.plocha{height:100dvh;padding:clamp(12px,1.5vw,28px);display:flex;align-items:stretch}
+.produkty{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.4vw,28px);opacity:0;filter:brightness(.2);transition:opacity .7s ease,filter .7s ease}
+.produkty.viditelne{opacity:1;filter:brightness(1)}
+.produkt{position:relative;min-width:0;overflow:hidden;border-radius:clamp(16px,1.5vw,30px);background:#151515;border:1px solid #303030;display:grid;grid-template-rows:minmax(0,1fr) auto;box-shadow:0 22px 55px rgba(0,0,0,.55)}
+.foto{position:relative;min-height:0;background:radial-gradient(circle at 50% 35%,#303030,#111 72%);overflow:hidden}
+.foto img{width:100%;height:100%;display:block;object-fit:cover;animation:priblizeni 10.7s linear both}
+.foto.bez-fotky{display:flex;align-items:center;justify-content:center;color:#777;font-size:clamp(30px,4vw,72px);font-weight:900;letter-spacing:.12em;text-align:center}
+.foto::after{content:"";position:absolute;inset:auto 0 0;height:25%;background:linear-gradient(transparent,rgba(0,0,0,.35));pointer-events:none}
+.telo{min-height:27vh;padding:clamp(16px,2vh,30px) clamp(18px,1.8vw,34px) clamp(18px,2.4vh,38px);display:flex;flex-direction:column;background:#111}
+.kategorie{color:var(--kat);font-size:clamp(12px,1vw,19px);font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.55em}
+.hlavni{display:flex;align-items:baseline;gap:18px}
+.nazev{font-size:clamp(27px,2.35vw,47px);font-weight:850;line-height:1.02;overflow-wrap:anywhere;flex:1}
+.cena{font-size:clamp(27px,2.45vw,49px);font-weight:900;line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--kat)}
+.popis{margin:.75em 0 0;color:var(--tlumene);font-size:clamp(15px,1.15vw,23px);line-height:1.28;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.stav{position:absolute;right:18px;top:18px;z-index:2;padding:8px 13px;border-radius:999px;background:rgba(0,0,0,.82);color:#ff8a85;font-size:clamp(12px,.9vw,18px);font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+.prazdne{margin:auto;color:var(--tlumene);font-size:clamp(26px,4vw,64px);text-align:center}
+.k0{--kat:var(--k0)}.k1{--kat:var(--k1)}.k2{--kat:var(--k2)}.k3{--kat:var(--k3)}.k4{--kat:var(--k4)}.k5{--kat:var(--k5)}
+@keyframes priblizeni{from{transform:scale(1)}to{transform:scale(1.035)}}
+@media(max-width:900px){body{overflow:auto}.plocha{height:auto;min-height:100dvh}.produkty{grid-template-columns:1fr}.produkt{min-height:88vh}.telo{min-height:0}.foto{min-height:58vh}}
+@media(prefers-reduced-motion:reduce){.produkty{transition-duration:.01ms}.foto img{animation:none}}
