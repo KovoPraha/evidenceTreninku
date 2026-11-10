@@ -1,0 +1,1490 @@
+{
+  "complete": true,
+  "platform": "Windows-11-10.0.26300-SP0",
+  "apache": "Server version: Apache/2.4.58 (Win64)\nApache Lounge VS17 Server built:   Oct 18 2023 13:03:18",
+  "baseline_sha": "6dee3253b483522396cd9c7349dabac576e702b6",
+  "head": "7c9fb7abf56255a44f6a216ae0ce72492bf65b83",
+  "config_sha256": "0eafb0a3bdc0f9d958094e4ccd86a4b20ab2ec1078aed39e4e8935f0f845aae0",
+  "source_sha256": {
+    "assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+    "assets/bar-requests.js": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+    "assets/js/medical-person-picker.js": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+    "assets/js/stress-athlete-picker.js": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+    "assets/public-profile-access.js": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+    "assets/roster-target-selector.js": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+    "assets/shop-admin.js": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+    "assets/staff-notifications.js": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+    "assets/training-form-resilience.js": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+    "assets/tv-canvas.js": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+    "assets/tv-editor.js": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+    "assets/tv-player.js": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+    "assets/vendor/bootstrap/bootstrap.bundle.min.js": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+    "assets/vendor/bootstrap/bootstrap.min.css": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    "sw.js": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+    ".htaccess": "876c50d0baebe942f2f791f3d6f48fd373b5ca9a39c04d3f524a028063aacf52"
+  },
+  "cases": [
+    {
+      "path": "assets/app-ui.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 8561,
+            "decoded_bytes": 8561,
+            "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+            "headers": {
+              "etag": "\"2171-65fe6912afdc9\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 8561,
+            "decoded_bytes": 8561,
+            "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+            "headers": {
+              "etag": "\"2171-65fe6912afdc9\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 8561,
+            "decoded_bytes": 8561,
+            "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+            "headers": {
+              "etag": "\"2171-65fe6912afdc9\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 2819,
+            "decoded_bytes": 8561,
+            "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+            "headers": {
+              "etag": "\"2171-65fe6918d5016-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 8561,
+            "decoded_bytes": 8561,
+            "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+            "headers": {
+              "etag": "\"2171-65fe6918d5016\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 8561,
+            "decoded_bytes": 8561,
+            "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+            "headers": {
+              "etag": "\"2171-65fe6918d5016\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/bar-requests.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 9642,
+            "decoded_bytes": 9642,
+            "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+            "headers": {
+              "etag": "\"25aa-65fe6912b01b6\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 9642,
+            "decoded_bytes": 9642,
+            "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+            "headers": {
+              "etag": "\"25aa-65fe6912b01b6\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 9642,
+            "decoded_bytes": 9642,
+            "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+            "headers": {
+              "etag": "\"25aa-65fe6912b01b6\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 3178,
+            "decoded_bytes": 9642,
+            "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+            "headers": {
+              "etag": "\"25aa-65fe6918d5016-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 9642,
+            "decoded_bytes": 9642,
+            "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+            "headers": {
+              "etag": "\"25aa-65fe6918d5016\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 9642,
+            "decoded_bytes": 9642,
+            "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+            "headers": {
+              "etag": "\"25aa-65fe6918d5016\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/js/medical-person-picker.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 578,
+            "decoded_bytes": 578,
+            "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+            "headers": {
+              "etag": "\"242-65fe6912b0d6e\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 578,
+            "decoded_bytes": 578,
+            "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+            "headers": {
+              "etag": "\"242-65fe6912b0d6e\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 578,
+            "decoded_bytes": 578,
+            "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+            "headers": {
+              "etag": "\"242-65fe6912b0d6e\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 294,
+            "decoded_bytes": 578,
+            "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+            "headers": {
+              "etag": "\"242-65fe6918d5402-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 578,
+            "decoded_bytes": 578,
+            "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+            "headers": {
+              "etag": "\"242-65fe6918d5402\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 578,
+            "decoded_bytes": 578,
+            "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+            "headers": {
+              "etag": "\"242-65fe6918d5402\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/js/stress-athlete-picker.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 5771,
+            "decoded_bytes": 5771,
+            "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+            "headers": {
+              "etag": "\"168b-65fe6912b16ea\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 5771,
+            "decoded_bytes": 5771,
+            "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+            "headers": {
+              "etag": "\"168b-65fe6912b16ea\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 5771,
+            "decoded_bytes": 5771,
+            "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+            "headers": {
+              "etag": "\"168b-65fe6912b16ea\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 1916,
+            "decoded_bytes": 5771,
+            "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+            "headers": {
+              "etag": "\"168b-65fe6918d57e8-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 5771,
+            "decoded_bytes": 5771,
+            "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+            "headers": {
+              "etag": "\"168b-65fe6918d57e8\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 5771,
+            "decoded_bytes": 5771,
+            "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+            "headers": {
+              "etag": "\"168b-65fe6918d57e8\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/public-profile-access.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 1036,
+            "decoded_bytes": 1036,
+            "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+            "headers": {
+              "etag": "\"40c-65fe6912b203f\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 1036,
+            "decoded_bytes": 1036,
+            "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+            "headers": {
+              "etag": "\"40c-65fe6912b203f\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 1036,
+            "decoded_bytes": 1036,
+            "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+            "headers": {
+              "etag": "\"40c-65fe6912b203f\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 547,
+            "decoded_bytes": 1036,
+            "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+            "headers": {
+              "etag": "\"40c-65fe6918d5d7f-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 1036,
+            "decoded_bytes": 1036,
+            "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+            "headers": {
+              "etag": "\"40c-65fe6918d5d7f\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 1036,
+            "decoded_bytes": 1036,
+            "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+            "headers": {
+              "etag": "\"40c-65fe6918d5d7f\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/roster-target-selector.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 1556,
+            "decoded_bytes": 1556,
+            "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+            "headers": {
+              "etag": "\"614-65fe6912b281b\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 1556,
+            "decoded_bytes": 1556,
+            "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+            "headers": {
+              "etag": "\"614-65fe6912b281b\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 1556,
+            "decoded_bytes": 1556,
+            "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+            "headers": {
+              "etag": "\"614-65fe6912b281b\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 709,
+            "decoded_bytes": 1556,
+            "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+            "headers": {
+              "etag": "\"614-65fe6918d6373-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 1556,
+            "decoded_bytes": 1556,
+            "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+            "headers": {
+              "etag": "\"614-65fe6918d6373\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 1556,
+            "decoded_bytes": 1556,
+            "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+            "headers": {
+              "etag": "\"614-65fe6918d6373\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/shop-admin.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 4477,
+            "decoded_bytes": 4477,
+            "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+            "headers": {
+              "etag": "\"117d-65fe6912b33d4\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 4477,
+            "decoded_bytes": 4477,
+            "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+            "headers": {
+              "etag": "\"117d-65fe6912b33d4\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 4477,
+            "decoded_bytes": 4477,
+            "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+            "headers": {
+              "etag": "\"117d-65fe6912b33d4\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 1392,
+            "decoded_bytes": 4477,
+            "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+            "headers": {
+              "etag": "\"117d-65fe6918d6765-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 4477,
+            "decoded_bytes": 4477,
+            "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+            "headers": {
+              "etag": "\"117d-65fe6918d6765\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 4477,
+            "decoded_bytes": 4477,
+            "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+            "headers": {
+              "etag": "\"117d-65fe6918d6765\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/staff-notifications.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 1896,
+            "decoded_bytes": 1896,
+            "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+            "headers": {
+              "etag": "\"768-65fe6912b38c4\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 1896,
+            "decoded_bytes": 1896,
+            "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+            "headers": {
+              "etag": "\"768-65fe6912b38c4\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 1896,
+            "decoded_bytes": 1896,
+            "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+            "headers": {
+              "etag": "\"768-65fe6912b38c4\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 796,
+            "decoded_bytes": 1896,
+            "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+            "headers": {
+              "etag": "\"768-65fe6918d6765-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 1896,
+            "decoded_bytes": 1896,
+            "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+            "headers": {
+              "etag": "\"768-65fe6918d6765\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 1896,
+            "decoded_bytes": 1896,
+            "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+            "headers": {
+              "etag": "\"768-65fe6918d6765\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/training-form-resilience.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 8293,
+            "decoded_bytes": 8293,
+            "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+            "headers": {
+              "etag": "\"2065-65fe6912b448e\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 8293,
+            "decoded_bytes": 8293,
+            "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+            "headers": {
+              "etag": "\"2065-65fe6912b448e\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 8293,
+            "decoded_bytes": 8293,
+            "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+            "headers": {
+              "etag": "\"2065-65fe6912b448e\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 2854,
+            "decoded_bytes": 8293,
+            "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+            "headers": {
+              "etag": "\"2065-65fe6918d714e-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 8293,
+            "decoded_bytes": 8293,
+            "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+            "headers": {
+              "etag": "\"2065-65fe6918d714e\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 8293,
+            "decoded_bytes": 8293,
+            "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+            "headers": {
+              "etag": "\"2065-65fe6918d714e\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/tv-canvas.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 2623,
+            "decoded_bytes": 2623,
+            "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+            "headers": {
+              "etag": "\"a3f-65fe6912b4c5d\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 2623,
+            "decoded_bytes": 2623,
+            "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+            "headers": {
+              "etag": "\"a3f-65fe6912b4c5d\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 2623,
+            "decoded_bytes": 2623,
+            "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+            "headers": {
+              "etag": "\"a3f-65fe6912b4c5d\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 985,
+            "decoded_bytes": 2623,
+            "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+            "headers": {
+              "etag": "\"a3f-65fe6918d714e-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 2623,
+            "decoded_bytes": 2623,
+            "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+            "headers": {
+              "etag": "\"a3f-65fe6918d714e\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 2623,
+            "decoded_bytes": 2623,
+            "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+            "headers": {
+              "etag": "\"a3f-65fe6918d714e\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/tv-editor.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 18693,
+            "decoded_bytes": 18693,
+            "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+            "headers": {
+              "etag": "\"4905-65fe6912b5dfa\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 18693,
+            "decoded_bytes": 18693,
+            "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+            "headers": {
+              "etag": "\"4905-65fe6912b5dfa\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 18693,
+            "decoded_bytes": 18693,
+            "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+            "headers": {
+              "etag": "\"4905-65fe6912b5dfa\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 5188,
+            "decoded_bytes": 18693,
+            "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+            "headers": {
+              "etag": "\"4905-65fe6918d7537-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 18693,
+            "decoded_bytes": 18693,
+            "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+            "headers": {
+              "etag": "\"4905-65fe6918d7537\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 18693,
+            "decoded_bytes": 18693,
+            "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+            "headers": {
+              "etag": "\"4905-65fe6918d7537\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/tv-player.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 3740,
+            "decoded_bytes": 3740,
+            "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+            "headers": {
+              "etag": "\"e9c-65fe6912b6786\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 3740,
+            "decoded_bytes": 3740,
+            "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+            "headers": {
+              "etag": "\"e9c-65fe6912b6786\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 3740,
+            "decoded_bytes": 3740,
+            "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+            "headers": {
+              "etag": "\"e9c-65fe6912b6786\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 1298,
+            "decoded_bytes": 3740,
+            "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+            "headers": {
+              "etag": "\"e9c-65fe6918d791f-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 3740,
+            "decoded_bytes": 3740,
+            "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+            "headers": {
+              "etag": "\"e9c-65fe6918d791f\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 3740,
+            "decoded_bytes": 3740,
+            "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+            "headers": {
+              "etag": "\"e9c-65fe6918d791f\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.bundle.min.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 80721,
+            "decoded_bytes": 80721,
+            "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+            "headers": {
+              "etag": "\"13b51-65fe6912b7bcd\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 80721,
+            "decoded_bytes": 80721,
+            "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+            "headers": {
+              "etag": "\"13b51-65fe6912b7bcd\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 80721,
+            "decoded_bytes": 80721,
+            "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+            "headers": {
+              "etag": "\"13b51-65fe6912b7bcd\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 23799,
+            "decoded_bytes": 80721,
+            "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+            "headers": {
+              "etag": "\"13b51-65fe6918d7da8-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 80721,
+            "decoded_bytes": 80721,
+            "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+            "headers": {
+              "etag": "\"13b51-65fe6918d7da8\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 80721,
+            "decoded_bytes": 80721,
+            "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+            "headers": {
+              "etag": "\"13b51-65fe6918d7da8\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.min.css",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 31248,
+            "decoded_bytes": 232803,
+            "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+            "headers": {
+              "etag": "\"38d63-65fe6912b8635-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=604800",
+              "content-type": "text/css"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 232803,
+            "decoded_bytes": 232803,
+            "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+            "headers": {
+              "etag": "\"38d63-65fe6912b8635\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=604800",
+              "content-type": "text/css"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 232803,
+            "decoded_bytes": 232803,
+            "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+            "headers": {
+              "etag": "\"38d63-65fe6912b8635\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=604800",
+              "content-type": "text/css"
+            }
+          },
+          "gzip_conditional_status": 200
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 31248,
+            "decoded_bytes": 232803,
+            "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+            "headers": {
+              "etag": "\"38d63-65fe6918d81a2-gzip\"",
+              "vary": "Accept-Encoding",
+              "content-encoding": "gzip",
+              "cache-control": "max-age=604800",
+              "content-type": "text/css"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 232803,
+            "decoded_bytes": 232803,
+            "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+            "headers": {
+              "etag": "\"38d63-65fe6918d81a2\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=604800",
+              "content-type": "text/css"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 232803,
+            "decoded_bytes": 232803,
+            "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+            "headers": {
+              "etag": "\"38d63-65fe6918d81a2\"",
+              "vary": "Accept-Encoding",
+              "cache-control": "max-age=604800",
+              "content-type": "text/css"
+            }
+          },
+          "gzip_conditional_status": 200
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "sw.js",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 1611,
+            "decoded_bytes": 1611,
+            "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+            "headers": {
+              "etag": "\"64b-65fe6912b8ec4\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 1611,
+            "decoded_bytes": 1611,
+            "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+            "headers": {
+              "etag": "\"64b-65fe6912b8ec4\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 1611,
+            "decoded_bytes": 1611,
+            "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+            "headers": {
+              "etag": "\"64b-65fe6912b8ec4\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 1611,
+            "decoded_bytes": 1611,
+            "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+            "headers": {
+              "etag": "\"64b-65fe6918d858b\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 1611,
+            "decoded_bytes": 1611,
+            "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+            "headers": {
+              "etag": "\"64b-65fe6918d858b\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 1611,
+            "decoded_bytes": 1611,
+            "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+            "headers": {
+              "etag": "\"64b-65fe6918d858b\"",
+              "cache-control": "max-age=30",
+              "content-type": "text/javascript"
+            }
+          },
+          "gzip_conditional_status": 304
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/control.json",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 15,
+            "decoded_bytes": 15,
+            "sha256": "fd18c84a41f878174ace9e13e21be5569b5ee223cd473b090f7c4ec62fc9e064",
+            "headers": {
+              "etag": "\"f-65fe6912bac9a\"",
+              "content-type": "application/json"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 15,
+            "decoded_bytes": 15,
+            "sha256": "fd18c84a41f878174ace9e13e21be5569b5ee223cd473b090f7c4ec62fc9e064",
+            "headers": {
+              "etag": "\"f-65fe6912bac9a\"",
+              "content-type": "application/json"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 15,
+            "decoded_bytes": 15,
+            "sha256": "fd18c84a41f878174ace9e13e21be5569b5ee223cd473b090f7c4ec62fc9e064",
+            "headers": {
+              "etag": "\"f-65fe6912bac9a\"",
+              "content-type": "application/json"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 15,
+            "decoded_bytes": 15,
+            "sha256": "fd18c84a41f878174ace9e13e21be5569b5ee223cd473b090f7c4ec62fc9e064",
+            "headers": {
+              "etag": "\"f-65fe6918d8d5c\"",
+              "content-type": "application/json"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 15,
+            "decoded_bytes": 15,
+            "sha256": "fd18c84a41f878174ace9e13e21be5569b5ee223cd473b090f7c4ec62fc9e064",
+            "headers": {
+              "etag": "\"f-65fe6918d8d5c\"",
+              "content-type": "application/json"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 15,
+            "decoded_bytes": 15,
+            "sha256": "fd18c84a41f878174ace9e13e21be5569b5ee223cd473b090f7c4ec62fc9e064",
+            "headers": {
+              "etag": "\"f-65fe6918d8d5c\"",
+              "content-type": "application/json"
+            }
+          },
+          "gzip_conditional_status": 304
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "assets/control.png",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 68,
+            "decoded_bytes": 68,
+            "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "headers": {
+              "etag": "\"44-65fe6912bb9fb\"",
+              "content-type": "image/png"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 68,
+            "decoded_bytes": 68,
+            "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "headers": {
+              "etag": "\"44-65fe6912bb9fb\"",
+              "content-type": "image/png"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 68,
+            "decoded_bytes": 68,
+            "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "headers": {
+              "etag": "\"44-65fe6912bb9fb\"",
+              "content-type": "image/png"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 68,
+            "decoded_bytes": 68,
+            "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "headers": {
+              "etag": "\"44-65fe6918d8d5c\"",
+              "content-type": "image/png"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 68,
+            "decoded_bytes": 68,
+            "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "headers": {
+              "etag": "\"44-65fe6918d8d5c\"",
+              "content-type": "image/png"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 68,
+            "decoded_bytes": 68,
+            "sha256": "431ced6916a2a21a156e38701afe55bbd7f88969fbbfc56d7fe099d47f265460",
+            "headers": {
+              "etag": "\"44-65fe6918d8d5c\"",
+              "content-type": "image/png"
+            }
+          },
+          "gzip_conditional_status": 304
+        }
+      },
+      "head_conditional_range": "PASS"
+    },
+    {
+      "path": "probe.html",
+      "variants": {
+        "before": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 755,
+            "decoded_bytes": 755,
+            "sha256": "9a63c2d4bb6f8c32d916476131745900e2c60b9072f71f831a9b8730a972e0c0",
+            "headers": {
+              "etag": "\"2f3-65fe6912bc31f\"",
+              "content-type": "text/html"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 755,
+            "decoded_bytes": 755,
+            "sha256": "9a63c2d4bb6f8c32d916476131745900e2c60b9072f71f831a9b8730a972e0c0",
+            "headers": {
+              "etag": "\"2f3-65fe6912bc31f\"",
+              "content-type": "text/html"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 755,
+            "decoded_bytes": 755,
+            "sha256": "9a63c2d4bb6f8c32d916476131745900e2c60b9072f71f831a9b8730a972e0c0",
+            "headers": {
+              "etag": "\"2f3-65fe6912bc31f\"",
+              "content-type": "text/html"
+            }
+          },
+          "gzip_conditional_status": 304
+        },
+        "after": {
+          "gzip": {
+            "status": 200,
+            "wire_bytes": 755,
+            "decoded_bytes": 755,
+            "sha256": "9a63c2d4bb6f8c32d916476131745900e2c60b9072f71f831a9b8730a972e0c0",
+            "headers": {
+              "etag": "\"2f3-65fe6918d9143\"",
+              "content-type": "text/html"
+            }
+          },
+          "identity": {
+            "status": 200,
+            "wire_bytes": 755,
+            "decoded_bytes": 755,
+            "sha256": "9a63c2d4bb6f8c32d916476131745900e2c60b9072f71f831a9b8730a972e0c0",
+            "headers": {
+              "etag": "\"2f3-65fe6918d9143\"",
+              "content-type": "text/html"
+            }
+          },
+          "gzip;q=0, identity;q=1": {
+            "status": 200,
+            "wire_bytes": 755,
+            "decoded_bytes": 755,
+            "sha256": "9a63c2d4bb6f8c32d916476131745900e2c60b9072f71f831a9b8730a972e0c0",
+            "headers": {
+              "etag": "\"2f3-65fe6918d9143\"",
+              "content-type": "text/html"
+            }
+          },
+          "gzip_conditional_status": 304
+        }
+      },
+      "head_conditional_range": "PASS"
+    }
+  ],
+  "denial": {
+    "before": {
+      ".htaccess": 403,
+      "assets/.htaccess": 403,
+      "config.php": 403,
+      "docs/": 403,
+      "tests/": 403
+    },
+    "after": {
+      ".htaccess": 403,
+      "assets/.htaccess": 403,
+      "config.php": 403,
+      "docs/": 403,
+      "tests/": 403
+    }
+  }
+}

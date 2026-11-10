@@ -11183,9 +11183,9 @@
       "title": "P11-HJS sdílený staff JavaScript",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "REJECTED",
       "registry": "P11-HJS",
-      "disposition": "Plán před implementací, transport/cache a funkční shoda se musí změřit.",
+      "disposition": "Nevybráno po měření produkčního přenosu; prototyp zachovaný, navazuje P11-JSZ.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md"
       ]
@@ -11198,7 +11198,7 @@
       "role": "handoff",
       "status": "SUPPORT",
       "registry": "P11-HJS",
-      "disposition": "Plán před implementací, transport/cache a funkční shoda se musí změřit.",
+      "disposition": "Nevybráno po měření produkčního přenosu; prototyp zachovaný, navazuje P11-JSZ.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md"
       ]
@@ -11211,9 +11211,48 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-HJS",
-      "disposition": "Plán před implementací, transport/cache a funkční shoda se musí změřit.",
+      "disposition": "Nevybráno po měření produkčního přenosu; prototyp zachovaný, navazuje P11-JSZ.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-5088402eb8",
+      "path": "docs/JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md",
+      "title": "P11-JSZ komprese JavaScriptů",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11-JSZ",
+      "disposition": "Plán před implementací; skutečný Apache a Chrome před release.",
+      "evidence": [
+        "docs/verification/javascript-compression-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-df678aa47e",
+      "path": "docs/SESSION_HANDOFF_JAVASCRIPT_COMPRESSION_2026-11-10.md",
+      "title": "P11-JSZ předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-JSZ",
+      "disposition": "Plán před implementací; skutečný Apache a Chrome před release.",
+      "evidence": [
+        "docs/verification/javascript-compression-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-4782fd7bd2",
+      "path": "docs/verification/javascript-compression-20261110/RESULTS.md",
+      "title": "P11-JSZ ověření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-JSZ",
+      "disposition": "Plán před implementací; skutečný Apache a Chrome před release.",
+      "evidence": [
+        "docs/verification/javascript-compression-20261110/RESULTS.md"
       ]
     }
   ],

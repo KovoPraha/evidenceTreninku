@@ -1016,8 +1016,14 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 
 | PL-d09e090cc9 | [P11-ASSET průběžné ověření](verification/bootstrap-assets-20261110/RESULTS.md) | evidence / SUPPORT | P11-ASSET |
 
-| PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | plan / PARTIAL | P11-HJS |
+| PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | plan / REJECTED | P11-HJS |
 
 | PL-4a78e33bd1 | [P11-HJS předání](SESSION_HANDOFF_SHARED_HEADER_SCRIPT_2026-11-10.md) | handoff / SUPPORT | P11-HJS |
 
 | PL-98c103e306 | [P11-HJS ověření](verification/shared-header-script-20261110/RESULTS.md) | evidence / SUPPORT | P11-HJS |
+
+| PL-5088402eb8 | [P11-JSZ komprese JavaScriptů](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md) | plan / PARTIAL | P11-JSZ |
+
+| PL-df678aa47e | [P11-JSZ předání](SESSION_HANDOFF_JAVASCRIPT_COMPRESSION_2026-11-10.md) | handoff / SUPPORT | P11-JSZ |
+
+| PL-4782fd7bd2 | [P11-JSZ ověření](verification/javascript-compression-20261110/RESULTS.md) | evidence / SUPPORT | P11-JSZ |
