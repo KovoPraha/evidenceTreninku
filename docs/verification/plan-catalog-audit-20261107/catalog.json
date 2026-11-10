@@ -11,13 +11,13 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "COACH-ROSTER-01",
-      "disposition": "Draft PR #436 a 11 CI kontrol PASS; testovací Aligátoři a vydání otevřené.",
+      "disposition": "PR #436 a deploy 42852365591 SUCCESS; přihlášené Aligátoří UAT otevřené.",
       "evidence": ["docs/verification/coach-group-rosters-20261110/RESULTS.md"]
     },
     {
       "id": "PL-9bb4072064",
       "path": "docs/verification/coach-group-rosters-20261110/RESULTS.md",
-      "title": "COACH-ROSTER-01 místní ověření",
+      "title": "COACH-ROSTER-01 ověření a společné vydání",
       "primary": false,
       "role": "evidence",
       "status": "SUPPORT",

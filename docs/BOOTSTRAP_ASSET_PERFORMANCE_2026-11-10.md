@@ -443,3 +443,10 @@ zachovaný; runtime/flags vlastní CURRENT. Finální doklady ve větvi
 codex/public-calendar-assets-release-docs-20261110, [PR #442](https://github.com/KovoPraha/evidenceTreninku/pull/442).
 Další krok: po úplném CI sloučit doklady bez druhého deploye. Žádný další
 implementační řez není v tomto zadání rozpracovaný.
+
+
+Finální docs integrace: souběžný #441 sloučen do main jako d0f5fee7. Převzaté
+všechny jeho věcné záznamy TESTER/COACH včetně intro CURRENT/HANDOFF; jediný
+konflikt CURRENT vyřešen zachováním obou dokončených prací a vlastního ASSET5
+měření. Pouze docs, aplikace8182489e se nemění. Všech11 kontrol finálního
+dokumentačního head se zopakuje před sloučením #442; druhý deploy se neprovádí.

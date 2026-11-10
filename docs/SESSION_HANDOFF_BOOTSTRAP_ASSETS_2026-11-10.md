@@ -37,3 +37,5 @@ Historie ASSET1–4 zůstává v [tematickém plánu](BOOTSTRAP_ASSET_PERFORMANC
 Tři historické katalogové hashy mají stále chybějící before HTML (LIMIT),
 nikoli dodatečné PASS; [ASSET4 důkazy](verification/catalog-audit-assets-20261110/RESULTS.md).
 Žádný další nový implementační řez není v tomto zadání rozpracovaný.
+
+Souběžné doklady #441/d0f5fee7 převzaté se zachováním TESTER/COACH intro a všech věcných záznamů; finální11CI #442 se ověřuje znovu, bez dalšího deploye.

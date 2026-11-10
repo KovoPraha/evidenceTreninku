@@ -1,6 +1,6 @@
-# COACH-ROSTER-01 — místní ověření
+# COACH-ROSTER-01 — ověření a společné vydání
 
-Datum: 10. 11. 2026. Větev `codex/coach-groups-rosters-20261110` z `fb593ad4`. Bez změny produkce a bez práce se skutečnými osobními daty.
+Datum: 10. 11. 2026. Syntetická část začala ve větvi `codex/coach-groups-rosters-20261110` z `fb593ad4`, bez skutečných osobních dat; produkční vydání je doloženo níže.
 
 | Kontrola | Výsledek | Důkaz / omezení |
 | --- | --- | --- |
@@ -16,6 +16,14 @@ Datum: 10. 11. 2026. Větev `codex/coach-groups-rosters-20261110` z `fb593ad4`. 
 | Sdílené UI styly | PASS | Stránka volá `appUiAssets()` jednou v `<head>`; opakované volání z `hlavicka.php` je idempotentní. Syntetická šablona používá stejnou verzi Bootstrap CSS pro mobilní kontrolu. |
 | Anonymní HTTP proti izolované větvi | NOT RUN | Místní MySQL na `127.0.0.1` odmítá spojení; `db.php` vrátil 503 ještě před autorizační kontrolou. Trasa je v inventáři anonymního CI sweepu. |
 | Skutečný trenér, registrátor a Aligátoři po reálném schválení | NOT RUN | Vyžaduje testovací přihlášení a existující aktuální grant na cílovou soupisku. Po výslovné žádosti vlastníka o nasazení zůstává provozním UAT, nikoli tvrzeným výsledkem syntetického testu. |
-| Produkční UAT, docházka z nové stránky | NOT RUN | Produkční release neproběhl; docházka je další etapa. |
+| Přihlášené produkční UAT, docházka z nové stránky | NOT RUN | Release proběhl; skutečný trenér/registrář a Aligátoři vyžadují přihlášené čtení. Docházka je další etapa. |
 
 Aktuální stránka zobrazuje pouze aktivní členství. Čekající a ukončená jména zůstávají skryta; jejich stav mění počet aktivních dětí. Pokud má kroužek více současných nabídek s různou kapacitou, stránka kapacitu nevypíše, aby netvrdila zavádějící součet. Počet dětí a volná místa jsou odlišné údaje: druhý zohledňuje kanonické rezervace kapacity.
+
+## Společné produkční vydání
+
+[Opravy #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) byly sloučeny jako `f39f31578f01b1a1060552eb8dd4f35b4d52a6e3`, [trenérská agenda #436](https://github.com/KovoPraha/evidenceTreninku/pull/436) jako `4e3df207319fbce8a2f65e01213c7e4ba11cbf3d`. Oba PR měly 11 úspěšných CI kontrol včetně PHPUnit, PHPStan/style, dokumentace, CodeQL a MariaDB 10.3/11.4. [Nasazení 42852365591](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42852365591) na přesném SHA `4e3df207319fbce8a2f65e01213c7e4ba11cbf3d` skončilo SUCCESS; `uat_schvaleno=false`, `importovat_krouzky=false` a krok importu byl přeskočen. Produkční workflow: 2442 testů/56079 assertions, ověřená záloha, aktuální migrace, zachované otisky variabilních symbolů, aktivace a serverový HTTP smoke 200 PASS. Soukromý klíč nebyl přes HTTP dostupný (403).
+
+[PR #439](https://github.com/KovoPraha/evidenceTreninku/pull/439) se sloučilo do `main` až po tomto workflow a není součástí nasazeného commitu `4e3df207`.
+
+Po aktivaci vnější anonymní čtení: veřejný produkt 298 HTTP 200, `moje_soupisky.php` a `eshop_identity_admin.php` bez přihlášení HTTP 302. Tyto sondy nepotvrzují obsah soupisek ani oprávnění přihlášených rolí. Pokus o přihlášené browser UAT skončil blokací Computer Use kvůli nepodporovanému vynucování politiky URL ve Windows prohlížeči; skutečný trenér, registrář, audit maskovaného náhledu a chronologie živých objednávek zůstávají NOT RUN. Při provozní přejímce nepoužívat nové skutečné objednávky či platby jen kvůli tomuto ověření; použít existující testovací data a příslušné účty.
