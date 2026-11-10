@@ -7,6 +7,7 @@ assets/vendor/bootstrap/bootstrap.bundle.min.js text eol=lf
 assets/vendor/bootstrap-icons/font/bootstrap-icons.css text eol=lf
 assets/app-ui.css text eol=lf
 assets/app-ui.js text eol=lf
+assets/staff-header.*.js text eol=lf
 
 # This new migration has byte-sensitive checksums; keep the same bytes on Windows and Linux.
 migrations/20261021170000_shop_system_email_templates.php text eol=lf

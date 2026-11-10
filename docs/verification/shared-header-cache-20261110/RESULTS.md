@@ -34,3 +34,6 @@ správně požadovala. Aplikace ani měření ještě neběžely. Oprava kopíru
 kořenové PHP soubory; porovnání všech ostatních PHP zůstává přesné. Obě izolované
 DB/config/účty byly uklizené. Apache gzip/browser samostatný běh42916624824 PASS;
 aktuální celek musí projít znovu na opraveném HEAD, nejde o release PASS.
+
+Obsahově adresované JS mají v `.gitattributes` vynucené LF stejně jako již
+verzované UI payloady. Checkout na Windows tak nezmění obsah proti SHA/SRI.
