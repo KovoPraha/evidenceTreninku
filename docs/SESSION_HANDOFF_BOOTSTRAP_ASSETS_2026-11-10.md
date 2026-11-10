@@ -1,26 +1,26 @@
 # Předání P11-ASSET — 10. 11. 2026
 
-ROZPRACOVÁNO, PR425 draft, žádný nový app merge/deploy.
+NASAZENO / TECHNICKÁ PŘEJÍMKA PASS.
 [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md),
-[důkazy](verification/bootstrap-assets-20261110/RESULTS.md).
+[výsledky](verification/bootstrap-assets-20261110/RESULTS.md),
+[release a skutečné meze](verification/bootstrap-assets-20261110/release/RESULTS.md).
 
-Aplikace: pouze3odstraněné duplicitní CDN linky ve sportovec_treninky,
-moje_treninky, sprava_treninku. Vše ostatní byte-shodné ff182971, včetně readeru.
-CSS lokální/CDN živě identické232803bytes/SRI; cold úspora30829gzipbytes/request.
-RIX SQL/index varianty zamítnuté, žádná nová migrace/index nebo role/aktivace.
-Produkce17110a7f/deploy42679050552, import/UATfalse. WIP7a7afd75 zachovaný.
+PR #425 → 9dbd9eaf, celý tree shodný s testovaným 6162e6b7.
+30 CI SUCCESS, 2 424 testů / 55 908 kontrol. Oba čerstvé běhy obou DB PASS:
+42725053241 a 42724887655, celé HTML/business/role/revokace/bearer/CSRF/checksumy.
+544 Chrome nav + 128 zahřátí, 52 legacy Měření nav, 8/8 pixelových párů shodných.
+Cold FCP profil 68→48/44 ms, Moje 64→48/60→44, Správa 60→52/56→52;
+CSS 2→1, jeden požadavek a 30 829 gzip bytes méně. Benchmark není produkční SLA.
 
-Zásadní korekce testů: fyzický baseline PHP root/db/header zachová workspace
-route guard i jediný bootstrap; sdílené jsou assets a pouze owned synthetic config.
-Úplná coach fixture pro AJAX; stejné zakázané role před/po. Úzká normalizace
-CSRF a jediného přesného tagu, computed styles a reálné offcanvas/collapse akce.
-SQLite/PHP účetní fixture nyní shodná Europe/Prague, původní timezone se obnoví;
-půlnoční failure reprodukované na mainu. Cíleně12/233, full PHPUnit0915 PASS.
+Deploy 42727693090 SUCCESS na 9dbd9eaf. Záloha 389 tabulek / 2 triggerů,
+konfigurace/migrace/VS/indexy/smoke PASS. Runner HTTP 0, serverový fallback 200;
+nezávislých 8 veřejných GET před/po má shodné statusy i normalizovaný DOM.
+CSS/SRI živě shodné. /bin chrání hostingový 403, nativní PHP guard má 404/0.
+Runtime 9dbd9eaf; uat_schvaleno=false, importovat_krouzky=false.
 
-První10.3 HTTP1k/10k/30k PASS, dřívější symlink běhy ale nejsou finální přejímka.
-Chrome136profilových vzorků shodných, FCP cold68→48/64→48ms pouze průběžné.
-Finální fyzický root oběDB42724887655/12092dd1 teď běží; aktuální PR CI také.
-Další krok: vyhodnotit kompletní544Chrome/HTTP/security/bezregresní gate a celéCI;
-při PASS očekávaný head squash425, ověřit tree, protected deploy a veřejné GET.
-Pak uložit finální artefakty/release stav docs PR bez druhého nasazení.
-Žádný neúplný/cancelled/FAIL běh ani lidské produkční UAT není PASS.
+Aplikační diff pouze 3 smazané CDN linky; reader/db/header a další runtime
+shodné s ff182971. RIX uzavřen bez přijaté SQL/index varianty, žádná nová aktivace.
+WIP původní fio větve / kis_rosters_admin7a7afd75 zachovaný bez stash/clean/reset.
+Doklady sdílí [PR #426](https://github.com/KovoPraha/evidenceTreninku/pull/426),
+jen docs: po sloučení se runtime znovu nenasazuje. Technická práce uzavřená;
+lidské přihlášené produkční UAT, fyzický mobil a obnova této zálohy NOT RUN.

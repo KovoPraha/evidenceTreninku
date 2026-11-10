@@ -1,0 +1,421 @@
+{
+  "groups": [
+    {
+      "case": "mine",
+      "viewport": "desktop",
+      "cache": "cold",
+      "fcp_ms": {
+        "before": 64,
+        "after": 48
+      },
+      "ready_ms": {
+        "before": 110.8,
+        "after": 94.2
+      },
+      "load_ms": {
+        "before": 61.5,
+        "after": 43
+      },
+      "ttfb_ms": {
+        "before": 6.9,
+        "after": 6.8
+      }
+    },
+    {
+      "case": "mine",
+      "viewport": "desktop",
+      "cache": "warm",
+      "fcp_ms": {
+        "before": 44,
+        "after": 44
+      },
+      "ready_ms": {
+        "before": 94,
+        "after": 93.6
+      },
+      "load_ms": {
+        "before": 42.4,
+        "after": 41.3
+      },
+      "ttfb_ms": {
+        "before": 6.9,
+        "after": 7
+      }
+    },
+    {
+      "case": "mine",
+      "viewport": "mobile",
+      "cache": "cold",
+      "fcp_ms": {
+        "before": 60,
+        "after": 44
+      },
+      "ready_ms": {
+        "before": 110.7,
+        "after": 94.1
+      },
+      "load_ms": {
+        "before": 61.9,
+        "after": 42.6
+      },
+      "ttfb_ms": {
+        "before": 6.8,
+        "after": 6.7
+      }
+    },
+    {
+      "case": "mine",
+      "viewport": "mobile",
+      "cache": "warm",
+      "fcp_ms": {
+        "before": 44,
+        "after": 40
+      },
+      "ready_ms": {
+        "before": 94.9,
+        "after": 95.1
+      },
+      "load_ms": {
+        "before": 42.4,
+        "after": 41.4
+      },
+      "ttfb_ms": {
+        "before": 6.7,
+        "after": 6.7
+      }
+    },
+    {
+      "case": "profile",
+      "viewport": "desktop",
+      "cache": "cold",
+      "fcp_ms": {
+        "before": 68,
+        "after": 48
+      },
+      "ready_ms": {
+        "before": 125.1,
+        "after": 94
+      },
+      "load_ms": {
+        "before": 67.3,
+        "after": 47.6
+      },
+      "ttfb_ms": {
+        "before": 16.3,
+        "after": 16.1
+      }
+    },
+    {
+      "case": "profile",
+      "viewport": "desktop",
+      "cache": "warm",
+      "fcp_ms": {
+        "before": 48,
+        "after": 44
+      },
+      "ready_ms": {
+        "before": 95.4,
+        "after": 94.7
+      },
+      "load_ms": {
+        "before": 48.8,
+        "after": 48.2
+      },
+      "ttfb_ms": {
+        "before": 15.9,
+        "after": 15.7
+      }
+    },
+    {
+      "case": "profile",
+      "viewport": "mobile",
+      "cache": "cold",
+      "fcp_ms": {
+        "before": 68,
+        "after": 44
+      },
+      "ready_ms": {
+        "before": 110.5,
+        "after": 93.9
+      },
+      "load_ms": {
+        "before": 64.6,
+        "after": 45.9
+      },
+      "ttfb_ms": {
+        "before": 15.4,
+        "after": 15.6
+      }
+    },
+    {
+      "case": "profile",
+      "viewport": "mobile",
+      "cache": "warm",
+      "fcp_ms": {
+        "before": 44,
+        "after": 44
+      },
+      "ready_ms": {
+        "before": 110.1,
+        "after": 111
+      },
+      "load_ms": {
+        "before": 46.1,
+        "after": 45.9
+      },
+      "ttfb_ms": {
+        "before": 15.4,
+        "after": 15.5
+      }
+    },
+    {
+      "case": "public-profile",
+      "viewport": "desktop",
+      "cache": "cold",
+      "fcp_ms": {
+        "before": 48,
+        "after": 44
+      },
+      "ready_ms": {
+        "before": 98.9,
+        "after": 83
+      },
+      "load_ms": {
+        "before": 47.1,
+        "after": 44.6
+      },
+      "ttfb_ms": {
+        "before": 13.7,
+        "after": 13.6
+      }
+    },
+    {
+      "case": "public-profile",
+      "viewport": "desktop",
+      "cache": "warm",
+      "fcp_ms": {
+        "before": 48,
+        "after": 44
+      },
+      "ready_ms": {
+        "before": 98.5,
+        "after": 94.6
+      },
+      "load_ms": {
+        "before": 46.2,
+        "after": 45.5
+      },
+      "ttfb_ms": {
+        "before": 13.6,
+        "after": 13.6
+      }
+    },
+    {
+      "case": "public-profile",
+      "viewport": "mobile",
+      "cache": "cold",
+      "fcp_ms": {
+        "before": 48,
+        "after": 44
+      },
+      "ready_ms": {
+        "before": 80.3,
+        "after": 80.4
+      },
+      "load_ms": {
+        "before": 47.6,
+        "after": 43.7
+      },
+      "ttfb_ms": {
+        "before": 14.1,
+        "after": 13.9
+      }
+    },
+    {
+      "case": "public-profile",
+      "viewport": "mobile",
+      "cache": "warm",
+      "fcp_ms": {
+        "before": 44,
+        "after": 40
+      },
+      "ready_ms": {
+        "before": 82.2,
+        "after": 80.4
+      },
+      "load_ms": {
+        "before": 46.3,
+        "after": 44.6
+      },
+      "ttfb_ms": {
+        "before": 14,
+        "after": 13.9
+      }
+    },
+    {
+      "case": "training",
+      "viewport": "desktop",
+      "cache": "cold",
+      "fcp_ms": {
+        "before": 60,
+        "after": 52
+      },
+      "ready_ms": {
+        "before": 77.5,
+        "after": 77
+      },
+      "load_ms": {
+        "before": 55.7,
+        "after": 47.9
+      },
+      "ttfb_ms": {
+        "before": 11.2,
+        "after": 11.2
+      }
+    },
+    {
+      "case": "training",
+      "viewport": "desktop",
+      "cache": "warm",
+      "fcp_ms": {
+        "before": 56,
+        "after": 56
+      },
+      "ready_ms": {
+        "before": 77.7,
+        "after": 77.8
+      },
+      "load_ms": {
+        "before": 48.9,
+        "after": 47.1
+      },
+      "ttfb_ms": {
+        "before": 11.4,
+        "after": 11.3
+      }
+    },
+    {
+      "case": "training",
+      "viewport": "mobile",
+      "cache": "cold",
+      "fcp_ms": {
+        "before": 56,
+        "after": 52
+      },
+      "ready_ms": {
+        "before": 77.6,
+        "after": 77.6
+      },
+      "load_ms": {
+        "before": 54.4,
+        "after": 48.9
+      },
+      "ttfb_ms": {
+        "before": 11,
+        "after": 11.4
+      }
+    },
+    {
+      "case": "training",
+      "viewport": "mobile",
+      "cache": "warm",
+      "fcp_ms": {
+        "before": 52,
+        "after": 52
+      },
+      "ready_ms": {
+        "before": 77.9,
+        "after": 77.8
+      },
+      "load_ms": {
+        "before": 51,
+        "after": 48.1
+      },
+      "ttfb_ms": {
+        "before": 11.5,
+        "after": 11.3
+      }
+    }
+  ],
+  "screenshots": [
+    {
+      "before": "bootstrap-coach-mine-desktop-before.png",
+      "after": "bootstrap-coach-mine-desktop-after.png",
+      "size": [
+        1036,
+        703
+      ],
+      "pixel_identical": true
+    },
+    {
+      "before": "bootstrap-coach-mine-mobile-before.png",
+      "after": "bootstrap-coach-mine-mobile-after.png",
+      "size": [
+        390,
+        844
+      ],
+      "pixel_identical": true
+    },
+    {
+      "before": "bootstrap-coach-profile-desktop-before.png",
+      "after": "bootstrap-coach-profile-desktop-after.png",
+      "size": [
+        1036,
+        703
+      ],
+      "pixel_identical": true
+    },
+    {
+      "before": "bootstrap-coach-profile-mobile-before.png",
+      "after": "bootstrap-coach-profile-mobile-after.png",
+      "size": [
+        390,
+        844
+      ],
+      "pixel_identical": true
+    },
+    {
+      "before": "bootstrap-public-public-profile-desktop-before.png",
+      "after": "bootstrap-public-public-profile-desktop-after.png",
+      "size": [
+        1036,
+        703
+      ],
+      "pixel_identical": true
+    },
+    {
+      "before": "bootstrap-public-public-profile-mobile-before.png",
+      "after": "bootstrap-public-public-profile-mobile-after.png",
+      "size": [
+        390,
+        844
+      ],
+      "pixel_identical": true
+    },
+    {
+      "before": "bootstrap-sports_lead-training-desktop-before.png",
+      "after": "bootstrap-sports_lead-training-desktop-after.png",
+      "size": [
+        1036,
+        703
+      ],
+      "pixel_identical": true
+    },
+    {
+      "before": "bootstrap-sports_lead-training-mobile-before.png",
+      "after": "bootstrap-sports_lead-training-mobile-after.png",
+      "size": [
+        390,
+        844
+      ],
+      "pixel_identical": true
+    }
+  ],
+  "method": "Real Chrome, no throttling/mocks; 17 alternating pairs after 4 warmup pairs per 4 contexts x 2 viewports x 2 cache states; 544 measured and 128 warmup navigations.",
+  "tested_head": "6162e6b7c7906b29a4c80c11ef044af5854cc4c8",
+  "cold_css_request_before": 2,
+  "cold_css_request_after": 1,
+  "duplicate_decoded_bytes_removed": 232803,
+  "observed_public_gzip_bytes_removed": 30829,
+  "production_sla": false
+}

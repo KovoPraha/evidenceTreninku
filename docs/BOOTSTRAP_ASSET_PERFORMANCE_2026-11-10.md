@@ -1,6 +1,6 @@
 # P11-ASSET — Bootstrap CSS načítaný právě jednou
 
-Zahájení 9./10. 11. 2026, Europe/Prague. ROZPRACOVÁNO. Vlastník vývoj/Codex.
+Zahájení 9./10. 11. 2026, Europe/Prague. NASAZENO / TECHNICKÁ PŘEJÍMKA PASS. Vlastník vývoj/Codex.
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_BOOTSTRAP_ASSETS_2026-11-10.md),
 [důkazy](verification/bootstrap-assets-20261110/RESULTS.md).
 
@@ -12,7 +12,8 @@ WIP kis_rosters_admin.php v původním htdocs SHA256
 7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachovaný.
 Pracovní větev codex/athlete-targeted-probe-20261109, následně vlastní PR425
 codex/athlete-targeted-read-optimization-20261109; izolovaný worktree mimo htdocs.
-Baseline ff182971, skutečná produkce17110a7f/deploy42679050552; žádný nový deploy.
+Baseline ff182971; výchozí produkce byla17110a7f/deploy42679050552.
+Finální runtime9dbd9eaf/deploy42727693090 SUCCESS, viz release protokol.
 
 [Předchozí RIX diagnóza](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) vyřadila
 SQL/index varianty kvůli regresím nebo nedostatečnému zisku na obou DB.
@@ -53,6 +54,10 @@ Ověřit také skutečný lokální/CDN payload přes HTTPS a skutečný Chrome.
    a protected deploy z main. Úplná záloha/migrace/VS/config/smoke a veřejné
    čtecí před/po; import/UATfalse, lidské produkční UAT samostatně NOT RUN.
    Finální důkazy docs PR bez druhého deploye. Nic nepovolovat podle HTTP200.
+
+## Historie přípravy a nepřijatých běhů
+
+Následující záznamy jsou historické; aktuální vydání je potvrzené nahoře a v release protokolu.
 
 Další krok: přesný tag removal, úzký testovací normalizátor a nativní HTTP/
 Chrome profil. Implementace/CI/merge/deploy optimalizace dosud NOT RUN.
@@ -156,3 +161,14 @@ Aplikační diff stále jen3odstraněné CDN tagy; SQL/header/auth/role beze zm�
 PHPUnit0915 plná sada PASS; finální aktuální CI následuje, staré překonané běhy
 zrušené k uvolnění runnerů. Merge/deploy pořád NOT RUN. Žádný předchozí
 nekompletní běh se nepočítá jako release přejímka.
+
+## Aktuální přejímka a vydání
+
+30CI/2424testů/55908assertions, oba čerstvé fullHTTP/Chrome běhy PASS,544nav
++52regresních,8/8pixelpárů shodných. FCP cold7–35%lepší, CSS2→1/−30829gzipbytes.
+Main425/9dbd9eaf tree-shodné s6162; deploy42727693090 SUCCESS, import/UATfalse.
+Záloha389/2, konfigurace/migrace/VS/indexy/smoke a živé8GET/DOM PASS.
+Metadata CLI hosting403 stejně jako migrate; native PHP guard404/0.
+Finální důkazy sdílí docs426 bez druhého deploye. Lidské produkční UAT/restore nové zálohy NOT RUN.
+[Finální metriky](verification/bootstrap-assets-20261110/RESULTS.md),
+[release](verification/bootstrap-assets-20261110/release/RESULTS.md).

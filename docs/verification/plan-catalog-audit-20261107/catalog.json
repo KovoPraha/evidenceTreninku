@@ -11144,9 +11144,9 @@
       "title": "P11-ASSET Bootstrap CSS právě jednou",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11-ASSET",
-      "disposition": "Zahájeno: odstranit duplicitní CSS, ověřit business/UI a paired Chrome bez časové regrese.",
+      "disposition": "425/9dbd9eaf a deploy42727693090 SUCCESS;30CI/544Chrome/8pixelpárů a živé8GET+DOM PASS. Doklady426 bez dalšího deploye; lidskéUAT samostatné NOT RUN.",
       "evidence": [
         "docs/verification/bootstrap-assets-20261110/RESULTS.md"
       ]

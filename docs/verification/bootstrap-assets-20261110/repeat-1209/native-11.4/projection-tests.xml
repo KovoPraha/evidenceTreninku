@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\AthleteTargetedReadTest" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteTargetedReadTest.php" tests="3" assertions="562" errors="0" failures="0" skipped="0" time="2.589598">
+    <testcase name="testFrozenFullResultParityForEveryPageYearAndPdoMode" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteTargetedReadTest.php" line="20" class="Tests\Integration\AthleteTargetedReadTest" classname="Tests.Integration.AthleteTargetedReadTest" assertions="505" time="1.957250"/>
+    <testcase name="testMeasurementOnlySigned64BitOwnershipAndExtremeYears" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteTargetedReadTest.php" line="61" class="Tests\Integration\AthleteTargetedReadTest" classname="Tests.Integration.AthleteTargetedReadTest" assertions="48" time="0.149184"/>
+    <testcase name="testLastPageClampingExactMultiplesAndFreshOwnership" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/AthleteTargetedReadTest.php" line="99" class="Tests\Integration\AthleteTargetedReadTest" classname="Tests.Integration.AthleteTargetedReadTest" assertions="9" time="0.483163"/>
+  </testsuite>
+</testsuites>

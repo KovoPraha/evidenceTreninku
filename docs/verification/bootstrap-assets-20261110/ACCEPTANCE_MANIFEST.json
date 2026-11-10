@@ -1,0 +1,517 @@
+{
+  "method": "SHA256 of canonical artifact bytes; JSON LF, binary PNG and lossless gzip unchanged. Primary screenshots retained; repeated PNGs omitted, repeat full JSON reports retained.",
+  "primary_run": 42725053241,
+  "repeat_run": 42724887655,
+  "files": [
+    {
+      "path": "ci-6162/native-10.3/asset-parents-1000.json.gz",
+      "bytes": 2133,
+      "sha256": "dfaeb7bc17dded720c2ae7ee76da3c9981c1fdcc4835e579cd8494fad0b59dbd"
+    },
+    {
+      "path": "ci-6162/native-10.3/asset-parents-10000.json.gz",
+      "bytes": 2175,
+      "sha256": "6ad9e3e5a9556a0f414a3a7d7925364cdf85f31a2ebc0821f935b293cef38c37"
+    },
+    {
+      "path": "ci-6162/native-10.3/asset-parents-30000.json.gz",
+      "bytes": 2256,
+      "sha256": "5fe0cfeb0a93e7012579982b1217d371ae4b82e2b234c4ecf7b1ffff43cc3c5c"
+    },
+    {
+      "path": "ci-6162/native-10.3/comparison-tests.xml",
+      "bytes": 678,
+      "sha256": "c1df3f6adb66745170ada23ec23a55a1392fd3d53f65a57af4d6867fb5e6aaca"
+    },
+    {
+      "path": "ci-6162/native-10.3/css-payload.json",
+      "bytes": 114,
+      "sha256": "98aa496df2a1acb9eb3df9bb7cba2494f63c8390c89929040dee16726654c8fb"
+    },
+    {
+      "path": "ci-6162/native-10.3/exact-edit-contract.json",
+      "bytes": 76,
+      "sha256": "9e2eed82ad1d61e43c76b5ebed1e3d031e685d3e9bf3458223fa8e1fcea8a506"
+    },
+    {
+      "path": "ci-6162/native-10.3/fixture-schema.json",
+      "bytes": 18875,
+      "sha256": "f2272de84770d310e55e72df1c5e9bfdb9449e053fe2a39426f366dcbb338623"
+    },
+    {
+      "path": "ci-6162/native-10.3/integrated-summary.json",
+      "bytes": 2201,
+      "sha256": "a7b7bfbbf38de1797aff4fb9e7e4716e24aaf08e6ef5ff23ffbc950c3f0fb90a"
+    },
+    {
+      "path": "ci-6162/native-10.3/measurement-statistics-1000.json",
+      "bytes": 4765,
+      "sha256": "5ed2474139ce2acc4252fbdbd407bd76242b500db6bd41cdff86901f0b394ff0"
+    },
+    {
+      "path": "ci-6162/native-10.3/measurement-statistics-10000.json",
+      "bytes": 4783,
+      "sha256": "f5c232e31b751d965e72f7e7c26ddd8ae222f250c6b16be94ffb02be92f5595d"
+    },
+    {
+      "path": "ci-6162/native-10.3/measurement-statistics-30000.json",
+      "bytes": 4786,
+      "sha256": "f853161e620a636751c63e7745df664cb462950c909b71649d9e7e8e38c8f4d7"
+    },
+    {
+      "path": "ci-6162/native-10.3/projection-tests.xml",
+      "bytes": 1310,
+      "sha256": "85b20c47f9baecbedb5809cc2d5284f340c8f1f3e5005979d54332775e49596c"
+    },
+    {
+      "path": "ci-6162/native-10.3/runner-cleanup.json",
+      "bytes": 164,
+      "sha256": "fe45661187b8e6c44c867afe22592b5b8b99ed387105fa55a261586d75a309a9"
+    },
+    {
+      "path": "ci-6162/native-10.3/security.json",
+      "bytes": 5772,
+      "sha256": "731520183f67090b79f1db36ae995d9ff3a8e40fd6a1050bd387d7906a01fc7c"
+    },
+    {
+      "path": "ci-6162/native-10.3/source-identity.json",
+      "bytes": 1404,
+      "sha256": "1b39ad32e05b26912d7a7346adceb6516a1199b20392ac2a2ac21fd24b5141b9"
+    },
+    {
+      "path": "ci-6162/native-10.3/targeted-http-1000.json.gz",
+      "bytes": 5256,
+      "sha256": "10475ed3831ca21a4d36d3aaeb3703f795804d7db47edd4551c27ca568b9f96f"
+    },
+    {
+      "path": "ci-6162/native-10.3/targeted-http-10000.json.gz",
+      "bytes": 5560,
+      "sha256": "823d5f932c442141a9e75b06bdd0eecffc63e6500e94e811b9bbe7adb75ccfa6"
+    },
+    {
+      "path": "ci-6162/native-10.3/targeted-http-30000.json.gz",
+      "bytes": 6125,
+      "sha256": "156b45adf3d8d200524134e74729e9f841daf56a648a3a089872d739a771cd06"
+    },
+    {
+      "path": "ci-6162/native-11.4/asset-browser-coach.json.gz",
+      "bytes": 12599,
+      "sha256": "182ee9be3c7ab7037f937d4f748f7f82b682f70eee5bfd5ca88113f1ee0ffc0c"
+    },
+    {
+      "path": "ci-6162/native-11.4/asset-browser-public.json.gz",
+      "bytes": 6695,
+      "sha256": "843d4bd3ddc09c6f6780bd4cf3c3df88a1b505bf2b1327afe98471bf8b32f590"
+    },
+    {
+      "path": "ci-6162/native-11.4/asset-browser-sports_lead.json.gz",
+      "bytes": 6729,
+      "sha256": "acd30cf56e9d493f2e72a31a09e9c77b1cabfb020c9780b90add676201ff02e3"
+    },
+    {
+      "path": "ci-6162/native-11.4/asset-parents-1000.json.gz",
+      "bytes": 2160,
+      "sha256": "84402e61ef6b39eaf09629a8f015bf1b085c8f534e9c538f2357a009f6267db6"
+    },
+    {
+      "path": "ci-6162/native-11.4/asset-parents-10000.json.gz",
+      "bytes": 2111,
+      "sha256": "2885d9569d823fc481849027e0053106bd0615c0293625a66652aa8f2a995d89"
+    },
+    {
+      "path": "ci-6162/native-11.4/asset-parents-30000.json.gz",
+      "bytes": 2173,
+      "sha256": "88447ce5239237e143b0ff3c077c7669a8d66bc639d931e2db5eb62b03301c92"
+    },
+    {
+      "path": "ci-6162/native-11.4/athlete-measurement-after-desktop.png",
+      "bytes": 91765,
+      "sha256": "9cc719bff0c56eec650b5d111d116fd785a3cecac7f008a34e5776bd4b0ae4f1"
+    },
+    {
+      "path": "ci-6162/native-11.4/athlete-measurement-after-mobile.png",
+      "bytes": 32496,
+      "sha256": "8dc37ded3c1db7fb005c7546a79656e1a83ca233ff946080ff2b48b08df8db0a"
+    },
+    {
+      "path": "ci-6162/native-11.4/athlete-measurement-before-desktop.png",
+      "bytes": 91765,
+      "sha256": "9cc719bff0c56eec650b5d111d116fd785a3cecac7f008a34e5776bd4b0ae4f1"
+    },
+    {
+      "path": "ci-6162/native-11.4/athlete-measurement-before-mobile.png",
+      "bytes": 32496,
+      "sha256": "8dc37ded3c1db7fb005c7546a79656e1a83ca233ff946080ff2b48b08df8db0a"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-coach-mine-desktop-after.png",
+      "bytes": 99036,
+      "sha256": "805912843f2c90cae3b33efa783e5d1c8264825aee4837cca4f735061c9d6bfc"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-coach-mine-desktop-before.png",
+      "bytes": 99036,
+      "sha256": "805912843f2c90cae3b33efa783e5d1c8264825aee4837cca4f735061c9d6bfc"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-coach-mine-mobile-after.png",
+      "bytes": 58929,
+      "sha256": "77e05ba970c5f7bf0303267efc63749d2a7b0202b6dc885ff56f140c262f4986"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-coach-mine-mobile-before.png",
+      "bytes": 58929,
+      "sha256": "77e05ba970c5f7bf0303267efc63749d2a7b0202b6dc885ff56f140c262f4986"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-coach-profile-desktop-after.png",
+      "bytes": 65648,
+      "sha256": "05cabd949d8cc4c187c0320a3278c88cd21f7a6fb0a43be4fab06c1fe4735643"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-coach-profile-desktop-before.png",
+      "bytes": 65648,
+      "sha256": "05cabd949d8cc4c187c0320a3278c88cd21f7a6fb0a43be4fab06c1fe4735643"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-coach-profile-mobile-after.png",
+      "bytes": 60752,
+      "sha256": "a5107365d673dc55aeadb3e6ce87b4f151683b0ec3494f168a0a668b17f75eaa"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-coach-profile-mobile-before.png",
+      "bytes": 60752,
+      "sha256": "a5107365d673dc55aeadb3e6ce87b4f151683b0ec3494f168a0a668b17f75eaa"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-public-public-profile-desktop-after.png",
+      "bytes": 65648,
+      "sha256": "05cabd949d8cc4c187c0320a3278c88cd21f7a6fb0a43be4fab06c1fe4735643"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-public-public-profile-desktop-before.png",
+      "bytes": 65648,
+      "sha256": "05cabd949d8cc4c187c0320a3278c88cd21f7a6fb0a43be4fab06c1fe4735643"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-public-public-profile-mobile-after.png",
+      "bytes": 60752,
+      "sha256": "a5107365d673dc55aeadb3e6ce87b4f151683b0ec3494f168a0a668b17f75eaa"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-public-public-profile-mobile-before.png",
+      "bytes": 60752,
+      "sha256": "a5107365d673dc55aeadb3e6ce87b4f151683b0ec3494f168a0a668b17f75eaa"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-sports_lead-training-desktop-after.png",
+      "bytes": 86711,
+      "sha256": "4df70acd3f2d37802ca221590614d5ad36181a5a42b5899e20ff8f209059efb8"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-sports_lead-training-desktop-before.png",
+      "bytes": 86711,
+      "sha256": "4df70acd3f2d37802ca221590614d5ad36181a5a42b5899e20ff8f209059efb8"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-sports_lead-training-mobile-after.png",
+      "bytes": 48098,
+      "sha256": "c56c227a1861f75c11cbbb605d811a20bd6c1e38021a2513cf854d5afe394313"
+    },
+    {
+      "path": "ci-6162/native-11.4/bootstrap-sports_lead-training-mobile-before.png",
+      "bytes": 48098,
+      "sha256": "c56c227a1861f75c11cbbb605d811a20bd6c1e38021a2513cf854d5afe394313"
+    },
+    {
+      "path": "ci-6162/native-11.4/browser-coach-after.json.gz",
+      "bytes": 2829,
+      "sha256": "80a166b01b77a94b7392e79d37b122b58353db472a98eaa0f00c4cddd5f11801"
+    },
+    {
+      "path": "ci-6162/native-11.4/browser-coach-before.json.gz",
+      "bytes": 2791,
+      "sha256": "c8c0504d332c387cd1d85310542f8110738f83c6dfa21a438eed83b179dede62"
+    },
+    {
+      "path": "ci-6162/native-11.4/comparison-tests.xml",
+      "bytes": 678,
+      "sha256": "a622afec208aab5f7d0ea28b8bd6c5a18194c77c0ac732d231d705e35e70aeb0"
+    },
+    {
+      "path": "ci-6162/native-11.4/css-payload.json",
+      "bytes": 114,
+      "sha256": "98aa496df2a1acb9eb3df9bb7cba2494f63c8390c89929040dee16726654c8fb"
+    },
+    {
+      "path": "ci-6162/native-11.4/exact-edit-contract.json",
+      "bytes": 76,
+      "sha256": "9e2eed82ad1d61e43c76b5ebed1e3d031e685d3e9bf3458223fa8e1fcea8a506"
+    },
+    {
+      "path": "ci-6162/native-11.4/fixture-schema.json",
+      "bytes": 19482,
+      "sha256": "1a5abbf1b197ad739e8d88d7f09e3f5773c693e2dcdce58658a4d3dafc9428ad"
+    },
+    {
+      "path": "ci-6162/native-11.4/integrated-summary.json",
+      "bytes": 2190,
+      "sha256": "b64211e65e64276087ba64aed63d65247071fcf6983b688f523c4a2cea55734b"
+    },
+    {
+      "path": "ci-6162/native-11.4/measurement-statistics-1000.json",
+      "bytes": 5004,
+      "sha256": "0990161b57eb56541f1be11b0e265df71b92cf62c4dc66e547b402647d73b3ef"
+    },
+    {
+      "path": "ci-6162/native-11.4/measurement-statistics-10000.json",
+      "bytes": 5022,
+      "sha256": "f50c7259816f87e67f4e148f25b3a007e93ad66020b30e421ca7e31e9723ad23"
+    },
+    {
+      "path": "ci-6162/native-11.4/measurement-statistics-30000.json",
+      "bytes": 5025,
+      "sha256": "c092f05782b3b2d746039f719de39f42f2aff208ebeb24943db539db22a77796"
+    },
+    {
+      "path": "ci-6162/native-11.4/projection-tests.xml",
+      "bytes": 1310,
+      "sha256": "31ebe8b1bdc302725f90479ca9c2de2675b9c6ed3ad8799bafd6503e0758cdd8"
+    },
+    {
+      "path": "ci-6162/native-11.4/runner-cleanup.json",
+      "bytes": 164,
+      "sha256": "fe45661187b8e6c44c867afe22592b5b8b99ed387105fa55a261586d75a309a9"
+    },
+    {
+      "path": "ci-6162/native-11.4/security.json",
+      "bytes": 5772,
+      "sha256": "28b926ee258abe51db1d34f734b1c9a0cb7178b79a0377078d444067c8aa6388"
+    },
+    {
+      "path": "ci-6162/native-11.4/source-identity.json",
+      "bytes": 1404,
+      "sha256": "1b39ad32e05b26912d7a7346adceb6516a1199b20392ac2a2ac21fd24b5141b9"
+    },
+    {
+      "path": "ci-6162/native-11.4/targeted-http-1000.json.gz",
+      "bytes": 5118,
+      "sha256": "d4c31762a085e5b25992444ac3c1376fe87215ecb22db275609bc4327019c8cd"
+    },
+    {
+      "path": "ci-6162/native-11.4/targeted-http-10000.json.gz",
+      "bytes": 5538,
+      "sha256": "90ae17ea17fee22a2a4be7e4089fe212f5778decb7a7791552433b4f689edf8c"
+    },
+    {
+      "path": "ci-6162/native-11.4/targeted-http-30000.json.gz",
+      "bytes": 5968,
+      "sha256": "27a0d5459cbfdcc59ac96451c973efe024a745a556e9107ad55ce3fc5e056028"
+    },
+    {
+      "path": "repeat-1209/native-10.3/asset-parents-1000.json.gz",
+      "bytes": 2155,
+      "sha256": "99f2dbce1da6b986d89dc18b310095c4ed257b73e45f690fbeb2a7b7fd753859"
+    },
+    {
+      "path": "repeat-1209/native-10.3/asset-parents-10000.json.gz",
+      "bytes": 2180,
+      "sha256": "4a7de2ae65862f51a9ec29acd4be1390394ea13a0eebfc53fc457582cf99d1ad"
+    },
+    {
+      "path": "repeat-1209/native-10.3/asset-parents-30000.json.gz",
+      "bytes": 2269,
+      "sha256": "92f79a0874e187b96b8f7b91d97ade3d13aff0219ccdf917e0c62da6a969f059"
+    },
+    {
+      "path": "repeat-1209/native-10.3/comparison-tests.xml",
+      "bytes": 678,
+      "sha256": "a11097d3cd66922078bbe560fd333497387962686b016f14e4120944823f9097"
+    },
+    {
+      "path": "repeat-1209/native-10.3/css-payload.json",
+      "bytes": 114,
+      "sha256": "98aa496df2a1acb9eb3df9bb7cba2494f63c8390c89929040dee16726654c8fb"
+    },
+    {
+      "path": "repeat-1209/native-10.3/exact-edit-contract.json",
+      "bytes": 76,
+      "sha256": "9e2eed82ad1d61e43c76b5ebed1e3d031e685d3e9bf3458223fa8e1fcea8a506"
+    },
+    {
+      "path": "repeat-1209/native-10.3/fixture-schema.json",
+      "bytes": 18875,
+      "sha256": "fe59ee3109d5f5ff6ecce2c1bb7bebd8a3e8bbc7b7ecb7e6856555a51722c4a1"
+    },
+    {
+      "path": "repeat-1209/native-10.3/integrated-summary.json",
+      "bytes": 2216,
+      "sha256": "3732918d668494b5e83733734befa517fedbbbf5d0aea553081cf3da951dd6db"
+    },
+    {
+      "path": "repeat-1209/native-10.3/measurement-statistics-1000.json",
+      "bytes": 4765,
+      "sha256": "03b8b4d1387536a6c8ccdefdd0e548dd6cccda593c68a1d3f67028bf41eed352"
+    },
+    {
+      "path": "repeat-1209/native-10.3/measurement-statistics-10000.json",
+      "bytes": 4783,
+      "sha256": "8daa12047a6714678fc55aebd7690accd979b6585b398285ade9292c3c45a59e"
+    },
+    {
+      "path": "repeat-1209/native-10.3/measurement-statistics-30000.json",
+      "bytes": 4786,
+      "sha256": "f5cd4dedf7206da1160480af2f4a8cee1536cea8a2e0c6cbc5916aa376e59330"
+    },
+    {
+      "path": "repeat-1209/native-10.3/projection-tests.xml",
+      "bytes": 1310,
+      "sha256": "9f19ec50c0d30b9d1c47e4a4290a7bec48b64d889d20e3dd1b568db9fec95669"
+    },
+    {
+      "path": "repeat-1209/native-10.3/runner-cleanup.json",
+      "bytes": 164,
+      "sha256": "fe45661187b8e6c44c867afe22592b5b8b99ed387105fa55a261586d75a309a9"
+    },
+    {
+      "path": "repeat-1209/native-10.3/security.json",
+      "bytes": 5772,
+      "sha256": "149509a2850d814765a2319379aba3250d032b4c95295ebe93b262f0527e781d"
+    },
+    {
+      "path": "repeat-1209/native-10.3/source-identity.json",
+      "bytes": 1404,
+      "sha256": "31837019e0a4313c446024a2d0566a1952c09c0c9dbd574e9e00afe9698fb7f1"
+    },
+    {
+      "path": "repeat-1209/native-10.3/targeted-http-1000.json.gz",
+      "bytes": 5291,
+      "sha256": "2e32aabd03977a3d2be623818ce63aaf2a338cf5733118352362f9006e41585d"
+    },
+    {
+      "path": "repeat-1209/native-10.3/targeted-http-10000.json.gz",
+      "bytes": 5508,
+      "sha256": "23b781acec93681ce8418ce5c1d7717fb632afc14d387d78aaef6714988d4c8b"
+    },
+    {
+      "path": "repeat-1209/native-10.3/targeted-http-30000.json.gz",
+      "bytes": 6309,
+      "sha256": "71b76354d7f1b611110ef6eebd1b3e121076885459dfcdc4e0e28cfd36a5c853"
+    },
+    {
+      "path": "repeat-1209/native-11.4/asset-browser-coach.json.gz",
+      "bytes": 12346,
+      "sha256": "245f5eba5e0394076a1d110b157de54fcd440156124f76607314a884a9ccfd75"
+    },
+    {
+      "path": "repeat-1209/native-11.4/asset-browser-public.json.gz",
+      "bytes": 6792,
+      "sha256": "51457d4ce8028e2feccbf2cd9dcda6b1ef1ff41a8d654e9b1c568feb723a4f60"
+    },
+    {
+      "path": "repeat-1209/native-11.4/asset-browser-sports_lead.json.gz",
+      "bytes": 6796,
+      "sha256": "b9df0f0282603026015bbeb0b6b1add8e539c6a766e0c5316db85a167da8326f"
+    },
+    {
+      "path": "repeat-1209/native-11.4/asset-parents-1000.json.gz",
+      "bytes": 2132,
+      "sha256": "76a62dbd4d52ea67f91bad6a6054c29cdcb65c8711a7284a188fd0df1790627a"
+    },
+    {
+      "path": "repeat-1209/native-11.4/asset-parents-10000.json.gz",
+      "bytes": 2145,
+      "sha256": "17a0f9835a286c54d1fa32760309a0ac7b9e503f2a5602d93964ebb28a2a8841"
+    },
+    {
+      "path": "repeat-1209/native-11.4/asset-parents-30000.json.gz",
+      "bytes": 2217,
+      "sha256": "9898cdfe9fa2505c95ab6091ad3dc409b9433e16b48834c151ac524a5e457492"
+    },
+    {
+      "path": "repeat-1209/native-11.4/browser-coach-after.json.gz",
+      "bytes": 2776,
+      "sha256": "e53d15eb30777a3c5d5c4b1162082cb7dd3df7cbd355f202e4ce0111a7f494bf"
+    },
+    {
+      "path": "repeat-1209/native-11.4/browser-coach-before.json.gz",
+      "bytes": 2774,
+      "sha256": "d53065aab690f41851369992b0ce20512e6b9fe6e7fab439109dc8d0352316e7"
+    },
+    {
+      "path": "repeat-1209/native-11.4/comparison-tests.xml",
+      "bytes": 678,
+      "sha256": "09caf3f938e0ad4bebd6ef5036bfb802d3e036ac5d78b3d1b404e3f0d045731f"
+    },
+    {
+      "path": "repeat-1209/native-11.4/css-payload.json",
+      "bytes": 114,
+      "sha256": "98aa496df2a1acb9eb3df9bb7cba2494f63c8390c89929040dee16726654c8fb"
+    },
+    {
+      "path": "repeat-1209/native-11.4/exact-edit-contract.json",
+      "bytes": 76,
+      "sha256": "9e2eed82ad1d61e43c76b5ebed1e3d031e685d3e9bf3458223fa8e1fcea8a506"
+    },
+    {
+      "path": "repeat-1209/native-11.4/fixture-schema.json",
+      "bytes": 19482,
+      "sha256": "eabfcdebc90d0ad2de8aa9266f3ccc549f4034c481ce10a7e4def14232fbc214"
+    },
+    {
+      "path": "repeat-1209/native-11.4/integrated-summary.json",
+      "bytes": 2203,
+      "sha256": "5aca8d34cdffcfb853518932eb9217b17aa47567ee36487fd908f6c7b0665c03"
+    },
+    {
+      "path": "repeat-1209/native-11.4/measurement-statistics-1000.json",
+      "bytes": 5004,
+      "sha256": "74fa70d9c9f917b63361452ed95fd5b81e829610f2a8b7cbe26884ad1360aa50"
+    },
+    {
+      "path": "repeat-1209/native-11.4/measurement-statistics-10000.json",
+      "bytes": 5022,
+      "sha256": "e789a46b28ce8e02d19d4b460ff1754585124792cb168f77ff0ce6e9bb4d3be3"
+    },
+    {
+      "path": "repeat-1209/native-11.4/measurement-statistics-30000.json",
+      "bytes": 5025,
+      "sha256": "a80c4d2a1f61a3184b4b6b2f22cee7cf15bccfad76382f60648617cbe93e12d2"
+    },
+    {
+      "path": "repeat-1209/native-11.4/projection-tests.xml",
+      "bytes": 1310,
+      "sha256": "6fb883470729a0051637ab42735cc4ef6d5f5b4cb7d52a24c42302b5f145af24"
+    },
+    {
+      "path": "repeat-1209/native-11.4/runner-cleanup.json",
+      "bytes": 164,
+      "sha256": "fe45661187b8e6c44c867afe22592b5b8b99ed387105fa55a261586d75a309a9"
+    },
+    {
+      "path": "repeat-1209/native-11.4/security.json",
+      "bytes": 5772,
+      "sha256": "5e2189a972c670f9228094a67d8803ccb874249e9a55b3763c681081ea6ad94b"
+    },
+    {
+      "path": "repeat-1209/native-11.4/source-identity.json",
+      "bytes": 1404,
+      "sha256": "31837019e0a4313c446024a2d0566a1952c09c0c9dbd574e9e00afe9698fb7f1"
+    },
+    {
+      "path": "repeat-1209/native-11.4/targeted-http-1000.json.gz",
+      "bytes": 5151,
+      "sha256": "db89e3dbd5d018a8341d28517d1c0f95c34d3ad163f6c6542a9d66a4c59d7cf7"
+    },
+    {
+      "path": "repeat-1209/native-11.4/targeted-http-10000.json.gz",
+      "bytes": 5509,
+      "sha256": "ff181d9cd0d19d6fa37103d843f45ae0579ab7f073e726c758dceeeb4cc3d4fc"
+    },
+    {
+      "path": "repeat-1209/native-11.4/targeted-http-30000.json.gz",
+      "bytes": 5832,
+      "sha256": "a3a67bd598679e597fd971c66e58d9ee643de32c39f720e4ef3d29d73f8882fb"
+    }
+  ]
+}

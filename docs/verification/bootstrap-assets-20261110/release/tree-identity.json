@@ -1,0 +1,41 @@
+{
+  "tested_head": "6162e6b7c7906b29a4c80c11ef044af5854cc4c8",
+  "deployed_sha": "9dbd9eaf1f78e364d1dacd1ae0e3969758b7a176",
+  "whole_tested_merge_tree_identical": true,
+  "runtime_files": [
+    {
+      "path": "moje_treninky.php",
+      "baseline_sha256": "dff4ec74386ca7b59a1e8a825151159f05969c7981834fed771dfe445877e1a2",
+      "deployed_sha256": "fac85dd390a9cd14ffa2b410e80521d1bdb0f3553f3296b5480a3b7273596a35"
+    },
+    {
+      "path": "sportovec_treninky.php",
+      "baseline_sha256": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+      "deployed_sha256": "ee975e1c20c5b8ebd9cedb44c0c3f807a70470545c24650ce3ca184d63322f2e"
+    },
+    {
+      "path": "sprava_treninku.php",
+      "baseline_sha256": "bfc4eb822c3c071c2ca3670cc2fe54f4f0a634386dd292b9a31ccd4d644a44a7",
+      "deployed_sha256": "4ba0cdf2aeadde44efc257d22079869aeed16a958da4d1eb13e58ed12942125c"
+    },
+    {
+      "path": "db.php",
+      "baseline_sha256": "bae8ae992697fce593292f06a27db353f4735764d5c4afbebfe1fefcb419ff9e",
+      "deployed_sha256": "bae8ae992697fce593292f06a27db353f4735764d5c4afbebfe1fefcb419ff9e"
+    },
+    {
+      "path": "hlavicka.php",
+      "baseline_sha256": "3012d42d1200d391b07ef395da89039d8f7cabc57d6ae75d044f8e046a516637",
+      "deployed_sha256": "3012d42d1200d391b07ef395da89039d8f7cabc57d6ae75d044f8e046a516637"
+    },
+    {
+      "path": "includes/athlete_profile_read.php",
+      "baseline_sha256": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+      "deployed_sha256": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359"
+    }
+  ],
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5",
+  "original_branch": "codex/fio-auto-reconciliation-recovery",
+  "artifact_canonical_hashes_verified": 102,
+  "prior_lossless_archive_hashes_verified": 129
+}

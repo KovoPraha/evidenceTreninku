@@ -1,6 +1,51 @@
 # P11-ASSET — průběžné ověření
 
-ROZPRACOVÁNO. [Plán](../../BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
+[Plán](../../BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
+
+## Technická přejímka a vydání 10. 11. 2026 — PASS
+
+PR [#425](https://github.com/KovoPraha/evidenceTreninku/pull/425) sloučen jako
+`9dbd9eaf1f78e364d1dacd1ae0e3969758b7a176`; celý tree je totožný s testovaným
+`6162e6b7`. [30/30 CI](premerge-checks.json) SUCCESS, PHPUnit2424/55908.
+Primární běh42725053241 i nezávislý42724887655 PASS na obouMariaDB10.3/11.4.
+Oba fyzickéPHP roots mají stejný bootstrap, hlavičku, reader a assets; celý
+HTML/16AJAXscénářů/4parent+coachAJAX ×1k/10k/30k, role/revokace/bearer/CSRF,
+checksumy a úklid PASS. [Zdrojová shoda](source-proof.json), [native](native-metrics.json).
+
+Skutečný Chrome544měřených navigací +128warmup,17střídavých párů každého
+kontextu/viewport/cache; navíc52legacy default/saved-Měření navigací. Žádné
+throttling/mocky. CSS2→1 na každé stránce, odstraněno232803decoded bytes,
+při ověřeném živém gzip30829bytes a1externí request. Warm cache bez významné
+regrese. [Všechny metriky a8/8pixelově shodných párů](browser-metrics.json);
+computed styles shodné, skutečné mobilní offcanvas otevřeno/zavřeno, žádná
+chyba aplikace. Pouze automatický nepoužitý favicon.ico404 evidován zvlášť.
+
+Cold FCP, mediány ms, původní→nové:
+
+| Stránka | Desktop1036×703 | Mobil390×844 |
+| --- | --- | --- |
+| Profil sportovce | 68→48 (−29.4%) | 68→44 (−35.3%) |
+| Moje tréninky | 64→48 (−25.0%) | 60→44 (−26.7%) |
+| Správa tréninků | 60→52 (−13.3%) | 56→52 (−7.1%) |
+| Veřejný bearer profil | 48→44 (−8.3%) | 48→44 (−8.3%) |
+
+Časy jsou párový syntetický Chrome benchmark, nikoli produkční SLA. Serverový
+čas zůstává kontrolní metrikou; SQL se nemění. Variabilita plánů a hostů je
+vidět mezi nezávislými běhy, nelze porovnávat absolutní čísla napříčVM.
+WIP7a7afd75 zachovaný; žádná migrace/index/role/cache/aktivace/import změna.
+
+Chráněný deploy [42727693090](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42727693090)
+SUCCESS na přesném `9dbd9eaf`, import/UAT false. Úplná záloha 389/2,
+konfigurace, migrace, VS, indexy a HTTP smoke PASS. [Osm GET před](public-before-final.json)
+a [po](public-after.json) mají shodný status i normalizovaný DOM. CLI je
+chráněné stávajícím hostingovým 403; canonical CSS/SRI živě shodné.
+Konečný stav a skutečné meze ověření jsou v [release](release/RESULTS.md).
+Přihlášené lidské produkční UAT, fyzický mobil a restore nové zálohy NOT RUN.
+
+---
+
+Následují historické pracovní záznamy včetně FAIL a nepřijatých měření.
+
 Baselineff182971/runtime17110a7f. RIX SQL/index varianty jsou nevybrané,
 reader obnoven přesně. Canonical Bootstrap232803bytes/SHA384 odpovídá SRI
 na duplicitních CDN odkazech; živý payload/HTML/Chrome následují.
