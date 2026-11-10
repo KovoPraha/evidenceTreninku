@@ -6,24 +6,36 @@ require_once __DIR__ . '/../csrf_helper.php';
 require_once __DIR__ . '/../includes/individual_lesson_context.php';
 require_once __DIR__ . '/../includes/public_seo.php';
 
-function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
-function timeToMin(string $t): int { return (int)substr($t,0,2)*60 + (int)substr($t,3,2); }
-function minToTime(int $m): string { return sprintf('%02d:%02d', intdiv($m,60), $m%60); }
+function h(string $s): string
+{
+    return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+function timeToMin(string $t): int
+{
+    return (int)substr($t, 0, 2) * 60 + (int)substr($t, 3, 2);
+}
+function minToTime(int $m): string
+{
+    return sprintf('%02d:%02d', intdiv($m, 60), $m % 60);
+}
 
 /** Vygeneruje sloty z okna lekce. Vrátí pole ['cas_od'=>'10:00','cas_do'=>'11:00']. */
-function generateSloty(string $casOd, string $casDo, int $slotMin): array {
+function generateSloty(string $casOd, string $casDo, int $slotMin): array
+{
     $odM  = timeToMin($casOd);
     $doM  = timeToMin($casDo);
     $sloty = [];
     for ($s = $odM; $s + $slotMin <= $doM; $s += $slotMin) {
-        $sloty[] = ['cas_od' => minToTime($s), 'cas_do' => minToTime($s + $slotMin)];
+        $sloty[] = ['cas_od' => minToTime($s), 'cas_do' => minToTime(
+            $s + $slotMin
+        )];
     }
     return $sloty;
 }
 
 $prihlaseny   = isset($_SESSION['verejny_uzivatel_id']);
 $uzivatelId   = (int)($_SESSION['verejny_uzivatel_id'] ?? 0);
-$uzivatelJmeno= $_SESSION['verejny_uzivatel_jmeno'] ?? '';
+$uzivatelJmeno = $_SESSION['verejny_uzivatel_jmeno'] ?? '';
 
 // ── Filtry ────────────────────────────────────────────────────────────────────
 $sportovist = $pdo->query(
@@ -34,7 +46,11 @@ $filterSport = (int)($_GET['sportoviste_id'] ?? 0);
 
 // Měsíc z ?od= parametru (nebo aktuální)
 $filterOd = trim($_GET['od'] ?? date('Y-m-01'));
-try { $refDt = new DateTime($filterOd); } catch (Exception $e) { $refDt = new DateTime(); }
+try {
+    $refDt = new DateTime($filterOd);
+} catch (Exception $e) {
+    $refDt = new DateTime();
+}
 $rok   = (int)$refDt->format('Y');
 $mesic = (int)$refDt->format('n');
 
@@ -54,8 +70,15 @@ $minDatum = (new DateTime())->modify('+3 days')->format('Y-m-d');
 // ── Načtení lekcí pro měsíc ────────────────────────────────────────────────
 $params = [$mesicOd, $mesicDo];
 $sportKl = '';
-if ($filterSport) { $sportKl = ' AND il.sportoviste_id = ?'; $params[] = $filterSport; }
-$lessonContext=individualLessonContextCondition($pdo,'il',INDIVIDUAL_LESSON_CONTEXT_LESSON);
+if ($filterSport) {
+    $sportKl = ' AND il.sportoviste_id = ?';
+    $params[] = $filterSport;
+}
+$lessonContext = individualLessonContextCondition(
+    $pdo,
+    'il',
+    INDIVIDUAL_LESSON_CONTEXT_LESSON
+);
 
 $lekceArr = $pdo->prepare("
     SELECT il.*, s.nazev AS sport_nazev, s.kod AS sport_kod, t.jmeno AS trener_jmeno
@@ -87,9 +110,13 @@ if (!empty($lekceArr)) {
         $slotKey = substr($b['slot_cas_od'] ?? '', 0, 5);
         $lid = (int)$b['lekce_id'];
         if ($b['stav'] === 'cekaci_listina') {
-            $waitingCounts[$lid][$slotKey] = ($waitingCounts[$lid][$slotKey] ?? 0) + (int)$b['cnt'];
+            $waitingCounts[$lid][$slotKey] = (
+                $waitingCounts[$lid][$slotKey] ?? 0
+            ) + (int)$b['cnt'];
         } else {
-            $bookingCounts[$lid][$slotKey] = ($bookingCounts[$lid][$slotKey] ?? 0) + (int)$b['cnt'];
+            $bookingCounts[$lid][$slotKey] = (
+                $bookingCounts[$lid][$slotKey] ?? 0
+            ) + (int)$b['cnt'];
         }
     }
 }
@@ -184,22 +211,30 @@ foreach ($lekceArr as $l) {
     }
 
     if (!isset($dayData[$datum])) {
-        $dayData[$datum] = ['lekce' => [], 'has_green' => false, 'has_yellow' => false, 'has_any' => false];
+        $dayData[$datum] = ['lekce' => [], 'has_green' => false, 'has_yellow' => false
+, 'has_any' => false];
     }
     $dayData[$datum]['lekce'][] = $lekceData;
     $dayData[$datum]['has_any'] = true;
     if ($lekceData['has_volne']) {
-        if ($l['typ'] === 'zelena') $dayData[$datum]['has_green'] = true;
-        else                        $dayData[$datum]['has_yellow'] = true;
+        if ($l['typ'] === 'zelena') {
+            $dayData[$datum]['has_green'] = true;
+        } else {
+            $dayData[$datum]['has_yellow'] = true;
+        }
     }
 }
 
 $upcomingSlots = [];
 foreach ($dayData as $date => $day) {
-    if ($date < date('Y-m-d')) continue;
+    if ($date < date('Y-m-d')) {
+        continue;
+    }
     foreach ($day['lekce'] as $lesson) {
         foreach ($lesson['sloty'] as $slot) {
-            if (!$slot['muzRez'] || $slot['volno'] <= 0 || $slot['moje']) continue;
+            if (!$slot['muzRez'] || $slot['volno'] <= 0 || $slot['moje']) {
+                continue;
+            }
             $reservationUrl = 'rezervovat.php?lekce_id=' . (int)$lesson['id']
                 . '&slot_od=' . rawurlencode((string)$slot['cas_od'])
                 . '&slot_do=' . rawurlencode((string)$slot['cas_do']);
@@ -211,9 +246,12 @@ foreach ($dayData as $date => $day) {
                 'to' => (string)$slot['cas_do'],
                 'price' => (float)$lesson['cena_kc'],
                 'free' => (int)$slot['volno'],
-                'url' => $prihlaseny ? $reservationUrl : 'prihlaseni.php?redirect=' . rawurlencode($reservationUrl),
+                'url' => $prihlaseny ? $reservationUrl : 'prihlaseni.php?redirect='
+. rawurlencode($reservationUrl),
             ];
-            if (count($upcomingSlots) >= 3) break 3;
+            if (count($upcomingSlots) >= 3) {
+                break 3;
+            }
         }
     }
 }
@@ -228,11 +266,27 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Rezervace — <?= h($mesiceCS[$mesic]) ?> <?= $rok ?></title>
-    <?php publicSeoHead('Individuální cyklistické lekce – KOVO Praha','Prohlédněte si veřejné termíny individuálních lekcí a volná místa. Vybraný termín můžete po přihlášení rezervovat.','booking/kalendar.php'); ?>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <?php appUiAssets(); ?>
-    <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+    <title>Rezervace — <?=
+
+ h($mesiceCS[$mesic])
+?> <?=
+
+ $rok
+?></title>
+    <?php
+publicSeoHead(
+    'Individuální cyklistické lekce – KOVO Praha',
+    'Prohlédněte si veřejné termíny individuálních lekcí a volná místa. Vybraný termín můžete po přihlášení rezervovat.',
+    'booking/kalendar.php'
+);
+?>
+    <?php
+appUiAssets();
+?>
+    <style nonce="<?=
+
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>">
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -287,7 +341,9 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 </head>
 <body class="bg-light">
 
-<?php publicShellNav('lessons'); ?>
+<?php
+publicShellNav('lessons');
+?>
 
 <div class="container mt-3 pb-5">
 
@@ -298,25 +354,56 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 
     <!-- Filtr sportoviště -->
     <form class="d-flex gap-2 mb-3 align-items-center flex-wrap" method="get">
-        <input type="hidden" name="od" value="<?= h($prvniDen->format('Y-m-01')) ?>">
+        <input type="hidden" name="od" value="<?=
+
+ h($prvniDen->format('Y-m-01'))
+?>">
         <label for="calendar-sportoviste" class="small text-muted mb-0">Sportoviště:</label>
-        <select id="calendar-sportoviste" name="sportoviste_id" class="form-select form-select-sm w-auto" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" onchange="this.form.submit()">
+        <select id="calendar-sportoviste" name="sportoviste_id" class="form-select form-select-sm w-auto" data-app-csp-handler="<?=
+
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>" onchange="this.form.submit()">
             <option value="">Všechna veřejná</option>
-            <?php foreach ($sportovist as $s): ?>
-                <option value="<?= $s['id'] ?>" <?= $filterSport === (int)$s['id'] ? 'selected' : '' ?>>
-                    <?= h($s['nazev']) ?>
+            <?php
+foreach ($sportovist as $s):
+    ?>
+                <option value="<?=
+
+     $s['id']
+    ?>" <?=
+
+     $filterSport === (int)$s['id'] ? 'selected' : ''
+    ?>>
+                    <?=
+
+     h($s['nazev'])
+    ?>
                 </option>
-            <?php endforeach; ?>
+            <?php
+endforeach;
+?>
         </select>
     </form>
 
     <!-- Navigace měsíce -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="?od=<?= $prevMesic . $sportParam ?>" class="btn btn-outline-secondary btn-sm" aria-label="Předchozí měsíc">
+        <a href="?od=<?=
+
+ $prevMesic . $sportParam
+?>" class="btn btn-outline-secondary btn-sm" aria-label="Předchozí měsíc">
             <i class="bi bi-chevron-left"></i>
         </a>
-        <h2 class="h5 mb-0 fw-bold"><?= $mesiceCS[$mesic] ?> <?= $rok ?></h2>
-        <a href="?od=<?= $nextMesic . $sportParam ?>" class="btn btn-outline-secondary btn-sm" aria-label="Následující měsíc">
+        <h2 class="h5 mb-0 fw-bold"><?=
+
+ $mesiceCS[$mesic]
+?> <?=
+
+ $rok
+?></h2>
+        <a href="?od=<?=
+
+ $nextMesic . $sportParam
+?>" class="btn btn-outline-secondary btn-sm" aria-label="Následující měsíc">
             <i class="bi bi-chevron-right"></i>
         </a>
     </div>
@@ -328,66 +415,172 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
         <span class="text-muted"><i class="bi bi-clock me-1"></i>Zpravidla min. 3 dny předem</span>
     </div>
 
-    <?php if($upcomingSlots!==[]):?><section class="mb-4" aria-labelledby="next-lessons-title"><h2 class="h5" id="next-lessons-title">Nejbližší volné termíny</h2><div class="row g-2"><?php foreach($upcomingSlots as$upcoming):?><div class="col-lg-4"><article class="card h-100 border-0 shadow-sm"><div class="card-body d-flex flex-column gap-1"><strong><?=h((new DateTimeImmutable($upcoming['date']))->format('j. n. Y').' · '.$upcoming['from'].'–'.$upcoming['to'])?></strong><span><?=h($upcoming['name'])?></span><span class="small text-muted"><?=h($upcoming['place'])?> · <?=h(number_format($upcoming['price'],0,',',' '))?> Kč · <?=$upcoming['free']?> <?=$upcoming['free']===1?'volné místo':($upcoming['free']<5?'volná místa':'volných míst')?></span><a class="btn btn-primary btn-sm mt-auto align-self-start" href="<?=h($upcoming['url'])?>"><?=$prihlaseny?'Rezervovat':'Přihlásit se a rezervovat'?></a></div></article></div><?php endforeach;?></div></section><?php endif; ?>
+    <?php
+if ($upcomingSlots !== []):
+    ?><section class="mb-4" aria-labelledby="next-lessons-title"><h2 class="h5" id="next-lessons-title">Nejbližší<?php
 
-    <?php if ($dayData === []): ?>
+    ?> volné termíny</h2><div class="row g-2"><?php
+foreach ($upcomingSlots as $upcoming):
+    ?><div class="col-lg-4"><article class="card h-100 border-0 shadow-sm"><div class="card-body d-flex<?php
+
+    ?> flex-column gap-1"><strong><?=
+
+        h((new DateTimeImmutable($upcoming['date']))->format('j. n. Y').' · '.$upcoming['from']
+    .'–'.$upcoming['to'])
+    ?></strong><span><?=
+
+        h($upcoming['name'])
+    ?></span><span class="small text-muted"><?=
+
+        h($upcoming['place'])
+    ?> · <?=
+
+        h(number_format($upcoming['price'], 0, ',', ' '))
+    ?> Kč · <?=
+
+        $upcoming['free']
+    ?> <?=
+
+        $upcoming['free'] === 1 ? 'volné místo' : ($upcoming['free'] < 5 ? 'volná místa'
+    : 'volných míst')
+    ?></span><a class="btn btn-primary btn-sm<?php
+
+    ?> mt-auto align-self-start" href="<?=
+
+        h($upcoming['url'])
+    ?>"><?=
+
+        $prihlaseny ? 'Rezervovat' : 'Přihlásit se a rezervovat'
+    ?></a></div></article></div><?php
+endforeach;
+    ?></div></section><?php
+endif;
+?>
+
+    <?php
+if ($dayData === []):
+    ?>
         <div class="alert alert-light border d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <span>V měsíci <?= h($mesiceCS[$mesic]) ?> <?= $rok ?> nejsou zveřejněné žádné individuální lekce.</span>
-            <a class="btn btn-outline-primary" href="?od=<?= h($nextMesic . $sportParam) ?>">Zobrazit další měsíc</a>
+            <span>V měsíci <?=
+
+         h($mesiceCS[$mesic])
+    ?> <?=
+
+         $rok
+    ?> nejsou zveřejněné žádné individuální lekce.</span>
+            <a class="btn btn-outline-primary" href="?od=<?=
+
+         h($nextMesic . $sportParam)
+    ?>">Zobrazit další měsíc</a>
         </div>
-    <?php endif; ?>
+    <?php
+endif;
+?>
 
     <!-- Kalendářní mřížka -->
     <div class="cal-grid mb-2">
-        <?php foreach ($dnyHeader as $dh): ?>
-            <div class="cal-header-cell"><?= $dh ?></div>
-        <?php endforeach; ?>
+        <?php
+foreach ($dnyHeader as $dh):
+    ?>
+            <div class="cal-header-cell"><?=
+
+     $dh
+    ?></div>
+        <?php
+endforeach;
+?>
 
         <?php
         // Pondělí = 1, Neděle = 7
         $prvniIso = (int)$prvniDen->format('N'); // 1=Po ... 7=Ne
-        $dnes     = date('Y-m-d');
-        $pocetDni = (int)$prvniDen->format('t');
+$dnes     = date('Y-m-d');
+$pocetDni = (int)$prvniDen->format('t');
 
-        // Prázdné buňky před prvním dnem
-        for ($b = 1; $b < $prvniIso; $b++):
-        ?>
+// Prázdné buňky před prvním dnem
+for ($b = 1; $b < $prvniIso; $b++):
+
+    ?>
             <div class="cal-day other-month"></div>
-        <?php endfor; ?>
-
-        <?php for ($d = 1; $d <= $pocetDni; $d++):
-            $datumStr = sprintf('%04d-%02d-%02d', $rok, $mesic, $d);
-            $isToday  = $datumStr === $dnes;
-            $isPast   = $datumStr < $dnes;
-            $dayInfo  = $dayData[$datumStr] ?? null;
-            $hasSlots = $dayInfo !== null;
-            $cls = 'cal-day';
-            if ($isToday)  $cls .= ' today';
-            if ($isPast)   $cls .= ' past';
-            if ($hasSlots) $cls .= ' has-slots';
-        ?>
-            <div class="<?= $cls ?>" data-app-csp-handler="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>"
-                 <?= $hasSlots ? "onclick=\"openModal('".h($datumStr)."')\" onkeydown=\"if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('".h($datumStr)."')}\" role=\"button\" tabindex=\"0\" aria-label=\"Zobrazit termíny ".h((new DateTimeImmutable($datumStr))->format('j. n. Y'))."\"" : '' ?>>
-                <div class="day-num"><?= $d ?></div>
-                <?php if ($hasSlots): ?>
-                <div class="day-dots">
-                    <?php if ($dayInfo['has_green']):  ?><span class="dot dot-green"></span><?php endif; ?>
-                    <?php if ($dayInfo['has_yellow']): ?><span class="dot dot-yellow"></span><?php endif; ?>
-                    <?php if ($dayInfo['has_any'] && !$dayInfo['has_green'] && !$dayInfo['has_yellow']): ?>
-                        <span class="dot dot-full"></span>
-                    <?php endif; ?>
-                </div>
-                <?php endif; ?>
-            </div>
-        <?php endfor; ?>
+        <?php
+endfor;
+?>
 
         <?php
-        // Prázdné buňky na konci (doplnit do 7)
-        $posledniIso = (int)$posledniDen->format('N');
-        for ($b = $posledniIso + 1; $b <= 7; $b++):
-        ?>
+for ($d = 1; $d <= $pocetDni; $d++):
+    $datumStr = sprintf('%04d-%02d-%02d', $rok, $mesic, $d);
+    $isToday  = $datumStr === $dnes;
+    $isPast   = $datumStr < $dnes;
+    $dayInfo  = $dayData[$datumStr] ?? null;
+    $hasSlots = $dayInfo !== null;
+    $cls = 'cal-day';
+    if ($isToday) {
+        $cls .= ' today';
+    }
+    if ($isPast) {
+        $cls .= ' past';
+    }
+    if ($hasSlots) {
+        $cls .= ' has-slots';
+    }
+
+    ?>
+            <div class="<?=
+
+     $cls
+    ?>" data-app-csp-handler="<?=
+
+    htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+    ?>"
+                 <?=
+
+     $hasSlots ? "onclick=\"openModal('".h($datumStr)."')\" onkeydown=\"if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('"
+    .h($datumStr)."')}\" role=\"button\" tabindex=\"0\" aria-label=\"Zobrazit termíny "
+    .h((new DateTimeImmutable($datumStr))->format('j. n. Y'))."\"" : ''
+    ?>>
+                <div class="day-num"><?=
+
+     $d
+    ?></div>
+                <?php
+if ($hasSlots):
+    ?>
+                <div class="day-dots">
+                    <?php
+if ($dayInfo['has_green']):
+    ?><span class="dot dot-green"></span><?php
+endif;
+    ?>
+                    <?php
+if ($dayInfo['has_yellow']):
+    ?><span class="dot dot-yellow"></span><?php
+endif;
+    ?>
+                    <?php
+if ($dayInfo['has_any'] && !$dayInfo['has_green'] && !$dayInfo['has_yellow']):
+    ?>
+                        <span class="dot dot-full"></span>
+                    <?php
+endif;
+    ?>
+                </div>
+                <?php
+endif;
+    ?>
+            </div>
+        <?php
+endfor;
+?>
+
+        <?php
+            // Prázdné buňky na konci (doplnit do 7)
+            $posledniIso = (int)$posledniDen->format('N');
+for ($b = $posledniIso + 1; $b <= 7; $b++):
+
+    ?>
             <div class="cal-day other-month"></div>
-        <?php endfor; ?>
+        <?php
+endfor;
+?>
     </div><!-- /cal-grid -->
 
 </div><!-- /container -->
@@ -408,10 +601,22 @@ $dnyHeader = ['Po','Út','St','Čt','Pá','So','Ne'];
 </div>
 
 
-<script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
+<script nonce="<?=
+
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>">
 // Data všech dnů serializovaná z PHP
-const dayData = <?= json_encode($dayData, JSON_UNESCAPED_UNICODE|JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?>;
-const jePrihlasen = <?= $prihlaseny ? 'true' : 'false' ?>;
+const dayData = <?=
+
+ json_encode(
+     $dayData,
+     JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+ )
+?>;
+const jePrihlasen = <?=
+
+ $prihlaseny ? 'true' : 'false'
+?>;
 const mesiceCS = ['','leden','únor','březen','duben','květen','červen','červenec','srpen','září','říjen','listopad','prosinec'];
 
 const modal    = new bootstrap.Modal(document.getElementById('dayModal'));
@@ -462,16 +667,20 @@ function openModal(datum) {
                 } else if (!s.muzRez) {
                     akce = '<span class="badge bg-secondary">Uzavřeno (3 dny)</span>';
                 } else if (s.volno === 0) {
-                    const urlWait = `rezervovat.php?lekce_id=${l.id}&slot_od=${encodeURIComponent(s.cas_od)}&slot_do=${encodeURIComponent(s.cas_do)}&waitlist=1`;
+                    const urlWait =<?php
+?> `rezervovat.php?lekce_id=${l.id}&slot_od=${encodeURIComponent(s.cas_od)}&slot_do=${encodeURIComponent(s.cas_do)}&waitlist=1`;
                     if (!jePrihlasen) {
-                        akce = `<a href="prihlaseni.php?redirect=${encodeURIComponent(urlWait)}" class="btn btn-outline-warning btn-sm slot-btn">Přihlásit se na čekací listinu</a>`;
+                        akce = `<a href="prihlaseni.php?redirect=${encodeURIComponent(urlWait)}" class="btn btn-outline-warning btn-sm<?php
+?> slot-btn">Přihlásit se na čekací listinu</a>`;
                     } else {
                         const listBadge = s.naListine > 0 ? ` (${s.naListine} čeká)` : '';
-                        akce = `<a href="${urlWait}" class="btn btn-outline-warning btn-sm slot-btn"><i class="bi bi-hourglass me-1"></i>Čekací listina${listBadge}</a>`;
+                        akce = `<a href="${urlWait}" class="btn btn-outline-warning btn-sm slot-btn"><i class="bi bi-hourglass<?php
+?> me-1"></i>Čekací listina${listBadge}</a>`;
                     }
                 } else if (!jePrihlasen) {
                     const url = `rezervovat.php?lekce_id=${l.id}&slot_od=${encodeURIComponent(s.cas_od)}&slot_do=${encodeURIComponent(s.cas_do)}`;
-                    akce = `<a href="prihlaseni.php?redirect=${encodeURIComponent(url)}" class="btn btn-outline-primary btn-sm slot-btn">Přihlásit se a rezervovat</a>`;
+                    akce = `<a href="prihlaseni.php?redirect=${encodeURIComponent(url)}" class="btn btn-outline-primary btn-sm<?php
+?> slot-btn">Přihlásit se a rezervovat</a>`;
                 } else {
                     const url = `rezervovat.php?lekce_id=${l.id}&slot_od=${encodeURIComponent(s.cas_od)}&slot_do=${encodeURIComponent(s.cas_do)}`;
                     akce = `<a href="${url}" class="btn btn-primary btn-sm slot-btn"><i class="bi bi-calendar-check me-1"></i>Rezervovat</a>`;

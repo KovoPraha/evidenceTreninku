@@ -629,3 +629,5 @@ shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované
 [Trvalérelease](verification/workspace-bootstrap-assets-20261110/release/RESULTS.md).
 
 - D2026-11-10-08 — P11-ASSET4: obsahové verze pěti společných assetů místo mtime zachovají payloady i TTL a ušetří při nezměněném vydání CSS 51890 B (v JS TTL 78508 B). Manifest vzniká offline a skutečné bytes hlídá PHPUnit/deploy. Lossless WebP zamítnuto pro zvětšení. Nová přísná katalogová parita je doložená samostatně; chybějící historické before HTML se nenahrazuje domněnkou o fotografiích. Explicitní system-curl ve verifikačním CLI obchází pozorovanou místní transportní chybu, obsah/status/HTTPS gate se nemění. [Měření a meze](verification/catalog-audit-assets-20261110/RESULTS.md).
+
+- D2026-11-10-09 — P11-ASSET5: odstranit dvě CDN Bootstrap CSS kopie z kalendáře individuálních lekcí a velodromu; společné lokální CSS ponechat byte-for-byte. Klubový kalendář již duplicitu nemá, slouží jako control. Akceptace samostatná, bez rozšiřování SQL/rezervací/manifestu. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset5--veřejný-kalendář-a-velodrom-10-11-2026).

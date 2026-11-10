@@ -370,3 +370,32 @@ Finální evidence ve větvi codex/stable-ui-assets-release-docs-20261110;
 WIP původní fio větve / kis_rosters_admin.php SHA-256 `7a7afd75` zachovaný.
 Další kandidát KONCEPT: duplicitní Bootstrap CSS veřejného kalendáře a velodromu,
 samostatná nativní/pixelová přejímka; fotografie se bez přijaté shody nemění.
+
+
+## P11-ASSET5 — veřejný kalendář a velodrom, 10. 11. 2026
+
+ROZPRACOVÁNO. Vlastník Vývoj/Codex, zadavatel Marek. Zadání: odstranit duplicitu
+CSS, ověřit shodu a přínos před/po, při PASS commit/merge/deploy; zachovat WIP.
+Base main37f1ba8f, runtime94c10708 / deploy42837011604; flags vlastní CURRENT.
+Větev codex/public-calendar-assets-performance-20261110, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-calendar-assets-performance-20261110.
+Původní fio větev a kis_rosters_admin.php SHA2567a7afd75 ponechat bez zásahu.
+
+Nález: booking/kalendar.php (individuální lekce) a booking/velodrom.php obsahují
+CDN Bootstrap5.3.3 i místní identický Bootstrap přes appUiAssets(). Klubový
+booking/klubovy_kalendar.php duplicitu nemá, bude nezměněným control pohledem.
+Vybrána pouze dvě odstranění CDN tagu. Payloady, manifest obsahových verzí,
+TTL, PHP/SQL logika, rezervace, role, kapacity a zabezpečení se nemění.
+
+Postup: veřejná GET/Chrome baseline; přesný source kontrakt dvou odstraněných
+tagů a jen povinného formátování/závorek; izolované MariaDB10.3/11.4 celé HTTP,
+business checksumy, odmítnutí anonymních POST; skutečný Apache/Chrome desktop
+a mobile, cold/warm, 17 střídavých párů po 4 warmupech. Porovnat celý výstup
+mimo přesný CDN tag a request nonce/CSRF, skutečné CSS SHA/SRI a snímky pixelů.
+Ověřit kalendářové filtry/navigaci a velodrom bez vytváření ostrých rezervací.
+Žádné síťové mocky či umělá latence; časový gate 20 % +20 ms. Po všech PASS
+ověřit tested/merged tree, chráněný deploy, zálohu/config/migrace/VS/indexy,
+živé GET/Chrome před/po a WIP. Doklady zapsat samostatně bez dalšího deploye.
+Akceptace zatím NOT RUN; další krok baseline a úzká implementace.
+
+ASSET5 checkpoint: source contract a1/12 negativní unit PASS; živý before6/6, cíle CSS2/53957 B a control1/31248 B. [Průběžné výsledky](verification/public-calendar-assets-20261110/RESULTS.md). Native dvojí DB/Chrome a přijetí ještě čekají.

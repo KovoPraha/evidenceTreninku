@@ -410,7 +410,7 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | DONE / P11-RIX | Diagnóza uzavřena bez přijaté SQL/index varianty; pokračuje P11-ASSET. |
 
-| PL-29c9854bef | [P11-ASSET Bootstrap a stabilní společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | DONE / P11-ASSET až ASSET4; historická mez LIMIT | #435 /94c10708, deploy42837011604 SUCCESS; 19 CI, nové katalogové5/5 celé HTML/karty a4 pixelové páry PASS. CSS po vydání −51890 B; doklady #437. Staré tři hashy bez before HTML nejsou zpětně vysvětlené. |
+| PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | ROZPRACOVÁNO / ASSET5; ASSET1–4 nasazené | Kalendář lekcí/velodrom CSS duplicity, nový before/source kontrakt PASS; native přejímka čeká. Dosavadní #435/runtime94c10708 a doklady #437, historická mez ASSET4 zachovaná. |
 
 | PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | REJECTED / P11-HJS/P11-HJS2 | Oba nevybrané; skutečná duplicitníCSSvede naASSET2, prototypy zachované. |
 

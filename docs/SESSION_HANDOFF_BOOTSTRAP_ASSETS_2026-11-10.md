@@ -1,4 +1,17 @@
-# Předání P11-ASSET4 — 10. 11. 2026
+# Předání P11-ASSET5 — 10. 11. 2026
+
+ROZPRACOVÁNO. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset5--veřejný-kalendář-a-velodrom-10-11-2026).
+Base37f1ba8f; větev codex/public-calendar-assets-performance-20261110, vlastní
+worktree C:/Users/Marek/Documents/Codex/evidencePavel-calendar-assets-performance-20261110.
+Odstranit pouze CDN Bootstrap z booking/kalendar.php a booking/velodrom.php;
+booking/klubovy_kalendar.php je control. Zachovat veškerou logiku, CSS payloady,
+manifest, TTL, role/rezervace/kapacity a původní WIP7a7afd75 / fio větev.
+Nová native/browser/live přejímka a měření NOT RUN. Při všech PASS povolené
+commit/merge/deploy. Další krok: bezpečná veřejná baseline a source kontrakt.
+Provozní runtime/flags jsou v [CURRENT](CURRENT_STATE.md), dosud94c10708.
+
+## Předchozí P11-ASSET4
+
 
 **NASAZENO / technická přejímka nového řezu PASS.**
 [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset4--katalogová-diagnóza-a-další-měřený-řez-10-11-2026),
@@ -38,3 +51,5 @@ Historie: [workspace release](verification/workspace-bootstrap-assets-20261110/r
 ## Aktuální předání P11-ASSET3
 
 Historický řez: [veřejné účty a původní meze katalogu](verification/public-account-assets-20261110/release/RESULTS.md).
+
+ASSET5 checkpoint: source contract a1/12 negativní unit PASS; živý before6/6, cíle CSS2/53957 B a control1/31248 B. [Průběžné výsledky](verification/public-calendar-assets-20261110/RESULTS.md). Native dvojí DB/Chrome a přijetí ještě čekají.
