@@ -171,6 +171,8 @@ try:
     source_paths=routes+['db.php','includes/ui_shell.php','assets/.htaccess','assets/vendor/bootstrap/bootstrap.min.css','assets/vendor/bootstrap/bootstrap.bundle.min.js','assets/app-ui.css','assets/app-ui.js']
     (safe/'source-identity.json').write_text(json.dumps(dict(complete=True,baseline_sha=base,optimized_sha=head,source_sha256={p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in source_paths}),indent=2))
 finally:
+    if (output/'http-difference.json').exists():
+        shutil.copyfile(output/'http-difference.json',safe/'http-difference.json')
     front.stop();stop_servers()
     if os.environ.get('CALENDAR_ASSETS_BROWSER')=='1':
         subprocess.run(['playwright-cli','--session','calendar-assets','close'],cwd=root,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)

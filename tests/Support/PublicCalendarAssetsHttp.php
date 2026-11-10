@@ -62,6 +62,7 @@ $normalize = static function (array $response): string {
     return publicCalendarAssetsComparisonHtml($html);
 };
 $report = ['complete' => false, 'samples' => [], 'signatures' => [], 'anonymous_post_denials' => []];
+$referenceBodies = [];
 foreach (range(-4, 16) as $round) {
     foreach ($round % 2 === 0 ? ['before', 'after'] : ['after', 'before'] as $variant) {
         $rt = $runtime;
@@ -78,10 +79,22 @@ foreach (range(-4, 16) as $round) {
             if ($local !== 1 || $cdn !== ($variant === 'before' && !str_starts_with($case, 'control') ? 1 : 0)) {
                 throw new RuntimeException('Unexpected CSS resources.');
             }
-            $signature = hash('sha256', $normalize($response));
+            $normalized = $normalize($response);
+            $signature = hash('sha256', $normalized);
             $report['signatures'][$case] ??= $signature;
+            $referenceBodies[$case] ??= $normalized;
             if ($report['signatures'][$case] !== $signature) {
-                file_put_contents($output . '/difference-' . $variant . '-private.html', $normalize($response));
+                $reference = $referenceBodies[$case];
+                $offset = 0;
+                while ($offset < min(strlen($reference), strlen($normalized)) && $reference[$offset] === $normalized[$offset]) {
+                    $offset++;
+                }
+                $safe = static fn (string $value): string => (string) preg_replace('~[A-Za-z0-9+/_-]{32,}~', '[OPAQUE]', $value);
+                $difference = ['case' => $case, 'offset' => $offset, 'before_bytes' => strlen($reference), 'after_bytes' => strlen($normalized),
+                    'before' => $safe(substr($reference, max(0, $offset - 80), 300)),
+                    'after' => $safe(substr($normalized, max(0, $offset - 80), 300))];
+                file_put_contents($output . '/http-difference.json', json_encode($difference, JSON_THROW_ON_ERROR | JSON_INVALID_UTF8_SUBSTITUTE));
+                file_put_contents($output . '/difference-' . $variant . '-private.html', $normalized);
                 throw new RuntimeException('Whole HTML differs: ' . $case . ':' . $variant);
             }
             if ($round >= 0) {
