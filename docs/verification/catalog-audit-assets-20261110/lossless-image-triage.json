@@ -1,0 +1,42 @@
+[
+  {
+    "case": 0,
+    "width": 1024,
+    "height": 768,
+    "source_bytes": 289615,
+    "lossless_webp_bytes": 502892,
+    "encoding_ms": 758.3394,
+    "decoded_pixels_equal": true,
+    "source_unchanged": true
+  },
+  {
+    "case": 1,
+    "width": 1024,
+    "height": 768,
+    "source_bytes": 287072,
+    "lossless_webp_bytes": 508188,
+    "encoding_ms": 787.9607,
+    "decoded_pixels_equal": true,
+    "source_unchanged": true
+  },
+  {
+    "case": 2,
+    "width": 1024,
+    "height": 768,
+    "source_bytes": 283201,
+    "lossless_webp_bytes": 494732,
+    "encoding_ms": 1285.8575,
+    "decoded_pixels_equal": true,
+    "source_unchanged": true
+  },
+  {
+    "case": 3,
+    "width": 1024,
+    "height": 768,
+    "source_bytes": 272969,
+    "lossless_webp_bytes": 498994,
+    "encoding_ms": 828.292,
+    "decoded_pixels_equal": true,
+    "source_unchanged": true
+  }
+]

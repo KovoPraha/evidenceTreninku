@@ -1,0 +1,17 @@
+{
+  "catalog": {
+    "candidates": 2048,
+    "hypothesis": "only existing product image src values replaced by canonical placeholder, public data otherwise untouched",
+    "matches": []
+  },
+  "price": {
+    "candidates": 1024,
+    "hypothesis": "only existing product image src values replaced by canonical placeholder, public data otherwise untouched",
+    "matches": []
+  },
+  "page2": {
+    "candidates": 2048,
+    "hypothesis": "only existing product image src values replaced by canonical placeholder, public data otherwise untouched",
+    "matches": []
+  }
+}

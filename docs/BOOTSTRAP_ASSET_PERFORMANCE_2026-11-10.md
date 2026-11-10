@@ -303,3 +303,75 @@ assetverze místo filemtime (vlastní nový gate). Před dalším katalogovým �
 nová strukturovaná baseline s dílčími otisky, nikoliv pouze starým agregovaným hashem.
 
 Finální důkazy předány v [PR433](https://github.com/KovoPraha/evidenceTreninku/pull/433); docs větev codex/public-account-assets-release-docs-20261110. Merge až po celémCI; bez druhého nasazení.
+
+
+## P11-ASSET4 — katalogová diagnóza a další měřený řez, 10. 11. 2026
+
+ROZPRACOVÁNO před implementací. Vlastník výslovně žádá prověřit tři neobjasněné
+katalogové rozdíly, pokračovat nejpřínosnější optimalizací, ověřit shodu a před/po;
+po všech PASS commit/merge/deploy. WIP zachovat, plán a handoff průběžně v repu.
+Vlastník Vývoj/Codex. Main50ce79b2e290b926a70e46f8a729682f12a7b864,
+runtimebeead425/deploy42810948814 SUCCESS, import/UATfalse.
+Větev codex/catalog-audit-next-performance-20261110; izolovaný worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107.
+Původní kis_rosters_admin.php7a7afd75 a původní větev zachovat; HJS/RIX nepřebírat.
+
+Etapa A: pouze čtecí analýza catalog/price/page2 proti uloženým před/po hashům,
+konkrétnímu normalizátoru a oběma runtime Git stromům. Aktuální anonymní GET
+zaznamenat bezpečně po částech (produktová pole, pořadí, formuláře, struktura,
+asset URL a dynamické bezpečnostní značky), bez cookies, rawHTML či tokenů v Gitu.
+Odlišit změnu dat, technického formátu a chybu sondy. Příčinu nededukovat jen
+z HTTP200 ani nerozšiřovat maskování, dokud ji nepotvrdí konkrétní reprodukce.
+Staré beforeHTML chybí; případnou mez historického důkazu výslovně zachovat.
+
+Etapa B: podle čerstvého waterfallu vybrat a zapsat nejpřínosnější bezpečný řez.
+Kandidáti k posouzení: zbývající duplicitní veřejná BootstrapCSS a stabilní verze
+společných assetů místo filemtime (při minulém deployi se změnilo5URL bez změny
+obsahu). Defer společného JS vyžaduje samostatnou inventuru inline závislostí;
+neaktivovat globální hledání ani nepřebírat nevyhovující SQL/index prototypy.
+Konkrétní implementace dosud NEVYBRÁNA, uvedené varianty jsou kandidáti.
+
+Akceptace: prokázaná příčina nebo přesně vymezená historická mez tří rozdílů,
+nová reprodukovatelná bezpečná baseline; vybraná změna má shodné datové výsledky,
+celé odpovědi s úzkou konkrétní allowancí, práva/CSRF a kanonické payloady.
+Reálný PHP/Apache/Chrome, cold/warm desktop/mobile a kontrola;17střídavých párů
+po4warmupech, bez mocků/umělé latence; doložené přenosy a FCP/ready, nezobecňovat
+neprokázaný časový zisk. Při změně načítání DB ověřit MariaDB10.3/11.4 a checksumy;
+při změně assetů i invalidaci při skutečně změněném obsahu a nezměněné cacheTTL.
+Celé aktuální CI, identický testovaný/merged tree, protecteddeploy přes main
+jen po PASS, oba flagsfalse, backup/config/VS/migrace/index/smoke a živé čtecí
+před/po. Lidské UAT odděleně; finální docsPR bez dalšího deploye.
+
+Závislosti: GitHub CI/protected release, existující syntetické fixture a ChromeCLI.
+Další krok: strukturovaná diagnóza katalogu a čerstvé srovnání kandidátů.
+[Důkazy ASSET4](verification/catalog-audit-assets-20261110/RESULTS.md).
+Nová aplikace/testy/merge/deploy zatím NOT RUN.
+
+
+### ASSET4 — diagnóza a výběr před implementací
+
+Čerstvý veřejný Chrome: katalogdesktop resourcepayload1417429B, z toho obrázky
+1208278B; mobile283580B/74429B. Pět společnýchCSS/JS tvoří78508B (CSS51890B,
+JS26618B), samostatný ikonovýfont130396B. Kalendář má navíc duplicitníCDN CSS22709B.
+Čtyři největší fotografie: losslessWebP zachoval pixely, ale1132857→2004806B;
+zamítnuto, do aplikace nejde. Změna rozměrů/kvality má vlastní vizuální přejímku.
+Vybrán obsahový manifest pěti společných assetů místo filemtime: bez změny
+payloadů a TTL ušetří znovunačtení CSS51890B při dalších deployích bez změnyobsahu;
+v rámci JS30sTTL potenciálněcelých78508B. Nejprve skutečná dvourelease fixture
+v jednom originu, žádné prodmtime zápisy a žádné prodnasazení jen kvůli benchmarku.
+
+Katalog: starý page2 parametr stranka je ignorován, skutečný je strana; původní
+tři rozdíly jsou pouze dva odlišné pohledy. Default/page2hash se lišil už před
+vydáním,09:29→11:38, price zůstal stejný. Aktuální hashy přesně odpovídají after
+11:56 a12:03. Samotná náhrada libovolné podmnožiny12fotografií známým placeholderem
+staré hashy nevysvětlí (boundedreplay bez zásahu do dat). Aktuální veřejné obrázky
+se načetly, ale12důvěryhodných inlinefallback handlerů je blokovaných: zdrojová
+nonce značka obsahuje emisní whitespace, a proto nesplní exactnonce guard.
+Opravit pouze zdrojovou značku, bezpečnostní kontrolu ponechat.
+
+Přihlášený browser inventory timeout20s, žádné UIzměny/role/formuláře.
+Proto samostatný úzký CLI audit pevného okna10.11., START TRANSACTION READ ONLY
++ROLLBACK, jen veřejná auditní pole a agregace skladové aktivity. Bez důvodů,
+aktérů, zákazníků, cen nákladů či tokenů. Nejprve CI/PR/main; potom stávající
+chráněné SSH/prodprostředí zkopíruje pouze dočasný čtecí nástroj mimo webroot a
+uklidí ho. Jde o diagnózu, nikoliv nasazení nové webové aplikace.

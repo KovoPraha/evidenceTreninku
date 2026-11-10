@@ -1,0 +1,357 @@
+{
+  "read_only": true,
+  "browser": "158.0.8127.18",
+  "rows": [
+    {
+      "viewport": "desktop",
+      "status": 200,
+      "data": {
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "type": "link",
+            "encoded": 31248,
+            "decoded": 232803,
+            "transfer": 31548
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+            "type": "link",
+            "encoded": 14132,
+            "decoded": 98255,
+            "transfer": 14432
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+            "type": "link",
+            "encoded": 6510,
+            "decoded": 28560,
+            "transfer": 6810
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+            "type": "script",
+            "encoded": 23799,
+            "decoded": 80721,
+            "transfer": 24099
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+            "type": "script",
+            "encoded": 2819,
+            "decoded": 8561,
+            "transfer": 3119
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/kovo-praha-logo.png",
+            "type": "img",
+            "encoded": 15584,
+            "decoded": 15584,
+            "transfer": 15884
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6",
+            "type": "css",
+            "encoded": 130396,
+            "decoded": 130396,
+            "transfer": 130696
+          },
+          {
+            "url": "https://kis.kovopraha.cz/uploads/shop-products/f42d7624017439bd8293818aa031b773.jpg",
+            "type": "img",
+            "encoded": 58845,
+            "decoded": 58845,
+            "transfer": 59145
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "type": "img",
+            "encoded": 992,
+            "decoded": 992,
+            "transfer": 1292
+          },
+          {
+            "url": "https://kis.kovopraha.cz/uploads/shop-products/794eec11d8f074735dad40eabfdfc67e.jpg",
+            "type": "img",
+            "encoded": 272969,
+            "decoded": 272969,
+            "transfer": 273269
+          },
+          {
+            "url": "https://kis.kovopraha.cz/uploads/shop-products/a08c31254e17808d3373d57291f43339.jpg",
+            "type": "img",
+            "encoded": 283201,
+            "decoded": 283201,
+            "transfer": 283501
+          },
+          {
+            "url": "https://kis.kovopraha.cz/uploads/shop-products/4a65da0471cc01bad4f0d4292044553e.jpg",
+            "type": "img",
+            "encoded": 289615,
+            "decoded": 289615,
+            "transfer": 289915
+          },
+          {
+            "url": "https://kis.kovopraha.cz/uploads/shop-products/765955f81f54caed18de06fb02176b73.jpg",
+            "type": "img",
+            "encoded": 287072,
+            "decoded": 287072,
+            "transfer": 287372
+          },
+          {
+            "url": "https://kis.kovopraha.cz/favicon.ico",
+            "type": "other",
+            "encoded": 247,
+            "decoded": 326,
+            "transfer": 547
+          }
+        ],
+        "images": [
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/f42d7624017439bd8293818aa031b773.jpg",
+            "width": 423,
+            "height": 318,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "https://kis.kovopraha.cz/assets/product-placeholder.svg?v=20261017",
+            "width": 231,
+            "height": 150,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/794eec11d8f074735dad40eabfdfc67e.jpg",
+            "width": 1024,
+            "height": 768,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/a08c31254e17808d3373d57291f43339.jpg",
+            "width": 1024,
+            "height": 768,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/4a65da0471cc01bad4f0d4292044553e.jpg",
+            "width": 1024,
+            "height": 768,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/765955f81f54caed18de06fb02176b73.jpg",
+            "width": 1024,
+            "height": 768,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 460,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 460,
+            "loading": "lazy"
+          }
+        ],
+        "fcp": 724
+      }
+    },
+    {
+      "viewport": "mobile",
+      "status": 200,
+      "data": {
+        "resources": [
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css?v=1794311532",
+            "type": "link",
+            "encoded": 31248,
+            "decoded": 232803,
+            "transfer": 31548
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=1794311532",
+            "type": "link",
+            "encoded": 14132,
+            "decoded": 98255,
+            "transfer": 14432
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.css?v=1794311532",
+            "type": "link",
+            "encoded": 6510,
+            "decoded": 28560,
+            "transfer": 6810
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=1794311532",
+            "type": "script",
+            "encoded": 23799,
+            "decoded": 80721,
+            "transfer": 24099
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/app-ui.js?v=1794311532",
+            "type": "script",
+            "encoded": 2819,
+            "decoded": 8561,
+            "transfer": 3119
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/kovo-praha-logo.png",
+            "type": "img",
+            "encoded": 15584,
+            "decoded": 15584,
+            "transfer": 15884
+          },
+          {
+            "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap-icons/font/fonts/bootstrap-icons.woff2?dd67030699838ea613ee6dbda90effa6",
+            "type": "css",
+            "encoded": 130396,
+            "decoded": 130396,
+            "transfer": 130696
+          },
+          {
+            "url": "https://kis.kovopraha.cz/uploads/shop-products/f42d7624017439bd8293818aa031b773.jpg",
+            "type": "img",
+            "encoded": 58845,
+            "decoded": 58845,
+            "transfer": 59145
+          },
+          {
+            "url": "https://kis.kovopraha.cz/favicon.ico",
+            "type": "other",
+            "encoded": 247,
+            "decoded": 326,
+            "transfer": 547
+          }
+        ],
+        "images": [
+          {
+            "src": "https://kis.kovopraha.cz/uploads/shop-products/f42d7624017439bd8293818aa031b773.jpg",
+            "width": 423,
+            "height": 318,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          },
+          {
+            "src": "",
+            "width": 0,
+            "height": 0,
+            "display": 366,
+            "loading": "lazy"
+          }
+        ],
+        "fcp": 672
+      }
+    }
+  ]
+}
