@@ -399,3 +399,12 @@ ověřit tested/merged tree, chráněný deploy, zálohu/config/migrace/VS/index
 Akceptace zatím NOT RUN; další krok baseline a úzká implementace.
 
 ASSET5 checkpoint: source contract a1/12 negativní unit PASS; živý before6/6, cíle CSS2/53957 B a control1/31248 B. [Průběžné výsledky](verification/public-calendar-assets-20261110/RESULTS.md). Native dvojí DB/Chrome a přijetí ještě čekají.
+
+
+ASSET5 integrace main: během práce sloučen #438 / f39f3157 (objednávky a
+registrátor). Společná dokumentace zachována včetně TESTER-20261110. Nové CI
+se zopakuje na integrovaném head; dva vybrané kalendářové zdroje z37f1ba8f
+jsou stále přesným oraclem, ostatní sdílené PHP kopie jsou v páru shodné.
+Produkční plán TESTER váže #438 na společné vydání s #436; před vlastním deploy
+ověřit splnění této již zapsané podmínky a aktuální run/SHA. #436 neslučovat
+v rámci tohoto řezu. Původní WIP zůstává bez zásahu.

@@ -555,25 +555,27 @@ if ($registrationReview['sensitive_record_id'] !== null):
      identityAdminH($registrationReview['birth_number_masked'])
 
     ?></span>
+                                            <?php if ((string)($_SESSION['role'] ?? '') === 'admin'): ?>
                                             <form method="post" action="athlete_sensitive_admin.php" class="d-flex gap-1 athlete-sensitive-reveal">
                                                 <?=
      csrf_field()
-    ?><input type="hidden" name="action" value="reveal"><input type="hidden" name="record_id" value="<?=
+                                                ?><input type="hidden" name="action" value="reveal"><input type="hidden" name="record_id" value="<?=
 
-                                                (int)$registrationReview['sensitive_record_id']
-    ?>">
+                                                                                            (int)$registrationReview['sensitive_record_id']
+                                                ?>">
 <?php
-    echo('                                                <input class="form-control form-control-sm" name="reason" ' .
+                                                echo('                                                <input class="form-control form-control-sm" name="reason" ' .
 
-                                                'minlength="10" maxlength="1000" required placeholder="Důvod odhalení RČ">
+                                                                                            'minlength="10" maxlength="1000" required placeholder="Důvod odhalení RČ">
 ');
-    ?>                                                <button class="btn btn-sm btn-outline-danger">Odhalit celé RČ</button>
+                                                ?>                                                <button class="btn btn-sm btn-outline-danger">Odhalit celé RČ</button>
                                             </form>
                                             <span class="small fw-semibold text-danger athlete-sensitive-result" aria-live="polite"></span>
+                                            <?php endif; ?>
                                         <?php else:
                                             ?><span class="badge bg-secondary">Bez českého RČ</span><?php
                                         endif;
-                                ?>
+    ?>
                                         <?php
 if ($registrationReview['private_photo_id'] !== null):
     ?><a class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer" href="private_download.php?kind=athlete-photo&amp;id=<?=
@@ -583,24 +585,24 @@ if ($registrationReview['private_photo_id'] !== null):
         ?><span class="text-muted small">Fotografie nebyla přiložena.</span><?php
     endif;
 
-                                ?>
+    ?>
                                     </div>
                                 </div>
 
                                 <?php
-                                $registrationMatch = $registrationReview['match'];
-                                ?>
+    $registrationMatch = $registrationReview['match'];
+    ?>
                                 <div class="alert <?=
-                                 $registrationMatch['level'] === PERSON_MATCH_EXACT ? 'alert-danger'
-                                                                : ($registrationMatch['level'] === PERSON_MATCH_SIMILARITY ? 'alert-warning' : 'alert-success')
+     $registrationMatch['level'] === PERSON_MATCH_EXACT ? 'alert-danger'
+                                    : ($registrationMatch['level'] === PERSON_MATCH_SIMILARITY ? 'alert-warning' : 'alert-success')
 
-                                ?> py-2 mb-2">
+    ?> py-2 mb-2">
                                     <div class="fw-semibold"><?=
-                                 $registrationMatch['level'] === PERSON_MATCH_EXACT ? 'SHODA – novou osobu nezakládejte bez zdůvodněné výjimky'
-                                                                : ($registrationMatch['level'] === PERSON_MATCH_SIMILARITY ? 'PODOBNOST – zkontrolujte všechny kandidáty'
-                                    : 'Person-match-v1 nenašel kandidáta')
+     $registrationMatch['level'] === PERSON_MATCH_EXACT ? 'SHODA – novou osobu nezakládejte bez zdůvodněné výjimky'
+                                    : ($registrationMatch['level'] === PERSON_MATCH_SIMILARITY ? 'PODOBNOST – zkontrolujte všechny kandidáty'
+        : 'Person-match-v1 nenašel kandidáta')
 
-                                ?></div>
+    ?></div>
                                     <?php
 foreach ($registrationMatch['candidates'] as $candidate):
     ?>
