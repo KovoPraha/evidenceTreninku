@@ -1,54 +1,26 @@
 # Předání P11-ASSET — 10. 11. 2026
 
-ROZPRACOVÁNO. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md),
+ROZPRACOVÁNO, PR425 draft, žádný nový app merge/deploy.
+[Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md),
 [důkazy](verification/bootstrap-assets-20261110/RESULTS.md).
 
-RIX SQL/index varianty nebyly přijaty; původní reader je přesně ff182971.
-Produkce nadále17110a7f, nový deploy NOT RUN. Draft425 nyní b8 obsahuje jen3odstraněné CDN linky; reader přesně baseline.
-Neslučovat, dokud neprojde celá přejímka. Předchozí SQL b9 byl zamítnut.
+Aplikace: pouze3odstraněné duplicitní CDN linky ve sportovec_treninky,
+moje_treninky, sprava_treninku. Vše ostatní byte-shodné ff182971, včetně readeru.
+CSS lokální/CDN živě identické232803bytes/SRI; cold úspora30829gzipbytes/request.
+RIX SQL/index varianty zamítnuté, žádná nová migrace/index nebo role/aktivace.
+Produkce17110a7f/deploy42679050552, import/UATfalse. WIP7a7afd75 zachovaný.
 
-Další analýzou doložený zásah: odstranit duplicitní Bootstrap CDN CSS z3stránek.
-Lokální canonical232803bytes/SRI identické. WIP7a7afd75 zachovaný, vlastní
-probe větev mimo htdocs. Přesné zdroje po odečtení tagů, HTTP/business/roles,
-17paired Chrome cold/warm desktop390/public, CSS2→1, bez časové regrese.
-Další krok implementace a nativní profil; žádné SQL/DB nebo provozní přepínače.
+Zásadní korekce testů: fyzický baseline PHP root/db/header zachová workspace
+route guard i jediný bootstrap; sdílené jsou assets a pouze owned synthetic config.
+Úplná coach fixture pro AJAX; stejné zakázané role před/po. Úzká normalizace
+CSRF a jediného přesného tagu, computed styles a reálné offcanvas/collapse akce.
+SQLite/PHP účetní fixture nyní shodná Europe/Prague, původní timezone se obnoví;
+půlnoční failure reprodukované na mainu. Cíleně12/233, full PHPUnit0915 PASS.
 
-Aktuálně: whole parent HTML3stránky shodné oběDB; test role200 se opravuje
-podle baseline. SharedUiShell a CodeQL test se zpřesňují; účetní PHPUnit
-půlnoční UTC/CET fixture selhání se diagnostikuje odděleně. Chrome/gate/
-merge/deploy stále nepřijaty. Viz aktuální odstavec plánu a RESULTS.
-
-
-### Kořen příčiny role kontroly (šestý běh42721621744/731 FAIL)
-Předchozí vysvětlení o inicializovaném kontextu bylo nepřesné. staffCurrentRoute
-porovnává realpath(SCRIPT_FILENAME) s db.php __DIR__. Baseline root měl db.php
-symlinkovaný do druhého rootu; pro zkopírované3rodiče tak workspace guard
-vracel route=null. Žádná změna produkčního oprávnění: chyba izolace A/B harness.
-Baseline nově dostane fyzickou, byte-shodnou kopii db.php z ff182971;
-main db.php musí být zároveň identický. Oba kontexty coach/Správa a lead/Moje
-opět musejí být odmítnuté se stejným statusem/Location, plus anonymní Moje/Správa.
-Šestý ani předchozí asset běhy nejsou platnou kompletní přejímkou. Jejich
-model/CSS/source/cleanup důkazy zůstávají, timing se musí zopakovat s opravou.
-RIX pokusy s odděleným symlink baseline jsou rovněž pouze zamítnutá diagnóza,
-nikoli důkaz ke sloučení. Čerstvý main PHPUnit42721710594 má stejné účetní
-selhání během české půlnoci jako PR. Čeká ověření přesného logu a fixture času.
-
-Main půlnoční selhání potvrzeno; oprava pouze soukromé SQLite test fixture
-CURRENT_TIMESTAMP na Europe/Prague: cíleně12/233 PASS. Osmýrun42722121950
-se správným baseline db.php/config probíhá, PR425 aktualizován na6db.
-
-
-### HTTP10.3 PASS, další izolované testovací opravy
-Osmý42722121950/6db: MariaDB10.3 komplet PASS, whole HTML3parent/16AJAX
-scénářů ×3velikosti, shodné role odmítnutí, security i checksumy, cleanup.
-11.4 skončil na CLI callback syntax (trailingsemicolon u výrazu), opraveno.
-Devátý42722418721/d9 došel reálným Chrome prvním blokem, ale skončil na
-console404. Doplněna URL do každé chyby a úzké oddělení pouze automatického
-Chromium favicon.ico404 (soubor není v repu ani uveden v HTML). Ostatní chyby
-se nezakrývají, žádný síťový mock ani změna app. Kompletní Chrome nepřijat.
-PHPStan/style d9 PASS. PHPUnit2424/55907 má1selhání: PHP UTC retry versus
-Prague SQLite clock. Fixture teď nastaví i PHPtimezone a vždy obnoví původní;
-při explicitním -d date.timezone=UTC cíleně12/233 PASS. Produkční kód beze změny.
-Osmé/deváté safe artefakty zachované. Staré queued/in-progress PR běhy6db/9e
-zrušené jako překonané po d9, nepočítají se jako PASS. Nový aktuální head musí
-prokázat celé CI i Chrome; merge/deploy dosud NOT RUN.
+První10.3 HTTP1k/10k/30k PASS, dřívější symlink běhy ale nejsou finální přejímka.
+Chrome136profilových vzorků shodných, FCP cold68→48/64→48ms pouze průběžné.
+Finální fyzický root oběDB42724887655/12092dd1 teď běží; aktuální PR CI také.
+Další krok: vyhodnotit kompletní544Chrome/HTTP/security/bezregresní gate a celéCI;
+při PASS očekávaný head squash425, ověřit tree, protected deploy a veřejné GET.
+Pak uložit finální artefakty/release stav docs PR bez druhého nasazení.
+Žádný neúplný/cancelled/FAIL běh ani lidské produkční UAT není PASS.

@@ -133,3 +133,26 @@ při explicitním -d date.timezone=UTC cíleně12/233 PASS. Produkční kód bez
 Osmé/deváté safe artefakty zachované. Staré queued/in-progress PR běhy6db/9e
 zrušené jako překonané po d9, nepočítají se jako PASS. Nový aktuální head musí
 prokázat celé CI i Chrome; merge/deploy dosud NOT RUN.
+
+
+### Poslední přejímka — nový fyzický baseline root
+Tenth42723243006/0915 a eleventh42723878203/c181: profil desktop/mobil
+cold/warm136vzorků PASS, CSS2→1 a computed styles shodné; první screenshoty
+pixelově identické. 404 bylo potvrzené pouze automatické favicon.ico Chromium,
+explicitně evidované mimo chyby aplikace, nikoli obecně ignorované404.
+Diagnostika c181 opravila původní domněnku o timeoutu navigace: Moje AJAX500
+kvůli neúplné syntetické fixture (legacy treninky.mereni/tagy). Použit stávající
+CoachHistoryHttpProfile prepare a nově celý mine_ajax fragment v HTTP shodě.
+Test navigace navíc správně sleduje data-bs-toggle offcanvas/collapse a skutečný
+target místo předpokladu navbar-collapse; obě akce musí otevřít a zavřít panel.
+
+Dvanáctý42724386359 a třináctý42724572553 nahrazené/zrušené; nejsou PASS.
+Baseline fyzicky kopíruje kořenové/includes PHP, nikoli jejich symlinky: jinak
+hlavicka přes __DIR__ znovu spouštěla bootstrap druhého rootu. db.php i hlavicka
+musí být byte-shodné s ff182971, assets zůstávají sdílené kvůli shodným verzím
+filemtime. To odstraňuje i umělé náklady druhého DB bootstrapu v A/B. Čerstvá
+platná přejímka je až42724887655/12092dd1 (obě DB), která nyní běží.
+Aplikační diff stále jen3odstraněné CDN tagy; SQL/header/auth/role beze změny.
+PHPUnit0915 plná sada PASS; finální aktuální CI následuje, staré překonané běhy
+zrušené k uvolnění runnerů. Merge/deploy pořád NOT RUN. Žádný předchozí
+nekompletní běh se nepočítá jako release přejímka.
