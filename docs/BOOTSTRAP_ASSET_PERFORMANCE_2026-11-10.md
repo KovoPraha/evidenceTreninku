@@ -277,3 +277,5 @@ Chrome CLI, GitHub CI a chráněné nasazení. Další krok: zachytit živý bef
 implementovat přesné odstranění, uložit výsledky do
 [ověření ASSET3](verification/public-account-assets-20261110/RESULTS.md).
 Implementace, nové testy a nový deploy zatím NOT RUN.
+
+Průběžně PR432: první nativní10.3 PASS (340 měřených +80warmup GET,10CSRF odpovědí,350tabulek shodných). První de6c CI nepřijato: style nebyl po zalomení šablon idempotentní a jedno zalomení rozdělilo literal minlength ve stávajícím testu. Opraveny pouze hranice formátování; testy a source/wholeHTML gate nezměněné. Nově místně exact source4/4, style dry-run6/6, password policy10/35 a další8/88 kontrol PASS. Nový celý CI následuje, release NOT RUN.

@@ -67,8 +67,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 </div>
 <?php endforeach; ?>
 <?php if ($submitted): ?>
-<div class="alert alert-success">Pokud účet existuje a lze jej bezpečně ověřit, zařadili jsme další postup k odeslání na příslušný e-mail.</<?php
-    ?>div>
+<div class="alert alert-success">Pokud účet existuje a lze jej bezpečně ověřit, zařadili jsme další postup k odeslání na příslušný e-mail.</div>
 <?php if ($localResetLink !== null): ?>
 <div class="alert alert-warning">
 <strong>Jen localhost:</strong> <a class="alert-link" href="<?= htmlspecialchars($localResetLink, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">Otevřít testovací odkaz pro obnovu</a>.</div>

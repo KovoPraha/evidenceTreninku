@@ -194,19 +194,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <legend class="form-label mb-2">K čemu budete účet používat?</legend>
                         <div class="form-check border rounded p-3 ps-5 mb-2">
                             <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-family" value="rodina" <?= $purpose === 'rodina' ? 'checked' : '' ?>>
-                            <label class="form-check-label" for="registration-purpose-family"><strong>Jsem rodič / zákonný zástupce</strong><?php
-                ?><br><span class="text-muted small">Po ověření e-mailu připojíte dítě nebo požádáte o registraci nového sportovce. Údaje níže patří vám.</spa<?php
-                ?>n></label>
+                            <label class="form-check-label" for="registration-purpose-family"><strong>Jsem rodič / zákonný zástupce</strong><br><?php
+                ?><span class="text-muted small">Po ověření e-mailu připojíte dítě nebo požádáte o registraci nového sportovce. Údaje níže patří vám.</span></label>
                         </div>
                         <div class="form-check border rounded p-3 ps-5 mb-2">
                             <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-shop" value="nakup" <?= $purpose === 'nakup' ? 'checked' : '' ?>>
-                            <label class="form-check-label" for="registration-purpose-shop"><strong>Jen nákup a rezervace</strong><br><span <?php
-                ?>class="text-muted small">Oblečení, veřejné akce a další nabídky. Datum narození není potřeba.</span></label>
+                            <label class="form-check-label" for="registration-purpose-shop"><strong>Jen nákup a rezervace</strong><br><?php
+                ?><span class="text-muted small">Oblečení, veřejné akce a další nabídky. Datum narození není potřeba.</span></label>
                         </div>
                         <div class="form-check border rounded p-3 ps-5">
                             <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-sport" value="sport" <?= $purpose === 'sport' ? 'checked' : '' ?>>
-                            <label class="form-check-label" for="registration-purpose-sport"><strong>Jsem také účastník nebo sportovec</stro<?php
-                ?>ng><br><span class="text-muted small">Vytvoří se mi osobní sportovní profil. Dítě lze přidat samostatně po přihlášení.</span></label>
+                            <label class="form-check-label" for="registration-purpose-sport"><strong>Jsem také účastník nebo sportovec</strong><br><?php
+                ?><span class="text-muted small">Vytvoří se mi osobní sportovní profil. Dítě lze přidat samostatně po přihlášení.</span></label>
                         </div>
                     </fieldset>
                     <div class="row g-3 mb-3">
@@ -227,8 +226,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                value="<?= h($_POST['email'] ?? '') ?>" required>
                     </div>
                     <div class="mb-3" id="registration-birth-field" <?=$purpose === 'sport' ? '' : 'hidden'?> >
-                        <label class="form-label" for="registration-birth-date">Datum narození <span id="registration-birth-required" class=<?php
-                ?>"text-muted small">(povinné pro sportovní profil)</span></label>
+                        <label class="form-label" for="registration-birth-date"><?php
+                ?>Datum narození <span id="registration-birth-required" class="text-muted small">(povinné pro sportovní profil)</span></label>
                         <input type="date" name="narozeni" id="registration-birth-date" class="form-control"
                                value="<?= h($_POST['narozeni'] ?? '') ?>" <?=$purpose === 'sport' ? 'required' : 'disabled'?> >
                     </div>
@@ -240,21 +239,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="mb-3">
                         <label class="form-label" for="registration-password">Heslo <small class="text-muted">(12–200 znaků)</small></label>
                         <div class="input-group">
-                            <input type="password" name="heslo" id="registration-password" class="form-control" required minlength="12" maxl<?php
-                ?>ength="200" autocomplete="new-password" aria-describedby="registration-password-help">
-                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password" aria-contro<?php
-                ?>ls="registration-password" aria-pressed="false">Zobrazit</button>
+                            <input type="password" name="heslo" id="registration-password" class="form-control" required minlength="12"<?php
+                ?> maxlength="200" autocomplete="new-password" aria-describedby="registration-password-help">
+                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password"<?php
+                ?> aria-controls="registration-password" aria-pressed="false">Zobrazit</button>
                         </div>
-                        <div id="registration-password-help" class="form-text">Nejlépe si zvolte krátkou větu nebo několik slov, která si sn<?php
-                ?>adno zapamatujete. Mezery jsou povolené.</div>
+                        <div id="registration-password-help" class="form-text"><?php
+                ?>Nejlépe si zvolte krátkou větu nebo několik slov, která si snadno zapamatujete. Mezery jsou povolené.</div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label" for="registration-password-confirmation">Heslo znovu</label>
                         <div class="input-group">
-                            <input type="password" name="heslo2" id="registration-password-confirmation" class="form-control" required minle<?php
-                ?>ngth="12" maxlength="200" autocomplete="new-password">
-                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password-confirmation<?php
-            ?>" aria-controls="registration-password-confirmation" aria-pressed="false">Zobrazit</button>
+                            <input type="password" name="heslo2" id="registration-password-confirmation" class="form-control" required minlength="12"<?php
+                ?> maxlength="200" autocomplete="new-password">
+                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password-confirmation"<?php
+                ?> aria-controls="registration-password-confirmation" aria-pressed="false">Zobrazit</button>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Zaregistrovat se</button>

@@ -99,8 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card shadow">
         <div class="card-body p-4">
             <h1 class="h4 mb-2 text-center"><i class="bi bi-box-arrow-in-right me-2"></i>Přihlášení</h1>
-            <p class="text-center text-muted small mb-4">Přihlaste se k e-shopu, rezervacím a svému sportovnímu přehledu. Trenérská Evidence<?php
-?> je dostupná po přidělení oprávnění.</p>
+            <p class="text-center text-muted small mb-4">Přihlaste se k e-shopu, rezervacím a svému sportovnímu přehledu. Trenérská Evidence je dostupná po přidělení oprávnění.</p>
 
             <?php if (isset($_SESSION['sportovec_pristup_id'])): ?>
                 <div class="alert alert-info small" role="status">
