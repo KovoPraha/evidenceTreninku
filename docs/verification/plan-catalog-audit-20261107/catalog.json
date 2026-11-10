@@ -11,7 +11,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "COACH-ROSTER-01",
-      "disposition": "Místní implementace a syntetické testy; PR/CI, testovací Aligátoři a vydání otevřené.",
+      "disposition": "Draft PR #436 a 11 CI kontrol PASS; testovací Aligátoři a vydání otevřené.",
       "evidence": ["docs/verification/coach-group-rosters-20261110/RESULTS.md"]
     },
     {
