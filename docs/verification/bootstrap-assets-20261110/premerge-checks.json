@@ -1,0 +1,152 @@
+[
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053468/job/129528418836",
+    "name": "Coach history HTTP and Chrome (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053468/job/129528418954",
+    "name": "Coach history native (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053468/job/129528418929",
+    "name": "Coach history native (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053520/job/129528419018",
+    "name": "Athlete history HTTP (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053520/job/129528418606",
+    "name": "Athlete history HTTP (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053477/job/129528418453",
+    "name": "Athlete header HTTP (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053402/job/129528418024",
+    "name": "Athlete measurement HTTP (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053477/job/129528418023",
+    "name": "Athlete header HTTP (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053287/job/129528416426",
+    "name": "MariaDB integra\u010dn\u00ed smoke (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053402/job/129528417685",
+    "name": "Athlete measurement HTTP (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053275/job/129528413959",
+    "name": "PHPStan level 5 and changed-file style",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053287/job/129528416463",
+    "name": "MariaDB integra\u010dn\u00ed smoke (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053227/job/129528413666",
+    "name": "docs",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725047363/job/129528399373",
+    "name": "Analyze (python)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/runs/129529078149",
+    "name": "CodeQL",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053204/job/129528413841",
+    "name": "Athlete profile native (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725047363/job/129528399349",
+    "name": "Analyze (actions)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053161/job/129528413345",
+    "name": "Athlete parent HTTP (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725047363/job/129528398992",
+    "name": "Analyze (javascript-typescript)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053287/job/129528416387",
+    "name": "MariaDB profily \u010dten\u00ed (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053241/job/129528414432",
+    "name": "Bootstrap assets HTTP (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053204/job/129528413494",
+    "name": "Athlete profile native (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053165/job/129528413367",
+    "name": "Training history native (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053165/job/129528413263",
+    "name": "Training history native (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053287/job/129528416165",
+    "name": "MariaDB profily \u010dten\u00ed (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053287/job/129528415973",
+    "name": "PHPUnit na PHP 8.2",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053241/job/129528414165",
+    "name": "Bootstrap assets HTTP (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053161/job/129528413026",
+    "name": "Athlete parent HTTP (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053165/job/129528412974",
+    "name": "Training history HTTP and Chrome (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42725053204/job/129528413140",
+    "name": "Athlete profile HTTP and Chrome (MariaDB 11.4)",
+    "state": "SUCCESS"
+  }
+]

@@ -410,4 +410,4 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | DONE / P11-RIX | Diagnóza uzavřena bez přijaté SQL/index varianty; pokračuje P11-ASSET. |
 
-| PL-29c9854bef | [P11-ASSET Bootstrap CSS právě jednou](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | PARTIAL / P11-ASSET | Canonical CSS shodné; dále HTTP/Chrome/CI, nic nového nasazeného. |
+| PL-29c9854bef | [P11-ASSET Bootstrap CSS právě jednou](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | PARTIAL / P11-ASSET | 425 sloučeno/30CI, oba2DB běhy a544Chrome PASS; chráněný deploy probíhá. |

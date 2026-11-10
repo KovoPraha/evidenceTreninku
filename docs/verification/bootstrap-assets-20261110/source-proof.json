@@ -1,0 +1,19 @@
+{
+  "tested_head": "6162e6b7c7906b29a4c80c11ef044af5854cc4c8",
+  "merge_sha": "9dbd9eaf1f78e364d1dacd1ae0e3969758b7a176",
+  "whole_tree_identical": true,
+  "repeat_head": "12092dd1b0ed878a7dd5f2dcd8225a0df2507bb2",
+  "repeat_difference_only_docs": true,
+  "application_edits": [
+    "moje_treninky.php: one duplicate CDN stylesheet removed",
+    "sportovec_treninky.php: one duplicate CDN stylesheet removed",
+    "sprava_treninku.php: one duplicate CDN stylesheet removed"
+  ],
+  "reader_db_header_unchanged": true,
+  "phpunit": {
+    "tests": 2424,
+    "assertions": 55908
+  },
+  "primary_run": 42725053241,
+  "repeat_run": 42724887655
+}

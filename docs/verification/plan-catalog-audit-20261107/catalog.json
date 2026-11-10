@@ -11146,7 +11146,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11-ASSET",
-      "disposition": "Zahájeno: odstranit duplicitní CSS, ověřit business/UI a paired Chrome bez časové regrese.",
+      "disposition": "425/9dbd9eaf sloučeno,30CI a oba2DB/544Chrome běhy PASS; chráněný deploy42727693090 probíhá.",
       "evidence": [
         "docs/verification/bootstrap-assets-20261110/RESULTS.md"
       ]

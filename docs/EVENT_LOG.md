@@ -9,6 +9,7 @@ uzavřených prací v [rozhodovacím logu](DECISION_LOG.md).
 
 | Datum / ID | Práce a událost | Výsledek / následující krok | Trvalé podklady |
 | --- | --- | --- | --- |
+| 10. 11. 2026 / E2026-11-10-02 | P11-ASSET technická přejímka PASS a merge | #425/9dbd9eaf tree shodné6162,30CI/2424testů/55908assertions; oba čerstvé2DB běhy PASS,544Chrome+52regresních,8pixelpárů. CSS2→1/−30829gzipbytes, coldFCP7–35%lepší. Deploy42727693090 probíhá, WIP/flags zachované. | [Výsledky](verification/bootstrap-assets-20261110/RESULTS.md) |
 | 10. 11. 2026 / E2026-11-10-01 | P11-ASSET zahájen | SQL/index RIX nevybrané, reader přesně obnoven. Prokázána duplicita Bootstrap CSS ve3stránkách a identické živé payloady;3tagy odstraněné, další krok párové Chrome/HTTP. WIP/produkce zachované. | [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) |
 | 9. 11. 2026 / E2026-11-09-35 | P11-RIX gate FAIL a pokračování probe | Celé b9 HTTP10.3 regrese36→157ms, žádný merge/deploy. Rozšířené fresh5table/measurement-only probe vyřadily CASE/anti/derived; reader v probe obnoven naff182971, zkoumá se DATE cover. Raw bezeztrátově archivované s SHA manifestem, WIP zachované. | [Aktuální plán](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) |
 | 9. 11. 2026 / E2026-11-09-34 | P11-RIX vybraný SQL kandidát | Po zamítnutí summary/index variant nativní ownership YEAR probe42709050977 PASS,12scénářů shodné, aktuální rok SQL−58.0/55.8%. Následuje reader a celé HTTP/Chrome/CI; žádný app deploy. | [Volba a brány](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) |

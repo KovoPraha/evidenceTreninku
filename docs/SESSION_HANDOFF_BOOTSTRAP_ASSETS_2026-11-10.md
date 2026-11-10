@@ -1,26 +1,24 @@
 # Předání P11-ASSET — 10. 11. 2026
 
-ROZPRACOVÁNO, PR425 draft, žádný nový app merge/deploy.
+TECHNICKÁ PŘEJÍMKA PASS / SLOUČENO / DEPLOY PROBÍHÁ.
 [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md),
-[důkazy](verification/bootstrap-assets-20261110/RESULTS.md).
+[výsledky](verification/bootstrap-assets-20261110/RESULTS.md),
+[release](verification/bootstrap-assets-20261110/release/RESULTS.md).
 
-Aplikace: pouze3odstraněné duplicitní CDN linky ve sportovec_treninky,
-moje_treninky, sprava_treninku. Vše ostatní byte-shodné ff182971, včetně readeru.
-CSS lokální/CDN živě identické232803bytes/SRI; cold úspora30829gzipbytes/request.
-RIX SQL/index varianty zamítnuté, žádná nová migrace/index nebo role/aktivace.
-Produkce17110a7f/deploy42679050552, import/UATfalse. WIP7a7afd75 zachovaný.
+PR425→9dbd9eaf, celý tree přesně6162e6b7/30CI SUCCESS,2424/55908.
+Dva čerstvé fullHTTP/native/Chrome běhy42725053241 a42724887655 PASS oběDB.
+Shodné celéHTML/business/role/revokace/bearer/CSRF/checksumy v1k/10k/30k.
+544Chrome nav+128warmup,52legacyMZ,8/8pixelpárů, computed styles a offcanvas PASS.
+Cold FCP profil68→48/44ms, Moje64→48/60→44, Správa60→52/56→52;
+CSS2→1,−30829gzipbytes/request. Benchmark je syntetický, nikoli produkční SLA.
 
-Zásadní korekce testů: fyzický baseline PHP root/db/header zachová workspace
-route guard i jediný bootstrap; sdílené jsou assets a pouze owned synthetic config.
-Úplná coach fixture pro AJAX; stejné zakázané role před/po. Úzká normalizace
-CSRF a jediného přesného tagu, computed styles a reálné offcanvas/collapse akce.
-SQLite/PHP účetní fixture nyní shodná Europe/Prague, původní timezone se obnoví;
-půlnoční failure reprodukované na mainu. Cíleně12/233, full PHPUnit0915 PASS.
+App diff pouze3smazané CDN linky. Reader/db/header iostatníruntime přesněff182971.
+RIX uzavřen bez přijatéhoSQL/indexu; žádná nová DB/role/cache/aktivace.
+WIP původnífio větev/kis_rosters_admin7a7afd75 zachovaný, bez stash/clean/reset.
 
-První10.3 HTTP1k/10k/30k PASS, dřívější symlink běhy ale nejsou finální přejímka.
-Chrome136profilových vzorků shodných, FCP cold68→48/64→48ms pouze průběžné.
-Finální fyzický root oběDB42724887655/12092dd1 teď běží; aktuální PR CI také.
-Další krok: vyhodnotit kompletní544Chrome/HTTP/security/bezregresní gate a celéCI;
-při PASS očekávaný head squash425, ověřit tree, protected deploy a veřejné GET.
-Pak uložit finální artefakty/release stav docs PR bez druhého nasazení.
-Žádný neúplný/cancelled/FAIL běh ani lidské produkční UAT není PASS.
+Chráněný deploy42727693090 na9dbd9eaf probíhá, importovat_krouzky=false,
+uat_schvaleno=false. Poslední potvrzený runtime17110a7f; čerstvé8GETpřed PASS.
+Další krok: ověřit SUCCESS, úplnou zálohu/migrace/VS/config/smoke a8GETpo,
+CLI metadata endpoint404/0bytes. Pak commit/push/PR finálních docs, celéCI,
+merge bez druhého deploye a ověřit runtime zdroje i WIP.
+Přihlášené lidské produkční UAT/fyzický mobil/restore této zálohy NOT RUN.

@@ -539,3 +539,17 @@ primárně2→1Bootstrapstylesheet/30829CDNgzip bytes; FCP/cold/warm/ready změ�
 reálně bez mockování sítě a zachovat bez významné regrese. Úzká normalizace
 jediného známého resource rozdílu s negativními testy; data/HTML/UI jinak shodné.
 Nasadit jen po celé přejímce a aktuálním CI podle [plánu](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
+
+
+## D2026-11-10-ASSET-V — přijmout pouze ověřené odstranění duplicitních stylů
+
+Přijato po 30 zelených CI kontrolách, dvou čerstvých nativních bězích obou DB,
+544 měřených Chrome navigacích a 8 pixelově shodných dvojicích screenshotů.
+Cold FCP je podle stránky/zařízení o 7–35 % nižší, CSS požadavky 2→1, živý gzip
+přenos o 30 829 bytes menší. SQL se nemění a jeho čas není deklarovaným ziskem.
+Baseline fyzické PHP kopie mají vlastní správný route root a jediný bootstrap;
+jedinou úmyslnou HTML výjimkou je přesný druhý identický CDN tag. PHPUnit
+fixture hodin se izolovaně sjednotila na Europe/Prague po reprodukci chyby i na
+mainu. Žádná produkční účetní, rolová nebo datová změna. #425/9dbd9eaf sloučeno,
+whole-tree totožné s6162; chráněný deploy42727693090 probíhá podle původního
+podmíněného zadání vlastníka. [Přejímka](verification/bootstrap-assets-20261110/RESULTS.md).

@@ -1,0 +1,58 @@
+{
+  "complete": true,
+  "diagnostic_only": false,
+  "baseline_sha": "ff18297178419a57899cd5bb614a6b0fa51c9e7f",
+  "optimized_sha": "12092dd1b0ed878a7dd5f2dcd8225a0df2507bb2",
+  "source_sha256": {
+    "sportovec_treninky.php": "ee975e1c20c5b8ebd9cedb44c0c3f807a70470545c24650ce3ca184d63322f2e",
+    "moje_treninky.php": "fac85dd390a9cd14ffa2b410e80521d1bdb0f3553f3296b5480a3b7273596a35",
+    "sprava_treninku.php": "4ba0cdf2aeadde44efc257d22079869aeed16a958da4d1eb13e58ed12942125c",
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+    "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359",
+    "includes/sports_activity.php": "b2764b25e2987c0b6c292d659bc52fc4349942056b653b0a03f80a44b8c987fd",
+    "includes/sports_activity_overview_read.php": "b5d3881df6e65b40f71a25db586c5413820e06099928b00d6cee6aaa448fe8d6"
+  },
+  "baseline_source_sha256": {
+    "sportovec_treninky.php": "cba7d3884dd3b9b64d256dd6388dc8f70aaea134c0945bf40212d747d936bce4",
+    "moje_treninky.php": "dff4ec74386ca7b59a1e8a825151159f05969c7981834fed771dfe445877e1a2",
+    "sprava_treninku.php": "bfc4eb822c3c071c2ca3670cc2fe54f4f0a634386dd292b9a31ccd4d644a44a7",
+    "ajax_sportovec_treninky.php": "33e84da8b3ec6f67b22dd318cce66971bbd53049e37d8f056e191dcd03bdf871",
+    "includes/athlete_profile_read.php": "425c4aee6275a093a866fd56722401d1d149d98c446f76fc203b4ee78fde8359"
+  },
+  "comparison": true,
+  "cases": [
+    {
+      "size": 1000,
+      "before": {
+        "total_median_ms": 9.261999999999999,
+        "ttfb_median_ms": 9.139
+      },
+      "after": {
+        "total_median_ms": 9.209999999999999,
+        "ttfb_median_ms": 9.067
+      }
+    },
+    {
+      "size": 10000,
+      "before": {
+        "total_median_ms": 134.78,
+        "ttfb_median_ms": 134.61200000000002
+      },
+      "after": {
+        "total_median_ms": 134.9,
+        "ttfb_median_ms": 134.792
+      }
+    },
+    {
+      "size": 30000,
+      "before": {
+        "total_median_ms": 400.132,
+        "ttfb_median_ms": 400.01599999999996
+      },
+      "after": {
+        "total_median_ms": 401.139,
+        "ttfb_median_ms": 400.997
+      }
+    }
+  ]
+}

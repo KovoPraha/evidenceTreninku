@@ -1,6 +1,6 @@
 # P11-ASSET — Bootstrap CSS načítaný právě jednou
 
-Zahájení 9./10. 11. 2026, Europe/Prague. ROZPRACOVÁNO. Vlastník vývoj/Codex.
+Zahájení 9./10. 11. 2026, Europe/Prague. TECHNICKÁ PŘEJÍMKA PASS, SLOUČENO425, deploy probíhá. Vlastník vývoj/Codex.
 [Registr](WORK_PLAN_CURRENT.md), [předání](SESSION_HANDOFF_BOOTSTRAP_ASSETS_2026-11-10.md),
 [důkazy](verification/bootstrap-assets-20261110/RESULTS.md).
 
@@ -156,3 +156,11 @@ Aplikační diff stále jen3odstraněné CDN tagy; SQL/header/auth/role beze zm�
 PHPUnit0915 plná sada PASS; finální aktuální CI následuje, staré překonané běhy
 zrušené k uvolnění runnerů. Merge/deploy pořád NOT RUN. Žádný předchozí
 nekompletní běh se nepočítá jako release přejímka.
+
+## Aktuální přejímka a vydání
+
+30CI/2424testů/55908assertions, oba čerstvé fullHTTP/Chrome běhy PASS,544nav
++52regresních,8/8pixelpárů shodných. FCP cold7–35%lepší, CSS2→1/−30829gzipbytes.
+Main425/9dbd9eaf tree-shodné s6162; deploy42727693090 probíhá, import/UATfalse.
+[Finální metriky](verification/bootstrap-assets-20261110/RESULTS.md),
+[release](verification/bootstrap-assets-20261110/release/RESULTS.md).
