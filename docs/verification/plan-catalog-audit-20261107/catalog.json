@@ -11183,9 +11183,9 @@
       "title": "P11-HJS sdílený staff JavaScript",
       "primary": true,
       "role": "plan",
-      "status": "REJECTED",
-      "registry": "P11-HJS",
-      "disposition": "Nevybráno po měření produkčního přenosu; prototyp zachovaný, navazuje P11-JSZ.",
+      "status": "PARTIAL",
+      "registry": "P11-HJS/P11-HJS2",
+      "disposition": "Původní HJS nevybrán; nový HJS2 plán po zavedení gzip, vlastní fresh gate.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md"
       ]
@@ -11197,8 +11197,8 @@
       "primary": false,
       "role": "handoff",
       "status": "SUPPORT",
-      "registry": "P11-HJS",
-      "disposition": "Nevybráno po měření produkčního přenosu; prototyp zachovaný, navazuje P11-JSZ.",
+      "registry": "P11-HJS/P11-HJS2",
+      "disposition": "Původní HJS nevybrán; nový HJS2 plán po zavedení gzip, vlastní fresh gate.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md"
       ]
@@ -11210,8 +11210,8 @@
       "primary": false,
       "role": "evidence",
       "status": "SUPPORT",
-      "registry": "P11-HJS",
-      "disposition": "Nevybráno po měření produkčního přenosu; prototyp zachovaný, navazuje P11-JSZ.",
+      "registry": "P11-HJS/P11-HJS2",
+      "disposition": "Původní HJS nevybrán; nový HJS2 plán po zavedení gzip, vlastní fresh gate.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md"
       ]
@@ -11266,6 +11266,19 @@
       "disposition": "Nasazeno a živě ověřeno, podrobnosti a meze měření.",
       "evidence": [
         "docs/verification/javascript-compression-20261110/release/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-dbd415fd2f",
+      "path": "docs/verification/shared-header-script-gzip-20261110/RESULTS.md",
+      "title": "P11-HJS2 nová přejímka",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-HJS2",
+      "disposition": "Nová přejímka po gzip; zatím NOT RUN.",
+      "evidence": [
+        "docs/verification/shared-header-script-gzip-20261110/RESULTS.md"
       ]
     }
   ],

@@ -412,6 +412,6 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-29c9854bef | [P11-ASSET Bootstrap CSS právě jednou](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | DONE / P11-ASSET | 425/9dbd9eaf a deploy42727693090 SUCCESS;30CI/544Chrome/8pixelpárů a živé8GET+DOM PASS. Doklady426, lidskéUAT samostatně. |
 
-| PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | REJECTED / P11-HJS | Nevybráno po měření produkce; prototyp zachovaný, navazuje P11-JSZ. |
+| PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | PARTIAL / P11-HJS/P11-HJS2 | Původní HJS nevybrán; nový HJS2 gate po gzip, dosud bez release. |
 
 | PL-5088402eb8 | [P11-JSZ komprese JavaScriptů](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md) | DONE / P11-JSZ | PR427/deploy42774356221 SUCCESS; produkční13JS−69 %, decodedbytes/8DOM PASS. |
