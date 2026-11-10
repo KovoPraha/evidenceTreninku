@@ -1015,3 +1015,9 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 | PL-5b9d1c88ae | [P11-ASSET předání](SESSION_HANDOFF_BOOTSTRAP_ASSETS_2026-11-10.md) | handoff / SUPPORT | P11-ASSET |
 
 | PL-d09e090cc9 | [P11-ASSET průběžné ověření](verification/bootstrap-assets-20261110/RESULTS.md) | evidence / SUPPORT | P11-ASSET |
+
+| PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | plan / PARTIAL | P11-HJS |
+
+| PL-4a78e33bd1 | [P11-HJS předání](SESSION_HANDOFF_SHARED_HEADER_SCRIPT_2026-11-10.md) | handoff / SUPPORT | P11-HJS |
+
+| PL-98c103e306 | [P11-HJS ověření](verification/shared-header-script-20261110/RESULTS.md) | evidence / SUPPORT | P11-HJS |

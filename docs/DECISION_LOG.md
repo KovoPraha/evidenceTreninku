@@ -561,3 +561,13 @@ Produkční /bin vrací stávající Apache403 před PHP, stejné jako migrate.p
 nativní PHP404/0 zůstává backstop. Přijato skutečné hostingové odmítnutí bez
 uvolnění přístupu; nebylo nutné měnit aplikaci nebo rewrite pravidla.
 Dokumentace426 neměníruntime9dbd9eaf a nevyžaduje druhý deploy.
+
+
+## D2026-11-10-HJS — měřit cachovatelný společný staff JavaScript
+
+Podle nového zadání vybrán neuzavřený bod7 původní analýzy:14.7kB stejného
+kódu v každém staff HTML. P11-ASSET ani zamítnuté RIX varianty se neopakují.
+Pouze kandidát do měření, nikoli slíbené zrychlení: nový studený request musí
+projít bezregresním gate a úspora teplého HTML/cache být skutečně doložená.
+Šest serverových hodnot zůstane čerstvých/soukromých, nikdy ve statickém JS;
+stejný JS/pořadí/SQL a žádná aktivace hledání nebo push. [Plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md).
