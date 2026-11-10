@@ -26,4 +26,4 @@ Provedené technické doplnění v rámci schváleného kopírování: ve větvi
 
 ## Další převzetí
 
-[Finální provozní výsledek a bezpečné důkazy](verification/bar-display-stock-20261110/RESULTS.md). Vizuální přejímka NOT RUN kvůli blokaci Computer Use ověřením URL. Následuje fyzická inventura v KIS a skutečné P02/P04 podle [handoffu](SESSION_HANDOFF_BAR_2026-11-06.md), bez opakování importu, počátečních pohybů nebo publikace nabídky. Souborové předání: `codex/bar-display-stock-release-20261110`, vlastní původní worktree; finální PR následuje bez nového deploye.
+[Finální provozní výsledek a bezpečné důkazy](verification/bar-display-stock-20261110/RESULTS.md). Vizuální přejímka NOT RUN kvůli blokaci Computer Use ověřením URL. Následuje fyzická inventura v KIS a skutečné P02/P04 podle [handoffu](SESSION_HANDOFF_BAR_2026-11-06.md), bez opakování importu, počátečních pohybů nebo publikace nabídky. Souborové předání: `codex/bar-display-stock-release-20261110`, vlastní původní worktree; [PR #444](https://github.com/KovoPraha/evidenceTreninku/pull/444), aktuální CI a stav sloučení u PR, bez nového deploye.

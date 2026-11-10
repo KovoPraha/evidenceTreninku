@@ -42,4 +42,4 @@ Vizuální přejímka TV v řízeném prohlížeči **NOT RUN**: otevření kart
 
 Zbývá skutečný login Lucky, fyzická inventura, počáteční hotovost a první prodej/uzávěrka, reálná karta/QR a vratka a [účetní adaptér](../../BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md). Tyto body vede [provozní handoff](../../SESSION_HANDOFF_BAR_2026-11-06.md); tento převod je neoznačuje za přijaté. Starší WIP původního checkoutu i odděleného pilotu zůstalo zachované.
 
-Konečné souborové předání je ve větvi `codex/bar-display-stock-release-20261110`; samostatný dokumentační PR a jeho stav budou doplněné po vytvoření. Doklady nevyžadují další produkční deploy.
+Konečné souborové předání: [PR #444](https://github.com/KovoPraha/evidenceTreninku/pull/444), větev `codex/bar-display-stock-release-20261110`. Aktuální CI a stav sloučení jsou u tohoto PR; doklady nevyžadují další produkční deploy.
