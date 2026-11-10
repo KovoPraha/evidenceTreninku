@@ -1,5 +1,7 @@
 # BAR: zveřejnění základní nabídky
 
+Stav 10. 11.: [původní TV obrazovky, převod zásob a oprava starých URL dokončené](verification/bar-display-stock-20261110/RESULTS.md). 68 počátečních zůstatků obou skladů převzato přesně včetně pěti záporných hodnot; fyzická inventura a lidské P02/P04 jsou nadále otevřené. Nabídka 1 / vydání 1 se znovu nepublikovala. Původní postup a nulové počátky níže jsou datovaná historie; další zásoby spravovat pouze v KIS, původní zdroj znovu nesynchronizovat.
+
 Zadání vlastníka 6. 11. 2026: zveřejnit existující nabídku „Bar KOVO – základní nabídka“ a aktualizovat přímo souborovou provozní dokumentaci, session handoff i navazující plán. Nový návrh se nezakládá. Tato etapa navazuje na [technickou přejímku a návrh 1](verification/bar-acceptance-20261106/RESULTS.md) a [plán začlenění](BAR_INTEGRATION_PLAN_2026-11-05.md).
 
 ## Rozsah a postup

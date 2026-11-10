@@ -1,5 +1,7 @@
 # BAR: provozní přejímka a příprava nabídky
 
+Stav 10. 11.: [původní TV obrazovky, převod zásob a oprava starých URL dokončené](verification/bar-display-stock-20261110/RESULTS.md). 68 počátečních zůstatků obou skladů převzato přesně včetně pěti záporných hodnot; fyzická inventura a lidské P02/P04 jsou nadále otevřené. Nabídka 1 / vydání 1 se znovu nepublikovala. Původní postup a nulové počátky níže jsou datovaná historie; další zásoby spravovat pouze v KIS, původní zdroj znovu nesynchronizovat.
+
 Zadání vlastníka 6. 11. 2026: pokračovat provozní přejímkou a připravit zveřejnění nabídky. Předchozí převod a doména jsou dokončené podle [protokolu B7](verification/bar-cutover-20261106/RESULTS.md). Příprava nabídky znamená uložený neveřejný koncept; nezahrnuje automatické zveřejnění ani odhad skutečných počátečních zásob.
 
 ## Postup

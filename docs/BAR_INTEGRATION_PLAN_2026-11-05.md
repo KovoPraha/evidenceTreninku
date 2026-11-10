@@ -1,6 +1,6 @@
 # Začlenění baru do KIS
 
-Aktualizace 10. 11.: [obnovení původního vzhledu obrazovek a řízený převod zásob](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) jsou nové zadání vlastníka; dřívější nulový sklad je historický počátek, nikoli trvalý požadavek. Starší nedokončená přejímka zůstává zachovaná.
+Aktualizace 10. 11.: [původní TV obrazovky a řízený převod zásob](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) jsou technicky dokončené. [Protokol](verification/bar-display-stock-20261110/RESULTS.md): 68 produktů / oba sklady převzaté přesně včetně pěti záporných stavů, nezávisle nula rozdílů; 44 URL i dva odlišné TV cíle PASS. Dřívější nulový počátek je historický. Další zásoby vést pouze v KIS, převod neopakovat; fyzická inventura a lidská/účetní přejímka zůstávají otevřené.
 
 Výchozí schválení vlastníka 5. 11. 2026: připravit plán a zahájit implementaci včetně potřebného refaktoringu, tehdy bez produkčního nasazení. Vlastník následně výslovně povolil nasazení a pokračování převodu; [6. 11. je dokončený katalog, schválené přístupy i přepnutí domény](verification/bar-cutover-20261106/RESULTS.md). Původní větev `codex/bar-kis-integration-20261105` vznikla od `0ced6664`, práce pokračuje ve stejném izolovaném worktree. Samostatný sedmietapový refaktoring baru nahrazuje tento plán.
 
