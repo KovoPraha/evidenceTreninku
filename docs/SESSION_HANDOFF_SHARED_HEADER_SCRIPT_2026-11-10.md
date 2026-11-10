@@ -18,3 +18,8 @@ a [nové důkazy](verification/shared-header-script-gzip-20261110/RESULTS.md).
 Původní zamítnutí a prototyp4c6ffea0 zachované; reálný Apache/gzip před nativním
 PHP/DB a Chrome, žádné převzetí starých měření. Nový merge/deploy až po PASS.
 Další krok: prověřit jednotlivé soubory prototypu a přidat komprimovaný transport.
+
+
+HJS2 finálně NEVYBRÁNO: browserodhalil větší konkrétní duplicitu BootstrapCSS
+v pracovni_pozice.php. Přednost P11-ASSET2; PR429/prototyp zachovat bezmerge/deploy.
+Native10.3shoda PASS, úplný Chrome gate nepřijatý; nové běhy nejsou releasePASS.

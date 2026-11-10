@@ -35,3 +35,12 @@ Pro platné hodnoty zPHP zůstane skutečná URL totožná. Mechanický kontrakt
 povoluje právě tuto1URL úpravu a pojmenovaný validační prefix, ostatní JSbody
 zůstává doslovně stejné. NodeVM href getter doplněn o skutečné browserové
 rozlišení relativní URL. Nová přejímka/CodeQL čekají; merge/deploy NOT RUN.
+
+## Uzavření výběru — NEVYBRÁNO
+
+42783645170 přesná chyba: workspace before má dvě stylesheets/požadavky,
+/assets/vendor/bootstrap/bootstrap.min.css a stejná?v=1794299668. Oba200gzip,
+BootstrapAPItrue, bezJS/networkchyb. Přesnějši další kandidát ASSET2 odstraní
+jeden celý duplicitníCSS přenos; HJS2 zůstává vlastní commitnuté/pushnuté WIP.
+Žádný jeho app merge/deploy. Úplný Chrome/14.3gate nepřijatý. Nativní10.3pár
+PASS a úspory offlinegzip nejsou přeznačené na finální výkonový výsledek.

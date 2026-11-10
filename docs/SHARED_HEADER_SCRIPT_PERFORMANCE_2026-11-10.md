@@ -135,3 +135,18 @@ Postup a přejímka před změnou:
 Nové implementační/test/release výsledky zatím NOT RUN. Další krok: obnovit a
 prověřit úzký prototyp proti aktuálnímu main, přidat skutečný kompresní transport.
 [Důkazy HJS2](verification/shared-header-script-gzip-20261110/RESULTS.md).
+
+
+### HJS2 uzavření výběru — NEVYBRÁNO, zachované WIP
+
+Nová diagnostika42783645170 ukázala skutečnou dosud neodstraněnou duplicitu
+na pracovni_pozice.php: CSSbezverze + totožnéCSS?v=..., oba200/gzip, BootstrapAPI
+funkční. Browserový guard1CSS byl nesprávný předpoklad prototypu; není to
+prokázaná regrese jehoJS. Přednost má jednodušší odstranění celé duplicitníCSS
+odpovědi na centrálním rozcestníku všech pracovníků (P11-ASSET2). HJS2 tedy
+není přijat ani nasazen. Nativní10.3shoda PASS, kompletní Chrome/cold/warm gate
+nesplněný. CodeQL nová DOMhranice vyřešena validací a URLpathname; negativní
+VM8/8 PASS, finální bezpečnostní/performance přejímka HJS2 se netvrdí.
+Všechny implementační commity v codex/shared-header-script-gzip-20261110 /PR429
+zachovat, neslučovat do vybraného řezu. Nové PHP/JS/bezpečnostní hranice ani
+JSZhelper změny se nepřimíchají do ASSET2. Původní WIP7a7afd75 zachovaný.
