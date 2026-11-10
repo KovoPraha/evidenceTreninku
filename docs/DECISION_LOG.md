@@ -627,3 +627,5 @@ BootstrapCSS2→1, cold−31248gzipB; coldFCPmedian−13,3%desktop/−7,1%mobile
 warmFCP/payload bezezměny, žádné produkčníSLA. Prod8GET/DOM i CSS/SRI/cache
 shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované.
 [Trvalérelease](verification/workspace-bootstrap-assets-20261110/release/RESULTS.md).
+
+- D2026-11-10-08 — P11-ASSET4: obsahové verze pěti společných assetů místo mtime zachovají payloady i TTL a ušetří při nezměněném vydání CSS 51890 B (v JS TTL 78508 B). Manifest vzniká offline a skutečné bytes hlídá PHPUnit/deploy. Lossless WebP zamítnuto pro zvětšení. Nová přísná katalogová parita je doložená samostatně; chybějící historické before HTML se nenahrazuje domněnkou o fotografiích. Explicitní system-curl ve verifikačním CLI obchází pozorovanou místní transportní chybu, obsah/status/HTTPS gate se nemění. [Měření a meze](verification/catalog-audit-assets-20261110/RESULTS.md).

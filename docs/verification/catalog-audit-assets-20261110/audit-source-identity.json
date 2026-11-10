@@ -1,0 +1,14 @@
+{
+  "complete": true,
+  "canonical_git_sha": "50ce79b2e290b926a70e46f8a729682f12a7b864",
+  "files": {
+    "booking/eshop.php": "7c5379385cb7665cb181b88db678371e9f4fee1561c9579ad967abf0c3d1c34c",
+    "includes/ui_shell.php": "15ac46d46549563c6757fc2832872fbbad22ebd0352150ec19a00de03a7cd4ff",
+    "includes/shop_catalog_page_read.php": "8f1a12dfd99cd742ee4cb1a1e29a9cad4118d5438d9d2ed73e1ff6d4746fa73b",
+    "includes/shop_catalog_cards.php": "a4bedfad0f3336fb9091736cffdb1f61c1fd9b91d1a7eec5a1073173e98ef9c9",
+    "includes/shop_storefront.php": "8dfd5ea626905f5802436e4800efd1a3e01d634180d8be3d37ef8967913386a6",
+    "includes/shop_member_pricing_read.php": "3bba57a10b4116556ac6b954afc11e2ed0f6b369e15f071ff71e9e29c7f8b2bf"
+  },
+  "readonly_run": 42826637716,
+  "cleanup_success": true
+}

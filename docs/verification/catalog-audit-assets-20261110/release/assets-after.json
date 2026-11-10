@@ -1,0 +1,71 @@
+{
+  "complete": true,
+  "transport": "system curl; PHP libcurl HTTP/2 PROTOCOL_ERROR and HTTP/1.1 empty reply recorded separately",
+  "resources": {
+    "assets/vendor/bootstrap/bootstrap.min.css": {
+      "http": 200,
+      "headers": {
+        "content-type": "text/css",
+        "content-length": "31248",
+        "cache-control": "max-age=604800",
+        "content-encoding": "gzip"
+      },
+      "download_bytes": 31248.0,
+      "url": "/assets/vendor/bootstrap/bootstrap.min.css?v=3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+      "decoded_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+      "expected_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+    },
+    "assets/vendor/bootstrap/bootstrap.bundle.min.js": {
+      "http": 200,
+      "headers": {
+        "content-type": "text/javascript",
+        "content-length": "23799",
+        "cache-control": "max-age=30",
+        "content-encoding": "gzip"
+      },
+      "download_bytes": 23799.0,
+      "url": "/assets/vendor/bootstrap/bootstrap.bundle.min.js?v=0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+      "decoded_sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+      "expected_sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c"
+    },
+    "assets/vendor/bootstrap-icons/font/bootstrap-icons.css": {
+      "http": 200,
+      "headers": {
+        "content-type": "text/css",
+        "content-length": "14132",
+        "cache-control": "max-age=604800",
+        "content-encoding": "gzip"
+      },
+      "download_bytes": 14132.0,
+      "url": "/assets/vendor/bootstrap-icons/font/bootstrap-icons.css?v=4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+      "decoded_sha256": "4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+      "expected_sha256": "4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d"
+    },
+    "assets/app-ui.css": {
+      "http": 200,
+      "headers": {
+        "content-type": "text/css",
+        "content-length": "6510",
+        "cache-control": "max-age=604800",
+        "content-encoding": "gzip"
+      },
+      "download_bytes": 6510.0,
+      "url": "/assets/app-ui.css?v=cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+      "decoded_sha256": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+      "expected_sha256": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769"
+    },
+    "assets/app-ui.js": {
+      "http": 200,
+      "headers": {
+        "content-type": "text/javascript",
+        "content-length": "2819",
+        "cache-control": "max-age=30",
+        "content-encoding": "gzip"
+      },
+      "download_bytes": 2819.0,
+      "url": "/assets/app-ui.js?v=189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+      "decoded_sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+      "expected_sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+    }
+  }
+}

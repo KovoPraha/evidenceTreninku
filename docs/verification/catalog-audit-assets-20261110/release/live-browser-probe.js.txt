@@ -1,0 +1,37 @@
+async(page)=>{
+  const config=JSON.parse('__LIVE_CONFIG__');
+  const cdp=await page.context().newCDPSession(page);await cdp.send('Network.enable');
+  await cdp.send('Network.setCacheDisabled',{cacheDisabled:true});
+  const errors=[],failed=[],knownBeforeCspErrors=[];let activeCase='';
+  page.on('pageerror',e=>errors.push(String(e)));
+  page.on('console',m=>{
+    if(m.type()!=='error')return;
+    if(m.location().url?.endsWith('/favicon.ico')&&m.text().includes('404'))return;
+    if(config.phase==='before'&&activeCase==='catalog'&&m.text().includes('Executing inline event handler')&&m.text().includes('script-src-attr')){
+      knownBeforeCspErrors.push(m.text());return;
+    }
+    errors.push({message:m.text(),url:m.location().url});
+  });
+  page.on('requestfailed',r=>failed.push({url:r.url().split('?')[0],error:r.failure()?.errorText}));
+  const rows=[];
+  for(const viewport of [{id:'desktop',width:1036,height:703},{id:'mobile',width:390,height:844}]){
+    await page.setViewportSize({width:viewport.width,height:viewport.height});
+    for(const item of [{id:'catalog',path:'/booking/eshop.php'},{id:'login',path:'/booking/prihlaseni.php'}]){
+      activeCase=item.id;await cdp.send('Network.clearBrowserCache');
+      const response=await page.goto('https://kis.kovopraha.cz'+item.path,{waitUntil:'networkidle'});
+      if(response.status()!==200)throw new Error('Live GET failed');
+      const state=await page.evaluate(paths=>({
+        resources:performance.getEntriesByType('resource').filter(r=>paths.includes(new URL(r.name).pathname.slice(1)))
+          .map(r=>({url:r.name,encoded:r.encodedBodySize,decoded:r.decodedBodySize,transfer:r.transferSize})),
+        images:Array.from(document.querySelectorAll('img')).filter(i=>i.getBoundingClientRect().top<innerHeight&&i.getBoundingClientRect().bottom>0)
+          .map(i=>({path:new URL(i.currentSrc||i.src).pathname,valid:i.complete&&i.naturalWidth>0})),
+        overflow:document.documentElement.scrollWidth>innerWidth,bootstrap:typeof bootstrap?.Modal==='function'
+      }),config.paths);
+      if(state.resources.length!==5||state.images.some(i=>!i.valid)||!state.bootstrap)throw new Error('Live rendering/resources failed '+JSON.stringify(state));
+      const screenshot=config.output+'/'+config.phase+'-'+item.id+'-'+viewport.id+'.png';
+      await page.screenshot({path:screenshot});rows.push({case:item.id,viewport:viewport.id,http:200,...state,screenshot});
+    }
+  }
+  await cdp.send('Network.setCacheDisabled',{cacheDisabled:false});
+  return{complete:!errors.length&&!failed.length,phase:config.phase,rows,errors,failed,knownBeforeCspErrors,browser:page.context().browser().version(),method:'anonymous read-only live cold verification; single captures, not timing benchmark'};
+}

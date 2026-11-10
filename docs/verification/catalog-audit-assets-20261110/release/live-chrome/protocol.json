@@ -1,0 +1,9 @@
+{
+  "navigation": [
+    {
+      "protocol": "h2",
+      "status": 200
+    }
+  ],
+  "note": "Read current production Chrome performance entries only"
+}

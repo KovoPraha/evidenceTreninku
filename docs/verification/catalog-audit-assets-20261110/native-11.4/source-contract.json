@@ -1,0 +1,22 @@
+{
+  "complete": true,
+  "baseline_sha": "50ce79b2e290b926a70e46f8a729682f12a7b864",
+  "only_runtime_changes": "five offline content versions and trusted image marker padding; one guard brace pair",
+  "routes": {
+    "includes/ui_shell.php": {
+      "source_sha256": "b721636ae3465c990c79e51080569f34df1846040055d220a7eafb31d76d4a64",
+      "all_other_php_tokens_and_literal_html_equal": true
+    },
+    "booking/eshop.php": {
+      "source_sha256": "cbbeadb48847ec97ea47a501951b4ac80c663b875c81f4a072b082bc66b9fc86",
+      "all_other_php_tokens_and_literal_html_equal": true
+    }
+  },
+  "unchanged_asset_sha256": {
+    "assets/vendor/bootstrap/bootstrap.min.css": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    "assets/vendor/bootstrap/bootstrap.bundle.min.js": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+    "assets/vendor/bootstrap-icons/font/bootstrap-icons.css": "4ffa6bea4304d2eda418683f56261685ed47bf00995039f27e5ad62d53938d2d",
+    "assets/app-ui.css": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+    "assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+  }
+}

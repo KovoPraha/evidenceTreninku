@@ -1,0 +1,97 @@
+[
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/runs/129890730461",
+    "name": "CodeQL",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833763455/job/129890373159",
+    "name": "Public account Bootstrap assets HTTP (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833763455/job/129890373447",
+    "name": "Public account Bootstrap assets HTTP (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833762315/job/129890368794",
+    "name": "Bootstrap assets HTTP (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833761946/job/129890366919",
+    "name": "docs",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833761807/job/129890366725",
+    "name": "MariaDB profily čtení (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833761807/job/129890366730",
+    "name": "PHPUnit na PHP 8.2",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833762331/job/129890368228",
+    "name": "Workspace Bootstrap assets HTTP (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833761807/job/129890366784",
+    "name": "MariaDB integrační smoke (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833761731/job/129890365087",
+    "name": "PHPStan level 5 and changed-file style",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833762133/job/129890369290",
+    "name": "Stable assets HTTP/cache (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833762331/job/129890369077",
+    "name": "Workspace Bootstrap assets HTTP (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833762315/job/129890368170",
+    "name": "Bootstrap assets HTTP (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833761807/job/129890366999",
+    "name": "MariaDB integrační smoke (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833762133/job/129890370107",
+    "name": "Stable assets HTTP/cache (MariaDB 10.3)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833761807/job/129890366529",
+    "name": "MariaDB profily čtení (MariaDB 11.4)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833751067/job/129890340701",
+    "name": "Analyze (javascript-typescript)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833751067/job/129890340497",
+    "name": "Analyze (python)",
+    "state": "SUCCESS"
+  },
+  {
+    "link": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42833751067/job/129890339924",
+    "name": "Analyze (actions)",
+    "state": "SUCCESS"
+  }
+]
