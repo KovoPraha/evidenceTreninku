@@ -11,7 +11,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
   Přihlášené UAT NOT RUN: Computer Use nemohl bezpečně určit URL. Další krok: neplatný čas, reload a obnova konceptu; žádný skutečný trénink testem nevznikl.
 - **P11-HJS3 ROZPRACOVÁNO:** [plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs3--společný-skript-po-odstranění-duplicitních-stylů-10-11-2026), [předání](SESSION_HANDOFF_SHARED_HEADER_SCRIPT_2026-11-10.md), [měření](verification/shared-header-cache-20261110/RESULTS.md).
-  Společný staffJS s obsahem v názvu a cache7d, kontext čerstvý v HTML; base5d6434dc, native/browser/release NOT RUN. WIP zachovaný, poslední runtimec29642f1/deploy42905781826; ASSET7 dokončené.
+  [#449](https://github.com/KovoPraha/evidenceTreninku/pull/449): source/8VM/1PHPUnit parity/style PASS; staffJS cache7d, fresh HTML kontext. Native2DB/Chrome/CI běží, release NOT RUN. WIP zachovaný, poslední runtimec29642f1/deploy42905781826; ASSET7 dokončené.
 - ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
   Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
   prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).

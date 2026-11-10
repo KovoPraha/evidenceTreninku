@@ -24,3 +24,6 @@ neodstraňuje CSS, další skripty, verze ani whitespace. Obě větve fixture ma
 fyzicky stejný aktuální PHP kontext mimo hlavičku; celé syntetické schéma se
 kontroluje checksumy. Apache před variantou používá původní assets/.htaccess;
 nových 7 dní platí jen pro obsahově adresovaný staff soubor. Ostatní JS 30 s.
+
+Implementace `7de1c569` pushnutá v [#449](https://github.com/KovoPraha/evidenceTreninku/pull/449); lokální PASS výše.
+Aktuální native2DB/Chrome/ostatní CI probíhají; merge/deploy NOT RUN.

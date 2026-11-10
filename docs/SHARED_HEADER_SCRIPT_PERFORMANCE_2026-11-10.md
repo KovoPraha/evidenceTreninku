@@ -223,3 +223,6 @@ nová celá přejímka. Při neprokázané paritě/přínosu nevydávat. Flags v
 HJS3 checkpoint: source/8VM/1PHPUnit (16 assertions)/style/docs PASS; implementace
 15 271 B s obsahovým názvem a SRI. Native/browser/přínos/release NOT RUN,
 bez nasazení do jejich dokončení. Podrobnosti v průběžných výsledcích.
+
+Implementace `7de1c569` pushnutá v [#449](https://github.com/KovoPraha/evidenceTreninku/pull/449); lokální PASS výše.
+Aktuální native2DB/Chrome/ostatní CI probíhají; merge/deploy NOT RUN.
