@@ -4,6 +4,28 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-81ad8711f2",
+      "path": "docs/COACH_GROUP_ROSTERS_2026-11-10.md",
+      "title": "COACH-ROSTER-01 — Moje skupiny a soupisky",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "COACH-ROSTER-01",
+      "disposition": "Místní implementace a syntetické testy; PR/CI, testovací Aligátoři a vydání otevřené.",
+      "evidence": ["docs/verification/coach-group-rosters-20261110/RESULTS.md"]
+    },
+    {
+      "id": "PL-9bb4072064",
+      "path": "docs/verification/coach-group-rosters-20261110/RESULTS.md",
+      "title": "COACH-ROSTER-01 místní ověření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "COACH-ROSTER-01",
+      "disposition": "Syntetické testy; skutečné Aligátoří UAT otevřené.",
+      "evidence": []
+    },
+    {
       "id": "PL-a54ff182c7",
       "path": "AGENTS.md",
       "title": "Projektové instrukce pro všechny vývojáře a agenty",

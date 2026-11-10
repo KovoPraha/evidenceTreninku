@@ -1,7 +1,7 @@
 # Aktuální session handoff
 
 QR01: [rychlá přihláška a verze podmínek](QUICK_REGISTRATION_TERMS_2026-11-09.md) sloučená v #416/#419 a nasazená jako `e3f2990` ([workflow 42637712723](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42637712723) SUCCESS). [20/395 místních kontrol a veřejný GET produktu 298](verification/quick-registration-terms-20261109/RESULTS.md) PASS; živá objednávka, platba a rodičovská přejímka otevřené. Release flags a důkazy vlastní CURRENT.
-Aktualizováno 10. 11. 2026, Europe/Prague. [TESTER-20261110](verification/tester-orders-registration-20261110.md) [PR #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) připravován k vydání s draft PR #436; bez produkční změny. Stručný bod převzetí pro všechny vývojáře.
+Aktualizováno 10. 11. 2026, Europe/Prague. [TESTER-20261110](verification/tester-orders-registration-20261110.md) [PR #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) sloučen; [COACH-ROSTER-01](COACH_GROUP_ROSTERS_2026-11-10.md) [PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436) před vydáním, [výsledky](verification/coach-group-rosters-20261110/RESULTS.md). Produkce dosud beze změny.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md) vede i UX01 [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) a Q01/Q3
 vlastní otevřené úkoly včetně Q2-TIME; plány a rozhodnutí čti ve verzovaných souborech.
 Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 je [nasazené a cíleně ověřené](verification/planner-mobile-release-20261108/RESULTS.md) v deploy42483838259 a následném P11-RH; Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
