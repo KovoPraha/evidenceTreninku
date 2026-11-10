@@ -1,0 +1,381 @@
+{
+  "complete": true,
+  "method": "SHA256 of canonical staged Git blobs; excludes this self-referential manifest; text uses canonical LF.",
+  "files": [
+    {
+      "path": "docs/verification/checkout-assets-20261110/RESULTS.md",
+      "bytes": 8692,
+      "sha256": "4d4d8496b19537e951000a7cc8a578bcf59e98e09115363e2d0d4c3e4b64ae22"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/candidate-get-probe.json",
+      "bytes": 1448,
+      "sha256": "b85ffe7356daacd356f384e43c413eb3a95eab35a2c32f45ab08712543e803f5"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/local-source-contract.json",
+      "bytes": 685,
+      "sha256": "372198299efd0b5f88aece26b5d3902d47795e0245875702762da6cb5bd7b5bf"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "b7ada947c8eb144af1b6a343b6ed3d77340b1e68b2edf47cedd322a54c83eb20"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-10.3/exact-source-contract.json",
+      "bytes": 684,
+      "sha256": "3724e1bb37e6a94f6d704c37871ec4420d90cac58b1fc4f7ff5ad916a077ef45"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-10.3/native-summary.json",
+      "bytes": 1875,
+      "sha256": "84c86125dcab333dbb93a52d5536beff87e8057245f2507fcc6e30fcbaf2d84a"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-10.3/shared-context.json",
+      "bytes": 23446,
+      "sha256": "92dbb32217ab2988d04fa05687fb2464080ac5a59b25d6296ec2efef2298680d"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-10.3/source-identity.json",
+      "bytes": 1072,
+      "sha256": "b66fcb216e56f2e2c09fb9f8bad05ca0015986b8a2e5fbbf6d43458f4fbf8fbf"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-10.3/whole-http.json.gz",
+      "bytes": 3214,
+      "sha256": "524a70d08cf36258d7ee87915c1a69e48772a21bfe36814b11cfd0b3cce62a71"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-control-desktop-cold.json.gz",
+      "bytes": 2876,
+      "sha256": "0e277c7df1c57df95fbc24340819732f15590dd4c7a415aa0f52f54b5cb4b191"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-control-desktop-warm.json.gz",
+      "bytes": 2774,
+      "sha256": "0951067eb4154ee856d7e83c7dea745e7bf2cabbf41a1306ec74454d982e941a"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-control-mobile-cold.json.gz",
+      "bytes": 2896,
+      "sha256": "9c8ff67327f5f4bd059c7974b05a5c0b12236b121c781a8886b05c48534f6444"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-control-mobile-warm.json.gz",
+      "bytes": 2719,
+      "sha256": "62b980c80138b12787ad6c37d21afbe02204b6ea5298cac580cd296417292b1f"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-guest-desktop-cold.json.gz",
+      "bytes": 3724,
+      "sha256": "3d84b8c3dfc853a10971b2ddbad65ce85d00c6b7afd4923dc77acf44cee1a9d6"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-guest-desktop-warm.json.gz",
+      "bytes": 3391,
+      "sha256": "310be113b5908d83b42111df8c2095d325011c3b80bc1312e53a1a1c7fc5b05b"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-guest-mobile-cold.json.gz",
+      "bytes": 3649,
+      "sha256": "efae270b5db6253ce83bd8fb6963dc045ee39bfb6944d25825575f40ae05eead"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-guest-mobile-warm.json.gz",
+      "bytes": 3312,
+      "sha256": "d5699e35b214008f03e3a1142acdb59da9c98a908c25c2617b91cb453c615c11"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-program-desktop-cold.json.gz",
+      "bytes": 3684,
+      "sha256": "0132824143447fe98bf3c9166bc304e63be45d08005d243feaba039b2ad33dcb"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-program-desktop-warm.json.gz",
+      "bytes": 3395,
+      "sha256": "09669025164c88123cb9c4ba6c9854c663b65edf3ca424d0fce1bb6d0535f4dc"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-program-mobile-cold.json.gz",
+      "bytes": 3705,
+      "sha256": "039bc55034f67c45a67435058413d0acbf3f47ce889c5c439bbaa8e5af3c0f10"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-program-mobile-warm.json.gz",
+      "bytes": 3339,
+      "sha256": "6b4927ffc6252e99536d7a034ce7b335cea9052e8555d7688ec962fa48efcfe7"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/browser-summary.json",
+      "bytes": 6492,
+      "sha256": "7b406e6a4c781041642d040272f320827d64cc6e98ad0da9fe048c3acaa55a7e"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-control-desktop-after.png",
+      "bytes": 121748,
+      "sha256": "d3791db94ab686eb9ded52beb0cbce6aa55c0865cd3c0e04e0670abfb1b94ac4"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-control-desktop-before.png",
+      "bytes": 121748,
+      "sha256": "d3791db94ab686eb9ded52beb0cbce6aa55c0865cd3c0e04e0670abfb1b94ac4"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-control-mobile-after.png",
+      "bytes": 81549,
+      "sha256": "7a8ceabd8efc6d5c72f1b71e570617a558638045e2145f17b58d86be8ccca6d5"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-control-mobile-before.png",
+      "bytes": 81549,
+      "sha256": "7a8ceabd8efc6d5c72f1b71e570617a558638045e2145f17b58d86be8ccca6d5"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-guest-desktop-after.png",
+      "bytes": 92273,
+      "sha256": "53a7efb119dc08c658f44d4f923bda23c60254a3b6d9db0b5f25c0369f4ac38f"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-guest-desktop-before.png",
+      "bytes": 92273,
+      "sha256": "53a7efb119dc08c658f44d4f923bda23c60254a3b6d9db0b5f25c0369f4ac38f"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-guest-mobile-after.png",
+      "bytes": 52106,
+      "sha256": "668bcab169fc56844acf39ac5eeba4811b58f376c394d0bae798591875c217c7"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-guest-mobile-before.png",
+      "bytes": 52106,
+      "sha256": "668bcab169fc56844acf39ac5eeba4811b58f376c394d0bae798591875c217c7"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-program-desktop-after.png",
+      "bytes": 77817,
+      "sha256": "019c6b5d6a25d2386414857d2b7c3f5b98fa35a3bce3cb1bf19a4e99fbf305eb"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-program-desktop-before.png",
+      "bytes": 77817,
+      "sha256": "019c6b5d6a25d2386414857d2b7c3f5b98fa35a3bce3cb1bf19a4e99fbf305eb"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-program-mobile-after.png",
+      "bytes": 55250,
+      "sha256": "7ffa3723e25b21af2d7180d803ba5f7b7105cdcad5eb070dd2d06846fbb147e1"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/checkout-assets-program-mobile-before.png",
+      "bytes": 55250,
+      "sha256": "7ffa3723e25b21af2d7180d803ba5f7b7105cdcad5eb070dd2d06846fbb147e1"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "b7ada947c8eb144af1b6a343b6ed3d77340b1e68b2edf47cedd322a54c83eb20"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/exact-source-contract.json",
+      "bytes": 684,
+      "sha256": "3724e1bb37e6a94f6d704c37871ec4420d90cac58b1fc4f7ff5ad916a077ef45"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/native-summary.json",
+      "bytes": 1811,
+      "sha256": "c11bd6eb7612433cbb2e87a997ae6c5bff8352165ff359419306ae0b7c2615ec"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/shared-context.json",
+      "bytes": 23446,
+      "sha256": "92dbb32217ab2988d04fa05687fb2464080ac5a59b25d6296ec2efef2298680d"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/source-identity.json",
+      "bytes": 1072,
+      "sha256": "b66fcb216e56f2e2c09fb9f8bad05ca0015986b8a2e5fbbf6d43458f4fbf8fbf"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-11.4/whole-http.json.gz",
+      "bytes": 3097,
+      "sha256": "81de2d2f6b3155e90a94f3a72e1809686bb5a76bc76d74813049a8ac68345f74"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/native-acceptance.json",
+      "bytes": 7980,
+      "sha256": "8168fa58f16301de2d256581194b2f67692824a22aae3aaa932d046619c10c41"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/REPRODUCE.md",
+      "bytes": 2295,
+      "sha256": "d519f3ea322117fd88e9cea45baf9ccc71b7bf0e768dc2fa9c847319e9a864bb"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/app-checks.json",
+      "bytes": 2320,
+      "sha256": "1d2bacc13d14907223e2ce3becce60e045df2492b0081bf21e3a078ada8da241"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/decoded-pixels.php.txt",
+      "bytes": 473,
+      "sha256": "81941e10e4ac2fb9c3cb3ef03f310354abd777ed0928bfeb97247a0f93bac69a"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/deploy-summary.json",
+      "bytes": 8411,
+      "sha256": "092aeda79e55d4d177a91918a79f241d74ab56def4b80e459604f94f4ce8e933"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/index-preflight/medical-index-after.json",
+      "bytes": 2438,
+      "sha256": "a195eabb4c95eb59eade4543d5e98c3d0150142a25e25e7b680cda4f90d60152"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/index-preflight/medical-index-before.json",
+      "bytes": 2439,
+      "sha256": "dd9b7ff0874966c1ab1749e337e108d854cf4a6ce93b1ab6604f2ab5de878d69"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-browser-probe.js.txt",
+      "bytes": 4097,
+      "sha256": "d6084a57dfe9532ab850fe008cdd7ef9c1d915b388c190b7303bfe8e7bae0e24"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-control-desktop.png",
+      "bytes": 219406,
+      "sha256": "890f6251e63bcedecb8a367d6c7b69c7611ec8c299388f401220dcebf5d5908c"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-control-mobile-reload1.png",
+      "bytes": 145987,
+      "sha256": "01d3a25314e4ed1f43e54ab0d43f9433d1e504ad877b869dd64d8c4b92019422"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-control-mobile-reload2.png",
+      "bytes": 145987,
+      "sha256": "01d3a25314e4ed1f43e54ab0d43f9433d1e504ad877b869dd64d8c4b92019422"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-control-mobile-reload3.png",
+      "bytes": 145987,
+      "sha256": "01d3a25314e4ed1f43e54ab0d43f9433d1e504ad877b869dd64d8c4b92019422"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-control-mobile-reload4.png",
+      "bytes": 145987,
+      "sha256": "01d3a25314e4ed1f43e54ab0d43f9433d1e504ad877b869dd64d8c4b92019422"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-control-mobile-repeat1.png",
+      "bytes": 145987,
+      "sha256": "01d3a25314e4ed1f43e54ab0d43f9433d1e504ad877b869dd64d8c4b92019422"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-control-mobile-repeat2.png",
+      "bytes": 145987,
+      "sha256": "01d3a25314e4ed1f43e54ab0d43f9433d1e504ad877b869dd64d8c4b92019422"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-control-mobile.png",
+      "bytes": 145987,
+      "sha256": "01d3a25314e4ed1f43e54ab0d43f9433d1e504ad877b869dd64d8c4b92019422"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-guest-desktop.png",
+      "bytes": 85202,
+      "sha256": "19db0c307bead9319b2b9a19d9e78f5aab1e42676d889ea901b9dfd87007230f"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-guest-mobile.png",
+      "bytes": 70958,
+      "sha256": "319f5f31536e5091df9549f1aebae8cdfb2069825a6fc444d0dc20d31ffeaf5b"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-program-desktop.png",
+      "bytes": 89233,
+      "sha256": "594149430b5799f7b71ae5409240bb3d6f7b99b05d6e96f01f6188248e9530fa"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after-program-mobile.png",
+      "bytes": 69022,
+      "sha256": "10ab9004b1ee7cbc016ddf06ecc58d04d4617011e04caebd2f4742772a6ca397"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/after.json",
+      "bytes": 11409,
+      "sha256": "4b564e92d5d282a0a019928fb2ff288324350dff487fd96a6b2901de05a06c5f"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/before-control-desktop.png",
+      "bytes": 219406,
+      "sha256": "890f6251e63bcedecb8a367d6c7b69c7611ec8c299388f401220dcebf5d5908c"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/before-control-mobile.png",
+      "bytes": 140879,
+      "sha256": "0bbcc6e6e9b81c88588653fd3372e06fb5eb785af8e340baaba899af00909b8e"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/before-guest-desktop.png",
+      "bytes": 85202,
+      "sha256": "19db0c307bead9319b2b9a19d9e78f5aab1e42676d889ea901b9dfd87007230f"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/before-guest-mobile.png",
+      "bytes": 70958,
+      "sha256": "319f5f31536e5091df9549f1aebae8cdfb2069825a6fc444d0dc20d31ffeaf5b"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/before-program-desktop.png",
+      "bytes": 89233,
+      "sha256": "594149430b5799f7b71ae5409240bb3d6f7b99b05d6e96f01f6188248e9530fa"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/before-program-mobile.png",
+      "bytes": 69022,
+      "sha256": "10ab9004b1ee7cbc016ddf06ecc58d04d4617011e04caebd2f4742772a6ca397"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/before.json",
+      "bytes": 12540,
+      "sha256": "0204604109fb6d1c9a57418f89d1c77d408699c279efc84ed160c5c3abf8380e"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/control-mobile-photo-diagnostic.json",
+      "bytes": 1704,
+      "sha256": "decb66eb737fd8138c7da092c58b86f058a9998d71e89e1770e5c2877e25e39f"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-chrome/parity-and-pixels.json",
+      "bytes": 3904,
+      "sha256": "84f19b35fee5ab97bf7195b99f33db41ff335b919b8bbc8de052a715cfa0deef"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/live-parity.py.txt",
+      "bytes": 3687,
+      "sha256": "2d63e1027ee397e324805666ecf6c1ec2de00836e610e8bd1d918e8f559ab78f"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/release-controls.json",
+      "bytes": 1998,
+      "sha256": "372b6da26d945c66c8c2f68b8287723bed74c2d13328f0e3f13bc832f9ac66b3"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/static-after.json",
+      "bytes": 3380,
+      "sha256": "8997ca119d5b92b77da7c4de43daee2593af7a96ac9e08c7c7fdcad2d16d597e"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/static-before.json",
+      "bytes": 3381,
+      "sha256": "11d7573d87affdd18c0f71bda3f09cdf1eae8f8426ed34b500bdb5c91bc95546"
+    },
+    {
+      "path": "docs/verification/checkout-assets-20261110/release/static-probe.py.txt",
+      "bytes": 2471,
+      "sha256": "8132acf7488d229b17d66098843b5dcf3204184038c9f4ef0db2b97e6965b57a"
+    }
+  ]
+}

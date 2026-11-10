@@ -1,0 +1,15 @@
+<?php
+declare(strict_types=1);
+$a = imagecreatefrompng($argv[1]);
+$b = imagecreatefrompng($argv[2]);
+if (imagesx($a) !== imagesx($b) || imagesy($a) !== imagesy($b)) {
+    exit(2);
+}
+for ($y = 0; $y < imagesy($a); ++$y) {
+    for ($x = 0; $x < imagesx($a); ++$x) {
+        if (imagecolorat($a, $x, $y) !== imagecolorat($b, $x, $y)) {
+            exit(3);
+        }
+    }
+}
+echo json_encode(['decoded_pixels_equal' => true, 'width' => imagesx($a), 'height' => imagesy($a)]);

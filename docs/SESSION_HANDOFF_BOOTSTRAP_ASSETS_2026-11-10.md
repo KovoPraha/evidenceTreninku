@@ -1,56 +1,41 @@
 # Předání P11-ASSET6 —10.11.2026
 
-ROZPRACOVÁNO. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset6--rychlý-nákup-a-přihláška-10-11-2026), [výsledky](verification/checkout-assets-20261110/RESULTS.md).
-Base58848900; vlastní větev codex/checkout-assets-performance-20261110,
-worktree C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261110.
-Poslední ověřený deploy42863352343/9ef52268; runtime/flags vlastní CURRENT.
-Původní fio/d1221f35 a WIP kis_rosters_admin.php SHA2567a7afd75 zachované.
+**NASAZENO / cílové formuláře technicky PASS; controlfoto LIMIT.**
+[Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset6--rychlý-nákup-a-přihláška-10-11-2026),
+[měření a meze](verification/checkout-assets-20261110/RESULTS.md),
+[receipt](verification/checkout-assets-20261110/release/release-controls.json).
 
-Vybrané dvě CDN CSS duplicity: rychly_nakup.php + rychla_prihlaska.php.
-Živé validní formuláře218/784 a298/952 mají200/2CSS; produkt/catalog control1CSS.
-Pouze dva tagy, všechny ceny, verze podmínek, účty, stock/doprava, CSRF,
-idempotence i writery neměnné. Source/wholeHTTP/pixels a actualbytes před-po,
-MariaDB10.3+11.4,17párů/4warmupy, celé CI, při všech PASS povolený merge/deploy.
-Nové provedení/native/browser/release zatím NOT RUN. Další krok source kontrakt.
+PR #445 →c9e5501a, celý tree97fa16dc totožný s testovaným d6af0a09;13CI PASS.
+Odstraněné dvě CDN Bootstrap CSS duplicity rychlého nákupu/přihlášky.
+Source kontrakt proti58848900: PHP tokeny a literal HTML/JS mimo2tagy stejné,
+0vložených závorek. Payloady/manifest/TTL, SQL, ceny/stock/terms/CSRF/writery stejné.
+Lokálně21/412, native42878204242/2DB desetHTTP/350checksumů naDB, denials,
+408měřených+96warmup Chrome,24funkčních záznamů,6pixelpárů a cleanup PASS.
+První fixture FAIL pro login302/stock404 zůstávají v historii, guardy nezměněné.
 
-[EVENTREAD](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) má SQLite paritu
-6506→17SQL, ale veřejná nabídka nyní0karet. Prototyp d8274970 pouze ve vlastní
-větvi; nevybraný, bez native/Chrome přejímky. Jeho helper/runtime nepřebírat.
-HJS/RIX WIP zachované. ASSET1–5 dokončené v [historii plánu](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
-ASSET4 historické tři katalogové hashy mají nadále LIMIT (chybějící beforeHTML),
-nejsou zpětně prohlášené za PASS. ASSET5 doklady #442 již sloučené.
+Cold CSS64454→31248 B v CI, decoded465606→232803 B; warm network0→0 B.
+FCP goods72→56/68→52 ms, program96→76/88→76 ms, control68→68 ms;
+mediány nejsou produkční SLA, backend zrychlení neprokázané.
+Deploy42881039034 SUCCESS/c9e5501a, 2454/56238, backup389/2,
+config/migrace/VS/index/HTTP200/cleanup PASS (runner0, servercurl200). Živých6celých HTML,
+všech5assetverzí a CSP/privacy hlavičky shodné; CSS53957→31248 B, controlstejný.
+PětUI+CDNpayload canonicalGit před/po stejné, JS/network errors0/overflowfalse.
+Přesných5/6pixelpárů včetně všech4 upravených formulářů. Mobilní controlfotka
+má RGB≤4 rozdíly pouze v obrázku; přesná příčina neprokázaná, striktní test
+zůstává LIMIT. Diagnostika/čtyři opakované GET/PNG zachované, nic nemaskováno.
+Runtime/flags vlastní [CURRENT](CURRENT_STATE.md), UAT/importfalse.
+Lidské přihlášené UAT, fyzický telefon a obnova této zálohy NOT RUN.
 
-ASSET6 checkpoint: source0braces/2tagy a21/412 lokálních kontrol PASS; původní regex testu upraven pouze pro PHP whitespace, DOM názvy/verze a rollback kontrolované dál. Native2DB/HTTP/Chrome/CI/release zatím čekají.
+Původní codex/fio-auto-reconciliation-recovery/d1221f35 a kis_rosters_admin.php
+SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` zachované.
+Vlastní worktree C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261110,
+doklady codex/checkout-assets-release-docs-20261110, [PR #446](https://github.com/KovoPraha/evidenceTreninku/pull/446).
+Závěrečné doklady PR #446: sloučením jsou součástí main.
+Žádný další runtime krok, **neopakovat deploy**.
 
-
-ASSET6 / [PR #445](https://github.com/KovoPraha/evidenceTreninku/pull/445).
-Souběžný main06ad54e4 /#444 převzatý bez konfliktu se zachováním dokončeného
-BARu a všech jeho věcných záznamů. Žádná aplikativní změna proti58848900;
-source oracle dvou formulářů zůstává58848900, celý ostatní PHP kontext je v A/B
-páru vždy čerstvý a byte-shodný. Nové CI ověřuje společný head před release.
-
-
-ASSET6 native kalibrace: první42876038779/d9c62776 obě DB skončily před
-HTTP maticí na očekávání customer login303. Skutečný neměněný veřejný login
-prihlaseni.php používá header Location bez status argumentu, tedy302; login
-byl úspěšný. Test nyní očekává přesně302, nikoli obecnou libovolnou3xx.
-Následný ověřený-account guard rychlé přihlášky zůstává přesně303 a celý
-Location/body kontrakt je dál kontrolovaný. Source/aplikace se nemění.
-Cleanup vlastního schema/user/config a workerů proběhl, žádná produkční akce.
-Nová plná native2DB/browser přejímka se opakuje, neoznačovat první FAIL za PASS.
-
-
-ASSET6 druhá kalibrace42876825180/c3a48460: login302 už prošel. Původní
-varianta ještě před změnou správně vracela404 pro NULL sklad, test ji chybně
-nazval unlimited. Současný shopStorefrontReadRows při dostupném inventory
-schématu NULL zásobu vylučuje; nyní explicitní unknown-stock404 i zero-stock404.
-Totéž existující veřejný filtr skrývá program bez účinných program terms (404).
-Očekávání jsou přesná podle neměněných guardů, žádná tolerance dalších stavů.
-Samostatně doplněn409 pro chybějící povinné athlete notice: jen vlastní fixture
-dočasně změní text a ve finally obnoví přesný obsah; checksumy se dál ověřují.
-Nové plné native2DB/Chrome měření se opakuje, předchozí FAIL zůstává v historii.
-
-První živý Chrome158 before6/6 GET200, desktop/mobile bez JS/network chyby
-a přetékání. Target Bootstrap53957 B (22709CDN+31248local), control31248 B.
-Pět obsahových URL a celé HTML zůstávají v nové baseline; před nasazením se
-obnoví čerstvý before. Produkce beze zápisu; nejde o produkční časový benchmark.
+[EVENTREAD](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) odložený nevybraný
+prototyp d8274970: SQLite potenciál6506→17SQL, produkční veřejná nabídka0karet;
+native/Chrome nepřijaté, helper nepřebírat. RIX/HJS2 WIP zachované.
+ASSET1–5 zůstávají v historii plánu; tři historické ASSET4 katalogové hashy
+nadále LIMIT (chybí beforeHTML), žádné dodatečné PASS. BAR #444 zachovaný.
+Žádný další implementační řez není v tomto zadání rozpracovaný.

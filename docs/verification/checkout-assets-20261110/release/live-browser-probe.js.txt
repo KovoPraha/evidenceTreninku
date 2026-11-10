@@ -1,0 +1,40 @@
+async(page)=>{
+  const config=JSON.parse('__CHECKOUT_LIVE_CONFIG__');
+  const cdp=await page.context().newCDPSession(page);await cdp.send('Network.enable');
+  await cdp.send('Network.setCacheDisabled',{cacheDisabled:true});
+  const errors=[],failed=[],rows=[];
+  page.on('pageerror',e=>errors.push(String(e)));
+  page.on('console',m=>{if(m.type()==='error'&&!m.location().url?.endsWith('/favicon.ico'))errors.push(m.text());});
+  page.on('requestfailed',r=>failed.push({url:r.url().split('?')[0],error:r.failure()?.errorText}));
+  const hash=async value=>page.evaluate(async text=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)))).map(n=>n.toString(16).padStart(2,'0')).join(''),value);
+  const literal="<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH\"\ncrossorigin=\"anonymous\">";
+  for(const viewport of [{id:'desktop',width:1036,height:703},{id:'mobile',width:390,height:844}]) {
+    await page.setViewportSize({width:viewport.width,height:viewport.height});
+    for(const item of [{"id": "guest", "path": "/booking/rychly_nakup.php?product_id=218&variant_id=784"}, {"id": "program", "path": "/booking/rychla_prihlaska.php?product_id=298&variant_id=952"}, {"id": "control", "path": "/booking/produkt.php?id=218"}]) {
+      await cdp.send('Network.clearBrowserCache');
+      const response=await page.goto('https://kis.kovopraha.cz'+item.path,{waitUntil:'networkidle'});
+      if(response.status()!==200)throw new Error('Public page failed '+item.id);
+      let html=(await response.text()).replace(/\r\n/g,'\n');
+      const nonce=response.headers()['content-security-policy']?.match(/nonce-([^']+)/)?.[1];
+      if(!nonce)throw new Error('CSP nonce missing');html=html.split(nonce).join('REQUEST_NONCE');
+      const cdnCount=html.split(literal).length-1;
+      const expected=config.phase==='before'&&item.id!=='control'?1:0;
+      if(cdnCount!==expected)throw new Error('Unexpected duplicate count '+item.id+':'+cdnCount);
+      if(cdnCount)html=html.replace(literal,'');
+      for(const m of html.matchAll(/name="csrf_token"\s+value="([a-f0-9]{64})"/gi))html=html.split(m[1]).join('REQUEST_CSRF');
+      const state=await page.evaluate(()=>({
+        styles:Array.from(document.styleSheets).filter(s=>s.href?.includes('/bootstrap.min.css')).map(s=>s.href),
+        resources:performance.getEntriesByType('resource').filter(r=>r.name.includes('/bootstrap.min.css')).map(r=>({url:r.name,encoded:r.encodedBodySize,decoded:r.decodedBodySize,transfer:r.transferSize})),
+        versions:Array.from(document.querySelectorAll('link[href*="/assets/"],script[src*="/assets/"]')).map(n=>n.href||n.src),
+        overflow:document.documentElement.scrollWidth>innerWidth,bootstrap:typeof window.bootstrap?.Modal==='function',
+        visible_text_sha_source:document.querySelector('main')?.innerText||''
+      }));
+      if(state.styles.length!==expected+1||!state.bootstrap)throw new Error('Bootstrap resource contract failed');
+      state.main_text_sha256=await hash(state.visible_text_sha_source);delete state.visible_text_sha_source;
+      const screenshot=config.output+'/'+config.phase+'-'+item.id+'-'+viewport.id+'.png';await page.screenshot({path:screenshot});
+      rows.push({case:item.id,viewport:viewport.id,http:200,whole_html_sha256:await hash(html),cache_control:response.headers()['cache-control'],referrer_policy:response.headers()['referrer-policy'],csp_sha256:await hash(response.headers()['content-security-policy'].split(nonce).join('REQUEST_NONCE')),...state,screenshot});
+    }
+  }
+  await cdp.send('Network.setCacheDisabled',{cacheDisabled:false});
+  return{complete:!errors.length&&!failed.length,captured_utc:new Date().toISOString(),phase:config.phase,rows,errors,failed,browser:page.context().browser().version(),method:'read-only production GET; exact one two-line CDN tag and request nonce/CSRF only; no asset version normalization; single captures are not a timing benchmark'};
+}

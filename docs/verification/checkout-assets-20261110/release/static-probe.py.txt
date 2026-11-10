@@ -1,0 +1,33 @@
+from pathlib import Path
+import json,subprocess,hashlib,sys
+from urllib.parse import urlsplit
+root=Path(__file__).resolve().parents[1];phase=sys.argv[1];assert phase in ['before','after']
+report=json.loads((root/f'output/checkout-live/{phase}.json').read_text(encoding='utf-8-sig'))
+assert report['complete'] and len(report['rows'])==6 and not report['errors'] and not report['failed']
+for row in report['rows']:
+    target=row['case']!='control';n=2 if phase=='before' and target else 1
+    assert len(row['styles'])==n and row['bootstrap'] and not row['overflow']
+    assert sum(r['encoded'] for r in row['resources'])==(53957 if n==2 else 31248)
+    assert sum(r['decoded'] for r in row['resources'])==232803*n
+    if target:assert 'no-store' in row['cache_control']
+urls=list(dict.fromkeys(url for row in report['rows'] for url in row['versions']))
+assert len(urls)==5
+urls.append('https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css')
+private=root/f'output/checkout-static-{phase}-private';private.mkdir(exist_ok=True)
+rows=[]
+for index,url in enumerate(urls):
+    body=private/f'{index}.body';header=private/f'{index}.headers'
+    p=subprocess.run(['C:/Windows/System32/curl.exe','--silent','--show-error','--compressed','--connect-timeout','15','--max-time','50','-D',str(header),'-o',str(body),'-w','%{http_code}',url],capture_output=True,check=True)
+    assert int(p.stdout)==200
+    path=urlsplit(url).path.lstrip('/') if index<5 else 'assets/vendor/bootstrap/bootstrap.min.css'
+    canonical=subprocess.check_output(['git','show','58848900:'+path],cwd=root)
+    payload=body.read_bytes();assert payload==canonical,url
+    headers={}
+    for line in header.read_text(encoding='utf-8').splitlines():
+        if ':' in line:
+            key,value=line.split(':',1)
+            if key.lower() in ['cache-control','content-type','content-encoding','etag']:headers[key.lower()]=value.strip()
+    rows.append(dict(url=url,canonical_path=path,decoded_bytes=len(payload),sha256=hashlib.sha256(payload).hexdigest(),headers=headers))
+out=dict(complete=True,phase=phase,canonical_git_payloads=6,rows=rows,method='TLS-verified system curl with decompression; canonical Git blob bytes. Transport encoding is separate from Chrome measurements.')
+(root/f'output/checkout-static-{phase}.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print(json.dumps(dict(complete=True,canonical_payloads=6,live_views=6,phase=phase)))

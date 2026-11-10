@@ -464,7 +464,7 @@ kódu BAR. Kvůli těmto dokladům se žádný další deploy nespouští.
 
 ## P11-ASSET6 — rychlý nákup a přihláška, 10. 11. 2026
 
-ROZPRACOVÁNO. Vlastník Vývoj/Codex, zadavatel Marek. Přímé zadání: další
+**NASAZENO / cílové formuláře technicky PASS; controlfoto LIMIT.** Výchozí plán a checkpointy níže jsou historické. Vlastník Vývoj/Codex, zadavatel Marek. Přímé zadání: další
 nejpřínosnější optimalizace podle analýzy; shoda/před-po, při všech PASS
 commit/merge/deploy, zachovat WIP a průběžný plán/handoff v repozitáři.
 Base main588489003aff40963c3a64959d566406c687d08f; poslední ověřený deploy42863352343/9ef52268 SUCCESS.
@@ -575,3 +575,40 @@ První živý Chrome158 before6/6 GET200, desktop/mobile bez JS/network chyby
 a přetékání. Target Bootstrap53957 B (22709CDN+31248local), control31248 B.
 Pět obsahových URL a celé HTML zůstávají v nové baseline; před nasazením se
 obnoví čerstvý before. Produkce beze zápisu; nejde o produkční časový benchmark.
+
+
+### ASSET6 — checkpoint přijatého headu a release
+
+D6af0a09:13aktuálních CI SUCCESS, native42878204242/oběDB a skutečný Chrome
+PASS; úplné exporty v [protokolu](verification/checkout-assets-20261110/RESULTS.md).
+PR #445 sloučen jako c9e5501a, celý tree97fa16dc shodný s testovaným headem.
+Deploy42881039034 spuštěný jednou na c9e5501a, UAT/importfalse; zatím běží.
+Živá čerstvá before6GET/6canonicalpayloads z19:01UTC, after/receipt NOT RUN.
+WIP7a7afd75 zachovaný, dokumentační větev codex/checkout-assets-release-docs-20261110.
+
+
+### ASSET6 — finální výsledek a předání
+
+Native42878204242/d6af0a09 naMariaDB10.3/11.4 PASS: deset celých HTTP scénářů,
+350checksumů/DB, source token/literal kontrakt s0závorkami, CSRF/notice denials
+a cleanup. Skutečný Apache/Chrome408měřených+96warmup,24funkčních záznamů,
+6pixelových párů PASS. Cold CSS64454→31248 B v CI, decoded465606→232803 B,
+warm network0→0 B. FCP goods72→56/68→52 ms, program96→76/88→76 ms,
+control68→68 ms; backend bez prokázaného zrychlení. Nejde o produkční SLA.
+
+PR #445 →c9e5501a, všech13CI SUCCESS, celý tree97fa16dc shodný s testovaným
+d6af0a09. Deploy42881039034 SUCCESS, 2454/56238, backup389/2,
+config/migrace/VS/index/smoke/cleanup PASS, import/UATfalse. Živých šest celých
+HTML, všech pět asset verzí, privacy hlavičky/CSP shodné;5/6pixelpárů přesně,
+všechny4 upravené formuláře PASS. Mobilní control fotografie má pouze RGB≤4
+rozdíl v obrázku, přesná příčina neprokázaná (LIMIT, nikoli PASS); diagnostika
+a původní PNG zachované v protokolu, žádná maska/tolerance strict testu.
+Produkční cold CSS53957→31248 B, control stejný; všech6staticpayloadů canonical
+Git před/po shodných. [Metoda, důkazy a meze](verification/checkout-assets-20261110/RESULTS.md),
+[receipt](verification/checkout-assets-20261110/release/release-controls.json).
+EVENTREAD odložený nevybraný prototyp, žádný jeho runtime helper se nepřebírá;
+historické3 ASSET4 hashy dál LIMIT. WIP7a7afd75 zachovaný. Lidské UAT,
+fyzický telefon a obnova nové zálohy NOT RUN. Finální doklady ve větvi
+codex/checkout-assets-release-docs-20261110, [PR #446](https://github.com/KovoPraha/evidenceTreninku/pull/446).
+Doklady jsou předané přes PR #446; jeho sloučením jsou součástí main.
+Další produkční krok není potřeba, kvůli dokladům neopakovat deploy.
