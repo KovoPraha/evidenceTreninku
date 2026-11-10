@@ -553,3 +553,11 @@ fixture hodin se izolovaně sjednotila na Europe/Prague po reprodukci chyby i na
 mainu. Žádná produkční účetní, rolová nebo datová změna. #425/9dbd9eaf sloučeno,
 whole-tree totožné s6162; chráněný deploy42727693090 probíhá podle původního
 podmíněného zadání vlastníka. [Přejímka](verification/bootstrap-assets-20261110/RESULTS.md).
+
+
+Potvrzení vydání:42727693090 SUCCESS, záloha389/2, konfigurace/VS/migrace/indexy
+zachované, HTTP smoke200 přes serverový fallback a8nezávislýchGET/DOM shodných.
+Produkční /bin vrací stávající Apache403 před PHP, stejné jako migrate.php;
+nativní PHP404/0 zůstává backstop. Přijato skutečné hostingové odmítnutí bez
+uvolnění přístupu; nebylo nutné měnit aplikaci nebo rewrite pravidla.
+Dokumentace426 neměníruntime9dbd9eaf a nevyžaduje druhý deploy.

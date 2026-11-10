@@ -2,7 +2,7 @@
 
 [Plán](../../BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
 
-## Technická přejímka 10. 11. 2026 — PASS, nasazení probíhá
+## Technická přejímka a vydání 10. 11. 2026 — PASS
 
 PR [#425](https://github.com/KovoPraha/evidenceTreninku/pull/425) sloučen jako
 `9dbd9eaf1f78e364d1dacd1ae0e3969758b7a176`; celý tree je totožný s testovaným
@@ -35,9 +35,12 @@ vidět mezi nezávislými běhy, nelze porovnávat absolutní čísla napříčV
 WIP7a7afd75 zachovaný; žádná migrace/index/role/cache/aktivace/import změna.
 
 Chráněný deploy [42727693090](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42727693090)
-na přesném9dbd9eaf probíhá, import/UATfalse. [Čerstvých8GETpřed](public-before-final.json)
-PASS. Finální backup/migrace/VS/config/smoke/po a lidské produkční UAT ještě
-nejsou tímto odstavcem potvrzené; konečný stav bude v [release](release/RESULTS.md).
+SUCCESS na přesném `9dbd9eaf`, import/UAT false. Úplná záloha 389/2,
+konfigurace, migrace, VS, indexy a HTTP smoke PASS. [Osm GET před](public-before-final.json)
+a [po](public-after.json) mají shodný status i normalizovaný DOM. CLI je
+chráněné stávajícím hostingovým 403; canonical CSS/SRI živě shodné.
+Konečný stav a skutečné meze ověření jsou v [release](release/RESULTS.md).
+Přihlášené lidské produkční UAT, fyzický mobil a restore nové zálohy NOT RUN.
 
 ---
 

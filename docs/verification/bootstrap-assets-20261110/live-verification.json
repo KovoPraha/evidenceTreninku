@@ -1,0 +1,15 @@
+{
+  "public_cases": 8,
+  "status_and_normalized_dom_identical": true,
+  "method": "Anonymous GET without cookies, redirects or POST; TLS verified.",
+  "cli_metadata_http": 403,
+  "cli_metadata_body_bytes": 326,
+  "cli_metadata_body_sha256": "7d6b0785143ee4476e270227a7cd8f3b7c964584e87eac6abc2aad7f87722398",
+  "cli_hosting_forbidden_identical_to_existing_migrate": true,
+  "native_cli_guard": {
+    "http": 404,
+    "body_bytes": 0
+  },
+  "canonical_css_bytes": 232803,
+  "canonical_css_sha384": "QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+}
