@@ -681,3 +681,6 @@ claims/role/program overview PASS; style/line200/lint/diff PASS. Nový runner:
 17celýchHTTP scénářů (main/empty/unverified/anonymous/control), CSRF a čerstvá
 revokace vazby/účtu,350checksumů a20Chrome kombinací. Native/baseline/Chrome
 přínos a release zatím NOT RUN; další krok nová přejímka, ne hotový výsledek.
+
+
+ASSET7 / [PR #447](https://github.com/KovoPraha/evidenceTreninku/pull/447), větev codex/family-assets-performance-20261110; native/browser běh připravený.
