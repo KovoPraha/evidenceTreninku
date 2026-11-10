@@ -717,3 +717,13 @@ stále PASS. Nová lokální unit sada824testů/28734assertions,3platformní ski
 bez selhání, style/diff PASS. Native42901718648 na předchozím f111d30e:
 10.3celáHTTP/350checksumů/CSRF/revokace PASS,11.4Chrome ještě běží; kvůli
 novému finálnímu SHA se aktuální CI/native2DB/browser zopakují celé.
+
+
+### ASSET7 — přijatý head a nasazování
+
+B65137a0 má13aktuálníchCI SUCCESS, native42903018197/oběDB a skutečnýChrome
+680měřených+160warmup/40funkčních/10pixelpárů PASS. [Plné exporty](verification/family-assets-20261110/RESULTS.md).
+PR #447 →c29642f1, celý tested/merged tree shodný. Deploy42905781826 spuštěný
+jednou na stejnémSHA, UAT/importfalse; zatím běží, receipt/after NOT RUN.
+Přihlášená uživatelská Chrome relace nedostupná (login), živé UAT NOT RUN.
+WIP7a7afd75 a ostatní worktrees zachované; doklady codex/family-assets-release-docs-20261110.
