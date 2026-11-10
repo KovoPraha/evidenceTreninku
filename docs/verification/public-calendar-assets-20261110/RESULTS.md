@@ -22,3 +22,15 @@ Vlastní fixture přidá syntetická veřejná sportoviště a oddělené lesson
 termíny pouze v ověřeném disposable schématu. MariaDB10.3/11.4 wholeHTTP,
 checksumy, anonymní POSTdenials, skutečný Apache/Chrome/cold/warm/pixels,
 CI a release zatím NOT RUN. Původní WIP7a7afd75 zachovaný.
+
+
+ASSET5 checkpoint / PR #439: první přísný HTTP diff byl4 mezery za inline SEO.
+PHP uzavírající značka spotřebuje zdrojový newline; porovnávač proto nyní
+odstraňuje přesně4 zdrojové mezery a jeden newline patřící jedinému známému
+CDNtagu, bez obecné whitespace normalizace. Regresní unit1/13 PASS. Nový živý
+before používá stejný přesný postup; skripty/data/verze assetů zůstávají celé.
+Native42851391494 na38f6e9fb prošlo na obou DB včetně Chrome. Následně do main
+přibylo povolené #436 /4e3df207; zachované oba souběžné plány a nové ověření
+se zopakuje na tomto společném základu. Společný produkční běh jiného řezu
+42852365591 běží na4e3df207; neslučovat další cizí větev ani ho nepřehrávat.
+Dosavadní aplikační diff tohoto PR proti main jsou jen dva zvolené kalendáře.

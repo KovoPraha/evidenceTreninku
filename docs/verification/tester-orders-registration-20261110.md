@@ -1,6 +1,6 @@
 # Reporting testerky: objednávky a registrační podklady
 
-Datum: 10. 11. 2026. Stav: [PR #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) po rebase na `37f1ba8f`, před opakovaným CI a vydáním; produkční UAT otevřené.
+Datum: 10. 11. 2026. Stav: [PR #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) sloučen do `main` jako `f39f3157` po 11 úspěšných CI kontrolách; produkční vydání a přihlášené UAT otevřené.
 
 ## Převzetí
 
@@ -43,8 +43,9 @@ Přiřazení pozice `registrar` spravuje vedením pověřený správce systému 
 - PHPStan podle `phpstan.neon.dist`: bez chyby.
 - Po rebase doplněn regresní test dosavadního administrátora; `PersonSensitiveTest`,
   `ShopOrderAdminListSortTest` a `AthleteRegistrationAdminTest`: 13/168 PASS.
-- Plná sada `composer test` byla ukončena po 366 z 2 427 testů bez dosavadního
-  selhání; její úplný výsledek není k dispozici. Cílená sada výše je dokončená.
+- Místní plná sada `composer test` byla ukončena po 366 z 2 427 testů bez dosavadního
+  selhání. Na PR #438 poté prošel úplný GitHub PHPUnit, oba MariaDB smoke a profily,
+  PHPStan, dokumentace a CodeQL; cílená místní sada výše je také dokončená.
 
 ## Produkční UAT po nasazení
 

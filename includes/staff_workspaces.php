@@ -45,6 +45,8 @@ function staffPositionDefinitions(): array
                     ['route' => 'moje_skupiny.php', 'label' => 'Moje skupiny', 'description' => 'Svěřené skupiny sportovců',
 
      'icon' => 'people'],
+                    ['route' => 'moje_soupisky.php', 'label' => 'Moje skupiny a soupisky',
+                     'description' => 'Aktuálně svěřené soupisky a děti', 'icon' => 'people-fill'],
                 ]],
                 ['label' => 'Evidence', 'icon' => 'clipboard-data', 'items' => [
                     ['route' => 'nova_cinnost.php', 'label' => 'Další činnost', 'description' => 'Výkaz práce mimo trénink',
