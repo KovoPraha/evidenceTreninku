@@ -374,7 +374,7 @@ samostatná nativní/pixelová přejímka; fotografie se bez přijaté shody nem
 
 ## P11-ASSET5 — veřejný kalendář a velodrom, 10. 11. 2026
 
-ROZPRACOVÁNO. Vlastník Vývoj/Codex, zadavatel Marek. Zadání: odstranit duplicitu
+**NASAZENO / technická přejímka PASS.** Výchozí plán a checkpointy níže jsou historické. Vlastník Vývoj/Codex, zadavatel Marek. Zadání: odstranit duplicitu
 CSS, ověřit shodu a přínos před/po, při PASS commit/merge/deploy; zachovat WIP.
 Base main37f1ba8f, runtime94c10708 / deploy42837011604; flags vlastní CURRENT.
 Větev codex/public-calendar-assets-performance-20261110, vlastní worktree
@@ -420,3 +420,43 @@ přibylo povolené #436 /4e3df207; zachované oba souběžné plány a nové ov�
 se zopakuje na tomto společném základu. Společný produkční běh jiného řezu
 42852365591 běží na4e3df207; neslučovat další cizí větev ani ho nepřehrávat.
 Dosavadní aplikační diff tohoto PR proti main jsou jen dva zvolené kalendáře.
+
+
+### ASSET5 — finální výsledek a předání
+
+Finální integrovaný head39f3f104 (zahrnuje schválené #438/#436), všech13 CI
+SUCCESS včetně2443/56108. Native42853530222 naMariaDB10.3/11.4: celé8HTTP,
+350 checksumů/DB, anonymní POST denials, source/cleanup PASS. Skutečný Chrome:
+408 měřených +96 warmup navigací,24 funkčních variant,6 pixelových párů PASS.
+Cold CSS64454→31248 B v CI; FCP60→56/56→52 ms kalendář desktop/mobile,
+52→48/48→48 ms velodrom. Control také o4 ms lepší; časový zisk neprohlašujeme
+za produkční SLA. Warm network0→0 B; decoded465606→232803 B.
+
+PR #439 sloučen jako8182489e, celý treee40cdc71 shodný s testovaným39f3f104.
+Deploy42855987339 SUCCESS, záloha389/2, config/migrace/VS/index/smoke/cleanup
+PASS. Čerstvá produkční baseline po4e3df207:6 celých HTML otisků, všech5 asset
+verzí a6 pixelových párů shodných po8182489e; CSS53957→31248 B, control stejný.
+[Finální měření, metoda a meze](verification/public-calendar-assets-20261110/RESULTS.md),
+[receipt](verification/public-calendar-assets-20261110/release/release-controls.json).
+Lidské přihlášené UAT, fyzický telefon a obnova této zálohy NOT RUN. WIP7a7afd75
+zachovaný; runtime/flags vlastní CURRENT. Finální doklady ve větvi
+codex/public-calendar-assets-release-docs-20261110, [PR #442](https://github.com/KovoPraha/evidenceTreninku/pull/442).
+Další krok: po úplném CI sloučit doklady bez druhého deploye. Žádný další
+implementační řez není v tomto zadání rozpracovaný.
+
+
+Finální docs integrace: souběžný #441 sloučen do main jako d0f5fee7. Převzaté
+všechny jeho věcné záznamy TESTER/COACH včetně intro CURRENT/HANDOFF; jediný
+konflikt CURRENT vyřešen zachováním obou dokončených prací a vlastního ASSET5
+měření. Pouze docs, aplikace8182489e se nemění. Všech11 kontrol finálního
+dokumentačního head se zopakuje před sloučením #442; druhý deploy se neprovádí.
+
+
+ASSET5 docs checkpoint: souběžný #440 byl mezitím sloučen jako9ef52268.
+GitHub protected main vyžaduje strict aktuální základ; pokus o merge #442
+po11 SUCCESS na staršímcfbafd47 vrátil405 (3 required checks expected).
+Žádné sloučení ani nasazení tím nevzniklo. Převzatý již schválený main včetně
+BAR, bez konfliktu a se zachováním jeho věcných dokladů; proti novému main
+zůstává náš PR pouze docs. Všech11 CI se zopakuje na společném finálním head.
+Naše produkční přejímka se týká8182489e/deploy42855987339, nikoli dodatečně
+kódu BAR. Kvůli těmto dokladům se žádný další deploy nespouští.

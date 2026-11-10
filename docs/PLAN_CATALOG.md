@@ -412,7 +412,7 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | DONE / P11-RIX | Diagnóza uzavřena bez přijaté SQL/index varianty; pokračuje P11-ASSET. |
 
-| PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | ROZPRACOVÁNO / ASSET5; ASSET1–4 nasazené | Kalendář lekcí/velodrom CSS duplicity, nový before/source kontrakt PASS; native přejímka čeká. Dosavadní #435/runtime94c10708 a doklady #437, historická mez ASSET4 zachovaná. |
+| PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | NASAZENO / ASSET1–5 technicky PASS | ASSET5 #439/8182489e, deploy42855987339,13CI; native2DB a6živých HTML/pixel párů shodných, CSS53957→31248 B. Lidské UAT otevřené; historická mez ASSET4 zachovaná. |
 
 | PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | REJECTED / P11-HJS/P11-HJS2 | Oba nevybrané; skutečná duplicitníCSSvede naASSET2, prototypy zachované. |
 

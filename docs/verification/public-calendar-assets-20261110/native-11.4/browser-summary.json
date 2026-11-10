@@ -1,0 +1,260 @@
+[
+  {
+    "case": "calendar",
+    "viewport": "desktop",
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 60,
+      "ready_ms": 91.29999999998836,
+      "document_encoded_bytes": 5399,
+      "css_network_payload": 64454,
+      "combined_payload_bytes": 69853,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 56,
+      "ready_ms": 91.10000000000582,
+      "document_encoded_bytes": 5262,
+      "css_network_payload": 31248,
+      "combined_payload_bytes": 36510,
+      "css_decoded_bytes": 232803
+    },
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "calendar",
+    "viewport": "desktop",
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 44,
+      "ready_ms": 58.79999999998836,
+      "document_encoded_bytes": 5399,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 5399,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 40,
+      "ready_ms": 58.89999999999418,
+      "document_encoded_bytes": 5262,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 5262,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "case": "calendar",
+    "viewport": "mobile",
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 56,
+      "ready_ms": 91.80000000001746,
+      "document_encoded_bytes": 5399,
+      "css_network_payload": 64454,
+      "combined_payload_bytes": 69853,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 52,
+      "ready_ms": 79.5,
+      "document_encoded_bytes": 5263,
+      "css_network_payload": 31248,
+      "combined_payload_bytes": 36511,
+      "css_decoded_bytes": 232803
+    },
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "calendar",
+    "viewport": "mobile",
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 40,
+      "ready_ms": 58.60000000000582,
+      "document_encoded_bytes": 5399,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 5399,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 36,
+      "ready_ms": 59.30000000001746,
+      "document_encoded_bytes": 5262,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 5262,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "case": "velodrome",
+    "viewport": "desktop",
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 52,
+      "ready_ms": 75.70000000001164,
+      "document_encoded_bytes": 2126,
+      "css_network_payload": 64454,
+      "combined_payload_bytes": 66580,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 48,
+      "ready_ms": 73.79999999998836,
+      "document_encoded_bytes": 1994,
+      "css_network_payload": 31248,
+      "combined_payload_bytes": 33242,
+      "css_decoded_bytes": 232803
+    },
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "velodrome",
+    "viewport": "desktop",
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 36,
+      "ready_ms": 59.79999999998836,
+      "document_encoded_bytes": 2125,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 2125,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 32,
+      "ready_ms": 59.29999999998836,
+      "document_encoded_bytes": 1994,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 1994,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "case": "velodrome",
+    "viewport": "mobile",
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 48,
+      "ready_ms": 75.60000000003492,
+      "document_encoded_bytes": 2125,
+      "css_network_payload": 64454,
+      "combined_payload_bytes": 66579,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 48,
+      "ready_ms": 59.300000000046566,
+      "document_encoded_bytes": 1994,
+      "css_network_payload": 31248,
+      "combined_payload_bytes": 33242,
+      "css_decoded_bytes": 232803
+    },
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "velodrome",
+    "viewport": "mobile",
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 36,
+      "ready_ms": 59.90000000002328,
+      "document_encoded_bytes": 2126,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 2126,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 32,
+      "ready_ms": 43.5,
+      "document_encoded_bytes": 1995,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 1995,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "case": "control",
+    "viewport": "desktop",
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 56,
+      "ready_ms": 82.20000000001164,
+      "document_encoded_bytes": 2694,
+      "css_network_payload": 31248,
+      "combined_payload_bytes": 33942,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 52,
+      "ready_ms": 75.89999999996508,
+      "document_encoded_bytes": 2694,
+      "css_network_payload": 31248,
+      "combined_payload_bytes": 33942,
+      "css_decoded_bytes": 232803
+    },
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "control",
+    "viewport": "desktop",
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 36,
+      "ready_ms": 59.40000000002328,
+      "document_encoded_bytes": 2695,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 2695,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 36,
+      "ready_ms": 59.79999999998836,
+      "document_encoded_bytes": 2694,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 2694,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "case": "control",
+    "viewport": "mobile",
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 52,
+      "ready_ms": 75.59999999997672,
+      "document_encoded_bytes": 2694,
+      "css_network_payload": 31248,
+      "combined_payload_bytes": 33942,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 48,
+      "ready_ms": 75.60000000003492,
+      "document_encoded_bytes": 2694,
+      "css_network_payload": 31248,
+      "combined_payload_bytes": 33942,
+      "css_decoded_bytes": 232803
+    },
+    "decoded_pixels_equal": true
+  },
+  {
+    "case": "control",
+    "viewport": "mobile",
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 32,
+      "ready_ms": 59.40000000002328,
+      "document_encoded_bytes": 2695,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 2695,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 36,
+      "ready_ms": 59.600000000034925,
+      "document_encoded_bytes": 2694,
+      "css_network_payload": 0,
+      "combined_payload_bytes": 2694,
+      "css_decoded_bytes": 232803
+    }
+  }
+]

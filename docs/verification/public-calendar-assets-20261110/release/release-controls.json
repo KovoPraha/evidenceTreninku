@@ -1,0 +1,52 @@
+{
+  "deploy_run": 42855987339,
+  "head_sha": "8182489e43d9f5013e02c58f2a8ccbc257b168ef",
+  "conclusion": "success",
+  "tested_sha": "39f3f1046bc495fc1981edf296c1d13a7134c8d1",
+  "tested_and_merged_tree": "e40cdc717b5a3ee556ba92c69fb44e7aeae5943b",
+  "app_ci_success": 13,
+  "unit_tests": 2443,
+  "assertions": 56108,
+  "uat_schvaleno": false,
+  "importovat_krouzky": false,
+  "backup_tables": 389,
+  "backup_triggers": 2,
+  "backup_sha256": "c0bd1021501977e387f91bf64c47ee424d363085d91b83041bf2bde08663ac71",
+  "backup_verified": true,
+  "existing_configuration_preserved": true,
+  "config_appended": false,
+  "private_key_backup_and_web_copy_verified": true,
+  "migrations_pending": [],
+  "existing_variable_symbols_unchanged": true,
+  "medical_index_definition_and_inventory_unchanged": true,
+  "http_smoke": {
+    "http": 200,
+    "via": "documented server-side curl fallback",
+    "runner_http": 0
+  },
+  "release_config_cleanup_success": true,
+  "index_diagnostics_cleanup_success": true,
+  "production_whole_html_pairs_equal": 6,
+  "production_decoded_pixel_pairs_equal": 6,
+  "production_encoded_css_bytes": {
+    "target_before": 53957,
+    "target_after": 31248,
+    "control_before": 31248,
+    "control_after": 31248
+  },
+  "native_encoded_css_bytes": {
+    "target_before": 64454,
+    "target_after": 31248,
+    "control_before": 31248,
+    "control_after": 31248
+  },
+  "decoded_css_bytes": {
+    "target_before": 465606,
+    "target_after": 232803
+  },
+  "production_writes": false,
+  "authenticated_production_human_uat": "NOT RUN",
+  "physical_mobile": "NOT RUN; Chrome viewport emulation only",
+  "restore_this_backup": "NOT RUN",
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5"
+}

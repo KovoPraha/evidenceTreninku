@@ -1,76 +1,43 @@
-# Předání P11-ASSET5 — 10. 11. 2026
+# Předání P11-ASSET5 —10.11.2026
 
-ROZPRACOVÁNO. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset5--veřejný-kalendář-a-velodrom-10-11-2026).
-Base37f1ba8f; větev codex/public-calendar-assets-performance-20261110, vlastní
-worktree C:/Users/Marek/Documents/Codex/evidencePavel-calendar-assets-performance-20261110.
-Odstranit pouze CDN Bootstrap z booking/kalendar.php a booking/velodrom.php;
-booking/klubovy_kalendar.php je control. Zachovat veškerou logiku, CSS payloady,
-manifest, TTL, role/rezervace/kapacity a původní WIP7a7afd75 / fio větev.
-Nová native/browser/live přejímka a měření NOT RUN. Při všech PASS povolené
-commit/merge/deploy. Další krok: bezpečná veřejná baseline a source kontrakt.
-Provozní runtime/flags jsou v [CURRENT](CURRENT_STATE.md), dosud94c10708.
+**NASAZENO / technická přejímka PASS.**
+[Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset5--veřejný-kalendář-a-velodrom-10-11-2026),
+[měření a meze](verification/public-calendar-assets-20261110/RESULTS.md),
+[release receipt](verification/public-calendar-assets-20261110/release/release-controls.json).
 
-## Předchozí P11-ASSET4
+PR #439 →8182489e, celý treee40cdc71 totožný s testovaným39f3f104;13 CI SUCCESS.
+Odstraněné dvě CDN Bootstrap CSS duplicity: booking/kalendar.php (lekce)
+a booking/velodrom.php. Klubový kalendář nezměněný control; payloady/manifest/
+TTL, SQL, rezervace, kapacity i práva stejné. Source kontrakt pinovaný na37f1ba8f
+ověřuje přesně dvě odstranění a16 vyjmenovaných guard závorek. První strict diff
+odhalil4 zdrojové mezery tagu; opraven přesný comparator, regresní unit1/13 PASS.
 
+Finální native42853530222/39f3f104:MariaDB10.3+11.4,8HTTP/350checksumů naDB,
+anonymní POSTdenials,408 Chrome měřených+96warmup,24funkčních variant,
+6decoded pixel pairs a cleanup PASS. Cold Bootstrap CSS64454→31248 B v CI;
+decoded465606→232803 B; warm síť0→0 B. Control také časově kolísá, proto
+neslibovat procentní produkční zrychlení; kompletní medians jsou v protokolu.
 
-**NASAZENO / technická přejímka nového řezu PASS.**
-[Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset4--katalogová-diagnóza-a-další-měřený-řez-10-11-2026),
-[měření a meze](verification/catalog-audit-assets-20261110/RESULTS.md),
-[release receipt](verification/catalog-audit-assets-20261110/release/release-controls.json).
-
-PR #435 → `94c10708`; celý tree totožný s testovaným `d439f5db`, 19 CI SUCCESS.
-Offline obsahové verze pěti CSS/JS; původní bytes a TTL zachované, při GET se
-nehashuje. Změna assetu vyžaduje tools/build-ui-asset-versions.php --write;
-zastaralý manifest zastaví testy/deploy. Opravena jen nonce značka fallbacku,
-CSP guard zachovaný. Žádné SQL/indexy, změny fotografií ani persistentní data cache.
-
-MariaDB 10.3/11.4 celé HTTP/345 tabulek PASS, 408 měřených Chrome navigací,
-4 syntetické pixelové páry. Při dalším nezměněném vydání 78508→0 B v JS TTL;
-po 31s 78508→26618 B, CSS úspora 51890 B. První cold objem se nezměnil.
-Skutečná změna CSS invaliduje právě jednu URL se správným hashem; fallback PASS.
-Deploy 42837011604 SUCCESS; 2432/55977, záloha 389/2, config/migrace/VS/indexy/HTTP
-i oba úklidy PASS. Runtime a flags vlastní [CURRENT](CURRENT_STATE.md).
-Živý katalog 5/5 včetně strana=2, opakování a 4 produkční pixelové páry shodné.
-PHP libcurl transport selhal; explicitní --system-curl zachovává HTTPS a plnou paritu.
-
-Historické tři hashy nejsou zpětně vysvětlené: stranka=2 opakovala default,
-before HTML chybí. Audit #434 / readonly 42826637716 PASS; samotné fotografie
-nejsou prokázanou úplnou příčinou. Nová přísná baseline je uchovaná v protokolu.
+Deploy42855987339 SUCCESS;2443/56108, backup389/2, config/migrace/VS/indexy,
+HTTP200 a oba úklidy PASS. Živý Chrome158, desktop/mobile:6 celých HTML otisků
+i6 pixelových párů přesně shodných,5assetverzí zachovaných, CSS53957→31248 B,
+control31248→31248 B, bez JS/network chyby a přetékání. Baseline čerstvá po
+schváleném společném vydání #438/#436; jejich věcné záznamy zachované.
+Runtime a flags vlastní [CURRENT](CURRENT_STATE.md); import/UATfalse.
 Lidské přihlášené produkční UAT, fyzický telefon a obnova této zálohy NOT RUN.
+
 Původní větev codex/fio-auto-reconciliation-recovery a WIP kis_rosters_admin.php
-SHA-256 `7a7afd75` zachované. HJS/RIX prototypy nepřebírat; nestashovat/neresetovat.
+SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`
+zachované, nestashovat/neresetovat. Vlastní doklady ve worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-calendar-assets-performance-20261110,
+větev codex/public-calendar-assets-release-docs-20261110; [PR #442](https://github.com/KovoPraha/evidenceTreninku/pull/442).
+Další krok: po všech CI sloučit dokumentační PR, **neopakovat deploy**.
 
-Doklady: codex/stable-ui-assets-release-docs-20261110; [PR #437](https://github.com/KovoPraha/evidenceTreninku/pull/437).
-Po sloučení finálního PR **neopakovat deploy**. Další kandidát KONCEPT: duplicita
-CSS veřejného kalendáře/velodromu, ověřit vlastní před/po a všechny negativní kontroly.
+Historie ASSET1–4 zůstává v [tematickém plánu](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
+Tři historické katalogové hashy mají stále chybějící before HTML (LIMIT),
+nikoli dodatečné PASS; [ASSET4 důkazy](verification/catalog-audit-assets-20261110/RESULTS.md).
+Žádný další nový implementační řez není v tomto zadání rozpracovaný.
 
-## P11-ASSET2 — nasazeno a technicky ověřeno
+Souběžné doklady #441/d0f5fee7 převzaté se zachováním TESTER/COACH intro a všech věcných záznamů; finální11CI #442 se ověřuje znovu, bez dalšího deploye.
 
-Historie: [workspace release](verification/workspace-bootstrap-assets-20261110/release/RESULTS.md).
-
-## Aktuální předání P11-ASSET3
-
-Historický řez: [veřejné účty a původní meze katalogu](verification/public-account-assets-20261110/release/RESULTS.md).
-
-ASSET5 checkpoint: source contract a1/12 negativní unit PASS; živý before6/6, cíle CSS2/53957 B a control1/31248 B. [Průběžné výsledky](verification/public-calendar-assets-20261110/RESULTS.md). Native dvojí DB/Chrome a přijetí ještě čekají.
-
-
-ASSET5 integrace main: během práce sloučen #438 / f39f3157 (objednávky a
-registrátor). Společná dokumentace zachována včetně TESTER-20261110. Nové CI
-se zopakuje na integrovaném head; dva vybrané kalendářové zdroje z37f1ba8f
-jsou stále přesným oraclem, ostatní sdílené PHP kopie jsou v páru shodné.
-Produkční plán TESTER váže #438 na společné vydání s #436; před vlastním deploy
-ověřit splnění této již zapsané podmínky a aktuální run/SHA. #436 neslučovat
-v rámci tohoto řezu. Původní WIP zůstává bez zásahu.
-
-
-ASSET5 checkpoint / PR #439: první přísný HTTP diff byl4 mezery za inline SEO.
-PHP uzavírající značka spotřebuje zdrojový newline; porovnávač proto nyní
-odstraňuje přesně4 zdrojové mezery a jeden newline patřící jedinému známému
-CDNtagu, bez obecné whitespace normalizace. Regresní unit1/13 PASS. Nový živý
-before používá stejný přesný postup; skripty/data/verze assetů zůstávají celé.
-Native42851391494 na38f6e9fb prošlo na obou DB včetně Chrome. Následně do main
-přibylo povolené #436 /4e3df207; zachované oba souběžné plány a nové ověření
-se zopakuje na tomto společném základu. Společný produkční běh jiného řezu
-42852365591 běží na4e3df207; neslučovat další cizí větev ani ho nepřehrávat.
-Dosavadní aplikační diff tohoto PR proti main jsou jen dva zvolené kalendáře.
+#440/9ef52268 již v main; strict ochrana odmítla starší docs základ. #442 přebírá main bez konfliktu, opakuje11CI. Naše produkční důkazy patří8182489e; BAR kvůli dokladům nenasazovat.

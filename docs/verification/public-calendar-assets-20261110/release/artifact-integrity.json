@@ -1,0 +1,321 @@
+{
+  "complete": true,
+  "method": "SHA256 of canonical staged Git blobs; excludes this self-referential manifest; text uses canonical LF.",
+  "files": [
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/RESULTS.md",
+      "bytes": 8474,
+      "sha256": "03e239e8bc9c65007950ae525c725f693d61f6436742321d4266e9d9b182ec60"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/live-before.json",
+      "bytes": 11375,
+      "sha256": "e9ba2a40b1b318113e5495ce9cd9caaad8158a19556ecc1763e835f3eb03b616"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/local-source-contract.json",
+      "bytes": 1911,
+      "sha256": "05147b666618c44d8c5dfadb8e3186c15270a1bb56e0b392cd2f8a09fc747b4b"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "b7ada947c8eb144af1b6a343b6ed3d77340b1e68b2edf47cedd322a54c83eb20"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-10.3/exact-source-contract.json",
+      "bytes": 1910,
+      "sha256": "a03fc978a08acb0b8ce3509608cebe9ad77adb902b2444e037fa8b9408a9cbb0"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-10.3/native-summary.json",
+      "bytes": 1380,
+      "sha256": "d2b8b787c16c2fa3c7e31a0b0e6f5f51f930f7a7fcf50812f582d4178d8d6d7f"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-10.3/shared-context.json",
+      "bytes": 23309,
+      "sha256": "6592240faa85adc4ea5fdff11b00500c9a3a645d1eee15d1e4904a8ca9e0465a"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-10.3/source-identity.json",
+      "bytes": 1060,
+      "sha256": "eb7f1367f979a3a2d48f9e8f30d1485371e73405eaa85987e804cde075829ff5"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-10.3/whole-http.json.gz",
+      "bytes": 2238,
+      "sha256": "b378035c3abcfc67380e966a82f83a5b11f281585230be122e5e345e01845bed"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-calendar-desktop-cold.json.gz",
+      "bytes": 3625,
+      "sha256": "cc1415bf869f671599997a3cbb6c4f5db36ae2ad753af64d8c39e614410459cd"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-calendar-desktop-warm.json.gz",
+      "bytes": 3354,
+      "sha256": "4565f2fe2255fc9f4dee4719bf10fdf5245b6678dd7011b2e309424fd5c9d0b5"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-calendar-mobile-cold.json.gz",
+      "bytes": 3503,
+      "sha256": "ad41eef30ca6600bb205354265e833476b74ee450de53364d730a36f5d0c31b9"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-calendar-mobile-warm.json.gz",
+      "bytes": 3334,
+      "sha256": "02da98ec91c7f2e8368f1ecb08f5dc05c71efc2103833bcbc18d339236649085"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-control-desktop-cold.json.gz",
+      "bytes": 2807,
+      "sha256": "1ef5d5e6a3e5e7d61c0cc5654e0c24ed8c62323d7b5d6151d619fa900264cae1"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-control-desktop-warm.json.gz",
+      "bytes": 2664,
+      "sha256": "7ad8570ebc5f4e5fd15a0a610ac74322c84393fa0f58977e274c02a96eaba516"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-control-mobile-cold.json.gz",
+      "bytes": 2815,
+      "sha256": "a13a3113300fa303e1777c98bbfe0951d86b06a1d65d6943ff7596845efb2871"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-control-mobile-warm.json.gz",
+      "bytes": 2668,
+      "sha256": "3a874fc5d40dc31d94d1cfbf8e1e6188af4e1cb75bddf417fe730b8c07425123"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-summary.json",
+      "bytes": 6512,
+      "sha256": "88803717f4d563a306cfd75eb0dd26e49e569f1a8b0f333720188a6ce81758bd"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-velodrome-desktop-cold.json.gz",
+      "bytes": 3645,
+      "sha256": "c893a2145bb42aa3c875593bfa8f0af74d0e9526a04a361fbc972a57cc12f6b1"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-velodrome-desktop-warm.json.gz",
+      "bytes": 3470,
+      "sha256": "aebaed42ab979e4cfe6d3817bc86d3e82894363bf05c3d325eb29f51817f0218"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-velodrome-mobile-cold.json.gz",
+      "bytes": 3638,
+      "sha256": "31520533a27d83baaad7cfa36ff5fab919f5f73e40aa026c9edb03f126a2f314"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/browser-velodrome-mobile-warm.json.gz",
+      "bytes": 3316,
+      "sha256": "e4f8fa415b29514e80ca96736162516cbd7ea29b71670b1bd1b702a5ba07cc9d"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-calendar-desktop-after.png",
+      "bytes": 67569,
+      "sha256": "d384ceaee1e2a55fec8fb16f04db4a3cfe693d1a0f10d71906e6e02965ab271b"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-calendar-desktop-before.png",
+      "bytes": 67569,
+      "sha256": "d384ceaee1e2a55fec8fb16f04db4a3cfe693d1a0f10d71906e6e02965ab271b"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-calendar-mobile-after.png",
+      "bytes": 61604,
+      "sha256": "7d7fc6512a6b8c4fe4500e21948e0f9ad35da62efeaf0206feb5af57ac8b3418"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-calendar-mobile-before.png",
+      "bytes": 61604,
+      "sha256": "7d7fc6512a6b8c4fe4500e21948e0f9ad35da62efeaf0206feb5af57ac8b3418"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-control-desktop-after.png",
+      "bytes": 47478,
+      "sha256": "7a9083e20608952292fa4a8c10744fbc199033875814699d4ab5e03db9801492"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-control-desktop-before.png",
+      "bytes": 47478,
+      "sha256": "7a9083e20608952292fa4a8c10744fbc199033875814699d4ab5e03db9801492"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-control-mobile-after.png",
+      "bytes": 47675,
+      "sha256": "5ec5f234fbff1f73d4934a2b7572691b096503900b152f80f9af72edb85cd3a9"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-control-mobile-before.png",
+      "bytes": 47675,
+      "sha256": "5ec5f234fbff1f73d4934a2b7572691b096503900b152f80f9af72edb85cd3a9"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-velodrome-desktop-after.png",
+      "bytes": 44373,
+      "sha256": "5335956d399a36a505dce7582fdd1a556686a2f0a13e147ff4a868f80abeeb4e"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-velodrome-desktop-before.png",
+      "bytes": 44373,
+      "sha256": "5335956d399a36a505dce7582fdd1a556686a2f0a13e147ff4a868f80abeeb4e"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-velodrome-mobile-after.png",
+      "bytes": 51210,
+      "sha256": "788eed90b9ad07f38d82b40e0bf60bab3e9eb09dbdd65dfa24e669795be23b5c"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/calendar-assets-velodrome-mobile-before.png",
+      "bytes": 51210,
+      "sha256": "788eed90b9ad07f38d82b40e0bf60bab3e9eb09dbdd65dfa24e669795be23b5c"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "b7ada947c8eb144af1b6a343b6ed3d77340b1e68b2edf47cedd322a54c83eb20"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/exact-source-contract.json",
+      "bytes": 1910,
+      "sha256": "a03fc978a08acb0b8ce3509608cebe9ad77adb902b2444e037fa8b9408a9cbb0"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/native-summary.json",
+      "bytes": 1445,
+      "sha256": "b28d91cb54c43198a8cb13179543328c733a8a382694ce1b838e003055ef9c34"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/shared-context.json",
+      "bytes": 23309,
+      "sha256": "6592240faa85adc4ea5fdff11b00500c9a3a645d1eee15d1e4904a8ca9e0465a"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/source-identity.json",
+      "bytes": 1060,
+      "sha256": "eb7f1367f979a3a2d48f9e8f30d1485371e73405eaa85987e804cde075829ff5"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/native-11.4/whole-http.json.gz",
+      "bytes": 2299,
+      "sha256": "946180dc003224ef25ca3e89c9f786687acabbab61183f55a0f522831e514604"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/app-checks.json",
+      "bytes": 2334,
+      "sha256": "9c1ad34b21fb3634b14673fa9bd176189cf12819d020cb2a756582c64ceb0713"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/deploy-summary.json",
+      "bytes": 8411,
+      "sha256": "81b39a117efb77b96a44457e9f69bc04f2b973128d6e395bf742d421dd27d95a"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/index-preflight/medical-index-after.json",
+      "bytes": 2438,
+      "sha256": "5a243eb196ed2628727cfe1fa97908c555093b327013fb350695e1935d294239"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/index-preflight/medical-index-before.json",
+      "bytes": 2439,
+      "sha256": "e1e25646fc9292f58e11f7bfca424aeba475fe2b07eaf4b111c8fe341e45fea4"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-browser-probe.js.txt",
+      "bytes": 4197,
+      "sha256": "d5f945a4fd8b1198f2cb1b86b3f20da1e2ab1c5cee01a5b6097f08092a428e41"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/after-calendar-desktop.png",
+      "bytes": 37400,
+      "sha256": "95a73870090c3e18e428d0f0999a4572a9c714e1d00df1d1d63a5118a6727f22"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/after-calendar-mobile.png",
+      "bytes": 34214,
+      "sha256": "8eb009f244e291167ba9cba41617eab258836d388f8ea40005a19d2d1289205d"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/after-control-desktop.png",
+      "bytes": 33497,
+      "sha256": "5b00f96a4a84cdc520f97b51167dc8ad75dcc53afc2fa4a8a54318c847d2ce0f"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/after-control-mobile.png",
+      "bytes": 33184,
+      "sha256": "b7b6f517fde8428897e618ac25efc9727d4b92372291c622e3b7834a45adadfe"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/after-velodrome-desktop.png",
+      "bytes": 28041,
+      "sha256": "ca73385504bb50af91970d1f905e821a58c985d1f3b17521aab7bcf2360f31e6"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/after-velodrome-mobile.png",
+      "bytes": 25465,
+      "sha256": "eeb343b55d43b490fc8380563625814aae61185902564c68caa803325d8ebf43"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/after.json",
+      "bytes": 10290,
+      "sha256": "9127e80476fd3bd96b1f6eff45402bb0a7e07d574c764196c4f4023e2f93a193"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/before-calendar-desktop.png",
+      "bytes": 37400,
+      "sha256": "95a73870090c3e18e428d0f0999a4572a9c714e1d00df1d1d63a5118a6727f22"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/before-calendar-mobile.png",
+      "bytes": 34214,
+      "sha256": "8eb009f244e291167ba9cba41617eab258836d388f8ea40005a19d2d1289205d"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/before-control-desktop.png",
+      "bytes": 33497,
+      "sha256": "5b00f96a4a84cdc520f97b51167dc8ad75dcc53afc2fa4a8a54318c847d2ce0f"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/before-control-mobile.png",
+      "bytes": 33184,
+      "sha256": "b7b6f517fde8428897e618ac25efc9727d4b92372291c622e3b7834a45adadfe"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/before-velodrome-desktop.png",
+      "bytes": 28041,
+      "sha256": "ca73385504bb50af91970d1f905e821a58c985d1f3b17521aab7bcf2360f31e6"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/before-velodrome-mobile.png",
+      "bytes": 25465,
+      "sha256": "eeb343b55d43b490fc8380563625814aae61185902564c68caa803325d8ebf43"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/before.json",
+      "bytes": 11420,
+      "sha256": "6dfc7d20b75256bd851e8a03afd2224682773c73fc316d44c3b5e606938cc2aa"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/live-chrome/parity-and-pixels.json",
+      "bytes": 2716,
+      "sha256": "c009f8f700c445fb42fa66d2af650b8b10d8039e5fb6728fd7ed7b996e9ac791"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/release-controls.json",
+      "bytes": 1742,
+      "sha256": "7169565bd95b4818edc002a644521086eb9cc9cafe23bf67dcc8563ce66a03b2"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/source-and-evidence-checks.json",
+      "bytes": 3302,
+      "sha256": "2070379b32ccb842541a19fdeaf80a86e049e8b7ffb6af8eb6c6b48214e90e57"
+    },
+    {
+      "path": "docs/verification/public-calendar-assets-20261110/release/tree-identity.json",
+      "bytes": 266,
+      "sha256": "1da6e0987809c4fb50aadb927e46886f85ac503b2168fe0e5cc6c6b8e8bf649a"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "calendar": {
+    "before": {
+      "total_ms": 3.235,
+      "ttfb_ms": 3.1380000000000003
+    },
+    "after": {
+      "total_ms": 3.201,
+      "ttfb_ms": 3.1220000000000003
+    }
+  },
+  "venue": {
+    "before": {
+      "total_ms": 3.057,
+      "ttfb_ms": 2.9619999999999997
+    },
+    "after": {
+      "total_ms": 3.075,
+      "ttfb_ms": 2.996
+    }
+  },
+  "empty-venue": {
+    "before": {
+      "total_ms": 2.807,
+      "ttfb_ms": 2.7030000000000003
+    },
+    "after": {
+      "total_ms": 2.706,
+      "ttfb_ms": 2.637
+    }
+  },
+  "empty-month": {
+    "before": {
+      "total_ms": 2.716,
+      "ttfb_ms": 2.65
+    },
+    "after": {
+      "total_ms": 2.677,
+      "ttfb_ms": 2.59
+    }
+  },
+  "invalid-month": {
+    "before": {
+      "total_ms": 3.0140000000000002,
+      "ttfb_ms": 2.9099999999999997
+    },
+    "after": {
+      "total_ms": 3.033,
+      "ttfb_ms": 2.955
+    }
+  },
+  "velodrome": {
+    "before": {
+      "total_ms": 2.5669999999999997,
+      "ttfb_ms": 2.508
+    },
+    "after": {
+      "total_ms": 2.549,
+      "ttfb_ms": 2.49
+    }
+  },
+  "control": {
+    "before": {
+      "total_ms": 2.532,
+      "ttfb_ms": 2.48
+    },
+    "after": {
+      "total_ms": 2.5820000000000003,
+      "ttfb_ms": 2.509
+    }
+  },
+  "control-register": {
+    "before": {
+      "total_ms": 2.2950000000000004,
+      "ttfb_ms": 2.2520000000000002
+    },
+    "after": {
+      "total_ms": 2.2929999999999997,
+      "ttfb_ms": 2.231
+    }
+  }
+}
