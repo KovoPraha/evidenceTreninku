@@ -114,5 +114,28 @@
       "sha256": "f5ca0de38f1097555c6820875880190cf4ce900318266f05b85cb560355a0572"
     }
   ],
-  "method": "TLS verified; anonymous GET only, no redirects, no POST. Exact known controls, only CSP nonce and form CSRF normalised. Redirects do not execute private templates."
+  "method": "TLS verified; anonymous GET only, no redirects, no POST. Exact known controls, only CSP nonce and form CSRF normalised. Redirects do not execute private templates.",
+  "control_cache_policies": [
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.min.css",
+      "cache_control": "max-age=604800"
+    },
+    {
+      "path": "assets/vendor/bootstrap-icons/font/bootstrap-icons.css",
+      "cache_control": "max-age=604800"
+    },
+    {
+      "path": "assets/app-ui.css",
+      "cache_control": "max-age=604800"
+    },
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.bundle.min.js",
+      "cache_control": "max-age=30"
+    },
+    {
+      "path": "assets/app-ui.js",
+      "cache_control": "max-age=30"
+    }
+  ],
+  "control_cache_evidence": "Enriched from the original captured TLS headers; body SHA256 reverified, no new request or timestamp change."
 }

@@ -1,6 +1,6 @@
 # P11-HJS3 — průběžné ověření společného pracovního skriptu
 
-ROZPRACOVÁNO. [Plán](../../SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs3--společný-skript-po-odstranění-duplicitních-stylů-10-11-2026).
+NASAZENO / technická přejímka PASS; přihlášené produkční UAT NOT RUN. [Plán](../../SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs3--společný-skript-po-odstranění-duplicitních-stylů-10-11-2026).
 Čerstvý main5d6434dc: původní hlavička byte-shodná s referencí HJS2, žádné top-level JS deklarace.
 
 ## Lokální kontrola implementace
@@ -47,7 +47,7 @@ funkční zkoušky. Neúplný běh není přijímací výkonový důkaz.
 
 ## Přijímací měření na konečném aplikačním HEAD
 
-Technická přejímka PASS, runtime merge HOTOVO, produkční deploy PROBÍHÁ.
+Technická přejímka, runtime merge i produkční deploy PASS. Konečné doklady vydání jsou níže; úvodní checkpointy zachycují historii jednotlivých bran.
 Testovaný `dd44cff7a657d79c7bb4f2aa7e959c779f3be8d9` a main
 `b753f6e765d83c402cc5e3b2c48ae448865749bb` mají přesně stejný celý Git tree;
 [14/14 CI](release/app-checks.json), [strict brána](release/premerge-gate.json),
@@ -117,3 +117,36 @@ prokázaný runtimec29642f1/deploy42905781826. Produkční after/receipt zatím 
 přihlášené produkční UAT NOT RUN. Fyzický mobil a reálné push oznámení NOT RUN.
 ASSET4 tři historické hash LIMIT a ASSET6 mobilní kontrolní foto LIMIT zachované;
 ASSET7 přihlášené produkční UAT zůstává NOT RUN. Žádné role/účty/WIP neměněny.
+
+## Konečný produkční doklad — 11. 11. 2026
+
+[Deploy42920002806](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42920002806) SUCCESS na b753f6e7; 2456 testů/56289 assertions, záloha389tabulek/2triggery, migrace/config/VS/index/HTTP200/cleanup PASS; UAT/importfalse.
+[Úplná release kontrola](release/release-controls.json), [průběh](release/deploy-summary.json).
+Záloha SHA256 `68b93d12fb82cad557596fd2edf1aba3224b0766ee4f968f48d7cb6b42587489`; nezávislý restore této konkrétní zálohy NOT RUN.
+Původní konfigurace zachovaná, config se nedoplňoval; soukromé klíče a zálohy
+ověřené. Migrace pending0, dosavadní variabilní symboly i definice/indexový
+inventář zdravotního čtení stejné. Release kopie config a diagnostické indexové
+soubory uklizené. Přímý runner HTTP0, předepsaný serverový curl200 PASS.
+Import kroužků přeskočený. Žádné další přepnutí UAT nebo aktivace hledání/push.
+
+[Živé TLS GET po](release/live-after.json) proti [před](release/live-before.json):
+4staff redirect302 +login200 a celé normalizované tělo/bezpečnostní hlavičky
+shodné. Pět dosavadních UI payloadů byte-shodných s kanonickým Git obsahem;
+obě JS dál cache30s, tři CSS7d. Nový staffJS404→200, decoded15 271B přesně
+SHA256/název i SHA384 SRI, gzip/identity/gzip;q=0 a 7d/immutable ověřené.
+[Reprodukovatelná čtecí sonda](release/live-http-probe.py.txt) neprovádí POST,
+neukládá formuláře a nenormalizuje nic kromě CSP nonce a známého form CSRF.
+Anonymní redirect neověřuje soukromé šablony v produkci; jejich vizuální/funkční
+shoda je doložená izolovaným native/Chrome během, živé přihlášené UAT NOT RUN.
+
+[Dokumentační #450](https://github.com/KovoPraha/evidenceTreninku/pull/450)
+obsahuje plán, handoff, aktuální stav, měření a bezpečné release doklady;
+sloučení vyžaduje všech11 aktuálních CI a strict main. Tento PR nepřináší runtime
+změnu ani druhé nasazení. Integrita bezpečných dokladů je v kanonickém
+[Git manifestu](release/artifact-integrity.json); nezahrnuje sám sebe.
+
+Původní fio/d1221f35, jediný tracked WIP kis_rosters_admin.php a jeho SHA256
+7a7afd75…64733e5 zůstaly shodné. Žádný stash/reset/clean, cizí staging ani merge
+starých HJS/HJS2 prototypů. ASSET4/6 LIMIT a ASSET7 UAT NOT RUN zachované.
+Další krok je případná přihlášená produkční přejímka s dostupnou schválenou
+relací, bez změn rolí nebo skutečných notifikací; není tvrzená jako hotová.
