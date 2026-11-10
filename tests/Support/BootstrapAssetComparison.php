@@ -5,7 +5,7 @@ declare(strict_types=1);
 /** Comparison-only allowance for removing the one known duplicate stylesheet. */
 function bootstrapAssetComparisonHtml(string $html): string
 {
-    $local = '~<link href="/(?!/)[^"]*assets/vendor/bootstrap/bootstrap\.min\.css\?v=[0-9]+" rel="stylesheet">~';
+    $local = '~<link href="/(?!/)[^"]*assets/vendor/bootstrap/bootstrap\.min\.css\?v=(?:[0-9]+|[a-f0-9]{64})" rel="stylesheet">~';
     if (preg_match_all($local, $html) !== 1) {
         return $html;
     }

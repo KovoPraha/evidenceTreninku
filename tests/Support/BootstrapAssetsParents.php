@@ -48,7 +48,7 @@ foreach (range(-4, 16) as $round) {
                 throw new RuntimeException('Asset parent unavailable: ' . $case . ':' . $response['status']);
             }
             $raw = $response['body'];
-            $local = preg_match_all('~href="/(?!/)[^"]*assets/vendor/bootstrap/bootstrap\.min\.css\?v=[0-9]+"~', $raw);
+            $local = preg_match_all('~href="/(?!/)[^"]*assets/vendor/bootstrap/bootstrap\.min\.css\?v=(?:[0-9]+|[a-f0-9]{64})"~', $raw);
             $cdn = substr_count($raw, 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
             $fragment = $case === 'mine_ajax';
             if ($local !== ($fragment ? 0 : 1) || $cdn !== (!$fragment && $variant === 'before' ? 1 : 0)) {

@@ -30,3 +30,38 @@ Proto samostatný úzký CLI audit pevného okna10.11., START TRANSACTION READ O
 aktérů, zákazníků, cen nákladů či tokenů. Nejprve CI/PR/main; potom stávající
 chráněné SSH/prodprostředí zkopíruje pouze dočasný čtecí nástroj mimo webroot a
 uklidí ho. Jde o diagnózu, nikoliv nasazení nové webové aplikace.
+
+
+### Dokončený čtecí audit a meze historického důkazu
+
+PR [#434](https://github.com/KovoPraha/evidenceTreninku/pull/434) je v main
+`fb593ad49f230b319b770bce763954017007db42`, po 11 úspěšných CI kontrolách.
+[Čtecí běh 42826637716](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42826637716)
+SUCCESS včetně úklidu. [Veřejný výsledek](production-readonly-audit.json):
+49 událostí fotografií (471–521), read-only transakce, rollback a konfigurace
+beze změny. Šest sledovaných PHP zdrojů odpovídá kanonickým blobům main.
+Nejde o nasazení webové aplikace; runtime zůstává beead425.
+
+**Historické tři rozdíly nejsou uzavřené jako PASS.** Chybí původní HTML,
+uchovaný SHA-256 nelze obrátit. Chybný parametr `stranka=2` opakoval první stránku;
+správný je `strana=2`. Default se změnil již před vydáním ASSET3. Časová shoda
+s editací fotografií sama nevysvětluje oba různé pohledy: náhrada všech podmnožin
+viditelných fotografií placeholderem původní hash nereprodukovala. Neoznačovat
+fotografie za prokázanou úplnou příčinu ani HTTP 200 za shodu obsahu.
+
+### Implementace ASSET4 — průběžný stav
+
+Větev `codex/stable-ui-assets-performance-20261110`, vlastní worktree
+`C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110`.
+Offline SHA-256 manifest pěti společných souborů, žádné hashování při GET.
+Obsah souborů a cache TTL zachované. Přesná kontrola PHP tokenů a emisního HTML
+proti 50ce79b2 PASS: pouze pět verzí, povinné závorky guardu a oprava whitespace
+nonce značky obrázku. CSP guard se nemění. Manifest má kontrolu skutečných bytů
+v PHPUnit a tím i v existujících deploy testech. Generátor: `php tools/build-ui-asset-versions.php --write`.
+
+Nový izolovaný profil: MariaDB 10.3/11.4, fyzické kopie dvou vydání na stejném
+originu, skutečný Apache a Chrome. Celé HTTP včetně správného stránkování,
+17 střídavých párů po 4 warmupech; cold/warm/metadata-only release, kontrola
+expirace 30s JS, skutečné změny CSS a CSP fallbacku. Bez síťových mocků či
+umělého zpomalování. Native/browser výsledky zatím NOT RUN; podmíněné nasazení
+zatím nepřijato. Původní WIP kis_rosters_admin.php 7a7afd75 zachovaný.

@@ -23,5 +23,10 @@ final class WorkspaceAssetsComparisonTest extends TestCase
         self::assertNotSame($after, workspaceAssetsComparisonHtml(str_replace('Workspace', 'Changed', $before)));
         $unexpected = str_replace('rel="stylesheet">', 'rel="stylesheet" media="print">', $before);
         self::assertSame($unexpected, workspaceAssetsComparisonHtml($unexpected));
+        $contentVersion = str_repeat('a', 64);
+        $hashedBefore = str_replace('?v=123', '?v=' . $contentVersion, $before);
+        self::assertSame(str_replace('?v=123', '?v=' . $contentVersion, $after), workspaceAssetsComparisonHtml($hashedBefore));
+        $invalidVersion = str_replace($contentVersion, str_repeat('a', 63), $hashedBefore);
+        self::assertSame($invalidVersion, workspaceAssetsComparisonHtml($invalidVersion));
     }
 }

@@ -375,3 +375,23 @@ Proto samostatný úzký CLI audit pevného okna10.11., START TRANSACTION READ O
 aktérů, zákazníků, cen nákladů či tokenů. Nejprve CI/PR/main; potom stávající
 chráněné SSH/prodprostředí zkopíruje pouze dočasný čtecí nástroj mimo webroot a
 uklidí ho. Jde o diagnózu, nikoliv nasazení nové webové aplikace.
+
+
+Implementační větev ASSET4: codex/stable-ui-assets-performance-20261110, izolovaný worktree C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110. Výchozí běžící aplikacebeead425, katalogový audit samostatně PR434 (čekáCI/main). Obsahový manifest5souborů se generuje při vývoji/build, na GET se nehashuje; kontrola skutečných canonical bytes v PHPUnit i deploy testech, LF pravidlo5assetů pro Windows/Linux. TTL ani payloady se nemění. Oprava pouze whitespace zdrojové CSPznačky obrázku, guard ponechaný. Native/browser dvourelease fixture, cold/warm a skutečná změna obsahu před přijetím.
+
+
+### ASSET4 — průběžný stav implementace
+
+Čtecí audit [#434](https://github.com/KovoPraha/evidenceTreninku/pull/434) sloučen,
+11 CI PASS; běh 42826637716 SUCCESS včetně rollbacku, shody konfigurace a úklidu.
+49 změn fotografií nedokazuje úplnou příčinu historických rozdílů. Původní HTML
+chybí, chybný parametr stránky 2 opakoval default. Historická shoda otevřená;
+[výsledky a meze](verification/catalog-audit-assets-20261110/RESULTS.md).
+Připraven offline manifest pěti společných assetů a úzká oprava nonce značky.
+Současná větev codex/stable-ui-assets-performance-20261110; samostatný worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-ui-cache-performance-20261110.
+Obsah souborů, cache TTL a CSP kontrola zachované. Zdrojový kontrakt PASS;
+nové celé HTTP, dvourelease Chrome a skutečná invalidace NOT RUN, release nepřijat.
+Runtime zůstává beead425 / deploy42810948814, oba flags false. Další krok:
+nový izolovaný profil, potom vyhodnotit shodu a naměřený přínos; teprve při
+splnění přejímky commit/merge/deploy. Původní WIP zachovaný, nic nestashovat.

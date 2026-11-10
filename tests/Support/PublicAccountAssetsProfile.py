@@ -136,8 +136,17 @@ try:
         (baseline_root/route).write_bytes(subprocess.check_output(['git','show',base+':'+route],cwd=root))
     (baseline_root/'config.php').symlink_to(root/'config.php')
     # No application file outside the four explicitly selected routes may differ.
-    changed=subprocess.check_output(['git','diff','--name-only',base,'HEAD','--','*.php','assets/'],cwd=root,text=True).splitlines()
-    assert set(changed)==set(routes+['tests/Support/PublicAccountAssetsSourceContract.php','tests/Support/PublicAccountAssetsHttp.php']),changed
+    # Replay the four CSS deletions on the CURRENT shared bootstrap. Every other
+    # rendered PHP file must be byte-identical between the paired document roots.
+    # The four selected routes keep their original exact source-token contract.
+    shared_files=list(root.glob('*.php'))+list((root/'includes').rglob('*.php'))+list((root/'booking').rglob('*.php'))
+    verified_shared=[]
+    for path in shared_files:
+        relative=path.relative_to(root).as_posix()
+        if relative in routes or relative=='config.php':continue
+        assert (baseline_root/relative).read_bytes()==path.read_bytes(),relative
+        verified_shared.append(relative)
+    (safe/'shared-context.json').write_text(json.dumps(dict(shared_context_sha=head,exact_shared_php_files=verified_shared),indent=2))
     contract=json.loads(subprocess.check_output(['php','tests/Support/PublicAccountAssetsSourceContract.php'],cwd=root))
     (safe/'exact-source-contract.json').write_text(json.dumps(contract,indent=2))
     canonical=(root/'assets/vendor/bootstrap/bootstrap.min.css').read_bytes()

@@ -213,3 +213,5 @@ jsou nyní E2026-11-09-08–09. Původní plánovací/měřicí commity zachovan
 
 Při převzetí #414 zůstalo přijaté Q2-TIME E2026-11-09-10; pracovní P11-RHI
 uzavření E10 je nyní E2026-11-09-11. Původní proof commit411cb96a zachovaný.
+
+- E2026-11-10-18 — P11-ASSET4: audit #434 sloučen, chráněný read-only běh42826637716 a úklid PASS. Historické rozdíly bez původního HTML nejsou vysvětlené. Izolovaná implementace manifestu a dvourelease měření rozpracovaná; produkční runtime beze změny. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
