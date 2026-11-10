@@ -91,3 +91,62 @@ bude mít samostatný plán, skutečný Apache/nativeHTTP/Chrome a release gate.
 Zadání merge/deploy platí až pro plně přijatý JSZ; HJS se do produkce neslučuje.
 
 Nástupnický [JSZ řez](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md) nasazen v PR427; HJS prototyp4c6ffea0 nadále pouze ve vlastní větvi.
+
+
+## P11-HJS2 — nové posouzení po nasazení gzip, 10. 11. 2026
+
+ROZPRACOVÁNO. Nové zadání vlastníka: další nejpřínosnější řez, ověřit shodu,
+měřit před/po, po plném PASS commit/merge/deploy. Zachovat původní i prototypové WIP.
+Původní zamítnutí HJS výše platí pro tehdejší nekomprimovaný hosting; neoznačuje
+se dodatečně za přijatý výsledek. P11-JSZ nyní skutečně gzipuje veřejné JS.
+Base main faed76c0ee94d210c99f67a20a92604da8f61206; potvrzený runtimef682cc46,
+deploy42774356221 SUCCESS. Vlastní větev codex/shared-header-script-gzip-20261110,
+worktree C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107.
+
+Kandidát bodu7 analýzy: opakovaný staff inline JS14812B, čisté tělo14717B;
+přesunout totožný kód do veřejného assets/staff-header.js a ponechat6 čerstvých
+serverových hodnot v soukromém JSON konkrétního HTML. Původní prototyp4c6ffea0
+zůstává ve své větvi; soubory z něj posoudit jednotlivě, neslučovat celou větev.
+Nezavádět cache práv, JSON ani HTML, neměnit cacheTTL30s, session, SQL, guardy,
+pořadí, synchronnost nebo aktivaci globálního hledání/push.
+
+Postup a přejímka před změnou:
+1. Mechanická shoda JS/PHP výrazů, prefixu/suffixu hlavičky; srovnávací NodeVM,
+   JSON/HTML normalizátor a PHP kontrakty. Žádné dynamic hodnoty v assetu.
+2. Nový nativní celý HTTP pár na obou MariaDB, čerstvá syntetická DB, role,
+   CSRF/revokace/bearer/DOM i doménové checksumy. Nenahrazovat serverovou shodu
+   pouhým počtem řádků nebo starou přejímkou prototypu.
+3. Reálný Apache před PHP workers: existující gzip .htaccess pro statický JS,
+   HTMLgzip a30sJS cache obě varianty; žádné síťové mocky/latence. Stejné backend
+   a proxy náklady oběma. Při /bin zachovat Apache403 před PHP404 guardem.
+4. Skutečný Chrome, coach Moje/Pracovní pozice, lead Správa, public profil,
+   desktop/mobile cold/warm,17 střídavých párů/4warmupy. Hash skutečně přijatého
+   JS, computedstyles/pixely a navigace/form/confirm/toast/shortcuts. Warm cache
+   vyhodnotit podle skutečných requestů, nedeklarovat cachehit po expiraci30s.
+5. Přijmout jen při HTMLdecoded úspoře nejméně12kB na staff a prokázané warm
+   gzipHTML úspoře; cold celkový payload HTML+novýJS nesmí regresovat více než
+   5%+1024B, FCP/ready do20%+20ms vůči baseline, public kontrola beze změny.
+   Pokud časový zisk není průkazný, tvrdit pouze přesně změřenou úsporu přenosu.
+6. Všechno aktuální CI, shodný tested/merged tree, chráněný deploymain s oběma
+   flagsfalse, backup/config/VS/migrace/index/smoke a nezávislé produkčníGET,
+   decodedasset/hash, veřejnéDOM, zápis do plánu/registru/CURRENT/handoff.
+   Finální doklady přes docsPR bez druhého deploye. WIP7a7afd75 zachovat.
+
+Nové implementační/test/release výsledky zatím NOT RUN. Další krok: obnovit a
+prověřit úzký prototyp proti aktuálnímu main, přidat skutečný kompresní transport.
+[Důkazy HJS2](verification/shared-header-script-gzip-20261110/RESULTS.md).
+
+
+### HJS2 uzavření výběru — NEVYBRÁNO, zachované WIP
+
+Nová diagnostika42783645170 ukázala skutečnou dosud neodstraněnou duplicitu
+na pracovni_pozice.php: CSSbezverze + totožnéCSS?v=..., oba200/gzip, BootstrapAPI
+funkční. Browserový guard1CSS byl nesprávný předpoklad prototypu; není to
+prokázaná regrese jehoJS. Přednost má jednodušší odstranění celé duplicitníCSS
+odpovědi na centrálním rozcestníku všech pracovníků (P11-ASSET2). HJS2 tedy
+není přijat ani nasazen. Nativní10.3shoda PASS, kompletní Chrome/cold/warm gate
+nesplněný. CodeQL nová DOMhranice vyřešena validací a URLpathname; negativní
+VM8/8 PASS, finální bezpečnostní/performance přejímka HJS2 se netvrdí.
+Všechny implementační commity v codex/shared-header-script-gzip-20261110 /PR429
+zachovat, neslučovat do vybraného řezu. Nové PHP/JS/bezpečnostní hranice ani
+JSZhelper změny se nepřimíchají do ASSET2. Původní WIP7a7afd75 zachovaný.

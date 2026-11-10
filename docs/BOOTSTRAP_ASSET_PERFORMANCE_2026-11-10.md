@@ -172,3 +172,51 @@ Metadata CLI hosting403 stejně jako migrate; native PHP guard404/0.
 Finální důkazy sdílí docs426 bez druhého deploye. Lidské produkční UAT/restore nové zálohy NOT RUN.
 [Finální metriky](verification/bootstrap-assets-20261110/RESULTS.md),
 [release](verification/bootstrap-assets-20261110/release/RESULTS.md).
+
+
+## P11-ASSET2 — pracovní rozcestník, nový řez 10. 11. 2026
+
+ROZPRACOVÁNO před implementací. Vlastník povolil další nejpřínosnější optimalizaci,
+shodu a před/po měření, commit/merge/deploy poPASS; WIP zachovat.
+Mainfaed76c0ee94d210c99f67a20a92604da8f61206, runtimef682cc46/deploy42774356221.
+Větev codex/workspace-bootstrap-assets-20261110, izolovaný worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-medical-state-performance-20261107.
+
+Čerstvý reálný Chrome/Apache v HJS2run42783645170 ukázal2CSS requests na
+pracovni_pozice.php: /assets/vendor/bootstrap/bootstrap.min.css a totožný?v=...
+Oba200/gzip, canonical232803 decodedB každý, BootstrapAPItrue, žádnéJSchyby.
+Přímý zdroj82 má ručnítag,83 appUiAssets() stejnouCSSvkládá znovu; společná
+hlavička na92 jej volá idempotentně. Nativní rootHTML tento skutečný CSSrequest
+nepoznalo, protože původní guard počítal pouze verzované URL. Celý jeden CSS
+přenos má větší doložený potenciál než3.3–3.6kB HTMLgzip v nevybraném HJS2.
+Původní ASSET3stránky i JSZ zůstávají dokončené; HJS2/PR429/prototyp zachované,
+bez jejich PHP/JS/JSON/JSZhelper změn v tomto řezu.
+
+Plán: odstranit pouze redundantní ruční CSSlink na pracovním rozcestníku.
+Ponechat společnou verzovanouCSS iJS, pořadí ostatníchCSS, inlinehlavičku,
+CSP/CSRF/SQL/práva/session a všechny ostatnístránky. Neodstraňovat další nalezené
+linky bez aktuálního důkazu duplicitní skutečné odpovědi.
+
+Přejímka: sourcecontract jediná smazanálinka, canonicalCSSbytes/SRI shodné,
+celý HTTP před/po po normalizaci jen této konkrétnílinky a nonce/CSRF. Vlastní
+čerstvé MariaDB10.3/11.4, 1k/10k/30k,17párů/4warmupy, role odmítnutí,
+profile revokace/bearer/logout a doménovéchecksums/cleanup. Reálný Apache/gzip
+před4vlastníPHPworkers oběma, cachepolitikastejná; žádnýmock/latence.
+Chrome coachworkspace+Moje, leadSpráva, publicprofil desktop/mobilecold/warm,
+17střídavýchpárů/4warmupy; workspaceCSS2→1, ostatní1→1, payloadhash všech
+CSSstejný, warm skutečnězměřit,8pixelpairs/computedstyle/nav/confirm/form PASS.
+ColdCSSpayload nižší o jeden celýgzip stylesheet; FCP/ready bezregrese přes
+20%+20ms, publiccontrol bezezměny. Časovýzisk netvrdit, pokud není prokázaný.
+CeléaktuálníCI aidentickýtested/mergedtree před protecteddeploymain s oběma
+flagsfalse, backup/config/migrace/VS/index/smoke a nezávislé GET/DOM/CSS před/po.
+FinálnídocsPR bezdruhéhonasazení; původní WIP7a7afd75 vždyshodný.
+
+Nové výsledky/implementace/PR/release zatím NOT RUN.
+[Důkazy ASSET2](verification/workspace-bootstrap-assets-20261110/RESULTS.md).
+
+
+ASSET2 průběžně: repository style vyžaduje opravu starých dlouhých řádků
+celého dotčeného souboru. Formátování proto pouze uvnitř PHP, bez změny emitted
+HTML; explicitní závorky dosavadního if/continue guardu. WorkspaceAssetsSourceContract
+ověří všechny PHP tokeny a ostatní literalHTML, nativní wholeHTML gate beze změny.
+První201e CI nepřijatý (fixture tuple/style), nový gate následuje; žádný release.

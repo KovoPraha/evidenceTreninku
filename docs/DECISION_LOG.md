@@ -590,3 +590,20 @@ shodné, skutečný payload−69 % (hlavní2−70 %); časové zrychlení strán
 neprokázané. Cache30s zachovaná, standardní gzipETag revalidace200 přiznaná,
 žádné oslabeníETag nebo force-gzip. PHP/SQL/JS/rootSW/práva beze změny.
 HJS4c6ffea0 zůstává pouze prototypem; původní WIP zachovaný. [Release](verification/javascript-compression-20261110/release/RESULTS.md).
+
+
+## D2026-11-10-HJS2 — nová přejímka inline JS po skutečném gzip
+
+Po dokončeném JSZ má odložený14.7kB staff modul jiné transportní předpoklady.
+Znovu jej posoudit podle aktuálního faed76c0 a skutečného Apache gzip/30s cache,
+nikoli přeznačit původní zamítnutí. Nevynucovat výsledek změnou TTL, umělými
+latencemi nebo oslabením cold/public gate. [Plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs2--nové-posouzení-po-nasazení-gzip-10-11-2026).
+
+
+## D2026-11-10-ASSET2 — skutečná duplicita rozcestníku před inlineJS
+
+Chrome42783645170 odhalil skutečnéCSS2: unversioned +verzovaná totožnáBootstrap,
+APItrue/chyby0. HJS2výběr tedy uzavřít bezrelease, všechnycommity/prototyp zachovat.
+JednaodstraněnáduplicitníCSSodpověď v centrálním pracovnímrozcestníku má větší
+přímýpayloadpřínos a menší sémantickýrozsah nežnováDOMJSONhranice. Ostatnínálezy
+bezaktuálníhoHTTP/browserdůkazu nerozšiřovat. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset2--pracovní-rozcestník-nový-řez-10-11-2026).

@@ -11144,9 +11144,9 @@
       "title": "P11-ASSET Bootstrap CSS právě jednou",
       "primary": true,
       "role": "plan",
-      "status": "DONE",
-      "registry": "P11-ASSET",
-      "disposition": "425/9dbd9eaf a deploy42727693090 SUCCESS;30CI/544Chrome/8pixelpárů a živé8GET+DOM PASS. Doklady426 bez dalšího deploye; lidskéUAT samostatné NOT RUN.",
+      "status": "PARTIAL",
+      "registry": "P11-ASSET/P11-ASSET2",
+      "disposition": "PůvodníASSETnasazen, novýASSET2plán pro skutečnou duplicitu rozcestníku.",
       "evidence": [
         "docs/verification/bootstrap-assets-20261110/RESULTS.md"
       ]
@@ -11158,8 +11158,8 @@
       "primary": false,
       "role": "handoff",
       "status": "SUPPORT",
-      "registry": "P11-ASSET",
-      "disposition": "Zahájeno: odstranit duplicitní CSS, ověřit business/UI a paired Chrome bez časové regrese.",
+      "registry": "P11-ASSET/P11-ASSET2",
+      "disposition": "PůvodníASSETnasazen, novýASSET2plán pro skutečnou duplicitu rozcestníku.",
       "evidence": [
         "docs/verification/bootstrap-assets-20261110/RESULTS.md"
       ]
@@ -11171,8 +11171,8 @@
       "primary": false,
       "role": "evidence",
       "status": "SUPPORT",
-      "registry": "P11-ASSET",
-      "disposition": "Zahájeno: odstranit duplicitní CSS, ověřit business/UI a paired Chrome bez časové regrese.",
+      "registry": "P11-ASSET/P11-ASSET2",
+      "disposition": "PůvodníASSETnasazen, novýASSET2plán pro skutečnou duplicitu rozcestníku.",
       "evidence": [
         "docs/verification/bootstrap-assets-20261110/RESULTS.md"
       ]
@@ -11184,8 +11184,8 @@
       "primary": true,
       "role": "plan",
       "status": "REJECTED",
-      "registry": "P11-HJS",
-      "disposition": "Nevybráno po měření produkčního přenosu; prototyp zachovaný, navazuje P11-JSZ.",
+      "registry": "P11-HJS/P11-HJS2",
+      "disposition": "HJS/HJS2 nevybrané; prototypy zachované, skutečná duplicitaCSS vede naASSET2.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md"
       ]
@@ -11197,8 +11197,8 @@
       "primary": false,
       "role": "handoff",
       "status": "SUPPORT",
-      "registry": "P11-HJS",
-      "disposition": "Nevybráno po měření produkčního přenosu; prototyp zachovaný, navazuje P11-JSZ.",
+      "registry": "P11-HJS/P11-HJS2",
+      "disposition": "HJS/HJS2 nevybrané; prototypy zachované, skutečná duplicitaCSS vede naASSET2.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md"
       ]
@@ -11210,8 +11210,8 @@
       "primary": false,
       "role": "evidence",
       "status": "SUPPORT",
-      "registry": "P11-HJS",
-      "disposition": "Nevybráno po měření produkčního přenosu; prototyp zachovaný, navazuje P11-JSZ.",
+      "registry": "P11-HJS/P11-HJS2",
+      "disposition": "HJS/HJS2 nevybrané; prototypy zachované, skutečná duplicitaCSS vede naASSET2.",
       "evidence": [
         "docs/verification/shared-header-script-20261110/RESULTS.md"
       ]
@@ -11266,6 +11266,32 @@
       "disposition": "Nasazeno a živě ověřeno, podrobnosti a meze měření.",
       "evidence": [
         "docs/verification/javascript-compression-20261110/release/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-dbd415fd2f",
+      "path": "docs/verification/shared-header-script-gzip-20261110/RESULTS.md",
+      "title": "P11-HJS2 nová přejímka",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-HJS2",
+      "disposition": "Nová přejímka po gzip; zatím NOT RUN.",
+      "evidence": [
+        "docs/verification/shared-header-script-gzip-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-9aef5ee092",
+      "path": "docs/verification/workspace-bootstrap-assets-20261110/RESULTS.md",
+      "title": "P11-ASSET2 přejímka",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-ASSET2",
+      "disposition": "Nový plán a následná wholeHTTP/browser přejímka.",
+      "evidence": [
+        "docs/verification/workspace-bootstrap-assets-20261110/RESULTS.md"
       ]
     }
   ],
