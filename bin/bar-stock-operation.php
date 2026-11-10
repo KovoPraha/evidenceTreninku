@@ -103,7 +103,7 @@ function barStockOperationMain(): void
                     || $snapshot['release_sha'] !== $deployment['sha']) {
                     throw new RuntimeException('Chybí potvrzení nebo aktuální snímek stejného vydání.');
                 }
-                $result['backup'] = barCutoverVerifyBackup($input['backup'] ?? [], $parent);
+                $result['backup'] = barCutoverVerifyBackup($input['backup'] ?? [], $parent, count($snapshot['plan']));
                 $result += barApplyOpeningStocks(
                     $target,
                     $snapshot['plan'],

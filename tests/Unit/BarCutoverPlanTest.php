@@ -95,4 +95,17 @@ final class BarCutoverPlanTest extends TestCase
         $this->expectException(\RuntimeException::class);
         \barCutoverVerifyBackup($proof, $this->root);
     }
+
+    public function testStockTransferRequiresBackupOfTheExistingImportedCatalogue(): void
+    {
+        $proof = $this->proof();
+        $manifest = $this->root . '/evidence_2026-11-05_localhost.manifest.json';
+        $data = json_decode((string)file_get_contents($manifest), true, 32, JSON_THROW_ON_ERROR);
+        $data['tables']['kis_bar_products'] = 68;
+        $data['tables']['kis_bar_import_runs'] = 1;
+        file_put_contents($manifest, json_encode($data, JSON_THROW_ON_ERROR));
+        self::assertTrue(\barCutoverVerifyBackup($proof, $this->root, 68)['verified']);
+        $this->expectException(\RuntimeException::class);
+        \barCutoverVerifyBackup($proof, $this->root, 67);
+    }
 }
