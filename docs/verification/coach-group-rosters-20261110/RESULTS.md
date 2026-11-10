@@ -1,4 +1,4 @@
-# COACH-ROSTER-01 — místní ověření
+# COACH-ROSTER-01 — ověření a společné vydání
 
 Datum: 10. 11. 2026. Syntetická část začala ve větvi `codex/coach-groups-rosters-20261110` z `fb593ad4`, bez skutečných osobních dat; produkční vydání je doloženo níže.
 
