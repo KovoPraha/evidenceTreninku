@@ -11222,11 +11222,11 @@
       "title": "P11-JSZ komprese JavaScriptů",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11-JSZ",
-      "disposition": "Plán před implementací; skutečný Apache a Chrome před release.",
+      "disposition": "PR427/f682cc46 a deploy42774356221 SUCCESS; 13JS decoded bytes/8DOM shodné, produkční payload -69 %, WIP zachovaný.",
       "evidence": [
-        "docs/verification/javascript-compression-20261110/RESULTS.md"
+        "docs/verification/javascript-compression-20261110/release/RESULTS.md"
       ]
     },
     {
@@ -11237,9 +11237,9 @@
       "role": "handoff",
       "status": "SUPPORT",
       "registry": "P11-JSZ",
-      "disposition": "Plán před implementací; skutečný Apache a Chrome před release.",
+      "disposition": "PR427/f682cc46 a deploy42774356221 SUCCESS; 13JS decoded bytes/8DOM shodné, produkční payload -69 %, WIP zachovaný.",
       "evidence": [
-        "docs/verification/javascript-compression-20261110/RESULTS.md"
+        "docs/verification/javascript-compression-20261110/release/RESULTS.md"
       ]
     },
     {
@@ -11250,9 +11250,22 @@
       "role": "evidence",
       "status": "SUPPORT",
       "registry": "P11-JSZ",
-      "disposition": "Plán před implementací; skutečný Apache a Chrome před release.",
+      "disposition": "PR427/f682cc46 a deploy42774356221 SUCCESS; 13JS decoded bytes/8DOM shodné, produkční payload -69 %, WIP zachovaný.",
       "evidence": [
-        "docs/verification/javascript-compression-20261110/RESULTS.md"
+        "docs/verification/javascript-compression-20261110/release/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-4c43f93691",
+      "path": "docs/verification/javascript-compression-20261110/release/RESULTS.md",
+      "title": "P11-JSZ finální release",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-JSZ",
+      "disposition": "Nasazeno a živě ověřeno, podrobnosti a meze měření.",
+      "evidence": [
+        "docs/verification/javascript-compression-20261110/release/RESULTS.md"
       ]
     }
   ],

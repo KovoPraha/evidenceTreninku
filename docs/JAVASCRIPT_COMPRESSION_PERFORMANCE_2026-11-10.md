@@ -1,6 +1,6 @@
 # P11-JSZ — komprese veřejných JavaScriptů
 
-10. 11. 2026 · ROZPRACOVÁNO · vlastník Vývoj/Codex.
+10. 11. 2026 · NASAZENO / TECHNICKÉ OVĚŘENÍ PASS · vlastník Vývoj/Codex.
 
 ## Zadání a výběr
 
@@ -89,3 +89,27 @@ na loopback síti neprokázaný. [Podrobnosti](verification/javascript-compressi
 běží, release NOT RUN. Přidán anonymní TLS curl live probe (GET/HEAD, bez cookies,
 redirectů a zápisů); přímé PythonTLS hosting zavíral, bez oslabeníTLS opraveno
 na stejný native curl jako stávající release kontroly. Původní WIP hash shodný.
+
+## Sloučení a probíhající release
+
+PR427 sloučen jako f682cc46de7d6dbb6876f79187b069589b134614; celý tree
+identický s d27b82cd /a7fa5de1. Všech12CI SUCCESS, PHPUnit2424/55908,
+obě MariaDB integrační/profile matice PASS. První překonaný Testy běh
+42772021047 zrušený, není počítaný jako PASS.
+[Protected deploy42774356221](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42774356221)
+běží na přesném merged SHA, flags import/UATfalse. Nový produkční výsledek
+zatím nepotvrzený. Finální dokumentační větev codex/javascript-compression-release-docs-20261110;
+bez druhého deploye. Další krok: dokončení release a liveGET/hash/DOM kontrola.
+
+## Finální stav
+
+PR427/f682cc46 sloučen, všech12CI PASS, celý tree shodný s testovaným d27b82cd.
+Deploy42774356221 SUCCESS, import/UATfalse, backup389/2, config/VS/index/smoke PASS.
+Skutečné produkční payloady hlavních2JS89282→26618B (−70,19 %), všech13JS
+147587→45775B (−68,98 %). DecodedSHA všech13 a8veřejných DOM shodné, CSS/SW,
+cache30s i privátní403 zachované. [Finální výsledky a meze](verification/javascript-compression-20261110/release/RESULTS.md).
+Časové zrychlení stránky není prokázané. Default gzip revalidace může poslat
+plný200 po30s; toto omezení zůstává přiznané, ETag ani TTL se kvůli němu neoslabuje.
+Původní WIP hash po deployi shodný, HJS4c6ffea0 zachovaný ve vlastní větvi.
+Tento řez je technicky hotový. Dokumentační uzavření bez druhého deploye;
+příští optimalizaci vybírat z nového waterfallu aktivní stránky.

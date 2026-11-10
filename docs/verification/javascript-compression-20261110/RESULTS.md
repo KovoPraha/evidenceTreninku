@@ -1,6 +1,10 @@
 # P11-JSZ — ověření
 
-10. 11. 2026. [Plán](../../JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md).
+10. 11. 2026. **NASAZENO / TECHNICKÉ OVĚŘENÍ PASS.**
+
+[Finální release a čerstvé produkční měření](release/RESULTS.md).
+
+[Plán](../../JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md).
 
 Výchozí skutečné produkční GET: 89282 B identity, max-age=30,
 [bezpečné otisky a metadata](../shared-header-script-20261110/production-js-transport.json).
@@ -57,3 +61,10 @@ Desktopcoldload105→105,3. **Zrychlení času stránky neprokázané**; prokáz
 nižší velikost skutečného přenosu. Žádný odhad mobilního SLA bez skutečné sítě.
 Nejde o přihlášené produkční UAT; PHP/SQL a JS zdroj nejsou měněné.
 Ostatní aktuální CI dosud běží, merge/deploy NOT RUN.
+
+## Uzavření
+
+PR427/f682cc46 a deploy42774356221 SUCCESS; všech12 aktuálníchCI a deploy testy
+2424/55908 PASS. Skutečná produkce13JS147587→45775B, hlavní2−70,19 %, přesné
+rozbalenébytes/cache/8DOM shodné. [Úplné release doklady](release/RESULTS.md).
+Původní WIP hash po deployi shodný; finální docs větev bez druhého deploye.

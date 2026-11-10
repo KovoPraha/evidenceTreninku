@@ -1,0 +1,557 @@
+{
+  "mode": "after",
+  "host": "kis.kovopraha.cz",
+  "cookies": false,
+  "redirects": false,
+  "writes": false,
+  "captured_utc": "2026-11-10T07:22:51Z",
+  "cases": [
+    {
+      "path": "assets/app-ui.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 2819,
+        "decoded_bytes": 8561,
+        "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+        "total_ms": 336.94550000655,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "2819",
+          "etag": "\"2171-65fe6e2e53837-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 8561,
+        "decoded_bytes": 8561,
+        "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+        "total_ms": 381.0148000047775,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "8561",
+          "etag": "\"2171-65fe6e2e53837\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      },
+      "q0": {
+        "status": 200,
+        "wire_bytes": 8561,
+        "decoded_bytes": 8561,
+        "sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+        "total_ms": 297.21029999200255,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "8561",
+          "etag": "\"2171-65fe6e2e53837\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      },
+      "head": {
+        "status": 200,
+        "wire_bytes": 0,
+        "decoded_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "total_ms": 218.86509998876136,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "2819",
+          "etag": "\"2171-65fe6e2e53837-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      }
+    },
+    {
+      "path": "assets/bar-requests.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 3178,
+        "decoded_bytes": 9642,
+        "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+        "total_ms": 242.44530001305975,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "3178",
+          "etag": "\"25aa-65fe6e2e53837-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 9642,
+        "decoded_bytes": 9642,
+        "sha256": "53682ec8afd076575d2b24c18a81b11f17f20160cb659424ae501e0adb1a7665",
+        "total_ms": 295.35799998848233,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "9642",
+          "etag": "\"25aa-65fe6e2e53837\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/js/medical-person-picker.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 294,
+        "decoded_bytes": 578,
+        "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+        "total_ms": 282.33129999716766,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "294",
+          "etag": "\"242-65fe6e2e56fa2-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 578,
+        "decoded_bytes": 578,
+        "sha256": "e362412a80d6d2f9850bbabb9c8fd8b6795c90f38f6434091886d0162205eb56",
+        "total_ms": 206.21950000349898,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "578",
+          "etag": "\"242-65fe6e2e56fa2\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/js/stress-athlete-picker.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 1916,
+        "decoded_bytes": 5771,
+        "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+        "total_ms": 205.31340000161435,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1916",
+          "etag": "\"168b-65fe6e2e57195-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 5771,
+        "decoded_bytes": 5771,
+        "sha256": "7de80f2a1572f509ac8e4a41178d7525bc65eefe8e38c4ea180c877d7a61b1ad",
+        "total_ms": 176.33159999968484,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "5771",
+          "etag": "\"168b-65fe6e2e57195\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/public-profile-access.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 547,
+        "decoded_bytes": 1036,
+        "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+        "total_ms": 283.773300005123,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "547",
+          "etag": "\"40c-65fe6e2e57195-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 1036,
+        "decoded_bytes": 1036,
+        "sha256": "edb48d45e4953cdf19c1c46754b89d1cc664d2648165cfe93edc77f44d4fcdaa",
+        "total_ms": 326.5943000005791,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1036",
+          "etag": "\"40c-65fe6e2e57195\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/roster-target-selector.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 709,
+        "decoded_bytes": 1556,
+        "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+        "total_ms": 243.42980000074022,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "709",
+          "etag": "\"614-65fe6e2e57195-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 1556,
+        "decoded_bytes": 1556,
+        "sha256": "f15050cb4138edb2fc514edd53626eee077ec746bbe40a1ab6eb0418ae0b54e0",
+        "total_ms": 313.1297999934759,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1556",
+          "etag": "\"614-65fe6e2e57195\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/shop-admin.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 1392,
+        "decoded_bytes": 4477,
+        "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+        "total_ms": 306.4391999942018,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1392",
+          "etag": "\"117d-65fe6e2e57195-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 4477,
+        "decoded_bytes": 4477,
+        "sha256": "7c57925a0d1ee9f92350f7b68a900b7ebff16635586dd086cefd9602681e6438",
+        "total_ms": 303.37239999789745,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "4477",
+          "etag": "\"117d-65fe6e2e57195\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/staff-notifications.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 796,
+        "decoded_bytes": 1896,
+        "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+        "total_ms": 249.25510000321083,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "796",
+          "etag": "\"768-65fe6e2e57195-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 1896,
+        "decoded_bytes": 1896,
+        "sha256": "f4250c1041bb94a07e35da63a214ded5c14c6a87dbeee0a71939781c1a80f866",
+        "total_ms": 269.5619000005536,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1896",
+          "etag": "\"768-65fe6e2e57195\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/training-form-resilience.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 2854,
+        "decoded_bytes": 8293,
+        "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+        "total_ms": 257.37459999800194,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "2854",
+          "etag": "\"2065-65fe6e2e57195-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 8293,
+        "decoded_bytes": 8293,
+        "sha256": "f29119002d078c25e3f54b8103fb7a542e9d1dd59d43468c62f0e9924455abe1",
+        "total_ms": 261.3701999944169,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "8293",
+          "etag": "\"2065-65fe6e2e57195\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/tv-canvas.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 985,
+        "decoded_bytes": 2623,
+        "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+        "total_ms": 200.6446000013966,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "985",
+          "etag": "\"a3f-65fe6e2e57195-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 2623,
+        "decoded_bytes": 2623,
+        "sha256": "9976a69c38a7745ef6bb7126e9843551a6d890bb725fed57692258cafab6218a",
+        "total_ms": 193.15150000329595,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "2623",
+          "etag": "\"a3f-65fe6e2e57195\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/tv-editor.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 5188,
+        "decoded_bytes": 18693,
+        "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+        "total_ms": 316.33319999673404,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "5188",
+          "etag": "\"4905-65fe6e2e57195-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 18693,
+        "decoded_bytes": 18693,
+        "sha256": "8c42ace44c32a7a85dd8670aae20f26a69c2fb0fea8e57723ba8301316cbf458",
+        "total_ms": 559.4792000047164,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "18693",
+          "etag": "\"4905-65fe6e2e57195\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/tv-player.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 1298,
+        "decoded_bytes": 3740,
+        "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+        "total_ms": 257.7708999888273,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1298",
+          "etag": "\"e9c-65fe6e2e57195-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 3740,
+        "decoded_bytes": 3740,
+        "sha256": "7930ea5da53f1b952a1386c00d10f4886085191f787694de587d2f54b1eb76f7",
+        "total_ms": 255.89670000772458,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "3740",
+          "etag": "\"e9c-65fe6e2e57195\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.bundle.min.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 23799,
+        "decoded_bytes": 80721,
+        "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+        "total_ms": 297.9353999980958,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "23799",
+          "etag": "\"13b51-65fe6e2e5771a-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 80721,
+        "decoded_bytes": 80721,
+        "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+        "total_ms": 637.4869999999646,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "80721",
+          "etag": "\"13b51-65fe6e2e5771a\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      },
+      "q0": {
+        "status": 200,
+        "wire_bytes": 80721,
+        "decoded_bytes": 80721,
+        "sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+        "total_ms": 841.7228000034811,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "80721",
+          "etag": "\"13b51-65fe6e2e5771a\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding"
+        }
+      },
+      "head": {
+        "status": 200,
+        "wire_bytes": 0,
+        "decoded_bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "total_ms": 361.4302000059979,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "23799",
+          "etag": "\"13b51-65fe6e2e5771a-gzip\"",
+          "cache-control": "max-age=30",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      }
+    },
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.min.css",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 31248,
+        "decoded_bytes": 232803,
+        "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+        "total_ms": 329.2871000012383,
+        "headers": {
+          "content-type": "text/css",
+          "content-length": "31248",
+          "etag": "\"38d63-65fe6e2e57772-gzip\"",
+          "cache-control": "max-age=604800",
+          "vary": "Accept-Encoding",
+          "content-encoding": "gzip"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 232803,
+        "decoded_bytes": 232803,
+        "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+        "total_ms": 565.6872999970801,
+        "headers": {
+          "content-type": "text/css",
+          "content-length": "232803",
+          "etag": "\"38d63-65fe6e2e57772\"",
+          "cache-control": "max-age=604800",
+          "vary": "Accept-Encoding"
+        }
+      }
+    },
+    {
+      "path": "sw.js",
+      "gzip": {
+        "status": 200,
+        "wire_bytes": 1611,
+        "decoded_bytes": 1611,
+        "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+        "total_ms": 407.8155000024708,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1611",
+          "etag": "\"64b-65fe6e2eb0d22\"",
+          "cache-control": "max-age=30"
+        }
+      },
+      "identity": {
+        "status": 200,
+        "wire_bytes": 1611,
+        "decoded_bytes": 1611,
+        "sha256": "1840ad6c8562165c19bb4f892812ed3c811b5d22f34a070c870d169a33243605",
+        "total_ms": 297.44860000209883,
+        "headers": {
+          "content-type": "text/javascript",
+          "content-length": "1611",
+          "etag": "\"64b-65fe6e2eb0d22\"",
+          "cache-control": "max-age=30"
+        }
+      }
+    }
+  ],
+  "denial": {
+    "assets/.htaccess": 403,
+    ".htaccess": 403,
+    "config.php": 403,
+    "bin/diagnose-athlete-read-schema.php": 403,
+    "bin/migrate.php": 403
+  },
+  "complete": true,
+  "target_wire_bytes": 26618,
+  "all_js_wire_bytes": 45775,
+  "target_saved_bytes": 62664,
+  "target_reduction_percent": 70.18659976255012
+}
