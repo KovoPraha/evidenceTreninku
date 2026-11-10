@@ -40,3 +40,14 @@ session=expired. Žádné rozšíření tolerovaných stavů ani změna autentiz
 první FAIL zůstává v historii, nová plná native/Chrome přejímka se opakuje.
 Produkční anonymní before:4redirecty302 a login200,5canonicalUIpayloadů PASS;
 přihlášené živé UAT NOT RUN. Žádné produkční POST, WIP zachovaný.
+
+
+ASSET7 druhý native checkpoint42901157327/ee01c130: loginové denials už podle
+původního kontraktu prošly; obě DB FAIL na neprázdném main-orders ještě při
+before. Kapacitní základ fixture vytváří objednávky bez kanonických payments,
+zatímco skutečné shopOrderListForAccount používá INNER JOIN payments.
+Doplněné pouze syntetické payment řádky bez reálného IBAN/platby, aby byl
+skutečný neprázdný stav vůbec vykreslený; query/writer/ochrana beze změny.
+Revokační fixture navíc ve finally obnovuje i původní updated_at vazby
+(ON UPDATE v migrovaném schématu), checksum kontrakt se nesnižuje. Nový celý
+native2DB/Chrome běh se opakuje, dosavadní FAIL zůstávají FAIL.

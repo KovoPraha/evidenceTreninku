@@ -48,6 +48,11 @@ if ($mode === '--seed') {
     }
     $admin->exec("UPDATE sportovci SET jmeno='ASSET7_OWNED_CHILD' WHERE id=1");
     $admin->exec("UPDATE individualni_lekce SET datum=DATE_ADD(CURRENT_DATE,INTERVAL 10 DAY)");
+    // The real account overview joins canonical payments; capacity-only fixtures do not create them.
+    $admin->exec("INSERT INTO payments(payable_type,payable_id,method,status,amount_minor,currency,variable_symbol,"
+        . "iban_snapshot,account_label_snapshot,spd_payload,due_at) "
+        . "SELECT 'shop_order',id,'bank_transfer','pending',total_minor,currency,CAST(8980000000+id AS CHAR),"
+        . "'CZ-SYNTHETIC','LOCALHOST NEPLATIT','SYNTHETIC DO NOT PAY','2099-12-31 23:59:59' FROM shop_orders WHERE account_id=10");
     $admin->exec("INSERT INTO verejne_rezervace(id,lekce_id,uzivatel_id,stav,slot_cas_od,cas_rezervace) "
         . "VALUES(90001,900001,10,'potvrzena','10:00:00','2026-01-01 10:00:00'),"
         . "(90002,900002,11,'potvrzena','11:00:00','2026-01-01 10:00:00')");
@@ -197,7 +202,7 @@ foreach (range(-4, 16) as $round) {
 if ($report['denials']['before'] !== $report['denials']['after']) {
     throw new RuntimeException('CSRF whole HTML differs.');
 }
-$relation = $admin->query("SELECT id,status FROM account_person_roles WHERE account_id=10 AND sportovec_id=1")->fetch(PDO::FETCH_ASSOC);
+$relation = $admin->query("SELECT id,status,updated_at FROM account_person_roles WHERE account_id=10 AND sportovec_id=1")->fetch(PDO::FETCH_ASSOC);
 try {
     $admin->prepare("UPDATE account_person_roles SET status='revoked' WHERE id=?")->execute([$relation['id']]);
     foreach (['before','after'] as $variant) {
@@ -210,7 +215,8 @@ try {
         $report['relation_revocation'][$variant] = $signature($r);
     }
 } finally {
-    $admin->prepare('UPDATE account_person_roles SET status=? WHERE id=?')->execute([$relation['status'],$relation['id']]);
+    $admin->prepare('UPDATE account_person_roles SET status=?,updated_at=? WHERE id=?')
+        ->execute([$relation['status'],$relation['updated_at'],$relation['id']]);
 }
 if ($report['relation_revocation']['before'] !== $report['relation_revocation']['after']) {
     throw new RuntimeException('Relation revocation parity failed.');
