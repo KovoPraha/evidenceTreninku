@@ -1,6 +1,6 @@
 # Reporting testerky: objednávky a registrační podklady
 
-Datum: 10. 11. 2026. Stav: oprava po rebase na `94c10708`, před PR/CI a vydáním; produkční UAT otevřené.
+Datum: 10. 11. 2026. Stav: [PR #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) po rebase na `37f1ba8f`, před opakovaným CI a vydáním; produkční UAT otevřené.
 
 ## Převzetí
 
@@ -12,7 +12,7 @@ Pracovní větev obsahovala před touto opravou cizí změnu `kis_rosters_admin.
 a nesledované lokální výstupy; nebyly upraveny.
 Oprava je připravena v samostatné větvi
 `codex/kis-tester-orders-registration-20261110` z aktuálně načteného
-`origin/main` (`50ce79b2e290b926a70e46f8a729682f12a7b864`).
+`origin/main` (`50ce79b2e290b926a70e46f8a729682f12a7b864`), později bez kódového konfliktu přenesena na `37f1ba8f`. Souběžné vydání UI aktiv #437 v CURRENT a deníku zachováno.
 
 ## Opravené body
 

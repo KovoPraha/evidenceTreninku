@@ -14,7 +14,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## Úplný katalog plánů
 
-TESTER-20261110 — VYDÁNÍ PŘIPRAVOVÁNO: [řazení objednávek a maskovaná kontrola registrace](verification/tester-orders-registration-20261110.md), vlastník vývoj; rebase na `94c10708`, PR/CI otevřené. Spolu s [COACH-ROSTER-01](https://github.com/KovoPraha/evidenceTreninku/pull/436) vydat podle výslovného požadavku vlastníka; testovací Aligátoři a lidské UAT oddělené.
+TESTER-20261110 — VYDÁNÍ PŘIPRAVOVÁNO: [řazení objednávek a maskovaná kontrola registrace](verification/tester-orders-registration-20261110.md), vlastník vývoj; [PR #438](https://github.com/KovoPraha/evidenceTreninku/pull/438) na `37f1ba8f`, CI otevřené. Spolu s [COACH-ROSTER-01](https://github.com/KovoPraha/evidenceTreninku/pull/436) vydat podle výslovného požadavku vlastníka; testovací Aligátoři a lidské UAT oddělené.
 
 QR01 — implementace a release hotové; živé UAT otevřené: [verze podmínek rychlé přihlášky](QUICK_REGISTRATION_TERMS_2026-11-09.md), vlastník vývoj; #416/#419 sloučené, `e3f2990` nasazené, [20/395 místních kontrol a veřejné čtení produktu 298 PASS](verification/quick-registration-terms-20261109/RESULTS.md). Další krok vlastníka/testera: přihlášené rodičovské UAT se skutečnou objednávkou a platbou podle provozního scénáře.
 
