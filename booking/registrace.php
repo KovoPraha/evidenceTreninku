@@ -10,7 +10,10 @@ require_once __DIR__ . '/../includes/password_security.php';
 require_once __DIR__ . '/../includes/auth_rate_limit.php';
 require_once __DIR__ . '/../includes/auth_mail_outbox.php';
 
-function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+function h(string $s): string
+{
+    return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
 function registrationSafeRedirect(mixed $value): string
 {
     return bookingReturnDestination($value, 'sportovni_prehled.php');
@@ -23,7 +26,8 @@ if (!in_array($purpose, ['nakup', 'sport', 'rodina'], true)) {
 $explicitReturn = bookingReturnDestination($_POST['redirect'] ?? $_GET['redirect'] ?? '');
 $redirect = bookingRegistrationDestination($explicitReturn, $purpose);
 if (isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: ' . $redirect); exit;
+    header('Location: ' . $redirect);
+    exit;
 }
 
 $errors  = [];
@@ -57,9 +61,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'Registrace momentálně není dostupná. Zkuste to později.';
         }
 
-        if (!$jmeno)    $errors[] = 'Zadejte jméno.';
-        if (!$prijmeni) $errors[] = 'Zadejte příjmení.';
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Neplatná emailová adresa.';
+        if (!$jmeno) {
+            $errors[] = 'Zadejte jméno.';
+        }
+        if (!$prijmeni) {
+            $errors[] = 'Zadejte příjmení.';
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Neplatná emailová adresa.';
+        }
         if (!in_array($purpose, ['nakup', 'sport', 'rodina'], true)) {
             $errors[] = 'Vyberte, k čemu budete účet používat.';
         }
@@ -75,7 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (InvalidArgumentException $exception) {
             $errors[] = $exception->getMessage();
         }
-        if ($heslo !== $heslo2) $errors[] = 'Hesla se neshodují.';
+        if ($heslo !== $heslo2) {
+            $errors[] = 'Hesla se neshodují.';
+        }
 
         if (empty($errors)) {
             // Kontrola duplicity
@@ -123,9 +135,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $link = appUrl('booking/overeni.php') . '#token=' . rawurlencode($verification['token'])
                     . '&redirect=' . rawurlencode($redirect);
-                authMailEnqueue($pdo,'verify','public',$accountId,$verification['hash'],$email,
+                authMailEnqueue(
+                    $pdo,
+                    'verify',
+                    'public',
+                    $accountId,
+                    $verification['hash'],
+                    $email,
                     'Ověření registrace — Kovopraha',
-                    "Dobrý den {$jmeno},\n\nPro dokončení registrace otevřete odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.");
+                    "Dobrý den {$jmeno},\n\nPro dokončení registrace otevřete odkaz:\n{$link}\n\nOdkaz je platný 24 hodin."
+                );
                 $pdo->commit();
                 $success = true;
             } catch (Throwable $exception) {
@@ -146,7 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registrace — Rezervace Kovopraha</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">
@@ -176,15 +194,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <legend class="form-label mb-2">K čemu budete účet používat?</legend>
                         <div class="form-check border rounded p-3 ps-5 mb-2">
                             <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-family" value="rodina" <?= $purpose === 'rodina' ? 'checked' : '' ?>>
-                            <label class="form-check-label" for="registration-purpose-family"><strong>Jsem rodič / zákonný zástupce</strong><br><span class="text-muted small">Po ověření e-mailu připojíte dítě nebo požádáte o registraci nového sportovce. Údaje níže patří vám.</span></label>
+                            <label class="form-check-label" for="registration-purpose-family"><strong>Jsem rodič / zákonný zástupce</strong><br><?php
+                ?><span class="text-muted small">Po ověření e-mailu připojíte dítě nebo požádáte o registraci nového sportovce. Údaje níže patří vám.</span></label>
                         </div>
                         <div class="form-check border rounded p-3 ps-5 mb-2">
                             <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-shop" value="nakup" <?= $purpose === 'nakup' ? 'checked' : '' ?>>
-                            <label class="form-check-label" for="registration-purpose-shop"><strong>Jen nákup a rezervace</strong><br><span class="text-muted small">Oblečení, veřejné akce a další nabídky. Datum narození není potřeba.</span></label>
+                            <label class="form-check-label" for="registration-purpose-shop"><strong>Jen nákup a rezervace</strong><br><?php
+                ?><span class="text-muted small">Oblečení, veřejné akce a další nabídky. Datum narození není potřeba.</span></label>
                         </div>
                         <div class="form-check border rounded p-3 ps-5">
                             <input class="form-check-input" type="radio" name="ucel" id="registration-purpose-sport" value="sport" <?= $purpose === 'sport' ? 'checked' : '' ?>>
-                            <label class="form-check-label" for="registration-purpose-sport"><strong>Jsem také účastník nebo sportovec</strong><br><span class="text-muted small">Vytvoří se mi osobní sportovní profil. Dítě lze přidat samostatně po přihlášení.</span></label>
+                            <label class="form-check-label" for="registration-purpose-sport"><strong>Jsem také účastník nebo sportovec</strong><br><?php
+                ?><span class="text-muted small">Vytvoří se mi osobní sportovní profil. Dítě lze přidat samostatně po přihlášení.</span></label>
                         </div>
                     </fieldset>
                     <div class="row g-3 mb-3">
@@ -204,10 +225,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="email" name="email" id="registration-email" class="form-control"
                                value="<?= h($_POST['email'] ?? '') ?>" required>
                     </div>
-                    <div class="mb-3" id="registration-birth-field" <?=$purpose==='sport'?'':'hidden'?> >
-                        <label class="form-label" for="registration-birth-date">Datum narození <span id="registration-birth-required" class="text-muted small">(povinné pro sportovní profil)</span></label>
+                    <div class="mb-3" id="registration-birth-field" <?=$purpose === 'sport' ? '' : 'hidden'?> >
+                        <label class="form-label" for="registration-birth-date"><?php
+                ?>Datum narození <span id="registration-birth-required" class="text-muted small">(povinné pro sportovní profil)</span></label>
                         <input type="date" name="narozeni" id="registration-birth-date" class="form-control"
-                               value="<?= h($_POST['narozeni'] ?? '') ?>" <?=$purpose==='sport'?'required':'disabled'?> >
+                               value="<?= h($_POST['narozeni'] ?? '') ?>" <?=$purpose === 'sport' ? 'required' : 'disabled'?> >
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="registration-phone">Telefon (nepovinný)</label>
@@ -217,16 +239,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="mb-3">
                         <label class="form-label" for="registration-password">Heslo <small class="text-muted">(12–200 znaků)</small></label>
                         <div class="input-group">
-                            <input type="password" name="heslo" id="registration-password" class="form-control" required minlength="12" maxlength="200" autocomplete="new-password" aria-describedby="registration-password-help">
-                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password" aria-controls="registration-password" aria-pressed="false">Zobrazit</button>
+                            <input type="password" name="heslo" id="registration-password" class="form-control" required minlength="12"<?php
+                ?> maxlength="200" autocomplete="new-password" aria-describedby="registration-password-help">
+                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password"<?php
+                ?> aria-controls="registration-password" aria-pressed="false">Zobrazit</button>
                         </div>
-                        <div id="registration-password-help" class="form-text">Nejlépe si zvolte krátkou větu nebo několik slov, která si snadno zapamatujete. Mezery jsou povolené.</div>
+                        <div id="registration-password-help" class="form-text"><?php
+                ?>Nejlépe si zvolte krátkou větu nebo několik slov, která si snadno zapamatujete. Mezery jsou povolené.</div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label" for="registration-password-confirmation">Heslo znovu</label>
                         <div class="input-group">
-                            <input type="password" name="heslo2" id="registration-password-confirmation" class="form-control" required minlength="12" maxlength="200" autocomplete="new-password">
-                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password-confirmation" aria-controls="registration-password-confirmation" aria-pressed="false">Zobrazit</button>
+                            <input type="password" name="heslo2" id="registration-password-confirmation" class="form-control" required minlength="12"<?php
+                ?> maxlength="200" autocomplete="new-password">
+                            <button class="btn btn-outline-secondary" type="button" data-password-toggle="registration-password-confirmation"<?php
+                ?> aria-controls="registration-password-confirmation" aria-pressed="false">Zobrazit</button>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Zaregistrovat se</button>

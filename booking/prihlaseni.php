@@ -8,11 +8,15 @@ require_once __DIR__ . '/../includes/auth_rate_limit.php';
 require_once __DIR__ . '/../includes/unified_account.php';
 require_once __DIR__ . '/../includes/public_login_destination.php';
 
-function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+function h(string $s): string
+{
+    return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
 $requestedReturn = $_POST['redirect'] ?? $_GET['redirect'] ?? null;
 
 if (isset($_SESSION['verejny_uzivatel_id'])) {
-    header('Location: ' . publicLoginDestination($requestedReturn, isset($_SESSION['trener_id']))); exit;
+    header('Location: ' . publicLoginDestination($requestedReturn, isset($_SESSION['trener_id'])));
+    exit;
 }
 
 $errors = isset($_GET['session']) && $_GET['session'] === 'expired'
@@ -86,7 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Přihlášení — Rezervace Kovopraha</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php appUiAssets(); ?>
 </head>
 <body class="bg-light">

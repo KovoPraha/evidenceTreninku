@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-10-06
+
+P11-ASSET3: další řez z bodu7 analýzy zúžen na čtyři veřejné vstupy k účtu. Explicitní CDN Bootstrap je shodná verze/SRI jako společná lokální CSS. Přednost před defer společného JS kvůli nezměněnému spouštění inline skriptů; rozhodující skutečný cold přenos a přesná vizuální/source/HTTP shoda. Kalendář a další nalezené linky mimo rozsah. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset3--veřejné-vstupy-k-účtu-10-11-2026).
+
 ## D2026-11-09-01
 
 PŘIJATO 9. 11. 2026 podle přímého zadání vlastníka: v [QR01](QUICK_REGISTRATION_TERMS_2026-11-09.md) opravit přesný HTML název `term_version[účel]` a zachovat serverové porovnání aktuálních verzí. Odstranění kontroly by dovolilo potvrdit zastaralý text. Při změně verze mezi GET a POST se požadavek odmítne; nový formulář načte současný text a dřívější potvrzení už neponechá zaškrtnuté. [Izolovaný důkaz](verification/quick-registration-terms-20261109/RESULTS.md).
