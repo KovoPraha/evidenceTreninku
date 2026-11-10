@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -15,7 +16,7 @@ final class PersonSensitiveTest extends TestCase
     protected function setUp(): void
     {
         $this->sessionBackup = $_SESSION ?? [];
-        $_SESSION = ['trener_id' => 7, 'role' => 'admin'];
+        $_SESSION = ['trener_id' => 7, 'role' => 'admin', 'staff_positions' => ['registrar'], 'staff_active_position' => 'registrar'];
     }
 
     protected function tearDown(): void
@@ -118,6 +119,8 @@ final class PersonSensitiveTest extends TestCase
         }
 
         $_SESSION['role'] = 'hlavni';
+        $_SESSION['staff_positions'] = ['coach'];
+        $_SESSION['staff_active_position'] = 'coach';
         try {
             \personSensitiveAdminMaskedView($pdo, $recordId, $config);
             self::fail('Main trainer read sensitive data.');
@@ -126,6 +129,8 @@ final class PersonSensitiveTest extends TestCase
         }
 
         $_SESSION['role'] = 'admin';
+        $_SESSION['staff_positions'] = ['registrar'];
+        $_SESSION['staff_active_position'] = 'registrar';
         $pdo->exec("UPDATE osoba_citlive_udaje SET rc_ciphertext=randomblob(length(rc_ciphertext)) WHERE id={$recordId}");
         try {
             \personSensitiveAdminReveal($pdo, $recordId, 'LOCALHOST tamper test', $config);
@@ -136,11 +141,51 @@ final class PersonSensitiveTest extends TestCase
         self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM osoba_citlive_pristupy')->fetchColumn());
     }
 
+    public function testRegistrarMayReadMaskAndPhotoWithAuditButCannotRevealOrErase(): void
+    {
+        $pdo = $this->database();
+        $config = $this->config('v1');
+        $digits = $this->syntheticBirthNumber('2010-01-02', 50);
+        $recordId = \personSensitiveStoreBirthNumber($pdo, 301, $digits, '2010-01-02', $config);
+        $_SESSION['role'] = 'hlavni';
+
+        self::assertSame(substr($digits, 0, 6) . '/****', \personSensitiveAdminMaskedView($pdo, $recordId, $config, '127.0.0.1'));
+        \personSensitiveAdminAuditPhotoView($pdo, ['id' => 9, 'request_id' => 301], '127.0.0.1');
+        self::assertSame(['masked_view', 'photo_view'], $pdo->query('SELECT action FROM osoba_citlive_pristupy ORDER BY id')->fetchAll(PDO::FETCH_COLUMN));
+        self::assertSame([7, 7], array_map('intval', $pdo->query('SELECT actor_trainer_id FROM osoba_citlive_pristupy ORDER BY id')->fetchAll(PDO::FETCH_COLUMN)));
+
+        foreach ([
+            static fn () => \personSensitiveAdminReveal($pdo, $recordId, 'Syntetický důvod odhalení.', $config),
+            static fn () => \personSensitiveAdminReplace($pdo, $recordId, $digits, '2010-01-02', 'Syntetický důvod opravy.', $config),
+            static fn () => \personSensitiveAdminErase($pdo, $recordId, 'Syntetický důvod výmazu.'),
+        ] as $action) {
+            try {
+                $action();
+                self::fail('Registrar performed a privileged sensitive operation.');
+            } catch (\PersonSensitiveException) {
+                self::addToAssertionCount(1);
+            }
+        }
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM osoba_citlive_pristupy')->fetchColumn());
+
+        $_SESSION['staff_positions'] = ['coach'];
+        $_SESSION['staff_active_position'] = 'coach';
+        try {
+            \personSensitiveAdminMaskedView($pdo, $recordId, $config);
+            self::fail('Coach read a masked birth number.');
+        } catch (\PersonSensitiveException) {
+            self::addToAssertionCount(1);
+        }
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM osoba_citlive_pristupy')->fetchColumn());
+    }
+
     /** @return array{keys:array<string,string>,active_version:string,index_key:string} */
     private function config(string $active, bool $includeV2 = false): array
     {
         $keys = ['v1' => str_repeat("\x11", 32)];
-        if ($includeV2 || $active === 'v2') $keys['v2'] = str_repeat("\x22", 32);
+        if ($includeV2 || $active === 'v2') {
+            $keys['v2'] = str_repeat("\x22", 32);
+        }
         return ['keys' => $keys, 'active_version' => $active, 'index_key' => str_repeat("\x33", 32)];
     }
 
@@ -153,8 +198,12 @@ final class PersonSensitiveTest extends TestCase
         for ($suffix = 0; $suffix <= 9999; $suffix++) {
             $candidate = $prefix . str_pad((string)$suffix, 4, '0', STR_PAD_LEFT);
             $remainder = 0;
-            foreach (str_split($candidate) as $digit) $remainder = (($remainder * 10) + (int)$digit) % 11;
-            if ($remainder === 0) return $candidate;
+            foreach (str_split($candidate) as $digit) {
+                $remainder = (($remainder * 10) + (int)$digit) % 11;
+            }
+            if ($remainder === 0) {
+                return $candidate;
+            }
         }
         self::fail('Cannot create synthetic checksum fixture.');
     }

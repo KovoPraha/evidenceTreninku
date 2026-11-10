@@ -1,5 +1,8 @@
 <?php
+
 declare(strict_types=1);
+
+require_once __DIR__ . '/staff_workspaces.php';
 
 const PERSON_SENSITIVE_CONTRACT = 'person-sensitive-v1';
 const PERSON_SENSITIVE_KEY_BYTES = 32;
@@ -46,17 +49,25 @@ function personSensitiveConfig(?array $override = null): array
         // also supports their canonical RČ records. Explicit shared settings win.
         $runtimePath = dirname(__DIR__) . '/var/private/kis-person-import.php';
         if (is_file($runtimePath) && is_readable($runtimePath)) {
-            if (!defined('KIS_PERSON_ARCHIVE_KEY_READ')) define('KIS_PERSON_ARCHIVE_KEY_READ', true);
+            if (!defined('KIS_PERSON_ARCHIVE_KEY_READ')) {
+                define('KIS_PERSON_ARCHIVE_KEY_READ', true);
+            }
             $runtime = require $runtimePath;
-            if (!is_array($runtime)) throw new PersonSensitiveException('Konfigurace citlivých údajů není dostupná.');
+            if (!is_array($runtime)) {
+                throw new PersonSensitiveException('Konfigurace citlivých údajů není dostupná.');
+            }
             foreach ($runtime['keys'] ?? [] as $version => $key) {
                 if (isset($rawKeys[$version]) && !hash_equals(personSensitiveDecodeKey($rawKeys[$version]), personSensitiveDecodeKey($key))) {
                     throw new PersonSensitiveException('Konflikt verzí šifrovacího klíče.');
                 }
                 $rawKeys[$version] = $key;
             }
-            if ($activeVersion === '') $activeVersion = (string)($runtime['active_version'] ?? '');
-            if ($rawIndexKey === '') $rawIndexKey = $runtime['index_key'] ?? '';
+            if ($activeVersion === '') {
+                $activeVersion = (string)($runtime['active_version'] ?? '');
+            }
+            if ($rawIndexKey === '') {
+                $rawIndexKey = $runtime['index_key'] ?? '';
+            }
         }
     }
 
@@ -90,7 +101,9 @@ function personSensitiveDecodeKey(mixed $raw): string
     if (!is_string($raw)) {
         throw new PersonSensitiveException('Konfigurace citlivých údajů není dostupná.');
     }
-    if (strlen($raw) === PERSON_SENSITIVE_KEY_BYTES) return $raw;
+    if (strlen($raw) === PERSON_SENSITIVE_KEY_BYTES) {
+        return $raw;
+    }
     $decoded = base64_decode($raw, true);
     if (!is_string($decoded) || strlen($decoded) !== PERSON_SENSITIVE_KEY_BYTES) {
         throw new PersonSensitiveException('Konfigurace citlivých údajů není dostupná.');
@@ -212,14 +225,20 @@ function personSensitiveAad(string $recordToken, int $requestId, ?int $personId 
     if (preg_match('/^[a-f0-9]{32}$/D', $recordToken) !== 1 || ($requestId < 1 && ($personId ?? 0) < 1)) {
         throw new PersonSensitiveException('Kontext citlivého údaje není platný.');
     }
-    if ($requestId < 1) return 'person-sensitive-person-v1|' . $recordToken . '|' . $personId;
+    if ($requestId < 1) {
+        return 'person-sensitive-person-v1|' . $recordToken . '|' . $personId;
+    }
     return PERSON_SENSITIVE_CONTRACT . '|' . $recordToken . '|' . $requestId;
 }
 
 /** @param array<string,mixed> $row */
-function personSensitiveDecryptForAdmin(array $row, ?array $configOverride = null): string
+function personSensitiveDecryptForAdmin(array $row, ?array $configOverride = null, bool $maskedView = false): string
 {
-    personSensitiveRequireAdmin();
+    if ($maskedView) {
+        personSensitiveRequireMaskedReader();
+    } else {
+        personSensitiveRequireAdmin();
+    }
     if ((string)($row['status'] ?? '') === 'erased') {
         throw new PersonSensitiveException('Citlivý údaj byl vymazán.');
     }
@@ -237,7 +256,7 @@ function personSensitiveDecryptForAdmin(array $row, ?array $configOverride = nul
     if (!is_string($plaintext) || preg_match('/^[0-9]{9,10}$/D', $plaintext) !== 1) {
         throw new PersonSensitiveException('Citlivý údaj nelze ověřit.');
     }
-    return $plaintext;
+    return $maskedView ? personSensitiveMaskBirthNumber($plaintext) : $plaintext;
 }
 
 function personSensitiveRequireAdmin(): int
@@ -247,6 +266,17 @@ function personSensitiveRequireAdmin(): int
     ]);
     $role = (string)($_SESSION['role'] ?? '');
     if ($trainerId === false || $role !== 'admin') {
+        throw new PersonSensitiveException('Přístup k citlivému údaji je odepřen.');
+    }
+    return (int)$trainerId;
+}
+
+function personSensitiveRequireMaskedReader(): int
+{
+    $trainerId = filter_var($_SESSION['trener_id'] ?? null, FILTER_VALIDATE_INT, [
+        'options' => ['min_range' => 1],
+    ]);
+    if ($trainerId === false || !staffActivePositionIs('registrar')) {
         throw new PersonSensitiveException('Přístup k citlivému údaji je odepřen.');
     }
     return (int)$trainerId;
@@ -288,10 +318,10 @@ function personSensitiveAdminMaskedView(
     ?array $configOverride = null,
     string $ipAddress = ''
 ): string {
-    $row = personSensitiveAdminRecord($pdo, $recordId);
-    $digits = personSensitiveDecryptForAdmin($row, $configOverride);
+    $row = personSensitiveAdminRecord($pdo, $recordId, true);
+    $masked = personSensitiveDecryptForAdmin($row, $configOverride, true);
     personSensitiveAudit($pdo, $row, 'masked_view', 'admin_masked_view', $ipAddress);
-    return personSensitiveMaskBirthNumber($digits);
+    return $masked;
 }
 
 function personSensitiveAdminReveal(
@@ -312,14 +342,22 @@ function personSensitiveAdminReveal(
 }
 
 /** @return array<string,mixed> */
-function personSensitiveAdminRecord(PDO $pdo, int $recordId): array
+function personSensitiveAdminRecord(PDO $pdo, int $recordId, bool $maskedView = false): array
 {
-    personSensitiveRequireAdmin();
-    if ($recordId < 1) throw new InvalidArgumentException('Citlivý záznam není platný.');
+    if ($maskedView) {
+        personSensitiveRequireMaskedReader();
+    } else {
+        personSensitiveRequireAdmin();
+    }
+    if ($recordId < 1) {
+        throw new InvalidArgumentException('Citlivý záznam není platný.');
+    }
     $statement = $pdo->prepare('SELECT * FROM osoba_citlive_udaje WHERE id=? LIMIT 1');
     $statement->execute([$recordId]);
     $row = $statement->fetch(PDO::FETCH_ASSOC);
-    if (!$row) throw new PersonSensitiveException('Citlivý záznam nebyl nalezen.');
+    if (!$row) {
+        throw new PersonSensitiveException('Citlivý záznam nebyl nalezen.');
+    }
     return $row;
 }
 
@@ -332,11 +370,13 @@ function personSensitiveAudit(
     string $ipAddress = '',
     ?int $privateFileId = null
 ): void {
-    $trainerId = personSensitiveRequireAdmin();
     $allowed = ['masked_view', 'reveal', 'replace', 'erase', 'key_rotate', 'photo_view'];
     if (!in_array($action, $allowed, true)) {
         throw new InvalidArgumentException('Neplatná auditní operace.');
     }
+    $trainerId = in_array($action, ['masked_view', 'photo_view'], true)
+        ? personSensitiveRequireMaskedReader()
+        : personSensitiveRequireAdmin();
     $statement = $pdo->prepare(
         'INSERT INTO osoba_citlive_pristupy '
         . '(sensitive_record_id,private_file_id,sportovec_id,request_id,actor_trainer_id,action,reason,ip_address) '
@@ -356,7 +396,7 @@ function personSensitiveAudit(
 
 function personSensitiveAdminAuditPhotoView(PDO $pdo, array $file, string $ipAddress = ''): void
 {
-    personSensitiveRequireAdmin();
+    personSensitiveRequireMaskedReader();
     $row = [
         'sportovec_id' => $file['sportovec_id'] ?? null,
         'request_id' => $file['request_id'] ?? null,
@@ -390,7 +430,9 @@ function personSensitiveAdminReplace(
         isset($row['sportovec_id']) ? (int)$row['sportovec_id'] : null
     );
     $started = !$pdo->inTransaction();
-    if ($started) $pdo->beginTransaction();
+    if ($started) {
+        $pdo->beginTransaction();
+    }
     try {
         $update = $pdo->prepare(
             "UPDATE osoba_citlive_udaje SET rc_ciphertext=?,rc_nonce=?,rc_key_version=?,rc_blind_index=?,"
@@ -405,9 +447,13 @@ function personSensitiveAdminReplace(
             $recordId,
         ]);
         personSensitiveAudit($pdo, $row, 'replace', $reason, $ipAddress);
-        if ($started) $pdo->commit();
+        if ($started) {
+            $pdo->commit();
+        }
     } catch (Throwable $exception) {
-        if ($started && $pdo->inTransaction()) $pdo->rollBack();
+        if ($started && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw new PersonSensitiveException('Rodné číslo nelze bezpečně změnit.', 0, $exception);
     }
 }
@@ -424,7 +470,9 @@ function personSensitiveAdminErase(
     }
     $row = personSensitiveAdminRecord($pdo, $recordId);
     $started = !$pdo->inTransaction();
-    if ($started) $pdo->beginTransaction();
+    if ($started) {
+        $pdo->beginTransaction();
+    }
     try {
         $update = $pdo->prepare(
             "UPDATE osoba_citlive_udaje SET rc_ciphertext=?,rc_nonce=?,rc_key_version='erased',"
@@ -439,9 +487,13 @@ function personSensitiveAdminErase(
             $recordId,
         ]);
         personSensitiveAudit($pdo, $row, 'erase', $reason, $ipAddress);
-        if ($started) $pdo->commit();
+        if ($started) {
+            $pdo->commit();
+        }
     } catch (Throwable $exception) {
-        if ($started && $pdo->inTransaction()) $pdo->rollBack();
+        if ($started && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw new PersonSensitiveException('Citlivý údaj nelze bezpečně vymazat.', 0, $exception);
     }
 }
@@ -467,7 +519,9 @@ function personSensitiveAdminRotate(
         isset($row['sportovec_id']) ? (int)$row['sportovec_id'] : null
     );
     $started = !$pdo->inTransaction();
-    if ($started) $pdo->beginTransaction();
+    if ($started) {
+        $pdo->beginTransaction();
+    }
     try {
         $update = $pdo->prepare(
             'UPDATE osoba_citlive_udaje SET rc_ciphertext=?,rc_nonce=?,rc_key_version=?,rc_blind_index=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
@@ -480,9 +534,13 @@ function personSensitiveAdminRotate(
             $recordId,
         ]);
         personSensitiveAudit($pdo, $row, 'key_rotate', $reason, $ipAddress);
-        if ($started) $pdo->commit();
+        if ($started) {
+            $pdo->commit();
+        }
     } catch (Throwable $exception) {
-        if ($started && $pdo->inTransaction()) $pdo->rollBack();
+        if ($started && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw new PersonSensitiveException('Klíč citlivého údaje nelze bezpečně otočit.', 0, $exception);
     } finally {
         sodium_memzero($digits);

@@ -1286,9 +1286,7 @@ function shopOrderAdminList(PDO $pdo, int $limit = 200, string $query = ''): arr
         $needle = '%'.$query.'%';
         $parameters = [$needle,$needle,$needle,$needle];
     }
-    $sql .= ('ORDER BY CASE p.status WHEN \'pending\' THEN 0 WHEN \'refund_required\' THEN 1 ELSE 2 END,' .
-    'o.created_at DESC,o.id DESC LIMIT ')
-    .$limit;
+    $sql .= 'ORDER BY o.created_at DESC,o.id DESC LIMIT '.$limit;
     $statement = $pdo->prepare($sql);
     $statement->execute($parameters);
     return $statement->fetchAll(PDO::FETCH_ASSOC);
