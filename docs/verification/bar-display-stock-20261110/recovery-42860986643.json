@@ -1,0 +1,12 @@
+{
+  "workflow_run": "42860986643",
+  "conclusion": "success",
+  "database_restore": "PASS",
+  "file_restore": "PASS",
+  "sql_file": "evidence_2026-11-10_170409_a022fa57.sql.gz",
+  "sql_sha256": "6e547c877688a060414495c10493d6437541d007715c6c48adce0998307119df",
+  "tables": 389,
+  "files_archive": "kis-files-42860986643.zip",
+  "files_sha256": "6457f04c6ea0befdcfa0c9945cad8f0513c55ad1435d36c11ecdae4a219a9f12",
+  "files": 4597
+}

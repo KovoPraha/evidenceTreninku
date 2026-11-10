@@ -31,7 +31,7 @@ Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESUL
   [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
   #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.
   Browser blokovaný; skutečná banka a externí schránka zůstávají neověřené.
-- P02/P04: [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md), Nově [BAR-DISPLAY-STOCK](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md): původní vzhled a převod zásob; dřívější nulový počátek je historický.
+- P02/P04: [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md), Nově [BAR-DISPLAY-STOCK](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md): #440 nasazeno, živé HTTP PASS; skladový inspect odmítnut bez zápisu, pokračuje přesná diagnostika; [protokol](verification/bar-display-stock-20261110/RESULTS.md).
   [účetní adaptér](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md); publikaci neopakovat.
 - P05: [serverové předání](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md)
   a [ranní plán](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).

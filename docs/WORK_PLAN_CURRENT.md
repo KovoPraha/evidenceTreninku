@@ -14,7 +14,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## BAR-DISPLAY-STOCK — oprava obrazovek a převod zásob (10. 11. 2026)
 
-ROZPRACOVÁNO, vlastník vývoj / vedení baru. Výslovný pokyn zachovat původní vzhled a převzít skutečné skladové zásoby nahrazuje dřívější nulový počátek pro tuto další operaci. [Plán a akceptace](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md), větev `codex/bar-display-stock-parity-20261110`, vlastní worktree mimo htdocs; starší WIP zachované. Další krok: ověřit původní TV šablony a bezpečný převod obou skladů, CI, řízené nasazení a nezávislá inventura. Lidská finanční přejímka zůstává zvlášť.
+ROZPRACOVÁNO, vlastník vývoj / vedení baru. Výslovný pokyn zachovat původní vzhled a převzít skutečné skladové zásoby nahrazuje dřívější nulový počátek pro tuto další operaci. [Plán a akceptace](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md), větev `codex/bar-display-stock-parity-20261110`, vlastní worktree mimo htdocs; starší WIP zachované. 12 CI PASS, #440 nasazeno, obě obrazovky a 45 fotografií živě PASS. Pouze čtecí inspect zásob selhal na validaci, nic nezapsal. Další krok: bezpečné souhrny/fáze a zachování případných záporných počátků, CI větve `codex/bar-stock-preflight-20261110`, nový inspect a teprve potom přesný převod s nezávislou kontrolou. [Průběžné důkazy](verification/bar-display-stock-20261110/RESULTS.md), dokumentační větev `codex/bar-display-stock-release-20261110`. Lidská finanční přejímka zůstává zvlášť.
 
 ## Úplný katalog plánů
 

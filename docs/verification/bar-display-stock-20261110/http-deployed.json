@@ -1,0 +1,280 @@
+{
+  "ok": true,
+  "checked_at": "2026-11-10T17:23:15.504021+00:00",
+  "release_sha": "9ef52268e1f5a8925cb62af6ab6b59ba27f75ac6",
+  "pages": [
+    {
+      "view": "text",
+      "url": "https://kis.kovopraha.cz/bar/menu.php?view=text",
+      "status": 200,
+      "isolated_layout": true,
+      "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-yVfgcUwGFl5ifOrf7pemuE4c' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-yVfgcUwGFl5ifOrf7pemuE4c' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-yVfgcUwGFl5ifOrf7pemuE4c'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-yVfgcUwGFl5ifOrf7pemuE4c'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+      "bytes": 23567
+    },
+    {
+      "view": "photos",
+      "url": "https://kis.kovopraha.cz/bar/menu.php?view=photos",
+      "status": 200,
+      "isolated_layout": true,
+      "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-QF3XylWCsJZ9itZAoq0Xqy6n' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-QF3XylWCsJZ9itZAoq0Xqy6n' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-QF3XylWCsJZ9itZAoq0Xqy6n'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-QF3XylWCsJZ9itZAoq0Xqy6n'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+      "bytes": 11663
+    }
+  ],
+  "assets": [
+    {
+      "asset": "bar-screen.css",
+      "status": 200,
+      "sha256": "d93ddd6c800a5e59e8c33d92648e0d27918db06b2b46f166dffb88380788649f",
+      "deployed_bytes_match": true
+    },
+    {
+      "asset": "bar-screen.js",
+      "status": 200,
+      "sha256": "8d637faf4eafc64ba8a955ff80ec6adabb52a7443df7922f74dbf4c83723815d",
+      "deployed_bytes_match": true
+    },
+    {
+      "asset": "bar-photos.css",
+      "status": 200,
+      "sha256": "94010d4c200cce9d6f3cde52115ba83554f71b986ae7738572d87f2f036a908c",
+      "deployed_bytes_match": true
+    },
+    {
+      "asset": "bar-photos.js",
+      "status": 200,
+      "sha256": "3fcf6459c84e7a0cbe383c381feec9eb068aba32875222b16dfc984bb8c9adbb",
+      "deployed_bytes_match": true
+    }
+  ],
+  "invalid_view_status": 400,
+  "public_products": 45,
+  "images": [
+    {
+      "product_id": 24,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 59,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 60,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 61,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 63,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 12,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 14,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 53,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 54,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 55,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 62,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 16,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 64,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 65,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 66,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 19,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 44,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 45,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 46,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 47,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 49,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 50,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 67,
+      "status": 200,
+      "content_type": "image/png"
+    },
+    {
+      "product_id": 68,
+      "status": 200,
+      "content_type": "image/png"
+    },
+    {
+      "product_id": 9,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 21,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 26,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 31,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 32,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 33,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 34,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 35,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 36,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 37,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 38,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 39,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 40,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 41,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 42,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 43,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 51,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 52,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 56,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 57,
+      "status": 200,
+      "content_type": "image/jpeg"
+    },
+    {
+      "product_id": 58,
+      "status": 200,
+      "content_type": "image/jpeg"
+    }
+  ],
+  "legacy": [],
+  "visual_acceptance": "NOT RUN"
+}

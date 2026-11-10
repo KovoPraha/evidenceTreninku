@@ -8,6 +8,40 @@ if (!function_exists('barRunRequest')) {
     require_once __DIR__ . '/requests.php';
 }
 
+/** Preserve signed legacy opening balances; normal receipts/sales retain their own nonnegative guards. */
+function barOpeningStockQuantity(mixed $value): int
+{
+    return barSourceInteger($value, -1000000, 1000000);
+}
+
+/** Only numeric stock metadata reaches protected operation logs, never configuration or exception text. */
+function barOpeningStockSourceSummary(array $source): array
+{
+    $summary = ['valid' => true, 'products' => count($source), 'invalid' => [],
+        'stall_total' => 0, 'office_total' => 0, 'negative_stall' => 0, 'negative_office' => 0];
+    foreach ($source as $row) {
+        foreach (['id' => 'id', 'sklad' => 'stall', 'predsklad' => 'office'] as $field => $location) {
+            try {
+                $value = $field === 'id' ? barSourceInteger($row[$field] ?? null, 1, 2147483647)
+                    : barOpeningStockQuantity($row[$field] ?? null);
+            } catch (InvalidArgumentException) {
+                $summary['valid'] = false;
+                $summary['invalid'][] = ['source_id' => (int)($row['id'] ?? 0), 'field' => $field,
+                    'type' => get_debug_type($row[$field] ?? null)];
+                continue;
+            }
+            if ($field !== 'id') {
+                $summary[$location . '_total'] += $value;
+                $summary['negative_' . $location] += (int)($value < 0);
+            }
+        }
+    }
+    if (!$summary['valid']) {
+        $summary['stall_total'] = $summary['office_total'] = null;
+    }
+    return $summary;
+}
+
 /** Separate from the original zero-stock catalogue import. Never guesses identities from names. */
 function barOpeningStockPlan(PDO $pdo, array $source): array
 {
@@ -28,8 +62,8 @@ function barOpeningStockPlan(PDO $pdo, array $source): array
         $target = $matches[0];
         $rows[] = ['source_id' => $sourceId, 'product_id' => (int)$target['id'], 'version' => (int)$target['lock_version'],
             'before_stall' => (int)$target['stock_stall'], 'before_office' => (int)$target['stock_office'],
-            'stall' => barSourceInteger($product['sklad'] ?? null, 0, 1000000),
-            'office' => barSourceInteger($product['predsklad'] ?? null, 0, 1000000)];
+            'stall' => barOpeningStockQuantity($product['sklad'] ?? null),
+            'office' => barOpeningStockQuantity($product['predsklad'] ?? null)];
     }
     if ($rows === [] || count($rows) > 1000 || count($rows) !== (int)$pdo->query('SELECT COUNT(*) FROM kis_bar_products WHERE source_id IS NOT NULL')->fetchColumn()) {
         throw new DomainException('Snímek musí obsahovat všechny převedené produkty.');
@@ -83,8 +117,8 @@ function barApplyOpeningStocks(PDO $pdo, array $plan, string $token, string $rea
             if ($query->fetchColumn() || barHasPendingStock($pdo, $id)) {
                 throw new BarConflictException('Produkt již má skladovou historii nebo rezervaci.');
             }
-            barSourceInteger($row['stall'] ?? null, 0, 1000000);
-            barSourceInteger($row['office'] ?? null, 0, 1000000);
+            barOpeningStockQuantity($row['stall'] ?? null);
+            barOpeningStockQuantity($row['office'] ?? null);
             $products[$id] = $product;
         }
         if (count($products) !== (int)$pdo->query('SELECT COUNT(*) FROM kis_bar_products WHERE source_id IS NOT NULL')->fetchColumn()) {
