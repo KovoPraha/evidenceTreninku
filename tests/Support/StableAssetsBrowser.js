@@ -79,10 +79,22 @@ async (page) => {
     // A true byte change runs the actual offline builder in the owned after-r2 root.
     await cdp.send('Network.clearBrowserCache');
     const original=await navigate('after','r2',path);await control('after','content');
-    const changed=await navigate('after','r2',path);
-    const changedUrls=changed.resources.filter(r=>!original.resources.some(o=>o.url===r.url));
+    const refreshStarted=Date.now();let refreshAttempts=0,changed,changedUrls;
+    // PHP opcode caches can retain a changed data include until their ordinary
+    // timestamp revalidation. This control is outside all measured samples.
+    do {
+      changed=await navigate('after','r2',path);refreshAttempts++;
+      changedUrls=changed.resources.filter(r=>!original.resources.some(o=>o.url===r.url));
+      if(changedUrls.length)break;
+      await page.waitForTimeout(500);
+    } while(Date.now()-refreshStarted<6000);
     if(changedUrls.length!==1 || !changedUrls[0].url.includes('/assets/app-ui.css?') || changedUrls[0].transfer===0)
-      throw new Error('Content invalidation did not fetch exactly the changed stylesheet');
+      throw new Error('Content invalidation did not fetch exactly the changed stylesheet: '+JSON.stringify({refreshAttempts,original:original.resources,changed:changed.resources}));
+    const payload=await page.request.get(changedUrls[0].url);
+    const text=await payload.text();
+    const actualHash=await page.evaluate(async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value)))).map(n=>n.toString(16).padStart(2,'0')).join(''),text);
+    if(new URL(changedUrls[0].url).searchParams.get('v')!==actualHash || !text.includes('Owned content invalidation acceptance.'))
+      throw new Error('Changed CSS manifest version does not match actual fetched bytes');
     if(JSON.stringify(original.shape)!==JSON.stringify(changed.shape))throw new Error('Comment-only mutation changed rendering');
     // Known broken photo exercises the actual CSP authorization, without weakening the guard.
     const fallback={};
@@ -92,7 +104,7 @@ async (page) => {
       fallback[variant]=state.images;
     }
     if(!fallback.before.some(i=>!i.valid) || fallback.after.some(i=>!i.valid))throw new Error('Trusted image fallback failed');
-    return{complete:!errors.length&&!failed.length,errors,failed,baselineCspErrors,expiry,content_invalidation:{changed_urls:changedUrls.map(r=>new URL(r.url).pathname),other_four_urls_unchanged:true,shape_equal:true},fallback};
+    return{complete:!errors.length&&!failed.length,errors,failed,baselineCspErrors,expiry,content_invalidation:{changed_urls:changedUrls.map(r=>new URL(r.url).pathname),other_four_urls_unchanged:true,shape_equal:true,actual_payload_hash_matches_version:true,refresh_attempts:refreshAttempts,observed_refresh_ms:Date.now()-refreshStarted},fallback};
   }
   for(let round=-4;round<17;round++) {
     for(const variant of round%2===0?['before','after']:['after','before']) {
