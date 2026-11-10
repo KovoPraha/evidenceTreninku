@@ -128,7 +128,7 @@ final class ParentJourneyAcceptanceTest extends TestCase
     private function quickFormVersions(array $terms): array
     {
         $source = (string)file_get_contents(dirname(__DIR__, 2).'/booking/rychla_prihlaska.php');
-        self::assertSame(1, preg_match('~<\?php foreach \(\$terms as \$purpose => \$term\):\?>.*?<\?php endforeach;\?>~s', $source, $match));
+        self::assertSame(1, preg_match('~<\?php\s+foreach\s*\(\$terms\s+as\s+\$purpose\s*=>\s*\$term\)\s*:\s*\?>.*?<\?php\s+endforeach\s*;\s*\?>~s', $source, $match));
         $escape = static fn (mixed $value): string => htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         ob_start();
         eval('?>'.str_replace('quickProgramH(', '$escape(', $match[0]));

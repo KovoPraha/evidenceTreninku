@@ -19,3 +19,5 @@ větvi; nevybraný, bez native/Chrome přejímky. Jeho helper/runtime nepřebír
 HJS/RIX WIP zachované. ASSET1–5 dokončené v [historii plánu](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md).
 ASSET4 historické tři katalogové hashy mají nadále LIMIT (chybějící beforeHTML),
 nejsou zpětně prohlášené za PASS. ASSET5 doklady #442 již sloučené.
+
+ASSET6 checkpoint: source0braces/2tagy a21/412 lokálních kontrol PASS; původní regex testu upraven pouze pro PHP whitespace, DOM názvy/verze a rollback kontrolované dál. Native2DB/HTTP/Chrome/CI/release zatím čekají.

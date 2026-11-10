@@ -11205,12 +11205,13 @@
       "title": "P11-ASSET Bootstrap CSS právě jednou",
       "primary": true,
       "role": "plan",
-      "status": "DONE",
-      "registry": "P11-ASSET/P11-ASSET2/P11-ASSET3/P11-ASSET4/P11-ASSET5",
-      "disposition": "ASSET1–5 nasazené; ASSET5 #439/8182489e, deploy42855987339 SUCCESS, strict native2DB/6liveHTML+pixelpairs PASS; historická mez ASSET4 zachovaná.",
+      "status": "PARTIAL",
+      "registry": "P11-ASSET/P11-ASSET2/P11-ASSET3/P11-ASSET4/P11-ASSET5/P11-ASSET6",
+      "disposition": "ASSET1–5 nasazené; ASSET6 dvě checkout CSS duplicity, source a21/412 lokálních kontrol PASS, native/browser/release čekají.",
       "evidence": [
         "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md",
-        "docs/verification/public-calendar-assets-20261110/RESULTS.md"
+        "docs/verification/public-calendar-assets-20261110/RESULTS.md",
+        "docs/verification/checkout-assets-20261110/RESULTS.md"
       ]
     },
     {

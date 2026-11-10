@@ -1,0 +1,18 @@
+{
+  "complete": true,
+  "baseline_sha": "588489003aff40963c3a64959d566406c687d08f",
+  "routes": {
+    "booking/rychly_nakup.php": {
+      "source_sha256": "b5303004bc8f36fd83a730926f86faa723544900c292c03cfdaa0e6b16a74d1d",
+      "whole_literal_html_except_exact_duplicate_equal": true,
+      "php_tokens_except_exact_listed_guard_braces_equal": true,
+      "brace_insertions": []
+    },
+    "booking/rychla_prihlaska.php": {
+      "source_sha256": "589ef5e149bac60a256ee0390b7a1b4c8507691e023abfc4b7e4043b1a4b9ddd",
+      "whole_literal_html_except_exact_duplicate_equal": true,
+      "php_tokens_except_exact_listed_guard_braces_equal": true,
+      "brace_insertions": []
+    }
+  }
+}

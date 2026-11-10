@@ -519,3 +519,26 @@ neresetovat ani neuklízet; stage jen vlastní soubory, žádné secrets/raw HTM
 
 Nová implementace/native/browser/release zatím NOT RUN. Další krok: živá
 baseline a přesná dvě odstranění, nové kontrakty/fixture a měřená přejímka.
+
+
+### ASSET6 checkpoint před novým CI
+
+Obě přesná odstranění implementovaná. Source kontrakt proti58848900 PASS:
+celé PHP tokeny a veškerý literal HTML/JS mimo2známé tagy stejné;0vložených
+guard závorek. Povinné formátování dlouhých šablonových řádků používá nulové
+PHP hranice, které nic nevypisují. Payloady/manifest/TTL i všechny služby stejné.
+Lokální21 testů/412 assertions PASS, včetně stale/refresh/atomického rollbacku
+rychlé přihlášky a17negativních assertion porovnávače. Style/line200/lint PASS.
+
+První lokální běh odhalil křehký zdrojový regex starého testu rodičovského
+průchodu: vyžadoval přesné mezery PHP foreach značek. Nyní přijímá pouze PHP
+whitespace; skutečný fragment stále vykresluje, HTML/atributy nijak nenormalizuje,
+dekóduje odeslané názvy/verze a zachovává všechny stale/rollback assertion.
+Nejde o zásah do registračního/platebního guardu nebo jeho vypnutí.
+
+Nový izolovaný native/Apache/Chrome runner:10HTTP scénářů včetně validních
+formulářů, empty-stock404, variant404, club303, neúplných terms409, customer303,
+product control; invalidCSRF obou formulářů a checksumy plné migrované DB.
+Chrome goods quantity, guardian/self synchronizace, věková poznámka, ack/CSC,
+přesné hidden verze a mobilní navigace,6pixelpairs. Nová native přejímka zatím
+NOT RUN, včetně backend/schema kalibrace fixture. Žádné produkční zápisy.
