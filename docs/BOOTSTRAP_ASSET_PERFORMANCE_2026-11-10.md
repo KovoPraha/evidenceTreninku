@@ -670,3 +670,14 @@ Historický ASSET4 LIMIT i ASSET6 controlfoto LIMIT zůstávají zachované.
 Native/browser/implementace/release zatím NOT RUN. Další krok: baseline fixture,
 přesná odstranění a nové párové přejímky; při neprokázané paritě nebo přínosu
 nevydávat. Runtime/flags vlastní CURRENT.
+
+
+ASSET7 checkpoint: implementovaná přesně čtyři odstranění. Source kontrakt
+proti4d1e9941 PASS: všechny PHP tokeny/literal HTML/JS zachované mimo konkrétní
+tagy a4přesně pinované guard závorky v moje_programy.php (PSR12). Nulové PHP
+hranice dělí dlouhé HTML řádky bez výstupu; whitespace není obecně maskovaný.
+Lokálních19testů/188assertions včetně negativních mutací porovnávače a account
+claims/role/program overview PASS; style/line200/lint/diff PASS. Nový runner:
+17celýchHTTP scénářů (main/empty/unverified/anonymous/control), CSRF a čerstvá
+revokace vazby/účtu,350checksumů a20Chrome kombinací. Native/baseline/Chrome
+přínos a release zatím NOT RUN; další krok nová přejímka, ne hotový výsledek.
