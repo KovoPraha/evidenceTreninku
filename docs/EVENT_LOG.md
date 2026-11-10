@@ -224,3 +224,5 @@ uzavření E10 je nyní E2026-11-09-11. Původní proof commit411cb96a zachovan�
 - E2026-11-10-20 — P11-ASSET4 NASAZENO: deploy 42837011604 SUCCESS; 2432/55977, záloha 389/2, config/migrace/VS/indexy/HTTP i úklidy PASS. Živá nová katalogová5/5 parita a 4 pixelové páry shodné; staré tři hashy LIMIT. [Výsledky](verification/catalog-audit-assets-20261110/RESULTS.md). Doklady/test helper v oddělené větvi, bez dalšího deploye; WIP `7a7afd75` zachovaný.
 
 - E2026-11-10-21 — P11-ASSET4: finální měření/release a stručný handoff sdílí [PR #437](https://github.com/KovoPraha/evidenceTreninku/pull/437), větev codex/stable-ui-assets-release-docs-20261110. Pouze doklady a explicitní transport testovacího CLI; žádný další produkční deploy. Živý Chrome h2/200, 12/12 produktových obrázků načtených bez chyby.
+
+- E2026-11-10-22 — P11-ASSET5 zahájeno dle vlastníka: kalendář lekcí/velodrom CDN CSS duplicity, klubový kalendář control; izolovaný worktree a nový baseline proti37f1ba8f. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset5--veřejný-kalendář-a-velodrom-10-11-2026). WIP zachovat, release podmíněn novými PASS.

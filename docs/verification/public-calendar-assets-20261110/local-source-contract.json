@@ -1,0 +1,115 @@
+{
+  "complete": true,
+  "baseline_sha": "37f1ba8fed86d7dacd14bbb17daa7207b04d313e",
+  "routes": {
+    "booking/kalendar.php": {
+      "source_sha256": "0eb444237cc38b4fce60a61fa285eaba36a5c8df450d3b9aa8ce62cd802e8ae8",
+      "whole_literal_html_except_exact_duplicate_equal": true,
+      "php_tokens_except_exact_listed_guard_braces_equal": true,
+      "brace_insertions": [
+        [
+          1288,
+          [
+            "{"
+          ]
+        ],
+        [
+          1298,
+          [
+            "}"
+          ]
+        ],
+        [
+          1299,
+          [
+            "{"
+          ]
+        ],
+        [
+          1309,
+          [
+            "}"
+          ]
+        ],
+        [
+          1334,
+          [
+            "{"
+          ]
+        ],
+        [
+          1336,
+          [
+            "}"
+          ]
+        ],
+        [
+          1376,
+          [
+            "{"
+          ]
+        ],
+        [
+          1378,
+          [
+            "}"
+          ]
+        ],
+        [
+          1491,
+          [
+            "{"
+          ]
+        ],
+        [
+          1494,
+          [
+            "}"
+          ]
+        ],
+        [
+          1963,
+          [
+            "{"
+          ]
+        ],
+        [
+          1967,
+          [
+            "}"
+          ]
+        ],
+        [
+          1971,
+          [
+            "{"
+          ]
+        ],
+        [
+          1975,
+          [
+            "}"
+          ]
+        ],
+        [
+          1979,
+          [
+            "{"
+          ]
+        ],
+        [
+          1983,
+          [
+            "}"
+          ]
+        ]
+      ]
+    },
+    "booking/velodrom.php": {
+      "source_sha256": "4652ecd6a57a822c98a6c0d0051fa9b35c6a7fa9a9683195b189dfe68b1b4148",
+      "whole_literal_html_except_exact_duplicate_equal": true,
+      "php_tokens_except_exact_listed_guard_braces_equal": true,
+      "brace_insertions": []
+    }
+  }
+}

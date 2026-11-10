@@ -1,4 +1,17 @@
-# Předání P11-ASSET4 — 10. 11. 2026
+# Předání P11-ASSET5 — 10. 11. 2026
+
+ROZPRACOVÁNO. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset5--veřejný-kalendář-a-velodrom-10-11-2026).
+Base37f1ba8f; větev codex/public-calendar-assets-performance-20261110, vlastní
+worktree C:/Users/Marek/Documents/Codex/evidencePavel-calendar-assets-performance-20261110.
+Odstranit pouze CDN Bootstrap z booking/kalendar.php a booking/velodrom.php;
+booking/klubovy_kalendar.php je control. Zachovat veškerou logiku, CSS payloady,
+manifest, TTL, role/rezervace/kapacity a původní WIP7a7afd75 / fio větev.
+Nová native/browser/live přejímka a měření NOT RUN. Při všech PASS povolené
+commit/merge/deploy. Další krok: bezpečná veřejná baseline a source kontrakt.
+Provozní runtime/flags jsou v [CURRENT](CURRENT_STATE.md), dosud94c10708.
+
+## Předchozí P11-ASSET4
+
 
 **NASAZENO / technická přejímka nového řezu PASS.**
 [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset4--katalogová-diagnóza-a-další-měřený-řez-10-11-2026),
@@ -38,3 +51,26 @@ Historie: [workspace release](verification/workspace-bootstrap-assets-20261110/r
 ## Aktuální předání P11-ASSET3
 
 Historický řez: [veřejné účty a původní meze katalogu](verification/public-account-assets-20261110/release/RESULTS.md).
+
+ASSET5 checkpoint: source contract a1/12 negativní unit PASS; živý before6/6, cíle CSS2/53957 B a control1/31248 B. [Průběžné výsledky](verification/public-calendar-assets-20261110/RESULTS.md). Native dvojí DB/Chrome a přijetí ještě čekají.
+
+
+ASSET5 integrace main: během práce sloučen #438 / f39f3157 (objednávky a
+registrátor). Společná dokumentace zachována včetně TESTER-20261110. Nové CI
+se zopakuje na integrovaném head; dva vybrané kalendářové zdroje z37f1ba8f
+jsou stále přesným oraclem, ostatní sdílené PHP kopie jsou v páru shodné.
+Produkční plán TESTER váže #438 na společné vydání s #436; před vlastním deploy
+ověřit splnění této již zapsané podmínky a aktuální run/SHA. #436 neslučovat
+v rámci tohoto řezu. Původní WIP zůstává bez zásahu.
+
+
+ASSET5 checkpoint / PR #439: první přísný HTTP diff byl4 mezery za inline SEO.
+PHP uzavírající značka spotřebuje zdrojový newline; porovnávač proto nyní
+odstraňuje přesně4 zdrojové mezery a jeden newline patřící jedinému známému
+CDNtagu, bez obecné whitespace normalizace. Regresní unit1/13 PASS. Nový živý
+before používá stejný přesný postup; skripty/data/verze assetů zůstávají celé.
+Native42851391494 na38f6e9fb prošlo na obou DB včetně Chrome. Následně do main
+přibylo povolené #436 /4e3df207; zachované oba souběžné plány a nové ověření
+se zopakuje na tomto společném základu. Společný produkční běh jiného řezu
+42852365591 běží na4e3df207; neslučovat další cizí větev ani ho nepřehrávat.
+Dosavadní aplikační diff tohoto PR proti main jsou jen dva zvolené kalendáře.
