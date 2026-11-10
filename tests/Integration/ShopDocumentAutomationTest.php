@@ -18,12 +18,15 @@ final class ShopDocumentAutomationTest extends TestCase
     private array $session;
     private string|false $oldRoot;
     private string $private;
+    private string $oldTimezone;
     private const BILLING = ['billing_street' => 'LOCALHOST 12','billing_city' => 'Praha','billing_postcode' => '19000'];
     private const BANK = ['iban' => 'CZ6508000000192000145399','bic' => 'GIBACZPX','account_label' => 'LOCALHOST NEPLATIT'
     ,'due_days' => 7];
 
     protected function setUp(): void
     {
+        $this->oldTimezone = date_default_timezone_get();
+        date_default_timezone_set('Europe/Prague');
         $this->session = $_SESSION ?? [];
         $_SESSION = ['trener_id' => 7,'staff_positions' => ['finance_manager'],'staff_active_position' => 'finance_manager'
     ];
@@ -33,6 +36,10 @@ final class ShopDocumentAutomationTest extends TestCase
         putenv('APP_PRIVATE_STORAGE_ROOT='.$this->private);
         $base = new ShopCheckoutTest('testCheckoutUsesCurrentServerPriceThenKeepsImmutableSnapshotAndIsIdempotent');
         $p = $this->pdo = (new \ReflectionMethod($base, 'database'))->invoke($base);
+        // SQLite's UTC clock otherwise predates today's Prague mandate after midnight.
+        // Match the business timezone explicitly in this isolated synthetic database.
+        $p->sqliteCreateFunction('current_timestamp', static fn (): string =>
+            (new \DateTimeImmutable('now', new \DateTimeZone('Europe/Prague')))->format('Y-m-d H:i:s'), 0);
         $p->exec(("ALTER TABLE treneri ADD COLUMN aktivni INT DEFAULT 1;
             CREATE TABLE staff_user_positions(trainer_id INT,position_code " .
     "TEXT);
@@ -59,6 +66,7 @@ final class ShopDocumentAutomationTest extends TestCase
 
     protected function tearDown(): void
     {
+        date_default_timezone_set($this->oldTimezone);
         $_SESSION = $this->session;
         $this->oldRoot === false ? putenv('APP_PRIVATE_STORAGE_ROOT') : putenv(
             'APP_PRIVATE_STORAGE_ROOT='.$this->oldRoot

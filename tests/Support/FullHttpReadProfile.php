@@ -78,7 +78,8 @@ function fullHttpNormalizedHtml(array $response): string
     if (preg_match("/nonce-([^']+)/", $response['headers']['content-security-policy'] ?? '', $nonce)) {
         $html = str_replace($nonce[1], 'SYNTHETIC_NONCE', $html);
     }
-    return $html;
+    require_once __DIR__ . '/BootstrapAssetComparison.php';
+    return bootstrapAssetComparisonHtml($html);
 }
 
 function fullHttpMatrix(array $credentials): array

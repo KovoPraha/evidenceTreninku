@@ -11105,9 +11105,9 @@
       "title": "P11-RIX cílené čtení profilu",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11-RIX",
-      "disposition": "Zahájeno: skutečné metadata, odpovídající fixture, poté měřená optimalizace; runtime zatím beze změny.",
+      "disposition": "Diagnóza uzavřena bez přijaté SQL/index varianty; reader obnoven, aktivní P11-ASSET.",
       "evidence": [
         "docs/verification/athlete-profile-targeted-read-20261109/RESULTS.md"
       ]
@@ -11136,6 +11136,45 @@
       "disposition": "Zahájeno: skutečné metadata, odpovídající fixture, poté měřená optimalizace; runtime zatím beze změny.",
       "evidence": [
         "docs/verification/athlete-profile-targeted-read-20261109/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-29c9854bef",
+      "path": "docs/BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md",
+      "title": "P11-ASSET Bootstrap CSS právě jednou",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11-ASSET",
+      "disposition": "Zahájeno: odstranit duplicitní CSS, ověřit business/UI a paired Chrome bez časové regrese.",
+      "evidence": [
+        "docs/verification/bootstrap-assets-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-5b9d1c88ae",
+      "path": "docs/SESSION_HANDOFF_BOOTSTRAP_ASSETS_2026-11-10.md",
+      "title": "P11-ASSET předání",
+      "primary": false,
+      "role": "handoff",
+      "status": "SUPPORT",
+      "registry": "P11-ASSET",
+      "disposition": "Zahájeno: odstranit duplicitní CSS, ověřit business/UI a paired Chrome bez časové regrese.",
+      "evidence": [
+        "docs/verification/bootstrap-assets-20261110/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-d09e090cc9",
+      "path": "docs/verification/bootstrap-assets-20261110/RESULTS.md",
+      "title": "P11-ASSET průběžné ověření",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "P11-ASSET",
+      "disposition": "Zahájeno: odstranit duplicitní CSS, ověřit business/UI a paired Chrome bez časové regrese.",
+      "evidence": [
+        "docs/verification/bootstrap-assets-20261110/RESULTS.md"
       ]
     }
   ],

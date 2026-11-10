@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Integration\BootstrapAssetComparisonTest" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/BootstrapAssetComparisonTest.php" tests="1" assertions="6" errors="0" failures="0" skipped="0" time="0.000931">
+    <testcase name="testOnlyTheExactDuplicateWithOneLocalCopyCanBeRemoved" file="/home/runner/work/evidenceTreninku/evidenceTreninku/tests/Integration/BootstrapAssetComparisonTest.php" line="13" class="Tests\Integration\BootstrapAssetComparisonTest" classname="Tests.Integration.BootstrapAssetComparisonTest" assertions="6" time="0.000931"/>
+  </testsuite>
+</testsuites>

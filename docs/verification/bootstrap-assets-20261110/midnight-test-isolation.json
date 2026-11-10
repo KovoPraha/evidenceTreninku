@@ -1,0 +1,24 @@
+{
+  "baseline_sha": "ff18297178419a57899cd5bb614a6b0fa51c9e7f",
+  "baseline_run": 42721710594,
+  "baseline_result": {
+    "tests": 2420,
+    "assertions": 55582,
+    "errors": 4,
+    "failures": 2
+  },
+  "same_six_shop_failures_as_pr": true,
+  "production_accounting_source_changed": false,
+  "sqlite_fixture_clock": "Europe/Prague CURRENT_TIMESTAMP override, private in-memory PDO only",
+  "targeted_after": {
+    "tests": 12,
+    "assertions": 233,
+    "errors": 0,
+    "failures": 0
+  },
+  "shared_ui_and_normalizer": {
+    "tests": 16,
+    "assertions": 98,
+    "pass_": true
+  }
+}

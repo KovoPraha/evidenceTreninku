@@ -1,0 +1,25 @@
+{
+  "same_payload": true,
+  "records": [
+    {
+      "url": "https://kis.kovopraha.cz/assets/vendor/bootstrap/bootstrap.min.css",
+      "status": 200,
+      "content_encoding": "gzip",
+      "wire_body_bytes": 31248,
+      "decoded_bytes": 232803,
+      "sha384": "QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH",
+      "tls_verified": true,
+      "cookies_sent": false
+    },
+    {
+      "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+      "status": 200,
+      "content_encoding": "gzip",
+      "wire_body_bytes": 30829,
+      "decoded_bytes": 232803,
+      "sha384": "QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH",
+      "tls_verified": true,
+      "cookies_sent": false
+    }
+  ]
+}
