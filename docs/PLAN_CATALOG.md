@@ -17,6 +17,7 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 | ID | Soubor | Stav / registr | Dispozice a důkaz |
 | --- | --- | --- | --- |
+| PL-e9b0541560 | [P11-EVENTREAD — odložená veřejná čtecí projekce](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) | ODLOŽENO | Prototyp d8274970, SQLite PASS/prod0karet; native přejímka a vydání NOT RUN. |
 | PL-81ad8711f2 | [COACH-ROSTER-01 — Moje skupiny a soupisky](COACH_GROUP_ROSTERS_2026-11-10.md) | PARTIAL / COACH-ROSTER-01 | [PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436) sloučen, [deploy 42852365591](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42852365591) SUCCESS; technické testy PASS, přihlášené Aligátoří UAT otevřené. [Protokol](verification/coach-group-rosters-20261110/RESULTS.md). |
 | PL-9bdeb21ac9 | [Původní obrazovky a převod zásob](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) | PARTIAL / P02 BAR-DISPLAY-STOCK | [Rozsah a akceptace](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) |
 | PL-f0201ffc26 | [Q01: provozní přejímky a příprava další funkce](QUALITY_NEXT_SLICES_2026-11-08.md) | PLANNED / Q01-Q4/Q5 | Připravené scénáře BAR, P05/P07 a P06 a návrh soukromého progresu C01/V5; skutečné vstupy, produktové a retenční rozhodnutí chybí. [WORK_PLAN_CURRENT.md](WORK_PLAN_CURRENT.md) |
@@ -412,7 +413,7 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | DONE / P11-RIX | Diagnóza uzavřena bez přijaté SQL/index varianty; pokračuje P11-ASSET. |
 
-| PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | NASAZENO / ASSET1–5 technicky PASS | ASSET5 #439/8182489e, deploy42855987339,13CI; native2DB a6živých HTML/pixel párů shodných, CSS53957→31248 B. Lidské UAT otevřené; historická mez ASSET4 zachovaná. |
+| PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | ROZPRACOVÁNO / ASSET6; ASSET1–5 nasazené | Dvě aktuální checkout CSS duplicity, nový source/native/browser před-po; původní historická mez zachovaná. |
 
 | PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | REJECTED / P11-HJS/P11-HJS2 | Oba nevybrané; skutečná duplicitníCSSvede naASSET2, prototypy zachované. |
 
