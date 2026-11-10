@@ -38,7 +38,7 @@ if ($mode === '--seed') {
     $variants = $admin->prepare('INSERT INTO shop_variants(id,product_id,source_candidate_id,sku,attributes_json,price_mode,amount_minor,currency,'
         . 'includes_vat,vat_rate_basis_points,stock_quantity_decimal,visible,catalog_status) VALUES(?,9001,NULL,?,\'{}\',\'fixed\',?,\'CZK\',1,2100,?,1,\'active\')');
     foreach ([[900101, 'LOCALHOST-CSS-IN', 12500, '5.000000'], [900102, 'LOCALHOST-CSS-EMPTY', 12500, '0.000000'],
-        [900103, 'LOCALHOST-CSS-UNLIMITED', 25000, null]] as $variant) {
+        [900103, 'LOCALHOST-CSS-UNKNOWN', 25000, null]] as $variant) {
         $variants->execute($variant);
     }
     $credential = ['email' => 'checkout-assets@example.invalid', 'password' => 'LOCALHOST-Neplatit-' . bin2hex(random_bytes(16))];
@@ -90,12 +90,12 @@ $checksums = static function () use ($admin): array {
 $beforeData = $checksums();
 $cases = [
     'guest' => ['/booking/rychly_nakup.php?product_id=9001&variant_id=900101', 200, false, true],
-    'guest-unlimited' => ['/booking/rychly_nakup.php?product_id=9001&variant_id=900103', 200, false, true],
+    'guest-unknown-stock' => ['/booking/rychly_nakup.php?product_id=9001&variant_id=900103', 404, false, false],
     'guest-empty-stock' => ['/booking/rychly_nakup.php?product_id=9001&variant_id=900102', 404, false, false],
     'guest-missing-variant' => ['/booking/rychly_nakup.php?product_id=9001&variant_id=999999', 404, false, false],
     'guest-club-guard' => ['/booking/rychly_nakup.php?product_id=501&variant_id=601', 303, false, false],
     'program' => ['/booking/rychla_prihlaska.php?product_id=501&variant_id=601', 200, false, true],
-    'program-missing-terms' => ['/booking/rychla_prihlaska.php?product_id=501&variant_id=602', 409, false, false],
+    'program-missing-terms' => ['/booking/rychla_prihlaska.php?product_id=501&variant_id=602', 404, false, false],
     'program-goods-guard' => ['/booking/rychla_prihlaska.php?product_id=9001&variant_id=900101', 404, false, false],
     'program-account-redirect' => ['/booking/rychla_prihlaska.php?product_id=501&variant_id=601', 303, true, false],
     'control' => ['/booking/produkt.php?id=9001', 200, false, false],
@@ -160,6 +160,29 @@ foreach (range(-4, 16) as $round) {
 }
 if ($report['invalid_csrf_denials']['before'] !== $report['invalid_csrf_denials']['after']) {
     throw new RuntimeException('Invalid CSRF whole HTML changed.');
+}
+// Public catalog filtering already hides a program without effective program
+// terms (404). Missing mandatory athlete notices reach the separate 409 guard.
+require_once dirname(__DIR__, 2) . '/includes/athlete_registration.php';
+$terms = athleteRegistrationCurrentTerms($admin);
+$notice = $terms['member_data_notice'];
+$changeNotice = $admin->prepare('UPDATE club_event_term_versions SET consent_text_plain=? WHERE id=?');
+$changeNotice->execute(['', $notice['id']]);
+try {
+    foreach (['before', 'after'] as $variant) {
+        $rt = $runtime;
+        $rt['base_url'] = 'http://127.0.0.1:' . ($variant === 'before' ? 18099 : 18100);
+        $denied = fullHttpRequest($rt, $output, 'checkout-' . $variant, $cases['program'][0]);
+        if ($denied['status'] !== 409 || !str_contains($denied['body'], 'Přihlášku nelze dokončit')) {
+            throw new RuntimeException('Missing mandatory notice was not denied.');
+        }
+        $report['missing_notice_denial'][$variant] = hash('sha256', $normalize($denied));
+    }
+} finally {
+    $changeNotice->execute([$notice['text'], $notice['id']]);
+}
+if ($report['missing_notice_denial']['before'] !== $report['missing_notice_denial']['after']) {
+    throw new RuntimeException('Missing-notice whole HTTP changed.');
 }
 if ($checksums() !== $beforeData) {
     throw new RuntimeException('Checkout GET/denial changed canonical data.');

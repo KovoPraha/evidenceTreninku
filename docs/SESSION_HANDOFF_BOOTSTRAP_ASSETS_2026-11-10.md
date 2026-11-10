@@ -38,3 +38,19 @@ Následný ověřený-account guard rychlé přihlášky zůstává přesně303 
 Location/body kontrakt je dál kontrolovaný. Source/aplikace se nemění.
 Cleanup vlastního schema/user/config a workerů proběhl, žádná produkční akce.
 Nová plná native2DB/browser přejímka se opakuje, neoznačovat první FAIL za PASS.
+
+
+ASSET6 druhá kalibrace42876825180/c3a48460: login302 už prošel. Původní
+varianta ještě před změnou správně vracela404 pro NULL sklad, test ji chybně
+nazval unlimited. Současný shopStorefrontReadRows při dostupném inventory
+schématu NULL zásobu vylučuje; nyní explicitní unknown-stock404 i zero-stock404.
+Totéž existující veřejný filtr skrývá program bez účinných program terms (404).
+Očekávání jsou přesná podle neměněných guardů, žádná tolerance dalších stavů.
+Samostatně doplněn409 pro chybějící povinné athlete notice: jen vlastní fixture
+dočasně změní text a ve finally obnoví přesný obsah; checksumy se dál ověřují.
+Nové plné native2DB/Chrome měření se opakuje, předchozí FAIL zůstává v historii.
+
+První živý Chrome158 before6/6 GET200, desktop/mobile bez JS/network chyby
+a přetékání. Target Bootstrap53957 B (22709CDN+31248local), control31248 B.
+Pět obsahových URL a celé HTML zůstávají v nové baseline; před nasazením se
+obnoví čerstvý before. Produkce beze zápisu; nejde o produkční časový benchmark.
