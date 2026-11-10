@@ -16,6 +16,11 @@ function barLegacyUrlTarget(string $path): string
     $target = '/bar/checkout.php';
     if (str_starts_with($path, 'public/') || str_starts_with($path, 'menu/')) {
         $target = '/bar/menu.php';
+        if ($path === 'public/obrazovka.php') {
+            $target .= '?view=text';
+        } elseif ($path === 'public/obrazovka2.php') {
+            $target .= '?view=photos';
+        }
     } elseif ($path === 'terminal/sklad.php') {
         $target = '/bar/index.php';
     } elseif ($path === 'terminal/uzavrit.php') {

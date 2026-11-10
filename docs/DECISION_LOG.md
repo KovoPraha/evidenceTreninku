@@ -10,6 +10,10 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
 COACH-ROSTER-01: trenérská agenda čte pouze přímo svěřené `club_teams` a jejich aktuální `club_roster_members`. Varianta dědění jmen z rodičovské skupiny byla odmítnuta, protože grant rodiče neopravňuje ke každé podřízené soupisce. Registrátorská projekce `memberRosterRead()` vrací širší osobní údaje a je vázána na editační pracovní roli; místo ní je úzká čtecí projekce jméno/příjmení. Čekající a ukončená jména vyžadují zvláštní oprávnění, proto první etapa ukazuje jen aktivní členství. [Plán](COACH_GROUP_ROSTERS_2026-11-10.md), [testy](verification/coach-group-rosters-20261110/RESULTS.md).
 
+## D2026-11-10-BAR01
+
+Výslovný pokyn vlastníka: původní formát, velikosti a grafika TV lístků se při začlenění nemění; převzít také zásobu stánku i předskladu podle původních ID. Dřívější nulový počátek byl proveden podle tehdejšího zadání, nový navazující převod jej doplní bez opakování katalogového importu. Nové cílové pohyby mají přednost a konflikt převod zastaví. [Plán](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md).
+
 ## D2026-11-10-07
 
 P11-ASSET4: před další změnou nejprve zjistit povahu tří katalogových rozdílů a vytvořit bezpečné dílčí otisky. Starý agregovaný hash bez beforeHTML neopravňuje libovolně normalizovat obsah. Varianty další optimalizace vybírat podle aktuálních přenosů, nikoliv starých časů. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset4--katalogová-diagnóza-a-další-měřený-řez-10-11-2026).

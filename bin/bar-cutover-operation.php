@@ -26,7 +26,7 @@ function barCutoverReadPlan(string $file): array
 }
 
 /** Names and fingerprints are explicit. The full protected restore run is verified by the workflow. */
-function barCutoverVerifyBackup(array $proof, string $directory): array
+function barCutoverVerifyBackup(array $proof, string $directory, ?int $existingBarProducts = null): array
 {
     if (!preg_match('/^evidence_[0-9A-Za-z_-]+\.sql\.gz$/D', (string)($proof['sql_file'] ?? ''))
         || !preg_match('/^kis-files-[1-9][0-9]{0,19}\.zip$/D', (string)($proof['files_archive'] ?? ''))
@@ -50,8 +50,11 @@ function barCutoverVerifyBackup(array $proof, string $directory): array
     $manifest = json_decode((string)file_get_contents(substr($sql, 0, -7) . '.manifest.json'), true, 32, JSON_THROW_ON_ERROR);
     if (($manifest['application'] ?? null) !== 'evidence' || ($manifest['sql_file'] ?? null) !== $proof['sql_file']
         || ($manifest['sha256'] ?? null) !== $proof['sql_sha256'] || !is_array($manifest['tables'] ?? null)
-        || ($manifest['tables']['kis_bar_products'] ?? null) !== 0 || ($manifest['tables']['kis_bar_import_runs'] ?? null) !== 0) {
-        throw new RuntimeException('Záloha neodpovídá prázdnému cíli baru.');
+        || ($manifest['tables']['kis_bar_products'] ?? null) !== ($existingBarProducts ?? 0)
+        || ($existingBarProducts === null
+            ? ($manifest['tables']['kis_bar_import_runs'] ?? null) !== 0
+            : ($existingBarProducts < 1 || ($manifest['tables']['kis_bar_import_runs'] ?? 0) < 1))) {
+        throw new RuntimeException('Záloha neodpovídá očekávanému katalogu baru.');
     }
     return ['verified' => true, 'restore_run' => (string)$proof['restore_run'], 'sql_file' => $proof['sql_file'],
         'sql_sha256' => $proof['sql_sha256'], 'files_archive' => $proof['files_archive'], 'files_sha256' => $proof['files_sha256']];

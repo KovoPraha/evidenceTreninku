@@ -11329,6 +11329,17 @@
       "evidence": [
         "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md"
       ]
+    },
+    {
+      "id": "PL-9bdeb21ac9",
+      "path": "docs/BAR_DISPLAY_STOCK_PARITY_2026-11-10.md",
+      "title": "BAR: původní obrazovky a převod zásob",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P02 BAR-DISPLAY-STOCK",
+      "disposition": "Nový výslovný pokyn 10. 11.; implementace a řízený převod obou skladů.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

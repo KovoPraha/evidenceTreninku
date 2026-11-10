@@ -450,3 +450,13 @@ všechny jeho věcné záznamy TESTER/COACH včetně intro CURRENT/HANDOFF; jedi
 konflikt CURRENT vyřešen zachováním obou dokončených prací a vlastního ASSET5
 měření. Pouze docs, aplikace8182489e se nemění. Všech11 kontrol finálního
 dokumentačního head se zopakuje před sloučením #442; druhý deploy se neprovádí.
+
+
+ASSET5 docs checkpoint: souběžný #440 byl mezitím sloučen jako9ef52268.
+GitHub protected main vyžaduje strict aktuální základ; pokus o merge #442
+po11 SUCCESS na staršímcfbafd47 vrátil405 (3 required checks expected).
+Žádné sloučení ani nasazení tím nevzniklo. Převzatý již schválený main včetně
+BAR, bez konfliktu a se zachováním jeho věcných dokladů; proti novému main
+zůstává náš PR pouze docs. Všech11 CI se zopakuje na společném finálním head.
+Naše produkční přejímka se týká8182489e/deploy42855987339, nikoli dodatečně
+kódu BAR. Kvůli těmto dokladům se žádný další deploy nespouští.

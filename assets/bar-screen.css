@@ -1,0 +1,33 @@
+:root{
+    --pozadi:#050505;--text:#f7f7f2;--tlumene:#a7a7a1;--linka:#343434;
+    --k0:#ffbe3d;--k1:#50c8ff;--k2:#78df8b;--k3:#ff7e79;--k4:#d49cff;--k5:#ff9ed2;
+    --zakladni-meritko:1;--meritko:var(--zakladni-meritko);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;background:var(--pozadi);color:var(--text)}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+.stranka{height:100dvh;display:grid;grid-template-rows:auto 1fr auto;padding:clamp(18px,2.2vh,30px) clamp(24px,3.2vw,64px) clamp(12px,1.6vh,22px)}
+.hlava{display:flex;align-items:end;justify-content:space-between;gap:28px;border-bottom:2px solid #fff;padding-bottom:clamp(11px,1.4vh,18px)}
+h1{font-size:clamp(34px,4.2vw,78px);line-height:.95;letter-spacing:.045em;text-transform:uppercase;margin:0;font-weight:850}
+.podtitul{font-size:clamp(16px,1.55vw,29px);color:var(--tlumene);text-transform:uppercase;letter-spacing:.16em;text-align:right;font-weight:650}
+.sloupce{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(44px,5.5vw,110px);padding-top:clamp(14px,2vh,28px);align-content:start}
+.sloupec{min-width:0;display:flex;flex-direction:column;gap:calc(clamp(12px,1.6vh,23px) * var(--meritko))}
+.kategorie{break-inside:avoid}
+.kategorie h2{font-size:calc(clamp(21px,2vw,36px) * var(--meritko));line-height:1;margin:0 0 calc(.38em * var(--meritko));text-transform:uppercase;letter-spacing:.1em;font-weight:850;color:var(--kat)}
+.polozka{display:grid;grid-template-columns:minmax(0,auto) 1fr auto;align-items:baseline;gap:.55em;min-height:calc(clamp(29px,3.25vh,47px) * var(--meritko));font-size:calc(clamp(19px,1.65vw,32px) * var(--meritko));line-height:1.12}
+.nazev{font-weight:670;min-width:0}
+.tecky{border-bottom:2px dotted var(--linka);transform:translateY(-.18em);min-width:16px}
+.cena{font-weight:850;white-space:nowrap;font-variant-numeric:tabular-nums}
+.popis{grid-column:1/-1;color:var(--tlumene);font-size:.62em;line-height:1.1;margin-top:-.42em;padding-bottom:.25em}
+.automaticky-bez-popisu .popis{display:none}
+.vyprodano .nazev,.vyprodano .cena{color:#777;text-decoration:line-through;text-decoration-thickness:2px}
+.stav{color:#ff7e79;text-transform:uppercase;font-size:.54em;letter-spacing:.1em;text-decoration:none;margin-left:.55em;white-space:nowrap}
+.pata{display:flex;justify-content:space-between;gap:24px;color:#71716d;font-size:clamp(11px,.8vw,15px);letter-spacing:.08em;text-transform:uppercase;padding-top:8px}
+.prazdne{grid-column:1/-1;text-align:center;color:var(--tlumene);font-size:clamp(24px,3vw,52px);padding-top:15vh}
+.k0{--kat:var(--k0)}.k1{--kat:var(--k1)}.k2{--kat:var(--k2)}.k3{--kat:var(--k3)}.k4{--kat:var(--k4)}.k5{--kat:var(--k5)}
+body.kompaktni{--zakladni-meritko:.82}.kompaktni .stranka{padding-top:14px;padding-bottom:8px}.kompaktni .sloupec{gap:8px}.kompaktni .popis{display:none}
+body.velke_ceny .cena{font-size:1.28em}.velke_ceny .popis{display:none}.velke_ceny .polozka{min-height:calc(clamp(32px,3.65vh,52px) * var(--meritko))}
+body.tisk{--pozadi:#fff;--text:#111;--tlumene:#555;--linka:#aaa;background:#fff;color:#111}.tisk .hlava{border-color:#111}.tisk .pata{color:#555}
+@media(max-width:800px){body{overflow:auto}.stranka{height:auto;min-height:100dvh}.hlava{align-items:start;flex-direction:column}.podtitul{text-align:left}.sloupce{grid-template-columns:1fr;gap:20px}.pata{display:none}}
+@media(max-height:850px) and (min-width:801px){.popis{display:none}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}

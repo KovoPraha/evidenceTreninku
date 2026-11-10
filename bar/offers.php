@@ -47,7 +47,7 @@ barCheckoutPageStart($pdo, 'Nabídky a obrazovka baru');
 <p>Zveřejněná nabídka určuje výběr produktů na obrazovce i v pokladně. Ceny a popisy přebírá z aktuálního katalogu. Vlastní spotřeba
 má samostatná pravidla.</p>
 <p><a href="<?= barH(appUiUrl('bar/menu.php')) ?>" target="_blank" rel="noopener">Veřejná obrazovka</a> · <a href="<?= barH(appUiUrl('bar/menu-pdf.php'))
-?>">Tiskový lístek PDF</a> · <a href="?">Nová nabídka</a></p>
+?>">Tiskový lístek PDF</a> · <a href="menu.php?view=text">Textová obrazovka</a> · <a href="menu.php?view=photos">Obrazová prezentace</a> · <a href="?">Nová nabídka</a></p>
 <p><?= $active ? 'Zveřejněno: ' . barH($active['title']) . ' (vydání ' . (int)$active['publication_id'] . ')' : 'Zatím není zveřejněná nabídka. Pokladna používá celý prodejní katalog.'
 ?></p>
 <?php if ($error !== ''): ?><p class="alert alert-danger"><?= barH($error) ?></p><?php endif; ?>

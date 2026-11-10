@@ -39,3 +39,5 @@ nikoli dodatečné PASS; [ASSET4 důkazy](verification/catalog-audit-assets-2026
 Žádný další nový implementační řez není v tomto zadání rozpracovaný.
 
 Souběžné doklady #441/d0f5fee7 převzaté se zachováním TESTER/COACH intro a všech věcných záznamů; finální11CI #442 se ověřuje znovu, bez dalšího deploye.
+
+#440/9ef52268 již v main; strict ochrana odmítla starší docs základ. #442 přebírá main bez konfliktu, opakuje11CI. Naše produkční důkazy patří8182489e; BAR kvůli dokladům nenasazovat.
