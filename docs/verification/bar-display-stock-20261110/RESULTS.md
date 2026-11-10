@@ -20,6 +20,10 @@
 
 ## Dosud neprovedené
 
+První úplný Linux běh odhalil dvě integrační opomenutí: nonce u externích skriptů a registraci obou záměrně izolovaných TV šablon v inventuře UI. Opraveno bez oslabení CSP. Kompresní regresní profil nadále porovnává totožné vstupní bajty před/po gzip a HTTP/cache/browser kontrakty, ale používá aktuální commit; historický snímek lze reprodukovat přes `JS_COMPRESSION_SOURCE_REF`. Původní globální zákaz všech změn aplikace proti historickému commitu nebyl regresním kontraktem dalších vydání.
+
+Úplná produkční záloha a izolovaná skutečná obnova [42851495227](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42851495227) SUCCESS: 389 tabulek a 4595 souborů. Žádný aplikační nebo skladový zápis tím nebyl proveden.
+
 Sloučení a nasazení této změny, skutečné čtení/změna skladových zásob a nové přepnutí starých TV URL jsou zatím NOT RUN. Níže budou připojené skutečné běhy a výsledky; testovací úspěch není doklad produkčního převodu.
 
 Předání implementace: [PR #440](https://github.com/KovoPraha/evidenceTreninku/pull/440). Souběžná změna #438 je zachovaná; její vydání má samostatné schválení podle svého protokolu. Žádné prod zásoby zatím nebyly měněné.

@@ -31,7 +31,7 @@ declare(strict_types=1);
 </main>
 <?php if ($produkty): ?>
 <script id="bar-screen-products" type="application/json" nonce="<?= barH(app_csp_nonce()) ?>"><?= $json ?></script>
-<script src="../assets/bar-photos.js?v=20261110" defer></script>
+<script src="../assets/bar-photos.js?v=20261110" nonce="<?= barH(app_csp_nonce()) ?>" defer></script>
 <?php endif; ?>
 </body>
 </html>

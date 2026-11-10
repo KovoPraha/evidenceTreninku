@@ -54,6 +54,6 @@ declare(strict_types=1);
 
     <footer class="pata"><span>Ceny včetně DPH</span><span id="hodiny"></span></footer>
 </main>
-<script src="../assets/bar-screen.js?v=20261110" defer></script>
+<script src="../assets/bar-screen.js?v=20261110" nonce="<?= barH(app_csp_nonce()) ?>" defer></script>
 </body>
 </html>
