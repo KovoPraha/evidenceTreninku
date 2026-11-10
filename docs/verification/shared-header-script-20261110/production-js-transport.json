@@ -1,0 +1,28 @@
+{
+  "method": "Anonymous HTTPS GET with Accept-Encoding:gzip; no cookies/redirects; public code equals canonical main. Raw body stays outside Git.",
+  "baseline": "6dee3253b483522396cd9c7349dabac576e702b6",
+  "observations": [
+    {
+      "path": "assets/vendor/bootstrap/bootstrap.bundle.min.js",
+      "status": 200,
+      "content_encoding": "identity",
+      "cache_control": "max-age=30",
+      "content_type": "text/javascript",
+      "encoded_bytes": 80721,
+      "decoded_bytes": 80721,
+      "decoded_sha256": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+      "offline_gzip6_bytes": 23983
+    },
+    {
+      "path": "assets/app-ui.js",
+      "status": 200,
+      "content_encoding": "identity",
+      "cache_control": "max-age=30",
+      "content_type": "text/javascript",
+      "encoded_bytes": 8561,
+      "decoded_bytes": 8561,
+      "decoded_sha256": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3",
+      "offline_gzip6_bytes": 2826
+    }
+  ]
+}
