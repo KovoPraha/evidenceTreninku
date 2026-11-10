@@ -1,0 +1,41 @@
+from pathlib import Path
+import json,subprocess,hashlib,re,sys,datetime
+root=Path(__file__).resolve().parents[1];phase=sys.argv[1];assert phase in ['before','after']
+private=root/f'output/family-live-{phase}-private';private.mkdir(exist_ok=True)
+paths=['/booking/moje_osoby.php','/booking/moje_objednavky.php','/booking/moje_programy.php','/booking/moje_rezervace.php','/booking/prihlaseni.php']
+rows=[];urls=[]
+for index,path in enumerate(paths):
+    body=private/f'{index}.html';headers=private/f'{index}.headers'
+    p=subprocess.run(['C:/Windows/System32/curl.exe','--silent','--show-error','--compressed','--connect-timeout','15','--max-time','50','-D',str(headers),'-o',str(body),'-w','%{http_code}','https://kis.kovopraha.cz'+path],check=True,capture_output=True)
+    status=int(p.stdout);expected=302 if index<4 else 200;assert status==expected,(path,status)
+    h={}
+    for line in headers.read_text(encoding='utf-8').splitlines():
+        if ':' in line:
+            key,val=line.split(':',1)
+            if key.lower() in ['location','cache-control','referrer-policy','content-security-policy','content-type']:h[key.lower()]=val.strip()
+    html=body.read_text(encoding='utf-8').replace('\r\n','\n')
+    nonce=re.search("nonce-([^']+)",h.get('content-security-policy',''))
+    if nonce:
+        html=html.replace(nonce[1],'REQUEST_NONCE');h['content-security-policy']=h['content-security-policy'].replace(nonce[1],'REQUEST_NONCE')
+    html=re.sub(r'(name="csrf_token"\s+value=")[a-f0-9]{64}(\")',r'\1REQUEST_CSRF\2',html)
+    css=html.count('bootstrap.min.css')
+    if index<4:assert h['location'].startswith('prihlaseni.php')
+    else:
+        assert css==1
+        urls=list(dict.fromkeys(re.findall(r'(?:href|src)="([^"]*/assets/[^\"]+\?v=[a-f0-9]{64})"',html)))
+        urls=[('https://kis.kovopraha.cz'+u if u.startswith('/') else u) for u in urls]
+        assert len(urls)==5
+    rows.append(dict(path=path,status=status,headers=h,normalized_whole_body_sha256=hashlib.sha256(html.encode()).hexdigest(),bootstrap_css_count=css))
+assets=[]
+for index,url in enumerate(urls):
+    payload=subprocess.check_output(['C:/Windows/System32/curl.exe','--silent','--show-error','--fail','--compressed','--max-time','50',url])
+    relative=url.split('kis.kovopraha.cz/',1)[1].split('?',1)[0]
+    canonical=subprocess.check_output(['git','show','4d1e9941:'+relative],cwd=root)
+    assert payload==canonical
+    assets.append(dict(url=url,path=relative,decoded_bytes=len(payload),sha256=hashlib.sha256(payload).hexdigest()))
+result=dict(complete=True,captured_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),phase=phase,read_only_anonymous_get=True,authenticated_production_uat='NOT RUN',rows=rows,canonical_static_payloads=assets,method='TLS verified, no redirects followed, no POST; exact normalized body and headers. Only CSP nonce and 64hex CSRF normalized. Anonymous redirects do not execute private templates and do not prove their live visual parity.')
+(root/f'output/family-live-{phase}.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+if phase=='after':
+    before=json.loads((root/'output/family-live-before.json').read_text(encoding='utf-8'))
+    assert before['rows']==rows and before['canonical_static_payloads']==assets
+print(json.dumps(dict(complete=True,phase=phase,anonymous_status_pairs=5,canonical_payloads=5,authenticated_production_uat='NOT RUN')))

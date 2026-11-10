@@ -1,0 +1,12 @@
+{
+  "checked_utc": "2026-11-10T21:16:02.808377+00:00",
+  "browser": "User Chrome profile via CUA",
+  "requested_path": "/booking/moje_osoby.php",
+  "observed_path": "/booking/prihlaseni.php?redirect=moje_osoby.php",
+  "observed_title": "Přihlášení — Rezervace Kovopraha",
+  "authenticated_session_available": false,
+  "credentials_entered": false,
+  "forms_submitted": false,
+  "roles_changed": false,
+  "authenticated_production_uat": "NOT RUN"
+}

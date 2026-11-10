@@ -616,7 +616,7 @@ Další produkční krok není potřeba, kvůli dokladům neopakovat deploy.
 
 ## P11-ASSET7 — stránky rodinného účtu, 10. 11. 2026
 
-ROZPRACOVÁNO. Vlastník Vývoj/Codex, zadavatel Marek. Přímé nové zadání:
+**NASAZENO / technická přejímka PASS; přihlášené produkční UAT NOT RUN.** Výchozí plán/checkpointy níže historické. Vlastník Vývoj/Codex, zadavatel Marek. Přímé nové zadání:
 nejpřínosnější další optimalizace podle analýzy; shoda výsledků a měření před/po,
 při všech PASS commit/merge/deploy, zachování WIP a průběžný plán/handoff v repu.
 Base4d1e99412d83c7bb70da77694f32e31b93ff8284; poslední ověřený runtimec9e5501a,
@@ -717,3 +717,36 @@ stále PASS. Nová lokální unit sada824testů/28734assertions,3platformní ski
 bez selhání, style/diff PASS. Native42901718648 na předchozím f111d30e:
 10.3celáHTTP/350checksumů/CSRF/revokace PASS,11.4Chrome ještě běží; kvůli
 novému finálnímu SHA se aktuální CI/native2DB/browser zopakují celé.
+
+
+### ASSET7 — přijatý head a nasazování
+
+B65137a0 má13aktuálníchCI SUCCESS, native42903018197/oběDB a skutečnýChrome
+680měřených+160warmup/40funkčních/10pixelpárů PASS. [Plné exporty](verification/family-assets-20261110/RESULTS.md).
+PR #447 →c29642f1, celý tested/merged tree shodný. Deploy42905781826 spuštěný
+jednou na stejnémSHA, UAT/importfalse; zatím běží, receipt/after NOT RUN.
+Přihlášená uživatelská Chrome relace nedostupná (login), živé UAT NOT RUN.
+WIP7a7afd75 a ostatní worktrees zachované; doklady codex/family-assets-release-docs-20261110.
+
+
+### ASSET7 — finální výsledek a předání
+
+Přesně čtyři rodinné CSS duplicity odstraněné, žádná změna SQL/writerů/ochran.
+Source/literal kontrakt PASS,4pinované PSR12 závorky, původní wiringtest a guard
+beze změny. Native42903018197/b65137a0 oběDB PASS:17celýchHTTP scénářů,
+350checksumů/DB, CSRF/revokace/cleanup. Chrome680měřených+160warmup navigací,
+40funkčních záznamů/10přesnýchpixelpárů PASS. Cold CSS[64454]→31248 B,
+decoded465606→232803 B, warm network0→0 B; FCP8–24ms zisk
+v targetkombinacích, mediány nejsou produkční SLA. Control CSS/payload beze změny; jeho FCPdesktop72→68/mobile68→68ms, tedy časový šum zahrnutý v měření.
+PR #447/c29642f1,13CI a tree1acec2cf shoda. [Deploy42905781826](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42905781826) SUCCESS nac29642f1,
+2455testů/56279assertions, backup389tabulek/2triggerů,
+config/migrace/VS/index/HTTP200/cleanup PASS. Přímý runnerHTTP0,
+předepsaný serverový curl fallback200; UAT/importfalse a import přeskočený.
+
+Pět živých anonymních status/Location/HTML/header párů a5canonical assetpayloadů
+shodných. Uživatelský Chrome na loginu, přihlášené produkční UAT/privátní live
+waterfall/fyzický telefon/obnova nové zálohy NOT RUN. [Výsledky a meze](verification/family-assets-20261110/RESULTS.md).
+Historické ASSET4/6 LIMIT, EVENTREAD/HJS2/RIX WIP i původní7a7afd75 zachované.
+Doklady [PR #448](https://github.com/KovoPraha/evidenceTreninku/pull/448):
+jeho sloučením v main, **neopakovat deploy**. Žádný další implementační řez
+není v tomto přesně čtyřstránkovém zadání rozpracovaný; runtime/flags vlastní CURRENT.

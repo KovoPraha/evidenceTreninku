@@ -1,0 +1,172 @@
+{
+  "main-people": {
+    "before": {
+      "total_ms": 2.219,
+      "ttfb_ms": 2.176
+    },
+    "after": {
+      "total_ms": 2.331,
+      "ttfb_ms": 2.299
+    }
+  },
+  "main-orders": {
+    "before": {
+      "total_ms": 9.01,
+      "ttfb_ms": 8.953
+    },
+    "after": {
+      "total_ms": 9.039,
+      "ttfb_ms": 8.984
+    }
+  },
+  "main-programs": {
+    "before": {
+      "total_ms": 6.7,
+      "ttfb_ms": 6.662999999999999
+    },
+    "after": {
+      "total_ms": 6.6930000000000005,
+      "ttfb_ms": 6.66
+    }
+  },
+  "main-reservations": {
+    "before": {
+      "total_ms": 1.7409999999999999,
+      "ttfb_ms": 1.714
+    },
+    "after": {
+      "total_ms": 1.7630000000000001,
+      "ttfb_ms": 1.729
+    }
+  },
+  "empty-people": {
+    "before": {
+      "total_ms": 1.926,
+      "ttfb_ms": 1.8920000000000001
+    },
+    "after": {
+      "total_ms": 1.95,
+      "ttfb_ms": 1.9120000000000001
+    }
+  },
+  "empty-orders": {
+    "before": {
+      "total_ms": 8.685,
+      "ttfb_ms": 8.66
+    },
+    "after": {
+      "total_ms": 8.855,
+      "ttfb_ms": 8.815
+    }
+  },
+  "empty-programs": {
+    "before": {
+      "total_ms": 6.808,
+      "ttfb_ms": 6.772
+    },
+    "after": {
+      "total_ms": 6.742999999999999,
+      "ttfb_ms": 6.7219999999999995
+    }
+  },
+  "empty-reservations": {
+    "before": {
+      "total_ms": 1.742,
+      "ttfb_ms": 1.699
+    },
+    "after": {
+      "total_ms": 1.714,
+      "ttfb_ms": 1.6800000000000002
+    }
+  },
+  "unverified-people": {
+    "before": {
+      "total_ms": 0.651,
+      "ttfb_ms": 0.592
+    },
+    "after": {
+      "total_ms": 0.64,
+      "ttfb_ms": 0.592
+    }
+  },
+  "unverified-orders": {
+    "before": {
+      "total_ms": 0.608,
+      "ttfb_ms": 0.5599999999999999
+    },
+    "after": {
+      "total_ms": 0.5950000000000001,
+      "ttfb_ms": 0.5569999999999999
+    }
+  },
+  "unverified-programs": {
+    "before": {
+      "total_ms": 0.6040000000000001,
+      "ttfb_ms": 0.565
+    },
+    "after": {
+      "total_ms": 0.6040000000000001,
+      "ttfb_ms": 0.5569999999999999
+    }
+  },
+  "unverified-reservations": {
+    "before": {
+      "total_ms": 0.594,
+      "ttfb_ms": 0.5519999999999999
+    },
+    "after": {
+      "total_ms": 0.599,
+      "ttfb_ms": 0.5630000000000001
+    }
+  },
+  "anonymous-people": {
+    "before": {
+      "total_ms": 0.592,
+      "ttfb_ms": 0.549
+    },
+    "after": {
+      "total_ms": 0.607,
+      "ttfb_ms": 0.5630000000000001
+    }
+  },
+  "anonymous-orders": {
+    "before": {
+      "total_ms": 0.593,
+      "ttfb_ms": 0.5609999999999999
+    },
+    "after": {
+      "total_ms": 0.599,
+      "ttfb_ms": 0.5640000000000001
+    }
+  },
+  "anonymous-programs": {
+    "before": {
+      "total_ms": 0.584,
+      "ttfb_ms": 0.5479999999999999
+    },
+    "after": {
+      "total_ms": 0.609,
+      "ttfb_ms": 0.5640000000000001
+    }
+  },
+  "anonymous-reservations": {
+    "before": {
+      "total_ms": 0.584,
+      "ttfb_ms": 0.541
+    },
+    "after": {
+      "total_ms": 0.602,
+      "ttfb_ms": 0.549
+    }
+  },
+  "control": {
+    "before": {
+      "total_ms": 17.541,
+      "ttfb_ms": 17.508
+    },
+    "after": {
+      "total_ms": 17.770999999999997,
+      "ttfb_ms": 17.715
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "complete": true,
+  "baseline_sha": "4d1e99412d83c7bb70da77694f32e31b93ff8284",
+  "optimized_sha": "b65137a06de5b4caafa6e066938b13f83495cd2b",
+  "source_sha256": {
+    "booking/moje_osoby.php": "07d698c91bd3e2cdba0c57cc03d1ce348af944862eaf0ab01a525bc43aaf4a89",
+    "booking/moje_objednavky.php": "f982cf91c783d9ff0a29ebba007113a2f596a9a5f676fecda8cfaf74ab043f16",
+    "booking/moje_programy.php": "44f2dffcf948c693b1e1f9a6a32f592bc3f0b4539e5fe034a723e570d8dca9ef",
+    "booking/moje_rezervace.php": "f550c4c820de415232c95f6cc4921e78f22432443dd8b649e52ff6e5b75f5ae6",
+    "db.php": "bae8ae992697fce593292f06a27db353f4735764d5c4afbebfe1fefcb419ff9e",
+    "includes/ui_shell.php": "b721636ae3465c990c79e51080569f34df1846040055d220a7eafb31d76d4a64",
+    "assets/.htaccess": "0eafb0a3bdc0f9d958094e4ccd86a4b20ab2ec1078aed39e4e8935f0f845aae0",
+    "assets/vendor/bootstrap/bootstrap.min.css": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    "assets/vendor/bootstrap/bootstrap.bundle.min.js": "0833b2e9c3a26c258476c46266e6877fc75218625162e0460be9a3a098a61c6c",
+    "assets/app-ui.css": "cc60cf39ba652a7214e6ec54232aff66ad73faf49fdc8c2ae4053fee54ee0769",
+    "assets/app-ui.js": "189e4338724ef9f014b1c5a2eedcbfbab0be1fa927287b83ef03e37ffdbb69c3"
+  }
+}

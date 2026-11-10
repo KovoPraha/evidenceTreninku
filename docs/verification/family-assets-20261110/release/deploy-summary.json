@@ -1,0 +1,252 @@
+{
+  "conclusion": "success",
+  "databaseId": 42905781826,
+  "headSha": "c29642f137aaa963d805fddd14cd01826542fb38",
+  "jobs": [
+    {
+      "completedAt": "2026-11-10T21:35:42Z",
+      "conclusion": "success",
+      "databaseId": 130143274886,
+      "name": "Nasazení KIS (kis.kovopraha.cz)",
+      "startedAt": "2026-11-10T21:31:02Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-10T21:31:04Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-10T21:31:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:31:04Z",
+          "conclusion": "success",
+          "name": "Ověřit ruční potvrzení",
+          "number": 2,
+          "startedAt": "2026-11-10T21:31:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:31:04Z",
+          "conclusion": "success",
+          "name": "Ověřit konfigurační Variables",
+          "number": 3,
+          "startedAt": "2026-11-10T21:31:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:31:06Z",
+          "conclusion": "success",
+          "name": "Stáhnout kód z main",
+          "number": 4,
+          "startedAt": "2026-11-10T21:31:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:31:08Z",
+          "conclusion": "success",
+          "name": "Připravit PHP",
+          "number": 5,
+          "startedAt": "2026-11-10T21:31:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:32:04Z",
+          "conclusion": "success",
+          "name": "Kontrola PHP syntaxe",
+          "number": 6,
+          "startedAt": "2026-11-10T21:31:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:32:51Z",
+          "conclusion": "success",
+          "name": "Nainstalovat závislosti a spustit testy",
+          "number": 7,
+          "startedAt": "2026-11-10T21:32:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:32:51Z",
+          "conclusion": "success",
+          "name": "Připravit ověřené SSH spojení",
+          "number": 8,
+          "startedAt": "2026-11-10T21:32:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:32:59Z",
+          "conclusion": "success",
+          "name": "Předletová kontrola serveru bez změny aplikace",
+          "number": 9,
+          "startedAt": "2026-11-10T21:32:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:33:08Z",
+          "conclusion": "success",
+          "name": "Přečíst indexy zdravotního čtení před migrací",
+          "number": 10,
+          "startedAt": "2026-11-10T21:32:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:33:12Z",
+          "conclusion": "success",
+          "name": "Nahrát zálohovací nástroj mimo aplikaci",
+          "number": 11,
+          "startedAt": "2026-11-10T21:33:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:33:18Z",
+          "conclusion": "success",
+          "name": "Vytvořit a ověřit produkční zálohu",
+          "number": 12,
+          "startedAt": "2026-11-10T21:33:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:33:26Z",
+          "conclusion": "success",
+          "name": "Připravit soukromý klíč archivu KIS a jeho zálohu",
+          "number": 13,
+          "startedAt": "2026-11-10T21:33:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:33:34Z",
+          "conclusion": "success",
+          "name": "Připravit soukromé úložiště dokumentů",
+          "number": 14,
+          "startedAt": "2026-11-10T21:33:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:33:45Z",
+          "conclusion": "success",
+          "name": "Připravit kompletní release mimo webroot",
+          "number": 15,
+          "startedAt": "2026-11-10T21:33:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:33:49Z",
+          "conclusion": "success",
+          "name": "Zachytit otisky dosavadních variabilních symbolů",
+          "number": 16,
+          "startedAt": "2026-11-10T21:33:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:33:59Z",
+          "conclusion": "success",
+          "name": "Aplikovat migrace z připraveného release",
+          "number": 17,
+          "startedAt": "2026-11-10T21:33:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:34:06Z",
+          "conclusion": "success",
+          "name": "Ověřit zachování dosavadních variabilních symbolů",
+          "number": 18,
+          "startedAt": "2026-11-10T21:33:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:34:10Z",
+          "conclusion": "success",
+          "name": "Ověřit index zdravotního čtení před aktivací",
+          "number": 19,
+          "startedAt": "2026-11-10T21:34:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:34:11Z",
+          "conclusion": "success",
+          "name": "Uchovat neosobní indexové důkazy nasazení",
+          "number": 20,
+          "startedAt": "2026-11-10T21:34:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:34:13Z",
+          "conclusion": "success",
+          "name": "Aktivovat ověřený release",
+          "number": 21,
+          "startedAt": "2026-11-10T21:34:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:34:13Z",
+          "conclusion": "skipped",
+          "name": "Založit produkty kroužků 2026/27 v KIS",
+          "number": 22,
+          "startedAt": "2026-11-10T21:34:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:34:22Z",
+          "conclusion": "success",
+          "name": "Odstranit jen vyjmenované osiřelé soubory a přesunout soukromé přílohy",
+          "number": 23,
+          "startedAt": "2026-11-10T21:34:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:34:44Z",
+          "conclusion": "success",
+          "name": "Ověřit zákaz HTTP přístupu ke klíči archivu",
+          "number": 24,
+          "startedAt": "2026-11-10T21:34:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:35:38Z",
+          "conclusion": "success",
+          "name": "HTTP smoke test bez tajného tokenu",
+          "number": 25,
+          "startedAt": "2026-11-10T21:34:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:35:39Z",
+          "conclusion": "success",
+          "name": "Odstranit kopii produkční konfigurace z release",
+          "number": 26,
+          "startedAt": "2026-11-10T21:35:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:35:41Z",
+          "conclusion": "success",
+          "name": "Odstranit vlastní indexové diagnostické soubory",
+          "number": 27,
+          "startedAt": "2026-11-10T21:35:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:35:41Z",
+          "conclusion": "success",
+          "name": "Post Stáhnout kód z main",
+          "number": 54,
+          "startedAt": "2026-11-10T21:35:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-10T21:35:41Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 55,
+          "startedAt": "2026-11-10T21:35:41Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42905781826/job/130143274886"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/42905781826"
+}
