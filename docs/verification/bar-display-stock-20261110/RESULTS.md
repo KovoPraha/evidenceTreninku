@@ -20,6 +20,8 @@
 
 ## Dosud neprovedené
 
+Checkpoint 17:17 UTC: všech 12 kontrol finálního headu `7acf051d` PASS, 2451 testů / 56206 assertions; #440 sloučeno jako `9ef52268e1f5a8925cb62af6ab6b59ba27f75ac6`. Chráněný [deploy 42863352343](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42863352343) právě běží, oba flagy false. Nová [úplná obnova 42860986643](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42860986643) SUCCESS: 389 tabulek / 4597 souborů, [přesný bod obnovy](recovery-42860986643.json). Skutečný skladový převod stále NOT RUN.
+
 První úplný Linux běh odhalil dvě integrační opomenutí: nonce u externích skriptů a registraci obou záměrně izolovaných TV šablon v inventuře UI. Opraveno bez oslabení CSP. Kompresní regresní profil nadále porovnává totožné vstupní bajty před/po gzip a HTTP/cache/browser kontrakty, ale používá aktuální commit; historický snímek lze reprodukovat přes `JS_COMPRESSION_SOURCE_REF`. Původní globální zákaz všech změn aplikace proti historickému commitu nebyl regresním kontraktem dalších vydání.
 
 Úplná produkční záloha a izolovaná skutečná obnova [42851495227](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42851495227) SUCCESS: 389 tabulek a 4595 souborů. Žádný aplikační nebo skladový zápis tím nebyl proveden.
