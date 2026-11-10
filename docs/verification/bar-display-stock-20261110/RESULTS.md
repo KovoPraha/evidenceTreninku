@@ -1,53 +1,45 @@
-# BAR-DISPLAY-STOCK — průběžný protokol 10. 11. 2026
+# BAR-DISPLAY-STOCK — provozní výsledek 10. 11. 2026
 
-[Rozsah, akceptace a rozhodnutí vlastníka](../../BAR_DISPLAY_STOCK_PARITY_2026-11-10.md).
+**Technická oprava, nasazení, převod zásob a přepnutí původních TV URL dokončené. Vizuální a lidská provozní přejímka zůstávají otevřené.** [Plán](../../BAR_DISPLAY_STOCK_PARITY_2026-11-10.md), [aktuální provozní stav](../../CURRENT_STATE.md), [další kroky BAR](../../SESSION_HANDOFF_BAR_2026-11-06.md).
 
-## Implementace
+## Obrazovky a vydání
 
-- Převzaté původní TV šablony `public/obrazovka.php` a `public/obrazovka2.php`, oddělený textový dvousloupcový ceník a střídající tři fotografické karty. Přizpůsobení výšce, původní barvy, typografie, velikosti, přechody a mobilní chování zachované. Připojená pouze data KIS a jeho bezpečné obrázky.
-- [Bajtová shoda původních CSS](original-css-parity.json), ceny nadále z celých haléřů, escapované HTML a bezpečný JSON. Tiskový PDF tok je oddělený.
-- Samostatný převod obou skladů podle `source_id`: konkrétní soukromý snímek, uzamčený zdroj, transakce cíle, audit obou skladů, ochrana proti nové zásobě/historii/rezervacím a opakování bez přičtení. Původní katalogový import se neopakuje. Převod zároveň přebírá pouze pět veřejných voleb vzhledu původní obrazovky, nikoli platební konfiguraci.
-- Chráněné `bar-stock-production.yml`: inspect → čerstvá úplná záloha a skutečná obnova → apply konkrétního otisku → nezávislý status. Nejistý zápis se automaticky neopakuje. Souhrny neobsahují hesla ani dumpy.
-- Původní dvě TV URL získávají odlišné pevné cíle `?view=text` / `?view=photos`. Následné přepnutí URL může použít aktuální status zásob místo již neplatného požadavku nulové provozní historie; úplná souborová záloha a její obnova zdroje zůstávají povinné.
+- [PR #440](https://github.com/KovoPraha/evidenceTreninku/pull/440): 12 kontrol PASS na `7acf051d`, 2451 testů / 56206 assertions. Sloučen jako `9ef52268e1f5a8925cb62af6ab6b59ba27f75ac6`; [deploy 42863352343](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42863352343) SUCCESS, oba UAT/import flagy false. Zachované souběžné schválené změny kalendářů, testerky a trenérských soupisek.
+- Původní dvousloupcový textový ceník a tři střídající fotografické karty, původní velikosti/barvy/přechody, přizpůsobení výšce a responzivní chování těchto TV šablon. [Bajtová shoda obou původních CSS](original-css-parity.json). Foto skript zachovává desetisekundové střídání, 720 ms přechod a neopakování předchozí trojice. Tiskový PDF tok zůstává oddělený.
+- [PR #443](https://github.com/KovoPraha/evidenceTreninku/pull/443): 11 kontrol PASS na `e9b5f194`, 2453 testů / 56219 assertions; sloučen jako `58848900`. Přesná signed počáteční zásoba a bezpečné fázové souhrny. Prověřený pomocník byl spuštěn chráněným workflow mimo webroot; kvůli tomuto kroku se web znovu nenasazoval.
+- [Konečná živá kontrola](http-final.json) a [opakovatelný čtecí postup](check-live.py): 2 stránky, přesné 4 soubory CSS/JS proti Git blobům vydání, 45 produktů / 45 fotografií, neplatný pohled odmítnut 400 a 2 původní TV odkazy PASS. [První kontrola po deployi](http-deployed.json) je zachovaná. Výslednou CSP spravuje společný výstupní filtr KIS: nonce/strict-dynamic a zakázané inline handlery ověřené.
 
-## Dosavadní ověření
+Veřejné vstupy: [textová obrazovka](https://kis.kovopraha.cz/bar/menu.php?view=text), [fotografická obrazovka](https://kis.kovopraha.cz/bar/menu.php?view=photos). Oba přímé původní odkazy `public/obrazovka.php` a `public/obrazovka2.php` mají odpovídající odlišné cíle.
 
-- 28 cílených PHP testů / 538 assertions PASS, včetně bezpečného vykreslení, tiskové větve, starých URL a transakčního převodu/replay/konfliktu/rolí.
-- Node test původního chování PASS: právě tři různé karty, výměna po 10 sekundách a 720 ms přechod, bez okamžitého opakování předchozích tří.
-- Dokumentační kontrakt, katalog plánu a nezměněné archivní bloky PASS.
-- Přímý PHPStan celého projektu po obejití pouze časového limitu Composeru PASS (bez chyb). Lokální plný Composer test a první PHPStan běh narazily na časový limit 300 s; úplná testovací sada zůstává na Linux CI. Časový limit není vykázán jako PASS.
-- Syntetické HTML obou obrazovek s 45 produkty vzniklo bez DB a bez produkčních zápisů. Vizuální Computer Use se opakovaně nepodařilo inicializovat, včetně Chrome; živá vizuální přejímka zatím NOT RUN.
+## Skutečný převod zásob
 
-## Dosud neprovedené
+| Krok | Výsledek a důkaz |
+| --- | --- |
+| Nový čtecí snímek [42868726163](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42868726163) | [PASS](stock-inspect-42868726163.json): 68 jednoznačných source_id, cílové počty nula, zdroj stánku 1073 / předskladu 0, 5 záporných zůstatků stánku. |
+| Zápis [42868993077](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42868993077) | [PASS](stock-apply-42868993077.json): committed=true, první provedení, 136 auditovaných počátečních operací, 68 produktů a oba sklady v jedné transakci, rozdíly 0. |
+| Nezávislé čtení [42869293812](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42869293812) | [PASS](stock-status-42869293812.json): všech 68 produktů v obou místech přesně odpovídá zdroji, rozdíly 0. Čtecí status sám nic nezapisuje. |
 
-Nasazení [42863352343](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42863352343) SUCCESS na `9ef52268`. Živá [kontrola](http-deployed.json) a [spustitelný čtecí postup](check-live.py): obě struktury, přesné 4 soubory aktiva proti Git blobu vydání, 45 produktů / 45 fotografií a odmítnutí neplatného pohledu 400 PASS. Výslednou nonce/CSP hlavičku spravuje společný KIS výstupní filtr; skripty používají nonce / strict-dynamic a zakázané inline handlery. První verze ověřovače nesprávně očekávala doslovnou lokální CSP; opravena podle skutečného společného kontraktu, žádné oslabení aplikace.
+Pět záporných hodnot bylo zachovaných přesně; nevzniklo vynulování ani zaokrouhlení. Běžné prodejní/skladové ochrany zůstaly. Převod zároveň převzal pouze povolená veřejná nastavení původní obrazovky. Ceny, katalog, fotografie, účty, role, dosavadní KIS prodeje/kasa a platební konfigurace se znovu neimportovaly. Zdrojová DB zůstala beze změny.
 
-Pouze čtecí [stock inspect 42864249836](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42864249836) FAIL: [výsledek](stock-inspect-42864249836.json), `InvalidArgumentException`, `committed=false`. Konkrétní příčina zatím není dokázaná; původní i cílové sloupce jsou signed INT. Návazná diagnostika a zachování případného záporného počátečního zůstatku jsou v témže [plánu](../../BAR_DISPLAY_STOCK_PARITY_2026-11-10.md#navazující-preflight-zásob). Žádná zásoba nebyla přepsaná, staré URL ještě nejsou rozlišené.
+Konkrétní snímek je uchovaný soukromě v `data/.kis-backups/bar-stock-42868726163/snapshot.json`; jeho SHA-256 je v čtecím výsledku. Bezpečné výsledky v tomto adresáři prošly místní kontrolou shody počtů, otisků obnovy, navazujících běhů a obou TV cílů.
 
-Doplněk preflight: bezpečné názvy fází a souhrny platnosti/počtů/záporných zůstatků bez konfigurace nebo textu výjimek. Při neplatných polích se neuvádějí neúplné součty jako skutečný stav. Přesné signed počáteční zůstatky mají audit obou skladů, normální prodejní a skladové ochrany zůstávají. Místních 12 testů / 34 assertions PASS (body obnovy, signed kopie a odmítnutí zlomků/null/nadlimitních hodnot), styl a dokumentační kontrakt PASS. Nový skutečný inspect zatím NOT RUN.
+**Další skladové operace patří pouze do KIS. Původní BAR se znovu nesynchronizuje a počáteční převod se neopakuje novým snímkem.** Shoda se zdrojem je důkaz okamžiku převodu; následný skutečný prodej smí počty v KIS změnit. Fyzická inventura a potvrzení pěti záporných stavů jsou otevřené.
 
-Přímý místní PHPStan celé aplikace po doplňku PASS bez chyb. [PR #443](https://github.com/KovoPraha/evidenceTreninku/pull/443), ověřovaný head `49f70695`; další provozní důkazy se doplňují odděleně ve větvi `codex/bar-display-stock-release-20261110`, aby nezneplatňovaly právě běžící aplikační CI.
+## Body obnovy a staré adresy
 
-Po sloučení čistě dokumentačního #442 / `966f7013` převzal #443 aktuální main přes update-branch bez konfliktu; finální ověřovaný head je `e9b5f1943dd317edfb7de9124d142f0a6d6188fa`. PHPStan, styl, dokumentace a bezpečnostní analýzy nového headu PASS, úplné databázové běhy pokračují. Runtime webu nadále `9ef52268`, žádný druhý deploy ani skladový zápis nebyl proveden.
+- Před skladovým zápisem skutečná úplná záloha a obnova [42860986643](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42860986643) SUCCESS: 389 tabulek / 4597 souborů. [Přesné názvy a SHA-256](recovery-42860986643.json) byly ověřené i při apply; hodinový limit zůstal zachovaný. Dřívější bod 42851495227 byl po vypršení nahrazen tímto čerstvým bodem.
+- Čerstvý čtecí katalogový balíček [42855976161](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42855976161) a izolovaný nácvik PASS: [příprava](prepare-42855976161.json), [nácvik](rehearsal-42855976161.json). Katalogový import se neopakoval.
+- Před úpravou URL [inspect 42869546748](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42869546748) a skutečná obnova všech 501 souborů starého baru PASS: [záloha](url-inspect-42869546748.json), [obnova](url-restore-42869546748.json), shodný SHA-256.
+- [Apply 42870089056](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42870089056) [PASS](url-apply-42870089056.json) a nezávislý [status 42870356938](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42870356938) [PASS](url-status-42870356938.json): 44 HTTP kontrol, bez DB zápisů nebo přehrávání původních požadavků. Závěrečný externí GET obou TV aliasů potvrdil správné odlišné cíle.
 
-Checkpoint 17:17 UTC: všech 12 kontrol finálního headu `7acf051d` PASS, 2451 testů / 56206 assertions; #440 sloučeno jako `9ef52268e1f5a8925cb62af6ab6b59ba27f75ac6`. Chráněný [deploy 42863352343](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42863352343) právě běží, oba flagy false. Nová [úplná obnova 42860986643](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42860986643) SUCCESS: 389 tabulek / 4597 souborů, [přesný bod obnovy](recovery-42860986643.json). Skutečný skladový převod stále NOT RUN.
+## Průběh validace a meze
 
-První úplný Linux běh odhalil dvě integrační opomenutí: nonce u externích skriptů a registraci obou záměrně izolovaných TV šablon v inventuře UI. Opraveno bez oslabení CSP. Kompresní regresní profil nadále porovnává totožné vstupní bajty před/po gzip a HTTP/cache/browser kontrakty, ale používá aktuální commit; historický snímek lze reprodukovat přes `JS_COMPRESSION_SOURCE_REF`. Původní globální zákaz všech změn aplikace proti historickému commitu nebyl regresním kontraktem dalších vydání.
+První pouze čtecí [inspect 42864249836](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42864249836) byl [odmítnut před zápisem](stock-inspect-42864249836.json). Původní rozsahový validátor nepřipouštěl záporný počátek. Nový snímek doložil pět takových hodnot; signed přenos je zachoval beze změny. Doplněné fáze/souhrny neobsahují konfiguraci ani text výjimek. Zlomky, null a nadlimitní hodnoty se dále odmítají. Místních 12 testů / 34 assertions, PHPStan celé aplikace, styl a dokumentační kontrakt PASS.
 
-Úplná produkční záloha a izolovaná skutečná obnova [42851495227](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42851495227) SUCCESS: 389 tabulek a 4595 souborů. Žádný aplikační nebo skladový zápis tím nebyl proveden.
+Původní globální kompresní test proti historickému commitu byl upraven na totožná aktuální aktiva před/po gzip, s možností explicitně reprodukovat historický zdroj. Všechny HTTP/cache/byte kontroly zůstaly; skutečný Apache/Chrome profil PASS. První integrační opomenutí nonce a registrace izolovaných TV šablon byla opravena před vydáním, CSP nebyla oslabena.
 
-Následná kontrola doplnila ověření zálohy již importovaného katalogu (přesný počet produktů snímku a existující import); původní první import nadále vyžaduje prázdný cíl. Šest testů bodu obnovy / 9 assertions PASS, včetně odmítnutí jiného počtu produktů. Pomocník zásob se může načíst mimo webroot po předchozím načtení ověřené aplikace. Čtyři transakční testy zásob / 12 assertions PASS; 24 testů CSP/UI/obrazovek / 14273 assertions PASS.
+Vizuální přejímka TV v řízeném prohlížeči **NOT RUN**: otevření karty opakovaně vypršelo; poslední Computer Use pokus skončil politikou, protože nebylo možné spolehlivě určit aktuální URL Windows prohlížeče. Další UI vstupy se neprováděly a nesouvisející snímek nebyl uložen do repozitáře. HTTP a přesná shoda CSS jsou doložené samostatně.
 
-Apache transportní porovnání aktuálních souborů na Windows PASS (15 veřejných JS, měřené hlavní soubory 89282 → 26618 bajtů), bez spuštění místního prohlížeče. Stejný profil na Linuxu se skutečným Chrome [42855111521](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42855111521) SUCCESS. Jde o kompresní profil, nikoli vizuální přejímku TV obrazovek. GitHub po opožděném výpočtu slučitelnosti znovu spouští úplné PR kontroly přesného headu `cb068d39db074c9aa7b289d9246e8a688aa2af86`; žádná ochrana nebyla obejita.
+Zbývá skutečný login Lucky, fyzická inventura, počáteční hotovost a první prodej/uzávěrka, reálná karta/QR a vratka a [účetní adaptér](../../BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md). Tyto body vede [provozní handoff](../../SESSION_HANDOFF_BAR_2026-11-06.md); tento převod je neoznačuje za přijaté. Starší WIP původního checkoutu i odděleného pilotu zůstalo zachované.
 
-Úplný nezávislý Linux běh stejného headu [42855092624](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42855092624) SUCCESS: 2450 testů / 56177 assertions, nativní MariaDB smoke a oba profily 10.3/11.4. Čerstvý [čtecí balíček 42855976161](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42855976161) a izolovaný nácvik SUCCESS; bezpečné výsledky [prepare](prepare-42855976161.json) / [rehearsal](rehearsal-42855976161.json). Zdroj 68/5/51 stabilní; žádný produkční zápis. Živá čtecí kontrola zároveň potvrdila, že před opravou obě původní TV URL vedou na stejnou obecnou stránku `/bar/menu.php`.
-
-Souběh 10. 11.: do main přibyla schválená ASSET5 změna #439 / `8182489e` (její plán obsahuje oprávnění commit/merge/deploy při PASS). GitHub vyžaduje aktuální základ: do #440 byl přes chráněné update-branch převzat main, nový head `fed1b337`, zachovaný kalendář i společná dokumentace. Úplné CI se opakuje nad integrovaným headem; uvedený starší PASS není vydáván za ověření nového headu. ASSET5 mezitím samostatně nasazeno během 42855987339 SUCCESS; tento BAR postup jej nepřehrává.
-
-Následný main `d0f5fee7` / #441 doplnil pouze společné předání trenérských soupisek a testerky. Vyřešeny dva souběžné řádky katalogu/indexu: zachované novější důkazy COACH i položka BAR. Head `7acf051d` znovu prochází přísným CI proti aktuálnímu main; auto-merge repozitář nepovoluje a nebylo zapnuto. Opakovaný Computer Use pokus přečetl inventář, ale otevření nové Chrome karty vypršelo a nativní snímek neodpovídal cílovému oknu; žádný další vstup nebyl odeslán. Nesouvisející snímek se neukládá do repozitáře, TV vizuální přejímka stále NOT RUN.
-
-Průběžné doplnění důkazů je pushnuté do `codex/bar-display-stock-release-20261110` odděleně od ověřovaného aplikačního PR #440. Po jeho sloučení bude dokumentační rozdíl přenesen na čerstvý main a předán vlastním PR. Nová úplná záloha/obnova [42860986643](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42860986643) spuštěná po vypršení prvního hodinového bodu; výsledek zatím čeká, skladový zápis se neprovedl.
-
-Sloučení a nasazení této změny, skutečné čtení/změna skladových zásob a nové přepnutí starých TV URL jsou zatím NOT RUN. Níže budou připojené skutečné běhy a výsledky; testovací úspěch není doklad produkčního převodu.
-
-Předání implementace: [PR #440](https://github.com/KovoPraha/evidenceTreninku/pull/440). Souběžná změna #438 je zachovaná; její vydání má samostatné schválení podle svého protokolu. Žádné prod zásoby zatím nebyly měněné.
+Konečné souborové předání je ve větvi `codex/bar-display-stock-release-20261110`; samostatný dokumentační PR a jeho stav budou doplněné po vytvoření. Doklady nevyžadují další produkční deploy.

@@ -1,5 +1,7 @@
 # BAR → KIS: postup a stav B7
 
+Stav 10. 11.: [původní TV obrazovky, převod zásob a oprava starých URL dokončené](verification/bar-display-stock-20261110/RESULTS.md). 68 počátečních zůstatků obou skladů převzato přesně včetně pěti záporných hodnot; fyzická inventura a lidské P02/P04 jsou nadále otevřené. Nabídka 1 / vydání 1 se znovu nepublikovala. Původní postup a nulové počátky níže jsou datovaná historie; další zásoby spravovat pouze v KIS, původní zdroj znovu nesynchronizovat.
+
 Plán vznikl po technické přejímce B6, 5. 11. 2026. Vlastník následně výslovně povolil nasazení a pokračování převodu; modul je [nasazený a technicky ověřený](verification/bar-release-20261105/RESULTS.md). **6. 11. je dokončený také [skutečný převod katalogu, fotografií, Lucky, schválených práv a přesměrování starého BAR](verification/bar-cutover-20261106/RESULTS.md).** Tento plán sám neuděluje souhlas k finanční automatizaci; níže zachovává původní pořadí kontrol.
 
 Následná [technická provozní přejímka](verification/bar-acceptance-20261106/RESULTS.md) a [publikace první nabídky](verification/bar-menu-publication-20261106/RESULTS.md) jsou dokončené. Zveřejněno 45 produktů s fotografiemi; [session handoff](SESSION_HANDOFF_BAR_2026-11-06.md) vede zbývající skutečný login Lucky, fyzické zásoby, vlastní kasu a lidskou finanční přejímku. Níže je zachovaný průběh původního převodu.
