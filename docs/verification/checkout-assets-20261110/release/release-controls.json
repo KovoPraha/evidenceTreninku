@@ -1,0 +1,57 @@
+{
+  "deploy_run": 42881039034,
+  "head_sha": "c9e5501a4911f724ae5e6ed253941cb4cb8e7830",
+  "conclusion": "success",
+  "tested_sha": "d6af0a09f921e78ea676ea5439519481e7eea57d",
+  "tested_and_merged_tree": "97fa16dcd690b2b78025b9aa531a52a7a5b6fee1",
+  "app_ci_success": 13,
+  "unit_tests": 2454,
+  "assertions": 56238,
+  "uat_schvaleno": false,
+  "importovat_krouzky": false,
+  "backup_tables": 389,
+  "backup_triggers": 2,
+  "backup_sha256": "7a01b1d1220d992401719fe2c0e5939539809d6ba2ee7c08c2c2dbae1bc79453",
+  "backup_verified": true,
+  "existing_configuration_preserved": true,
+  "config_appended": false,
+  "private_key_backup_and_web_copy_verified": true,
+  "migrations_pending": [],
+  "existing_variable_symbols_unchanged": true,
+  "medical_index_definition_and_inventory_unchanged": true,
+  "http_smoke": {
+    "ok": true,
+    "http": 200,
+    "via": "curl"
+  },
+  "release_config_cleanup_success": true,
+  "index_diagnostics_cleanup_success": true,
+  "production_whole_html_pairs_equal": 6,
+  "production_decoded_pixel_pairs_equal": 5,
+  "production_changed_form_pixel_pairs_equal": 4,
+  "control_mobile_photo": "LIMIT: unchanged control photograph only; RGB channel delta max4; exact cause unproven",
+  "production_static_payloads_canonical_equal": 6,
+  "production_encoded_css_bytes": {
+    "target_before": 53957,
+    "target_after": 31248,
+    "control_before": 31248,
+    "control_after": 31248
+  },
+  "native_encoded_css_bytes": {
+    "target_before": 64454,
+    "target_after": 31248,
+    "control_before": 31248,
+    "control_after": 31248
+  },
+  "decoded_css_bytes": {
+    "target_before": 465606,
+    "target_after": 232803
+  },
+  "runner_direct_http": 0,
+  "server_side_fallback_http": 200,
+  "production_checkout_test_writes": false,
+  "authenticated_production_human_uat": "NOT RUN",
+  "physical_mobile": "NOT RUN; Chrome viewport emulation only",
+  "restore_this_backup": "NOT RUN",
+  "original_wip_sha256": "7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5"
+}

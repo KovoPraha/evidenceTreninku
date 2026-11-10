@@ -413,7 +413,7 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-c6f66ca2b4 | [P11-RIX cílené čtení profilu](ATHLETE_PROFILE_TARGETED_READ_2026-11-09.md) | DONE / P11-RIX | Diagnóza uzavřena bez přijaté SQL/index varianty; pokračuje P11-ASSET. |
 
-| PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | ROZPRACOVÁNO / ASSET6; ASSET1–5 nasazené | Dvě aktuální checkout CSS duplicity, nový source/native/browser před-po; původní historická mez zachovaná. |
+| PL-29c9854bef | [P11-ASSET Bootstrap a společné assety](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | NASAZENO / ASSET1–6 technická přejímka s mezemi | ASSET6 #445/c9e5501a, deploy42881039034,13CI; native2DB a6HTML/4targetpixely shodné, controlfoto LIMIT; CSS53957→31248 B. Lidské UAT a historický ASSET4 LIMIT zachované. |
 
 | PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | REJECTED / P11-HJS/P11-HJS2 | Oba nevybrané; skutečná duplicitníCSSvede naASSET2, prototypy zachované. |
 

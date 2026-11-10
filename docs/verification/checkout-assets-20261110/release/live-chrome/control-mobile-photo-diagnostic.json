@@ -1,0 +1,71 @@
+{
+  "complete": true,
+  "scope": "Unchanged control product, mobile photograph only",
+  "whole_html_equal": true,
+  "css_js_and_versions_equal": true,
+  "diagnostic": {
+    "count": 32509,
+    "bounds": [
+      107,
+      532,
+      281,
+      761
+    ],
+    "colors": 13924,
+    "size": [
+      390,
+      844
+    ],
+    "mean_absolute_channel_difference_on_changed_pixels": 0.6468157535861864,
+    "max_channel_difference": 4,
+    "pixels_above_channel_delta": {
+      "1": 4866,
+      "2": 246,
+      "4": 0,
+      "8": 0,
+      "16": 0,
+      "64": 0
+    }
+  },
+  "reloads": [
+    {
+      "round": 1,
+      "bodies": [
+        {
+          "sha256": "794eec11d8f074735dad40eabfdfc67ee2a39987a4d95f8f68261d90c18ea50f",
+          "bytes": 272969
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "bodies": [
+        {
+          "sha256": "794eec11d8f074735dad40eabfdfc67ee2a39987a4d95f8f68261d90c18ea50f",
+          "bytes": 272969
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "bodies": [
+        {
+          "sha256": "794eec11d8f074735dad40eabfdfc67ee2a39987a4d95f8f68261d90c18ea50f",
+          "bytes": 272969
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "bodies": [
+        {
+          "sha256": "794eec11d8f074735dad40eabfdfc67ee2a39987a4d95f8f68261d90c18ea50f",
+          "bytes": 272969
+        }
+      ]
+    }
+  ],
+  "source_before_payload_hash": "NOT CAPTURED",
+  "cause": "Unproven. Small image-only RGB deltas consistent with image rendering/decoding rounding; inference, not proof.",
+  "acceptance": "Four changed-form pixel pairs and desktop control exact; mobile control strict pixel check remains LIMIT, not PASS. No pixel masks or tolerance gate substituted."
+}

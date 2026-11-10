@@ -1,0 +1,41 @@
+from pathlib import Path
+import json,subprocess
+root=Path(__file__).resolve().parents[1];folder=root/'output/checkout-live'
+read=lambda p:json.loads(p.read_text(encoding='utf-8-sig'))
+a,b=read(folder/'before.json'),read(folder/'after.json')
+assert a['complete'] and b['complete'] and not a['errors']+b['errors']+a['failed']+b['failed']
+rows=[]
+pixel=root/'output/checkout-pixels.php.txt'
+assert pixel.is_file(), 'Copy the archived decoded-pixels.php.txt helper into output/checkout-pixels.php.txt'
+for x,y in zip(a['rows'],b['rows']):
+    assert (x['case'],x['viewport'])==(y['case'],y['viewport'])
+    for key in ['http','whole_html_sha256','main_text_sha256','versions','overflow','bootstrap','cache_control','referrer_policy','csp_sha256']:
+        assert x[key]==y[key],(x['case'],x['viewport'],key,x[key],y[key])
+    assert x['http']==200 and not x['overflow'] and x['bootstrap']
+    target=x['case']!='control'
+    assert len(x['styles'])==(2 if target else 1) and len(y['styles'])==1
+    enc=lambda r:sum(v['encoded'] for v in r['resources'])
+    dec=lambda r:sum(v['decoded'] for v in r['resources'])
+    assert enc(x)==(53957 if target else 31248) and enc(y)==31248
+    assert dec(x)==(465606 if target else 232803) and dec(y)==232803
+    result=subprocess.run(['C:/xampp/php/php.exe',str(pixel),x['screenshot'],y['screenshot']],capture_output=True,text=True)
+    if result.returncode==0:
+        pixels=json.loads(result.stdout);assert pixels['decoded_pixels_equal']
+    else:
+        assert result.returncode==3 and (x['case'],x['viewport'])==('control','mobile')
+        diagnostic=read(root/'output/checkout-image-pixel-diagnostic.json')
+        assert diagnostic['bounds']==[107,532,281,761] and diagnostic['max_channel_difference']==4
+        assert diagnostic['count']==32509
+        pixels=dict(decoded_pixels_equal=False,status='LIMIT: mobile control product photograph only; exact cause unproven; not relabeled PASS',**diagnostic)
+    rows.append(dict(case=x['case'],viewport=x['viewport'],whole_html_equal=True,main_text_equal=True,all_five_asset_versions_equal=True,privacy_headers_equal=True,csp_equal=True,before_encoded_css=enc(x),after_encoded_css=enc(y),before_decoded_css=dec(x),after_decoded_css=dec(y),**pixels))
+assert len(rows)==6
+static_a,static_b=read(root/'output/checkout-static-before.json'),read(root/'output/checkout-static-after.json')
+assert static_a['complete'] and static_b['complete']
+for x,y in zip(static_a['rows'],static_b['rows']):
+    for key in ['url','canonical_path','decoded_bytes','sha256']:assert x[key]==y[key]
+    for key in ['cache-control','content-type']:assert x['headers'].get(key)==y['headers'].get(key)
+assert sum(r['decoded_pixels_equal'] for r in rows)==5
+assert sum(r['decoded_pixels_equal'] for r in rows if r['case']!='control')==4
+proof=dict(complete=True,strict_production_pixel_pairs_equal=5,target_pixel_pairs_equal=4,control_mobile_photo_status='LIMIT',before_utc=a['captured_utc'],after_utc=b['captured_utc'],rows=rows,canonical_asset_payloads_equal=6,method='Exact two-line CDN tag, request CSP nonce and 64-hex CSRF only. No script removal, general whitespace, image masks or asset-version normalization. Read-only anonymous production GET, no checkout submission. GD decoded pixel comparison; one control-only image difference explicitly LIMIT, never PASS. Static payloads canonical Git bytes; ETag/transport encoding are not payload identity.')
+(folder/'parity-and-pixels.json').write_text(json.dumps(proof,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print(json.dumps(dict(complete=True,whole_html_pairs=6,strict_pixel_pairs=5,target_pixel_pairs=4,control_mobile_photo='LIMIT',canonical_payloads=6)))

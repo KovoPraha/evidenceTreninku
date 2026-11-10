@@ -1,7 +1,6 @@
 # P11-ASSET6 — ověření checkout formulářů
 
-Implementace, native/Chrome a13CI PASS; PR #445 sloučen jako c9e5501a.
-Chráněné nasazení42881039034 běží, živé after zatím NOT RUN.
+NASAZENO / cílové formuláře technicky PASS, controlfoto LIMIT. Implementace, native/Chrome,13CI a živé HTML/targetpixely PASS.
 [Plán](../../BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset6--rychlý-nákup-a-přihláška-10-11-2026), [PR #445](https://github.com/KovoPraha/evidenceTreninku/pull/445).
 
 ## Rozsah a shoda
@@ -72,8 +71,50 @@ prohlášen za native/produkčně přijatý. Historické tři ASSET4 katalogové
 zůstávají LIMIT pro chybějící before HTML. Původní WIP7a7afd75 zachovaný.
 
 
-Celý tested/merged tree97fa16dc shodný; čerstvá živá baseline6GET z19:01:02UTC,
-šestcanonical staticpayloadů PASS. Finální doklady ve větvi
-codex/checkout-assets-release-docs-20261110; PR bude doplněn při otevření.
-Další krok dokončit deploy, ověřit receipt a živé after. Bez druhého deploye
-kvůli samotným dokladům.
+## Produkční release a přejímka
+
+PR #445 sloučen jako `c9e5501a4911f724ae5e6ed253941cb4cb8e7830`; celý tree `97fa16dcd690b2b78025b9aa531a52a7a5b6fee1` je totožný s testovaným d6af0a09.
+[Všech13 aktuálních kontrol](release/app-checks.json) SUCCESS, přísná branch
+protection zachovaná. [Deploy42881039034](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42881039034)
+SUCCESS na stejném SHA; znovu2454 testů/56238 assertions.
+Záloha389 tabulek/2 triggerů ověřená, SHA256
+`7a01b1d1220d992401719fe2c0e5939539809d6ba2ee7c08c2c2dbae1bc79453`. Konfigurace zachovaná bez doplnění, archivní klíč/záloha/
+webcopy PASS, pending migrace [], dosavadní VS a definice/inventory zdravotního
+indexu stejné. Přímý runner HTTP0 (síťová nedostupnost); předepsaný serverový
+curl fallback200 a oba úklidy PASS. Import přeskočený, oba flagsfalse.
+[Receipt](release/release-controls.json), [workflow](release/deploy-summary.json),
+[indexy](release/index-preflight/medical-index-before.json).
+
+Čerstvé produkční [before](release/live-chrome/before.json) z2026-11-10T19:01:02.734Z
+a [after](release/live-chrome/after.json) z2026-11-10T19:11:20.501Z: šest celých HTML
+otisků shodných, včetně dat, skriptů a všech pěti asset verzí. Zachované privacy
+hlavičky/no-store a CSP. Maskují se jen konkrétní dva známé tagy a nonce/CSRF;
+žádné obecné whitespace, script nebo asset-version normalizace.
+Cíle CSS2→1, control1→1. Živé cold encoded53957→31248 B (−22709 B /−42,1 %
+Bootstrap CSS), decoded465606→232803 B; control31248→31248 B.
+Pět ze šesti [GD pixelových párů](release/live-chrome/parity-and-pixels.json)
+přesně shodných, včetně všech čtyř upravených formulářů; desktop/mobile bez
+přetékání a JS/network chyb. Chrome158 Windows,
+jednorázové produkční capture nejsou časový benchmark. [Pět UI payloadů +CDN](release/static-after.json)
+shodných s canonical Git58848900 před i po včetně cache politik; ETag může
+odrážet mtime. Encoded rozdíl proti CI je skutečný odlišný CDN transport,
+rozbalený CSS payload je stále přesně totožný.
+
+**LIMIT kontrolní mobilní fotografie:** strict pixel test není PASS. Rozdíl
+32509pixelů je omezený na obdélník x107–281/y532–761 fotografie neupraveného
+produkt.php; vše mimo fotografii přesně stejné. Max RGB kanálová odchylka4/255,
+průměr na odlišných pixelech0,647, jen246pixelů má kanálovou odchylku větší2.
+Šest celých HTML/hlaviček/CSP, všechny assety i control desktop přesně stejné.
+Čtyři opakované GET dávají stejný JPEG272969 B/SHA794eec11…ea50f a stejné after
+pixely; before samotný JPEG nebyl samostatně hashován. Rozdíl může odpovídat
+zaokrouhlení při dekódování/zmenšení, ale přesná příčina není prokázaná a není
+zpětně označená PASS. Žádná obrazová maska ani tolerance nenahradila strict test.
+[Diagnostika](release/live-chrome/control-mobile-photo-diagnostic.json), všechny
+původní i opakované PNG zachované. Runtime kontrolního produktu nebyl změněn;
+native6/6pixelpairs a všechny4 produkční targetpairs jsou přesně shodné.
+
+Přihlášené lidské produkční UAT, fyzický telefon a obnova této konkrétní zálohy
+NOT RUN. Žádná testovací produkční objednávka, platba ani změna rolí nevznikla.
+Původní fio/d1221f35 a WIP SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5` zachované.
+Finální doklady: codex/checkout-assets-release-docs-20261110,
+[PR #446](https://github.com/KovoPraha/evidenceTreninku/pull/446); sloučením PR #446 jsou součástí main; druhý deploy se neprovádí.

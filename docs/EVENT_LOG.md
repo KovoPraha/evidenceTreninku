@@ -244,3 +244,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 10.11.2026 — ASSET6 [PR #445](https://github.com/KovoPraha/evidenceTreninku/pull/445): main#444/06ad54e4 převzatý bez konfliktu, BAR doklady zachované. Source0braces/2tags a lokální21/412 PASS; nové společné CI/native přejímka čekají.
 
 - 10. 11. 2026 — P11-ASSET6: #445/c9e5501a sloučen po13CI/native2DB/Chrome PASS, celý tested tree97fa16dc stejný. Chráněný deploy42881039034 běží, receipt/after NOT RUN; [protokol](verification/checkout-assets-20261110/RESULTS.md), WIP zachovaný.
+
+- 10. 11. 2026 — P11-ASSET6 NASAZENO: #445/c9e5501a,13CI/native42878204242/2DB PASS; deploy42881039034 SUCCESS, backup389/2/config/migrace/VS/index/smoke/cleanup PASS. Šest živých HTML a4targetpixelpáry shodné,5/6strictpixely PASS a mobilní controlfoto RGB≤4 LIMIT; CSS53957→31248 B, controlpayload stejný; WIP7a7afd75 zachovaný. [Protokol](verification/checkout-assets-20261110/RESULTS.md). Finální doklady bez druhého deploye, lidské UAT NOT RUN.
