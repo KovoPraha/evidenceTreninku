@@ -28,6 +28,8 @@ Doplněk preflight: bezpečné názvy fází a souhrny platnosti/počtů/záporn
 
 Přímý místní PHPStan celé aplikace po doplňku PASS bez chyb. [PR #443](https://github.com/KovoPraha/evidenceTreninku/pull/443), ověřovaný head `49f70695`; další provozní důkazy se doplňují odděleně ve větvi `codex/bar-display-stock-release-20261110`, aby nezneplatňovaly právě běžící aplikační CI.
 
+Po sloučení čistě dokumentačního #442 / `966f7013` převzal #443 aktuální main přes update-branch bez konfliktu; finální ověřovaný head je `e9b5f1943dd317edfb7de9124d142f0a6d6188fa`. PHPStan, styl, dokumentace a bezpečnostní analýzy nového headu PASS, úplné databázové běhy pokračují. Runtime webu nadále `9ef52268`, žádný druhý deploy ani skladový zápis nebyl proveden.
+
 Checkpoint 17:17 UTC: všech 12 kontrol finálního headu `7acf051d` PASS, 2451 testů / 56206 assertions; #440 sloučeno jako `9ef52268e1f5a8925cb62af6ab6b59ba27f75ac6`. Chráněný [deploy 42863352343](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42863352343) právě běží, oba flagy false. Nová [úplná obnova 42860986643](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42860986643) SUCCESS: 389 tabulek / 4597 souborů, [přesný bod obnovy](recovery-42860986643.json). Skutečný skladový převod stále NOT RUN.
 
 První úplný Linux běh odhalil dvě integrační opomenutí: nonce u externích skriptů a registraci obou záměrně izolovaných TV šablon v inventuře UI. Opraveno bez oslabení CSP. Kompresní regresní profil nadále porovnává totožné vstupní bajty před/po gzip a HTTP/cache/browser kontrakty, ale používá aktuální commit; historický snímek lze reprodukovat přes `JS_COMPRESSION_SOURCE_REF`. Původní globální zákaz všech změn aplikace proti historickému commitu nebyl regresním kontraktem dalších vydání.
