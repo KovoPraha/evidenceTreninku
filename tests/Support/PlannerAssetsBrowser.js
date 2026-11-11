@@ -9,7 +9,7 @@ async (page) => {
     const css = new Map();
     const errors = [];
     const samples = [];
-    const path = '/planovac.php';
+    const path = config.path;
     cdp.on('Network.responseReceived', event => {
         if (new URL(event.response.url).pathname.endsWith('/bootstrap.min.css')) {
             css.set(event.requestId, {url: event.response.url, status: event.response.status});
@@ -80,11 +80,20 @@ async (page) => {
             if (round >= 0) samples.push({variant, round, ...timing, ready_ms: ready});
             if (round === 0 && config.cache === 'cold') {
                 await page.screenshot({path: config.screenshots[variant], animations: 'disabled'});
-                const modal = page.locator('#modalKopirovat');
-                await page.locator('[data-bs-target="#modalKopirovat"]').click();
-                await modal.waitFor({state: 'visible'});
-                await modal.locator('[data-bs-dismiss="modal"]').first().click();
-                await modal.waitFor({state: 'hidden'});
+                if (path === '/login.php') {
+                    await page.locator('button[type="submit"]').click();
+                    const alert = page.locator('.alert-danger');
+                    await alert.waitFor({state: 'visible'});
+                    if (!(await alert.innerText()).includes('Vyplňte přihlašovací údaje')) {
+                        throw new Error('Login form error differs');
+                    }
+                } else {
+                    const modal = page.locator('#modalKopirovat');
+                    await page.locator('[data-bs-target="#modalKopirovat"]').click();
+                    await modal.waitFor({state: 'visible'});
+                    await modal.locator('[data-bs-dismiss="modal"]').first().click();
+                    await modal.waitFor({state: 'hidden'});
+                }
             }
         }
     }
