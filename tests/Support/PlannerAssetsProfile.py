@@ -173,8 +173,9 @@ try:
             if not line.strip():
                 continue
             host, _, path, secure, _, name, value = line.removeprefix("#HttpOnly_").split("\t")
-            assert host == "127.0.0.1" and secure == "FALSE"
-            cookies.append(dict(name=name, value=value, domain=host, path=path, httpOnly=line.startswith("#HttpOnly_")))
+            assert host.lstrip(".") == "127.0.0.1" and secure in {"TRUE", "FALSE"}
+            cookies.append(dict(name=name, value=value, domain="127.0.0.1", path=path,
+                                secure=secure == "TRUE", httpOnly=line.startswith("#HttpOnly_"), sameSite="Lax"))
         assert cookies
         subprocess.run(["playwright-cli", "--session", "planner-assets", "open", "about:blank", "--browser=chrome"],
                        cwd=root, stdout=subprocess.DEVNULL, check=True)

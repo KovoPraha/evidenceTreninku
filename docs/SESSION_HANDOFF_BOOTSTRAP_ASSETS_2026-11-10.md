@@ -33,4 +33,4 @@ Runtime/flags vlastní [CURRENT](CURRENT_STATE.md). Kalibrace všech FAIL v prot
 
 ## P11-ASSET8, 11. 11. 2026
 
-**P11-ASSET8 ROZPRACOVÁNO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset8--plánovač-11-11-2026), [měření](verification/schedule-bootstrap-20261111/RESULTS.md). Plánovač má CDN i místní Bootstrap CSS. Čeká párová přejímka.
+**P11-ASSET8 ROZPRACOVÁNO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset8--plánovač-11-11-2026), [měření](verification/schedule-bootstrap-20261111/RESULTS.md). Plánovač má CDN i místní Bootstrap CSS. [#451](https://github.com/KovoPraha/evidenceTreninku/pull/451), HTTP parita potvrzena v prvním běhu. Chrome a finální CI čekají.

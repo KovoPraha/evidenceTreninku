@@ -99,7 +99,7 @@ final class SharedUiShellTest extends TestCase
             }
             // These measured pages rely on the existing header's canonical assets.
             // Keep the inventory guard for every other legacy page until migrated.
-            $verifiedSharedOnly = in_array($relative, ['moje_treninky.php','sprava_treninku.php'], true);
+            $verifiedSharedOnly = in_array($relative, ['moje_treninky.php', 'planovac.php', 'sprava_treninku.php'], true);
             if (!str_contains($source, 'bootstrap.min.css') && !str_contains($source, 'appUiAssets();') && !$verifiedSharedOnly) {
                 $missing[] = $relative;
             }
