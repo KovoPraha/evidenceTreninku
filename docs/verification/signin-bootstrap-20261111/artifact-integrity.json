@@ -1,0 +1,105 @@
+{
+  "method": "SHA256 of canonical staged Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/RESULTS.md",
+      "bytes": 1833,
+      "sha256": "3cdd7ed1a1e4c4c6f68b124bafe6a4fe1f558208f0fabda818092128c9cdab92"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/application-checks.json",
+      "bytes": 2708,
+      "sha256": "62475e555415f3ae02311312bd69d57d17e7f6e9c8ddd49ed8ecfefb042397be"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-10.3/http.json.gz",
+      "bytes": 1001,
+      "sha256": "033f729f1a76d9ebab300fb9dcc392c688757d13f6cb8948c4695b02842a26af"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-10.3/source.json",
+      "bytes": 416,
+      "sha256": "8453a519604c666999603af49222c969e46b872a796409d4be6f5fff85d7177a"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/browser-dark-cold.json",
+      "bytes": 5903,
+      "sha256": "e47ddfbfb2833680d647163cf09e63e61bcf8a932aa3689c79efc5cd9610d83a"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/browser-dark-warm.json",
+      "bytes": 5817,
+      "sha256": "398984fa34d1bc256c6f8833219f193030b9fcb3ca503e16cd653522b3715b09"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/browser-light-cold.json",
+      "bytes": 5946,
+      "sha256": "32d774aabf442134c4147ccf491e9d3b8cc9a015e192a6dd3adb2c0f563fba4c"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/browser-light-warm.json",
+      "bytes": 5825,
+      "sha256": "dd656c447f8fd084dd2489487c9265ce17783cb53ac3ab444b2a33e7ed1f28a6"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/browser-summary.json",
+      "bytes": 1813,
+      "sha256": "dc825ae11b5b3144f874a04ccd4db0c2e764d340d5c8aaf7bdf8ded75f04ed71"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/dark-cold-after.png",
+      "bytes": 66132,
+      "sha256": "9ac01d570b5782d39df169a819b6e255d0cbb0a6d6fe949a4eaa230857a4d154"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/dark-cold-before.png",
+      "bytes": 66132,
+      "sha256": "9ac01d570b5782d39df169a819b6e255d0cbb0a6d6fe949a4eaa230857a4d154"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/http.json.gz",
+      "bytes": 1005,
+      "sha256": "64aa9e85304a6011f12e01a82dd56347deb71889ddbf1f17f691629957fa14eb"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/light-cold-after.png",
+      "bytes": 233112,
+      "sha256": "3edb96fc3ef0779e0630033c57ca840bc6607b64c2d8510938135ea831b44d67"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/light-cold-before.png",
+      "bytes": 233112,
+      "sha256": "3edb96fc3ef0779e0630033c57ca840bc6607b64c2d8510938135ea831b44d67"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/mariadb-11.4/source.json",
+      "bytes": 416,
+      "sha256": "8453a519604c666999603af49222c969e46b872a796409d4be6f5fff85d7177a"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/production-after.json",
+      "bytes": 2166,
+      "sha256": "f5827a2beb04fd7bfdaaf4ac5c70a37ef90b1b287c9f990dbd2065db5af5233f"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/production-before.json",
+      "bytes": 2166,
+      "sha256": "f5827a2beb04fd7bfdaaf4ac5c70a37ef90b1b287c9f990dbd2065db5af5233f"
+    },
+    {
+      "path": "docs/verification/signin-bootstrap-20261111/release.json",
+      "bytes": 675,
+      "sha256": "5a87970adb658df417d4296736e3df4820f311033637845e1007f2fdb377a80e"
+    }
+  ]
+}

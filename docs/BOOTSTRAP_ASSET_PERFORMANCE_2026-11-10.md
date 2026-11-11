@@ -780,7 +780,7 @@ NASAZENO. #451/d8ae4f85, 13 CI, [deploy 42979420239](https://github.com/KovoPrah
 
 ## P11-ASSET9 — vstupní přihlášení, 11. 11. 2026
 
-ROZPRACOVÁNO. Vývoj/Codex podle navazujícího zadání Marka. Větev
+NASAZENO. Vývoj/Codex podle navazujícího zadání Marka. Větev
 codex/login-bootstrap-20261111, pracovní kopie
 C:/Users/Marek/Documents/Codex/evidencePavel-login-bootstrap-20261111.
 Výchozí main c629a789, vydání d8ae4f85, předchozí deploy 42979420239.
@@ -796,3 +796,5 @@ a úspěšný návrat do KIS na syntetickém účtu. Chrome porovná desktop,
 mobilní rozlišení, snímky, chybové hlášení a studený i teplý přenos.
 Merge a chráněný deploy po shodě, měřené úspoře a úspěšném CI.
 Produkční kontrola veřejným GET. [Výsledky](verification/signin-bootstrap-20261111/RESULTS.md).
+
+- **P11-ASSET9 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset9--vstupní-přihlášení-11-11-2026), [výsledky](verification/signin-bootstrap-20261111/RESULTS.md). #453/18bd541b, [deploy 43104809135](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43104809135) SUCCESS, 15 CI, Bootstrap CSS 64 454 → 31 248 B. Veřejný login před a po PASS. Přihlášená produkční přejímka NOT RUN.
