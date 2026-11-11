@@ -186,10 +186,16 @@ function p11Worker(array $arguments): void
             'html_lf_sha256' => hash('sha256', str_replace("\r\n", "\n", $rendered['html'])),
             'result_sha256' => hash('sha256', json_encode([$rendered['data'], $rendered['html']], JSON_THROW_ON_ERROR))];
         if ($route === 'R05') {
-            // Keep the raw HTML hash; compare the frozen baseline after only this known mobile CSS fix.
+            // Reconstruct only the two known markup changes for the frozen planner comparison.
             $comparableHtml = str_replace('style="width:auto;max-width:100%"', 'style="width:auto"', $rendered['html'], $styleCount);
             p11Assert($styleCount === 3, 'Planner filter width change no longer matches the expected three selects.');
-            $result['html_lf_expected_style_compat_sha256'] = hash('sha256', str_replace("\r\n", "\n", $comparableHtml));
+            $title = "    <title>Plánovač tréninků</title>\n";
+            $duplicate = '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"'
+                . ' integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">' . "\n";
+            $comparableHtml = str_replace("\r\n", "\n", $comparableHtml);
+            $comparableHtml = str_replace($title, $title . $duplicate, $comparableHtml, $titleCount);
+            p11Assert($titleCount === 1, 'Planner title boundary changed.');
+            $result['html_lf_expected_style_compat_sha256'] = hash('sha256', $comparableHtml);
         }
         unset($rendered);
         $reference ??= $result['result_sha256'];

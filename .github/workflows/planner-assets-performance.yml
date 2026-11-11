@@ -3,7 +3,8 @@ name: Planner Bootstrap assets parity and performance
 on:
   pull_request:
     paths:
-      - 'planovac.php'
+      # The release benchmark compares an exact frozen planner source.
+      # The ordinary planner regression suite runs for subsequent application edits.
       - 'tests/Support/PlannerAssets*'
       - '.github/workflows/planner-assets-performance.yml'
   workflow_dispatch:
