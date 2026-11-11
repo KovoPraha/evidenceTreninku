@@ -1,0 +1,92 @@
+[
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 104,
+      "ready_ms": 119.80000000000291,
+      "html_bytes": 14662,
+      "css_bytes": 64454,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 100,
+      "ready_ms": 122.5,
+      "html_bytes": 14542,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 80,
+      "ready_ms": 88.30000000000291,
+      "html_bytes": 14661,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 80,
+      "ready_ms": 91.70000000001164,
+      "html_bytes": 14541,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "before": {
+      "fcp_ms": 96,
+      "ready_ms": 117.19999999998254,
+      "html_bytes": 14660,
+      "css_bytes": 64454,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 88,
+      "ready_ms": 112.70000000001164,
+      "html_bytes": 14541,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "before": {
+      "fcp_ms": 76,
+      "ready_ms": 101.60000000000582,
+      "html_bytes": 14661,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 72,
+      "ready_ms": 85.20000000001164,
+      "html_bytes": 14542,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  }
+]

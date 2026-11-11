@@ -1,0 +1,26 @@
+{
+  "complete": true,
+  "run": 42979420239,
+  "head": "d8ae4f8595e58e4b8556866011576eee3d5c8972",
+  "tested": "c1a1491ec4e4bf828bb2a91edf05b9c7dbf9fa48",
+  "tree": "8be11a262a3b1503ee585bce45c5759701790f9a",
+  "tests": 2456,
+  "assertions": 56288,
+  "backup": {
+    "tables": 389,
+    "triggers": 2,
+    "sha256": "ee97857404534e9a2e3eac976b54560c2db9e9efe0c6116a62478027a691fe52"
+  },
+  "flags": {
+    "uat_schvaleno": false,
+    "importovat_krouzky": false
+  },
+  "runner_http": 200,
+  "smoke_http": 200,
+  "config_preserved": true,
+  "migrations_current": true,
+  "variable_symbols_unchanged": true,
+  "medical_index_unchanged": true,
+  "temporary_release_files_removed": true,
+  "authenticated_production_uat": "NOT RUN"
+}

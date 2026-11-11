@@ -753,7 +753,7 @@ není v tomto přesně čtyřstránkovém zadání rozpracovaný; runtime/flags 
 
 ## P11-ASSET8 — plánovač, 11. 11. 2026
 
-ROZPRACOVÁNO. Vlastník vývoj/Codex podle aktuálního zadání Marka.
+NASAZENO, technická přejímka PASS. Vlastník vývoj/Codex podle aktuálního zadání Marka.
 Větev codex/planner-bootstrap-performance-20261111, izolovaná pracovní kopie
 C:/Users/Marek/Documents/Codex/evidencePavel-planner-bootstrap-performance-20261111.
 Výchozí main 90745940, produkční runtime b753f6e7 z deploye 42920002806.
@@ -773,3 +773,7 @@ součty, desktop/mobile pixely, ovládání kopírovacího dialogu a skutečný
 studený i teplý přenos v Chromu. Povolit deploy při shodě, úspoře přenosu a
 aktuálním úspěšném CI. Ověřit produkční read-only smoke, zachovat import a
 příznak přejímky false. [Průběžné výsledky](verification/schedule-bootstrap-20261111/RESULTS.md).
+
+### Výsledek P11-ASSET8
+
+NASAZENO. #451/d8ae4f85, 13 CI, [deploy 42979420239](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42979420239) SUCCESS. Cold Bootstrap CSS −33 206 B, celé HTTP a pixely shodné. [Výsledky](verification/schedule-bootstrap-20261111/RESULTS.md). Přihlášená produkční přejímka NOT RUN.
