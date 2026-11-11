@@ -750,3 +750,26 @@ Historické ASSET4/6 LIMIT, EVENTREAD/HJS2/RIX WIP i původní7a7afd75 zachovan�
 Doklady [PR #448](https://github.com/KovoPraha/evidenceTreninku/pull/448):
 jeho sloučením v main, **neopakovat deploy**. Žádný další implementační řez
 není v tomto přesně čtyřstránkovém zadání rozpracovaný; runtime/flags vlastní CURRENT.
+
+## P11-ASSET8 — plánovač, 11. 11. 2026
+
+ROZPRACOVÁNO. Vlastník vývoj/Codex podle aktuálního zadání Marka.
+Větev codex/planner-bootstrap-performance-20261111, izolovaná pracovní kopie
+C:/Users/Marek/Documents/Codex/evidencePavel-planner-bootstrap-performance-20261111.
+Výchozí main 90745940, produkční runtime b753f6e7 z deploye 42920002806.
+Původní fio checkout a kis_rosters_admin.php zůstávají zachované.
+
+Analýza v bodu 7 a profil celého HTTP identifikovaly dvojí Bootstrap CSS.
+Plánovač ještě vkládá CDN kopii 5.3.3 před své styly a hlavička vkládá stejný
+lokální Bootstrap později. Odstraníme přesně CDN značku a zachováme místo
+všech zbývajících prostředků. Tato trasa má doložené používání v předchozí
+přejímce. Úspora celé kopie při studeném načtení má větší potenciál než
+přesun přibližně 6 kB nekomprimovaných stylů hlavičky. Zásah do SQL či cache
+přístupů nevyplývá z tohoto nálezu.
+
+Přejímka na stejném runneru a datech před/po: přesný zdrojový rozdíl, celé HTML
+s výjimkou jedné značky a nonce, role/redirecty, shodné databázové kontrolní
+součty, desktop/mobile pixely, ovládání kopírovacího dialogu a skutečný
+studený i teplý přenos v Chromu. Povolit deploy při shodě, úspoře přenosu a
+aktuálním úspěšném CI. Ověřit produkční read-only smoke, zachovat import a
+příznak přejímky false. [Průběžné výsledky](verification/schedule-bootstrap-20261111/RESULTS.md).
