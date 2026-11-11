@@ -1,0 +1,8 @@
+{
+  "baseline": "907459401d45159678f8f54c4035a1e76c0e094b",
+  "head": "c1a1491ec4e4bf828bb2a91edf05b9c7dbf9fa48",
+  "only_known_css_link_removed": true,
+  "before_sha256": "776648b3c089f69d393b0ab4d767a9ffae0e31ec752ea98b71127885997127b2",
+  "after_sha256": "694a4d58196bc4119272ce0b9667e9fba89062b3839334cf1d21a41b3d93d6ab",
+  "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+}

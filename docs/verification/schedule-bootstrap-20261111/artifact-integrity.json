@@ -1,0 +1,115 @@
+{
+  "method": "SHA256 of canonical staged Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/RESULTS.md",
+      "bytes": 4191,
+      "sha256": "20adc2222d1eca0618cbc01d4ada4e1575adcc94ae717764d9047a468c8a8448"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/application-checks.json",
+      "bytes": 2318,
+      "sha256": "c2aaecb33b2b3677fdf0eb7fcd010c03e44fbab6c34cb47f88d0a3d307028cef"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "998f2e2fba4c06ebf63efde0d9823781e0d66e019733419673b42252202b922e"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-10.3/http.json.gz",
+      "bytes": 5427,
+      "sha256": "25db557bb4885004f65745cc9cb90b18d671ceeb00a4adc7b322de50081505c4"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-10.3/source.json",
+      "bytes": 416,
+      "sha256": "98137e32f9e32274ef3a26d805a6bb52b99cd60955a51156e51c6f438e7a631a"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/browser-dark-cold.json",
+      "bytes": 5983,
+      "sha256": "28a39a60ccb23e582c4f5e457d16f0ea8598958502aed252931dd20f279252b4"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/browser-dark-warm.json",
+      "bytes": 5885,
+      "sha256": "ab0d6bdc4be19041c2ca3fc0acc8c2d2d5606e3a1b9b9d9a0d6225ec1f94dd0d"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/browser-light-cold.json",
+      "bytes": 5938,
+      "sha256": "4229ed4be97a9d91ed2dd50e3b3f7ae80d37ce32cbf721ea859b27bf0f4229b8"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/browser-light-warm.json",
+      "bytes": 5833,
+      "sha256": "8c3e79354da1021e3926a61f64096d5ff564c21b33c4975168a10de0cf71b970"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/browser-summary.json",
+      "bytes": 1828,
+      "sha256": "5f0d879a05a5038bdbd22ca0c87f254c50039e7b971a00da4cf7dc4c9bfbfa99"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "998f2e2fba4c06ebf63efde0d9823781e0d66e019733419673b42252202b922e"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/dark-cold-after.png",
+      "bytes": 55140,
+      "sha256": "c1f98f4ee1a788ceb2b67f1b27822454d4e50bc299f8ab04b7045ff382fcde8f"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/dark-cold-before.png",
+      "bytes": 55140,
+      "sha256": "c1f98f4ee1a788ceb2b67f1b27822454d4e50bc299f8ab04b7045ff382fcde8f"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/http.json.gz",
+      "bytes": 5348,
+      "sha256": "37c468d9f2ea29b73467cfa799d9e0354c4599143be94f0c0a11872e65ba5d95"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/light-cold-after.png",
+      "bytes": 103702,
+      "sha256": "8c5ae416e03aa630735857e08476bc9eeb2f6b20271e0c8472827913b8d62d64"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/light-cold-before.png",
+      "bytes": 103702,
+      "sha256": "8c5ae416e03aa630735857e08476bc9eeb2f6b20271e0c8472827913b8d62d64"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/mariadb-11.4/source.json",
+      "bytes": 416,
+      "sha256": "98137e32f9e32274ef3a26d805a6bb52b99cd60955a51156e51c6f438e7a631a"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/production-after.json",
+      "bytes": 1090,
+      "sha256": "d0ecc3ea9b97c01874bc06e2832149d6af27d63c9a983622b954882b68bfbd88"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/production-before.json",
+      "bytes": 1090,
+      "sha256": "d0ecc3ea9b97c01874bc06e2832149d6af27d63c9a983622b954882b68bfbd88"
+    },
+    {
+      "path": "docs/verification/schedule-bootstrap-20261111/release.json",
+      "bytes": 727,
+      "sha256": "d0aa903c494f558f0977037b2fb12e856258756170bc1c8e3f4ba21c406e6d03"
+    }
+  ]
+}

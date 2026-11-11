@@ -262,3 +262,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 11.11.2026 P11-HJS3 NASAZENO: [Deploy42920002806](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42920002806) SUCCESS na b753f6e7; 2456 testů/56289 assertions, záloha389tabulek/2triggery, migrace/config/VS/index/HTTP200/cleanup PASS; UAT/importfalse. Živé5GET/5UI+novýJS/hash/SRI/gzip/cache PASS; přihlášené produkční UAT NOT RUN. Plán/handoff/registr a bezpečné doklady přes#450 bez redeploye. [Výsledky](verification/shared-header-cache-20261110/RESULTS.md).
 
 - 11. 11. 2026 P11-ASSET8. Doložená duplicita Bootstrap CSS v plánovači má přednost před extrakcí menšího inline CSS hlavičky. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset8--plánovač-11-11-2026).
+
+- 11. 11. 2026 P11-ASSET8. #451/d8ae4f85 nasazen po shodě HTML, pixelů a úspoře 33 206 B cold CSS. [Výsledky](verification/schedule-bootstrap-20261111/RESULTS.md), [deploy 42979420239](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42979420239).

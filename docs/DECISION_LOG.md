@@ -661,3 +661,5 @@ shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované
 11.11.2026 P11-HJS3: po14CI a nové native/Chrome přejímce sloučen#449 a nasazen b753f6e7/deploy42920002806 dle podmíněného zadání. Akceptovaná warm úspora25–30% při cold+955–1264B; časové rozdíly nejsou produkční SLA. Delší cache jen veřejného obsahového JS, fresh context zůstává privátní. UAT/importfalse, přihlášené UAT NOT RUN; doklady#450 bez druhého nasazení. [Rozhodnutí a měření](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#hjs3-konečné-vydání--11-11-2026).
 
 - 11. 11. 2026 P11-ASSET8. Doložená duplicita Bootstrap CSS v plánovači má přednost před extrakcí menšího inline CSS hlavičky. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset8--plánovač-11-11-2026).
+
+- 11. 11. 2026 P11-ASSET8. #451/d8ae4f85 nasazen po shodě HTML, pixelů a úspoře 33 206 B cold CSS. [Výsledky](verification/schedule-bootstrap-20261111/RESULTS.md), [deploy 42979420239](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42979420239).
