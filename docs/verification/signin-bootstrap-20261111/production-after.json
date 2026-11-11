@@ -1,0 +1,26 @@
+{
+  "/login.php": {
+    "Cache-Control": "no-store",
+    "Content-Type": "text/html; charset=UTF-8",
+    "X-Content-Type-Options": "nosniff",
+    "status": 200,
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+    "normalized_sha256": "aaa709b7ccc2d67d55395e2300b8e840110482e2cb1ef252abc4dd626ca50854"
+  },
+  "/login.php?return_to=planovac.php": {
+    "Cache-Control": "no-store",
+    "Content-Type": "text/html; charset=UTF-8",
+    "X-Content-Type-Options": "nosniff",
+    "status": 200,
+    "csp": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+    "normalized_sha256": "aaa709b7ccc2d67d55395e2300b8e840110482e2cb1ef252abc4dd626ca50854"
+  },
+  "/assets/vendor/bootstrap/bootstrap.min.css": {
+    "Cache-Control": "max-age=604800",
+    "Content-Type": "text/css",
+    "X-Content-Type-Options": "nosniff",
+    "status": 200,
+    "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    "bytes": 232803
+  }
+}

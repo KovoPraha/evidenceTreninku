@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "tested": "87fe5f59f422c292ece0889e02b0f44379d758d0",
+  "head": "18bd541b922e8b1d93dc9a4144e791da5a34e49b",
+  "tree": "f0894988467e39265d28c81e1356739cfab71c0e",
+  "run": 43104809135,
+  "ci": 15,
+  "runner_http": 200,
+  "smoke_http": 200,
+  "tests": 2456,
+  "assertions": 56288,
+  "backup": {
+    "tables": 389,
+    "triggers": 2,
+    "sha256": "88ebfe3372def5f9aac9a1cab3817858663fd2f28423d6e87d1ad0466eae5d23"
+  },
+  "config_preserved": true,
+  "migrations_current": true,
+  "variable_symbols_unchanged": true,
+  "medical_index_unchanged": true,
+  "uat_schvaleno": false,
+  "importovat_krouzky": false,
+  "authenticated_production_uat": "NOT RUN"
+}
