@@ -94,4 +94,4 @@ async (page) => {
     await cdp.detach();
     if (errors.length) throw new Error('Unexpected browser errors: ' + JSON.stringify(errors));
     return {samples, complete: true};
-};
+}

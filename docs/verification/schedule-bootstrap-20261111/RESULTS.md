@@ -9,3 +9,5 @@ shodných checksumů. Běh 11.4 skončil před Chrome na předpokladu o přízna
 Secure při předání syntetické session. Fixture nyní přebírá skutečný příznak.
 První PHPUnit selhal na explicitním seznamu stránek se sdíleným CSS.
 Seznam obsahuje i plánovač a cílený test znovu prošel. Finální CI se opakuje.
+
+Druhý běh 42976040733 znovu potvrdil HTTP, ale Chrome před navigací odmítl koncový středník v předávané funkci. Funkce nyní prochází i kontrolou po zabalení do výrazu. Lokální sada 23 testů a 138 kontrol PASS.
