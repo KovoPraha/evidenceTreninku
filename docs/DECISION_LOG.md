@@ -663,3 +663,5 @@ shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované
 - 11. 11. 2026 P11-ASSET8. Doložená duplicita Bootstrap CSS v plánovači má přednost před extrakcí menšího inline CSS hlavičky. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset8--plánovač-11-11-2026).
 
 - 11. 11. 2026 P11-ASSET8. #451/d8ae4f85 nasazen po shodě HTML, pixelů a úspoře 33 206 B cold CSS. [Výsledky](verification/schedule-bootstrap-20261111/RESULTS.md), [deploy 42979420239](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42979420239).
+
+- 11. 11. 2026 P11-ASSET9. Vybrána úspora duplicitního Bootstrapu na veřejném vstupu do KIS. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset9--vstupní-přihlášení-11-11-2026).

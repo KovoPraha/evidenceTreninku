@@ -4,11 +4,11 @@ Aktualizováno 10. 11. 2026, Europe/Prague. [TESTER-20261110](verification/teste
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md) vede i UX01 [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) a Q01/Q3
 vlastní otevřené úkoly včetně Q2-TIME; plány a rozhodnutí čti ve verzovaných souborech.
 Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 je [nasazené a cíleně ověřené](verification/planner-mobile-release-20261108/RESULTS.md) v deploy42483838259 a následném P11-RH; Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
-
 ## Poslední práce a další krok
 - **Q2-TIME NASAZENO:** #412 / `4f92b225`, deploy42622226704 SUCCESS; [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026).
   11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
   Přihlášené UAT NOT RUN: Computer Use nemohl bezpečně určit URL. Další krok: neplatný čas, reload a obnova konceptu; žádný skutečný trénink testem nevznikl.
+- **P11-ASSET9 ROZPRACOVÁNO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset9--vstupní-přihlášení-11-11-2026), [výsledky](verification/signin-bootstrap-20261111/RESULTS.md). Vstupní přihlášení má dvě kopie Bootstrap CSS. Čeká párová přejímka.
 - **P11-ASSET8 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset8--plánovač-11-11-2026), [měření](verification/schedule-bootstrap-20261111/RESULTS.md). #451/d8ae4f85, [deploy 42979420239](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42979420239) SUCCESS, 13 CI, dvě MariaDB a Chrome PASS. Cold CSS 64 454 → 31 248 B, vizuální shoda. Přihlášené produkční UAT NOT RUN.
 - **P11-HJS3 NASAZENO:** [plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs3--společný-skript-po-odstranění-duplicitních-stylů-10-11-2026), [předání](SESSION_HANDOFF_SHARED_HEADER_SCRIPT_2026-11-10.md), [měření](verification/shared-header-cache-20261110/RESULTS.md).
   #449/b753f6e7,14CI/native2DB/544Chrome/8pixelpárů PASS; warm gzip−25–30%, cold+955–1264B. [Deploy42920002806](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42920002806) SUCCESS, 2456/56289, UAT/importfalse; živé GET/hash/cache PASS. Doklady[#450](https://github.com/KovoPraha/evidenceTreninku/pull/450), bez redeploye; WIP zachovaný, přihlášené UAT NOT RUN.

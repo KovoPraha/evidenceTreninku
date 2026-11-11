@@ -11208,14 +11208,15 @@
       "primary": true,
       "role": "plan",
       "status": "PARTIAL",
-      "registry": "P11-ASSET/P11-ASSET2/P11-ASSET3/P11-ASSET4/P11-ASSET5/P11-ASSET6/P11-ASSET7/P11-ASSET8",
+      "registry": "P11-ASSET/P11-ASSET2/P11-ASSET3/P11-ASSET4/P11-ASSET5/P11-ASSET6/P11-ASSET7/P11-ASSET8/P11-ASSET9",
       "disposition": "ASSET1–7 nasazené; ASSET7 #447/c29642f1, deploy42905781826,13CI/native2DB/10pixelpárů PASS. Živé anonymní5GET/payloady stejné; přihlášené UAT a historické ASSET4/6 LIMIT zachované. ASSET8 #451/d8ae4f85, deploy 42979420239, úspora cold CSS 33 206 B, přihlášené UAT NOT RUN.",
       "evidence": [
         "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md",
         "docs/verification/public-calendar-assets-20261110/RESULTS.md",
         "docs/verification/checkout-assets-20261110/RESULTS.md",
         "docs/verification/family-assets-20261110/RESULTS.md",
-        "docs/verification/schedule-bootstrap-20261111/RESULTS.md"
+        "docs/verification/schedule-bootstrap-20261111/RESULTS.md",
+        "docs/verification/signin-bootstrap-20261111/RESULTS.md"
       ]
     },
     {

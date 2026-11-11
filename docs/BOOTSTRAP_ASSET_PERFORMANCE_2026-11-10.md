@@ -777,3 +777,22 @@ příznak přejímky false. [Průběžné výsledky](verification/schedule-boots
 ### Výsledek P11-ASSET8
 
 NASAZENO. #451/d8ae4f85, 13 CI, [deploy 42979420239](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42979420239) SUCCESS. Cold Bootstrap CSS −33 206 B, celé HTTP a pixely shodné. [Výsledky](verification/schedule-bootstrap-20261111/RESULTS.md). Přihlášená produkční přejímka NOT RUN.
+
+## P11-ASSET9 — vstupní přihlášení, 11. 11. 2026
+
+ROZPRACOVÁNO. Vývoj/Codex podle navazujícího zadání Marka. Větev
+codex/login-bootstrap-20261111, pracovní kopie
+C:/Users/Marek/Documents/Codex/evidencePavel-login-bootstrap-20261111.
+Výchozí main c629a789, vydání d8ae4f85, předchozí deploy 42979420239.
+
+Podle bodu 7 analýzy má vstupní login jednu značku CDN Bootstrapu 5.3.3
+a stejnou místní kopii ze sdílené sady. Volíme tento veřejný vstup,
+protože úspora jedné celé kopie pomůže už před získáním session.
+Rozsah je odebrání přesné CDN značky v login.php. Ostatní styly, formulář,
+ochrany, návratové cesty a databázová logika mají zachovanou paritu.
+
+Párová přejímka zahrne anonymní formulář, chybu CSRF, prázdný formulář
+a úspěšný návrat do KIS na syntetickém účtu. Chrome porovná desktop,
+mobilní rozlišení, snímky, chybové hlášení a studený i teplý přenos.
+Merge a chráněný deploy po shodě, měřené úspoře a úspěšném CI.
+Produkční kontrola veřejným GET. [Výsledky](verification/signin-bootstrap-20261111/RESULTS.md).

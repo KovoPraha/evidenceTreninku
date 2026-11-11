@@ -34,3 +34,7 @@ Runtime/flags vlastní [CURRENT](CURRENT_STATE.md). Kalibrace všech FAIL v prot
 ## P11-ASSET8, 11. 11. 2026
 
 - **P11-ASSET8 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset8--plánovač-11-11-2026), [měření](verification/schedule-bootstrap-20261111/RESULTS.md). #451/d8ae4f85, [deploy 42979420239](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42979420239) SUCCESS, 13 CI, dvě MariaDB a Chrome PASS. Cold CSS 64 454 → 31 248 B, vizuální shoda. Přihlášené produkční UAT NOT RUN.
+
+## P11-ASSET9, 11. 11. 2026
+
+- **P11-ASSET9 ROZPRACOVÁNO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset9--vstupní-přihlášení-11-11-2026), [výsledky](verification/signin-bootstrap-20261111/RESULTS.md). Vstupní přihlášení má dvě kopie Bootstrap CSS. Čeká párová přejímka.
