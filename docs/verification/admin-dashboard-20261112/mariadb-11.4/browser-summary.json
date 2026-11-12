@@ -1,0 +1,96 @@
+[
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "admin_dashboard",
+    "before": {
+      "fcp_ms": 84,
+      "ready_ms": 114.60000000000582,
+      "html_bytes": 7318,
+      "css_bytes": 53957,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 84,
+      "ready_ms": 119.90000000000873,
+      "html_bytes": 7319,
+      "css_bytes": 53957,
+      "css_decoded_bytes": 465606
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "admin_dashboard",
+    "before": {
+      "fcp_ms": 60,
+      "ready_ms": 80.19999999999709,
+      "html_bytes": 7316,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 60,
+      "ready_ms": 72.59999999999127,
+      "html_bytes": 7318,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "admin_dashboard",
+    "before": {
+      "fcp_ms": 84,
+      "ready_ms": 119.80000000000291,
+      "html_bytes": 7318,
+      "css_bytes": 53957,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 84,
+      "ready_ms": 114.60000000000582,
+      "html_bytes": 7317,
+      "css_bytes": 53957,
+      "css_decoded_bytes": 465606
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "admin_dashboard",
+    "before": {
+      "fcp_ms": 60,
+      "ready_ms": 75.19999999998254,
+      "html_bytes": 7318,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 60,
+      "ready_ms": 77.89999999999418,
+      "html_bytes": 7318,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    }
+  }
+]
