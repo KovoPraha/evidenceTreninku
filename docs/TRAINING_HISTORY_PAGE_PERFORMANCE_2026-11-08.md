@@ -74,8 +74,8 @@ Finální vydání: #394/ab49947d, deploy42486500282 SUCCESS; záloha389/2,2392t
 
 ## P11-RHC2 — omezená agregace vzorů kopírování, 12. 11. 2026
 
-ROZPRACOVÁNO, Vývoj/Codex na pokyn Marka pokračovat v měřených optimalizacích,
-testech, merge a nasazení. Base 7d452b30, poslední runtime dbab9e6e.
+NASAZENO / technická přejímka PASS, Vývoj/Codex na pokyn Marka pokračovat v měřených optimalizacích,
+testech, merge a nasazení. Base 7d452b30, výchozí runtime dbab9e6e.
 Větev codex/training-copy-performance-20261112, samostatný worktree
 C:/Users/Marek/Documents/Codex/evidencePavel-training-copy-performance-20261112.
 Původní fio WIP zůstává zachovaný.
@@ -119,3 +119,9 @@ datovaných tréninků vyšel seznam 439,67 → 7,43 ms a týmový výběr
 Před dokončením proto rozpoznáváme remízy také před prvním vyhodnocením
 hierarchie a u návratu k původnímu dotazu uvolňujeme kandidáty. Tyto hodnoty
 patří průběžnému commitu acbcea30, poslední varianta čeká na nové měření.
+
+### Výsledek P11-RHC2
+
+**P11-RHC2 NASAZENO.** [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md#p11-rhc2--omezená-agregace-vzorů-kopírování-12-11-2026), [měření](verification/training-copy-20261112/RESULTS.md). #457/87171a67, [deploy 43215069511](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43215069511) SUCCESS, 13 CI. Omezená agregace a původní výběr při remízách. Přihlášené produkční UAT NOT RUN.
+
+Další k profilování je opakované čtení počtů nad sportovci v admin_dashboard.php a jeho duplicitní Bootstrap. Přednost určí nové měření.

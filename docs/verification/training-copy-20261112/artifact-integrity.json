@@ -1,0 +1,130 @@
+{
+  "algorithm": "SHA-256 of Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/training-copy-20261112/RESULTS.md",
+      "bytes": 4497,
+      "sha256": "5dc817847f9036142102dee01a9230a08de27da604694a35c216092a8c8ffa78"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/application-checks.json",
+      "bytes": 803,
+      "sha256": "a0d123c17653d110ccd1b90c3bcc3a2459d26d620eb2792d3eeb97b2b14562f4"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/http-medians.json",
+      "bytes": 1978,
+      "sha256": "6445753f077b13c3882424df494e6736b78dec678e4fa0b89c13d393acb00d6e"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "903a70a1e8dc485ff2d7e2971448fc9235662599e5a332bfb05669799f5e169d"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-10.3/http.json.gz",
+      "bytes": 4964,
+      "sha256": "3d796ffa4cd414674ec623a67a8a9efedc322141d09646f0e414e2969911e726"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-10.3/native.json",
+      "bytes": 68733,
+      "sha256": "70a4fefe0de9c14ad36235450bc756c96ee44a5b3c8d28f28916867be227ee28"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-10.3/source.json",
+      "bytes": 421,
+      "sha256": "c40598ea52c3302d035c648f32a349d79b00f3442479753587c5f63db0dfb273"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/browser-duplikovat_trenink-dark-cold.json",
+      "bytes": 5982,
+      "sha256": "5d94e8cf244af0379a335ddc24767f539283fe51b84c44c1f3e8a76477cc3067"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/browser-duplikovat_trenink-dark-warm.json",
+      "bytes": 5886,
+      "sha256": "7b4562b20ea5f42d96608a69039c106c97ff3a6c2eda628343cb54325024b199"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/browser-duplikovat_trenink-light-cold.json",
+      "bytes": 5992,
+      "sha256": "552d46a520a4b3087e024ed5830eda674676072d1f67277ec6fbf7462abbc79b"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/browser-duplikovat_trenink-light-warm.json",
+      "bytes": 5887,
+      "sha256": "e48f32ca95f03610b98b550028b6f2b736dd2910d11f11537785cd1963c0a005"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/browser-summary.json",
+      "bytes": 1984,
+      "sha256": "c810141a6c3535417d8dad06ef4da53a2970b16302d5790d4a9df921e0ed09a3"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "903a70a1e8dc485ff2d7e2971448fc9235662599e5a332bfb05669799f5e169d"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/duplikovat_trenink-dark-cold-after.png",
+      "bytes": 75934,
+      "sha256": "4f269ea52b153d57366fcda99c54583535df8df93634245ddcbbc6e0cb6dcbff"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/duplikovat_trenink-dark-cold-before.png",
+      "bytes": 75934,
+      "sha256": "4f269ea52b153d57366fcda99c54583535df8df93634245ddcbbc6e0cb6dcbff"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/duplikovat_trenink-light-cold-after.png",
+      "bytes": 106297,
+      "sha256": "817784b17eea22e94348c6cc5fafc2c9219758ea608a81cf562d56469e3686b9"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/duplikovat_trenink-light-cold-before.png",
+      "bytes": 106297,
+      "sha256": "817784b17eea22e94348c6cc5fafc2c9219758ea608a81cf562d56469e3686b9"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/http.json.gz",
+      "bytes": 5001,
+      "sha256": "64bb1e9e79a60b07485adeb78cb2f9cb8d22c0dfbba79450e19d05aacc20c051"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/native.json",
+      "bytes": 68691,
+      "sha256": "f8bcd977553ed029753bfec9ebce5e6c7662c96bc14a12dc40a787816d10ebbb"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/mariadb-11.4/source.json",
+      "bytes": 421,
+      "sha256": "c40598ea52c3302d035c648f32a349d79b00f3442479753587c5f63db0dfb273"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/production-after.json",
+      "bytes": 1160,
+      "sha256": "3ecbaee848b605c7b47eece53c4b95d0eb074494bd186e98807c4e586779c0bb"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/production-before.json",
+      "bytes": 1160,
+      "sha256": "3ecbaee848b605c7b47eece53c4b95d0eb074494bd186e98807c4e586779c0bb"
+    },
+    {
+      "path": "docs/verification/training-copy-20261112/release.json",
+      "bytes": 511,
+      "sha256": "065adf27efd4880e788535fb0bffae74e7338d9e5e94e43600b1eadcd3b18dad"
+    }
+  ]
+}

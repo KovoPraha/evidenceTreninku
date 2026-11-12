@@ -35,3 +35,5 @@ Finální důkazy jsou na větvi `codex/training-history-release-proof-20261108`
 [PR #398](https://github.com/KovoPraha/evidenceTreninku/pull/398) předává důkazy do main; další deploy není potřeba. Neopakovat vydání ani writery.
 Další krok mimo uzavřený řez: přihlášené produkční UAT historií NOT RUN,
 ostatní AJAX/profilové historie a celé K0.2 otevřené; nepředstírat jejich přejímku.
+
+- **P11-RHC2 NASAZENO.** [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md#p11-rhc2--omezená-agregace-vzorů-kopírování-12-11-2026), [měření](verification/training-copy-20261112/RESULTS.md). #457/87171a67, [deploy 43215069511](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43215069511) SUCCESS, 13 CI. Omezená agregace a původní výběr při remízách. Přihlášené produkční UAT NOT RUN.

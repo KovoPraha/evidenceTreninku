@@ -1,0 +1,9 @@
+{
+  "duplikovat_trenink.php": {
+    "baseline": "7d452b3015fe7835eafc5b9cea6009d9a3101450",
+    "head": "7052add9613dbf5ccc5b91999afd702faec5b0db",
+    "before_sha256": "5f6b50b9be15673b0be5b29f40b252bc3578c81613ae2b1a113a71c76a733ea4",
+    "after_sha256": "59b9e0f7d39944e1151ad50e73b9f30221524c68b529af81ee4c732e3aa92658",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  }
+}
