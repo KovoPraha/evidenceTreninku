@@ -244,6 +244,10 @@ final class DeployWorkflowContractTest extends TestCase
             self::assertStringContainsString("'{$table}'", $backup);
         }
         foreach ([
+            'club_makeup_auto_settings',
+            'club_makeup_offer_auto',
+            'club_makeup_route_exceptions',
+            'club_makeup_plan_exclusions',
             'club_makeup_config_events',
             'club_makeup_credits',
             'club_makeup_events',

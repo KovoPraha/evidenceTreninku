@@ -159,6 +159,8 @@ try {
                 . "VALUES(200,2,1,1,2016,2018,1)");
             $m = require dirname(__DIR__, 2).'/migrations/20261102171000_offer_makeup_scopes.php';
             $m['up']($pdo);
+            $m = require dirname(__DIR__, 2).'/migrations/20261112140000_club_makeup_automatic.php';
+            $m['up']($pdo);
             foreach ([1 => 10,
             2 => 11] as $credit => $person) {
                 $pdo->prepare("INSERT INTO "
