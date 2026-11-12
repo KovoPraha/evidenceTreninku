@@ -15,7 +15,8 @@ Větev `codex/makeup-auto-20261112`, oddělený worktree z `origin/main` `4b9bcb
 [Draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459) otevřen;
 merge a aktivace NOT RUN; runtime implementace lokálně hotová včetně migrace,
 administrace, rodičovské a trenérské stránky. [Průběžné testy a meze](verification/makeup-auto-20261112/RESULTS.md).
-Další krok: dokončit izolované CI včetně MariaDB a souběhu, pak rolové UAT.
+CI 43248400672: 2460 testů / 56453 assertions, MariaDB 10.3/11.4 včetně
+souběhu PASS; PHPStan/styl, docs a CodeQL PASS. Další krok: rolové UAT.
 Aktivace skutečných
 nabídek závisí na schválených kategoriích, lhůtách a kapacitách.
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.
