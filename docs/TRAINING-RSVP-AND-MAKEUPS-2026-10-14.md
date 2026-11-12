@@ -280,7 +280,9 @@ aktivace a lidské UAT dosud neproběhly. Výsledek kódu a testů se doplní n�
 Implementační větev `codex/makeup-auto-20261112` obsahuje opt-in migraci,
 jediný serverový výběr automatických termínů, opakovanou kontrolu při POST,
 výpočet volných míst se společnou kapacitou nákupu, výjimky, audit a rozhraní
-koordinátora, rodiče a trenéra. Nová nabídka po zapnutí vytvoří politiku a
+koordinátora, rodiče a trenéra. Koordinátor má stránkovanou historii nároků a
+rezervací, správce může upravit věkové hranice v kanonické nabídce.
+Nová nabídka po zapnutí vytvoří politiku a
 pravidla omluv také pro již naplánované budoucí termíny příslušné soupisky.
 [Ověření a meze](verification/makeup-auto-20261112/RESULTS.md),
 [draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459).

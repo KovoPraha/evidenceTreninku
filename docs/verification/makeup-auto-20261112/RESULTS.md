@@ -6,6 +6,8 @@ Větev `codex/makeup-auto-20261112`, draft [PR #459](https://github.com/KovoPrah
 Schéma přidává výchozí vypnutý přepínač, děděná pravidla a výjimky; čtení
 termínů je bez zápisu, první rezervace vytváří označený slot v transakci.
 Staré kredity, rezervace, ruční sloty a směry zůstávají ve schématu.
+Koordinátor vidí stavové počty, výjimky a stránkovaný deník všech událostí
+nároků/rezervací; úprava věkových mezí zůstává v kanonické nabídce pro správce.
 
 ## Ověření
 

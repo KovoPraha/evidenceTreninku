@@ -231,6 +231,11 @@ value="<?= (int) $autoSettings[$field] ?>" required>
 <div class="col-12"><button class="btn btn-primary">Uložit společná pravidla</button></div></form></section>
 <h2 class="h5 mt-4">Výjimky nabídek</h2>
 <p class="small text-muted">Každá nabídka dědí společná pravidla, pokud není vyplněna výjimka. Stávající vypnuté pravidlo omluv je nutné zapnout zvlášť.</p>
+<p class="small text-muted">Věkové hranice jsou součástí nabídky kroužku.
+<?php if (roleAtLeast('admin')): ?>
+<a href="club_program_offers_admin.php">Upravit nabídky a ročníky narození</a>.
+<?php endif; ?>
+</p>
 <div class="row g-3"><?php foreach ($offers as $offer): $override = $autoOffers[(int) $offer['id']] ?? null; ?>
 <div class="col-lg-6">
 <form method="post" class="card card-body h-100">
@@ -589,6 +594,47 @@ endforeach;
 </tbody>
 </table>
 </div>
+<?php
+    $historyPage = max(1, min(100000, (int) ($_GET['history_page'] ?? 1)));
+    $historyOffset = ($historyPage - 1) * 50;
+    $historyQuery = $pdo->query('SELECT e.id,e.created_at,e.action,c.id AS credit_id,c.status AS credit_status, '
+        . 'sp.jmeno,sp.prijmeni,src.datum AS source_date,src.nazev AS source_name, '
+        . 'target.datum AS target_date,target.nazev AS target_name,r.status AS reservation_status '
+        . 'FROM club_makeup_events e JOIN club_makeup_credits c ON c.id=e.credit_id '
+        . 'JOIN sportovci sp ON sp.id=c.sportovec_id '
+        . 'JOIN planovane_treninky src ON src.id=c.source_plan_id '
+        . 'LEFT JOIN club_makeup_reservations r ON r.id=e.reservation_id '
+        . 'LEFT JOIN planovane_treninky target ON target.id=r.target_plan_id '
+        . 'ORDER BY e.id DESC LIMIT 51 OFFSET ' . $historyOffset);
+    $historyRows = $historyQuery->fetchAll(PDO::FETCH_ASSOC);
+    $hasNextHistory = count($historyRows) > 50;
+    $historyRows = array_slice($historyRows, 0, 50);
+    ?>
+<h2 class="h5 mt-5" id="historie">Historie nároků a rezervací</h2>
+<p class="small text-muted">Úplný deník změn je stránkovaný od nejnovější události.
+Stav nároku a rezervace v tabulce je jejich současný stav.</p>
+<div class="table-responsive"><table class="table table-sm">
+<thead><tr><th>Čas</th><th>Dítě</th><th>Událost</th><th>Zdroj</th><th>Cíl</th><th>Stav</th></tr></thead>
+<tbody>
+<?php foreach ($historyRows as $history): ?>
+<tr>
+<td><?= makeupAdminH($history['created_at']) ?></td>
+<td><?= makeupAdminH($history['prijmeni'] . ' ' . $history['jmeno']) ?></td>
+<td><?= makeupAdminH($history['action']) ?> #<?= (int) $history['credit_id'] ?></td>
+<td><?= makeupAdminH($history['source_date'] . ' ' . $history['source_name']) ?></td>
+<td><?= makeupAdminH(($history['target_date'] ?? '') . ' ' . ($history['target_name'] ?? '')) ?></td>
+<td><?= makeupAdminH($history['credit_status']) ?> / <?= makeupAdminH($history['reservation_status'] ?? '—') ?></td>
+</tr>
+<?php endforeach; ?>
+</tbody></table></div>
+<nav class="d-flex gap-2" aria-label="Stránky historie náhrad">
+<?php if ($historyPage > 1): ?>
+<a class="btn btn-sm btn-outline-secondary" href="?history_page=<?= $historyPage - 1 ?>#historie">Novější</a>
+<?php endif; ?>
+<?php if ($hasNextHistory): ?>
+<a class="btn btn-sm btn-outline-secondary" href="?history_page=<?= $historyPage + 1 ?>#historie">Starší</a>
+<?php endif; ?>
+</nav>
 <?php endif; ?>
 <?php
 endif;
