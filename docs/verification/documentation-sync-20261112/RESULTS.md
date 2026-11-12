@@ -15,7 +15,8 @@ nebyl upraven.
 | Fio/SumUp | [Aktivace](../live-payments-20261105/ACTIVATION.md), [CURRENT](../../CURRENT_STATE.md) | Vývojový kontext již nepopisuje aktivaci jako budoucí krok. Nové finanční operace zůstávají samostatné. |
 
 Předání: [PR #460](https://github.com/KovoPraha/evidenceTreninku/pull/460)
-otevřený po pushi větve `codex/docs-current-state-20261112`; merge čeká na CI.
+sloučen 12. 11. jako `ca95f6c3` po 11 úspěšných CI kontrolách včetně
+PHPUnit, CodeQL, dokumentace a MariaDB 10.3/11.4.
 Místní `php tools/check-current-docs.php` PASS (80 řádků CURRENT,
 5 393 odkazů, 108 archivních bloků), `git diff --check` PASS.
 Sloučení dokumentace nemění nasazenou aplikaci ani provozní přepínače.
