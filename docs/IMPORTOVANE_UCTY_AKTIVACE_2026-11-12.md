@@ -2,6 +2,8 @@
 
 ID: KIS-ACT-01 / PL-9d3bb013a4. Stav: **K OVĚŘENÍ**. Vlastník implementace: vývoj; kontrola identity, textu pozvánky a produkčního pilotu: vedení TJ KOVO Praha. Větev `codex/parent-account-activation` z `origin/main` `66a4cc08`, izolovaný worktree `C:\xampp\htdocs\evidencePavel-parent-activation`. Bez merge, produkčního nasazení a hromadného odeslání. Závěry o datech vycházejí ze zdrojového kódu a syntetických testů; skutečné počty a stav konkrétních osob v produkci je nutné ověřit chráněným administrativním přehledem. Tento dokument neobsahuje osobní údaje.
 
+Sdílení: commit `5a1df911`, push větve a [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463). CI běží; stav před integrací se ověřuje v PR. Schválení vedením a produkční pilot jsou samostatné brány.
+
 ## Analýza současného stavu
 
 | Záznam | Význam | Co dělá import starého KIS |
