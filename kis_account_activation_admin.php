@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Database bootstrap unavailable.');
+}
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/imported_account_activation.php';
 require_once __DIR__ . '/includes/app_url.php';

@@ -5,6 +5,9 @@ require_once dirname(__DIR__) . '/includes/session_security.php';
 app_session_start();
 app_session_send_auth_no_store_headers();
 require_once dirname(__DIR__) . '/db.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Database bootstrap unavailable.');
+}
 require_once dirname(__DIR__) . '/csrf_helper.php';
 require_once dirname(__DIR__) . '/includes/imported_account_activation.php';
 

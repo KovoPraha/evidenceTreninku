@@ -185,6 +185,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261106090000_staff_notifications',
                 '20261107180000_shop_document_automation',
                 '20261108070000_medical_read_covering_index',
+                '20261112150000_imported_account_activation',
 
             ],
             array_keys($catalog)
@@ -232,6 +233,8 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertSame(1, (int)$pdo->query(('SELECT COUNT(*) FROM club_event_term_versions WHERE scope_type=\'athlete_registration\' AND consent_pu'
  . 'rpose=\'csc_birth_number_sharing\' AND terms_version=\'csc-birth-number-sharing-2026-10-20-v1\''))->fetchColumn());
         self::assertTrue($this->tableExists($pdo, 'password_reset_tokens'));
+        self::assertTrue($this->columnExists($pdo, 'password_reset_tokens', 'delivery_email'));
+        self::assertTrue($this->tableExists($pdo, 'public_account_activation_events'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feeds'));
         self::assertTrue($this->tableExists($pdo, 'family_calendar_feed_events'));
         self::assertTrue($this->tableExists($pdo, 'member_charge_reminder_preferences'));
