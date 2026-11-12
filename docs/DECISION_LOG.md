@@ -6,6 +6,20 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-12-01
+
+MAKEUP-AUTO-01: připravit rozšíření jediné existující služby náhrad s výchozím
+vypnutým organizačním přepínačem. Zachovat historické kredity, rezervace,
+ruční sloty a směrové vazby; automatický výběr musí sdílet serverovou kontrolu
+věku a kapacity s rezervací. Varianta hromadně vygenerovat všechny dvojice
+nabídek a předem zapsat všechny sloty byla odmítnuta: nové nabídky by vyžadovaly
+další synchronizaci, dvojice se mohou stát zastaralými a měnily by význam
+historických řádků. Virtuální nabídka se materializuje až při první rezervaci
+pod zámkem plánu. Vedení musí dodat skutečné kategorie a provozní hodnoty před
+aktivací; technický návrh neurčuje jejich čísla. Pokyn vlastníka 12. 11.:
+připravit implementaci dle dodaného zadání.
+[Technická analýza a etapy](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026).
+
 ## D2026-11-10-08
 
 COACH-ROSTER-01: trenérská agenda čte pouze přímo svěřené `club_teams` a jejich aktuální `club_roster_members`. Varianta dědění jmen z rodičovské skupiny byla odmítnuta, protože grant rodiče neopravňuje ke každé podřízené soupisce. Registrátorská projekce `memberRosterRead()` vrací širší osobní údaje a je vázána na editační pracovní roli; místo ní je úzká čtecí projekce jméno/příjmení. Čekající a ukončená jména vyžadují zvláštní oprávnění, proto první etapa ukazuje jen aktivní členství. [Plán](COACH_GROUP_ROSTERS_2026-11-10.md), [testy](verification/coach-group-rosters-20261110/RESULTS.md).
