@@ -1,0 +1,110 @@
+{
+  "10.3": {
+    "coach": {
+      "before": 5.465,
+      "after": 11.706
+    },
+    "sports_lead": {
+      "before": 3.982,
+      "after": 3.589
+    },
+    "registrar": {
+      "before": 3.676,
+      "after": 3.466
+    },
+    "program_coordinator": {
+      "before": 5.687,
+      "after": 5.333
+    },
+    "catalog_manager": {
+      "before": 3.744,
+      "after": 3.667
+    },
+    "order_operator": {
+      "before": 3.777,
+      "after": 3.592
+    },
+    "finance_manager": {
+      "before": 3.791,
+      "after": 4.679
+    },
+    "tv_operator": {
+      "before": 4.078,
+      "after": 5.92
+    },
+    "bar_operator": {
+      "before": 4.55,
+      "after": 3.942
+    },
+    "bar_admin": {
+      "before": 3.861,
+      "after": 3.97
+    },
+    "system_admin": {
+      "before": 18.087,
+      "after": 16.986
+    },
+    "other_coach": {
+      "before": 3.671,
+      "after": 3.404
+    },
+    "anonymous": {
+      "before": 1.5,
+      "after": 1.487
+    }
+  },
+  "11.4": {
+    "coach": {
+      "before": 5.146,
+      "after": 11.288
+    },
+    "sports_lead": {
+      "before": 3.379,
+      "after": 3.354
+    },
+    "registrar": {
+      "before": 3.432,
+      "after": 3.266
+    },
+    "program_coordinator": {
+      "before": 3.183,
+      "after": 3.13
+    },
+    "catalog_manager": {
+      "before": 3.175,
+      "after": 3.073
+    },
+    "order_operator": {
+      "before": 3.009,
+      "after": 4.991
+    },
+    "finance_manager": {
+      "before": 4.757,
+      "after": 3.507
+    },
+    "tv_operator": {
+      "before": 3.08,
+      "after": 3.189
+    },
+    "bar_operator": {
+      "before": 3.125,
+      "after": 3.296
+    },
+    "bar_admin": {
+      "before": 3.169,
+      "after": 3.347
+    },
+    "system_admin": {
+      "before": 15.182,
+      "after": 13.83
+    },
+    "other_coach": {
+      "before": 3.527,
+      "after": 3.427
+    },
+    "anonymous": {
+      "before": 1.607,
+      "after": 1.518
+    }
+  }
+}

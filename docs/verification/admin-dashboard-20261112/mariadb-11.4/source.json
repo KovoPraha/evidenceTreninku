@@ -1,0 +1,9 @@
+{
+  "admin_dashboard.php": {
+    "baseline": "5cd6ad07b7f99b7b8d361f49520025d799e8776e",
+    "head": "5dd88550f48cd34f2fa51b3b2459925a8ba781b2",
+    "before_sha256": "8dee9850321370413657309b823ebc1ab51b7d391a672b6b3988c35bf555b9ba",
+    "after_sha256": "3867efc48ac21d1a2365006779f6513e853025573b534ca5cc54b298efd1f5ae",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  }
+}

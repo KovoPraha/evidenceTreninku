@@ -421,4 +421,4 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 
 | PL-5088402eb8 | [P11-JSZ komprese JavaScriptů](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md) | DONE / P11-JSZ | PR427/deploy42774356221 SUCCESS; produkční13JS−69 %, decodedbytes/8DOM PASS. |
 
-| PL-4e386ec554 | [P11-ADM — administrátorský přehled](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md) | ROZPRACOVÁNO / P11-ADM | [Měření](verification/admin-dashboard-20261112/RESULTS.md), společná agregace čtyř počtů. |
+| PL-4e386ec554 | [P11-ADM — administrátorský přehled](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md) | DONE / P11-ADM | [Měření](verification/admin-dashboard-20261112/RESULTS.md), 2 SQL místo 4, #465/be4ce55a, deploy 43326177751 SUCCESS; UAT NOT RUN. |

@@ -298,3 +298,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 - 12. 11. 2026 P11-RHC2. #457/87171a67 vydán po shodě celých řádků/HTTP, snímků a měřeném přínosu. [Doklady](verification/training-copy-20261112/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43215069511).
 
 - 12. 11. 2026 P11-ADM. Zahájeno měření společné agregace čtyř administrátorských počtů. [Plán](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md).
+
+- 13. 11. 2026 P11-ADM. #465/be4ce55a vydán po 13 CI a přesné paritě. Vybrány 2 SQL, varianta 1 SQL zamítnuta kvůli regresi. [Doklady](verification/admin-dashboard-20261112/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43326177751). Přihlášené produkční UAT NOT RUN.
