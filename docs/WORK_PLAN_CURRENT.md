@@ -5,6 +5,22 @@ Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a rel
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
+
+## MAKEUP-AUTO-01 — automatické náhradní lekce (12. 11. 2026)
+
+**K VYDÁNÍ: vlastník 12. 11. požádal o nasazení kódu; automatika zůstane vypnutá.**
+[Technická analýza, etapy, migrace, rizika a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026).
+Vlastník vývoj KIS; vedení KOVO potvrzuje věkové hranice a centrální pravidla.
+Větev `codex/makeup-auto-20261112`, oddělený worktree z `origin/main` `4b9bcb1a`.
+[Draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459) otevřen;
+merge a aktivace NOT RUN; runtime implementace lokálně hotová včetně migrace,
+administrace, rodičovské a trenérské stránky. [Průběžné testy a meze](verification/makeup-auto-20261112/RESULTS.md).
+CI 43248400672: 2460 testů / 56453 assertions, MariaDB 10.3/11.4 včetně
+souběhu PASS; PHPStan/styl, docs a CodeQL PASS. Další krok: sloučit PR #459,
+vydat chráněným workflow s `uat_schvaleno=false`, `importovat_krouzky=false`,
+ověřit receipt/migraci/HTTP; potom rolové UAT.
+Aktivace skutečných
+nabídek závisí na schválených kategoriích, lhůtách a kapacitách.
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.
 Jde o jediný průběžný seznam práce, včetně konceptů a budoucích etap; [WORK_REGISTER](WORK_REGISTER.md)
 odkazuje sem. Sjednocení #333/#334 dokládá [protokol](verification/documentation-reconcile-20261106/RESULTS.md).
@@ -16,7 +32,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 K OVĚŘENÍ: [analýza, implementace, migrace, testy a otevřené brány](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md). Vlastník vývoj; identitu, text pozvánky a pilot schvaluje vedení TJ KOVO Praha. Větev/worktree `codex/parent-account-activation` / `C:\xampp\htdocs\evidencePavel-parent-activation`, base `origin/main` `66a4cc08`. Syntetické testy PASS; celý lokální PHPUnit blokuje chybějící vendor třída, lokální MariaDB/browser/produkční počty NOT RUN. Žádný merge, deploy ani odeslání. Další krok: programátorské review, izolované testovací účty, schválení vedením před produkcí.
 
-Předání: commit `64b546da`, push, [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463); 68 cílených testů / 3217 kontrol a všech 11 CI kontrol PASS včetně 2463 PHPUnit testů a obou MariaDB. Programátorské review, přihlášené UAT a produkční schválení vedením otevřené.
+Předání: commit `64b546da`, push, [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463); 68 cílených testů / 3217 kontrol a všech 11 CI kontrol PASS včetně 2463 PHPUnit testů a obou MariaDB. Souběžný `main` `428a2258` nyní převzat do větve, nové CI společného stromu čeká. Programátorské review, přihlášené UAT a produkční schválení vedením otevřené.
 
 ## BAR-DISPLAY-STOCK — oprava obrazovek a převod zásob (10. 11. 2026)
 

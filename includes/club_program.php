@@ -444,6 +444,19 @@ function clubProgramCreateOfferInTransaction(
         null,
         $result
     );
+    if ($birthYearFrom !== null && $birthYearTo !== null) {
+        require_once __DIR__ . '/club_makeup.php';
+        if (clubMakeupAutoEnabled($pdo)) {
+            clubMakeupPolicySave(
+                $pdo,
+                $actorId,
+                (int) $result['id'],
+                true,
+                clubMakeupAutoValue($pdo, (int) $result['id'], 'excuse_hours'),
+                true
+            );
+        }
+    }
     return $result;
 }
 /** @param array<string,mixed> $input @return array{id:int,changed:bool,status:string} */
@@ -526,6 +539,13 @@ function clubProgramUpdateOffer(PDO $pdo, int $actorId, int $offerId, array $inp
         $capacityState = clubProgramOfferCapacityState($pdo, $before, null, true);
         if ($capacity !== null && (int) $capacity < (int) $capacityState['occupied_count']) {
             throw new ClubProgramException('Kapacitu nelze snížit pod počet aktivních účastí a platných rezervací.');
+        }
+        if ($capacity !== null) {
+            require_once __DIR__ . '/club_makeup.php';
+            if ((int) $capacity < (int) $capacityState['occupied_count']
+                    + clubMakeupFutureReservedForOffer($pdo, $before)) {
+                throw new ClubProgramException('Kapacitu nelze snížit pod počet účastníků a rezervovaných náhrad.');
+            }
         }
         $after = $before;
         foreach (['name' => $name,
@@ -1569,6 +1589,13 @@ function clubProgramActivateOrderItemInTransaction(
             )) {
                 throw new ClubProgramException('Kapacita společné soupisky v tomto období je vyčerpána.');
             }
+        }
+        require_once __DIR__ . '/club_makeup.php';
+        $futureMakeups = clubMakeupFutureReservedForOffer($pdo, $item);
+        if ($futureMakeups > 0
+            && (int) $capacityState['occupied_count'] + $futureMakeups >= (int) $item['capacity']
+            && !clubProgramPersonOccupiesSharedCapacity($pdo, $item, $sportovecId, true)) {
+            throw new ClubProgramException('Kapacitu budoucího tréninku již obsadili náhradníci.');
         }
     }
     if ($termsRequired) {

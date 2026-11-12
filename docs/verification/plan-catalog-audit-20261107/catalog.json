@@ -2315,10 +2315,10 @@
       "path": "docs/TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md",
       "title": "Účast na tréninku a návrh náhradních lekcí",
       "primary": true,
-      "role": "completed-plan",
-      "status": "DONE",
-      "registry": "P08",
-      "disposition": "Implementace omluvenek/náhrad nasazená a znovu ověřená; přihlášené lidské UAT samostatně P08.",
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "MAKEUP-AUTO-01",
+      "disposition": "Původní náhrady nasazené a ověřené; oddíl MAKEUP-AUTO-01 je nový připravený návrh bez implementace.",
       "evidence": [
         "docs/verification/makeup-audit-20261106/RESULTS.md"
       ]

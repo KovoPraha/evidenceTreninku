@@ -13,6 +13,143 @@ require_once dirname(__DIR__, 2).'/includes/training_rsvp.php';
 
 final class ClubMakeupTest extends TestCase
 {
+    public function testAutomaticSettingsKeepMigrationHistoryAndLimitNewCredits(): void
+    {
+        $pdo = $this->fixture();
+        $migration = require dirname(__DIR__, 2).'/migrations/20261112140000_club_makeup_automatic.php';
+        $migration['up']($pdo);
+        self::assertTrue($migration['verify']($pdo));
+        self::assertSame(0, (int) $pdo->query('SELECT enabled FROM club_makeup_auto_settings')->fetchColumn());
+        self::assertSame(0, (int) $pdo->query('SELECT COUNT(*) FROM club_makeup_credits')->fetchColumn());
+
+        \clubMakeupAutoSettingsSave($pdo, 1, true, 8, 1, 1, 6);
+        $policy = $pdo->query('SELECT q.enabled,q.excuse_hours FROM club_makeup_offer_policies m '
+            . 'JOIN club_makeup_policies q ON q.id=m.policy_id WHERE m.offer_id=11')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame(1, (int) $policy['enabled']);
+        self::assertSame(8, (int) $policy['excuse_hours']);
+        \clubMakeupFinalizeSource($pdo, 100, 500, 1);
+        self::assertSame(
+            date('Y-m-d', strtotime('-1 day')),
+            $pdo->query('SELECT expires_on FROM club_makeup_credits')->fetchColumn()
+        );
+        $quotaPdo = $this->fixture();
+        \clubMakeupAutoSettingsSave($quotaPdo, 1, true, 8, 365, 1, 6);
+        $quotaPdo->exec("INSERT INTO club_makeup_credits(source_plan_id,sportovec_id,source_enrollment_id,"
+            . "source_offer_id,status,expires_on,excused_at) "
+            . "VALUES(200,10,40,11,'used','2030-01-01','2026-01-01 08:00:00')");
+        \clubMakeupFinalizeSource($quotaPdo, 100, 500, 1);
+        self::assertSame(1, (int) $quotaPdo->query('SELECT COUNT(*) FROM club_makeup_credits')->fetchColumn());
+    }
+
+    public function testAutomaticCancellationRuleIsSnapshottedAtBooking(): void
+    {
+        $pdo = $this->fixture();
+        $pdo->exec('ALTER TABLE club_program_offers ADD COLUMN capacity INTEGER NULL');
+        $pdo->exec("ALTER TABLE club_program_offers ADD COLUMN status TEXT NOT NULL DEFAULT 'active'");
+        $pdo->exec('UPDATE club_program_offers SET capacity=20,product_id=id,variant_id=id');
+        $pdo->exec("UPDATE club_program_enrollments SET status='active' WHERE id=41");
+        \clubMakeupAutoSettingsSave($pdo, 1, true, 12, 365, 0, 6);
+        $pdo->prepare("INSERT INTO club_makeup_credits(source_plan_id,sportovec_id,source_enrollment_id,"
+            . "source_offer_id,status,expires_on,excused_at) VALUES(100,10,41,12,'available',?,'2026-01-01 08:00:00')")
+            ->execute([date('Y-m-d', strtotime('+2 months'))]);
+        $credit = (int) $pdo->lastInsertId();
+        $reservation = \clubMakeupReserve($pdo, 10, $credit, 200, 'athlete', 50);
+        self::assertSame(6, (int) $pdo->query('SELECT cancel_hours_snapshot FROM club_makeup_reservations')->fetchColumn());
+        \clubMakeupAutoSettingsSave($pdo, 1, true, 12, 365, 0, 720);
+        $reserved = \clubMakeupReservationsForPerson($pdo, 10);
+        self::assertSame(6, (int) $reserved[0]['excuse_hours']);
+        \clubMakeupCancelReservation($pdo, 10, $reservation, 'athlete', 50);
+        self::assertSame('available', $pdo->query('SELECT status FROM club_makeup_credits')->fetchColumn());
+    }
+
+    public function testAutomaticOfferAndPlanNeedNoManualRouteOrTrainerSlot(): void
+    {
+        $pdo = $this->fixture();
+        $pdo->exec("ALTER TABLE club_program_offers ADD COLUMN capacity INTEGER NULL");
+        $pdo->exec("ALTER TABLE club_program_offers ADD COLUMN status TEXT NOT NULL DEFAULT 'active'");
+        $pdo->exec('UPDATE club_program_offers SET capacity=3,product_id=id,variant_id=id');
+        $pdo->exec("UPDATE club_program_enrollments SET status='active' WHERE id=41");
+        $pdo->exec("INSERT INTO sportovci VALUES(11,'Běla','Testová','2017-04-01','aktivni')");
+        $pdo->exec("INSERT INTO sportovci VALUES(12,'Cyril','Testový','2017-04-01','aktivni')");
+        $pdo->exec("INSERT INTO sportovci VALUES(13,'Dana','Testová','2017-04-01','aktivni')");
+        $pdo->exec("INSERT INTO child_access_accounts VALUES(53,13,'dana',1,1)");
+        $pdo->exec("INSERT INTO club_program_enrollments VALUES(42,21,11,30,'active','2020-01-01','2030-01-01')");
+        $pdo->exec("INSERT INTO club_program_enrollments VALUES(43,21,12,31,'active','2020-01-01','2030-01-01')");
+        $pdo->exec("INSERT INTO club_program_enrollments VALUES(44,12,13,31,'active','2020-01-01','2030-01-01')");
+        \clubMakeupPolicySave($pdo, 1, 12, true, 12, false);
+        \clubMakeupPolicySave($pdo, 1, 21, true, 12, false);
+        \clubMakeupRouteSave($pdo, 1, 12, 21, false);
+        $expires = date('Y-m-d', strtotime('+2 months'));
+        $insert = $pdo->prepare("INSERT INTO club_makeup_credits(source_plan_id,sportovec_id,source_enrollment_id,"
+            . "source_offer_id,status,expires_on,excused_at) VALUES(100,?,?,12,'available',?,'2026-01-01 08:00:00')");
+        $insert->execute([10,41,$expires]);
+        $credit = (int) $pdo->lastInsertId();
+        $insert->execute([13,44,$expires]);
+        $secondCredit = (int) $pdo->lastInsertId();
+        self::assertSame([], \clubMakeupAvailableSlots($pdo, 10, $credit));
+        \clubMakeupAutoSettingsSave($pdo, 1, true, 12, 365, 0, 12);
+        self::assertTrue(\clubMakeupRouteAllowed($pdo, 12, 21));
+        self::assertCount(1, \clubMakeupAvailableSlots($pdo, 10, $credit));
+        self::assertSame(0, (int) $pdo->query('SELECT COUNT(*) FROM club_makeup_slots')->fetchColumn());
+        $reservation = \clubMakeupReserve($pdo, 10, $credit, 200, 'athlete', 50);
+        self::assertGreaterThan(0, $reservation);
+        self::assertSame('automatic', $pdo->query('SELECT origin FROM club_makeup_slots WHERE plan_id=200')->fetchColumn());
+        $targetOffer = $pdo->query('SELECT * FROM club_program_offers WHERE id=21')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame(1, \clubMakeupFutureReservedForOffer($pdo, $targetOffer));
+        self::assertSame([], \clubMakeupAvailableSlots($pdo, 13, $secondCredit));
+        try {
+            \clubMakeupReserve($pdo, 13, $secondCredit, 200, 'athlete', 53);
+            self::fail('A full group accepted a second makeup.');
+        } catch (\ClubMakeupException $error) {
+            self::assertStringContainsString('Kapacita', $error->getMessage());
+        }
+        $pdo->exec('UPDATE club_makeup_slots SET capacity=1 WHERE plan_id=200');
+        $pdo->exec('UPDATE club_program_offers SET capacity=4 WHERE id=21');
+        self::assertCount(1, \clubMakeupAvailableSlots($pdo, 13, $secondCredit));
+        $secondReservation = \clubMakeupReserve($pdo, 13, $secondCredit, 200, 'athlete', 53);
+        self::assertGreaterThan(0, $secondReservation);
+        \clubMakeupCancelReservation($pdo, 13, $secondReservation, 'athlete', 53);
+        \clubMakeupCancelReservation($pdo, 10, $reservation, 'athlete', 50);
+        self::assertSame(0, \clubMakeupFutureReservedForOffer($pdo, $targetOffer));
+        self::assertCount(1, \clubMakeupAvailableSlots($pdo, 13, $secondCredit));
+        \clubMakeupAutoRouteExceptionSave($pdo, 1, 12, 21, false);
+        self::assertSame([], \clubMakeupAvailableSlots($pdo, 13, $secondCredit));
+        \clubMakeupRouteSave($pdo, 1, 12, 21, true);
+        self::assertFalse(\clubMakeupRouteAllowed($pdo, 12, 21));
+        \clubMakeupAutoSettingsSave($pdo, 1, false, 12, 365, 0, 12);
+        self::assertTrue(\clubMakeupRouteAllowed($pdo, 12, 21));
+    }
+
+    public function testAutomaticAgeAndPlanExclusionAreEnforcedOnTheServer(): void
+    {
+        $pdo = $this->fixture();
+        $pdo->exec('ALTER TABLE club_program_offers ADD COLUMN capacity INTEGER NULL');
+        $pdo->exec("ALTER TABLE club_program_offers ADD COLUMN status TEXT NOT NULL DEFAULT 'active'");
+        $pdo->exec('UPDATE club_program_offers SET capacity=20,product_id=id,variant_id=id');
+        $pdo->exec("UPDATE club_program_enrollments SET status='active' WHERE id=41");
+        \clubMakeupPolicySave($pdo, 1, 12, true, 12, false);
+        \clubMakeupPolicySave($pdo, 1, 21, true, 12, false);
+        \clubMakeupRouteSave($pdo, 1, 12, 21, false);
+        $pdo->prepare("INSERT INTO club_makeup_credits(source_plan_id,sportovec_id,source_enrollment_id,"
+            . "source_offer_id,status,expires_on,excused_at) VALUES(100,10,41,12,'available',?,'2026-01-01 08:00:00')")
+            ->execute([date('Y-m-d', strtotime('+2 months'))]);
+        $credit = (int) $pdo->lastInsertId();
+        \clubMakeupAutoSettingsSave($pdo, 1, true, 24, 365, 0, 12);
+        self::assertCount(1, \clubMakeupAvailableSlots($pdo, 10, $credit));
+        \clubMakeupAutoPlanExclusionSave($pdo, 1, 200, true);
+        self::assertSame([], \clubMakeupAvailableSlots($pdo, 10, $credit));
+        \clubMakeupAutoPlanExclusionSave($pdo, 1, 200, false);
+        $pdo->exec('UPDATE club_program_offers SET birth_year_from=2010,birth_year_to=2012 WHERE id=21');
+        self::assertSame([], \clubMakeupAvailableSlots($pdo, 10, $credit));
+        try {
+            \clubMakeupReserve($pdo, 10, $credit, 200, 'athlete', 50);
+            self::fail('An age-incompatible plan accepted a reservation.');
+        } catch (\ClubMakeupException $error) {
+            self::assertSame('Termín není dostupný pro náhradu.', $error->getMessage());
+        }
+        self::assertSame(0, (int) $pdo->query('SELECT COUNT(*) FROM club_makeup_slots')->fetchColumn());
+    }
+
     public function testExplicitRoutesAreDirectionalAndMigrationNeverRestoresRemovedPermission(): void
     {
         $pdo = $this->fixture();
@@ -511,6 +648,9 @@ final class ClubMakeupTest extends TestCase
         $statement->execute([$excused]);
         $migration = require dirname(__DIR__, 2).'/migrations/20261102171000_offer_makeup_scopes.php';
         $migration['up']($pdo);
+        $automatic = require dirname(__DIR__, 2).'/migrations/20261112140000_club_makeup_automatic.php';
+        $automatic['up']($pdo);
+        self::assertTrue($automatic['verify']($pdo));
         return $pdo;
     }
 }
