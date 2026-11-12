@@ -56,6 +56,9 @@ if ($training) {
     }
     $admin->exec('ALTER TABLE trenink_mereni ADD COLUMN IF NOT EXISTS poradi INT DEFAULT 0');
     $admin->exec('INSERT INTO trenink_skupina(trenink_id, skupina_id) VALUES(101, 1)');
+    // Equal display names leave ORDER BY ties undefined on MariaDB 11.4.
+    $admin->exec("UPDATE sportovci sp JOIN trenink_sportovec ts ON ts.sportovec_id = sp.id
+        SET sp.jmeno = CONCAT('Synthetic ', sp.id) WHERE ts.trenink_id = 101");
 }
 foreach ($credentials as $role => $credential) {
     fullHttpLogin($runtime, $output, $role, $credential);
