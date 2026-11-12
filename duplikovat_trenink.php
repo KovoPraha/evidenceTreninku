@@ -10,15 +10,24 @@ require_once 'db.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';
 
-function h($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
+function h($s)
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+}
 
 // ── Filtr skupiny ──────────────────────────────────────────────────────────
 $filterGroup = $_GET['skupina_id'] ?? '';
 $filterTeam = $_GET['team_id'] ?? '';
-if ($filterGroup !== '' && !ctype_digit((string)$filterGroup)) $filterGroup = '';
-if ($filterTeam !== '' && !ctype_digit((string)$filterTeam)) $filterTeam = '';
+if ($filterGroup !== '' && !ctype_digit((string)$filterGroup)) {
+    $filterGroup = '';
+}
+if ($filterTeam !== '' && !ctype_digit((string)$filterTeam)) {
+    $filterTeam = '';
+}
 $duplicatePeriod = (string)($_GET['obdobi'] ?? '90');
-if (!in_array($duplicatePeriod, ['30','90','365','all'], true)) $duplicatePeriod = '90';
+if (!in_array($duplicatePeriod, ['30','90','365','all'], true)) {
+    $duplicatePeriod = '90';
+}
 
 $skupiny = [];
 try {
@@ -58,12 +67,16 @@ try {
         $sql .= ' AND t.datum >= DATE_SUB(CURRENT_DATE, INTERVAL '.(int)$duplicatePeriod.' DAY)';
     }
     $sql .= ' GROUP BY t.id ORDER BY t.datum DESC';
-    if ($filterTeam === '') $sql .= ' LIMIT 100';
+    if ($filterTeam === '') {
+        $sql .= ' LIMIT 100';
+    }
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if ($filterTeam !== '') $treninky = array_slice(trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$filterTeam), 0, 100);
+    if ($filterTeam !== '') {
+        $treninky = array_slice(trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$filterTeam), 0, 100);
+    }
 } catch (PDOException $e) {
     error_log('duplikovat_trenink.php main: ' . $e->getMessage());
 }
@@ -72,21 +85,21 @@ $canonicalLabels = trainingRosterBridgeTrainingLabels($pdo, $treninky);
 // ── Seskupení podle měsíce ─────────────────────────────────────────────────
 // Kategorie meta
 $kategorieMeta = [
-    'silnice'   => ['label'=>'Silnice',    'color'=>'success',  'icon'=>'bi-bicycle'],
-    'mtb'       => ['label'=>'MTB',        'color'=>'warning',  'icon'=>'bi-tree'],
-    'draha'     => ['label'=>'Dráha',      'color'=>'primary',  'icon'=>'bi-stopwatch'],
-    'cyklokros' => ['label'=>'Cyklokros',  'color'=>'orange',   'icon'=>'bi-signpost-split'],
-    'posilovna' => ['label'=>'Posilovna',  'color'=>'danger',   'icon'=>'bi-heart-pulse'],
-    'atletika'  => ['label'=>'Atletika',   'color'=>'info',     'icon'=>'bi-person-walking'],
-    'cviceni'   => ['label'=>'Cvičení',    'color'=>'secondary','icon'=>'bi-activity'],
-    'plavani'   => ['label'=>'Plavání',    'color'=>'teal',     'icon'=>'bi-water'],
+    'silnice'   => ['label' => 'Silnice',    'color' => 'success',  'icon' => 'bi-bicycle'],
+    'mtb'       => ['label' => 'MTB',        'color' => 'warning',  'icon' => 'bi-tree'],
+    'draha'     => ['label' => 'Dráha',      'color' => 'primary',  'icon' => 'bi-stopwatch'],
+    'cyklokros' => ['label' => 'Cyklokros',  'color' => 'orange',   'icon' => 'bi-signpost-split'],
+    'posilovna' => ['label' => 'Posilovna',  'color' => 'danger',   'icon' => 'bi-heart-pulse'],
+    'atletika'  => ['label' => 'Atletika',   'color' => 'info',     'icon' => 'bi-person-walking'],
+    'cviceni'   => ['label' => 'Cvičení',    'color' => 'secondary','icon' => 'bi-activity'],
+    'plavani'   => ['label' => 'Plavání',    'color' => 'teal',     'icon' => 'bi-water'],
 ];
 
 $byMonth = [];
-$czDays  = ['Monday'=>'Po','Tuesday'=>'Út','Wednesday'=>'St',
-            'Thursday'=>'Čt','Friday'=>'Pá','Saturday'=>'So','Sunday'=>'Ne'];
-$czMonths = [1=>'Leden',2=>'Únor',3=>'Březen',4=>'Duben',5=>'Květen',6=>'Červen',
-             7=>'Červenec',8=>'Srpen',9=>'Září',10=>'Říjen',11=>'Listopad',12=>'Prosinec'];
+$czDays  = ['Monday' => 'Po','Tuesday' => 'Út','Wednesday' => 'St',
+            'Thursday' => 'Čt','Friday' => 'Pá','Saturday' => 'So','Sunday' => 'Ne'];
+$czMonths = [1 => 'Leden',2 => 'Únor',3 => 'Březen',4 => 'Duben',5 => 'Květen',6 => 'Červen',
+             7 => 'Červenec',8 => 'Srpen',9 => 'Září',10 => 'Říjen',11 => 'Listopad',12 => 'Prosinec'];
 
 foreach ($treninky as $t) {
     try {
@@ -108,8 +121,8 @@ foreach ($treninky as $t) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Duplikovat trénink — výběr vzoru</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"
+          integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
     <style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">
 
         /* Měsíční nadpis */
@@ -250,8 +263,8 @@ foreach ($treninky as $t) {
                 </select>
                 <label class="visually-hidden" for="duplicate-period">Období</label>
                 <select name="obdobi" id="duplicate-period" class="form-select form-select-sm" style="max-width:220px;">
-                    <?php foreach (['30'=>'Posledních 30 dní','90'=>'Posledních 90 dní','365'=>'Poslední rok','all'=>'Celá historie'] as $value=>$label): ?>
-                        <option value="<?= h($value) ?>" <?= $duplicatePeriod===(string)$value?'selected':'' ?>><?= h($label) ?></option>
+                    <?php foreach (['30' => 'Posledních 30 dní','90' => 'Posledních 90 dní','365' => 'Poslední rok','all' => 'Celá historie'] as $value => $label): ?>
+                        <option value="<?= h($value) ?>" <?= $duplicatePeriod === (string)$value ? 'selected' : '' ?>><?= h($label) ?></option>
                     <?php endforeach; ?>
                 </select>
                 <button type="submit" class="btn btn-sm btn-primary">
@@ -283,7 +296,7 @@ foreach ($treninky as $t) {
 
             <?php foreach ($byMonth as $monthKey => $monthData):
                 $monthItems = $monthData['items'];
-            ?>
+                ?>
             <div class="month-heading">
                 <i class="bi bi-calendar3 me-2"></i><?= h($monthData['label']) ?>
                 <span class="ms-2" style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.8rem;">
@@ -292,14 +305,17 @@ foreach ($treninky as $t) {
             </div>
 
             <?php foreach ($monthItems as $t):
-                try { $dt = new DateTime($t['datum']); }
-                catch (Exception $e) { $dt = null; }
+                try {
+                    $dt = new DateTime($t['datum']);
+                } catch (Exception $e) {
+                    $dt = null;
+                }
                 $dayNum  = $dt ? $dt->format('j') : '?';
                 $dayShort = $dt ? ($czDays[$dt->format('l')] ?? '?') : '?';
                 $tid      = (int)$t['id'];
                 $tKat     = $t['kategorie'] ?? '';
                 $tKm      = $kategorieMeta[$tKat] ?? null;
-            ?>
+                ?>
             <a href="formular.php?duplikat=<?= $tid ?>" class="trenink-card">
 
                 <!-- Datum badge -->

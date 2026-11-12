@@ -798,3 +798,25 @@ Merge a chráněný deploy po shodě, měřené úspoře a úspěšném CI.
 Produkční kontrola veřejným GET. [Výsledky](verification/signin-bootstrap-20261111/RESULTS.md).
 
 - **P11-ASSET9 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset9--vstupní-přihlášení-11-11-2026), [výsledky](verification/signin-bootstrap-20261111/RESULTS.md). #453/18bd541b, [deploy 43104809135](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43104809135) SUCCESS, 15 CI, Bootstrap CSS 64 454 → 31 248 B. Veřejný login před a po PASS. Přihlášená produkční přejímka NOT RUN.
+
+## P11-ASSET10 — zápis, úprava a kopírování tréninku, 12. 11. 2026
+
+ROZPRACOVÁNO, Vývoj/Codex podle navazujícího zadání Marka. Výchozí main
+c11a1937, nasazený runtime 18bd541b. Větev codex/training-form-assets-20261112
+v samostatné pracovní kopii C:/Users/Marek/Documents/Codex/evidencePavel-training-form-assets-20261112.
+
+V bodu 7 analýzy je kandidát dvojí CSS. Zápis, úprava a výběr tréninku ke
+kopírování vkládají stejný Bootstrap 5.3.3 z CDN i ze sdílené hlavičky.
+Přednost má odstranění jedné celé kopie na třech souvisejících trasách před
+menšími úpravami hlavičky. Přejímka porovná celé HTML, přístupová rozhodnutí,
+výsledky filtrů, předvyplnění a stav databáze na syntetických datech. Chrome
+porovná pixely, ovládání formulářů, studený a teplý přenos. Shoda a prokázaná
+úspora přenosu jsou podmínkou merge a chráněného deploye. Výsledek ověří
+produkční read-only smoke. [Průběžné výsledky](verification/training-form-bootstrap-20261112/RESULTS.md).
+
+Další kandidáti k profilování podle kontroly zdrojů: duplicitní Bootstrap
+na admin_dashboard.php, club_calendar.php, club_programs_admin.php
+a eshop_catalog_admin.php. U kopírování tréninku s filtrem týmu stojí za
+samostatné měření agregace účastníků a převod všech kandidátů na soupisky
+před omezením výsledku na 100. Rozhodnutí o pořadí vyžaduje profil na
+reprezentativní velikosti dat a kontrolu shody prvních 100 výsledků.

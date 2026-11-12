@@ -10,6 +10,7 @@ async (page) => {
     const errors = [];
     const samples = [];
     const path = config.path;
+    const route = path.split('?')[0];
     cdp.on('Network.responseReceived', event => {
         if (new URL(event.response.url).pathname.endsWith('/bootstrap.min.css')) {
             css.set(event.requestId, {url: event.response.url, status: event.response.status});
@@ -32,7 +33,7 @@ async (page) => {
             if (config.cache === 'cold') await cdp.send('Network.clearBrowserCache');
             css.clear();
             const response = await page.goto(config.urls[variant] + path, {waitUntil: 'load'});
-            if (response.status() !== 200 || new URL(page.url()).pathname !== path) throw new Error('Planner unavailable');
+            if (response.status() !== 200 || new URL(page.url()).pathname !== route) throw new Error('Page unavailable');
             const ready = await page.evaluate(() => new Promise(resolve =>
                 requestAnimationFrame(() => requestAnimationFrame(() => resolve(performance.now())))));
             await page.waitForLoadState('networkidle');
@@ -80,19 +81,35 @@ async (page) => {
             if (round >= 0) samples.push({variant, round, ...timing, ready_ms: ready});
             if (round === 0 && config.cache === 'cold') {
                 await page.screenshot({path: config.screenshots[variant], animations: 'disabled'});
-                if (path === '/login.php') {
+                if (route === '/login.php') {
                     await page.locator('button[type="submit"]').click();
                     const alert = page.locator('.alert-danger');
                     await alert.waitFor({state: 'visible'});
                     if (!(await alert.innerText()).includes('Vyplňte přihlašovací údaje')) {
                         throw new Error('Login form error differs');
                     }
-                } else {
+                } else if (route === '/planovac.php') {
                     const modal = page.locator('#modalKopirovat');
                     await page.locator('[data-bs-target="#modalKopirovat"]').click();
                     await modal.waitFor({state: 'visible'});
                     await modal.locator('[data-bs-dismiss="modal"]').first().click();
                     await modal.waitFor({state: 'hidden'});
+                } else if (route === '/duplikovat_trenink.php') {
+                    const card = page.locator('a.trenink-card[href="formular.php?duplikat=101"]');
+                    await card.waitFor({state: 'visible'});
+                    const search = page.locator('#quickSearch');
+                    await search.fill('NO SYNTHETIC RESULT');
+                    await card.waitFor({state: 'hidden'});
+                    await search.fill('');
+                    await card.waitFor({state: 'visible'});
+                } else {
+                    const form = page.locator('#treninkForm');
+                    const action = route === '/formular.php' ? 'ulozit_trenink.php' : 'update_trenink.php';
+                    if (await form.getAttribute('action') !== action) throw new Error('Unexpected form action');
+                    const rows = form.locator('#mereniRows .mereni-row');
+                    const count = await rows.count();
+                    await form.locator('#btnAddMereni').click();
+                    if (await rows.count() !== count + 1) throw new Error('Measurement row not added');
                 }
             }
         }

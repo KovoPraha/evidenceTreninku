@@ -667,3 +667,5 @@ shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované
 - 11. 11. 2026 P11-ASSET9. Vybrána úspora duplicitního Bootstrapu na veřejném vstupu do KIS. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset9--vstupní-přihlášení-11-11-2026).
 
 - 11. 11. 2026 P11-ASSET9. #453/18bd541b vydán po shodě formuláře a úspoře 33 206 B. [Doklady](verification/signin-bootstrap-20261111/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43104809135).
+
+- 12. 11. 2026 P11-ASSET10. Vybrána úspora duplicitního Bootstrapu na třech trasách tréninků. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset10--zápis-úprava-a-kopírování-tréninku-12-11-2026).
