@@ -26,6 +26,14 @@ První běh PR CI na `067f0348` našel tři opravené chyby: MariaDB odmítla
 hlásil jednu další neurčenou proměnnou `$pdo` v trenérské šabloně.
 Nový běh po opravě čeká na výsledek; první selhání se nezapočítává jako PASS.
 
+MariaDB 10.3 profil porovnávající zmrazený `main` s PR narazil na kontrolu
+absolutní shody počtu tabulek/migrací. Artefakt běhu ukazuje před 349/162,
+po 353/163; rozdíl přesně odpovídá čtyřem novým tabulkám v jedné migraci.
+Komparátory nyní přijímají pouze shodné schéma nebo tento přesný přírůstek.
+Na staženém artefaktu prošly všechny tři komparátory (`medical`, `planner`,
+`attendance`) s `complete=true` a `domain_results_equal=true`; kontrola
+dat, HTML, vzorků a autorizace zůstala zachovaná. Nové CI pending.
+
 ## Známé hranice
 
 - Automatický režim nabízí jen nabídky se strukturovaným věkem a číselnou

@@ -34,6 +34,16 @@ automatiky nevstupuje; případný organizační strop je další rozhodnutí ve
 [Plán](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026),
 [výsledky](verification/makeup-auto-20261112/RESULTS.md).
 
+## D2026-11-12-03
+
+MAKEUP-AUTO-01: porovnání syntetických MariaDB GET profilů se zmrazeným
+`main` může při nové migraci porovnávat věcně stejnou čtecí cestu přes schéma
+rozšířené o tabulky jiné agendy. Pro tuto migraci komparátory přijmou pouze
+přesný přírůstek čtyř tabulek a jednoho záznamu ledgeru; nadále vyžadují
+shodu doménových dat, HTML, autorizace a počtu měřicích vzorků. Varianta
+obecně ignorovat počty schématu byla odmítnuta, protože by přehlédla
+neočekávané rozdíly. [Artefakt a ověření](verification/makeup-auto-20261112/RESULTS.md).
+
 ## D2026-11-10-08
 
 COACH-ROSTER-01: trenérská agenda čte pouze přímo svěřené `club_teams` a jejich aktuální `club_roster_members`. Varianta dědění jmen z rodičovské skupiny byla odmítnuta, protože grant rodiče neopravňuje ke každé podřízené soupisce. Registrátorská projekce `memberRosterRead()` vrací širší osobní údaje a je vázána na editační pracovní roli; místo ní je úzká čtecí projekce jméno/příjmení. Čekající a ukončená jména vyžadují zvláštní oprávnění, proto první etapa ukazuje jen aktivní členství. [Plán](COACH_GROUP_ROSTERS_2026-11-10.md), [testy](verification/coach-group-rosters-20261110/RESULTS.md).
