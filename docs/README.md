@@ -1,11 +1,18 @@
 # Dokumentace EvidencePavel / KIS
 
-Aktualizováno: 7. 11. 2026, Europe/Prague
+Aktualizováno: 12. 11. 2026, Europe/Prague
 
 Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
 webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
 <https://kis.kovopraha.cz/>.
 
+
+## Aktuální vývoj a otevřená přejímka
+
+- [Stav vydání](CURRENT_STATE.md) a [stručné předání](HANDOFF_CURRENT.md) vycházejí z `main` `4b9bcb1a`; poslední doložený produkční aplikační commit je `87171a67` ([deploy 43215069511](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43215069511)).
+- [Kopírování tréninků](verification/training-copy-20261112/RESULTS.md), [styly formulářů](verification/training-form-bootstrap-20261112/RESULTS.md) a [styly přihlášení](verification/signin-bootstrap-20261111/RESULTS.md) jsou nasazené; přihlášené produkční UAT posledních řezů je otevřené.
+- [Testerovy objednávky a registrace](verification/tester-orders-registration-20261110.md), [trenérské soupisky](verification/coach-group-rosters-20261110/RESULTS.md), [BAR zásoby](verification/bar-display-stock-20261110/RESULTS.md) a [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) rozlišují nasazení od provozní přejímky.
+- [Revize dokumentace 12. 11.](verification/documentation-sync-20261112/RESULTS.md) uvádí zdroje a opravené nesoulady.
 
 ## Dokumentace práce a rozhodnutí
 

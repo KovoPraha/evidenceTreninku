@@ -12,6 +12,10 @@ a [registr otevřených plánů a konceptů](docs/WORK_PLAN_CURRENT.md). Všechn
 na odpovídající plán musí odkazovat CURRENT i handoff. Dokumentaci předávejte přes GitHub PR spolu se změnou.
 [Deník událostí](docs/EVENT_LOG.md) a [rozhodovací log / uzavřené plány](docs/DECISION_LOG.md) zajišťují historickou dohledatelnost bez načítání historie v handoffu.
 
+## Aktuální dokumentace
+
+[Stav vývoje a otevřené přejímky](docs/CURRENT_STATE.md) jsou rozvedeny v [rozcestníku dokumentace](docs/README.md). Revize vůči `main` z 12. 11. je v [protokolu](docs/verification/documentation-sync-20261112/RESULTS.md).
+
 ## Produkce
 
 Produkční aplikace běží na <https://kis.kovopraha.cz/>. Nasazení provádí ruční
