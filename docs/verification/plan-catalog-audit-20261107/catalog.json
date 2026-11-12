@@ -4,6 +4,19 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-4e386ec554",
+      "path": "docs/ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md",
+      "title": "P11-ADM — administrátorský přehled",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P11-ADM",
+      "disposition": "Párová přejímka agregace čtyř počtů, výkon a vydání čekají na ověření.",
+      "evidence": [
+        "docs/verification/admin-dashboard-20261112/RESULTS.md"
+      ]
+    },
+    {
       "id": "PL-9d3bb013a4",
       "path": "docs/IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md",
       "title": "KIS-ACT-01 — aktivace importovaných rodičů",

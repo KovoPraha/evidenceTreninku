@@ -1043,3 +1043,5 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 | PL-9aef5ee092 | [P11-ASSET2 přejímka](verification/workspace-bootstrap-assets-20261110/RESULTS.md) | evidence / SUPPORT | P11-ASSET2 |
 
 | PL-b70af66e59 | [P11-ASSET2 finální release](verification/workspace-bootstrap-assets-20261110/release/RESULTS.md) | evidence / SUPPORT | P11-ASSET2 |
+
+| PL-4e386ec554 | [P11-ADM — administrátorský přehled](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md) | plan / PARTIAL | P11-ADM |
