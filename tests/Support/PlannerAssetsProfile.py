@@ -4,12 +4,22 @@ from pathlib import Path
 from WorkspaceAssetsApache import WorkspaceAssetsApache
 
 root=Path(__file__).resolve().parents[2]
+training_profile = "TRAINING_ASSETS_BASE_SHA" in os.environ
 login_profile = "LOGIN_ASSETS_BASE_SHA" in os.environ
-profile = "login-assets" if login_profile else "planner-assets"
-route = "login.php" if login_profile else "planovac.php"
-base = "c629a78953df7a47ac53e1ff55dcb516acca3416" if login_profile else "907459401d45159678f8f54c4035a1e76c0e094b"
-assert os.environ.get("LOGIN_ASSETS_BASE_SHA" if login_profile else "PLANNER_ASSETS_BASE_SHA") == base
-browser_enabled = os.environ["LOGIN_ASSETS_BROWSER" if login_profile else "PLANNER_ASSETS_BROWSER"] == "1"
+if training_profile:
+    profile, variable = "training-assets", "TRAINING_ASSETS"
+    base = "c11a1937e3e270329bf2b599ee0c40b199432483"
+    routes = ["formular.php", "edit_trenink.php", "duplikovat_trenink.php"]
+elif login_profile:
+    profile, variable = "login-assets", "LOGIN_ASSETS"
+    base = "c629a78953df7a47ac53e1ff55dcb516acca3416"
+    routes = ["login.php"]
+else:
+    profile, variable = "planner-assets", "PLANNER_ASSETS"
+    base = "907459401d45159678f8f54c4035a1e76c0e094b"
+    routes = ["planovac.php"]
+assert os.environ[variable + "_BASE_SHA"] == base
+browser_enabled = os.environ[variable + "_BROWSER"] == "1"
 assert os.name!='nt' and os.environ.get('EVIDENCE_PERFORMANCE_CONFIRM')=='SYNTHETIC-ONLY'
 runtime = Path(tempfile.mkdtemp(prefix="kis-" + profile + "-"))
 output = root / "output" / (profile + "-private")
@@ -17,7 +27,7 @@ safe = root / "output" / (profile + "-safe")
 output.mkdir(exist_ok=False);safe.mkdir(exist_ok=False)
 (runtime/'sessions').mkdir();(runtime/'metrics').mkdir()
 (output/'runtime.json').write_text(json.dumps(dict(runtime=str(runtime),datadir=os.environ['EVIDENCE_PERFORMANCE_DATADIR'],port=int(os.environ['EVIDENCE_MARIADB_SMOKE_PORT']),http_port=18099,synthetic_only=True)))
-original = (root / route).read_bytes()
+original = {route: (root / route).read_bytes() for route in routes}
 head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
 servers=[];baseline_root=runtime/'baseline';baseline_root.mkdir()
 front=WorkspaceAssetsApache(runtime,root)
@@ -92,11 +102,12 @@ def stop_servers():
 
 
 
-def browser(cookies, viewport, theme, cache, css_hash):
-    label = f"{theme}-{cache}"
+def browser(path, cookies, viewport, theme, cache, css_hash):
+    route_name = Path(path.split("?", 1)[0]).stem
+    label = f"{route_name}-{theme}-{cache}" if training_profile else f"{theme}-{cache}"
     screenshots = {variant: str(safe / f"{label}-{variant}.png") for variant in ("before", "after")}
     config = dict(urls={"before": "http://127.0.0.1:18099", "after": "http://127.0.0.1:18100"},
-                  viewport=viewport, theme=theme, cache=cache, cookies=cookies, path="/" + route,
+                  viewport=viewport, theme=theme, cache=cache, cookies=cookies, path=path,
                   screenshots=screenshots, css_sha256=css_hash)
     template = (root / "tests/Support/PlannerAssetsBrowser.js").read_text()
     script = runtime / "planner-browser.js"
@@ -112,6 +123,8 @@ def browser(cookies, viewport, theme, cache, css_hash):
     report = json.JSONDecoder().raw_decode(result.stdout.split("### Result", 1)[1].lstrip())[0]
     assert report["complete"] and len(report["samples"]) == 22
     summary = {"theme": theme, "viewport": viewport, "cache": cache}
+    if training_profile:
+        summary["route"] = route_name
     for variant in ("before", "after"):
         records = [row for row in report["samples"] if row["variant"] == variant]
         assert len(records) == 11
@@ -133,25 +146,43 @@ def browser(cookies, viewport, theme, cache, css_hash):
 
 
 try:
-    before = subprocess.check_output(["git", "show", base + ":" + route], cwd=root)
-    cdn = b'<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"'
-    if login_profile:
-        start = before.index(cdn)
-        suffix = b'crossorigin="anonymous">\n'
-    else:
-        start = before.index(b"<?php echo '    " + cdn)
-        suffix = b"'; ?>"
-    end = before.index(suffix, start) + len(suffix)
-    assert before[:start] + before[end:] == original, "Unexpected application edit"
     canonical_css = (root / "assets/vendor/bootstrap/bootstrap.min.css").read_bytes()
+    css_hash = hashlib.sha256(canonical_css).hexdigest()
     assert base64.b64encode(hashlib.sha384(canonical_css).digest()).decode() == (
         "QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
     )
-    (safe / "source.json").write_text(json.dumps(dict(
-        baseline=base, head=head, only_known_css_link_removed=True,
-        before_sha256=hashlib.sha256(before).hexdigest(),
-        after_sha256=hashlib.sha256(original).hexdigest(),
-        bootstrap_sha256=hashlib.sha256(canonical_css).hexdigest()), indent=2))
+    baseline = {}
+    sources = {}
+    for route in routes:
+        before = subprocess.check_output(["git", "show", base + ":" + route], cwd=root)
+        cdn = b'<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"'
+        if route == "planovac.php":
+            start = before.index(b"<?php echo '    " + cdn)
+            suffix = b"'; ?>"
+        else:
+            start = before.index(cdn if login_profile else b"    " + cdn)
+            suffix = b'crossorigin="anonymous">\n'
+        end = before.index(suffix, start) + len(suffix)
+        expected = before[:start] + before[end:]
+        if route == "duplikovat_trenink.php":
+            # The legacy copy list also needs PSR-12 formatting and a wrapped icon link.
+            expected = expected.replace(
+                b'bootstrap-icons.css" rel="stylesheet" integrity=',
+                b'bootstrap-icons.css" rel="stylesheet"\n          integrity=', 1)
+            style_source = runtime / route
+            style_source.write_bytes(expected)
+            subprocess.run(["php", "vendor/bin/php-cs-fixer", "fix", "--config=.php-cs-fixer.dist.php",
+                            "--using-cache=no", "--", str(style_source)], cwd=root, check=True)
+            expected = style_source.read_bytes()
+        assert expected == original[route], "Unexpected application edit: " + route
+        baseline[route] = before
+        sources[route] = dict(
+            baseline=base, head=head, only_known_css_link_removed=route != "duplikovat_trenink.php",
+            before_sha256=hashlib.sha256(before).hexdigest(),
+            after_sha256=hashlib.sha256(original[route]).hexdigest(), bootstrap_sha256=css_hash)
+        if route == "duplikovat_trenink.php":
+            sources[route]["known_css_link_removed_with_psr12_and_icon_wrap"] = True
+    (safe / "source.json").write_text(json.dumps(sources if training_profile else sources[routes[0]], indent=2))
     php("FullHttpReadFixture.php", "--setup", output)
     database_alias()
     database_alias_created = True
@@ -163,7 +194,8 @@ try:
         else:
             (baseline_root / entry.name).symlink_to(entry, target_is_directory=entry.is_dir())
     shutil.copytree(root / "includes", baseline_root / "includes")
-    (baseline_root / route).write_bytes(before)
+    for route, before in baseline.items():
+        (baseline_root / route).write_bytes(before)
     (baseline_root / "config.php").symlink_to(root / "config.php")
     start_servers()
     front.start()
@@ -175,6 +207,7 @@ try:
             assert totals["after"] < totals["before"] * 1.2 + 20, (case, totals)
     (safe / "http.json.gz").write_bytes(gzip.compress(json.dumps(native).encode(), mtime=0))
     if browser_enabled:
+        paths = json.loads((output / "browser-paths.json").read_text()) if training_profile else ["/" + routes[0]]
         cookies = []
         if not login_profile:
             cookie_text = (output / "cookie-coach.txt").read_text()
@@ -191,10 +224,11 @@ try:
         subprocess.run(["playwright-cli", "--session", profile, "open", "about:blank", "--browser=chrome"],
                        cwd=root, stdout=subprocess.DEVNULL, check=True)
         summaries = []
-        for viewport, theme in [({"width": 1036, "height": 703}, "light"), ({"width": 390, "height": 844}, "dark")]:
-            for cache in ("cold", "warm"):
-                summaries.append(browser(cookies, viewport, theme, cache, hashlib.sha256(canonical_css).hexdigest()))
-                (safe / "browser-summary.json").write_text(json.dumps(summaries, indent=2))
+        for path in paths:
+            for viewport, theme in [({"width": 1036, "height": 703}, "light"), ({"width": 390, "height": 844}, "dark")]:
+                for cache in ("cold", "warm"):
+                    summaries.append(browser(path, cookies, viewport, theme, cache, css_hash))
+                    (safe / "browser-summary.json").write_text(json.dumps(summaries, indent=2))
     if not login_profile:
         checksums = subprocess.check_output(
             ["php", "tests/Support/PlannerAssetsHttp.php", str(output), "--verify"], cwd=root)
@@ -214,4 +248,4 @@ finally:
     (safe / "cleanup.json").write_text(json.dumps(dict(
         owned_schema_user_config_removed=cleanup_ok, owned_ports_closed=not servers,
         bridge_account_removed=not database_alias_created, private_artifacts_excluded=True,
-        source_unchanged=(root / route).read_bytes() == original), indent=2))
+        source_unchanged=all((root / route).read_bytes() == original[route] for route in routes)), indent=2))
