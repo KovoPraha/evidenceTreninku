@@ -1,14 +1,19 @@
 <?php
 require_once __DIR__ . '/includes/init.php';
+require_once __DIR__ . '/includes/admin_dashboard_read.php';
 
 if (!isset($_SESSION['trener_id']) || !roleAtLeast('hlavni')) {
     header('Location: login.php');
     exit;
 }
 
-function h($s): string { return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
+function h($s): string
+{
+    return htmlspecialchars((string)$s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
 
 $lastImport = $pdo->query("SELECT * FROM kis_import_runs ORDER BY created_at DESC, id DESC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+$memberCounts = adminDashboardMemberCounts($pdo);
 $cards = [
     [
         'label' => 'KIS import',
@@ -26,28 +31,28 @@ $cards = [
     ],
     [
         'label' => 'Bez skupiny',
-        'value' => (int)$pdo->query("SELECT COUNT(*) FROM sportovci s WHERE NOT EXISTS (SELECT 1 FROM sportovec_skupina ss WHERE ss.sportovec_id=s.id)")->fetchColumn(),
+        'value' => $memberCounts['without_group'],
         'hint' => 'členové bez zařazení',
         'href' => 'sprava_sportovcu.php?kis=bez_skupiny',
         'class' => 'border-0',
     ],
     [
         'label' => 'Dluh v KIS',
-        'value' => (int)$pdo->query("SELECT COUNT(*) FROM sportovci WHERE COALESCE(kis_neuhrazeno,0)>0")->fetchColumn(),
+        'value' => $memberCounts['debt'],
         'hint' => 'neuhrazené částky',
         'href' => 'sprava_sportovcu.php?kis=dluh',
         'class' => 'border-0',
     ],
     [
         'label' => 'Mimo import',
-        'value' => (int)$pdo->query("SELECT COUNT(*) FROM sportovci WHERE kis_last_seen_at IS NULL OR kis_last_seen_at < DATE_SUB(NOW(), INTERVAL 90 DAY)")->fetchColumn(),
+        'value' => $memberCounts['stale'],
         'hint' => 'neviděni v KIS 90+ dní',
         'href' => 'sprava_sportovcu.php?kis=mimo_import',
         'class' => 'border-0',
     ],
     [
         'label' => 'Ruční stav + KIS aktivní',
-        'value' => (int)$pdo->query("SELECT COUNT(*) FROM sportovci WHERE COALESCE(stav_manualni,0)=1 AND COALESCE(kis_aktivni,0)=1")->fetchColumn(),
+        'value' => $memberCounts['manual_active'],
         'hint' => 'zkontrolujte ruční blokace',
         'href' => 'sprava_sportovcu.php?stav=manualni&kis=kis_aktivni',
         'class' => 'border-0',
@@ -116,8 +121,12 @@ if (roleAtLeast('admin')) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+<?php
+echo '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" '
+    . 'integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">' . "\n";
+echo '    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" '
+    . 'integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">' . "\n";
+?>
 </head>
 <body class="bg-light">
 <?php include __DIR__ . '/hlavicka.php'; ?>

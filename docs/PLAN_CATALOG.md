@@ -420,3 +420,5 @@ další otevřené kroky a závislosti určuje [prioritní přehled registru](WO
 | PL-7528f205dd | [P11-HJS sdílený staff JavaScript](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md) | NASAZENO / HJS3 technicky PASS | #449/b753f6e7, deploy42920002806,14CI/native2DB/544Chrome/8pixelpárů PASS; warm gzip−25–30%, cold+955–1264B. Živé GET/hash/SRI/cache PASS, přihlášené UAT NOT RUN; HJS/HJS2 nevybrání zachované, doklady#450. |
 
 | PL-5088402eb8 | [P11-JSZ komprese JavaScriptů](JAVASCRIPT_COMPRESSION_PERFORMANCE_2026-11-10.md) | DONE / P11-JSZ | PR427/deploy42774356221 SUCCESS; produkční13JS−69 %, decodedbytes/8DOM PASS. |
+
+| PL-4e386ec554 | [P11-ADM — administrátorský přehled](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md) | ROZPRACOVÁNO / P11-ADM | [Měření](verification/admin-dashboard-20261112/RESULTS.md), společná agregace čtyř počtů. |
