@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 const ONE_TIME_TOKEN_EMAIL_VERIFICATION = 'email-verification-v1';
@@ -91,7 +92,9 @@ function one_time_imported_account(PDO $pdo, int $accountId): bool
     } else {
         $exists = $pdo->query("SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='kis_person_contacts'")->fetchColumn();
     }
-    if (!$exists) return false;
+    if (!$exists) {
+        return false;
+    }
     $query = $pdo->prepare('SELECT 1 FROM kis_person_contacts WHERE account_id=? LIMIT 1');
     $query->execute([$accountId]);
     return (bool)$query->fetchColumn();
@@ -159,7 +162,9 @@ function one_time_booking_approval_consume(
             return null;
         }
 
-        if ($onConsumed !== null) $onConsumed($pdo, (int)$reservation['id'], $action);
+        if ($onConsumed !== null) {
+            $onConsumed($pdo, (int)$reservation['id'], $action);
+        }
         $pdo->commit();
         $reservation['stav'] = $newState;
         $reservation['cas_potvrzeni'] = $confirmedAt;

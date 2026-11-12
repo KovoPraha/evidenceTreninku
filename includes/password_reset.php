@@ -225,7 +225,9 @@ function passwordResetConsume(PDO $pdo, string $token, string $newPassword, ?int
         $consume->execute((string)$reset['target_type'] === 'public'
             ? [$nowSql, (int)$reset['target_id']]
             : [$nowSql, $reset['target_type'], (int)$reset['target_id']]);
-        if ((string)$reset['target_type'] === 'public') passwordResetAuditPublic($pdo, (int)$reset['target_id']);
+        if ((string)$reset['target_type'] === 'public') {
+            passwordResetAuditPublic($pdo, (int)$reset['target_id']);
+        }
         if ((string)$reset['target_type'] === 'child') {
             childAccessEvent(
                 $pdo,

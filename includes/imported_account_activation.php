@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/password_reset.php';
 
-final class ImportedAccountActivationException extends RuntimeException {}
+final class ImportedAccountActivationException extends RuntimeException
+{
+}
 
 /** @return array{account:array<string,mixed>,mode:string,reason:string} */
 function importedAccountInviteEligibility(PDO $pdo, int $accountId): array
@@ -87,16 +90,29 @@ function importedAccountInvite(PDO $pdo, int $accountId, int $actorId, string $r
         )->execute([$mode === 'activate' ? 'activation' : 'public', $accountId, $accountId,
             $issued['hash'], $issued['expires_at'], (string)$account['email']]);
         $link = ($mode === 'activate' ? $activationUrl : $resetUrl) . '#token=' . rawurlencode($issued['token']);
-        $body = "Dobrý den,\n\nPo ověření v TJ KOVO Praha můžete nastavit vlastní heslo ke svému účtu KIS:\n{$link}\n\nOdkaz platí 60 minut a lze jej použít jen jednou. Pokud jste o přístup nežádali, zprávu ignorujte.";
-        authMailEnqueue($pdo, 'reset', 'public', $accountId, $issued['hash'], (string)$account['email'],
-            'Pozvání do KIS — TJ KOVO Praha', $body, $keyConfig);
+        $body = "Dobrý den,\n\n"
+            . "Po ověření v TJ KOVO Praha můžete nastavit vlastní heslo ke svému účtu KIS:\n{$link}\n\n"
+            . 'Odkaz platí 60 minut a lze jej použít jen jednou. Pokud jste o přístup nežádali, zprávu ignorujte.';
+        authMailEnqueue(
+            $pdo,
+            'reset',
+            'public',
+            $accountId,
+            $issued['hash'],
+            (string)$account['email'],
+            'Pozvání do KIS — TJ KOVO Praha',
+            $body,
+            $keyConfig
+        );
         $pdo->prepare(
             'INSERT INTO public_account_activation_events(account_id,actor_trainer_id,action,reason) VALUES(?,?,?,?)'
         )->execute([$accountId, $actorId, 'invite_' . $mode, $reason]);
         $pdo->commit();
         return $mode;
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw $exception;
     }
 }
@@ -105,13 +121,17 @@ function importedAccountActivationConsume(PDO $pdo, string $token, string $newPa
 {
     passwordPolicyValidate($newPassword);
     $hash = one_time_token_hash(ONE_TIME_TOKEN_ACCOUNT_ACTIVATION, trim($token));
-    if ($hash === '') return false;
+    if ($hash === '') {
+        return false;
+    }
     $nowSql = gmdate('Y-m-d H:i:s', $now ?? time());
     $pdo->beginTransaction();
     try {
         $sql = "SELECT * FROM password_reset_tokens WHERE target_type='activation' AND token_hash=? "
             . 'AND consumed_at IS NULL AND expires_at>=? LIMIT 1';
-        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') $sql .= ' FOR UPDATE';
+        if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $sql .= ' FOR UPDATE';
+        }
         $query = $pdo->prepare($sql);
         $query->execute([$hash, $nowSql]);
         $tokenRow = $query->fetch(PDO::FETCH_ASSOC);
@@ -138,7 +158,9 @@ function importedAccountActivationConsume(PDO $pdo, string $token, string $newPa
         $pdo->commit();
         return true;
     } catch (Throwable $exception) {
-        if ($pdo->inTransaction()) $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         throw $exception;
     }
 }
@@ -148,9 +170,13 @@ function importedAccountActivationTokenAuthorized(PDO $pdo, array $tokenRow): bo
 {
     if (($tokenRow['target_type'] ?? '') !== 'activation'
         || (int)$tokenRow['target_id'] !== (int)$tokenRow['delivery_account_id']
-        || !filter_var((string)($tokenRow['delivery_email'] ?? ''), FILTER_VALIDATE_EMAIL)) return false;
+        || !filter_var((string)($tokenRow['delivery_email'] ?? ''), FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
     $decision = importedAccountInviteEligibility($pdo, (int)$tokenRow['target_id']);
     return $decision['mode'] === 'activate'
-        && hash_equals(mb_strtolower((string)$decision['account']['email'], 'UTF-8'),
-            mb_strtolower((string)$tokenRow['delivery_email'], 'UTF-8'));
+        && hash_equals(
+            mb_strtolower((string)$decision['account']['email'], 'UTF-8'),
+            mb_strtolower((string)$tokenRow['delivery_email'], 'UTF-8')
+        );
 }

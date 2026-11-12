@@ -170,10 +170,14 @@ function authMailTokenIsCurrent(PDO $pdo, array $row, ?int $now = null): bool
     require_once __DIR__.'/password_reset.php';
     if ((string)$reset['target_type'] === 'activation') {
         require_once __DIR__ . '/imported_account_activation.php';
-        if (!importedAccountActivationTokenAuthorized($pdo, $reset)) return false;
+        if (!importedAccountActivationTokenAuthorized($pdo, $reset)) {
+            return false;
+        }
         $email = $pdo->prepare('SELECT 1 FROM verejni_uzivatele WHERE id=? AND email=?');
     } else {
-        if (!passwordResetTargetStillAuthorized($pdo, $reset)) return false;
+        if (!passwordResetTargetStillAuthorized($pdo, $reset)) {
+            return false;
+        }
         $email = $pdo->prepare('SELECT 1 FROM verejni_uzivatele WHERE id=? AND email=? AND aktivni=1 AND email_overeno=1');
     }
     $email->execute([(int)$reset['delivery_account_id'],(string)$row['recipient_email']]);
