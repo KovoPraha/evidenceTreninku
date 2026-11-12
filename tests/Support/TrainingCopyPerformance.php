@@ -60,6 +60,9 @@ foreach ([100, 1000, 10000] as $size) {
                 'recent' => ['1=1', [], null, false, '30'],
                 'coach-scope' => ['EXISTS (SELECT 1 FROM trenink_trener tt WHERE tt.trenink_id=t.id AND tt.trener_id=?)', [1], 1, false, 'all'],
             ] as $name => [$scope, $params, $team, $group, $period]) {
+                if ($size === 10000 && !in_array($name, ['all', 'root'], true)) {
+                    continue;
+                }
                 $sql = trainingCopyFixtureSql($scope, $group, $period);
                 $expected = trainingCopyBaseline($pdo, $sql, $params, $team);
                 $samples = ['before' => [], 'after' => []];

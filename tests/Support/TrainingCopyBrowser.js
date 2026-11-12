@@ -48,7 +48,7 @@ async (page) => {
                     css_bytes: resources.reduce((sum, entry) => sum + (entry.transferSize > 0 ? entry.encodedBodySize : 0), 0),
                     css_decoded_bytes: resources.reduce((sum, entry) => sum + entry.decodedBodySize, 0),
                     styles: Array.from(document.styleSheets).filter(sheet => sheet.href?.includes('bootstrap.min.css')).length,
-                    shape: ['body', 'h1', '.navbar', '.day-header', '.plan-card', '.btn', '.form-select'].map(selector => {
+                    shape: ['body', 'h1', '.navbar', '.month-heading', '.trenink-card', '.btn', '.form-select'].map(selector => {
                         const node = document.querySelector(selector);
                         if (!node) return null;
                         const style = getComputedStyle(node);
@@ -62,7 +62,7 @@ async (page) => {
             });
             const expected = 1;
             if (metrics.styles !== expected || css.size !== expected || !metrics.bootstrap || !metrics.fcp_ms) {
-                throw new Error('Planner stylesheet or timing contract: ' + JSON.stringify({variant, css: [...css.values()], metrics}));
+                throw new Error('Copy-list stylesheet or timing contract: ' + JSON.stringify({variant, css: [...css.values()], metrics}));
             }
             if (config.cache === 'cold' && round === -3) {
                 for (const requestId of css.keys()) {
@@ -76,18 +76,18 @@ async (page) => {
             }
             const signature = JSON.stringify([metrics.shape, metrics.overflow]);
             styleSignature ??= signature;
-            if (styleSignature !== signature) throw new Error('Planner geometry or computed styles differ');
+            if (styleSignature !== signature) throw new Error('Copy-list geometry or computed styles differ');
             const {shape, ...timing} = metrics;
             if (round >= 0) samples.push({variant, round, ...timing, ready_ms: ready});
             if (round === 0 && config.cache === 'cold') {
                 await page.screenshot({path: config.screenshots[variant], animations: 'disabled'});
-                    const card = page.locator('a.trenink-card[href="formular.php?duplikat=101"]');
-                    await card.waitFor({state: 'visible'});
-                    const search = page.locator('#quickSearch');
-                    await search.fill('NO SYNTHETIC RESULT');
-                    await card.waitFor({state: 'hidden'});
-                    await search.fill('');
-                    await card.waitFor({state: 'visible'});
+                const card = page.locator('a.trenink-card[href="formular.php?duplikat=101"]');
+                await card.waitFor({state: 'visible'});
+                const search = page.locator('#quickSearch');
+                await search.fill('NO SYNTHETIC RESULT');
+                await card.waitFor({state: 'hidden'});
+                await search.fill('');
+                await card.waitFor({state: 'visible'});
             }
         }
     }

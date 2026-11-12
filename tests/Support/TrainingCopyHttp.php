@@ -14,7 +14,6 @@ if ($output === false) {
 $verifyOnly = ($argv[2] ?? '') === '--verify';
 $argv = [__FILE__, '--library'];
 require_once __DIR__ . '/FullHttpReadProfile.php';
-require_once __DIR__ . '/BootstrapAssetComparison.php';
 
 [$runtime, $admin] = fullHttpEnvironment($output);
 $admin->exec('USE `' . $runtime['schema'] . '`');
