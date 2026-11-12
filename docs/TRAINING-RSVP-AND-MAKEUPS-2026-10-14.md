@@ -180,6 +180,14 @@ Po vydání ověřit workflow receipt, migraci a veřejný HTTP smoke. Aktivace 
 skutečné nabídky a lidské rolové UAT zůstávají samostatnými otevřenými kroky.
 Výsledek zaznamenat v [protokolu](verification/makeup-auto-20261112/RESULTS.md).
 
+**Provedeno:** PR #459 byl po 11 zelených kontrolách sloučen jako
+`428a2258c3a740b0d244f9b93c4fbaa9db2713f1`. Chráněný
+[deploy 43269836068](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43269836068)
+skončil SUCCESS: záloha, migrace, zachování VS, aktivace release a HTTP 200.
+Oba další vstupy zůstaly false. Organizační přepínač má v nové migraci default
+off; samostatný produkční SELECT a rolové UAT zatím NOT RUN. Podrobnosti vede
+[protokol](verification/makeup-auto-20261112/RESULTS.md).
+
 **Stav: ROZPRACOVÁNO — implementace zahájena 12. 11. 2026.** Vlastník: vývoj KIS;
 věkové kategorie, pravidla organizace a provozní přijetí: vedení KOVO Praha.
 Zadání: automaticky nabídnout náhrady v každém vhodném kroužku podle

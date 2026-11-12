@@ -8,17 +8,17 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## MAKEUP-AUTO-01 — automatické náhradní lekce (12. 11. 2026)
 
-**K VYDÁNÍ: vlastník 12. 11. požádal o nasazení kódu; automatika zůstane vypnutá.**
+**KÓD NASAZEN: automatický režim je výchozí vypnutý; aktivace a UAT otevřené.**
 [Technická analýza, etapy, migrace, rizika a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026).
 Vlastník vývoj KIS; vedení KOVO potvrzuje věkové hranice a centrální pravidla.
 Větev `codex/makeup-auto-20261112`, oddělený worktree z `origin/main` `4b9bcb1a`.
-[Draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459) otevřen;
-merge a aktivace NOT RUN; runtime implementace lokálně hotová včetně migrace,
+[PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459) sloučen jako `428a2258`;
+[deploy 43269836068](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43269836068) SUCCESS, aktivace automatiky NOT RUN; runtime obsahuje migraci,
 administrace, rodičovské a trenérské stránky. [Průběžné testy a meze](verification/makeup-auto-20261112/RESULTS.md).
 CI 43248400672: 2460 testů / 56453 assertions, MariaDB 10.3/11.4 včetně
-souběhu PASS; PHPStan/styl, docs a CodeQL PASS. Další krok: sloučit PR #459,
-vydat chráněným workflow s `uat_schvaleno=false`, `importovat_krouzky=false`,
-ověřit receipt/migraci/HTTP; potom rolové UAT.
+souběhu PASS; PHPStan/styl, docs a CodeQL PASS. Deploy: záloha 389/2,
+migrace current/pending [], VS shodné, HTTP 200; `uat_schvaleno=false`,
+`importovat_krouzky=false`. Další krok: čtecí kontrola nastavení a rolové UAT.
 Aktivace skutečných
 nabídek závisí na schválených kategoriích, lhůtách a kapacitách.
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.
