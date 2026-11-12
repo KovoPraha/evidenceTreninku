@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 7. 11. 2026, Europe/Prague. Kontrola main `e36c9ba6`; produkční stav určují výsledkové protokoly.
+Aktualizováno 12. 11. 2026, Europe/Prague. Kontrola `main` `4b9bcb1a`; produkční stav určují výsledkové protokoly. [Revize](verification/documentation-sync-20261112/RESULTS.md).
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -46,7 +46,7 @@ sdílené v Gitu; jejich historické „plánováno“ nepřebírat jako dnešn�
 
 ## UX01 — celoroční nabídka stávajícího kroužku
 
-Stav: IMPLEMENTOVÁNO VE VĚTVI, [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) před merge; uživatel 8. 11. povolil pokračovat a nasadit kód. Vlastník: vývoj; ceny a ostré zveřejnění určuje vedení klubu. [Plán, výsledky a release postup](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [rozhodnutí](DECISION_LOG.md#d2026-11-08-01). Větev `codex/year-offer-ux-20261108` zahrnuje `origin/main` `ab49947d`; cizí WIP zachované. Předchozí CI 11/11 PASS, po vyřešení konfliktu znovu ověřit aktuální head. Další krok: merge, workflow deploy kódu a čtecí UAT; produkční nabídky bez schválených cen nevytvářet.
+Stav: KÓD SLOUČENÝ A NASAZENÝ; nové nabídky a přihlášené UAT otevřené. [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) sloučen jako `1c828fbf`; [deploy 42492821311](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42492821311) SUCCESS na stejném SHA. Vlastník: vývoj; ceny a zveřejnění určuje vedení klubu. [Plán a postup](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026), [rozhodnutí](DECISION_LOG.md#d2026-11-08-01). Podrobný dokumentační [PR #401](https://github.com/KovoPraha/evidenceTreninku/pull/401) je otevřený. Další krok: přihlášené čtecí UAT a schválení cen před tvorbou či zveřejněním nabídek.
 
 ## Q2-TIME — ochrana rozepsaného tréninku
 
