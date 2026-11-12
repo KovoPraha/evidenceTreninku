@@ -4,6 +4,19 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-roster-scroll-20261112",
+      "path": "docs/ROSTER_SCROLL_POSITION_2026-11-12.md",
+      "title": "ROSTER-SCROLL-01 — pozice správy soupisek",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "ROSTER-SCROLL-01",
+      "disposition": "Místní implementace a syntetické desktop/mobilní ověření; PR/CI, deploy a přihlášené UAT otevřené.",
+      "evidence": [
+        "docs/verification/roster-scroll-20261112/RESULTS.md"
+      ]
+    },
+    {
       "id": "PL-e9b0541560",
       "path": "docs/CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md",
       "title": "P11-EVENTREAD — odložená veřejná čtecí projekce",
