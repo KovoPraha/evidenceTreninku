@@ -53,3 +53,7 @@ SQL místo čtyř a čeká na nové párové měření.
 Pracovní větev byla po sloučení #462 aktualizována na main 22d151f7.
 Zachována je oprava pozice soupisek i její plán a záznamy. Referenční
 admin_dashboard.php z 5cd6ad07 je obsahově shodný s touto novou základnou.
+
+Po souběžném #463 byla základna znovu aktualizována na 373b8d89.
+Zachována je aktivace importovaných účtů, její migrace i dokumentace.
+admin_dashboard.php je proti referenci 5cd6ad07 nadále shodný.
