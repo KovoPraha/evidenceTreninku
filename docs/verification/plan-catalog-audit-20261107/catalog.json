@@ -53,8 +53,23 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "ROSTER-SCROLL-01",
-      "disposition": "Místní implementace a syntetické desktop/mobilní ověření; PR/CI, deploy a přihlášené UAT otevřené.",
+      "disposition": "PR #462 a chráněné nasazení 43320369018 PASS; technické a syntetické ověření hotové, přihlášené UAT otevřené.",
       "evidence": [
+        "docs/verification/roster-scroll-20261112/RESULTS.md",
+        "docs/TESTER_ROSTER_SCROLL_2026-11-13.md"
+      ]
+    },
+    {
+      "id": "PL-roster-scroll-tester-20261113",
+      "path": "docs/TESTER_ROSTER_SCROLL_2026-11-13.md",
+      "title": "ROSTER-SCROLL-01 — scénář pro testerku",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "ROSTER-SCROLL-01",
+      "disposition": "Scénáře S01–S07 ke stažení; přihlášené produkční UAT dosud NOT RUN.",
+      "evidence": [
+        "docs/TESTER_ROSTER_SCROLL_2026-11-13.md",
         "docs/verification/roster-scroll-20261112/RESULTS.md"
       ]
     },

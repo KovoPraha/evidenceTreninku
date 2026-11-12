@@ -11,6 +11,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-9d3bb013a4 | [KIS-ACT-01 — aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) | plan / PARTIAL | KIS-ACT-01 |
 | PL-4dc01803a8 | [KIS-ACT-01 — scénář pro testerku](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md) | evidence / SUPPORT | KIS-ACT-01 |
 | PL-roster-scroll-20261112 | [ROSTER-SCROLL-01 — pozice správy soupisek](ROSTER_SCROLL_POSITION_2026-11-12.md) | plan / PARTIAL | ROSTER-SCROLL-01 |
+| PL-roster-scroll-tester-20261113 | [ROSTER-SCROLL-01 — scénář pro testerku](TESTER_ROSTER_SCROLL_2026-11-13.md) | evidence / SUPPORT | ROSTER-SCROLL-01 |
 | PL-b6f3287c42 | [P11-EVENTREAD — výběrové ověření](verification/club-event-public-read-20261110/RESULTS.md) | evidence / SUPPORT | P11-EVENTREAD |
 | PL-e91566d185 | [P11-EVENTREAD — předání](SESSION_HANDOFF_CLUB_EVENT_PUBLIC_READ_2026-11-10.md) | handoff / SUPPORT | P11-EVENTREAD |
 | PL-e9b0541560 | [P11-EVENTREAD — odložená veřejná čtecí projekce](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) | plan / DEFERRED | P11-EVENTREAD |
