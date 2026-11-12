@@ -18,3 +18,5 @@ Zvolený postup: při submitu doplnit do formuláře aktuální `scrollY`; serve
 Výsledek: změna kontroleru a vloženého view, [místní protokol](verification/roster-scroll-20261112/RESULTS.md) s desktop/mobilním syntetickým průchodem a cílenými testy. Další krok: PR a CI; poté přihlášená přejímka u registráře. Nasazení ani lidská přejímka dosud neproběhly.
 
 Předání: commit `5ab66f2d` pushnutý do větve, [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) otevřen proti `main`; CI běží. Merge, deploy a přihlášené UAT NOT RUN.
+
+Vydání 12. 11.: vlastník výslovně požádal „nasadit“. Po integraci současného `main` je povolen merge #462 a běžné chráněné `deploy-production.yml` se vstupy `potvrzeni=NASADIT`, `uat_schvaleno=false`, `importovat_krouzky=false`. Obnova, migrace a HTTP smoke jsou součástí workflow; přihlášené UAT uživatelského posunu zůstane samostatné. Aktuální deploy 43269836068 před tímto vydáním je SUCCESS; žádný import ani aktivace další agendy se nepožaduje.
