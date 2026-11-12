@@ -19,7 +19,8 @@ nároků/rezervací; úprava věkových mezí zůstává v kanonické nabídce p
 | `php vendor/bin/phpunit --filter ClubProgramTest` | PASS | 13 testů / 134 assertions po doplnění ochrany nákupu a úprav kapacity před budoucími rezervacemi náhrad. |
 | Plná lokální PHPUnit | ENVIRONMENT FAIL | `--stop-on-error --no-progress`: první chyba po 248 testech je chybějící `Symfony\Component\Filesystem\Path` v původním sdíleném `vendor`; pracovní strom má odlišný `composer.lock`. Není to výsledek plné sady nad závislostmi této větve. |
 | PHP syntaxe, PSR-12, dokumentace, diff | PASS | `php -l` na 10 změněných PHP souborech; PHP CS Fixer 3.95.30 `--dry-run` nad 10 soubory 0 oprav; žádný řádek přes 200 znaků; `php tools/check-current-docs.php`: 80 řádků CURRENT, 0 chyb; `git diff --check`: 0 chyb. Repo skript `tools/check-php-style.php` nelze spustit proti sdílenému `vendor`, kde chybí `vendor/bin/php-cs-fixer`; ekvivalentní kontrola PHAR prošla. |
-| MariaDB 10.3/11.4, dvě souběžné rezervace, rolový browser | NOT RUN | Čeká na izolované CI/UAT; zde nebyla měněna produkce ani skutečná data. |
+| MariaDB 10.3/11.4, souběh posledního místa | RETEST PENDING | Běh 43240712174 zastavil `makeup_last_slot`: oba workery dostaly obecnou výjimku. Souběžný fixture použil staré schéma a neaplikoval novou migraci se sloupcem `cancel_hours_snapshot`, který nyní ukládá každá rezervace. Fixture doplněn o migraci; nové CI musí potvrdit jednoho vítěze a jedno zamítnutí na obou verzích. |
+| Rolový browser | NOT RUN | Přihlášená přejímka koordinátora, trenéra a rodiče zůstává otevřená. |
 | Merge, deploy, zapnutí automatiky, lidská přejímka | NOT RUN | Samostatné kroky až po potvrzení věkových hranic, pravidel a skutečných kapacit vedením. |
 
 První běh PR CI na `067f0348` našel tři opravené chyby: MariaDB odmítla
@@ -34,6 +35,11 @@ Komparátory nyní přijímají pouze shodné schéma nebo tento přesný přír
 Na staženém artefaktu prošly všechny tři komparátory (`medical`, `planner`,
 `attendance`) s `complete=true` a `domain_results_equal=true`; kontrola
 dat, HTML, vzorků a autorizace zůstala zachovaná. Nové CI pending.
+
+Běh 43240712174: full PHPUnit, PHPStan/styl, docs, CodeQL a oba MariaDB
+čtecí profily PASS. Oba integrační smoke joby skončily ve starém fixture
+`TrainingClosureMariaDbRace.php` na `makeup_last_slot`; fixture nyní aplikuje
+novou migraci. Dokud opakovaný běh neprojde, souběh není označen jako PASS.
 
 ## Známé hranice
 
