@@ -13,9 +13,10 @@ nároků/rezervací; úprava věkových mezí zůstává v kanonické nabídce p
 
 | Kontrola | Výsledek | Důkaz / mez |
 | --- | --- | --- |
-| `php vendor/bin/phpunit --filter ClubMakeupTest` | PASS | 18 testů, 140 assertions; automatický termín bez ručního slotu, 3/2 kapacita, plná skupina, věk, vyloučení plánu, výjimka směru i vypnutí přepínače, migrace opakovaně, platnost a limit nároků, uložená lhůta storna, původní životní cyklus. |
+| `php vendor/bin/phpunit --filter ClubMakeupTest` | PASS | 18 testů, 142 assertions; automatický termín bez ručního slotu, 3/2 kapacita, plná skupina, věk, vyloučení plánu, výjimka směru i vypnutí přepínače, budoucí rezervace pro ochranu nákupu, migrace opakovaně, platnost a limit nároků, uložená lhůta storna, původní životní cyklus. |
 | `php vendor/bin/phpunit --filter DeployWorkflowContractTest` | PASS | 14 testů, 503 assertions; seznam zálohovaných tabulek zahrnuje nové nastavení a výjimky. |
 | `php vendor/bin/phpunit --filter AuthSecurityMigrationTest` | PASS | 1 test / 91 assertions po doplnění nové migrace do očekávaného registru. |
+| `php vendor/bin/phpunit --filter ClubProgramTest` | PASS | 13 testů / 134 assertions po doplnění ochrany nákupu a úprav kapacity před budoucími rezervacemi náhrad. |
 | Plná lokální PHPUnit | ENVIRONMENT FAIL | `--stop-on-error --no-progress`: první chyba po 248 testech je chybějící `Symfony\Component\Filesystem\Path` v původním sdíleném `vendor`; pracovní strom má odlišný `composer.lock`. Není to výsledek plné sady nad závislostmi této větve. |
 | PHP syntaxe, PSR-12, dokumentace, diff | PASS | `php -l` na 10 změněných PHP souborech; PHP CS Fixer 3.95.30 `--dry-run` nad 10 soubory 0 oprav; žádný řádek přes 200 znaků; `php tools/check-current-docs.php`: 80 řádků CURRENT, 0 chyb; `git diff --check`: 0 chyb. Repo skript `tools/check-php-style.php` nelze spustit proti sdílenému `vendor`, kde chybí `vendor/bin/php-cs-fixer`; ekvivalentní kontrola PHAR prošla. |
 | MariaDB 10.3/11.4, dvě souběžné rezervace, rolový browser | NOT RUN | Čeká na izolované CI/UAT; zde nebyla měněna produkce ani skutečná data. |

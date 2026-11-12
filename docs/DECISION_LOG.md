@@ -25,6 +25,8 @@ připravit implementaci dle dodaného zadání.
 MAKEUP-AUTO-01: automatická kapacita používá kanonický výpočet fyzických
 soupisek a placených držení v `club_program.php`; odečítá aktivní náhradní
 rezervace. Stejné fyzické zámky používá aktivace nové účasti a rezervace.
+Potvrzené náhrady chrání kapacitu i po vypnutí automatiky; snížení kapacity
+pod běžná místa a budoucí rezervace se odmítne.
 Výpočet přes celé překryvné období je konzervativní: některý den může zůstat
 nevypsaný, ale automatikou nevznikne místo nad limit. Ruční sloty zůstávají
 historickým vědomým rozhodnutím trenéra. Varianta nezávisle přepočítávat

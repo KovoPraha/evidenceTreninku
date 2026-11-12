@@ -94,6 +94,8 @@ final class ClubMakeupTest extends TestCase
         $reservation = \clubMakeupReserve($pdo, 10, $credit, 200, 'athlete', 50);
         self::assertGreaterThan(0, $reservation);
         self::assertSame('automatic', $pdo->query('SELECT origin FROM club_makeup_slots WHERE plan_id=200')->fetchColumn());
+        $targetOffer = $pdo->query('SELECT * FROM club_program_offers WHERE id=21')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame(1, \clubMakeupFutureReservedForOffer($pdo, $targetOffer));
         self::assertSame([], \clubMakeupAvailableSlots($pdo, 13, $secondCredit));
         try {
             \clubMakeupReserve($pdo, 13, $secondCredit, 200, 'athlete', 53);
@@ -102,6 +104,7 @@ final class ClubMakeupTest extends TestCase
             self::assertStringContainsString('Kapacita', $error->getMessage());
         }
         \clubMakeupCancelReservation($pdo, 10, $reservation, 'athlete', 50);
+        self::assertSame(0, \clubMakeupFutureReservedForOffer($pdo, $targetOffer));
         self::assertCount(1, \clubMakeupAvailableSlots($pdo, 13, $secondCredit));
         \clubMakeupAutoRouteExceptionSave($pdo, 1, 12, 21, false);
         self::assertSame([], \clubMakeupAvailableSlots($pdo, 13, $secondCredit));

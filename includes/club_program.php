@@ -540,6 +540,13 @@ function clubProgramUpdateOffer(PDO $pdo, int $actorId, int $offerId, array $inp
         if ($capacity !== null && (int) $capacity < (int) $capacityState['occupied_count']) {
             throw new ClubProgramException('Kapacitu nelze snížit pod počet aktivních účastí a platných rezervací.');
         }
+        if ($capacity !== null) {
+            require_once __DIR__ . '/club_makeup.php';
+            if ((int) $capacity < (int) $capacityState['occupied_count']
+                    + clubMakeupFutureReservedForOffer($pdo, $before)) {
+                throw new ClubProgramException('Kapacitu nelze snížit pod počet účastníků a rezervovaných náhrad.');
+            }
+        }
         $after = $before;
         foreach (['name' => $name,
              'starts_on' => $startsOn,
@@ -1584,13 +1591,11 @@ function clubProgramActivateOrderItemInTransaction(
             }
         }
         require_once __DIR__ . '/club_makeup.php';
-        if (clubMakeupAutoEnabled($pdo)) {
-            $futureMakeups = clubMakeupFutureReservedForOffer($pdo, $item);
-            if ($futureMakeups > 0
-                && (int) $capacityState['occupied_count'] + $futureMakeups >= (int) $item['capacity']
-                && !clubProgramPersonOccupiesSharedCapacity($pdo, $item, $sportovecId, true)) {
-                throw new ClubProgramException('Kapacitu budoucího tréninku již obsadili náhradníci.');
-            }
+        $futureMakeups = clubMakeupFutureReservedForOffer($pdo, $item);
+        if ($futureMakeups > 0
+            && (int) $capacityState['occupied_count'] + $futureMakeups >= (int) $item['capacity']
+            && !clubProgramPersonOccupiesSharedCapacity($pdo, $item, $sportovecId, true)) {
+            throw new ClubProgramException('Kapacitu budoucího tréninku již obsadili náhradníci.');
         }
     }
     if ($termsRequired) {
