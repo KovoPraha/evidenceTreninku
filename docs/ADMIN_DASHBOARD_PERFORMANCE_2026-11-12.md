@@ -47,3 +47,9 @@ mixed 49,87 → 84,36 ms, grouped 62,92 → 90,17 ms, ungrouped 32,90 → 53,24 
 Varianta s jedním SQL se proto nepoužije. Původní NOT EXISTS zůstane
 samostatným dotazem a tři stavové počty spojíme. Poslední varianta má dva
 SQL místo čtyř a čeká na nové párové měření.
+
+## Převzetí souběžných změn
+
+Pracovní větev byla po sloučení #462 aktualizována na main 22d151f7.
+Zachována je oprava pozice soupisek i její plán a záznamy. Referenční
+admin_dashboard.php z 5cd6ad07 je obsahově shodný s touto novou základnou.
