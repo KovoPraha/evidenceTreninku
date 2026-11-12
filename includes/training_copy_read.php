@@ -32,6 +32,7 @@ final class TrainingCopyRead
         $window = array_slice($candidates, 0, 101);
         $dates = array_column($window, 'datum');
         if (count($dates) !== count(array_unique($dates))) {
+            unset($candidates, $window, $dates);
             $rows = self::read($pdo, $sql . ' GROUP BY t.id ORDER BY t.datum DESC'
                 . ($team === null ? ' LIMIT 100' : ''), $params);
             return $team === null ? $rows : array_slice(trainingRosterBridgeFilterTrainingRows($pdo, $rows, $team), 0, 100);
