@@ -2,7 +2,7 @@
 
 ID: KIS-ACT-01 / PL-9d3bb013a4. Stav: **K OVĚŘENÍ**. Vlastník implementace: vývoj; kontrola identity, textu pozvánky a produkčního pilotu: vedení TJ KOVO Praha. Větev `codex/parent-account-activation` z `origin/main` `66a4cc08`, izolovaný worktree `C:\xampp\htdocs\evidencePavel-parent-activation`. Bez merge, produkčního nasazení a hromadného odeslání. Závěry o datech vycházejí ze zdrojového kódu a syntetických testů; skutečné počty a stav konkrétních osob v produkci je nutné ověřit chráněným administrativním přehledem. Tento dokument neobsahuje osobní údaje.
 
-Sdílení: commit `5a1df911`, push větve a [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463). CI běží; stav před integrací se ověřuje v PR. Schválení vedením a produkční pilot jsou samostatné brány.
+Sdílení: větev `codex/parent-account-activation`, commit `64b546da` a [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463). Všech 11 kontrol na tomto commitu PASS; schválení vedením a produkční pilot jsou samostatné brány.
 
 ## Analýza současného stavu
 
@@ -48,9 +48,10 @@ Fronta rozlišuje `pending`, `processing`, `sent`, `failed` a `cancelled`. Stav 
 
 ## Ověření v této větvi
 
+- PASS: CI na commitu `64b546da`: 2463 PHPUnit testů / 56435 kontrol, PHPStan a styl, dokumentace, CodeQL a integrační i profilovací joby MariaDB 10.3/11.4. [Běh](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43263993335). Lokální neúplný vendor je popsán níže.
 - PASS: cílená sada s dočasným bootstrapem namířeným na tento worktree: 68 testů / 3217 kontrol. Nevyřízená vazba blokuje pozvánku; schválený rodič se dvěma dětmi aktivuje účet jedním odkazem; opakované použití a vypršení nefungují; duplicitní či změněný e-mail, zrušená vazba i mezitím aktivovaný účet blokují; běžné ověření e-mailu obchvat nevytvoří; aktivní ověřený účet projde resetem; po aktivaci přihlášení ukazuje právě schválené děti. Sada zahrnuje obnovu hesla, poštovní frontu, žádosti o vazbu, rodinný portál, zálohovací kontrakt, katalog migrací a registraci administrativní stránky.
 - PASS: cílené stávající testy obnovy hesla, poštovní fronty a zálohovacího kontraktu, 40 testů / 701 kontrol; existující tok žádosti o vazbu 8 testů / 76 kontrol s dočasným bootstrapem namířeným na tento worktree. Syntaktická kontrola dotčených PHP souborů, `composer validate --strict` a `git diff --check` PASS.
 - Celá lokální sada `composer test` STOP po 248 testech: sdílený vendor původního checkoutu nemá `Symfony\Component\Filesystem\Path`. Jde o omezení lokálních závislostí; výsledek celé sady nelze označit PASS. CI se správně instalovaným `composer.lock` musí projít před merge.
 - Autentizované prohlížečové UAT, počty skutečných importovaných účtů, doručitelnost a schválení pilotu zůstávají samostatnou předprodukční kontrolou. Lokální testovací MariaDB na portu 3308 nebyla při kontrole spuštěná; pokus o agregované čtení skončil odmítnutím spojení. Tato větev nečetla produkční osobní údaje a neodeslala žádnou produkční zprávu.
 
-Další krok: dokončit CI a review návrhu s programátorem, v izolované MariaDB a prohlížeči projít testovací účty, nechat vedení schválit identifikační postup a pilotní dávku. Teprve samostatně rozhodnout o merge a nasazení; produkční pozvánky poslat až po přejímce.
+Další krok: programátorské review návrhu, v izolované MariaDB a prohlížeči projít testovací účty, nechat vedení schválit identifikační postup a pilotní dávku. Teprve samostatně rozhodnout o merge a nasazení; produkční pozvánky poslat až po přejímce.

@@ -14,9 +14,9 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## KIS-ACT-01 — první heslo importovaných rodičů (12. 11. 2026)
 
-K OVĚŘENÍ: [analýza, implementace, migrace, testy a otevřené brány](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md). Vlastník vývoj; identitu, text pozvánky a pilot schvaluje vedení TJ KOVO Praha. Větev/worktree `codex/parent-account-activation` / `C:\xampp\htdocs\evidencePavel-parent-activation`, base `origin/main` `66a4cc08`. Syntetické testy PASS; celý lokální PHPUnit blokuje chybějící vendor třída, MariaDB/browser/produkční počty NOT RUN. Žádný merge, deploy ani odeslání. Další krok: CI a programátorské review, izolované testovací účty, schválení vedením před produkcí.
+K OVĚŘENÍ: [analýza, implementace, migrace, testy a otevřené brány](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md). Vlastník vývoj; identitu, text pozvánky a pilot schvaluje vedení TJ KOVO Praha. Větev/worktree `codex/parent-account-activation` / `C:\xampp\htdocs\evidencePavel-parent-activation`, base `origin/main` `66a4cc08`. Syntetické testy PASS; celý lokální PHPUnit blokuje chybějící vendor třída, lokální MariaDB/browser/produkční počty NOT RUN. Žádný merge, deploy ani odeslání. Další krok: programátorské review, izolované testovací účty, schválení vedením před produkcí.
 
-Předání: commit `5a1df911`, push, [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463); 67 cílených testů / 3124 kontrol PASS. CI zatím běží; produkční schválení otevřené.
+Předání: commit `64b546da`, push, [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463); 68 cílených testů / 3217 kontrol a všech 11 CI kontrol PASS včetně 2463 PHPUnit testů a obou MariaDB. Programátorské review, přihlášené UAT a produkční schválení vedením otevřené.
 
 ## BAR-DISPLAY-STOCK — oprava obrazovek a převod zásob (10. 11. 2026)
 
