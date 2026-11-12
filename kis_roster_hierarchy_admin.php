@@ -415,7 +415,7 @@ endforeach;
 include __DIR__.
     '/includes/member_roster_view.php';
 ?></main>
-<script>
+<script nonce="<?= krha(app_csp_nonce()) ?>">
 (() => {
     const restoreY = <?= json_encode($restoreScrollY) ?>;
     if (restoreY !== null) {
