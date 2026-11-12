@@ -12,6 +12,8 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [Technická analýza, etapy, migrace, rizika a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026).
 Vlastník vývoj KIS; vedení KOVO potvrzuje věkové hranice a centrální pravidla.
 Větev `codex/makeup-auto-20261112`, oddělený worktree z `origin/main` `4b9bcb1a`.
+[Draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459) otevřen;
+merge, runtime implementace a aktivace NOT RUN.
 Další krok: implementovat opt-in schéma a společný výběr cíle/kapacity,
 synteticky ověřit včetně souběhu a poté předložit rolové UAT. Aktivace skutečných
 nabídek závisí na schválených kategoriích, lhůtách a kapacitách.

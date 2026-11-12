@@ -181,6 +181,8 @@ tento oddíl je bezpečný technický přepis. Evidence: [registr](WORK_PLAN_CUR
 Příprava vznikla z `origin/main` `4b9bcb1a` na větvi
 `codex/makeup-auto-20261112` v odděleném worktree
 `C:\xampp\evidencePavel-makeup-auto-20261112`.
+Návrh je sdílen v [draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459);
+merge, implementace, migrace, aktivace a lidské UAT dosud neproběhly.
 
 ### Ověřený současný stav a omezení
 
