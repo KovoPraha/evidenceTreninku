@@ -17,6 +17,10 @@ require_once __DIR__ . '/FullHttpReadProfile.php';
 
 [$runtime, $admin] = fullHttpEnvironment($output);
 $admin->exec('USE `' . $runtime['schema'] . '`');
+$admin->exec('SET GLOBAL query_cache_type=OFF');
+if (!in_array(strtoupper((string)$admin->query('SELECT @@global.query_cache_type')->fetchColumn()), ['OFF', '0'], true)) {
+    throw new RuntimeException('The owned HTTP benchmark requires the SQL result cache to be off.');
+}
 $checksums = static function () use ($admin): array {
     $result = [];
     foreach ($admin->query('SHOW FULL TABLES WHERE Table_type = "BASE TABLE"')->fetchAll(PDO::FETCH_COLUMN) as $table) {
@@ -115,6 +119,7 @@ foreach ($cases as $case) {
     }
 }
 file_put_contents($output . '/http.json', json_encode([
-    'cases' => count($cases), 'fixture_people' => (int)$admin->query('SELECT COUNT(*) FROM sportovci')->fetchColumn(),
+    'cases' => count($cases), 'database_query_cache_off' => true,
+    'fixture_people' => (int)$admin->query('SELECT COUNT(*) FROM sportovci')->fetchColumn(),
     'signatures' => $signatures, 'samples' => $samples,
 ], JSON_THROW_ON_ERROR));

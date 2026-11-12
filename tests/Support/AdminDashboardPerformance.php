@@ -31,6 +31,7 @@ foreach ([0, 100, 10000, 100000] as $size) {
     foreach (['mixed', 'grouped', 'ungrouped'] as $layout) {
         $schema = 'p11_adm_' . bin2hex(random_bytes(8));
         $admin->exec('CREATE DATABASE `' . $schema . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $pdo = null;
         try {
             $pdo = new Tests\Support\QueryProfilePdo($dsn . ';dbname=' . $schema, 'root', '');
             $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
@@ -90,7 +91,11 @@ foreach ([0, 100, 10000, 100000] as $size) {
                 'samples_ms' => $samples, 'median_ms' => array_map($median, $samples),
                 'median_peak_bytes' => array_map($median, $peaks), 'diagnostics' => $diagnostics];
         } finally {
+            if ($pdo !== null && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             $pdo = null;
+            unset($checksum);
             $admin->exec('DROP DATABASE `' . $schema . '`');
         }
     }
