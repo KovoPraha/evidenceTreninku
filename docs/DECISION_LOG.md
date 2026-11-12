@@ -722,3 +722,5 @@ shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované
 - 12. 11. 2026 P11-RHC2. Navazující měření a omezení agregace kopírovacího seznamu. [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md#p11-rhc2--omezená-agregace-vzorů-kopírování-12-11-2026).
 
 - 12. 11. 2026 P11-RHC2. #457/87171a67 vydán po shodě celých řádků/HTTP, snímků a měřeném přínosu. [Doklady](verification/training-copy-20261112/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43215069511).
+
+- 12. 11. 2026 P11-ADM. Zahájeno měření společné agregace čtyř administrátorských počtů. [Plán](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md).
