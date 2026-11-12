@@ -1,0 +1,195 @@
+{
+  "algorithm": "SHA-256 of Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/RESULTS.md",
+      "bytes": 3269,
+      "sha256": "c93884c597cf88c6364f177aff7107d656d338a79ade4933c120feb9b60b91f9"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/application-checks.json",
+      "bytes": 965,
+      "sha256": "b1112aaaa497be6d352ac199b99db31ada0db3e451573e9778f56d9dfd5ab934"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "455aff714e86d2b9146c58e5a626cfb263b2730a043ba6d8f28fc865baf5f0ae"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-10.3/http.json.gz",
+      "bytes": 3396,
+      "sha256": "f134132b7841612f6fa8db3259a4f61452b65b58b8043fe445bb985f71bbe78b"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-10.3/source.json",
+      "bytes": 1428,
+      "sha256": "5d58e2ade7137348b24c43b01b1a13a224cd73eeca4c3ee6dbecbca57510035d"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-duplikovat_trenink-dark-cold.json",
+      "bytes": 5922,
+      "sha256": "e386499217a8f13b3590bea6c4fbfe5cbba54e17ab29f61fdc336e4e3dd805af"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-duplikovat_trenink-dark-warm.json",
+      "bytes": 5828,
+      "sha256": "53df00c4933b95ac1518119e9319be6ad4ba62cd671fced4af1f017eaedb2c31"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-duplikovat_trenink-light-cold.json",
+      "bytes": 5955,
+      "sha256": "a3db707b9fff7bc64f599ae0a471c188bc476c7497a80e66b02e4976d5cd8b57"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-duplikovat_trenink-light-warm.json",
+      "bytes": 5794,
+      "sha256": "6284ced901d45816fb3a5f04b672c56268290df8deae952161f1f42e7329dd49"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-edit_trenink-dark-cold.json",
+      "bytes": 5954,
+      "sha256": "6bcf710c1d2f1e2ae13028fdc920178b6d198898668df7c6f336b463a56ba044"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-edit_trenink-dark-warm.json",
+      "bytes": 5870,
+      "sha256": "8e75b9c64515b2c44c1bec7f8fcda2f77a7257c0b7e2481287b6f07da339cd88"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-edit_trenink-light-cold.json",
+      "bytes": 5961,
+      "sha256": "79b87b2121d5777d1a62c55c73bb0b8b4f677bd6d2cca1fcfe8bc3190d9601da"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-edit_trenink-light-warm.json",
+      "bytes": 5841,
+      "sha256": "cf4929d7ff9b320b2e1e9a8499003ede237fff849b796488f207aefe50aca3df"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-formular-dark-cold.json",
+      "bytes": 5972,
+      "sha256": "5ebc77a6bd28c40afa739984d32e0869ab72afa4faadf53e79754bb8eaa8c71b"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-formular-dark-warm.json",
+      "bytes": 5863,
+      "sha256": "00339aea2bebf1ffeee4546049b574dd5292912dacb1c254544e0b005e5d7bab"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-formular-light-cold.json",
+      "bytes": 5950,
+      "sha256": "f46c6e924863308145a5b71ba18dc4082810a90adce88195dbc3cb6f8ea13dd0"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-formular-light-warm.json",
+      "bytes": 5770,
+      "sha256": "14e224303ea8e41fbe4dca3a6f892ba5b4b8ee76580e0cc4b56944cab8f6c8b9"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/browser-summary.json",
+      "bytes": 5765,
+      "sha256": "92cbe18ddd1b7d7a829233e57111efe32a3ebca44f47ec09e369d6ccf5755698"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "455aff714e86d2b9146c58e5a626cfb263b2730a043ba6d8f28fc865baf5f0ae"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/duplikovat_trenink-dark-cold-after.png",
+      "bytes": 76375,
+      "sha256": "a5cb25ee4b2bf546a26a46f3aaa62a441bcf533fb1814154af50c05ad239850b"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/duplikovat_trenink-dark-cold-before.png",
+      "bytes": 76375,
+      "sha256": "a5cb25ee4b2bf546a26a46f3aaa62a441bcf533fb1814154af50c05ad239850b"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/duplikovat_trenink-light-cold-after.png",
+      "bytes": 96798,
+      "sha256": "f3eef3228bbc390d510eb470296ff65220f84b5eb46212ef91904b830c2a6336"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/duplikovat_trenink-light-cold-before.png",
+      "bytes": 96798,
+      "sha256": "f3eef3228bbc390d510eb470296ff65220f84b5eb46212ef91904b830c2a6336"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/edit_trenink-dark-cold-after.png",
+      "bytes": 63656,
+      "sha256": "aa385b56a5b7bfbd98a7b35045255cab1e7987f451ee27c050b07eae90e5f501"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/edit_trenink-dark-cold-before.png",
+      "bytes": 63656,
+      "sha256": "aa385b56a5b7bfbd98a7b35045255cab1e7987f451ee27c050b07eae90e5f501"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/edit_trenink-light-cold-after.png",
+      "bytes": 97301,
+      "sha256": "ff4ac51481c830a17206bc363c06cfeebca1988fffad47758c389ab68ccf2bb9"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/edit_trenink-light-cold-before.png",
+      "bytes": 97301,
+      "sha256": "ff4ac51481c830a17206bc363c06cfeebca1988fffad47758c389ab68ccf2bb9"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/formular-dark-cold-after.png",
+      "bytes": 69013,
+      "sha256": "d3df8b42960e7ada211db9c0bea0589a2cdfe8d11f2a5d0064f02043a19ec6f0"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/formular-dark-cold-before.png",
+      "bytes": 69013,
+      "sha256": "d3df8b42960e7ada211db9c0bea0589a2cdfe8d11f2a5d0064f02043a19ec6f0"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/formular-light-cold-after.png",
+      "bytes": 99644,
+      "sha256": "ed5e934078cbb47a7c3c952aa3de22049f1d84e6dd1fb5a547995f702f5b1cc9"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/formular-light-cold-before.png",
+      "bytes": 99644,
+      "sha256": "ed5e934078cbb47a7c3c952aa3de22049f1d84e6dd1fb5a547995f702f5b1cc9"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/http.json.gz",
+      "bytes": 3426,
+      "sha256": "4b4b786534f5592641923af94c9d1c1b7cb45d233fc56328d54e5d1d29d7cd9f"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/mariadb-11.4/source.json",
+      "bytes": 1428,
+      "sha256": "5d58e2ade7137348b24c43b01b1a13a224cd73eeca4c3ee6dbecbca57510035d"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/production-after.json",
+      "bytes": 1130,
+      "sha256": "68cf6e55d5264a25296fcac4dc9ee7e84739858b102cb0d01099cad70d5bcff2"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/production-before.json",
+      "bytes": 1130,
+      "sha256": "68cf6e55d5264a25296fcac4dc9ee7e84739858b102cb0d01099cad70d5bcff2"
+    },
+    {
+      "path": "docs/verification/training-form-bootstrap-20261112/release.json",
+      "bytes": 509,
+      "sha256": "ff59b000860a858e55746a254f64a7bd83fb8bd27cdc9d97b6d1e789dc2d8ab9"
+    }
+  ]
+}
