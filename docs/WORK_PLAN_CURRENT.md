@@ -32,11 +32,11 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## KIS-ACT-01 — první heslo importovaných rodičů (12. 11. 2026)
 
-Vlastník 12. 11. autorizoval vydání kódu a migrace z PR #463; po zeleném CI sloučit a spustit chráněný deploy s UAT/import false. [Rozsah a pilotní brána](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md). Pozvánky a změny vazeb vyžadují zvláštní provozní schválení. Při tomto záznamu merge/deploy NOT RUN.
+KÓD NASAZEN; pilot a rodičovské UAT otevřené. Vlastník 12. 11. autorizoval vydání kódu a migrace z PR #463; [deploy 43322186478](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43322186478) SUCCESS na `373b8d89`, UAT/import false. [Rozsah](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md), [protokol](verification/parent-activation-release-20261112/RESULTS.md). Pozvánky a změny vazeb vyžadují zvláštní provozní schválení.
 
-K OVĚŘENÍ: [analýza, implementace, migrace, testy a otevřené brány](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md). Vlastník vývoj; identitu, text pozvánky a pilot schvaluje vedení TJ KOVO Praha. Větev/worktree `codex/parent-account-activation` / `C:\xampp\htdocs\evidencePavel-parent-activation`, base `origin/main` `66a4cc08`. Syntetické testy PASS; celý lokální PHPUnit blokuje chybějící vendor třída, lokální MariaDB/browser/produkční počty NOT RUN. Žádný merge, deploy ani odeslání. Další krok: programátorské review, izolované testovací účty, schválení vedením před produkcí.
+Vlastník vývoj; identitu, text pozvánky a pilot schvaluje vedení TJ KOVO Praha. Vývojová větev `codex/parent-account-activation` v izolovaném worktree. Cílené syntetické testy a plné PR CI PASS; produkční počty, přihlášené rodičovské UAT a doručení pozvánek NOT RUN. Další krok: schválení konkrétní malé dávky a její provozní přejímka.
 
-Předání: commit `64b546da`, push, [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463); 68 cílených testů / 3217 kontrol a všech 11 CI kontrol PASS včetně 2463 PHPUnit testů a obou MariaDB. Souběžný `main` `428a2258` převzat v `44ee2323`; výsledek nového CI společného stromu ověřit v PR. Programátorské review, přihlášené UAT a produkční schválení vedením otevřené.
+Předání: [PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463) sloučen, poslední společný strom `bdece243` měl 11 CI PASS včetně obou MariaDB; záloha, migrace a živé anonymní GET ověřeny v [release protokolu](verification/parent-activation-release-20261112/RESULTS.md). Vydání neobsahovalo provozní odeslání.
 
 ## BAR-DISPLAY-STOCK — oprava obrazovek a převod zásob (10. 11. 2026)
 
