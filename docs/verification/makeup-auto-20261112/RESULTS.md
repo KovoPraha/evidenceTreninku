@@ -23,7 +23,8 @@ nároků/rezervací; úprava věkových mezí zůstává v kanonické nabídce p
 | Plná CI PHPUnit, statická kontrola, dokumentace, CodeQL | PASS | [PHPUnit 43248400672](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43248400672): 2460 testů / 56453 assertions; PHPStan level 5 + styl 43248400701, dokumentace 43248400895, CodeQL 43248390394 PASS. |
 | MariaDB čtecí profily 10.3/11.4 | PASS | [CI 43248400672](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43248400672): oba profily PASS s přesným přírůstkem schématu. |
 | Rolový browser | NOT RUN | Přihlášená přejímka koordinátora, trenéra a rodiče zůstává otevřená. |
-| Merge, deploy, zapnutí automatiky, lidská přejímka | NOT RUN | Samostatné kroky až po potvrzení věkových hranic, pravidel a skutečných kapacit vedením. |
+| Merge a deploy | PASS | PR #459 squash merge `428a2258c3a740b0d244f9b93c4fbaa9db2713f1`; [workflow 43269836068](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43269836068) SUCCESS na stejném SHA. |
+| Zapnutí automatiky, lidská přejímka | NOT RUN | Výchozí `enabled=0`; hodnoty a skutečné kapacity musí potvrdit vedení, přihlášené rolové UAT zůstává otevřené. |
 
 První běh PR CI na `067f0348` našel tři opravené chyby: MariaDB odmítla
 `INSERT ... SELECT 1 WHERE` bez `FROM`, migrační test neznal nové ID a PHPStan
@@ -47,10 +48,14 @@ novou migraci. Opakované CI 43248400672 potvrdilo oba smoke joby PASS.
 
 ## Známé hranice
 
-Vlastník 12. 11. výslovně požádal o nasazení kódu. Release se připravuje z
-PR #459 přes chráněný workflow s oběma dalšími přepínači false. Produkční
-automatika zůstává vypnutá; merge, workflow receipt a kontrola živého stavu
-jsou do jejich skutečného provedení označeny NOT RUN.
+Vlastník 12. 11. výslovně požádal o nasazení kódu. Release proběhl z `main`
+na SHA `428a2258` přes chráněný workflow 43269836068 s
+`uat_schvaleno=false`, `importovat_krouzky=false`. Workflow provedlo znovu
+2460 testů / 56453 assertions, ověřenou zálohu 389 tabulek a 2 triggerů,
+migraci s `current=true`/`pending=[]`, kontrolu nezměněných VS, aktivaci
+release a přímý HTTP 200. Import produktů byl přeskočen. Výchozí přepínač
+nové migrace je off; samostatný produkční SELECT pro aktuální hodnotu nebyl
+proveden. Přihlášené rolové a lidské UAT zůstává NOT RUN.
 
 - Automatický režim nabízí jen nabídky se strukturovaným věkem a číselnou
   kapacitou. Nabídky bez stropu zůstávají v ručním režimu.

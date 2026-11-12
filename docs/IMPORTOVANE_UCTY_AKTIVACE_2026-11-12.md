@@ -1,5 +1,9 @@
 # KIS: aktivace importovaných účtů rodičů
 
+## Povolení vydání 12. 11. 2026
+
+Vlastník pokynem „nasadit“ povolil sloučení PR #463 a chráněné vydání kódu a migrace do KIS po zeleném CI, ověřené záloze a standardních kontrolách. Vydání proběhne s `uat_schvaleno=false` a `importovat_krouzky=false`. Pokyn neautorizuje schválení rodinných vazeb, zařazení pozvánek do fronty ani odeslání pilotní dávky. Text pozvánky, identifikační postup a rozsah pilotu musí vedení potvrdit před první skutečnou pozvánkou. Po nasazení ověřit SHA, migraci, veřejné a nepřihlášené HTTP chování a zaznamenat meze produkčního UAT.
+
 ID: KIS-ACT-01 / PL-9d3bb013a4. Stav: **K OVĚŘENÍ**. Vlastník implementace: vývoj; kontrola identity, textu pozvánky a produkčního pilotu: vedení TJ KOVO Praha. Větev `codex/parent-account-activation` z `origin/main` `66a4cc08`, izolovaný worktree `C:\xampp\htdocs\evidencePavel-parent-activation`. Bez merge, produkčního nasazení a hromadného odeslání. Závěry o datech vycházejí ze zdrojového kódu a syntetických testů; skutečné počty a stav konkrétních osob v produkci je nutné ověřit chráněným administrativním přehledem. Tento dokument neobsahuje osobní údaje.
 
 Sdílení: větev `codex/parent-account-activation`, commit `64b546da` a [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463). Všech 11 kontrol na tomto commitu PASS; schválení vedením a produkční pilot jsou samostatné brány.
@@ -46,7 +50,7 @@ Fronta rozlišuje `pending`, `processing`, `sent`, `failed` a `cancelled`. Stav 
 - Pokud je část importovaných vazeb stále `pending`, pozvánka daného účtu se nevydá. Tím se brání částečnému přístupu u více dětí bez kontroly všech vazeb.
 - Při změně e-mailu, zrušení schválené vazby, vypršení či použití tokenu se aktivace odmítne. Změna hesla a aktivace zvyšují verzi relace.
 - Hromadné odeslání zatěžuje e-mailovou frontu; před první dávkou ověřit pracovníka, šifrovací klíče, transport, limity a vzor zprávy na syntetických účtech. Začít malou schválenou dávkou.
-- Před produkcí vedení organizace schválí text pozvánky, postup kontroly identity, rozsah pilotní dávky a způsob řešení nedoručených zpráv. Bez tohoto schválení nic nenasazovat ani neposílat.
+- Před první produkční pozvánkou vedení organizace schválí text, postup kontroly identity, rozsah pilotní dávky a způsob řešení nedoručených zpráv. Pokyn vlastníka k nasazení povoluje vydání kódu a migrace, nikoli odeslání.
 
 ## Ověření v této větvi
 
