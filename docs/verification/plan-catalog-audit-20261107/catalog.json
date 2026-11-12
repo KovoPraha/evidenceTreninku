@@ -9,9 +9,9 @@
       "title": "P11-ADM — administrátorský přehled",
       "primary": true,
       "role": "plan",
-      "status": "PARTIAL",
+      "status": "DONE",
       "registry": "P11-ADM",
-      "disposition": "Párová přejímka agregace čtyř počtů, výkon a vydání čekají na ověření.",
+      "disposition": "P11-ADM technická přejímka a vydání PASS, #465/be4ce55a, deploy 43326177751. Přihlášené produkční UAT NOT RUN. Další kandidát duplicitní Bootstrap.",
       "evidence": [
         "docs/verification/admin-dashboard-20261112/RESULTS.md"
       ]

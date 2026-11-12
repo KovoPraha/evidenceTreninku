@@ -1,6 +1,6 @@
 # P11-ADM — agregace administrátorského přehledu
 
-12. 11. 2026. ROZPRACOVÁNO. Vývoj/Codex na navazující pokyn Marka pokračovat
+Zahájeno 12. 11. 2026; NASAZENO 13. 11. 2026. Vývoj/Codex na navazující pokyn Marka pokračovat
 v testovaných a měřených optimalizacích, merge a nasazení.
 Base 5cd6ad07, výchozí nasazený runtime 428a2258, deploy 43269836068 SUCCESS.
 Větev codex/admin-dashboard-performance-20261112, samostatný worktree
@@ -37,7 +37,7 @@ kontrolované invarianty.
    UAT/import false. Zachovat souběžné změny v main.
 5. Aktualizovat tento plán, registr, CURRENT, handoff, události a důkazy.
 
-[Průběžné výsledky](verification/admin-dashboard-20261112/RESULTS.md). Další krok je implementace a párové ověření.
+[Průběžné výsledky](verification/admin-dashboard-20261112/RESULTS.md). Přejímka a vydání jsou dokončené; viz výsledek níže.
 
 ## Diagnostická varianta a změna výběru
 
@@ -46,7 +46,7 @@ všech čtyř počtů bylo na větších sadách pomalejší. Na 100 000 záznam
 mixed 49,87 → 84,36 ms, grouped 62,92 → 90,17 ms, ungrouped 32,90 → 53,24 ms.
 Varianta s jedním SQL se proto nepoužije. Původní NOT EXISTS zůstane
 samostatným dotazem a tři stavové počty spojíme. Poslední varianta má dva
-SQL místo čtyř a čeká na nové párové měření.
+SQL místo čtyř; finální párové měření je v odkazovaných výsledcích.
 
 ## Převzetí souběžných změn
 
@@ -57,3 +57,14 @@ admin_dashboard.php z 5cd6ad07 je obsahově shodný s touto novou základnou.
 Po souběžném #463 byla základna znovu aktualizována na 373b8d89.
 Zachována je aktivace importovaných účtů, její migrace i dokumentace.
 admin_dashboard.php je proti referenci 5cd6ad07 nadále shodný.
+
+## Výsledek
+
+**P11-ADM NASAZENO.** [Plán](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md), [měření](verification/admin-dashboard-20261112/RESULTS.md). #465/be4ce55a, [deploy 43326177751](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43326177751) SUCCESS, 13 CI. Čtyři počty: 4→2 SQL; celé HTTP −6–9 % v CI. Přihlášené produkční UAT NOT RUN.
+
+Na 10 000 osobách nativní část −6–14 %, na 100 000 −1,8–10,1 %.
+Celé HTML, oprávnění a dva full-page snímky shodné; 358 tabulek beze změny.
+Varianta jednoho SQL zamítnuta kvůli regresi. Finální varianta zachovává
+NOT EXISTS a spojuje jen tři stavové počty. Paměť +112 B, FCP shodný.
+Přesná data, omezení, záloha a provozní důkazy jsou v [měření](verification/admin-dashboard-20261112/RESULTS.md).
+Další krok: měřit odstranění duplicitního Bootstrapu administrátorského přehledu.
