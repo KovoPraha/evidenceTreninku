@@ -4,7 +4,7 @@ ID: KIS-ACT-01 / PL-9d3bb013a4. Stav: **K OVĚŘENÍ**. Vlastník implementace: 
 
 Sdílení: větev `codex/parent-account-activation`, commit `64b546da` a [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463). Všech 11 kontrol na tomto commitu PASS; schválení vedením a produkční pilot jsou samostatné brány.
 
-Souběh: `main` se posunul na `428a2258` (MAKEUP-AUTO-01). Všechny jeho věcné změny jsou převzaty do této větve; tři konflikty v deníku, rozhodnutích a očekávaném katalogu migrací byly vyřešeny se zachováním obou agend. CI na výsledném společném stromu musí znovu projít.
+Souběh: `main` se posunul na `428a2258` (MAKEUP-AUTO-01). Všechny jeho věcné změny jsou převzaty do této větve v merge commitu `44ee2323`; tři konflikty v deníku, rozhodnutích a očekávaném katalogu migrací byly vyřešeny se zachováním obou agend. Výsledek CI na společném stromu je nutné ověřit přímo v PR.
 
 ## Analýza současného stavu
 

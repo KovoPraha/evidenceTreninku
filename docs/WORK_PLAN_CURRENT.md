@@ -32,7 +32,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 K OVĚŘENÍ: [analýza, implementace, migrace, testy a otevřené brány](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md). Vlastník vývoj; identitu, text pozvánky a pilot schvaluje vedení TJ KOVO Praha. Větev/worktree `codex/parent-account-activation` / `C:\xampp\htdocs\evidencePavel-parent-activation`, base `origin/main` `66a4cc08`. Syntetické testy PASS; celý lokální PHPUnit blokuje chybějící vendor třída, lokální MariaDB/browser/produkční počty NOT RUN. Žádný merge, deploy ani odeslání. Další krok: programátorské review, izolované testovací účty, schválení vedením před produkcí.
 
-Předání: commit `64b546da`, push, [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463); 68 cílených testů / 3217 kontrol a všech 11 CI kontrol PASS včetně 2463 PHPUnit testů a obou MariaDB. Souběžný `main` `428a2258` nyní převzat do větve, nové CI společného stromu čeká. Programátorské review, přihlášené UAT a produkční schválení vedením otevřené.
+Předání: commit `64b546da`, push, [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463); 68 cílených testů / 3217 kontrol a všech 11 CI kontrol PASS včetně 2463 PHPUnit testů a obou MariaDB. Souběžný `main` `428a2258` převzat v `44ee2323`; výsledek nového CI společného stromu ověřit v PR. Programátorské review, přihlášené UAT a produkční schválení vedením otevřené.
 
 ## BAR-DISPLAY-STOCK — oprava obrazovek a převod zásob (10. 11. 2026)
 
