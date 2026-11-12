@@ -110,3 +110,12 @@ Na MariaDB 11.4 prošla nativní parita včetně remíz. HTTP kontrola ukázala,
 že pracovní pozice vedoucího sportu má na této trase dosavadní 403.
 Matice nyní zachovává toto odmítnutí, testuje registráře a přidává
 pozitivní druhý trenérský účet s kontrolou nepřítomnosti cizího tréninku.
+
+### Průběžný profil P11-RHC2
+
+Diagnostický běh 43212500796 na 10.3 potvrdil paritu. Pro 10 000 jednoznačně
+datovaných tréninků vyšel seznam 439,67 → 7,43 ms a týmový výběr
+505,51 → 76,60 ms. Při remízách týmový výběr zdražil 494,86 → 543,61 ms.
+Před dokončením proto rozpoznáváme remízy také před prvním vyhodnocením
+hierarchie a u návratu k původnímu dotazu uvolňujeme kandidáty. Tyto hodnoty
+patří průběžnému commitu acbcea30, poslední varianta čeká na nové měření.

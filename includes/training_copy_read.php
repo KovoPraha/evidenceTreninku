@@ -24,15 +24,15 @@ final class TrainingCopyRead
             $candidateSql .= ' LIMIT 101';
         }
         $candidates = self::read($pdo, $candidateSql, $params);
-        if ($team !== null) {
+        $hasDateTies = self::hasDateTies(array_slice($candidates, 0, 101));
+        if ($team !== null && !$hasDateTies) {
             $candidates = trainingRosterBridgeFilterTrainingRows($pdo, $candidates, $team);
         }
         // The legacy date-only sort leaves ties undefined, including the 100th row.
         // Execute that exact query when a tie could change the visible selection.
         $window = array_slice($candidates, 0, 101);
-        $dates = array_column($window, 'datum');
-        if (count($dates) !== count(array_unique($dates))) {
-            unset($candidates, $window, $dates);
+        if ($hasDateTies || self::hasDateTies($window)) {
+            unset($candidates, $window);
             $rows = self::read($pdo, $sql . ' GROUP BY t.id ORDER BY t.datum DESC'
                 . ($team === null ? ' LIMIT 100' : ''), $params);
             return $team === null ? $rows : array_slice(trainingRosterBridgeFilterTrainingRows($pdo, $rows, $team), 0, 100);
@@ -52,6 +52,12 @@ final class TrainingCopyRead
             }
         }
         return $ordered;
+    }
+
+    private static function hasDateTies(array $rows): bool
+    {
+        $dates = array_column($rows, 'datum');
+        return count($dates) !== count(array_unique($dates));
     }
 
     private static function read(PDO $pdo, string $sql, array $params): array
