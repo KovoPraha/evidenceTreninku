@@ -820,3 +820,15 @@ a eshop_catalog_admin.php. U kopírování tréninku s filtrem týmu stojí za
 samostatné měření agregace účastníků a převod všech kandidátů na soupisky
 před omezením výsledku na 100. Rozhodnutí o pořadí vyžaduje profil na
 reprezentativní velikosti dat a kontrolu shody prvních 100 výsledků.
+
+### Výsledek P11-ASSET10
+
+**P11-ASSET10 NASAZENO.** [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset10--zápis-úprava-a-kopírování-tréninku-12-11-2026), [výsledky](verification/training-form-bootstrap-20261112/RESULTS.md). #455/dbab9e6e, [deploy 43164465663](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43164465663) SUCCESS, 15 CI. Studený Bootstrap CSS 64 454 → 31 248 B na třech trasách. Přihlášené produkční UAT NOT RUN.
+
+Při dalším měření porovnat nejdřív filtr kopírovacího seznamu na rozsáhlejší
+historii. Dnes dotaz agreguje skupiny, podskupiny a účastníky ještě před
+vyhodnocením vazby na tým a omezením na 100. Kandidát je vyhodnotit
+způsobilé identifikátory a počítat údaje pro zobrazené tréninky. Srovnání
+musí pokrýt stejný výsledek včetně platnosti historické hierarchie a oprávnění.
+V přehledu administrace ověřit samostatně opakované počty nad tabulkou
+sportovci a duplicitní styly, aby bylo možné zvolit podle naměřeného přínosu.

@@ -1,0 +1,23 @@
+{
+  "number": "455",
+  "base": "c11a1937e3e270329bf2b599ee0c40b199432483",
+  "head": "da41c0d059e8ad03da09605450a04a9de14fa672",
+  "tree": "bc0854612043bcb5a20ccd121d448a5de4fa953d",
+  "checks": {
+    "Analyze (actions)": "SUCCESS",
+    "docs": "SUCCESS",
+    "PHPStan level 5 and changed-file style": "SUCCESS",
+    "Planner Bootstrap assets HTTP (MariaDB 10.3)": "SUCCESS",
+    "PHPUnit na PHP 8.2": "SUCCESS",
+    "Training forms Bootstrap assets HTTP (MariaDB 10.3)": "SUCCESS",
+    "Analyze (javascript-typescript)": "SUCCESS",
+    "Planner Bootstrap assets HTTP (MariaDB 11.4)": "SUCCESS",
+    "Training forms Bootstrap assets HTTP (MariaDB 11.4)": "SUCCESS",
+    "Analyze (python)": "SUCCESS",
+    "MariaDB integrační smoke (MariaDB 10.3)": "SUCCESS",
+    "MariaDB integrační smoke (MariaDB 11.4)": "SUCCESS",
+    "MariaDB profily čtení (MariaDB 10.3)": "SUCCESS",
+    "MariaDB profily čtení (MariaDB 11.4)": "SUCCESS",
+    "CodeQL": "SUCCESS"
+  }
+}

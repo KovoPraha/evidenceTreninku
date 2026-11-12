@@ -1,0 +1,284 @@
+[
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "formular",
+    "before": {
+      "fcp_ms": 84,
+      "ready_ms": 108.29999999998836,
+      "html_bytes": 17427,
+      "css_bytes": 64454,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 80,
+      "ready_ms": 107.59999999997672,
+      "html_bytes": 17342,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "formular",
+    "before": {
+      "fcp_ms": 52,
+      "ready_ms": 58,
+      "html_bytes": 17427,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 52,
+      "ready_ms": 70,
+      "html_bytes": 17342,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "formular",
+    "before": {
+      "fcp_ms": 84,
+      "ready_ms": 112.19999999998254,
+      "html_bytes": 17427,
+      "css_bytes": 64454,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 76,
+      "ready_ms": 104.10000000000582,
+      "html_bytes": 17342,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "formular",
+    "before": {
+      "fcp_ms": 48,
+      "ready_ms": 60.29999999998836,
+      "html_bytes": 17427,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 48,
+      "ready_ms": 65.89999999999418,
+      "html_bytes": 17342,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "edit_trenink",
+    "before": {
+      "fcp_ms": 92,
+      "ready_ms": 108,
+      "html_bytes": 18449,
+      "css_bytes": 64454,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 80,
+      "ready_ms": 100.80000000001746,
+      "html_bytes": 18325,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "edit_trenink",
+    "before": {
+      "fcp_ms": 64,
+      "ready_ms": 70.39999999999418,
+      "html_bytes": 18447,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 60,
+      "ready_ms": 64.10000000000582,
+      "html_bytes": 18324,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "edit_trenink",
+    "before": {
+      "fcp_ms": 84,
+      "ready_ms": 110.89999999999418,
+      "html_bytes": 18449,
+      "css_bytes": 64454,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 72,
+      "ready_ms": 103.19999999998254,
+      "html_bytes": 18327,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "edit_trenink",
+    "before": {
+      "fcp_ms": 60,
+      "ready_ms": 61.70000000001164,
+      "html_bytes": 18450,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 56,
+      "ready_ms": 68.89999999996508,
+      "html_bytes": 18326,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "duplikovat_trenink",
+    "before": {
+      "fcp_ms": 76,
+      "ready_ms": 99.29999999998836,
+      "html_bytes": 9190,
+      "css_bytes": 64454,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 68,
+      "ready_ms": 97.60000000003492,
+      "html_bytes": 9107,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "duplikovat_trenink",
+    "before": {
+      "fcp_ms": 48,
+      "ready_ms": 57.40000000002328,
+      "html_bytes": 9190,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 44,
+      "ready_ms": 52.90000000002328,
+      "html_bytes": 9107,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "duplikovat_trenink",
+    "before": {
+      "fcp_ms": 72,
+      "ready_ms": 101,
+      "html_bytes": 9190,
+      "css_bytes": 64454,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 68,
+      "ready_ms": 96,
+      "html_bytes": 9107,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "duplikovat_trenink",
+    "before": {
+      "fcp_ms": 44,
+      "ready_ms": 59,
+      "html_bytes": 9189,
+      "css_bytes": 0,
+      "css_decoded_bytes": 465606
+    },
+    "after": {
+      "fcp_ms": 40,
+      "ready_ms": 55.20000000001164,
+      "html_bytes": 9107,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  }
+]

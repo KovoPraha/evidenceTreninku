@@ -1,0 +1,27 @@
+{
+  "formular.php": {
+    "baseline": "c11a1937e3e270329bf2b599ee0c40b199432483",
+    "head": "da41c0d059e8ad03da09605450a04a9de14fa672",
+    "only_known_css_link_removed": true,
+    "before_sha256": "b1733c61d1d4b8ba34b282ebe6e65290ec294b8ae115fdfab2351a4d1450cfa4",
+    "after_sha256": "796c06046a479ae8660d1b4e347656d51fe9cce62558e9deca3004a186d698d2",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  },
+  "edit_trenink.php": {
+    "baseline": "c11a1937e3e270329bf2b599ee0c40b199432483",
+    "head": "da41c0d059e8ad03da09605450a04a9de14fa672",
+    "only_known_css_link_removed": true,
+    "before_sha256": "f6643d26502409ff52d3bb1b6bc8dc3f4b7f917ac8ae0d1611c6c3ad4d0fa476",
+    "after_sha256": "6b0c2855336878c82b7ff7b3c3e5d213c08d5c752759472fcbd2b3653392ac34",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  },
+  "duplikovat_trenink.php": {
+    "baseline": "c11a1937e3e270329bf2b599ee0c40b199432483",
+    "head": "da41c0d059e8ad03da09605450a04a9de14fa672",
+    "only_known_css_link_removed": false,
+    "before_sha256": "f8d18f371e76c2e3282cff6e7566e7c50b2ac76d8518a3c07cb9e5e8a853753e",
+    "after_sha256": "5f6b50b9be15673b0be5b29f40b252bc3578c81613ae2b1a113a71c76a733ea4",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    "known_css_link_removed_with_psr12_and_icon_wrap": true
+  }
+}
