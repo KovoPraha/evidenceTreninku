@@ -453,7 +453,7 @@ function clubProgramCreateOfferInTransaction(
                 (int) $result['id'],
                 true,
                 clubMakeupAutoValue($pdo, (int) $result['id'], 'excuse_hours'),
-                false
+                true
             );
         }
     }

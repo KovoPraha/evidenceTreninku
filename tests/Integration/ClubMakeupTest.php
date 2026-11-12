@@ -105,6 +105,10 @@ final class ClubMakeupTest extends TestCase
         self::assertCount(1, \clubMakeupAvailableSlots($pdo, 13, $secondCredit));
         \clubMakeupAutoRouteExceptionSave($pdo, 1, 12, 21, false);
         self::assertSame([], \clubMakeupAvailableSlots($pdo, 13, $secondCredit));
+        \clubMakeupRouteSave($pdo, 1, 12, 21, true);
+        self::assertFalse(\clubMakeupRouteAllowed($pdo, 12, 21));
+        \clubMakeupAutoSettingsSave($pdo, 1, false, 12, 365, 0, 12);
+        self::assertTrue(\clubMakeupRouteAllowed($pdo, 12, 21));
     }
 
     public function testAutomaticAgeAndPlanExclusionAreEnforcedOnTheServer(): void

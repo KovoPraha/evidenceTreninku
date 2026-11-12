@@ -11,7 +11,7 @@ Staré kredity, rezervace, ruční sloty a směry zůstávají ve schématu.
 
 | Kontrola | Výsledek | Důkaz / mez |
 | --- | --- | --- |
-| `php vendor/bin/phpunit --filter ClubMakeupTest` | PASS | 18 testů, 138 assertions; automatický termín bez ručního slotu, 3/2 kapacita, plná skupina, věk, vyloučení plánu, výjimka směru, migrace opakovaně, platnost a limit nároků, uložená lhůta storna, původní životní cyklus. |
+| `php vendor/bin/phpunit --filter ClubMakeupTest` | PASS | 18 testů, 140 assertions; automatický termín bez ručního slotu, 3/2 kapacita, plná skupina, věk, vyloučení plánu, výjimka směru i vypnutí přepínače, migrace opakovaně, platnost a limit nároků, uložená lhůta storna, původní životní cyklus. |
 | `php vendor/bin/phpunit --filter DeployWorkflowContractTest` | PASS | 14 testů, 503 assertions; seznam zálohovaných tabulek zahrnuje nové nastavení a výjimky. |
 | `php vendor/bin/phpunit --filter AuthSecurityMigrationTest` | PASS | 1 test / 91 assertions po doplnění nové migrace do očekávaného registru. |
 | Plná lokální PHPUnit | ENVIRONMENT FAIL | `--stop-on-error --no-progress`: první chyba po 248 testech je chybějící `Symfony\Component\Filesystem\Path` v původním sdíleném `vendor`; pracovní strom má odlišný `composer.lock`. Není to výsledek plné sady nad závislostmi této větve. |
