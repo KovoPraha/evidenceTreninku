@@ -170,7 +170,7 @@ je samostatná akceptační brána před provozním zapnutím pravidel.
 
 ## MAKEUP-AUTO-01 — automatické cíle a termíny (12. 11. 2026)
 
-**Stav: PŘIPRAVENÝ NÁVRH IMPLEMENTACE, kód nezměněn.** Vlastník: vývoj KIS;
+**Stav: ROZPRACOVÁNO — implementace zahájena 12. 11. 2026.** Vlastník: vývoj KIS;
 věkové kategorie, pravidla organizace a provozní přijetí: vedení KOVO Praha.
 Zadání: automaticky nabídnout náhrady v každém vhodném kroužku podle
 strukturovaného věku, volné kapacity a centrálních pravidel, bez ruční vazby
@@ -181,8 +181,9 @@ tento oddíl je bezpečný technický přepis. Evidence: [registr](WORK_PLAN_CUR
 Příprava vznikla z `origin/main` `4b9bcb1a` na větvi
 `codex/makeup-auto-20261112` v odděleném worktree
 `C:\xampp\evidencePavel-makeup-auto-20261112`.
-Návrh je sdílen v [draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459);
-merge, implementace, migrace, aktivace a lidské UAT dosud neproběhly.
+Návrh je sdílen v [draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459).
+Vlastník 12. 11. výslovně požádal po analýze také o implementaci; merge,
+aktivace a lidské UAT dosud neproběhly. Výsledek kódu a testů se doplní níže.
 
 ### Ověřený současný stav a omezení
 
@@ -275,6 +276,12 @@ merge, implementace, migrace, aktivace a lidské UAT dosud neproběhly.
    je samostatný krok až po lidské přejímce věkových kategorií a pravidel.
 
 ### Otevřené vstupy pro bezpečnou aktivaci
+
+Implementační větev `codex/makeup-auto-20261112` obsahuje opt-in migraci,
+jediný serverový výběr automatických termínů, opakovanou kontrolu při POST,
+výpočet volných míst se společnou kapacitou nákupu, výjimky, audit a rozhraní
+koordinátora, rodiče a trenéra. [Ověření a meze](verification/makeup-auto-20261112/RESULTS.md),
+[draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459).
 
 Vedení musí potvrdit skutečné strukturované věkové hranice KOVO skupin,
 společnou lhůtu omluvy, dobu platnosti kreditu, maximální počet náhrad,

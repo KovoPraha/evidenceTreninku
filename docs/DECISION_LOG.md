@@ -20,6 +20,20 @@ aktivací; technický návrh neurčuje jejich čísla. Pokyn vlastníka 12. 11.:
 připravit implementaci dle dodaného zadání.
 [Technická analýza a etapy](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026).
 
+## D2026-11-12-02
+
+MAKEUP-AUTO-01: automatická kapacita používá kanonický výpočet fyzických
+soupisek a placených držení v `club_program.php`; odečítá aktivní náhradní
+rezervace. Stejné fyzické zámky používá aktivace nové účasti a rezervace.
+Výpočet přes celé překryvné období je konzervativní: některý den může zůstat
+nevypsaný, ale automatikou nevznikne místo nad limit. Ruční sloty zůstávají
+historickým vědomým rozhodnutím trenéra. Varianta nezávisle přepočítávat
+kapacitu jen podle daného dne by se rozešla s e-shopem a mohla pustit
+souběžný nákup i náhradu na stejné místo. Nabídka bez číselné kapacity do
+automatiky nevstupuje; případný organizační strop je další rozhodnutí vedení.
+[Plán](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026),
+[výsledky](verification/makeup-auto-20261112/RESULTS.md).
+
 ## D2026-11-10-08
 
 COACH-ROSTER-01: trenérská agenda čte pouze přímo svěřené `club_teams` a jejich aktuální `club_roster_members`. Varianta dědění jmen z rodičovské skupiny byla odmítnuta, protože grant rodiče neopravňuje ke každé podřízené soupisce. Registrátorská projekce `memberRosterRead()` vrací širší osobní údaje a je vázána na editační pracovní roli; místo ní je úzká čtecí projekce jméno/příjmení. Čekající a ukončená jména vyžadují zvláštní oprávnění, proto první etapa ukazuje jen aktivní členství. [Plán](COACH_GROUP_ROSTERS_2026-11-10.md), [testy](verification/coach-group-rosters-20261110/RESULTS.md).

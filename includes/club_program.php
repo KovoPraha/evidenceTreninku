@@ -444,6 +444,19 @@ function clubProgramCreateOfferInTransaction(
         null,
         $result
     );
+    if ($birthYearFrom !== null && $birthYearTo !== null) {
+        require_once __DIR__ . '/club_makeup.php';
+        if (clubMakeupAutoEnabled($pdo)) {
+            clubMakeupPolicySave(
+                $pdo,
+                $actorId,
+                (int) $result['id'],
+                true,
+                clubMakeupAutoValue($pdo, (int) $result['id'], 'excuse_hours'),
+                false
+            );
+        }
+    }
     return $result;
 }
 /** @param array<string,mixed> $input @return array{id:int,changed:bool,status:string} */
@@ -1568,6 +1581,15 @@ function clubProgramActivateOrderItemInTransaction(
                 true
             )) {
                 throw new ClubProgramException('Kapacita společné soupisky v tomto období je vyčerpána.');
+            }
+        }
+        require_once __DIR__ . '/club_makeup.php';
+        if (clubMakeupAutoEnabled($pdo)) {
+            $futureMakeups = clubMakeupFutureReservedForOffer($pdo, $item);
+            if ($futureMakeups > 0
+                && (int) $capacityState['occupied_count'] + $futureMakeups >= (int) $item['capacity']
+                && !clubProgramPersonOccupiesSharedCapacity($pdo, $item, $sportovecId, true)) {
+                throw new ClubProgramException('Kapacitu budoucího tréninku již obsadili náhradníci.');
             }
         }
     }

@@ -231,6 +231,10 @@ endforeach;
         </div>
     </div>
     <section class="card border-0 shadow-sm mt-4" id="nahradnici"><div class="card-body"><h2 class="h5">Náhradníci na tomto termínu</h2>
+        <?php if (clubMakeupAutoEnabled($pdo)): ?>
+            <p class="small text-muted">U zapojených kroužků se vhodné termíny nabízejí automaticky.
+                Ruční nastavení níže slouží pro výjimky a přepíše automatický slot.</p>
+        <?php endif; ?>
         <?php
 if ($makeupError !== ''):
     ?><div class="alert alert-danger"><?=

@@ -8,14 +8,15 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## MAKEUP-AUTO-01 — automatické náhradní lekce (12. 11. 2026)
 
-**PŘIPRAVENÝ NÁVRH IMPLEMENTACE, kód a produkce beze změny.**
+**ROZPRACOVÁNO: vlastník 12. 11. požádal o implementaci; produkce beze změny.**
 [Technická analýza, etapy, migrace, rizika a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026).
 Vlastník vývoj KIS; vedení KOVO potvrzuje věkové hranice a centrální pravidla.
 Větev `codex/makeup-auto-20261112`, oddělený worktree z `origin/main` `4b9bcb1a`.
 [Draft PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459) otevřen;
-merge, runtime implementace a aktivace NOT RUN.
-Další krok: implementovat opt-in schéma a společný výběr cíle/kapacity,
-synteticky ověřit včetně souběhu a poté předložit rolové UAT. Aktivace skutečných
+merge a aktivace NOT RUN; runtime implementace lokálně hotová včetně migrace,
+administrace, rodičovské a trenérské stránky. [Průběžné testy a meze](verification/makeup-auto-20261112/RESULTS.md).
+Další krok: dokončit izolované CI včetně MariaDB a souběhu, pak rolové UAT.
+Aktivace skutečných
 nabídek závisí na schválených kategoriích, lhůtách a kapacitách.
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.
 Jde o jediný průběžný seznam práce, včetně konceptů a budoucích etap; [WORK_REGISTER](WORK_REGISTER.md)
