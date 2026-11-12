@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## MAKEUP-AUTO-01 — automatické náhradní lekce (12. 11. 2026)
 
-**ROZPRACOVÁNO: vlastník 12. 11. požádal o implementaci; produkce beze změny.**
+**K VYDÁNÍ: vlastník 12. 11. požádal o nasazení kódu; automatika zůstane vypnutá.**
 [Technická analýza, etapy, migrace, rizika a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026).
 Vlastník vývoj KIS; vedení KOVO potvrzuje věkové hranice a centrální pravidla.
 Větev `codex/makeup-auto-20261112`, oddělený worktree z `origin/main` `4b9bcb1a`.
@@ -16,7 +16,9 @@ Větev `codex/makeup-auto-20261112`, oddělený worktree z `origin/main` `4b9bcb
 merge a aktivace NOT RUN; runtime implementace lokálně hotová včetně migrace,
 administrace, rodičovské a trenérské stránky. [Průběžné testy a meze](verification/makeup-auto-20261112/RESULTS.md).
 CI 43248400672: 2460 testů / 56453 assertions, MariaDB 10.3/11.4 včetně
-souběhu PASS; PHPStan/styl, docs a CodeQL PASS. Další krok: rolové UAT.
+souběhu PASS; PHPStan/styl, docs a CodeQL PASS. Další krok: sloučit PR #459,
+vydat chráněným workflow s `uat_schvaleno=false`, `importovat_krouzky=false`,
+ověřit receipt/migraci/HTTP; potom rolové UAT.
 Aktivace skutečných
 nabídek závisí na schválených kategoriích, lhůtách a kapacitách.
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.

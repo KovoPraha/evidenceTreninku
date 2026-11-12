@@ -170,6 +170,16 @@ je samostatná akceptační brána před provozním zapnutím pravidel.
 
 ## MAKEUP-AUTO-01 — automatické cíle a termíny (12. 11. 2026)
 
+### Vydání na pokyn vlastníka 12. 11. 2026
+
+Vlastník požádal o nasazení implementace po úspěšném CI PR #459. Vydat přes
+chráněný produkční workflow z `main` s `uat_schvaleno=false` a
+`importovat_krouzky=false`; migrace ponechá organizační automatiku vypnutou.
+Před merge ověřit aktuální základ, všechny PR kontroly a oddělený stav větve.
+Po vydání ověřit workflow receipt, migraci a veřejný HTTP smoke. Aktivace pro
+skutečné nabídky a lidské rolové UAT zůstávají samostatnými otevřenými kroky.
+Výsledek zaznamenat v [protokolu](verification/makeup-auto-20261112/RESULTS.md).
+
 **Stav: ROZPRACOVÁNO — implementace zahájena 12. 11. 2026.** Vlastník: vývoj KIS;
 věkové kategorie, pravidla organizace a provozní přijetí: vedení KOVO Praha.
 Zadání: automaticky nabídnout náhrady v každém vhodném kroužku podle

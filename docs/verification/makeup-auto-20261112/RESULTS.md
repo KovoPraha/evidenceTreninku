@@ -47,6 +47,11 @@ novou migraci. Opakované CI 43248400672 potvrdilo oba smoke joby PASS.
 
 ## Známé hranice
 
+Vlastník 12. 11. výslovně požádal o nasazení kódu. Release se připravuje z
+PR #459 přes chráněný workflow s oběma dalšími přepínači false. Produkční
+automatika zůstává vypnutá; merge, workflow receipt a kontrola živého stavu
+jsou do jejich skutečného provedení označeny NOT RUN.
+
 - Automatický režim nabízí jen nabídky se strukturovaným věkem a číselnou
   kapacitou. Nabídky bez stropu zůstávají v ručním režimu.
 - Kanonický výpočet kapacity počítá unikátní běžné účastníky a držená místa
