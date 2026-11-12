@@ -49,6 +49,9 @@ přesný přírůstek čtyř tabulek a jednoho záznamu ledgeru; nadále vyžadu
 shodu doménových dat, HTML, autorizace a počtu měřicích vzorků. Varianta
 obecně ignorovat počty schématu byla odmítnuta, protože by přehlédla
 neočekávané rozdíly. [Artefakt a ověření](verification/makeup-auto-20261112/RESULTS.md).
+## D2026-11-12-RS01
+
+ROSTER-SCROLL-01: jednorázový, číselně validovaný posun je předán formulářem a po POST/303/GET odstraněn z URL po obnovení stránky. Varianta `sessionStorage` by při přerušené navigaci mohla obnovit starou pozici na nezávislé návštěvě. Přenášejí se jen povolené parametry výběru soupisky, data a hledání; žádná libovolná návratová URL. Rozhodnutí vývoje podle přímého zadání vlastníka 12. 11. 2026. [Plán](ROSTER_SCROLL_POSITION_2026-11-12.md), [ověření](verification/roster-scroll-20261112/RESULTS.md).
 
 ## D2026-11-10-08
 

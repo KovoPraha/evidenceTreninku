@@ -17,7 +17,8 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 | ID | Soubor | Stav / registr | Dispozice a důkaz |
 | --- | --- | --- | --- |
-| PL-9d3bb013a4 | [KIS-ACT-01: aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) | K OVĚŘENÍ / KIS-ACT-01 | Návrh a kód na vlastní větvi; syntetické testy PASS, produkční pilot a schválení vedením otevřené. |
+| PL-9d3bb013a4 | [KIS-ACT-01: aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) | K OVĚŘENÍ / KIS-ACT-01 | Kód a migrace v PR #463: vydání vlastníkem povoleno, 11 CI PASS na `b43fe2bb`; pilot a pozvánky zůstávají otevřené. |
+| PL-roster-scroll-20261112 | [ROSTER-SCROLL-01 — pozice správy soupisek](ROSTER_SCROLL_POSITION_2026-11-12.md) | PARTIAL / ROSTER-SCROLL-01 | Místní implementace a syntetické desktop/mobilní ověření; PR/CI, deploy a přihlášené UAT otevřené. [Výsledek](verification/roster-scroll-20261112/RESULTS.md). |
 | PL-e9b0541560 | [P11-EVENTREAD — odložená veřejná čtecí projekce](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) | ODLOŽENO | Prototyp d8274970, SQLite PASS/prod0karet; native přejímka a vydání NOT RUN. |
 | PL-81ad8711f2 | [COACH-ROSTER-01 — Moje skupiny a soupisky](COACH_GROUP_ROSTERS_2026-11-10.md) | PARTIAL / COACH-ROSTER-01 | [PR #436](https://github.com/KovoPraha/evidenceTreninku/pull/436) sloučen, [deploy 42852365591](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42852365591) SUCCESS; technické testy PASS, přihlášené Aligátoří UAT otevřené. [Protokol](verification/coach-group-rosters-20261110/RESULTS.md). |
 | PL-9bdeb21ac9 | [Původní obrazovky a převod zásob](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md) | PARTIAL / P02 BAR-DISPLAY-STOCK | Technické nasazení, 68 zásob obou skladů a 44 URL dokončené. Vizuální přejímka blokovaná Computer Use, fyzické/lidské P02/P04 otevřené. [Výsledek](verification/bar-display-stock-20261110/RESULTS.md). |
