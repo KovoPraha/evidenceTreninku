@@ -60,7 +60,9 @@ foreach ([
     $cases[] = ['id' => $id, 'role' => 'coach',
         'path' => '/duplikovat_trenink.php' . ($query === '' ? '' : '?' . $query), 'status' => 200];
 }
-$cases[] = ['id' => 'lead-ties', 'role' => 'sports_lead', 'path' => '/duplikovat_trenink.php?obdobi=all', 'status' => 200];
+$cases[] = ['id' => 'other-coach', 'role' => 'other_coach', 'path' => '/duplikovat_trenink.php?obdobi=all', 'status' => 200];
+$cases[] = ['id' => 'denied-lead', 'role' => 'sports_lead', 'path' => '/duplikovat_trenink.php?obdobi=all', 'status' => 403];
+$cases[] = ['id' => 'denied-registrar', 'role' => 'registrar', 'path' => '/duplikovat_trenink.php', 'status' => 403];
 $cases[] = ['id' => 'anonymous', 'role' => 'anonymous', 'path' => '/duplikovat_trenink.php', 'status' => 302];
 $initial = $checksums();
 file_put_contents($output . '/checksums.json', json_encode($initial, JSON_THROW_ON_ERROR));
@@ -76,6 +78,10 @@ foreach ($cases as $case) {
             $raw = $response['body'];
             if ($response['status'] !== $case['status'] || preg_match('/Fatal error|Warning:|Uncaught .*Exception/', $raw)) {
                 throw new RuntimeException('Page HTTP status or error: ' . $id . '/' . $variant . '/' . $response['status']);
+            }
+            $foreign = $case['role'] === 'coach' ? 102 : 101;
+            if ($positive && str_contains($raw, 'href="formular.php?duplikat=' . $foreign . '"')) {
+                throw new RuntimeException('Another coach training leaked into the copy list: ' . $id);
             }
             $cdn = substr_count($raw, 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
             $local = preg_match_all('~href="/(?!/)[^"]*assets/vendor/bootstrap/bootstrap\.min\.css\?v=[a-f0-9]{64}"~', $raw);

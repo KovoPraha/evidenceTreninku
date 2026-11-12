@@ -103,3 +103,10 @@ Nová cesta kontroluje prvních 101 způsobilých kandidátů. Pokud se datum
 opakuje, provede přesný původní dotaz včetně původního limitu a týmového
 filtru. Shoda zahrne i nejednoznačnou hranici sté položky. Zisk se bude
 vykazovat samostatně pro jednoznačné pořadí a režii při remízách.
+
+### HTTP přejímka P11-RHC2
+
+Na MariaDB 11.4 prošla nativní parita včetně remíz. HTTP kontrola ukázala,
+že pracovní pozice vedoucího sportu má na této trase dosavadní 403.
+Matice nyní zachovává toto odmítnutí, testuje registráře a přidává
+pozitivní druhý trenérský účet s kontrolou nepřítomnosti cizího tréninku.

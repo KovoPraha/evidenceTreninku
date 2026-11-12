@@ -70,9 +70,8 @@ jobs:
           EVIDENCE_PERFORMANCE_DATADIR: /var/lib/mysql
         run: |
           mkdir -p output
-          php tests/Support/TrainingCopyPerformance.php > output/training-copy-native.json
           python3 tests/Support/TrainingCopyIntegratedProfile.py
-          mv output/training-copy-native.json output/training-copy-safe/native.json
+          php tests/Support/TrainingCopyPerformance.php > output/training-copy-safe/native.json
       - name: Preserve safe native HTTP and session evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
