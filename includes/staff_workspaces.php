@@ -154,6 +154,8 @@ function staffPositionDefinitions(): array
      'icon' => 'arrow-repeat'],
                     ['route' => 'kis_person_import_admin.php', 'label' => 'Osoby ze starého KIS', 'description'
     => 'Úplné osoby, kontakty a zdrojové vazby', 'icon' => 'person-lines-fill'],
+                    ['route' => 'kis_account_activation_admin.php', 'label' => 'Aktivace účtů KIS',
+                        'description' => 'Prověřené vazby a pozvánky rodičům', 'icon' => 'person-lock'],
 
                     ['route' => 'season_preparation_admin.php','label' => 'Příprava dalšího období',
                         'description' => 'Pokračující osoby, svěření trenérům a navazující lekce','icon'

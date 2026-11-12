@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-12-ACT01
+
+Pro importované rodiče použít existující veřejný účet a schvalované `account_person_roles`. Alternativu automatického spojení podle jména nebo importního e-mailu odmítnout: obojí může přiřadit cizí dítě. Alternativu nového systému přístupových účtů odmítnout: rodinný portál a samostatný sportovec už mají odlišné identity. Po lidské kontrole vydat jednorázový odkaz pro první heslo; u již aktivního ověřeného účtu využít reset. U samotného profilu dítěte rodič registruje účet a správce schválí vazbu ke stávajícímu ID. Jde o technickou volbu podle zadání vlastníka 12. 11.; text, identifikační postup a pilot ještě schvaluje vedení. [Plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md).
+
 ## D2026-11-12-01
 
 MAKEUP-AUTO-01: připravit rozšíření jediné existující služby náhrad s výchozím

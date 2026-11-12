@@ -213,6 +213,7 @@ final class DeployWorkflowContractTest extends TestCase
             'club_event_order_items',
             'kis_import_source_artifacts',
             'password_reset_tokens',
+            'public_account_activation_events',
             'club_member_charges',
             'club_member_charge_events',
             'kis_import_payment_rows',

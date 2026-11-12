@@ -650,6 +650,7 @@ jobs:
           # The dedicated filter benchmark separately measures the new index contribution.
           cp migrations/20261107180000_shop_document_automation.php "$before_tree/migrations/"
           cp migrations/20261108070000_medical_read_covering_index.php "$before_tree/migrations/"
+          cp migrations/20261112150000_imported_account_activation.php "$before_tree/migrations/"
           cp includes/medical_clearance_read_index.php "$before_tree/includes/"
           cp docs/verification/medical-read-performance-20261106/before-harness.php.txt "$before_tree/tests/Support/MedicalReadBefore20261106.php"
           (cd "$before_tree" && php -d memory_limit=512M tests/Support/MedicalReadBefore20261106.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/before")
@@ -659,6 +660,7 @@ jobs:
           ln -s "$GITHUB_WORKSPACE/vendor" "$planner_tree/vendor"
           cp migrations/20261107180000_shop_document_automation.php "$planner_tree/migrations/"
           cp migrations/20261108070000_medical_read_covering_index.php "$planner_tree/migrations/"
+          cp migrations/20261112150000_imported_account_activation.php "$planner_tree/migrations/"
           cp includes/medical_clearance_read_index.php "$planner_tree/includes/"
           cp docs/verification/planner-read-performance-20261106/before-harness.php.txt "$planner_tree/tests/Support/PlannerBeforeProfile.php"
           (cd "$planner_tree" && php -d memory_limit=512M tests/Support/PlannerBeforeProfile.php --run "$GITHUB_WORKSPACE/synthetic-read-pages/planner-before" --route R05)
@@ -668,6 +670,7 @@ jobs:
           ln -s "$GITHUB_WORKSPACE/vendor" "$attendance_tree/vendor"
           cp migrations/20261107180000_shop_document_automation.php "$attendance_tree/migrations/"
           cp migrations/20261108070000_medical_read_covering_index.php "$attendance_tree/migrations/"
+          cp migrations/20261112150000_imported_account_activation.php "$attendance_tree/migrations/"
           cp includes/medical_clearance_read_index.php "$attendance_tree/includes/"
           cp docs/verification/attendance-read-performance-20261107/before-harness.php.txt "$attendance_tree/tests/Support/AttendanceBeforeProfile.php"
           # R06 lesson choices depend on the preceding R05 seed: preserve the full matrix order.

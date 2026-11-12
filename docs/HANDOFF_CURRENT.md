@@ -1,4 +1,5 @@
 # Aktuální session handoff
+KIS-ACT-01: vlastník povolil vydání kódu [PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463) a migrace po zeleném CI; [plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md). Žádné pozvánky ani změny rodinných vazeb. Sloučení, chráněný deploy a živý důkaz jsou další kroky; UAT/import false.
 MAKEUP-AUTO-01 NASAZENO: [PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459) → `428a2258`, [deploy 43269836068](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43269836068) SUCCESS s výchozí vypnutou automatikou, UAT/import false; [protokol](verification/makeup-auto-20261112/RESULTS.md). Další krok: produkční čtecí kontrola nastavení, rolové UAT a potvrzení věku, pravidel a kapacit před zapnutím. [Plán](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026), [registr](WORK_PLAN_CURRENT.md#makeup-auto-01--automatické-náhradní-lekce-12-11-2026).
 Aktualizováno 12. 11. 2026, Europe/Prague. [TESTER-20261110](verification/tester-orders-registration-20261110.md) #438 a [COACH-ROSTER-01](COACH_GROUP_ROSTERS_2026-11-10.md) #436 nasazeny jako `4e3df207` ve [workflow 42852365591](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42852365591) SUCCESS; následný #439 nasadil runtime `8182489e` ([workflow 42855987339](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42855987339) SUCCESS). [Technické výsledky a meze](verification/coach-group-rosters-20261110/RESULTS.md); přihlášené UAT a skuteční Aligátoři otevření.
 [CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md) vede i UX01 [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) a Q01/Q3
@@ -56,8 +57,7 @@ Skutečné P05/P07 a export P06 zůstávají odložené.
 
 ## Otevřené hranice a ostatní plány
 
-P01 dokončené v potvrzeném rozsahu; instalaci ani rozesílku neopakovat.
-Skutečné P05/P07, nový export P06, heslo a T07 vlastník odložil.
+P01 dokončené v potvrzeném rozsahu; instalaci ani rozesílku neopakovat. Skutečné P05/P07, nový export P06, heslo a T07 vlastník odložil.
 P02/P04 potřebují skutečné podklady/přejímku a účetní adaptér; P08/P09 lidské
 převzetí, P12 konkrétní testerku a přístup, P13 výběr událostí.
 Úplné další kroky, závislosti a tematické soubory všech P01–P14 vede

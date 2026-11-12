@@ -19,6 +19,7 @@ function anonymousPublicRoutes(): array
         'ajax_sportovec_poznamka.php' => 'Published profile token plus CSRF and athlete/family authorization.',
         'program_skupiny.php' => 'Published group programme, token-scoped.',
         'booking/cyklisticke_krouzky.php' => 'Public course catalogue.',
+        'booking/aktivace_uctu.php' => 'Reviewed imported-account activation with a one-time token and CSRF.',
         'booking/eshop.php' => 'Public shop catalogue.',
         'booking/kalendar.php' => 'Public lesson calendar.',
         'booking/klubovy_kalendar.php' => 'Public club calendar; private participation requires sign-in.',

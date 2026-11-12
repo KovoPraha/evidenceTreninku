@@ -4,6 +4,19 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-9d3bb013a4",
+      "path": "docs/IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md",
+      "title": "KIS-ACT-01 — aktivace importovaných rodičů",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "KIS-ACT-01",
+      "disposition": "Místní implementace a syntetické testy; CI, browser UAT, schválení vedením, merge, nasazení a pilot otevřené.",
+      "evidence": [
+        "docs/IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md"
+      ]
+    },
+    {
       "id": "PL-roster-scroll-20261112",
       "path": "docs/ROSTER_SCROLL_POSITION_2026-11-12.md",
       "title": "ROSTER-SCROLL-01 — pozice správy soupisek",
