@@ -11,9 +11,10 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "KIS-ACT-01",
-      "disposition": "Místní implementace a syntetické testy; CI, browser UAT, schválení vedením, merge, nasazení a pilot otevřené.",
+      "disposition": "PR #463 a chráněné nasazení 43322186478 PASS; pilot, pozvánky a rodičovské UAT otevřené.",
       "evidence": [
-        "docs/IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md"
+        "docs/IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md",
+        "docs/verification/parent-activation-release-20261112/RESULTS.md"
       ]
     },
     {

@@ -2,13 +2,13 @@
 
 ## Povolení vydání 12. 11. 2026
 
-Vlastník pokynem „nasadit“ povolil sloučení PR #463 a chráněné vydání kódu a migrace do KIS po zeleném CI, ověřené záloze a standardních kontrolách. Vydání proběhne s `uat_schvaleno=false` a `importovat_krouzky=false`. Pokyn neautorizuje schválení rodinných vazeb, zařazení pozvánek do fronty ani odeslání pilotní dávky. Text pozvánky, identifikační postup a rozsah pilotu musí vedení potvrdit před první skutečnou pozvánkou. Po nasazení ověřit SHA, migraci, veřejné a nepřihlášené HTTP chování a zaznamenat meze produkčního UAT.
+Vlastník pokynem „nasadit“ povolil sloučení PR #463 a chráněné vydání kódu a migrace do KIS po zeleném CI, ověřené záloze a standardních kontrolách. [Vydání 43322186478](verification/parent-activation-release-20261112/RESULTS.md) skončilo SUCCESS na `373b8d89`, s `uat_schvaleno=false` a `importovat_krouzky=false`. Pokyn neautorizuje schválení rodinných vazeb, zařazení pozvánek do fronty ani odeslání pilotní dávky. Text pozvánky, identifikační postup a rozsah pilotu musí vedení potvrdit před první skutečnou pozvánkou.
 
-ID: KIS-ACT-01 / PL-9d3bb013a4. Stav: **K OVĚŘENÍ**. Vlastník implementace: vývoj; kontrola identity, textu pozvánky a produkčního pilotu: vedení TJ KOVO Praha. Větev `codex/parent-account-activation` z `origin/main` `66a4cc08`, izolovaný worktree `C:\xampp\htdocs\evidencePavel-parent-activation`. Bez merge, produkčního nasazení a hromadného odeslání. Závěry o datech vycházejí ze zdrojového kódu a syntetických testů; skutečné počty a stav konkrétních osob v produkci je nutné ověřit chráněným administrativním přehledem. Tento dokument neobsahuje osobní údaje.
+ID: KIS-ACT-01 / PL-9d3bb013a4. Stav: **KÓD NASAZEN, PILOT OTEVŘEN**. Vlastník implementace: vývoj; kontrola identity, textu pozvánky a produkčního pilotu: vedení TJ KOVO Praha. Vývojová větev `codex/parent-account-activation`, izolovaný worktree `C:\xampp\htdocs\evidencePavel-parent-activation`. Skutečné počty a stav konkrétních osob v produkci je nutné ověřit chráněným administrativním přehledem. Tento dokument neobsahuje osobní údaje.
 
-Sdílení: větev `codex/parent-account-activation`, commit `64b546da` a [draft PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463). Všech 11 kontrol na tomto commitu PASS; schválení vedením a produkční pilot jsou samostatné brány.
+Sdílení: [PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463) sloučen jako `373b8d89`; poslední větev `bdece243` měla 11 CI PASS. Schválení vedením pro konkrétní pozvánky a produkční pilot zůstává samostatnou bránou.
 
-Souběh: `main` se posunul na `428a2258` (MAKEUP-AUTO-01). Všechny jeho věcné změny jsou převzaty do této větve v merge commitu `44ee2323`; tři konflikty v deníku, rozhodnutích a očekávaném katalogu migrací byly vyřešeny se zachováním obou agend. Výsledek CI na společném stromu je nutné ověřit přímo v PR.
+Souběh: před merge byly převzaty `428a2258` (MAKEUP-AUTO-01) a `22d151f7` (ROSTER-SCROLL-01). Obě agendy a jejich dokumentace zůstaly zachovány; výsledek společného stromu potvrdilo poslední CI PR #463.
 
 ## Analýza současného stavu
 
@@ -60,4 +60,4 @@ Fronta rozlišuje `pending`, `processing`, `sent`, `failed` a `cancelled`. Stav 
 - Celá lokální sada `composer test` STOP po 248 testech: sdílený vendor původního checkoutu nemá `Symfony\Component\Filesystem\Path`. Jde o omezení lokálních závislostí; výsledek celé sady nelze označit PASS. CI se správně instalovaným `composer.lock` musí projít před merge.
 - Autentizované prohlížečové UAT, počty skutečných importovaných účtů, doručitelnost a schválení pilotu zůstávají samostatnou předprodukční kontrolou. Lokální testovací MariaDB na portu 3308 nebyla při kontrole spuštěná; pokus o agregované čtení skončil odmítnutím spojení. Tato větev nečetla produkční osobní údaje a neodeslala žádnou produkční zprávu.
 
-Další krok: programátorské review návrhu, v izolované MariaDB a prohlížeči projít testovací účty, nechat vedení schválit identifikační postup a pilotní dávku. Teprve samostatně rozhodnout o merge a nasazení; produkční pozvánky poslat až po přejímce.
+Další krok: vedení schválí identifikační postup, text pozvánky a malou pilotní dávku; správce potom na ověřených vazbách provede pilot. Produkční pozvánky, doručení, přihlášení a správné zobrazení dětí dosud NOT RUN. [Technické vydání a přesné meze](verification/parent-activation-release-20261112/RESULTS.md).
