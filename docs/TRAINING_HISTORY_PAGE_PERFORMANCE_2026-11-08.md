@@ -71,3 +71,35 @@ Všech14CI na2a02e96f PASS (hlavní sada2392testů/53289assertions). #394 slouč
 
 
 Finální vydání: #394/ab49947d, deploy42486500282 SUCCESS; záloha389/2,2392testů/53289assertions, migrace current, VS beze změny, aktivace/smoke PASS. Katalog5/5DOM a obě historie302/login před/po shodné. [Trvalý produkční protokol](verification/training-history-release-20261108/RESULTS.md). Přihlášené produkční UAT NOT RUN; další P11 řezy otevřené. Dokumentační předání vlastní release-proof větví bez druhého nasazení.
+
+## P11-RHC2 — omezená agregace vzorů kopírování, 12. 11. 2026
+
+ROZPRACOVÁNO, Vývoj/Codex na pokyn Marka pokračovat v měřených optimalizacích,
+testech, merge a nasazení. Base 7d452b30, poslední runtime dbab9e6e.
+Větev codex/training-copy-performance-20261112, samostatný worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-training-copy-performance-20261112.
+Původní fio WIP zůstává zachovaný.
+
+Kopírovací seznam nyní násobí vazby skupin, podskupin a účastníků pro celé
+období ještě před filtrem historické hierarchie a limitem 100. Změřit
+kandidátní čtení ID a data, stávající kanonický filtr týmů a detailní
+agregaci nejvýše 100 vybraných tréninků. Zachovat predikát pracovního
+rozsahu, skupinový filtr v agregaci, období, návratové typy, počty,
+štítky, ovládání a odkazy na předvyplnění. Parita zahrne remízy dat,
+nulový a neexistující tým, starší záznamy bez vazby a prázdné výsledky.
+
+Nezávislá reference vychází z přesného původního SQL. Přejímka na stejných
+datech a runneru před/po porovná celé řádky a celé HTTP včetně hlaviček,
+role a shodné kontrolní součty. Měření 100, 1 000 a 10 000 tréninků,
+4 zahřívací a 17 střídavých měřených párů, MariaDB 10.3/11.4. Přínos
+ověřit časem, pamětí a rozsahem detailů. Merge/deploy až po shodě,
+prokázaném přínosu a zeleném CI. Produkční read-only kontrola po nasazení.
+[Průběžné výsledky](verification/training-copy-20261112/RESULTS.md).
+
+### Kontrola remíz P11-RHC2
+
+První místní porovnání odhalilo rozdílné pořadí stejně datovaných tréninků.
+Nová cesta kontroluje prvních 101 způsobilých kandidátů. Pokud se datum
+opakuje, provede přesný původní dotaz včetně původního limitu a týmového
+filtru. Shoda zahrne i nejednoznačnou hranici sté položky. Zisk se bude
+vykazovat samostatně pro jednoznačné pořadí a režii při remízách.
