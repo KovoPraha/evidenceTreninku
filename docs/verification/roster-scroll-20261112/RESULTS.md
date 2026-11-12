@@ -1,6 +1,6 @@
 # ROSTER-SCROLL-01 — ověření 12. 11. 2026
 
-Stav: místní implementace a syntetické ověření; PR/CI, merge, deploy a přihlášené provozní UAT NOT RUN. Větev `codex/roster-scroll-position-20261112`. [Plán](../../ROSTER_SCROLL_POSITION_2026-11-12.md).
+Stav: místní implementace a syntetické ověření; [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) otevřen, CI běží, merge/deploy/přihlášené provozní UAT NOT RUN. Větev `codex/roster-scroll-position-20261112`. [Plán](../../ROSTER_SCROLL_POSITION_2026-11-12.md).
 
 | Kontrola | Výsledek | Důkaz / mez |
 | --- | --- | --- |

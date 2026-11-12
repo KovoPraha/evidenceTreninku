@@ -16,3 +16,5 @@ Zvolený postup: při submitu doplnit do formuláře aktuální `scrollY`; serve
 - Ověřit syntaxi PHP, cílené testy, `php tools/check-current-docs.php`, `git diff --check`; přihlášené produkční UAT je samostatná přejímka.
 
 Výsledek: změna kontroleru a vloženého view, [místní protokol](verification/roster-scroll-20261112/RESULTS.md) s desktop/mobilním syntetickým průchodem a cílenými testy. Další krok: PR a CI; poté přihlášená přejímka u registráře. Nasazení ani lidská přejímka dosud neproběhly.
+
+Předání: commit `5ab66f2d` pushnutý do větve, [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) otevřen proti `main`; CI běží. Merge, deploy a přihlášené UAT NOT RUN.
