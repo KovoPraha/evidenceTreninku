@@ -39,6 +39,9 @@ $errors = [];
 $memberPreview = null;
 $notice = (string)($_SESSION['roster_hierarchy_notice'] ?? '');
 unset($_SESSION['roster_hierarchy_notice']);
+$scrollInput = $_POST['scroll_y'] ?? $_GET['scroll_y'] ?? null;
+$restoreScrollY = is_string($scrollInput) && preg_match('/^\d{1,8}$/D', $scrollInput)
+    ? min((int) $scrollInput, 10000000) : null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
@@ -49,9 +52,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             memberRosterMutate($pdo, $_POST);
             $_SESSION['roster_hierarchy_notice'] = 'Změna byla uložena.';
-            $targetId = max(0, (int) ($_POST['team_id'] ?? 0));
+            $targetId = max(0, (int) ($_POST['return_team_id'] ?? $_POST['team_id'] ?? 0));
+            $redirectParams = [];
+            if ($targetId) {
+                $redirectParams['team_id'] = $targetId;
+            }
+            $returnDate = (string) ($_POST['return_on'] ?? '');
+            if ($returnDate !== '') {
+                try {
+                    $redirectParams['on'] = kisRosterDate($returnDate);
+                } catch (InvalidArgumentException|KisRosterException $error) {
+                    // UI context is optional and must not undo a successful mutation.
+                }
+            }
+            $returnSearch = mb_substr(trim((string) ($_POST['return_person_search'] ?? '')), 0, 100);
+            if ($returnSearch !== '') {
+                $redirectParams['person_search'] = $returnSearch;
+            }
+            if ($restoreScrollY !== null) {
+                $redirectParams['scroll_y'] = $restoreScrollY;
+            }
             header(
-                'Location: kis_roster_hierarchy_admin.php' . ($targetId ? '?team_id=' . $targetId : ''),
+                'Location: kis_roster_hierarchy_admin.php' . ($redirectParams
+                    ? '?' . http_build_query($redirectParams, '', '&', PHP_QUERY_RFC3986) : ''),
                 true,
                 303
             );
@@ -391,4 +414,50 @@ endforeach;
 ?></tbody></table></div></div></section></div><?php
 include __DIR__.
     '/includes/member_roster_view.php';
-?></main></body></html>
+?></main>
+<script>
+(() => {
+    const restoreY = <?= json_encode($restoreScrollY) ?>;
+    if (restoreY !== null) {
+        history.scrollRestoration = 'manual';
+        window.addEventListener('load', () => {
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                window.scrollTo(0, restoreY);
+                const url = new URL(window.location.href);
+                if (url.searchParams.has('scroll_y')) {
+                    url.searchParams.delete('scroll_y');
+                    history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+                }
+                history.scrollRestoration = 'auto';
+            }));
+        }, {once: true});
+    }
+
+    document.addEventListener('submit', (event) => {
+        const form = event.target;
+        if (!(form instanceof HTMLFormElement) || !form.closest('main')) return;
+        if (form.method !== 'get' && form.method !== 'post') return;
+        const put = (name, value) => {
+            let input = form.querySelector(`input[name="${name}"]`);
+            if (!input) {
+                input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                form.appendChild(input);
+            }
+            input.value = value;
+        };
+        put('scroll_y', String(Math.max(0, Math.round(window.scrollY))));
+        if (form.method === 'post') {
+            const params = new URL(window.location.href).searchParams;
+            for (const [source, target] of [
+                ['team_id', 'return_team_id'], ['on', 'return_on'],
+                ['person_search', 'return_person_search']
+            ]) {
+                if (params.has(source)) put(target, params.get(source));
+            }
+        }
+    });
+})();
+</script>
+</body></html>

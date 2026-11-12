@@ -22,6 +22,8 @@ migrace current/pending [], VS shodné, HTTP 200; `uat_schvaleno=false`,
 Aktivace skutečných
 nabídek závisí na schválených kategoriích, lhůtách a kapacitách.
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.
+
+ROSTER-SCROLL-01 — K OVĚŘENÍ: [pozice správy soupisek](ROSTER_SCROLL_POSITION_2026-11-12.md), přímé zadání 12. 11. 2026. Vlastník vývoj KIS, větev `codex/roster-scroll-position-20261112`, izolovaný worktree. [Místní syntetické ověření](verification/roster-scroll-20261112/RESULTS.md) PASS; další krok PR/CI. Nasazení a přihlášené UAT otevřené.
 Jde o jediný průběžný seznam práce, včetně konceptů a budoucích etap; [WORK_REGISTER](WORK_REGISTER.md)
 odkazuje sem. Sjednocení #333/#334 dokládá [protokol](verification/documentation-reconcile-20261106/RESULTS.md).
 Následné zadání vlastníka 6. 11.: pokračovat plně autonomně přes P01–P14.

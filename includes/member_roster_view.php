@@ -9,7 +9,7 @@ if (!isset($pdo, $teams, $today) || !function_exists('krha')) {
 }
 $memberPreview ??= null;
 $selectedTeamId = max(0, (int) ($_GET['team_id'] ?? $_POST['team_id'] ?? 0));
-$selectedDate = (string) ($_GET['on'] ?? $today);
+$selectedDate = (string) ($_GET['on'] ?? $_POST['return_on'] ?? $today);
 $memberView = null;
 try {
     $selectedDate = kisRosterDate($selectedDate);
@@ -19,7 +19,7 @@ try {
 } catch (InvalidArgumentException|KisRosterException $error) {
     echo '<div class="alert alert-danger">' . krha($error->getMessage()) . '</div>';
 }
-$search = mb_substr(trim((string) ($_GET['person_search'] ?? '')), 0, 100);
+$search = mb_substr(trim((string) ($_GET['person_search'] ?? $_POST['return_person_search'] ?? '')), 0, 100);
 $people = [];
 if ($memberView && $search !== '') {
     $query = $pdo->prepare("SELECT id,jmeno,prijmeni FROM sportovci WHERE stav_clenstvi<>'archiv' "
