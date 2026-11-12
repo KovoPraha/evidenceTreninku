@@ -4,6 +4,7 @@ declare(strict_types=1);
 const ONE_TIME_TOKEN_EMAIL_VERIFICATION = 'email-verification-v1';
 const ONE_TIME_TOKEN_BOOKING_APPROVAL = 'booking-approval-v1';
 const ONE_TIME_TOKEN_PASSWORD_RESET = 'password-reset-v1';
+const ONE_TIME_TOKEN_ACCOUNT_ACTIVATION = 'account-activation-v1';
 
 /** @return array{token:string,hash:string,expires_at:string} */
 function one_time_token_issue(string $purpose, int $ttlSeconds, ?int $now = null): array
@@ -51,7 +52,7 @@ function one_time_email_verification_consume(PDO $pdo, string $token, ?int $now 
         );
         $select->execute([$hash, $nowSql]);
         $user = $select->fetch(PDO::FETCH_ASSOC);
-        if (!$user) {
+        if (!$user || one_time_imported_account($pdo, (int)$user['id'])) {
             $pdo->rollBack();
             return null;
         }
@@ -79,6 +80,21 @@ function one_time_email_verification_consume(PDO $pdo, string $token, ?int $now 
         }
         throw $exception;
     }
+}
+
+/** Imported accounts must set a password through the reviewed activation flow. */
+function one_time_imported_account(PDO $pdo, int $accountId): bool
+{
+    $driver = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+    if ($driver === 'sqlite') {
+        $exists = $pdo->query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='kis_person_contacts'")->fetchColumn();
+    } else {
+        $exists = $pdo->query("SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='kis_person_contacts'")->fetchColumn();
+    }
+    if (!$exists) return false;
+    $query = $pdo->prepare('SELECT 1 FROM kis_person_contacts WHERE account_id=? LIMIT 1');
+    $query->execute([$accountId]);
+    return (bool)$query->fetchColumn();
 }
 
 /** @return array<string,mixed>|null */

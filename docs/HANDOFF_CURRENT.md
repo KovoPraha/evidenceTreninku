@@ -5,6 +5,7 @@ Aktualizováno 12. 11. 2026, Europe/Prague. [TESTER-20261110](verification/teste
 vlastní otevřené úkoly včetně Q2-TIME; plány a rozhodnutí čti ve verzovaných souborech.
 Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 je [nasazené a cíleně ověřené](verification/planner-mobile-release-20261108/RESULTS.md) v deploy42483838259 a následném P11-RH; Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
 ## Poslední práce a další krok
+- **KIS-ACT-01 K OVĚŘENÍ:** [analýza, změna a testy](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) na `codex/parent-account-activation`; lokální syntetika PASS, celé PHPUnit blokuje chybějící vendor třída. CI, přihlášené testovací UAT a produkční schválení vedením otevřené. Nic neslučovat ani nenasazovat bez review.
 - **Q2-TIME NASAZENO:** #412 / `4f92b225`, deploy42622226704 SUCCESS; [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026).
   11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
   Kanonický protokol uvádí UAT NOT RUN; otevřený [PR #417](https://github.com/KovoPraha/evidenceTreninku/pull/417) dokládá 3/3 přihlášené scénáře bez platného submitu. Je třeba převzít důkaz a dořešit úklid konceptu; žádný skutečný trénink testem nevznikl.
@@ -56,8 +57,7 @@ Skutečné P05/P07 a export P06 zůstávají odložené.
 
 ## Otevřené hranice a ostatní plány
 
-P01 dokončené v potvrzeném rozsahu; instalaci ani rozesílku neopakovat.
-Skutečné P05/P07, nový export P06, heslo a T07 vlastník odložil.
+P01 dokončené v potvrzeném rozsahu; instalaci ani rozesílku neopakovat. Skutečné P05/P07, nový export P06, heslo a T07 vlastník odložil.
 P02/P04 potřebují skutečné podklady/přejímku a účetní adaptér; P08/P09 lidské
 převzetí, P12 konkrétní testerku a přístup, P13 výběr událostí.
 Úplné další kroky, závislosti a tematické soubory všech P01–P14 vede

@@ -12,6 +12,10 @@ Následné zadání vlastníka 6. 11.: pokračovat plně autonomně přes P01–
 Aktivní průchod a bezpečně doložené výsledky vede [protokol](verification/autonomous-p01-p14-20261106/RESULTS.md).
 Dřívější dokumentační rozsah je historický; chybějící skutečné podklady se nedoplňují odhadem.
 
+## KIS-ACT-01 — první heslo importovaných rodičů (12. 11. 2026)
+
+K OVĚŘENÍ: [analýza, implementace, migrace, testy a otevřené brány](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md). Vlastník vývoj; identitu, text pozvánky a pilot schvaluje vedení TJ KOVO Praha. Větev/worktree `codex/parent-account-activation` / `C:\xampp\htdocs\evidencePavel-parent-activation`, base `origin/main` `66a4cc08`. Syntetické testy PASS; celý lokální PHPUnit blokuje chybějící vendor třída, MariaDB/browser/produkční počty NOT RUN. Žádný merge, deploy ani odeslání. Další krok: CI a programátorské review, izolované testovací účty, schválení vedením před produkcí.
+
 ## BAR-DISPLAY-STOCK — oprava obrazovek a převod zásob (10. 11. 2026)
 
 TECHNICKY HOTOVO, vizuální a lidská přejímka OTEVŘENÁ. [Plán a akceptace](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md), [výsledek a bezpečné důkazy](verification/bar-display-stock-20261110/RESULTS.md). #440/#443 sloučené, TV nasazené a 68 produktů / oba sklady přesně převedené; součet stánku 1073 / předskladu 0, včetně pěti záporných stavů. Nezávisle 0 rozdílů, 44 starých URL i oba odlišné TV cíle PASS. Vlastník vývoj / vedení baru; souborové předání `codex/bar-display-stock-release-20261110`, původní vlastní worktree, cizí WIP zachovaný. Další krok: fyzická inventura v KIS a skutečné P02/P04; vizuální kontrola po obnovení Computer Use. Počáteční převod ani publikaci neopakovat, starý BAR znovu nesynchronizovat.

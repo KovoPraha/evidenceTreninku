@@ -8,6 +8,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-9d3bb013a4 | [KIS-ACT-01 — aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) | plan / PARTIAL | KIS-ACT-01 |
 | PL-b6f3287c42 | [P11-EVENTREAD — výběrové ověření](verification/club-event-public-read-20261110/RESULTS.md) | evidence / SUPPORT | P11-EVENTREAD |
 | PL-e91566d185 | [P11-EVENTREAD — předání](SESSION_HANDOFF_CLUB_EVENT_PUBLIC_READ_2026-11-10.md) | handoff / SUPPORT | P11-EVENTREAD |
 | PL-e9b0541560 | [P11-EVENTREAD — odložená veřejná čtecí projekce](CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md) | plan / DEFERRED | P11-EVENTREAD |

@@ -4,6 +4,19 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-9d3bb013a4",
+      "path": "docs/IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md",
+      "title": "KIS-ACT-01 — aktivace importovaných rodičů",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "KIS-ACT-01",
+      "disposition": "Místní implementace a syntetické testy; CI, browser UAT, schválení vedením, merge, nasazení a pilot otevřené.",
+      "evidence": [
+        "docs/IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md"
+      ]
+    },
+    {
       "id": "PL-e9b0541560",
       "path": "docs/CLUB_EVENT_PUBLIC_READ_PERFORMANCE_2026-11-10.md",
       "title": "P11-EVENTREAD — odložená veřejná čtecí projekce",

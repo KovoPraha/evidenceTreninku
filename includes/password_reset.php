@@ -192,9 +192,11 @@ function passwordResetConsume(PDO $pdo, string $token, string $newPassword, ?int
             $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
             $update = $pdo->prepare(
                 'UPDATE verejni_uzivatele SET heslo_hash=?,session_version=session_version+1 '
-                . 'WHERE id=? AND aktivni=1 AND email_overeno=1'
+                . 'WHERE id=? AND aktivni=1 AND email_overeno=1 '
+                . 'AND (? IS NULL OR LOWER(email)=LOWER(?))'
             );
-            $update->execute([$newHash, (int)$reset['target_id']]);
+            $deliveryEmail = $reset['delivery_email'] ?? null;
+            $update->execute([$newHash, (int)$reset['target_id'], $deliveryEmail, $deliveryEmail]);
             if ($trainerId !== false && $trainerId !== null) {
                 $trainerUpdate = $pdo->prepare(
                     'UPDATE treneri SET heslo=?,session_version=session_version+1 WHERE id=? AND aktivni=1'
@@ -217,11 +219,13 @@ function passwordResetConsume(PDO $pdo, string $token, string $newPassword, ?int
             return null;
         }
 
-        $consume = $pdo->prepare(
-            'UPDATE password_reset_tokens SET consumed_at=? '
-            . 'WHERE target_type=? AND target_id=? AND consumed_at IS NULL'
-        );
-        $consume->execute([$nowSql, $reset['target_type'], (int)$reset['target_id']]);
+        $consume = $pdo->prepare((string)$reset['target_type'] === 'public'
+            ? "UPDATE password_reset_tokens SET consumed_at=? WHERE target_type IN ('public','activation') AND target_id=? AND consumed_at IS NULL"
+            : 'UPDATE password_reset_tokens SET consumed_at=? WHERE target_type=? AND target_id=? AND consumed_at IS NULL');
+        $consume->execute((string)$reset['target_type'] === 'public'
+            ? [$nowSql, (int)$reset['target_id']]
+            : [$nowSql, $reset['target_type'], (int)$reset['target_id']]);
+        if ((string)$reset['target_type'] === 'public') passwordResetAuditPublic($pdo, (int)$reset['target_id']);
         if ((string)$reset['target_type'] === 'child') {
             childAccessEvent(
                 $pdo,
@@ -255,7 +259,10 @@ function passwordResetTargetStillAuthorized(PDO $pdo, array $reset): bool
         );
         $statement->execute([(int)$reset['target_id'], (int)$reset['delivery_account_id']]);
         $account = $statement->fetch(PDO::FETCH_ASSOC);
-        return $account && ((int)($account['trener_id'] ?? 0) < 1 || !staffAccountHasTechnicalEmail($pdo, (int)$account['trener_id'], $pdo->inTransaction()));
+        $snapshot = $reset['delivery_email'] ?? null;
+        return $account
+            && ($snapshot === null || mb_strtolower((string)$account['email'], 'UTF-8') === mb_strtolower((string)$snapshot, 'UTF-8'))
+            && ((int)($account['trener_id'] ?? 0) < 1 || !staffAccountHasTechnicalEmail($pdo, (int)$account['trener_id'], $pdo->inTransaction()));
     }
     if ((string)$reset['target_type'] !== 'child') {
         return false;
@@ -270,4 +277,15 @@ function passwordResetTargetStillAuthorized(PDO $pdo, array $reset): bool
     );
     $statement->execute([(int)$reset['delivery_account_id'], (int)$reset['target_id']]);
     return (bool)$statement->fetchColumn();
+}
+
+function passwordResetAuditPublic(PDO $pdo, int $accountId): void
+{
+    // Older isolated SQLite fixtures predate the activation migration.
+    if ((string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite'
+        && !$pdo->query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='public_account_activation_events'")->fetchColumn()) {
+        return;
+    }
+    $pdo->prepare('INSERT INTO public_account_activation_events(account_id,actor_trainer_id,action,reason) VALUES(?,NULL,?,?)')
+        ->execute([$accountId, 'password_reset', 'Jednorázovým odkazem změněno heslo; staré relace a odkazy zneplatněny.']);
 }

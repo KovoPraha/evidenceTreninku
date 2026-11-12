@@ -9,6 +9,8 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 ## Aktuální vývoj a otevřená přejímka
 
+- [KIS-ACT-01: aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) je na vlastní větvi k review; produkční schválení, nasazení a pozvánky jsou otevřené.
+
 - [Stav vydání](CURRENT_STATE.md) a [stručné předání](HANDOFF_CURRENT.md) vycházejí z `main` `4b9bcb1a`; poslední doložený produkční aplikační commit je `87171a67` ([deploy 43215069511](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43215069511)).
 - [Kopírování tréninků](verification/training-copy-20261112/RESULTS.md), [styly formulářů](verification/training-form-bootstrap-20261112/RESULTS.md) a [styly přihlášení](verification/signin-bootstrap-20261111/RESULTS.md) jsou nasazené; přihlášené produkční UAT posledních řezů je otevřené.
 - [Testerovy objednávky a registrace](verification/tester-orders-registration-20261110.md), [trenérské soupisky](verification/coach-group-rosters-20261110/RESULTS.md), [BAR zásoby](verification/bar-display-stock-20261110/RESULTS.md) a [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) rozlišují nasazení od provozní přejímky.

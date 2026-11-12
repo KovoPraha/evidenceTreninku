@@ -452,6 +452,7 @@ const EVIDENCE_TABLES = [
     'oznameni_targets',
     'payments',
     'password_reset_tokens',
+    'public_account_activation_events',
     'trainer_password_reset_tokens',
     'planovane_treninky',
     'planovane_treninky_podskupiny',

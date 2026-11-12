@@ -112,7 +112,7 @@ function authMailResendVerification(
         $select = $pdo->prepare($sql);
         $select->execute([$email]);
         $row = $select->fetch(PDO::FETCH_ASSOC);
-        if (!$row) {
+        if (!$row || one_time_imported_account($pdo, (int)$row['id'])) {
             $pdo->commit();
             return ['accepted' => true,'queued' => false];
         }
@@ -161,18 +161,21 @@ function authMailTokenIsCurrent(PDO $pdo, array $row, ?int $now = null): bool
     $nowSql]);
         return (bool)$query->fetchColumn();
     }
-    $query = $pdo->prepare('SELECT * FROM password_reset_tokens WHERE target_type=? AND target_id=? AND token_hash=? AND consumed_at IS NULL AND expires_at>=?');
-    $query->execute([(string)$row['target_type'],(int)$row['target_id'],(string)$row['token_hash'],
-    $nowSql]);
+    $query = $pdo->prepare("SELECT * FROM password_reset_tokens WHERE target_type IN ('public','child','activation') AND target_id=? AND token_hash=? AND consumed_at IS NULL AND expires_at>=?");
+    $query->execute([(int)$row['target_id'],(string)$row['token_hash'],$nowSql]);
     $reset = $query->fetch(PDO::FETCH_ASSOC);
     if (!$reset) {
         return false;
     }
     require_once __DIR__.'/password_reset.php';
-    if (!passwordResetTargetStillAuthorized($pdo, $reset)) {
-        return false;
+    if ((string)$reset['target_type'] === 'activation') {
+        require_once __DIR__ . '/imported_account_activation.php';
+        if (!importedAccountActivationTokenAuthorized($pdo, $reset)) return false;
+        $email = $pdo->prepare('SELECT 1 FROM verejni_uzivatele WHERE id=? AND email=?');
+    } else {
+        if (!passwordResetTargetStillAuthorized($pdo, $reset)) return false;
+        $email = $pdo->prepare('SELECT 1 FROM verejni_uzivatele WHERE id=? AND email=? AND aktivni=1 AND email_overeno=1');
     }
-    $email = $pdo->prepare('SELECT 1 FROM verejni_uzivatele WHERE id=? AND email=? AND aktivni=1 AND email_overeno=1');
     $email->execute([(int)$reset['delivery_account_id'],(string)$row['recipient_email']]);
     return (bool)$email->fetchColumn();
 }

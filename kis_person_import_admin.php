@@ -99,7 +99,7 @@ if($batch) {
 </div>
 <p>Nové účty jsou neaktivní a jejich vazby čekají na ověření. Sdílené nebo chybějící e-maily se nezměnily v přístupová oprávnění.
 Původní údaje jsou uchovány v šifrovaném archivu importu.</p>
-<p><a href="?view=protocol">Protokol a převodní mapa</a> · <a href="sprava_sportovcu.php">Evidence osob</a> · <a href="eshop_identity_admin.php">Účty a ověření vazeb</a></p>
+<p><a href="?view=protocol">Protokol a převodní mapa</a> · <a href="sprava_sportovcu.php">Evidence osob</a> · <a href="eshop_identity_admin.php">Účty a ověření vazeb</a> · <a href="kis_account_activation_admin.php">Aktivace účtů a pozvánky</a></p>
 <form method="get" class="d-flex gap-2 mb-3"><input class="form-control" name="q" value="<?=kpiH($query)?>" placeholder="Jméno osoby nebo zástupce"><button class="btn btn-primary">Hledat</button></form>
 <p class="text-muted">Zobrazeno nejvýše 200 vazeb. Pro další osoby použijte hledání.</p>
 <div class="table-responsive"><table class="table table-striped"><thead><tr><th>Osoba</th><th>Narození</th><th>Kontaktní adresa</th><th>Zástupce a vztah</th><th>Kontakty</th><th>Zdroj</th></tr></thead><tbody>
