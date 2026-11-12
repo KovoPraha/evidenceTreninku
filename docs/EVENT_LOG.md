@@ -272,3 +272,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 - 12. 11. 2026 P11-ASSET10. Vybrána úspora duplicitního Bootstrapu na třech trasách tréninků. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset10--zápis-úprava-a-kopírování-tréninku-12-11-2026).
 
 - 12. 11. 2026 P11-ASSET10. #455/dbab9e6e vydán po shodě zobrazení a úspoře 33 206 B na každé trase. [Doklady](verification/training-form-bootstrap-20261112/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43164465663).
+
+- 12. 11. 2026 P11-RHC2. Navazující měření a omezení agregace kopírovacího seznamu. [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md#p11-rhc2--omezená-agregace-vzorů-kopírování-12-11-2026).

@@ -9,6 +9,7 @@ if (!isset($_SESSION['trener_id'])) {
 require_once 'db.php';
 require_once __DIR__ . '/includes/training_roster_bridge.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';
+require_once __DIR__ . '/includes/training_copy_read.php';
 
 function h($s)
 {
@@ -66,17 +67,13 @@ try {
     if ($duplicatePeriod !== 'all') {
         $sql .= ' AND t.datum >= DATE_SUB(CURRENT_DATE, INTERVAL '.(int)$duplicatePeriod.' DAY)';
     }
-    $sql .= ' GROUP BY t.id ORDER BY t.datum DESC';
-    if ($filterTeam === '') {
-        $sql .= ' LIMIT 100';
-    }
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $treninky = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if ($filterTeam !== '') {
-        $treninky = array_slice(trainingRosterBridgeFilterTrainingRows($pdo, $treninky, (int)$filterTeam), 0, 100);
-    }
+    $treninky = TrainingCopyRead::rows(
+        $pdo,
+        $sql,
+        $params,
+        $filterTeam === '' ? null : (int)$filterTeam,
+        $filterGroup !== ''
+    );
 } catch (PDOException $e) {
     error_log('duplikovat_trenink.php main: ' . $e->getMessage());
 }
