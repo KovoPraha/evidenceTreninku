@@ -230,6 +230,7 @@ endforeach;
             <p class="small text-muted mt-3 mb-0">Odpověď je orientační pro plánování. Skutečnou docházku zadává trenér samostatně v evidenci tréninku.</p>
         </div>
     </div>
+    <?php /** @var PDO $pdo */ ?>
     <section class="card border-0 shadow-sm mt-4" id="nahradnici"><div class="card-body"><h2 class="h5">Náhradníci na tomto termínu</h2>
         <?php if (clubMakeupAutoEnabled($pdo)): ?>
             <p class="small text-muted">U zapojených kroužků se vhodné termíny nabízejí automaticky.

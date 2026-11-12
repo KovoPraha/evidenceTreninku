@@ -35,8 +35,9 @@ CREATE TABLE club_makeup_auto_settings (
 )
 SQL);
         }
-        $pdo->exec('INSERT INTO club_makeup_auto_settings(id) SELECT 1 WHERE NOT EXISTS '
-            . '(SELECT 1 FROM club_makeup_auto_settings WHERE id=1)');
+        $pdo->exec($mysql
+            ? 'INSERT IGNORE INTO club_makeup_auto_settings(id) VALUES(1)'
+            : 'INSERT OR IGNORE INTO club_makeup_auto_settings(id) VALUES(1)');
         if (!$makeupAutoTableExists($pdo, 'club_makeup_offer_auto')) {
             $pdo->exec($mysql ? <<<'SQL'
 CREATE TABLE club_makeup_offer_auto (

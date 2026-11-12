@@ -185,6 +185,7 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261106090000_staff_notifications',
                 '20261107180000_shop_document_automation',
                 '20261108070000_medical_read_covering_index',
+                '20261112140000_club_makeup_automatic',
 
             ],
             array_keys($catalog)
