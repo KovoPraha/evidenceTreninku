@@ -1,0 +1,118 @@
+{
+  "10.3": {
+    "all": {
+      "before": 95.084,
+      "after": 18.261
+    },
+    "default": {
+      "before": 16.329,
+      "after": 16.312
+    },
+    "month": {
+      "before": 10.314,
+      "after": 10.238
+    },
+    "year": {
+      "before": 39.988,
+      "after": 17.427
+    },
+    "group": {
+      "before": 26.238,
+      "after": 11.738
+    },
+    "root": {
+      "before": 100.981,
+      "after": 23.737
+    },
+    "child": {
+      "before": 99.72,
+      "after": 23.194
+    },
+    "empty": {
+      "before": 98.888,
+      "after": 12.406
+    },
+    "zero": {
+      "before": 94.498,
+      "after": 18.23
+    },
+    "group-root": {
+      "before": 32.344,
+      "after": 17.559
+    },
+    "other-coach": {
+      "before": 94.056,
+      "after": 17.89
+    },
+    "denied-lead": {
+      "before": 2.728,
+      "after": 2.482
+    },
+    "denied-registrar": {
+      "before": 2.408,
+      "after": 2.39
+    },
+    "anonymous": {
+      "before": 0.662,
+      "after": 0.594
+    }
+  },
+  "11.4": {
+    "all": {
+      "before": 61.435,
+      "after": 13.246
+    },
+    "default": {
+      "before": 12.038,
+      "after": 12.139
+    },
+    "month": {
+      "before": 7.795,
+      "after": 7.968
+    },
+    "year": {
+      "before": 26.251,
+      "after": 12.511
+    },
+    "group": {
+      "before": 16.784,
+      "after": 9.447
+    },
+    "root": {
+      "before": 62.633,
+      "after": 15.585
+    },
+    "child": {
+      "before": 63.524,
+      "after": 15.843
+    },
+    "empty": {
+      "before": 61.367,
+      "after": 8.264
+    },
+    "zero": {
+      "before": 59.313,
+      "after": 12.793
+    },
+    "group-root": {
+      "before": 20.213,
+      "after": 12.611
+    },
+    "other-coach": {
+      "before": 59.246,
+      "after": 12.562
+    },
+    "denied-lead": {
+      "before": 2.432,
+      "after": 2.151
+    },
+    "denied-registrar": {
+      "before": 2.046,
+      "after": 2.009
+    },
+    "anonymous": {
+      "before": 0.694,
+      "after": 0.603
+    }
+  }
+}

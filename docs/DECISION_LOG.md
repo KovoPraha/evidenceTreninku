@@ -673,3 +673,5 @@ shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované
 - 12. 11. 2026 P11-ASSET10. #455/dbab9e6e vydán po shodě zobrazení a úspoře 33 206 B na každé trase. [Doklady](verification/training-form-bootstrap-20261112/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43164465663).
 
 - 12. 11. 2026 P11-RHC2. Navazující měření a omezení agregace kopírovacího seznamu. [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md#p11-rhc2--omezená-agregace-vzorů-kopírování-12-11-2026).
+
+- 12. 11. 2026 P11-RHC2. #457/87171a67 vydán po shodě celých řádků/HTTP, snímků a měřeném přínosu. [Doklady](verification/training-copy-20261112/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43215069511).

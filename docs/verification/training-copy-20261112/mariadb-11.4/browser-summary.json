@@ -1,0 +1,96 @@
+[
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "duplikovat_trenink",
+    "before": {
+      "fcp_ms": 136,
+      "ready_ms": 149.80000000001746,
+      "html_bytes": 13035,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 80,
+      "ready_ms": 100.60000000000582,
+      "html_bytes": 13034,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "duplikovat_trenink",
+    "before": {
+      "fcp_ms": 112,
+      "ready_ms": 128.09999999997672,
+      "html_bytes": 13035,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 64,
+      "ready_ms": 75.29999999998836,
+      "html_bytes": 13034,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "duplikovat_trenink",
+    "before": {
+      "fcp_ms": 124,
+      "ready_ms": 146.89999999999418,
+      "html_bytes": 13035,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 80,
+      "ready_ms": 100.20000000001164,
+      "html_bytes": 13035,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "duplikovat_trenink",
+    "before": {
+      "fcp_ms": 108,
+      "ready_ms": 126.30000000001746,
+      "html_bytes": 13035,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 64,
+      "ready_ms": 83.09999999997672,
+      "html_bytes": 13034,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  }
+]
