@@ -41,8 +41,9 @@ Závislosti určuje composer.lock. Webové requesty nesmějí provádět migrace
   [D01–D20](docs/CLUB_COMPLETION_DECISIONS.md).
 - Ověřené rodinné vazby a trenérské rozsahy, inventura/ocenění, skutečné dohody
   a finanční částky, doplnění chybějících podkladů. Nic nepřiřazovat odhadem.
-- Ostrý import a cutover, aktivace bran/Fio/automatického potvrzování a transportů
-  vyžadují samostatné rozhodnutí. Technický PASS ani HTTP 200 není úplné UAT.
+- Další ostrý import a cutover vyžadují samostatné rozhodnutí. Fio a SumUp byly
+  [aktivovány](docs/verification/live-payments-20261105/ACTIVATION.md); aktuální přepínače
+  ověř v [CURRENT_STATE](docs/CURRENT_STATE.md). Technický PASS ani HTTP 200 není úplné UAT.
 - Kreditní wallet a TrainingPeaks nejsou doloženou aktivní integrací.
   `kredit_pohyby` a `sso_tokeny` nebyly nalezeny v aktuálních migračních PHP/SQL
   definicích; neuvádět je jako existující tabulky podle historického návrhu.
