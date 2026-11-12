@@ -38,3 +38,12 @@ kontrolované invarianty.
 5. Aktualizovat tento plán, registr, CURRENT, handoff, události a důkazy.
 
 [Průběžné výsledky](verification/admin-dashboard-20261112/RESULTS.md). Další krok je implementace a párové ověření.
+
+## Diagnostická varianta a změna výběru
+
+První běh 43319920379 na MariaDB 11.4 potvrdil shodné hodnoty, ale spojení
+všech čtyř počtů bylo na větších sadách pomalejší. Na 100 000 záznamech
+mixed 49,87 → 84,36 ms, grouped 62,92 → 90,17 ms, ungrouped 32,90 → 53,24 ms.
+Varianta s jedním SQL se proto nepoužije. Původní NOT EXISTS zůstane
+samostatným dotazem a tři stavové počty spojíme. Poslední varianta má dva
+SQL místo čtyř a čeká na nové párové měření.

@@ -42,6 +42,15 @@ foreach ([0, 100, 10000, 100000] as $size) {
             $beforeChecksum = $checksum();
             $pdo->exec('START TRANSACTION READ ONLY');
             $expected = adminDashboardBaseline($pdo);
+            $known = [
+                'without_group' => $layout === 'grouped' ? 0 : ($layout === 'mixed' ? $size - intdiv($size, 2) : $size),
+                'debt' => intdiv($size, 5) * 2,
+                'stale' => intdiv($size, 6) + intdiv($size + 5, 6),
+                'manual_active' => intdiv($size, 20) * 2,
+            ];
+            if ($expected !== $known) {
+                throw new RuntimeException('Fixture boundary conditions are incorrect.');
+            }
             $samples = ['before' => [], 'after' => []];
             $peaks = ['before' => [], 'after' => []];
             for ($round = -4; $round < 17; $round++) {
@@ -70,7 +79,7 @@ foreach ([0, 100, 10000, 100000] as $size) {
                 $diagnostics[$variant] = ['sql' => count($pdo->profile),
                     'fetched_rows' => array_sum(array_column($pdo->profile, 'fetched_rows'))];
             }
-            if ($diagnostics['before']['sql'] !== 4 || $diagnostics['after']['sql'] !== 1) {
+            if ($diagnostics['before']['sql'] !== 4 || $diagnostics['after']['sql'] !== 2) {
                 throw new RuntimeException('Unexpected dashboard query budget.');
             }
             $pdo->rollBack();
