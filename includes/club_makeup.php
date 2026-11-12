@@ -868,7 +868,8 @@ function clubMakeupAvailableSlots(PDO $pdo, int $personId, int $creditId): array
     ): bool {
         return (int)$row['plan_id'] !== (int)$credit['source_plan_id']
             && clubMakeupRouteAllowed($pdo, (int) $credit['source_offer_id'], (int) $row['offer_id'])
-            && (int)$row['booked'] < (int)$row['capacity']
+            && (($row['origin'] ?? 'manual') === 'automatic'
+                || (int)$row['booked'] < (int)$row['capacity'])
             && !clubMakeupPersonIsRegular($pdo, (int)$row['plan_id'], $personId, (string)$row['datum'])
             && clubMakeupStart($row) > clubMakeupNow() && clubMakeupCreditUsableOn($pdo, $credit, (string)$row['datum']);
     }));
@@ -985,10 +986,12 @@ function clubMakeupReserve(
         if (!clubMakeupCreditUsableOn($pdo, $credit, (string)$slot['datum'])) {
             throw new ClubMakeupException('Nárok není platný nebo chybí zaplacené navazující pololetí.');
         }
-        $count = $pdo->prepare("SELECT COUNT(*) FROM club_makeup_reservations WHERE target_plan_id=? AND status='booked'");
-        $count->execute([$targetPlanId]);
-        if ((int)$count->fetchColumn() >= (int)$slot['capacity']) {
-            throw new ClubMakeupException('Kapacita náhradníků je obsazená.');
+        if (($slot['origin'] ?? 'manual') !== 'automatic') {
+            $count = $pdo->prepare("SELECT COUNT(*) FROM club_makeup_reservations WHERE target_plan_id=? AND status='booked'");
+            $count->execute([$targetPlanId]);
+            if ((int)$count->fetchColumn() >= (int)$slot['capacity']) {
+                throw new ClubMakeupException('Kapacita náhradníků je obsazená.');
+            }
         }
         if (($slot['origin'] ?? 'manual') === 'automatic') {
             if (!clubMakeupAutoEnabled($pdo)

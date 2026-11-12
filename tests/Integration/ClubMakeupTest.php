@@ -103,6 +103,12 @@ final class ClubMakeupTest extends TestCase
         } catch (\ClubMakeupException $error) {
             self::assertStringContainsString('Kapacita', $error->getMessage());
         }
+        $pdo->exec('UPDATE club_makeup_slots SET capacity=1 WHERE plan_id=200');
+        $pdo->exec('UPDATE club_program_offers SET capacity=4 WHERE id=21');
+        self::assertCount(1, \clubMakeupAvailableSlots($pdo, 13, $secondCredit));
+        $secondReservation = \clubMakeupReserve($pdo, 13, $secondCredit, 200, 'athlete', 53);
+        self::assertGreaterThan(0, $secondReservation);
+        \clubMakeupCancelReservation($pdo, 13, $secondReservation, 'athlete', 53);
         \clubMakeupCancelReservation($pdo, 10, $reservation, 'athlete', 50);
         self::assertSame(0, \clubMakeupFutureReservedForOffer($pdo, $targetOffer));
         self::assertCount(1, \clubMakeupAvailableSlots($pdo, 13, $secondCredit));

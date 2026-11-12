@@ -13,7 +13,7 @@ nároků/rezervací; úprava věkových mezí zůstává v kanonické nabídce p
 
 | Kontrola | Výsledek | Důkaz / mez |
 | --- | --- | --- |
-| `php vendor/bin/phpunit --filter ClubMakeupTest` | PASS | 18 testů, 142 assertions; automatický termín bez ručního slotu, 3/2 kapacita, plná skupina, věk, vyloučení plánu, výjimka směru i vypnutí přepínače, budoucí rezervace pro ochranu nákupu, migrace opakovaně, platnost a limit nároků, uložená lhůta storna, původní životní cyklus. |
+| `php vendor/bin/phpunit --filter ClubMakeupTest` | PASS | 18 testů, 144 assertions; automatický termín bez ručního slotu, 3/2 kapacita, plná skupina, zvýšení kapacity po vzniku slotu, věk, vyloučení plánu, výjimka směru i vypnutí přepínače, budoucí rezervace pro ochranu nákupu, migrace opakovaně, platnost a limit nároků, uložená lhůta storna, původní životní cyklus. |
 | `php vendor/bin/phpunit --filter DeployWorkflowContractTest` | PASS | 14 testů, 503 assertions; seznam zálohovaných tabulek zahrnuje nové nastavení a výjimky. |
 | `php vendor/bin/phpunit --filter AuthSecurityMigrationTest` | PASS | 1 test / 91 assertions po doplnění nové migrace do očekávaného registru. |
 | `php vendor/bin/phpunit --filter ClubProgramTest` | PASS | 13 testů / 134 assertions po doplnění ochrany nákupu a úprav kapacity před budoucími rezervacemi náhrad. |
