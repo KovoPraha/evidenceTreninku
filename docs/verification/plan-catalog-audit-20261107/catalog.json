@@ -27,6 +27,21 @@
       "disposition": "PR #463 a chráněné nasazení 43322186478 PASS; pilot, pozvánky a rodičovské UAT otevřené.",
       "evidence": [
         "docs/IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md",
+        "docs/verification/parent-activation-release-20261112/RESULTS.md",
+        "docs/TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md"
+      ]
+    },
+    {
+      "id": "PL-4dc01803a8",
+      "path": "docs/TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md",
+      "title": "KIS-ACT-01 — scénář pro testerku",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "KIS-ACT-01",
+      "disposition": "Scénáře T01–T09 ke stažení; produkční pozvánky a rodičovské UAT dosud NOT RUN.",
+      "evidence": [
+        "docs/TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md",
         "docs/verification/parent-activation-release-20261112/RESULTS.md"
       ]
     },

@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 12. 11. 2026, Europe/Prague. Kontrola `main` `4b9bcb1a`; produkční stav určují výsledkové protokoly. [Revize](verification/documentation-sync-20261112/RESULTS.md).
+Aktualizováno 13. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -32,7 +32,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## KIS-ACT-01 — první heslo importovaných rodičů (12. 11. 2026)
 
-KÓD NASAZEN; pilot a rodičovské UAT otevřené. Vlastník 12. 11. autorizoval vydání kódu a migrace z PR #463; [deploy 43322186478](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43322186478) SUCCESS na `373b8d89`, UAT/import false. [Rozsah](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md), [protokol](verification/parent-activation-release-20261112/RESULTS.md). Pozvánky a změny vazeb vyžadují zvláštní provozní schválení.
+KÓD NASAZEN; pilot a rodičovské UAT otevřené. Vlastník 12. 11. autorizoval vydání kódu a migrace z PR #463; [deploy 43322186478](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43322186478) SUCCESS na `373b8d89`, UAT/import false. [Rozsah](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md), [protokol](verification/parent-activation-release-20261112/RESULTS.md), [scénář pro testerku](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md). Pozvánky a změny vazeb vyžadují zvláštní provozní schválení.
 
 Vlastník vývoj; identitu, text pozvánky a pilot schvaluje vedení TJ KOVO Praha. Vývojová větev `codex/parent-account-activation` v izolovaném worktree. Cílené syntetické testy a plné PR CI PASS; produkční počty, přihlášené rodičovské UAT a doručení pozvánek NOT RUN. Další krok: schválení konkrétní malé dávky a její provozní přejímka.
 

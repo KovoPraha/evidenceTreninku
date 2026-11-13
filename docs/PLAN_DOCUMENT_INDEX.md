@@ -1,6 +1,6 @@
 # Úplný index verzovaných podkladů
 
-Inventura k 7. 11. 2026. [Katalog plánů](PLAN_CATALOG.md) obsahuje hlavní
+Inventura založena 7. 11. 2026, aktualizována 13. 11. 2026. [Katalog plánů](PLAN_CATALOG.md) obsahuje hlavní
 plány, koncepty a vložené ověřovací plány; tento seznam eviduje i zbytek
 textové dokumentace i binární plány/přílohy, aby žádný soubor nezmizel jen kvůli názvu, formátu nebo složce.
 Historický protokol/fixture není nové schválení ani tvrzení o dnešním provozu.
@@ -9,6 +9,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
 | PL-9d3bb013a4 | [KIS-ACT-01 — aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) | plan / PARTIAL | KIS-ACT-01 |
+| PL-4dc01803a8 | [KIS-ACT-01 — scénář pro testerku](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md) | evidence / SUPPORT | KIS-ACT-01 |
 | PL-roster-scroll-20261112 | [ROSTER-SCROLL-01 — pozice správy soupisek](ROSTER_SCROLL_POSITION_2026-11-12.md) | plan / PARTIAL | ROSTER-SCROLL-01 |
 | PL-b6f3287c42 | [P11-EVENTREAD — výběrové ověření](verification/club-event-public-read-20261110/RESULTS.md) | evidence / SUPPORT | P11-EVENTREAD |
 | PL-e91566d185 | [P11-EVENTREAD — předání](SESSION_HANDOFF_CLUB_EVENT_PUBLIC_READ_2026-11-10.md) | handoff / SUPPORT | P11-EVENTREAD |
