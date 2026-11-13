@@ -1,0 +1,23 @@
+{
+  "number": "470",
+  "base": "bf9d40020f9ac9c519d0c0b0df32ed0832ea8248",
+  "head": "1507b1e1f7539bdedd22ee84a34b2be1c57a475d",
+  "tree": "b61eacacf96e595308a573ac5383865157514f4f",
+  "checks": {
+    "Admin dashboard (MariaDB 10.3)": "SUCCESS",
+    "Analyze (actions)": "SUCCESS",
+    "docs": "SUCCESS",
+    "PHPStan level 5 and changed-file style": "SUCCESS",
+    "PHPUnit na PHP 8.2": "SUCCESS",
+    "Admin dashboard (MariaDB 11.4)": "SUCCESS",
+    "Analyze (javascript-typescript)": "SUCCESS",
+    "Admin dashboard assets (MariaDB 10.3)": "SUCCESS",
+    "Analyze (python)": "SUCCESS",
+    "Admin dashboard assets (MariaDB 11.4)": "SUCCESS",
+    "MariaDB integrační smoke (MariaDB 10.3)": "SUCCESS",
+    "MariaDB integrační smoke (MariaDB 11.4)": "SUCCESS",
+    "MariaDB profily čtení (MariaDB 10.3)": "SUCCESS",
+    "MariaDB profily čtení (MariaDB 11.4)": "SUCCESS",
+    "CodeQL": "SUCCESS"
+  }
+}

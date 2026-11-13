@@ -306,3 +306,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 - 13. 11. 2026 P11-ADM. #465/be4ce55a vydán po 13 CI a přesné paritě. Vybrány 2 SQL, varianta 1 SQL zamítnuta kvůli regresi. [Doklady](verification/admin-dashboard-20261112/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43326177751). Přihlášené produkční UAT NOT RUN.
 
 - 13. 11. 2026 P11-ASSET11 zahájeno. Vybrána přesná duplicitní CDN značka administrátorského přehledu po dokončené agregaci; oddělený baseline 722099b7. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset11--administrátorský-přehled-13-11-2026), [důkazy](verification/admin-dashboard-bootstrap-20261113/RESULTS.md).
+
+- 13. 11. 2026 P11-ASSET11 #470/cd04bad6 vydán po 15 CI, HTTP a pixelové shodě. Cold CSS 64454→31248 B. [Důkazy](verification/admin-dashboard-bootstrap-20261113/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43386354560). UAT/import false; přihlášené produkční UAT NOT RUN.
