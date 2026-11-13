@@ -832,3 +832,58 @@ způsobilé identifikátory a počítat údaje pro zobrazené tréninky. Srovná
 musí pokrýt stejný výsledek včetně platnosti historické hierarchie a oprávnění.
 V přehledu administrace ověřit samostatně opakované počty nad tabulkou
 sportovci a duplicitní styly, aby bylo možné zvolit podle naměřeného přínosu.
+
+## P11-ASSET11 — administrátorský přehled, 13. 11. 2026
+
+ROZPRACOVÁNO. Vlastník vývoj/Codex podle navazujícího pokynu Marka
+pokračovat ve stejném stylu: implementace, shoda a měření, commit, merge
+a chráněné nasazení po úspěšných kontrolách. Base 722099b7, poslední
+ověřený runtime be4ce55a / deploy 43326177751 SUCCESS. Větev
+codex/admin-dashboard-bootstrap-20261113, izolovaný worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-admin-dashboard-bootstrap-20261113.
+Původní fio checkout a jeho WIP zůstávají zachované.
+
+Navazuje na [agregaci počtů](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md)
+a bod 7 původní analýzy. Přehled vkládá CDN Bootstrap 5.3.3 v head
+a stejný místní Bootstrap ze společné hlavičky. Zvolená změna odebere
+přesně první značku. Sdílené styly, ikony, karty, odkazy, oprávnění
+a SQL zůstanou předmětem kontroly shody.
+
+Párová přejímka oddělí tento řez od předchozí SQL optimalizace:
+referenční stránka z 722099b7 už má dva SQL pro čtyři počty.
+Zdrojový rozdíl musí být jen odebrání přesného PHP echo Bootstrapu.
+MariaDB 10.3/11.4: celé HTTP s výjimkou jedné přesně určené značky
+a CSP nonce, 13 rolových/redirect scénářů, stejné kontrolní součty
+databáze a ověřený úklid. Chrome: cold/warm přenos, FCP/ready,
+desktop/light a mobile/dark, geometrie a pixelově shodné snímky.
+Historický profil agregace zůstává aktivní s úzkou kompatibilitou
+pro právě tento odebraný tag; zachová všechny ostatní kontroly.
+
+Merge až po shodě, úspoře skutečného přenosu a aktuálním zeleném CI.
+Chráněné nasazení s UAT/import false, ověření shodného Git stromu,
+zálohy, konfigurace, migrací, VS, indexu a HTTP. Produkční anonymní
+GET a přesné veřejné payloady před/po; přihlášené UAT evidovat zvlášť.
+[Průběžné výsledky](verification/admin-dashboard-bootstrap-20261113/RESULTS.md). Další krok: implementace a párové CI.
+
+### ASSET11 — implementace a místní kontrola
+
+Aplikační diff jsou přesně dvě odebrané řádky PHP echo jedné CDN značky.
+Automatická kontrola přesného zdrojového rozdílu a shodného SQL helperu PASS.
+PHP/JS/Python syntaxe, PSR-12 a kontrola dokumentace PASS. Existující
+SharedUiShellTest má doplněn přehled do inventáře stránek se sdílenými styly.
+Cílený místní PHPUnit ještě běží; nativní HTTP, Chrome a výkon čekají na CI.
+Matice CI obsahuje oddělené counts/assets profily na MariaDB 10.3/11.4.
+
+### ASSET11 — párový checkpoint PR #470
+
+[CSS profily běhu 43383614934](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43383614934)
+PASS na obou MariaDB: 13 HTTP scénářů/358 nezměněných tabulek na databázi,
+dva pixelově shodné páry a ověřený úklid. Cold CSS 53 957→31 248 B,
+−42,09 %; FCP cold desktop 68→64 ms, mobile 64→60 ms. HTTP prakticky
+shodné. Lokální cílené testy dokončily 21/155 PASS. Celkové CI při tomto
+checkpointu běží; vydání čeká. [Podrobnosti](verification/admin-dashboard-bootstrap-20261113/RESULTS.md).
+
+Po souběžném záznamu soupisek bf9d4002 aktualizována základna. Zachovány
+jeho dokumenty, stav vydání a scénář pro testerku. CSS reference 722099b7
+zůstává obsahově platná. Dosavadní měření je z fe11fb95; nový head
+projde celou přejímkou před merge.

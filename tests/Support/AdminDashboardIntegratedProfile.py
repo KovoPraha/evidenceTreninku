@@ -4,8 +4,9 @@ from pathlib import Path
 from WorkspaceAssetsApache import WorkspaceAssetsApache
 
 root=Path(__file__).resolve().parents[2]
-profile = "admin-dashboard"
-base = "5cd6ad07b7f99b7b8d361f49520025d799e8776e"
+assets_mode = os.environ.get("ADMIN_DASHBOARD_ASSETS", "0") == "1"
+profile = "admin-dashboard-assets" if assets_mode else "admin-dashboard"
+base = "722099b7638172d87b23dc4881398e43bf53dbd9" if assets_mode else "5cd6ad07b7f99b7b8d361f49520025d799e8776e"
 assert os.environ["ADMIN_DASHBOARD_BASE_SHA"] == base
 browser_enabled = os.environ["ADMIN_DASHBOARD_BROWSER"] == "1"
 routes = ["admin_dashboard.php"]
@@ -122,13 +123,15 @@ def browser(path, cookies, viewport, theme, cache, css_hash):
     assert after["fcp_ms"] <= before["fcp_ms"] * 1.2 + 20, summary
     assert after["ready_ms"] <= before["ready_ms"] * 1.2 + 20, summary
     if cache == "cold":
-        assert before["css_decoded_bytes"] == after["css_decoded_bytes"] == 465606, summary
-        assert before["css_bytes"] == after["css_bytes"], summary
+        assert before["css_decoded_bytes"] == 465606 and after["css_decoded_bytes"] == 232803, summary
+        assert 0 < after["css_bytes"] < before["css_bytes"], summary
         compare_png = """$a=imagecreatefrompng($argv[1]);$b=imagecreatefrompng($argv[2]);
         if(imagesx($a)!==imagesx($b)||imagesy($a)!==imagesy($b))exit(1);
         for($y=0;$y<imagesy($a);$y++)for($x=0;$x<imagesx($a);$x++)if(imagecolorat($a,$x,$y)!==imagecolorat($b,$x,$y))exit(2);"""
         subprocess.run(["php", "-r", compare_png, screenshots["before"], screenshots["after"]], check=True)
         summary["pixels_equal"] = True
+    else:
+        assert before["css_bytes"] == after["css_bytes"] == 0, summary
     (safe / f"browser-{label}.json").write_text(json.dumps(report, indent=2))
     return summary
 
@@ -143,6 +146,13 @@ try:
     sources = {}
     for route in routes:
         before = subprocess.check_output(["git", "show", base + ":" + route], cwd=root)
+        if assets_mode:
+            removed = '''echo '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" '
+    . 'integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">' . "\\n";
+'''.encode()
+            assert before.count(removed) == 1 and before.replace(removed, b"") == original[route], "Unexpected asset source change"
+            helper = "includes/admin_dashboard_read.php"
+            assert subprocess.check_output(["git", "show", base + ":" + helper], cwd=root) == (root / helper).read_bytes()
         baseline[route] = before
         sources[route] = dict(
             baseline=base, head=head,

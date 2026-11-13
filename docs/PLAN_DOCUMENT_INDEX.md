@@ -1020,7 +1020,7 @@ P11-RH: [plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](S
 
 | PL-362e27a035 | [P11-RIX průběžné ověření](verification/athlete-profile-targeted-read-20261109/RESULTS.md) | evidence / SUPPORT | P11-RIX |
 
-| PL-29c9854bef | [P11-ASSET Bootstrap CSS právě jednou](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | plan / DONE | P11-ASSET/P11-ASSET2 |
+| PL-29c9854bef | [P11-ASSET Bootstrap CSS právě jednou](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md) | plan / PARTIAL | P11-ASSET1–11 |
 
 | PL-5b9d1c88ae | [P11-ASSET předání](SESSION_HANDOFF_BOOTSTRAP_ASSETS_2026-11-10.md) | handoff / SUPPORT | P11-ASSET |
 

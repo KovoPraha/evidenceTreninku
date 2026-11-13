@@ -100,6 +100,7 @@ final class SharedUiShellTest extends TestCase
             // These measured pages rely on the existing header's canonical assets.
             // Keep the inventory guard for every other legacy page until migrated.
             $verifiedSharedOnly = in_array($relative, [
+                'admin_dashboard.php',
                 'duplikovat_trenink.php',
                 'edit_trenink.php',
                 'formular.php',

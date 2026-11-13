@@ -77,6 +77,8 @@ file_put_contents($output . '/checksums.json', json_encode($initial, JSON_THROW_
 $variants = ['before' => $runtime, 'after' => ['base_url' => 'http://127.0.0.1:18100'] + $runtime];
 $signatures = [];
 $samples = [];
+$removedBootstrap = '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" '
+    . 'integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">' . "\n";
 foreach ($cases as $case) {
     $id = $case['id'];
     $positive = $case['status'] === 200;
@@ -89,13 +91,18 @@ foreach ($cases as $case) {
             }
             $cdn = substr_count($raw, 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
             $local = preg_match_all('~href="/(?!/)[^"]*assets/vendor/bootstrap/bootstrap\.min\.css\?v=[a-f0-9]{64}"~', $raw);
-            if ($positive && ($local !== 1 || $cdn !== 1)) {
+            if ($positive && ($local !== 1 || $cdn !== ($variant === 'before' ? 1 : 0))) {
                 throw new RuntimeException('Unexpected CSS links: ' . $id . '/' . $variant);
             }
             $headers = array_intersect_key($response['headers'], array_flip([
                 'content-type', 'cache-control', 'content-security-policy', 'location', 'x-frame-options', 'x-content-type-options',
             ]));
             $html = $raw;
+            // P11-ASSET11 compatibility: remove only the exact former CDN tag.
+            $html = str_replace($removedBootstrap, '', $html, $removed);
+            if ($removed !== ($positive && $variant === 'before' ? 1 : 0)) {
+                throw new RuntimeException('Unexpected Bootstrap normalization: ' . $id . '/' . $variant);
+            }
             if (preg_match("/nonce-([^']+)/", $headers['content-security-policy'] ?? '', $nonce)) {
                 $html = str_replace($nonce[1], 'SYNTHETIC_NONCE', $html);
                 $headers['content-security-policy'] = str_replace($nonce[1], 'SYNTHETIC_NONCE', $headers['content-security-policy']);
@@ -120,6 +127,7 @@ foreach ($cases as $case) {
 }
 file_put_contents($output . '/http.json', json_encode([
     'cases' => count($cases), 'database_query_cache_off' => true,
+    'removed_bootstrap_bytes' => strlen($removedBootstrap),
     'fixture_people' => (int)$admin->query('SELECT COUNT(*) FROM sportovci')->fetchColumn(),
     'signatures' => $signatures, 'samples' => $samples,
 ], JSON_THROW_ON_ERROR));
