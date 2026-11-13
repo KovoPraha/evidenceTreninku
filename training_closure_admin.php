@@ -204,8 +204,8 @@ function tcH(mixed $v): string
 <div class="card-body">
 <h2>Trénink #<?=$trainingId?> · <?=tcH($training['datum'])?></h2>
 <p><?=tcH($training['napln'])?></p>
-<p>Stav: <strong><?=!$current ? 'Rozepsaná docházka' : ($current['status'] === 'void' ? 'Zneplatněná docházka' : 'Uzavřená docházka, verze '
-        .(int)$current['version'])?></strong>. Zápis z papíru uchová okamžik přepisu i skutečné konání.</p>
+<p>Stav: <strong><?=!$current ? 'Rozepsaná docházka' : ($current['status'] === 'void' ? 'Zneplatněná docházka' : ($current['status'] === 'draft' ? 'Rozpracovaná docházka, verze '.(int)$current['version'] : 'Uzavřená docházka, verze '.(int)$current['version']))?></strong>. Zápis z papíru uchová okamžik přepisu i skutečné konání.</p>
+<?php if ($plan && isset($current['snapshot']['attendance_states'])): ?><div class="alert alert-info">Stavy jednotlivých dětí upravte v <a href="coach_attendance.php?plan_id=<?=(int)$plan['id']?>">trenérské docházce</a>. Zde zůstává auditované zneplatnění lekce.</div><?php endif; ?>
 <?php if ($plan):?><p>Plán #<?=(int)$plan['id']?> · <?=tcH($plan['nazev'])?> · <?=tcH($plan['cas_od'])
     ?>–<?=tcH($plan['cas_do'])?></p><?php endif;?>
 <?php if ($selectedPeople):?><p>Ověření podkladů k datu lekce: <?php foreach ($selectedPeople as $person):
@@ -309,7 +309,7 @@ function tcH(mixed $v): string
 <tbody><?php foreach ($rows as $r):?><tr>
 <td><?=tcH($r['datum'])?></td>
 <td><?=tcH($r['napln'])?></td>
-<td><?=!$r['version'] ? 'K uzavření' : ($r['status'] === 'void' ? 'Zneplatněno' : 'Uzavřeno, verze '.(int)$r['version'])
+<td><?=!$r['version'] ? 'K uzavření' : ($r['status'] === 'void' ? 'Zneplatněno' : ($r['status'] === 'draft' ? 'Rozpracováno, verze '.(int)$r['version'] : 'Uzavřeno, verze '.(int)$r['version']))
     ?></td>
 <td>
 <a href="?id=<?=(int)$r['id']?>">Docházka #<?=(int)$r['id']?></a>

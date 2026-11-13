@@ -97,14 +97,15 @@ function trainingClosureClose(PDO $pdo, int $trainingId, int $expectedVersion, a
     if (!trainingClosureReady($pdo)) {
         throw new TrainingClosureException('Uzavírání docházky není připraveno.');
     }
+    $draft = ($input['draft'] ?? false) === true;
     $reason = trim((string)($input['reason'] ?? ''));
-    if (mb_strlen($reason) < 10 || mb_strlen($reason) > 1000 || ($input['confirmed'] ?? false) !== true) {
+    if (mb_strlen($reason) < 10 || mb_strlen($reason) > 1000 || (!$draft && ($input['confirmed'] ?? false) !== true)) {
         throw new TrainingClosureException('Potvrďte skutečnou docházku a uveďte důvod zápisu či opravy (10–1000 znaků).');
     }
     $start = trainingClosureDateTime((string)($input['actual_started_at'] ?? ''));
     $end = trainingClosureDateTime((string)($input['actual_ended_at'] ?? ''));
     $now = new DateTimeImmutable('now', new DateTimeZone('Europe/Prague'));
-    if ($end <= $start || $end > $now || $end->getTimestamp() - $start->getTimestamp() > 86400) {
+    if ($end <= $start || (!$draft && $end > $now) || $end->getTimestamp() - $start->getTimestamp() > 86400) {
         throw new TrainingClosureException('Definitivní docházku lze uzavřít až po skutečném konci lekce s platnou délkou do 24 hodin.');
     }
     $people = trainingClosureIds($input['participant_ids'] ?? []);
@@ -112,8 +113,11 @@ function trainingClosureClose(PDO $pdo, int $trainingId, int $expectedVersion, a
     if (!$coaches) {
         throw new TrainingClosureException('Potvrďte alespoň jednoho skutečně přítomného trenéra.');
     }
-    $status = ($input['void'] ?? false) ? 'void' : 'closed';
-    $pdo->beginTransaction();
+    $status = ($input['void'] ?? false) ? 'void' : ($draft ? 'draft' : 'closed');
+    $ownsTransaction = !$pdo->inTransaction();
+    if ($ownsTransaction) {
+        $pdo->beginTransaction();
+    }
     try {
         $training = trainingClosureAssertTraining($pdo, $trainingId, $actor);
         if ($start->format('Y-m-d') !== (string)$training['datum']) {
@@ -151,9 +155,45 @@ function trainingClosureClose(PDO $pdo, int $trainingId, int $expectedVersion, a
         if ($plan) {
             $expected = array_map('intval', array_column(trainingRosterBridgeExpectedForPlan($pdo, (int)$plan['id']), 'id'));
         }
+        $attendanceStates = $input['attendance_states'] ?? null;
+        if ($attendanceStates !== null) {
+            if (!is_array($attendanceStates)) {
+                throw new TrainingClosureException('Neplatný seznam stavů docházky.');
+            }
+            $validated = [];
+            foreach ($attendanceStates as $id => $state) {
+                if (!ctype_digit((string)$id) || (int)$id < 1 || !in_array($state, ['present','absent','excused'], true)) {
+                    throw new TrainingClosureException('Neplatný stav docházky.');
+                }
+                $validated[(int)$id] = $state;
+            }
+            if ($status !== 'void') {
+                $present = array_keys(array_filter($validated, static fn (string $state): bool => $state === 'present'));
+                sort($present, SORT_NUMERIC);
+                if ($present !== $people) {
+                    throw new TrainingClosureException('Přítomní sportovci neodpovídají zvoleným stavům.');
+                }
+            }
+            $attendanceStates = $validated;
+        } elseif ($version > 0 && $status !== 'void') {
+            $previous = trainingClosureCurrent($pdo, $trainingId);
+            if (isset($previous['snapshot']['attendance_states'])) {
+                throw new TrainingClosureException('Docházku se stavy dětí opravte z rozvrhu v trenérské docházce.');
+            }
+        }
         $guestReasons = (array)($input['guest_reasons'] ?? []);
         if ($plan) {
+            $reserved = [];
+            require_once __DIR__.'/club_makeup.php';
+            if (clubMakeupReady($pdo)) {
+                $reservationQuery = $pdo->prepare("SELECT sportovec_id FROM club_makeup_reservations WHERE target_plan_id=? AND status IN ('booked','attended','no_show')");
+                $reservationQuery->execute([(int)$plan['id']]);
+                $reserved = array_map('intval', $reservationQuery->fetchAll(PDO::FETCH_COLUMN));
+            }
             foreach (array_diff($people, $expected) as $person) {
+                if (in_array($person, $reserved, true)) {
+                    continue;
+                }
                 if (mb_strlen(trim((string)($guestReasons[$person] ?? ''))) < 10) {
                     throw new TrainingClosureException('U neplánovaného hosta #'.$person.' doplňte důvod účasti.');
                 }
@@ -167,7 +207,7 @@ function trainingClosureClose(PDO $pdo, int $trainingId, int $expectedVersion, a
         $affected = array_unique(array_merge($people, $before['snapshot']['participant_ids'] ?? [], $rawParticipants));
         sort($affected, SORT_NUMERIC);
         $review = [];
-        if (memberChargeReadTableExists($pdo, 'sportovec_obdobi')) {
+        if ($status !== 'draft' && memberChargeReadTableExists($pdo, 'sportovec_obdobi')) {
             foreach ($affected as $person) {
                 $s = $pdo->prepare('SELECT id FROM sportovci WHERE id=?'.$lock);
                 $s->execute([$person]);
@@ -189,6 +229,10 @@ function trainingClosureClose(PDO $pdo, int $trainingId, int $expectedVersion, a
     ,'participant_ids' => $people,'coach_ids' => $coaches,'guest_reasons' => $guestReasons,'record_source' => ($input['record_source'] ?? 'coach')
     === 'paper' ? 'paper' : 'coach','plan_id' => $plan ? (int)$plan['id'] : null,'category' => $training['kategorie'] ?? null
     ,'description' => $training['napln'] ?? null];
+        if ($attendanceStates !== null) {
+            $snapshot['attendance_states'] = $attendanceStates;
+            $snapshot['makeup_reservation_ids'] = (array)($input['makeup_reservation_ids'] ?? []);
+        }
         $pdo->prepare(('INSERT INTO ' .
     'training_closure_revisions(training_id,version,status,actual_date,actual_started_at,actual_ended_at,duration_minutes,snapshot' .
     '_json,reason,closed_by) ' .
@@ -203,35 +247,39 @@ function trainingClosureClose(PDO $pdo, int $trainingId, int $expectedVersion, a
             $pdo->prepare('INSERT INTO training_closures(training_id,current_revision_id,version,status) VALUES(?,?,?,?)')
     ->execute([$trainingId,$revision,$version + 1,$status]);
         }
-        $pdo->prepare('DELETE FROM trenink_sportovec WHERE trenink_id=?')->execute([$trainingId]);
-        $ins = $pdo->prepare('INSERT INTO trenink_sportovec(trenink_id,sportovec_id) VALUES(?,?)');
-        foreach ($people as $person) {
-            $ins->execute([$trainingId,$person]);
-        }
-        $pdo->prepare('DELETE FROM trenink_trener WHERE trenink_id=?')->execute([$trainingId]);
-        $ins = $pdo->prepare('INSERT INTO trenink_trener(trenink_id,trener_id) VALUES(?,?)');
-        foreach ($coaches as $coach) {
-            $ins->execute([$trainingId,$coach]);
-        }
-        $pdo->prepare('UPDATE treninky SET delka=? WHERE id=?')->execute([$status === 'void' ? 0 : $minutes / 60
+        if ($status !== 'draft') {
+            $pdo->prepare('DELETE FROM trenink_sportovec WHERE trenink_id=?')->execute([$trainingId]);
+            $ins = $pdo->prepare('INSERT INTO trenink_sportovec(trenink_id,sportovec_id) VALUES(?,?)');
+            foreach ($people as $person) {
+                $ins->execute([$trainingId,$person]);
+            }
+            $pdo->prepare('DELETE FROM trenink_trener WHERE trenink_id=?')->execute([$trainingId]);
+            $ins = $pdo->prepare('INSERT INTO trenink_trener(trenink_id,trener_id) VALUES(?,?)');
+            foreach ($coaches as $coach) {
+                $ins->execute([$trainingId,$coach]);
+            }
+            $pdo->prepare('UPDATE treninky SET delka=? WHERE id=?')->execute([$status === 'void' ? 0 : $minutes / 60
     ,$trainingId]);
-        require_once __DIR__.'/club_makeup.php';
-        if ($status === 'void') {
-            trainingClosureVoidMakeups($pdo, $trainingId, $plan ? (int)$plan['id'] : 0, $actor);
-        } else {
-            clubMakeupReconcileRecordedAttendance($pdo, $trainingId, $actor);
-            if ($plan) {
-                clubMakeupFinalizeTarget($pdo, (int)$plan['id'], $trainingId, $actor);
+            require_once __DIR__.'/club_makeup.php';
+            if ($status === 'void') {
+                trainingClosureVoidMakeups($pdo, $trainingId, $plan ? (int)$plan['id'] : 0, $actor);
+            } else {
+                clubMakeupReconcileRecordedAttendance($pdo, $trainingId, $actor);
+                if ($plan) {
+                    clubMakeupFinalizeTarget($pdo, (int)$plan['id'], $trainingId, $actor);
+                }
             }
         }
         foreach ($review as [$kind,$id]) {
             $pdo->prepare('INSERT INTO training_closure_reviews(training_id,revision_id,reference_kind,reference_id) VALUES(?,?,?,?)')
     ->execute([$trainingId,$revision,$kind,$id]);
         }
-        $pdo->commit();
+        if ($ownsTransaction) {
+            $pdo->commit();
+        }
         return ['revision_id' => $revision,'version' => $version + 1,'status' => $status,'review_required' => count($review) > 0] + $snapshot;
     } catch (Throwable $e) {
-        if ($pdo->inTransaction()) {
+        if ($ownsTransaction && $pdo->inTransaction()) {
             $pdo->rollBack();
         }throw $e;
     }
@@ -324,6 +372,31 @@ function trainingClosedActivitiesForPerson(PDO $pdo, int $personId, string $from
     ,'closed_by' => (int)$row['closed_by']];
         }
     }return $out;
+}
+
+/** Current final status, including an absence that has no trenink_sportovec row. Caller checks person ACL. */
+function trainingClosureStatesForPerson(PDO $pdo, int $personId, string $from, string $to): array
+{
+    if (!trainingClosureReady($pdo)) {
+        return [];
+    }
+    $query = $pdo->prepare("SELECT r.training_id,r.actual_date,r.version,r.snapshot_json FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date DESC,r.training_id DESC");
+    $query->execute([$from,$to]);
+    $result = [];
+    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $snapshot = json_decode((string)$row['snapshot_json'], true, 512, JSON_THROW_ON_ERROR);
+        $state = $snapshot['attendance_states'][$personId] ?? null;
+        if ($state === null && in_array($personId, $snapshot['participant_ids'] ?? [], true)) {
+            $state = 'present';
+        }
+        if (!in_array($state, ['present','absent','excused'], true)) {
+            continue;
+        }
+        $result[(int)$row['training_id']] = ['state' => $state, 'plan_id' => (int)($snapshot['plan_id'] ?? 0),
+            'date' => (string)$row['actual_date'], 'version' => (int)$row['version'],
+            'makeup_reservation_id' => (int)($snapshot['makeup_reservation_ids'][$personId] ?? 0)];
+    }
+    return $result;
 }
 
 /** Serialize all planning writers, including copying a week and a recurring series. */

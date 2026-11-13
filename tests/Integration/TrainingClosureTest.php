@@ -98,4 +98,24 @@ final class TrainingClosureTest extends TestCase {
     try{\trainingScheduleAssertAvailable($p,2,1,'2026-01-02','17:00','18:00',2,[],4);self::fail('Linked reservation silently moved');}catch(\TrainingClosureException $e){self::assertStringContainsString('rezervované',$e->getMessage());}
     try{\trainingScheduleAssertAvailable($p,2,1,'2026-01-02','15:00','16:30',null,[],4);self::fail('Linked venue silently removed');}catch(\TrainingClosureException $e){self::assertStringContainsString('rezervované',$e->getMessage());}$p->rollBack();
  }
+ public function testDraftKeepsLegacyPresenceAndFinalRevisionRecordsAbsence():void {
+    $p=$this->fixture();
+    $input=$this->input();$input['attendance_states']=[10=>'present',11=>'absent'];$input['draft']=true;
+    $draft=\trainingClosureClose($p,100,0,$input,2);
+    self::assertSame('draft',$draft['status']);
+    self::assertSame([10],array_map('intval',$p->query('SELECT sportovec_id FROM trenink_sportovec')->fetchAll(PDO::FETCH_COLUMN)));
+    self::assertSame([],\trainingClosureStatesForPerson($p,11,'2026-01-01','2026-01-31'));
+    unset($input['draft']);
+    $final=\trainingClosureClose($p,100,1,$input,2);
+    self::assertSame('closed',$final['status']);
+    self::assertSame('absent',\trainingClosureStatesForPerson($p,11,'2026-01-01','2026-01-31')[100]['state']);
+    self::assertSame('present',\trainingClosureStatesForPerson($p,10,'2026-01-01','2026-01-31')[100]['state']);
+ }
+ public function testClosureCanJoinPlanCreationTransaction():void {
+    $p=$this->fixture();$p->beginTransaction();
+    \trainingClosureClose($p,100,0,$this->input(),2);
+    self::assertTrue($p->inTransaction());
+    $p->rollBack();
+    self::assertSame(0,(int)$p->query('SELECT COUNT(*) FROM training_closure_revisions')->fetchColumn());
+ }
 }
