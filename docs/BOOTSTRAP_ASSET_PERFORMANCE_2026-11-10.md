@@ -835,7 +835,7 @@ sportovci a duplicitní styly, aby bylo možné zvolit podle naměřeného pří
 
 ## P11-ASSET11 — administrátorský přehled, 13. 11. 2026
 
-ROZPRACOVÁNO. Vlastník vývoj/Codex podle navazujícího pokynu Marka
+NASAZENO / technická přejímka PASS. Vlastník vývoj/Codex podle navazujícího pokynu Marka
 pokračovat ve stejném stylu: implementace, shoda a měření, commit, merge
 a chráněné nasazení po úspěšných kontrolách. Base 722099b7, poslední
 ověřený runtime be4ce55a / deploy 43326177751 SUCCESS. Větev
@@ -887,3 +887,5 @@ Po souběžném záznamu soupisek bf9d4002 aktualizována základna. Zachovány
 jeho dokumenty, stav vydání a scénář pro testerku. CSS reference 722099b7
 zůstává obsahově platná. Dosavadní měření je z fe11fb95; nový head
 projde celou přejímkou před merge.
+
+**P11-ASSET11 NASAZENO.** [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset11--administrátorský-přehled-13-11-2026), [měření](verification/admin-dashboard-bootstrap-20261113/RESULTS.md). #470/cd04bad6, [deploy 43386354560](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43386354560) SUCCESS, 15 CI. Studený Bootstrap CSS 64454→31248 B; pixely shodné. Přihlášené produkční UAT NOT RUN.

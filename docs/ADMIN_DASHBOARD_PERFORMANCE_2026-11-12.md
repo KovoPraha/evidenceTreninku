@@ -68,3 +68,5 @@ Varianta jednoho SQL zamítnuta kvůli regresi. Finální varianta zachovává
 NOT EXISTS a spojuje jen tři stavové počty. Paměť +112 B, FCP shodný.
 Přesná data, omezení, záloha a provozní důkazy jsou v [měření](verification/admin-dashboard-20261112/RESULTS.md).
 Další krok: měřit odstranění duplicitního Bootstrapu administrátorského přehledu.
+
+**P11-ASSET11 NASAZENO.** [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset11--administrátorský-přehled-13-11-2026), [měření](verification/admin-dashboard-bootstrap-20261113/RESULTS.md). #470/cd04bad6, [deploy 43386354560](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43386354560) SUCCESS, 15 CI. Studený Bootstrap CSS 64454→31248 B; pixely shodné. Přihlášené produkční UAT NOT RUN.
