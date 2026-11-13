@@ -1,6 +1,6 @@
 # Úplný index verzovaných podkladů
 
-Inventura k 7. 11. 2026. [Katalog plánů](PLAN_CATALOG.md) obsahuje hlavní
+Inventura založena 7. 11. 2026, aktualizována 13. 11. 2026. [Katalog plánů](PLAN_CATALOG.md) obsahuje hlavní
 plány, koncepty a vložené ověřovací plány; tento seznam eviduje i zbytek
 textové dokumentace i binární plány/přílohy, aby žádný soubor nezmizel jen kvůli názvu, formátu nebo složce.
 Historický protokol/fixture není nové schválení ani tvrzení o dnešním provozu.

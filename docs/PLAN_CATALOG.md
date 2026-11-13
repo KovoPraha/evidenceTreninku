@@ -1,6 +1,6 @@
 # Katalog všech plánů a konceptů
 
-Aktualizováno 7. 11. 2026. Součást jediného [registru práce](WORK_PLAN_CURRENT.md),
+Aktualizováno 13. 11. 2026. Součást jediného [registru práce](WORK_PLAN_CURRENT.md),
 nikoli druhé pořadí realizace. Záznam identifikuje soubor, dispozici, položku
 registru, důkaz nebo meze ověření. Záměr v historickém auditu není schválený úkol.
 HOTOVO/DONE označuje pouze vymezený technický/dokumentační řez, ne všechny

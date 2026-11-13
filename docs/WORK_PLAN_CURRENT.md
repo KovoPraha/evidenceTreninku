@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 12. 11. 2026, Europe/Prague. Kontrola `main` `4b9bcb1a`; produkční stav určují výsledkové protokoly. [Revize](verification/documentation-sync-20261112/RESULTS.md).
+Aktualizováno 13. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
