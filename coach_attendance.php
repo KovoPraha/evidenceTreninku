@@ -61,12 +61,14 @@ unset($_SESSION['coach_attendance_success']);
 $plan = $view['plan'];
 $rosterLabels = trainingRosterBridgePlanLabels($pdo, [$plan]);
 $current = $view['current'];
+$staleSubmission = $error !== '' && $_SERVER['REQUEST_METHOD'] === 'POST'
+    && (int)($_POST['version'] ?? -1) !== (int)($current['version'] ?? 0);
 $people = $view['people'];
 $now = new DateTimeImmutable('now', new DateTimeZone('Europe/Prague'));
 $lessonStart = trainingClosureDateTime((string)($current['actual_started_at'] ?? ($plan['datum'].' '.substr((string)$plan['cas_od'], 0, 5).':00')));
 $lessonEnd = trainingClosureDateTime((string)($current['actual_ended_at'] ?? ($plan['datum'].' '.substr((string)$plan['cas_do'], 0, 5).':00')));
 $editDeadline = $lessonEnd->setTimezone(new DateTimeZone('UTC'))->add(new DateInterval('PT72H'));
-$canSave = $people !== [] && $plan['stav'] !== 'zruseny' && $now >= $lessonStart
+$canSave = !$staleSubmission && $people !== [] && $plan['stav'] !== 'zruseny' && $now >= $lessonStart
     && (staffActivePositionIs('sports_lead') || $now <= $editDeadline)
     && (($current['status'] ?? '') !== 'void' || staffActivePositionIs('sports_lead'));
 $history = [];
@@ -97,6 +99,10 @@ function caH(mixed $value): string
 <p><?=caH($plan['datum'])?> · <?=caH(substr((string)$plan['cas_od'], 0, 5))?>–<?=caH(substr((string)$plan['cas_do'], 0, 5))?></p>
 <p>Soupiska: <strong><?=caH($rosterLabels[$planId] ?? 'Bez přiřazené soupisky')?></strong></p>
 <?php if ($error):?><div class="alert alert-danger" role="alert"><?=caH($error)?></div><?php endif;?>
+<?php if ($staleSubmission):?>
+<div class="alert alert-warning">Níže zůstaly vaše neuložené volby. Ukládání je zablokované, protože existuje novější verze.
+ <a href="coach_attendance.php?plan_id=<?=$planId?>">Načtěte aktuální docházku</a>, porovnejte ji a změny zadejte znovu.</div>
+<?php endif;?>
 <?php if ($success):?><div class="alert alert-success" role="status"><?=caH($success)?></div><?php endif;?>
 <?php if ($plan['stav'] === 'zruseny'):?><div class="alert alert-warning">Termín je zrušený. Historie zůstává k nahlédnutí.</div><?php endif;?>
 <?php if ($now < $lessonStart):?><div class="alert alert-info">Docházku lze začít zapisovat od začátku lekce.</div><?php endif;?>
@@ -131,7 +137,7 @@ function caH(mixed $value): string
 <?php endforeach;?>
 <?php if (!$people):?><p class="alert alert-warning">K tomuto termínu není přiřazena platná soupiska ani rezervovaný náhradník.</p><?php endif;?>
 <button class="btn btn-primary btn-lg" type="submit" <?=$canSave ? '' : 'disabled'?>>Uložit docházku</button>
-<span class="small text-muted ms-2">Úplná docházka se uzavře po skončení lekce. Dříve se uloží jako rozpracovaná.</span>
+<p class="small text-muted mt-2">Úplná docházka se uzavře po skončení lekce. Dříve se uloží jako rozpracovaná.</p>
 </form>
 <?php if ($history):?><section class="mt-4"><h2 class="h4">Historie změn</h2><ol>
 <?php foreach ($history as $item): $snapshot = json_decode((string)$item['snapshot_json'], true) ?: []; ?>
