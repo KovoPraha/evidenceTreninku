@@ -101,6 +101,7 @@ final class SharedUiShellTest extends TestCase
             // Keep the inventory guard for every other legacy page until migrated.
             $verifiedSharedOnly = in_array($relative, [
                 'admin_dashboard.php',
+                'club_programs_admin.php',
                 'duplikovat_trenink.php',
                 'edit_trenink.php',
                 'formular.php',
