@@ -1,6 +1,6 @@
 # ROSTER-SCROLL-01 — ověření 12. 11. 2026
 
-Stav: místní implementace a syntetické ověření; [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) otevřen, CI běží, merge/deploy/přihlášené provozní UAT NOT RUN. Větev `codex/roster-scroll-position-20261112`. [Plán](../../ROSTER_SCROLL_POSITION_2026-11-12.md).
+Stav: NASAZENO; [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) sloučen jako `22d151f7`, [deploy 43320369018](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43320369018) SUCCESS. Přihlášené provozní UAT NOT RUN; připraven [scénář pro testerku](../../TESTER_ROSTER_SCROLL_2026-11-13.md). [Plán](../../ROSTER_SCROLL_POSITION_2026-11-12.md).
 
 | Kontrola | Výsledek | Důkaz / mez |
 | --- | --- | --- |
@@ -14,5 +14,8 @@ Stav: místní implementace a syntetické ověření; [PR #462](https://github.c
 | Plná místní sada PHPUnit | NELZE HODNOTIT | Sdílené `vendor` z původního checkoutu neodpovídá současnému `composer.lock`: běh `--stop-on-error` skončil na chybějící třídě `Symfony\Component\Filesystem\Path` v `FilesystemDependencyContractTest` po 248 testech. Není to selhání opravy; linuxové CI instaluje závislosti z aktuálního locku. |
 | Plný PHPUnit na PHP 8.2 v CI | PASS | [Testy #1399](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43234241186), úloha „PHPUnit na PHP 8.2“ dokončena úspěšně po doplnění CSP nonce. Ostatní MariaDB úlohy téhož běhu ještě pokračují. |
 | Propojení dokumentace a whitespace | PASS | `php tools/check-current-docs.php`: 80 řádků CURRENT, 5404 lokálních odkazů, 0 chyb; `git diff --check` bez nálezu. |
+| Finální PR CI | PASS | 11 kontrol: plný PHPUnit, MariaDB 10.3/11.4 smoke a čtecí profily, PHP quality, dokumentace a CodeQL. [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) byl sloučen 12. 11. 2026 jako `22d151f7`. |
+| Chráněné nasazení | PASS | [Workflow 43320369018](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43320369018) dokončeno SUCCESS na `22d151f7`: 2460 testů / 56455 assertions, záloha 393 tabulek / 2 triggery, migrace current/pending [], VS beze změny, aktivace a HTTP 200. `uat_schvaleno=false`, `importovat_krouzky=false`; importní krok přeskočen. |
+| Veřejný vstup správy soupisek | PASS v mezích anonymního přístupu | `GET https://kis.kovopraha.cz/kis_roster_hierarchy_admin.php` vrací 302 `Location: login.php`. Přihlášený obsah a posun nelze tímto čtecím testem potvrdit. |
 
-Izolovaná fixture v ignorovaném `output/playwright/roster-scroll-fixture.php` není součástí Gitu. POST používá stávající serverové CSRF, kontrolu oprávnění, náhled a mutační službu beze změny. Další krok: PR/CI, potom přihlášená přejímka správy osob u registráře.
+Izolovaná fixture v ignorovaném `output/playwright/roster-scroll-fixture.php` není součástí Gitu. POST používá stávající serverové CSRF, kontrolu oprávnění, náhled a mutační službu beze změny. Další krok: přihlášená přejímka správy osob u registráře na počítači a mobilu.

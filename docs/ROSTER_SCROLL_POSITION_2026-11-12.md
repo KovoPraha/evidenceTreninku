@@ -1,6 +1,6 @@
 # ROSTER-SCROLL-01 — pozice při správě soupisek
 
-Datum: 12. 11. 2026. Stav: K OVĚŘENÍ. Vlastník: vývoj KIS; zadání a akceptace: vlastník. Větev `codex/roster-scroll-position-20261112`, samostatný worktree `C:/xampp/htdocs/evidencePavel-roster-scroll-20261112` nad `origin/main`. Související registr: [ROSTER-SCROLL-01](WORK_PLAN_CURRENT.md).
+Datum: 12. 11. 2026. Stav: NASAZENO, přihlášené UAT otevřené. Vlastník: vývoj KIS; zadání a akceptace: vlastník. Vývojová větev `codex/roster-scroll-position-20261112`. Související registr: [ROSTER-SCROLL-01](WORK_PLAN_CURRENT.md).
 
 ## Rozsah a rozhodnutí
 
@@ -15,8 +15,10 @@ Zvolený postup: při submitu doplnit do formuláře aktuální `scrollY`; serve
 - Desktop a mobil; navigace na stránku bez jednorázového parametru neobnovuje dřívější pozici.
 - Ověřit syntaxi PHP, cílené testy, `php tools/check-current-docs.php`, `git diff --check`; přihlášené produkční UAT je samostatná přejímka.
 
-Výsledek: změna kontroleru a vloženého view, [místní protokol](verification/roster-scroll-20261112/RESULTS.md) s desktop/mobilním syntetickým průchodem a cílenými testy. Další krok: PR a CI; poté přihlášená přejímka u registráře. Nasazení ani lidská přejímka dosud neproběhly.
+Výsledek: změna kontroleru a vloženého view, [protokol](verification/roster-scroll-20261112/RESULTS.md) s desktop/mobilním syntetickým průchodem, cílenými testy a vydáním. Další krok: přihlášená přejímka podle [scénáře pro testerku](TESTER_ROSTER_SCROLL_2026-11-13.md) na skutečném dlouhém seznamu, včetně opakovaných akcí a mobilního zařízení.
 
-Předání: commit `5ab66f2d` pushnutý do větve, [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) otevřen proti `main`; CI běží. Merge, deploy a přihlášené UAT NOT RUN.
+Předání: [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) sloučen jako `22d151f7` po 11 PASS kontrolách. [Deploy 43320369018](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43320369018) SUCCESS na stejném SHA; přihlášené UAT NOT RUN.
 
-Vydání 12. 11.: vlastník výslovně požádal „nasadit“. Po integraci současného `main` je povolen merge #462 a běžné chráněné `deploy-production.yml` se vstupy `potvrzeni=NASADIT`, `uat_schvaleno=false`, `importovat_krouzky=false`. Obnova, migrace a HTTP smoke jsou součástí workflow; přihlášené UAT uživatelského posunu zůstane samostatné. Aktuální deploy 43269836068 před tímto vydáním je SUCCESS; žádný import ani aktivace další agendy se nepožaduje.
+Vydání 12. 11.: vlastník výslovně požádal „nasadit“. Po integraci tehdejšího `main` byl #462 sloučen a spuštěno chráněné `deploy-production.yml` se vstupy `potvrzeni=NASADIT`, `uat_schvaleno=false`, `importovat_krouzky=false`. Workflow provedlo zálohu, migrace a HTTP smoke. Přihlášené UAT uživatelského posunu zůstává samostatné; import kroužků ani aktivace další agendy nebyly součástí tohoto vydání.
+
+Výsledek vydání: workflow dokončilo testy 2460/56455, zálohu 393 tabulek a 2 triggerů, migrace current/pending [], kontrolu neměnných VS, aktivaci i HTTP 200. Krok importu kroužků byl přeskočen. Anonymní GET na `kis_roster_hierarchy_admin.php` vrací 302 na `login.php`, jak vyžaduje přihlášení. Toto není důkaz přihlášeného zachování posunu; provozní UAT zůstává otevřené.

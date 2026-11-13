@@ -23,7 +23,7 @@ Aktivace skutečných
 nabídek závisí na schválených kategoriích, lhůtách a kapacitách.
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.
 
-ROSTER-SCROLL-01 — K VYDÁNÍ: [pozice správy soupisek](ROSTER_SCROLL_POSITION_2026-11-12.md), přímé zadání a povolení nasazení 12. 11. 2026. Vlastník vývoj KIS, větev `codex/roster-scroll-position-20261112`, izolovaný worktree. [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) přenesen na aktuální `main`; opakované CI před merge. [Syntetické ověření](verification/roster-scroll-20261112/RESULTS.md) PASS, přihlášené UAT otevřené.
+ROSTER-SCROLL-01 — NASAZENO, PŘIHLÁŠENÉ UAT OTEVŘENÉ: [pozice správy soupisek](ROSTER_SCROLL_POSITION_2026-11-12.md), zadání a povolení nasazení 12. 11. 2026. Vlastník vývoj KIS. [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) sloučen jako `22d151f7` po 11 CI PASS; [deploy 43320369018](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43320369018) SUCCESS, UAT/import false. [Syntetické a technické ověření](verification/roster-scroll-20261112/RESULTS.md) PASS. Další krok: registrář ověří opakované akce v dlouhém seznamu na počítači a mobilu podle [scénáře S01–S07 pro testerku](TESTER_ROSTER_SCROLL_2026-11-13.md).
 Jde o jediný průběžný seznam práce, včetně konceptů a budoucích etap; [WORK_REGISTER](WORK_REGISTER.md)
 odkazuje sem. Sjednocení #333/#334 dokládá [protokol](verification/documentation-reconcile-20261106/RESULTS.md).
 Následné zadání vlastníka 6. 11.: pokračovat plně autonomně přes P01–P14.
