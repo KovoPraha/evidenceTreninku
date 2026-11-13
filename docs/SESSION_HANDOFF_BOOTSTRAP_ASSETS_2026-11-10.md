@@ -42,3 +42,7 @@ Runtime/flags vlastní [CURRENT](CURRENT_STATE.md). Kalibrace všech FAIL v prot
 - **P11-ASSET10 NASAZENO.** [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset10--zápis-úprava-a-kopírování-tréninku-12-11-2026), [výsledky](verification/training-form-bootstrap-20261112/RESULTS.md). #455/dbab9e6e, [deploy 43164465663](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43164465663) SUCCESS, 15 CI. Studený Bootstrap CSS 64 454 → 31 248 B na třech trasách. Přihlášené produkční UAT NOT RUN.
 
 **P11-ASSET11 NASAZENO.** [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset11--administrátorský-přehled-13-11-2026), [měření](verification/admin-dashboard-bootstrap-20261113/RESULTS.md). #470/cd04bad6, [deploy 43386354560](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43386354560) SUCCESS, 15 CI. Studený Bootstrap CSS 64454→31248 B; pixely shodné. Přihlášené produkční UAT NOT RUN.
+
+
+13. 11. 2026 — **P11-ASSET12 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset12--správa-kroužkových-programů-13-11-2026), [měření](verification/program-admin-bootstrap-20261113/RESULTS.md). #473/b2ca9f4b, [deploy 43447880903](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43447880903) SUCCESS, 13 CI. Studený Bootstrap CSS 53957→31248 B (−42,09 %), 4 pixelové páry shodné; přihlášené produkční UAT NOT RUN.
+Další krok: vlastní profil kalendáře/katalogu nebo opakovaných údajů nabídek. WIP zachovaný; další deploy kvůli dokladům neopakovat.

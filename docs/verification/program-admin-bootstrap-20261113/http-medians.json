@@ -1,0 +1,46 @@
+{
+  "10.3": {
+    "program_coordinator": {
+      "before": 23.647000000000002,
+      "after": 23.548
+    },
+    "program-terms": {
+      "before": 25.206,
+      "after": 25.224
+    },
+    "offer-terms": {
+      "before": 27.186999999999998,
+      "after": 26.973
+    },
+    "missing-program": {
+      "before": 25.625,
+      "after": 25.727
+    },
+    "empty-overview": {
+      "before": 6.131,
+      "after": 6.223
+    }
+  },
+  "11.4": {
+    "program_coordinator": {
+      "before": 22.716,
+      "after": 22.566
+    },
+    "program-terms": {
+      "before": 24.057,
+      "after": 23.970000000000002
+    },
+    "offer-terms": {
+      "before": 25.527,
+      "after": 25.739
+    },
+    "missing-program": {
+      "before": 23.805,
+      "after": 23.906
+    },
+    "empty-overview": {
+      "before": 6.08,
+      "after": 5.9030000000000005
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+    "purpose": "selection diagnostic only; no optimization or native performance claim",
+    "engine": "SQLite in-memory",
+    "application_sha": "acab26a83f1841bb72813cece6c11452fa44e30f",
+    "helper_sha256": "6e7043b8efe795b222ee69a84c023b05c46fa89e7391ac879a53fbcc4208791e",
+    "cases": [
+        {
+            "offers": 0,
+            "sql_executions": 1,
+            "stable_result": true,
+            "top_repeated_queries": {
+                "SELECT o.*,p.code AS program_code,p.name AS program_name,NULL AS season_name,t.name AS team_name,v.sku,sp.name AS product_name FROM club_program_offers o JOIN club_programs p ON p.id=o.program_id JOIN club_teams t ON t.id=o.team_id JOIN shop_variants v ON v.id=o.variant_id JOIN shop_products sp ON sp.id=o.product_id ORDER BY o.starts_on DESC,o.id DESC": 1
+            }
+        },
+        {
+            "offers": 2,
+            "sql_executions": 43,
+            "stable_result": true,
+            "top_repeated_queries": {
+                "PRAGMA table_info(shop_order_items)": 8,
+                "PRAGMA table_info(club_event_term_versions)": 8,
+                "SELECT * FROM club_event_term_versions WHERE scope_type=? AND scope_key=? AND consent_purpose=? AND status='active' ORDER BY id DESC LIMIT 1": 8,
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?": 4,
+                "PRAGMA table_info(club_program_enrollments)": 4,
+                "SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id": 2
+            }
+        },
+        {
+            "offers": 12,
+            "sql_executions": 253,
+            "stable_result": true,
+            "top_repeated_queries": {
+                "PRAGMA table_info(shop_order_items)": 48,
+                "PRAGMA table_info(club_event_term_versions)": 48,
+                "SELECT * FROM club_event_term_versions WHERE scope_type=? AND scope_key=? AND consent_purpose=? AND status='active' ORDER BY id DESC LIMIT 1": 48,
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?": 24,
+                "PRAGMA table_info(club_program_enrollments)": 24,
+                "SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id": 12
+            }
+        },
+        {
+            "offers": 100,
+            "sql_executions": 2101,
+            "stable_result": true,
+            "top_repeated_queries": {
+                "PRAGMA table_info(shop_order_items)": 400,
+                "PRAGMA table_info(club_event_term_versions)": 400,
+                "SELECT * FROM club_event_term_versions WHERE scope_type=? AND scope_key=? AND consent_purpose=? AND status='active' ORDER BY id DESC LIMIT 1": 400,
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?": 200,
+                "PRAGMA table_info(club_program_enrollments)": 200,
+                "SELECT team_id FROM club_program_physical_teams WHERE program_id=? ORDER BY team_id": 100
+            }
+        }
+    ]
+}

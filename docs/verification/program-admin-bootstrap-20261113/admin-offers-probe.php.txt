@@ -1,0 +1,28 @@
+<?php
+declare(strict_types=1);
+if (PHP_SAPI !== 'cli') { exit(1); }
+$root = dirname(__DIR__, 3);
+require $root . '/tests/Support/ProgramStorefrontFixture.php';
+require $root . '/includes/shop_catalog_cards.php';
+$cases = [];
+foreach ([0, 2, 12, 100] as $count) {
+    $pdo = \Tests\Support\programStorefrontFixture($count);
+    $pdo->exec('ALTER TABLE club_programs ADD COLUMN code TEXT');
+    $pdo->exec('ALTER TABLE shop_products ADD COLUMN name TEXT');
+    $pdo->exec("UPDATE shop_products SET name='LOCALHOST NEPLATIT'");
+    $expected = clubProgramAdminOffers($pdo);
+    $pdo->queries = [];
+    $actual = clubProgramAdminOffers($pdo);
+    if ($expected !== $actual || count($actual) !== $count) { throw new RuntimeException('Probe inconsistency'); }
+    $frequencies = array_count_values($pdo->queries);
+    arsort($frequencies);
+    $cases[] = ['offers' => $count, 'sql_executions' => count($pdo->queries), 'stable_result' => true,
+        'top_repeated_queries' => array_slice($frequencies, 0, 6, true)];
+}
+$result = ['purpose' => 'selection diagnostic only; no optimization or native performance claim',
+    'engine' => 'SQLite in-memory', 'application_sha' => trim((string)shell_exec('git rev-parse HEAD')),
+    'helper_sha256' => hash_file('sha256', $root . '/includes/club_program.php'),
+    'cases' => $cases];
+file_put_contents($root . '/docs/verification/program-admin-bootstrap-20261113/admin-offers-diagnostic.json',
+    json_encode($result, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n");
+foreach ($cases as $case) { echo $case['offers'] . ' offers: ' . $case['sql_executions'] . " SQL\n"; }
