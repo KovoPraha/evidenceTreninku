@@ -312,3 +312,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 - 13. 11. 2026 P11-ASSET11 #470/cd04bad6 vydán po 15 CI, HTTP a pixelové shodě. Cold CSS 64454→31248 B. [Důkazy](verification/admin-dashboard-bootstrap-20261113/RESULTS.md), [deploy](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43386354560). UAT/import false; přihlášené produkční UAT NOT RUN.
 
 13. 11. 2026 — Zahájen P11-ASSET12: nový pokyn vlastníka, izolovaný worktree a přesná akceptace před implementací. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset12--správa-kroužkových-programů-13-11-2026).
+
+13. 11. 2026 — P11-ASSET12 dokončen: přesná shoda, před/po měření a celý release. **P11-ASSET12 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset12--správa-kroužkových-programů-13-11-2026), [měření](verification/program-admin-bootstrap-20261113/RESULTS.md). #473/b2ca9f4b, [deploy 43447880903](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43447880903) SUCCESS, 13 CI. Studený Bootstrap CSS 53957→31248 B (−42,09 %), 4 pixelové páry shodné; přihlášené produkční UAT NOT RUN.

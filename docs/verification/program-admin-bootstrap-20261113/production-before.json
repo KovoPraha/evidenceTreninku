@@ -1,0 +1,18 @@
+{
+  "/club_programs_admin.php": {
+    "status": 302,
+    "location": "login.php",
+    "content_type": "text/html; charset=UTF-8",
+    "cache_control": "no-store, no-cache, must-revalidate",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "/assets/vendor/bootstrap/bootstrap.min.css": {
+    "status": 200,
+    "location": null,
+    "content_type": "text/css",
+    "cache_control": "max-age=604800",
+    "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    "bytes": 232803
+  }
+}
