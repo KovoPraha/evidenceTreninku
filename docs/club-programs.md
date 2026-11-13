@@ -150,3 +150,20 @@ Prázdný HTTP scénář má oddělený setup a přesnou obnovu/checksumy. Histo
 ASSET12 profil zachovává všechny CSS/HTML kontroly a dovoluje jen přesné
 dvouřádkové přepojení stránky na tento nový reader; jeho staré měření není
 novým izolovaným CSS výsledkem. Žádná produkční změna zatím neproběhla.
+
+
+První native checkpoint PR #477/670a88d2, běh 43472823698:
+strict nativní řádky/typy/pořadí, 0/2/12/100/401 a checksumy/obnova PASS
+na obou MariaDB. 100 nabídek: 10.3 643,741→87,283 ms,
+11.4 894,890→108,677 ms, SQL 2228→262. 401 nabídek:
+2610,006→333,034 / 3615,241→425,548 ms, SQL 8922→1023.
+Peak PHP při401 3038080→3810408 B (+772328 B); úspora je v SQL/čase,
+nikoli v paměti. Malý 2-row případ má více načtených metadat, ale méně
+SQL a nižší naměřený čas. Jde o syntetický průběžný výsledek, ne SLA.
+
+Celý profil nebyl přijat: samostatný HTTP fixture neměl přímý require
+definice CLUB_PROGRAM_TERM_PURPOSES. Doplněna explicitní závislost fixture;
+produkční reader beze změny. Vlastní schéma/účty/config/porty uklizené.
+Nové celé CI/HTTP/Chrome měření nutné před merge. Místní composer analyse
+ukončil časový limit300s bez dokončení; Linux PHPStan/styl běhu43472823347
+PASS. Lokální 27/196 a ostatní předchozí kontroly zůstávají PASS.

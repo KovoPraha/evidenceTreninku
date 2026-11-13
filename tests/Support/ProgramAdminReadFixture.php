@@ -7,6 +7,8 @@ if (PHP_SAPI !== 'cli' || getenv('EVIDENCE_PERFORMANCE_CONFIRM') !== 'SYNTHETIC-
     exit;
 }
 
+require_once dirname(__DIR__, 2) . '/includes/club_program.php';
+
 /** Additional synthetic offers on the owned FullHttpReadFixture schema only. */
 function programAdminReadPopulate(PDO $pdo, int $total): void
 {
