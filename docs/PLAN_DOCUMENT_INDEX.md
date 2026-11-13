@@ -8,6 +8,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-coach-attendance-20261113 | [E4-06 — docházka trenéra z rozvrhu](COACH_ATTENDANCE_2026-11-13.md) | plan / PARTIAL | E4-06 |
 | PL-9d3bb013a4 | [KIS-ACT-01 — aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) | plan / PARTIAL | KIS-ACT-01 |
 | PL-4dc01803a8 | [KIS-ACT-01 — scénář pro testerku](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md) | evidence / SUPPORT | KIS-ACT-01 |
 | PL-roster-scroll-20261112 | [ROSTER-SCROLL-01 — pozice správy soupisek](ROSTER_SCROLL_POSITION_2026-11-12.md) | plan / PARTIAL | ROSTER-SCROLL-01 |
