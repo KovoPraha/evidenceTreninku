@@ -86,6 +86,10 @@ if ($emptyOnly) {
     file_put_contents($output . '/checksums.json', json_encode($initial, JSON_THROW_ON_ERROR));
 }
 $readInitial = $checksums();
+$readOffers = (int)$admin->query('SELECT COUNT(*) FROM club_program_offers')->fetchColumn();
+if ($readOffers !== ($emptyOnly ? 0 : 100)) {
+    throw new RuntimeException('Unexpected populated or empty fixture size.');
+}
 $variants = ['before' => $runtime, 'after' => ['base_url' => 'http://127.0.0.1:18100'] + $runtime];
 $signatures = [];
 $samples = [];
@@ -156,7 +160,8 @@ try {
 }
 file_put_contents($output . ($emptyOnly ? '/empty-http.json' : '/http.json'), json_encode([
     'cases' => count($cases), 'database_query_cache_off' => true,
-    'fixture_offers' => (int)$admin->query('SELECT COUNT(*) FROM club_program_offers')->fetchColumn(),
+    'fixture_offers' => $readOffers,
+    'restored_fixture_offers' => (int)$admin->query('SELECT COUNT(*) FROM club_program_offers')->fetchColumn(),
     'fixture_people' => (int)$admin->query('SELECT COUNT(*) FROM sportovci')->fetchColumn(),
     'signatures' => $signatures, 'samples' => $samples,
 ], JSON_THROW_ON_ERROR));

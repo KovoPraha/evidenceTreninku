@@ -167,3 +167,17 @@ produkční reader beze změny. Vlastní schéma/účty/config/porty uklizené.
 Nové celé CI/HTTP/Chrome měření nutné před merge. Místní composer analyse
 ukončil časový limit300s bez dokončení; Linux PHPStan/styl běhu43472823347
 PASS. Lokální 27/196 a ostatní předchozí kontroly zůstávají PASS.
+
+
+Iterace2 / 82d79cd8, celý párový běh43473894094 PASS na obou MariaDB:
+17 HTTP scénářů, 355 checksumů a cleanup; Chrome176měřených+48warmup,
+čtyři pixelově shodné dvojice, stejné formuláře a geometrie. HTTP přehledu
+100nabídek 10.3 621,960→69,115 ms, 11.4 903,470→121,619 ms.
+Desktop cold FCP1024→236ms, mobile1036→240ms. CSS/payload beze změny.
+Nativní401 3198,187→320,916 / 5023,155→609,070ms; SQL8922→1023.
+
+Před finálním přijetím zpřesněna pouze testová evidence: fixture_offers
+se nyní odečítá před čtením (100/0) a restored_fixture_offers po obnově
+(100), s výslovným invariantem velikosti. Předchozí pole se počítalo až
+po obnově; prázdný scénář a jeho přesná obnova už byly provedené správně.
+Produkční reader ani stránka se nemění. Aktuální celý CI pár se zopakuje.
