@@ -2674,9 +2674,11 @@
       "primary": true,
       "role": "reference",
       "status": "REFERENCE",
-      "registry": "DOC02",
-      "disposition": "Referenční podklad, nikoli samostatný schválený implementační plán.",
-      "evidence": []
+      "registry": "DOC02/P11-PADMIN",
+      "disposition": "Referenční podklad, nikoli samostatný schválený implementační plán. P11-PADMIN rozpracován 13. 11.: dávkové čtení správního seznamu a přejímka před/po.",
+      "evidence": [
+        "docs/verification/program-admin-read-20261113/RESULTS.md"
+      ]
     },
     {
       "id": "PL-a332066e3c",

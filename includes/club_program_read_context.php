@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * One public read projection only. Never retain this object across mutations,
+ * One read projection only (public or administrative). Never retain this object across mutations,
  * requests or connections. Checkout and locking reads do not consume it.
  */
 final class ClubProgramReadContext
@@ -63,6 +63,32 @@ final class ClubProgramReadContext
     public function offer(int $variantId): array|false
     {
         return $this->offers[$variantId] ??= clubProgramOfferForVariant($this->pdo, $variantId, $this->now, false, $this);
+    }
+
+    /** Warm every administrative row, including inactive and non-saleable offers.
+     * @param list<array<string,mixed>> $offers
+     */
+    public function warmAdminOffers(array $offers): void
+    {
+        if ($offers === []) {
+            return;
+        }
+        $physicalPrograms = [];
+        $targets = ['offer' => [], 'program' => []];
+        foreach ($offers as $offer) {
+            $targets['offer'][] = (int) $offer['id'];
+            $targets['program'][] = (int) $offer['program_id'];
+            if ((int) ($offer['team_id'] ?? 0) > 0 && (int) $offer['program_id'] > 0) {
+                $physicalPrograms[] = (int) $offer['program_id'];
+            }
+        }
+        $this->warmPhysicalTeams($physicalPrograms);
+        if (!clubProgramTermsRegistryAvailable($this->pdo, $this)) {
+            return;
+        }
+        foreach ($targets as $type => $ids) {
+            $this->warmTermsForTargets($type, array_values(array_unique($ids)));
+        }
     }
 
     /** @param list<int> $variantIds */

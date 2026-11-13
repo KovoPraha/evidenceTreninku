@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/club_program.php';
+require_once __DIR__ . '/includes/club_program_admin_read.php';
 if (!isset($_SESSION['trener_id']) || !canAccess('sync_evidence')) {
     header('Location: login.php');
     exit;
@@ -91,7 +92,7 @@ unset($_SESSION['club_program_flash']);
 $programs = $pdo->query('SELECT * FROM club_programs ORDER BY name,id')->fetchAll(PDO::FETCH_ASSOC);
 $teams = $pdo->query("SELECT t.* FROM club_teams t WHERE t.status='active' AND t.team_kind='roster' ORDER BY t.name,t.id")->fetchAll(PDO::FETCH_ASSOC);
 $variants = clubProgramAdminSelectableVariants($pdo);
-$offers = clubProgramAdminOffers($pdo);
+$offers = clubProgramAdminOffersRead($pdo);
 $termsProgramId = (int)($_GET['terms_program_id'] ?? 0);
 $termsOfferId = (int)($_GET['terms_offer_id'] ?? 0);
 $termsTargetType = $termsOfferId > 0 ? 'offer' : 'program';
