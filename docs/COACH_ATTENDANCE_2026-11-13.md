@@ -28,3 +28,26 @@ Trenér může zapisovat a opravovat do 72 hodin po konci termínu. Po lhůtě t
 Technické testy této větve: `CoachAttendanceTest` pokrývá časově platnou soupisku, omluvu, částečný a konečný zápis, souběžnou verzi, cizího trenéra a rezervovaného náhradníka. `TrainingClosureTest` pokrývá zachování staré přítomnosti při rozpracovaném záznamu, konečnou absenci a atomické začlenění do transakce. Výsledky celé sady a prohlížečového průchodu jsou v [ověřovacím protokolu](verification/coach-attendance-20261113/RESULTS.md).
 
 Implementace je zatím jen v pracovní větvi. Produkční nasazení ani přihlášené uživatelské ověření se tímto dokumentem netvrdí. Před nasazením je potřeba dokončit zbývající scénáře zadání v izolované instalaci, zvlášť plný provozní tok náhrad a oprávnění vedoucího sportu v prohlížeči. Produkční UAT vyžaduje schválený testovací rozsah podle `PRODUKCNI-UZIVATELSKE-TESTOVANI.md`.
+
+## Akceptační průchod před vydáním
+
+Použít oddělenou instalaci s označenými syntetickými účty: trenér A vlastní skupiny, trenér B jiné skupiny, vedoucí sportu, rodič a dítě s platným placeným členstvím. Připravit dva termíny, datovanou změnu soupisky a jeden vhodný náhradní termín s volným místem. Zaznamenat ID a stav všech testovacích řádků před průchodem; po něm odstranit pouze tyto označené řádky a ověřit zachování starších dat. Bez tohoto průchodu nepokládat funkci za připravenou k nasazení.
+
+| # | Postup a očekávaný výsledek |
+|---|---|
+| A01 | Trenér A otevře vlastní termín z rozvrhu; stránka ukáže datum, čas a název datované soupisky. |
+| A02 | Porovnat termíny před a po změně soupisek a ukončení členství; každý ukáže právě děti platné v jeho den, bez duplicit. |
+| A03 | Uložit jedno dítě jako přítomné a další ponechat nevyplněné; vznikne rozpracovaná verze, nevyplněné není absence. |
+| A04 | Po konci lekce označit jiné dítě nepřítomné, doplnit všechny stavy a uložit; vznikne uzavřená verze a správný souhrn. |
+| A05 | Rodič omluví dítě před termínem; trenér vidí důvod a stav Omluven. Pokus změnit jej na neomluvenou absenci je odmítnut. |
+| A06 | Znovu otevřít termín; poslední uložené stavy a předchozí verze jsou viditelné. |
+| A07 | Trenér A ve lhůtě 72 hodin opraví stav; nová verze zachová původní historii a aktéra. |
+| A08 | Po lhůtě trenér A opravu neuloží; vedoucí sportu s aktivní pozicí ji může provést. |
+| A09 | Z včasné rodičovské omluvy a uzavřené neúčasti vznikne právě jeden nárok. Rodič rezervuje vhodný termín; náhradník se objeví jen u něj a má viditelný štítek a ID rezervace. |
+| A10 | Zapsat náhradníka jako přítomného a v další rezervaci jako nepřítomného; stav rezervace odpovídá výsledku, kmenové členství a soupiska se nezmění. Bez rezervace nelze přidat cizí dítě. |
+| A11 | V historii termínu dohledat všechna dítětem zapsaná rozhodnutí a jejich verze; v historii dítěte datum, skupinu, absenci/omluvu i náhradní účast po pozdějším přesunu skupiny. |
+| A12 | Trenér B nemůže termín trenéra A otevřít ani odeslat jeho docházku. |
+| A13 | Na telefonu o šířce 390 px projít označení, trenérskou omluvu s důvodem, průběžný souhrn, uložení a potvrzení bez vodorovného posunu. |
+| A14 | Otevřít tentýž termín ve dvou nezávislých relacích; po prvním uložení se druhé se starou verzí odmítne a první změna zůstane. |
+
+Pro produkční přejímku se scénáře zopakují jen v odsouhlaseném okně, s vlastníkem určenými TEST účty a auditovaným úklidem. Do protokolu zapsat u každého bodu PASS/FAIL/BLOCKED, roli, čas a důkaz; samotný technický test ani HTTP odpověď nejsou uživatelské potvrzení.
