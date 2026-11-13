@@ -11,7 +11,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "E4-06",
-      "disposition": "Návrh PR #474; lokální technické a syntetické ověření PASS, nasazení a produkční UAT otevřené.",
+      "disposition": "Návrh PR #474; jádro CI a lokální ověření PASS, vedlejší výkonové browser kontroly červené, nasazení a produkční UAT otevřené.",
       "evidence": [
         "docs/verification/coach-attendance-20261113/RESULTS.md"
       ]

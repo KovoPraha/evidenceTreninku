@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## E4-06 — docházka trenéra z rozvrhu (13. 11. 2026)
 
-KÓD V NÁVRHU [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474); [audit a napojení](COACH_ATTENDANCE_2026-11-13.md), [lokální důkazy](verification/coach-attendance-20261113/RESULTS.md). Trenérský zápis, omluvy, rezervovaní náhradníci, verzované opravy, historie dítěte a mobilní rozhraní jsou implementované v pracovní větvi. Technické a syntetické lokální ověření PASS; produkční nasazení a přihlášené UAT NOT RUN. Další krok: dokončit izolovanou prohlížečovou akceptaci rodičovské omluvy a celého náhradového cyklu, rolí a souběhu; potom vydání a uživatelské ověření v nově schváleném okně. Úplný tok MAKEUP-AUTO-01 zůstává blokovaný do nasazení a přijetí tohoto zápisu.
+KÓD V NÁVRHU [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474); [audit a napojení](COACH_ATTENDANCE_2026-11-13.md), [technické důkazy a červené vedlejší CI](verification/coach-attendance-20261113/RESULTS.md). Trenérský zápis, omluvy, rezervovaní náhradníci, verzované opravy, historie dítěte a mobilní rozhraní jsou implementované v pracovní větvi. Jádro CI včetně PHPUnit, MariaDB 10.3/11.4 a profilace plánovače PASS; starší samostatné výkonové browser kontroly je třeba opravit a zopakovat. Produkční nasazení a přihlášené UAT NOT RUN. Další krok: dokončit izolovanou prohlížečovou akceptaci rodičovské omluvy a celého náhradového cyklu, rolí a souběhu; potom vydání a uživatelské ověření v nově schváleném okně. Úplný tok MAKEUP-AUTO-01 zůstává blokovaný do nasazení a přijetí tohoto zápisu.
 
 ## MAKEUP-AUTO-01 — automatické náhradní lekce (12. 11. 2026)
 

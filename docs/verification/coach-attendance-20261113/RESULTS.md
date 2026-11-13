@@ -11,7 +11,9 @@ Pracovní větev `codex/coach-attendance`, syntetická lokální MariaDB `attend
 - `composer validate --strict`, PHP syntax, `git diff --check`, `php tools/check-current-docs.php` a `php tools/check-php-style.php` nad dotčenými soubory: PASS.
 - `php bin/migrate.php --check --json` nad oddělenou lokální DB: `ok=true`, `current=true`.
 - `composer test`: skončil kvůli výchozímu pětiminutovému limitu Composeru při 46 % suite.
-- Přímý `php vendor/bin/phpunit --configuration phpunit.xml.dist --no-progress` bez limitu: 2472 testů / 56 664 kontrol, 5 přeskočených, PASS nad dřívější revizí větve. Po doplnění vazby náhradníka, trenérské omluvy a formátování prošlo zacíleně 43 testů / 303 kontrol. Celou aktuální revizi ověřuje CI v PR #474.
+- Přímý `php vendor/bin/phpunit --configuration phpunit.xml.dist --no-progress` bez limitu: 2472 testů / 56 664 kontrol, 5 přeskočených, PASS nad dřívější revizí větve. Po doplnění vazby náhradníka, trenérské omluvy a formátování prošlo zacíleně 43 testů / 303 kontrol.
+- [CI Testy 43454839175](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43454839175) nad `788a3ec1`: PHPUnit, MariaDB 10.3/11.4 integrační smoke a obě čtecí profilace včetně srovnání plánovače PASS. [PHP quality](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43454838901) a [kontrola dokumentace](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43454838981) PASS.
+- Ostatní výkonové workflow v tomto PR nejsou zelené: [Bootstrap assets](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43454839092) porovnává `hlavicka.php` s pevným starším commitem, ačkoli se zde záhlaví nemění. [Rodičovský](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43454838881), [historický](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43454839279), [měřicí](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43454839111) a [záhlavní](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43454839139) browser benchmark selhal v základní variantě na konzolové chybě nebo neúspěšném požadavku. Tyto červené kontroly nejsou akceptací pro nasazení; je potřeba zjistit příčinu a zopakovat je.
 
 ## Prohlížečový průchod
 
@@ -24,4 +26,13 @@ Playwright CLI, Chromium, lokální PHP 8.2 server a syntetické účty. Před t
 5. Po přihlášení syntetického rodiče stránka `booking/soupiskove_treninky.php` u dítěte zobrazila „Nepřítomen“ u stejného termínu.
 6. Na trenérské stránce nebyla hlášena chyba ani varování v konzoli. Jediná chyba na úvodním přihlášení byla chybějící favicon.
 
-Tento průchod neověřil produkci, fyzické zařízení ani úplný provozní tok náhradní lekce. Tyto body zůstávají samostatnou akceptací před nasazením.
+Tento průchod neověřil produkci ani fyzické zařízení. Pro vydání zbývá izolovaný přihlášený průchod se dvěma trenéry, vedoucím sportu, rodičem a placeným syntetickým členstvím:
+
+| Scénář | Dosavadní důkaz | Zbývá |
+| --- | --- | --- |
+| Rodič omluví včas → trenér uzavře absenci → vznikne právě jeden nárok → rodič jej vidí a rezervuje vhodný termín → náhradník je přítomen nebo chybí | Jednotlivé přechody pokrývají integrační testy | Celý tok v prohlížeči včetně úklidu rezervace |
+| Pozdní omluva, přítomné dítě a plný nebo nepřípustný náhradní termín | Dosavadní testy náhrad | Prohlížečové ověření návaznosti nové docházky |
+| Trenér cizí skupiny, oprava po 72 hodinách, vedoucí sportu a dvě současně otevřená okna | Integrační testy oprávnění a verze | Prohlížečový průchod se samostatnými relacemi |
+| Omluva přijatá trenérem při lekci s důvodem | Integrační test a historie revizí | Kontrola na telefonu a v rodičovské historii |
+
+Produkční UAT se skutečnými uživateli a zápisy se provede až v nově schváleném rozsahu. Starší testovací okno z `PRODUKCNI-UZIVATELSKE-TESTOVANI.md` skončilo a není oprávněním k novým zápisům.
