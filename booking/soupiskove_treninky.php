@@ -45,6 +45,7 @@ try {
         throw new RuntimeException('K tomuto profilu nemáte přístup.');
     }
     $items = athleteTrainingTimeline($pdo, (int)$person['sportovec_id'], $year);
+    /** @var PDO $pdo */
     $finalStates = trainingClosureStatesForPerson($pdo, (int)$person['sportovec_id'], "$year-01-01", "$year-12-31");
     $makeupPlans = [];
     if (kisRosterHierarchyHasTable($pdo, 'club_makeup_reservations')) {

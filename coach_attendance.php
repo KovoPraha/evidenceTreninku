@@ -10,6 +10,7 @@ require_once __DIR__.'/db.php';
 require_once __DIR__.'/csrf_helper.php';
 require_once __DIR__.'/includes/coach_attendance.php';
 require_once __DIR__.'/includes/ui_shell.php';
+/** @var PDO $pdo */
 
 $actor = (int)$_SESSION['trener_id'];
 $planId = (int)($_POST['plan_id'] ?? $_GET['plan_id'] ?? 0);
@@ -24,7 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('Neplatný bezpečnostní token.');
     }
     try {
-        $result = coachAttendanceSave($pdo, $planId, $actor, (int)($_POST['version'] ?? 0), $_POST['attendance'] ?? []);
+        if (!is_array($_POST['attendance'] ?? null)) {
+            throw new TrainingClosureException('Neplatný formulář docházky.');
+        }
+        $result = coachAttendanceSave($pdo, $planId, $actor, (int)($_POST['version'] ?? 0), $_POST['attendance']);
         $_SESSION['coach_attendance_success'] = $result['status'] === 'draft'
             ? 'Rozpracovaná docházka byla uložena. Nevyplněné děti zůstávají bez stavu.'
             : 'Docházka byla uložena a uzavřena.';

@@ -127,9 +127,6 @@ function coachAttendanceSave(PDO $pdo, int $planId, int $actor, int $expectedVer
         if (staffActivePositionIs('coach') && $now > $deadline) {
             throw new TrainingClosureException('Lhůta 72 hodin pro opravu uplynula. Obraťte se na vedoucího sportu.');
         }
-        if (!is_array($posted)) {
-            throw new TrainingClosureException('Neplatný formulář docházky.');
-        }
         if ($view['people'] === []) {
             throw new TrainingClosureException('Termín nemá očekávané děti ani rezervované náhradníky. Zkontrolujte soupisku v plánovači.');
         }
