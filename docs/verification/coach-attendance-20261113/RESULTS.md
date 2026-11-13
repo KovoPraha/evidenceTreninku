@@ -8,10 +8,10 @@ Pracovní větev `codex/coach-attendance`, syntetická lokální MariaDB `attend
 - `TrainingClosureTest` + `ClubMakeupTest`: verzované uzavření a návaznost na náhrady — 30 testů / 200 kontrol, PASS.
 - `AthleteTrainingTimelineTest` + `AthleteTimelineReadOptimizationTest`: 7 testů / 70 kontrol, PASS.
 - `StaffWorkspaceRegistryTest`: 14 testů / 2335 kontrol, PASS po zařazení nové trasy do inventáře.
-- `composer validate --strict`, PHP syntax a `git diff --check`: PASS.
+- `composer validate --strict`, PHP syntax, `git diff --check`, `php tools/check-current-docs.php` a `php tools/check-php-style.php` nad dotčenými soubory: PASS.
 - `php bin/migrate.php --check --json` nad oddělenou lokální DB: `ok=true`, `current=true`.
 - `composer test`: skončil kvůli výchozímu pětiminutovému limitu Composeru při 46 % suite.
-- Přímý `php vendor/bin/phpunit --configuration phpunit.xml.dist --no-progress` bez limitu: 2472 testů / 56 664 kontrol, 5 přeskočených, PASS. Po tomto běhu byly doplněny pouze úzké změny historické vazby náhradníka a hlášení stavu; dotčené integrační testy byly spuštěny znovu a prošly.
+- Přímý `php vendor/bin/phpunit --configuration phpunit.xml.dist --no-progress` bez limitu: 2472 testů / 56 664 kontrol, 5 přeskočených, PASS nad dřívější revizí větve. Po doplnění vazby náhradníka, trenérské omluvy a formátování prošlo zacíleně 43 testů / 303 kontrol. Celou aktuální revizi ověřuje CI v PR #474.
 
 ## Prohlížečový průchod
 
