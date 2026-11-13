@@ -59,6 +59,7 @@ try {
 $success = (string)($_SESSION['coach_attendance_success'] ?? '');
 unset($_SESSION['coach_attendance_success']);
 $plan = $view['plan'];
+$rosterLabels = trainingRosterBridgePlanLabels($pdo, [$plan]);
 $current = $view['current'];
 $people = $view['people'];
 $now = new DateTimeImmutable('now', new DateTimeZone('Europe/Prague'));
@@ -94,6 +95,7 @@ function caH(mixed $value): string
 <p><a href="planovac.php?datum=<?=caH($plan['datum'])?>">← Rozvrh</a></p>
 <h1 class="h2">Docházka · <?=caH($plan['nazev'])?></h1>
 <p><?=caH($plan['datum'])?> · <?=caH(substr((string)$plan['cas_od'], 0, 5))?>–<?=caH(substr((string)$plan['cas_do'], 0, 5))?></p>
+<p>Soupiska: <strong><?=caH($rosterLabels[$planId] ?? 'Bez přiřazené soupisky')?></strong></p>
 <?php if ($error):?><div class="alert alert-danger" role="alert"><?=caH($error)?></div><?php endif;?>
 <?php if ($success):?><div class="alert alert-success" role="status"><?=caH($success)?></div><?php endif;?>
 <?php if ($plan['stav'] === 'zruseny'):?><div class="alert alert-warning">Termín je zrušený. Historie zůstává k nahlédnutí.</div><?php endif;?>

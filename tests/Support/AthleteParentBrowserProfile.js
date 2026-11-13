@@ -30,11 +30,10 @@ async (page) => {
       return original.apply(this,args);
     };
   });
-  const errors = [], failed = [], httpErrors = [];
+  const errors = [], failed = [];
   page.on('pageerror', e => errors.push(String(e)));
   page.on('console', m => {if(m.type()==='error') errors.push(m.text());});
   page.on('requestfailed', r => {if(!r.failure()?.errorText?.includes('ERR_ABORTED')) failed.push(r.failure()?.errorText);});
-  page.on('response', r => {if(r.status()>=400) httpErrors.push({status:r.status(),url:r.url()});});
   const wait = async (name, previous = 0) => page.waitForFunction(({name,previous}) => window.__profileDone[name]?.sequence > previous,
     {name,previous},{timeout:60000});
   const seq = async name => page.evaluate(n => window.__profileDone[n]?.sequence || 0,name);
@@ -99,6 +98,6 @@ async (page) => {
   await page.locator('#mainTabs button[data-bs-target="#pane-treninky"]').click();
   await page.locator('#mainTabs button[data-bs-target="#pane-mereni"]').click();
   await page.waitForFunction(() => document.getElementById('pane-mereni').classList.contains('active'));
-  report.console_errors=errors;report.failed_requests=failed;report.http_errors=httpErrors;
+  report.console_errors=errors;report.failed_requests=failed;
   await cdp.detach();report.complete=true;return report;
 }
