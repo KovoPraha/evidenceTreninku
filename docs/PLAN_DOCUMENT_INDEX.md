@@ -211,7 +211,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-a4f00e107c | [auth-revocation-rate-limit.md](auth-revocation-rate-limit.md) | plan / PARTIAL | C04 |
 | PL-a2394bae7c | [club-event-roster-targets.md](club-event-roster-targets.md) | reference / REFERENCE | DOC02 |
 | PL-728f5e3013 | [club-events-k3.md](club-events-k3.md) | reference / REFERENCE | DOC02 |
-| PL-cfc153f135 | [club-programs.md](club-programs.md) | reference / REFERENCE | DOC02 |
+| PL-cfc153f135 | [club-programs.md](club-programs.md) | plan / PARTIAL | DOC02/P11-PADMIN |
 | PL-a332066e3c | [databazove-schema.md](databazove-schema.md) | reference / REFERENCE | DOC02 |
 | PL-7dbccbca95 | [family-weekly-summaries.md](family-weekly-summaries.md) | plan / PARTIAL | C03 |
 | PL-7508722c03 | [fio-readonly-import-k4.md](fio-readonly-import-k4.md) | plan / PARTIAL | P07 |
