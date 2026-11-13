@@ -889,3 +889,75 @@ zůstává obsahově platná. Dosavadní měření je z fe11fb95; nový head
 projde celou přejímkou před merge.
 
 **P11-ASSET11 NASAZENO.** [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset11--administrátorský-přehled-13-11-2026), [měření](verification/admin-dashboard-bootstrap-20261113/RESULTS.md). #470/cd04bad6, [deploy 43386354560](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43386354560) SUCCESS, 15 CI. Studený Bootstrap CSS 64454→31248 B; pixely shodné. Přihlášené produkční UAT NOT RUN.
+
+
+## P11-ASSET12 — správa kroužkových programů, 13. 11. 2026
+
+ROZPRACOVÁNO před implementací. Vývoj/Codex podle aktuálního zadání Marka:
+další optimalizace podle analýzy, přesná shoda a měření před/po, při všech
+PASS commit/merge/chráněný deploy; zachovat WIP a průběžný plán/handoff.
+Base bc8da209fc469df58f91e27a2fce2340ba47f785, ověřený runtime cd04bad6 / deploy 43386354560 SUCCESS.
+Větev codex/next-performance-20261113, izolovaný worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261113.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachovat.
+
+### Výběr a akceptace
+
+Aktuální zdroj a registr potvrzují, že kopírovací seznam P11-RHC2 i počty
+P11-ADM jsou již nasazené. Staré kandidáty neimplementovat podruhé.
+EVENTREAD zůstává odložený podle veřejné prázdné nabídky; jeho WIP nepřebírat.
+Z dalších potvrzených CSS duplicit volíme club_programs_admin.php:
+Bootstrap 5.3.3 z CDN a stejná místní sada z hlavicka.php. Přenos celé
+druhé kopie představuje přímo ověřitelný přínos bez změny čtecích či
+zápisových pravidel. Návštěvnost ani produkční časový příslib nejsou doložené.
+Kalendář a katalogová administrace zůstávají samostatnými kandidáty.
+
+1. Odebrat pouze přesný CDN stylesheet z emitovaného head. Všechny další
+HTML/PHP/SQL/JS, texty, nabídky, podmínky, CSRF a role zachovat. Source guard
+vyžaduje přesně předem stanovený rozdíl proti této immutable baseline.
+2. Párové celé HTTP na vlastněném plně migrovaném syntetickém schématu
+MariaDB 10.3/11.4: pozitivní správa i editor podmínek, prázdná data,
+odmítnuté role a anonymní přístup. Normalizovat jen odstraněnou přesnou
+značku a request nonce/CSRF; stejné hlavičky a kontrolní součty všech tabulek.
+Každý kladný případ 4 zahřátí a 17 střídavých měřených párů.
+3. Reálný Apache/Chrome přes Playwright CLI, desktop/light a mobile/dark,
+cold/warm cache. Přesné CSS bytes/hash/SRI, stejné formuláře a odkazy,
+geometrie a full-page pixely, chyby stránky; bez mockování a umělé latence.
+Přijmout úsporu skutečného CSS přenosu a bez významného zpomalení kontrol.
+4. Lokální přiměřené testy, syntaxe/styl/docs, celé aktuální CI. Po PASS
+merge se shodným testovaným Git stromem a chráněný deploy s UAT/import false.
+Záloha/config/migrace/VS/index/HTTP/úklid, anonymní produkční GET před/po;
+přihlášené produkční UAT označit podle skutečně provedeného rozsahu.
+
+[Průběžné výsledky](verification/program-admin-bootstrap-20261113/RESULTS.md).
+Další krok: implementace přesného zdrojového rozdílu, syntetický párový profil.
+
+
+### ASSET12 — implementace a místní checkpoint
+
+Aplikační diff přesně odebere jednu CDN značku z existujícího PHP echo;
+žádná další zdrojová změna stránky. Source guard, Python/JS syntaxe,
+PHP syntaxe a PSR-12 PASS. Nový oddělený párový profil převzal ověřený
+Apache/Chrome a bezpečný úklid z ASSET11. Doplněny běžný přehled,
+editor programu/období, chybějící program, všechny pracovní pozice a
+anonymní účet. Prázdný přehled má oddělený syntetický setup s přesnou
+obnovou a kontrolou všech tabulek před/po čtení. Žádné produkční zápisy.
+Veřejný produkční GET před změnou: administrace 302, místní Bootstrap
+200 a přesná shoda se zdrojem PASS. Nativní HTTP/Chrome/výkon a CI
+čekají na běh PR; závislosti pro místní PHPUnit se právě připravují.
+
+ASSET12 checkpoint PR #473/e6c420a3: místní cílená sada 23 testů /
+172 assertions PASS; composer validate --strict, celý changed-file styl a
+kontrola dokumentace PASS. MariaDB 10.3 nový profil PASS: 16 běžných/rolových
+scénářů a 1 prázdný přehled, přesné celé HTML/hlavičky, 355 nezměněných
+tabulek a úklid. Úbytek HTML přesně 210 B. CSS přenos a pixely se ještě
+měří v Chromu na 11.4; celé CI, merge a deploy zatím čekají.
+
+
+Po souběžném #472 / 784cdc7b převzaty nové skutečnosti o blokovaném
+úplném UAT náhradních lekcí i všechny související dokumenty. Konflikt
+CURRENT vyřešen zachováním příchozího obsahu a vlastní řádky ASSET12.
+Původní baseline bc8da209 zůstává platná, app i harness jsou byte-shodné
+s e6c420a3. Starý párový běh PASS (CSS 53957→31248 B, čtyři pixelové
+páry); nový head projde opakovanou kompletní přejímkou před integrací.

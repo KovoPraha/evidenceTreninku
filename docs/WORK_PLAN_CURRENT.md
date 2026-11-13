@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## MAKEUP-AUTO-01 — automatické náhradní lekce (12. 11. 2026)
 
-**KÓD NASAZEN: automatický režim je výchozí vypnutý; aktivace a UAT otevřené.**
+**KÓD NASAZEN: automatický režim je výchozí vypnutý; úplné funkční UAT blokuje trenérská docházka.**
 [Technická analýza, etapy, migrace, rizika a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026).
 Vlastník vývoj KIS; vedení KOVO potvrzuje věkové hranice a centrální pravidla.
 Větev `codex/makeup-auto-20261112`, oddělený worktree z `origin/main` `4b9bcb1a`.
@@ -21,6 +21,12 @@ migrace current/pending [], VS shodné, HTTP 200; `uat_schvaleno=false`,
 `importovat_krouzky=false`. Další krok: čtecí kontrola nastavení a rolové UAT.
 Aktivace skutečných
 nabídek závisí na schválených kategoriích, lhůtách a kapacitách.
+Podle hlášení vlastníka 13. 11. se omluvenka rodiči zobrazuje jako čekající,
+ale trenér zatím nemá dostupný zápis docházky konkrétní lekce. Dokončit a
+nasadit trenérskou evidenci dle samostatného zadání E4-06, ověřit propojení,
+potom projít rodič → omluva → trenérská skutečná absence → jeden nárok →
+rodičovské zobrazení → rezervace. [Blokátor a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#blokující-závislost-úplného-funkčního-ověření-13-11-2026),
+[protokol](verification/makeup-attendance-e2e-20261113/RESULTS.md).
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.
 
 ROSTER-SCROLL-01 — NASAZENO, PŘIHLÁŠENÉ UAT OTEVŘENÉ: [pozice správy soupisek](ROSTER_SCROLL_POSITION_2026-11-12.md), zadání a povolení nasazení 12. 11. 2026. Vlastník vývoj KIS. [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) sloučen jako `22d151f7` po 11 CI PASS; [deploy 43320369018](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43320369018) SUCCESS, UAT/import false. [Syntetické a technické ověření](verification/roster-scroll-20261112/RESULTS.md) PASS. Další krok: registrář ověří opakované akce v dlouhém seznamu na počítači a mobilu podle [scénáře S01–S07 pro testerku](TESTER_ROSTER_SCROLL_2026-11-13.md).
@@ -240,6 +246,7 @@ Skutečná bankovní platba, externí schránka a produkční přejímka členst
 | P11-RHC | HOTOVO technicky / NASAZENO | #400/da152282, deploy42494231010 SUCCESS;14CI/parita PASS, AJAX148→10ms; přihlášené UAT NOT RUN, veřejný obsah222→223 | [Plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md); vlastní větev, WIP zachovaný |
 | P11-RHC2 | NASAZENO / technická přejímka PASS | Vývoj/Codex, #457/87171a67, deploy 43215069511 | [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md#p11-rhc2--omezená-agregace-vzorů-kopírování-12-11-2026), [měření](verification/training-copy-20261112/RESULTS.md). Další kandidát opakované počty a styly administrátorského přehledu. |
 | P11-ADM | NASAZENO / technická přejímka PASS | Vývoj/Codex, #465/be4ce55a, deploy 43326177751 | [Plán](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md), [měření](verification/admin-dashboard-20261112/RESULTS.md). Další kandidát duplicitní Bootstrap přehledu. Přihlášené UAT NOT RUN. |
+| P11-ASSET12 | ROZPRACOVÁNO | Vývoj/Codex, codex/next-performance-20261113 | [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset12--správa-kroužkových-programů-13-11-2026), [výsledky](verification/program-admin-bootstrap-20261113/RESULTS.md). Další krok párová přejímka, CI a chráněné vydání. |
 | P11-ASSET11 | NASAZENO / technická přejímka PASS | Vývoj/Codex, #470/cd04bad6, deploy 43386354560 | [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset11--administrátorský-přehled-13-11-2026), [měření](verification/admin-dashboard-bootstrap-20261113/RESULTS.md). Další kandidáti kalendář/programy/katalogová administrace; přihlášené UAT NOT RUN. |
 | P11-RH | HOTOVO technicky / NASAZENO | #394/ab49947d, deploy42486500282 SUCCESS; parita/14CI PASS, GET398→16ms; přihlášené UAT NOT RUN | [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_TRAINING_HISTORY_2026-11-08.md); vlastní větev, WIP zachovaný |
 | P11-R13-F | TECHNICKY HOTOVO / NASAZENO: #385/519ff098, deploy42477866185 SUCCESS | Parita, výkon, 15CI, index a čtecí produkční přejímka PASS; přihlášené UAT NOT RUN | [Plán](MEDICAL_FILTER_READ_PERFORMANCE_2026-11-07.md), [předání](SESSION_HANDOFF_MEDICAL_FILTER_2026-11-07.md), [protokol](verification/medical-filter-release-20261108/RESULTS.md); WIP zachovaný |

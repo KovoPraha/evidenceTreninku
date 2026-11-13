@@ -170,6 +170,34 @@ je samostatná akceptační brána před provozním zapnutím pravidel.
 
 ## MAKEUP-AUTO-01 — automatické cíle a termíny (12. 11. 2026)
 
+### Blokující závislost úplného funkčního ověření (13. 11. 2026)
+
+**Stav: BLOKOVÁNO / end-to-end UAT NOT RUN.** Vlastník 13. 11. hlásí, že
+rodičovská omluvenka se zobrazuje jako lekce čekající na potvrzení, ale trenér
+zatím nemá dostupnou funkci k zápisu skutečné docházky konkrétního tréninku.
+To je hlášení o dostupnosti v požadovaném uživatelském postupu; samotná
+existence `formular.php?plan_id=…` v kódu ani dřívější syntetické testy
+neprokazují, že jej trenér v tomto scénáři může dokončit. Příčinu je třeba
+ověřit v samostatném zadání trenérské evidence docházky
+([E4-06](plans/realization-20261022/etapa-4-2026-10-22/00_ETAPA_4_PLAN.md#e4-06--uzavírat-skutečnou-docházku-a-bezpečně-ji-opravovat)).
+
+Pořadí dokončení:
+
+1. Dokončit a nasadit trenérský zápis skutečné docházky ke konkrétnímu
+   plánovanému tréninku podle samostatného zadání a ověřit jej přihlášeným
+   trenérem v dostupné navigaci.
+2. Ověřit propojení uložené a uzavřené docházky se zdrojovou omluvenkou,
+   vyhodnocením nároku a případnou rezervací náhradníka.
+3. Na vhodných testovacích účtech projít rodičovskou omluvu zaplacené lekce,
+   čekající stav, trenérské uzavření skutečné absence, vznik právě jednoho
+   nároku, zobrazení v rodičovském účtu a rezervaci vhodného cílového tréninku.
+   Zaznamenat role, termíny, nastavení, výsledek a úklid testovacích dat.
+
+Úplné funkční ověření automatických náhrad zůstává otevřené, dokud celý tok
+neprojde. Samotné zadání omluvenky, technické vyhodnocování ani nasazení kódu
+nejsou důkazem dokončeného UAT. Aktuální [protokol blokátoru](verification/makeup-attendance-e2e-20261113/RESULTS.md)
+odděluje doložené kroky od neprovedených.
+
 ### Vydání na pokyn vlastníka 12. 11. 2026
 
 Vlastník požádal o nasazení implementace po úspěšném CI PR #459. Vydat přes
