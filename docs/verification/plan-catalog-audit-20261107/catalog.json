@@ -2672,10 +2672,10 @@
       "path": "docs/club-programs.md",
       "title": "Kroužkové programy, období a účasti (M1.4)",
       "primary": true,
-      "role": "reference",
-      "status": "REFERENCE",
+      "role": "plan",
+      "status": "PARTIAL",
       "registry": "DOC02/P11-PADMIN",
-      "disposition": "Referenční podklad, nikoli samostatný schválený implementační plán. P11-PADMIN rozpracován 13. 11.: dávkové čtení správního seznamu a přejímka před/po.",
+      "disposition": "Původní referenční podklad rozšířený o schválený plán P11-PADMIN. #477/b4d5cfe2, deploy43478690110 SUCCESS; native2DB/HTTP/Chrome/15CI PASS, dávkové čtení a podmínky hotové, přihlášené produkční UAT a ostatní obchodní etapy otevřené.",
       "evidence": [
         "docs/verification/program-admin-read-20261113/RESULTS.md"
       ]

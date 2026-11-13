@@ -77,7 +77,7 @@ Stavy `shop_orders`, `payments`, `club_program_enrollments` a `club_roster_membe
 
 ## P11-PADMIN — dávkové čtení správy programů (13. 11. 2026)
 
-ROZPRACOVÁNO před implementací. Vývoj/Codex na pokyn Marka pokračovat
+NASAZENO / technická přejímka PASS. Původní plán před implementací: Vývoj/Codex na pokyn Marka pokračovat
 v další měřené optimalizaci, zachovat WIP, aktualizovat plán/handoff a po
 úplném PASS commit/merge/chráněný deploy. Větev codex/program-admin-read-20261113,
 worktree C:/Users/Marek/Documents/Codex/evidencePavel-program-admin-read-20261113.
@@ -181,3 +181,28 @@ se nyní odečítá před čtením (100/0) a restored_fixture_offers po obnově
 (100), s výslovným invariantem velikosti. Předchozí pole se počítalo až
 po obnově; prázdný scénář a jeho přesná obnova už byly provedené správně.
 Produkční reader ani stránka se nemění. Aktuální celý CI pár se zopakuje.
+
+
+### PADMIN — dokončení
+
+**P11-PADMIN NASAZENO:** [plán](club-programs.md#p11-padmin--dávkové-čtení-správy-programů-13-11-2026), [výsledky](verification/program-admin-read-20261113/RESULTS.md). #477/b4d5cfe2, [deploy 43478690110](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43478690110) SUCCESS, 15 CI. CI GET100 nabídek 727→91 / 890→118 ms, přesná shoda; přihlášené produkční UAT NOT RUN.
+
+Finální párová nativní/HTTP/Chrome přejímka aktuálního headu PASS: po17HTTP
+scénářích/355shodných tabulkách na MariaDB10.3/11.4, 0/2/12/100/401 strict
+nativní pole/typy/pořadí, 176měřených+48warmup navigací a4pixelové dvojice.
+Všechny časy, SQL/řádky, špičkový přírůstek paměti a meze jsou ve výsledcích.
+Metadata/podmínky/soupisky už nejsou opakované per offer; dva kapacitní SQL
+na fyzickou soupisku/nabídku zůstávají další samostatný kandidát.
+Původní scalar/public/checkout/locking API beze změny. Nové volání čte čerstvá
+data, neexistuje persistentní cache práv ani nová migrace. Lokální27/196 PASS.
+Celý testovaný/sloučený strom 94bcfbec6d53fed9b1775dbdd8aa5e28a263d8ca shodný; deploy 43478690110
+2472/56686, záloha394/2,
+config/migrace/VS/index/HTTP/úklid PASS. Import/UAT false; veřejná živá
+kontrola před/po a CSS hash PASS, přihlášené produkční UAT NOT RUN.
+
+Výsledkové předání: codex/program-admin-read-evidence-20261113 ve stejném
+worktree; doklady vlastním dokumentačním PR, po jeho přijetí v main.
+Kvůli dokladům znovu nenasazovat. Původní fio WIP i ostatní prototypy
+zachované. Celé M1.4/UX01 ani blokátor náhradních lekcí tímto nejsou uzavřené.
+Další krok: nativně profilovat zbylé kapacitní roundtripy a případný objemový
+správní seznam, případně zbývající CSS duplicity, vždy samostatně podle přínosu.
