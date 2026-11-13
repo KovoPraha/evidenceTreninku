@@ -893,7 +893,7 @@ projde celou přejímkou před merge.
 
 ## P11-ASSET12 — správa kroužkových programů, 13. 11. 2026
 
-ROZPRACOVÁNO před implementací. Vývoj/Codex podle aktuálního zadání Marka:
+NASAZENO / technická přejímka PASS. Původní plán před implementací: Vývoj/Codex podle aktuálního zadání Marka:
 další optimalizace podle analýzy, přesná shoda a měření před/po, při všech
 PASS commit/merge/chráněný deploy; zachovat WIP a průběžný plán/handoff.
 Base bc8da209fc469df58f91e27a2fce2340ba47f785, ověřený runtime cd04bad6 / deploy 43386354560 SUCCESS.
@@ -961,3 +961,31 @@ CURRENT vyřešen zachováním příchozího obsahu a vlastní řádky ASSET12.
 Původní baseline bc8da209 zůstává platná, app i harness jsou byte-shodné
 s e6c420a3. Starý párový běh PASS (CSS 53957→31248 B, čtyři pixelové
 páry); nový head projde opakovanou kompletní přejímkou před integrací.
+
+
+### ASSET12 — dokončení
+
+**P11-ASSET12 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset12--správa-kroužkových-programů-13-11-2026), [měření](verification/program-admin-bootstrap-20261113/RESULTS.md). #473/b2ca9f4b, [deploy 43447880903](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43447880903) SUCCESS, 13 CI. Studený Bootstrap CSS 53957→31248 B (−42,09 %), 4 pixelové páry shodné; přihlášené produkční UAT NOT RUN.
+
+Párový běh 43445439575/acab26a8 PASS: MariaDB 10.3/11.4, 17 HTTP
+scénářů na každé DB, 355 nezměněných tabulek, ověřený úklid; Chrome
+176 měřených +48 zahřívacích navigací. Stejné HTML/hlavičky, formuláře,
+geometrie a pixely. CSS cold −22709 B, warm 0→0; SQL a významný přínos
+časů serveru se tímto řezem nemění/neprokazuje. Místní 23/172 PASS.
+Testovaný a sloučený Git tree 8a9d00fa3dff2fbdb43de4b04882bd8f454ff6d7 shodný.
+Deploy 43447880903: 2467/56603, záloha
+394/2, konfigurace/migrace/VS/index/HTTP/úklid PASS,
+import/UAT false. Nezávislé anonymní GET před/po a kanonický CSS hash PASS.
+Přihlášené produkční UAT NOT RUN; dokumentační předání bez dalšího deploye.
+
+Výsledkové předání: větev codex/program-admin-assets-evidence-20261113,
+stejný izolovaný worktree. Release je hotový, doklady se předávají vlastním
+dokumentačním PR; jeho přijetím jsou součástí main. Kvůli dokladům znovu nenasazovat.
+
+Starší kandidát kopírovacího seznamu je již P11-RHC2, počty administrace
+P11-ADM a jeho styly ASSET11; neopakovat. Další zdrojově potvrzené duplicity
+club_calendar.php / eshop_catalog_admin.php vyžadují vlastní měření/paritu.
+clubProgramAdminOffers opakuje kapacitu a podmínky po nabídkách; nejprve
+ověřit objem a nativní SQL/HTTP profil. Výběrová SQLite diagnostika pro
+0/2/12/100 nabídek ukázala 1/43/253/2101 SQL; pouze růst práce, žádný
+přijatý před/po přínos. Reprodukovatelný probe a JSON jsou ve výsledcích. WIP nepřebírat.

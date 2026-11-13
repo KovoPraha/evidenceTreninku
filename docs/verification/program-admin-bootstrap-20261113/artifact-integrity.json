@@ -1,0 +1,185 @@
+{
+  "algorithm": "SHA-256 of Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/RESULTS.md",
+      "bytes": 6690,
+      "sha256": "16f1b78d19273641b9ea502b4dd94ac81717736f474983ffde349b34fb45517d"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/admin-offers-diagnostic.json",
+      "bytes": 2983,
+      "sha256": "cf513eb4f07ed3fa20d956cb01699fde2edd0b1891af838526a7875bd2f909bb"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/admin-offers-probe.php.txt",
+      "bytes": 1635,
+      "sha256": "30abc1e9d32f4d4efb723f77b49c96a3cded4c0a9a8c833bb2e9164940b192aa"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/application-checks.json",
+      "bytes": 887,
+      "sha256": "e8cc1ac19ed58b7682ff87c28f3d9d8e3302990cef8037d4b8a41d769ad7724c"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/http-medians.json",
+      "bytes": 853,
+      "sha256": "b787f41b85114c951291e809f062ca1a8938259e641638b80d95e65259804aea"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-10.3/empty-http.json.gz",
+      "bytes": 961,
+      "sha256": "5a0943843c25bf42aee0c0acd6f3597ed1272bc0cfdf8f59b03b617fe26b4dab"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-10.3/http.json.gz",
+      "bytes": 2767,
+      "sha256": "bbce302358d2912600350855d524762ffa866762de34c472d4dbea62c0e11666"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-10.3/source.json",
+      "bytes": 422,
+      "sha256": "19245b61a7a4b6ea96277ce743c187d03787f1f27eb5081311a67144b85d29bd"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/browser-overview-dark-cold.json",
+      "bytes": 5938,
+      "sha256": "c8213b5938094e6d0197c34072338e903096d1eabb9e356475938a3fe30b4d92"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/browser-overview-dark-warm.json",
+      "bytes": 5876,
+      "sha256": "3183b48c9f9e345ffb1819da2a89a39518e2b09c20dff85ae5af9c3cfde44b6a"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/browser-overview-light-cold.json",
+      "bytes": 5892,
+      "sha256": "3f719d687c137bb1d75607c997228d8b0d660f464b8bb313241045446f67e0e0"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/browser-overview-light-warm.json",
+      "bytes": 5835,
+      "sha256": "110ca416e7d61beda74c2369b568af0cdef068e08db9f41dc34f217fbf29abd2"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/browser-summary.json",
+      "bytes": 3790,
+      "sha256": "269d36de337553a2cff429f2557fa01f9aa07574e9c7b36ce7f64ec07823e06e"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/browser-terms-dark-cold.json",
+      "bytes": 5942,
+      "sha256": "4f6d776462ee0c4b2b79c8b7b54f890a972f0387403837f2866a5e071aa91102"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/browser-terms-dark-warm.json",
+      "bytes": 5864,
+      "sha256": "9daeb5d85d64101bba0e4a12cad03266220b1fb02a9fdf5cbf5d379dbcea00c5"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/browser-terms-light-cold.json",
+      "bytes": 5896,
+      "sha256": "2c4b423f4d2b9d8162bc33063855c6ba8d1b549c9c5090efe9385e0b1a60e8c5"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/browser-terms-light-warm.json",
+      "bytes": 5831,
+      "sha256": "460babe8258a15cbde3d49a6c3ba072aaa787f7b6cdd45682314e62be73a9bc1"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/empty-http.json.gz",
+      "bytes": 961,
+      "sha256": "e53e51a82ab967c3ed21e9881976e227dd707484a295133a4e9e50678e164c81"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/http.json.gz",
+      "bytes": 2778,
+      "sha256": "ba9d0fc9a77f73223f4ce9f7667d4f4cf5fd52edef59f8318813b9909ea79861"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/overview-dark-cold-after.png",
+      "bytes": 142123,
+      "sha256": "0e2eb34c31da946e8d2f9e5b0c50715075446ae0d0927e52e4c8d37a616f5aab"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/overview-dark-cold-before.png",
+      "bytes": 142123,
+      "sha256": "0e2eb34c31da946e8d2f9e5b0c50715075446ae0d0927e52e4c8d37a616f5aab"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/overview-light-cold-after.png",
+      "bytes": 188440,
+      "sha256": "9e4f3d04a88b119a20ce6ae339ec06e6c43ec483db72bc9813bceefa12d05454"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/overview-light-cold-before.png",
+      "bytes": 188440,
+      "sha256": "9e4f3d04a88b119a20ce6ae339ec06e6c43ec483db72bc9813bceefa12d05454"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/source.json",
+      "bytes": 422,
+      "sha256": "19245b61a7a4b6ea96277ce743c187d03787f1f27eb5081311a67144b85d29bd"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/terms-dark-cold-after.png",
+      "bytes": 213980,
+      "sha256": "80c876cc44f025a31aa50d2ac4e32d6c337bf4573afae16d173c0179ebc0d615"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/terms-dark-cold-before.png",
+      "bytes": 213980,
+      "sha256": "80c876cc44f025a31aa50d2ac4e32d6c337bf4573afae16d173c0179ebc0d615"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/terms-light-cold-after.png",
+      "bytes": 255011,
+      "sha256": "2baeb4f7070780dc663a43c34d586c60712530c08ca543f4ad7e0c4b7700a90d"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/mariadb-11.4/terms-light-cold-before.png",
+      "bytes": 255011,
+      "sha256": "2baeb4f7070780dc663a43c34d586c60712530c08ca543f4ad7e0c4b7700a90d"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/paired-run.json",
+      "bytes": 7307,
+      "sha256": "3a708ce59fc029b63939a80bb946a40530b2014a4122e7728b68d17491518c9e"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/production-after.json",
+      "bytes": 562,
+      "sha256": "daccf3a6b34cb42267438167f14699401c14a76d17daaec53fd21a3d7bbd01d1"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/production-before.json",
+      "bytes": 562,
+      "sha256": "daccf3a6b34cb42267438167f14699401c14a76d17daaec53fd21a3d7bbd01d1"
+    },
+    {
+      "path": "docs/verification/program-admin-bootstrap-20261113/release.json",
+      "bytes": 511,
+      "sha256": "e3075a17dc18cb07ca3a82650016ba06b5c5a9cd5f6f57acdcc189c3c5c348b3"
+    }
+  ]
+}

@@ -11279,7 +11279,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11-ASSET/P11-ASSET2/P11-ASSET3/P11-ASSET4/P11-ASSET5/P11-ASSET6/P11-ASSET7/P11-ASSET8/P11-ASSET9/P11-ASSET10/P11-ASSET11/P11-ASSET12",
-      "disposition": "ASSET1–7 nasazené; ASSET7 #447/c29642f1, deploy42905781826,13CI/native2DB/10pixelpárů PASS. Živé anonymní5GET/payloady stejné; přihlášené UAT a historické ASSET4/6 LIMIT zachované. ASSET8 #451/d8ae4f85, deploy 42979420239, úspora cold CSS 33 206 B, přihlášené UAT NOT RUN. P11-ASSET11 rozpracován: duplicitní Bootstrap administrátorského přehledu, base 722099b7. P11-ASSET11 vydán #470/cd04bad6, deploy 43386354560 SUCCESS, cold CSS 64454→31248 B; produkční přihlášené UAT NOT RUN. P11-ASSET12: správa programů, přesná shoda a měření, rozpracováno 13. 11. 2026.",
+      "disposition": "ASSET1–7 nasazené; ASSET7 #447/c29642f1, deploy42905781826,13CI/native2DB/10pixelpárů PASS. Živé anonymní5GET/payloady stejné; přihlášené UAT a historické ASSET4/6 LIMIT zachované. ASSET8 #451/d8ae4f85, deploy 42979420239, úspora cold CSS 33 206 B, přihlášené UAT NOT RUN. P11-ASSET11 rozpracován: duplicitní Bootstrap administrátorského přehledu, base 722099b7. P11-ASSET11 vydán #470/cd04bad6, deploy 43386354560 SUCCESS, cold CSS 64454→31248 B; produkční přihlášené UAT NOT RUN. P11-ASSET12: správa programů, přesná shoda a měření, rozpracováno 13. 11. 2026. ASSET12 vydán #473/b2ca9f4b, deploy 43447880903 SUCCESS, CSS cold 53957→31248 B, parita/pixely/13CI PASS; přihlášené produkční UAT NOT RUN. Historické ASSET4/6 meze zachované.",
       "evidence": [
         "docs/verification/workspace-bootstrap-assets-20261110/release/RESULTS.md",
         "docs/verification/public-calendar-assets-20261110/RESULTS.md",
