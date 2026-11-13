@@ -6,6 +6,8 @@ Vlastník pokynem „nasadit“ povolil sloučení PR #463 a chráněné vydán�
 
 ID: KIS-ACT-01 / PL-9d3bb013a4. Stav: **KÓD NASAZEN, PILOT OTEVŘEN**. Vlastník implementace: vývoj; kontrola identity, textu pozvánky a produkčního pilotu: vedení TJ KOVO Praha. Vývojová větev `codex/parent-account-activation`, izolovaný worktree `C:\xampp\htdocs\evidencePavel-parent-activation`. Skutečné počty a stav konkrétních osob v produkci je nutné ověřit chráněným administrativním přehledem. Tento dokument neobsahuje osobní údaje.
 
+Aktuální kroky a očekávané výsledky pro testerku: [scénář první aktivace](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md). Čtecí kontrola je oddělená od schváleného pilotu; scénář sám nedokládá provedené UAT.
+
 Sdílení: [PR #463](https://github.com/KovoPraha/evidenceTreninku/pull/463) sloučen jako `373b8d89`; poslední větev `bdece243` měla 11 CI PASS. Schválení vedením pro konkrétní pozvánky a produkční pilot zůstává samostatnou bránou.
 
 Souběh: před merge byly převzaty `428a2258` (MAKEUP-AUTO-01) a `22d151f7` (ROSTER-SCROLL-01). Obě agendy a jejich dokumentace zůstaly zachovány; výsledek společného stromu potvrdilo poslední CI PR #463.

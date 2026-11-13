@@ -13,3 +13,5 @@ Datum: 12. 11. 2026, Europe/Prague. Rozsah: technické vydání PR [#463](https:
 | Pozvánky a pilot | NOT RUN | Vydání samo pozvánky nevytváří. Tento průchod žádnou pozvánku nezařadil ani neodeslal. Stav existující fronty nebyl čtecím produkčním přístupem ověřen. |
 
 Další krok: vedení schválí text pozvánky, způsob prokázání identity, pilotní adresáty a postup při nedoručení. Správce pak na ověřených vazbách provede malý pilot a zaznamená skutečné doručení, aktivaci a rodičovské UAT. Bez tohoto kroku nelze tvrdit, že rodiče již mají přístup.
+
+Podklad pro provedení a zápis této přejímky: [scénář pro testerku](../../TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md) (13. 11. 2026; scénáře dosud NOT RUN).

@@ -32,7 +32,7 @@ Dřívější dokumentační rozsah je historický; chybějící skutečné podk
 
 ## KIS-ACT-01 — první heslo importovaných rodičů (12. 11. 2026)
 
-KÓD NASAZEN; pilot a rodičovské UAT otevřené. Vlastník 12. 11. autorizoval vydání kódu a migrace z PR #463; [deploy 43322186478](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43322186478) SUCCESS na `373b8d89`, UAT/import false. [Rozsah](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md), [protokol](verification/parent-activation-release-20261112/RESULTS.md). Pozvánky a změny vazeb vyžadují zvláštní provozní schválení.
+KÓD NASAZEN; pilot a rodičovské UAT otevřené. Vlastník 12. 11. autorizoval vydání kódu a migrace z PR #463; [deploy 43322186478](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43322186478) SUCCESS na `373b8d89`, UAT/import false. [Rozsah](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md), [protokol](verification/parent-activation-release-20261112/RESULTS.md), [scénář pro testerku](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md). Pozvánky a změny vazeb vyžadují zvláštní provozní schválení.
 
 Vlastník vývoj; identitu, text pozvánky a pilot schvaluje vedení TJ KOVO Praha. Vývojová větev `codex/parent-account-activation` v izolovaném worktree. Cílené syntetické testy a plné PR CI PASS; produkční počty, přihlášené rodičovské UAT a doručení pozvánek NOT RUN. Další krok: schválení konkrétní malé dávky a její provozní přejímka.
 

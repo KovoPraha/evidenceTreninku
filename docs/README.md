@@ -1,6 +1,6 @@
 # Dokumentace EvidencePavel / KIS
 
-Aktualizováno: 12. 11. 2026, Europe/Prague
+Aktualizováno: 13. 11. 2026, Europe/Prague
 
 Evidence tréninků, e-shop a KIS jsou jedna aplikace s jedním repozitářem,
 webrootem, migračním katalogem a kanonickou databází osob. Produkce běží na
@@ -9,9 +9,9 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 ## Aktuální vývoj a otevřená přejímka
 
-- [KIS-ACT-01: aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) je na vlastní větvi k review; produkční schválení, nasazení a pozvánky jsou otevřené.
+- **Pro testerku:** [aktuální scénář první aktivace rodičů](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md) lze otevřít na GitHubu a stáhnout tlačítkem **Raw → Uložit jako**. [Změna KIS-ACT-01](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) je nasazená; [release protokol](verification/parent-activation-release-20261112/RESULTS.md) odděluje technické PASS od dosud neprovedených pozvánek a rodičovského UAT.
 
-- [Stav vydání](CURRENT_STATE.md) a [stručné předání](HANDOFF_CURRENT.md) vycházejí z `main` `4b9bcb1a`; poslední doložený produkční aplikační commit je `87171a67` ([deploy 43215069511](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43215069511)).
+- [Stav vydání](CURRENT_STATE.md) a [stručné předání](HANDOFF_CURRENT.md) uvádějí aktuální ověřený produkční commit, přepínače a otevřenou přejímku.
 - [Kopírování tréninků](verification/training-copy-20261112/RESULTS.md), [styly formulářů](verification/training-form-bootstrap-20261112/RESULTS.md) a [styly přihlášení](verification/signin-bootstrap-20261111/RESULTS.md) jsou nasazené; přihlášené produkční UAT posledních řezů je otevřené.
 - [Testerovy objednávky a registrace](verification/tester-orders-registration-20261110.md), [trenérské soupisky](verification/coach-group-rosters-20261110/RESULTS.md), [BAR zásoby](verification/bar-display-stock-20261110/RESULTS.md) a [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) rozlišují nasazení od provozní přejímky.
 - [Revize dokumentace 12. 11.](verification/documentation-sync-20261112/RESULTS.md) uvádí zdroje a opravené nesoulady.
