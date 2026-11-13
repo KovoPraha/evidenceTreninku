@@ -60,7 +60,7 @@ async (page) => {
                     bootstrap: typeof window.bootstrap?.Modal === 'function',
                 };
             });
-            const expected = 2;
+            const expected = variant === 'before' ? 2 : 1;
             if (metrics.styles !== expected || css.size !== expected || !metrics.bootstrap || !metrics.fcp_ms) {
                 throw new Error('Dashboard stylesheet or timing contract: ' + JSON.stringify({variant, css: [...css.values()], metrics}));
             }

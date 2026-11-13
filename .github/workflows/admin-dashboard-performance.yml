@@ -3,8 +3,7 @@ name: Admin dashboard parity and performance
 on:
   pull_request:
     paths:
-      # The release benchmark compares an exact frozen training-form source.
-      # The ordinary training-form regression suite runs for subsequent application edits.
+      # Independently retain the count baseline and the later CSS-only baseline.
       - 'tests/Support/AdminDashboard*'
       - 'includes/admin_dashboard_read.php'
       - 'admin_dashboard.php'
@@ -22,12 +21,13 @@ permissions:
 
 jobs:
   native-profile:
-    name: Admin dashboard (MariaDB ${{ matrix.mariadb-version }})
+    name: ${{ matrix.mode == 'assets' && 'Admin dashboard assets' || 'Admin dashboard' }} (MariaDB ${{ matrix.mariadb-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
+        mode: ['counts', 'assets']
         mariadb-version: ${{ fromJSON(github.event_name == 'workflow_dispatch' && inputs.mariadb_version == '10.3' && '["10.3"]' || github.event_name == 'workflow_dispatch' && inputs.mariadb_version == '11.4' && '["11.4"]' || '["10.3","11.4"]') }}
     services:
       mariadb:
@@ -63,7 +63,8 @@ jobs:
           google-chrome --version
       - name: Compare exact dashboard counts and native performance
         env:
-          ADMIN_DASHBOARD_BASE_SHA: 5cd6ad07b7f99b7b8d361f49520025d799e8776e
+          ADMIN_DASHBOARD_BASE_SHA: ${{ matrix.mode == 'assets' && '722099b7638172d87b23dc4881398e43bf53dbd9' || '5cd6ad07b7f99b7b8d361f49520025d799e8776e' }}
+          ADMIN_DASHBOARD_ASSETS: ${{ matrix.mode == 'assets' && '1' || '0' }}
           ADMIN_DASHBOARD_BROWSER: ${{ matrix.mariadb-version == '11.4' && '1' || '0' }}
           EVIDENCE_PERFORMANCE_CONFIRM: SYNTHETIC-ONLY
           EVIDENCE_MARIADB_SMOKE_PORT: '3306'
@@ -71,12 +72,14 @@ jobs:
         run: |
           mkdir -p output
           python3 tests/Support/AdminDashboardIntegratedProfile.py
-          php tests/Support/AdminDashboardPerformance.php > output/admin-dashboard-safe/native.json
+          if [ '${{ matrix.mode }}' = 'counts' ]; then
+            php tests/Support/AdminDashboardPerformance.php > output/admin-dashboard-safe/native.json
+          fi
       - name: Preserve safe native HTTP and session evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: admin-dashboard-${{ matrix.mariadb-version }}
-          path: output/admin-dashboard-safe/
+          name: admin-dashboard${{ matrix.mode == 'assets' && '-assets' || '' }}-${{ matrix.mariadb-version }}
+          path: output/admin-dashboard${{ matrix.mode == 'assets' && '-assets' || '' }}-safe/
           if-no-files-found: warn
           retention-days: 30
