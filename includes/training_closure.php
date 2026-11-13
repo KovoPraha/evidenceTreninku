@@ -232,6 +232,7 @@ function trainingClosureClose(PDO $pdo, int $trainingId, int $expectedVersion, a
         if ($attendanceStates !== null) {
             $snapshot['attendance_states'] = $attendanceStates;
             $snapshot['makeup_reservation_ids'] = (array)($input['makeup_reservation_ids'] ?? []);
+            $snapshot['attendance_excuse_reasons'] = (array)($input['attendance_excuse_reasons'] ?? []);
         }
         $pdo->prepare(('INSERT INTO ' .
     'training_closure_revisions(training_id,version,status,actual_date,actual_started_at,actual_ended_at,duration_minutes,snapshot' .
@@ -380,7 +381,9 @@ function trainingClosureStatesForPerson(PDO $pdo, int $personId, string $from, s
     if (!trainingClosureReady($pdo)) {
         return [];
     }
-    $query = $pdo->prepare("SELECT r.training_id,r.actual_date,r.version,r.snapshot_json FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date DESC,r.training_id DESC");
+    $query = $pdo->prepare('SELECT r.training_id,r.actual_date,r.version,r.snapshot_json '
+        . 'FROM training_closures c JOIN training_closure_revisions r ON r.id=c.current_revision_id '
+        . "WHERE c.status='closed' AND r.actual_date BETWEEN ? AND ? ORDER BY r.actual_date DESC,r.training_id DESC");
     $query->execute([$from,$to]);
     $result = [];
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {

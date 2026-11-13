@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__.'/training_day.php';
@@ -85,6 +86,7 @@ function coachAttendanceLoad(PDO $pdo, int $planId, int $actor): array
         }
     }
     $saved = $current['snapshot']['attendance_states'] ?? [];
+    $manualReasons = $current['snapshot']['attendance_excuse_reasons'] ?? [];
     $present = $current ? array_map('intval', $current['snapshot']['participant_ids'] ?? []) : $rawPresent;
     foreach ($people as $id => &$person) {
         if (!isset($person['label'])) {
@@ -92,6 +94,11 @@ function coachAttendanceLoad(PDO $pdo, int $planId, int $actor): array
             continue;
         }
         $person['state'] = $saved[$id] ?? (in_array($id, $present, true) ? 'present' : ($person['excuse'] !== null ? 'excused' : ''));
+        $person['manual_excuse'] = false;
+        if ($person['state'] === 'excused' && $person['excuse'] === null && isset($manualReasons[$id])) {
+            $person['excuse'] = (string)$manualReasons[$id];
+            $person['manual_excuse'] = true;
+        }
     }
     unset($person);
     uasort($people, static fn (array $a, array $b): int => ($a['makeup'] <=> $b['makeup']) ?: strcasecmp($a['label'], $b['label']));
@@ -99,7 +106,7 @@ function coachAttendanceLoad(PDO $pdo, int $planId, int $actor): array
 }
 
 /** Save a draft or a final revision in the existing attendance history. */
-function coachAttendanceSave(PDO $pdo, int $planId, int $actor, int $expectedVersion, array $posted): array
+function coachAttendanceSave(PDO $pdo, int $planId, int $actor, int $expectedVersion, array $posted, array $postedReasons = []): array
 {
     $pdo->beginTransaction();
     try {
@@ -132,6 +139,7 @@ function coachAttendanceSave(PDO $pdo, int $planId, int $actor, int $expectedVer
         }
         $states = [];
         $present = [];
+        $manualReasons = [];
         foreach ($view['people'] as $id => $person) {
             $value = $posted[$id] ?? '';
             if (!is_string($value) || !in_array($value, ['', 'present', 'absent', 'excused'], true)) {
@@ -140,8 +148,12 @@ function coachAttendanceSave(PDO $pdo, int $planId, int $actor, int $expectedVer
             if ($value === 'absent' && $person['excuse'] !== null) {
                 throw new TrainingClosureException('Evidovanou omluvu nelze změnit na neomluvenou absenci.');
             }
-            if ($value === 'excused' && $person['excuse'] === null) {
-                throw new TrainingClosureException('Omluvu nejprve zaznamenejte v přípravě lekce.');
+            if ($value === 'excused' && ($person['excuse'] === null || $person['manual_excuse'])) {
+                $reason = trim((string)($postedReasons[$id] ?? $person['excuse'] ?? ''));
+                if (mb_strlen($reason) < 10 || mb_strlen($reason) > 1000) {
+                    throw new TrainingClosureException('U omluvy doplňte důvod v délce 10–1000 znaků.');
+                }
+                $manualReasons[$id] = $reason;
             }
             if ($value !== '') {
                 $states[$id] = $value;
@@ -201,6 +213,7 @@ function coachAttendanceSave(PDO $pdo, int $planId, int $actor, int $expectedVer
             'actual_ended_at' => $end->format('Y-m-d H:i:s'),
             'participant_ids' => $present, 'coach_ids' => $coachIds,
             'attendance_states' => $states, 'makeup_reservation_ids' => $reservationIds,
+            'attendance_excuse_reasons' => $manualReasons,
             'guest_reasons' => $guestReasons,
             'reason' => $expectedVersion ? 'Oprava docházky trenérem.' : 'Zápis docházky trenérem.',
             'confirmed' => true, 'draft' => $draft,

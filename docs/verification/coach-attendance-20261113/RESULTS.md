@@ -4,7 +4,7 @@ Pracovní větev `codex/coach-attendance`, syntetická lokální MariaDB `attend
 
 ## Technické kontroly
 
-- `CoachAttendanceTest`: datovaná soupiska, rodičovská omluva, rozpracovaný a konečný zápis, ztracená aktualizace, cizí trenér, rezervovaný náhradník včetně vyčerpání rezervace, následné opravy a historické vazby a lhůta s oprávněním vedoucího sportu — 5 testů / 27 kontrol, PASS.
+- `CoachAttendanceTest`: datovaná soupiska, rodičovská i nová trenérská omluva s důvodem, rozpracovaný a konečný zápis, ztracená aktualizace, cizí trenér, rezervovaný náhradník včetně vyčerpání rezervace, následné opravy a historické vazby a lhůta s oprávněním vedoucího sportu — 6 testů / 33 kontrol, PASS.
 - `TrainingClosureTest` + `ClubMakeupTest`: verzované uzavření a návaznost na náhrady — 30 testů / 200 kontrol, PASS.
 - `AthleteTrainingTimelineTest` + `AthleteTimelineReadOptimizationTest`: 7 testů / 70 kontrol, PASS.
 - `StaffWorkspaceRegistryTest`: 14 testů / 2335 kontrol, PASS po zařazení nové trasy do inventáře.

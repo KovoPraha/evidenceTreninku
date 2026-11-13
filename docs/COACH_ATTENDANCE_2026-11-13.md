@@ -17,7 +17,7 @@ Původní lokální checkout obsahoval jinou rozpracovanou práci; tato změna v
 
 ## Napojení nové funkce
 
-`coach_attendance.php?plan_id=…` otevírá docházku přímo z rozvrhu. Očekávané děti načítá podle členství platného v den lekce, doplní rezervované náhradníky a omluvy. Uložená verze má přednost před předvyplněním. Nevyplněný stav zůstává prázdný; rodičovskou omluvu nelze uložit jako neomluvenou absenci. Bez rezervace nelze náhradníka ručně přidat.
+`coach_attendance.php?plan_id=…` otevírá docházku přímo z rozvrhu. Očekávané děti načítá podle členství platného v den lekce, doplní rezervované náhradníky a omluvy. Uložená verze má přednost před předvyplněním. Nevyplněný stav zůstává prázdný; rodičovskou omluvu nelze uložit jako neomluvenou absenci. Trenér může při lekci zapsat novou omluvu s povinným důvodem přímo ve formuláři; důvod zůstává v revizi docházky a sám o sobě nezakládá nárok na náhradu. Bez rezervace nelze náhradníka ručně přidat.
 
 První zápis vytvoří skutečný `treninky` záznam navázaný na plán a zkopíruje historický snapshot soupisky. Částečná docházka nebo zápis před koncem lekce vytvoří verzi `draft`; nepřepisuje `trenink_sportovec` ani nečerpá náhradní lekci. Po konci lekce úplný zápis vytvoří `closed` revizi; jen přítomné děti se promítnou do `trenink_sportovec` a stávající náhradový proces se vyhodnotí. `attendance_states` ve `snapshot_json` uzavření rozlišuje přítomnost, neomluvenou absenci a omluvu bez nové paralelní tabulky. Každá oprava je další verze s identitou aktéra v `closed_by`; staré verze zůstávají.
 
