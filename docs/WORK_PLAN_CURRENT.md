@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## MAKEUP-AUTO-01 — automatické náhradní lekce (12. 11. 2026)
 
-**KÓD NASAZEN: automatický režim je výchozí vypnutý; aktivace a UAT otevřené.**
+**KÓD NASAZEN: automatický režim je výchozí vypnutý; úplné funkční UAT blokuje trenérská docházka.**
 [Technická analýza, etapy, migrace, rizika a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#makeup-auto-01--automatické-cíle-a-termíny-12-11-2026).
 Vlastník vývoj KIS; vedení KOVO potvrzuje věkové hranice a centrální pravidla.
 Větev `codex/makeup-auto-20261112`, oddělený worktree z `origin/main` `4b9bcb1a`.
@@ -21,6 +21,12 @@ migrace current/pending [], VS shodné, HTTP 200; `uat_schvaleno=false`,
 `importovat_krouzky=false`. Další krok: čtecí kontrola nastavení a rolové UAT.
 Aktivace skutečných
 nabídek závisí na schválených kategoriích, lhůtách a kapacitách.
+Podle hlášení vlastníka 13. 11. se omluvenka rodiči zobrazuje jako čekající,
+ale trenér zatím nemá dostupný zápis docházky konkrétní lekce. Dokončit a
+nasadit trenérskou evidenci dle samostatného zadání E4-06, ověřit propojení,
+potom projít rodič → omluva → trenérská skutečná absence → jeden nárok →
+rodičovské zobrazení → rezervace. [Blokátor a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#blokující-závislost-úplného-funkčního-ověření-13-11-2026),
+[protokol](verification/makeup-attendance-e2e-20261113/RESULTS.md).
 Po novém merge/deploy/provozní operaci stav znovu ověřit, nikoli převzít z názvu větve.
 
 ROSTER-SCROLL-01 — NASAZENO, PŘIHLÁŠENÉ UAT OTEVŘENÉ: [pozice správy soupisek](ROSTER_SCROLL_POSITION_2026-11-12.md), zadání a povolení nasazení 12. 11. 2026. Vlastník vývoj KIS. [PR #462](https://github.com/KovoPraha/evidenceTreninku/pull/462) sloučen jako `22d151f7` po 11 CI PASS; [deploy 43320369018](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43320369018) SUCCESS, UAT/import false. [Syntetické a technické ověření](verification/roster-scroll-20261112/RESULTS.md) PASS. Další krok: registrář ověří opakované akce v dlouhém seznamu na počítači a mobilu podle [scénáře S01–S07 pro testerku](TESTER_ROSTER_SCROLL_2026-11-13.md).
