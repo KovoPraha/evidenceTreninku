@@ -147,7 +147,12 @@ try:
         before = subprocess.check_output(["git", "show", base + ":" + route], cwd=root)
         old = b'    \'content="width=device-width,initial-scale=1"><title>Krou\xc5\xbekov\xc3\xa9 programy</title><link \' .\n    \'href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" \' .\n\n    \'integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" \' .\n    \'crossorigin="anonymous"></head><body class="bg-light">\');'
         new = b'    \'content="width=device-width,initial-scale=1"><title>Krou\xc5\xbekov\xc3\xa9 programy</title></head><body class="bg-light">\');'
-        assert before.count(old) == 1 and before.replace(old, new) == original[route], "Unexpected source change"
+        expected = before.replace(old, new)
+        # The subsequent read optimization changes only this explicit page wiring.
+        # Retain the original ASSET12 tag/control checks and all whole-HTML comparisons.
+        read_projection = expected.replace(b"require_once __DIR__ . '/includes/club_program.php';", b"require_once __DIR__ . '/includes/club_program.php';\nrequire_once __DIR__ . '/includes/club_program_admin_read.php';", 1)
+        read_projection = read_projection.replace(b'$offers = clubProgramAdminOffers($pdo);', b'$offers = clubProgramAdminOffersRead($pdo);', 1)
+        assert before.count(old) == 1 and original[route] in (expected, read_projection), "Unexpected source change"
         baseline[route] = before
         sources[route] = dict(
             baseline=base, head=head,

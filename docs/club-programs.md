@@ -73,3 +73,80 @@ Stavy `shop_orders`, `payments`, `club_program_enrollments` a `club_roster_membe
   vlastní registrační a platnostní okno.
 - Automatické storno řeší objednávkový lifecycle. Samostatné administrátorské
   ukončení účasti bez storna objednávky zatím vyžaduje řízený zásah správce.
+
+
+## P11-PADMIN — dávkové čtení správy programů (13. 11. 2026)
+
+ROZPRACOVÁNO před implementací. Vývoj/Codex na pokyn Marka pokračovat
+v další měřené optimalizaci, zachovat WIP, aktualizovat plán/handoff a po
+úplném PASS commit/merge/chráněný deploy. Větev codex/program-admin-read-20261113,
+worktree C:/Users/Marek/Documents/Codex/evidencePavel-program-admin-read-20261113.
+Base c5a4ca3b18265f79d740f4be7b25491132aac887; ověřený runtime b2ca9f4b,
+deploy 43447880903 SUCCESS. Původní fio/d1221f35 a kis_rosters_admin.php
+SHA256 7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachovat.
+
+Výběrová diagnostika ASSET12: 0/2/12/100 nabídek = 1/43/253/2101 SQL
+na SQLite in-memory. Aktuální clubProgramAdminOffers pro každou nabídku
+opakuje metadata schématu, fyzické soupisky, kapacitu a účinné podmínky.
+Stávající ClubProgramReadContext už má dávky podmínek a fyzických soupisek,
+ale veřejný warmup filtruje aktivní/prodejné nabídky; správa musí zobrazit
+i koncepty, uzavřené, skončené a neprodejné nabídky. Pouhé použití veřejné
+variantové projekce by měnilo výsledky a není přijaté.
+
+Zvolený řez: samostatný reader jen pro administrační seznam, přesně původní
+výběrový SQL/pořadí/PDO typy. Nový lokální čtecí kontext načte metadata jednou,
+fyzické soupisky a poslední aktivní podmínky v omezených dávkách pro všechny
+zobrazené nabídky bez filtru prodejnosti. Kapacitu nadále počítá stejná
+kanonická funkce nad čerstvými daty; její zápisové a zamykající cesty zůstanou
+referencí. Dva kapacitní dotazy na nabídku tímto řezem nezmizí — jeho cíl
+je odstranit většinu z 21 opakovaných SQL na nabídku bez duplikace složité
+kapacitní sémantiky. Žádná persistentní cache, změna práv, schématu či writerů.
+
+Akceptace:
+1. Strict shoda kompletních řádků/typů/pořadí s nezměněným scalar API:
+0/2/12/100/401 nabídek, hranice dávky 80/400, aktivní/neaktivní programy a
+nabídky, deduplikace osob mezi překryvy, více fyzických soupisek, rezervace
+pending/paid/expired/rejected/cancelled, anonymní placené přihlášky, null/0
+kapacita, primární fallback, chybějící registry/volitelné sloupce, poslední
+aktivní override a programový fallback včetně prázdného/VZOR textu.
+2. Nové volání musí po změně dat znovu číst aktuální stav, lock API nesmí
+čerpat tento kontext. Původní public/scalar/checkout funkce beze změny.
+3. MariaDB 10.3/11.4 párově: stejné fixture, query cache off, 4 zahřátí a
+17 střídavých měřených párů, čas neinstrumentovaně; SQL/řádky a paměť zvlášť.
+Požadovat významné snížení SQL i měřený přínos na 100+ nabídkách.
+4. Celé HTTP před/po: přehled a editory, odmítnuté role a anonymní, prázdný
+přehled; přesná HTML/hlavičková shoda kromě nonce, všech tabulek checksumy,
+bezpečný úklid. Skutečný Apache/Chrome desktop/mobile light/dark, shodné
+pixely/formuláře, GET čas; CSS je už ASSET12 a není novou úsporou.
+5. Cílené a celé CI, styl/syntaxe/docs/diff PASS; aktuální main, shodný
+testovaný a sloučený strom. Chráněný deploy s UAT/import false, záloha,
+config/migrace/VS/index/HTTP/úklid, anonymní živé GET před/po. Přihlášené
+produkční UAT evidovat zvlášť. Současný blokátor náhradních lekcí zachovat.
+
+[Průběžné výsledky](verification/program-admin-read-20261113/RESULTS.md).
+Další krok: minimální reader/context warmup a samostatná strict parita.
+
+
+### PADMIN — implementace a místní checkpoint
+
+Nový includes/club_program_admin_read.php ponechává přesný výběrový SQL
+a zbytek zpracování původního API. Mění jen napojení lokálního kontextu;
+původní includes/club_program.php je byte-shodný s baseline. Stránka má
+jedno nové require a volání readeru. ClubProgramReadContext má oddělený
+warmAdminOffers pro všechny stavové nabídky, včetně dávkových chybějících
+podmínek; veřejný warmup a zamykající API se nemění.
+
+Místní parita 5/75 a rozšířená sada 27/196 PASS. Diagnostický SQLite počet
+SQL: 0 nabídek 1→1, 2:43→14, 12:253→34, 100:2101→212, 401:8422→823.
+Jde o výběrový SQL důkaz, ne nativní či produkční latenci.
+Syntaxe PHP/JS/Python, changed-file styl a composer validate PASS;
+statická analýza ještě běží. Nativní čas/paměť a celé HTTP/Chrome čekají na CI.
+
+Profil má vlastní syntetický plně migrovaný server, před/po 0/2/12/100/401,
+čas na obyčejném PDO a instrumentaci zvlášť. HTTP a Chrome mají 100 nabídek
+s uzavřenými/koncepty/expirací, různými podmínkami a sdílenými fyzickými
+soupiskami; základní skutečné placené účasti fixture zůstávají zachované.
+Prázdný HTTP scénář má oddělený setup a přesnou obnovu/checksumy. Historický
+ASSET12 profil zachovává všechny CSS/HTML kontroly a dovoluje jen přesné
+dvouřádkové přepojení stránky na tento nový reader; jeho staré měření není
+novým izolovaným CSS výsledkem. Žádná produkční změna zatím neproběhla.
