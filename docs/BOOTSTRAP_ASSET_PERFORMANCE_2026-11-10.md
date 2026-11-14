@@ -1146,3 +1146,15 @@ Výsledkové předání vlastním PR z codex/calendar-catalog-assets-evidence-20
 po přijetí v main, bez dalšího nasazení. Původní fio WIP zachovaný.
 Další kandidáti: zbylé administrativní CSS duplicity, objem seznamů až po
 samostatném profilu a doloženém rozsahu. Ostatní WIP/prototypy nepřebírat.
+
+
+### ASSET13 — výsledkové CI přes půlnoc (15. 11. 2026)
+
+Nasazený837a7112 zůstává beze změny a jeho13CI i release PASS platí.
+První dokumentační head #482/f9f99254 narazil na kalendářní hranici v
+nezměněném rodinném benchmarku: baseline proti sobě, size20, přesně
+00:00 Europe/Prague15.11. Plné logy soukromé, bezpečné údaje/inference
+v [checkpointu](verification/calendar-catalog-bootstrap-20261114/midnight-checkpoint.json).
+Aktuální výsledkové PR proto opakuje stejné celé CI po půlnoci. Žádná
+změna aplikace, testů, normalizace ani další produkční operace. Původní
+fail se nepřepisuje na PASS. Merge dokladů až po nové zelené bráně.

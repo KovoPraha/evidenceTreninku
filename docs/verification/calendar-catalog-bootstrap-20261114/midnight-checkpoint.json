@@ -1,0 +1,14 @@
+{
+  "run": 43650474067,
+  "head": "f9f9925443fd1dc3fb4c8c950198df303d1790ff",
+  "job": 132617578409,
+  "failed_step": "Ověřit metadata a sekce rodinného přehledu",
+  "utc_timestamp": "2026-11-14T23:00:00.7065551Z",
+  "local_timestamp": "2026-11-15T00:00:00.7065551+01:00",
+  "timezone": "Europe/Prague",
+  "message": "Page data or HTML changed size=20 mode=baseline",
+  "application_changed": false,
+  "baseline_uses_current_calendar_date": true,
+  "inference": "Self-comparison crossed the local date boundary; unrelated to the CSS patch.",
+  "response": "Retain the failure evidence and rerun unchanged complete checks after the boundary; no weakened normalization."
+}

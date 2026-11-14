@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/RESULTS.md",
-      "bytes": 8182,
-      "sha256": "9e198ee7713e3a91d3ca8f8d9efd43bdc1d99670e26d21f4cf07aeecb20ceb2d"
+      "bytes": 9180,
+      "sha256": "04048ecb9229ac9b1bf8e7d6bb0165990ffd5ff2b4a23c6fb9983db8d83c21ef"
     },
     {
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/application-checks.json",
@@ -235,6 +235,11 @@
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/source.json",
       "bytes": 836,
       "sha256": "12f6aff2618b44194ce77ada53f051f44c7d33ac9268268b987059c424dd8d84"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/midnight-checkpoint.json",
+      "bytes": 675,
+      "sha256": "b0f4bd6b42aae19c861fbe3fda687c20ad33cadaa69b7eea992f441fc7caa86e"
     },
     {
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/paired-run.json",

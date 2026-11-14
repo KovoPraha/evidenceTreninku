@@ -125,3 +125,20 @@ Ostatní rozpracované PR/prototypy tímto nesloučené, souběžná dokumentace
 #476 zachovaná a lidské blokátory otevřené. Další kandidáti:
 zbylé administrativní CSS duplicity, nebo velikost seznamů až po samostatném
 profilu a doloženém objemu; žádný další neověřený prototyp tímto nevydávat.
+
+
+## Výsledkové CI přes půlnoc — 15. 11. 2026
+
+Dokumentační PR #482/f9f99254 nezměnilo aplikaci. Jeho první širší CI
+43650474067 selhalo na rodinném profilu11.4, nikoli na CSS: v23:00:00UTC
+(00:00 Europe/Prague) se vlastní baseline změnila mezi páry, size20,
+mode=baseline. Profil porovnává skutečný kalendářně závislý přehled přes
+více procesů; jeho datové sekce používají aktuální datum. Přechod dne je
+silně podložené vysvětlení časováním a kontrolou zdroje, nikoli změna
+nasazeného kódu. [Důkaz a inference](midnight-checkpoint.json).
+
+Původní fail zachovaný. Nový dokumentační head opakuje všechny stejné
+kontroly již po hranici dne, bez změny aplikace/testů nebo širšího maskování
+HTML/dat. Teprve zelená aktuální brána dovolí merge dokladů. Kvůli tomu
+žádný další deploy. Případné deterministické hodiny v rodinném benchmarku
+vyžadují samostatný návrh; zde se nechce změnit časová sémantika aplikace.
