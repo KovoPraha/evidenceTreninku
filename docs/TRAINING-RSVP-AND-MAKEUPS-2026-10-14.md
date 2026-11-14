@@ -198,6 +198,14 @@ neprojde. Samotné zadání omluvenky, technické vyhodnocování ani nasazení 
 nejsou důkazem dokončeného UAT. Aktuální [protokol blokátoru](verification/makeup-attendance-e2e-20261113/RESULTS.md)
 odděluje doložené kroky od neprovedených.
 
+**Následné ověření 13. 11.:** [samostatný místní přihlášený scénář](verification/makeup-attendance-e2e-20261113/RESULTS.md#samostatný-syntetický-průchod-13-11-2026)
+na vlastních syntetických datech dokončil omluvu, trenérský zápis skutečné
+docházky, vznik právě jednoho nároku i rodičovskou rezervaci automatického
+termínu. Stránka byla dostupná i po přihlášení s legacy rolí `trener` a
+pracovní pozicí `coach`. Hlášení vlastníka o produkční dostupnosti to samo
+nevyvrací; skutečné role, nastavení, lidská přejímka a produkční aktivace
+zůstávají otevřené. Úklid dočasných souborů je popsán v protokolu.
+
 ### Vydání na pokyn vlastníka 12. 11. 2026
 
 Vlastník požádal o nasazení implementace po úspěšném CI PR #459. Vydat přes
