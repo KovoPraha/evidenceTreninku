@@ -321,3 +321,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 14. 11. 2026 — P11-PCAP zahájen: dávkové kapacitní čtení po doloženém PADMIN. [Plán](club-programs.md#p11-pcap--dávkové-kapacity-správy-programů-14-11-2026), [výsledky](verification/program-capacity-read-20261114/RESULTS.md). Původní WIP zachovaný, vydání až po PASS.
 
 14. 11. 2026 — P11-PCAP dokončen po přesné paritě a párovém měření, chráněné vydání ověřeno. **P11-PCAP NASAZENO:** [plán](club-programs.md#p11-pcap--dávkové-kapacity-správy-programů-14-11-2026), [výsledky](verification/program-capacity-read-20261114/RESULTS.md). #479/c7b77fa5, [deploy 43633315305](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43633315305) SUCCESS,15CI. Syntetický GET100 94→56 / 93→52ms, přesná shoda; přihlášené produkční UAT NOT RUN.
+
+14. 11. 2026 — P11-ASSET13 zahájen: odstranění zbylých dvou Bootstrap CSS duplicit potvrzených analýzou. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset13--klubový-kalendář-a-správa-katalogu-14-11-2026), [výsledky](verification/calendar-catalog-bootstrap-20261114/RESULTS.md).

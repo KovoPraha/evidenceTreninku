@@ -102,6 +102,8 @@ final class SharedUiShellTest extends TestCase
             $verifiedSharedOnly = in_array($relative, [
                 'admin_dashboard.php',
                 'club_programs_admin.php',
+                'club_calendar.php',
+                'eshop_catalog_admin.php',
                 'duplikovat_trenink.php',
                 'edit_trenink.php',
                 'formular.php',
