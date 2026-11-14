@@ -5,87 +5,689 @@ require_once __DIR__ . '/includes/init.php';
 require_once __DIR__ . '/csrf_helper.php';
 require_once __DIR__ . '/includes/club_calendar.php';
 require_once __DIR__ . '/includes/roster_target_selector.php';
-if (!isset($_SESSION['trener_id'])) { header('Location: login.php'); exit; }
-
-function calendarH(mixed $value): string { return htmlspecialchars((string)$value,ENT_QUOTES|ENT_SUBSTITUTE,'UTF-8'); }
-function calendarInputDate(mixed $value): string { return $value ? str_replace(' ','T',substr((string)$value,0,16)) : ''; }
-function calendarAmountMinor(mixed $value): int { $value=str_replace([' ', ','],['','.'],trim((string)$value));if($value==='')return 0;if(preg_match('/^[0-9]+(?:\.[0-9]{1,2})?$/D',$value)!==1)throw new InvalidArgumentException('Cena musí být částka v Kč, například 1250 nebo 1250,50.');[$whole,$decimal]=array_pad(explode('.',$value,2),2,'');return((int)$whole*100)+(int)str_pad($decimal,2,'0'); }
-function calendarParticipantStatus(string $status): string { return ['planned'=>'Plánuje se','confirmed'=>'Potvrzeno','waitlisted'=>'Náhradník','cancelled'=>'Zrušeno'][$status]??$status; }
-function calendarChargeStatus(string $status): string { return ['pending'=>'Čeká na úhradu','paid'=>'Uhrazeno','refund_required'=>'Čeká na vrácení','refunded'=>'Vráceno','cancelled'=>'Zrušeno'][$status]??$status; }
-
-$actorId=(int)$_SESSION['trener_id'];$errors=[];
-$month=(string)($_GET['month']??date('Y-m'));
-if(preg_match('/^\d{4}-\d{2}$/D',$month)!==1)$month=date('Y-m');
-$monthStart=DateTimeImmutable::createFromFormat('!Y-m-d',$month.'-01')?:new DateTimeImmutable('first day of this month');
-$monthEnd=$monthStart->modify('last day of this month');
-$eventId=(int)($_GET['event_id']??0);
-
-if($_SERVER['REQUEST_METHOD']==='POST'){
-    if(!csrf_verify((string)($_POST['csrf_token']??'')))$errors[]='Formulář vypršel. Obnovte stránku a zkuste to znovu.';
-    else try{
-        $action=(string)($_POST['action']??'');$eventId=(int)($_POST['event_id']??0);
-        if($action==='save_event'){$_POST['participant_fee_minor']=calendarAmountMinor($_POST['participant_fee_czk']??'0');$result=clubCalendarSaveEvent($pdo,$actorId,$eventId,$_POST);$eventId=$result['id'];$_SESSION['club_calendar_flash']=$result['created']?'Akce byla přidána do kalendáře.':'Akce byla upravena.';}
-        elseif($action==='open_registration'||$action==='close_registration'){clubCalendarSetRegistration($pdo,$eventId,$actorId,$action==='open_registration');$_SESSION['club_calendar_flash']=$action==='open_registration'?'Přihlašování je otevřené.':'Přihlašování je uzavřené.';}
-        elseif($action==='add_person'){clubCalendarAddPerson($pdo,$eventId,$actorId,$_POST);$_SESSION['club_calendar_flash']='Osoba byla přidána.';}
-        elseif($action==='add_link'){clubCalendarAddLink($pdo,$eventId,$actorId,$_POST);$_SESSION['club_calendar_flash']='Odkaz byl přidán.';}
-        elseif($action==='reserve_vehicle'){$saved=clubCalendarReserveVehicle($pdo,$eventId,$actorId,$_POST);$_SESSION['club_calendar_flash']=$saved['conflict_count']?'Vozidlo bylo rezervováno přes výrazně označenou kolizi.':'Vozidlo bylo rezervováno.';}
-        elseif($action==='add_participant'){clubCalendarAddParticipant($pdo,$eventId,(int)($_POST['sportovec_id']??0),$actorId,isset($_POST['confirmed']),null);$_SESSION['club_calendar_flash']='Účastník byl uložen.';}
-        elseif($action==='confirm_participant'){$s=$pdo->prepare('SELECT sportovec_id,account_id FROM club_event_planned_participants WHERE id=? AND event_id=?');$s->execute([(int)($_POST['participant_id']??0),$eventId]);$p=$s->fetch(PDO::FETCH_ASSOC);if(!$p)throw new ClubCalendarException('Účastník nebyl nalezen.');$r=clubCalendarAddParticipant($pdo,$eventId,(int)$p['sportovec_id'],$actorId,true,$p['account_id']===null?null:(int)$p['account_id']);$_SESSION['club_calendar_flash']=$r['payer_missing']?'Účast je potvrzená, ale chybí schválený účet plátce.':'Účast byla potvrzena.';}
-        elseif($action==='cancel_participant'){clubCalendarCancelParticipant($pdo,(int)($_POST['participant_id']??0),$actorId,(string)($_POST['reason']??''));$_SESSION['club_calendar_flash']='Účast byla zrušena.';}
-        elseif($action==='remove_item'){clubCalendarRemoveItem($pdo,$eventId,$actorId,(string)($_POST['item_type']??''),(int)($_POST['item_id']??0));$_SESSION['club_calendar_flash']='Položka byla odebrána.';}
-        elseif($action==='create_race_record'){$r=clubCalendarCreateLegacyRace($pdo,$eventId,$actorId,(string)($_POST['category']??''));$_SESSION['club_calendar_flash']=$r['created']?'Výsledkový záznam závodu byl založen.':'Výsledkový záznam už existuje.';}
-        else throw new InvalidArgumentException('Neplatná operace kalendáře.');
-        header('Location: club_calendar.php?month='.rawurlencode($month).'&event_id='.$eventId,true,303);exit;
-    }catch(InvalidArgumentException|ClubCalendarException|ShopCheckoutException$exception){$errors[]=$exception->getMessage();}catch(Throwable$exception){error_log('club_calendar.php: '.$exception->getMessage());$errors[]='Operace selhala bez částečného zápisu.';}
+if (!isset($_SESSION['trener_id'])) {
+    header('Location: login.php');
+    exit;
 }
-$success=(string)($_SESSION['club_calendar_flash']??'');unset($_SESSION['club_calendar_flash']);
-$events=clubCalendarEvents($pdo,$monthStart->format('Y-m-d'),$monthEnd->format('Y-m-d'),null,true);
-$detail=$eventId>0?clubCalendarDetail($pdo,$eventId):null;if($eventId>0&&!$detail)$errors[]='Vybraná akce nebyla nalezena.';
-$trainers=$pdo->query("SELECT id,jmeno FROM treneri WHERE aktivni=1 ORDER BY jmeno,id")->fetchAll(PDO::FETCH_ASSOC);
-$vehicles=$pdo->query('SELECT id,znacka_model,spz FROM ucto_vozidla ORDER BY znacka_model,spz,id')->fetchAll(PDO::FETCH_ASSOC);
-$athleteQuery=trim((string)($_GET['athlete_q']??''));
-if(mb_strlen($athleteQuery,'UTF-8')>80)$athleteQuery=mb_substr($athleteQuery,0,80,'UTF-8');
-$athleteQueryTooShort=$athleteQuery!==''&&mb_strlen($athleteQuery,'UTF-8')<2&&!ctype_digit($athleteQuery);
-$athletes=[];
-if($athleteQuery!==''&&!$athleteQueryTooShort){
-    $search=$pdo->prepare("SELECT id,jmeno,prijmeni FROM sportovci WHERE CONCAT(prijmeni COLLATE utf8mb4_unicode_ci,' ',jmeno COLLATE utf8mb4_unicode_ci) LIKE ? OR CONCAT(jmeno COLLATE utf8mb4_unicode_ci,' ',prijmeni COLLATE utf8mb4_unicode_ci) LIKE ? OR id=? ORDER BY prijmeni,jmeno,id LIMIT 25");
-    $pattern='%'.str_replace(['\\','%','_'],['\\\\','\\%','\\_'],$athleteQuery).'%';
-    $search->execute([$pattern,$pattern,ctype_digit($athleteQuery)?(int)$athleteQuery:0]);
-    $athletes=$search->fetchAll(PDO::FETCH_ASSOC);
+
+function calendarH(mixed $value): string
+{
+    return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
-$selectedTeams=$detail?array_map('intval',array_column($detail['teams'],'team_id')):[];
-$calendarByDay=[];$allConflicts=[];foreach($events as$event){$day=substr((string)$event['starts_at'],0,10);$calendarByDay[$day][]=$event;foreach($event['vehicle_conflicts']as$conflict)$allConflicts[(int)$conflict['reservation_id'].'-'.(int)$conflict['conflict']['id']]=$conflict;}
-$defaults=$detail?:['id'=>0,'name'=>'','activity_kind'=>'race','planning_status'=>'planned','visibility'=>'staff','starts_at'=>$monthStart->setTime(9,0)->format('Y-m-d H:i:s'),'ends_at'=>$monthStart->setTime(17,0)->format('Y-m-d H:i:s'),'location'=>'','public_description_plain'=>'','internal_note'=>'','capacity'=>100,'participant_fee_minor'=>0,'fee_due_days'=>14,'status'=>'draft','legacy_race_id'=>null];
-$prev=$monthStart->modify('-1 month')->format('Y-m');$next=$monthStart->modify('+1 month')->format('Y-m');
+function calendarInputDate(mixed $value): string
+{
+    return $value ? str_replace(' ', 'T', substr((string)$value, 0, 16)) : '';
+}
+function calendarAmountMinor(mixed $value): int
+{
+    $value = str_replace([' ', ','], [''
+    ,'.'], trim((string)$value));
+    if ($value === '') {
+        return 0;
+    }if (preg_match('/^[0-9]+(?:\.[0-9]{1,2})?$/D', $value) !== 1) {
+        throw new InvalidArgumentException(
+            'Cena musí být částka v Kč, například 1250 nebo 1250,50.'
+        );
+    }[$whole,$decimal] = array_pad(explode('.', $value, 2), 2, '');
+    return((int)$whole * 100) + (int)str_pad($decimal, 2, '0');
+}
+function calendarParticipantStatus(string $status): string
+{
+    return ['planned' => 'Plánuje se'
+    ,'confirmed' => 'Potvrzeno','waitlisted' => 'Náhradník','cancelled' => 'Zrušeno'][$status] ?? $status
+    ;
+}
+function calendarChargeStatus(string $status): string
+{
+    return ['pending' => 'Čeká na úhradu'
+    ,'paid' => 'Uhrazeno','refund_required' => 'Čeká na vrácení','refunded' => 'Vráceno','cancelled' => 'Zrušeno'][$status] ?? $status
+    ;
+}
+
+$actorId = (int)$_SESSION['trener_id'];
+$errors = [];
+$month = (string)($_GET['month'] ?? date('Y-m'));
+if (preg_match('/^\d{4}-\d{2}$/D', $month) !== 1) {
+    $month = date('Y-m');
+}
+$monthStart = DateTimeImmutable::createFromFormat('!Y-m-d', $month.'-01') ?: new DateTimeImmutable(
+    'first day of this month'
+);
+$monthEnd = $monthStart->modify('last day of this month');
+$eventId = (int)($_GET['event_id'] ?? 0);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+        $errors[] = 'Formulář vypršel. Obnovte stránku a zkuste to znovu.'
+        ;
+    } else {
+        try {
+            $action = (string)($_POST['action'] ?? '');
+            $eventId = (int)(
+                $_POST['event_id'] ?? 0
+            );
+            if ($action === 'save_event') {
+                $_POST['participant_fee_minor'] = calendarAmountMinor(
+                    $_POST['participant_fee_czk'] ?? '0'
+                );
+                $result = clubCalendarSaveEvent($pdo, $actorId, $eventId, $_POST);
+                $eventId = $result['id']
+                ;
+                $_SESSION['club_calendar_flash'] = $result['created'] ? 'Akce byla přidána do kalendáře.'
+                : 'Akce byla upravena.';
+            } elseif ($action === 'open_registration' || $action === 'close_registration') {
+                clubCalendarSetRegistration($pdo, $eventId, $actorId, $action === 'open_registration');
+                $_SESSION['club_calendar_flash'] = $action === 'open_registration'
+                ? 'Přihlašování je otevřené.' : 'Přihlašování je uzavřené.';
+            } elseif ($action === 'add_person') {
+                clubCalendarAddPerson($pdo, $eventId, $actorId, $_POST);
+                $_SESSION['club_calendar_flash'] = 'Osoba byla přidána.';
+            } elseif ($action === 'add_link') {
+                clubCalendarAddLink(
+                    $pdo,
+                    $eventId,
+                    $actorId,
+                    $_POST
+                );
+                $_SESSION['club_calendar_flash'] = 'Odkaz byl přidán.';
+            } elseif ($action === 'reserve_vehicle') {
+                $saved = clubCalendarReserveVehicle($pdo, $eventId, $actorId, $_POST);
+                $_SESSION['club_calendar_flash'] = $saved['conflict_count']
+                ? 'Vozidlo bylo rezervováno přes výrazně označenou kolizi.' : 'Vozidlo bylo rezervováno.'
+                ;
+            } elseif ($action === 'add_participant') {
+                clubCalendarAddParticipant($pdo, $eventId, (int)($_POST['sportovec_id'] ?? 0), $actorId, isset($_POST['confirmed']), null);
+                $_SESSION['club_calendar_flash'] = 'Účastník byl uložen.'
+                ;
+            } elseif ($action === 'confirm_participant') {
+                $s = $pdo->prepare(
+                    'SELECT sportovec_id,account_id FROM club_event_planned_participants WHERE id=? AND event_id=?'
+                );
+                $s->execute([(int)($_POST['participant_id'] ?? 0),$eventId]);
+                $p = $s->fetch(
+                    PDO::FETCH_ASSOC
+                );
+                if (!$p) {
+                    throw new ClubCalendarException('Účastník nebyl nalezen.');
+                }$r = clubCalendarAddParticipant(
+                    $pdo,
+                    $eventId,
+                    (int)$p['sportovec_id'],
+                    $actorId,
+                    true,
+                    $p['account_id'] === null ? null : (int)$p['account_id']
+                );
+                $_SESSION['club_calendar_flash'] = $r['payer_missing'] ? 'Účast je potvrzená, ale chybí schválený účet plátce.'
+                : 'Účast byla potvrzena.';
+            } elseif ($action === 'cancel_participant') {
+                clubCalendarCancelParticipant($pdo, (int)($_POST['participant_id'] ?? 0), $actorId, (string)($_POST['reason'] ?? ''));
+                $_SESSION['club_calendar_flash'] = 'Účast byla zrušena.'
+                ;
+            } elseif ($action === 'remove_item') {
+                clubCalendarRemoveItem($pdo, $eventId, $actorId, (string)($_POST['item_type'] ?? ''), (int)($_POST['item_id'] ?? 0));
+                $_SESSION['club_calendar_flash'] = 'Položka byla odebrána.'
+                ;
+            } elseif ($action === 'create_race_record') {
+                $r = clubCalendarCreateLegacyRace($pdo, $eventId, $actorId, (string)($_POST['category'] ?? ''));
+                $_SESSION['club_calendar_flash'] = $r['created']
+                ? 'Výsledkový záznam závodu byl založen.' : 'Výsledkový záznam už existuje.';
+            } else {
+                throw new InvalidArgumentException('Neplatná operace kalendáře.');
+            }
+            header('Location: club_calendar.php?month='.rawurlencode($month).'&event_id='
+.$eventId, true, 303);
+            exit;
+        } catch (InvalidArgumentException|ClubCalendarException|ShopCheckoutException$exception
+        ) {
+            $errors[] = $exception->getMessage();
+        } catch (Throwable$exception) {
+            error_log('club_calendar.php: '
+            .$exception->getMessage());
+            $errors[] = 'Operace selhala bez částečného zápisu.';
+        }
+    }
+}
+$success = (string)($_SESSION['club_calendar_flash'] ?? '');
+unset($_SESSION['club_calendar_flash']
+);
+$events = clubCalendarEvents($pdo, $monthStart->format('Y-m-d'), $monthEnd->format(
+    'Y-m-d'
+), null, true);
+$detail = $eventId > 0 ? clubCalendarDetail($pdo, $eventId) : null;
+if ($eventId > 0 && !$detail
+) {
+    $errors[] = 'Vybraná akce nebyla nalezena.';
+}
+$trainers = $pdo->query(
+    "SELECT id,jmeno FROM treneri WHERE aktivni=1 ORDER BY jmeno,id"
+)->fetchAll(PDO::FETCH_ASSOC);
+$vehicles = $pdo->query(
+    'SELECT id,znacka_model,spz FROM ucto_vozidla ORDER BY znacka_model,spz,id'
+)->fetchAll(PDO::FETCH_ASSOC);
+$athleteQuery = trim((string)($_GET['athlete_q'] ?? ''));
+if (mb_strlen($athleteQuery, 'UTF-8') > 80) {
+    $athleteQuery = mb_substr($athleteQuery, 0, 80, 'UTF-8');
+}
+$athleteQueryTooShort = $athleteQuery !== '' && mb_strlen($athleteQuery, 'UTF-8') < 2 && !ctype_digit(
+    $athleteQuery
+);
+$athletes = [];
+if ($athleteQuery !== '' && !$athleteQueryTooShort) {
+    $search = $pdo->prepare(
+        "SELECT id,jmeno,prijmeni FROM sportovci WHERE CONCAT(prijmeni COLLATE utf8mb4_unicode_ci,' ',jmeno COLLATE utf8mb4_unicode_ci) LIKE ? OR "
+        . "CONCAT(jmeno COLLATE utf8mb4_unicode_ci,' ',prijmeni COLLATE utf8mb4_unicode_ci) LIKE ? OR id=? ORDER BY prijmeni,jmeno,id LIMIT 25"
+    );
+    $pattern = '%'.str_replace(['\\','%','_'], ['\\\\','\\%','\\_'], $athleteQuery).'%'
+    ;
+    $search->execute([$pattern,$pattern,ctype_digit($athleteQuery) ? (int)$athleteQuery
+: 0]);
+    $athletes = $search->fetchAll(PDO::FETCH_ASSOC);
+}
+$selectedTeams = $detail ? array_map('intval', array_column(
+    $detail['teams'],
+    'team_id'
+)) : [];
+$calendarByDay = [];
+$allConflicts = [];
+foreach ($events as $event) {
+    $day = substr((string)$event['starts_at'], 0, 10);
+    $calendarByDay[$day][] = $event;
+    foreach ($event['vehicle_conflicts'] as $conflict
+    ) {
+        $allConflicts[(int)$conflict['reservation_id'].'-'.(int)$conflict['conflict']['id']] = $conflict
+        ;
+    }
+}
+$defaults = $detail ?: ['id' => 0,'name' => '','activity_kind' => 'race','planning_status' => 'planned'
+,'visibility' => 'staff','starts_at' => $monthStart->setTime(9, 0)->format(
+    'Y-m-d H:i:s'
+),'ends_at' => $monthStart->setTime(17, 0)->format('Y-m-d H:i:s'),'location' => '','public_description_plain' => ''
+,'internal_note' => '','capacity' => 100,'participant_fee_minor' => 0,'fee_due_days' => 14
+,'status' => 'draft','legacy_race_id' => null];
+$prev = $monthStart->modify('-1 month')->format('Y-m');
+$next = $monthStart->modify(
+    '+1 month'
+)->format('Y-m');
 ?>
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kalendář klubových akcí</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"><style nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>">.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.5rem}.calendar-day{min-height:130px}.calendar-event{display:block;font-size:.78rem;padding:.35rem .45rem;border-radius:.5rem;margin-top:.35rem;text-decoration:none}.status-planned{background:#fff3cd;color:#664d03}.status-confirmed{background:#d1e7dd;color:#0f5132}.status-cancelled{background:#e2e3e5;color:#41464b}.status-completed{background:#cfe2ff;color:#084298}.conflict-card{border:3px solid #dc3545!important;box-shadow:0 0 0 .2rem rgba(220,53,69,.15)}@media(max-width:900px){.calendar-grid{grid-template-columns:1fr}.calendar-weekday{display:none}.calendar-day{min-height:auto}}</style></head><body class="bg-light">
-<?php include __DIR__.'/hlavicka.php';?><main class="container-fluid py-4" style="max-width:1500px">
-<?php if(in_array(staffActivePosition(),['coach','sports_lead'],true)):?><p><a href="sports_activity_admin.php">Doložit skutečnou účast, starty a výsledky</a> · Registrace a dokončení plánování se do sportovních výkonů nezapočítávají automaticky.</p><?php endif;?>
-<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3"><div><h1 class="h3 mb-1"><i class="bi bi-calendar-event me-2 text-primary"></i>Kalendář klubových akcí</h1><p class="text-muted mb-0">Závody, soustředění, školení, schůze a další klubové termíny. Individuální lekce a veřejné hodiny velodromu se spravují ve vlastních částech.</p></div><div class="btn-group"><a class="btn btn-outline-primary" href="club_calendar.php?month=<?=calendarH($prev)?>">‹ Předchozí</a><a class="btn btn-outline-secondary" href="club_calendar.php?month=<?=calendarH(date('Y-m'))?>">Dnes</a><a class="btn btn-outline-primary" href="club_calendar.php?month=<?=calendarH($next)?>">Další ›</a></div></div>
-<?php foreach($errors as$error):?><div class="alert alert-danger"><?=calendarH($error)?></div><?php endforeach;?><?php if($success!==''):?><div class="alert alert-success"><?=calendarH($success)?></div><?php endif;?>
-<?php if($allConflicts!==[]):?><section class="alert alert-danger border-3 shadow-sm"><h2 class="h5"><i class="bi bi-exclamation-octagon-fill me-2"></i>Kolize vozidel vyžadují pozornost</h2><p class="mb-2">Uložení bylo povolené, protože domluva mohla proběhnout mimo systém. Varování zůstává viditelné, dokud se rezervace nepřestanou překrývat.</p><?php foreach($allConflicts as$c):?><div><strong><?=calendarH($c['vehicle'])?></strong>: <?=calendarH($c['conflict']['name'])?>, <?=calendarH($c['conflict']['starts_at'])?>–<?=calendarH($c['conflict']['ends_at'])?></div><?php endforeach;?></section><?php endif;?>
-<section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white d-flex justify-content-between"><strong><?=calendarH($monthStart->format('m/Y'))?></strong><a class="btn btn-primary btn-sm" href="club_calendar.php?month=<?=calendarH($month)?>#editor"><i class="bi bi-plus-lg me-1"></i>Nová akce</a></div><div class="card-body"><div class="calendar-grid"><?php foreach(['Po','Út','St','Čt','Pá','So','Ne']as$weekday):?><div class="calendar-weekday fw-semibold text-center text-muted"><?=$weekday?></div><?php endforeach;?><?php for($blank=1;$blank<(int)$monthStart->format('N');$blank++):?><div></div><?php endfor;?><?php for($day=1;$day<=(int)$monthEnd->format('j');$day++):$date=$monthStart->setDate((int)$monthStart->format('Y'),(int)$monthStart->format('m'),$day);?><div class="calendar-day border rounded bg-white p-2"><div class="d-flex justify-content-between"><strong><?=$day?></strong><span class="small text-muted"><?=$date->format('D')?></span></div><?php foreach($calendarByDay[$date->format('Y-m-d')]??[]as$event):$hasConflict=$event['vehicle_conflicts']!==[];?><a class="calendar-event status-<?=calendarH($event['planning_status'])?> <?=$hasConflict?'border border-danger border-3':''?>" href="club_calendar.php?month=<?=calendarH($month)?>&event_id=<?=(int)$event['id']?>#editor"><strong><?=calendarH(substr((string)$event['starts_at'],11,5))?> <?=calendarH($event['name'])?></strong><br><?=calendarH(clubCalendarKinds()[$event['activity_kind']]??'Akce')?> · <?=calendarH(clubCalendarPlanningStatuses()[$event['planning_status']]??$event['planning_status'])?><?php if($hasConflict):?><br><span class="text-danger fw-bold">⚠ kolize vozidla</span><?php endif;?></a><?php endforeach;?></div><?php endfor;?></div></div></section>
-<section class="card border-0 shadow-sm mb-4" id="editor"><div class="card-header bg-white d-flex justify-content-between align-items-center"><strong><?=$detail?'Upravit akci':'Nová akce'?></strong><?php if($detail):?><a class="btn btn-outline-primary btn-sm" href="club_calendar.php?month=<?=calendarH($month)?>#editor">Založit další</a><?php endif;?></div><div class="card-body"><form method="post" class="row g-3"><?=csrf_field()?><input type="hidden" name="action" value="save_event"><input type="hidden" name="event_id" value="<?=(int)$defaults['id']?>">
-<div class="col-lg-5"><label class="form-label fw-semibold">Název</label><input class="form-control" name="name" maxlength="255" required value="<?=calendarH($defaults['name'])?>"></div><div class="col-md-3 col-lg-2"><label class="form-label fw-semibold">Druh</label><select class="form-select" name="activity_kind"><?php foreach(clubCalendarKinds()as$value=>$label):?><option value="<?=calendarH($value)?>" <?=$defaults['activity_kind']===$value?'selected':''?>><?=calendarH($label)?></option><?php endforeach;?></select></div><div class="col-md-4 col-lg-3"><label class="form-label fw-semibold">Stav</label><select class="form-select" name="planning_status"><?php foreach(clubCalendarPlanningStatuses()as$value=>$label):?><option value="<?=calendarH($value)?>" <?=$defaults['planning_status']===$value?'selected':''?>><?=calendarH($label)?></option><?php endforeach;?></select></div><div class="col-lg-2"><label class="form-label fw-semibold">Viditelnost</label><select class="form-select" name="visibility"><?php foreach(clubCalendarVisibilities()as$value=>$label):?><option value="<?=calendarH($value)?>" <?=$defaults['visibility']===$value?'selected':''?>><?=calendarH($label)?></option><?php endforeach;?></select></div>
-<div class="col-md-3"><label class="form-label">Začátek</label><input class="form-control" type="datetime-local" name="starts_at" required value="<?=calendarH(calendarInputDate($defaults['starts_at']))?>"></div><div class="col-md-3"><label class="form-label">Konec</label><input class="form-control" type="datetime-local" name="ends_at" required value="<?=calendarH(calendarInputDate($defaults['ends_at']))?>"></div><div class="col-md-4"><label class="form-label">Místo</label><input class="form-control" name="location" maxlength="255" required value="<?=calendarH($defaults['location'])?>"></div><div class="col-md-2"><label class="form-label">Kapacita</label><input class="form-control" type="number" name="capacity" min="1" max="10000" value="<?=(int)$defaults['capacity']?>"></div>
-<div class="col-lg-6"><label class="form-label">Informace pro členy / veřejnost</label><textarea class="form-control" name="public_description_plain" rows="3" maxlength="4000"><?=calendarH($defaults['public_description_plain'])?></textarea></div><div class="col-lg-6"><label class="form-label">Interní poznámka pro trenéry</label><textarea class="form-control" name="internal_note" rows="3" maxlength="4000"><?=calendarH($defaults['internal_note'])?></textarea></div>
-<details class="col-12"><summary class="fw-semibold mb-3">Soupisky a cena</summary><div class="row g-3"><div class="col-lg-8"><label class="form-label">Cílová skupina nebo soupisky</label><div data-roster-target-container data-roster-date-selector="[name=&quot;starts_at&quot;]"><?= rosterTargetSelectorHtml($pdo,substr((string)$defaults['starts_at'],0,10),$selectedTeams) ?></div><div class="form-text">Celá skupina zahrne všechny její soupisky platné v den akce.</div></div><div class="col-md-2"><label class="form-label">Cena za osobu (Kč)</label><input class="form-control" inputmode="decimal" name="participant_fee_czk" value="<?=calendarH(number_format((int)$defaults['participant_fee_minor']/100,2,',',''))?>"><div class="form-text">Bez poplatku zadejte 0.</div></div><div class="col-md-2"><label class="form-label">Splatnost (dny)</label><input class="form-control" type="number" min="1" max="90" name="fee_due_days" value="<?=(int)$defaults['fee_due_days']?>"></div></div></details>
-<div class="col-12 d-grid d-md-flex justify-content-md-end"><button class="btn btn-success btn-lg"><i class="bi bi-check-lg me-1"></i>Uložit akci</button></div></form></div></section>
-<?php if($detail&&in_array(staffActivePosition(),['coach','sports_lead','finance_manager'],true)):?><p><a class="btn btn-outline-primary" href="club_event_work_admin.php?event_id=<?=$eventId?>">Účast, doprava a vyúčtování této akce</a></p><?php endif;?>
-<?php if($detail && (string)$detail['pricing_policy']==='free' && (empty($detail['terms_version'])||empty($detail['consent_text_plain'])||empty($detail['cancellation_policy_plain'])||empty($detail['cancellation_deadline_at']))):?><div class="alert alert-warning"><strong>Bezplatné přihlašování zatím nelze otevřít.</strong> Správce musí nejprve v administraci akcí doplnit verzi souhlasu, jeho text a storno podmínky.</div><?php endif;?>
-<?php if($detail):$registrationOpen=$detail['status']==='open';$registrationHasSession=!empty($detail['session_id']);$registrationStateAllowed=in_array((string)$detail['planning_status'],['planned','confirmed'],true);$registrationCanOpen=$registrationHasSession&&$registrationStateAllowed;?><section class="mb-5"><?php if(!$registrationOpen&&!$registrationHasSession):?><div class="alert alert-warning"><strong>Přihlašování zatím nelze otevřít.</strong> V editoru výše doplňte začátek, konec a místo a akci nejdříve uložte.</div><?php endif;?><div class="d-flex flex-wrap gap-2 mb-3"><form method="post"><?=csrf_field()?><input type="hidden" name="event_id" value="<?=$eventId?>"><button class="btn <?=$registrationOpen?'btn-outline-danger':'btn-success'?>" name="action" value="<?=$registrationOpen?'close_registration':'open_registration'?>" <?=!$registrationOpen&&!$registrationCanOpen?'disabled title="'.calendarH($registrationHasSession?'Dokončenou nebo zrušenou akci nelze otevřít':'Nejdříve uložte termín akce').'"':''?>><?=$registrationOpen?'Uzavřít přihlašování':($detail['planning_status']==='planned'?'Potvrdit akci a otevřít přihlašování':'Otevřít přihlašování')?></button></form><?php if($detail['legacy_race_id']):?><a class="btn btn-outline-primary" href="zavod_detail.php?id=<?=(int)$detail['legacy_race_id']?>">Výsledky závodu</a><?php elseif($detail['activity_kind']==='race'):?><form method="post" class="d-flex gap-2"><?=csrf_field()?><input type="hidden" name="action" value="create_race_record"><input type="hidden" name="event_id" value="<?=$eventId?>"><select class="form-select" name="category"><option value="silnice">Silnice</option><option value="draha">Dráha</option><option value="mtb">MTB</option></select><button class="btn btn-outline-primary text-nowrap">Založit výsledky</button></form><?php endif;?></div>
-<?php if($detail['vehicle_conflicts']!==[]):?><div class="alert alert-danger border-3"><h2 class="h5">⚠ Tato akce má kolizi vozidla</h2><?php foreach($detail['vehicle_conflicts']as$c):?><div><?=calendarH($c['vehicle'])?> se překrývá s <strong><?=calendarH($c['conflict']['name'])?></strong> (<?=calendarH($c['conflict']['starts_at'])?>–<?=calendarH($c['conflict']['ends_at'])?>).</div><?php endforeach;?></div><?php endif;?>
-<div class="row g-3"><div class="col-xl-6"><div class="card border-0 shadow-sm h-100"><div class="card-header bg-white fw-semibold">Zajišťující osoby</div><div class="card-body"><form method="post" class="row g-2 mb-3"><?=csrf_field()?><input type="hidden" name="action" value="add_person"><input type="hidden" name="event_id" value="<?=$eventId?>"><div class="col-md-4"><select class="form-select" name="person_role"><option value="lead_coach">Hlavní trenér</option><option value="coach">Trenér</option><option value="driver">Řidič</option><option value="organizer">Organizátor</option><option value="other">Jiná role</option></select></div><div class="col-md-4"><select class="form-select" name="trainer_id"><option value="">Registrovaný trenér…</option><?php foreach($trainers as$t):?><option value="<?=(int)$t['id']?>"><?=calendarH($t['jmeno'])?></option><?php endforeach;?></select></div><div class="col-md-4"><input class="form-control" name="external_name" maxlength="255" placeholder="nebo externí jméno"></div><div class="col-md-5"><input class="form-control" name="external_contact" maxlength="255" placeholder="Kontakt (interní)"></div><div class="col-md-5"><input class="form-control" name="note" maxlength="1000" placeholder="Poznámka"></div><div class="col-md-2 d-grid"><button class="btn btn-outline-primary">Přidat</button></div><div class="col-12 form-check ms-2"><input class="form-check-input" type="checkbox" name="visible_to_members" id="person-visible"><label class="form-check-label" for="person-visible">Jméno smí vidět členové cílových soupisek</label></div></form><?php foreach($detail['people']as$p):?><form method="post" class="d-flex gap-2 align-items-center border-top py-2"><?=csrf_field()?><input type="hidden" name="action" value="remove_item"><input type="hidden" name="event_id" value="<?=$eventId?>"><input type="hidden" name="item_type" value="person"><input type="hidden" name="item_id" value="<?=(int)$p['id']?>"><span class="flex-grow-1"><strong><?=calendarH($p['trainer_name']?:$p['external_name'])?></strong> · <?=calendarH($p['person_role'])?></span><button class="btn btn-sm btn-outline-danger">Odebrat</button></form><?php endforeach;?></div></div></div>
-<div class="col-xl-6"><div class="card border-0 shadow-sm h-100"><div class="card-header bg-white fw-semibold">Odkazy</div><div class="card-body"><form method="post" class="row g-2 mb-3"><?=csrf_field()?><input type="hidden" name="action" value="add_link"><input type="hidden" name="event_id" value="<?=$eventId?>"><div class="col-md-3"><select class="form-select" name="link_type"><option value="propositions">Propozice</option><option value="registration">Registrace pořadatele</option><option value="map">Mapa</option><option value="results">Výsledky</option><option value="other">Jiné</option></select></div><div class="col-md-3"><input class="form-control" name="label" maxlength="255" required placeholder="Název"></div><div class="col-md-4"><input class="form-control" type="url" name="url" maxlength="2048" required placeholder="https://…"></div><div class="col-md-2 d-grid"><button class="btn btn-outline-primary">Přidat</button></div></form><?php foreach($detail['links']as$l):?><form method="post" class="d-flex gap-2 align-items-center border-top py-2"><?=csrf_field()?><input type="hidden" name="action" value="remove_item"><input type="hidden" name="event_id" value="<?=$eventId?>"><input type="hidden" name="item_type" value="link"><input type="hidden" name="item_id" value="<?=(int)$l['id']?>"><a class="flex-grow-1" href="<?=calendarH($l['url'])?>" target="_blank" rel="noopener noreferrer"><?=calendarH($l['label'])?></a><button class="btn btn-sm btn-outline-danger">Odebrat</button></form><?php endforeach;?></div></div></div>
-<div class="col-12"><div class="card border-0 shadow-sm <?=$detail['vehicle_conflicts']!==[]?'conflict-card':''?>"><div class="card-header <?=$detail['vehicle_conflicts']!==[]?'bg-danger text-white':'bg-white'?> fw-semibold">Vozidla <?=$detail['vehicle_conflicts']!==[]?'— KOLIZE':''?></div><div class="card-body"><form method="post" class="row g-2"><?=csrf_field()?><input type="hidden" name="action" value="reserve_vehicle"><input type="hidden" name="event_id" value="<?=$eventId?>"><div class="col-md-3"><select class="form-select" name="vehicle_id" required><option value="">Vyberte vozidlo</option><?php foreach($vehicles as$v):?><option value="<?=(int)$v['id']?>"><?=calendarH($v['znacka_model'].' · '.$v['spz'])?></option><?php endforeach;?></select></div><div class="col-md-2"><input class="form-control" type="datetime-local" name="starts_at" required value="<?=calendarH(calendarInputDate($detail['starts_at']))?>"></div><div class="col-md-2"><input class="form-control" type="datetime-local" name="ends_at" required value="<?=calendarH(calendarInputDate($detail['ends_at']))?>"></div><div class="col-md-2"><select class="form-select" name="driver_trainer_id"><option value="">Řidič z trenérů…</option><?php foreach($trainers as$t):?><option value="<?=(int)$t['id']?>"><?=calendarH($t['jmeno'])?></option><?php endforeach;?></select></div><div class="col-md-3"><input class="form-control" name="driver_name" maxlength="255" placeholder="nebo externí řidič"></div><div class="col-md-5"><input class="form-control" name="note" maxlength="1000" placeholder="Účel / poznámka"></div><div class="col-md-5"><input class="form-control border-danger" name="conflict_note" maxlength="1000" placeholder="Pokud koliduje: jak je kolize domluvená"></div><div class="col-md-2 d-grid"><button class="btn btn-outline-primary">Rezervovat</button></div><div class="col-12 form-check ms-2 p-3 border border-danger rounded bg-danger-subtle"><input class="form-check-input" type="checkbox" name="conflict_acknowledged" id="vehicle-ack"><label class="form-check-label fw-bold text-danger" for="vehicle-ack">Pokud systém najde kolizi, vím o ní a chci rezervaci přesto uložit.</label></div></form><?php foreach($detail['vehicles']as$v):?><form method="post" class="d-flex flex-wrap gap-2 align-items-center border-top py-2 <?=$v['conflicts']!==[]?'bg-danger-subtle px-2':''?>"><?=csrf_field()?><input type="hidden" name="action" value="remove_item"><input type="hidden" name="event_id" value="<?=$eventId?>"><input type="hidden" name="item_type" value="vehicle"><input type="hidden" name="item_id" value="<?=(int)$v['id']?>"><span class="flex-grow-1"><strong><?=calendarH($v['znacka_model'].' '.$v['spz'])?></strong> · <?=calendarH($v['starts_at'].'–'.$v['ends_at'])?> · řidič <?=calendarH($v['driver_trainer_name']?:$v['driver_name']?:'neuveden')?><?php if($v['conflicts']!==[]):?><span class="badge text-bg-danger ms-2">KOLIZE</span><?php endif;?></span><?php if($v['status']==='active'):?><button class="btn btn-sm btn-outline-danger">Zrušit rezervaci</button><?php endif;?></form><?php endforeach;?></div></div></div>
-<div class="col-12" id="ucastnici"><div class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Účastníci</div><div class="card-body">
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport"<?php
+?> content="width=device-width,initial-scale=1"><title>Kalendář klubových akcí</title><style nonce="<?=
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>">.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.5rem}.calendar-day{min-height:130px}.calendar-event{displ<?php
+?>ay:block;font-size:.78rem;padding:.35rem<?php
+?> .45rem;border-radius:.5rem;margin-top:.35rem;text-decoration:none}.status-planned{background:#fff3cd;color:#664d03}.status-confirmed{back<?php
+?>ground:#d1e7dd;color:#0f5132}.status-cancelled{background:#e2e3e5;color:#41464b}.status-completed{background:#cfe2ff;color:#084298}.confli<?php
+?>ct-card{border:3px solid #dc3545!important;box-shadow:0 0 0 .2rem<?php
+?> rgba(220,53,69,.15)}@media(max-width:900px){.calendar-grid{grid-template-columns:1fr}.calendar-weekday{display:none}.calendar-day{min-hei<?php
+?>ght:auto}}</style></head><body class="bg-light">
+<?php
+include __DIR__.'/hlavicka.php';
+?><main class="container-fluid py-4" style="max-width:1500px">
+<?php
+if (in_array(staffActivePosition(), ['coach','sports_lead'], true)):
+    ?><p><a href="sports_activity_admin.php">Doložit skutečnou účast, starty a výsledky</a> · Registrace a dokončení plánování se do<?php
+    ?> sportovních výkonů nezapočítávají automaticky.</p><?php
+endif;
+?>
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3"><div><h1 class="h3 mb-1"><i class="bi bi-calendar-event<?php
+?> me-2 text-primary"></i>Kalendář klubových akcí</h1><p class="text-muted mb-0">Závody, soustředění, školení, schůze a další klubové<?php
+?> termíny. Individuální lekce a veřejné hodiny velodromu se spravují ve vlastních částech.</p></div><div class="btn-group"><a class="btn<?php
+?> btn-outline-primary" href="club_calendar.php?month=<?=
+calendarH($prev)
+?>">‹ Předchozí</a><a class="btn btn-outline-secondary" href="club_calendar.php?month=<?=
+calendarH(date('Y-m'))
+?>">Dnes</a><a class="btn btn-outline-primary" href="club_calendar.php?month=<?=
+calendarH($next)
+?>">Další ›</a></div></div>
+<?php
+foreach ($errors as $error):
+    ?><div class="alert alert-danger"><?=
+    calendarH($error)
+    ?></div><?php
+endforeach;
+?><?php
+if ($success !== ''):
+    ?><div class="alert alert-success"><?=
+    calendarH($success)
+    ?></div><?php
+endif;
+?>
+<?php
+if ($allConflicts !== []):
+    ?><section class="alert alert-danger border-3 shadow-sm"><h2 class="h5"><i class="bi bi-exclamation-octagon-fill me-2"></i>Kolize vozidel<?php
+    ?> vyžadují pozornost</h2><p class="mb-2">Uložení bylo povolené, protože domluva mohla proběhnout mimo systém. Varování zůstává viditelné,<?php
+    ?> dokud se rezervace nepřestanou překrývat.</p><?php
+foreach ($allConflicts as $c):
+    ?><div><strong><?=
+    calendarH($c['vehicle'])
+    ?></strong>: <?=
+    calendarH($c['conflict']['name'])
+    ?>, <?=
+    calendarH($c['conflict']['starts_at'])
+    ?>–<?=
+    calendarH($c['conflict']['ends_at'])
+    ?></div><?php
+endforeach;
+    ?></section><?php
+endif;
+?>
+<section class="card border-0 shadow-sm mb-4"><div class="card-header bg-white d-flex justify-content-between"><strong><?=
+calendarH($monthStart->format('m/Y'))
+?></strong><a class="btn btn-primary btn-sm" href="club_calendar.php?month=<?=
+calendarH($month)
+?>#editor"><i class="bi bi-plus-lg me-1"></i>Nová akce</a></div><div class="card-body"><div class="calendar-grid"><?php
+foreach (['Po','Út','St','Čt','Pá','So','Ne'] as $weekday):
+    ?><div class="calendar-weekday fw-semibold text-center text-muted"><?=
+    $weekday
+    ?></div><?php
+endforeach;
+?><?php
+for ($blank = 1;$blank < (int)$monthStart->format('N');$blank++):
+    ?><div></div><?php
+endfor;
+?><?php
+for ($day = 1;$day <= (int)$monthEnd->format('j');$day++):$date = $monthStart->setDate((int)$monthStart->format(
+    'Y'
+), (int)$monthStart->format('m'), $day);
+    ?><div class="calendar-day border rounded bg-white p-2"><div class="d-flex justify-content-between"><strong><?=
+    $day
+    ?></strong><span class="small text-muted"><?=
+    $date->format('D')
+    ?></span></div><?php
+foreach ($calendarByDay[$date->format('Y-m-d')] ?? [] as $event):$hasConflict = $event['vehicle_conflicts'] !== []
+    ;
+    ?><a class="calendar-event status-<?=
+    calendarH($event['planning_status'])
+    ?> <?=
+    $hasConflict ? 'border border-danger border-3' : ''
+    ?>" href="club_calendar.php?month=<?=
+    calendarH($month)
+    ?>&event_id=<?=
+    (int)$event['id']
+    ?>#editor"><strong><?=
+    calendarH(substr((string)$event['starts_at'], 11, 5))
+    ?> <?=
+    calendarH($event['name'])
+    ?></strong><br><?=
+    calendarH(clubCalendarKinds()[$event['activity_kind']] ?? 'Akce')
+    ?> · <?=
+    calendarH(
+        clubCalendarPlanningStatuses()[$event['planning_status']] ?? $event['planning_status']
+    )
+    ?><?php
+if ($hasConflict):
+    ?><br><span class="text-danger fw-bold">⚠ kolize vozidla</span><?php
+endif;
+    ?></a><?php
+endforeach;
+    ?></div><?php
+endfor;
+?></div></div></section>
+<section class="card border-0 shadow-sm mb-4" id="editor"><div class="card-header bg-white d-flex justify-content-between align-items-center"><strong><?=
+$detail ? 'Upravit akci' : 'Nová akce'
+?></strong><?php
+if ($detail):
+    ?><a class="btn btn-outline-primary btn-sm" href="club_calendar.php?month=<?=
+    calendarH($month)
+    ?>#editor">Založit další</a><?php
+endif;
+?></div><div class="card-body"><form method="post" class="row g-3"><?=
+csrf_field()
+?><input type="hidden" name="action" value="save_event"><input type="hidden" name="event_id" value="<?=
+(int)$defaults['id']
+?>">
+<div class="col-lg-5"><label class="form-label fw-semibold">Název</label><input class="form-control" name="name" maxlength="255" required value="<?=
+calendarH($defaults['name'])
+?>"></div><div class="col-md-3 col-lg-2"><label class="form-label fw-semibold">Druh</label><select class="form-select" name="activity_kind"><?php
+foreach (clubCalendarKinds() as $value => $label):
+    ?><option value="<?=
+    calendarH($value)
+    ?>" <?=
+    $defaults['activity_kind'] === $value ? 'selected' : ''
+    ?>><?=
+    calendarH($label)
+    ?></option><?php
+endforeach;
+?></select></div><div class="col-md-4 col-lg-3"><label class="form-label fw-semibold">Stav</label><select class="form-select" name="planning_status"><?php
+foreach (clubCalendarPlanningStatuses() as $value => $label):
+    ?><option value="<?=
+    calendarH($value)
+    ?>" <?=
+    $defaults['planning_status'] === $value ? 'selected' : ''
+    ?>><?=
+    calendarH($label)
+    ?></option><?php
+endforeach;
+?></select></div><div class="col-lg-2"><label class="form-label fw-semibold">Viditelnost</label><select class="form-select" name="visibility"><?php
+foreach (clubCalendarVisibilities() as $value => $label):
+    ?><option value="<?=
+    calendarH($value)
+    ?>" <?=
+    $defaults['visibility'] === $value ? 'selected' : ''
+    ?>><?=
+    calendarH($label)
+    ?></option><?php
+endforeach;
+?></select></div>
+<div class="col-md-3"><label class="form-label">Začátek</label><input class="form-control" type="datetime-local" name="starts_at" required value="<?=
+calendarH(calendarInputDate($defaults['starts_at']))
+?>"></div><div class="col-md-3"><label class="form-label">Konec</label><input class="form-control" type="datetime-local" name="ends_at"<?php
+?> required value="<?=
+calendarH(calendarInputDate($defaults['ends_at']))
+?>"></div><div class="col-md-4"><label class="form-label">Místo</label><input class="form-control" name="location" maxlength="255" required value="<?=
+calendarH($defaults['location'])
+?>"></div><div class="col-md-2"><label class="form-label">Kapacita</label><input class="form-control" type="number" name="capacity" min="1"<?php
+?> max="10000" value="<?=
+(int)$defaults['capacity']
+?>"></div>
+<div class="col-lg-6"><label class="form-label">Informace pro členy / veřejnost</label><textarea class="form-control"<?php
+?> name="public_description_plain" rows="3" maxlength="4000"><?=
+calendarH($defaults['public_description_plain'])
+?></textarea></div><div class="col-lg-6"><label class="form-label">Interní poznámka pro trenéry</label><textarea class="form-control"<?php
+?> name="internal_note" rows="3" maxlength="4000"><?=
+calendarH($defaults['internal_note'])
+?></textarea></div>
+<details class="col-12"><summary class="fw-semibold mb-3">Soupisky a cena</summary><div class="row g-3"><div class="col-lg-8"><label<?php
+?> class="form-label">Cílová skupina nebo soupisky</label><div data-roster-target-container data-roster-date-selector="[name=&quot;starts_at&quot;]"><?=
+ rosterTargetSelectorHtml(
+     $pdo,
+     substr((string)$defaults['starts_at'], 0, 10),
+     $selectedTeams
+ )
+?></div><div class="form-text">Celá skupina zahrne všechny její soupisky platné v den akce.</div></div><div class="col-md-2"><label<?php
+?> class="form-label">Cena za osobu (Kč)</label><input class="form-control" inputmode="decimal" name="participant_fee_czk" value="<?=
+calendarH(number_format((int)$defaults['participant_fee_minor'] / 100, 2, ',', ''))
+?>"><div class="form-text">Bez poplatku zadejte 0.</div></div><div class="col-md-2"><label class="form-label">Splatnost (dny)</label><input<?php
+?> class="form-control" type="number" min="1" max="90" name="fee_due_days" value="<?=
+(int)$defaults['fee_due_days']
+?>"></div></div></details>
+<div class="col-12 d-grid d-md-flex justify-content-md-end"><button class="btn btn-success btn-lg"><i class="bi bi-check-lg<?php
+?> me-1"></i>Uložit akci</button></div></form></div></section>
+<?php
+if ($detail && in_array(staffActivePosition(), ['coach','sports_lead','finance_manager'], true)):
+    ?><p><a class="btn btn-outline-primary" href="club_event_work_admin.php?event_id=<?=
+    $eventId
+    ?>">Účast, doprava a vyúčtování této akce</a></p><?php
+endif;
+?>
+<?php
+if ($detail && (string)$detail['pricing_policy'] === 'free' && (empty($detail['terms_version']
+) || empty($detail['consent_text_plain']) || empty($detail['cancellation_policy_plain']
+) || empty($detail['cancellation_deadline_at']))):
+    ?><div class="alert alert-warning"><strong>Bezplatné přihlašování zatím nelze otevřít.</strong> Správce musí nejprve v administraci akcí<?php
+    ?> doplnit verzi souhlasu, jeho text a storno podmínky.</div><?php
+endif;
+?>
+<?php
+if ($detail):$registrationOpen = $detail['status'] === 'open';
+    $registrationHasSession = !empty($detail['session_id']
+    );
+    $registrationStateAllowed = in_array((string)$detail['planning_status'], ['planned'
+    ,'confirmed'], true);
+    $registrationCanOpen = $registrationHasSession && $registrationStateAllowed
+    ;
+    ?><section class="mb-5"><?php
+if (!$registrationOpen && !$registrationHasSession):
+    ?><div class="alert alert-warning"><strong>Přihlašování zatím nelze otevřít.</strong> V editoru výše doplňte začátek, konec a místo a akci<?php
+    ?> nejdříve uložte.</div><?php
+endif;
+    ?><div class="d-flex flex-wrap gap-2 mb-3"><form method="post"><?=
+    csrf_field()
+    ?><input type="hidden" name="event_id" value="<?=
+    $eventId
+    ?>"><button class="btn <?=
+    $registrationOpen ? 'btn-outline-danger' : 'btn-success'
+    ?>" name="action" value="<?=
+    $registrationOpen ? 'close_registration' : 'open_registration'
+    ?>" <?=
+    !$registrationOpen && !$registrationCanOpen ? 'disabled title="'.calendarH($registrationHasSession
+    ? 'Dokončenou nebo zrušenou akci nelze otevřít' : 'Nejdříve uložte termín akce').'"'
+    : ''
+    ?>><?=
+    $registrationOpen ? 'Uzavřít přihlašování' : ($detail['planning_status'] === 'planned' ? 'Potvrdit akci a otevřít přihlašování'
+    : 'Otevřít přihlašování')
+    ?></button></form><?php
+if ($detail['legacy_race_id']):
+    ?><a class="btn btn-outline-primary" href="zavod_detail.php?id=<?=
+    (int)$detail['legacy_race_id']
+    ?>">Výsledky závodu</a><?php elseif ($detail['activity_kind'] === 'race'):
+        ?><form method="post" class="d-flex gap-2"><?=
+        csrf_field()
+        ?><input type="hidden" name="action" value="create_race_record"><input type="hidden" name="event_id" value="<?=
+        $eventId
+        ?>"><select class="form-select" name="category"><option value="silnice">Silnice</option><option value="draha">Dráha</option><option<?php
+        ?> value="mtb">MTB</option></select><button class="btn btn-outline-primary text-nowrap">Založit výsledky</button></form><?php
+    endif;
+?></div>
+<?php
+if ($detail['vehicle_conflicts'] !== []):
+    ?><div class="alert alert-danger border-3"><h2 class="h5">⚠ Tato akce má kolizi vozidla</h2><?php
+foreach ($detail['vehicle_conflicts'] as $c):
+    ?><div><?=
+    calendarH($c['vehicle'])
+    ?> se překrývá s <strong><?=
+    calendarH($c['conflict']['name'])
+    ?></strong> (<?=
+    calendarH($c['conflict']['starts_at'])
+    ?>–<?=
+    calendarH($c['conflict']['ends_at'])
+    ?>).</div><?php
+endforeach;
+    ?></div><?php
+endif;
+?>
+<div class="row g-3"><div class="col-xl-6"><div class="card border-0 shadow-sm h-100"><div class="card-header bg-white<?php
+?> fw-semibold">Zajišťující osoby</div><div class="card-body"><form method="post" class="row g-2 mb-3"><?=
+csrf_field()
+?><input type="hidden" name="action" value="add_person"><input type="hidden" name="event_id" value="<?=
+$eventId
+?>"><div class="col-md-4"><select class="form-select" name="person_role"><option value="lead_coach">Hlavní trenér</option><option<?php
+?> value="coach">Trenér</option><option value="driver">Řidič</option><option value="organizer">Organizátor</option><option<?php
+?> value="other">Jiná role</option></select></div><div class="col-md-4"><select class="form-select" name="trainer_id"><option<?php
+?> value="">Registrovaný trenér…</option><?php
+foreach ($trainers as $t):
+    ?><option value="<?=
+    (int)$t['id']
+    ?>"><?=
+    calendarH($t['jmeno'])
+    ?></option><?php
+endforeach;
+?></select></div><div class="col-md-4"><input class="form-control" name="external_name" maxlength="255" placeholder="nebo externí<?php
+?> jméno"></div><div class="col-md-5"><input class="form-control" name="external_contact" maxlength="255" placeholder="Kontakt<?php
+?> (interní)"></div><div class="col-md-5"><input class="form-control" name="note" maxlength="1000" placeholder="Poznámka"></div><div<?php
+?> class="col-md-2 d-grid"><button class="btn btn-outline-primary">Přidat</button></div><div class="col-12 form-check ms-2"><input<?php
+?> class="form-check-input" type="checkbox" name="visible_to_members" id="person-visible"><label class="form-check-label"<?php
+?> for="person-visible">Jméno smí vidět členové cílových soupisek</label></div></form><?php
+foreach ($detail['people'] as $p):
+    ?><form method="post" class="d-flex gap-2 align-items-center border-top py-2"><?=
+    csrf_field()
+    ?><input type="hidden" name="action" value="remove_item"><input type="hidden" name="event_id" value="<?=
+    $eventId
+    ?>"><input type="hidden" name="item_type" value="person"><input type="hidden" name="item_id" value="<?=
+    (int)$p['id']
+    ?>"><span class="flex-grow-1"><strong><?=
+    calendarH($p['trainer_name'] ?: $p['external_name'])
+    ?></strong> · <?=
+    calendarH($p['person_role'])
+    ?></span><button class="btn btn-sm btn-outline-danger">Odebrat</button></form><?php
+endforeach;
+?></div></div></div>
+<div class="col-xl-6"><div class="card border-0 shadow-sm h-100"><div class="card-header bg-white fw-semibold">Odkazy</div><div<?php
+?> class="card-body"><form method="post" class="row g-2 mb-3"><?=
+csrf_field()
+?><input type="hidden" name="action" value="add_link"><input type="hidden" name="event_id" value="<?=
+$eventId
+?>"><div class="col-md-3"><select class="form-select" name="link_type"><option value="propositions">Propozice</option><option<?php
+?> value="registration">Registrace pořadatele</option><option value="map">Mapa</option><option value="results">Výsledky</option><option<?php
+?> value="other">Jiné</option></select></div><div class="col-md-3"><input class="form-control" name="label" maxlength="255" required<?php
+?> placeholder="Název"></div><div class="col-md-4"><input class="form-control" type="url" name="url" maxlength="2048" required<?php
+?> placeholder="https://…"></div><div class="col-md-2 d-grid"><button class="btn btn-outline-primary">Přidat</button></div></form><?php
+foreach ($detail['links'] as $l):
+    ?><form method="post" class="d-flex gap-2 align-items-center border-top py-2"><?=
+    csrf_field()
+    ?><input type="hidden" name="action" value="remove_item"><input type="hidden" name="event_id" value="<?=
+    $eventId
+    ?>"><input type="hidden" name="item_type" value="link"><input type="hidden" name="item_id" value="<?=
+    (int)$l['id']
+    ?>"><a class="flex-grow-1" href="<?=
+    calendarH($l['url'])
+    ?>" target="_blank" rel="noopener noreferrer"><?=
+    calendarH($l['label'])
+    ?></a><button class="btn btn-sm btn-outline-danger">Odebrat</button></form><?php
+endforeach;
+?></div></div></div>
+<div class="col-12"><div class="card border-0 shadow-sm <?=
+$detail['vehicle_conflicts'] !== [] ? 'conflict-card' : ''
+?>"><div class="card-header <?=
+$detail['vehicle_conflicts'] !== [] ? 'bg-danger text-white' : 'bg-white'
+?> fw-semibold">Vozidla <?=
+$detail['vehicle_conflicts'] !== [] ? '— KOLIZE' : ''
+?></div><div class="card-body"><form method="post" class="row g-2"><?=
+csrf_field()
+?><input type="hidden" name="action" value="reserve_vehicle"><input type="hidden" name="event_id" value="<?=
+$eventId
+?>"><div class="col-md-3"><select class="form-select" name="vehicle_id" required><option value="">Vyberte vozidlo</option><?php
+foreach ($vehicles as $v):
+    ?><option value="<?=
+    (int)$v['id']
+    ?>"><?=
+    calendarH($v['znacka_model'].' · '.$v['spz'])
+    ?></option><?php
+endforeach;
+?></select></div><div class="col-md-2"><input class="form-control" type="datetime-local" name="starts_at" required value="<?=
+calendarH(calendarInputDate($detail['starts_at']))
+?>"></div><div class="col-md-2"><input class="form-control" type="datetime-local" name="ends_at" required value="<?=
+calendarH(calendarInputDate($detail['ends_at']))
+?>"></div><div class="col-md-2"><select class="form-select" name="driver_trainer_id"><option value="">Řidič z trenérů…</option><?php
+foreach ($trainers as $t):
+    ?><option value="<?=
+    (int)$t['id']
+    ?>"><?=
+    calendarH($t['jmeno'])
+    ?></option><?php
+endforeach;
+?></select></div><div class="col-md-3"><input class="form-control" name="driver_name" maxlength="255" placeholder="nebo externí<?php
+?> řidič"></div><div class="col-md-5"><input class="form-control" name="note" maxlength="1000" placeholder="Účel / poznámka"></div><div<?php
+?> class="col-md-5"><input class="form-control border-danger" name="conflict_note" maxlength="1000" placeholder="Pokud koliduje: jak je<?php
+?> kolize domluvená"></div><div class="col-md-2 d-grid"><button class="btn btn-outline-primary">Rezervovat</button></div><div class="col-12<?php
+?> form-check ms-2 p-3 border border-danger rounded bg-danger-subtle"><input class="form-check-input" type="checkbox"<?php
+?> name="conflict_acknowledged" id="vehicle-ack"><label class="form-check-label fw-bold text-danger" for="vehicle-ack">Pokud systém najde<?php
+?> kolizi, vím o ní a chci rezervaci přesto uložit.</label></div></form><?php
+foreach ($detail['vehicles'] as $v):
+    ?><form method="post" class="d-flex flex-wrap gap-2 align-items-center border-top py-2 <?=
+    $v['conflicts'] !== [] ? 'bg-danger-subtle px-2' : ''
+    ?>"><?=
+    csrf_field()
+    ?><input type="hidden" name="action" value="remove_item"><input type="hidden" name="event_id" value="<?=
+    $eventId
+    ?>"><input type="hidden" name="item_type" value="vehicle"><input type="hidden" name="item_id" value="<?=
+    (int)$v['id']
+    ?>"><span class="flex-grow-1"><strong><?=
+    calendarH($v['znacka_model'].' '.$v['spz'])
+    ?></strong> · <?=
+    calendarH($v['starts_at'].'–'.$v['ends_at'])
+    ?> · řidič <?=
+    calendarH($v['driver_trainer_name'] ?: $v['driver_name'] ?: 'neuveden')
+    ?><?php
+if ($v['conflicts'] !== []):
+    ?><span class="badge text-bg-danger ms-2">KOLIZE</span><?php
+endif;
+    ?></span><?php
+if ($v['status'] === 'active'):
+    ?><button class="btn btn-sm btn-outline-danger">Zrušit rezervaci</button><?php
+endif;
+    ?></form><?php
+endforeach;
+?></div></div></div>
+<div class="col-12" id="ucastnici"><div class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">Účastníci</div><div<?php
+?> class="card-body">
   <form method="get" action="club_calendar.php#ucastnici" class="row g-2 mb-2">
-    <input type="hidden" name="month" value="<?=calendarH($month)?>"><input type="hidden" name="event_id" value="<?=$eventId?>">
-    <div class="col-md-9"><label for="athlete-search" class="form-label">Vyhledat sportovce jménem nebo ID</label><input id="athlete-search" class="form-control" type="search" name="athlete_q" maxlength="80" value="<?=calendarH($athleteQuery)?>" placeholder="Např. Novák Jan nebo ID" required></div>
+    <input type="hidden" name="month" value="<?=
+calendarH($month)
+?>"><input type="hidden" name="event_id" value="<?=
+$eventId
+?>">
+    <div class="col-md-9"><label for="athlete-search" class="form-label">Vyhledat sportovce jménem nebo ID</label><input<?php
+?> id="athlete-search" class="form-control" type="search" name="athlete_q" maxlength="80" value="<?=
+calendarH($athleteQuery)
+?>" placeholder="Např. Novák Jan nebo ID" required></div>
     <div class="col-md-3 d-grid align-self-end"><button class="btn btn-outline-primary">Vyhledat</button></div>
   </form>
-  <?php if($athleteQuery===''):?><p class="small text-muted">Nejprve vyhledejte sportovce. Seznam se omezuje na 25 výsledků.</p><?php elseif($athleteQueryTooShort):?><p class="small text-muted">Zadejte alespoň dvě písmena jména nebo číselné ID.</p><?php elseif($athletes===[]):?><p class="small text-muted">Žádný sportovec neodpovídá hledání. Zkuste celé jméno nebo ID.</p><?php elseif(count($athletes)===25):?><p class="small text-muted">Zobrazeno prvních 25 shod. Upřesněte jméno nebo použijte ID.</p><?php endif;?>
-  <?php if($athletes!==[]):?><form method="post" class="row g-2 mb-3"><?=csrf_field()?><input type="hidden" name="action" value="add_participant"><input type="hidden" name="event_id" value="<?=$eventId?>"><div class="col-md-7"><label class="form-label" for="participant-athlete">Vyberte sportovce z výsledků</label><select id="participant-athlete" class="form-select" name="sportovec_id" required><option value="">Vyberte sportovce</option><?php foreach($athletes as$a):?><option value="<?=(int)$a['id']?>"><?=calendarH($a['prijmeni'].' '.$a['jmeno'].' · ID '.(int)$a['id'])?></option><?php endforeach;?></select></div><div class="col-md-3 form-check align-self-center"><input class="form-check-input" type="checkbox" name="confirmed" id="participant-confirm"><label class="form-check-label" for="participant-confirm">Rovnou potvrdit účast</label></div><div class="col-md-2 d-grid align-self-end"><button class="btn btn-outline-primary">Přidat</button></div></form><?php endif;?>
-  <div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Sportovec</th><th>Stav</th><th>Plátce</th><th>Předpis</th><th></th></tr></thead><tbody><?php foreach($detail['participants']as$p):?><tr><td><?=calendarH($p['prijmeni'].' '.$p['jmeno'])?></td><td><span class="badge text-bg-<?=$p['status']==='confirmed'?'success':($p['status']==='cancelled'?'secondary':'warning')?>"><?=calendarH(calendarParticipantStatus((string)$p['status']))?></span></td><td><?=calendarH($p['email']?:'chybí schválený účet')?></td><td><?=$p['charge_id']?calendarH(number_format((int)$p['amount_minor']/100,2,',',' ').' Kč · '.calendarChargeStatus((string)$p['charge_status'])):((int)$detail['participant_fee_minor']>0&&$p['status']==='confirmed'?'<span class="text-danger fw-bold">čeká na plátce</span>':'—')?></td><td><div class="d-flex gap-2 justify-content-end"><?php if(in_array($p['status'],['planned','waitlisted'],true)):?><form method="post"><?=csrf_field()?><input type="hidden" name="action" value="confirm_participant"><input type="hidden" name="event_id" value="<?=$eventId?>"><input type="hidden" name="participant_id" value="<?=(int)$p['id']?>"><button class="btn btn-sm btn-success">Potvrdit</button></form><?php endif;?><?php if($p['status']!=='cancelled'):?><form method="post" class="d-flex gap-1"><?=csrf_field()?><input type="hidden" name="action" value="cancel_participant"><input type="hidden" name="event_id" value="<?=$eventId?>"><input type="hidden" name="participant_id" value="<?=(int)$p['id']?>"><input class="form-control form-control-sm" name="reason" required maxlength="1000" placeholder="Důvod"><button class="btn btn-sm btn-outline-danger">Zrušit</button></form><?php endif;?></div></td></tr><?php endforeach;?><?php if($detail['participants']===[]):?><tr><td colspan="5" class="text-center text-muted">Zatím bez účastníků.</td></tr><?php endif;?></tbody></table></div>
-</div></div></div></div></div></section><?php endif;?>
-</main><script nonce="<?=htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')?>" src="assets/roster-target-selector.js"></script></body></html>
+  <?php
+if ($athleteQuery === ''):
+    ?><p class="small text-muted">Nejprve vyhledejte sportovce. Seznam se omezuje na 25 výsledků.</p><?php elseif ($athleteQueryTooShort):
+        ?><p class="small text-muted">Zadejte alespoň dvě písmena jména nebo číselné ID.</p><?php elseif ($athletes === []):
+            ?><p class="small text-muted">Žádný sportovec neodpovídá hledání. Zkuste celé jméno nebo ID.</p><?php elseif (count($athletes) === 25):
+                ?><p class="small text-muted">Zobrazeno prvních 25 shod. Upřesněte jméno nebo použijte ID.</p><?php
+            endif;
+?>
+  <?php
+if ($athletes !== []):
+    ?><form method="post" class="row g-2 mb-3"><?=
+    csrf_field()
+    ?><input type="hidden" name="action" value="add_participant"><input type="hidden" name="event_id" value="<?=
+    $eventId
+    ?>"><div class="col-md-7"><label class="form-label" for="participant-athlete">Vyberte sportovce z výsledků</label><select<?php
+    ?> id="participant-athlete" class="form-select" name="sportovec_id" required><option value="">Vyberte sportovce</option><?php
+foreach ($athletes as $a):
+    ?><option value="<?=
+    (int)$a['id']
+    ?>"><?=
+    calendarH($a['prijmeni'].' '.$a['jmeno'].' · ID '.(int)$a['id'])
+    ?></option><?php
+endforeach;
+    ?></select></div><div class="col-md-3 form-check align-self-center"><input class="form-check-input" type="checkbox" name="confirmed"<?php
+    ?> id="participant-confirm"><label class="form-check-label" for="participant-confirm">Rovnou potvrdit účast</label></div><div<?php
+    ?> class="col-md-2 d-grid align-self-end"><button class="btn btn-outline-primary">Přidat</button></div></form><?php
+endif;
+?>
+  <div class="table-responsive"><table class="table align-middle<?php
+?> mb-0"><thead><tr><th>Sportovec</th><th>Stav</th><th>Plátce</th><th>Předpis</th><th></th></tr></thead><tbody><?php
+foreach ($detail['participants'] as $p):
+    ?><tr><td><?=
+    calendarH($p['prijmeni'].' '.$p['jmeno'])
+    ?></td><td><span class="badge text-bg-<?=
+    $p['status'] === 'confirmed' ? 'success' : (
+        $p['status'] === 'cancelled' ? 'secondary' : 'warning'
+    )
+    ?>"><?=
+    calendarH(calendarParticipantStatus((string)$p['status']))
+    ?></span></td><td><?=
+    calendarH($p['email'] ?: 'chybí schválený účet')
+    ?></td><td><?=
+    $p['charge_id'] ? calendarH(number_format((int)$p['amount_minor'] / 100, 2, ',', ' ').' Kč · '
+    .calendarChargeStatus((string)$p['charge_status'])) : ((int)$detail['participant_fee_minor'] > 0 && $p['status'] === 'confirmed'
+    ? '<span class="text-danger fw-bold">čeká na plátce</span>' : '—')
+    ?></td><td><div class="d-flex gap-2 justify-content-end"><?php
+if (in_array($p['status'], ['planned','waitlisted'], true)):
+    ?><form method="post"><?=
+    csrf_field()
+    ?><input type="hidden" name="action" value="confirm_participant"><input type="hidden" name="event_id" value="<?=
+    $eventId
+    ?>"><input type="hidden" name="participant_id" value="<?=
+    (int)$p['id']
+    ?>"><button class="btn btn-sm btn-success">Potvrdit</button></form><?php
+endif;
+    ?><?php
+if ($p['status'] !== 'cancelled'):
+    ?><form method="post" class="d-flex gap-1"><?=
+    csrf_field()
+    ?><input type="hidden" name="action" value="cancel_participant"><input type="hidden" name="event_id" value="<?=
+    $eventId
+    ?>"><input type="hidden" name="participant_id" value="<?=
+    (int)$p['id']
+    ?>"><input class="form-control form-control-sm" name="reason" required maxlength="1000" placeholder="Důvod"><button class="btn btn-sm<?php
+    ?> btn-outline-danger">Zrušit</button></form><?php
+endif;
+    ?></div></td></tr><?php
+endforeach;
+?><?php
+if ($detail['participants'] === []):
+    ?><tr><td colspan="5" class="text-center text-muted">Zatím bez účastníků.</td></tr><?php
+endif;
+?></tbody></table></div>
+</div></div></div></div></div></section><?php
+endif;
+?>
+</main><script nonce="<?=
+htmlspecialchars(app_csp_nonce(), ENT_QUOTES, 'UTF-8')
+?>" src="assets/roster-target-selector.js"></script></body></html>
