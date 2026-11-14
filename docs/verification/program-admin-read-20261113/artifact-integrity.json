@@ -1,0 +1,200 @@
+{
+  "algorithm": "SHA-256 of Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/program-admin-read-20261113/RESULTS.md",
+      "bytes": 8908,
+      "sha256": "e73720d925fee215dd4ffae7e11aa8334715d4096597a0c767adb07728df6a03"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/application-checks.json",
+      "bytes": 1019,
+      "sha256": "686d53f1a830e458c6d532d48cf95847827528e7d07339586ca26668ff08ac32"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/http-medians.json",
+      "bytes": 872,
+      "sha256": "9a42e5cc265d454ab7ab966ba210d00ec06a3ec41fba75c232eef7adc5263902"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-10.3/empty-http.json.gz",
+      "bytes": 947,
+      "sha256": "8cb6c9d1b63a6ff4b942de965873de3f5f3c938504a89b4f95f874c2cbfba22c"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-10.3/http.json.gz",
+      "bytes": 3005,
+      "sha256": "965a18065aadd355e248d7b030e61a6b80f2400d0f4ffdd67937763339c35fff"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-10.3/native.json.gz",
+      "bytes": 155513,
+      "sha256": "af2267627a5bca41133eb2a9b9321e66f8e76b6b1e9fd7dd4259be5165776745"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-10.3/source.json",
+      "bytes": 422,
+      "sha256": "ddd342ecffbe02f84318feafbdfe664fe1781c847ba3ffe0a789f374ab068220"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/browser-overview-dark-cold.json",
+      "bytes": 6014,
+      "sha256": "eae4ee5d61801d11bce36ece8ceb164f1f5e15086f01da6ad4a884d4d695fee8"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/browser-overview-dark-warm.json",
+      "bytes": 5913,
+      "sha256": "53f95203591568f68fe06aa3c08e7ccf3ce0e270b8cf1ffd2056d94493d060c3"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/browser-overview-light-cold.json",
+      "bytes": 6003,
+      "sha256": "305bea46202c8e7af0b426f42bcfc9d7a60132a0cd085332bb5d900f997c9ee7"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/browser-overview-light-warm.json",
+      "bytes": 5893,
+      "sha256": "edb841fb939fd1f2f7743dad423c13df8d48aa8aa6d8f46ca92a29e0434bbd8f"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/browser-summary.json",
+      "bytes": 3894,
+      "sha256": "4adc1f04aec90e04e3b4496562b78ad10f30594fde757b8a2241a16027d9e4e4"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/browser-terms-dark-cold.json",
+      "bytes": 5967,
+      "sha256": "882551e044aadfd49777037eece888a0baf2002982ae86facd61e212fa5277d0"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/browser-terms-dark-warm.json",
+      "bytes": 5898,
+      "sha256": "fef53d3b2170bebc875cfc4e7140790c2a58ad53b3c36d12608ea634e1275d91"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/browser-terms-light-cold.json",
+      "bytes": 6022,
+      "sha256": "556620ad1fa2185a7e768c796cd59dda6c903bdb0fa6c2a326ed8c53c6f1f0c5"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/browser-terms-light-warm.json",
+      "bytes": 5933,
+      "sha256": "69e40ba3a6dacbab0f856992da21656723de911d792400cf39ec1c123fbd44c4"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/empty-http.json.gz",
+      "bytes": 929,
+      "sha256": "84dd68f55df9a0437a96609e30f4388826914f854abfa96d6e67fc945b9cf217"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/http.json.gz",
+      "bytes": 2986,
+      "sha256": "190766b679d5129b3d17effbe810d82879602d02d1984722f50514a13d063aa4"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/native.json.gz",
+      "bytes": 154917,
+      "sha256": "8f10a61e962b710fb66f031c3eb585c2e03b3dfdaabff5319e19a8414796137f"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/overview-dark-cold-after.png",
+      "bytes": 1881059,
+      "sha256": "9fac221006ff5912e67deab4d52e58c9188fd7fd71378933c882dcb7198b82c9"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/overview-dark-cold-before.png",
+      "bytes": 1881059,
+      "sha256": "9fac221006ff5912e67deab4d52e58c9188fd7fd71378933c882dcb7198b82c9"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/overview-light-cold-after.png",
+      "bytes": 2681571,
+      "sha256": "0f453f0c999e35b5248a1ee9dea9497670c070356afb4ccf1ac6a021503fe372"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/overview-light-cold-before.png",
+      "bytes": 2681571,
+      "sha256": "0f453f0c999e35b5248a1ee9dea9497670c070356afb4ccf1ac6a021503fe372"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/source.json",
+      "bytes": 422,
+      "sha256": "ddd342ecffbe02f84318feafbdfe664fe1781c847ba3ffe0a789f374ab068220"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/terms-dark-cold-after.png",
+      "bytes": 1952564,
+      "sha256": "01096fb6ccaa6affdca07dadcc1eeffe9652ca1a1e6f55d49c16c1b13fd0eb89"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/terms-dark-cold-before.png",
+      "bytes": 1952564,
+      "sha256": "01096fb6ccaa6affdca07dadcc1eeffe9652ca1a1e6f55d49c16c1b13fd0eb89"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/terms-light-cold-after.png",
+      "bytes": 2748171,
+      "sha256": "c9d171015f463d294d9e9d79673de6636e675e6e0499129bdb7074ee4a68b188"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/mariadb-11.4/terms-light-cold-before.png",
+      "bytes": 2748171,
+      "sha256": "c9d171015f463d294d9e9d79673de6636e675e6e0499129bdb7074ee4a68b188"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/native-checkpoint-1.json",
+      "bytes": 14084,
+      "sha256": "e19033012aaf365294e00a0a7120ff3866ec7a93196b49b958c0a742e60848a3"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/paired-checkpoint-2.json",
+      "bytes": 9394,
+      "sha256": "000770f02737c0fe16c1122b3320570f35052c9dd824e7345a346b076126b63e"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/paired-run.json",
+      "bytes": 7301,
+      "sha256": "9e9c545025956ee4e8f4bbeaaa8313c9cec6e63f2c63854c43d4f02f26dc0cdd"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/production-after.json",
+      "bytes": 562,
+      "sha256": "daccf3a6b34cb42267438167f14699401c14a76d17daaec53fd21a3d7bbd01d1"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/production-before.json",
+      "bytes": 562,
+      "sha256": "daccf3a6b34cb42267438167f14699401c14a76d17daaec53fd21a3d7bbd01d1"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/release.json",
+      "bytes": 509,
+      "sha256": "28288cac3455df21a8eba57962fedc8ab6bd225259bd130eb7431e447b08e1c4"
+    },
+    {
+      "path": "docs/verification/program-admin-read-20261113/sqlite-selection.json",
+      "bytes": 795,
+      "sha256": "9c153511bcf4e5a26e81718318fe42ddef82f4863dfbcc9903a837bf773df064"
+    }
+  ]
+}

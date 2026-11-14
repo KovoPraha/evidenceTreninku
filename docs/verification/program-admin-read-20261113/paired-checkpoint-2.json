@@ -1,0 +1,414 @@
+{
+  "head": "82d79cd82da109e1b625a76616aac7cbd58565af",
+  "run": 43473894094,
+  "paired_profile": "PASS",
+  "note": "Fixture metadata count clarified in next commit; production code unchanged",
+  "versions": {
+    "10.3": {
+      "native": [
+        {
+          "offers": 0,
+          "median_ms": {
+            "before": 0.175765,
+            "after": 0.175925
+          },
+          "median_peak_bytes": {
+            "before": 39896,
+            "after": 39896
+          },
+          "sql": {
+            "before": 1,
+            "after": 1
+          }
+        },
+        {
+          "offers": 2,
+          "median_ms": {
+            "before": 14.701671,
+            "after": 4.971067
+          },
+          "median_peak_bytes": {
+            "before": 88024,
+            "after": 104416
+          },
+          "sql": {
+            "before": 43,
+            "after": 14
+          }
+        },
+        {
+          "offers": 12,
+          "median_ms": {
+            "before": 94.454103,
+            "after": 13.025743
+          },
+          "median_peak_bytes": {
+            "before": 158144,
+            "after": 197600
+          },
+          "sql": {
+            "before": 270,
+            "after": 40
+          }
+        },
+        {
+          "offers": 100,
+          "median_ms": {
+            "before": 752.973946,
+            "after": 78.17369
+          },
+          "median_peak_bytes": {
+            "before": 809208,
+            "after": 1153960
+          },
+          "sql": {
+            "before": 2228,
+            "after": 262
+          }
+        },
+        {
+          "offers": 401,
+          "median_ms": {
+            "before": 3198.187076,
+            "after": 320.915769
+          },
+          "median_peak_bytes": {
+            "before": 3038080,
+            "after": 3810408
+          },
+          "sql": {
+            "before": 8922,
+            "after": 1023
+          }
+        }
+      ],
+      "http_median_ms": {
+        "program_coordinator": {
+          "before": 621.9599999999999,
+          "after": 69.115
+        },
+        "program-terms": {
+          "before": 619.4739999999999,
+          "after": 67.762
+        },
+        "offer-terms": {
+          "before": 610.6120000000001,
+          "after": 70.12899999999999
+        },
+        "missing-program": {
+          "before": 612.56,
+          "after": 65.746
+        }
+      },
+      "checksums": {
+        "tables": 355,
+        "unchanged": true
+      },
+      "cleanup": {
+        "owned_schema_user_config_removed": true,
+        "owned_ports_closed": true,
+        "bridge_account_removed": true,
+        "private_artifacts_excluded": true,
+        "source_unchanged": true
+      }
+    },
+    "11.4": {
+      "native": [
+        {
+          "offers": 0,
+          "median_ms": {
+            "before": 0.447864,
+            "after": 0.466887
+          },
+          "median_peak_bytes": {
+            "before": 39896,
+            "after": 39896
+          },
+          "sql": {
+            "before": 1,
+            "after": 1
+          }
+        },
+        {
+          "offers": 2,
+          "median_ms": {
+            "before": 26.076246,
+            "after": 8.94586
+          },
+          "median_peak_bytes": {
+            "before": 88024,
+            "after": 104416
+          },
+          "sql": {
+            "before": 43,
+            "after": 14
+          }
+        },
+        {
+          "offers": 12,
+          "median_ms": {
+            "before": 147.710591,
+            "after": 22.981396
+          },
+          "median_peak_bytes": {
+            "before": 158144,
+            "after": 197600
+          },
+          "sql": {
+            "before": 270,
+            "after": 40
+          }
+        },
+        {
+          "offers": 100,
+          "median_ms": {
+            "before": 1246.901375,
+            "after": 156.266669
+          },
+          "median_peak_bytes": {
+            "before": 809208,
+            "after": 1153960
+          },
+          "sql": {
+            "before": 2228,
+            "after": 262
+          }
+        },
+        {
+          "offers": 401,
+          "median_ms": {
+            "before": 5023.155438,
+            "after": 609.070084
+          },
+          "median_peak_bytes": {
+            "before": 3038080,
+            "after": 3810408
+          },
+          "sql": {
+            "before": 8922,
+            "after": 1023
+          }
+        }
+      ],
+      "http_median_ms": {
+        "program_coordinator": {
+          "before": 903.47,
+          "after": 121.619
+        },
+        "program-terms": {
+          "before": 896.476,
+          "after": 119.397
+        },
+        "offer-terms": {
+          "before": 895.427,
+          "after": 124.49000000000001
+        },
+        "missing-program": {
+          "before": 897.366,
+          "after": 119.32900000000001
+        }
+      },
+      "checksums": {
+        "tables": 355,
+        "unchanged": true
+      },
+      "cleanup": {
+        "owned_schema_user_config_removed": true,
+        "owned_ports_closed": true,
+        "bridge_account_removed": true,
+        "private_artifacts_excluded": true,
+        "source_unchanged": true
+      }
+    }
+  },
+  "browser": [
+    {
+      "theme": "light",
+      "viewport": {
+        "width": 1036,
+        "height": 703
+      },
+      "cache": "cold",
+      "route": "overview",
+      "before": {
+        "fcp_ms": 1024,
+        "ready_ms": 1044.600000000035,
+        "html_bytes": 13260,
+        "css_bytes": 31248,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 236,
+        "ready_ms": 248.30000000004657,
+        "html_bytes": 13260,
+        "css_bytes": 31248,
+        "css_decoded_bytes": 232803
+      },
+      "pixels_equal": true
+    },
+    {
+      "theme": "light",
+      "viewport": {
+        "width": 1036,
+        "height": 703
+      },
+      "cache": "warm",
+      "route": "overview",
+      "before": {
+        "fcp_ms": 1016,
+        "ready_ms": 1037.2000000000116,
+        "html_bytes": 13261,
+        "css_bytes": 0,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 212,
+        "ready_ms": 225.70000000001164,
+        "html_bytes": 13260,
+        "css_bytes": 0,
+        "css_decoded_bytes": 232803
+      }
+    },
+    {
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cache": "cold",
+      "route": "overview",
+      "before": {
+        "fcp_ms": 1036,
+        "ready_ms": 1054.399999999965,
+        "html_bytes": 13259,
+        "css_bytes": 31248,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 240,
+        "ready_ms": 257.20000000001164,
+        "html_bytes": 13261,
+        "css_bytes": 31248,
+        "css_decoded_bytes": 232803
+      },
+      "pixels_equal": true
+    },
+    {
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cache": "warm",
+      "route": "overview",
+      "before": {
+        "fcp_ms": 1016,
+        "ready_ms": 1035.2000000000116,
+        "html_bytes": 13259,
+        "css_bytes": 0,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 224,
+        "ready_ms": 237.89999999996508,
+        "html_bytes": 13261,
+        "css_bytes": 0,
+        "css_decoded_bytes": 232803
+      }
+    },
+    {
+      "theme": "light",
+      "viewport": {
+        "width": 1036,
+        "height": 703
+      },
+      "cache": "cold",
+      "route": "terms",
+      "before": {
+        "fcp_ms": 1020,
+        "ready_ms": 1046.0999999999767,
+        "html_bytes": 13933,
+        "css_bytes": 31248,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 240,
+        "ready_ms": 260,
+        "html_bytes": 13936,
+        "css_bytes": 31248,
+        "css_decoded_bytes": 232803
+      },
+      "pixels_equal": true
+    },
+    {
+      "theme": "light",
+      "viewport": {
+        "width": 1036,
+        "height": 703
+      },
+      "cache": "warm",
+      "route": "terms",
+      "before": {
+        "fcp_ms": 1012,
+        "ready_ms": 1037.3000000000466,
+        "html_bytes": 13934,
+        "css_bytes": 0,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 220,
+        "ready_ms": 236,
+        "html_bytes": 13934,
+        "css_bytes": 0,
+        "css_decoded_bytes": 232803
+      }
+    },
+    {
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cache": "cold",
+      "route": "terms",
+      "before": {
+        "fcp_ms": 1044,
+        "ready_ms": 1066.4000000000233,
+        "html_bytes": 13936,
+        "css_bytes": 31248,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 236,
+        "ready_ms": 254.59999999997672,
+        "html_bytes": 13935,
+        "css_bytes": 31248,
+        "css_decoded_bytes": 232803
+      },
+      "pixels_equal": true
+    },
+    {
+      "theme": "dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "cache": "warm",
+      "route": "terms",
+      "before": {
+        "fcp_ms": 1048,
+        "ready_ms": 1065.5,
+        "html_bytes": 13937,
+        "css_bytes": 0,
+        "css_decoded_bytes": 232803
+      },
+      "after": {
+        "fcp_ms": 224,
+        "ready_ms": 238.39999999990687,
+        "html_bytes": 13935,
+        "css_bytes": 0,
+        "css_decoded_bytes": 232803
+      }
+    }
+  ]
+}

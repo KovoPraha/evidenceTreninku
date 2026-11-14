@@ -1,0 +1,35 @@
+{
+    "purpose": "SQLite selection counts only, not native timing",
+    "cases": [
+        {
+            "offers": 0,
+            "before_sql": 1,
+            "after_sql": 1,
+            "strict_parity": true
+        },
+        {
+            "offers": 2,
+            "before_sql": 43,
+            "after_sql": 14,
+            "strict_parity": true
+        },
+        {
+            "offers": 12,
+            "before_sql": 253,
+            "after_sql": 34,
+            "strict_parity": true
+        },
+        {
+            "offers": 100,
+            "before_sql": 2101,
+            "after_sql": 212,
+            "strict_parity": true
+        },
+        {
+            "offers": 401,
+            "before_sql": 8422,
+            "after_sql": 823,
+            "strict_parity": true
+        }
+    ]
+}

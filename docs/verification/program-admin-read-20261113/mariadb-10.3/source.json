@@ -1,0 +1,9 @@
+{
+  "club_programs_admin.php": {
+    "baseline": "c5a4ca3b18265f79d740f4be7b25491132aac887",
+    "head": "1f09f6aebf96fa3cc3b72c4ce89972a17b71eb10",
+    "before_sha256": "0554920104496e4aefe07f5fff577cd5cf2cf4b692ae8f5a0ee4baa3fc8d649b",
+    "after_sha256": "7d9905e13b438d286628a98d7a8fb17fb0eb6f6082ca126d717d9fab4d46307e",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  }
+}
