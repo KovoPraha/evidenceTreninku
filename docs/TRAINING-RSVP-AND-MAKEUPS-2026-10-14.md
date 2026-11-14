@@ -206,6 +206,16 @@ pracovní pozicí `coach`. Hlášení vlastníka o produkční dostupnosti to sa
 nevyvrací; skutečné role, nastavení, lidská přejímka a produkční aktivace
 zůstávají otevřené. Úklid dočasných souborů je popsán v protokolu.
 
+**Stav 15. 11.:** trenérská evidence E4-06 byla vydána přes
+[PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474) a
+[deploy 43651304138](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43651304138)
+na `ea995408`. Místní HTTP průchod náhrad 31/31, vizuální automatická
+rezervace a zápis běžnou rolí `trener` prošly;
+[důkazy a meze](verification/coach-attendance-20261113/RESULTS.md).
+**Produkční přihlášený průchod celého toku dosud NOT RUN**; chybí nové
+schválené testovací okno a určené TEST role. Automatický režim zůstává
+výchozí vypnutý a pravidla musí být schválena před aktivací.
+
 ### Vydání na pokyn vlastníka 12. 11. 2026
 
 Vlastník požádal o nasazení implementace po úspěšném CI PR #459. Vydat přes

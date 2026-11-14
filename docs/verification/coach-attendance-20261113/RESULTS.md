@@ -1,5 +1,29 @@
 # Ověření trenérské docházky — 13. 11. 2026
 
+## Vydání 15. 11. 2026
+
+[PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474) byl sloučen
+jako `ea9954080c20c491885e60d6e30623b226612a93`. Na poslední špičce
+větve prošlo všech 21 CI kontrol včetně obou MariaDB integračních smoke,
+browser profilů a Bootstrap assets na MariaDB 10.3/11.4.
+[Produkční deploy 43651304138](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43651304138)
+skončil SUCCESS na stejném SHA: 2487 PHPUnit testů / 57125 tvrzení PASS,
+syntaxe PHP PASS, předletová kontrola serveru PASS, ověřená záloha mimo
+webroot, migrace aktuální, vydání aktivováno a přímý HTTP smoke indexu 200.
+Workflow zapsal `UAT schválení: false`; krok importu kroužků byl `skipped`.
+Později spuštěný duplicitní běh
+[43651334299](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43651334299)
+byl zrušen před vytvořením jobu, takže nezakládá druhé nasazení.
+
+**Produkční uživatelské UAT nebylo provedeno.** Dřívější okno pro zápisy
+skončilo a nasazení s `uat_schvaleno=false` není jeho prodloužením. V novém
+schváleném okně je třeba pomocí určených TEST účtů projít trenérskou
+navigaci a zápis konkrétního tréninku, rodičovskou omluvu, uzavření skutečné
+absence, vznik právě jednoho nároku, zobrazení v rodičovském účtu a rezervaci
+vhodného náhradního termínu. Automatický režim je výchozí vypnutý; před
+aktivací je nutná čtecí kontrola nastavení a schválení pravidel klubu.
+Místní syntetické PASS níže nejsou produkční přejímka.
+
 ## Pokračování 14. 11. 2026
 
 Vlastník požádal o dokončení řešení blokátoru testerky. Větev po nových
@@ -101,7 +125,7 @@ Tyto průchody neověřily produkci ani fyzické zařízení. Placený náhradov
 
 | Scénář | Dosavadní důkaz | Zbývá |
 | --- | --- | --- |
-| Rodič omluví včas → trenér uzavře neúčast → vznikne právě jeden nárok → rodič jej vidí a rezervuje vhodný termín → náhradník je přítomen nebo chybí | Souvislý HTTP průchod 31/31 PASS, včetně opravy cílové účasti | Vizuální průchod rodiny a trenéra se skutečnou rezervací; úklid vlastní fixture |
+| Rodič omluví včas → trenér uzavře neúčast → vznikne právě jeden nárok → rodič jej vidí a rezervuje vhodný termín → náhradník je přítomen nebo chybí | Souvislý HTTP průchod 31/31 PASS včetně opravy cílové účasti; samostatně v izolovaném Chrome prošla automatická rezervace a zápis běžným `trener` | Souvislé přihlášené produkční UAT rodiny a trenéra v novém okně; souborový úklid vlastní fixture je blokovaný |
 | Pozdní omluva, přítomné dítě a plný nebo nepřípustný náhradní termín | Dosavadní testy náhrad | Prohlížečové ověření návaznosti nové docházky |
 | Trenér cizí skupiny, oprava po 72 hodinách, vedoucí sportu a dvě současně otevřená okna | Integrační testy i samostatné prohlížečové relace PASS | Produkční uživatelské potvrzení |
 | Omluva přijatá trenérem při lekci s důvodem | Integrační test, mobilní uložení a rodičovská historie PASS | Produkční uživatelské potvrzení |
