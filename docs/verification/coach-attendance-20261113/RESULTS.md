@@ -24,6 +24,26 @@ vhodného náhradního termínu. Automatický režim je výchozí vypnutý; pře
 aktivací je nutná čtecí kontrola nastavení a schválení pravidel klubu.
 Místní syntetické PASS níže nejsou produkční přejímka.
 
+## Čtecí prověrka produkčního UAT 15. 11. 2026
+
+Po pokynu vlastníka zvolit okno a TEST účty samostatně byl dočasně nastaven
+konec `KIS_UAT_WINDOW_END=2026-11-17 20:00:00` a spuštěna pouze čtecí
+[kontrola připravenosti 43654981616](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43654981616).
+Výsledek `ready=false`: nasazený commit `ea995408` má
+`uat_approved=false`, oba vyhrazení rodiče jsou aktivní (2/2), dětské
+TEST přístupy 0/2, schválené oddělené vazby rodin 0/2 a aktivní
+synchronizované pravidlo omluv TEST tréninku 0. Kontrola neprovedla
+produkční zápis. Koncová proměnná byla po prověrce vrácena na původní
+`2026-10-22 23:00:00` a tato hodnota byla ověřena.
+
+Oficiální provisioning plánuje zdrojový TEST trénink nejdříve na druhý
+následující den; současný časově omezený průchod proto nelze dokončit
+okamžitě jen změnou okna. Automatické náhrady navíc používají společný
+přepínač, jehož zapnutí může zpřístupnit způsobilé skutečné nabídky.
+Bez potvrzených pravidel klubu a izolace účinku přepínače se globální
+automatika pro test nezapínala. TEST účty se neobnovovaly, žádná nabídka
+ani rezervace se v produkci nezakládala. Plné produkční UAT zůstává otevřené.
+
 ## Pokračování 14. 11. 2026
 
 Vlastník požádal o dokončení řešení blokátoru testerky. Větev po nových
