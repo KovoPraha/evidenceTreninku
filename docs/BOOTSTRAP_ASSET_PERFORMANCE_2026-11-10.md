@@ -1073,3 +1073,21 @@ Role/negativy, detail/nenalezená akce, vyhledávání, prázdný měsíc a prá
 filtrované/neplatné katalogové filtry; Chrome16scénářů, osm pixelových párů.
 Nativní HTTP/Chrome a skutečný CSS transport i celé CI zatím NOT RUN.
 Další krok push/PR a kompletní párová přejímka před vydáním.
+
+
+### ASSET13 — první CI a oprava přejímky
+
+PR #481/920d40ca, párový běh43646140387 nepřijat. MariaDB10.3 PASS:
+33celých HTTP scénářů,356nezměněných tabulek a bezpečný úklid. Na11.4
+HTTP část dokončená, Chrome selhal na zděděném požadavku alespoň dvou
+formulářů; přehled kalendáře správně obsahuje jediný editor. Minimum je
+teď přesně jeden pro přehled, dva pro detail/katalog, nikoliv vypnutí kontroly.
+
+Celé PHPUnit zároveň správně odmítlo nedostupný statický SRI důkaz:
+prázdná PHP hranice vložená při zalomení tagu ikon oddělila href a integrity
+pro zdrojový scanner. Testy SRI včetně negativních případů neměníme.
+Stejný tag ikon je nově emitován spojením konstantních literálů, které
+scanner umí číst. Source contract explicitně připíná tuto další ekvivalentní
+reprezentaci, hodnoty celého HTML stejné. Aktuálně21/9připnutých editů;
+zbytek tokenů i HTML zachovaný, source contract/styl PASS. Nová celá CI
+nutná před přijetím; dosud žádný merge/deploy. [Checkpoint](verification/calendar-catalog-bootstrap-20261114/checkpoint-1.json).

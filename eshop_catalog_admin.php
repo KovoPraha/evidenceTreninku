@@ -103,8 +103,10 @@ $variants = shopCatalogManagementVariants(
 );
 ?>
 <!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Správa<?php
-?> katalogu</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"<?php
-?> integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous"></head><body class="bg-light"><?php
+?> katalogu</title><?php
+echo '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"' .
+    ' integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">';
+?></head><body class="bg-light"><?php
 include __DIR__.'/hlavicka.php';
 ?>
 <main class="container-fluid py-4" style="max-width:1700px"><div class="d-flex justify-content-between align-items-start gap-2<?php

@@ -81,7 +81,8 @@ async (page) => {
             if (round >= 0) samples.push({variant, round, ...timing, ready_ms: ready});
             if (round === 0 && config.cache === 'cold') {
                 await page.screenshot({path: config.screenshots[variant], animations: 'disabled', fullPage: true});
-                if (await page.locator('main form').count() < 2) throw new Error('Expected administrative forms');
+                const minimumForms = config.path.startsWith('/club_calendar.php') && !config.path.includes('event_id=') ? 1 : 2;
+                if (await page.locator('main form').count() < minimumForms) throw new Error('Expected administrative forms');
                 const forms = await page.locator('main form').evaluateAll(nodes => nodes.map(node => [
                     node.getAttribute('method'), node.getAttribute('action'),
                     [...node.querySelectorAll('input,select,textarea,button')].map(input => [

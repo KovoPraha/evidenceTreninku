@@ -29,7 +29,7 @@ $signature = static function (string $source): array {
     return $result;
 };
 
-// Only pinned guard braces and a value-identical split of one long SQL literal.
+// Pinned guard braces, one equal SQL split and an identical static icon-tag emission.
 $edits = json_decode('{
   "club_calendar.php": [
     [
@@ -243,6 +243,34 @@ $edits = json_decode('{
       0,
       [
         "}"
+      ]
+    ],
+    [
+      690,
+      1,
+      [
+        [
+          "T_INLINE_HTML",
+          "<!doctype html><html lang=\\"cs\\"><head><meta charset=\\"utf-8\\"><meta name=\\"viewport\\" content=\\"width=device-width,initial-scale=1\\"><title>Správa katalogu</title>"
+        ],
+        [
+          "T_ECHO",
+          "echo"
+        ],
+        [
+          "T_CONSTANT_ENCAPSED_STRING",
+          "\'<link rel=\\"stylesheet\\" href=\\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css\\"\'"
+        ],
+        ".",
+        [
+          "T_CONSTANT_ENCAPSED_STRING",
+          "\' integrity=\\"sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+\\" crossorigin=\\"anonymous\\">\'"
+        ],
+        ";",
+        [
+          "T_INLINE_HTML",
+          "</head><body class=\\"bg-light\\">"
+        ]
       ]
     ]
   ]
