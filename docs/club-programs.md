@@ -206,3 +206,131 @@ Kvůli dokladům znovu nenasazovat. Původní fio WIP i ostatní prototypy
 zachované. Celé M1.4/UX01 ani blokátor náhradních lekcí tímto nejsou uzavřené.
 Další krok: nativně profilovat zbylé kapacitní roundtripy a případný objemový
 správní seznam, případně zbývající CSS duplicity, vždy samostatně podle přínosu.
+
+
+## P11-PCAP — dávkové kapacity správy programů (14. 11. 2026)
+
+NASAZENO / technická přejímka PASS. Původní plán před implementací: Vlastník Vývoj/Codex; oprávnění vlastníka
+„pokračuj ve stejném duchu stále dále“ navazuje na implementaci, paritu,
+před/po, commit/merge a chráněné nasazení po PASS. Base b0d2368d08f861444883a99a11e1f4205a2d0263,
+runtime b4d5cfe2 / deploy43478690110 SUCCESS ověřený živě v GitHub Actions.
+Větev codex/program-capacity-read-20261114, worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-program-capacity-read-20261114.
+Původní fio/d1221f35, kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachovat.
+Souběžné #474/#476 a ostatní PR nejsou součástí tohoto řezu.
+
+PADMIN doložil zbylých262/1023 SQL na100/401 nabídkách: dvě kapacitní
+čtení na každou fyzickou soupisku/nabídku. Je to konkrétní kandidát z analýzy,
+časový přínos dalšího řezu zatím NOT RUN. Žádná produkční latence z těchto
+syntetických hodnot neplyne.
+
+Varianta: nový read-only pomocník pouze pro správní reader, omezené UNION ALL
+dávky nejvýše80 cílů /480 parametrů pro aktivní účasti i čekající objednávky.
+Přesné původní predikáty překryvu, fyzických soupisek, plateb, identity,
+vypršení, zamítnutí a již přijatých položek; stejný pure výpočet
+clubProgramCapacityFromRows. Žádné obecné načtení celých tabulek do PHP.
+Aktivní osoby deduplikovat, rezervace spotřebovat po cílech proudově.
+Pořadí fyzických soupisek, rozhodnutí při stejné obsazenosti i min dostupnost
+zůstávají stejné. Včetně null/0 kapacity a legacy fallbacků.
+
+Alternativa měnit canonical checkout/locking SQL by rozšířila riziko;
+pro tento samostatný řez zůstává includes/club_program.php byte-shodný.
+Duplikované výběrové predikáty v read-only pomocníku vyžadují diferenciální
+testy proti canonical API; společný pure výpočet se neduplikuje. Žádná
+persistentní cache, změna práv, schématu, indexů ani writerů. Každé nové
+volání vytváří čerstvý kontext; zamykající a veřejné API zůstává původní.
+Časové porovnání rezervací zachovává >= a Europe/Prague; přesné hraniční
+testy použijí stejný explicitní okamžik pro scalar i dávku.
+
+Akceptace a postup:
+1. Implementace a strict srovnání celých řádků/typů/pořadí s PADMIN i
+canonical scalar API; 0/2/12/79/80/81/100/401, více soupisek, překryvy
+na hranách, tie, všichni žadatelé/objednávky a absence volitelných sloupců.
+Kontrola čerstvého GET po změně, proudu rezervací a pevných SQL dávek.
+2. Native MariaDB 10.3/11.4 query cache off, obyčejné PDO pro čas/peak,
+instrumentace odděleně; 4 warmup/17střídavých párů, SQL/řádky/peak,
+všechny checksumy a obnova. Baseline je již optimalizovaný PADMIN,
+nikoliv původní scalar. Požadovat měřený přínos100+ a zásadní pokles SQL.
+3. Celé HTTP17 scénářů včetně prázdného, přesné HTML/hlavičky kromě nonce,
+Chrome desktop/mobile light/dark cold/warm a čtyři pixelové páry.
+Zachovat existující CSS regresní profily, žádnou starou úsporu nevydávat za novou.
+4. Cílené/úplné CI, styl/syntaxe/docs/diff PASS, aktuální main a shodný
+testovaný/sloučený strom; chráněný deploy se zálohou/config/migracemi/VS/
+indexem/HTTP/úklidem, import/UAT false. Anonymní GET před/po; skutečná
+produkční přihlášená přejímka zvlášť, bez mutací objednávek/osob/rolí.
+5. Výsledky a release do verzovaných dokladů, CURRENT/handoff průběžně.
+Nedoložený přínos znamená nevydat optimalizaci a zapsat zjištění.
+
+[Průběžné výsledky](verification/program-capacity-read-20261114/RESULTS.md).
+Další krok implementace a místní diferenciální testy.
+
+
+### PCAP — místní implementace a přejímka
+
+Nový ClubProgramCapacityRead a tři řádky přepojení správního readeru.
+Stránka, canonical includes/club_program.php, pure kapacitní výpočet
+i ClubProgramReadContext byte-shodné s baseline. Každá dávka má nejvýše80
+UNION cílů; aktivní osoby deduplikované, rezervace řazené interním numerickým
+ordinalem a předávané generátorem společnému pure výpočtu. Pořadí fyzických
+soupisek a první stav při stejné obsazenosti zachované. Dotazy parametrizované,
+žádné načítání celé tabulky. Dávkový reader zachycuje jeden okamžik expirace
+pro celý GET, stejný predikát >= a Europe/Prague; explicitní hrana PASS.
+
+První nový test odhalil chybějící fallback prázdné fyzické soupisky;
+opraveno stejným cílem0 jako canonical API. Po opravě 7 testů/210 assertions
+PASS a rozšířená místní sada34/406 PASS. Zahrnuje strict celé řádky/typy/
+pořadí, 79/80/81/160/161/401, 2500 rezervací, překryvy včetně hran,
+tie/quantity/deduplikaci, nulové/neomezené kapacity, legacy sloupce/tabulky,
+změny mezi GET, cizí PDO a přesnou shodu canonical SQL predikátů pro všechny
+podporované varianty schématu. Původní veřejné a locking testy PASS.
+SQL diagnostika SQLite proti PADMIN: 0:1→1, 2:14→12, 12:34→12,
+100:212→16, 401:823→33, strict shoda. Není to nativní časové měření.
+Změněné PHP PSR12/200/braces a cílený PHPStan PASS, Python/PHP syntaxe PASS.
+
+Nový párový native/HTTP/Chrome profil porovnává přesně zmrazený PADMIN
+reader z b0d2368d (jen přejmenování testové funkce); HTTP před má původní
+soubor readeru, celá stránka a canonical API jsou stejné. 4 warmup/17 párů,
+0/2/12/100/401, 17 HTTP scénářů,355 checksumů a čtyři pixelové páry čekají
+na CI. Existující PADMIN profil zůstává regresí celkového přínosu proti
+původnímu scalar API, jeho historické výsledky se nepřepisují.
+Další krok nové celé CI a párový native před/po; bez PASS nevydávat.
+
+
+### PCAP — párová přejímka
+
+PR #479/6e8bf906, běh43632235271 SUCCESS na MariaDB 10.3/11.4:
+native 0/2/12/100/401 strict celá pole/typy/pořadí,17 HTTP scénářů na každéDB,
+355 checksumů, obnova a úklid; Chrome 176měřených+48 warmup a čtyři pixelové
+dvojice/formuláře/geometrie PASS. 100 nabídek reader114,362→58,460 /
+115,821→51,230ms; HTTP 93,923→56,275 / 92,705→51,945ms. SQL 262→16,
+401 nabídek 1023→35; počet načtených řádků se nemění. Peak při 100
+1153960→1380448B (+226488B), při 401: 3810408→4053240B (+242832B).
+Jde o syntetický nový přínos proti nasazenému PADMIN, nikoli produkční SLA.
+Plné tabulky/bezpečné doklady ve výsledcích; širší CI ještě čeká, merge
+a deploy zatím NOT RUN. Původní WIP zachovaný, anonymní živá baseline PASS.
+
+
+### PCAP — dokončení
+
+**P11-PCAP NASAZENO:** [plán](club-programs.md#p11-pcap--dávkové-kapacity-správy-programů-14-11-2026), [výsledky](verification/program-capacity-read-20261114/RESULTS.md). #479/c7b77fa5, [deploy 43633315305](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43633315305) SUCCESS, 15 CI. Syntetický GET 100 94→56 / 93→52ms, přesná shoda; přihlášené produkční UAT NOT RUN.
+
+Strict celé řádky/typy/pořadí proti zmrazenému již optimalizovanému PADMIN
+i canonical API PASS na obou MariaDB, native 0/2/12/100/401,17 HTTP scénářů,
+všech355 checksumů/obnova/úklid a Chrome 176měřených+48 warmup navigací se
+čtyřmi pixelově shodnými dvojicemi. Úplné časy/SQL/řádky/peak v dokladech.
+Původní stránka/canonical/pure/context byte-shodné, public/checkout/locking
+nedotčené. Read-only dávky≤80, stejná platební/identitní pravidla.
+Zachycený okamžik expirace platí pro celý GET; přesná explicitní hrana
+stejná jako canonical API. Žádná persistentní cache nebo migrace.
+
+Testovaný/sloučený strom d1ed26133c5828e886a63ae4e6e9eb011538c891,15 CI PASS; chráněný deploy 43633315305
+2479/56904, záloha 394/2, config/migrace/VS/index/HTTP/úklid PASS.
+UAT/import false, import přeskočený; anonymní GET/CSS před/po shodné.
+Přihlášené produkční UAT a produkční časový benchmark NOT RUN; žádná
+skutečná účast/objednávka/platba/role ani rozesílka nebyla ověřením měněna.
+Doklady samostatným PR z codex/program-capacity-read-evidence-20261114,
+po přijetí v main, bez dalšího nasazení. Původní fio WIP zachovaný.
+Ostatní PR/prototypy a lidské blokátory nepřevzaté, celé M1.4/UX01 neuzavřené.
+Další kandidát: profil objemu správního seznamu a zbývající duplicitní styly
+kalendáře/katalogové administrace; nejprve měření, parita a oddělené přijetí.

@@ -2687,10 +2687,11 @@
       "primary": true,
       "role": "plan",
       "status": "PARTIAL",
-      "registry": "DOC02/P11-PADMIN",
-      "disposition": "Původní referenční podklad rozšířený o schválený plán P11-PADMIN. #477/b4d5cfe2, deploy43478690110 SUCCESS; native2DB/HTTP/Chrome/15CI PASS, dávkové čtení a podmínky hotové, přihlášené produkční UAT a ostatní obchodní etapy otevřené.",
+      "registry": "DOC02/P11-PADMIN/P11-PCAP",
+      "disposition": "Původní tematický podklad rozšířený o schválené P11-PADMIN a P11-PCAP. #477/b4d5cfe2 a #479/c7b77fa5 nasazeno, deploy43633315305 SUCCESS. PCAP native2DB/HTTP/Chrome/15CI PASS; ostatní obchodní etapy a přihlášené produkční UAT otevřené.",
       "evidence": [
-        "docs/verification/program-admin-read-20261113/RESULTS.md"
+        "docs/verification/program-admin-read-20261113/RESULTS.md",
+        "docs/verification/program-capacity-read-20261114/RESULTS.md"
       ]
     },
     {

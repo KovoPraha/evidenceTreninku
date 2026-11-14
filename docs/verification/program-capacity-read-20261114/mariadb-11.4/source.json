@@ -1,0 +1,15 @@
+{
+  "club_programs_admin.php": {
+    "baseline": "b0d2368d08f861444883a99a11e1f4205a2d0263",
+    "head": "6e8bf9068e9ab371cdc69353b4f39fb0bde136f6",
+    "before_sha256": "7d9905e13b438d286628a98d7a8fb17fb0eb6f6082ca126d717d9fab4d46307e",
+    "after_sha256": "7d9905e13b438d286628a98d7a8fb17fb0eb6f6082ca126d717d9fab4d46307e",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  },
+  "includes/club_program_admin_read.php": {
+    "baseline": "b0d2368d08f861444883a99a11e1f4205a2d0263",
+    "head": "6e8bf9068e9ab371cdc69353b4f39fb0bde136f6",
+    "before_sha256": "3b0122f127a6bf21b586f69950ecbb8dc6e3b67de66069aaa6c5feaa3c0455e3",
+    "after_sha256": "763ad5346f98bd893fd22e1bb61db83ed94577e96f1be212cb9a4ec86e1d1945"
+  }
+}
