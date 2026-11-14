@@ -18,6 +18,36 @@ skončily po úspěšné kontrole HTML/rolí/CSRF na neurčené konzolové chyb�
 selhaném požadavku v základní variantě. Do jejich asercí byly doplněny
 konkrétní diagnostické údaje; příčinu a opakovaný výsledek určí nové CI.
 
+V navazujícím lokálním prohlížeči na oddělené syntetické databázi
+`attendance_demo` (MariaDB 10.4.32, port 3318, PHP 8.2, Chrome) byl ověřen
+rodičovský rezervační krok a běžná trenérská role:
+
+- Rodič syntetického dítěte #7 viděl jeden dostupný nárok po uzavřené
+  absenci, rezervoval volné místo a UI přešlo na „Rezervováno 1“.
+  [Snímek](parent-reserved-makeup-20261114.png). Tento cíl měl předem
+  existující ruční slot.
+- Ve stejné izolované databázi byl pouze pro test zapnut automatický režim,
+  cílové nabídce doplněna číselná kapacita a vytvořen budoucí termín #9 bez
+  slotu. Před rezervací bylo v `club_makeup_slots` pro #9 nula řádků.
+  Rodič dítěte #9 uviděl jeden kompatibilní cíl, rezervoval jej v UI a potom
+  viděl „Rezervováno 1“. Databáze obsahovala jeden slot `origin=automatic`,
+  jednu `booked` rezervaci a nárok `reserved`.
+  [Snímek](parent-automatic-makeup-20261114.png).
+- Trenér #5 měl legacy roli `trener`, aktivní pozici `coach` a otevřel
+  docházku budoucího cíle #6; rezervovaní náhradníci byli odděleni od
+  soupisky a označeni ID rezervace. [Snímek](coach-reserved-makeup-20261114.png).
+  U vlastního již proběhlého syntetického termínu #1 odeslal v prohlížeči
+  úplnou opravu bez role `admin`; verze uzavření vzrostla z 6 na 7 a nová
+  revize má `closed_by=5`. Tím je ověřen POST v běžné trenérské roli.
+
+Test použil výhradně existující a doplněné lokální syntetické záznamy;
+žádné produkční zápisy, platby ani odesílání zpráv. Rodičovská omluva a
+prvotní uzavření zdrojového termínu proběhly v dřívějším 31/31 HTTP testu,
+nikoli znovu v jednom grafickém sezení. Skutečný cílový termín ještě
+neproběhl, takže jeho docházka nebyla uzavřena. Produkční přejímka je dál
+NOT RUN. Změny v izolované fixture a její úklid se doplní při zastavení
+služeb.
+
 Aktualizace 14. 11.: po převzetí aktuálního `origin/main` (`b0d2368d`, merge `fff1207a`) prošlo lokálně 37 cílených testů / 237 kontrol a `php tools/check-current-docs.php` (0 chyb). Původní úplné CI a HTTP/prohlížečové výsledky níže platí pro uvedené starší commity; nové CI po pushi zatím NOT RUN.
 
 Pracovní větev `codex/coach-attendance`, syntetická lokální MariaDB `attendance_demo` na portu 3318. Žádné produkční zápisy.

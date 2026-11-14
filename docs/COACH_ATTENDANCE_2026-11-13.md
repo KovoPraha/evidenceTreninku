@@ -57,3 +57,16 @@ Pro produkční přejímku se scénáře zopakují jen v odsouhlaseném okně, s
 Nové zadání pokrývá stejný rozsah E4-06. Body A–G, historie, role, mobil a souběh jsou implementované v návrhu PR #474; jejich vazby na existující data jsou v auditu výše a akceptační scénáře A01–A14 odpovídají požadavkům testerky. Není důvod zakládat další docházkový modul. Větev byla sloučena s aktuálním `origin/main` `b0d2368d` v merge commitu `fff1207a`; jediný textový konflikt v katalogu plánů zachoval oba nezávislé záznamy. Nová technická kontrola 37 cílených testů / 237 kontrol a kontrola dokumentace prošly. Stav po aktualizaci PR a nové CI patří do ověřovacího protokolu.
 
 Otevřené před vydáním: vyhodnotit vedlejší červené výkonové workflow, dokončit vizuální průchod rezervací náhradní lekce a odlišit jej od již úspěšného souvislého HTTP testu. Produkční nasazení a uživatelská přejímka zůstávají NOT RUN; samostatné schválené UAT okno je potřeba pro produkční zápisy.
+
+## Pokračování 14. 11. 2026
+
+Na základě pokynu vlastníka dokončit řešení byl vyřešen nový konflikt s
+`main` (`c1836273`) a v izolované syntetické databázi doplněn vizuální
+rodičovský průchod automatické rezervace. Před rezervací cíl neměl slot,
+po ní vznikl slot `origin=automatic` a jediná aktivní rezervace. Samostatný
+přihlášený `trener` s pozicí `coach` uložil skutečnou opravu docházky bez
+legacy role `admin`. [Metoda, důkazy a meze](verification/coach-attendance-20261113/RESULTS.md).
+
+Zbývá zelené opakování výkonových browser kontrol, integrace PR, nasazení
+nové stránky a schválené produkční UAT. Místní průchod nenahrazuje
+produkční dostupnost konkrétnímu trenérovi ani lidskou přejímku.
