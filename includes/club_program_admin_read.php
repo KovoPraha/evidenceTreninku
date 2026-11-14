@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/club_program.php';
+require_once __DIR__ . '/club_program_capacity_read.php';
 
 /** One fresh administrative GET projection; never a checkout or locking read.
  * @return list<array<string,mixed>>
@@ -16,8 +17,9 @@ function clubProgramAdminOffersRead(PDO $pdo): array
         . 'sp.id=o.product_id ORDER BY o.starts_on DESC,o.id DESC')->fetchAll(PDO::FETCH_ASSOC);
     $context = new ClubProgramReadContext($pdo);
     $context->warmAdminOffers($rows);
+    $capacities = (new ClubProgramCapacityRead($pdo, $context))->states($rows);
     foreach ($rows as &$row) {
-        $row = array_merge($row, clubProgramOfferCapacityState($pdo, $row, null, false, 0, $context));
+        $row = array_merge($row, $capacities[(int) $row['id']]);
         $row['effective_terms'] = clubProgramTermsEffective($pdo, (int) $row['program_id'], (int) $row['id'], false, $context);
         $row['terms_complete'] = clubProgramTermsComplete($row['effective_terms']);
         $saleState = clubProgramOfferSaleState($row);

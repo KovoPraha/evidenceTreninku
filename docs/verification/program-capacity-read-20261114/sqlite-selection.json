@@ -1,0 +1,42 @@
+[
+    {
+        "offers": 0,
+        "strict_parity": true,
+        "queries": {
+            "before": 1,
+            "after": 1
+        }
+    },
+    {
+        "offers": 2,
+        "strict_parity": true,
+        "queries": {
+            "before": 14,
+            "after": 12
+        }
+    },
+    {
+        "offers": 12,
+        "strict_parity": true,
+        "queries": {
+            "before": 34,
+            "after": 12
+        }
+    },
+    {
+        "offers": 100,
+        "strict_parity": true,
+        "queries": {
+            "before": 212,
+            "after": 16
+        }
+    },
+    {
+        "offers": 401,
+        "strict_parity": true,
+        "queries": {
+            "before": 823,
+            "after": 33
+        }
+    }
+]
