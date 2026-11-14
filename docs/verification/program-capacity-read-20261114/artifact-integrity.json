@@ -1,0 +1,190 @@
+{
+  "algorithm": "SHA-256 of Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/program-capacity-read-20261114/RESULTS.md",
+      "bytes": 7692,
+      "sha256": "48ba87fd6fea2871a7e88a1be37777d28254f0d7f568c6530eb7d50d1ee4dd97"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/application-checks.json",
+      "bytes": 983,
+      "sha256": "dd18cd6d299ad2a5347030e4258929bec1d4a5a40e3505914e1da0c7a5c97294"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/http-medians.json",
+      "bytes": 861,
+      "sha256": "d26a39bddafe459fee059ac618743469791ea75d81f1fb660a6d4be15acce8e0"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-10.3/empty-http.json.gz",
+      "bytes": 933,
+      "sha256": "6258faeb75eaae255d5e087fb3f4f804314f67caba19ffbce599b1e8c670b2a9"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-10.3/http.json.gz",
+      "bytes": 2905,
+      "sha256": "57f77e78f82aa7b53d8179950bf6ba0be3e9ac0ba6f5bb275f2a53e780de2ffe"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-10.3/native.json.gz",
+      "bytes": 77848,
+      "sha256": "f22cc940a7cc42442c3b87f05d3077f9510e3df4e2ad596ff3dcedc4ffdff94f"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-10.3/source.json",
+      "bytes": 763,
+      "sha256": "0f141525cbcc361df1a761e92127902bff4145e1306b3e9d67137b5d7bc69ff6"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/browser-overview-dark-cold.json",
+      "bytes": 5948,
+      "sha256": "d8c2ef00dcafb2467f4438209fcb60d999288ff0ca51bb44d667e91eeaa097a2"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/browser-overview-dark-warm.json",
+      "bytes": 5868,
+      "sha256": "8e0805d671dd063b0d110071201af3bff96ceefad1a5352ef07ef76a4ae1183f"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/browser-overview-light-cold.json",
+      "bytes": 5999,
+      "sha256": "1be0622d5a717c44fb6c615158ae7b0314c0e43fc630e2488cf223d4674ed6be"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/browser-overview-light-warm.json",
+      "bytes": 5840,
+      "sha256": "426458e043262499cb3b9b86e130cbb402317e8c5e534552f485b637c6c3706f"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/browser-summary.json",
+      "bytes": 3860,
+      "sha256": "c5bb2fcb867c0cfd9d01e377b4b5c379fcb4bb6867ea51b298a33ef1ffd40c67"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/browser-terms-dark-cold.json",
+      "bytes": 5937,
+      "sha256": "f7d73cf7bdf7147c667d770d371695823c83441cd64c5e9297ae42600fae6137"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/browser-terms-dark-warm.json",
+      "bytes": 5879,
+      "sha256": "041e7cb1f1e102a9ff9c7a06933be98ffd4960f5dc186849df5c9b8077dc4cba"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/browser-terms-light-cold.json",
+      "bytes": 5952,
+      "sha256": "7799cd957d769d37384716ded53b5698cb2d8e5353baa36e032bb5f49ec3a329"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/browser-terms-light-warm.json",
+      "bytes": 5909,
+      "sha256": "80b53549e2492126525bba1305b5c7d4572b3cabcde44187059dff2cf0b1157b"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/empty-http.json.gz",
+      "bytes": 934,
+      "sha256": "3473db6f0b5b4b4af82f7d1a2c0b0ebe0964ea87ba4b68720db83fd900f73424"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/http.json.gz",
+      "bytes": 2935,
+      "sha256": "d53a1652955da12f9edb47c526387d9d1326e79e1676d60f98104ea6d9244f33"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/native.json.gz",
+      "bytes": 78036,
+      "sha256": "4e0685bd86778d4267698cdfad32362af4f81998983b253ce675b0eccca7daf6"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/overview-dark-cold-after.png",
+      "bytes": 1881059,
+      "sha256": "9fac221006ff5912e67deab4d52e58c9188fd7fd71378933c882dcb7198b82c9"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/overview-dark-cold-before.png",
+      "bytes": 1881059,
+      "sha256": "9fac221006ff5912e67deab4d52e58c9188fd7fd71378933c882dcb7198b82c9"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/overview-light-cold-after.png",
+      "bytes": 2681571,
+      "sha256": "0f453f0c999e35b5248a1ee9dea9497670c070356afb4ccf1ac6a021503fe372"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/overview-light-cold-before.png",
+      "bytes": 2681571,
+      "sha256": "0f453f0c999e35b5248a1ee9dea9497670c070356afb4ccf1ac6a021503fe372"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/source.json",
+      "bytes": 763,
+      "sha256": "0f141525cbcc361df1a761e92127902bff4145e1306b3e9d67137b5d7bc69ff6"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/terms-dark-cold-after.png",
+      "bytes": 1952564,
+      "sha256": "01096fb6ccaa6affdca07dadcc1eeffe9652ca1a1e6f55d49c16c1b13fd0eb89"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/terms-dark-cold-before.png",
+      "bytes": 1952564,
+      "sha256": "01096fb6ccaa6affdca07dadcc1eeffe9652ca1a1e6f55d49c16c1b13fd0eb89"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/terms-light-cold-after.png",
+      "bytes": 2748171,
+      "sha256": "c9d171015f463d294d9e9d79673de6636e675e6e0499129bdb7074ee4a68b188"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/mariadb-11.4/terms-light-cold-before.png",
+      "bytes": 2748171,
+      "sha256": "c9d171015f463d294d9e9d79673de6636e675e6e0499129bdb7074ee4a68b188"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/paired-run.json",
+      "bytes": 7289,
+      "sha256": "2c249cfeca91402e109a525af188c903b87fb663c9a230dd7b3bda0503ef532a"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/production-after.json",
+      "bytes": 562,
+      "sha256": "daccf3a6b34cb42267438167f14699401c14a76d17daaec53fd21a3d7bbd01d1"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/production-before.json",
+      "bytes": 562,
+      "sha256": "daccf3a6b34cb42267438167f14699401c14a76d17daaec53fd21a3d7bbd01d1"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/release.json",
+      "bytes": 511,
+      "sha256": "9efa6bd812e79ab718ae5866df4c0a38d663e59cffbb9c6fcee55cfe36a136de"
+    },
+    {
+      "path": "docs/verification/program-capacity-read-20261114/sqlite-selection.json",
+      "bytes": 738,
+      "sha256": "498e4b5840f8f293e03a6c11f401901cf339a44bc344692a67acaaa5895f0977"
+    }
+  ]
+}
