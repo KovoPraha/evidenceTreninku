@@ -1091,3 +1091,32 @@ scanner umí číst. Source contract explicitně připíná tuto další ekvival
 reprezentaci, hodnoty celého HTML stejné. Aktuálně21/9připnutých editů;
 zbytek tokenů i HTML zachovaný, source contract/styl PASS. Nová celá CI
 nutná před přijetím; dosud žádný merge/deploy. [Checkpoint](verification/calendar-catalog-bootstrap-20261114/checkpoint-1.json).
+
+
+### ASSET13 — nová párová přejímka
+
+PR #481/700ecd4b, celý párový běh43646929544 SUCCESS: MariaDB10.3/11.4
+po33HTTP scénářích,356checksumů,bezpečný úklid; Chrome16scénářů,
+352měřených+96warmup navigací a osm pixelových dvojic stejných. CSS cold
+53957→31248B (−22709B/−42,09%),warm0→0B,decoded465606→232803B.
+Kladné HTML přesně−210B. Formuláře/CSRF/odkazy/role/hlavičky a ostatní
+HTML shodné. Časy serveru neprokazují významné zrychlení; FCP/ready jsou
+v úplných tabulkách včetně nulových a drobných protisměrných rozdílů.
+Přijatý doložený přínos je přenos a jeden CSS požadavek, ne produkční SLA.
+SRI kontrola včetně negativů nezměněná, lokálně2/9 a nový celý PHPUnit PASS.
+Širší CI ještě čeká, merge/deploy NOT RUN. Starší neúspěšná brána se nemaže.
+
+
+### ASSET13 — souběžná dokumentace a nová brána
+
+Před merge se main posunul přes #476 naf9cc4f726c0ed94829ab752e919432fe1be58e63; GitHub odmítl merge
+405 „3 required checks expected“, strict ochrana zachovaná. Příchozí změny
+jsou výhradně dokumentace syntetické přejímky náhradních lekcí a její meze,
+nikoli nový runtime. Všechny převzaté údaje CURRENT/handoff/registr/log
+zachované. Vlastní dirty výsledky byly odložené jen po vyjmenovaných cestách
+a poté vrácené; původní fio WIP nedotčený.
+
+Větev rebased na nový main, aplikační/testové/workflow Git bloby přesně stejné
+jako700ecd4b. Původní celý13CI a párová přejímka PASS jsou historický
+checkpoint, nová kompletní přejímka aktuálního headu povinná před merge.
+Immutable zdrojová baseline f9b27e4c zůstává platná, #476 nemění aplikaci.

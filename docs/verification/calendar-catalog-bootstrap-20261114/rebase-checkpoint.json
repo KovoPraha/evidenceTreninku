@@ -1,0 +1,8 @@
+{
+  "prior_tested_head": "700ecd4b1713b9d0f7bf21737a5cc7c0c3573273",
+  "new_main": "f9cc4f726c0ed94829ab752e919432fe1be58e63",
+  "incoming_pr": 476,
+  "incoming_docs_only": true,
+  "application_test_workflow_blobs_equal": true,
+  "all_current_checks_required_again": true
+}
