@@ -1158,3 +1158,23 @@ v [checkpointu](verification/calendar-catalog-bootstrap-20261114/midnight-checkp
 Aktuální výsledkové PR proto opakuje stejné celé CI po půlnoci. Žádná
 změna aplikace, testů, normalizace ani další produkční operace. Původní
 fail se nepřepisuje na PASS. Merge dokladů až po nové zelené bráně.
+
+
+### ASSET13 — návaznost po přijetí docházky (15. 11. 2026)
+
+Po našem vydání837a7112/43649462751 byl již jiným úkolem sloučen #474
+jakoea995408 a nasazen během43651304138 SUCCESS. Obsahuje náš release jako
+předka. Naše dvě stránky, hlavicka.php, kanonický Bootstrap a.htaccess
+mají stejné Git bloby jako vlastní ověřené vydání. Náš benchmark b0fde0bc
+a jeho meze se nepřepisují na nový výkonový výsledek docházky.
+
+Navazující chráněné vydání ověřené ze skutečných logů: 2487/57125,
+záloha394/2, config/pending migrace[]/VS/index/HTTP200/úklid PASS,
+UAT/importfalse. Zrušený duplicitní dispatch43651334299 neměl žádný job
+a nic neaktivoval. Anonymní GET/CSS znovu shodné. [Receipt](verification/calendar-catalog-bootstrap-20261114/followup-release.json),
+[veřejné ověření](verification/calendar-catalog-bootstrap-20261114/followup-public.json),[návaznost a Git bloby](verification/calendar-catalog-bootstrap-20261114/runtime-continuity.json).
+
+Dokumentační větev převzala celý přijatý main bez změny kódu. CURRENT/handoff
+uvádějí aktuální runtime, naše vlastní vydání zůstává oddělené. Lidské UAT
+docházky i přihlášené produkční CSS UAT zůstávají otevřené. Další celý CI head
+je povinný před merge dokladů. Žádný další deploy kvůli dokumentaci.

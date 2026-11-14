@@ -3,8 +3,8 @@
   "files": [
     {
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/RESULTS.md",
-      "bytes": 9180,
-      "sha256": "04048ecb9229ac9b1bf8e7d6bb0165990ffd5ff2b4a23c6fb9983db8d83c21ef"
+      "bytes": 10380,
+      "sha256": "26115482aae6bcfcdba9b201d5a4aeeda53ce6492263e561825bfc9b74c5f2d5"
     },
     {
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/application-checks.json",
@@ -15,6 +15,16 @@
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/checkpoint-1.json",
       "bytes": 588,
       "sha256": "632043ecc83462dbb84a5b509e076098fec392453d1816b3e868ae65484ee649"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/followup-public.json",
+      "bytes": 846,
+      "sha256": "59ff85a7020392bae5fd147f3ec750625e7e51d6f231248fb361250033ecf8f3"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/followup-release.json",
+      "bytes": 511,
+      "sha256": "1cd0b658c8bf21d82fa80c65dc6ff7ce3173293a2c082d21eb62e4cccd082375"
     },
     {
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/http-medians.json",
@@ -265,6 +275,11 @@
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/release.json",
       "bytes": 509,
       "sha256": "1a2c3bb47ea00b62d217e67a122c30805f8ff614f1c15284b958e965e9a8b3a1"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/runtime-continuity.json",
+      "bytes": 955,
+      "sha256": "ad764d686dde4f87286e2a7c3b955d145bae3fd2bc82ba30a38a0d93992fb207"
     },
     {
       "path": "docs/verification/calendar-catalog-bootstrap-20261114/table-counts.json",
