@@ -51,3 +51,9 @@ Použít oddělenou instalaci s označenými syntetickými účty: trenér A vla
 | A14 | Otevřít tentýž termín ve dvou nezávislých relacích; po prvním uložení se druhé se starou verzí odmítne a první změna zůstane. |
 
 Pro produkční přejímku se scénáře zopakují jen v odsouhlaseném okně, s vlastníkem určenými TEST účty a auditovaným úklidem. Do protokolu zapsat u každého bodu PASS/FAIL/BLOCKED, roli, čas a důkaz; samotný technický test ani HTTP odpověď nejsou uživatelské potvrzení.
+
+## Převzetí požadavku testerky 14. 11. 2026
+
+Nové zadání pokrývá stejný rozsah E4-06. Body A–G, historie, role, mobil a souběh jsou implementované v návrhu PR #474; jejich vazby na existující data jsou v auditu výše a akceptační scénáře A01–A14 odpovídají požadavkům testerky. Není důvod zakládat další docházkový modul. Větev byla sloučena s aktuálním `origin/main` `b0d2368d` v merge commitu `fff1207a`; jediný textový konflikt v katalogu plánů zachoval oba nezávislé záznamy. Nová technická kontrola 37 cílených testů / 237 kontrol a kontrola dokumentace prošly. Stav po aktualizaci PR a nové CI patří do ověřovacího protokolu.
+
+Otevřené před vydáním: vyhodnotit vedlejší červené výkonové workflow, dokončit vizuální průchod rezervací náhradní lekce a odlišit jej od již úspěšného souvislého HTTP testu. Produkční nasazení a uživatelská přejímka zůstávají NOT RUN; samostatné schválené UAT okno je potřeba pro produkční zápisy.

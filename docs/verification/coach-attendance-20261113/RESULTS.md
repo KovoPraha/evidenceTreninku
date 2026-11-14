@@ -1,5 +1,7 @@
 # Ověření trenérské docházky — 13. 11. 2026
 
+Aktualizace 14. 11.: po převzetí aktuálního `origin/main` (`b0d2368d`, merge `fff1207a`) prošlo lokálně 37 cílených testů / 237 kontrol a `php tools/check-current-docs.php` (0 chyb). Původní úplné CI a HTTP/prohlížečové výsledky níže platí pro uvedené starší commity; nové CI po pushi zatím NOT RUN.
+
 Pracovní větev `codex/coach-attendance`, syntetická lokální MariaDB `attendance_demo` na portu 3318. Žádné produkční zápisy.
 
 ## Technické kontroly
