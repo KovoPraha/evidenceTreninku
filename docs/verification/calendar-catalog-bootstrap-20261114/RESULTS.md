@@ -11,3 +11,6 @@ závorek a jednoho hodnotově stejného rozdělení SQL literálu. Contract
 verzovaný v tests/Support/CalendarCatalogAssetsSourceContract.php.
 Původní fio/d1221f35 WIP a ostatní PR/prototypy zachované. Další krok
 skutečný Apache/Chrome a MariaDB10.3/11.4 před/po proti f9b27e4c.
+
+
+První celé CI nepřijaté: [checkpoint](checkpoint-1.json). Native10.3 HTTP33/checksum356/cleanup PASS; browser minimum formulářů a statický SRI důkaz opravené, SRI testy nezměněné. Nová celá přejímka čeká, žádný deploy.
