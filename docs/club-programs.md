@@ -210,7 +210,7 @@ správní seznam, případně zbývající CSS duplicity, vždy samostatně podl
 
 ## P11-PCAP — dávkové kapacity správy programů (14. 11. 2026)
 
-ROZPRACOVÁNO před implementací. Vlastník Vývoj/Codex; oprávnění vlastníka
+NASAZENO / technická přejímka PASS. Původní plán před implementací: Vlastník Vývoj/Codex; oprávnění vlastníka
 „pokračuj ve stejném duchu stále dále“ navazuje na implementaci, paritu,
 před/po, commit/merge a chráněné nasazení po PASS. Base b0d2368d08f861444883a99a11e1f4205a2d0263,
 runtime b4d5cfe2 / deploy43478690110 SUCCESS ověřený živě v GitHub Actions.
@@ -248,8 +248,8 @@ Akceptace a postup:
 canonical scalar API; 0/2/12/79/80/81/100/401, více soupisek, překryvy
 na hranách, tie, všichni žadatelé/objednávky a absence volitelných sloupců.
 Kontrola čerstvého GET po změně, proudu rezervací a pevných SQL dávek.
-2. Native MariaDB10.3/11.4 query cache off, obyčejné PDO pro čas/peak,
-instrumentace odděleně; 4warmup/17střídavých párů, SQL/řádky/peak,
+2. Native MariaDB 10.3/11.4 query cache off, obyčejné PDO pro čas/peak,
+instrumentace odděleně; 4 warmup/17střídavých párů, SQL/řádky/peak,
 všechny checksumy a obnova. Baseline je již optimalizovaný PADMIN,
 nikoliv původní scalar. Požadovat měřený přínos100+ a zásadní pokles SQL.
 3. Celé HTTP17 scénářů včetně prázdného, přesné HTML/hlavičky kromě nonce,
@@ -278,9 +278,9 @@ soupisek a první stav při stejné obsazenosti zachované. Dotazy parametrizova
 pro celý GET, stejný predikát >= a Europe/Prague; explicitní hrana PASS.
 
 První nový test odhalil chybějící fallback prázdné fyzické soupisky;
-opraveno stejným cílem0 jako canonical API. Po opravě 7testů/210assertions
+opraveno stejným cílem0 jako canonical API. Po opravě 7 testů/210 assertions
 PASS a rozšířená místní sada34/406 PASS. Zahrnuje strict celé řádky/typy/
-pořadí, 79/80/81/160/161/401, 2500rezervací, překryvy včetně hran,
+pořadí, 79/80/81/160/161/401, 2500 rezervací, překryvy včetně hran,
 tie/quantity/deduplikaci, nulové/neomezené kapacity, legacy sloupce/tabulky,
 změny mezi GET, cizí PDO a přesnou shodu canonical SQL predikátů pro všechny
 podporované varianty schématu. Původní veřejné a locking testy PASS.
@@ -290,8 +290,47 @@ Změněné PHP PSR12/200/braces a cílený PHPStan PASS, Python/PHP syntaxe PASS
 
 Nový párový native/HTTP/Chrome profil porovnává přesně zmrazený PADMIN
 reader z b0d2368d (jen přejmenování testové funkce); HTTP před má původní
-soubor readeru, celá stránka a canonical API jsou stejné. 4warmup/17párů,
-0/2/12/100/401, 17HTTP scénářů,355checksumů a čtyři pixelové páry čekají
+soubor readeru, celá stránka a canonical API jsou stejné. 4 warmup/17 párů,
+0/2/12/100/401, 17 HTTP scénářů,355 checksumů a čtyři pixelové páry čekají
 na CI. Existující PADMIN profil zůstává regresí celkového přínosu proti
 původnímu scalar API, jeho historické výsledky se nepřepisují.
 Další krok nové celé CI a párový native před/po; bez PASS nevydávat.
+
+
+### PCAP — párová přejímka
+
+PR #479/6e8bf906, běh43632235271 SUCCESS na MariaDB 10.3/11.4:
+native 0/2/12/100/401 strict celá pole/typy/pořadí,17 HTTP scénářů na každéDB,
+355 checksumů, obnova a úklid; Chrome 176měřených+48 warmup a čtyři pixelové
+dvojice/formuláře/geometrie PASS. 100 nabídek reader114,362→58,460 /
+115,821→51,230ms; HTTP 93,923→56,275 / 92,705→51,945ms. SQL 262→16,
+401 nabídek 1023→35; počet načtených řádků se nemění. Peak při 100
+1153960→1380448B (+226488B), při 401: 3810408→4053240B (+242832B).
+Jde o syntetický nový přínos proti nasazenému PADMIN, nikoli produkční SLA.
+Plné tabulky/bezpečné doklady ve výsledcích; širší CI ještě čeká, merge
+a deploy zatím NOT RUN. Původní WIP zachovaný, anonymní živá baseline PASS.
+
+
+### PCAP — dokončení
+
+**P11-PCAP NASAZENO:** [plán](club-programs.md#p11-pcap--dávkové-kapacity-správy-programů-14-11-2026), [výsledky](verification/program-capacity-read-20261114/RESULTS.md). #479/c7b77fa5, [deploy 43633315305](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43633315305) SUCCESS, 15 CI. Syntetický GET 100 94→56 / 93→52ms, přesná shoda; přihlášené produkční UAT NOT RUN.
+
+Strict celé řádky/typy/pořadí proti zmrazenému již optimalizovanému PADMIN
+i canonical API PASS na obou MariaDB, native 0/2/12/100/401,17 HTTP scénářů,
+všech355 checksumů/obnova/úklid a Chrome 176měřených+48 warmup navigací se
+čtyřmi pixelově shodnými dvojicemi. Úplné časy/SQL/řádky/peak v dokladech.
+Původní stránka/canonical/pure/context byte-shodné, public/checkout/locking
+nedotčené. Read-only dávky≤80, stejná platební/identitní pravidla.
+Zachycený okamžik expirace platí pro celý GET; přesná explicitní hrana
+stejná jako canonical API. Žádná persistentní cache nebo migrace.
+
+Testovaný/sloučený strom d1ed26133c5828e886a63ae4e6e9eb011538c891,15 CI PASS; chráněný deploy 43633315305
+2479/56904, záloha 394/2, config/migrace/VS/index/HTTP/úklid PASS.
+UAT/import false, import přeskočený; anonymní GET/CSS před/po shodné.
+Přihlášené produkční UAT a produkční časový benchmark NOT RUN; žádná
+skutečná účast/objednávka/platba/role ani rozesílka nebyla ověřením měněna.
+Doklady samostatným PR z codex/program-capacity-read-evidence-20261114,
+po přijetí v main, bez dalšího nasazení. Původní fio WIP zachovaný.
+Ostatní PR/prototypy a lidské blokátory nepřevzaté, celé M1.4/UX01 neuzavřené.
+Další kandidát: profil objemu správního seznamu a zbývající duplicitní styly
+kalendáře/katalogové administrace; nejprve měření, parita a oddělené přijetí.
