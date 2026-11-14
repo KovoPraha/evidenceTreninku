@@ -989,3 +989,87 @@ clubProgramAdminOffers opakuje kapacitu a podmínky po nabídkách; nejprve
 ověřit objem a nativní SQL/HTTP profil. Výběrová SQLite diagnostika pro
 0/2/12/100 nabídek ukázala 1/43/253/2101 SQL; pouze růst práce, žádný
 přijatý před/po přínos. Reprodukovatelný probe a JSON jsou ve výsledcích. WIP nepřebírat.
+
+
+## P11-ASSET13 — klubový kalendář a správa katalogu (14. 11. 2026)
+
+ROZPRACOVÁNO před implementací. Vlastník Vývoj/Codex, aktuální pokyn vlastníka
+pokračovat nejpřínosnější optimalizací, ověřit shodu/před-po a po PASS
+commitnout/sloučit/nasadit. Base f9b27e4ca0e12769e702a3ff3c170fcb7d05b09e;
+runtime c7b77fa5 / deploy43633315305 SUCCESS ověřen aktuálně.
+Větev codex/next-performance-20261114, worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachovat.
+Ostatní otevřené PR/prototypy nejsou součástí tohoto řezu.
+
+### Výběr, varianty a rozsah
+
+PADMIN/PCAP jsou dokončené; původní analýza a ASSET12 uvádějí zbývající
+duplicity club_calendar.php / eshop_catalog_admin.php. Aktuální zdroj potvrzuje
+CDN Bootstrap5.3.3 a místní stejný payload přes hlavicka.php/appUiAssets.
+Výběr odstraňuje zbytečně opakovanou práci na obou cestách bez změny datových
+pravidel. Objem správního seznamu vyžaduje vlastní produkční podklady a
+případné produktové rozhodnutí, není nyní vybranou změnou. Nejsou doložené
+návštěvnosti, proto nejde o tvrzení globálního produkčního bottlenecku.
+
+Odebrat pouze dva přesné CDN CSS tagy; žádná další změna stránek. Ikony,
+lokální styly včetně kalendářové mřížky, pořadí dalších stylů, JS, SQL,
+formuláře/CSRF, skladové/kalendářové operace a role zůstanou stejné.
+Varianta změny společného shellu by zasáhla ostatní stránky a není potřebná.
+Žádná databázová migrace nebo persistentní cache. Zdrojový guard porovná
+přesný rozdíl s immutable baseline. Samotný zdroj není důkaz přenosu;
+před/po v opravdovém Apache/Chrome musí potvrdit bytes/hash/cache.
+
+### Akceptace a postup
+
+1. Plán/registr/CURRENT/handoff před implementací, pak přesné odstranění tagů.
+Syntaxe a styly změněných stránek s minimem existujícího formátování.
+2. MariaDB10.3/11.4 vlastněný migrovaný syntetický FullHttpReadFixture:
+obě cesty, role, anonymní, naplněný/prázdný/filtrovaný stav, detail akce,
+chybějící akce a neplatné filtry. Celé HTML a bezpečnostní hlavičky shodné
+po odstranění pouze přesného CSS tagu a request nonce; CSRF zachovat.
+Query cache off,4warmup/17střídavých párů pro kladné GET, negativy jeden pár.
+Všechny tabulky checksumy stejné a přesný úklid schématu/účtů/configu/portů.
+3. Chrome přes standardní Playwright CLI: skutečné lokální i CDN požadavky,
+přehled/detail kalendáře a přehled/filtr katalogu, desktop/light a mobile/dark,
+cold/warm. Stejné formuláře/odkazy, geometrie/styly a pixelové dvojice,
+bez chyb; přesný CSS hash/SRI a měřená úspora cold transferu. Warm cache
+nesmí nově přenášet CSS. Časy uvést včetně nulového/neprůkazného přínosu,
+ne vydávat přenosovou úsporu za prokázané zrychlení serveru.
+4. Místní přiměřené kontroly a celé aktuální CI; před merge aktuální main,
+shodný testovaný/sloučený strom. Po PASS chráněný deploy s import/UAT false,
+záloha/config/migrace/VS/index/HTTP/úklid a nezávislé anonymní GET/CSS před/po.
+Přihlášené produkční UAT evidovat zvlášť, bez změn skutečných účastí,
+objednávek, skladů či rolí. Pak výsledkové doklady samostatným PR bez redeploye.
+
+[Průběžné výsledky](verification/calendar-catalog-bootstrap-20261114/RESULTS.md).
+Další krok minimální patch a párový nativní HTTP/Chrome profil.
+
+
+### ASSET13 — zachování formátovacích pravidel
+
+Obě starší šablony jsou minifikované. Povinný changed-file styl vyžaduje
+PSR12, délku řádků≤200 a závorky guardů. Před funkční změnou rozšířen plán
+o čisté formátování: prázdné PHP hranice rozdělují zdroj, ale emitované HTML
+zůstává byte-shodné. Dlouhé konstantní SQL řetězce lze rozdělit na spojení
+stejných literálů. Source contract porovná přesné hodnoty literálů a tokeny,
+vyjmenuje každý povolený pár závorek proti immutable baseline; nejde o
+obecné ignorování odlišné logiky. Kompletní HTTP/Chrome shoda zůstává povinná.
+
+
+### ASSET13 — místní checkpoint
+
+Oba přesné CSS tagy odebrané. Povinné formátování zachovává literální HTML,
+source contract proti f9b27e4c připíná21/8 konkrétních editů tokenů
+(závorky guardů a jedno hodnotově stejné rozdělení dlouhého SQL řetězce).
+Žádný další PHP token či text HTML se neliší. Contract PASS,15testů/92kontrol
+SharedUiShell PASS, cílený PHPStan bez chyb, PSR12/200/braces a syntaxe
+PHP/Python/JS, docs/diff PASS. Původní WIP zachovaný.
+
+Nový párový profil používá skutečné původní šablony pro baseline, vlastní
+migrovaný syntetický server se čtyřmi kalendářovými stavy a katalogem.
+Role/negativy, detail/nenalezená akce, vyhledávání, prázdný měsíc a prázdné/
+filtrované/neplatné katalogové filtry; Chrome16scénářů, osm pixelových párů.
+Nativní HTTP/Chrome a skutečný CSS transport i celé CI zatím NOT RUN.
+Další krok push/PR a kompletní párová přejímka před vydáním.
