@@ -18,6 +18,13 @@ skončily po úspěšné kontrole HTML/rolí/CSRF na neurčené konzolové chyb�
 selhaném požadavku v základní variantě. Do jejich asercí byly doplněny
 konkrétní diagnostické údaje; příčinu a opakovaný výsledek určí nové CI.
 
+CI na `d00f78c8` vypsalo ve čtyřech profilech šest shodných hlášení HTTP 404
+bez selhaných síťových požadavků. Místní Chrome ukázal přesnou URL
+`http://127.0.0.1:18186/favicon.ico`; tato nepovinná ikona na localhostu
+chybí. Browser profily nyní její 404 evidují odděleně a ostatní konzolové
+chyby dál odmítají. Bootstrap profil na MariaDB 11.4 volá tentýž měřicí
+browser skript a selhal stejnou asercí. Opakované CI je stále otevřené.
+
 V navazujícím lokálním prohlížeči na oddělené syntetické databázi
 `attendance_demo` (MariaDB 10.4.32, port 3318, PHP 8.2, Chrome) byl ověřen
 rodičovský rezervační krok a běžná trenérská role:
@@ -45,8 +52,14 @@ Test použil výhradně existující a doplněné lokální syntetické záznamy
 prvotní uzavření zdrojového termínu proběhly v dřívějším 31/31 HTTP testu,
 nikoli znovu v jednom grafickém sezení. Skutečný cílový termín ještě
 neproběhl, takže jeho docházka nebyla uzavřena. Produkční přejímka je dál
-NOT RUN. Změny v izolované fixture a její úklid se doplní při zastavení
-služeb.
+NOT RUN. Úklid: tři browser relace byly zavřeny, vlastní schéma
+`attendance_demo` bylo po ověření portu 3318 a datadiru
+`C:\xampp\mysql\attendance-local-data` smazáno a následný dotaz vrátil 0.
+PHP a MariaDB testovací služby jsou zastaveny, porty 18186 a 3318
+neposlouchají. Souborový datadir a lokální session soubory zůstávají na
+disku; dřívější automatická kontrola jejich odstranění odmítla. Při tomto
+průchodu odmítla odstranit také nově vytvořený
+`tests/Support/__pycache__`; není součástí Gitu ani PR.
 
 Aktualizace 14. 11.: po převzetí aktuálního `origin/main` (`b0d2368d`, merge `fff1207a`) prošlo lokálně 37 cílených testů / 237 kontrol a `php tools/check-current-docs.php` (0 chyb). Původní úplné CI a HTTP/prohlížečové výsledky níže platí pro uvedené starší commity; nové CI po pushi zatím NOT RUN.
 
