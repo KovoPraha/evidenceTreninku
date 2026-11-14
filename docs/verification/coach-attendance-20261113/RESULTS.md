@@ -1,5 +1,23 @@
 # Ověření trenérské docházky — 13. 11. 2026
 
+## Pokračování 14. 11. 2026
+
+Vlastník požádal o dokončení řešení blokátoru testerky. Větev po nových
+změnách `main` znovu začlenila `origin/main` v `c1836273`. Jediný konflikt
+`docs/PLAN_CATALOG.md` byl vyřešen zachováním odkazu na E4-06 i nového stavu
+P11-PCAP. `php tools/check-current-docs.php` hlásí 0 chyb, `git diff --check`
+prošel. PR #474 je stále pracovní návrh; merge, deploy ani produkční UAT zde
+nejsou tvrzeny.
+
+CI na předchozí špičce větve mělo 15 úspěšných a 6 neúspěšných kontrol.
+Obě chyby Bootstrap assets skončily před měřením na porovnání společného
+`hlavicka.php` s pevným historickým SHA, přestože oba porovnávané HTTP servery
+používají stejnou aktuální verzi záhlaví. Kontrola je upravena tak, aby
+ověřovala shodu záhlaví obou variant. Čtyři browser profily na MariaDB 11.4
+skončily po úspěšné kontrole HTML/rolí/CSRF na neurčené konzolové chybě nebo
+selhaném požadavku v základní variantě. Do jejich asercí byly doplněny
+konkrétní diagnostické údaje; příčinu a opakovaný výsledek určí nové CI.
+
 Aktualizace 14. 11.: po převzetí aktuálního `origin/main` (`b0d2368d`, merge `fff1207a`) prošlo lokálně 37 cílených testů / 237 kontrol a `php tools/check-current-docs.php` (0 chyb). Původní úplné CI a HTTP/prohlížečové výsledky níže platí pro uvedené starší commity; nové CI po pushi zatím NOT RUN.
 
 Pracovní větev `codex/coach-attendance`, syntetická lokální MariaDB `attendance_demo` na portu 3318. Žádné produkční zápisy.
