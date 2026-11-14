@@ -186,9 +186,18 @@ function p11Worker(array $arguments): void
             'html_lf_sha256' => hash('sha256', str_replace("\r\n", "\n", $rendered['html'])),
             'result_sha256' => hash('sha256', json_encode([$rendered['data'], $rendered['html']], JSON_THROW_ON_ERROR))];
         if ($route === 'R05') {
-            // Reconstruct only the two known markup changes for the frozen planner comparison.
+            // Reconstruct the known markup changes for the frozen planner comparison.
             $comparableHtml = str_replace('style="width:auto;max-width:100%"', 'style="width:auto"', $rendered['html'], $styleCount);
             p11Assert($styleCount === 3, 'Planner filter width change no longer matches the expected three selects.');
+            $comparableHtml = preg_replace(
+                '~(<!-- Akce -->)\s*(?:<a class="btn btn-primary btn-sm mt-2" '
+                    . 'href="coach_attendance\.php\?plan_id=\d+">Zapsat docházku</a>\s*)?'
+                    . '(<a class="btn btn-outline-primary btn-sm mt-2" '
+                    . 'href="training_closure_admin\.php\?plan_id=\d+#lesson-work">)~u',
+                '$1' . "\n                        " . '$2',
+                $comparableHtml
+            );
+            p11Assert($comparableHtml !== null, 'Planner attendance link normalization failed.');
             $title = "    <title>Plánovač tréninků</title>\n";
             $duplicate = '    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"'
                 . ' integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">' . "\n";

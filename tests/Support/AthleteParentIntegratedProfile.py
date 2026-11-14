@@ -125,7 +125,8 @@ def browser(variant, role):
     script.write_text(template)
     report = result(cli(session, "run-code", "--filename=" + str(script)))
     assert report["complete"] and len(report["samples"]) == 26
-    assert not report["console_errors"] and not report["failed_requests"]
+    assert not report["console_errors"] and not report["failed_requests"], json.dumps({
+        "console_errors": report["console_errors"], "failed_requests": report["failed_requests"]})
     (output / f"browser-{role}-{variant}.json").write_text(json.dumps(report))
     assert report["interactions"]["complete"]
     cli(session, "close")

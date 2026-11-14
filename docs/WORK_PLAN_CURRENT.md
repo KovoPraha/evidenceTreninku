@@ -6,6 +6,10 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
 
+## E4-06 — docházka trenéra z rozvrhu (13. 11. 2026)
+
+KÓD V NÁVRHU [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474); [audit a převzetí požadavku testerky](COACH_ATTENDANCE_2026-11-13.md), [technické důkazy a vizuální průchod](verification/coach-attendance-20261113/RESULTS.md). Trenérský zápis, omluvy, rezervovaní náhradníci, verzované opravy, historie dítěte a mobilní rozhraní jsou implementované v pracovní větvi. Po aktualizaci `main` lokálně 36 cílených testů / 233 kontrol PASS; dříve prošlo jádro CI a souvislý HTTP tok náhrady 31/31. V izolovaném prohlížeči rodič rezervoval automatický cíl bez předem vytvořeného slotu a běžný `trener` uložil opravu. Výkonové browser kontroly čekají na opakované CI; úklid lokální fixture je otevřený. Produkční nasazení a lidské UAT NOT RUN. Další krok: uzavřít CI, vydat a v nově schváleném okně projít produkční UAT. Úplný produkční tok MAKEUP-AUTO-01 zůstává otevřený do nasazení a přijetí tohoto zápisu.
+
 ## MAKEUP-AUTO-01 — automatické náhradní lekce (12. 11. 2026)
 
 **KÓD NASAZEN; místní syntetický celý tok PASS, produkční UAT otevřené.** Automatický režim je výchozí vypnutý.

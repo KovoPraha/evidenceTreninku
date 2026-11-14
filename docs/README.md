@@ -92,7 +92,7 @@ testy, potom `CURRENT_STATE.md` a `HANDOFF_CURRENT.md`.
 
 | Oblast | Dokumenty |
 |---|---|
-| Klubové programy a kroužky | [club-programs.md](club-programs.md), [training-roster-bridge.md](training-roster-bridge.md), [kis-roster-policies.md](kis-roster-policies.md), [účast na tréninku a pravidla náhrad](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md) |
+| Klubové programy a kroužky | [club-programs.md](club-programs.md), [training-roster-bridge.md](training-roster-bridge.md), [kis-roster-policies.md](kis-roster-policies.md), [účast na tréninku a pravidla náhrad](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md), [docházka trenéra z rozvrhu](COACH_ATTENDANCE_2026-11-13.md) |
 | E-shop a objednávky | [shop-checkout-k4.md](shop-checkout-k4.md), [shop-beneficiaries.md](shop-beneficiaries.md), [shop-account-person-roles.md](shop-account-person-roles.md), [shop-catalog-publication.md](shop-catalog-publication.md) |
 | Platby | [Přijetí hotovosti a postup vratky](ORDER_PAYMENTS_2026-10-21.md), [produkční TEST cyklus hotovosti a vratky](ORDER_CASH_REFUND_PRODUCTION_2026-10-21.md), [shop-program-payment-verification.md](shop-program-payment-verification.md), [fio-readonly-import-k4.md](fio-readonly-import-k4.md), [stripe-integration-plan.md](stripe-integration-plan.md) |
 | Číselné řady a účetní kategorie | [Návod a implementace](SHOP_NUMBER_SERIES_2026-10-21.md), [produkční vydání a zachování VS](SHOP_NUMBER_SERIES_RELEASE_2026-10-21.md), [kontrola před zveřejněním](SHOP_PUBLICATION_ACCOUNTING_GUARD_2026-10-22.md), [její produkční ověření](SHOP_PUBLICATION_ACCOUNTING_RELEASE_2026-10-22.md) |

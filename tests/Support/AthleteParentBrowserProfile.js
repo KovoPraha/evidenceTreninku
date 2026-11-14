@@ -30,9 +30,16 @@ async (page) => {
       return original.apply(this,args);
     };
   });
-  const errors = [], failed = [];
+  const errors = [], failed = [], optionalFaviconErrors = [];
   page.on('pageerror', e => errors.push(String(e)));
-  page.on('console', m => {if(m.type()==='error') errors.push(m.text());});
+  page.on('console', m => {
+    if(m.type()!=='error') return;
+    const url=m.location().url;
+    if(url && new URL(url).pathname==='/favicon.ico' && m.text().includes('404')) {
+      optionalFaviconErrors.push(url);return;
+    }
+    errors.push({message:m.text(),url});
+  });
   page.on('requestfailed', r => {if(!r.failure()?.errorText?.includes('ERR_ABORTED')) failed.push(r.failure()?.errorText);});
   const wait = async (name, previous = 0) => page.waitForFunction(({name,previous}) => window.__profileDone[name]?.sequence > previous,
     {name,previous},{timeout:60000});
@@ -98,6 +105,6 @@ async (page) => {
   await page.locator('#mainTabs button[data-bs-target="#pane-treninky"]').click();
   await page.locator('#mainTabs button[data-bs-target="#pane-mereni"]').click();
   await page.waitForFunction(() => document.getElementById('pane-mereni').classList.contains('active'));
-  report.console_errors=errors;report.failed_requests=failed;
+  report.console_errors=errors;report.failed_requests=failed;report.optional_favicon_404=optionalFaviconErrors.length;
   await cdp.detach();report.complete=true;return report;
 }
