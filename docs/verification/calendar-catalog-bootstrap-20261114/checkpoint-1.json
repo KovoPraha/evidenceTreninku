@@ -1,0 +1,13 @@
+{
+  "head": "920d40ca986820d82bda02cdf31cada6dcababa9",
+  "run": 43646140387,
+  "overall": "FAIL",
+  "mariadb_10_3_http_cases": 33,
+  "mariadb_10_3_checksums": {
+    "tables": 356,
+    "unchanged": true
+  },
+  "browser_failure": "Overview calendar has one form; inherited program-page assertion incorrectly required two.",
+  "phpunit_failure": "Existing unchanged SRI scanner could not see icon integrity behind an inserted empty PHP boundary.",
+  "fix": "Route-specific form minimum; emit exactly identical icon tag via statically visible literal concatenation. SRI checks unchanged."
+}
