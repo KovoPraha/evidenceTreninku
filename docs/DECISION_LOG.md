@@ -6,6 +6,19 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-15-CA01
+
+Po zeleném CI vydat trenérskou docházku E4-06 jako kód, ale neschvalovat tím
+produkční uživatelské UAT ani aktivaci automatických náhrad. Pokyn vlastníka
+„najdi řešení a dokonči to“ pokrývá dokončení a nasazení funkce; staré
+testovací okno pro zápisy však skončilo a pravidla náhrad potřebují samostatné
+schválení. [Deploy 43651304138](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43651304138)
+proto použil `uat_schvaleno=false` a import kroužků přeskočil. Automatika má
+výchozí vypnutý režim; skutečný produkční přepínač ještě nebyl čtením ověřen.
+Úplné produkční ověření zůstává otevřené do
+schváleného testovacího okna s TEST rolemi.
+[Release protokol](verification/coach-attendance-20261113/RESULTS.md#vydání-15-11-2026).
+
 ## D2026-11-13-CA01
 
 E4-06 ukládá stavy do verzovaného snapshotu stávajícího `training_closures` a skutečnou přítomnost do `trenink_sportovec`. Datovaný seznam vychází z existujících vazeb soupisek; rodičovské omluvy a rezervace náhrad se čtou z jejich kanonických záznamů. Volba zachovává auditní historii, vazbu na náhrady a staré docházky bez druhé tabulky účasti. Neúplný zápis je `draft` bez vyčerpání náhrady; úplný zápis po konci termínu je `closed`. Náhradníka bez rezervace nelze přidat. [Audit a provozní meze](COACH_ATTENDANCE_2026-11-13.md), [ověření](verification/coach-attendance-20261113/RESULTS.md).

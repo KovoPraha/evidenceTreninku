@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 13. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
+Aktualizováno 15. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## E4-06 — docházka trenéra z rozvrhu (13. 11. 2026)
 
-KÓD V NÁVRHU [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474); [audit a převzetí požadavku testerky](COACH_ATTENDANCE_2026-11-13.md), [technické důkazy a vizuální průchod](verification/coach-attendance-20261113/RESULTS.md). Trenérský zápis, omluvy, rezervovaní náhradníci, verzované opravy, historie dítěte a mobilní rozhraní jsou implementované v pracovní větvi. Po aktualizaci `main` lokálně 36 cílených testů / 233 kontrol PASS; dříve prošlo jádro CI a souvislý HTTP tok náhrady 31/31. V izolovaném prohlížeči rodič rezervoval automatický cíl bez předem vytvořeného slotu a běžný `trener` uložil opravu. Výkonové browser kontroly čekají na opakované CI; úklid lokální fixture je otevřený. Produkční nasazení a lidské UAT NOT RUN. Další krok: uzavřít CI, vydat a v nově schváleném okně projít produkční UAT. Úplný produkční tok MAKEUP-AUTO-01 zůstává otevřený do nasazení a přijetí tohoto zápisu.
+KÓD NASAZEN: [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474) → `ea995408`, [deploy 43651304138](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43651304138) SUCCESS; 21/21 CI, záloha, migrace a HTTP 200 PASS, `uat_schvaleno=false`, import přeskočen. [Audit a převzetí požadavku testerky](COACH_ATTENDANCE_2026-11-13.md), [technické a vizuální důkazy](verification/coach-attendance-20261113/RESULTS.md). Trenérský zápis, omluvy, rezervovaní náhradníci, verzované opravy, historie dítěte a mobilní rozhraní jsou vydané. Místní HTTP tok náhrady 31/31 a izolovaná vizuální rezervace automatického cíle i zápis běžnou rolí `trener` PASS. **Produkční přihlášené UAT E4-06 a MAKEUP-AUTO-01 NOT RUN.** Další krok: v nově schváleném okně ověřit trenérskou dostupnost, skutečnou absenci, nárok a rodičovskou rezervaci pomocí TEST rolí; pravidla a automatický režim aktivovat až po samostatném schválení.
 
 ## MAKEUP-AUTO-01 — automatické náhradní lekce (12. 11. 2026)
 

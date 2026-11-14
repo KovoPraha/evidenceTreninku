@@ -27,11 +27,11 @@ Trenér může zapisovat a opravovat do 72 hodin po konci termínu. Po lhůtě t
 
 Technické testy této větve: `CoachAttendanceTest` pokrývá časově platnou soupisku, omluvu, částečný a konečný zápis, souběžnou verzi, cizího trenéra a rezervovaného náhradníka. `TrainingClosureTest` pokrývá zachování staré přítomnosti při rozpracovaném záznamu, konečnou absenci a atomické začlenění do transakce. Výsledky celé sady a prohlížečového průchodu jsou v [ověřovacím protokolu](verification/coach-attendance-20261113/RESULTS.md).
 
-Implementace je zatím jen v pracovní větvi. Produkční nasazení ani přihlášené uživatelské ověření se tímto dokumentem netvrdí. Před nasazením je potřeba dokončit zbývající scénáře zadání v izolované instalaci, zvlášť plný provozní tok náhrad a oprávnění vedoucího sportu v prohlížeči. Produkční UAT vyžaduje schválený testovací rozsah podle `PRODUKCNI-UZIVATELSKE-TESTOVANI.md`.
+Implementace byla vydána přes [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474) a [deploy 43651304138](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43651304138). Technické a izolované prohlížečové důkazy jsou v [protokolu](verification/coach-attendance-20261113/RESULTS.md). Přihlášené produkční UAT vyžaduje nový schválený testovací rozsah podle `PRODUKCNI-UZIVATELSKE-TESTOVANI.md` a dosud nebylo provedeno.
 
-## Akceptační průchod před vydáním
+## Scénáře produkční přejímky
 
-Použít oddělenou instalaci s označenými syntetickými účty: trenér A vlastní skupiny, trenér B jiné skupiny, vedoucí sportu, rodič a dítě s platným placeným členstvím. Připravit dva termíny, datovanou změnu soupisky a jeden vhodný náhradní termín s volným místem. Zaznamenat ID a stav všech testovacích řádků před průchodem; po něm odstranit pouze tyto označené řádky a ověřit zachování starších dat. Bez tohoto průchodu nepokládat funkci za připravenou k nasazení.
+V odsouhlaseném produkčním okně použít označené TEST účty: trenér A vlastní skupiny, trenér B jiné skupiny, vedoucí sportu, rodič a dítě s platným placeným členstvím. Připravit dva termíny, datovanou změnu soupisky a jeden vhodný náhradní termín s volným místem. Zaznamenat ID a stav všech testovacích řádků před průchodem; po něm uklidit pouze tyto označené záznamy a ověřit zachování starších dat. Do té doby neoznačovat úplný tok automatických náhrad za produkčně přijatý.
 
 | # | Postup a očekávaný výsledek |
 |---|---|
@@ -67,6 +67,7 @@ po ní vznikl slot `origin=automatic` a jediná aktivní rezervace. Samostatný
 přihlášený `trener` s pozicí `coach` uložil skutečnou opravu docházky bez
 legacy role `admin`. [Metoda, důkazy a meze](verification/coach-attendance-20261113/RESULTS.md).
 
-Zbývá zelené opakování výkonových browser kontrol, integrace PR, nasazení
-nové stránky a schválené produkční UAT. Místní průchod nenahrazuje
-produkční dostupnost konkrétnímu trenérovi ani lidskou přejímku.
+Všech 21 CI kontrol následně prošlo, PR byl sloučen jako `ea995408` a
+produkční deploy 43651304138 skončil SUCCESS. Zbývá schválené produkční UAT;
+místní průchod nenahrazuje dostupnost konkrétnímu trenérovi ani lidskou
+přejímku. Podrobnosti a provozní hranice jsou v [protokolu](verification/coach-attendance-20261113/RESULTS.md#vydání-15-11-2026).
