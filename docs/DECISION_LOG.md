@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-13-CA01
+
+E4-06 ukládá stavy do verzovaného snapshotu stávajícího `training_closures` a skutečnou přítomnost do `trenink_sportovec`. Datovaný seznam vychází z existujících vazeb soupisek; rodičovské omluvy a rezervace náhrad se čtou z jejich kanonických záznamů. Volba zachovává auditní historii, vazbu na náhrady a staré docházky bez druhé tabulky účasti. Neúplný zápis je `draft` bez vyčerpání náhrady; úplný zápis po konci termínu je `closed`. Náhradníka bez rezervace nelze přidat. [Audit a provozní meze](COACH_ATTENDANCE_2026-11-13.md), [ověření](verification/coach-attendance-20261113/RESULTS.md).
+
 ## D2026-11-12-ACT01
 
 Pro importované rodiče použít existující veřejný účet a schvalované `account_person_roles`. Alternativu automatického spojení podle jména nebo importního e-mailu odmítnout: obojí může přiřadit cizí dítě. Alternativu nového systému přístupových účtů odmítnout: rodinný portál a samostatný sportovec už mají odlišné identity. Po lidské kontrole vydat jednorázový odkaz pro první heslo; u již aktivního ověřeného účtu využít reset. U samotného profilu dítěte rodič registruje účet a správce schválí vazbu ke stávajícímu ID. Jde o technickou volbu podle zadání vlastníka 12. 11.; text, identifikační postup a pilot ještě schvaluje vedení. [Plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md).

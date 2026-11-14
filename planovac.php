@@ -774,6 +774,10 @@ $oldestPendingDate = $pendingSummary['oldest_date'];
                         </div>
 
                         <!-- Akce -->
+                        <?php if ((int)$p['trener_id'] === $trenerId || staffActivePositionIs('sports_lead')): ?>
+                        <a class="btn btn-primary btn-sm mt-2" href="coach_attendance.php?plan_id=<?=
+                                         (int)$p['id'] ?>">Zapsat docházku</a>
+                        <?php endif; ?>
                         <a class="btn btn-outline-primary btn-sm mt-2" href="training_closure_admin.php?plan_id=<?=
                                          (int)$p['id'] ?>#lesson-work">Lekce, omluvy a docházka</a>
                         <div class="d-flex gap-1 mt-2 flex-wrap">

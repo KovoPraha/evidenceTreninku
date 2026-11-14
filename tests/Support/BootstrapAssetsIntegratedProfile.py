@@ -293,8 +293,9 @@ try:
     database_source = subprocess.check_output(["git", "show", base + ":db.php"], cwd=root)
     assert database_source == (root/"db.php").read_bytes(), "Database bootstrap changed"
     (baseline_root/"db.php").write_bytes(database_source)
-    header_source = subprocess.check_output(["git", "show", base + ":hlavicka.php"], cwd=root)
-    assert header_source == (baseline_root/"hlavicka.php").read_bytes(), "Shared header changed"
+    # Both variants share the current header; the frozen commit only supplies the
+    # three route files whose duplicate stylesheet links this profile compares.
+    assert (root/"hlavicka.php").read_bytes() == (baseline_root/"hlavicka.php").read_bytes(), "Shared header differs between variants"
     (baseline_root/"config.php").symlink_to(root/"config.php")
     start_servers()
     reports=[]
