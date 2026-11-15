@@ -1,0 +1,22 @@
+{
+  "own_release": "837a7112afdd53f1a84d3c875e14b2948ea94f3f",
+  "own_run": 43649462751,
+  "later_accepted_pr": 474,
+  "later_runtime": "ea9954080c20c491885e60d6e30623b226612a93",
+  "later_run": 43651304138,
+  "ancestor_and_scoped_blobs_verified": true,
+  "sha256_git_blobs": {
+    "club_calendar.php": "8095f084a35a3a3c2f9d6b21c56828b7047b2684117370f6c0ee306c75f85262",
+    "eshop_catalog_admin.php": "3434bbd1f553db45826b1a7239a6e9502c36a338d8e4e14d1d86aa1fd3fdc79e",
+    "hlavicka.php": "1d2f59c11696fe6b4846770f4a9275bd5d29373331a558d8bd22a7dd4aa22105",
+    "assets/vendor/bootstrap/bootstrap.min.css": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    ".htaccess": "876c50d0baebe942f2f791f3d6f48fd373b5ca9a39c04d3f524a028063aacf52"
+  },
+  "duplicate_dispatch": {
+    "run": 43651334299,
+    "head": "ea9954080c20c491885e60d6e30623b226612a93",
+    "conclusion": "cancelled",
+    "jobs": 0,
+    "activation_executed": false
+  }
+}

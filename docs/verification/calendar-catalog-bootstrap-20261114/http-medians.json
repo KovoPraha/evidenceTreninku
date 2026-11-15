@@ -1,0 +1,110 @@
+{
+  "10.3": {
+    "calendar-coach": {
+      "before": 13.518,
+      "after": 13.155
+    },
+    "calendar-sports_lead": {
+      "before": 10.999,
+      "after": 10.895
+    },
+    "calendar-program_coordinator": {
+      "before": 11.287,
+      "after": 11.123
+    },
+    "catalog-catalog_manager": {
+      "before": 42.321,
+      "after": 42.998000000000005
+    },
+    "calendar-finance_manager": {
+      "before": 11.336,
+      "after": 11.22
+    },
+    "calendar-other_coach": {
+      "before": 13.259,
+      "after": 13.328
+    },
+    "calendar-detail": {
+      "before": 15.104,
+      "after": 15.216000000000001
+    },
+    "calendar-empty": {
+      "before": 11.364,
+      "after": 11.378
+    },
+    "calendar-missing": {
+      "before": 13.548,
+      "after": 13.39
+    },
+    "calendar-search": {
+      "before": 21.765,
+      "after": 21.672
+    },
+    "catalog-filter": {
+      "before": 41.695,
+      "after": 42.302
+    },
+    "catalog-empty": {
+      "before": 31.486,
+      "after": 31.2
+    },
+    "catalog-invalid": {
+      "before": 41.384,
+      "after": 41.607
+    }
+  },
+  "11.4": {
+    "calendar-coach": {
+      "before": 10.552000000000001,
+      "after": 10.514000000000001
+    },
+    "calendar-sports_lead": {
+      "before": 9.011999999999999,
+      "after": 8.921
+    },
+    "calendar-program_coordinator": {
+      "before": 7.9590000000000005,
+      "after": 7.887
+    },
+    "catalog-catalog_manager": {
+      "before": 29.686,
+      "after": 29.932
+    },
+    "calendar-finance_manager": {
+      "before": 8.07,
+      "after": 8.103000000000002
+    },
+    "calendar-other_coach": {
+      "before": 9.456000000000001,
+      "after": 9.384
+    },
+    "calendar-detail": {
+      "before": 10.704,
+      "after": 10.739
+    },
+    "calendar-empty": {
+      "before": 8.164,
+      "after": 8.1
+    },
+    "calendar-missing": {
+      "before": 9.606,
+      "after": 9.798
+    },
+    "calendar-search": {
+      "before": 18.198,
+      "after": 18.15
+    },
+    "catalog-filter": {
+      "before": 30.228,
+      "after": 30.267
+    },
+    "catalog-empty": {
+      "before": 21.886,
+      "after": 21.989
+    },
+    "catalog-invalid": {
+      "before": 29.919999999999998,
+      "after": 30.235000000000003
+    }
+  }
+}

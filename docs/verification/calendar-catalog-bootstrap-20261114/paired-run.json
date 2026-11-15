@@ -1,0 +1,222 @@
+{
+  "conclusion": "success",
+  "databaseId": 43648335428,
+  "headSha": "b0fde0bcf8963d1a96b468fa683311b6ac9412a1",
+  "jobs": [
+    {
+      "completedAt": "2026-11-14T22:35:27Z",
+      "conclusion": "success",
+      "databaseId": 132611025344,
+      "name": "Calendar/catalog Bootstrap assets HTTP (MariaDB 11.4)",
+      "startedAt": "2026-11-14T22:29:18Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-14T22:29:19Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-14T22:29:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:29:41Z",
+          "conclusion": "success",
+          "name": "Initialize containers",
+          "number": 2,
+          "startedAt": "2026-11-14T22:29:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:29:45Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 3,
+          "startedAt": "2026-11-14T22:29:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:29:48Z",
+          "conclusion": "success",
+          "name": "Run shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240",
+          "number": 4,
+          "startedAt": "2026-11-14T22:29:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:29:52Z",
+          "conclusion": "success",
+          "name": "Install locked dependencies",
+          "number": 5,
+          "startedAt": "2026-11-14T22:29:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:30:01Z",
+          "conclusion": "success",
+          "name": "Prepare real Apache",
+          "number": 6,
+          "startedAt": "2026-11-14T22:29:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:30:07Z",
+          "conclusion": "success",
+          "name": "Prepare Chrome and CLI",
+          "number": 7,
+          "startedAt": "2026-11-14T22:30:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:35:25Z",
+          "conclusion": "success",
+          "name": "Compare whole public HTTP, duplicate CSS and actual Chrome",
+          "number": 8,
+          "startedAt": "2026-11-14T22:30:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:35:26Z",
+          "conclusion": "success",
+          "name": "Preserve safe native HTTP and session evidence",
+          "number": 9,
+          "startedAt": "2026-11-14T22:35:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:35:26Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 17,
+          "startedAt": "2026-11-14T22:35:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:35:27Z",
+          "conclusion": "success",
+          "name": "Stop containers",
+          "number": 18,
+          "startedAt": "2026-11-14T22:35:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:35:27Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 19,
+          "startedAt": "2026-11-14T22:35:27Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/43648335428/job/132611025344"
+    },
+    {
+      "completedAt": "2026-11-14T22:30:35Z",
+      "conclusion": "success",
+      "databaseId": 132611025548,
+      "name": "Calendar/catalog Bootstrap assets HTTP (MariaDB 10.3)",
+      "startedAt": "2026-11-14T22:29:18Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-11-14T22:29:20Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-11-14T22:29:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:29:39Z",
+          "conclusion": "success",
+          "name": "Initialize containers",
+          "number": 2,
+          "startedAt": "2026-11-14T22:29:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:29:43Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 3,
+          "startedAt": "2026-11-14T22:29:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:29:46Z",
+          "conclusion": "success",
+          "name": "Run shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240",
+          "number": 4,
+          "startedAt": "2026-11-14T22:29:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:29:50Z",
+          "conclusion": "success",
+          "name": "Install locked dependencies",
+          "number": 5,
+          "startedAt": "2026-11-14T22:29:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:30:02Z",
+          "conclusion": "success",
+          "name": "Prepare real Apache",
+          "number": 6,
+          "startedAt": "2026-11-14T22:29:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:30:02Z",
+          "conclusion": "skipped",
+          "name": "Prepare Chrome and CLI",
+          "number": 7,
+          "startedAt": "2026-11-14T22:30:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:30:31Z",
+          "conclusion": "success",
+          "name": "Compare whole public HTTP, duplicate CSS and actual Chrome",
+          "number": 8,
+          "startedAt": "2026-11-14T22:30:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:30:32Z",
+          "conclusion": "success",
+          "name": "Preserve safe native HTTP and session evidence",
+          "number": 9,
+          "startedAt": "2026-11-14T22:30:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:30:32Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 17,
+          "startedAt": "2026-11-14T22:30:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:30:33Z",
+          "conclusion": "success",
+          "name": "Stop containers",
+          "number": 18,
+          "startedAt": "2026-11-14T22:30:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-11-14T22:30:33Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 19,
+          "startedAt": "2026-11-14T22:30:33Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/43648335428/job/132611025548"
+    }
+  ],
+  "status": "completed"
+}
