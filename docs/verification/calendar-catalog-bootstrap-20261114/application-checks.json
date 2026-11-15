@@ -1,0 +1,21 @@
+{
+  "number": "481",
+  "base": "f9cc4f726c0ed94829ab752e919432fe1be58e63",
+  "head": "b0fde0bcf8963d1a96b468fa683311b6ac9412a1",
+  "tree": "a2b779bf36481c8df879dc88de2d4965cffca979",
+  "checks": {
+    "Calendar/catalog Bootstrap assets HTTP (MariaDB 10.3)": "SUCCESS",
+    "Analyze (actions)": "SUCCESS",
+    "docs": "SUCCESS",
+    "PHPStan level 5 and changed-file style": "SUCCESS",
+    "PHPUnit na PHP 8.2": "SUCCESS",
+    "Calendar/catalog Bootstrap assets HTTP (MariaDB 11.4)": "SUCCESS",
+    "Analyze (javascript-typescript)": "SUCCESS",
+    "Analyze (python)": "SUCCESS",
+    "MariaDB integra\u010dn\u00ed smoke (MariaDB 10.3)": "SUCCESS",
+    "MariaDB integra\u010dn\u00ed smoke (MariaDB 11.4)": "SUCCESS",
+    "MariaDB profily \u010dten\u00ed (MariaDB 10.3)": "SUCCESS",
+    "MariaDB profily \u010dten\u00ed (MariaDB 11.4)": "SUCCESS",
+    "CodeQL": "SUCCESS"
+  }
+}

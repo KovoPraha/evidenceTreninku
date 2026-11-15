@@ -1,0 +1,16 @@
+{
+  "club_calendar.php": {
+    "baseline": "f9b27e4ca0e12769e702a3ff3c170fcb7d05b09e",
+    "head": "b0fde0bcf8963d1a96b468fa683311b6ac9412a1",
+    "before_sha256": "13f3006c12b3f8d3b40ae7ab5aa3666a59a7967740895199ce22f938fb8ab30d",
+    "after_sha256": "8095f084a35a3a3c2f9d6b21c56828b7047b2684117370f6c0ee306c75f85262",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  },
+  "eshop_catalog_admin.php": {
+    "baseline": "f9b27e4ca0e12769e702a3ff3c170fcb7d05b09e",
+    "head": "b0fde0bcf8963d1a96b468fa683311b6ac9412a1",
+    "before_sha256": "70b7f0c73b60678f18c97d004dd44bec556c0d389f5c026a8aa063e8886e340f",
+    "after_sha256": "3434bbd1f553db45826b1a7239a6e9502c36a338d8e4e14d1d86aa1fd3fdc79e",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  }
+}

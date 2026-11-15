@@ -993,7 +993,7 @@ přijatý před/po přínos. Reprodukovatelný probe a JSON jsou ve výsledcích
 
 ## P11-ASSET13 — klubový kalendář a správa katalogu (14. 11. 2026)
 
-ROZPRACOVÁNO před implementací. Vlastník Vývoj/Codex, aktuální pokyn vlastníka
+NASAZENO / technická přejímka PASS. Původní plán před implementací: Vlastník Vývoj/Codex, aktuální pokyn vlastníka
 pokračovat nejpřínosnější optimalizací, ověřit shodu/před-po a po PASS
 commitnout/sloučit/nasadit. Base f9b27e4ca0e12769e702a3ff3c170fcb7d05b09e;
 runtime c7b77fa5 / deploy43633315305 SUCCESS ověřen aktuálně.
@@ -1120,3 +1120,61 @@ Větev rebased na nový main, aplikační/testové/workflow Git bloby přesně s
 jako700ecd4b. Původní celý13CI a párová přejímka PASS jsou historický
 checkpoint, nová kompletní přejímka aktuálního headu povinná před merge.
 Immutable zdrojová baseline f9b27e4c zůstává platná, #476 nemění aplikaci.
+
+
+### ASSET13 — dokončení
+
+**P11-ASSET13 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset13--klubový-kalendář-a-správa-katalogu-14-11-2026), [výsledky](verification/calendar-catalog-bootstrap-20261114/RESULTS.md). #481/837a7112, [deploy 43649462751](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43649462751) SUCCESS, 13 CI. Cold Bootstrap CSS −22709 B, osm pixelových párů stejných. Přihlášené produkční UAT NOT RUN.
+
+Celá nová přejímka aktuálního headu PASS: MariaDB 10.3/11.4 po 33 HTTP
+scénářích, všechny tabulky checksumy stejné a úklid; Chrome 16 scénářů,
+352 měřených+96 warmup navigací a osm pixelových párů. Cold CSS před [53957],
+po [31248], warm 0→0 B, decoded 465606→232803 B. Kladné HTML přesně−210 B,
+celé ostatní HTML/hlavičky/CSRF/formuláře/odkazy/geometrie shodné. SQL hodnoty,
+ikony i customstyly stejné, žádná migrace nebo změna práv/writerů.
+Časy celé HTTP/FCP/ready v dokladech, přijatý zisk je transport, nikoli
+prokázaná produkční latence nebo SLA. První neúspěšná brána a úzké opravy
+jsou zachované v checkpointu; starý širší běh43646140396 záměrně ukončen
+po nahrazení headu920d40ca. Nový celý aktuální head znovu ověřen.
+
+Testovaný/sloučený stroma2b779bf36481c8df879dc88de2d4965cffca979,13 CI PASS; chráněný deploy43649462751,
+2479/56982, záloha 394/2,config/migrace/VS/index/HTTP/úklid PASS.
+UAT/import false, import přeskočený. Nezávislé anonymní GET obou administrací
+a CSS payload/hash/cache před/po stejné. Přihlášené produkční UAT NOT RUN;
+žádné skutečné akce/účasti/objednávky/sklady/role nebyly ověřením měněné.
+Výsledkové předání vlastním PR z codex/calendar-catalog-assets-evidence-20261114,
+po přijetí v main, bez dalšího nasazení. Původní fio WIP zachovaný.
+Další kandidáti: zbylé administrativní CSS duplicity, objem seznamů až po
+samostatném profilu a doloženém rozsahu. Ostatní WIP/prototypy nepřebírat.
+
+
+### ASSET13 — výsledkové CI přes půlnoc (15. 11. 2026)
+
+Nasazený837a7112 zůstává beze změny a jeho13CI i release PASS platí.
+První dokumentační head #482/f9f99254 narazil na kalendářní hranici v
+nezměněném rodinném benchmarku: baseline proti sobě, size20, přesně
+00:00 Europe/Prague15.11. Plné logy soukromé, bezpečné údaje/inference
+v [checkpointu](verification/calendar-catalog-bootstrap-20261114/midnight-checkpoint.json).
+Aktuální výsledkové PR proto opakuje stejné celé CI po půlnoci. Žádná
+změna aplikace, testů, normalizace ani další produkční operace. Původní
+fail se nepřepisuje na PASS. Merge dokladů až po nové zelené bráně.
+
+
+### ASSET13 — návaznost po přijetí docházky (15. 11. 2026)
+
+Po našem vydání837a7112/43649462751 byl již jiným úkolem sloučen #474
+jakoea995408 a nasazen během43651304138 SUCCESS. Obsahuje náš release jako
+předka. Naše dvě stránky, hlavicka.php, kanonický Bootstrap a.htaccess
+mají stejné Git bloby jako vlastní ověřené vydání. Náš benchmark b0fde0bc
+a jeho meze se nepřepisují na nový výkonový výsledek docházky.
+
+Navazující chráněné vydání ověřené ze skutečných logů: 2487/57125,
+záloha394/2, config/pending migrace[]/VS/index/HTTP200/úklid PASS,
+UAT/importfalse. Zrušený duplicitní dispatch43651334299 neměl žádný job
+a nic neaktivoval. Anonymní GET/CSS znovu shodné. [Receipt](verification/calendar-catalog-bootstrap-20261114/followup-release.json),
+[veřejné ověření](verification/calendar-catalog-bootstrap-20261114/followup-public.json),[návaznost a Git bloby](verification/calendar-catalog-bootstrap-20261114/runtime-continuity.json).
+
+Dokumentační větev převzala celý přijatý main bez změny kódu. CURRENT/handoff
+uvádějí aktuální runtime, naše vlastní vydání zůstává oddělené. Lidské UAT
+docházky i přihlášené produkční CSS UAT zůstávají otevřené. Další celý CI head
+je povinný před merge dokladů. Žádný další deploy kvůli dokumentaci.

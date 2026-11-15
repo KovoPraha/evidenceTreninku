@@ -1,0 +1,290 @@
+{
+  "algorithm": "SHA-256 of Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/RESULTS.md",
+      "bytes": 10380,
+      "sha256": "26115482aae6bcfcdba9b201d5a4aeeda53ce6492263e561825bfc9b74c5f2d5"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/application-checks.json",
+      "bytes": 875,
+      "sha256": "e064d12ecdc066e6bf28b848f7ff95c4c5f14c9c448b3c5c64416189ef25641b"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/checkpoint-1.json",
+      "bytes": 588,
+      "sha256": "632043ecc83462dbb84a5b509e076098fec392453d1816b3e868ae65484ee649"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/followup-public.json",
+      "bytes": 846,
+      "sha256": "59ff85a7020392bae5fd147f3ec750625e7e51d6f231248fb361250033ecf8f3"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/followup-release.json",
+      "bytes": 511,
+      "sha256": "1cd0b658c8bf21d82fa80c65dc6ff7ce3173293a2c082d21eb62e4cccd082375"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/http-medians.json",
+      "bytes": 2236,
+      "sha256": "ebef78b116073f61ecf1aa8c8580cdfe375e18af8e8987892ab0445ea92eb1bc"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "c0d5086df9f4881a39f8df77891e3524cd2387bd6252e1a103a1dc084e86e4fb"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-10.3/http.json.gz",
+      "bytes": 6496,
+      "sha256": "3fdd32d788d841c042f9e87b44c9bd641c26205eba4e944e3d107e9cb16c80c6"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-10.3/source-contract.json",
+      "bytes": 7111,
+      "sha256": "62c74296bb4ad7a8227519a9ba4ea65ac90149fc168202bec7700af0769bbc20"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-10.3/source.json",
+      "bytes": 836,
+      "sha256": "12f6aff2618b44194ce77ada53f051f44c7d33ac9268268b987059c424dd8d84"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-club_calendar-detail-dark-cold.json",
+      "bytes": 5934,
+      "sha256": "e3866f21f5043b70bcc8d00f857db934cfdd2fb8457893bde0910aefc66fc277"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-club_calendar-detail-dark-warm.json",
+      "bytes": 5841,
+      "sha256": "9cb90a1f5334bde001a53097a429f09829610481db377c237cc4b2b47a1d1bc1"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-club_calendar-detail-light-cold.json",
+      "bytes": 5960,
+      "sha256": "36b70f4d02dfd8526eefaabf12151d507bf7c6f4fa5a7ae7d6f5a69e78db276e"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-club_calendar-detail-light-warm.json",
+      "bytes": 5829,
+      "sha256": "dda56d87d49acfd76300adbd649c16967278c9956c74756f5b9ab3e5a07edec7"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-club_calendar-overview-dark-cold.json",
+      "bytes": 5903,
+      "sha256": "6ad3812bea6084d94007eca49b774ea579c15f50ce5397b4317e2f7a982386fd"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-club_calendar-overview-dark-warm.json",
+      "bytes": 5829,
+      "sha256": "2c5b9280cd7bd527effcf66676f5bb7f5cbcdfbef513566bdb6dc429e2cb485a"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-club_calendar-overview-light-cold.json",
+      "bytes": 5939,
+      "sha256": "28ea51199cbe3cacd8f85dcd235d9cdfd9be3846cf31396225bd3f06dfcb8c7e"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-club_calendar-overview-light-warm.json",
+      "bytes": 5829,
+      "sha256": "cb1a4f55fad352bb9efa7d02930c9681f86f8013166585df9bbc3f1aa8975346"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-eshop_catalog_admin-filter-dark-cold.json",
+      "bytes": 5973,
+      "sha256": "26e86e10a4e9101f2d0ad7d6dd68431365be92bdf778b0affe35a41aea4590da"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-eshop_catalog_admin-filter-dark-warm.json",
+      "bytes": 5842,
+      "sha256": "2d7f70c3795e6da793b7476f2deb9967e3c869396d802a10671b1613dbd55b72"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-eshop_catalog_admin-filter-light-cold.json",
+      "bytes": 5949,
+      "sha256": "537c5de2fe8bc40bfd853f1e3b4c60e01b222dbfdead1e6630c023710c1c4d7b"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-eshop_catalog_admin-filter-light-warm.json",
+      "bytes": 5841,
+      "sha256": "3abc34ec0a3d22844e38ca51242776d63aaa47fb305d13ea3cdef17bf55e3f27"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-eshop_catalog_admin-overview-dark-cold.json",
+      "bytes": 5922,
+      "sha256": "6f245c22f33a9c8f3a1b1e6ba8ba0b0903a78fd2519336649375cc921fd45b08"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-eshop_catalog_admin-overview-dark-warm.json",
+      "bytes": 5839,
+      "sha256": "2764173d8872f67c710523422a7054369ec52db706d63c8435950c9d31df7f4f"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-eshop_catalog_admin-overview-light-cold.json",
+      "bytes": 5919,
+      "sha256": "608740a8799b9ba8a010851d438a52349b2a644e0fa8791d4b3c1120b81f5d18"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-eshop_catalog_admin-overview-light-warm.json",
+      "bytes": 5773,
+      "sha256": "136b2567066547deb5f8b9828ea97dff3bd972a5e37dc8ca1832a62e4208552d"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/browser-summary.json",
+      "bytes": 7978,
+      "sha256": "9d04ab09d9617e439dd3fcf407c642b7bd58d8c47d2eeb544bcb7f48fd4ffc9e"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "c0d5086df9f4881a39f8df77891e3524cd2387bd6252e1a103a1dc084e86e4fb"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/club_calendar-detail-dark-cold-after.png",
+      "bytes": 264976,
+      "sha256": "ed1c9cfe663d57130120aaa01fe0ad3a6a4a8672283a8118ed72dac43a00dbb8"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/club_calendar-detail-dark-cold-before.png",
+      "bytes": 264976,
+      "sha256": "ed1c9cfe663d57130120aaa01fe0ad3a6a4a8672283a8118ed72dac43a00dbb8"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/club_calendar-detail-light-cold-after.png",
+      "bytes": 275837,
+      "sha256": "0e3a9da3ff8b6c7fd2a4daf12d3e61882cdb1d1a958a13c2be103e82558f0273"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/club_calendar-detail-light-cold-before.png",
+      "bytes": 275837,
+      "sha256": "0e3a9da3ff8b6c7fd2a4daf12d3e61882cdb1d1a958a13c2be103e82558f0273"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/club_calendar-overview-dark-cold-after.png",
+      "bytes": 140201,
+      "sha256": "0fb5139b9b6dcddd373ea1bea4a4afc2c0f868405b22feffd6917a5539bc4fc2"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/club_calendar-overview-dark-cold-before.png",
+      "bytes": 140201,
+      "sha256": "0fb5139b9b6dcddd373ea1bea4a4afc2c0f868405b22feffd6917a5539bc4fc2"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/club_calendar-overview-light-cold-after.png",
+      "bytes": 153510,
+      "sha256": "c6f3c7c4386eb7955a3926b37e671010c1c2a5f0150bdda74e04aedb8667598c"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/club_calendar-overview-light-cold-before.png",
+      "bytes": 153510,
+      "sha256": "c6f3c7c4386eb7955a3926b37e671010c1c2a5f0150bdda74e04aedb8667598c"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/eshop_catalog_admin-filter-dark-cold-after.png",
+      "bytes": 113466,
+      "sha256": "efa5274fef3d5c81818c930197686c68c912c5a5098d2d6d3444b673145296f5"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/eshop_catalog_admin-filter-dark-cold-before.png",
+      "bytes": 113466,
+      "sha256": "efa5274fef3d5c81818c930197686c68c912c5a5098d2d6d3444b673145296f5"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/eshop_catalog_admin-filter-light-cold-after.png",
+      "bytes": 146743,
+      "sha256": "7bbdb82948cf67f000ed6c030d014d0c32b45936b7766cd6eda32a8c1cc3b9cb"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/eshop_catalog_admin-filter-light-cold-before.png",
+      "bytes": 146743,
+      "sha256": "7bbdb82948cf67f000ed6c030d014d0c32b45936b7766cd6eda32a8c1cc3b9cb"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/eshop_catalog_admin-overview-dark-cold-after.png",
+      "bytes": 114354,
+      "sha256": "c5ed9e8274aba7a0a2bfab8227d4bc04beee7a9c76aff616d4860a7a935d4353"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/eshop_catalog_admin-overview-dark-cold-before.png",
+      "bytes": 114354,
+      "sha256": "c5ed9e8274aba7a0a2bfab8227d4bc04beee7a9c76aff616d4860a7a935d4353"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/eshop_catalog_admin-overview-light-cold-after.png",
+      "bytes": 147035,
+      "sha256": "6a3b74f39a03b2d3c4497113efe48acec06b651713b8977d6687c0f9f3ab608d"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/eshop_catalog_admin-overview-light-cold-before.png",
+      "bytes": 147035,
+      "sha256": "6a3b74f39a03b2d3c4497113efe48acec06b651713b8977d6687c0f9f3ab608d"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/http.json.gz",
+      "bytes": 6566,
+      "sha256": "740674b3ccefc7c7c71774bf3dfe46164db91668e37a62462013178e5efc3c31"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/source-contract.json",
+      "bytes": 7111,
+      "sha256": "62c74296bb4ad7a8227519a9ba4ea65ac90149fc168202bec7700af0769bbc20"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/mariadb-11.4/source.json",
+      "bytes": 836,
+      "sha256": "12f6aff2618b44194ce77ada53f051f44c7d33ac9268268b987059c424dd8d84"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/midnight-checkpoint.json",
+      "bytes": 675,
+      "sha256": "b0f4bd6b42aae19c861fbe3fda687c20ad33cadaa69b7eea992f441fc7caa86e"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/paired-run.json",
+      "bytes": 7295,
+      "sha256": "84d09f4fc325a5541b0ef1bc1340b09401375ed86bc459daec486167846bf56c"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/production-after.json",
+      "bytes": 846,
+      "sha256": "59ff85a7020392bae5fd147f3ec750625e7e51d6f231248fb361250033ecf8f3"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/production-before.json",
+      "bytes": 846,
+      "sha256": "59ff85a7020392bae5fd147f3ec750625e7e51d6f231248fb361250033ecf8f3"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/rebase-checkpoint.json",
+      "bytes": 274,
+      "sha256": "da658b2c1b36a35bcfbd1f49fffc0a1ce7cda9e5b4656b2ee30c5c0e43a7c23b"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/release.json",
+      "bytes": 509,
+      "sha256": "1a2c3bb47ea00b62d217e67a122c30805f8ff614f1c15284b958e965e9a8b3a1"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/runtime-continuity.json",
+      "bytes": 955,
+      "sha256": "ad764d686dde4f87286e2a7c3b955d145bae3fd2bc82ba30a38a0d93992fb207"
+    },
+    {
+      "path": "docs/verification/calendar-catalog-bootstrap-20261114/table-counts.json",
+      "bytes": 33,
+      "sha256": "47f330d8dc847466f9162e8e93ff16e82e1b87d0d01e574fd290d4132b0ee426"
+    }
+  ]
+}
