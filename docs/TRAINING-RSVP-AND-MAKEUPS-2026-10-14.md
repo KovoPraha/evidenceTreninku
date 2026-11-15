@@ -215,6 +215,9 @@ rezervace a zápis běžnou rolí `trener` prošly;
 **Produkční přihlášený průchod celého toku dosud NOT RUN**; chybí nové
 schválené testovací okno a určené TEST role. Automatický režim zůstává
 výchozí vypnutý a pravidla musí být schválena před aktivací.
+[Následná čtecí kontrola připravenosti](verification/coach-attendance-20261113/RESULTS.md#čtecí-prověrka-produkčního-uat-15-11-2026)
+vrátila `ready=false`; žádné produkční TEST zápisy ani změna společného
+přepínače při ní neproběhly.
 
 ### Vydání na pokyn vlastníka 12. 11. 2026
 
