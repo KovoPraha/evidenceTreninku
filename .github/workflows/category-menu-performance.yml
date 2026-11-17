@@ -1,12 +1,6 @@
-name: Category menu read parity and performance
+name: Category menu historical replay (superseded by category labels)
 
 on:
-  pull_request:
-    paths:
-      - 'includes/shop_category.php'
-      - 'tests/Integration/ShopCategoryMenuReadTest.php'
-      - 'tests/Support/CategoryMenu*'
-      - '.github/workflows/category-menu-performance.yml'
   workflow_dispatch:
     inputs:
       mariadb_version:
@@ -40,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: 8a545bb88f52029bf521a62d60d1d81cf2dea440
           fetch-depth: 0
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
         with:

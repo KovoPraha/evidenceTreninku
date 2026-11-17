@@ -429,3 +429,63 @@ a následně menu znovu načte stejné uzly (celkem6 dotazů). Ověřit přínos
 jednoho lokálního read contextu na reálném HTTP před změnou veřejné signatury;
 nedělat persistentní cache. Zbylé náklady menu_label a sjednocování produktů
 v hlubokém stromu také vyžadují vlastní profil. P11-REVIEW zatím nevybráno.
+
+
+## P11-CATLABEL — skládání popisků kategorií (17. 11. 2026)
+
+**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex. Nový pokyn vlastníka:
+další optimalizace s největším přínosem, přesná shoda a měření před/po;
+po úplném PASS commit, merge a chráněný deploy. Base30386ddb29ceed99190a18ed9e792ff02111b139,
+větev codex/catalog-category-label-performance-20261117, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35, tracked WIP kis_rosters_admin.php a jeho SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+P11-CATMENU dokončen #490/#491, runtimea3796752/deploy44152881039 ověřený.
+
+Porovnat dva následné kandidáty ze závěru předchozího řezu: (A) jedno lokální
+načtení uzlů místo dvou ve shopCatalogPageSelect, (B) skládání menu_label.
+shopCategoryMenuLabel při každém rodiči volá array_unshift, tedy znovu přesune
+celé dosud složené pole. Navržená varianta přidává na konec a jednou obrátí
+pořadí před implode. Stejná posloupnost navštívení, ukončení cyklu/sirotka,
+typy, mezery, Unicode, prázdné a neobvyklé názvy. Žádná změna ceny, SQL,
+produktů, oprávnění, HTML, cache nebo writerů; žádný limit výsledku.
+
+Nejdřív lokální diferenciální profil celého menu a společného načtení uzlů,
+ploché/malé/větvené/hluboké grafy. Podle důkazu zvolit minimální funkční řez.
+Frozen oracle z aktuálního base; případná změna jen uvnitř MenuLabel,
+všechny ostatní zdrojové tokeny musí zůstat přesně stejné.
+Ověřit přímo popisky i celé menu, cykly/sirotky/skryté rodiče, typy klíčů,
+chybějící/neplatné vstupy, čerstvost/rollback. MariaDB10.3/11.4 a reálné
+celé Apache/PHP HTTP pro anonymního i přihlášeného zákazníka, filtry,
+hledání, řazení, prázdné výsledky a neplatný CSRF, checksumy celé fixture.
+Skutečný Chrome desktop/mobil, formuláře, styly/geometrie/pixely a CSS.
+
+Akceptace před měřením: hluboké cíle chain250/500 ≥20% zisku v nativním
+menu i celém HTTP na obou DB; ostatní tvary nejvýše20%+5ms funkce/+20msHTTP,
+bez zhoršení přesné shody. Zveřejnit všechny směry a paměť. Při nesplnění
+nezavádět kandidát, nezměkčovat tolerance. Potom celé CI, testovaný/sloučený
+strom, chráněný deploy se zálohou/config/migracemi/VS/indexem/HTTP/úklidem,
+UAT/importfalse. Produkční profil a přihlášené/lidské UAT NOT RUN.
+Doklady a handoff v main přes vlastní PR, bez dalšího deploye dokumentace.
+Další krok: místní porovnání obou kandidátů, žádná aplikovaná změna.
+
+
+### CATLABEL — výběr podle místního profilu
+
+SQLite/PHP8.2.12, část callsite shopCategoryNodes + celé menu, 2 zahřívací
++11 střídavých trojic. Přesná shoda všech celých menu. Flat30:1,49→1,53ms
+popisky /1,04ms sdílené uzly; flat1000:68,59→64,72 /54,01ms;
+tree1000:69,67→68,59 /47,45ms; chain250:181,02→106,24 /182,22ms;
+chain500:1247,80→692,39 /1490,94ms. [Vzorky a prototyp](verification/category-label-20261117/local-probe.json).
+Časy sdílených uzlů v hlubokém stromu mají i opačný směr; nejde o nativní
+ani produkční profil. Zvoleno skládání popisků pro nejvyšší doložený hluboký
+zisk a minimální rozsah bez změny signatury. Sdílené čtení zůstává KONCEPT.
+
+Lokální aplikovaná změna: jen MenuLabel, append a array_reverse na konci,
+žádný cache či jiné volání. Nativní/HTTP/Chrome přejímka čeká. Nový aktuální
+CI profil navazuje na baseline30386ddb a zamyká celý prefix/suffix mimo
+MenuLabel. Starý profil CATMENU měl zamknutý i tento helper; jeho historická
+workflow zůstává ručně přehratelná na původním testovaném8a545bb8. Aktuální
+PR brána je nahrazena dvěma CATLABEL joby se stejnými kontrolami + novými
+chain250/500 cíli; všeobecné CI se nemění. Žádné vynechání bezpečnosti/CSP,
+parity či výkonnostních tolerancí. Tento postup musí být součástí review.
