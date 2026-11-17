@@ -9440,7 +9440,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11/P11-ATTR/P11-REVIEW/P11-CATMENU",
-      "disposition": "Dílčí čtecí optimalizace: implementace, nativní parita/měření, merge a schválené nasazení hotové; celé K0.2 otevřené. P11-ATTR 17.11.2026: objevování parametrů variant, lokální parita PASS, nativní měření/CI čeká. P11-ATTR #488/4270d0cc, deploy44131137781 SUCCESS; repeated celé HTTP129→75/234→118ms, PHP peak přibližně poloviční, unique HTTP +6–12 %. Parita/51HTTP naDB/8pixelpárů/13CI PASS, přihlášené UAT NOT RUN. P11-REVIEW nevybráno: regrese filtrů/nestabilní zisk, bez změny aplikace. P11-CATMENU lokální implementace indexu stromu, nativní/HTTP/Chrome a release čekají.",
+      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. P11-ATTR #488/4270d0cc deploy44131137781 SUCCESS, repeated rychlejší a peak přibližně poloviční, unique režie6–12 %. P11-REVIEW nevybráno: nestabilní zisk/regrese filtrů. P11-CATMENU #490/a3796752 deploy44152881039 SUCCESS, 9nativních/32HTTP scénářů naDB a4pixelpáry/13CI PASS. Tree1000 HTTP 94.0→25.2ms / 76.3→19.2ms, index má zveřejněnou paměťovou režii. Přihlášené produkční UAT NOT RUN.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
         "docs/verification/catalog-release-20261107/RESULTS.md",

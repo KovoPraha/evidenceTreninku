@@ -1,0 +1,9 @@
+{
+  "includes/shop_category.php": {
+    "baseline": "832048619c3b5c4977e614a5c746979e03a30815",
+    "head": "8a545bb88f52029bf521a62d60d1d81cf2dea440",
+    "before_sha256": "58922dbdb4b0169188f4f07e2db016705f4daf8771c1ae2ca88836ad8f532a37",
+    "after_sha256": "f6a22f2e92055d4a52e5ec5283bc63bee75280d2cf54b0d0a85e198f3bc426f9",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  }
+}

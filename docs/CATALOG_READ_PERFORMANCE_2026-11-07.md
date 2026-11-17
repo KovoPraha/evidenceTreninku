@@ -238,7 +238,7 @@ Další výkonový řez až po novém měření konkrétního kandidáta.
 
 ## P11-REVIEW — agregace kontroly importovaného katalogu (17. 11. 2026)
 
-**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex. Aktuální pokyn vlastníka:
+**NEVYBRÁNO / původní aplikační kód zachovaný.** Vlastník vývoj/Codex. Aktuální pokyn vlastníka:
 další optimalizace podle analýzy, přesná shoda a měření před/po; po úplném
 PASS commit/merge/chráněné nasazení. Base832048619c3b5c4977e614a5c746979e03a30815,
 větev codex/next-performance-20261117c; vlastní worktree
@@ -321,7 +321,7 @@ Další výběr navazuje níže jako P11-CATMENU, bez přebírání SQL prototyp
 
 ## P11-CATMENU — strom kategorií veřejného katalogu (17. 11. 2026)
 
-**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex; stejné aktuální oprávnění
+**NASAZENO / technická přejímka PASS, přihlášené produkční UAT NOT RUN.** Vlastník vývoj/Codex; stejné aktuální oprávnění
 ověřit další optimalizaci, po shodě a přínosu commit/merge/chráněný deploy.
 Base832048619c3b5c4977e614a5c746979e03a30815, větev
 codex/catalog-category-menu-performance-20261117, worktree
@@ -399,3 +399,33 @@ obsahuje origin i jeho schválený hash. Porovnání ověří raw CSP hash skute
 handleru, potom přeloží hash stejného handleru s normalizovaným originem;
 další CSP beze změny, unit kontroluje i chybějící raw hash. Pět lokálních
 testů menu/porovnání,45 kontrol PASS. Algoritmus/brány stejné, celé CI znovu.
+
+
+### CATMENU — dokončení a další diagnóza
+
+**P11-CATMENU NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catmenu--strom-kategorií-veřejného-katalogu-17-11-2026), [výsledky](verification/category-menu-20261117/RESULTS.md). #490/a3796752, [deploy 44152881039](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44152881039) SUCCESS, 13 CI. Tree1000 celé HTTP 94.0→25.2ms / 76.3→19.2ms; parita/32scénářů naDB/4pixelpáry PASS. Paměťová režie indexu v protokolu. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
+
+Párový běh44151159980 na 8a545bb8 prošel obě MariaDB. 9 nativních profilů/DB,
+celé menu/typy/BFS/pořadí/popisky/počty přesně stejné, 3SQL a checksumy stejné.
+32 celých HTTP scénářů/DB, 355 tabulek nezměněných v každé fázi i po Chrome.
+Chrome při tree1000:8 případů,176 měřených+48 zahřívacích navigací a4 identické
+pixelové páry, stejné formuláře/geometrie/styly/JS/CSS. Flat1000 celé HTTP
+35.0→23.9ms / 26.8→18.2ms; tree1000 94.0→25.2ms / 76.3→19.2ms. Přírůstek paměti indexu je zveřejněný v úplných
+tabulkách; malé případy a všechny časové směry také. Žádná tolerance se neměnila.
+První nepoužitelné HTTP měření odhalilo baseline symlink __DIR__ chybu;
+fyzická kopie a realpath aserce opravily fixture před finální přejímkou.
+
+Testovaný/sloučený strom 4931882cb8228ab2c56641685e0b78de23c9eb59,13 CI SUCCESS. Chráněný deploy44152881039:
+2496 testů/57239 kontrol, záloha 394 tabulek/2 triggerů.
+Config zachovaný, migrace current/pending[], VS/index stejné;
+aktivace/HTTP200/úklid PASS. UAT/import false, import přeskočený. Živé anonymní
+GET katalogu (celé normalizované HTML/hlavičky), redirect administrace a CSS
+payload/hash před/po stejné. Produkční výkonový profil a přihlášené UAT NOT RUN.
+Původní fio WIP/HEAD/hash zachované, jiné PR nebrané. Doklady samostatným docs
+PR bez redeploye.
+
+Další KONCEPT k nové diagnóze: shopCatalogPageSelect volá shopCategoryNodes
+a následně menu znovu načte stejné uzly (celkem6 dotazů). Ověřit přínos
+jednoho lokálního read contextu na reálném HTTP před změnou veřejné signatury;
+nedělat persistentní cache. Zbylé náklady menu_label a sjednocování produktů
+v hlubokém stromu také vyžadují vlastní profil. P11-REVIEW zatím nevybráno.

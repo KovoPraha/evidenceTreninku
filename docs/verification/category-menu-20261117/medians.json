@@ -1,0 +1,494 @@
+{
+  "10.3": {
+    "native": [
+      {
+        "shape": "flat",
+        "rows": 30,
+        "ms": {
+          "before": 1.181641,
+          "after": 1.153479
+        },
+        "peak_bytes": {
+          "before": 54896,
+          "after": 54896
+        }
+      },
+      {
+        "shape": "flat",
+        "rows": 500,
+        "ms": {
+          "before": 10.002619,
+          "after": 3.982953
+        },
+        "peak_bytes": {
+          "before": 506032,
+          "after": 506032
+        }
+      },
+      {
+        "shape": "flat",
+        "rows": 1000,
+        "ms": {
+          "before": 31.290017,
+          "after": 7.304461
+        },
+        "peak_bytes": {
+          "before": 1007664,
+          "after": 1007664
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 30,
+        "ms": {
+          "before": 1.277711,
+          "after": 1.248567
+        },
+        "peak_bytes": {
+          "before": 56288,
+          "after": 56288
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 500,
+        "ms": {
+          "before": 34.111989,
+          "after": 4.199459
+        },
+        "peak_bytes": {
+          "before": 551192,
+          "after": 611584
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 1000,
+        "ms": {
+          "before": 143.36223,
+          "after": 7.611326
+        },
+        "peak_bytes": {
+          "before": 1097240,
+          "after": 1214336
+        }
+      },
+      {
+        "shape": "chain",
+        "rows": 120,
+        "ms": {
+          "before": 33.579772,
+          "after": 5.529246
+        },
+        "peak_bytes": {
+          "before": 729848,
+          "after": 769704
+        }
+      },
+      {
+        "shape": "chain",
+        "rows": 250,
+        "ms": {
+          "before": 284.084032,
+          "after": 22.893575
+        },
+        "peak_bytes": {
+          "before": 3059688,
+          "after": 3136920
+        }
+      },
+      {
+        "shape": "mixed",
+        "rows": 80,
+        "ms": {
+          "before": 3.737054,
+          "after": 1.727433
+        },
+        "peak_bytes": {
+          "before": 130624,
+          "after": 152272
+        }
+      }
+    ],
+    "http": {
+      "matrix": {
+        "overview-anonymous": {
+          "before": 16.625,
+          "after": 16.209999999999997
+        },
+        "category-anonymous": {
+          "before": 16.167,
+          "after": 16.160999999999998
+        },
+        "missing-anonymous": {
+          "before": 16.539,
+          "after": 16.298
+        },
+        "invalid-anonymous": {
+          "before": 16.552999999999997,
+          "after": 16.607
+        },
+        "search-anonymous": {
+          "before": 16.522,
+          "after": 16.764000000000003
+        },
+        "empty-anonymous": {
+          "before": 16.624,
+          "after": 16.776
+        },
+        "sort-price-anonymous": {
+          "before": 16.115000000000002,
+          "after": 15.956000000000001
+        },
+        "sort-name-anonymous": {
+          "before": 15.777,
+          "after": 15.866000000000001
+        },
+        "page-anonymous": {
+          "before": 16.081000000000003,
+          "after": 16.112000000000002
+        },
+        "overview-customer": {
+          "before": 23.511,
+          "after": 24.160999999999998
+        },
+        "category-customer": {
+          "before": 24.694,
+          "after": 24.268
+        },
+        "missing-customer": {
+          "before": 23.951,
+          "after": 24.062
+        },
+        "invalid-customer": {
+          "before": 23.681,
+          "after": 23.614
+        },
+        "search-customer": {
+          "before": 23.889,
+          "after": 23.932
+        },
+        "empty-customer": {
+          "before": 23.91,
+          "after": 23.897000000000002
+        },
+        "sort-price-customer": {
+          "before": 23.76,
+          "after": 23.727
+        },
+        "sort-name-customer": {
+          "before": 23.521,
+          "after": 23.583
+        },
+        "page-customer": {
+          "before": 23.825,
+          "after": 23.911
+        },
+        "csrf-customer": {
+          "before": 24.202,
+          "after": 23.813000000000002
+        }
+      },
+      "flat-1000": {
+        "overview-anonymous": {
+          "before": 34.952,
+          "after": 23.871
+        },
+        "category-anonymous": {
+          "before": 34.852000000000004,
+          "after": 24.075
+        },
+        "overview-customer": {
+          "before": 43.596999999999994,
+          "after": 32.408
+        },
+        "category-customer": {
+          "before": 43.419,
+          "after": 32.297
+        }
+      },
+      "chain-250": {
+        "overview-anonymous": {
+          "before": 174.516,
+          "after": 35.939
+        },
+        "category-anonymous": {
+          "before": 173.35999999999999,
+          "after": 36.547000000000004
+        },
+        "overview-customer": {
+          "before": 180.044,
+          "after": 42.793
+        },
+        "category-customer": {
+          "before": 183.04999999999998,
+          "after": 43.911
+        }
+      },
+      "tree-1000": {
+        "overview-anonymous": {
+          "before": 93.992,
+          "after": 25.239
+        },
+        "category-anonymous": {
+          "before": 93.795,
+          "after": 25.764
+        },
+        "overview-customer": {
+          "before": 102.02600000000001,
+          "after": 33.258
+        },
+        "category-customer": {
+          "before": 102.29,
+          "after": 33.022000000000006
+        }
+      }
+    }
+  },
+  "11.4": {
+    "native": [
+      {
+        "shape": "flat",
+        "rows": 30,
+        "ms": {
+          "before": 0.75639,
+          "after": 0.739739
+        },
+        "peak_bytes": {
+          "before": 54896,
+          "after": 54896
+        }
+      },
+      {
+        "shape": "flat",
+        "rows": 500,
+        "ms": {
+          "before": 7.882606,
+          "after": 3.063733
+        },
+        "peak_bytes": {
+          "before": 506032,
+          "after": 506032
+        }
+      },
+      {
+        "shape": "flat",
+        "rows": 1000,
+        "ms": {
+          "before": 24.870928,
+          "after": 5.565624
+        },
+        "peak_bytes": {
+          "before": 1007664,
+          "after": 1007664
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 30,
+        "ms": {
+          "before": 0.859819,
+          "after": 0.771944
+        },
+        "peak_bytes": {
+          "before": 56288,
+          "after": 56288
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 500,
+        "ms": {
+          "before": 25.165326,
+          "after": 3.150739
+        },
+        "peak_bytes": {
+          "before": 551192,
+          "after": 611584
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 1000,
+        "ms": {
+          "before": 104.281292,
+          "after": 5.769517
+        },
+        "peak_bytes": {
+          "before": 1097240,
+          "after": 1214336
+        }
+      },
+      {
+        "shape": "chain",
+        "rows": 120,
+        "ms": {
+          "before": 26.127723,
+          "after": 4.312429
+        },
+        "peak_bytes": {
+          "before": 729848,
+          "after": 769704
+        }
+      },
+      {
+        "shape": "chain",
+        "rows": 250,
+        "ms": {
+          "before": 211.552096,
+          "after": 18.889057
+        },
+        "peak_bytes": {
+          "before": 3059688,
+          "after": 3136920
+        }
+      },
+      {
+        "shape": "mixed",
+        "rows": 80,
+        "ms": {
+          "before": 2.747266,
+          "after": 1.150779
+        },
+        "peak_bytes": {
+          "before": 130624,
+          "after": 152272
+        }
+      }
+    ],
+    "http": {
+      "matrix": {
+        "overview-anonymous": {
+          "before": 12.375,
+          "after": 12.331
+        },
+        "category-anonymous": {
+          "before": 14.654,
+          "after": 14.176
+        },
+        "missing-anonymous": {
+          "before": 11.993,
+          "after": 12.259
+        },
+        "invalid-anonymous": {
+          "before": 12.179,
+          "after": 12.437
+        },
+        "search-anonymous": {
+          "before": 12.01,
+          "after": 12.286
+        },
+        "empty-anonymous": {
+          "before": 12.149999999999999,
+          "after": 11.818999999999999
+        },
+        "sort-price-anonymous": {
+          "before": 11.938,
+          "after": 12.205
+        },
+        "sort-name-anonymous": {
+          "before": 12.424,
+          "after": 12.134
+        },
+        "page-anonymous": {
+          "before": 12.335,
+          "after": 12.44
+        },
+        "overview-customer": {
+          "before": 18.234,
+          "after": 18.284000000000002
+        },
+        "category-customer": {
+          "before": 18.466,
+          "after": 18.44
+        },
+        "missing-customer": {
+          "before": 18.37,
+          "after": 18.317
+        },
+        "invalid-customer": {
+          "before": 18.308999999999997,
+          "after": 18.253999999999998
+        },
+        "search-customer": {
+          "before": 18.198,
+          "after": 18.318
+        },
+        "empty-customer": {
+          "before": 18.49,
+          "after": 18.214000000000002
+        },
+        "sort-price-customer": {
+          "before": 18.016000000000002,
+          "after": 18.099
+        },
+        "sort-name-customer": {
+          "before": 18.235,
+          "after": 18.271
+        },
+        "page-customer": {
+          "before": 18.232000000000003,
+          "after": 18.412000000000003
+        },
+        "csrf-customer": {
+          "before": 18.063,
+          "after": 18.273999999999997
+        }
+      },
+      "flat-1000": {
+        "overview-anonymous": {
+          "before": 26.828,
+          "after": 18.217000000000002
+        },
+        "category-anonymous": {
+          "before": 27.275000000000002,
+          "after": 18.366
+        },
+        "overview-customer": {
+          "before": 33.294,
+          "after": 24.316999999999997
+        },
+        "category-customer": {
+          "before": 32.819,
+          "after": 24.221
+        }
+      },
+      "chain-250": {
+        "overview-anonymous": {
+          "before": 148.754,
+          "after": 29.6
+        },
+        "category-anonymous": {
+          "before": 149.096,
+          "after": 30.200999999999997
+        },
+        "overview-customer": {
+          "before": 153.941,
+          "after": 35.551
+        },
+        "category-customer": {
+          "before": 157.613,
+          "after": 36.547000000000004
+        }
+      },
+      "tree-1000": {
+        "overview-anonymous": {
+          "before": 76.34100000000001,
+          "after": 19.227999999999998
+        },
+        "category-anonymous": {
+          "before": 75.73,
+          "after": 19.751
+        },
+        "overview-customer": {
+          "before": 82.039,
+          "after": 25.288999999999998
+        },
+        "category-customer": {
+          "before": 82.679,
+          "after": 26.188
+        }
+      }
+    }
+  }
+}
