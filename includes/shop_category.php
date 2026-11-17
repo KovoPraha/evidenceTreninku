@@ -190,17 +190,14 @@ function shopCategoryMenuLabel(array $nodes, string $path): string
     $current = $path;
     while (isset($nodes[$current]) && !isset($visited[$current])) {
         $visited[$current] = true;
-        array_unshift(
-            $labels,
-            (string)$nodes[$current]['display_name']
-        );
+        $labels[] = (string)$nodes[$current]['display_name'];
         $parent = $nodes[$current]['parent_path'] ?? null;
         if (!is_string($parent) || $parent === '') {
             break;
         }
         $current = $parent;
     }
-    return implode(' › ', $labels);
+    return implode(' › ', array_reverse($labels));
 }
 
 /** @param list<array<string,mixed>> $products @return list<array<string,mixed>> */

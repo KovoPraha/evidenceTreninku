@@ -1,0 +1,19 @@
+function shopCategoryMenuLabel(array $nodes, string $path): string
+{
+    $labels = [];
+    $visited = [];
+    $current = $path;
+    while (isset($nodes[$current]) && !isset($visited[$current])) {
+        $visited[$current] = true;
+        array_unshift(
+            $labels,
+            (string)$nodes[$current]['display_name']
+        );
+        $parent = $nodes[$current]['parent_path'] ?? null;
+        if (!is_string($parent) || $parent === '') {
+            break;
+        }
+        $current = $parent;
+    }
+    return implode(' › ', $labels);
+}

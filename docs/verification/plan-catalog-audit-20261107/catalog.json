@@ -9439,14 +9439,15 @@
       "primary": true,
       "role": "plan",
       "status": "PARTIAL",
-      "registry": "P11/P11-ATTR/P11-REVIEW/P11-CATMENU",
-      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. P11-ATTR #488/4270d0cc deploy44131137781 SUCCESS, repeated rychlejší a peak přibližně poloviční, unique režie6–12 %. P11-REVIEW nevybráno: nestabilní zisk/regrese filtrů. P11-CATMENU #490/a3796752 deploy44152881039 SUCCESS, 9nativních/32HTTP scénářů naDB a4pixelpáry/13CI PASS. Tree1000 HTTP 94.0→25.2ms / 76.3→19.2ms, index má zveřejněnou paměťovou režii. Přihlášené produkční UAT NOT RUN.",
+      "registry": "P11/P11-ATTR/P11-REVIEW/P11-CATMENU/P11-CATLABEL",
+      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. P11-ATTR #488/4270d0cc deploy44131137781 SUCCESS, repeated rychlejší a peak přibližně poloviční, unique režie6–12 %. P11-REVIEW nevybráno: nestabilní zisk/regrese filtrů. P11-CATMENU #490/a3796752 deploy44152881039 SUCCESS, 9nativních/32HTTP scénářů naDB a4pixelpáry/13CI PASS. Tree1000 HTTP 94.0→25.2ms / 76.3→19.2ms, index má zveřejněnou paměťovou režii. Přihlášené produkční UAT NOT RUN. P11-CATLABEL: vybráno skládání popisků, lokálně27 testů/204 kontrol a source kontrakt PASS; nativní/HTTP/Chrome/CI a release čekají. Sdílené načtení uzlů zůstává koncept.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
         "docs/verification/catalog-release-20261107/RESULTS.md",
         "docs/verification/attendance-lesson-release-20261107/RESULTS.md",
         "docs/verification/attribute-discovery-20261117/RESULTS.md",
-        "docs/verification/category-menu-20261117/RESULTS.md"
+        "docs/verification/category-menu-20261117/RESULTS.md",
+        "docs/verification/category-label-20261117/RESULTS.md"
       ]
     },
     {
