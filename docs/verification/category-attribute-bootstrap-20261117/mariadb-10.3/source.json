@@ -1,0 +1,16 @@
+{
+  "eshop_categories_admin.php": {
+    "baseline": "e30fdc97a369245478c25fd14c220df45aec3e18",
+    "head": "fb51c194f3b0a6ffe27b152f1654a4f30e210287",
+    "before_sha256": "deffd3e6233075e9889bb37c3d177a5c43e4eea7146dc1a4b309b42f80cb1d36",
+    "after_sha256": "5cb0e815f85ac9bd91fa1f2d05870360048cde1a8c11c7eadc3c1a8206b70a5b",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  },
+  "eshop_attributes_admin.php": {
+    "baseline": "e30fdc97a369245478c25fd14c220df45aec3e18",
+    "head": "fb51c194f3b0a6ffe27b152f1654a4f30e210287",
+    "before_sha256": "537916ae072a4c87f9ffa696329a7f16d622e9d0d28ef960c24f883e5e5f3d11",
+    "after_sha256": "8d455b6d18025de84e946429b1f984a8dc3311fcb57f4a4710337b0a4f5dad7e",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  }
+}
