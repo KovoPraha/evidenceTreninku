@@ -40,7 +40,9 @@ střídavých trojic. Porovnání s odstraněním duplicitního čtení uzlů:
 Zvoleny popisky: největší doložený hluboký zisk při minimálním rozsahu,
 sdílení uzlů zůstává KONCEPT k vlastnímu nativnímu profilu. Časy obsahují
 i opačné směry. [Vzorky](local-probe.json), [prototyp](local-probe.php.txt)
-(kopie do output/category-label-probe.php.txt a CLI php nad aktuálním repem).
+(kopie do output/category-label-probe.php.txt a CLI php v odděleném checkoutu
+baseline30386ddb). Jde o původní sondu před aplikací změny; nad již
+optimalizovaným modulem z aktuálního main se tato sonda nespouští.
 Toto není MariaDB ani produkční profil.
 
 ## Nativní menu na MariaDB
