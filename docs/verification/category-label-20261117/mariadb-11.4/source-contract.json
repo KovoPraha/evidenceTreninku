@@ -1,0 +1,9 @@
+{
+    "complete": true,
+    "base": "30386ddb29ceed99190a18ed9e792ff02111b139",
+    "only_label_changed": true,
+    "prefix_suffix_byte_equal": true,
+    "frozen_label_menu_equal": true,
+    "source_sha256": "231133f261fe9901105ba7946816cc0087e8b238e45cbda4b8321ca29b52bab6",
+    "frozen_sha256": "4d3e6ff1878061abc62be20fca101f2b5ffd8f3ad9d9295c89d0b993bb5e4b76"
+}

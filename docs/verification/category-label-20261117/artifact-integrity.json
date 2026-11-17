@@ -1,0 +1,295 @@
+{
+  "algorithm": "SHA-256 of Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/category-label-20261117/RESULTS.md",
+      "bytes": 12863,
+      "sha256": "5709367c7d61e71a31ab2b673d97e39501584dd0de34ae2c0b3033aefa70864d"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/application-checks.json",
+      "bytes": 849,
+      "sha256": "bf7b1d6e7fa87ddeb1d6ab5bee6b50c595c8fb40e613b9ed48d8bff89b792d41"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/local-probe.json",
+      "bytes": 20016,
+      "sha256": "cc4e7966f946151fb5bbb5a33b584b7ace3e5cac14e319db56fa29932f0000d3"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/local-probe.php.txt",
+      "bytes": 2900,
+      "sha256": "adeda4ced64bbebd2c97b7d3204102108b1ccf9d9a4eb5fa7573593f644c915b"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/checksums-chain-250.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/checksums-chain-500.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/checksums-flat-1000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/checksums-matrix.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/checksums-tree-1000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/http-chain-250.json.gz",
+      "bytes": 2188,
+      "sha256": "8b83f445692b2f398a0705ee701ccf8d0fa66ca82bbb47511f6a3cc56e1e1866"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/http-chain-500.json.gz",
+      "bytes": 2246,
+      "sha256": "20b34190879b0f6236255c4d173a0680a60e0b2e4695da0291ef081e6279cb98"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/http-flat-1000.json.gz",
+      "bytes": 2110,
+      "sha256": "fa90d48a11c981df36c7ddfdb3a070d4b6b9ca23cf8f053e187b8022279b7b75"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/http-matrix.json.gz",
+      "bytes": 7309,
+      "sha256": "1ac1dcba4caeb5ea3e7e47a89c210dd0046d4b18a32ed75efeea052b326f2cdb"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/http-tree-1000.json.gz",
+      "bytes": 2130,
+      "sha256": "533c3b5ebfd6ebc2931d39fac32b7ac517e1e11876f33f76fb23aa78a0ef81f1"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/native-cleanup.json",
+      "bytes": 29,
+      "sha256": "38d368f3a42951348669a605cb9bafce7ad7d235bff64b98ff52c76dc591afe6"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/native.json",
+      "bytes": 50017,
+      "sha256": "50a9703e708f3778fa9bd0193df630d0890f0d675d9bd2fe38c6a0742f5369d8"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/source-contract.json",
+      "bytes": 366,
+      "sha256": "86396320e6a015168a8404d97687edb73b3fddffd0900201c3f4b95a67ad8ba7"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-10.3/source.json",
+      "bytes": 425,
+      "sha256": "33007ab014dd6fbba2a7cf0cd3aa92dd315a7af422a4a59684efcdc4773e951b"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/browser-eshop-category-dark-cold.json",
+      "bytes": 5965,
+      "sha256": "407ceadf0afc1c1a2c25f74dd9805cc0666695b211def843d2192c12eb370adb"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/browser-eshop-category-dark-warm.json",
+      "bytes": 5826,
+      "sha256": "cb04eec460b6d0ef74e8f70d6b3a322c6e9f391aab1a07908476da6ba2fb672a"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/browser-eshop-category-light-cold.json",
+      "bytes": 5942,
+      "sha256": "c11a040330b966f562499068ea4c47da9051f04a2e923be59d2cd28a19a5f00f"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/browser-eshop-category-light-warm.json",
+      "bytes": 5871,
+      "sha256": "c24489651feaed1912d73e66334d33785f188ef4f4e195b5d42107422204f881"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/browser-eshop-overview-dark-cold.json",
+      "bytes": 5933,
+      "sha256": "bf2c792556ab1afa81b8ca8c2414ad19e33aa2a65585d566cf6ecd02110f6ea8"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/browser-eshop-overview-dark-warm.json",
+      "bytes": 5872,
+      "sha256": "7b1161039f0f4186fc2e89cb704731260d72d1fcdda20723034983a6268c3fba"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/browser-eshop-overview-light-cold.json",
+      "bytes": 5944,
+      "sha256": "9b61281ea851dc0735a04f6c29de23d1f8be47b51d0b8e67c32cd5be94bf6ec1"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/browser-eshop-overview-light-warm.json",
+      "bytes": 5800,
+      "sha256": "a3e1070e8607272054a560adb8d1447f7f06ffae0e1d0341657b01062bd62117"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/browser-summary.json",
+      "bytes": 3880,
+      "sha256": "8429877a57f82e2221aba608713b8cf909723333a3eeb05e67287a2038683406"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/checksums-chain-250.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/checksums-chain-500.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/checksums-flat-1000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/checksums-matrix.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/checksums-tree-1000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/eshop-category-dark-cold-after.png",
+      "bytes": 128971,
+      "sha256": "4b76049e5747e2cad8b0699b60d29ac2f90a4ee8c2bde8c4105b94a9e6472a13"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/eshop-category-dark-cold-before.png",
+      "bytes": 128971,
+      "sha256": "4b76049e5747e2cad8b0699b60d29ac2f90a4ee8c2bde8c4105b94a9e6472a13"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/eshop-category-light-cold-after.png",
+      "bytes": 129052,
+      "sha256": "d28616d2b6fa93aea4250643fb2e695e6611a1dbd2990604da06d1e1e97edac9"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/eshop-category-light-cold-before.png",
+      "bytes": 129052,
+      "sha256": "d28616d2b6fa93aea4250643fb2e695e6611a1dbd2990604da06d1e1e97edac9"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/eshop-overview-dark-cold-after.png",
+      "bytes": 167794,
+      "sha256": "8291007c5a59921455d158badad535012eb50bc6c95692eaa9ef124bb6d2445e"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/eshop-overview-dark-cold-before.png",
+      "bytes": 167794,
+      "sha256": "8291007c5a59921455d158badad535012eb50bc6c95692eaa9ef124bb6d2445e"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/eshop-overview-light-cold-after.png",
+      "bytes": 149848,
+      "sha256": "bb93a8f3634dbd8888672929aebea9ade0ee175c88474e33e239abd4fe81c0ba"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/eshop-overview-light-cold-before.png",
+      "bytes": 149848,
+      "sha256": "bb93a8f3634dbd8888672929aebea9ade0ee175c88474e33e239abd4fe81c0ba"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/http-chain-250.json.gz",
+      "bytes": 2195,
+      "sha256": "bf82a16a663b1e60712ed737874b1fc72b9337975061aa4b61f207a08328dad6"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/http-chain-500.json.gz",
+      "bytes": 2258,
+      "sha256": "194d75a214c5c566195331bb3165d095b38996cc12d42ca32a69916864eb408f"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/http-flat-1000.json.gz",
+      "bytes": 2080,
+      "sha256": "11a92753087d72842de3eed5626966432c050988c8d16059bbd53de73f908eb9"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/http-matrix.json.gz",
+      "bytes": 7198,
+      "sha256": "4735549dc1d836de95846be235f24f6b192ac03bc7504d8ec9b66aed2336192b"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/http-tree-1000.json.gz",
+      "bytes": 2113,
+      "sha256": "c9a25dbb91d051efa69af2b168af668964f644d8f63030ba02949ec6c1c5bd30"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/native-cleanup.json",
+      "bytes": 29,
+      "sha256": "38d368f3a42951348669a605cb9bafce7ad7d235bff64b98ff52c76dc591afe6"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/native.json",
+      "bytes": 50040,
+      "sha256": "a3920064dc054dc5b51e19fa7dfac6a15375331cf6cae2d725584cac8a41c3de"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/source-contract.json",
+      "bytes": 366,
+      "sha256": "86396320e6a015168a8404d97687edb73b3fddffd0900201c3f4b95a67ad8ba7"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/mariadb-11.4/source.json",
+      "bytes": 425,
+      "sha256": "33007ab014dd6fbba2a7cf0cd3aa92dd315a7af422a4a59684efcdc4773e951b"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/medians.json",
+      "bytes": 11839,
+      "sha256": "25cadff4a38bd8c66d7a18b2711952ca15c777659d30d07569adf1b31cd97d58"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/paired-run.json",
+      "bytes": 7261,
+      "sha256": "8839abc2d401792d052dcf61a5833f7364a2c1760bf7e189bb9aa74a956fc64d"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/production-after.json",
+      "bytes": 2665,
+      "sha256": "0a4ac17b20844ea8183d13a0b9a5e184e96428c4e16907a1f9fb8a2d182b9bf9"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/production-before.json",
+      "bytes": 2665,
+      "sha256": "0a4ac17b20844ea8183d13a0b9a5e184e96428c4e16907a1f9fb8a2d182b9bf9"
+    },
+    {
+      "path": "docs/verification/category-label-20261117/release.json",
+      "bytes": 511,
+      "sha256": "ace83117e8ea36292cbe43e2b89773d9602fc8694a3ad7eab290df604430db1a"
+    }
+  ]
+}
