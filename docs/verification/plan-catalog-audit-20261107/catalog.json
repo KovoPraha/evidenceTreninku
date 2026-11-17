@@ -9439,13 +9439,14 @@
       "primary": true,
       "role": "plan",
       "status": "PARTIAL",
-      "registry": "P11/P11-ATTR",
-      "disposition": "Dílčí čtecí optimalizace: implementace, nativní parita/měření, merge a schválené nasazení hotové; celé K0.2 otevřené. P11-ATTR 17.11.2026: objevování parametrů variant, lokální parita PASS, nativní měření/CI čeká. P11-ATTR #488/4270d0cc, deploy44131137781 SUCCESS; repeated celé HTTP129→75/234→118ms, PHP peak přibližně poloviční, unique HTTP +6–12 %. Parita/51HTTP naDB/8pixelpárů/13CI PASS, přihlášené UAT NOT RUN.",
+      "registry": "P11/P11-ATTR/P11-REVIEW/P11-CATMENU",
+      "disposition": "Dílčí čtecí optimalizace: implementace, nativní parita/měření, merge a schválené nasazení hotové; celé K0.2 otevřené. P11-ATTR 17.11.2026: objevování parametrů variant, lokální parita PASS, nativní měření/CI čeká. P11-ATTR #488/4270d0cc, deploy44131137781 SUCCESS; repeated celé HTTP129→75/234→118ms, PHP peak přibližně poloviční, unique HTTP +6–12 %. Parita/51HTTP naDB/8pixelpárů/13CI PASS, přihlášené UAT NOT RUN. P11-REVIEW nevybráno: regrese filtrů/nestabilní zisk, bez změny aplikace. P11-CATMENU lokální implementace indexu stromu, nativní/HTTP/Chrome a release čekají.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
         "docs/verification/catalog-release-20261107/RESULTS.md",
         "docs/verification/attendance-lesson-release-20261107/RESULTS.md",
-        "docs/verification/attribute-discovery-20261117/RESULTS.md"
+        "docs/verification/attribute-discovery-20261117/RESULTS.md",
+        "docs/verification/category-menu-20261117/RESULTS.md"
       ]
     },
     {

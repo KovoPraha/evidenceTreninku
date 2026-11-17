@@ -1,0 +1,44 @@
+<?php
+declare(strict_types=1);
+if (PHP_SAPI !== 'cli') { exit(1); }
+require __DIR__ . '/../includes/shop_catalog_review.php';
+$source = file_get_contents(__DIR__ . '/catalog-review-candidate.txt');
+$candidate = eval(preg_replace('/^function shopCatalogReviewDetail/', 'return static function', $source, 1) . ';');
+[$script, $count, $perProduct] = $argv;
+$count = (int)$count; $perProduct = (int)$perProduct;
+$pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+$pdo->exec('PRAGMA foreign_keys=ON; CREATE TABLE treneri(id INTEGER PRIMARY KEY,jmeno TEXT)');
+$pdo->exec("INSERT INTO treneri VALUES(7,'LOCALHOST')");
+foreach (['20260802170000_shop_catalog_staging.php','20260802190000_shop_catalog_review.php'] as $file) {
+    $migration = require __DIR__ . '/../migrations/' . $file; $migration['up']($pdo);
+}
+// SQLite does not automatically create the real MariaDB product FK index.
+$pdo->exec('CREATE INDEX idx_probe_variant_product ON shop_catalog_variant_candidates(product_candidate_id)');
+$pdo->exec("INSERT INTO shop_catalog_import_runs(id,source_sha256,source_filename,contract_version,status,product_count,variant_count,warning_count,manual_review_count)
+VALUES(1,'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','LOCALHOST.csv','LOCALHOST','staged',0,0,0,0)");
+$product = $pdo->prepare('INSERT INTO shop_catalog_product_candidates(id,run_id,external_product_key,name,offer_type,classification_confidence,needs_manual_review,payload_json,review_status) VALUES(?,1,?,?,?,\'high\',0,\'{}\',?)');
+$variant = $pdo->prepare('INSERT INTO shop_catalog_variant_candidates(run_id,product_candidate_id,sku,price_mode,amount_minor,currency,payload_json) VALUES(1,?,?,\'fixed\',?,?,\'{}\')');
+$pdo->beginTransaction();
+for ($i=1;$i<=$count;$i++) {
+    $product->execute([$i,'LOCALHOST-'.$i,'LOCALHOST '.str_pad((string)$i,6,'0',STR_PAD_LEFT),['goods','program','rental','unclassified'][$i%4],['pending','approved','auto_classified','excluded'][$i%4]]);
+    for ($j=0;$j<$perProduct;$j++) {
+        $variant->execute([$i,'SKU-'.$i.'-'.$j,$j%7===0?null:($j%11===0?-100:1000+$j),['CZK','EUR',null][$j%3]]);
+    }
+}
+$pdo->commit();
+$samples=[];
+foreach (['all'=>['','',''],'pending'=>['pending','',''],'sku'=>['','','SKU-'.$count.'-0'],'missing'=>['','','LOCALHOST-NO-MATCH']] as $label=>$filters) {
+    $pair=['before'=>[],'after'=>[]]; $expected=null;
+    for($round=-2;$round<9;$round++) {
+        foreach($round%2===0?['before','after']:['after','before'] as $mode) {
+            $start=hrtime(true);
+            $value=$mode==='before'?shopCatalogReviewDetail($pdo,1,...$filters):$candidate($pdo,1,...$filters);
+            $ms=(hrtime(true)-$start)/1e6;
+            $signature=hash('sha256',serialize($value));$expected??=$signature;
+            if($signature!==$expected)throw new RuntimeException('Result differs '.$label.'/'.$mode);
+            if($round>=0)$pair[$mode][]=$ms;
+        }
+    }
+    $samples[$label]=$pair;
+}
+echo json_encode(['products'=>$count,'variants_per_product'=>$perProduct,'samples'=>$samples,'exact_equal'=>true],JSON_THROW_ON_ERROR),"\n";

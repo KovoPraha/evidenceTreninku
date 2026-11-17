@@ -234,3 +234,168 @@ shodné. Skutečné produkty/definice/objednávky/role neměněné tímto ověř
 Původní fio WIP a jeho hash zachovaný; jiné PR/prototypy nepřebírané.
 Doklady samostatným docs PR bez dalšího nasazení; lidské UAT samostatně.
 Další výkonový řez až po novém měření konkrétního kandidáta.
+
+
+## P11-REVIEW — agregace kontroly importovaného katalogu (17. 11. 2026)
+
+**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex. Aktuální pokyn vlastníka:
+další optimalizace podle analýzy, přesná shoda a měření před/po; po úplném
+PASS commit/merge/chráněné nasazení. Base832048619c3b5c4977e614a5c746979e03a30815,
+větev codex/next-performance-20261117c; vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+P11-ATTR včetně předání #489 dokončen; runtime4270d0cc/44131137781 ověřený.
+
+Nález navazuje na původní analýzu výběru katalogu před drahou prezentací:
+shopCatalogReviewDetail pro až500 produktů opakuje čtyři korelované agregace
+variant. Nejprve změřit sloučení COUNT/MIN/MAX částky do jedné agregace
+omezené na předem vybraných500 ID, ve stejném SQL statementu. Výběr, filtry,
+CASE řazení, limit500 a události50 zachovat přesně. MIN měny prozatím ponechat
+původním skalárním poddotazem kvůli možným kolacím a reprezentaci shodných měn.
+Seznam importů ani writery/review/promote/platby se tímto měnit nemají.
+
+Varianty: ponechat původní dotaz; agregovat celou tabulku (nevybráno kvůli
+filtrovaným malým výsledkům); nebo agregovat jen předem omezený výřez.
+Preferovaný kandidát drží stále3 SQL na detail a jedno konzistentní čtení
+produktů/statistik v jediném statementu, bez cache, transakčních změn nebo DDL.
+Nejdřív místní SQLite profil se skutečnými migracemi a indexem odpovídajícím
+MariaDB; není to důkaz produkčního přínosu. Nativně použít skutečné migrované
+indexy na MariaDB10.3/11.4, malá i velká data a selektivní filtry. Měřit čas,
+paměť/SQL a pokud dostupné handler reads, zveřejnit i nulové nebo opačné změny.
+
+Přesná diferenciální shoda proti frozen funkci z baseline: run/produtky/události,
+typy polí, pořadí a limity; 0 variant, NULL/0/záporné částky, měny a kolace,
+všechny review/offer stavy, neplatné filtry, hledání názvu/klíče/SKU s Unicode
+či wildcardy, více importů a hranice500/50. Práva, CSRF a odmítnuté POST beze
+změny. Celé ostatní tokeny zdroje (jen povinný styl) stejné, ostatní stránky
+byte-shodné. Ověřit celé HTTP/HTML/hlavičky a reálný Chrome desktop/mobil;
+UI/CSS se nemění. Velké HTTP profily oddělit od menší vizuální fixture.
+
+Akceptace před výsledkem: významný zisk ≥20 % na velkém nativním i celém HTTP
+cíli na obou MariaDB; malé/selektivní případy bez regrese >20 % +5ms funkce /
+20ms HTTP. Když kandidát nedává zisk nebo mění výsledky, nevydávat ho.
+Celé aktuální CI a přesný testovaný/sloučený strom před chráněným deployem;
+záloha/config/migrace/VS/index/HTTP/úklid, UAT/import false. Žádné skutečné
+importy, review, publikace, produkty, platby ani změny rolí tímto ověřením.
+Přihlášené produkční UAT a výkonový profil samostatně NOT RUN. Výsledky,
+plán a handoff sdílet v main; doklady bez dalšího nasazení.
+Další krok: místní profil a rozhodnutí o minimálním SQL řezu.
+
+
+### REVIEW — místní diagnóza a omezení strategie
+
+Původní neomezeně použitá skupinová varianta není přijatá. SQLite se skutečnými
+migračními tabulkami a explicitním indexem variant odpovídajícím MariaDB,
+9 střídavých párů po dvou zahřívacích. Při1200 produktech×100 variantách:
+nefiltrovaný detail426,57→259,20ms (−39,2 %), ale pending filtr124,36→161,00ms
+(regrese nad bránou); při500×50 byl nefiltrovaný137,43→139,50ms.
+[Úplné lokální vzorky](verification/catalog-review-read-20261117/local-v1.json).
+To není nativní produkční výsledek a tolerance se nezvyšuje.
+
+Ještě před implementací zúžená strategie: skupinový výpočet pouze pokud
+status/type/search jsou prázdné; původní SQL pro všechny ostatní případy
+(včetně neplatných ne-prázdných filtrů). Trim hledání se zachová před volbou
+strategie, jak již původně probíhal. Tím se zachovává stará výkonnost selektivních
+cest a lze měřit přínos omezené agregace běžného nefiltrovaného přehledu.
+Měna zůstává původním skalárním MIN, nic dalšího se nemění. Nový kandidát
+vyžaduje nové místní a pak nativní porovnání; zatím žádná produkční změna.
+
+
+### REVIEW — nevybráno pro vydání této etapy
+
+Konzervativní SQLite varianta s původním SQL pro všechny filtry vrací stejné
+výsledky, ale opakovaný velký profil1200×100 ukázal471,29→422,91ms (−10,3 %),
+nikoli požadovaných20 %. Filtrované cesty mají stejné SQL; jejich čas v tomto
+běhu kolísal, například pending156,97→176,16ms. Nová tolerance se nezavádí.
+[Selektivní sonda](verification/catalog-review-read-20261117/local-selective.json),
+[první kandidát](verification/catalog-review-read-20261117/candidate-v1.php.txt),
+[konzervativní kandidát](verification/catalog-review-read-20261117/candidate-selective.php.txt),
+[metoda](verification/catalog-review-read-20261117/local-probe.php.txt).
+
+P11-REVIEW **NEVYBRÁNO**, bez úpravy produkčního kódu, merge či deploye.
+MariaDB/HTTP/Chrome tohoto SQL řezu NOT RUN. Případný návrat vyžaduje novou
+nativní diagnózu nad skutečnými migrovanými indexy, nikoli předpoklad zisku.
+Původní shop_catalog_review.php zůstává byte-shodný s base83204861.
+Další výběr navazuje níže jako P11-CATMENU, bez přebírání SQL prototypu.
+
+## P11-CATMENU — strom kategorií veřejného katalogu (17. 11. 2026)
+
+**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex; stejné aktuální oprávnění
+ověřit další optimalizaci, po shodě a přínosu commit/merge/chráněný deploy.
+Base832048619c3b5c4977e614a5c746979e03a30815, větev
+codex/catalog-category-menu-performance-20261117, worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+
+Nález přímo v cestě veřejného katalogu: shopStorefrontCategoryMenu pro každý
+viditelný uzel volá shopCategoryDescendants. To při každém kroku BFS znovu
+projde všechny uzly, potom se sjednocují produkty. Preferovaný kandidát
+vytvoří index přímých potomků jednou v rámci volání menu; projde stejnou BFS
+se stejným pořadím a striktními typy cest. Žádný persistentní stav nebo změna
+SQL, kategorií, vstupních produktů, cen, pravidel prodejnosti či počtů.
+Samostatná shopCategoryDescendants ani filtrování/řazení katalogu se nemění.
+
+Nejdřív lokální profil plochého, větveného a hlubokého stromu. Potom přesná
+diferenciální parita celé položky menu proti frozen funkci: descendant_paths
+včetně pořadí/typů, product_count, menu_label, metadata a pořadí menu.
+Ověřit skryté rodiče/potomky, sirotky/cykly, nenavázané a duplicitní produkty,
+číselné cesty/klíče, prázdné/neplatné kategorie, Unicode a natural sort.
+Index musí rozlišit string/int rodiče stejně jako původní ===, bez opravy
+historické sémantiky pod záminkou výkonu. Výstup nesmí mít umělý limit.
+
+Source contract připne jedinou funkční změnu a povinné stylové závorky mimo
+menu; ostatní logika a stránky byte/token-shodné. MariaDB10.3/11.4, skutečné
+menu i celé veřejné HTTP nad stejnou syntetickou fixture, čerstvost dvou
+volání/rollback, statusy/hlavičky/CSRF/DOM a checksumy. Reálný Chrome desktop/
+mobil, stejné formuláře/geometrie/styly/pixely. Přijmout ≥20 % časového zisku
+na velkých cílech obou DB; malé případy bez regrese >20 % +5ms funkce /
+20ms HTTP. Zveřejnit také režii paměti indexu a všechny časové směry.
+
+Při PASS celé CI, přesný testovaný/sloučený strom a chráněný deploy se
+zálohou/config/migracemi/VS/indexem/HTTP/úklidem, UAT/import false. Žádné
+skutečné produkty, review/importy, objednávky, platby, role ani rozesílky.
+Přihlášené produkční UAT a produkční výkonový profil samostatně NOT RUN.
+Průběžné výsledky, plán a handoff v repu; finální doklady bez redeploye.
+Další krok: izolovaný profil nového indexu proti kanonickému menu.
+
+
+### CATMENU — výběr kandidáta podle místního profilu
+
+SQLite/PHP8.2.12, 9 střídavých párů po2 zahřívacích, přesná shoda celé položky
+menu včetně BFS pořadí/typů, popisků a počtů. Plochých30 kategorií1,79→1,86ms;
+plochých500124,66→48,70ms; větvených500468,01→57,94ms; řetěz120
+399,88→70,35ms. Přírůstek PHP peak: flat5001,164→1,165MB,
+tree5001,288→1,309MB, chain1200,730→0,770MB. [Vzorky](verification/category-menu-20261117/local-probe.json).
+Tohle je pouze lokální diagnóza, nikoli MariaDB nebo produkční profil.
+
+Kandidát zvolen pro implementaci a nativní přejímku. Index rozlišuje string/int
+rodiče, BFS zachovává pořadí původního foreach a striktní navštívení; obecná
+shopCategoryDescendants zůstává původní. Výsledek ani produkty nejsou omezené,
+SQL/cache/objednávky a ceny se nemění. Další krok hraniční parita a celé HTTP.
+
+### CATMENU — lokální implementace a nativní přejímka
+
+Index aplikovaný pouze uvnitř menu. [Průběžný protokol a přesná metoda](verification/category-menu-20261117/RESULTS.md).
+Číselné cesty mají již v původním sestavení uzlů TypeError (int klíč do explode);
+výjimka se zachovává, není to nově podporovaný případ. Ostatní smíšené grafy,
+prázdné a chybné vstupy, skryté rodiče/potomci a rollback proti frozen funkci.
+Nativní MariaDB/Apache/Chrome běží z vlastní syntetické fixture v CI,
+žádný produkční SQL experiment. Merge/nasazení čekají na celé brány.
+
+PR #490, první CI44148895506: HTTP baseline pod booking symlinkem načítala
+nový includes kvůli PHP __DIR__. Výsledky HTTP nepoužitelné pro před/po,
+zjištěno gain bránou; fixture opravena fyzickou kopií a realpath asercí.
+Aplikační algoritmus/tolerance beze změny. Celé CI/profily znovu před mergem.
+
+Druhý běh44149428209: nativní/HTTP10.3 PASS, Chrome zastavil CSP obrázků na
+nesprávném portu. Vlastní APP_BASE_URL env pro každý worker; normalizace jen
+očekávaného loopback originu při HTML/hlavičkovém srovnání. CSP/payloady/cesty
+beze změny, žádné ignorované chyby. Celé ověření znovu.
+
+Třetí běh44150359799 zastavila přesná CSP shoda, protože inline onerror
+obsahuje origin i jeho schválený hash. Porovnání ověří raw CSP hash skutečného
+handleru, potom přeloží hash stejného handleru s normalizovaným originem;
+další CSP beze změny, unit kontroluje i chybějící raw hash. Pět lokálních
+testů menu/porovnání,45 kontrol PASS. Algoritmus/brány stejné, celé CI znovu.

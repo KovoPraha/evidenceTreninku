@@ -1,0 +1,17 @@
+function shopStorefrontCategoryMenu(PDO $pdo,array $products):array
+{
+    $nodes=shopCategoryNodes($pdo);$direct=[];
+    foreach($products as$product)foreach(($product['categories']??[])as$path){
+        try{$path=shopCategoryPath((string)$path);}catch(InvalidArgumentException){continue;}
+        $direct[$path][(int)($product['product_id']??0)]=true;
+    }
+    $menu=[];
+    foreach(shopCategoryTreeOrder($nodes)as$node){
+        if(!(bool)$node['visible_in_menu'])continue;
+        $paths=shopCategoryDescendants($nodes,(string)$node['category_path']);$productIds=[];
+        foreach($paths as$path)foreach(array_keys($direct[$path]??[])as$productId)$productIds[$productId]=true;
+        $count=count($productIds);
+        if($count<1)continue;$node['product_count']=$count;$node['descendant_paths']=$paths;$node['menu_label']=shopCategoryMenuLabel($nodes,(string)$node['category_path']);$menu[]=$node;
+    }
+    return$menu;
+}
