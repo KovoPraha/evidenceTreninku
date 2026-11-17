@@ -336,3 +336,7 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 15. 11. 2026 — ASSET13 doklady převzaly již přijatý #474 a [navazující deploy 43651304138](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43651304138) SUCCESS na `ea995408`; vlastní release #481 zůstává oddělený. [Návaznost](verification/calendar-catalog-bootstrap-20261114/runtime-continuity.json), [výsledky](verification/calendar-catalog-bootstrap-20261114/RESULTS.md). Půlnoční baseline fail zachovaný; stejné aktuální CI nutné znovu, bez redeploye a bez změn testů.
 
 17. 11. 2026 — ASSET13 doklady #482 jsou v main; nové P11-ASSET14 zahájeno nad čerstvým e30fdc97, původní WIP zachovaný. [Plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset14--kategorie-a-parametry-e-shopu-17-11-2026).
+
+17. 11. 2026 — P11-ASSET14 párový běh44111856114 PASS, 39 HTTP/DB,355 checksumů a osm pixelových párů. Cold CSS53957→31248B, serverový zisk netvrzen. Širší CI #486 čeká. [Výsledky](verification/category-attribute-bootstrap-20261117/RESULTS.md).
+
+17. 11. 2026 — P11-ASSET14 dokončen, měření a chráněné vydání ověřené. **P11-ASSET14 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset14--kategorie-a-parametry-e-shopu-17-11-2026), [výsledky](verification/category-attribute-bootstrap-20261117/RESULTS.md). #486/9a0bc834, [deploy 44114428641](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44114428641) SUCCESS, 13 CI. Obě DB 39 HTTP/355 checksumů a osm pixelových párů PASS; cold CSS 53957→31248 B (−42,09 %). Přihlášené produkční UAT NOT RUN.

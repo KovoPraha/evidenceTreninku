@@ -1,0 +1,265 @@
+{
+  "algorithm": "SHA-256 of Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/RESULTS.md",
+      "bytes": 7553,
+      "sha256": "f17040ef46c5fda2468d148e95503f1a0900d595218bbe8d4300d285060524af"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/application-checks.json",
+      "bytes": 879,
+      "sha256": "c0718bcd211519cba2dc7e7ccf0a4d60a3ee141b982ee619d31403c14298f698"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/http-medians.json",
+      "bytes": 2604,
+      "sha256": "cf641d316a678bb65622c91b5710ff930bdbcd401f64e617b120eedf51b37c9d"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-10.3/http.json.gz",
+      "bytes": 6800,
+      "sha256": "b70bad5cd41a17e86c3d3940f4264aff4aafdf1847363cec865820ca84c8f831"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-10.3/source-contract.json",
+      "bytes": 6784,
+      "sha256": "b15e0b23d59d1b31040a9301f3dfddf060b601703774b13333f1a36334505482"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-10.3/source.json",
+      "bytes": 848,
+      "sha256": "02a9ebe042c72fbcf3f9ea9b9ae82f8cfc28437c3ecbb1da1b4cd11e8a956686"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_attributes_admin-detail-dark-cold.json",
+      "bytes": 5893,
+      "sha256": "cd7a6070c2084af59940942b2f0be769a536980bae4f5707d4225b747411c56d"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_attributes_admin-detail-dark-warm.json",
+      "bytes": 5806,
+      "sha256": "d0fa55bb136f24027a0449dc79672ae2564d92e3ebc6f0b7b7222cbe7b476840"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_attributes_admin-detail-light-cold.json",
+      "bytes": 5849,
+      "sha256": "3528fcb4b2cd9d5e6a8260309173a1eab37a0f6b5ad63a8c428c5c96d28112b6"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_attributes_admin-detail-light-warm.json",
+      "bytes": 5825,
+      "sha256": "8c379f3884e47fb3ffd9ab21711604fef492040accfa640056c5c9210616fa62"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_attributes_admin-overview-dark-cold.json",
+      "bytes": 5916,
+      "sha256": "a2ec94efbec1ccb5f6a32c1d3a80d8c73e55627358ff2aa2a0bb773edc57a49d"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_attributes_admin-overview-dark-warm.json",
+      "bytes": 5847,
+      "sha256": "19022b276d03a8ffcad22fd10f2ad128ad45694f917e6daf2538c9b0ab56815c"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_attributes_admin-overview-light-cold.json",
+      "bytes": 5899,
+      "sha256": "f4554a0936980b80e3a51a268397cd1c25d16d62f63d12338b921a470f17eca3"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_attributes_admin-overview-light-warm.json",
+      "bytes": 5876,
+      "sha256": "03a9ccd59707d518d4df0c8c7fa7e095b6c0d445bcfa1179cbcbef91644f2ea1"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_categories_admin-detail-dark-cold.json",
+      "bytes": 5906,
+      "sha256": "2c5dc7b7955ad0fda51aa0427abbc3c2afc8e0b7ae4f6fdf328dea24859ff691"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_categories_admin-detail-dark-warm.json",
+      "bytes": 5847,
+      "sha256": "3653ff9901078c824762a330a433b0487bbc52e421fc4e985ec642cd4159d49d"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_categories_admin-detail-light-cold.json",
+      "bytes": 5946,
+      "sha256": "d3da35acd7e3d12c4ff2981919e93aecf9c1fb0d11399410740cf0b374189067"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_categories_admin-detail-light-warm.json",
+      "bytes": 5815,
+      "sha256": "95ea56f0024d9bd6b8ffb3aceaf77ed3f8d8ae1bd84862203cc192008d559eb5"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_categories_admin-overview-dark-cold.json",
+      "bytes": 5930,
+      "sha256": "2773eeb9f7ef11494c0c28639f3c00d8e4cd89801f1e48815590439385cfa8f3"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_categories_admin-overview-dark-warm.json",
+      "bytes": 5813,
+      "sha256": "6a5ae0a5b02c30fce3a7dd651a4cc4879535d91f3271979ebaee1871b8955e1c"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_categories_admin-overview-light-cold.json",
+      "bytes": 5901,
+      "sha256": "f0ab85821ead505eaf6f8e87ca9f3166bd5efa08f95b09331695895e056cb3de"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-eshop_categories_admin-overview-light-warm.json",
+      "bytes": 5830,
+      "sha256": "387d875a1a83549509f15e5ba085c8613e7fc08be78217285667540ab730d7e3"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/browser-summary.json",
+      "bytes": 7943,
+      "sha256": "a9b97f26d5b96d23f14633824b92dc029178f56bcabb01d853076b07e530c775"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_attributes_admin-detail-dark-cold-after.png",
+      "bytes": 125648,
+      "sha256": "f0f23c8d6a5011f51b8ffa2be0a33dd774cfbc8c6907154303d490784eddff14"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_attributes_admin-detail-dark-cold-before.png",
+      "bytes": 125648,
+      "sha256": "f0f23c8d6a5011f51b8ffa2be0a33dd774cfbc8c6907154303d490784eddff14"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_attributes_admin-detail-light-cold-after.png",
+      "bytes": 180993,
+      "sha256": "b16474f1ff1e4d9f48857409c9a7a5200be5347cc3a6d719b6b34303cfad59f8"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_attributes_admin-detail-light-cold-before.png",
+      "bytes": 180993,
+      "sha256": "b16474f1ff1e4d9f48857409c9a7a5200be5347cc3a6d719b6b34303cfad59f8"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_attributes_admin-overview-dark-cold-after.png",
+      "bytes": 120758,
+      "sha256": "ce3343793faf441397b6b59059e8c0eacf8cdf6ffea1cc92be0be02c7b1153b1"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_attributes_admin-overview-dark-cold-before.png",
+      "bytes": 120758,
+      "sha256": "ce3343793faf441397b6b59059e8c0eacf8cdf6ffea1cc92be0be02c7b1153b1"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_attributes_admin-overview-light-cold-after.png",
+      "bytes": 175409,
+      "sha256": "6a5809483c82c5c07433e4c233c87c69445571133274c0b48f428a7be631b62f"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_attributes_admin-overview-light-cold-before.png",
+      "bytes": 175409,
+      "sha256": "6a5809483c82c5c07433e4c233c87c69445571133274c0b48f428a7be631b62f"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_categories_admin-detail-dark-cold-after.png",
+      "bytes": 208841,
+      "sha256": "95dd7bbbae7599ebd9d76ab30d5e05d18924a2d4b44f95b7aa30fdc99900a725"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_categories_admin-detail-dark-cold-before.png",
+      "bytes": 208841,
+      "sha256": "95dd7bbbae7599ebd9d76ab30d5e05d18924a2d4b44f95b7aa30fdc99900a725"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_categories_admin-detail-light-cold-after.png",
+      "bytes": 254663,
+      "sha256": "fc58d4aa897f413c44abacdd032c1d1a81e20db1410b00cfe9c441f086ab44d0"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_categories_admin-detail-light-cold-before.png",
+      "bytes": 254663,
+      "sha256": "fc58d4aa897f413c44abacdd032c1d1a81e20db1410b00cfe9c441f086ab44d0"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_categories_admin-overview-dark-cold-after.png",
+      "bytes": 186548,
+      "sha256": "7c5f1000123a63cd87638f602a0116475968fa87bf168ec107f0e45a72fe040d"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_categories_admin-overview-dark-cold-before.png",
+      "bytes": 186548,
+      "sha256": "7c5f1000123a63cd87638f602a0116475968fa87bf168ec107f0e45a72fe040d"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_categories_admin-overview-light-cold-after.png",
+      "bytes": 232393,
+      "sha256": "569da28d127930d6df544cdb74f22e72f387970e2b5edf1eb6051aee0808b90d"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/eshop_categories_admin-overview-light-cold-before.png",
+      "bytes": 232393,
+      "sha256": "569da28d127930d6df544cdb74f22e72f387970e2b5edf1eb6051aee0808b90d"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/http.json.gz",
+      "bytes": 6784,
+      "sha256": "67a6afaf8b47e4e13e635de828c1708e559700ed3c7d3d69e96e440467fe0279"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/source-contract.json",
+      "bytes": 6784,
+      "sha256": "b15e0b23d59d1b31040a9301f3dfddf060b601703774b13333f1a36334505482"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/mariadb-11.4/source.json",
+      "bytes": 848,
+      "sha256": "02a9ebe042c72fbcf3f9ea9b9ae82f8cfc28437c3ecbb1da1b4cd11e8a956686"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/paired-run.json",
+      "bytes": 7382,
+      "sha256": "76b052d8837c3cde6669e129adb1fe8216ce1481dccfd6d8d2c91e2c13b6584e"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/production-after.json",
+      "bytes": 858,
+      "sha256": "8f90815d39f9b5f84f9db4e966ba54b040c18c0a0badc7e45a9bebbe35ab5a55"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/production-before.json",
+      "bytes": 858,
+      "sha256": "8f90815d39f9b5f84f9db4e966ba54b040c18c0a0badc7e45a9bebbe35ab5a55"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/release.json",
+      "bytes": 511,
+      "sha256": "0290d062251f9e02dc4adae3187aa5c0fde4f24c7c2b08b9d70251f6fac2e618"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/source-contract.json",
+      "bytes": 6784,
+      "sha256": "b15e0b23d59d1b31040a9301f3dfddf060b601703774b13333f1a36334505482"
+    },
+    {
+      "path": "docs/verification/category-attribute-bootstrap-20261117/table-counts.json",
+      "bytes": 33,
+      "sha256": "b4e214b3bc578f5965174f1cbc84cd19f5600b8e4d26ac00917009f72b5aed7c"
+    }
+  ]
+}

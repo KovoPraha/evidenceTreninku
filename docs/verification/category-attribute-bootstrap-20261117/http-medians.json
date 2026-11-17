@@ -1,0 +1,126 @@
+{
+  "10.3": {
+    "categories-catalog_manager": {
+      "before": 6.115,
+      "after": 6.352
+    },
+    "attributes-catalog_manager": {
+      "before": 5.9030000000000005,
+      "after": 5.642
+    },
+    "category-detail": {
+      "before": 6.446000000000001,
+      "after": 6.346
+    },
+    "category-search": {
+      "before": 6.171,
+      "after": 6.101
+    },
+    "category-empty": {
+      "before": 6.284,
+      "after": 6.484
+    },
+    "category-invalid": {
+      "before": 6.117,
+      "after": 6.118
+    },
+    "category-product": {
+      "before": 6.115,
+      "after": 6.159000000000001
+    },
+    "category-missing-product": {
+      "before": 6.175,
+      "after": 6.221
+    },
+    "attribute-text-inactive": {
+      "before": 5.946,
+      "after": 6.101999999999999
+    },
+    "attribute-number": {
+      "before": 5.808,
+      "after": 5.992
+    },
+    "attribute-choice": {
+      "before": 5.904000000000001,
+      "after": 5.921
+    },
+    "attribute-missing": {
+      "before": 5.878,
+      "after": 5.832999999999999
+    },
+    "attribute-key": {
+      "before": 5.678,
+      "after": 5.671
+    },
+    "categories-csrf-rejected": {
+      "before": 6.3740000000000006,
+      "after": 6.218999999999999
+    },
+    "attributes-csrf-rejected": {
+      "before": 5.682,
+      "after": 5.7219999999999995
+    }
+  },
+  "11.4": {
+    "categories-catalog_manager": {
+      "before": 4.296,
+      "after": 4.394
+    },
+    "attributes-catalog_manager": {
+      "before": 3.882,
+      "after": 3.96
+    },
+    "category-detail": {
+      "before": 3.73,
+      "after": 3.685
+    },
+    "category-search": {
+      "before": 3.662,
+      "after": 4.178
+    },
+    "category-empty": {
+      "before": 4.095,
+      "after": 4.28
+    },
+    "category-invalid": {
+      "before": 4.398,
+      "after": 3.68
+    },
+    "category-product": {
+      "before": 4.292,
+      "after": 3.65
+    },
+    "category-missing-product": {
+      "before": 3.7230000000000003,
+      "after": 4.507
+    },
+    "attribute-text-inactive": {
+      "before": 4.335,
+      "after": 4.284
+    },
+    "attribute-number": {
+      "before": 4.131,
+      "after": 4.138
+    },
+    "attribute-choice": {
+      "before": 4.244000000000001,
+      "after": 4.218
+    },
+    "attribute-missing": {
+      "before": 3.458,
+      "after": 4.044
+    },
+    "attribute-key": {
+      "before": 3.356,
+      "after": 3.9579999999999997
+    },
+    "categories-csrf-rejected": {
+      "before": 4.292,
+      "after": 3.6270000000000002
+    },
+    "attributes-csrf-rejected": {
+      "before": 4.002000000000001,
+      "after": 3.457
+    }
+  }
+}

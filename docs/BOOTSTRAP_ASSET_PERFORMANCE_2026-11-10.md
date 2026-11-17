@@ -1193,7 +1193,7 @@ Historické checkpointy výše nejsou aktuální čekající merge.
 
 ## P11-ASSET14 — kategorie a parametry e-shopu (17. 11. 2026)
 
-**ROZPRACOVÁNO.** Vlastník vývoj/Codex. Pokyn vlastníka: aktualizovat dokumentaci
+**NASAZENO / technická přejímka PASS, přihlášené produkční UAT NOT RUN.** Vlastník vývoj/Codex. Pokyn vlastníka: aktualizovat dokumentaci
 na GitHubu a pokračovat stejným postupem, po shodě a měření commit/merge/deploy.
 Větev codex/next-performance-20261117, base e30fdc97a369245478c25fd14c220df45aec3e18,
 worktree C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
@@ -1233,3 +1233,39 @@ ani změny rolí. Finální doklady sdílet v main bez dalšího deploye.
 Dva přesné tagy pryč, source contract 14/7 konkrétních editů PASS;
 30 testů/184 assertions a cílený PHPStan PASS. Párová nativní/Chrome a CI
 přejímka čeká. [Výsledky a další krok](verification/category-attribute-bootstrap-20261117/RESULTS.md).
+
+
+### ASSET14 — párová přejímka PASS
+
+[PR #486](https://github.com/KovoPraha/evidenceTreninku/pull/486), head fb51c194,
+[párový běh 44111856114](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44111856114)
+SUCCESS. MariaDB 10.3/11.4 po 39 HTTP scénářích, 355 checksumů beze změny,
+úklid PASS. Chrome 16 případů / 352 měřených + 96 warmup navigací,
+osm pixelově stejných párů. Studený CSS přenos 53957 → 31248 B (−42,09 %),
+warm 0 → 0 B, decoded 465606 → 232803 B. HTML kladných scénářů přesně −210 B.
+Formuláře, hlavičky, CSRF, role, pořadí a ostatní HTML stejné.
+FCP stejné nebo o 4 ms lepší; některé ready časy drobně opačné, úplná data
+v [protokolu](verification/category-attribute-bootstrap-20261117/RESULTS.md).
+Přijatým přínosem je přenos; významné zrychlení serveru netvrdíme.
+Celé CI čeká, merge/deploy NOT RUN; WIP zachovaný.
+
+
+### ASSET14 — dokončení
+
+**P11-ASSET14 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset14--kategorie-a-parametry-e-shopu-17-11-2026), [výsledky](verification/category-attribute-bootstrap-20261117/RESULTS.md). #486/9a0bc834, [deploy 44114428641](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44114428641) SUCCESS, 13 CI. Obě DB 39 HTTP/355 checksumů a osm pixelových párů PASS; cold CSS 53957→31248 B (−42,09 %). Přihlášené produkční UAT NOT RUN.
+
+Testovaný/sloučený strom f9832999bdcd58a9c471d0bbe8cf6ea3956da567, všech 13 aktuálních CI SUCCESS;
+obě DB 39 scénářů a 355 nezměněných tabulek, 352 měřených + 96 warmup
+navigací Chrome a osm identických pixelových párů. Bootstrap cold −22709 B,
+warm 0→0 B, HTML −210 B. Úplné časové hodnoty a meze v protokolu;
+významný serverový zisk se netvrdí. Schéma, role a writery nezměněné.
+
+Chráněný deploy 44114428641 dokončen: 2487 testů / 57179 kontrol,
+ověřená záloha 394 tabulek / 2 triggery; config zachovaný,
+pending migrace [], původní VS a index shodné, aktivace/HTTP200/úklid PASS.
+UAT/import false; import přeskočený. Nezávislé anonymní GET/CSS bytes/hash/
+cache před/po stejné; skutečné zápisy a přihlášené produkční UAT NOT RUN.
+Finální doklady vlastní docs PR bez dalšího nasazení. Původní fio WIP
+d1221f35/kis_rosters_admin.php zůstává zachovaný; jiné WIP nepřebírané.
+Další kandidáti: konkrétní zbývající CSS duplicity, nebo objem seznamů až
+po novém měření. Žádný spekulativní SQL/index zásah tímto přijatý není.
