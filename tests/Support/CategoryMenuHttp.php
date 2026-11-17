@@ -18,6 +18,7 @@ if (!$verifyOnly && !preg_match('/^[a-z0-9-]+$/D', $label)) {
 }
 $argv = [__FILE__, '--library'];
 require_once __DIR__ . '/FullHttpReadProfile.php';
+require_once __DIR__ . '/CategoryMenuComparison.php';
 
 [$runtime, $admin] = fullHttpEnvironment($output);
 $admin->exec('USE `' . $runtime['schema'] . '`');
@@ -116,6 +117,12 @@ try {
                 ]));
                 $html = $raw;
                 if (preg_match("/nonce-([^']+)/", $headers['content-security-policy'] ?? '', $nonce)) {
+                    $headers['content-security-policy'] = categoryMenuComparisonCsp(
+                        $raw,
+                        $headers['content-security-policy'],
+                        $nonce[1],
+                        $rt['base_url']
+                    );
                     $html = str_replace($nonce[1], 'SYNTHETIC_NONCE', $html);
                     $headers['content-security-policy'] = str_replace($nonce[1], 'SYNTHETIC_NONCE', $headers['content-security-policy']);
                 }
@@ -131,6 +138,7 @@ try {
                 $signature = [hash('sha256', $html), $headers];
                 $signatures[$id] ??= $signature;
                 if ($signature !== $signatures[$id]) {
+                    file_put_contents($output . '/comparison-failure-private.html', $html);
                     throw new RuntimeException('Whole HTML or security headers differ: ' . $id . '/' . $variant);
                 }
                 if ($round >= 0 || !$positive) {

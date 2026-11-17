@@ -55,3 +55,10 @@ Fixture nastaví existující APP_BASE_URL env každému workeru na jeho vlastn�
 loopback origin. CSP i assety nedotčené, žádná povolená chyba/mock. V HTTP
 porovnání se normalizuje pouze tato očekávaná dvojice původů, všechny cesty,
 atributy a hlavičky se dále porovnávají. Celé profily/CI se znovu opakují.
+
+Třetí běh44150359799 správně zastavila přesná CSP shoda: inline image onerror
+obsahuje vlastní origin a tím i jeho schválený sha256 v CSP. Porovnávací
+helper ověří skutečný raw hash handleru a přeloží právě tento hash na stejný
+handler s normalizovaným syntetickým originem. Ostatní CSP se porovnává beze
+změny. Unit test dokládá shodu obou originů a odmítnutí chybějícího hash.
+Žádná změna app/CSP politiky ani tolerance; celé finální CI znovu.

@@ -393,3 +393,9 @@ Druhý běh44149428209: nativní/HTTP10.3 PASS, Chrome zastavil CSP obrázků na
 nesprávném portu. Vlastní APP_BASE_URL env pro každý worker; normalizace jen
 očekávaného loopback originu při HTML/hlavičkovém srovnání. CSP/payloady/cesty
 beze změny, žádné ignorované chyby. Celé ověření znovu.
+
+Třetí běh44150359799 zastavila přesná CSP shoda, protože inline onerror
+obsahuje origin i jeho schválený hash. Porovnání ověří raw CSP hash skutečného
+handleru, potom přeloží hash stejného handleru s normalizovaným originem;
+další CSP beze změny, unit kontroluje i chybějící raw hash. Pět lokálních
+testů menu/porovnání,45 kontrol PASS. Algoritmus/brány stejné, celé CI znovu.

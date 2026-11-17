@@ -356,3 +356,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 - 17. 11. 2026 P11-CATMENU PR #490: CI odhalilo chybu HTTP baseline symlinku booking (__DIR__ do nového includes). Fyzická kopie a aserce opravují měření, algoritmus/brány stejné; nativní/HTTP/Chrome i CI se opakují, release NOT RUN.
 
 - 17. 11. 2026 P11-CATMENU: druhý běh zastavil CSP obrázků kvůli sdílenému pevnému originu fixture. Vlastní APP_BASE_URL env pro oba workery opraví skutečné originy; normalizován jen testovací origin v HTML/hlavičkách, CSP/brány/algoritmus stejné. Celé CI/profily znovu; release NOT RUN.
+
+- 17. 11. 2026 P11-CATMENU: třetí běh odhalil očekávaný CSP hash inline image handleru s odlišným testovacím originem. Helper ověří skutečný hash a srovná hash stejného handleru po normalizaci originu, další CSP nedotčené; unit včetně negativního hash. App/tolerance stejné, finální CI znovu.

@@ -8,9 +8,27 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__) . '/Support/CategoryMenuBaseline.php';
+require_once dirname(__DIR__) . '/Support/CategoryMenuComparison.php';
 
 final class ShopCategoryMenuReadTest extends TestCase
 {
+    public function testSyntheticOriginNormalizationRetainsVerifiedCspHashes(): void
+    {
+        $results = [];
+        foreach (['http://127.0.0.1:18099', 'http://127.0.0.1:18100'] as $origin) {
+            $handler = "this.onerror=null;this.src='" . $origin . "/assets/image.svg'";
+            $html = '<img data-app-csp-handler="fixture-nonce" onerror="'
+                . htmlspecialchars($handler, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '">';
+            $hash = base64_encode(hash('sha256', $handler, true));
+            $csp = "img-src 'self'; script-src-attr 'unsafe-hashes' 'sha256-" . $hash . "'";
+            $results[] = \categoryMenuComparisonCsp($html, $csp, 'fixture-nonce', $origin);
+        }
+        self::assertSame($results[0], $results[1]);
+        self::assertStringContainsString("img-src 'self';", $results[0]);
+        $this->expectException(\RuntimeException::class);
+        \categoryMenuComparisonCsp($html, "script-src-attr 'none'", 'fixture-nonce', $origin);
+    }
+
     public function testHiddenAncestorsVirtualPathsAndDuplicateProductsMatchExactly(): void
     {
         $pdo = $this->database();
