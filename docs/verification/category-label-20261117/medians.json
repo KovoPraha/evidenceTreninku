@@ -1,0 +1,530 @@
+{
+  "10.3": {
+    "native": [
+      {
+        "shape": "flat",
+        "rows": 30,
+        "ms": {
+          "before": 0.667834,
+          "after": 0.488272
+        },
+        "peak_bytes": {
+          "before": 54896,
+          "after": 54896
+        }
+      },
+      {
+        "shape": "flat",
+        "rows": 500,
+        "ms": {
+          "before": 2.41527,
+          "after": 2.293238
+        },
+        "peak_bytes": {
+          "before": 506032,
+          "after": 506032
+        }
+      },
+      {
+        "shape": "flat",
+        "rows": 1000,
+        "ms": {
+          "before": 4.572759,
+          "after": 4.540091
+        },
+        "peak_bytes": {
+          "before": 1007664,
+          "after": 1007664
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 30,
+        "ms": {
+          "before": 0.748509,
+          "after": 0.689518
+        },
+        "peak_bytes": {
+          "before": 56288,
+          "after": 56288
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 500,
+        "ms": {
+          "before": 2.58377,
+          "after": 2.56996
+        },
+        "peak_bytes": {
+          "before": 611584,
+          "after": 611584
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 1000,
+        "ms": {
+          "before": 4.411918,
+          "after": 4.512589
+        },
+        "peak_bytes": {
+          "before": 1214336,
+          "after": 1214336
+        }
+      },
+      {
+        "shape": "chain",
+        "rows": 250,
+        "ms": {
+          "before": 15.394717,
+          "after": 7.786585
+        },
+        "peak_bytes": {
+          "before": 3136920,
+          "after": 3145136
+        }
+      },
+      {
+        "shape": "chain",
+        "rows": 500,
+        "ms": {
+          "before": 77.18192,
+          "after": 27.981677
+        },
+        "peak_bytes": {
+          "before": 10261192,
+          "after": 10273504
+        }
+      },
+      {
+        "shape": "mixed",
+        "rows": 80,
+        "ms": {
+          "before": 0.831165,
+          "after": 0.88062
+        },
+        "peak_bytes": {
+          "before": 152272,
+          "after": 152272
+        }
+      }
+    ],
+    "http": {
+      "matrix": {
+        "overview-anonymous": {
+          "before": 10.4,
+          "after": 10.229999999999999
+        },
+        "category-anonymous": {
+          "before": 9.761000000000001,
+          "after": 8.543000000000001
+        },
+        "missing-anonymous": {
+          "before": 8.501,
+          "after": 9.972
+        },
+        "invalid-anonymous": {
+          "before": 8.648,
+          "after": 9.998999999999999
+        },
+        "search-anonymous": {
+          "before": 8.534,
+          "after": 9.943
+        },
+        "empty-anonymous": {
+          "before": 9.707,
+          "after": 9.691999999999998
+        },
+        "sort-price-anonymous": {
+          "before": 8.667,
+          "after": 8.614
+        },
+        "sort-name-anonymous": {
+          "before": 9.994,
+          "after": 9.996
+        },
+        "page-anonymous": {
+          "before": 10.064,
+          "after": 8.606000000000002
+        },
+        "overview-customer": {
+          "before": 14.962,
+          "after": 14.561
+        },
+        "category-customer": {
+          "before": 13.200999999999999,
+          "after": 14.906
+        },
+        "missing-customer": {
+          "before": 14.912999999999998,
+          "after": 15.25
+        },
+        "invalid-customer": {
+          "before": 13.469999999999999,
+          "after": 13.599
+        },
+        "search-customer": {
+          "before": 15.013,
+          "after": 14.241999999999999
+        },
+        "empty-customer": {
+          "before": 13.908,
+          "after": 13.219
+        },
+        "sort-price-customer": {
+          "before": 13.030999999999999,
+          "after": 12.940999999999999
+        },
+        "sort-name-customer": {
+          "before": 13.643,
+          "after": 13.171000000000001
+        },
+        "page-customer": {
+          "before": 13.701,
+          "after": 13.270999999999999
+        },
+        "csrf-customer": {
+          "before": 13.269,
+          "after": 14.499
+        }
+      },
+      "flat-1000": {
+        "overview-anonymous": {
+          "before": 14.511,
+          "after": 14.276
+        },
+        "category-anonymous": {
+          "before": 14.411999999999999,
+          "after": 13.392
+        },
+        "overview-customer": {
+          "before": 17.918,
+          "after": 19.506
+        },
+        "category-customer": {
+          "before": 19.205,
+          "after": 17.987
+        }
+      },
+      "chain-250": {
+        "overview-anonymous": {
+          "before": 22.518,
+          "after": 15.549
+        },
+        "category-anonymous": {
+          "before": 23.424,
+          "after": 16.121
+        },
+        "overview-customer": {
+          "before": 27.438,
+          "after": 19.814999999999998
+        },
+        "category-customer": {
+          "before": 27.012999999999998,
+          "after": 20.846
+        }
+      },
+      "chain-500": {
+        "overview-anonymous": {
+          "before": 81.054,
+          "after": 32.304
+        },
+        "category-anonymous": {
+          "before": 83.50399999999999,
+          "after": 36.367
+        },
+        "overview-customer": {
+          "before": 85.202,
+          "after": 36.161
+        },
+        "category-customer": {
+          "before": 88.791,
+          "after": 40.311
+        }
+      },
+      "tree-1000": {
+        "overview-anonymous": {
+          "before": 15.337,
+          "after": 14.427999999999999
+        },
+        "category-anonymous": {
+          "before": 14.314,
+          "after": 15.58
+        },
+        "overview-customer": {
+          "before": 19.424,
+          "after": 19.937
+        },
+        "category-customer": {
+          "before": 20.301,
+          "after": 18.789
+        }
+      }
+    }
+  },
+  "11.4": {
+    "native": [
+      {
+        "shape": "flat",
+        "rows": 30,
+        "ms": {
+          "before": 0.875142,
+          "after": 0.968021
+        },
+        "peak_bytes": {
+          "before": 54896,
+          "after": 54896
+        }
+      },
+      {
+        "shape": "flat",
+        "rows": 500,
+        "ms": {
+          "before": 3.289813,
+          "after": 3.289957
+        },
+        "peak_bytes": {
+          "before": 506032,
+          "after": 506032
+        }
+      },
+      {
+        "shape": "flat",
+        "rows": 1000,
+        "ms": {
+          "before": 5.898239,
+          "after": 5.916942
+        },
+        "peak_bytes": {
+          "before": 1007664,
+          "after": 1007664
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 30,
+        "ms": {
+          "before": 0.990041,
+          "after": 0.932876
+        },
+        "peak_bytes": {
+          "before": 56288,
+          "after": 56288
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 500,
+        "ms": {
+          "before": 3.405815,
+          "after": 3.415396
+        },
+        "peak_bytes": {
+          "before": 611584,
+          "after": 611584
+        }
+      },
+      {
+        "shape": "tree",
+        "rows": 1000,
+        "ms": {
+          "before": 6.23359,
+          "after": 6.14121
+        },
+        "peak_bytes": {
+          "before": 1214336,
+          "after": 1214336
+        }
+      },
+      {
+        "shape": "chain",
+        "rows": 250,
+        "ms": {
+          "before": 20.417948,
+          "after": 10.647255
+        },
+        "peak_bytes": {
+          "before": 3136920,
+          "after": 3145136
+        }
+      },
+      {
+        "shape": "chain",
+        "rows": 500,
+        "ms": {
+          "before": 106.390621,
+          "after": 38.017877
+        },
+        "peak_bytes": {
+          "before": 10261192,
+          "after": 10273504
+        }
+      },
+      {
+        "shape": "mixed",
+        "rows": 80,
+        "ms": {
+          "before": 1.292306,
+          "after": 1.244169
+        },
+        "peak_bytes": {
+          "before": 152272,
+          "after": 152272
+        }
+      }
+    ],
+    "http": {
+      "matrix": {
+        "overview-anonymous": {
+          "before": 12.751999999999999,
+          "after": 12.424
+        },
+        "category-anonymous": {
+          "before": 12.478,
+          "after": 12.556
+        },
+        "missing-anonymous": {
+          "before": 12.456,
+          "after": 12.491999999999999
+        },
+        "invalid-anonymous": {
+          "before": 12.308,
+          "after": 12.352
+        },
+        "search-anonymous": {
+          "before": 12.597999999999999,
+          "after": 12.836
+        },
+        "empty-anonymous": {
+          "before": 12.59,
+          "after": 12.508000000000001
+        },
+        "sort-price-anonymous": {
+          "before": 12.292000000000002,
+          "after": 12.583
+        },
+        "sort-name-anonymous": {
+          "before": 12.463999999999999,
+          "after": 12.34
+        },
+        "page-anonymous": {
+          "before": 12.382000000000001,
+          "after": 12.564
+        },
+        "overview-customer": {
+          "before": 18.363,
+          "after": 18.68
+        },
+        "category-customer": {
+          "before": 18.63,
+          "after": 18.612
+        },
+        "missing-customer": {
+          "before": 18.665000000000003,
+          "after": 18.171
+        },
+        "invalid-customer": {
+          "before": 18.043,
+          "after": 18.235
+        },
+        "search-customer": {
+          "before": 18.651,
+          "after": 18.509999999999998
+        },
+        "empty-customer": {
+          "before": 18.788,
+          "after": 18.636
+        },
+        "sort-price-customer": {
+          "before": 18.354,
+          "after": 18.796
+        },
+        "sort-name-customer": {
+          "before": 18.593,
+          "after": 18.371
+        },
+        "page-customer": {
+          "before": 18.508,
+          "after": 18.796
+        },
+        "csrf-customer": {
+          "before": 18.816,
+          "after": 18.756999999999998
+        }
+      },
+      "flat-1000": {
+        "overview-anonymous": {
+          "before": 18.982,
+          "after": 19.093
+        },
+        "category-anonymous": {
+          "before": 18.985,
+          "after": 19.003
+        },
+        "overview-customer": {
+          "before": 24.814,
+          "after": 24.647
+        },
+        "category-customer": {
+          "before": 25.095,
+          "after": 24.997
+        }
+      },
+      "chain-250": {
+        "overview-anonymous": {
+          "before": 31.151999999999997,
+          "after": 21.394
+        },
+        "category-anonymous": {
+          "before": 31.933999999999997,
+          "after": 22.348
+        },
+        "overview-customer": {
+          "before": 37.042,
+          "after": 27.433
+        },
+        "category-customer": {
+          "before": 38.021,
+          "after": 28.153000000000002
+        }
+      },
+      "chain-500": {
+        "overview-anonymous": {
+          "before": 110.709,
+          "after": 43.28
+        },
+        "category-anonymous": {
+          "before": 114.23700000000001,
+          "after": 46.684000000000005
+        },
+        "overview-customer": {
+          "before": 117.16,
+          "after": 48.284
+        },
+        "category-customer": {
+          "before": 120.821,
+          "after": 52.507999999999996
+        }
+      },
+      "tree-1000": {
+        "overview-anonymous": {
+          "before": 20.136999999999997,
+          "after": 20.593
+        },
+        "category-anonymous": {
+          "before": 20.153000000000002,
+          "after": 20.291
+        },
+        "overview-customer": {
+          "before": 25.930000000000003,
+          "after": 26.087
+        },
+        "category-customer": {
+          "before": 26.287000000000003,
+          "after": 26.641000000000002
+        }
+      }
+    }
+  }
+}

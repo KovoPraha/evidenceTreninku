@@ -1,0 +1,190 @@
+[
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "eshop-overview",
+    "before": {
+      "fcp_ms": 84,
+      "ready_ms": 113.20000000001164,
+      "html_bytes": 3557,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 80,
+      "ready_ms": 109.5,
+      "html_bytes": 3557,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "eshop-overview",
+    "before": {
+      "fcp_ms": 64,
+      "ready_ms": 73.69999999998254,
+      "html_bytes": 3557,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 64,
+      "ready_ms": 84.39999999999418,
+      "html_bytes": 3556,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "eshop-overview",
+    "before": {
+      "fcp_ms": 76,
+      "ready_ms": 106.80000000001746,
+      "html_bytes": 3557,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 76,
+      "ready_ms": 109.89999999999418,
+      "html_bytes": 3557,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "eshop-overview",
+    "before": {
+      "fcp_ms": 60,
+      "ready_ms": 83.10000000000582,
+      "html_bytes": 3557,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 64,
+      "ready_ms": 81.39999999999418,
+      "html_bytes": 3556,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "eshop-category",
+    "before": {
+      "fcp_ms": 84,
+      "ready_ms": 109.59999999997672,
+      "html_bytes": 3360,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 80,
+      "ready_ms": 113.59999999997672,
+      "html_bytes": 3360,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "eshop-category",
+    "before": {
+      "fcp_ms": 64,
+      "ready_ms": 80.30000000001746,
+      "html_bytes": 3361,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 68,
+      "ready_ms": 85.10000000000582,
+      "html_bytes": 3360,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "eshop-category",
+    "before": {
+      "fcp_ms": 80,
+      "ready_ms": 107.90000000002328,
+      "html_bytes": 3360,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 80,
+      "ready_ms": 112.80000000001746,
+      "html_bytes": 3361,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "eshop-category",
+    "before": {
+      "fcp_ms": 64,
+      "ready_ms": 82.5,
+      "html_bytes": 3360,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 64,
+      "ready_ms": 83.30000000004657,
+      "html_bytes": 3360,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  }
+]

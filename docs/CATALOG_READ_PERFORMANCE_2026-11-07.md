@@ -433,7 +433,7 @@ v hlubokém stromu také vyžadují vlastní profil. P11-REVIEW zatím nevybrán
 
 ## P11-CATLABEL — skládání popisků kategorií (17. 11. 2026)
 
-**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex. Nový pokyn vlastníka:
+**NASAZENO / technická přejímka PASS, přihlášené produkční UAT NOT RUN.** Vlastník vývoj/Codex. Nový pokyn vlastníka:
 další optimalizace s největším přínosem, přesná shoda a měření před/po;
 po úplném PASS commit, merge a chráněný deploy. Base30386ddb29ceed99190a18ed9e792ff02111b139,
 větev codex/catalog-category-label-performance-20261117, vlastní worktree
@@ -489,3 +489,57 @@ workflow zůstává ručně přehratelná na původním testovaném8a545bb8. Akt
 PR brána je nahrazena dvěma CATLABEL joby se stejnými kontrolami + novými
 chain250/500 cíli; všeobecné CI se nemění. Žádné vynechání bezpečnosti/CSP,
 parity či výkonnostních tolerancí. Tento postup musí být součástí review.
+
+
+### CATLABEL — nativní přejímka, CI a merge
+
+**P11-CATLABEL SLOUČENO / DEPLOY BĚŽÍ:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catlabel--skládání-popisků-kategorií-17-11-2026), [měření](verification/category-label-20261117/RESULTS.md). #492/8347ff50,13 CI PASS; [deploy44189981302](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44189981302) běží. Chain500 HTTP81,1→32,3 /110,7→43,3ms, shoda obou DB/4pixelpáry PASS. WIP zachovaný; aktivace a živé ověření čekají.
+
+Head28496cca, párový běh44188289970 SUCCESS; chain250 HTTP22,52→15,55 /
+31,15→21,39ms, chain50081,05→32,30 /110,71→43,28ms. Všech9 nativních
+profilů/36celýchHTTP scénářů naDB,355 checksumů,4pixelpáry a source lock PASS.
+PHP peak chain500 má +12312B. Testovaný/sloučený strom
+ac82cc6b006259281efe2a6b595cfe787e5a10d3 přesně shodný. Chráněný deploy
+spuštěný jednou s UAT/importfalse; produkční aktivace/živý GET ještě čekají.
+
+### CATLABEL — další koncept k měření
+
+KONCEPT, zatím bez implementace a bez doloženého přínosu: topCategories
+v shopCatalogPageSelect pro každou položku menu prochází všechny produkty
+a jejich kategorie. Porovnat přesné počty jedním průchodem (jednou za záznam
+produktu/prefix) při mnoha produktech a kategoriích. Zachovat doslovnou
+sémantiku path/prefix, duplicity záznamů, řazení/typy/počty a celý výsledek;
+nejprve lokální i celé HTTP důkazy. Duplicitní načtení uzlů také zůstává
+otevřený koncept k samostatnému profilu, bez persistentní cache.
+
+
+### CATLABEL — dokončení (17. 11. 2026)
+
+**P11-CATLABEL NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catlabel--skládání-popisků-kategorií-17-11-2026), [výsledky](verification/category-label-20261117/RESULTS.md). #492/8347ff50, [deploy 44189981302](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44189981302) SUCCESS,13 CI. Chain500 celé HTTP 81.1→32.3ms / 110.7→43.3ms; parita/36scénářů naDB/4pixelpáry PASS. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
+
+Párový běh44188289970 na 28496cca SUCCESS na obou MariaDB.
+9 nativních profilů/DB, přesný starý popisek + celé menu,3SQL/volání a stejné
+checksumy. 36 celých HTTP scénářů/DB,355 tabulek nezměněných v každé fázi i po
+Chrome. Chain250 celé HTTP 22.5→15.5ms / 31.2→21.4ms; chain500 81.1→32.3ms / 110.7→43.3ms. Menší/ploché/větvené
+případy a paměť i opačné časové směry v úplném protokolu. Brány se nezměkčovaly.
+Chrome8 případů,176 měřených+48 zahřívacích navigací,4 identické pixelové páry,
+stejné formuláře/geometrie/styly/CSS a žádné síťové/console chyby. Desktop/
+mobil snímky také vizuálně ověřené. Produkční profil a přihlášené UAT NOT RUN.
+
+Jediná funkční změna: append/reverse uvnitř MenuLabel. Celý prefix/suffix
+modulu byteově stejný; žádný cache, změna SQL/signatury/produktů/cen/writerů.
+Sdílené načítání uzlů zůstává koncept. Historická CATMENU lane je zachovaná
+pro ruční replay na8a545bb8, aktuální dva CATLABEL joby s baseline30386ddb
+přebírají přísnou paritu/HTTP/CSP/Chrome/source lock, všeobecné CI stejné.
+
+Testovaný/sloučený strom ac82cc6b006259281efe2a6b595cfe787e5a10d3,13 CI SUCCESS. Chráněný deploy44189981302:
+2500 testů/57277 kontrol, záloha 394 tabulek/2 triggerů.
+Config zachovaný, pending migrace[], VS/index stejné, aktivace/HTTP200/úklid
+PASS. UAT/importfalse, import přeskočený. Živý anonymní katalog (celé
+normalizované HTML/hlavičky), administrace redirect a CSS payload/hash/cache
+před/po stejné. Doklady samostatným docs PR bez redeploye; původní fio
+WIP/HEAD/hash zachované a jiné PR nepřebírané.
+
+Další krok je [koncept souhrnu topCategories](#catlabel--další-koncept-k-měření),
+případně samostatný profil sdíleného čtení uzlů. Nejdřív důkazy, bez tvrzení
+přínosu před měřením a bez persistentní cache.
