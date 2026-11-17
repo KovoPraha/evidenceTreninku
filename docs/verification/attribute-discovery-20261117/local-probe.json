@@ -1,0 +1,650 @@
+[
+  {
+    "mode": "before",
+    "shape": "repeated",
+    "rows": 1000,
+    "samples": [
+      {
+        "ms": 12.8793,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 10.9451,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 9.3302,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 8.4153,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 12.2943,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 11.1535,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 7.1757,
+        "peak_bytes": 1563760
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "after",
+    "shape": "repeated",
+    "rows": 1000,
+    "samples": [
+      {
+        "ms": 3.4073,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 3.2694,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 3.2701,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 3.2878,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 3.3904,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 3.2781,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 3.2227,
+        "peak_bytes": 20992
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "before",
+    "shape": "repeated",
+    "rows": 10000,
+    "samples": [
+      {
+        "ms": 63.5749,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 86.4764,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 85.9463,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 83.8654,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 102.706,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 108.0187,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 109.2593,
+        "peak_bytes": 15633520
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "after",
+    "shape": "repeated",
+    "rows": 10000,
+    "samples": [
+      {
+        "ms": 33.1071,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 30.4001,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 31.0702,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 30.8435,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 32.3598,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 31.6828,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 35.7333,
+        "peak_bytes": 20992
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "before",
+    "shape": "repeated",
+    "rows": 30000,
+    "samples": [
+      {
+        "ms": 222.7697,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 235.3814,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 206.2843,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 230.0362,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 256.5172,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 247.4528,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 201.2327,
+        "peak_bytes": 46615664
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "after",
+    "shape": "repeated",
+    "rows": 30000,
+    "samples": [
+      {
+        "ms": 75.3703,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 83.2244,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 75.1546,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 78.019,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 66.1885,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 59.9645,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 60.7723,
+        "peak_bytes": 20992
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "before",
+    "shape": "unique",
+    "rows": 1000,
+    "samples": [
+      {
+        "ms": 9.5871,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 9.2508,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 9.5619,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 8.95,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 8.4326,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 8.3332,
+        "peak_bytes": 1563760
+      },
+      {
+        "ms": 8.054,
+        "peak_bytes": 1563760
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "after",
+    "shape": "unique",
+    "rows": 1000,
+    "samples": [
+      {
+        "ms": 8.3547,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 8.1347,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 7.8562,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 8.9609,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 9.4777,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 9.4195,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 8.415,
+        "peak_bytes": 222136
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "before",
+    "shape": "unique",
+    "rows": 10000,
+    "samples": [
+      {
+        "ms": 112.2814,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 129.0857,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 118.4998,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 91.8353,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 116.3835,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 95.5011,
+        "peak_bytes": 15633520
+      },
+      {
+        "ms": 66.2176,
+        "peak_bytes": 15633520
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "after",
+    "shape": "unique",
+    "rows": 10000,
+    "samples": [
+      {
+        "ms": 110.4339,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 81.4023,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 84.5246,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 93.2418,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 107.9999,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 120.2854,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 126.663,
+        "peak_bytes": 222136
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "before",
+    "shape": "unique",
+    "rows": 30000,
+    "samples": [
+      {
+        "ms": 295.5017,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 422.5704,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 323.6317,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 246.6537,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 219.5625,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 253.8545,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 226.2671,
+        "peak_bytes": 46615664
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "after",
+    "shape": "unique",
+    "rows": 30000,
+    "samples": [
+      {
+        "ms": 306.6529,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 259.4024,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 264.8661,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 300.1595,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 284.2757,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 263.9658,
+        "peak_bytes": 222136
+      },
+      {
+        "ms": 271.755,
+        "peak_bytes": 222136
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  }
+]
