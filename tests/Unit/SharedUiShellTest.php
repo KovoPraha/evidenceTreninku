@@ -104,6 +104,8 @@ final class SharedUiShellTest extends TestCase
                 'club_programs_admin.php',
                 'club_calendar.php',
                 'eshop_catalog_admin.php',
+                'eshop_categories_admin.php',
+                'eshop_attributes_admin.php',
                 'duplikovat_trenink.php',
                 'edit_trenink.php',
                 'formular.php',
