@@ -101,3 +101,72 @@ všechny kontroly zachované. Timeout není vydáván za PASS.
 Produkty/pořadí/navigace/počet PASS; úplný DOM před/po karet nelze z původních
 nonce hashů zpětně prokázat. Dva opravené průchody po nasazení 5/5 stabilní.
 Pokračování je [R06 nabídka lekcí](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md).
+
+
+## P11-ATTR — objevování parametrů variant (17. 11. 2026)
+
+**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex. Pokyn vlastníka pokračovat
+v optimalizaci stejným postupem: doložit shodu a přínos, po PASS commit/merge/
+chráněné nasazení. Base f8f1c17511a6826411b309d24910f37042dd5bf9,
+větev codex/attribute-discovery-performance-20261117, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+ASSET14 dokončené včetně dokladů #487/f8f1c175, runtime 9a0bc834 se nemění
+pouhým zahájením této diagnózy.
+
+Nový nález navazuje na původní princip analýzy P11: neudržovat celý drahý
+výsledek, pokud stačí agregát. shopAttributeDiscoveredKeys vybírá pouze JSON
+sloupec, ale fetchAll drží celé pole a znovu dekóduje každou variantu.
+Jediným aplikačním voláním je eshop_attributes_admin.php. Definice, editory,
+povolené hodnoty, ceny, viditelnost i zápisy se tímto měnit nemají.
+
+Nejdřív izolovaný syntetický profil variant: původní chování versus postupné
+fetch řádků a omezená paměť přesně stejných surových JSON hodnot jen v rámci
+jednoho volání. Kandidát nejvýše 128 položek, každá nejvýše 8192 B;
+žádná perzistentní cache ani změna PDO nastavení. Porovnat i jedinečné hodnoty,
+vyčerpání/evikci, velké dokumenty, null, neplatné UTF-8/JSON, skaláry,
+číselné klíče, pole, hloubku, Unicode a změnu dat mezi dvěma voláními.
+SQL DISTINCT podle textové kolace není vybráno: mohlo by sloučit významově
+odlišné surové hodnoty. SQL a celá množina variant zůstávají stejné.
+
+Implementovat pouze při doloženém přínosu. Pak přesná parita proti zmrazené
+funkci a vnějšími funkcemi nezměněné PHP tokeny (jen povinný styl a připnuté
+závorky). Zachovat existující integrační testy. MariaDB 10.3/11.4, různé objemy
+opakovaných i jedinečných JSON, čas/paměť/SQL a checksumy. Ověřit celé HTTP,
+HTML/role/CSRF a skutečný Chrome bez změny UI. Požadovat významný zisk na
+opakovaných datech, nezamlčet režii jedinečných dat; při regresi kandidát
+nepřijmout. Celé aktuální CI a přesný testovaný/sloučený strom před vydáním.
+
+Záloha/config/migrace/VS/index/HTTP/úklid chráněného deploye, UAT/import false,
+neprovádět skutečné produkty, platby, účasti ani změny rolí. Lidské produkční
+UAT samostatně. Finální protokol a handoff v main, bez dalšího deploye dokladů.
+Další krok: izolovaný profil před rozhodnutím o produkční implementaci.
+
+
+### ATTR — izolovaný výběr kandidáta
+
+SQLite 3 / PHP 8.2.12, vlastní in-memory data, 7 vzorků na variantu/objem,
+1000/10000/30000 řádků, 16 klíčů a opakované i jedinečné hodnoty. Shodný
+seznam klíčů ve všech párech. Na 30000 opakovaných řádcích medián funkce
+230,04 → 75,15 ms; u jedinečných 253,85 → 271,75 ms (+7,05 %).
+Přírůstek PHP peak u fetchAll 46,62 MB, kandidát 20,99 kB opakovaných /
+222,14 kB jedinečných. [Surové lokální vzorky](verification/attribute-discovery-20261117/local-probe.json).
+Jde o diagnózu SQLite, nikoli produkční nebo MariaDB výsledek.
+
+Kandidát vybraný pro implementaci a nativní přejímku; paměť zůstává pouze
+v rámci každého volání, přesné surové řetězce a limit 128×8192 B. PDO buffering
+se nemění a výsledná množina klíčů není uměle omezovaná. Měřit skutečné
+MariaDB náklady včetně bufferu; místní PHP peak není celá paměť serveru.
+
+
+### ATTR — místní implementace a přejímka
+
+Source contract potvrzuje jedinou funkční změnu discovery; ostatní tokeny
+shodné kromě 40 připnutých guard závorek povinného stylu. Lokálně 25 testů /
+124 kontrol, PHPStan/styl/syntaxe PASS. [Protokol](verification/attribute-discovery-20261117/RESULTS.md).
+Nativní akceptace zpřesněna: repeated funkce ≥20 % rychlejší, unique režie
+nejvýše 20 % +5 ms; celé HTTP repeated30k cíl ≥20 % rychlejší a ostatní
+případy bez regrese >20 % +20 ms. Vždy přesná shoda, stejná 2 SQL a checksumy.
+Měřit buffer PDO a nezamlčet menší/žádné paměťové zlepšení MariaDB.
+Native/Chrome/širší CI zatím NOT RUN; přijetí/vydání až po úplném PASS.

@@ -1,0 +1,9 @@
+function shopAttributeDiscoveredKeys(PDO $pdo):array
+{
+    if(!shopAttributeTableExists($pdo,'shop_variants'))return[];$keys=[];
+    foreach($pdo->query('SELECT attributes_json FROM shop_variants')->fetchAll(PDO::FETCH_COLUMN)as$json){
+        try{$decoded=json_decode((string)$json,true,64,JSON_THROW_ON_ERROR);}catch(JsonException){continue;}
+        if(!is_array($decoded))continue;foreach(array_keys($decoded)as$key){$key=trim((string)$key);if($key!=='')$keys[$key]=true;}
+    }
+    $result=array_keys($keys);usort($result,static fn(string$a,string$b):int=>[mb_strtolower($a,'UTF-8'),$a]<=>[mb_strtolower($b,'UTF-8'),$b]);return$result;
+}
