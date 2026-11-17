@@ -1,0 +1,338 @@
+[
+  {
+    "shape": "flat",
+    "categories": 30,
+    "products": 30,
+    "samples": {
+      "before": [
+        {
+          "ms": 1.4364,
+          "peak_bytes": 71080
+        },
+        {
+          "ms": 1.5693,
+          "peak_bytes": 71080
+        },
+        {
+          "ms": 1.5448,
+          "peak_bytes": 71080
+        },
+        {
+          "ms": 2.1317,
+          "peak_bytes": 71080
+        },
+        {
+          "ms": 2.8436,
+          "peak_bytes": 71080
+        },
+        {
+          "ms": 3.2365,
+          "peak_bytes": 71080
+        },
+        {
+          "ms": 1.7881,
+          "peak_bytes": 71080
+        },
+        {
+          "ms": 4.264,
+          "peak_bytes": 71080
+        },
+        {
+          "ms": 1.6017,
+          "peak_bytes": 71080
+        }
+      ],
+      "after": [
+        {
+          "ms": 1.3966,
+          "peak_bytes": 72224
+        },
+        {
+          "ms": 1.4539,
+          "peak_bytes": 72224
+        },
+        {
+          "ms": 1.7649,
+          "peak_bytes": 72224
+        },
+        {
+          "ms": 6.6258,
+          "peak_bytes": 72224
+        },
+        {
+          "ms": 1.8569,
+          "peak_bytes": 72224
+        },
+        {
+          "ms": 4.1925,
+          "peak_bytes": 72224
+        },
+        {
+          "ms": 4.3976,
+          "peak_bytes": 72224
+        },
+        {
+          "ms": 1.6832,
+          "peak_bytes": 72224
+        },
+        {
+          "ms": 2.8012,
+          "peak_bytes": 72224
+        }
+      ]
+    },
+    "exact_equal": true
+  },
+  {
+    "shape": "flat",
+    "categories": 500,
+    "products": 500,
+    "samples": {
+      "before": [
+        {
+          "ms": 124.657,
+          "peak_bytes": 1163784
+        },
+        {
+          "ms": 188.8135,
+          "peak_bytes": 1163784
+        },
+        {
+          "ms": 188.9632,
+          "peak_bytes": 909176
+        },
+        {
+          "ms": 154.654,
+          "peak_bytes": 1163784
+        },
+        {
+          "ms": 118.6467,
+          "peak_bytes": 1163784
+        },
+        {
+          "ms": 103.5568,
+          "peak_bytes": 1163784
+        },
+        {
+          "ms": 110.5238,
+          "peak_bytes": 1163784
+        },
+        {
+          "ms": 242.6657,
+          "peak_bytes": 1163784
+        },
+        {
+          "ms": 120.6864,
+          "peak_bytes": 1163784
+        }
+      ],
+      "after": [
+        {
+          "ms": 49.4401,
+          "peak_bytes": 1164928
+        },
+        {
+          "ms": 66.2826,
+          "peak_bytes": 1164928
+        },
+        {
+          "ms": 48.6951,
+          "peak_bytes": 1164928
+        },
+        {
+          "ms": 39.8663,
+          "peak_bytes": 1164928
+        },
+        {
+          "ms": 40.9168,
+          "peak_bytes": 1164928
+        },
+        {
+          "ms": 49.6757,
+          "peak_bytes": 1164928
+        },
+        {
+          "ms": 38.0237,
+          "peak_bytes": 910712
+        },
+        {
+          "ms": 59.8316,
+          "peak_bytes": 1164928
+        },
+        {
+          "ms": 25.8723,
+          "peak_bytes": 1164928
+        }
+      ]
+    },
+    "exact_equal": true
+  },
+  {
+    "shape": "tree",
+    "categories": 500,
+    "products": 500,
+    "samples": {
+      "before": [
+        {
+          "ms": 615.2619,
+          "peak_bytes": 1288280
+        },
+        {
+          "ms": 490.835,
+          "peak_bytes": 1262968
+        },
+        {
+          "ms": 398.0574,
+          "peak_bytes": 1288280
+        },
+        {
+          "ms": 387.0685,
+          "peak_bytes": 1288280
+        },
+        {
+          "ms": 400.3699,
+          "peak_bytes": 1288280
+        },
+        {
+          "ms": 533.58,
+          "peak_bytes": 1264008
+        },
+        {
+          "ms": 617.4083,
+          "peak_bytes": 1288280
+        },
+        {
+          "ms": 468.0108,
+          "peak_bytes": 1288280
+        },
+        {
+          "ms": 426.9349,
+          "peak_bytes": 1288280
+        }
+      ],
+      "after": [
+        {
+          "ms": 57.9379,
+          "peak_bytes": 1308672
+        },
+        {
+          "ms": 72.6512,
+          "peak_bytes": 1308672
+        },
+        {
+          "ms": 70.1886,
+          "peak_bytes": 1308672
+        },
+        {
+          "ms": 36.8271,
+          "peak_bytes": 1308672
+        },
+        {
+          "ms": 41.4353,
+          "peak_bytes": 1308672
+        },
+        {
+          "ms": 65.4457,
+          "peak_bytes": 1308672
+        },
+        {
+          "ms": 50.2024,
+          "peak_bytes": 1308672
+        },
+        {
+          "ms": 47.3209,
+          "peak_bytes": 1308672
+        },
+        {
+          "ms": 69.1805,
+          "peak_bytes": 1308672
+        }
+      ]
+    },
+    "exact_equal": true
+  },
+  {
+    "shape": "chain",
+    "categories": 120,
+    "products": 120,
+    "samples": {
+      "before": [
+        {
+          "ms": 445.9458,
+          "peak_bytes": 729640
+        },
+        {
+          "ms": 399.8831,
+          "peak_bytes": 729640
+        },
+        {
+          "ms": 467.0159,
+          "peak_bytes": 729640
+        },
+        {
+          "ms": 360.6899,
+          "peak_bytes": 729640
+        },
+        {
+          "ms": 348.702,
+          "peak_bytes": 729640
+        },
+        {
+          "ms": 397.8689,
+          "peak_bytes": 729640
+        },
+        {
+          "ms": 583.8793,
+          "peak_bytes": 729640
+        },
+        {
+          "ms": 395.8327,
+          "peak_bytes": 729640
+        },
+        {
+          "ms": 432.5874,
+          "peak_bytes": 729640
+        }
+      ],
+      "after": [
+        {
+          "ms": 79.9979,
+          "peak_bytes": 770448
+        },
+        {
+          "ms": 124.9215,
+          "peak_bytes": 770448
+        },
+        {
+          "ms": 70.3539,
+          "peak_bytes": 770448
+        },
+        {
+          "ms": 77.1595,
+          "peak_bytes": 770448
+        },
+        {
+          "ms": 59.6577,
+          "peak_bytes": 770448
+        },
+        {
+          "ms": 81.2896,
+          "peak_bytes": 770448
+        },
+        {
+          "ms": 48.7575,
+          "peak_bytes": 770448
+        },
+        {
+          "ms": 46.0597,
+          "peak_bytes": 770448
+        },
+        {
+          "ms": 52.7374,
+          "peak_bytes": 770448
+        }
+      ]
+    },
+    "exact_equal": true
+  }
+]

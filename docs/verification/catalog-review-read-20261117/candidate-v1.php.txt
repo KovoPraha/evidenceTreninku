@@ -1,0 +1,63 @@
+function shopCatalogReviewDetail(
+    PDO $pdo,
+    int $runId,
+    string $status = '',
+    string $type = '',
+    string $search = ''
+): array {
+    $runStatement = $pdo->prepare('SELECT * FROM shop_catalog_import_runs WHERE id = ?');
+    $runStatement->execute([$runId]);
+    $run = $runStatement->fetch(PDO::FETCH_ASSOC);
+    if (!$run) {
+        return ['run' => null, 'products' => [], 'events' => []];
+    }
+
+    $where = ['p.run_id = ?'];
+    $parameters = [$runId];
+    if (in_array($status, ['pending', 'auto_classified', 'approved', 'excluded'], true)) {
+        $where[] = 'p.review_status = ?';
+        $parameters[] = $status;
+    }
+    if (in_array($type, ShopOfferClassifier::TYPES, true)) {
+        $where[] = 'COALESCE(p.reviewed_offer_type, p.offer_type) = ?';
+        $parameters[] = $type;
+    }
+    $search = trim($search);
+    if ($search !== '') {
+        $where[] = '(p.name LIKE ? OR p.external_product_key LIKE ? '
+            . 'OR EXISTS (SELECT 1 FROM shop_catalog_variant_candidates sv '
+            . 'WHERE sv.product_candidate_id=p.id AND sv.sku LIKE ?))';
+        $needle = '%' . $search . '%';
+        array_push($parameters, $needle, $needle, $needle);
+    }
+
+    $ordering = " ORDER BY CASE p.review_status WHEN 'pending' THEN 0 WHEN 'approved' THEN 1 "
+        . "WHEN 'auto_classified' THEN 2 ELSE 3 END, p.name, p.id";
+    $statement = $pdo->prepare(
+        'SELECT p.*, variant_stats.variant_count, variant_stats.min_amount_minor, variant_stats.max_amount_minor, '
+        . '(SELECT MIN(v.currency) FROM shop_catalog_variant_candidates v WHERE v.product_candidate_id=p.id) AS currency '
+        . 'FROM (SELECT selected_products.id, COUNT(v.id) AS variant_count, '
+        . 'MIN(v.amount_minor) AS min_amount_minor, MAX(v.amount_minor) AS max_amount_minor '
+        . 'FROM (SELECT p.id FROM shop_catalog_product_candidates p WHERE ' . implode(' AND ', $where)
+        . $ordering . ' LIMIT 500) selected_products '
+        . 'LEFT JOIN shop_catalog_variant_candidates v ON v.product_candidate_id=selected_products.id '
+        . 'GROUP BY selected_products.id) variant_stats '
+        . 'JOIN shop_catalog_product_candidates p ON p.id=variant_stats.id' . $ordering
+    );
+    $statement->execute($parameters);
+
+    $events = $pdo->prepare(
+        'SELECT e.*, p.name AS product_name, t.jmeno AS actor_name '
+        . 'FROM shop_catalog_review_events e '
+        . 'JOIN shop_catalog_product_candidates p ON p.id=e.product_candidate_id '
+        . 'LEFT JOIN treneri t ON t.id=e.actor_trainer_id '
+        . 'WHERE e.run_id=? ORDER BY e.created_at DESC, e.id DESC LIMIT 50'
+    );
+    $events->execute([$runId]);
+
+    return [
+        'run' => $run,
+        'products' => $statement->fetchAll(PDO::FETCH_ASSOC),
+        'events' => $events->fetchAll(PDO::FETCH_ASSOC),
+    ];
+}

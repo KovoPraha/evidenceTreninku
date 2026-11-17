@@ -346,3 +346,9 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 17. 11. 2026 — P11-ATTR: všech 13 CI PASS, #488 sloučen jako 4270d0cc s přesně shodným testovaným stromem. Chráněný deploy44131137781 spuštěný, výsledek zatím čeká, UAT/import false. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-attr--objevování-parametrů-variant-17-11-2026).
 
 17. 11. 2026 — P11-ATTR dokončen, všechny brány a chráněný deploy PASS. **P11-ATTR NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-attr--objevování-parametrů-variant-17-11-2026), [výsledky](verification/attribute-discovery-20261117/RESULTS.md). #488/4270d0cc, [deploy 44131137781](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44131137781) SUCCESS, 13 CI. Repeated30k celé HTTP129→75 /234→118ms; PHP peak přibližně poloviční. Unique HTTP má 6–12 % režii. Parita obou DB/8pixelpárů PASS, přihlášené produkční UAT NOT RUN.
+
+17. 11. 2026 — P11-REVIEW zahájeno: ověřit sdružené COUNT/MIN/MAX částky variant pouze vybraných produktů, zachovat samostatné MIN měny, filtry, limity a celý zbytek katalogové kontroly. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-review--agregace-kontroly-importovaného-katalogu-17-11-2026).
+
+17. 11. 2026 — P11-REVIEW nevybráno kvůli nestálému zisku v místním profilu, produkční kód beze změny. Nový P11-CATMENU měří opakované průchody stromu katalogu, bez změny jeho sémantiky. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catmenu--strom-kategorií-veřejného-katalogu-17-11-2026).
+
+- 17. 11. 2026 P11-CATMENU: lokální index a diferenciální hraniční testy; nativní/HTTP/Chrome workflow připraven. [Protokol](verification/category-menu-20261117/RESULTS.md). Merge/deploy čekají.
