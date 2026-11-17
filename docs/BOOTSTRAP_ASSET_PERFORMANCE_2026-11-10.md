@@ -1178,3 +1178,58 @@ Dokumentační větev převzala celý přijatý main bez změny kódu. CURRENT/h
 uvádějí aktuální runtime, naše vlastní vydání zůstává oddělené. Lidské UAT
 docházky i přihlášené produkční CSS UAT zůstávají otevřené. Další celý CI head
 je povinný před merge dokladů. Žádný další deploy kvůli dokumentaci.
+
+
+### ASSET13 — uzavření sdíleného předání (17. 11. 2026)
+
+Výsledkové [PR #482](https://github.com/KovoPraha/evidenceTreninku/pull/482)
+sloučené jako ea6f8fc51b0623235336a3e5025cabfa6eeae87d. Poslední head
+61062361 prošel všech 11 kontrol včetně obou MariaDB; testovaný a sloučený
+strom eb9e3c80dd10a96046e40210a5979ebafa7f50f5 shodný. Všech 57 otisků
+artefaktů ověřeno, původní WIP nezměněn. Nový deploy kvůli dokladům neproběhl.
+Čerstvá kontrola 17. 11. potvrzuje poslední úspěšný deploy 43651304138 na
+ea995408; main e30fdc97 navíc obsahuje jen předání a zjištěné UAT blokátory.
+Historické checkpointy výše nejsou aktuální čekající merge.
+
+## P11-ASSET14 — kategorie a parametry e-shopu (17. 11. 2026)
+
+**ROZPRACOVÁNO.** Vlastník vývoj/Codex. Pokyn vlastníka: aktualizovat dokumentaci
+na GitHubu a pokračovat stejným postupem, po shodě a měření commit/merge/deploy.
+Větev codex/next-performance-20261117, base e30fdc97a369245478c25fd14c220df45aec3e18,
+worktree C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+
+Po dokončených SQL řezech navazuje potvrzený typ nálezu z původní analýzy
+bod 7: eshop_categories_admin.php a eshop_attributes_admin.php mají vlastní
+CDN Bootstrap 5.3.3 a současně lokální kopii ze společné hlavicky. Oba
+hlavní přehledy již používají dávkové čtení. Volíme odstranění konkrétních
+CSS duplicit; neprohlašujeme neznámou četnost návštěv ani neověřený zisk SQL.
+Další SQL/objemové změny vyžadují samostatný profil a zachování všech voleb.
+
+Rozsah: přesně dva CSS tagy pryč. Dle povinného stylu pouze ekvivalentní
+formátování šablon; source kontrakt připne všechny konkrétní změny tokenů,
+HTML musí zůstat stejné kromě známého tagu. Zachovat statický SRI důkaz,
+práva, CSRF, POST/redirect/validace/audit, všechna data, řazení a formuláře.
+Žádná migrace, persistentní cache, změna plateb či aktivace dalších funkcí.
+
+Přejímka: syntetická MariaDB 10.3/11.4, skutečné Apache/PHP před/po se
+zmrazenou baseline, všechny role/negativy, přehled, hledání, detail, chybné ID
+a prázdný filtr. Celé HTML a bezpečnostní hlavičky shodné po odpočtení
+jediného konkrétního tagu a request nonce. Nezměněné checksumy a úklid.
+Chrome desktop/mobil a světlé/tmavé schéma, cold/warm skutečný CDN/lokální
+transport a přesné payload hashe, pixelové páry, styly, geometrie a formuláře.
+Zveřejnit všechny časové výsledky, nezaměňovat nižší přenos za serverové SLA.
+
+Další krok: minimální patch, source kontrakt, párové HTTP/Chrome měření.
+Pak všechny aktuální CI, merge přesného testovaného stromu a chráněné
+nasazení s import/UAT false; backup/config/migrace/VS/smoke/úklid a živé
+čtecí před/po. Přihlášené produkční UAT samostatně; žádné skutečné zápisy
+ani změny rolí. Finální doklady sdílet v main bez dalšího deploye.
+
+
+### ASSET14 — místní checkpoint
+
+Dva přesné tagy pryč, source contract 14/7 konkrétních editů PASS;
+30 testů/184 assertions a cílený PHPStan PASS. Párová nativní/Chrome a CI
+přejímka čeká. [Výsledky a další krok](verification/category-attribute-bootstrap-20261117/RESULTS.md).
