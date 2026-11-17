@@ -1,0 +1,21 @@
+{
+  "number": "488",
+  "base": "f8f1c17511a6826411b309d24910f37042dd5bf9",
+  "head": "559795b1f1c6b4a4ac96bb10f04f79aaeef4ec1c",
+  "tree": "2426a2ec7629b445717eee536061d87ec0d2a49d",
+  "checks": {
+    "Attribute discovery read HTTP (MariaDB 10.3)": "SUCCESS",
+    "Analyze (actions)": "SUCCESS",
+    "docs": "SUCCESS",
+    "PHPStan level 5 and changed-file style": "SUCCESS",
+    "PHPUnit na PHP 8.2": "SUCCESS",
+    "Attribute discovery read HTTP (MariaDB 11.4)": "SUCCESS",
+    "Analyze (javascript-typescript)": "SUCCESS",
+    "Analyze (python)": "SUCCESS",
+    "MariaDB integra\u010dn\u00ed smoke (MariaDB 10.3)": "SUCCESS",
+    "MariaDB integra\u010dn\u00ed smoke (MariaDB 11.4)": "SUCCESS",
+    "MariaDB profily \u010dten\u00ed (MariaDB 10.3)": "SUCCESS",
+    "MariaDB profily \u010dten\u00ed (MariaDB 11.4)": "SUCCESS",
+    "CodeQL": "SUCCESS"
+  }
+}

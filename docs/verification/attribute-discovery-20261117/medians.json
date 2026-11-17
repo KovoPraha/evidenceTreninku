@@ -1,0 +1,418 @@
+{
+  "10.3": {
+    "native": [
+      {
+        "shape": "repeated",
+        "rows": 1000,
+        "ms": {
+          "before": 4.046695,
+          "after": 2.305107
+        },
+        "peak_bytes": {
+          "before": 3085832,
+          "after": 1549816
+        }
+      },
+      {
+        "shape": "repeated",
+        "rows": 10000,
+        "ms": {
+          "before": 39.418563,
+          "after": 20.049945
+        },
+        "peak_bytes": {
+          "before": 30721544,
+          "after": 15115768
+        }
+      },
+      {
+        "shape": "repeated",
+        "rows": 30000,
+        "ms": {
+          "before": 121.851488,
+          "after": 62.955687
+        },
+        "peak_bytes": {
+          "before": 91809288,
+          "after": 45221368
+        }
+      },
+      {
+        "shape": "unique",
+        "rows": 1000,
+        "ms": {
+          "before": 4.11715,
+          "after": 4.504996
+        },
+        "peak_bytes": {
+          "before": 3085832,
+          "after": 1750960
+        }
+      },
+      {
+        "shape": "unique",
+        "rows": 10000,
+        "ms": {
+          "before": 39.309544,
+          "after": 43.33387
+        },
+        "peak_bytes": {
+          "before": 30721544,
+          "after": 15316912
+        }
+      },
+      {
+        "shape": "unique",
+        "rows": 30000,
+        "ms": {
+          "before": 115.96102,
+          "after": 132.100601
+        },
+        "peak_bytes": {
+          "before": 94791176,
+          "after": 48404400
+        }
+      },
+      {
+        "shape": "legacy",
+        "rows": 400,
+        "ms": {
+          "before": 1.678702,
+          "after": 1.728907
+        },
+        "peak_bytes": {
+          "before": 423792,
+          "after": 353768
+        }
+      }
+    ],
+    "http": {
+      "matrix": {
+        "categories-catalog_manager": {
+          "before": 3.8379999999999996,
+          "after": 3.9230000000000005
+        },
+        "attributes-catalog_manager": {
+          "before": 8.095,
+          "after": 5.859999999999999
+        },
+        "category-detail": {
+          "before": 4.148,
+          "after": 4.127
+        },
+        "category-search": {
+          "before": 3.9890000000000003,
+          "after": 4.052
+        },
+        "category-empty": {
+          "before": 3.879,
+          "after": 3.869
+        },
+        "category-invalid": {
+          "before": 3.78,
+          "after": 3.8019999999999996
+        },
+        "category-product": {
+          "before": 3.869,
+          "after": 3.8890000000000002
+        },
+        "category-missing-product": {
+          "before": 3.8040000000000003,
+          "after": 3.798
+        },
+        "attribute-text-inactive": {
+          "before": 7.738,
+          "after": 6.235
+        },
+        "attribute-number": {
+          "before": 7.705,
+          "after": 5.835
+        },
+        "attribute-choice": {
+          "before": 8.011000000000001,
+          "after": 6.085
+        },
+        "attribute-missing": {
+          "before": 8.802000000000001,
+          "after": 6.824
+        },
+        "attribute-key": {
+          "before": 8.189,
+          "after": 6.475
+        },
+        "categories-csrf-rejected": {
+          "before": 3.9569999999999994,
+          "after": 3.92
+        },
+        "attributes-csrf-rejected": {
+          "before": 7.8100000000000005,
+          "after": 5.812
+        }
+      },
+      "repeated-10000": {
+        "categories-catalog_manager": {
+          "before": 3.856,
+          "after": 3.8800000000000003
+        },
+        "attributes-catalog_manager": {
+          "before": 45.953,
+          "after": 27.765
+        },
+        "attribute-choice": {
+          "before": 46.008,
+          "after": 27.521
+        }
+      },
+      "repeated-30000": {
+        "categories-catalog_manager": {
+          "before": 4.405,
+          "after": 4.002000000000001
+        },
+        "attributes-catalog_manager": {
+          "before": 129.411,
+          "after": 74.85700000000001
+        },
+        "attribute-choice": {
+          "before": 126.916,
+          "after": 74.37299999999999
+        }
+      },
+      "unique-10000": {
+        "categories-catalog_manager": {
+          "before": 4.215,
+          "after": 4.237
+        },
+        "attributes-catalog_manager": {
+          "before": 48.092999999999996,
+          "after": 51.436
+        },
+        "attribute-choice": {
+          "before": 46.120000000000005,
+          "after": 49.859
+        }
+      },
+      "unique-30000": {
+        "categories-catalog_manager": {
+          "before": 3.812,
+          "after": 3.7750000000000004
+        },
+        "attributes-catalog_manager": {
+          "before": 135.487,
+          "after": 143.988
+        },
+        "attribute-choice": {
+          "before": 130.802,
+          "after": 146.974
+        }
+      }
+    }
+  },
+  "11.4": {
+    "native": [
+      {
+        "shape": "repeated",
+        "rows": 1000,
+        "ms": {
+          "before": 7.197874,
+          "after": 3.529857
+        },
+        "peak_bytes": {
+          "before": 3085832,
+          "after": 1549816
+        }
+      },
+      {
+        "shape": "repeated",
+        "rows": 10000,
+        "ms": {
+          "before": 65.786177,
+          "after": 30.962292
+        },
+        "peak_bytes": {
+          "before": 30721544,
+          "after": 15115768
+        }
+      },
+      {
+        "shape": "repeated",
+        "rows": 30000,
+        "ms": {
+          "before": 187.402318,
+          "after": 85.500378
+        },
+        "peak_bytes": {
+          "before": 91809288,
+          "after": 45221368
+        }
+      },
+      {
+        "shape": "unique",
+        "rows": 1000,
+        "ms": {
+          "before": 6.961195,
+          "after": 8.269455
+        },
+        "peak_bytes": {
+          "before": 3085832,
+          "after": 1750960
+        }
+      },
+      {
+        "shape": "unique",
+        "rows": 10000,
+        "ms": {
+          "before": 67.069062,
+          "after": 72.440679
+        },
+        "peak_bytes": {
+          "before": 30721544,
+          "after": 15316912
+        }
+      },
+      {
+        "shape": "unique",
+        "rows": 30000,
+        "ms": {
+          "before": 189.93645,
+          "after": 228.003458
+        },
+        "peak_bytes": {
+          "before": 94791176,
+          "after": 48404400
+        }
+      },
+      {
+        "shape": "legacy",
+        "rows": 400,
+        "ms": {
+          "before": 3.134234,
+          "after": 3.23337
+        },
+        "peak_bytes": {
+          "before": 423792,
+          "after": 353768
+        }
+      }
+    ],
+    "http": {
+      "matrix": {
+        "categories-catalog_manager": {
+          "before": 7.401,
+          "after": 7.438000000000001
+        },
+        "attributes-catalog_manager": {
+          "before": 14.772,
+          "after": 10.763
+        },
+        "category-detail": {
+          "before": 7.656,
+          "after": 7.7669999999999995
+        },
+        "category-search": {
+          "before": 7.3020000000000005,
+          "after": 7.403
+        },
+        "category-empty": {
+          "before": 7.34,
+          "after": 7.347
+        },
+        "category-invalid": {
+          "before": 7.267,
+          "after": 7.313
+        },
+        "category-product": {
+          "before": 7.433999999999999,
+          "after": 7.296
+        },
+        "category-missing-product": {
+          "before": 7.477,
+          "after": 7.403
+        },
+        "attribute-text-inactive": {
+          "before": 15.044,
+          "after": 11.403
+        },
+        "attribute-number": {
+          "before": 14.488,
+          "after": 11.321
+        },
+        "attribute-choice": {
+          "before": 14.813,
+          "after": 10.850999999999999
+        },
+        "attribute-missing": {
+          "before": 14.557,
+          "after": 10.783
+        },
+        "attribute-key": {
+          "before": 14.17,
+          "after": 10.926
+        },
+        "categories-csrf-rejected": {
+          "before": 7.2490000000000006,
+          "after": 7.3309999999999995
+        },
+        "attributes-csrf-rejected": {
+          "before": 14.465,
+          "after": 10.71
+        }
+      },
+      "repeated-10000": {
+        "categories-catalog_manager": {
+          "before": 7.272,
+          "after": 7.303
+        },
+        "attributes-catalog_manager": {
+          "before": 83.417,
+          "after": 46.004000000000005
+        },
+        "attribute-choice": {
+          "before": 80.24199999999999,
+          "after": 43.115
+        }
+      },
+      "repeated-30000": {
+        "categories-catalog_manager": {
+          "before": 7.343,
+          "after": 7.509
+        },
+        "attributes-catalog_manager": {
+          "before": 233.53199999999998,
+          "after": 117.914
+        },
+        "attribute-choice": {
+          "before": 216.39,
+          "after": 107.46
+        }
+      },
+      "unique-10000": {
+        "categories-catalog_manager": {
+          "before": 7.420000000000001,
+          "after": 7.476
+        },
+        "attributes-catalog_manager": {
+          "before": 83.964,
+          "after": 87.67099999999999
+        },
+        "attribute-choice": {
+          "before": 79.77199999999999,
+          "after": 84.966
+        }
+      },
+      "unique-30000": {
+        "categories-catalog_manager": {
+          "before": 7.292,
+          "after": 7.407
+        },
+        "attributes-catalog_manager": {
+          "before": 228.152,
+          "after": 249.763
+        },
+        "attribute-choice": {
+          "before": 228.488,
+          "after": 242.16899999999998
+        }
+      }
+    }
+  }
+}

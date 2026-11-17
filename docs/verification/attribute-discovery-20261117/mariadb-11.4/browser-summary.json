@@ -1,0 +1,378 @@
+[
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "eshop_categories_admin-overview",
+    "before": {
+      "fcp_ms": 88,
+      "ready_ms": 111.5,
+      "html_bytes": 8451,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 84,
+      "ready_ms": 106.19999999998254,
+      "html_bytes": 8448,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "eshop_categories_admin-overview",
+    "before": {
+      "fcp_ms": 56,
+      "ready_ms": 58,
+      "html_bytes": 8445,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 56,
+      "ready_ms": 57.79999999998836,
+      "html_bytes": 8443,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "eshop_categories_admin-overview",
+    "before": {
+      "fcp_ms": 76,
+      "ready_ms": 102,
+      "html_bytes": 8445,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 76,
+      "ready_ms": 102.90000000002328,
+      "html_bytes": 8445,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "eshop_categories_admin-overview",
+    "before": {
+      "fcp_ms": 52,
+      "ready_ms": 71.39999999996508,
+      "html_bytes": 8445,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 52,
+      "ready_ms": 73.10000000003492,
+      "html_bytes": 8444,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "eshop_categories_admin-detail",
+    "before": {
+      "fcp_ms": 84,
+      "ready_ms": 106.70000000001164,
+      "html_bytes": 8604,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 84,
+      "ready_ms": 107.29999999998836,
+      "html_bytes": 8603,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "eshop_categories_admin-detail",
+    "before": {
+      "fcp_ms": 56,
+      "ready_ms": 61.40000000002328,
+      "html_bytes": 8603,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 60,
+      "ready_ms": 64.60000000003492,
+      "html_bytes": 8604,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "eshop_categories_admin-detail",
+    "before": {
+      "fcp_ms": 80,
+      "ready_ms": 107.39999999996508,
+      "html_bytes": 8603,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 80,
+      "ready_ms": 104,
+      "html_bytes": 8603,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "eshop_categories_admin-detail",
+    "before": {
+      "fcp_ms": 56,
+      "ready_ms": 73.5,
+      "html_bytes": 8604,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 56,
+      "ready_ms": 68.39999999996508,
+      "html_bytes": 8604,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "eshop_attributes_admin-overview",
+    "before": {
+      "fcp_ms": 316,
+      "ready_ms": 349,
+      "html_bytes": 7963,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 324,
+      "ready_ms": 345.1000000000349,
+      "html_bytes": 7956,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "eshop_attributes_admin-overview",
+    "before": {
+      "fcp_ms": 280,
+      "ready_ms": 289.30000000004657,
+      "html_bytes": 7958,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 304,
+      "ready_ms": 321.30000000004657,
+      "html_bytes": 7957,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "eshop_attributes_admin-overview",
+    "before": {
+      "fcp_ms": 296,
+      "ready_ms": 322.8999999999651,
+      "html_bytes": 7958,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 320,
+      "ready_ms": 348.79999999998836,
+      "html_bytes": 7956,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "eshop_attributes_admin-overview",
+    "before": {
+      "fcp_ms": 276,
+      "ready_ms": 296.3999999999651,
+      "html_bytes": 7957,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 304,
+      "ready_ms": 321.19999999995343,
+      "html_bytes": 7957,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "cold",
+    "route": "eshop_attributes_admin-detail",
+    "before": {
+      "fcp_ms": 296,
+      "ready_ms": 320.79999999998836,
+      "html_bytes": 7965,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 324,
+      "ready_ms": 352.4000000000233,
+      "html_bytes": 7966,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "light",
+    "viewport": {
+      "width": 1036,
+      "height": 703
+    },
+    "cache": "warm",
+    "route": "eshop_attributes_admin-detail",
+    "before": {
+      "fcp_ms": 276,
+      "ready_ms": 280.29999999998836,
+      "html_bytes": 7966,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 308,
+      "ready_ms": 313.4000000000233,
+      "html_bytes": 7965,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "cold",
+    "route": "eshop_attributes_admin-detail",
+    "before": {
+      "fcp_ms": 296,
+      "ready_ms": 327,
+      "html_bytes": 7966,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 328,
+      "ready_ms": 356.4000000000233,
+      "html_bytes": 7967,
+      "css_bytes": 31248,
+      "css_decoded_bytes": 232803
+    },
+    "pixels_equal": true
+  },
+  {
+    "theme": "dark",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "cache": "warm",
+    "route": "eshop_attributes_admin-detail",
+    "before": {
+      "fcp_ms": 272,
+      "ready_ms": 284.79999999993015,
+      "html_bytes": 7967,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    },
+    "after": {
+      "fcp_ms": 304,
+      "ready_ms": 312.5999999999767,
+      "html_bytes": 7966,
+      "css_bytes": 0,
+      "css_decoded_bytes": 232803
+    }
+  }
+]

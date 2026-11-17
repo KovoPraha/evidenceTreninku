@@ -1,0 +1,218 @@
+[
+  {
+    "mode": "before",
+    "shape": "repeated",
+    "rows": 30000,
+    "samples": [
+      {
+        "ms": 242.8885,
+        "peak_bytes": 46622000
+      },
+      {
+        "ms": 181.0134,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 190.5307,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 198.3832,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 173.9924,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 195.5062,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 210.7995,
+        "peak_bytes": 46615664
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "after",
+    "shape": "repeated",
+    "rows": 30000,
+    "samples": [
+      {
+        "ms": 71.2632,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 76.3765,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 73.74,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 58.2686,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 58.7034,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 58.3941,
+        "peak_bytes": 20992
+      },
+      {
+        "ms": 61.2325,
+        "peak_bytes": 20992
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "before",
+    "shape": "unique",
+    "rows": 30000,
+    "samples": [
+      {
+        "ms": 239.402,
+        "peak_bytes": 46622000
+      },
+      {
+        "ms": 233.2561,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 231.0465,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 190.6629,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 186.7249,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 200.3035,
+        "peak_bytes": 46615664
+      },
+      {
+        "ms": 329.2634,
+        "peak_bytes": 46615664
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  },
+  {
+    "mode": "after",
+    "shape": "unique",
+    "rows": 30000,
+    "samples": [
+      {
+        "ms": 264.9333,
+        "peak_bytes": 221920
+      },
+      {
+        "ms": 310.0002,
+        "peak_bytes": 221920
+      },
+      {
+        "ms": 335.9423,
+        "peak_bytes": 221920
+      },
+      {
+        "ms": 243.132,
+        "peak_bytes": 221920
+      },
+      {
+        "ms": 252.0893,
+        "peak_bytes": 221920
+      },
+      {
+        "ms": 306.8979,
+        "peak_bytes": 221920
+      },
+      {
+        "ms": 315.5235,
+        "peak_bytes": 221920
+      }
+    ],
+    "keys": [
+      "LOCALHOST_key_0",
+      "LOCALHOST_key_1",
+      "LOCALHOST_key_10",
+      "LOCALHOST_key_11",
+      "LOCALHOST_key_12",
+      "LOCALHOST_key_13",
+      "LOCALHOST_key_14",
+      "LOCALHOST_key_15",
+      "LOCALHOST_key_2",
+      "LOCALHOST_key_3",
+      "LOCALHOST_key_4",
+      "LOCALHOST_key_5",
+      "LOCALHOST_key_6",
+      "LOCALHOST_key_7",
+      "LOCALHOST_key_8",
+      "LOCALHOST_key_9"
+    ],
+    "sha256": "d169edded6d5fbc3823946db0900b2b43f81d49bbed17306498c6e6a3518361a"
+  }
+]
