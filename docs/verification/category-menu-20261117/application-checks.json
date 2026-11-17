@@ -1,0 +1,21 @@
+{
+  "number": "490",
+  "base": "832048619c3b5c4977e614a5c746979e03a30815",
+  "head": "8a545bb88f52029bf521a62d60d1d81cf2dea440",
+  "tree": "4931882cb8228ab2c56641685e0b78de23c9eb59",
+  "checks": {
+    "Category menu read HTTP (MariaDB 10.3)": "SUCCESS",
+    "Analyze (actions)": "SUCCESS",
+    "docs": "SUCCESS",
+    "PHPStan level 5 and changed-file style": "SUCCESS",
+    "PHPUnit na PHP 8.2": "SUCCESS",
+    "Category menu read HTTP (MariaDB 11.4)": "SUCCESS",
+    "Analyze (javascript-typescript)": "SUCCESS",
+    "Analyze (python)": "SUCCESS",
+    "MariaDB integra\u010dn\u00ed smoke (MariaDB 10.3)": "SUCCESS",
+    "MariaDB integra\u010dn\u00ed smoke (MariaDB 11.4)": "SUCCESS",
+    "MariaDB profily \u010dten\u00ed (MariaDB 10.3)": "SUCCESS",
+    "MariaDB profily \u010dten\u00ed (MariaDB 11.4)": "SUCCESS",
+    "CodeQL": "SUCCESS"
+  }
+}

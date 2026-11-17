@@ -1,0 +1,19 @@
+{
+  "run": 44152881039,
+  "merge_sha": "a3796752830c7d82503a52be6c1d6bfafd892c29",
+  "tree": "4931882cb8228ab2c56641685e0b78de23c9eb59",
+  "workflow_conclusion": "success",
+  "verified": true,
+  "tests": 2496,
+  "assertions": 57239,
+  "tables": 394,
+  "triggers": 2,
+  "direct_http": 200,
+  "smoke_http": 200,
+  "import_executed": false,
+  "uat_schvaleno": false,
+  "pending_migrations": [],
+  "variable_symbols_unchanged": true,
+  "medical_index_unchanged": true,
+  "live_anonymous_before_after_equal": true
+}
