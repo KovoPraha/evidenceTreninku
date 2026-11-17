@@ -388,3 +388,8 @@ PR #490, první CI44148895506: HTTP baseline pod booking symlinkem načítala
 nový includes kvůli PHP __DIR__. Výsledky HTTP nepoužitelné pro před/po,
 zjištěno gain bránou; fixture opravena fyzickou kopií a realpath asercí.
 Aplikační algoritmus/tolerance beze změny. Celé CI/profily znovu před mergem.
+
+Druhý běh44149428209: nativní/HTTP10.3 PASS, Chrome zastavil CSP obrázků na
+nesprávném portu. Vlastní APP_BASE_URL env pro každý worker; normalizace jen
+očekávaného loopback originu při HTML/hlavičkovém srovnání. CSP/payloady/cesty
+beze změny, žádné ignorované chyby. Celé ověření znovu.

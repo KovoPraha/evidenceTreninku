@@ -47,3 +47,11 @@ obě stránky tedy měřily nový algoritmus. Nativní procesy porovnávaly spr�
 frozen oracle, celé HTTP z tohoto běhu není důkaz před/po. Oprava fixture:
 fyzická kopie booking jako už dříve kořenových PHP/includes, aserce realpath.
 Funkční změna aplikace a tolerance stejné, celé CI i profily běží znovu.
+
+Druhý běh [44149428209](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44149428209):
+nativní/HTTP brány PASS na10.3, Chrome na11.4 zastavil CSP (placeholder obrázky
+nové stránky odkazovaly starý port kvůli společné APP_BASE_URL konfiguraci).
+Fixture nastaví existující APP_BASE_URL env každému workeru na jeho vlastní
+loopback origin. CSP i assety nedotčené, žádná povolená chyba/mock. V HTTP
+porovnání se normalizuje pouze tato očekávaná dvojice původů, všechny cesty,
+atributy a hlavičky se dále porovnávají. Celé profily/CI se znovu opakují.

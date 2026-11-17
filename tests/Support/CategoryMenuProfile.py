@@ -52,7 +52,9 @@ def start_servers():
         args = ["php", "-d", "memory_limit=512M", "-d", "date.timezone=Europe/Prague", "-d", "display_errors=1",
                 "-d", "session.save_handler=files", "-d", "session.save_path="+str(runtime/"sessions")]
         args += ["-S", "127.0.0.1:"+str(port), "-t", str(document_root)]
-        env = os.environ | {"PHP_CLI_SERVER_WORKERS":"4", "P11_HTTP_METRICS":str(runtime/"metrics")}
+        public_port = 18099 if variant == "before" else 18100
+        env = os.environ | {"PHP_CLI_SERVER_WORKERS":"4", "P11_HTTP_METRICS":str(runtime/"metrics"),
+                            "APP_BASE_URL":f"http://127.0.0.1:{public_port}"}
         with (runtime/"private-http.log").open("ab") as log:
             process = subprocess.Popen(args,cwd=document_root,env=env,stdout=log,stderr=log,start_new_session=True)
         if os.getpgid(process.pid) != process.pid or process.pid <= 1:

@@ -121,6 +121,13 @@ try {
                 }
                 $html = preg_replace('/(name="csrf_token"\s+value=")[a-f0-9]{64}(")/', '$1SYNTHETIC_CSRF$2', $html);
                 $html = preg_replace('/(name="checkout_key"\s+value=")[a-f0-9]{32}(")/', '$1SYNTHETIC_CHECKOUT$2', $html);
+                // Each physical server advertises its own origin, including images
+                // under CSP self. Compare every path/attribute with only that origin normalized.
+                $html = str_replace($rt['base_url'], 'http://synthetic.local', $html);
+                foreach ($headers as &$value) {
+                    $value = str_replace($rt['base_url'], 'http://synthetic.local', $value);
+                }
+                unset($value);
                 $signature = [hash('sha256', $html), $headers];
                 $signatures[$id] ??= $signature;
                 if ($signature !== $signatures[$id]) {
