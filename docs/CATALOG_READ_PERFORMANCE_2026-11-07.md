@@ -383,3 +383,8 @@ výjimka se zachovává, není to nově podporovaný případ. Ostatní smíšen
 prázdné a chybné vstupy, skryté rodiče/potomci a rollback proti frozen funkci.
 Nativní MariaDB/Apache/Chrome běží z vlastní syntetické fixture v CI,
 žádný produkční SQL experiment. Merge/nasazení čekají na celé brány.
+
+PR #490, první CI44148895506: HTTP baseline pod booking symlinkem načítala
+nový includes kvůli PHP __DIR__. Výsledky HTTP nepoužitelné pro před/po,
+zjištěno gain bránou; fixture opravena fyzickou kopií a realpath asercí.
+Aplikační algoritmus/tolerance beze změny. Celé CI/profily znovu před mergem.

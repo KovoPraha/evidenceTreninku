@@ -173,11 +173,16 @@ try:
     for entry in root.iterdir():
         if entry.name.startswith(".") or entry.name in {"output", "config.php", "includes"}:
             continue
-        if entry.is_file() and entry.suffix == ".php":
+        if entry.name == "booking":
+            # __DIR__ in a symlinked PHP directory resolves to the new tree.
+            # Physical copies keep dirname(__DIR__)/includes on the old tree.
+            shutil.copytree(entry, baseline_root / entry.name)
+        elif entry.is_file() and entry.suffix == ".php":
             shutil.copy2(entry, baseline_root / entry.name)
         else:
             (baseline_root / entry.name).symlink_to(entry, target_is_directory=entry.is_dir())
     shutil.copytree(root / "includes", baseline_root / "includes")
+    assert (baseline_root / "booking/eshop.php").resolve().parent.parent == baseline_root
     for route, before in baseline.items():
         (baseline_root / route).write_bytes(before)
     (baseline_root / "config.php").symlink_to(root / "config.php")

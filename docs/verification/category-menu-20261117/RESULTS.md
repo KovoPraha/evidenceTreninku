@@ -1,6 +1,6 @@
 # P11-CATMENU — průběžné ověření 17. 11. 2026
 
-Stav: lokální implementace, merge a nasazení NOT RUN. Větev
+Stav: PR [#490](https://github.com/KovoPraha/evidenceTreninku/pull/490), nativní/HTTP přejímka se opakuje; merge a nasazení NOT RUN. Větev
 `codex/catalog-category-menu-performance-20261117`, základ `832048619c3b5c4977e614a5c746979e03a30815`.
 
 Jediná funkční změna: index přímých potomků uvnitř
@@ -39,3 +39,11 @@ Původní WIP `kis_rosters_admin.php` se zachovává v původním worktree,
 SHA256 `7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5`.
 P11-REVIEW odmítnutý kvůli nestabilnímu zisku; důkazy v
 [plánu](../../CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-review--agregace-kontroly-importovaného-katalogu-17-11-2026).
+
+První CI [44148895506](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44148895506)
+neprošlo HTTP gain bránou (16,68→16,39ms na11.4). Diagnóza: symlink celého
+booking adresáře v baseline znamenal, že PHP __DIR__ sáhlo do nového includes,
+obě stránky tedy měřily nový algoritmus. Nativní procesy porovnávaly správný
+frozen oracle, celé HTTP z tohoto běhu není důkaz před/po. Oprava fixture:
+fyzická kopie booking jako už dříve kořenových PHP/includes, aserce realpath.
+Funkční změna aplikace a tolerance stejné, celé CI i profily běží znovu.

@@ -352,3 +352,5 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 17. 11. 2026 — P11-REVIEW nevybráno kvůli nestálému zisku v místním profilu, produkční kód beze změny. Nový P11-CATMENU měří opakované průchody stromu katalogu, bez změny jeho sémantiky. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catmenu--strom-kategorií-veřejného-katalogu-17-11-2026).
 
 - 17. 11. 2026 P11-CATMENU: lokální index a diferenciální hraniční testy; nativní/HTTP/Chrome workflow připraven. [Protokol](verification/category-menu-20261117/RESULTS.md). Merge/deploy čekají.
+
+- 17. 11. 2026 P11-CATMENU PR #490: CI odhalilo chybu HTTP baseline symlinku booking (__DIR__ do nového includes). Fyzická kopie a aserce opravují měření, algoritmus/brány stejné; nativní/HTTP/Chrome i CI se opakují, release NOT RUN.
