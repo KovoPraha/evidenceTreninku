@@ -105,7 +105,7 @@ Pokračování je [R06 nabídka lekcí](ATTENDANCE_LESSON_READ_PERFORMANCE_2026-
 
 ## P11-ATTR — objevování parametrů variant (17. 11. 2026)
 
-**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex. Pokyn vlastníka pokračovat
+**NASAZENO / technická přejímka PASS, přihlášené produkční UAT NOT RUN.** Vlastník vývoj/Codex. Pokyn vlastníka pokračovat
 v optimalizaci stejným postupem: doložit shodu a přínos, po PASS commit/merge/
 chráněné nasazení. Base f8f1c17511a6826411b309d24910f37042dd5bf9,
 větev codex/attribute-discovery-performance-20261117, vlastní worktree
@@ -170,3 +170,67 @@ nejvýše 20 % +5 ms; celé HTTP repeated30k cíl ≥20 % rychlejší a ostatní
 případy bez regrese >20 % +20 ms. Vždy přesná shoda, stejná 2 SQL a checksumy.
 Měřit buffer PDO a nezamlčet menší/žádné paměťové zlepšení MariaDB.
 Native/Chrome/širší CI zatím NOT RUN; přijetí/vydání až po úplném PASS.
+
+
+### ATTR — kontrola režie a nevybrané varianty
+
+Předběžná MariaDB10.3 přejímka na 559795b1 PASS: repeated30k funkce
+121,85→62,96 ms, celé HTTP přehled129,41→74,86 / detail126,92→74,37 ms.
+PHP peak repeated91,81→45,22 MB; unique94,79→48,40 MB. Unique čas funkce
+115,96→132,10 ms (+13,92 %) je skutečná režie, pod předem stanovenou
+20 % +5ms bránou. Není to tvrzení o rychlejším každém katalogu; získává
+se přibližně poloviční PHP peak také na jedinečných datech.
+
+Další lokální sondy nebyly vybrané. Adaptivní omezení cache po128missech
+s1024 vynechanými řádky měřilo repeated232,19→72,51 / unique229,46→253,53ms
+(+10,49 %); neprokázalo výhodu navíc oproti jednodušší variantě.
+fetchColumn místo fetch(PDO::FETCH_NUM) měřil repeated195,51→61,23 /
+unique231,05→306,90ms (+32,83 %) a nesplnil toleranci. Obě sondy jsou
+SQLite a samostatné časové běhy, nikoli nativní zlepšení hlavního headu.
+[Sonda backoff](verification/attribute-discovery-20261117/adaptive-probe.json),
+[sonda fetchColumn](verification/attribute-discovery-20261117/column-probe.json).
+Produkční kandidát zůstává beze změny, včetně bezpečného čtení celého řádku.
+Finální přijetí stále čeká na11.4/Chrome a celé CI; režii zveřejnit v protokolu.
+
+
+### ATTR — merge a chráněné nasazení
+
+Všech 13 kontrol aktuálního 559795b1 SUCCESS. [PR #488](https://github.com/KovoPraha/evidenceTreninku/pull/488)
+sloučen jako 4270d0ccdf97499891a059d70e28df3169444247. Celý testovaný/sloučený
+strom 2426a2ec7629b445717eee536061d87ec0d2a49d shodný. Jediný vlastní dispatch
+[44131137781](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44131137781)
+spuštěn z tohoto main, potvrzení NASADIT, UAT/import false. Nasazení v tomto
+checkpointu běží; výsledek se potvrdí z celého workflow, ne ze samotného startu.
+
+
+### ATTR — dokončení
+
+**P11-ATTR NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-attr--objevování-parametrů-variant-17-11-2026), [výsledky](verification/attribute-discovery-20261117/RESULTS.md). #488/4270d0cc, [deploy 44131137781](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44131137781) SUCCESS, 13 CI. Repeated30k celé HTTP129→75 /234→118ms; PHP peak přibližně poloviční. Unique HTTP má 6–12 % režii. Parita obou DB/8pixelpárů PASS, přihlášené produkční UAT NOT RUN.
+
+Párový běh 44128919479 na 559795b1 SUCCESS na obou MariaDB. Sedm nativních
+distribucí včetně historických hranic, 2 SQL/volání a checksumy beze změny;
+51 celých HTTP scénářů na DB (39 v matici a čtyři sady po třech), každá fáze
+355 nezměněných tabulek. Chrome: 16 případů, 352 měřených a 96 zahřívacích
+navigací, osm identických pixelových
+párů. Celé HTML/hlavičky/role/CSRF/typy/řazení stejné. CSS a UI bez změny.
+
+Repeated 30k: nativní funkce 121,85→62,96 / 187,40→85,50 ms; celé HTTP přehled
+129,41→74,86 / 233,53→117,91 ms, detail 126,92→74,37 / 216,39→107,46 ms.
+Nativní přírůstek PHP peak 91,81→45,22 MB repeated a 94,79→48,40 MB unique
+včetně bufferu mysqlnd, nikoli paměť celého OS/DB. Unique funkce
+115,96→132,10 / 189,94→228,00 ms (cca +14–20 %), celé unique HTTP cca +6–12 %.
+Přijata úspora
+paměti a opakovaného dekódování s touto zveřejněnou režií; není to rychlejší
+každý katalog. Všechny předem stanovené brány prošly beze změny tolerance.
+Úplné mediány/vzorky a nevybrané lokální sondy v protokolu. Produkční SLA
+nebo produkční výkonové měření se tím neprokazuje.
+
+Testovaný/sloučený strom 2426a2ec7629b445717eee536061d87ec0d2a49d, všech 13 CI SUCCESS.
+Chráněný deploy 44131137781: 2491 testů / 57194 kontrol,
+záloha 394 tabulek / 2 triggerů. Konfigurace
+zachovaná, pending migrace [], původní VS/index shodné; aktivace, HTTP 200
+a úklid PASS. UAT/import false, import přeskočený. Nezávislé anonymní GET a CSS před/po
+shodné. Skutečné produkty/definice/objednávky/role neměněné tímto ověřením.
+Původní fio WIP a jeho hash zachovaný; jiné PR/prototypy nepřebírané.
+Doklady samostatným docs PR bez dalšího nasazení; lidské UAT samostatně.
+Další výkonový řez až po novém měření konkrétního kandidáta.

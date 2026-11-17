@@ -1,0 +1,9 @@
+{
+  "includes/shop_attribute.php": {
+    "baseline": "f8f1c17511a6826411b309d24910f37042dd5bf9",
+    "head": "559795b1f1c6b4a4ac96bb10f04f79aaeef4ec1c",
+    "before_sha256": "eb381fd4901a8d80dab72df55fc90a79cea60c185c6b92006dd8b4c14346bcf2",
+    "after_sha256": "ff5710ccc3ad2835e371e1f33ecf23f46ea2513d99d69124ebbe3411c7694ada",
+    "bootstrap_sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8"
+  }
+}
