@@ -1,14 +1,6 @@
-name: Category labels read parity and performance
+name: Category labels historical replay (superseded by descendants)
 
 on:
-  pull_request:
-    paths:
-      - 'includes/shop_category.php'
-      - 'tests/Integration/ShopCategoryLabelReadTest.php'
-      - 'tests/Support/CategoryLabel*'
-      - 'tests/Support/CategoryMenuFixture.php'
-      - 'tests/Support/CategoryMenuComparison.php'
-      - '.github/workflows/category-label-performance.yml'
   workflow_dispatch:
     inputs:
       mariadb_version:

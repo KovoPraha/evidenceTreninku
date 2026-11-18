@@ -1,0 +1,81 @@
+<?php
+
+declare(strict_types=1);
+
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
+$root = dirname(__DIR__, 2);
+$base = 'd92fd79067ea9e63da183088d8d806b86e6f9760';
+$read = static function (string $path) use ($root, $base): string {
+    $process = proc_open(['git', 'show', $base . ':' . $path], [1 => ['pipe', 'w'], 2 => STDERR], $pipes, $root);
+    if (!is_resource($process)) {
+        throw new RuntimeException('Immutable source required.');
+    }
+    $source = (string)stream_get_contents($pipes[1]);
+    fclose($pipes[1]);
+    if (proc_close($process) !== 0) {
+        throw new RuntimeException('Immutable source unavailable.');
+    }
+    return str_replace("\r\n", "\n", $source);
+};
+$local = static fn (string $path): string => str_replace("\r\n", "\n", (string)file_get_contents($path));
+$before = $read('includes/shop_category.php');
+$after = $local($root . '/includes/shop_category.php');
+$scope = static function (string $source): array {
+    $start = strpos($source, 'function shopCategoryDescendants(');
+    $end = strpos($source, '/** @param array<string,array<string,mixed>> $nodes @return list<array', $start);
+    if ($start === false || $end === false || substr_count($source, 'function shopCategoryDescendants(') !== 1) {
+        throw new RuntimeException('Unique descendant scope required.');
+    }
+    return [substr($source, 0, $start), substr($source, $start, $end - $start), substr($source, $end)];
+};
+[$prefix, $function, $suffix] = $scope($before);
+[$newPrefix, $newFunction, $newSuffix] = $scope($after);
+$menuStart = strpos($suffix, 'function shopStorefrontCategoryMenu(');
+$newMenuStart = strpos($newSuffix, 'function shopStorefrontCategoryMenu(');
+$menu = substr($suffix, $menuStart);
+$pure = str_replace(
+    'function shopStorefrontCategoryMenu(PDO $pdo, array $products)',
+    'function shopStorefrontCategoryMenuFromNodes(array $nodes, array $products)',
+    $menu
+);
+$pure = str_replace('    $nodes = shopCategoryNodes($pdo);' . "\n", '', $pure);
+$wrapper = <<<'PHP'
+function shopStorefrontCategoryMenu(PDO $pdo, array $products): array
+{
+    return shopStorefrontCategoryMenuFromNodes(shopCategoryNodes($pdo), $products);
+}
+
+/** @param array<string,array<string,mixed>> $nodes
+ * @param list<array<string,mixed>> $products @return list<array<string,mixed>>
+ */
+PHP;
+$page = $read('includes/shop_catalog_page_read.php');
+$start = strpos($page, 'function shopCatalogPageSelect(');
+$end = strpos($page, '/** One read operation;', $start);
+if (rtrim($function) . "\n" !== $local(__DIR__ . '/CategoryDescendantsBaseline.txt')
+    || rtrim(substr($page, $start, $end - $start)) . "\n" !== $local(__DIR__ . '/CategoryDescendantsSelectBaseline.txt')
+    || $menu !== $local(__DIR__ . '/CategoryDescendantsMenuBaseline.txt')
+) {
+    throw new RuntimeException('Frozen helper/selection differs from immutable baseline.');
+}
+$expectedPage = str_replace(
+    '$categoryMenu = shopStorefrontCategoryMenu($pdo, $products);',
+    '$categoryMenu = $pdo->inTransaction()' . "\n"
+        . '        ? shopStorefrontCategoryMenu($pdo, $products)' . "\n"
+        . '        : shopStorefrontCategoryMenuFromNodes($categoryNodes, $products);',
+    $page,
+    $replacements
+);
+if ($prefix !== $newPrefix || substr($suffix, 0, $menuStart) !== substr($newSuffix, 0, $newMenuStart)
+    || $newFunction !== $local(__DIR__ . '/CategoryDescendantsCandidate.txt') . "\n"
+    || substr($newSuffix, $newMenuStart) !== $wrapper . "\n" . $pure
+    || $replacements !== 1 || $expectedPage !== $local($root . '/includes/shop_catalog_page_read.php')
+) {
+    throw new RuntimeException('Only the pinned descendant, exact menu extraction and one callsite may change.');
+}
+echo json_encode(['complete' => true, 'base' => $base, 'only_pinned_category_changes' => true,
+    'category_surroundings_equal' => true, 'frozen_helper_selection_menu_equal' => true, 'selection_callsite_only_changed' => true,
+    'source_sha256' => hash('sha256', $after), 'frozen_sha256' => hash('sha256', $function)], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR), "\n";

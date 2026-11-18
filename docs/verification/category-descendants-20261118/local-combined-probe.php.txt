@@ -1,0 +1,27 @@
+<?php
+declare(strict_types=1);
+if (PHP_SAPI !== 'cli') { exit(1); }
+require __DIR__.'/../tests/Support/CategoryDescendantsBaseline.php';
+require __DIR__.'/../tests/Support/CategoryMenuFixture.php';
+final class CombinedProbePdo extends PDO {
+ public int $queries=0;
+ public function query(string $query, ?int $fetchMode=null, mixed ...$args): PDOStatement|false {
+  $this->queries++;return $fetchMode===null?parent::query($query):parent::query($query,$fetchMode,...$args);
+ }
+}
+$results=[];
+foreach([['flat',30,false],['flat',1000,true],['tree',500,true],['tree',1000,true],['chain',500,true]]as[$shape,$count,$filtered]){
+ $pdo=new CombinedProbePdo('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+ $pdo->exec('CREATE TABLE shop_product_categories(product_id INT,category_path TEXT);CREATE TABLE shop_member_category_rules(category_path TEXT);CREATE TABLE shop_category_meta(category_path TEXT PRIMARY KEY,display_name TEXT,parent_path TEXT NULL,sort_order INT,visible_in_menu INT,description TEXT NULL)');
+ $products=categoryMenuFixture($pdo,$count,$shape);$products[0]+=['public_name'=>'LOCALHOST','public_summary'=>'','min_amount_minor'=>100];
+ $input=$filtered?['kategorie'=>'LOCALHOST-0']:[];$samples=['before'=>[],'after'=>[]];$expected=null;
+ for($round=-2;$round<11;$round++)foreach($round%2===0?array_keys($samples):array_reverse(array_keys($samples))as$mode){
+  $pdo->queries=0;memory_reset_peak_usage();$mem=memory_get_usage();$start=hrtime(true);
+  $value=$mode==='before'?categoryDescendantsSelectBaseline($pdo,$products,$input):shopCatalogPageSelect($pdo,$products,$input);
+  $ms=(hrtime(true)-$start)/1e6;$peak=memory_get_peak_usage()-$mem;$hash=hash('sha256',serialize($value));$expected??=$hash;
+  if($hash!==$expected||$pdo->queries!==($mode==='before'?6:3))throw new RuntimeException('State or query budget differs');
+  unset($value);if($round>=0)$samples[$mode][]=['ms'=>$ms,'peak_bytes'=>$peak,'sql'=>$pdo->queries,'sha256'=>$hash];
+ }
+ $results[]=['shape'=>$shape,'categories'=>$count,'filtered'=>$filtered,'exact_equal'=>true,'samples'=>$samples];
+}
+echo json_encode($results,JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR),"\n";

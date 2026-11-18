@@ -1,0 +1,69 @@
+function shopStorefrontCategoryMenu(PDO $pdo, array $products): array
+{
+    $nodes = shopCategoryNodes($pdo);
+    $direct = [];
+    foreach ($products as $product) {
+        foreach (($product['categories'] ?? []) as $path) {
+            try {
+                $path = shopCategoryPath((string)$path);
+            } catch (InvalidArgumentException) {
+                continue;
+            }
+            $direct[$path][(int)($product['product_id'] ?? 0)] = true;
+        }
+    }
+    // Match the original strict parent comparison, including PHP key types.
+    $key = static fn (string|int $path): string => is_int($path) ? 'i:' . $path : 's:' . $path;
+    $children = [];
+    foreach ($nodes as $childPath => $node) {
+        $parent = $node['parent_path'] ?? null;
+        if (is_string($parent) || is_int($parent)) {
+            $children[$key($parent)][] = $childPath;
+        }
+    }
+    $descendants = static function (string $selectedPath) use ($nodes, $children, $key): array {
+        $selectedPath = shopCategoryPath($selectedPath);
+        if (!isset($nodes[$selectedPath])) {
+            return [];
+        }
+        $result = [];
+        $queue = [$selectedPath];
+        $seen = [];
+        // Keep breadth-first insertion order; skip repeats only when dequeued.
+        for ($cursor = 0; $cursor < count($queue); $cursor++) {
+            $path = $queue[$cursor];
+            $typed = $key($path);
+            if (isset($seen[$typed])) {
+                continue;
+            }
+            $seen[$typed] = true;
+            $result[] = $path;
+            foreach ($children[$typed] ?? [] as $child) {
+                $queue[] = $child;
+            }
+        }
+        return $result;
+    };
+    $menu = [];
+    foreach (shopCategoryTreeOrder($nodes) as $node) {
+        if (!(bool)$node['visible_in_menu']) {
+            continue;
+        }
+        $paths = $descendants((string)$node['category_path']);
+        $productIds = [];
+        foreach ($paths as $path) {
+            foreach (array_keys($direct[$path] ?? []) as $productId) {
+                $productIds[$productId] = true;
+            }
+        }
+        $count = count($productIds);
+        if ($count < 1) {
+            continue;
+        }
+        $node['product_count'] = $count;
+        $node['descendant_paths'] = $paths;
+        $node['menu_label'] = shopCategoryMenuLabel($nodes, (string)$node['category_path']);
+        $menu[] = $node;
+    }
+    return $menu;
+}

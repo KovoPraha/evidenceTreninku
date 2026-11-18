@@ -1,13 +1,6 @@
-name: Catalog category counts read parity and performance
+name: Catalog category counts historical replay (superseded by category read)
 
 on:
-  pull_request:
-    paths:
-      - 'includes/shop_catalog_page_read.php'
-      - 'tests/Integration/CatalogTopCountsReadTest.php'
-      - 'tests/Support/CatalogTopCounts*'
-      - 'tests/Support/CategoryMenuComparison.php'
-      - '.github/workflows/catalog-top-counts-performance.yml'
   workflow_dispatch:
     inputs:
       mariadb_version:

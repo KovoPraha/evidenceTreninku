@@ -1,0 +1,19 @@
+function probeIndexedDescendants(array $nodes, string $selectedPath): array
+{
+    $selectedPath = shopCategoryPath($selectedPath);
+    if (!isset($nodes[$selectedPath])) { return []; }
+    $key = static fn (string|int $path): string => is_int($path) ? 'i:' . $path : 's:' . $path;
+    $children = [];
+    foreach ($nodes as $childPath => $node) {
+        $parent = $node['parent_path'] ?? null;
+        if (is_string($parent) || is_int($parent)) { $children[$key($parent)][] = $childPath; }
+    }
+    $result = []; $queue = [$selectedPath]; $seen = [];
+    for ($cursor = 0; $cursor < count($queue); $cursor++) {
+        $path = $queue[$cursor]; $typed = $key($path);
+        if (isset($seen[$typed])) { continue; }
+        $seen[$typed] = true; $result[] = $path;
+        foreach ($children[$typed] ?? [] as $child) { $queue[] = $child; }
+    }
+    return $result;
+}

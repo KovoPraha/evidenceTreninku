@@ -653,3 +653,139 @@ WIP/HEAD/hash zachované a jiné PR nepřebírané.
 
 Další případné sdílené načítání uzlů zůstává koncept k samostatnému profilu.
 Tímto vydáním se další funkční rozsah neotevírá.
+
+
+## P11-CATREAD — další čtení kategorií (18. 11. 2026)
+
+**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex; pokyn vlastníka
+„pokračuj v práci“ navazuje na optimalizace s přesnou paritou, měřením,
+commitem/mergem a chráněným deployem při úplném PASS. Base
+d92fd79067ea9e63da183088d8d806b86e6f9760, větev
+codex/catalog-node-read-performance-20261118, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+CATTOP runtime43121578/deploy44269813909 SUCCESS ověřený, neopakovat.
+
+Porovnat dvě zbývající CPU/read varianty v celém shopCatalogPageSelect:
+1. sdílení již načtených uzlů s menu uvnitř jediného volání (6→3SQL),
+2. index rodič→děti pro veřejný shopCategoryDescendants, který dosud při
+   zvoleném filtru skenuje všechny uzly pro každého navštíveného potomka.
+Druhá varianta navazuje na již indexované menu, zachovat však veřejný BFS
+kontrakt: přesný pořádek, PHP typy klíčů/rodičů, cykly, prázdné/chybějící
+cesty a stejné výjimky. Bez změny normalizace, cen, prodejnosti, writerů,
+cache či limitu. Zvolit podle místního párového profilu; nenasadit obě
+varianty automaticky. Baseline vždy aktuální main, žádné staré zisky.
+
+Před implementací uložit sondu a celé stavy/typy/hash i opačné směry.
+Přijmout jen kandidát s ≥20% ziskem celého nativního výběru a odpovídajícího
+celého filtrovaného HTTP na obou MariaDB10.3/11.4 na dvou velkých tvarech
+určených před nativním měřením. Kontroly≤20%+5ms funkce/+20msHTTP,
+Chrome FCP/ready≤20%+20ms. Všechny vzorky a PHPpeak zveřejnit, žádná
+tolerance změněná podle výsledku. Celé návratové stavy/HTML/hlavičky/CSRF,
+checksumy355tabulek, skutečný Chrome desktop/mobil/cold/warm a pixely.
+Source contract připne celý modul mimo jediný vybraný algoritmus. Původní
+unit testy pokračují. Historické source-locked workflows zachovat pro replay
+na původním headu; aktuální lane musí převzít plnou přejímku, ne snížit brány.
+
+Při úplném PASS všech aktuálních CI commit/merge, jediný chráněný deploy se
+zálohou/config/migracemi/VS/indexem/HTTP/úklidem, UAT/importfalse. Produkční
+výkonový profil a přihlášené/lidské UAT NOT RUN. Finální doklady vlastním
+docs PR do main bez dalšího deploye. Další krok je lokální diferenciální
+profil obou variant, aplikace zatím beze změny.
+
+
+### CATREAD — volba kandidáta a pevná přejímka
+
+Místní SQLite/PHP8.2.12, celý Select,2warmup+11střídavých trojic. Celé
+stavy/typy/hash přesně stejné, strict oracle. Vybrán indexovaný veřejný
+shopCategoryDescendants (CATDESC), tree500 filtr187,89→77,55ms, tree1000
+623,78→107,87ms. Sdílení uzlů tree1000 filtr623,78→659,77ms; zůstává koncept.
+Nezměněné přehledy mají na stanici výkyvy až+28%; proto jde jen o diagnózu,
+nikoli úspěšnou přejímku či produkční profil. Všechny směry v tabulce:
+
+| Tvar/uzly | Režim | Původní ms | Sdílené uzly ms | Index potomků ms |
+| --- | --- | ---: | ---: | ---: |
+| flat/30 | přehled | 1.75 | 2.01 | 2.03 |
+| flat/30 | filtr | 2.17 | 1.51 | 3.09 |
+| flat/1000 | přehled | 130.18 | 86.77 | 117.26 |
+| flat/1000 | filtr | 104.22 | 82.58 | 106.45 |
+| tree/500 | přehled | 67.64 | 49.46 | 84.89 |
+| tree/500 | filtr | 187.89 | 148.11 | 77.55 |
+| tree/1000 | přehled | 145.18 | 97.49 | 186.14 |
+| tree/1000 | filtr | 623.78 | 659.77 | 107.87 |
+| chain/250 | přehled | 190.84 | 174.22 | 221.59 |
+| chain/250 | filtr | 185.49 | 219.50 | 171.29 |
+| chain/500 | přehled | 944.05 | 725.11 | 708.60 |
+| chain/500 | filtr | 911.20 | 600.62 | 681.15 |
+| mixed/1000 | přehled | 783.99 | 593.90 | 627.02 |
+| mixed/1000 | filtr | 947.76 | 738.31 | 901.27 |
+
+[Sonda/vzorky](verification/category-descendants-20261118/RESULTS.md), reprodukce pouze v odděleném checkoutu base d92fd790.
+Pouze veřejný helper Descendants: typed index a BFS cursor/seen, žádná
+změna ostatních funkcí ani modulu Select. Původní veřejná signatura i6SQL
+zůstávají. Přesné cykly, numericstring/int klíče, pořadí a normalizace.
+
+Před nativním měřením cíle konkrétně tree500/tree1000, filtr LOCALHOST-0:
+≥20% celý Select i category HTTP (anonym/zákazník) na obou DB. Kontroly a
+Chrome dle původních tolerancí. 10native profilů/DB (9tvarů +nezměněný
+přehled),36HTTP scénářů/DB. HTTP fixture před časováním ověří počet uzlů
+a potomků a objemy uloží do bezpečných výsledků. Chrome při tree1000,
+filtr kořene s produktem;355checksumů po každé fázi i Chrome. Žádné nové
+oslabení tolerance podle místních výkyvů. Zamčená CATLABEL lane zachovaná
+pro replay přesného28496cca7f6ff97b37e91aac7f2587dd9516de1d; nová CATDESC
+lane přebírá plnou paritu/CSP/HTTP/Chrome a aktuální baseline d92fd790.
+CATTOP/historická CATMENU i obecné testy zachované. Native/deploy čekají.
+
+
+### CATREAD — samostatný index odmítnut, kombinovaný kandidát
+
+18. 11. 2026: head7b0e0bc7/běh44362076843 nesplnil celé HTTP tree500≥20%:
+10.3 anonym17,821→14,486ms (18,7%),11.4 zákazník30,779→26,006ms (15,5%).
+Native PASS; tree1000/Chrome dále NOT RUN, merge/deploy NOT RUN.
+[Neúspěšný doklad](verification/category-descendants-20261118/rejected-first/RESULTS.md).
+Žádná tolerance se nezměkčuje a kandidát se nenásobí pouhým opakováním běhu.
+
+Nová výslovná volba vývoje v rámci pokynu pokračovat: kombinovat dvě původně
+profilované varianty. Zachovat index potomků a předat již lokálně načtené
+uzly čistému helperu menu, čímž celý Select místo6SQL provede3SQL. Původní
+PDO veřejná signatura menu zůstane wrapperem se3SQL; nový array helper je
+bez SQL. Nové uzly vznikají při každém volání, žádná statická/session/cache.
+Konzistentní stejná data v jednom Select nahrazují dvě samostatné inventury;
+metadata změněná mezi požadavky či v transakci musí být vždy čerstvě vidět.
+Původní chování souběžné editace mezi dvěma původními čteními není garantovaný
+snapshot kontrakt; nově výběr a menu záměrně používají tutéž lokální inventuru.
+
+Rozsah se zvětšuje pouze o extrakci beze změny těla menu a jeden callsite
+v Select. Source contract připne i celé původní menu, veřejný wrapper,
+přesnou extrakci a jedinou náhradu callsite; zbytek obou modulů beze změny.
+Frozen native před bude celý Select+Descendants+Menu z baseline d92fd790
+(6SQL), po3SQL. HTTP před použije oba původní celé moduly ve fyzické kopii.
+CATTOP zamčená lane se zachová pro replay původního d66cbcd8; nová CATREAD
+lane přebírá oba moduly a původní testy. CATLABEL replay28496cca zachovaný.
+Nezměněné původní cíle tree500/tree1000≥20% na obou DB (nativní celý Select
+i category HTTP anonym/zákazník), stejné kontroly/Chrome/paměťové zveřejnění.
+Nejdřív nová lokální parita kombinace, potom všechny CI/profily od začátku.
+
+
+### CATREAD — kombinovaná lokální parita a transakční hranice
+
+Místní celé stavy/hash přesně shodné, outsideTX6→3SQL,2warmup+11střídavých
+párů. Sonda vyžaduje aktuální kombinovaný kandidát/frozen baseline helpery,
+nikoli checkout původního main. [Sonda a data](verification/category-descendants-20261118/RESULTS.md).
+
+| Tvar/uzly | Režim | Celý Select ms před → po |
+| --- | --- | ---: |
+| flat/30 | přehled | 2.40 → 1.66 |
+| flat/1000 | filtr | 126.86 → 83.96 |
+| tree/500 | filtr | 180.75 → 47.15 |
+| tree/1000 | filtr | 692.54 → 85.80 |
+| chain/500 | filtr | 937.68 → 765.11 |
+
+Původní CatalogPageReadCompatibilityTest zachytil transakční SQL sekvenci,
+která musí zůstat přesně původní. Žádný test nebyl oslaben: Select v transakci
+nadále volá původní veřejné menu/6SQL; mimo transakci sdílí uzly/3SQL.
+Nový test ověřuje oba rozpočty, samotný pure helper0SQL i veřejný wrapper3SQL.
+Lokální sonda byla před přidáním tohoto transakčního guardu a měří jen outsideTX;
+finální native/HTTP CI bude nad plným kandidátem včetně guardu. Původní brány
+tree500/tree1000≥20% a tolerance kontrol/Chrome beze změny. Nová přejímka čeká.
