@@ -657,7 +657,7 @@ Tímto vydáním se další funkční rozsah neotevírá.
 
 ## P11-CATREAD — další čtení kategorií (18. 11. 2026)
 
-**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex; pokyn vlastníka
+**NASAZENO / technická přejímka PASS, přihlášené produkční UAT NOT RUN.** Vlastník vývoj/Codex; pokyn vlastníka
 „pokračuj v práci“ navazuje na optimalizace s přesnou paritou, měřením,
 commitem/mergem a chráněným deployem při úplném PASS. Base
 d92fd79067ea9e63da183088d8d806b86e6f9760, větev
@@ -691,8 +691,8 @@ na původním headu; aktuální lane musí převzít plnou přejímku, ne sníž
 Při úplném PASS všech aktuálních CI commit/merge, jediný chráněný deploy se
 zálohou/config/migracemi/VS/indexem/HTTP/úklidem, UAT/importfalse. Produkční
 výkonový profil a přihlášené/lidské UAT NOT RUN. Finální doklady vlastním
-docs PR do main bez dalšího deploye. Další krok je lokální diferenciální
-profil obou variant, aplikace zatím beze změny.
+docs PR do main bez dalšího deploye. Původní další krok byl lokální diferenciální
+profil obou variant před změnou aplikace; dokončení níže.
 
 
 ### CATREAD — volba kandidáta a pevná přejímka
@@ -789,3 +789,41 @@ Nový test ověřuje oba rozpočty, samotný pure helper0SQL i veřejný wrapper
 Lokální sonda byla před přidáním tohoto transakčního guardu a měří jen outsideTX;
 finální native/HTTP CI bude nad plným kandidátem včetně guardu. Původní brány
 tree500/tree1000≥20% a tolerance kontrol/Chrome beze změny. Nová přejímka čeká.
+
+18. 11. 2026 — CATREAD kombinace fc4efb64/běh44364589030 PASS na obou DB:10native/36HTTP scénářů naDB,355checksumů i po Chrome,8Chrome/176+48navigací/4pixelpáry, desktop/mobil také vizuálně ověřené. Tree1000 categoryHTTP anonym45,1→21,8ms /32,2→15,8ms; zákazník53,5→30,1 /38,3→21,2ms. Tree500 oba kontexty≥20%, všechny původní brány stejné. Plný místní PHPStan957souborů PASS. Obecné CI/merge/deploy čekají.
+
+18. 11. 2026 — CATREAD #496 po13CI PASS sloučeno `e846e5a5afa5aaaa14516f2cdd353f6f58a22e40`, strom `a578c0f29a3197d0d69b7185adfcb1b3a06c616b` shodný s testovaným headem. [Deploy44367469594](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44367469594) spuštěn jednou, produkční potvrzení čeká; UAT/importfalse.
+
+
+### CATREAD — dokončení (18. 11. 2026)
+
+**P11-CATREAD NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catread--další-čtení-kategorií-18-11-2026), [výsledky](verification/category-descendants-20261118/RESULTS.md). #496/e846e5a5, [deploy44367469594](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44367469594) SUCCESS,13CI. Tree1000 filtrHTTP 45.0→21.8ms / 32.2→15.8ms; stav/36scénářů naDB/4pixelpáry PASS. MimoTX6→3SQL, insideTX původní6SQL. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
+
+Párový běh44364589030 nafc4efb64 SUCCESS na obou DB:
+10nativních profilů/DB, přesný celý Select/stav/typy/serializedhash a
+checksumy, outsideTX6→3SQL. Tree500 celý categoryHTTP 26.0→19.0ms / 18.1→13.2ms, tree1000
+45.0→21.8ms / 32.2→15.8ms. Anonym i zákazník oba velké cíle≥20%; všechny kontroly a původní
+tolerance stejné. 36celých HTTP scénářů/DB a355checksumů po každé fázi i Chrome.
+Chrome8případů,176měřených+48zahřívacích navigací,4shodné pixelové páry,
+formuláře/geometrie/styly/CSS/JS stejné, bez síťových/console chyb. Desktop/
+mobil snímky také vizuálně ověřené. Všechny směry/paměť v úplném protokolu.
+
+Samostatný index byl nejprve správně odmítnut na původní20%HTTP bráně;
+první bezpečné artefakty zachované v rejected-first. Kombinace je výslovná
+změna rozsahu (index potomků +pouze lokální sdílení uzlů). Původní
+CatalogPageReadCompatibilityTest beze změny, uvnitř transakce přesná stará
+SQL sekvence6→6, mimo ni6→3. PDO menu signatura/3SQL stejné, pure menu0SQL.
+Tělo menu byteově stejné, ostatní části obou modulů připnuté source kontraktem,
+frozen původní Descendants+Menu+Select z aktuálního baseline d92fd790.
+Žádná cache/limity/ceny/prodejnost/writer změna; fresh metadata/rollback PASS.
+Historické CATLABEL/CATTOP lane zachované pro replay původních headů,
+nová CATREAD lane pokrývá oba moduly a všechny původní testy pokračují.
+
+Testovaný/sloučený strom `a578c0f29a3197d0d69b7185adfcb1b3a06c616b`,13CI SUCCESS. Chráněný deploy44367469594:
+2512testů/59480kontrol, záloha394tabulek/2triggerů,
+config zachovaný, pending migrace[], VS/zdravotní index stejné. Aktivace/
+HTTP200/úklid PASS, UAT/importfalse. Živé anonymní celé HTML/hlavičky katalogu
+i skutečného veřejného filtru, administrace redirect a CSS před/po stejné.
+Produkční výkonový profil a přihlášené/lidské UAT NOT RUN. Původní fio
+WIP/HEAD/hash zachované, žádné jiné PR nepřebírané. Finální doklady samostatným
+docs PR do main bez dalšího deploye. Další funkční rozsah tímto neotevřen.
