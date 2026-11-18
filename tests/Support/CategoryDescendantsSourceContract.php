@@ -42,7 +42,7 @@ if (rtrim($function) . "\n" !== $local(__DIR__ . '/CategoryDescendantsBaseline.t
     throw new RuntimeException('Frozen helper/selection differs from immutable baseline.');
 }
 if ($prefix !== $newPrefix || $suffix !== $newSuffix
-    || $newFunction !== $local(__DIR__ . '/CategoryDescendantsCandidate.txt')
+    || $newFunction !== $local(__DIR__ . '/CategoryDescendantsCandidate.txt') . "\n"
     || $page !== $local($root . '/includes/shop_catalog_page_read.php')
 ) {
     throw new RuntimeException('Only the pinned descendant helper may change.');

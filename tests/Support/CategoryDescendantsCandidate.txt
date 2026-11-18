@@ -31,4 +31,3 @@ function shopCategoryDescendants(array $nodes, string $selectedPath): array
     }
     return $result;
 }
-
