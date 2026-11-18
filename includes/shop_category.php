@@ -122,18 +122,29 @@ function shopCategoryDescendants(array $nodes, string $selectedPath): array
     if (!isset($nodes[$selectedPath])) {
         return [];
     }
+    // Preserve strict parent comparisons, including integer-coerced PHP keys.
+    $key = static fn (string|int $path): string => is_int($path) ? 'i:' . $path : 's:' . $path;
+    $children = [];
+    foreach ($nodes as $childPath => $node) {
+        $parent = $node['parent_path'] ?? null;
+        if (is_string($parent) || is_int($parent)) {
+            $children[$key($parent)][] = $childPath;
+        }
+    }
     $result = [];
     $queue = [$selectedPath];
-    while ($queue !== []) {
-        $path = array_shift($queue);
-        if (in_array($path, $result, true)) {
+    $seen = [];
+    // Breadth-first insertion order; repeats are skipped only when dequeued.
+    for ($cursor = 0; $cursor < count($queue); $cursor++) {
+        $path = $queue[$cursor];
+        $typed = $key($path);
+        if (isset($seen[$typed])) {
             continue;
-        }$result[] = $path;
-        foreach ($nodes as $childPath => $node) {
-            if (($node['parent_path'] ?? null) === $path
-            ) {
-                $queue[] = $childPath;
-            }
+        }
+        $seen[$typed] = true;
+        $result[] = $path;
+        foreach ($children[$typed] ?? [] as $child) {
+            $queue[] = $child;
         }
     }
     return $result;

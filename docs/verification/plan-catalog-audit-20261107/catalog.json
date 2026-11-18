@@ -9440,7 +9440,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11/P11-ATTR/P11-REVIEW/P11-CATMENU/P11-CATLABEL/P11-CATTOP",
-      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. P11-ATTR #488 nasazeno se zveřejněnou unique režií; P11-REVIEW nevybráno. P11-CATMENU #490/a3796752 deploy44152881039 SUCCESS. P11-CATLABEL #492/8347ff50 deploy44189981302 SUCCESS. P11-CATTOP #494/43121578 deploy44269813909 SUCCESS,6native/36HTTP scénářů naDB a4pixelpáry/13CI PASS. 10000×1000 HTTP 1079.3→321.1ms / 828.4→232.8ms; všechny směry/paměť/single-root režie zveřejněné. Sdílené načítání uzlů KONCEPT k samostatnému měření; přihlášené produkční UAT NOT RUN.",
+      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. P11-ATTR #488 nasazeno se zveřejněnou unique režií; P11-REVIEW nevybráno. P11-CATMENU #490/a3796752 deploy44152881039 SUCCESS. P11-CATLABEL #492/8347ff50 deploy44189981302 SUCCESS. P11-CATTOP #494/43121578 deploy44269813909 SUCCESS,6native/36HTTP scénářů naDB a4pixelpáry/13CI PASS. 10000×1000 HTTP 1079.3→321.1ms / 828.4→232.8ms; všechny směry/paměť/single-root režie zveřejněné. Sdílené načítání uzlů KONCEPT k samostatnému měření; přihlášené produkční UAT NOT RUN. P11-CATREAD: nové místní srovnání sdílení uzlů a indexovaného filtru potomků, zatím diagnóza bez app změny. CATDESC vybrán po místním porovnání; tree500/tree1000 pevné native/HTTP cíle≥20%, přejímka čeká.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
         "docs/verification/catalog-release-20261107/RESULTS.md",
@@ -9448,7 +9448,8 @@
         "docs/verification/attribute-discovery-20261117/RESULTS.md",
         "docs/verification/category-menu-20261117/RESULTS.md",
         "docs/verification/category-label-20261117/RESULTS.md",
-        "docs/verification/catalog-top-counts-20261118/RESULTS.md"
+        "docs/verification/catalog-top-counts-20261118/RESULTS.md",
+        "docs/verification/category-descendants-20261118/RESULTS.md"
       ]
     },
     {

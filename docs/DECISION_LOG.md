@@ -789,3 +789,7 @@ shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované
 18. 11. 2026 — CATTOP vybrán po přesné místní paritě:5000×500 1013→163ms a10000×1000 4898→444ms; jediný kořen +14,7 %. Žádné změkčení bran, nativní/HTTP/Chrome přejímka čeká. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-cattop--počty-kořenových-kategorií-18-11-2026).
 
 18. 11. 2026 — P11-CATTOP přijat souhrn doslovných kořenů: přesná shoda i původní fallback, oba velké cíle native/HTTP ≥20% na obou DB a nezměněné kontroly. **P11-CATTOP NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-cattop--počty-kořenových-kategorií-18-11-2026), [výsledky](verification/catalog-top-counts-20261118/RESULTS.md). #494/43121578, [deploy 44269813909](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44269813909) SUCCESS,13 CI. 10000×1000 celé HTTP 1079.3→321.1ms / 828.4→232.8ms; parita/36scénářů naDB/4pixelpáry PASS. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
+
+18. 11. 2026 — P11-CATREAD zahájen po CATTOP; dvě varianty k nové místní diagnóze (sdílení uzlů / indexovaný filtr potomků), nikoli předem deklarovaný zisk. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catread--další-čtení-kategorií-18-11-2026), aplikace zatím beze změny.
+
+18. 11. 2026 — CATREAD vybrán veřejný indexovaný filtr potomků: tree500/1000 celý filtrovaný výběr lokálně187,9→77,6ms /623,8→107,9ms, přesná shoda. Výkyvy kontrol zveřejněné, sdílení uzlů koncept. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catread--další-čtení-kategorií-18-11-2026), native/HTTP/Chrome čekají.
