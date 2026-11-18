@@ -45,10 +45,35 @@ function shopCatalogPageSelect(PDO $pdo, array $products, array $input, ?array $
             $selectedPaths = [];
         }
         $selectedCategoryLabel = (string) ($categoryNodes[$selectedCategory]['display_name'] ?? $selectedCategory);
-        $products = array_values(array_filter(
-            $products,
-            static fn (array $product): bool => array_intersect($selectedPaths, $product['categories']) !== []
-        ));
+        $useCategorySet = $products !== [];
+        foreach ($products as $product) {
+            if (!is_array($product) || !is_array($product['categories'] ?? null)) {
+                $useCategorySet = false;
+                break;
+            }
+            foreach ($product['categories'] as $path) {
+                if (!is_string($path)) {
+                    $useCategorySet = false;
+                    break 2;
+                }
+            }
+        }
+        if ($useCategorySet) {
+            $pathSet = array_fill_keys($selectedPaths, true);
+            $products = $pathSet === [] ? [] : array_values(array_filter($products, static function (array $product) use ($pathSet): bool {
+                foreach ($product['categories'] as $path) {
+                    if (isset($pathSet[$path])) {
+                        return true;
+                    }
+                }
+                return false;
+            }));
+        } else {
+            $products = array_values(array_filter(
+                $products,
+                static fn (array $product): bool => array_intersect($selectedPaths, $product['categories']) !== []
+            ));
+        }
     }
     $catalogSearch = trim((string) ($input['q'] ?? ''));
     $catalogSort = (string) ($input['razeni'] ?? 'order');

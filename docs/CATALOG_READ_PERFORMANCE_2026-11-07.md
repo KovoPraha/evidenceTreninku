@@ -827,3 +827,83 @@ i skutečného veřejného filtru, administrace redirect a CSS před/po stejné.
 Produkční výkonový profil a přihlášené/lidské UAT NOT RUN. Původní fio
 WIP/HEAD/hash zachované, žádné jiné PR nepřebírané. Finální doklady samostatným
 docs PR do main bez dalšího deploye. Další funkční rozsah tímto neotevřen.
+
+
+## P11-CATSEL — výběr katalogu po CATREAD (18. 11. 2026)
+
+**DIAGNÓZA / ROZPRACOVÁNO.** Vývoj/Codex, aktuální explicitní pokyn vlastníka:
+další nejpřínosnější optimalizace, ověřit přesnou shodu, měřit před/po,
+při úplném PASS commit/merge/deploy, zachovat WIP a aktualizovat dokumentaci.
+Base4db60635f1d05f620fef9d9081be297c3bbe877b, větev
+codex/catalog-selection-performance-20261118, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a WIP kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+CATREAD #496/#497 dokončen, runtimee846e5a5/deploy44367469594 SUCCESS
+znovu ověřený; předchozí nasazení neopakovat.
+
+Nová diagnóza celého shopCatalogPageSelect nad dvěma zbývajícími místy:
+1. array_intersect(selectedPaths,categories) opakovaný pro každý produkt;
+   kandidát jednorázový set doslovných cest a membership průchod kategorií,
+2. opakovaný mb_strtolower a tvorba klíčů uvnitř usort; kandidát lokální
+   příprava klíčů při zachování přesného PHP tuple porovnání/stabilních shod.
+Neimplementovat obě varianty automaticky. První lokální měření nad stejným
+celým stavem a aktuálním main určí největší doložený zisk a paměťovou režii.
+Potom upřesnit pouze vybraný blok a brány před nativním měřením.
+
+Přesně zachovat cesty/typy/pořadí, duplicity záznamů i ID, všechny filtry,
+searchMatches, řazení, stránkování a počty před stránkou, výjimky/varování
+u neobvyklých vstupů. Kanonické DTO jsou pole se string kategoriemi; případné
+urychlení má bezpečně vrátit původní algoritmus pro jiné typy, nikoli změnit
+jejich význam nebo předčasně vyhodit výjimku. Bez normalizace cest navíc,
+cache, limitu, SQL/cen/prodejnosti/writerů. Zachovat CATREAD insideTX6SQL /
+outsideTX3SQL a původní transakční test; CATTOP a menu beze změny.
+
+Přejímka: vybrat dva velké objemy před nativním měřením, celý Select i
+odpovídající celé HTTP na obou MariaDB10.3/11.4 musí získat≥20%, ostatní
+kontroly≤20%+5ms native/+20msHTTP. Chrome FCP/ready≤20%+20ms. Původní
+baseline, celé typy/pořadí/hash/HTML/bezpečnostní hlavičky/CSRF,355checksumů,
+skutečný Chrome desktop/mobil/cold/warm a4pixelpáry. Všechny směry/paměť
+zveřejnit, brány neměnit podle výsledku. Source contract připne celý modul
+mimo vybraný blok. Historické source-locked lane zachovat pro replay a
+aktuální lane musí převzít plné přísné testování.
+
+Při úplném PASS všech aktuálních CI přesný testovaný strom, jediný chráněný
+deploy se zálohou/config/migracemi/VS/indexem/HTTP/úklidem, UAT/importfalse.
+Živé čtecí GET před/po včetně skutečné filtrované cesty, žádné skutečné
+objednávky/platby/role/rozesílky. Produkční výkonový profil a přihlášené/lidské
+UAT NOT RUN. Finální doklady vlastním docs PR do main bez dalšího deploye.
+Další krok: lokální diferenciální sonda obou variant, aplikace zatím beze změny.
+
+
+### CATSEL — volba membership filtru a pevná přejímka
+
+SQLite/PHP8.2.12, celý Select,2warmup+7střídavých trojic, canonical string
+DTO. Celé stavy/hash shodné. Membership má největší absolutní zisk ve
+velkém filtrovaném stromu; řadicí klíče zůstávají samostatný koncept.
+Výkyvy nezměněných přehledů jsou také zveřejněné, jde jen o místní diagnózu.
+
+| Produkty/uzly/režim | Původní ms | Membership ms | Řadicí klíče ms |
+| --- | ---: | ---: | ---: |
+| 12/6/přehled | 0.58 | 0.52 | 0.27 |
+| 12/6/filtr | 0.59 | 0.60 | 0.34 |
+| 1000/100/přehled | 113.09 | 66.39 | 14.68 |
+| 1000/100/filtr | 114.62 | 116.79 | 76.24 |
+| 2500/500/přehled | 391.94 | 357.86 | 76.61 |
+| 2500/500/filtr | 744.99 | 243.35 | 557.90 |
+| 5000/1000/přehled | 496.34 | 451.69 | 70.12 |
+| 5000/1000/filtr | 2740.16 | 706.39 | 2341.34 |
+| 10000/1/přehled | 1023.75 | 1087.70 | 129.15 |
+| 10000/1/filtr | 1672.26 | 1179.24 | 149.81 |
+
+Před nativním měřením cíle5000/500 a10000/1000, metadata strom,
+vybraný kořen LOCALHOST-0 zahrnuje všechny produkty. Native celý Select i
+celé category HTTP anonym/zákazník≥20% na obou DB. Ostatní původní tolerance
+beze změny. 9native profilů,46HTTP scénářů/DB včetně selektivního listu,
+overview/no-op a empty/missing kontrol. HTTP fixture před časováním čte
+skutečný PageRead a asertuje aktivní/filtered počet produktů, uzly a potomky.
+Původní transakční kontrakt3/6SQL a celé menu/CATTOP/řazení beze změny.
+Source contract zamkne oba celé moduly mimo jediný blok v PageSelect.
+Historický CATREAD zachovaný pro replayfc4efb64; nová CATSEL lane přebírá
+oba moduly a plnou přísnou přejímku, původní unit a ostatní CI pokračují.
+[Doklady](verification/catalog-selection-20261118/RESULTS.md). Nativní přejímka čeká.
