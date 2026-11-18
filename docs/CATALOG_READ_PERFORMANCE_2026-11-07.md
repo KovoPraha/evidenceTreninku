@@ -543,3 +543,67 @@ WIP/HEAD/hash zachované a jiné PR nepřebírané.
 Další krok je [koncept souhrnu topCategories](#catlabel--další-koncept-k-měření),
 případně samostatný profil sdíleného čtení uzlů. Nejdřív důkazy, bez tvrzení
 přínosu před měřením a bez persistentní cache.
+
+
+## P11-CATTOP — počty kořenových kategorií (18. 11. 2026)
+
+**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex, nový výslovný pokyn
+vlastníka pokračovat CATTOP, ověřit shodu/měření a při úplném PASS commit,
+merge a chráněný deploy. Basea1bf2ba28a6e248ae99eb403d06b75749dcc04cf,
+větev codex/catalog-top-counts-performance-20261118, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a WIP kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+CATLABEL #492/#493 dokončen, poslední runtime8347ff50/deploy44189981302
+SUCCESS ověřený, neopakovat jeho nasazení.
+
+Rozsah pouze výpočet topCategories v shopCatalogPageSelect. Nyní každý
+kořen menu znovu prochází všechny produkty a jejich kategorie. Kandidát:
+počítat doslovný první segment před „ > “ jedním průchodem a deduplikovat
+shodné kořeny uvnitř jednoho záznamu produktu. Počítat záznamy, nikoli ID
+produktů; stejné ID ve dvou záznamech se musí započítat dvakrát. Výsledné
+položky se nadále vytvoří původním pořadím menu a s původními názvy.
+
+Zachovat doslovný ===/str_starts_with význam, bez normalizace cest,
+casefoldingu či záměny hierarchie technické cesty za metadata parent_path.
+Počty jsou nad allProducts před hledáním/filtry/stránkou, nikoli nad12kartami.
+Nezavádět cache, limit, nové SQL nebo změnu cen/prodejnosti/writerů.
+U neřetězcových cest či nepolových kategorií ponechat původní smyčku,
+aby zůstaly i původní výjimky/varování a případy předčasného break. Pokud
+neexistuje způsobilý kořen, neprocházet produkty navíc.
+
+Nejdřív místní profil celého shopCatalogPageSelect, frozen původní funkce
+z tohoto base a přesná shoda celého návratového stavu. Malé, jediné/žádné
+kořeny, mnoho kořenů/produktů, více podkategorií/duplicit, Unicode/mezery,
+doslovné wildcards, neplatné cesty, metadata jiných rodičů a skryté uzly.
+Potom MariaDB10.3/11.4 a plné Apache/PHP HTTP s reálnými publikovanými
+syntetickými produkty, zákazníkem/anonymem, filtry/hledáním/řazením/stránkou/
+CSRF; checksumy všech tabulek a skutečný Chrome desktop/mobil/pixely.
+Source kontrakt zamkne celý modul mimo jediný blok, staré testy pokračují.
+
+Brány před výsledkem: velké cíle5000produktů×500kořenů a10000×1000 alespoň
+20% zisku nativního celého výběru i celého přehledového HTTP na obou DB;
+ostatní bez regrese nad20%+5ms funkce/+20msHTTP. Zveřejnit všechny směry
+i paměť. Pokud nesplní, nevydat kandidát ani nezměkčit bránu.
+Při PASS celé aktuální CI, přesný testovaný/sloučený strom a chráněný deploy
+se zálohou/config/migracemi/VS/indexem/HTTP/úklidem, UAT/importfalse.
+Produkční výkonový profil a přihlášené/lidské UAT NOT RUN. Doklady a handoff
+do main vlastním PR bez druhého deploye dokumentace.
+Další krok: místní diferenciální profil, zatím bez změny aplikace.
+
+
+### CATTOP — místní výběr kandidáta
+
+SQLite/PHP8.2.12, celý shopCatalogPageSelect,2 warmup+11 střídavých párů,
+shoda celého stavu/hashů. Produkty×kořeny:12×6 0,53→0,52ms;
+1000×100 181,28→63,27ms;5000×500 1012,89→162,53ms;
+10000×1000 4897,82→444,11ms;10000×1 348,23→399,35ms (+14,7 %).
+[Vzorky](verification/catalog-top-counts-20261118/local-probe.json). Jediný
+kořen má režii, patří do kontrol a zveřejněné tabulky; není to produkční profil.
+
+Zvoleno pro nativní přejímku. Jen blok topCategories: seznam způsobilých
+kořenů, doslovný první segment a lokální set za každý záznam. Neobvyklé
+typy spadnou do zcela původní smyčky, bez předčasné nové výjimky; žádný
+způsobilý kořen znamená žádný průchod produktů navíc. Native6SQL beze změny,
+aktuální ostatní workflow nejsou rušené ani oslabované (jiný zdrojový modul).
+Další krok: hraniční parita a celé native/HTTP/Chrome brány.

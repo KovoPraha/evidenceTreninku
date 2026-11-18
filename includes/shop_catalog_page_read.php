@@ -80,18 +80,49 @@ function shopCatalogPageSelect(PDO $pdo, array $products, array $input, ?array $
     $totalPages = max(1, (int) ceil($filteredProductCount / $perPage));
     $page = min($page, $totalPages);
     $products = array_slice($products, ($page - 1) * $perPage, $perPage);
+    $topCategoryCounts = [];
+    foreach ($categoryMenu as $categoryItem) {
+        $path = (string) ($categoryItem['category_path'] ?? '');
+        if ($path !== '' && !str_contains($path, ' > ')) {
+            $topCategoryCounts[$path] = 0;
+        }
+    }
+    if ($topCategoryCounts !== []) {
+        foreach ($allProducts as $product) {
+            if (!is_array($product['categories'] ?? null)) {
+                $topCategoryCounts = null;
+                break;
+            }
+            $seenRoots = [];
+            foreach ($product['categories'] as $productPath) {
+                if (!is_string($productPath)) {
+                    $topCategoryCounts = null;
+                    break 2;
+                }
+                $root = explode(' > ', $productPath, 2)[0];
+                if (isset($topCategoryCounts[$root])) {
+                    $seenRoots[$root] = true;
+                }
+            }
+            foreach ($seenRoots as $root => $_) {
+                $topCategoryCounts[$root]++;
+            }
+        }
+    }
     $topCategories = [];
     foreach ($categoryMenu as $categoryItem) {
         $path = (string) ($categoryItem['category_path'] ?? '');
         if ($path === '' || str_contains($path, ' > ')) {
             continue;
         }
-        $count = 0;
-        foreach ($allProducts as $product) {
-            foreach ($product['categories'] as $productPath) {
-                if ($productPath === $path || str_starts_with($productPath, $path . ' > ')) {
-                    $count++;
-                    break;
+        $count = $topCategoryCounts[$path] ?? 0;
+        if ($topCategoryCounts === null) {
+            foreach ($allProducts as $product) {
+                foreach ($product['categories'] as $productPath) {
+                    if ($productPath === $path || str_starts_with($productPath, $path . ' > ')) {
+                        $count++;
+                        break;
+                    }
                 }
             }
         }

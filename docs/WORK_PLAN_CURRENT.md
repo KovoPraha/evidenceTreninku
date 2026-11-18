@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 15. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
+Aktualizováno 18. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -255,7 +255,7 @@ Skutečná bankovní platba, externí schránka a produkční přejímka členst
 | P11-RHC | HOTOVO technicky / NASAZENO | #400/da152282, deploy42494231010 SUCCESS;14CI/parita PASS, AJAX148→10ms; přihlášené UAT NOT RUN, veřejný obsah222→223 | [Plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md); vlastní větev, WIP zachovaný |
 | P11-RHC2 | NASAZENO / technická přejímka PASS | Vývoj/Codex, #457/87171a67, deploy 43215069511 | [Plán](TRAINING_HISTORY_PAGE_PERFORMANCE_2026-11-08.md#p11-rhc2--omezená-agregace-vzorů-kopírování-12-11-2026), [měření](verification/training-copy-20261112/RESULTS.md). Počty a styly přehledu již P11-ADM/ASSET11; další kandidáty vede ASSET12. |
 | P11-ADM | NASAZENO / technická přejímka PASS | Vývoj/Codex, #465/be4ce55a, deploy 43326177751 | [Plán](ADMIN_DASHBOARD_PERFORMANCE_2026-11-12.md), [měření](verification/admin-dashboard-20261112/RESULTS.md). Styly přehledu dokončené ASSET11; další kandidáty vede ASSET12. Přihlášené UAT NOT RUN. |
-| P11-CATTOP | KONCEPT / K MĚŘENÍ | Vývoj/Codex; zatím bez implementační větve | [Koncept](CATALOG_READ_PERFORMANCE_2026-11-07.md#catlabel--další-koncept-k-měření); topCategories opakuje průchod produktů pro každou kategorii. Nejdřív parita doslovných prefixů/duplicit a lokální/celé HTTP profil. Přínos zatím nedoložený. |
+| P11-CATTOP | LOKÁLNÍ IMPLEMENTACE / K OVĚŘENÍ | Vývoj/Codex,codex/catalog-top-counts-performance-20261118 | [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-cattop--počty-kořenových-kategorií-18-11-2026); lokální parita celého výběru a profil, následně native/HTTP/Chrome a při úplném PASS chráněný deploy. |
 | P11-CATLABEL | NASAZENO / technická přejímka PASS | Vývoj/Codex,#492/8347ff50,deploy44189981302 | [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catlabel--skládání-popisků-kategorií-17-11-2026), [výsledky](verification/category-label-20261117/RESULTS.md); chain500 HTTP 81.1→32.3ms / 110.7→43.3ms; 36scénářů/DB,4pixelpáry/13CI PASS. UAT NOT RUN. |
 | P11-CATMENU | NASAZENO / technická přejímka PASS | Vývoj/Codex, #490/a3796752, deploy44152881039 | [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catmenu--strom-kategorií-veřejného-katalogu-17-11-2026), [výsledky](verification/category-menu-20261117/RESULTS.md); tree1000 HTTP 94.0→25.2ms / 76.3→19.2ms; 32scénářů/DB,4pixelpáry/13CI PASS. UAT NOT RUN. |
 | P11-REVIEW | NEVYBRÁNO / původní kód zachovaný | Vývoj/Codex, codex/next-performance-20261117c | [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-review--agregace-kontroly-importovaného-katalogu-17-11-2026); lokální zisk nebyl stabilně ≥20 %; případný návrat až po nové nativní diagnóze. Žádný merge/deploy. |
