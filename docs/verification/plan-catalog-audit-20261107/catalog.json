@@ -9440,14 +9440,15 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11/P11-ATTR/P11-REVIEW/P11-CATMENU/P11-CATLABEL/P11-CATTOP",
-      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. P11-ATTR #488 nasazeno se zveřejněnou unique režií; P11-REVIEW nevybráno. P11-CATMENU #490/a3796752 deploy44152881039 SUCCESS. P11-CATLABEL #492/8347ff50 deploy44189981302 SUCCESS,9nativních/36HTTP scénářů naDB a4pixelpáry/13CI PASS. Chain500 HTTP 81.1→32.3ms / 110.7→43.3ms, všechny časové směry/paměť zveřejněné. Sdílené načtení uzlů/topCategories KONCEPT k měření. Přihlášené produkční UAT NOT RUN.",
+      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. P11-ATTR #488 nasazeno se zveřejněnou unique režií; P11-REVIEW nevybráno. P11-CATMENU #490/a3796752 deploy44152881039 SUCCESS. P11-CATLABEL #492/8347ff50 deploy44189981302 SUCCESS,9nativních/36HTTP scénářů naDB a4pixelpáry/13CI PASS. Chain500 HTTP 81.1→32.3ms / 110.7→43.3ms, všechny časové směry/paměť zveřejněné. Sdílené načtení uzlů/topCategories KONCEPT k měření. Přihlášené produkční UAT NOT RUN. P11-CATTOP18.11: explicitně zahájená diagnóza počtů, bez změny aplikace, lokální profil čeká. CATTOP lokální celý stav a typový fallback PASS, velké zisky, single-root režie zveřejněná; nativní/HTTP/Chrome/release čekají.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
         "docs/verification/catalog-release-20261107/RESULTS.md",
         "docs/verification/attendance-lesson-release-20261107/RESULTS.md",
         "docs/verification/attribute-discovery-20261117/RESULTS.md",
         "docs/verification/category-menu-20261117/RESULTS.md",
-        "docs/verification/category-label-20261117/RESULTS.md"
+        "docs/verification/category-label-20261117/RESULTS.md",
+        "docs/verification/catalog-top-counts-20261118/RESULTS.md"
       ]
     },
     {
