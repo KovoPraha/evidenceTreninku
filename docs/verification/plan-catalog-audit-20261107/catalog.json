@@ -9440,7 +9440,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11/P11-ATTR/P11-REVIEW/P11-CATMENU/P11-CATLABEL/P11-CATTOP",
-      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. ATTR#488/CATMENU#490/CATLABEL#492/CATTOP#494 nasazeny s vlastními protokoly. CATREAD #496/e846e5a5 deploy44367469594 SUCCESS,10native/36HTTP scénářů naDB a4pixelpáry/13CI PASS. Tree1000 filtrHTTP 45.0→21.8ms / 32.2→15.8ms, mimoTX6→3SQL, uvnitř původní6SQL. Samostatný index odmítnut kvůli tree500HTTP pod20%; původní brány zůstaly a kombinace prošla. Všechny směry/paměť zveřejněné, produkční přihlášené UAT NOT RUN. CATSEL: nová diagnóza membership filtru a řadicích klíčů v celém Select, zatím bez app změny. Vybrán CATSEL membership filtr po místní shodě:2500/500745→243ms,5000/10002740→706ms; řadicí klíče samostatný koncept. Pevná native/HTTP přejímka5000/500 a10000/1000≥20% čeká.",
+      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. ATTR#488/CATMENU#490/CATLABEL#492/CATTOP#494/CATREAD#496 nasazeny se samostatnými protokoly. CATSEL #498/a752cd96 deploy44404265875 SUCCESS,9native/46HTTP scénářů naDB a4pixelpáry/13CI PASS. 10000/1000 filtrHTTP 1321.5→415.9ms / 632.6→206.8ms, oba velké cíle≥20% na obou DB. Přesné stavy/HTML/hlavičky,355checksumů, SQL3/6TX původní. Všechny směry/paměť zveřejněné; řadicí klíče samostatný koncept. Přihlášené produkční UAT NOT RUN.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
         "docs/verification/catalog-release-20261107/RESULTS.md",
