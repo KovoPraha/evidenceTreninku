@@ -1,0 +1,305 @@
+{
+  "algorithm": "SHA-256 of Git blobs",
+  "files": [
+    {
+      "path": "docs/verification/catalog-selection-20261118/RESULTS.md",
+      "bytes": 14946,
+      "sha256": "d43498cb82ea01c529135dcb1719fd39785eba1748d5653d0f652056d2314aa4"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/application-checks.json",
+      "bytes": 853,
+      "sha256": "baf26e2a3322a0a8483def403a58d9db8744d495808040b44f84a74b574c653e"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/local-checks.json",
+      "bytes": 715,
+      "sha256": "fa8f09872a843e28baed43cb0125b436272b6571fc3e205fac03a22af653e793"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/local-probe.json",
+      "bytes": 47163,
+      "sha256": "8a865d3325a09e56a7b6a2b88104f16435ae1a89f9043ee1edcfae01830cf280"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/local-probe.php.txt",
+      "bytes": 4258,
+      "sha256": "a2fee8a5d978d800a8ad7c9b1190040da0b76dac3f7b2e5c2cc5d6a51eb8fb0c"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/local-prototype.txt",
+      "bytes": 341,
+      "sha256": "09c189bf5338cd10982492b238daf029661fbee0fc501455e8dcc086bfc628ac"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/checksums-browser.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/checksums-large-10000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/checksums-large-5000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/checksums-matrix.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/checksums-single-10000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/http-browser.json.gz",
+      "bytes": 2845,
+      "sha256": "b08df8ea5b1fea97411f6566250b85a68d07ae5c0b116446f96a31d7b6a555c5"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/http-large-10000.json.gz",
+      "bytes": 3416,
+      "sha256": "6e71b84298f3ab27a2d2eb7833365f3f60615976309331a47a65d177878a1555"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/http-large-5000.json.gz",
+      "bytes": 3302,
+      "sha256": "da7df4783ddf34c0b2d0eb6d9c0ef3418d850786a17d91fe5acb896133e332d7"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/http-matrix.json.gz",
+      "bytes": 7800,
+      "sha256": "c5b5b3b2ae7b66dcad8ebae28dd4884316502e81eaa4c311da742a06f885aa10"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/http-single-10000.json.gz",
+      "bytes": 3166,
+      "sha256": "241968eef9da85ca387402ef47026352a9bb37e8ee8d0de12917bf3ef56fee9d"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/native-cleanup.json",
+      "bytes": 29,
+      "sha256": "38d368f3a42951348669a605cb9bafce7ad7d235bff64b98ff52c76dc591afe6"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/native.json",
+      "bytes": 50863,
+      "sha256": "d5ee53740fbb8ece19ea4ffbd72464a83e70c76472a4603449e8125793187be0"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/source-contract.json",
+      "bytes": 316,
+      "sha256": "7686fa650947f93fd781bec0825b70dbd10862b05c3fc6489726758cac005184"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-10.3/source.json",
+      "bytes": 434,
+      "sha256": "2d08c9036ff91c9006f5e4f555a94f1040782c8df94135c347db766aef79ab7f"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/browser-eshop-category-dark-cold.json",
+      "bytes": 5943,
+      "sha256": "1070f17e17c2d2f108ca8012cba8ecd39de1127d124bb6a7d39a1d3bc188179a"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/browser-eshop-category-dark-warm.json",
+      "bytes": 5801,
+      "sha256": "583c05e7fa2f71ecff4013095d19ba609504d5136523f516126fbbea02276847"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/browser-eshop-category-light-cold.json",
+      "bytes": 5893,
+      "sha256": "6c8bb70e8db609a62c4660276ebdf8f4840f90cf8680baadc11f7766682877ee"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/browser-eshop-category-light-warm.json",
+      "bytes": 5847,
+      "sha256": "e27a929b08b00e338476c2d39140ea022686551a3e1231bb05ec9eac6b8d623d"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/browser-eshop-overview-dark-cold.json",
+      "bytes": 5928,
+      "sha256": "643a6b2b1b8023f9f65fdbb4a0625aa6a6a5b4f8eea3a08095f34b5d39a6714a"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/browser-eshop-overview-dark-warm.json",
+      "bytes": 5788,
+      "sha256": "353177afc30af006fdef58099b6851fbd78b1fee1cb4572bb9f8cf63ca743d7a"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/browser-eshop-overview-light-cold.json",
+      "bytes": 5933,
+      "sha256": "d5aed6b13b8d9bfe431c8f050f7df001438627757fdde690bb49947a62657b0c"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/browser-eshop-overview-light-warm.json",
+      "bytes": 5816,
+      "sha256": "84626da96f7c414b8b1fcfec35032d5b07f01789e0cf0a676bb4f685c1facff5"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/browser-summary.json",
+      "bytes": 3872,
+      "sha256": "8011762463266d65efb28c39c7bef9143c1614a415fdd77778c2b72956c0d031"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/checksums-browser.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/checksums-large-10000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/checksums-large-5000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/checksums-matrix.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/checksums-single-10000.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/checksums.json",
+      "bytes": 32,
+      "sha256": "41b8e678bf581f0094c5423d5c9595ce42314405622694a82f1e398bb9c4ff78"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/cleanup.json",
+      "bytes": 176,
+      "sha256": "6e7d4a08b660e87364fba90ae09ea6514b17c7dc3ee5a632a2ebebcb3ff63479"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/eshop-category-dark-cold-after.png",
+      "bytes": 566453,
+      "sha256": "6953659363b94e5e7fdbb2cfe83f225c47c04c4164899e8d0de7aa61c564e4fd"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/eshop-category-dark-cold-before.png",
+      "bytes": 566453,
+      "sha256": "6953659363b94e5e7fdbb2cfe83f225c47c04c4164899e8d0de7aa61c564e4fd"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/eshop-category-light-cold-after.png",
+      "bytes": 419985,
+      "sha256": "8e9df40093d17c250a4b0797a1e153c52040726c63e669c20d00a8b1c5b14ad4"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/eshop-category-light-cold-before.png",
+      "bytes": 419985,
+      "sha256": "8e9df40093d17c250a4b0797a1e153c52040726c63e669c20d00a8b1c5b14ad4"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/eshop-overview-dark-cold-after.png",
+      "bytes": 600140,
+      "sha256": "482963db3c35a9e6b1ddd0de35d965305e281ff19134859a6f7ddc3ed221fa25"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/eshop-overview-dark-cold-before.png",
+      "bytes": 600140,
+      "sha256": "482963db3c35a9e6b1ddd0de35d965305e281ff19134859a6f7ddc3ed221fa25"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/eshop-overview-light-cold-after.png",
+      "bytes": 440209,
+      "sha256": "c7bf26f963e96882b321d84de3657154df954140aa6d96b79c28a6ec914e3ca1"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/eshop-overview-light-cold-before.png",
+      "bytes": 440209,
+      "sha256": "c7bf26f963e96882b321d84de3657154df954140aa6d96b79c28a6ec914e3ca1"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/http-browser.json.gz",
+      "bytes": 2847,
+      "sha256": "2a6304657bcb78413b5328e395c89f637cfb1eb2ef914f5dc66af1a52b55cdc0"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/http-large-10000.json.gz",
+      "bytes": 3333,
+      "sha256": "8dd367c10a15493078584cee8991acb537630b015e9e9143bf3888fa800133fc"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/http-large-5000.json.gz",
+      "bytes": 3230,
+      "sha256": "a924d71faab3548c76edae6d5a169ee03a6cd8ab624448ca5f014f128bc34918"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/http-matrix.json.gz",
+      "bytes": 7764,
+      "sha256": "8f925453fc6c159eb05ee0ef2123664cc0597c2c5b0308160b00777362e7cfaf"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/http-single-10000.json.gz",
+      "bytes": 3073,
+      "sha256": "d22dea8c68fe1ee116098ec21769c82d66fcf09185e4ede6087129383669c9de"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/native-cleanup.json",
+      "bytes": 29,
+      "sha256": "38d368f3a42951348669a605cb9bafce7ad7d235bff64b98ff52c76dc591afe6"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/native.json",
+      "bytes": 50780,
+      "sha256": "bd771c721eb44722dd8a6e5ca0ddee3ab6871aaf4ceaf3a1eaa2351be97b0c13"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/source-contract.json",
+      "bytes": 316,
+      "sha256": "7686fa650947f93fd781bec0825b70dbd10862b05c3fc6489726758cac005184"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/mariadb-11.4/source.json",
+      "bytes": 434,
+      "sha256": "2d08c9036ff91c9006f5e4f555a94f1040782c8df94135c347db766aef79ab7f"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/medians.json",
+      "bytes": 14810,
+      "sha256": "9e154f8d9b7909ba991ea26dd86fdd65a73ebce31fc719dd62f96277806dc1e8"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/paired-run.json",
+      "bytes": 224,
+      "sha256": "4d480d3896ad3a46193d5408ab6d8b124fc5309b51675790e3cff1c2998fbd2a"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/production-after.json",
+      "bytes": 3860,
+      "sha256": "2678cd49cbaa7c8925fc71e20a854ca2029856f30918d82db1eeeb9965b3f782"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/production-before.json",
+      "bytes": 3860,
+      "sha256": "2678cd49cbaa7c8925fc71e20a854ca2029856f30918d82db1eeeb9965b3f782"
+    },
+    {
+      "path": "docs/verification/catalog-selection-20261118/release.json",
+      "bytes": 511,
+      "sha256": "8796fed08190bf57d1908dee93e74b4ca934a603ec91f491cf551d4bd566c720"
+    }
+  ]
+}

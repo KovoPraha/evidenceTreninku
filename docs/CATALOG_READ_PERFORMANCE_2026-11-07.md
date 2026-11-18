@@ -831,7 +831,7 @@ docs PR do main bez dalšího deploye. Další funkční rozsah tímto neotevře
 
 ## P11-CATSEL — výběr katalogu po CATREAD (18. 11. 2026)
 
-**DIAGNÓZA / ROZPRACOVÁNO.** Vývoj/Codex, aktuální explicitní pokyn vlastníka:
+**NASAZENO / technická přejímka PASS, přihlášené produkční UAT NOT RUN.** Vývoj/Codex, aktuální explicitní pokyn vlastníka:
 další nejpřínosnější optimalizace, ověřit přesnou shodu, měřit před/po,
 při úplném PASS commit/merge/deploy, zachovat WIP a aktualizovat dokumentaci.
 Base4db60635f1d05f620fef9d9081be297c3bbe877b, větev
@@ -873,7 +873,7 @@ deploy se zálohou/config/migracemi/VS/indexem/HTTP/úklidem, UAT/importfalse.
 Živé čtecí GET před/po včetně skutečné filtrované cesty, žádné skutečné
 objednávky/platby/role/rozesílky. Produkční výkonový profil a přihlášené/lidské
 UAT NOT RUN. Finální doklady vlastním docs PR do main bez dalšího deploye.
-Další krok: lokální diferenciální sonda obou variant, aplikace zatím beze změny.
+Původní první krok byl lokální diferenciální profil před změnou aplikace; dokončení níže.
 
 
 ### CATSEL — volba membership filtru a pevná přejímka
@@ -907,3 +907,45 @@ Source contract zamkne oba celé moduly mimo jediný blok v PageSelect.
 Historický CATREAD zachovaný pro replayfc4efb64; nová CATSEL lane přebírá
 oba moduly a plnou přísnou přejímku, původní unit a ostatní CI pokračují.
 [Doklady](verification/catalog-selection-20261118/RESULTS.md). Nativní přejímka čeká.
+
+18. 11. 2026 — CATSEL finální head972577ca lokálně33testů/4194kontrol PASS, dalších6dotčených/100kontrol po guardfix PASS, plný PHPStan/styl8PHP/0chyb/source contract PASS. Native/HTTP/Chrome/obecné CI ještě čekají. [Příkazy](verification/catalog-selection-20261118/local-checks.json).
+
+18. 11. 2026 — CATSEL #498/972577ca/běh44401578117 native/HTTP/Chrome SUCCESS na obou DB:9native/46HTTP scénářů naDB,355checksumů po každé fázi i Chrome,176měřených+48zahřívacích navigací/4shodné pixelpáry; desktop/mobil také vizuálně ověřené. 10000/1000 categoryHTTP anonym1321,5→415,9ms /632,6→206,8ms, zákazník1348,8→445,0ms /667,1→232,1ms. Oba velké cíle i všechny kontroly splnily původní brány, SourceContract/statické kontroly PASS. Obecné CI/merge/deploy ještě čekají.
+
+18. 11. 2026 — CATSEL #498 po13CI PASS sloučeno `a752cd96d1a9cd2dee47498974178950cb156fac`, strom `08e81c9d597761b296a31093c7976f0806eaa936` shodný s testovaným headem. [Deploy44404265875](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44404265875) spuštěn jednou, produkční potvrzení čeká; UAT/importfalse.
+
+
+### CATSEL — dokončení (18. 11. 2026)
+
+**P11-CATSEL NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catsel--výběr-katalogu-po-catread-18-11-2026), [výsledky](verification/catalog-selection-20261118/RESULTS.md). #498/a752cd96, [deploy44404265875](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44404265875) SUCCESS,13CI. 10000/1000 filtrHTTP 1321.5→415.9ms / 632.6→206.8ms; stav/46scénářů naDB/4pixelpáry PASS. SQL3outside/6insideTX stejné. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
+
+Párový běh44401578117 na972577ca SUCCESS na obou DB:
+9nativních profilů/DB, celý stav/typy/pořadí/serializedhash shodné,3SQL
+před/po a stejné checksumy. 46celých HTTP scénářů/DB,355checksumů po každé
+fázi i Chrome. Cíl5000/500 categoryHTTP anonym 396.4→201.6ms / 203.5→105.8ms,10000/1000 1321.5→415.9ms / 632.6→206.8ms;
+anonym i zákazník oba cíle≥20%. Ostatní kontroly a všechny původní tolerance
+beze změny; nevynechané opačné směry/paměť v protokolu. HTTP fixture skutečně
+asertuje PageRead aktivní/filtered počty, uzly i potomky před časováním.
+Chrome8případů,176měřených+48zahřívacích navigací,4shodné pixelové páry,
+formuláře/geometrie/styly/CSS/JS stejné, žádné síťové/console chyby. Desktop/
+mobil snímky také vizuálně ověřené. Produkční výkonový profil/UAT NOT RUN.
+
+Pouze membership blok selectedCategory, prefix/suffix PageRead i celý
+shop_category.php beze změny, frozen celý Select z aktuálního main4db60635.
+String kategorie mají lokální množinu cest, jiné typy přesný starý callback
+včetně varování/výjimek. Řazení/menu/CATTOP/ceny/prodejnost/writery/cache/
+limity stejné, SQL3outside/6insideTX i celá transakční sekvence původní.
+Statická kontrola odhalila redundantní is_array(product), odstraněný podle
+platného list<array> kontraktu bez rozšíření typů/potlačení pravidla.
+Historický CATREAD replayfc4efb64 zůstává, nová CATSEL lane přebírá přísnou
+přejímku. Všechny původní testy zachované. Řadicí klíče zůstávají koncept
+k samostatnému budoucímu profilu, nejsou v tomto vydání implementované.
+
+Testovaný/sloučený strom `08e81c9d597761b296a31093c7976f0806eaa936`,13CI PASS. Deploy44404265875:
+2518testů/59580kontrol, záloha394tabulek/2triggerů,
+config zachovaný, pending migrace[], VS/zdravotní index stejné, aktivace/
+HTTP200/úklid PASS. UAT/importfalse, import přeskočený. Živý anonymní katalog
+i skutečný veřejný filtr: celé normalizované HTML/hlavičky stejné, guard
+administrace a CSS payload/hash také. Přihlášené produkční/lidské UAT NOT RUN.
+Původní fio WIP/HEAD/hash zachované, jiné PR nepřebírané. Finální doklady
+vlastním docs PR do main bez dalšího nasazení.

@@ -1,0 +1,18 @@
+{
+  "tests": 33,
+  "assertions": 4194,
+  "unit_result": "PASS",
+  "unit_command": "php vendor/bin/phpunit --filter 'CatalogSelectionReadTest|CatalogPageReadCompatibilityTest|CatalogTopCountsReadTest|ShopCategoryDescendantsReadTest|ShopCategoryMenuReadTest|ShopCategoryLabelReadTest'",
+  "affected_tests": 6,
+  "affected_assertions": 100,
+  "phpstan": "PASS full level5 analysis",
+  "style_files": 8,
+  "style_errors": 0,
+  "source_contract": "PASS",
+  "baseline": "4db60635f1d05f620fef9d9081be297c3bbe877b",
+  "head": "972577ca6b70ed1bd3261173b72d9e84a3584737",
+  "outside_transaction_sql_before": 3,
+  "outside_transaction_sql_after": 3,
+  "inside_transaction_sql_before": 6,
+  "inside_transaction_sql_after": 6
+}
