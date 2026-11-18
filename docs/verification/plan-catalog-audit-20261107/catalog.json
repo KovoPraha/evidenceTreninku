@@ -9440,7 +9440,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11/P11-ATTR/P11-REVIEW/P11-CATMENU/P11-CATLABEL/P11-CATTOP",
-      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. P11-ATTR #488 nasazeno se zveřejněnou unique režií; P11-REVIEW nevybráno. P11-CATMENU #490/a3796752 deploy44152881039 SUCCESS. P11-CATLABEL #492/8347ff50 deploy44189981302 SUCCESS. P11-CATTOP #494/43121578 deploy44269813909 SUCCESS,6native/36HTTP scénářů naDB a4pixelpáry/13CI PASS. 10000×1000 HTTP 1079.3→321.1ms / 828.4→232.8ms; všechny směry/paměť/single-root režie zveřejněné. Sdílené načítání uzlů KONCEPT k samostatnému měření; přihlášené produkční UAT NOT RUN. P11-CATREAD: nové místní srovnání sdílení uzlů a indexovaného filtru potomků, zatím diagnóza bez app změny. CATDESC vybrán po místním porovnání; tree500/tree1000 pevné native/HTTP cíle≥20%, přejímka čeká. Samostatný CATDESC #496/7b0e0bc7 nepřijat: tree500HTTP18,7%/15,5% pod20%. Nová kombinace s lokálním sdílením uzlů mimoTX6→3SQL, insideTX původní6SQL, brány stejné a nové CI čeká.",
+      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. ATTR#488/CATMENU#490/CATLABEL#492/CATTOP#494 nasazeny s vlastními protokoly. CATREAD #496/e846e5a5 deploy44367469594 SUCCESS,10native/36HTTP scénářů naDB a4pixelpáry/13CI PASS. Tree1000 filtrHTTP 45.0→21.8ms / 32.2→15.8ms, mimoTX6→3SQL, uvnitř původní6SQL. Samostatný index odmítnut kvůli tree500HTTP pod20%; původní brány zůstaly a kombinace prošla. Všechny směry/paměť zveřejněné, produkční přihlášené UAT NOT RUN.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
         "docs/verification/catalog-release-20261107/RESULTS.md",

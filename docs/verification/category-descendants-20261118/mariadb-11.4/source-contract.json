@@ -1,0 +1,10 @@
+{
+    "complete": true,
+    "base": "d92fd79067ea9e63da183088d8d806b86e6f9760",
+    "only_pinned_category_changes": true,
+    "category_surroundings_equal": true,
+    "frozen_helper_selection_menu_equal": true,
+    "selection_callsite_only_changed": true,
+    "source_sha256": "ead8dae0104e725f9162cd1b9377216497bc1ffd0b8872da3330e2746060a533",
+    "frozen_sha256": "91d2ba391defd2080eab49e3623ba74f6c35af9e15f17ba759236294dc835d82"
+}

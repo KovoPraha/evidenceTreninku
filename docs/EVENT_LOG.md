@@ -386,3 +386,9 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 18. 11. 2026 — CATREAD samostatný index head7b0e0bc7 nepřijat kvůli HTTP tree500 pod20%. Rozšíření o původně profilované lokální sdílení uzlů,6→3SQL při stejné veřejné signatuře menu, source contract obou modulů; původní brány beze změny. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catread--další-čtení-kategorií-18-11-2026).
 
 18. 11. 2026 — CATREAD kombinace lokálně shodná,6→3SQL mimo transakci. Původní transakční sekvence zachovaná bez oslabení CatalogPageReadCompatibilityTest, doplněn guard a oba query budgety. Native/HTTP brány zůstávají20%; finální přejímka čeká.
+
+18. 11. 2026 — CATREAD kombinace fc4efb64/běh44364589030 PASS na obou DB:10native/36HTTP scénářů naDB,355checksumů i po Chrome,8Chrome/176+48navigací/4pixelpáry, desktop/mobil také vizuálně ověřené. Tree1000 categoryHTTP anonym45,1→21,8ms /32,2→15,8ms; zákazník53,5→30,1 /38,3→21,2ms. Tree500 oba kontexty≥20%, všechny původní brány stejné. Plný místní PHPStan957souborů PASS. Obecné CI/merge/deploy čekají.
+
+18. 11. 2026 — CATREAD #496 po13CI PASS sloučeno `e846e5a5afa5aaaa14516f2cdd353f6f58a22e40`, strom `a578c0f29a3197d0d69b7185adfcb1b3a06c616b` shodný s testovaným headem. [Deploy44367469594](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44367469594) spuštěn jednou, produkční potvrzení čeká; UAT/importfalse.
+
+18. 11. 2026 — CATREAD dokončen, všechny brány i chráněný deploy PASS. **P11-CATREAD NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catread--další-čtení-kategorií-18-11-2026), [výsledky](verification/category-descendants-20261118/RESULTS.md). #496/e846e5a5, [deploy44367469594](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44367469594) SUCCESS,13CI. Tree1000 filtrHTTP 45.0→21.8ms / 32.2→15.8ms; stav/36scénářů naDB/4pixelpáry PASS. MimoTX6→3SQL, insideTX původní6SQL. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
