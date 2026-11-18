@@ -1,0 +1,10 @@
+{
+    "complete": true,
+    "base": "d92fd79067ea9e63da183088d8d806b86e6f9760",
+    "only_descendants_changed": true,
+    "prefix_suffix_byte_equal": true,
+    "frozen_helper_selection_equal": true,
+    "page_module_unchanged": true,
+    "source_sha256": "12e51bf37fe5c43e2295c5c6fc27d2484e43ccf74a2d98c68220c03f0e5f3b00",
+    "frozen_sha256": "91d2ba391defd2080eab49e3623ba74f6c35af9e15f17ba759236294dc835d82"
+}

@@ -8,7 +8,7 @@ profile = "category-descendants"
 base = "d92fd79067ea9e63da183088d8d806b86e6f9760"
 assert os.environ["CATEGORY_DESCENDANTS_BASE_SHA"] == base
 browser_enabled = os.environ["CATEGORY_DESCENDANTS_BROWSER"] == "1"
-routes = ["includes/shop_category.php"]
+routes = ["includes/shop_category.php", "includes/shop_catalog_page_read.php"]
 assert os.name!='nt' and os.environ.get('EVIDENCE_PERFORMANCE_CONFIRM')=='SYNTHETIC-ONLY'
 runtime = Path(tempfile.mkdtemp(prefix="kis-" + profile + "-"))
 output = root / "output" / (profile + "-private")

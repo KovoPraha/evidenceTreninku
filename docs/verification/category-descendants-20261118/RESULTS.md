@@ -18,3 +18,9 @@ FCP/ready≤20%+20ms. Deset nativních profilů,36HTTP scénářů/DB,
 Native/HTTP/Chrome/merge/deploy NOT RUN; přihlášené produkční UAT NOT RUN.
 
 Lokálně26testů/4086kontrol PASS, source contract PASS, styl7PHPsouborů/0chyb PASS, kontrola dokumentace80řádků/5706odkazů/108archivů/0chyb PASS. PHPStan dobíhá, nativní/HTTP/Chrome přejímka bude v PR.
+
+Samostatný index NEPŘIJAT: [první běh](rejected-first/RESULTS.md). Nový kombinovaný kandidát index+sdílené uzly pouze v jednom volání,6→3SQL; původní cíle tree500/1000 a tolerance beze změny. Nové celé ověření čeká.
+
+Kombinovaná outsideTX sonda6→3SQL: tree500180,75→47,15ms, tree1000692,54→85,80ms, celý stav/hash shodný. [Data](local-combined-probe.json), [sonda](local-combined-probe.php.txt). Po sondě přidán transakční guard: insideTX původní6SQL, původní kompatibilitní test beze změny. Finální native/HTTP CI čeká.
+
+Finální kombinovaný kandidát:27testů/4094kontrol PASS, původní transakční SQL sekvence PASS, outsideTX6→3SQL/insideTX6→6/standaloneMenu3/pureMenu0. Styl8PHP/0chyb, source contract a docs80/5710odkazů/108archivů/0chyb PASS. [Příkazy](local-checks.json); nové CI čeká.

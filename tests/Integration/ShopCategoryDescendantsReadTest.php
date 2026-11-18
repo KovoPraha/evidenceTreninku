@@ -9,9 +9,44 @@ use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__) . '/Support/CategoryDescendantsBaseline.php';
 require_once dirname(__DIR__) . '/Support/CategoryMenuFixture.php';
+require_once dirname(__DIR__) . '/Support/QueryProfilePdo.php';
 
 final class ShopCategoryDescendantsReadTest extends TestCase
 {
+    public function testSingleCallNodeReuseQueryBudgetAndStandaloneMenuAreEquivalent(): void
+    {
+        $pdo = new \Tests\Support\QueryProfilePdo('sqlite::memory:');
+        $pdo->exec('CREATE TABLE shop_product_categories(product_id INT,category_path TEXT)');
+        $pdo->exec('CREATE TABLE shop_member_category_rules(category_path TEXT)');
+        $pdo->exec('CREATE TABLE shop_category_meta(category_path TEXT PRIMARY KEY,display_name TEXT,parent_path TEXT NULL,'
+            . 'sort_order INT,visible_in_menu INT,description TEXT NULL)');
+        $products = \categoryMenuFixture($pdo, 80, 'tree');
+        $products[0] += ['public_name' => 'LOCALHOST', 'public_summary' => '', 'min_amount_minor' => 100];
+        $pdo->profiling = true;
+        $pdo->profile = [];
+        $before = \categoryDescendantsSelectBaseline($pdo, $products, ['kategorie' => 'LOCALHOST-0']);
+        self::assertCount(6, $pdo->profile);
+        $pdo->profile = [];
+        $after = \shopCatalogPageSelect($pdo, $products, ['kategorie' => 'LOCALHOST-0']);
+        self::assertCount(3, $pdo->profile);
+        self::assertSame($before, $after);
+        $pdo->beginTransaction();
+        $pdo->profile = [];
+        self::assertSame($before, \shopCatalogPageSelect($pdo, $products, ['kategorie' => 'LOCALHOST-0']));
+        self::assertCount(6, $pdo->profile);
+        $pdo->rollBack();
+        $nodes = \shopCategoryNodes($pdo);
+        $pdo->profile = [];
+        $pure = \shopStorefrontCategoryMenuFromNodes($nodes, $products);
+        self::assertSame([], $pdo->profile);
+        $wrapper = \shopStorefrontCategoryMenu($pdo, $products);
+        self::assertCount(3, $pdo->profile);
+        self::assertSame($pure, $wrapper);
+        self::assertSame(\categoryDescendantsMenuBaseline($pdo, $products), $wrapper);
+        self::assertSame($nodes, \shopCategoryNodes($pdo));
+        self::assertSame([], \shopStorefrontCategoryMenuFromNodes([], $products));
+    }
+
     public function testBreadthFirstOrderAndCycleReentryAreExact(): void
     {
         $nodes = ['D' => ['parent_path' => 'B'], 'C' => ['parent_path' => 'R'],

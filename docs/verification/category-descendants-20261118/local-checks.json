@@ -1,0 +1,22 @@
+{
+  "tests": 27,
+  "assertions": 4094,
+  "unit_result": "PASS",
+  "unit_command": "php vendor/phpunit/phpunit/phpunit --filter ShopCategoryDescendantsReadTest|CatalogPageReadCompatibilityTest|CatalogTopCountsReadTest|ShopCategoryMenuReadTest|ShopCategoryLabelReadTest",
+  "style_files": 8,
+  "style_errors": 0,
+  "source_contract": "PASS",
+  "docs": {
+    "current_lines": 80,
+    "local_links": 5710,
+    "archived_blocks": 108,
+    "errors": 0
+  },
+  "phpstan_combined": "RUNNING; final current-head CI required before merge",
+  "transactional_sql_before": 6,
+  "transactional_sql_after": 6,
+  "selection_sql_before": 6,
+  "selection_sql_after": 3,
+  "standalone_menu_sql": 3,
+  "pure_menu_sql": 0
+}

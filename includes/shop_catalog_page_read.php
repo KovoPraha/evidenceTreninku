@@ -32,7 +32,9 @@ function shopCatalogPageSelect(PDO $pdo, array $products, array $input, ?array $
     $activeCatalogCount = count($products);
     $allProducts = $products;
     $categoryNodes = shopCategoryNodes($pdo);
-    $categoryMenu = shopStorefrontCategoryMenu($pdo, $products);
+    $categoryMenu = $pdo->inTransaction()
+        ? shopStorefrontCategoryMenu($pdo, $products)
+        : shopStorefrontCategoryMenuFromNodes($categoryNodes, $products);
     $selectedCategory = trim((string) ($input['kategorie'] ?? ''));
     $selectedCategoryLabel = '';
     if ($selectedCategory !== '') {

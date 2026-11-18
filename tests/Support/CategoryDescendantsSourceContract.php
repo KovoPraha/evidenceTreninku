@@ -33,20 +33,49 @@ $scope = static function (string $source): array {
 };
 [$prefix, $function, $suffix] = $scope($before);
 [$newPrefix, $newFunction, $newSuffix] = $scope($after);
+$menuStart = strpos($suffix, 'function shopStorefrontCategoryMenu(');
+$newMenuStart = strpos($newSuffix, 'function shopStorefrontCategoryMenu(');
+$menu = substr($suffix, $menuStart);
+$pure = str_replace(
+    'function shopStorefrontCategoryMenu(PDO $pdo, array $products)',
+    'function shopStorefrontCategoryMenuFromNodes(array $nodes, array $products)',
+    $menu
+);
+$pure = str_replace('    $nodes = shopCategoryNodes($pdo);' . "\n", '', $pure);
+$wrapper = <<<'PHP'
+function shopStorefrontCategoryMenu(PDO $pdo, array $products): array
+{
+    return shopStorefrontCategoryMenuFromNodes(shopCategoryNodes($pdo), $products);
+}
+
+/** @param array<string,array<string,mixed>> $nodes
+ * @param list<array<string,mixed>> $products @return list<array<string,mixed>>
+ */
+PHP;
 $page = $read('includes/shop_catalog_page_read.php');
 $start = strpos($page, 'function shopCatalogPageSelect(');
 $end = strpos($page, '/** One read operation;', $start);
 if (rtrim($function) . "\n" !== $local(__DIR__ . '/CategoryDescendantsBaseline.txt')
     || rtrim(substr($page, $start, $end - $start)) . "\n" !== $local(__DIR__ . '/CategoryDescendantsSelectBaseline.txt')
+    || $menu !== $local(__DIR__ . '/CategoryDescendantsMenuBaseline.txt')
 ) {
     throw new RuntimeException('Frozen helper/selection differs from immutable baseline.');
 }
-if ($prefix !== $newPrefix || $suffix !== $newSuffix
+$expectedPage = str_replace(
+    '$categoryMenu = shopStorefrontCategoryMenu($pdo, $products);',
+    '$categoryMenu = $pdo->inTransaction()' . "\n"
+        . '        ? shopStorefrontCategoryMenu($pdo, $products)' . "\n"
+        . '        : shopStorefrontCategoryMenuFromNodes($categoryNodes, $products);',
+    $page,
+    $replacements
+);
+if ($prefix !== $newPrefix || substr($suffix, 0, $menuStart) !== substr($newSuffix, 0, $newMenuStart)
     || $newFunction !== $local(__DIR__ . '/CategoryDescendantsCandidate.txt') . "\n"
-    || $page !== $local($root . '/includes/shop_catalog_page_read.php')
+    || substr($newSuffix, $newMenuStart) !== $wrapper . "\n" . $pure
+    || $replacements !== 1 || $expectedPage !== $local($root . '/includes/shop_catalog_page_read.php')
 ) {
-    throw new RuntimeException('Only the pinned descendant helper may change.');
+    throw new RuntimeException('Only the pinned descendant, exact menu extraction and one callsite may change.');
 }
-echo json_encode(['complete' => true, 'base' => $base, 'only_descendants_changed' => true,
-    'prefix_suffix_byte_equal' => true, 'frozen_helper_selection_equal' => true, 'page_module_unchanged' => true,
+echo json_encode(['complete' => true, 'base' => $base, 'only_pinned_category_changes' => true,
+    'category_surroundings_equal' => true, 'frozen_helper_selection_menu_equal' => true, 'selection_callsite_only_changed' => true,
     'source_sha256' => hash('sha256', $after), 'frozen_sha256' => hash('sha256', $function)], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR), "\n";

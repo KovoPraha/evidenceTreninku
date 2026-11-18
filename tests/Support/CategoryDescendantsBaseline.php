@@ -16,7 +16,11 @@ function categoryDescendantsFrozenClosure(string $file, string $name, bool $sele
         throw new RuntimeException('Frozen category scope required.');
     }
     if ($selection) {
-        $source = str_replace('shopCategoryDescendants(', 'categoryDescendantsBaseline(', $source);
+        $source = str_replace(
+            ['shopCategoryDescendants(', 'shopStorefrontCategoryMenu('],
+            ['categoryDescendantsBaseline(', 'categoryDescendantsMenuBaseline('],
+            $source
+        );
     }
     $closure = eval('declare(strict_types=1);' . $source . ';');
     if (!$closure instanceof Closure) {
@@ -37,4 +41,11 @@ function categoryDescendantsSelectBaseline(PDO $pdo, array $products, array $inp
     static $original = null;
     $original ??= categoryDescendantsFrozenClosure('CategoryDescendantsSelectBaseline.txt', 'shopCatalogPageSelect', true);
     return $original($pdo, $products, $input, $searchMatches);
+}
+
+function categoryDescendantsMenuBaseline(PDO $pdo, array $products): array
+{
+    static $original = null;
+    $original ??= categoryDescendantsFrozenClosure('CategoryDescendantsMenuBaseline.txt', 'shopStorefrontCategoryMenu');
+    return $original($pdo, $products);
 }

@@ -214,7 +214,14 @@ function shopCategoryMenuLabel(array $nodes, string $path): string
 /** @param list<array<string,mixed>> $products @return list<array<string,mixed>> */
 function shopStorefrontCategoryMenu(PDO $pdo, array $products): array
 {
-    $nodes = shopCategoryNodes($pdo);
+    return shopStorefrontCategoryMenuFromNodes(shopCategoryNodes($pdo), $products);
+}
+
+/** @param array<string,array<string,mixed>> $nodes
+ * @param list<array<string,mixed>> $products @return list<array<string,mixed>>
+ */
+function shopStorefrontCategoryMenuFromNodes(array $nodes, array $products): array
+{
     $direct = [];
     foreach ($products as $product) {
         foreach (($product['categories'] ?? []) as $path) {

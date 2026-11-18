@@ -116,7 +116,7 @@ try {
                 }
                 $record = json_decode((string)stream_get_contents($pipes[1]), true, 512, JSON_THROW_ON_ERROR);
                 fclose($pipes[1]);
-                if (proc_close($process) !== 0 || $record['sql'] !== 6) {
+                if (proc_close($process) !== 0 || $record['sql'] !== ($mode === 'before' ? 6 : 3)) {
                     throw new RuntimeException('Worker or query budget failed.');
                 }
                 $expected ??= $record['keys'];
