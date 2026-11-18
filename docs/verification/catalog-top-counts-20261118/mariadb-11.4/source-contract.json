@@ -1,0 +1,9 @@
+{
+    "complete": true,
+    "base": "a1bf2ba28a6e248ae99eb403d06b75749dcc04cf",
+    "only_counts_changed": true,
+    "prefix_suffix_byte_equal": true,
+    "frozen_selection_equal": true,
+    "source_sha256": "ce7338716d864e3ebe1db4a2340bd661faca8954e9591f101ba6206e5cd290ff",
+    "frozen_sha256": "5a82e690c4899e03d0cf6f7a20a447e51b99c80aac3bf8abfdb6fb36fb429f7a"
+}
