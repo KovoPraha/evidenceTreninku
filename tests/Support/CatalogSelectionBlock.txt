@@ -1,6 +1,6 @@
         $useCategorySet = $products !== [];
         foreach ($products as $product) {
-            if (!is_array($product) || !is_array($product['categories'] ?? null)) {
+            if (!is_array($product['categories'] ?? null)) {
                 $useCategorySet = false;
                 break;
             }

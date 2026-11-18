@@ -47,7 +47,7 @@ function shopCatalogPageSelect(PDO $pdo, array $products, array $input, ?array $
         $selectedCategoryLabel = (string) ($categoryNodes[$selectedCategory]['display_name'] ?? $selectedCategory);
         $useCategorySet = $products !== [];
         foreach ($products as $product) {
-            if (!is_array($product) || !is_array($product['categories'] ?? null)) {
+            if (!is_array($product['categories'] ?? null)) {
                 $useCategorySet = false;
                 break;
             }

@@ -18,3 +18,5 @@ ChromeFCP/ready≤20%+20ms. 9native profilů/46HTTP scénářů naDB,
 355checksumů/8Chrome případů/176+48navigací/4pixelpáry. Fixture před
 časováním ověří skutečný počet uzlů, celé aktivní/filtered produkty i potomky.
 Native/HTTP/Chrome/merge/deploy NOT RUN; přihlášené produkční UAT NOT RUN.
+
+Lokálně33testů/4194kontrol PASS, po odstranění redundantního is_array(product) dalších6dotčených/100kontrol PASS; typy kategorií/fallback stejné, source contract PASS. Styl8PHP/0chyb PASS. PHPStan/aktuální celé CI před mergem povinné, bez potlačení pravidla.
