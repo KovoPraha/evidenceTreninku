@@ -372,3 +372,9 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 18. 11. 2026 — P11-CATTOP zahájen explicitním pokynem vlastníka. Jen počty kořenů nad všemi záznamy, zachovat doslovné cesty/duplicitní záznamy a fallback neobvyklých typů. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-cattop--počty-kořenových-kategorií-18-11-2026); zatím diagnóza, bez změny app.
 
 18. 11. 2026 — CATTOP vybrán po přesné místní paritě:5000×500 1013→163ms a10000×1000 4898→444ms; jediný kořen +14,7 %. Žádné změkčení bran, nativní/HTTP/Chrome přejímka čeká. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-cattop--počty-kořenových-kategorií-18-11-2026).
+
+18. 11. 2026 — P11-CATTOP #494 přejímka běh44267837717 PASS:6native/36HTTP scénářů na DB,4pixelpáry, stav/hash/hlavičky/355checksumů shodné, brány beze změny. [Výsledky](verification/catalog-top-counts-20261118/RESULTS.md); širší CI/merge/deploy čekají.
+
+18. 11. 2026 — CATTOP #494 po13CI PASS sloučeno `4312157834bd0b70dcc871e40d9e19c812537f47`, strom `0142340dd157ea71080bc2cf05365523581bc39c` shodný s testovaným headem. Chráněný [deploy44269813909](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44269813909) spuštěn jednou, potvrzení produkce čeká; UAT/importfalse.
+
+18. 11. 2026 — P11-CATTOP dokončen, všechny brány a chráněný deploy PASS. **P11-CATTOP NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-cattop--počty-kořenových-kategorií-18-11-2026), [výsledky](verification/catalog-top-counts-20261118/RESULTS.md). #494/43121578, [deploy 44269813909](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44269813909) SUCCESS,13 CI. 10000×1000 celé HTTP 1079.3→321.1ms / 828.4→232.8ms; parita/36scénářů naDB/4pixelpáry PASS. Přihlášené produkční UAT NOT RUN; WIP zachovaný.

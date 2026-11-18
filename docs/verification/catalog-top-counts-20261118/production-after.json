@@ -1,0 +1,41 @@
+{
+  "/booking/eshop.php": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/html; charset=UTF-8",
+      "Location": null,
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-attr 'unsafe-hashes' 'sha256-wbrpL5QQ2UNjCzDh1jlP3Gx1/hkkkiJ8IfwQ+KQT3m4='; style-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN"
+    },
+    "sha256": "dc10c469c6d7bc95fbae0747b72e67bc79b49bcb02c8e59fb6d3c33400d3da9e",
+    "bytes": 43291
+  },
+  "/eshop_categories_admin.php": {
+    "status": 302,
+    "headers": {
+      "Content-Type": "text/html; charset=UTF-8",
+      "Location": "login.php",
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN"
+    },
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "/assets/vendor/bootstrap/bootstrap.min.css": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/css",
+      "Location": null,
+      "Cache-Control": "max-age=604800",
+      "Content-Security-Policy": null,
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN"
+    },
+    "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    "bytes": 232803
+  }
+}

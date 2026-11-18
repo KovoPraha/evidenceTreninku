@@ -1,0 +1,21 @@
+{
+  "number": "494",
+  "base": "a1bf2ba28a6e248ae99eb403d06b75749dcc04cf",
+  "head": "d66cbcd8a0f5d6f258f05e71072e46c3e4aa46ec",
+  "tree": "0142340dd157ea71080bc2cf05365523581bc39c",
+  "checks": {
+    "Catalog category counts read HTTP (MariaDB 10.3)": "SUCCESS",
+    "Analyze (actions)": "SUCCESS",
+    "docs": "SUCCESS",
+    "PHPStan level 5 and changed-file style": "SUCCESS",
+    "PHPUnit na PHP 8.2": "SUCCESS",
+    "Catalog category counts read HTTP (MariaDB 11.4)": "SUCCESS",
+    "Analyze (javascript-typescript)": "SUCCESS",
+    "Analyze (python)": "SUCCESS",
+    "MariaDB integra\u010dn\u00ed smoke (MariaDB 10.3)": "SUCCESS",
+    "MariaDB integra\u010dn\u00ed smoke (MariaDB 11.4)": "SUCCESS",
+    "MariaDB profily \u010dten\u00ed (MariaDB 10.3)": "SUCCESS",
+    "MariaDB profily \u010dten\u00ed (MariaDB 11.4)": "SUCCESS",
+    "CodeQL": "SUCCESS"
+  }
+}

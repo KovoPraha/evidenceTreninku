@@ -547,17 +547,17 @@ přínosu před měřením a bez persistentní cache.
 
 ## P11-CATTOP — počty kořenových kategorií (18. 11. 2026)
 
-**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník vývoj/Codex, nový výslovný pokyn
+**NASAZENO / technická přejímka PASS, přihlášené produkční UAT NOT RUN.** Vlastník vývoj/Codex, nový výslovný pokyn
 vlastníka pokračovat CATTOP, ověřit shodu/měření a při úplném PASS commit,
 merge a chráněný deploy. Basea1bf2ba28a6e248ae99eb403d06b75749dcc04cf,
 větev codex/catalog-top-counts-performance-20261118, vlastní worktree
 C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
 Původní fio/d1221f35 a WIP kis_rosters_admin.php SHA256
 7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
-CATLABEL #492/#493 dokončen, poslední runtime8347ff50/deploy44189981302
+Při zahájení: CATLABEL #492/#493 dokončen, runtime8347ff50/deploy44189981302
 SUCCESS ověřený, neopakovat jeho nasazení.
 
-Rozsah pouze výpočet topCategories v shopCatalogPageSelect. Nyní každý
+Rozsah pouze výpočet topCategories v shopCatalogPageSelect. Původně každý
 kořen menu znovu prochází všechny produkty a jejich kategorie. Kandidát:
 počítat doslovný první segment před „ > “ jedním průchodem a deduplikovat
 shodné kořeny uvnitř jednoho záznamu produktu. Počítat záznamy, nikoli ID
@@ -589,7 +589,7 @@ Při PASS celé aktuální CI, přesný testovaný/sloučený strom a chráněn�
 se zálohou/config/migracemi/VS/indexem/HTTP/úklidem, UAT/importfalse.
 Produkční výkonový profil a přihlášené/lidské UAT NOT RUN. Doklady a handoff
 do main vlastním PR bez druhého deploye dokumentace.
-Další krok: místní diferenciální profil, zatím bez změny aplikace.
+Původní první krok byl místní diferenciální profil před změnou aplikace.
 
 
 ### CATTOP — místní výběr kandidáta
@@ -606,4 +606,50 @@ kořenů, doslovný první segment a lokální set za každý záznam. Neobvykl�
 typy spadnou do zcela původní smyčky, bez předčasné nové výjimky; žádný
 způsobilý kořen znamená žádný průchod produktů navíc. Native6SQL beze změny,
 aktuální ostatní workflow nejsou rušené ani oslabované (jiný zdrojový modul).
-Další krok: hraniční parita a celé native/HTTP/Chrome brány.
+Následovala hraniční parita a celé native/HTTP/Chrome brány; dokončení níže.
+
+
+### CATTOP — nativní a HTTP přejímka
+
+18. 11. 2026: PR #494, běh44267837717 na d66cbcd8 SUCCESS na obou DB.
+6 nativních profilů/DB a36HTTP scénářů/DB přesně shodných včetně typů,
+pořadí, celého HTML/bezpečnostních hlaviček a355checksumů. 10000×1000
+anonym HTTP1079,3→321,1ms /828,4→232,8ms, single-root opačné směry
+a paměť v [úplném protokolu](verification/catalog-top-counts-20261118/RESULTS.md). Chrome8případů,176+48navigací,
+4shodné pixelové páry; desktop/mobil snímky také vizuálně ověřené.
+Předem určené brány nezměněné. Obecné CI/merge/deploy ještě čekají.
+
+18. 11. 2026 — CATTOP #494 po13CI PASS sloučeno `4312157834bd0b70dcc871e40d9e19c812537f47`, strom `0142340dd157ea71080bc2cf05365523581bc39c` shodný s testovaným headem. Chráněný [deploy44269813909](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44269813909) spuštěn jednou, potvrzení produkce čeká; UAT/importfalse.
+
+
+### CATTOP — dokončení (18. 11. 2026)
+
+**P11-CATTOP NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-cattop--počty-kořenových-kategorií-18-11-2026), [výsledky](verification/catalog-top-counts-20261118/RESULTS.md). #494/43121578, [deploy 44269813909](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44269813909) SUCCESS,13 CI. 10000×1000 celé HTTP 1079.3→321.1ms / 828.4→232.8ms; parita/36scénářů naDB/4pixelpáry PASS. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
+
+Párový běh44267837717 na d66cbcd8 SUCCESS na obou MariaDB.
+6nativních profilů/DB, přesný celý výběr/stav/typy/serializedhash,6SQL a
+checksumy shodné. 36celých HTTP scénářů/DB,355tabulek stejných v každé fázi
+i po Chrome. 5000×500 anonymHTTP 343.0→159.2ms / 265.4→119.5ms; 10000×1000 1079.3→321.1ms / 828.4→232.8ms. Přihlášený
+zákazník rovněž splnil ≥20% obou velkých cílů na obou DB. Single-root režie,
+malé a prázdné kontroly, všechny časové směry/paměť v protokolu; brány stejné.
+Chrome8případů,176měřených+48zahřívacích navigací,4identické pixelové páry,
+stejné formuláře/geometrie/styly/CSS a žádné síťové/console chyby. Desktop/
+mobil snímky také vizuálně ověřené. Produkční profil a přihlášené UAT NOT RUN.
+
+Jediná aplikační změna je lokální souhrn kořenů za každý záznam v bloku
+topCategories. Neobvyklé typy zachovávají původní smyčku/výjimky/varování;
+strict frozen oracle explicitně deklaruje strict_types=1. Celý prefix/suffix
+modulu stejný, žádná cache, změna SQL/signatury/cen/prodejnosti/writerů.
+Historické CATMENU/CATLABEL workflow zachované, CATTOP přidává vlastní
+2MariaDB joby a obecné CI stejné.
+
+Testovaný/sloučený strom 0142340dd157ea71080bc2cf05365523581bc39c,13CI SUCCESS. Chráněný deploy44269813909:
+2506testů/57333kontrol, záloha394tabulek/2triggerů.
+Config zachovaný, pending migrace[], VS/index stejné, aktivace/HTTP200/úklid
+PASS. UAT/importfalse, import přeskočený. Živý anonymní katalog (celé
+normalizované HTML/hlavičky), administrace redirect a CSS payload/hash/cache
+před/po stejné. Doklady samostatným docs PR bez redeploye; původní fio
+WIP/HEAD/hash zachované a jiné PR nepřebírané.
+
+Další případné sdílené načítání uzlů zůstává koncept k samostatnému profilu.
+Tímto vydáním se další funkční rozsah neotevírá.
