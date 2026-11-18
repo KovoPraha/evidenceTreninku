@@ -1,0 +1,66 @@
+<?php
+declare(strict_types=1);
+if (PHP_SAPI !== 'cli') { exit(1); }
+require __DIR__.'/../includes/shop_catalog_page_read.php';
+require __DIR__.'/../tests/Support/CatalogTopCountsFixture.php';
+$source=file_get_contents(__DIR__.'/../includes/shop_catalog_page_read.php');
+$start=strpos($source,'function shopCatalogPageSelect(');$end=strpos($source,'/** One read operation;',$start);$select=substr($source,$start,$end-$start);
+eval('declare(strict_types=1);'.str_replace('function shopCatalogPageSelect','function probeOriginalSelection',$select));
+$old=<<<'PHP'
+        $products = array_values(array_filter(
+            $products,
+            static fn (array $product): bool => array_intersect($selectedPaths, $product['categories']) !== []
+        ));
+PHP;
+$new=<<<'PHP'
+        $pathSet = array_fill_keys($selectedPaths, true);
+        $products = array_values(array_filter($products, static function (array $product) use ($pathSet): bool {
+            foreach ($product['categories'] as $path) {
+                if (isset($pathSet[$path])) { return true; }
+            }
+            return false;
+        }));
+PHP;
+if(substr_count($select,$old)!==1)throw new RuntimeException('Filter scope');
+eval('declare(strict_types=1);'.str_replace(['function shopCatalogPageSelect',$old],['function probeMembershipSelection',$new],$select));
+$a=strpos($select,'    usort($products,');$b=strpos($select,'    $filteredProductCount =',$a);
+$sorting=<<<'PHP'
+    $sortKeys = [];
+    foreach ($products as $i => $product) {
+        $name = mb_strtolower((string)$product['public_name'], 'UTF-8');
+        $id = (int)$product['product_id'];
+        $sortKeys[$i] = match ($catalogSort) {
+            'price' => [(int)$product['min_amount_minor'], $name, $id],
+            'name' => [$name, $id],
+            default => [(int)($product['sort_order'] ?? 0), $name, $id],
+        };
+    }
+    $indices = array_keys($products);
+    usort($indices, static fn ($a, $b): int => $sortKeys[$a] <=> $sortKeys[$b]);
+    $products = array_map(static fn ($i): array => $products[$i], $indices);
+
+PHP;
+$sorted=substr($select,0,$a).$sorting.substr($select,$b);
+eval('declare(strict_types=1);'.str_replace('function shopCatalogPageSelect','function probeSortSelection',$sorted));
+$results=[];
+foreach([[12,6],[1000,100],[2500,500],[5000,1000],[10000,1]]as[$size,$roots]){
+ $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+ $pdo->exec('CREATE TABLE shop_product_categories(product_id INT,category_path TEXT);CREATE TABLE shop_member_category_rules(category_path TEXT);CREATE TABLE shop_category_meta(category_path TEXT PRIMARY KEY,display_name TEXT,parent_path TEXT NULL,sort_order INT,visible_in_menu INT,description TEXT NULL)');
+ $products=catalogTopCountsFixture($pdo,$size,$roots);
+ $insert=$pdo->prepare('INSERT INTO shop_category_meta VALUES(?,?,?,0,1,NULL)');
+ for($i=0;$i<$roots;$i++)$insert->execute(['LOCALHOST-'.$i,'LOCALHOST '.$i,$i===0?null:'LOCALHOST-'.intdiv($i-1,8)]);
+ foreach($products as$i=>&$p){$p['public_name']='LOCALHOST Žluťoučký sportovní dres '.str_pad((string)(($i*7919)%$size),6,'0',STR_PAD_LEFT);}unset($p);
+ foreach([[],['kategorie'=>'LOCALHOST-0']]as$input){
+  $samples=['before'=>[],'membership'=>[],'sort-keys'=>[]];$expected=null;
+  for($round=-2;$round<7;$round++)foreach($round%2===0?array_keys($samples):array_reverse(array_keys($samples))as$mode){
+   memory_reset_peak_usage();$memory=memory_get_usage();$start=hrtime(true);
+   $state=match($mode){'before'=>probeOriginalSelection($pdo,$products,$input),'membership'=>probeMembershipSelection($pdo,$products,$input),'sort-keys'=>probeSortSelection($pdo,$products,$input)};
+   $ms=(hrtime(true)-$start)/1e6;$peak=memory_get_peak_usage()-$memory;$hash=hash('sha256',serialize($state));$expected??=$hash;
+   if($hash!==$expected)throw new RuntimeException('Whole selection differs');
+   unset($state);if($round>=0)$samples[$mode][]=['ms'=>$ms,'peak_bytes'=>$peak,'sha256'=>$hash];
+  }
+  $results[]=['products'=>$size,'nodes'=>$roots,'filtered'=>$input!==[],'exact_equal'=>true,'samples'=>$samples];
+ }
+}
+file_put_contents(__DIR__.'/catalog-selection-membership-prototype.txt',$new."\n");
+echo json_encode($results,JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR),"\n";

@@ -1,0 +1,7 @@
+        $pathSet = array_fill_keys($selectedPaths, true);
+        $products = array_values(array_filter($products, static function (array $product) use ($pathSet): bool {
+            foreach ($product['categories'] as $path) {
+                if (isset($pathSet[$path])) { return true; }
+            }
+            return false;
+        }));

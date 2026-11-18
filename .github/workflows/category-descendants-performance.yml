@@ -1,15 +1,6 @@
-name: Category descendants read parity and performance
+name: Category read historical replay (superseded by catalog selection)
 
 on:
-  pull_request:
-    paths:
-      - 'includes/shop_category.php'
-      - 'includes/shop_catalog_page_read.php'
-      - 'tests/Integration/ShopCategoryDescendantsReadTest.php'
-      - 'tests/Support/CategoryDescendants*'
-      - 'tests/Support/CategoryMenuFixture.php'
-      - 'tests/Support/CategoryMenuComparison.php'
-      - '.github/workflows/category-descendants-performance.yml'
   workflow_dispatch:
     inputs:
       mariadb_version:
