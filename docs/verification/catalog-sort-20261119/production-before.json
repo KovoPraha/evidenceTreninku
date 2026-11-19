@@ -1,0 +1,80 @@
+{
+  "/booking/eshop.php": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/html; charset=UTF-8",
+      "Location": null,
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-attr 'unsafe-hashes' 'sha256-wbrpL5QQ2UNjCzDh1jlP3Gx1/hkkkiJ8IfwQ+KQT3m4='; style-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN"
+    },
+    "sha256": "dc10c469c6d7bc95fbae0747b72e67bc79b49bcb02c8e59fb6d3c33400d3da9e",
+    "bytes": 43291
+  },
+  "/booking/eshop.php?razeni=name": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/html; charset=UTF-8",
+      "Location": null,
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-attr 'unsafe-hashes' 'sha256-wbrpL5QQ2UNjCzDh1jlP3Gx1/hkkkiJ8IfwQ+KQT3m4='; style-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN"
+    },
+    "sha256": "e58973a2a099b4d66d3d2ddd4a2f1d07bf2a226b4898093b60e413af80aee471",
+    "bytes": 42602
+  },
+  "/booking/eshop.php?razeni=price": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/html; charset=UTF-8",
+      "Location": null,
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-attr 'unsafe-hashes' 'sha256-wbrpL5QQ2UNjCzDh1jlP3Gx1/hkkkiJ8IfwQ+KQT3m4='; style-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN"
+    },
+    "sha256": "c9e28f1131c2718f0a33b198496351c0366a5adea4fb2aef9888ea16b1dfa816",
+    "bytes": 42333
+  },
+  "/eshop_categories_admin.php": {
+    "status": 302,
+    "headers": {
+      "Content-Type": "text/html; charset=UTF-8",
+      "Location": "login.php",
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-attr 'none'; style-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN"
+    },
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "/assets/vendor/bootstrap/bootstrap.min.css": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/css",
+      "Location": null,
+      "Cache-Control": "max-age=604800",
+      "Content-Security-Policy": null,
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN"
+    },
+    "sha256": "3c8f27e6009ccfd710a905e6dcf12d0ee3c6f2ac7da05b0572d3e0d12e736fc8",
+    "bytes": 232803
+  },
+  "/booking/eshop.php?kategorie=CYKLISTICK%C3%89%20OBLE%C4%8CEN%C3%8D": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/html; charset=UTF-8",
+      "Location": null,
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE' 'strict-dynamic'; script-src-attr 'unsafe-hashes' 'sha256-wbrpL5QQ2UNjCzDh1jlP3Gx1/hkkkiJ8IfwQ+KQT3m4='; style-src 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-elem 'self' https://cdn.jsdelivr.net 'nonce-SYNTHETIC_NONCE'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' https://cdn.jsdelivr.net data:; connect-src 'self'; frame-src 'self'; manifest-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "SAMEORIGIN"
+    },
+    "sha256": "a64fe139e5bc6881174c7177a3d7d403b859ce81b8b2eb93b030058fba45dc2a",
+    "bytes": 42913
+  }
+}

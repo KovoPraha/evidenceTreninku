@@ -9440,7 +9440,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "P11/P11-ATTR/P11-REVIEW/P11-CATMENU/P11-CATLABEL/P11-CATTOP",
-      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. ATTR#488/CATMENU#490/CATLABEL#492/CATTOP#494/CATREAD#496 nasazeny se samostatnými protokoly. CATSEL #498/a752cd96 deploy44404265875 SUCCESS,9native/46HTTP scénářů naDB a4pixelpáry/13CI PASS. 10000/1000 filtrHTTP 1321.5→415.9ms / 632.6→206.8ms, oba velké cíle≥20% na obou DB. Přesné stavy/HTML/hlavičky,355checksumů, SQL3/6TX původní. Všechny směry/paměť zveřejněné; řadicí klíče samostatný koncept. Přihlášené produkční UAT NOT RUN. CATSORT: nová diagnóza řadicích klíčů po CATSEL, aplikace zatím beze změny.",
+      "disposition": "Katalog #364 nasazen, celé K0.2 otevřené. ATTR#488/CATMENU#490/CATLABEL#492/CATTOP#494/CATREAD#496/CATSEL#498 nasazeny se samostatnými protokoly. CATSORT #500/62c00649 deploy44473829467 SUCCESS,30native/82HTTP scénářů naDB a4pixelpáry/13CI PASS. 10000/1000 přehledHTTP 318.8→237.3ms / 232.7→164.0ms, všechny pevné order/name cíle≥20% na obou DB. Přesné stavy/HTML/hlavičky,355checksumů, SQL3/6TX původní. Všechny směry/paměť zveřejněné. Přihlášené produkční UAT NOT RUN.",
       "evidence": [
         "docs/verification/catalog-read-performance-20261107/RESULTS.md",
         "docs/verification/catalog-release-20261107/RESULTS.md",
