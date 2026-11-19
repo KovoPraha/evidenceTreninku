@@ -10,7 +10,7 @@
   "gain_percent": 17.807335149345484,
   "accepted": false,
   "threshold_unchanged": true,
-  "reason": "17.806% and 19.235% whole-HTTP gain are below fixed 20% gate; no merge or deployment",
+  "reason": "17.807% and 19.235% whole-HTTP gain are below fixed 20% gate; no merge or deployment",
   "failures": [
     {
       "version": "10.3",

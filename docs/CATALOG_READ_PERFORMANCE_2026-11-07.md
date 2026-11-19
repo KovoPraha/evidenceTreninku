@@ -953,7 +953,7 @@ vlastním docs PR do main bez dalšího nasazení.
 
 ## P11-CATSORT — řazení katalogu (19. 11. 2026)
 
-**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník: Vývoj/Codex. Pokyn vlastníka
+**NASAZENO / technická přejímka PASS, přihlášené produkční UAT NOT RUN.** Vlastník: Vývoj/Codex. Pokyn vlastníka
 „pokračuj“ navazuje na schválené optimalizace, přesnou paritu, měření před/po
 a při úplném PASS commit/merge/chráněný deploy. WIP zachovat. Base
 4f43f793510fd7dd1bb136cea875475b258adab6, větev
@@ -996,7 +996,7 @@ UAT/importfalse. Živé čtecí GET před/po včetně skutečné filtrované ces
 žádné skutečné objednávky/platby/role/rozesílky. Produkční výkonový profil
 a přihlášené/lidské UAT NOT RUN. Finální doklady vlastním docs PR do main
 bez dalšího nasazení. Závislost: měřitelný přínos při přesné paritě a zelené CI.
-Další krok: lokální sonda bez změny aplikace.
+Původní první krok byl místní profil; dokončení a další krok níže.
 
 
 ### CATSORT — místní diagnóza a implementace
@@ -1015,7 +1015,7 @@ Native/HTTP/Chrome/obecnéCI ještě čekají.
 ### CATSORT — první kandidát odmítnut a zpřesnění
 
 Head7d54ffb4/běh44469280478, MariaDB10.3 large5000/500 overview-customer
-147,209→120,995ms (17,806%) nesplnil předem daných≥20%. Žádné sloučení
+147,209→120,995ms (17,807%) nesplnil předem daných≥20%. Žádné sloučení
 ani nasazení, výsledek se nepřeznačuje jako PASS. [Doklad](verification/catalog-sort-20261119/rejected-uasort.json).
 Rozšíření zůstává v jediném bloku řazení: odstranit zbývající PHP callback
 nad hotovými tuple klíči a použít stabilní vestavěný asort(SORT_REGULAR).
@@ -1102,3 +1102,53 @@ případy/20% a ostatní tolerance stejné. Finální CI přejímka ještě ček
 | 10000/1000 | czech/order | 1414.78 → 149.96 |
 | 10000/1000 | czech/name | 1204.95 → 115.26 |
 | 10000/1000 | czech/price | 2355.79 → 116.71 |
+
+
+19. 11. 2026 — CATSORT #500 po13CI PASS sloučeno `62c00649080ecdedd5bdd48b536b72d2dae84451`,
+strom `3ff868f3efecb71f75a3320e23d0be37fbb8aa65` přesně shodný s testovaným headem8570d24f.
+Párový běh44472254109 SUCCESS:30native/82HTTP scénářů naDB,355checksumů,
+176měřených+48zahřívacích Chrome navigací a4pixelpáry; desktop/mobil také
+vizuálně ověřené. Overview10000/1000 anonym318,775→237,337ms /232,742→163,960ms,
+celý Select89,86→29,54ms /71,91→21,05ms; peak3,446→5,422MiB.
+Všechny pevné order/name cíle5000/500 a10000/1000, přehled/kořen i oběrole≥20%,
+kontroly i původní tolerance stejné. Oba předchozí kandidáti odmítnutí se
+svými bezpečnými daty uchovaní. [Deploy44473829467](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44473829467)
+spuštěn právě jednou, chráněné produkční potvrzení ještě čeká; UAT/importfalse.
+Finální doklady ve vlastní větvi codex/catalog-sort-release-docs-20261119,
+zatím lokálně, po vydání vlastní docs PR bez dalšího nasazení.
+
+
+### CATSORT — dokončení (19. 11. 2026)
+
+**P11-CATSORT NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catsort--řazení-katalogu-19-11-2026), [výsledky](verification/catalog-sort-20261119/RESULTS.md). #500/62c00649, [deploy44473829467](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44473829467) SUCCESS,13CI. 10000/1000 přehledHTTP 318.8→237.3ms / 232.7→164.0ms;30native/82HTTP scénářů naDB/4pixelpáry PASS. SQL3outside/6insideTX stejné. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
+
+Párový běh44472254109 na8570d24f SUCCESS na obou DB:
+30nativních profilů/DB, celý stav/typy/pořadí/serializedhash shodné,3SQL
+před/po a stejné checksumy.82celých HTTP scénářů/DB,355checksumů po každé
+fázi i Chrome. Cíl5000/500 overviewHTTP anonym 163.3→125.5ms / 116.0→86.8ms,10000/1000 318.8→237.3ms / 232.7→164.0ms;
+overview/root order/name anonym i zákazník oba objemy≥20%. Price i všechny
+kontroly změřené, původní tolerance beze změny. Veškeré směry/paměť v protokolu.
+Fixture asertuje PageRead aktivní/filtered počty, uzly a potomky před měřením.
+Chrome8případů,176měřených+48zahřívacích navigací/4pixelpáry, jmenný přehled
+a cenový filtr; formuláře/geometrie/styly/CSS/JS stejné, žádné síťové/console
+chyby. Desktop/mobil snímky také vizuálně ověřené.
+
+Pouze blok řazení, prefix/suffix PageRead i celý shop_category.php beze změny,
+frozen celý Select z čerstvého main4f43f793. Lokální tuple klíče pro kanonické
+string/int DTO, samostatné sloupce array_multisort(SORT_REGULAR), původní pozice
+a mapa klíčů; duplicity ID/záznamů, asociativní vstupy, velké inty i numeric-string
+porovnání zachované. Jiné typy/chybějící pole a0/1produkty
+původním callbackem včetně varování/výjimek/počtu konverzí. Žádná cache nebo
+normalizace, filtry/menu/CATTOP/prodejnost/ceny/writery/limity i SQL3/6TX
+a celá transakční sekvence původní. Historická CATSEL replay972577ca
+zachovaná; nová CATSORT přebírá úplnou přejímku. Starší testy zachované.
+
+Testovaný/sloučený strom `3ff868f3efecb71f75a3320e23d0be37fbb8aa65`,13CI PASS. Deploy44473829467:
+2524testů/60255kontrol, záloha394tabulek/2triggerů,
+config zachovaný, pending migrace[], VS/zdravotní index stejné, aktivace/
+HTTP200/úklid PASS. UAT/importfalse, import přeskočený. Živý anonymní katalog,
+name/price řazení a skutečný filtr: celé normalizované HTML/hlavičky stejné,
+guard administrace a CSS také. Produkční výkonový profil a přihlášené/
+lidské UAT NOT RUN. Původní fio WIP/HEAD/hash zachované, jiné PR nepřebírané.
+Další krok: finální doklady vlastním docs PR do main bez dalšího nasazení;
+další optimalizaci vybrat až novým profilem aktuálního stavu.
