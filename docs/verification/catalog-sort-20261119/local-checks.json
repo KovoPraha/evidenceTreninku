@@ -8,7 +8,7 @@
   "catalog_regressions": {
     "tests": 38,
     "assertions": 4815,
-    "result": "PASS"
+    "result": "PASS rerun after asort refinement"
   },
   "phpstan": "PASS",
   "style": {
@@ -22,7 +22,7 @@
     "prefix_suffix_byte_equal": true,
     "frozen_selection_equal": true,
     "category_module_unchanged": true,
-    "source_sha256": "50c2022b75f5ab988c803de174ecdf3f29733a136040680235679a98055436b4"
+    "source_sha256": "7d4ca1cff89e8363d41d62d23b20eb09fdc2c9a141b737ef371100c20c7bb4d8"
   },
   "composer_validate": "PASS",
   "syntax_python_javascript": "PASS",
@@ -37,5 +37,7 @@
     "python -m py_compile tests/Support/CatalogSortProfile.py",
     "node --check tests/Support/CatalogSortBrowser.js",
     "composer validate --strict"
-  ]
+  ],
+  "final_algorithm": "asort SORT_REGULAR",
+  "final_local_probe_profiles": 12
 }

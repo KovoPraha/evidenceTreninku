@@ -107,7 +107,7 @@ function shopCatalogPageSelect(PDO $pdo, array $products, array $input, ?array $
         }
     }
     if ($sortKeys !== []) {
-        uasort($sortKeys, static fn (array $a, array $b): int => $a <=> $b);
+        asort($sortKeys, SORT_REGULAR);
         $sortedProducts = [];
         foreach ($sortKeys as $index => $_) {
             $sortedProducts[] = $products[$index];

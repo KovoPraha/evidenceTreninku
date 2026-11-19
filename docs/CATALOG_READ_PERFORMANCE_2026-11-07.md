@@ -1010,3 +1010,46 @@ a10000/1000 overview/root≥20%, ostatní původní tolerance beze změny.
 Native/HTTP/Chrome/obecnéCI ještě čekají.
 
 19. 11. 2026 — CATSORT lokálně5testů/621kontrol, širší katalog38testů/4815kontrol PASS, plný PHPStan/styl8PHP/0chyb/source contract/Composer/syntaxe PASS. [Příkazy](verification/catalog-sort-20261119/local-checks.json). Native2DB/82HTTP/Chrome a obecné CI ještě čekají.
+
+
+### CATSORT — první kandidát odmítnut a zpřesnění
+
+Head7d54ffb4/běh44469280478, MariaDB10.3 large5000/500 overview-customer
+147,209→120,995ms (17,806%) nesplnil předem daných≥20%. Žádné sloučení
+ani nasazení, výsledek se nepřeznačuje jako PASS. [Doklad](verification/catalog-sort-20261119/rejected-uasort.json).
+Rozšíření zůstává v jediném bloku řazení: odstranit zbývající PHP callback
+nad hotovými tuple klíči a použít stabilní vestavěný asort(SORT_REGULAR).
+[PHP dokumentace](https://www.php.net/manual/en/function.asort.php) popisuje
+normální porovnání a zachování pořadí shod odPHP8; použití pro stejné tuple
+ověří celá diferenciální parita, samotná dokumentace není důkaz shody app.
+Typový guard a celý původní fallback stejné. Žádné změkčení bran nebo
+vynechání customer: stejné30native/82HTTP případy, stejné objemy a tolerance.
+HTTPsafeJSON se nově uloží před vyhodnocením brány i při odmítnutí kandidáta.
+První lokální data patří k uasort; finální asort sonda je samostatný doklad.
+Další krok: nová místní parita/profil, pak znovu celá CI přejímka finálního headu.
+
+První kandidát také na11.4: large10000 overview-anonymous234,541→189,427ms (19,235%) pod20%. Obě zamítnutí a původní safe artefakty zůstávají ve [výsledcích](verification/catalog-sort-20261119/rejected-uasort.json).
+
+
+### CATSORT — finální lokální asort profil
+
+Finální12profilů5000/500 a10000/1000, ASCII/čeština×3sorty, celý Select,
+2warmup+7střídavých párů, celé stavy/hash PASS. [Data](verification/catalog-sort-20261119/local-asort-probe.json).
+Po změně znovu38testů/4815kontrol, plný PHPStan/styl8PHP/0chyb a nový
+SourceContract PASS. Finální blok asort(SORT_REGULAR), původní fallback
+stejný; žádné změkčení bran,82HTTP/30native/Chrome přejímka ještě čeká.
+
+| Produkty/uzly | Názvy/sort | Před → po ms |
+| --- | --- | ---: |
+| 5000/500 | ascii/order | 271.68 → 49.43 |
+| 5000/500 | ascii/name | 231.38 → 49.65 |
+| 5000/500 | ascii/price | 525.16 → 137.42 |
+| 5000/500 | czech/order | 330.53 → 49.85 |
+| 5000/500 | czech/name | 361.96 → 42.70 |
+| 5000/500 | czech/price | 882.34 → 110.67 |
+| 10000/1000 | ascii/order | 1402.98 → 301.11 |
+| 10000/1000 | ascii/name | 819.54 → 315.09 |
+| 10000/1000 | ascii/price | 469.59 → 106.48 |
+| 10000/1000 | czech/order | 688.10 → 104.49 |
+| 10000/1000 | czech/name | 668.29 → 107.54 |
+| 10000/1000 | czech/price | 638.10 → 86.19 |

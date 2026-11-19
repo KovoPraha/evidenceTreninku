@@ -1,0 +1,29 @@
+    $sortKeys = [];
+    if (count($products) > 1) {
+        foreach ($products as $index => $product) {
+            if (!is_string($product['public_name'] ?? null) || !is_int($product['product_id'] ?? null)
+                || ($catalogSort === 'price' && !is_int($product['min_amount_minor'] ?? null))
+                || ($catalogSort === 'order' && !is_int($product['sort_order'] ?? 0))
+            ) {
+                $sortKeys = [];
+                break;
+            }
+            $name = mb_strtolower($product['public_name'], 'UTF-8');
+            $id = $product['product_id'];
+            $sortKeys[$index] = match ($catalogSort) {
+                'price' => [$product['min_amount_minor'], $name, $id],
+                'name' => [$name, $id],
+                default => [$product['sort_order'] ?? 0, $name, $id],
+            };
+        }
+    }
+    if ($sortKeys !== []) {
+        asort($sortKeys, SORT_REGULAR);
+        $sortedProducts = [];
+        foreach ($sortKeys as $index => $_) {
+            $sortedProducts[] = $products[$index];
+        }
+        $products = $sortedProducts;
+    } else {
+__ORIGINAL__
+    }

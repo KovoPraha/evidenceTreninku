@@ -196,13 +196,13 @@ try:
             php("CatalogSortHttpFixture.php", output, str(size), str(nodes), shape)
         php("CatalogSortHttp.php", output, label)
         native = json.loads((output / "http.json").read_text())
+        (safe / f"http-{label}.json.gz").write_bytes(gzip.compress(json.dumps(native).encode(), mtime=0))
         for case, variants in native["samples"].items():
             if variants["before"][0]["status"] == 200:
                 totals = {v: statistics.median(s["total_ms"] for s in samples) for v, samples in variants.items()}
                 assert totals["after"] <= totals["before"] * 1.2 + 20, (label, case, totals)
                 if label.startswith("large-") and any(case == name + "-" + role for name in ("overview", "category", "sort-name", "category-name") for role in ("anonymous", "customer")):
                     assert totals["after"] < totals["before"] * .8, ("whole HTTP gain", label, case, totals)
-        (safe / f"http-{label}.json.gz").write_bytes(gzip.compress(json.dumps(native).encode(), mtime=0))
         check = subprocess.check_output(["php", "tests/Support/CatalogSortHttp.php", str(output), "--verify"], cwd=root)
         (safe / f"checksums-{label}.json").write_bytes(check)
     if browser_enabled:

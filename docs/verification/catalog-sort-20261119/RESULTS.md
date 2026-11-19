@@ -49,3 +49,9 @@ SQL3outside/6insideTX a původní transakční sekvence stejné.
 Native/HTTP/Chrome/CI/merge/deploy NOT RUN; přihlášené produkční UAT NOT RUN.
 
 Lokální implementace:5testů/621kontrol, širší katalog38/4815, plný PHPStan a styl8PHP/0chyb, SourceContract a Composer/syntaxe PASS. [Doklad](local-checks.json). Chrome jmenný přehled/cenový filtr, native2DB/82HTTP/CI/merge/deploy ještě čekají.
+
+První uasort kandidát7d54ffb4 odmítnut: [147,209→120,995ms,17,806% pod20%](rejected-uasort.json). Zpřesnění na vestavěný asort(SORT_REGULAR); guard/fallback, všechny případy i brány stejné. Finální parita/měření čekají.
+
+Také11.4 large10000 overview-anonymous234,541→189,427ms (19,235%) pod20%: [obě odmítnutí](rejected-uasort.json), [běh](rejected-uasort/run.json). Všechny dostupné safe native/HTTP/checksum/cleanup artefakty neúspěšného kandidáta uchované ve stejné složce.
+
+Finální asort:12lokálních profilů celý stav/hash shodné, širší38testů/4815kontrol, plný PHPStan/styl/source contract znovuPASS. [Data](local-asort-probe.json), [sonda](local-asort-probe.php.txt), [prototyp](local-asort-prototype.txt), [frozen PageRead](local-asort-frozen-page.txt). Reprodukce: kopie do output/catalog-sort-asort-probe.php.txt, output/catalog-sort-asort-block.txt a output/catalog-sort-frozen-page.txt. Původní24profilová sonda je uasort, finální sonda samostatná. Native/HTTP/Chrome čekají.

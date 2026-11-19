@@ -811,3 +811,5 @@ shodné; authUAT kvůlibrowserAPI NOTRUN. HJSprototypy a původníWIP zachované
 19. 11. 2026 — CATSORT zahájen pokračovacím pokynem vlastníka po CATSEL. Nová diagnóza jednorázových řadicích klíčů se stejným PHP tuple porovnáním a původním fallbackem. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catsort--řazení-katalogu-19-11-2026), aplikace zatím beze změny, WIP zachovaný.
 
 19. 11. 2026 — CATSORT místní24profilů celý stav/hash PASS, tuple klíče vybrané pro další přejímku; bezpečný guard zachová původní callback, prefix/suffix a celý category modul připnuté. Pevné cíle/tolerance nezměněné. [Data](verification/catalog-sort-20261119/RESULTS.md), native/HTTP/Chrome čekají.
+
+19. 11. 2026 — CATSORT uasort head7d54ffb4 odmítnut:10.3 large5000 overview-customer147,209→120,995ms pouze17,806% pod pevnými20%. Zpřesnění stejného bloku na asort(SORT_REGULAR), nezměněné brány/všechny případy, původní guard/fallback. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catsort--řazení-katalogu-19-11-2026).
