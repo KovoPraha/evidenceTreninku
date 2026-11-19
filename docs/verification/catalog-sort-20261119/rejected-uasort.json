@@ -1,0 +1,30 @@
+{
+  "head": "7d54ffb4bad753bc9e35300f765e4a608cfb0788",
+  "run": 44469280478,
+  "candidate": "prepared tuple keys with PHP uasort callback",
+  "version": "10.3",
+  "failed_gate": "whole HTTP gain >=20%",
+  "case": "large-5000/overview-customer",
+  "before_ms": 147.209,
+  "after_ms": 120.995,
+  "gain_percent": 17.807335149345484,
+  "accepted": false,
+  "threshold_unchanged": true,
+  "reason": "17.806% and 19.235% whole-HTTP gain are below fixed 20% gate; no merge or deployment",
+  "failures": [
+    {
+      "version": "10.3",
+      "case": "large-5000/overview-customer",
+      "before_ms": 147.209,
+      "after_ms": 120.995,
+      "gain_percent": 17.807335149345484
+    },
+    {
+      "version": "11.4",
+      "case": "large-10000/overview-anonymous",
+      "before_ms": 234.541,
+      "after_ms": 189.427,
+      "gain_percent": 19.23501647899515
+    }
+  ]
+}

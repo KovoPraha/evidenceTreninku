@@ -406,3 +406,17 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 18. 11. 2026 — CATSEL #498 po13CI PASS sloučeno `a752cd96d1a9cd2dee47498974178950cb156fac`, strom `08e81c9d597761b296a31093c7976f0806eaa936` shodný s testovaným headem. [Deploy44404265875](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44404265875) spuštěn jednou, produkční potvrzení čeká; UAT/importfalse.
 
 18. 11. 2026 — CATSEL dokončen, všechny brány i chráněný deploy PASS. **P11-CATSEL NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catsel--výběr-katalogu-po-catread-18-11-2026), [výsledky](verification/catalog-selection-20261118/RESULTS.md). #498/a752cd96, [deploy44404265875](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44404265875) SUCCESS,13CI. 10000/1000 filtrHTTP 1321.5→415.9ms / 632.6→206.8ms; stav/46scénářů naDB/4pixelpáry PASS. SQL3outside/6insideTX stejné. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
+
+19. 11. 2026 — CATSORT zahájen pokračovacím pokynem vlastníka po CATSEL. Nová diagnóza jednorázových řadicích klíčů se stejným PHP tuple porovnáním a původním fallbackem. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catsort--řazení-katalogu-19-11-2026), aplikace zatím beze změny, WIP zachovaný.
+
+19. 11. 2026 — CATSORT místní24profilů celý stav/hash PASS, tuple klíče vybrané pro další přejímku; bezpečný guard zachová původní callback, prefix/suffix a celý category modul připnuté. Pevné cíle/tolerance nezměněné. [Data](verification/catalog-sort-20261119/RESULTS.md), native/HTTP/Chrome čekají.
+
+19. 11. 2026 — CATSORT lokálně5testů/621kontrol, širší katalog38testů/4815kontrol PASS, plný PHPStan/styl8PHP/0chyb/source contract/Composer/syntaxe PASS. [Příkazy](verification/catalog-sort-20261119/local-checks.json). Native2DB/82HTTP/Chrome a obecné CI ještě čekají.
+
+19. 11. 2026 — CATSORT uasort head7d54ffb4 odmítnut:10.3 large5000 overview-customer147,209→120,995ms pouze17,806% pod pevnými20%. Zpřesnění stejného bloku na asort(SORT_REGULAR), nezměněné brány/všechny případy, původní guard/fallback. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catsort--řazení-katalogu-19-11-2026).
+
+19. 11. 2026 — CATSORT finální asort lokálně12profilů/38testů/4815kontrol i kvalita/source contract PASS. Oba předchozí HTTP neúspěchy uchované, všechny původní brány stejné. PR #500 musí znovu projít celou přejímkou finálního headu.
+
+19. 11. 2026 — CATSORT asort head0b8ed5a2 odmítnut:10.3 large10000 overview-anonymous274,934→225,040ms pouze18,147% pod20%. Profilovaný další kandidát: samostatné sloupce array_multisort(SORT_REGULAR) a původní pozice pro ties, fallback navíc pro ne-list, jinak stejný. Všechny brány/případy stejné, žádný merge/deploy.
+
+19. 11. 2026 — CATSORT finální sloupce/mapa původních klíčů39testů/4869kontrol,12lokálních profilů, plný PHPStan/styl/source contract PASS. Nadbytečné list kontroly nahrazeny přesnou mapou bez potlačení pravidel nebo rozšíření typů; asociativní klíče i velká int ID/ceny mají diferenciální pokrytí. Původní brány/případy stejné, finální CI čekají.

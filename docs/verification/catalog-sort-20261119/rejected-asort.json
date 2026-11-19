@@ -1,0 +1,13 @@
+{
+  "head": "0b8ed5a2774a4ee66c029ad9f3c78c41dd100d75",
+  "run": 44470291449,
+  "candidate": "asort SORT_REGULAR over prepared tuple arrays",
+  "version": "10.3",
+  "failed_gate": "whole HTTP gain >=20%",
+  "case": "large-10000/overview-anonymous",
+  "before_ms": 274.934,
+  "after_ms": 225.04,
+  "gain_percent": 18.14762815803066,
+  "accepted": false,
+  "threshold_unchanged": true
+}

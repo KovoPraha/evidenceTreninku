@@ -87,20 +87,71 @@ function shopCatalogPageSelect(PDO $pdo, array $products, array $input, ?array $
                 : str_contains(mb_strtolower((string) $product['public_name'] . ' ' . (string) $product['public_summary'], 'UTF-8'), $needle);
         }));
     }
-    usort($products, static function (array $a, array $b) use ($catalogSort): int {
-        $aName = mb_strtolower((string) $a['public_name'], 'UTF-8');
-        $bName = mb_strtolower((string) $b['public_name'], 'UTF-8');
-        if ($catalogSort === 'price') {
-            return [(int) $a['min_amount_minor'], $aName, (int) $a['product_id']]
-                <=> [(int) $b['min_amount_minor'], $bName, (int) $b['product_id']];
+    $sortKeys = [];
+    $sortNames = [];
+    $sortIds = [];
+    $sortPrimary = [];
+    $sortOriginalKeys = [];
+    $usePreparedSort = count($products) > 1;
+    if ($usePreparedSort) {
+        foreach ($products as $index => $product) {
+            if (!is_string($product['public_name'] ?? null) || !is_int($product['product_id'] ?? null)
+                || ($catalogSort === 'price' && !is_int($product['min_amount_minor'] ?? null))
+                || ($catalogSort === 'order' && !is_int($product['sort_order'] ?? 0))
+            ) {
+                $usePreparedSort = false;
+                break;
+            }
+            $sortOriginalKeys[] = $index;
+            $sortKeys[] = count($sortKeys);
+            $sortNames[] = mb_strtolower($product['public_name'], 'UTF-8');
+            $sortIds[] = $product['product_id'];
+            if ($catalogSort !== 'name') {
+                $sortPrimary[] = $catalogSort === 'price' ? $product['min_amount_minor'] : ($product['sort_order'] ?? 0);
+            }
         }
+    }
+    if ($usePreparedSort) {
+        // The final input position preserves ties without comparing product payloads.
         if ($catalogSort === 'name') {
-            return [$aName, (int) $a['product_id']] <=> [$bName, (int) $b['product_id']];
+            array_multisort($sortNames, SORT_ASC, SORT_REGULAR, $sortIds, SORT_ASC, SORT_REGULAR, $sortKeys, SORT_ASC, SORT_REGULAR);
+        } else {
+            array_multisort(
+                $sortPrimary,
+                SORT_ASC,
+                SORT_REGULAR,
+                $sortNames,
+                SORT_ASC,
+                SORT_REGULAR,
+                $sortIds,
+                SORT_ASC,
+                SORT_REGULAR,
+                $sortKeys,
+                SORT_ASC,
+                SORT_REGULAR
+            );
         }
-        // Existing cards have no product sort_order; retain their implicit zero.
-        return [(int) ($a['sort_order'] ?? 0), $aName, (int) $a['product_id']]
-            <=> [(int) ($b['sort_order'] ?? 0), $bName, (int) $b['product_id']];
-    });
+        $sortedProducts = [];
+        foreach ($sortKeys as $index) {
+            $sortedProducts[] = $products[$sortOriginalKeys[$index]];
+        }
+        $products = $sortedProducts;
+    } else {
+        usort($products, static function (array $a, array $b) use ($catalogSort): int {
+            $aName = mb_strtolower((string) $a['public_name'], 'UTF-8');
+            $bName = mb_strtolower((string) $b['public_name'], 'UTF-8');
+            if ($catalogSort === 'price') {
+                return [(int) $a['min_amount_minor'], $aName, (int) $a['product_id']]
+                    <=> [(int) $b['min_amount_minor'], $bName, (int) $b['product_id']];
+            }
+            if ($catalogSort === 'name') {
+                return [$aName, (int) $a['product_id']] <=> [$bName, (int) $b['product_id']];
+            }
+            // Existing cards have no product sort_order; retain their implicit zero.
+            return [(int) ($a['sort_order'] ?? 0), $aName, (int) $a['product_id']]
+                <=> [(int) ($b['sort_order'] ?? 0), $bName, (int) $b['product_id']];
+        });
+    }
     $filteredProductCount = count($products);
     $perPage = 12;
     $page = max(1, (int) ($input['strana'] ?? 1));

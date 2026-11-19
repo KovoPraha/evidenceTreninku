@@ -949,3 +949,156 @@ i skutečný veřejný filtr: celé normalizované HTML/hlavičky stejné, guard
 administrace a CSS payload/hash také. Přihlášené produkční/lidské UAT NOT RUN.
 Původní fio WIP/HEAD/hash zachované, jiné PR nepřebírané. Finální doklady
 vlastním docs PR do main bez dalšího nasazení.
+
+
+## P11-CATSORT — řazení katalogu (19. 11. 2026)
+
+**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník: Vývoj/Codex. Pokyn vlastníka
+„pokračuj“ navazuje na schválené optimalizace, přesnou paritu, měření před/po
+a při úplném PASS commit/merge/chráněný deploy. WIP zachovat. Base
+4f43f793510fd7dd1bb136cea875475b258adab6, větev
+codex/catalog-sort-performance-20261119, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+CATSEL #498/#499 dokončen, runtime a752cd96 / deploy44404265875 SUCCESS
+čerstvě ověřené. Předchozí nasazení neopakovat.
+
+Zbývající profilovaný kandidát: mb_strtolower a tvorba stejných tuple klíčů
+uvnitř každého porovnání usort. Lokálně porovnat celý Select z čerstvého
+main s jednorázovou přípravou klíčů a stabilním porovnáním stejných PHP polí.
+Před implementací ověřit zisk na běžných ASCII i českých jménech, všech
+order/name/price režimech a zveřejnit paměť; stará diagnóza není nová přejímka.
+Bez ID deduplikace, změny PHP numeric-string srovnání nebo normalizace.
+Neobvyklé typy/chybějící pole i nula/jeden produkt mají přesný původní callback
+včetně varování, výjimek a pořadí vyhodnocování. Zachovat stabilní úplné shody.
+
+Rozsah: pouze blok řazení v shopCatalogPageSelect. Celý zbytek PageRead,
+shop_category.php, filtry/CATTOP/menu/ceny/prodejnost/writery/cache/limity
+byte-shodné. SQL mimoTX3 / uvnitřTX6 a celá původní sekvence nezměněná.
+Zmrazený celý Select z base, source contract připne prefix/suffix i finální blok.
+
+Před nativním měřením cíle5000produktů/500uzlů a10000/1000 tree, přehled
+i kořen zahrnující všechny produkty, všechny3režimy. Celý Select a odpovídající
+celé HTTP anonym/zákazník na obou MariaDB10.3/11.4 musí získat≥20% pro
+order/name; price měřit i ověřit shodu, tolerance jako ostatní kontroly.
+Ostatní kontroly≤20%+5ms native/+20msHTTP, Chrome FCP/ready≤20%+20ms.
+Brány neměnit podle výsledku. Celé DTO/typy/pořadí/serializedhash, HTML a
+bezpečnostní hlavičky/CSRF, checksumy všech355tabulek, skutečný Chrome
+desktop/mobil/cold/warm a4pixelpáry. Všechny směry a paměť zveřejnit.
+Historickou CATSEL source-locked lane zachovat jako ruční replay, nová
+lane převezme plnou přísnou přejímku; původní unit/obecné CI zachovat.
+
+Etapy: místní sonda → vybraný blok + diferenciální testy → nativní2DB/
+celéHTTP/Chrome → všechny aktuální CI na přesném headu → merge a jeden
+chráněný deploy se zálohou/config/migracemi/VS/indexem/HTTP/úklidem.
+UAT/importfalse. Živé čtecí GET před/po včetně skutečné filtrované cesty;
+žádné skutečné objednávky/platby/role/rozesílky. Produkční výkonový profil
+a přihlášené/lidské UAT NOT RUN. Finální doklady vlastním docs PR do main
+bez dalšího nasazení. Závislost: měřitelný přínos při přesné paritě a zelené CI.
+Další krok: lokální sonda bez změny aplikace.
+
+
+### CATSORT — místní diagnóza a implementace
+
+Celý Select24profilů, přesná shoda stavů/hash. Jednorázové tuple klíče
+a stabilní uasort, pouze bezpečné string/int DTO; původní callback pro
+neobvyklé typy a0/1produkty. Nativní přejímka30profilů/82HTTP scénářů
+naDB s původními krátkými ASCII názvy. Pevné cíle order/name5000/500
+a10000/1000 overview/root≥20%, ostatní původní tolerance beze změny.
+[Úplná data a všechny směry](verification/catalog-sort-20261119/RESULTS.md).
+Native/HTTP/Chrome/obecnéCI ještě čekají.
+
+19. 11. 2026 — CATSORT lokálně5testů/621kontrol, širší katalog38testů/4815kontrol PASS, plný PHPStan/styl8PHP/0chyb/source contract/Composer/syntaxe PASS. [Příkazy](verification/catalog-sort-20261119/local-checks.json). Native2DB/82HTTP/Chrome a obecné CI ještě čekají.
+
+
+### CATSORT — první kandidát odmítnut a zpřesnění
+
+Head7d54ffb4/běh44469280478, MariaDB10.3 large5000/500 overview-customer
+147,209→120,995ms (17,806%) nesplnil předem daných≥20%. Žádné sloučení
+ani nasazení, výsledek se nepřeznačuje jako PASS. [Doklad](verification/catalog-sort-20261119/rejected-uasort.json).
+Rozšíření zůstává v jediném bloku řazení: odstranit zbývající PHP callback
+nad hotovými tuple klíči a použít stabilní vestavěný asort(SORT_REGULAR).
+[PHP dokumentace](https://www.php.net/manual/en/function.asort.php) popisuje
+normální porovnání a zachování pořadí shod odPHP8; použití pro stejné tuple
+ověří celá diferenciální parita, samotná dokumentace není důkaz shody app.
+Typový guard a celý původní fallback stejné. Žádné změkčení bran nebo
+vynechání customer: stejné30native/82HTTP případy, stejné objemy a tolerance.
+HTTPsafeJSON se nově uloží před vyhodnocením brány i při odmítnutí kandidáta.
+První lokální data patří k uasort; finální asort sonda je samostatný doklad.
+Další krok: nová místní parita/profil, pak znovu celá CI přejímka finálního headu.
+
+První kandidát také na11.4: large10000 overview-anonymous234,541→189,427ms (19,235%) pod20%. Obě zamítnutí a původní safe artefakty zůstávají ve [výsledcích](verification/catalog-sort-20261119/rejected-uasort.json).
+
+
+### CATSORT — finální lokální asort profil
+
+Finální12profilů5000/500 a10000/1000, ASCII/čeština×3sorty, celý Select,
+2warmup+7střídavých párů, celé stavy/hash PASS. [Data](verification/catalog-sort-20261119/local-asort-probe.json).
+Po změně znovu38testů/4815kontrol, plný PHPStan/styl8PHP/0chyb a nový
+SourceContract PASS. Finální blok asort(SORT_REGULAR), původní fallback
+stejný; žádné změkčení bran,82HTTP/30native/Chrome přejímka ještě čeká.
+
+| Produkty/uzly | Názvy/sort | Před → po ms |
+| --- | --- | ---: |
+| 5000/500 | ascii/order | 271.68 → 49.43 |
+| 5000/500 | ascii/name | 231.38 → 49.65 |
+| 5000/500 | ascii/price | 525.16 → 137.42 |
+| 5000/500 | czech/order | 330.53 → 49.85 |
+| 5000/500 | czech/name | 361.96 → 42.70 |
+| 5000/500 | czech/price | 882.34 → 110.67 |
+| 10000/1000 | ascii/order | 1402.98 → 301.11 |
+| 10000/1000 | ascii/name | 819.54 → 315.09 |
+| 10000/1000 | ascii/price | 469.59 → 106.48 |
+| 10000/1000 | czech/order | 688.10 → 104.49 |
+| 10000/1000 | czech/name | 668.29 → 107.54 |
+| 10000/1000 | czech/price | 638.10 → 86.19 |
+
+
+### CATSORT — druhý kandidát odmítnut, samostatné sloupce
+
+Head0b8ed5a2/běh44470291449, MariaDB10.3 large10000 overview-anonymous
+274,934→225,040ms (18,147%) nesplnil původní≥20% bránu. Žádný merge/deploy.
+Vestavěné asort nad vnořenými tuple stále provádí drahé array porovnání.
+Další kandidát ve stejném jediném bloku: čtyři samostatná pole názvů, ID,
+primární ceny/pořadí a původní pozice, array_multisort se SORT_REGULAR pro
+každý sloupec (žádné float/numeric casty). Pozice jako poslední klíč zachová
+úplné shody, produktový payload se nikdy neporovnává. Pro ne-list vstupy
+navíc původní callback; stejné guardy ostatních typů a0/1produkty.
+[PHP dokumentace](https://www.php.net/manual/en/function.array-multisort.php)
+popisuje lexikografické pořadí a normální porovnání bez změny typů;
+rozhodující bude striktní app parita včetně numeric-string a velkých intů.
+Původní30native/82HTTP scénáře, všechny objemy/role/20% i ostatní tolerance
+beze změny. Další krok: místní plný Select a testy, potom celá CI přejímka.
+
+
+### CATSORT — finální sloupce a mapa původních klíčů
+
+Finální12profilů5000/500 a10000/1000, ASCII/čeština×3sorty, celý Select,
+2warmup+7střídavých párů, celé stavy/hash PASS. [Data](verification/catalog-sort-20261119/local-columns-probe.json).
+Po změně znovu39testů/4869kontrol (včetně6nových/675), plný PHPStan/
+styl8PHP/0chyb/source contract PASS. Statická analýza včas odhalila
+nadbytečné array_is_list/array_values při list kontraktu; bez změny typů,
+baseline či potlačení pravidla nahrazeno mapou původních klíčů a pořadových
+pozic. Tím jsou přesně zachované i asociativní/neposloupné vstupy, bez
+zbytečného castu nebo zvláštního fallbacku. Fallback zůstává pro nepodporované
+typy/chybějící pole a0/1produkty. [Pravidlo](https://phpstan.org/error-identifiers/arrayValues.list).
+Primární cena/pořadí, názvy, ID a pozice jsou samostatné sloupce,
+array_multisort používá všude SORT_REGULAR; velké int hodnoty se nepřevádějí
+na float. Produktové payloady se neporovnávají. Původní30native/82HTTP
+případy/20% a ostatní tolerance stejné. Finální CI přejímka ještě čeká.
+
+| Produkty/uzly | Názvy/sort | Před → po ms |
+| --- | --- | ---: |
+| 5000/500 | ascii/order | 152.93 → 35.49 |
+| 5000/500 | ascii/name | 127.02 → 35.59 |
+| 5000/500 | ascii/price | 214.71 → 35.33 |
+| 5000/500 | czech/order | 547.35 → 58.18 |
+| 5000/500 | czech/name | 756.27 → 64.51 |
+| 5000/500 | czech/price | 593.99 → 64.79 |
+| 10000/1000 | ascii/order | 749.16 → 179.99 |
+| 10000/1000 | ascii/name | 1341.74 → 229.94 |
+| 10000/1000 | ascii/price | 1649.85 → 313.57 |
+| 10000/1000 | czech/order | 1414.78 → 149.96 |
+| 10000/1000 | czech/name | 1204.95 → 115.26 |
+| 10000/1000 | czech/price | 2355.79 → 116.71 |

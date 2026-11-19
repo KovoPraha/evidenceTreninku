@@ -1,0 +1,43 @@
+{
+  "php": "8.2.12",
+  "targeted": {
+    "tests": 6,
+    "assertions": 675,
+    "result": "PASS included in 39-test run"
+  },
+  "catalog_regressions": {
+    "tests": 39,
+    "assertions": 4869,
+    "result": "PASS rerun after final column/key-map change"
+  },
+  "phpstan": "PASS",
+  "style": {
+    "php_files": 8,
+    "errors": 0
+  },
+  "source_contract": {
+    "complete": true,
+    "base": "4f43f793510fd7dd1bb136cea875475b258adab6",
+    "only_sort_changed": true,
+    "prefix_suffix_byte_equal": true,
+    "frozen_selection_equal": true,
+    "category_module_unchanged": true,
+    "source_sha256": "cbbd8384f1da20b1bd9037a0a59ed9e0b29b69dd46e3cb618fa282cbdaefc1d4"
+  },
+  "composer_validate": "PASS",
+  "syntax_python_javascript": "PASS",
+  "production_profile": "NOT RUN",
+  "authenticated_production_uat": "NOT RUN",
+  "commands": [
+    "C:/xampp/php/php.exe vendor/bin/phpunit --configuration phpunit.xml.dist --filter CatalogSortReadTest",
+    "C:/xampp/php/php.exe vendor/bin/phpunit --configuration phpunit.xml.dist --filter 'CatalogSortReadTest|CatalogSelectionReadTest|CategoryDescendantsReadTest|CatalogTopCountsReadTest|CatalogPageReadCompatibilityTest|CategoryMenuReadTest|CategoryLabelReadTest'",
+    "C:/xampp/php/php.exe vendor/bin/phpstan analyse --memory-limit=1G --no-progress",
+    "C:/xampp/php/php.exe tools/check-php-style.php",
+    "C:/xampp/php/php.exe tests/Support/CatalogSortSourceContract.php",
+    "python -m py_compile tests/Support/CatalogSortProfile.py",
+    "node --check tests/Support/CatalogSortBrowser.js",
+    "composer validate --strict"
+  ],
+  "final_algorithm": "array_multisort SORT_REGULAR with original positions and original-key map",
+  "final_local_probe_profiles": 12
+}
