@@ -1,0 +1,52 @@
+    $sortKeys = [];
+    $sortNames = [];
+    $sortIds = [];
+    $sortPrimary = [];
+    $sortOriginalKeys = [];
+    $usePreparedSort = count($products) > 1;
+    if ($usePreparedSort) {
+        foreach ($products as $index => $product) {
+            if (!is_string($product['public_name'] ?? null) || !is_int($product['product_id'] ?? null)
+                || ($catalogSort === 'price' && !is_int($product['min_amount_minor'] ?? null))
+                || ($catalogSort === 'order' && !is_int($product['sort_order'] ?? 0))
+            ) {
+                $usePreparedSort = false;
+                break;
+            }
+            $sortOriginalKeys[] = $index;
+            $sortKeys[] = count($sortKeys);
+            $sortNames[] = mb_strtolower($product['public_name'], 'UTF-8');
+            $sortIds[] = $product['product_id'];
+            if ($catalogSort !== 'name') {
+                $sortPrimary[] = $catalogSort === 'price' ? $product['min_amount_minor'] : ($product['sort_order'] ?? 0);
+            }
+        }
+    }
+    if ($usePreparedSort) {
+        // The final input position preserves ties without comparing product payloads.
+        if ($catalogSort === 'name') {
+            array_multisort($sortNames, SORT_ASC, SORT_REGULAR, $sortIds, SORT_ASC, SORT_REGULAR, $sortKeys, SORT_ASC, SORT_REGULAR);
+        } else {
+            array_multisort(
+                $sortPrimary,
+                SORT_ASC,
+                SORT_REGULAR,
+                $sortNames,
+                SORT_ASC,
+                SORT_REGULAR,
+                $sortIds,
+                SORT_ASC,
+                SORT_REGULAR,
+                $sortKeys,
+                SORT_ASC,
+                SORT_REGULAR
+            );
+        }
+        $sortedProducts = [];
+        foreach ($sortKeys as $index) {
+            $sortedProducts[] = $products[$sortOriginalKeys[$index]];
+        }
+        $products = $sortedProducts;
+    } else {
+__ORIGINAL__
+    }

@@ -1,27 +1,50 @@
     $sortKeys = [];
-    if (count($products) > 1) {
+    $sortNames = [];
+    $sortIds = [];
+    $sortPrimary = [];
+    $sortOriginalKeys = [];
+    $usePreparedSort = count($products) > 1;
+    if ($usePreparedSort) {
         foreach ($products as $index => $product) {
             if (!is_string($product['public_name'] ?? null) || !is_int($product['product_id'] ?? null)
                 || ($catalogSort === 'price' && !is_int($product['min_amount_minor'] ?? null))
                 || ($catalogSort === 'order' && !is_int($product['sort_order'] ?? 0))
             ) {
-                $sortKeys = [];
+                $usePreparedSort = false;
                 break;
             }
-            $name = mb_strtolower($product['public_name'], 'UTF-8');
-            $id = $product['product_id'];
-            $sortKeys[$index] = match ($catalogSort) {
-                'price' => [$product['min_amount_minor'], $name, $id],
-                'name' => [$name, $id],
-                default => [$product['sort_order'] ?? 0, $name, $id],
-            };
+            $sortOriginalKeys[] = $index;
+            $sortKeys[] = count($sortKeys);
+            $sortNames[] = mb_strtolower($product['public_name'], 'UTF-8');
+            $sortIds[] = $product['product_id'];
+            if ($catalogSort !== 'name') {
+                $sortPrimary[] = $catalogSort === 'price' ? $product['min_amount_minor'] : ($product['sort_order'] ?? 0);
+            }
         }
     }
-    if ($sortKeys !== []) {
-        asort($sortKeys, SORT_REGULAR);
+    if ($usePreparedSort) {
+        // The final input position preserves ties without comparing product payloads.
+        if ($catalogSort === 'name') {
+            array_multisort($sortNames, SORT_ASC, SORT_REGULAR, $sortIds, SORT_ASC, SORT_REGULAR, $sortKeys, SORT_ASC, SORT_REGULAR);
+        } else {
+            array_multisort(
+                $sortPrimary,
+                SORT_ASC,
+                SORT_REGULAR,
+                $sortNames,
+                SORT_ASC,
+                SORT_REGULAR,
+                $sortIds,
+                SORT_ASC,
+                SORT_REGULAR,
+                $sortKeys,
+                SORT_ASC,
+                SORT_REGULAR
+            );
+        }
         $sortedProducts = [];
-        foreach ($sortKeys as $index => $_) {
-            $sortedProducts[] = $products[$index];
+        foreach ($sortKeys as $index) {
+            $sortedProducts[] = $products[$sortOriginalKeys[$index]];
         }
         $products = $sortedProducts;
     } else {

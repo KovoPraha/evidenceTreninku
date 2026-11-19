@@ -1,14 +1,14 @@
 {
   "php": "8.2.12",
   "targeted": {
-    "tests": 5,
-    "assertions": 621,
-    "result": "PASS"
+    "tests": 6,
+    "assertions": 675,
+    "result": "PASS included in 39-test run"
   },
   "catalog_regressions": {
-    "tests": 38,
-    "assertions": 4815,
-    "result": "PASS rerun after asort refinement"
+    "tests": 39,
+    "assertions": 4869,
+    "result": "PASS rerun after final column/key-map change"
   },
   "phpstan": "PASS",
   "style": {
@@ -22,7 +22,7 @@
     "prefix_suffix_byte_equal": true,
     "frozen_selection_equal": true,
     "category_module_unchanged": true,
-    "source_sha256": "7d4ca1cff89e8363d41d62d23b20eb09fdc2c9a141b737ef371100c20c7bb4d8"
+    "source_sha256": "cbbd8384f1da20b1bd9037a0a59ed9e0b29b69dd46e3cb618fa282cbdaefc1d4"
   },
   "composer_validate": "PASS",
   "syntax_python_javascript": "PASS",
@@ -38,6 +38,6 @@
     "node --check tests/Support/CatalogSortBrowser.js",
     "composer validate --strict"
   ],
-  "final_algorithm": "asort SORT_REGULAR",
+  "final_algorithm": "array_multisort SORT_REGULAR with original positions and original-key map",
   "final_local_probe_profiles": 12
 }

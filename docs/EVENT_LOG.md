@@ -416,3 +416,7 @@ ASSET5 doklady #442: po11SUCCESS na cfbafd47 přibyl do main #440/9ef52268. Stri
 19. 11. 2026 — CATSORT uasort head7d54ffb4 odmítnut:10.3 large5000 overview-customer147,209→120,995ms pouze17,806% pod pevnými20%. Zpřesnění stejného bloku na asort(SORT_REGULAR), nezměněné brány/všechny případy, původní guard/fallback. [Plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catsort--řazení-katalogu-19-11-2026).
 
 19. 11. 2026 — CATSORT finální asort lokálně12profilů/38testů/4815kontrol i kvalita/source contract PASS. Oba předchozí HTTP neúspěchy uchované, všechny původní brány stejné. PR #500 musí znovu projít celou přejímkou finálního headu.
+
+19. 11. 2026 — CATSORT asort head0b8ed5a2 odmítnut:10.3 large10000 overview-anonymous274,934→225,040ms pouze18,147% pod20%. Profilovaný další kandidát: samostatné sloupce array_multisort(SORT_REGULAR) a původní pozice pro ties, fallback navíc pro ne-list, jinak stejný. Všechny brány/případy stejné, žádný merge/deploy.
+
+19. 11. 2026 — CATSORT finální sloupce/mapa původních klíčů39testů/4869kontrol,12lokálních profilů, plný PHPStan/styl/source contract PASS. Nadbytečné list kontroly nahrazeny přesnou mapou bez potlačení pravidel nebo rozšíření typů; asociativní klíče i velká int ID/ceny mají diferenciální pokrytí. Původní brány/případy stejné, finální CI čekají.

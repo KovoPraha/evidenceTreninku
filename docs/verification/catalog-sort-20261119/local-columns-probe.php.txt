@@ -1,0 +1,35 @@
+<?php
+declare(strict_types=1);
+if (PHP_SAPI !== 'cli') { exit(1); }
+require __DIR__.'/../includes/shop_catalog_page_read.php';
+require __DIR__.'/../tests/Support/CatalogSelectionFixture.php';
+$source=file_get_contents(__DIR__.'/catalog-sort-frozen-page.txt');
+$start=strpos($source,'function shopCatalogPageSelect(');$end=strpos($source,'/** One read operation;',$start);$select=substr($source,$start,$end-$start);
+eval('declare(strict_types=1);'.str_replace('function shopCatalogPageSelect','function probeOriginalSort',$select));
+$a=strpos($select,'    usort($products,');$b=strpos($select,'    $filteredProductCount =',$a);
+if($a===false||$b===false)throw new RuntimeException('Sort scope');
+$original=substr($select,$a,$b-$a);
+$block=str_replace('__ORIGINAL__',implode("\n",array_map(static fn($line)=>'    '.$line,explode("\n",rtrim($original)))),file_get_contents(__DIR__.'/catalog-sort-columns-block.txt'));
+eval('declare(strict_types=1);'.str_replace('function shopCatalogPageSelect','function probePreparedSort',substr($select,0,$a).$block.substr($select,$b)));
+$results=[];
+foreach([[5000,500],[10000,1000]]as[$size,$nodes]){
+ $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+ $pdo->exec('CREATE TABLE shop_product_categories(product_id INT,category_path TEXT);CREATE TABLE shop_member_category_rules(category_path TEXT);CREATE TABLE shop_category_meta(category_path TEXT PRIMARY KEY,display_name TEXT,parent_path TEXT NULL,sort_order INT,visible_in_menu INT,description TEXT NULL)');
+ $products=catalogSelectionFixture($pdo,$size,$nodes,'tree');
+ foreach(['ascii','czech']as$names){
+  foreach($products as$i=>&$p){$p['public_name']=($names==='ascii'?'LOCALHOST ':'LOCALHOST Ă„Ä…Ă‹ĹĄluĂ„Ä…Ă„â€žouÄ‚â€žÄąÂ¤kĂ„â€šĂ‹ĹĄ dres ').str_pad((string)(($i*7919)%$size),6,'0',STR_PAD_LEFT);$p['min_amount_minor']=10000+(($i*3571)%$size);$p['sort_order']=$i%3;}unset($p);
+  foreach(['order','name','price']as$sort){
+   $input=['razeni'=>$sort];$samples=['before'=>[],'after'=>[]];$expected=null;
+   for($round=-2;$round<7;$round++)foreach($round%2===0?array_keys($samples):array_reverse(array_keys($samples))as$mode){
+    memory_reset_peak_usage();$memory=memory_get_usage();$start=hrtime(true);
+    $state=$mode==='before'?probeOriginalSort($pdo,$products,$input):probePreparedSort($pdo,$products,$input);
+    $ms=(hrtime(true)-$start)/1e6;$peak=memory_get_peak_usage()-$memory;$hash=hash('sha256',serialize($state));$expected??=$hash;
+    if($hash!==$expected)throw new RuntimeException('Whole selection differs');
+    unset($state);if($round>=0)$samples[$mode][]=['ms'=>$ms,'peak_bytes'=>$peak,'sha256'=>$hash];
+   }
+   $results[]=['products'=>$size,'nodes'=>$nodes,'names'=>$names,'sort'=>$sort,'exact_equal'=>true,'samples'=>$samples];
+   file_put_contents(__DIR__.'/catalog-sort-columns-final-probe.json',json_encode($results,JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR));
+  }
+ }
+}
+echo "PASS ".count($results)." complete paired selections\n";

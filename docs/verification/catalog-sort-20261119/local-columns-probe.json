@@ -1,0 +1,998 @@
+[
+    {
+        "products": 5000,
+        "nodes": 500,
+        "names": "ascii",
+        "sort": "order",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 146.6697,
+                    "peak_bytes": 1783048,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 162.482,
+                    "peak_bytes": 1725760,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 196.669,
+                    "peak_bytes": 1783048,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 152.9304,
+                    "peak_bytes": 1725760,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 161.779,
+                    "peak_bytes": 1783048,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 121.3953,
+                    "peak_bytes": 1725760,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 120.346,
+                    "peak_bytes": 1783048,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 40.7889,
+                    "peak_bytes": 2829360,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 38.8647,
+                    "peak_bytes": 2829360,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 30.9867,
+                    "peak_bytes": 2829360,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 35.4903,
+                    "peak_bytes": 2829360,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 33.7782,
+                    "peak_bytes": 2829360,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 28.0963,
+                    "peak_bytes": 2829360,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                },
+                {
+                    "ms": 36.6167,
+                    "peak_bytes": 2829360,
+                    "sha256": "be555325273ae2d40f8ef6d35ed3a1890d69997caf1b2146ca0e36b1a6a5b36a"
+                }
+            ]
+        }
+    },
+    {
+        "products": 5000,
+        "nodes": 500,
+        "names": "ascii",
+        "sort": "name",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 118.8588,
+                    "peak_bytes": 1783048,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 127.0243,
+                    "peak_bytes": 1783048,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 121.7089,
+                    "peak_bytes": 1783048,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 113.8444,
+                    "peak_bytes": 1783048,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 134.3413,
+                    "peak_bytes": 1783048,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 200.0604,
+                    "peak_bytes": 1783048,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 202.7166,
+                    "peak_bytes": 1783048,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 34.8392,
+                    "peak_bytes": 1725760,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 35.5873,
+                    "peak_bytes": 2534072,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 40.3209,
+                    "peak_bytes": 1725760,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 38.7439,
+                    "peak_bytes": 2534072,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 34.6325,
+                    "peak_bytes": 1725760,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 55.5799,
+                    "peak_bytes": 2534072,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                },
+                {
+                    "ms": 32.8892,
+                    "peak_bytes": 1725760,
+                    "sha256": "f019f483d0e65ade3be641a7ffb8f401d92758f4748ab08f58e96395028961e3"
+                }
+            ]
+        }
+    },
+    {
+        "products": 5000,
+        "nodes": 500,
+        "names": "ascii",
+        "sort": "price",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 214.7062,
+                    "peak_bytes": 1783048,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 168.2734,
+                    "peak_bytes": 1725760,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 148.1827,
+                    "peak_bytes": 1783048,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 337.8254,
+                    "peak_bytes": 1725760,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 247.6434,
+                    "peak_bytes": 1783048,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 262.9876,
+                    "peak_bytes": 1725760,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 213.3598,
+                    "peak_bytes": 1783048,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 26.6924,
+                    "peak_bytes": 2829360,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 23.6336,
+                    "peak_bytes": 2829360,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 37.4032,
+                    "peak_bytes": 2829360,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 35.3272,
+                    "peak_bytes": 2829360,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 81.9121,
+                    "peak_bytes": 2829360,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 63.7133,
+                    "peak_bytes": 2829360,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                },
+                {
+                    "ms": 26.7342,
+                    "peak_bytes": 2829360,
+                    "sha256": "4cbe9136b71cefdfc4f7d164199cf616911ad3e14821cfb6e95ba2f71bf72fe9"
+                }
+            ]
+        }
+    },
+    {
+        "products": 5000,
+        "nodes": 500,
+        "names": "czech",
+        "sort": "order",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 500.9549,
+                    "peak_bytes": 1783048,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 531.9192,
+                    "peak_bytes": 1783048,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 536.4275,
+                    "peak_bytes": 1783048,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 547.3457,
+                    "peak_bytes": 1783048,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 606.2027,
+                    "peak_bytes": 1783048,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 559.7417,
+                    "peak_bytes": 1783048,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 1792.9547,
+                    "peak_bytes": 1783048,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 58.1846,
+                    "peak_bytes": 1725760,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 55.3725,
+                    "peak_bytes": 3389360,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 77.9805,
+                    "peak_bytes": 1725760,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 60.6519,
+                    "peak_bytes": 3389360,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 46.8462,
+                    "peak_bytes": 1725760,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 41.4662,
+                    "peak_bytes": 3389360,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                },
+                {
+                    "ms": 228.0632,
+                    "peak_bytes": 1725760,
+                    "sha256": "199e984613b65044cafc304e47995c6c57aea893909b9a73c8d873b3e3cb47be"
+                }
+            ]
+        }
+    },
+    {
+        "products": 5000,
+        "nodes": 500,
+        "names": "czech",
+        "sort": "name",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 1808.0186,
+                    "peak_bytes": 1783048,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 1615.2855,
+                    "peak_bytes": 1725760,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 768.714,
+                    "peak_bytes": 1783048,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 756.2662,
+                    "peak_bytes": 1725760,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 598.1082,
+                    "peak_bytes": 1783048,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 589.5423,
+                    "peak_bytes": 1725760,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 641.0999,
+                    "peak_bytes": 1783048,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 187.7059,
+                    "peak_bytes": 3094072,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 186.2397,
+                    "peak_bytes": 3094072,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 62.7833,
+                    "peak_bytes": 3094072,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 58.5761,
+                    "peak_bytes": 3094072,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 64.5102,
+                    "peak_bytes": 3094072,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 62.4079,
+                    "peak_bytes": 3094072,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                },
+                {
+                    "ms": 81.3375,
+                    "peak_bytes": 3094072,
+                    "sha256": "88127ca02c0b0c90e6ecc7623977ab334c1972a44212f3a8d6fb5b4b4205de3e"
+                }
+            ]
+        }
+    },
+    {
+        "products": 5000,
+        "nodes": 500,
+        "names": "czech",
+        "sort": "price",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 477.7366,
+                    "peak_bytes": 1783048,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 1014.6538,
+                    "peak_bytes": 1783048,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 1005.4771,
+                    "peak_bytes": 1783048,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 593.9868,
+                    "peak_bytes": 1783048,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 594.5649,
+                    "peak_bytes": 1783048,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 542.0227,
+                    "peak_bytes": 1783048,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 580.7737,
+                    "peak_bytes": 1783048,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 85.3752,
+                    "peak_bytes": 1725760,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 64.786,
+                    "peak_bytes": 3389360,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 85.6175,
+                    "peak_bytes": 1725760,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 64.9243,
+                    "peak_bytes": 3389360,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 54.5854,
+                    "peak_bytes": 1725760,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 55.9123,
+                    "peak_bytes": 3389360,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                },
+                {
+                    "ms": 53.8791,
+                    "peak_bytes": 1725760,
+                    "sha256": "51add12d3cb6cd0e42ab6ef8777b0574df8da13d70ff324d8f3afb1028b1f33a"
+                }
+            ]
+        }
+    },
+    {
+        "products": 10000,
+        "nodes": 1000,
+        "names": "ascii",
+        "sort": "order",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 1413.3894,
+                    "peak_bytes": 3588920,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 990.4913,
+                    "peak_bytes": 3445616,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 733.5699,
+                    "peak_bytes": 3588920,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 708.1399,
+                    "peak_bytes": 3445616,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 709.9467,
+                    "peak_bytes": 3588920,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 954.0715,
+                    "peak_bytes": 3445616,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 749.1561,
+                    "peak_bytes": 3588920,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 144.2579,
+                    "peak_bytes": 5661712,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 179.9899,
+                    "peak_bytes": 5661712,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 205.4845,
+                    "peak_bytes": 5661712,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 130.5271,
+                    "peak_bytes": 5661712,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 227.6189,
+                    "peak_bytes": 5661712,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 295.0659,
+                    "peak_bytes": 5661712,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                },
+                {
+                    "ms": 105.8685,
+                    "peak_bytes": 5661712,
+                    "sha256": "0f73b824c7446179da259887f7f77c982982e0aefc5e9c448e7267bad355570b"
+                }
+            ]
+        }
+    },
+    {
+        "products": 10000,
+        "nodes": 1000,
+        "names": "ascii",
+        "sort": "name",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 307.5284,
+                    "peak_bytes": 3588920,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 583.5178,
+                    "peak_bytes": 3588920,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 526.5092,
+                    "peak_bytes": 3588920,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 1341.7445,
+                    "peak_bytes": 3588920,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 1575.9811,
+                    "peak_bytes": 3588920,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 1616.189,
+                    "peak_bytes": 3588920,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 1587.1063,
+                    "peak_bytes": 3588920,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 99.1777,
+                    "peak_bytes": 3445616,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 84.292,
+                    "peak_bytes": 5075352,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 172.2434,
+                    "peak_bytes": 3445616,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 229.9434,
+                    "peak_bytes": 5075352,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 558.0291,
+                    "peak_bytes": 3445616,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 382.0813,
+                    "peak_bytes": 5075352,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                },
+                {
+                    "ms": 474.8564,
+                    "peak_bytes": 3445616,
+                    "sha256": "b9df1a2acc64abd03731bb9c1394ba9f7b9068a00363df6015d94469f08f0420"
+                }
+            ]
+        }
+    },
+    {
+        "products": 10000,
+        "nodes": 1000,
+        "names": "ascii",
+        "sort": "price",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 1651.4147,
+                    "peak_bytes": 3588920,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 1599.5114,
+                    "peak_bytes": 3445616,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 1649.848,
+                    "peak_bytes": 3588920,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 1718.8011,
+                    "peak_bytes": 3445616,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 1562.0127,
+                    "peak_bytes": 3588920,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 1542.1647,
+                    "peak_bytes": 3445616,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 1697.5556,
+                    "peak_bytes": 3588920,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 273.3249,
+                    "peak_bytes": 5661712,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 283.1568,
+                    "peak_bytes": 5661712,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 300.1427,
+                    "peak_bytes": 5661712,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 318.4844,
+                    "peak_bytes": 5661712,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 414.9853,
+                    "peak_bytes": 5661712,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 313.5728,
+                    "peak_bytes": 5661712,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                },
+                {
+                    "ms": 372.0385,
+                    "peak_bytes": 5661712,
+                    "sha256": "fee74796ada7feb9d824787a633f9075ddf62374d196b445e9b6a3dff1af9de3"
+                }
+            ]
+        }
+    },
+    {
+        "products": 10000,
+        "nodes": 1000,
+        "names": "czech",
+        "sort": "order",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 3051.1363,
+                    "peak_bytes": 3588920,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 1433.0025,
+                    "peak_bytes": 3588920,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 2844.2539,
+                    "peak_bytes": 3588920,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 1323.5997,
+                    "peak_bytes": 3588920,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 1414.7781,
+                    "peak_bytes": 3588920,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 1211.2602,
+                    "peak_bytes": 3588920,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 1338.8004,
+                    "peak_bytes": 3588920,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 226.743,
+                    "peak_bytes": 3445616,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 236.8077,
+                    "peak_bytes": 6781712,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 149.9555,
+                    "peak_bytes": 3445616,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 171.7447,
+                    "peak_bytes": 6781712,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 82.1404,
+                    "peak_bytes": 3445616,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 90.0694,
+                    "peak_bytes": 6781712,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                },
+                {
+                    "ms": 99.762,
+                    "peak_bytes": 3445616,
+                    "sha256": "86ab651e36a4c77473b54de19104dff05fa44f6f13a2f5ebc7c5eb79d8cc8a78"
+                }
+            ]
+        }
+    },
+    {
+        "products": 10000,
+        "nodes": 1000,
+        "names": "czech",
+        "sort": "name",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 1058.0285,
+                    "peak_bytes": 3588920,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 1204.9539,
+                    "peak_bytes": 3445616,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 1465.1883,
+                    "peak_bytes": 3588920,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 1071.8277,
+                    "peak_bytes": 3445616,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 1229.0891,
+                    "peak_bytes": 3588920,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 1296.3105,
+                    "peak_bytes": 3445616,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 1102.1862,
+                    "peak_bytes": 3588920,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 115.2624,
+                    "peak_bytes": 6195352,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 172.6601,
+                    "peak_bytes": 6195352,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 100.7102,
+                    "peak_bytes": 6195352,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 109.2031,
+                    "peak_bytes": 6195352,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 139.1233,
+                    "peak_bytes": 6195352,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 117.7947,
+                    "peak_bytes": 6195352,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                },
+                {
+                    "ms": 81.1492,
+                    "peak_bytes": 6195352,
+                    "sha256": "c036bcb070eac3ac30acdbdc78075400abe7d69e08aaad515cc4203948ad2190"
+                }
+            ]
+        }
+    },
+    {
+        "products": 10000,
+        "nodes": 1000,
+        "names": "czech",
+        "sort": "price",
+        "exact_equal": true,
+        "samples": {
+            "before": [
+                {
+                    "ms": 1293.5032,
+                    "peak_bytes": 3588920,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 1231.2784,
+                    "peak_bytes": 3588920,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 1256.7873,
+                    "peak_bytes": 3588920,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 2355.7936,
+                    "peak_bytes": 3588920,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 3424.3795,
+                    "peak_bytes": 3588920,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 2405.7925,
+                    "peak_bytes": 3588920,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 2585.1914,
+                    "peak_bytes": 3588920,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                }
+            ],
+            "after": [
+                {
+                    "ms": 106.8296,
+                    "peak_bytes": 3445616,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 116.7057,
+                    "peak_bytes": 6781712,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 87.2733,
+                    "peak_bytes": 3445616,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 82.2522,
+                    "peak_bytes": 6781712,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 330.746,
+                    "peak_bytes": 3445616,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 163.4923,
+                    "peak_bytes": 6781712,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                },
+                {
+                    "ms": 156.6233,
+                    "peak_bytes": 3445616,
+                    "sha256": "494ef702668d1114cd044c112882f66a43374c6190bf6ea6f26acbe5f224326e"
+                }
+            ]
+        }
+    }
+]

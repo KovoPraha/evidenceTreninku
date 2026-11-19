@@ -1053,3 +1053,52 @@ stejný; žádné změkčení bran,82HTTP/30native/Chrome přejímka ještě če
 | 10000/1000 | czech/order | 688.10 → 104.49 |
 | 10000/1000 | czech/name | 668.29 → 107.54 |
 | 10000/1000 | czech/price | 638.10 → 86.19 |
+
+
+### CATSORT — druhý kandidát odmítnut, samostatné sloupce
+
+Head0b8ed5a2/běh44470291449, MariaDB10.3 large10000 overview-anonymous
+274,934→225,040ms (18,147%) nesplnil původní≥20% bránu. Žádný merge/deploy.
+Vestavěné asort nad vnořenými tuple stále provádí drahé array porovnání.
+Další kandidát ve stejném jediném bloku: čtyři samostatná pole názvů, ID,
+primární ceny/pořadí a původní pozice, array_multisort se SORT_REGULAR pro
+každý sloupec (žádné float/numeric casty). Pozice jako poslední klíč zachová
+úplné shody, produktový payload se nikdy neporovnává. Pro ne-list vstupy
+navíc původní callback; stejné guardy ostatních typů a0/1produkty.
+[PHP dokumentace](https://www.php.net/manual/en/function.array-multisort.php)
+popisuje lexikografické pořadí a normální porovnání bez změny typů;
+rozhodující bude striktní app parita včetně numeric-string a velkých intů.
+Původní30native/82HTTP scénáře, všechny objemy/role/20% i ostatní tolerance
+beze změny. Další krok: místní plný Select a testy, potom celá CI přejímka.
+
+
+### CATSORT — finální sloupce a mapa původních klíčů
+
+Finální12profilů5000/500 a10000/1000, ASCII/čeština×3sorty, celý Select,
+2warmup+7střídavých párů, celé stavy/hash PASS. [Data](verification/catalog-sort-20261119/local-columns-probe.json).
+Po změně znovu39testů/4869kontrol (včetně6nových/675), plný PHPStan/
+styl8PHP/0chyb/source contract PASS. Statická analýza včas odhalila
+nadbytečné array_is_list/array_values při list kontraktu; bez změny typů,
+baseline či potlačení pravidla nahrazeno mapou původních klíčů a pořadových
+pozic. Tím jsou přesně zachované i asociativní/neposloupné vstupy, bez
+zbytečného castu nebo zvláštního fallbacku. Fallback zůstává pro nepodporované
+typy/chybějící pole a0/1produkty. [Pravidlo](https://phpstan.org/error-identifiers/arrayValues.list).
+Primární cena/pořadí, názvy, ID a pozice jsou samostatné sloupce,
+array_multisort používá všude SORT_REGULAR; velké int hodnoty se nepřevádějí
+na float. Produktové payloady se neporovnávají. Původní30native/82HTTP
+případy/20% a ostatní tolerance stejné. Finální CI přejímka ještě čeká.
+
+| Produkty/uzly | Názvy/sort | Před → po ms |
+| --- | --- | ---: |
+| 5000/500 | ascii/order | 152.93 → 35.49 |
+| 5000/500 | ascii/name | 127.02 → 35.59 |
+| 5000/500 | ascii/price | 214.71 → 35.33 |
+| 5000/500 | czech/order | 547.35 → 58.18 |
+| 5000/500 | czech/name | 756.27 → 64.51 |
+| 5000/500 | czech/price | 593.99 → 64.79 |
+| 10000/1000 | ascii/order | 749.16 → 179.99 |
+| 10000/1000 | ascii/name | 1341.74 → 229.94 |
+| 10000/1000 | ascii/price | 1649.85 → 313.57 |
+| 10000/1000 | czech/order | 1414.78 → 149.96 |
+| 10000/1000 | czech/name | 1204.95 → 115.26 |
+| 10000/1000 | czech/price | 2355.79 → 116.71 |

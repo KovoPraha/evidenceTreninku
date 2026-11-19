@@ -166,6 +166,29 @@ final class CatalogSortReadTest extends TestCase
         self::assertSame([], \shopCatalogPageSelect($this->database(), $products, $input)['products']);
     }
 
+    public function testFullWidthIntegersAndAssociativeInputPreserveOrdering(): void
+    {
+        $pdo = $this->database();
+        $products = [];
+        for ($i = 0; $i < 72; $i++) {
+            $products[] = ['product_id' => PHP_INT_MAX - ($i % 4), 'categories' => [],
+                'public_name' => ['02', '2', '2.0', '10', '1a', 'ŽLUŤOUČKÝ'][$i % 6],
+                'min_amount_minor' => PHP_INT_MIN + ($i % 3), 'sort_order' => PHP_INT_MAX - ($i % 5), 'record_position' => $i];
+        }
+        $associative = [];
+        foreach ($products as $i => $product) {
+            $associative['LOCALHOST-' . $i] = $product;
+        }
+        foreach ([$products, $associative, [9 => $products[0], 3 => $products[1], 7 => $products[2]]] as $inputProducts) {
+            foreach (['order', 'name', 'price'] as $sort) {
+                for ($page = 1; $page <= 6; $page++) {
+                    $input = ['razeni' => $sort, 'strana' => $page];
+                    self::assertSame(\catalogSortBaseline($pdo, $inputProducts, $input), \shopCatalogPageSelect($pdo, $inputProducts, $input));
+                }
+            }
+        }
+    }
+
     private function products(): array
     {
         $products = [];
