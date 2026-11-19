@@ -949,3 +949,64 @@ i skutečný veřejný filtr: celé normalizované HTML/hlavičky stejné, guard
 administrace a CSS payload/hash také. Přihlášené produkční/lidské UAT NOT RUN.
 Původní fio WIP/HEAD/hash zachované, jiné PR nepřebírané. Finální doklady
 vlastním docs PR do main bez dalšího nasazení.
+
+
+## P11-CATSORT — řazení katalogu (19. 11. 2026)
+
+**DIAGNÓZA / ROZPRACOVÁNO.** Vlastník: Vývoj/Codex. Pokyn vlastníka
+„pokračuj“ navazuje na schválené optimalizace, přesnou paritu, měření před/po
+a při úplném PASS commit/merge/chráněný deploy. WIP zachovat. Base
+4f43f793510fd7dd1bb136cea875475b258adab6, větev
+codex/catalog-sort-performance-20261119, vlastní worktree
+C:/Users/Marek/Documents/Codex/evidencePavel-next-performance-20261114.
+Původní fio/d1221f35 a kis_rosters_admin.php SHA256
+7a7afd75bfa34f736f158096ab46a671b7fee6c6faedc3701f989c0cf64733e5 zachované.
+CATSEL #498/#499 dokončen, runtime a752cd96 / deploy44404265875 SUCCESS
+čerstvě ověřené. Předchozí nasazení neopakovat.
+
+Zbývající profilovaný kandidát: mb_strtolower a tvorba stejných tuple klíčů
+uvnitř každého porovnání usort. Lokálně porovnat celý Select z čerstvého
+main s jednorázovou přípravou klíčů a stabilním porovnáním stejných PHP polí.
+Před implementací ověřit zisk na běžných ASCII i českých jménech, všech
+order/name/price režimech a zveřejnit paměť; stará diagnóza není nová přejímka.
+Bez ID deduplikace, změny PHP numeric-string srovnání nebo normalizace.
+Neobvyklé typy/chybějící pole i nula/jeden produkt mají přesný původní callback
+včetně varování, výjimek a pořadí vyhodnocování. Zachovat stabilní úplné shody.
+
+Rozsah: pouze blok řazení v shopCatalogPageSelect. Celý zbytek PageRead,
+shop_category.php, filtry/CATTOP/menu/ceny/prodejnost/writery/cache/limity
+byte-shodné. SQL mimoTX3 / uvnitřTX6 a celá původní sekvence nezměněná.
+Zmrazený celý Select z base, source contract připne prefix/suffix i finální blok.
+
+Před nativním měřením cíle5000produktů/500uzlů a10000/1000 tree, přehled
+i kořen zahrnující všechny produkty, všechny3režimy. Celý Select a odpovídající
+celé HTTP anonym/zákazník na obou MariaDB10.3/11.4 musí získat≥20% pro
+order/name; price měřit i ověřit shodu, tolerance jako ostatní kontroly.
+Ostatní kontroly≤20%+5ms native/+20msHTTP, Chrome FCP/ready≤20%+20ms.
+Brány neměnit podle výsledku. Celé DTO/typy/pořadí/serializedhash, HTML a
+bezpečnostní hlavičky/CSRF, checksumy všech355tabulek, skutečný Chrome
+desktop/mobil/cold/warm a4pixelpáry. Všechny směry a paměť zveřejnit.
+Historickou CATSEL source-locked lane zachovat jako ruční replay, nová
+lane převezme plnou přísnou přejímku; původní unit/obecné CI zachovat.
+
+Etapy: místní sonda → vybraný blok + diferenciální testy → nativní2DB/
+celéHTTP/Chrome → všechny aktuální CI na přesném headu → merge a jeden
+chráněný deploy se zálohou/config/migracemi/VS/indexem/HTTP/úklidem.
+UAT/importfalse. Živé čtecí GET před/po včetně skutečné filtrované cesty;
+žádné skutečné objednávky/platby/role/rozesílky. Produkční výkonový profil
+a přihlášené/lidské UAT NOT RUN. Finální doklady vlastním docs PR do main
+bez dalšího nasazení. Závislost: měřitelný přínos při přesné paritě a zelené CI.
+Další krok: lokální sonda bez změny aplikace.
+
+
+### CATSORT — místní diagnóza a implementace
+
+Celý Select24profilů, přesná shoda stavů/hash. Jednorázové tuple klíče
+a stabilní uasort, pouze bezpečné string/int DTO; původní callback pro
+neobvyklé typy a0/1produkty. Nativní přejímka30profilů/82HTTP scénářů
+naDB s původními krátkými ASCII názvy. Pevné cíle order/name5000/500
+a10000/1000 overview/root≥20%, ostatní původní tolerance beze změny.
+[Úplná data a všechny směry](verification/catalog-sort-20261119/RESULTS.md).
+Native/HTTP/Chrome/obecnéCI ještě čekají.
+
+19. 11. 2026 — CATSORT lokálně5testů/621kontrol, širší katalog38testů/4815kontrol PASS, plný PHPStan/styl8PHP/0chyb/source contract/Composer/syntaxe PASS. [Příkazy](verification/catalog-sort-20261119/local-checks.json). Native2DB/82HTTP/Chrome a obecné CI ještě čekají.

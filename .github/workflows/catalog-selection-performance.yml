@@ -1,13 +1,6 @@
-name: Catalog selection parity and performance
+name: Catalog selection historical replay (superseded by catalog sort)
 
 on:
-  pull_request:
-    paths:
-      - 'includes/shop_catalog_page_read.php'
-      - 'tests/Integration/CatalogSelectionReadTest.php'
-      - 'tests/Support/CatalogSelection*'
-      - 'tests/Support/CategoryMenuComparison.php'
-      - '.github/workflows/catalog-selection-performance.yml'
   workflow_dispatch:
     inputs:
       mariadb_version:
@@ -41,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: 972577ca6b70ed1bd3261173b72d9e84a3584737
           fetch-depth: 0
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
         with:
