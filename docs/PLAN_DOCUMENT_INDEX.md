@@ -239,7 +239,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 | PL-7dbccbca95 | [family-weekly-summaries.md](family-weekly-summaries.md) | plan / PARTIAL | C03 |
 | PL-7508722c03 | [fio-readonly-import-k4.md](fio-readonly-import-k4.md) | plan / PARTIAL | P07 |
 | PL-46d727f7c5 | [formulare-tok-dat.md](formulare-tok-dat.md) | reference / REFERENCE | DOC02 |
-| PL-e88cb05d10 | [AUTH-MAIL-01/02 — rodičovská pošta](identity-email-queue.md) | plan / PARTIAL | AUTH-MAIL-01/AUTH-MAIL-02 |
+| PL-e88cb05d10 | [AUTH-MAIL-01/02/03 — rodičovská pošta](identity-email-queue.md) | plan / PARTIAL | AUTH-MAIL-01/AUTH-MAIL-02/AUTH-MAIL-03 |
 | PL-auth-mail-results-20261121 | [AUTH-MAIL-01 — ověření](verification/auth-mail-worker-20261121/RESULTS.md) | evidence / SUPPORT | AUTH-MAIL-01 |
 | PL-auth-mail-reset-results-20261121 | [AUTH-MAIL-02 — ověření](verification/auth-mail-reset-20261121/RESULTS.md) | evidence / SUPPORT | AUTH-MAIL-02 |
 | PL-1c05fd48e3 | [implementacni-prompt-funkcni-vylepseni-1-8.md](implementacni-prompt-funkcni-vylepseni-1-8.md) | historical-plan / SUPERSEDED | C01/P06/P09 |

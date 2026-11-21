@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-21-AM03
+
+Podnět vlastníka k záložnímu režimu e-mailů je zatím koncept, nikoli schválení druhého odesílatele. První volba k prověření je nezávislý čtecí dohled a řízené záložní spuštění již zabezpečeného workeru; navazuje na potvrzený výpadek plánovače. Druhý transport má smysl při prokázané nedoručitelnosti, ale automaticky přeposlat zprávu s nejasným přijetím `mail()` by mohlo vytvořit duplicitní odkazy. Výběr poskytovatele, kanál upozornění a aktivace jsou otevřené. [Koncept](identity-email-queue.md#auth-mail-03--záložní-provoz-rodičovské-pošty-21-11-2026).
+
 ## D2026-11-21-PL02
 
 Vlastník 21. 11. výslovně požádal „nasadit“ opravu propojení rodiče. Vydání PR #507 proto proběhne pouze chráněným `deploy-production.yml` z `main`, s `uat_schvaleno=false` a `importovat_krouzky=false`. Souběžný kód AUTH-MAIL-02 v main nebude v tomto kroku spouštět jednorázovou operaci vydání resetů; ta má samostatný provozní postup a oprávnění. Produkční zásah do účtu č. 453 ani lidské UAT nejsou automatickou součástí deploye. [Plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026).
@@ -19,6 +23,8 @@ Podle zadání vlastníka je při plánování správcem organizačně potvrdite
 ## D2026-11-21-AM02
 
 Vlastník požádal o nové obnovovací e-maily pro dva zrušené odkazy a platnost 3 dny. Zvoleno nové vydání jednorázových tokenů v jedné DB transakci s frontou, po kontrole dvou různých aktuálně oprávněných účtů a novějších žádostí. Staré zrušené odkazy nelze bezpečně opakovat ani prodloužit; ruční vložení plaintextu či duplicitní odeslání se nepoužije. Běžné rodičovské resety budou mít 72 hodin; trenérské, aktivační a ověřovací odkazy nejsou součástí tohoto pokynu. [Plán](identity-email-queue.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-starých-odkazů-21-11-2026), [výsledky](verification/auth-mail-reset-20261121/RESULTS.md).
+
+Po [PR #510](https://github.com/KovoPraha/evidenceTreninku/pull/510) byla čtecí kontrola dvou starých řádků PASS; jednorázové vydání zařadilo dvě nové zprávy a přirozený běh obě předal `mail()`. Doručení příjemci zůstává k ověření.
 
 ## D2026-11-21-AM01
 
