@@ -1,6 +1,6 @@
 # Inventura rozpracovaných checkoutů — 21. 11. 2026
 
-Stav: čtecí inventura dokončena; uvolnění produkčního kódu soupisky probíhá samostatně v ROSTER-HISTORY-01. Vlastník: vývoj KIS. Pokyn vlastníka: zjistit původ nečekané rozpracované změny, uzavřít proveditelné části a neztratit historické podklady. Inventura nepovoluje odhadovat provozní údaje ani vydávat starý konflikt za hotový release.
+Stav: čtecí inventura dokončena; oprava soupisky byla vydána v [deploy 44896953740](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44896953740). Vlastník: vývoj KIS. Pokyn vlastníka: zjistit původ nečekané rozpracované změny, uzavřít proveditelné části a neztratit historické podklady. Inventura nepovoluje odhadovat provozní údaje ani vydávat starý konflikt za hotový release.
 
 ## Metoda a rozsah
 
@@ -22,13 +22,14 @@ Původní Fio patch je v lokálním `.codex-tmp/`, nikoli v Gitu; archiv není o
 
 ## Otevřené GitHub PR k okamžiku inventury
 
-Otevřených bylo 12 PR. #503 je dokumentační návaznost aktuální opravy soupisky. Starší nedraftové #417, #402, #401, #399 a #371 jsou dokumentace či UAT z 7.–9. 11.; jejich neaktuální odkazy na release nelze sloučit bez porovnání s dnešním main. #391 obsahuje skutečnou bezpečnostní změnu soukromého úložiště: její původní CI prošlo, ale vůči dnešnímu main má konflikty a vyžaduje nové posouzení kódu, testů a regresí. Drafty #386, #384, #382, #380 a #376 jsou rozpracované audity/testy nebo řetězec ČSC/Sportsoft; zejména draft není souhlas s nasazením. Seznam je [živě ověřitelný na GitHubu](https://github.com/KovoPraha/evidenceTreninku/pulls?q=is%3Apr+is%3Aopen).
+Otevřených bylo 12 PR. #503 byla dokumentační návaznost aktuální opravy soupisky a 21. 11. se sloučila jako `e1afc125` po 11 CI PASS. Starší nedraftové #417, #402, #401, #399 a #371 jsou dokumentace či UAT z 7.–9. 11.; jejich neaktuální odkazy na release nelze sloučit bez porovnání s dnešním main. #391 obsahuje skutečnou bezpečnostní změnu soukromého úložiště: její původní CI prošlo, ale vůči dnešnímu main má konflikty. Její dvě aplikační/testovací změny a tematický audit byly přeneseny do aktuální větve `codex/wip-reconciliation-20261121`; cílený Windows PHPUnit 10 testů / 21 assertions PASS, tři unixové symlink testy SKIP. Nové Linux CI musí potvrdit i tyto scénáře před merge a vydáním. Drafty #386, #384, #382, #380 a #376 jsou rozpracované audity/testy nebo řetězec ČSC/Sportsoft; zejména draft není souhlas s nasazením. Seznam je [živě ověřitelný na GitHubu](https://github.com/KovoPraha/evidenceTreninku/pulls?q=is%3Apr+is%3Aopen).
 
 Tyto PR nevznikly v současném hlavním checkoutu a samotný otevřený stav nedokazuje běžící vlákno. Jejich věcný obsah a případné nahrazení novějším main se musí vyhodnotit jednotlivě před uzavřením nebo merge. Hromadné nasazení z historických větví by přepsalo současný stav.
 
 ## Přesná hranice dokončení
 
-- ROSTER-HISTORY-01: kód a dokumentace v #502 sloučené; aktuální produkční deploy a dokumentační #503 se sledují samostatně. Přihlášené UAT výchozího a historického dne ještě vyžaduje pozorování testerky.
+- ROSTER-HISTORY-01: kód v #502 a dokumentace v #503 sloučené, [produkční deploy 44896953740](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44896953740) na `85a81986` SUCCESS. Workflow potvrdilo testy, zálohu, migrace, zachování VS a HTTP smoke; import kroužků byl přeskočen, UAT flag false. Přihlášené UAT výchozího a historického dne ještě vyžaduje pozorování testerky.
+- SEC01: původní bezpečnostní PR #391 je obsahově převzaté do aktuální větve; před novým merge/deploy musí projít dnešním Linux CI. [Tematický audit](../../SECURITY_AUDIT_2026-11-08.md) odděluje původní reprodukci od současného vydání.
 - Fio, BAR obrazovky/sklad, stará Packeta aplikace a W85: aplikace již byla dříve vydaná. Opakovaný deploy z výše uvedených starých stromů by nic potřebného nedokončil.
 - BAR fyzická inventura a kasa, skutečné P05/P07 objednání/platba/PDF, smluvní cena a první přeprava Packety jsou provozní kroky, které nelze pravdivě uzavřít z Git historie. Aktuální stav vede [registr](../../WORK_PLAN_CURRENT.md).
 - Neaktivní checkouty a soukromé výstupy jsou zachované. Úklid lze řešit až po převzetí hodnotných důkazů a vyřešení otevřených PR; není součástí produkčního vydání soupisky.

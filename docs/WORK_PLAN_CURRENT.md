@@ -1,6 +1,6 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 18. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
+Aktualizováno 21. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
@@ -8,7 +8,11 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## ROSTER-HISTORY-01 — výchozí seznam členů a historie (21. 11. 2026)
 
-KÓD SLOUČEN, produkční vydání a přihlášené UAT otevřené. [Rozsah, rozhodnutí a akceptace](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026), [PR #502](https://github.com/KovoPraha/evidenceTreninku/pull/502) → `85a81986`, 11 CI PASS. Vlastník vývoj KIS; `codex/roster-membership-history-20261121`, samostatný worktree z `origin/main` `9cec4360`. Testerka hlásí ukončené dítě v hlavní tabulce. Výchozí seznam nyní používá časovou platnost, ostatní intervaly jsou v rozbalovací historii. Regresní test 13/151 a hierarchie 9/51 PASS, PHP syntaxe i dokumentační kontrola PASS; produkční nasazení a UAT NOT RUN. Další krok: po vydání ověřit registrářský pohled k dnešnímu a historickému dni.
+KÓD NASAZEN, přihlášené UAT otevřené. [Rozsah, rozhodnutí a akceptace](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026), [PR #502](https://github.com/KovoPraha/evidenceTreninku/pull/502) → `85a81986`, 11 CI PASS; [deploy 44896953740](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44896953740) SUCCESS na stejném SHA, záloha/migrace/VS/HTTP PASS, UAT/import false. [Dokumentační #503](https://github.com/KovoPraha/evidenceTreninku/pull/503) sloučený. Vlastník vývoj KIS; `codex/roster-membership-history-20261121`. Výchozí seznam používá časovou platnost, ostatní intervaly jsou v rozbalovací historii; 22 cílených testů PASS. Další krok: testerka v přihlášené administraci ověří dnešek, poslední platný den a dřívější den, včetně nadřazené skupiny.
+
+## WIP-AUDIT-01 / SEC01 — převzetí historických checkoutů (21. 11. 2026)
+
+ČTECÍ INVENTURA HOTOVÁ, bezpečnostní SEC01 K NOVÉ CI. [Přesná inventura a dispozice sedmi stromů](verification/worktree-reconciliation-20261121/RESULTS.md), [bezpečnostní audit](SECURITY_AUDIT_2026-11-08.md). Vlastník vývoj KIS; nová větev `codex/wip-reconciliation-20261121` z aktuálního main, samostatný worktree. Původní hlavní checkout byl na 399 commitů staré Fio větvi; její jediná zastaralá lokální změna byla archivována jako patch, sledované soubory jsou čisté. Fio, BAR sklad a W85 již byly dříve vydané; staré provozní poznámky a soukromé podklady zachovány. Z konfliktního #391 byly přeneseny jen dvě aplikační/testovací změny a tematický audit, cílený Windows test 10/21 PASS, tři Linux symlink scénáře zde SKIP. Další krok: nové CI, merge a produkční vydání SEC01; samostatně čtecí přejímka ROSTER-HISTORY-01 a provozní vstupy P02/P05/P07/Packeta. Staré drafty a neaktuální dokumentační PR vyhodnotit jednotlivě podle inventury, ne hromadným merge.
 
 ## E4-06 — docházka trenéra z rozvrhu (13. 11. 2026)
 

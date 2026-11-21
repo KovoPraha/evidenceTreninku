@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-21-WIP01
+
+Pokyn vlastníka vyjasnit a dokončit zdánlivé souběžné WIP. Původní hlavní checkout se vrací na dnešní `main`, protože lokální změna měnila jen neaktivní přesměrovací stránku a funkční Fio bylo dávno vydané. Před obnovou se lokální patch uchoval mimo Git. Historické checkouty ani soukromé výstupy se nemažou: BAR a P05/P07 potřebují skutečné provozní hodnoty, Packeta cenu a první zásilku, picker čtecí přejímku. Bezpečnostní #391 má věcný kód a prošlé původní CI, proto se jeho dvě změny převádějí na současný main s novým CI namísto přijetí konfliktů starých souhrnných dokumentů. [Inventura a důkazy](verification/worktree-reconciliation-20261121/RESULTS.md), [SEC01](SECURITY_AUDIT_2026-11-08.md).
+
 ## D2026-11-21-RH01
 
 Podle zadání testerky má hlavní tabulka zobrazovat členství platné k vybranému dni a ostatní intervaly mají být dostupné v rozbalovací historii. Zvolený výklad `removed`: ukončené členství zůstává platné do uloženého `valid_to` včetně, stejně jako v existujícím výpočtu `kisRosterEffectiveMemberIds()`. Alternativa bezpodmínečně vyloučit všechny řádky `removed` by skryla dítě i při zobrazení dne před ukončením a rozcházela by se s počtem členů a nadřazenými skupinami. Změna odděluje pouze čtení a vykreslení; historické řádky se nemažou. [Rozsah a ověření](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026).
