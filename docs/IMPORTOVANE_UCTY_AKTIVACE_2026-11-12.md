@@ -2,17 +2,17 @@
 
 ## KIS-PARENT-LINK-01 — oprávnění při propojení rodiče (21. 11. 2026)
 
-Stav: K OVĚŘENÍ CI; [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník: vývoj KIS. Větev `codex/parent-link-permissions-20261121`, samostatný worktree z `origin/main` v `C:\Users\Marek\Documents\Codex\evidencePavel-parent-link-20261121`. Zadání vlastníka pokrývá opravu a syntetické ověření správy vazeb; neautorizuje zápis do produkčních účtů ani lidskou přejímku.
+Stav: K REVIEW; [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník: vývoj KIS. Větev `codex/parent-link-permissions-20261121`, samostatný worktree z `origin/main` v `C:\Users\Marek\Documents\Codex\evidencePavel-parent-link-20261121`. Zadání vlastníka pokrývá opravu a syntetické ověření správy vazeb; neautorizuje zápis do produkčních účtů ani lidskou přejímku.
 
 Nález: `sprava_sportovcu.php` načítá sekci „Napojené uživatelské účty“ běžným čtením bez dešifrování citlivého záznamu. Akce `attach_account` volá `sportovecEditorGuardianAccount()` → `sportovecEditorRequireActor()` → `personSensitiveRequireAdmin()`, která kontroluje přesnou legacy roli `admin` a vyhazuje hlášku o citlivém údaji. Správu vazeb přitom vlastní aktivní pozice `registrar` a `eshop_identity_admin.php` v této pozici schvaluje stejné `account_person_roles`.
 
 Postup: oddělit kontrolu zápisu rodičovské vazby od oprávnění k rodnému číslu; na zápisu v transakci znovu ověřit aktivní pozici a její aktuální DB grant. Citlivé zobrazení a změna RČ si ponechají vlastní striktní kontrolu. Neaktivní/neověřený účet lze po kontrole identity propojit ke stávajícímu ID sportovce, portál jej ale podle stávající podmínky `accountPersonEligibleParticipants()` nepustí. Rozhraní uvede konkrétní překážku. Důvod schválení a audit vazby zůstávají povinné.
 
-Akceptace: registrář načte vazby a schválí čekající vazbu bez přístupu k RČ; odebraný grant či jiná pozice zápis odmítne s vysvětlením; neaktivní/neověřený účet nemá přístup do portálu; nevznikne nový `sportovci` ani duplicitní vztah. Ověření pouze synteticky. [Výsledky a meze](verification/parent-link-permissions-20261121/RESULTS.md). Další krok: dokončit CI a review [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507); produkční UAT zůstává otevřené.
+Akceptace: registrář načte vazby a schválí čekající vazbu bez přístupu k RČ; odebraný grant či jiná pozice zápis odmítne s vysvětlením; neaktivní/neověřený účet nemá přístup do portálu; nevznikne nový `sportovci` ani duplicitní vztah. Ověření pouze synteticky. [Výsledky a meze](verification/parent-link-permissions-20261121/RESULTS.md). Další krok: review [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507); produkční UAT zůstává otevřené.
 
 Souběh: `origin/main` `5acd225f` (#505) převzato v `84af1987`; obě konfliktní evidence byly sloučeny, 33 cílených testů / 218 assertions a dokumentační kontrola znovu PASS. Nová PR CI čeká na úplný výsledek.
 
-Další souběh: head `f96abbf8` prošel všemi 11 CI kontrolami. Následné `main` `741c0625` (#506, rodičovské e-maily) převzato bez překryvu aplikačního kódu; společné dokumenty zachovány. Na výsledném stromu 40 cílených testů / 273 assertions PASS, nová CI otevřená.
+Další souběh: head `f96abbf8` prošel všemi 11 CI kontrolami. Následné `main` `741c0625` (#506, rodičovské e-maily) převzato bez překryvu aplikačního kódu; společné dokumenty zachovány. Na výsledném stromu 40 cílených testů / 273 assertions PASS; head `5a372d46` má 11/11 CI PASS.
 
 ## Povolení vydání 12. 11. 2026
 

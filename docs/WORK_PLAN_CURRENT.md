@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## KIS-PARENT-LINK-01 — propojení rodičovského účtu (21. 11. 2026)
 
-K OVĚŘENÍ NOVÉ CI, [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main` včetně `741c0625`. [Nález a akceptace](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Předchozí head 11 CI PASS; po dalším převzetí main 40/273 lokálně PASS. Další krok: CI/review, pak řízená přihlášená přejímka. Produkční zápis a lidské UAT NOT RUN.
+K REVIEW, [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main` včetně `741c0625`. [Nález a akceptace](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Head `5a372d46` 11/11 CI PASS; po převzetí main 40/273 lokálně PASS. Další krok: review, pak řízená přihlášená přejímka. Produkční zápis a lidské UAT NOT RUN.
 
 ## AUTH-MAIL-01 — rodičovské ověřovací a obnovovací e-maily (21. 11. 2026)
 
