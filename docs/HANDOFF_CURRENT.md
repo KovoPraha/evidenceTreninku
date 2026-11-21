@@ -15,7 +15,7 @@ Aktualizováno 21. 11. 2026. Audit vyšel z `origin/main` `a4df047d` a [#514](ht
 | P15 ČSC/Sportsoft | S0 podklady v main; cílová inventura na odděleném počítači chybí. Runtime drafty #376/#380/#382 a audit #386 ponechat k revizi po vstupu; [plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md). |
 | Zdravotní filtr #384 | Draft měření zůstává otevřený; dokončit párové měření a úklid nebo věcně uzavřít po revizi, [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md). |
 
-Všech pět otevřených PR je draft; [inventární tabulky](verification/branch-documentation-audit-20261121/RESULTS.md) odlišují otevřený PR od historické větve. Neprovádět hromadné mazání: nepřímý předek `main` nedokazuje chybějící obsah po squash merge.
+Všech pět otevřených věcných PR je draft; [KONCEPT dispozice každého PR](verification/branch-documentation-audit-20261121/RESULTS.md#koncept-doc-branch-close-01--rozhodnutí-o-pěti-draftech-21-11-2026) odděluje měření #384 od P15 řetězce. Prioritu P15 určuje vlastník; uzavření draftu není nasazení ani přejímka. Neprovádět hromadné mazání: nepřímý předek `main` nedokazuje chybějící obsah po squash merge.
 
 <!-- membership-morning-publish:start -->
 ## Ranní serverový výsledek PASS
