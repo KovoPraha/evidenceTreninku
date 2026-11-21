@@ -1,49 +1,25 @@
 # Aktuální session handoff
-KIS-PARENT-LINK-01 KÓD NASAZEN: [plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [výsledky](verification/parent-link-permissions-20261121/RESULTS.md). [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) → `7d856ed6`, 11/11 CI; [deploy 44912234389](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44912234389) SUCCESS na stejném SHA, 2538/60410, záloha/migrace/VS/HTTP 200 PASS, UAT/import false. Další krok: přihlášené UAT registráře a rodiče; účet č. 453 nebyl měněn ani ověřen.
-AUTH-MAIL-01/02: [plán](identity-email-queue.md), [protokol workeru](verification/auth-mail-worker-20261121/RESULTS.md), [protokol nových resetů](verification/auth-mail-reset-20261121/RESULTS.md). #506 aktivoval rodičovský CRON; [#510](https://github.com/KovoPraha/evidenceTreninku/pull/510) nasadil 72h reset. Preflight PASS pro staré řádky 3/8, nové 10/11 vydány a přirozeným workerem předány `mail()`; `pending=0`, `failed=0`. Doručení do obou schránek NOT RUN: potvrdit příjem včetně spamu nebo prověřit mail/MTA logy. [AUTH-MAIL-03 backup koncept](identity-email-queue.md#auth-mail-03--záložní-provoz-rodičovské-pošty-21-11-2026): nezávislý dohled a řízené náhradní spuštění; určit kanál upozornění. Výsledky v [PR #511](https://github.com/KovoPraha/evidenceTreninku/pull/511).
-TRAINING-PLAN-ACL-01 KÓD NASAZEN: [PR #508](https://github.com/KovoPraha/evidenceTreninku/pull/508) → `6dcd0a20`, finální CI 21/21, [deploy 44910511209](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44910511209) SUCCESS na stejném SHA, UAT/import false. Přihlášené UAT rolí NOT RUN. [Plán a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#training-plan-acl-01--plánování-správcem-a-kolize-21-11-2026), [výsledky](verification/training-plan-admin-collision-20261121/RESULTS.md), [registr](WORK_PLAN_CURRENT.md#training-plan-acl-01--správce-a-kolize-plánovaných-tréninků-21-11-2026). Další krok: kontrolovaný test správce a běžného trenéra bez zápisu do skutečných rozvrhů; release dokumentace ve větvi `codex/training-plan-admin-release-20261121`.
-ROSTER-HISTORY-01: [výchozí soupiska a historie členství](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026) opraveny přes [#502](https://github.com/KovoPraha/evidenceTreninku/pull/502) a vydány na `85a81986` v [deploy 44896953740](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44896953740) SUCCESS. Testerka má ještě ověřit dnešek, poslední platný den a dřívější den. [Inventura starých checkoutů](verification/worktree-reconciliation-20261121/RESULTS.md): 202 worktrees bez změn sledovaných souborů; neversionované výstupy a historické patche zachovány. SEC01 [#504](https://github.com/KovoPraha/evidenceTreninku/pull/504) vydáno na `11505aed` v [deploy 44899472344](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44899472344) SUCCESS, UAT/import false; skutečný soukromý soubor provozně neověřen.
-E4-06 NASAZENO: [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474) → `ea995408`, [deploy 43651304138](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43651304138) SUCCESS na stejném SHA, 21 CI PASS, 2487 testů / 57125 tvrzení, záloha, migrace a HTTP 200 PASS; `uat_schvaleno=false`, import kroužků přeskočen. [Audit a scénáře](COACH_ATTENDANCE_2026-11-13.md); [místní vizuální rezervace automatického cíle a zápis běžným trenérem](verification/coach-attendance-20261113/RESULTS.md) PASS. Přihlášené produkční UAT NOT RUN; [čtecí prověrka 43654981616](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43654981616) vrátila `ready=false` (UAT flag false, dětské účty a rodinné vazby 0/2, TEST pravidlo 0). Zkusmé okno bylo vráceno na původní hodnotu; k dokončení jsou nutné platné okno, TEST role a schválená pravidla automatiky.
-KIS-ACT-01 NASAZENO: #463 → `373b8d89`, [deploy 43322186478](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43322186478) SUCCESS; [protokol](verification/parent-activation-release-20261112/RESULTS.md), [plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md), [scénář pro testerku](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md). Záloha, migrace a anonymní HTTP PASS, UAT/import false. Žádná pozvánka ani změna vazby tímto vydáním; další krok je schválený malý pilot a rodičovské UAT.
-MAKEUP-AUTO-01 KÓD NASAZEN: [PR #459](https://github.com/KovoPraha/evidenceTreninku/pull/459) → `428a2258`, [deploy 43269836068](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43269836068) SUCCESS, automatika výchozí vypnutá, UAT/import false; [release protokol](verification/makeup-auto-20261112/RESULTS.md). [Místní syntetický tok](verification/makeup-attendance-e2e-20261113/RESULTS.md) prošel od omluvy po rezervaci, původně však zápis provedl účet s legacy rolí `admin`. [Novější ověření E4-06](verification/coach-attendance-20261113/RESULTS.md) pokrývá HTTP tok 31/31, vizuální automatickou rezervaci a uložení docházky běžnou rolí `trener`; kód je nasazen přes [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474). **Úplné produkční UAT otevřené:** v platném okně projít celý rodičovský tok, ověřit trenérskou navigaci a čtecí kontrolu nastavení; aktivace pravidel vyžaduje schválení. [Blokátor](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#blokující-závislost-úplného-funkčního-ověření-13-11-2026), [registr](WORK_PLAN_CURRENT.md#makeup-auto-01--automatické-náhradní-lekce-12-11-2026).
-Aktualizováno 19. 11. 2026, Europe/Prague. [TESTER-20261110](verification/tester-orders-registration-20261110.md) #438 a [COACH-ROSTER-01](COACH_GROUP_ROSTERS_2026-11-10.md) #436 nasazeny jako `4e3df207` ve [workflow 42852365591](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42852365591) SUCCESS; následný #439 nasadil runtime `8182489e` ([workflow 42855987339](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42855987339) SUCCESS). [Technické výsledky a meze](verification/coach-group-rosters-20261110/RESULTS.md); přihlášené UAT a skuteční Aligátoři otevření.
-[CURRENT_STATE](CURRENT_STATE.md) vlastní release/flags; [registr](WORK_PLAN_CURRENT.md) vede i UX01 [celoroční nabídky](club-programs.md#ux01--doplnění-celoroční-nabídky-ke-stávajícím-skupinám-8-11-2026) a Q01/Q3
-vlastní otevřené úkoly včetně Q2-TIME; [ROSTER-SCROLL-01](ROSTER_SCROLL_POSITION_2026-11-12.md) je nasazeno přes [#462](https://github.com/KovoPraha/evidenceTreninku/pull/462), [deploy 43320369018](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43320369018) SUCCESS, přihlášené UAT otevřené; [scénář pro testerku](TESTER_ROSTER_SCROLL_2026-11-13.md). Plány a rozhodnutí čti ve verzovaných souborech.
-Q1 má [částečné přihlášené UAT](verification/quality-uat-20261108/RESULTS.md), Q2 #390 je [nasazené a cíleně ověřené](verification/planner-mobile-release-20261108/RESULTS.md) v deploy42483838259 a následném P11-RH; Q3 #389 ve vydání #385, Q4/Q5 mají [podklad](QUALITY_NEXT_SLICES_2026-11-08.md).
-## Poslední práce a další krok
-- **Q2-TIME NASAZENO:** #412 / `4f92b225`, deploy42622226704 SUCCESS; [plán](QUALITY_NEXT_SLICES_2026-11-08.md#q2-time--odolný-zápis-tréninku-9-11-2026).
-  11 CI / 2409 testů, 6 HTTP a přesný produkční JS PASS; [protokol a scénář testerky](verification/training-form-resilience-release-20261109/RESULTS.md).
-  Původní release protokol má UAT NOT RUN, následný [přihlášený pokus 9. 11.](verification/training-form-uat-20261109/RESULTS.md) dokládá 3/3 scénáře bez platného submitu. Úklid konkrétního TEST konceptu zůstal neověřený; žádný skutečný trénink testem nevznikl.
-- **P11-CATSORT NASAZENO:** [plán](CATALOG_READ_PERFORMANCE_2026-11-07.md#p11-catsort--řazení-katalogu-19-11-2026), [výsledky](verification/catalog-sort-20261119/RESULTS.md). #500/62c00649, [deploy44473829467](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44473829467) SUCCESS,13CI. 10000/1000 přehledHTTP 318.8→237.3ms / 232.7→164.0ms;30native/82HTTP scénářů naDB/4pixelpáry PASS. SQL3outside/6insideTX stejné. Přihlášené produkční UAT NOT RUN; WIP zachovaný.
-- **P11-ASSET8/9/10 NASAZENO:** [plán](BOOTSTRAP_ASSET_PERFORMANCE_2026-11-10.md#p11-asset8--plánovač-11-11-2026), [plánovač](verification/schedule-bootstrap-20261111/RESULTS.md), [přihlášení](verification/signin-bootstrap-20261111/RESULTS.md), [formuláře](verification/training-form-bootstrap-20261112/RESULTS.md). Deploy 42979420239/43104809135/43164465663 SUCCESS, syntetické MariaDB/Chrome PASS, CSS 64 454 → 31 248 B. [Revize](verification/documentation-sync-20261112/RESULTS.md). Přihlášené produkční UAT NOT RUN.
-- **P11-HJS3 NASAZENO:** [plán](SHARED_HEADER_SCRIPT_PERFORMANCE_2026-11-10.md#p11-hjs3--společný-skript-po-odstranění-duplicitních-stylů-10-11-2026), [předání](SESSION_HANDOFF_SHARED_HEADER_SCRIPT_2026-11-10.md), [měření](verification/shared-header-cache-20261110/RESULTS.md).
-  #449/b753f6e7,14CI/native2DB/544Chrome/8pixelpárů PASS; warm gzip−25–30%, cold+955–1264B. [Deploy42920002806](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42920002806) SUCCESS, 2456/56289, UAT/importfalse; živé GET/hash/cache PASS. Doklady[#450](https://github.com/KovoPraha/evidenceTreninku/pull/450), bez redeploye; WIP zachovaný, přihlášené UAT NOT RUN.
-- ROLE01-MOB NASAZENO: #361 / `3b37e053`, deploy 42365946802 SUCCESS; [důkazy](verification/access-mobile-cards-20261107/RESULTS.md).
-  Čtecí otisky 48 účtů / 82 rolí shodné. Chrome desktop/390/360 px, filtr Bar,
-  prázdné hledání a editor deaktivovaného #64 cíleně PASS bez zápisu. [Čtecí protokol](verification/quality-uat-20261108/RESULTS.md).
-- ROLE01 HOTOVO: [plán](ACCESS_OVERVIEW_2026-11-07.md), [produkční protokol](verification/access-release-20261107/RESULTS.md).
-- AUTO01 HOTOVO: [plán a výsledky 1/7/8](AUTONOMOUS_PRIORITIES_1_7_8_2026-11-07.md), P14 389 tabulek / 2 triggery PASS; inventura WIP bez mazání. [Katalog](PLAN_CATALOG.md).
-- P11 picker HOTOVO: [plán](ATTENDANCE_PERSON_PICKER_2026-11-07.md), [předání #366/#372](SESSION_HANDOFF_ATTENDANCE_PERSON_PICKER_2026-11-07.md).
-  [Produkční protokol](verification/attendance-picker-release-20261107/RESULTS.md): schválené nasazení a čtecí kontrola dokončené, neopakovat.
-  **Přihlášené UAT pickeru částečně PASS**: hledání a stránkování; omluva a výběr/verze otevřené. [Výsledek](verification/quality-uat-20261108/RESULTS.md).
-  Původní WIP a oba picker worktrees zachované; výsledky a kalibrace jsou v repu, nové aktivace žádné.
-  [Lekce #367](SESSION_HANDOFF_ATTENDANCE_LESSON_READ_PERFORMANCE_2026-11-07.md) a [katalog #364](SESSION_HANDOFF_CATALOG_READ_PERFORMANCE_2026-11-07.md) zahrnuté.
-  [Nový Windows pár /9 scénářů/234Chrome](SESSION_HANDOFF_ATTENDANCE_HTTP_2026-11-07.md) HOTOVO: trenér6,40 →0,35s, SQLlekce203 →72.
-- P11-RHC zahrnuté: [Moje tréninky / plán](COACH_HISTORY_PAGE_PERFORMANCE_2026-11-08.md), [předání](SESSION_HANDOFF_COACH_HISTORY_2026-11-08.md).
-  #400/da152282, deploy42494231010 SUCCESS; původní katalog222→223 a nový5/5stabilní zachované v [historickém protokolu](verification/coach-history-release-20261108/RESULTS.md). UAT samostatné.
-- P11-R13-F NASAZENO: #385/519ff098, deploy42477866185 SUCCESS; [protokol](verification/medical-filter-release-20261108/RESULTS.md), index/veřejný DOM/anonym403 PASS; přihlášené UAT nového vydání NOT RUN.
-- P11-R05-H zachováno: [předání](SESSION_HANDOFF_PLANNER_HIERARCHY_2026-11-07.md); nalezené [360px přetékání](verification/quality-uat-20261108/RESULTS.md) opraveno Q2 [#390](https://github.com/KovoPraha/evidenceTreninku/pull/390) a [nasazeno / cíleně čtecí PASS](verification/planner-mobile-release-20261108/RESULTS.md). Oprava je i v následném P11-RH; úplné funkční UAT ostatních rolí otevřené.
-- P07 N1/N2: [automatické doklady a zprávy](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md),
-  [PR #355](https://github.com/KovoPraha/evidenceTreninku/pull/355), [důkazy](verification/shop-document-automation-20261107/RESULTS.md).
-  #355 sloučeno a nasazeno, 2337 testů / 43257 assertions a 11 CI PASS; pověření 1 zapnuté.
-  Browser blokovaný; skutečná banka a externí schránka zůstávají neověřené.
-- P02/P04: [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md), [BAR-DISPLAY-STOCK](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md): TV nasazené, 68 zásob obou skladů převedené včetně 5 záporných stavů, nezávisle 0 rozdílů; 44 URL PASS. [Důkazy](verification/bar-display-stock-20261110/RESULTS.md). Neimportovat znovu; fyzická inventura a lidské/účetní UAT otevřené.
-  [účetní adaptér](BAR_ACCOUNTING_ADAPTER_PLAN_2026-11-05.md); publikaci neopakovat.
-- P05: [serverové předání](SESSION_HANDOFF_SERVER_MEMBERSHIP_AUDIT_2026-11-06.md)
-  a [ranní plán](MEMBERSHIP_SCHEDULER_MORNING_AUDIT_2026-11-07.md).
-  Výsledek nepředpokládat z data; číst důkaz. Místní úloha zůstává PAUSED.
+
+Aktualizováno 21. 11. 2026. Výchozí společný kód je `origin/main` `a4df047d`; aktuální přehled vydání je [CURRENT_STATE](CURRENT_STATE.md). Starší pracovní checkouty nejsou výchozí verze. [Audit větví a dokumentace](verification/branch-documentation-audit-20261121/RESULTS.md) uvádí ověřený rozsah a meze inventury.
+
+## Co převzít jako další
+
+| Oblast | Skutečný další krok |
+| --- | --- |
+| Rodičovská pošta AUTH-MAIL-01/02 | Dvě nové obnovy byly přijaty `mail()`; potvrdit přijetí ve dvou schránkách nebo prověřit MTA logy. [Plán a záložní KONCEPT](identity-email-queue.md), [výsledek](verification/auth-mail-reset-20261121/RESULTS.md). |
+| KIS-PARENT-LINK-01 | Přihlášeně ověřit registráře a rodiče, včetně dotčeného účtu; [plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [protokol](verification/parent-link-permissions-20261121/RESULTS.md). |
+| TRAINING-PLAN-ACL-01 | V kontrolovaném UAT zkusit plánování správcem a běžným trenérem, bez zásahu do skutečných rozvrhů; [plán](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#training-plan-acl-01--plánování-správcem-a-kolize-21-11-2026), [výsledek](verification/training-plan-admin-collision-20261121/RESULTS.md). |
+| E4-06 / MAKEUP-AUTO-01 | Zajistit TEST role a nové okno pro celý tok omluva → docházka → nárok → rezervace. Aktivace pravidel vyžaduje samostatné schválení; [plán](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md), [protokol](verification/coach-attendance-20261113/RESULTS.md). |
+| ROSTER-HISTORY-01 / KIS-ACT-01 / SEC01 | Testerka ověří denní a historickou soupisku, rodičovský pilot a soukromý dokument ve svých řízených scénářích. [Inventura](verification/worktree-reconciliation-20261121/RESULTS.md), [pilot](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md). |
+| P02/P04, P05/P07, Packeta | Čekají na skutečné stavy zásob/kasy, objednávku/platbu/PDF a cenu/první zásilku. [BAR předání](SESSION_HANDOFF_BAR_2026-11-06.md), [registr](WORK_PLAN_CURRENT.md). |
+| P15 ČSC/Sportsoft | S0 podklady v main; cílová inventura na odděleném počítači chybí. Runtime drafty #376/#380/#382 a audit #386 ponechat k revizi po vstupu; [plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md). |
+| Zdravotní filtr #384 | Draft měření zůstává otevřený; dokončit párové měření a úklid nebo věcně uzavřít po revizi, [plán](MEDICAL_STATE_READ_PERFORMANCE_2026-11-07.md). |
+
+Všech pět otevřených PR je draft; [inventární tabulky](verification/branch-documentation-audit-20261121/RESULTS.md) odlišují otevřený PR od historické větve. Neprovádět hromadné mazání: nepřímý předek `main` nedokazuje chybějící obsah po squash merge.
+
 <!-- membership-morning-publish:start -->
 ## Ranní serverový výsledek PASS
+
 [Ranní serverový výsledek PASS](verification/membership-scheduler-20261107/RESULTS.md).
 Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
 Skutečné P05/P07 a export P06 zůstávají odložené.
@@ -57,22 +33,5 @@ Kontrola i přenos běží na serverech, bez zapnutého počítače vlastníka.
 Skutečné P05/P07 a export P06 zůstávají odložené.
 
 <!-- membership-morning-preflight:end -->
-## Otevřené hranice a ostatní plány
 
-P01 dokončené v potvrzeném rozsahu; instalaci ani rozesílku neopakovat. Skutečné P05/P07, nový export P06, heslo a T07 vlastník odložil.
-P02/P04 potřebují skutečné podklady/přejímku a účetní adaptér; P08/P09 lidské
-převzetí, P12 konkrétní testerku a přístup, P13 výběr událostí.
-Úplné další kroky, závislosti a tematické soubory všech P01–P14 vede
-[jediný registr](WORK_PLAN_CURRENT.md). Plán nenahrazuje oprávnění k produkční změně.
-
-## Povinné převzetí a zápis
-
-1. Ověř `git status --short --branch`, `git fetch --prune origin`, HEAD a main.
-   Cizí WIP zachovej; při starém checkoutu použij vlastní větev/worktree z main.
-2. Načti [AGENTS](../AGENTS.md), [pravidla dokumentace](WORK_DOCUMENTATION_POLICY.md),
-   CURRENT, registr a příslušný plán; při rozhodování i jeho záznam v logu.
-3. Už při zahájení/změně ulož koncept/plán do `docs/`, aktualizuj registr,
-   tento handoff a CURRENT odkazy. Během práce zapisuj výsledky a další krok.
-4. Před předáním zapiš ověření, omezení, stav PR/merge/deploy a událost do
-   [deníku](EVENT_LOG.md); významná rozhodnutí do [logu rozhodnutí](DECISION_LOG.md).
-Historie: [deník](EVENT_LOG.md) → [rozhodnutí a uzavřené plány](DECISION_LOG.md) → [archiv tohoto předání](HANDOFF_ARCHIVE_2026-11-07.md) a [provozní archiv](CHANGELOG-PROVOZ.md). Historii sem nepřidávat; limit 80 řádků.
+Při převzetí načti [AGENTS](../AGENTS.md), [pravidla dokumentace](WORK_DOCUMENTATION_POLICY.md), [registr](WORK_PLAN_CURRENT.md) a dotčený tematický plán. Ověř `git fetch --prune origin`, stav checkoutu, PR a důkazy; cizí WIP zachovej. Změny stavu zapiš do [deníku](EVENT_LOG.md), volby do [rozhodovacího logu](DECISION_LOG.md), úplný rozcestník je [katalog](PLAN_CATALOG.md). [Historický snímek](verification/branch-documentation-audit-20261121/STATE_BEFORE.md) uchovává zkrácené předchozí přehledy.

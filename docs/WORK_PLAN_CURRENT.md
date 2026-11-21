@@ -6,6 +6,10 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
 
+## DOC-BRANCH-AUDIT-01 — soulad dokumentace a větví (21. 11. 2026)
+
+Inventurní a dokumentační řez HOTOVO; věcné drafty a provozní přejímky otevřené. Vlastník vývoj KIS; větev `codex/documentation-branch-audit-20261121`, samostatný worktree z `origin/main` `a4df047d`. [Postup, varianty, inventář a výsledky](verification/branch-documentation-audit-20261121/RESULTS.md). Rozsah oprávnění: čtecí audit, oprava rozporů, zkrácení CURRENT/HANDOFF a dokumentační PR; bez mazání větví či produkčních zápisů. Závislosti: aktuální PR/deploy, obsah historických větví, TEST role a skutečné provozní podklady. Další krok: předat dokumentační PR; #384 a P15 drafty vyřešit jednotlivě po věcném ověření. Žádný z pěti otevřených draft PR není nasazený. Z 478 místních větví je 424 spárováno se sloučeným PR podle názvu, 11 se zavřeným nesloučeným PR a 30 bez PR; archivní CSV samo nedokazuje obsahové převzetí.
+
 ## KIS-PARENT-LINK-01 — propojení rodičovského účtu (21. 11. 2026)
 
 KÓD NASAZEN: [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) sloučen jako `7d856ed6`; [deploy 44912234389](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44912234389) SUCCESS na stejném SHA, 11/11 CI, 2538/60410 v release. Vlastník vývoj KIS; implementační větev `codex/parent-link-permissions-20261121`, dokumentační větev `codex/parent-link-release-20261121`. [Nález, rozsah a akceptace](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Další krok: řízené přihlášené UAT registráře a rodiče; skutečný účet č. 453 nebyl měněn. UAT/import false, lidská přejímka NOT RUN.
@@ -35,7 +39,7 @@ KÓD NASAZEN, přihlášené UAT otevřené. [Rozsah, rozhodnutí a akceptace](M
 
 ## DOC-WIP-01 — převzetí starých dokumentačních PR (21. 11. 2026)
 
-Z konfliktních #399, #401, #402, #417 a #371 byly do [PR #505](https://github.com/KovoPraha/evidenceTreninku/pull/505) na současném `main` připraveny věcné výsledky, přejímací scénáře, syntetické důkazy a kontrakt P15 S0. Historické společné CURRENT/HANDOFF z jejich větví se nepřebírají. [Protokol převzetí](verification/worktree-reconciliation-20261121/RESULTS.md) rozlišuje vydaný kód a další NOT RUN. Tento dokumentační krok nespouští nové nasazení aplikace ani provozní aktivaci.
+Z konfliktních #399, #401, #402, #417 a #371 byly věcné výsledky, přejímací scénáře, syntetické důkazy a kontrakt P15 S0 převzaty do [sloučeného PR #505](https://github.com/KovoPraha/evidenceTreninku/pull/505) jako `5acd225f`. Původní konfliktní PR již nejsou otevřené. Historické společné CURRENT/HANDOFF z jejich větví nebyly převzaty. [Protokol převzetí](verification/worktree-reconciliation-20261121/RESULTS.md) rozlišuje vydaný kód a další NOT RUN. Dokumentační merge nespustil nové nasazení ani provozní aktivaci; navazující P15 runtime drafty jsou v [aktuální inventuře](verification/branch-documentation-audit-20261121/RESULTS.md).
 
 ## P15 — čtecí ČSC / Sportsoft a oddělená stanice
 
