@@ -2,22 +2,21 @@
 
 ## AUTH-MAIL-01 — oprava automatického zpracování rodičovské fronty (21. 11. 2026)
 
-**Stav: K OVĚŘENÍ — kód připraven, produkční diagnostika otevřená.** Vlastník: vývoj KIS;
+**Stav: AUTOMATIKA NASAZENA A AKTIVNÍ; doručení do schránky K OVĚŘENÍ.** Vlastník: vývoj KIS;
 větev `codex/auth-mail-worker-repair-20261121`, oddělený worktree z `origin/main`
 `11505aed`, převzaté souběžné `main` `5acd225f` v PR #506. Zadání vlastníka: opravit automatické zpracování ověření účtu a obnovy
 hesla rodičů, bezpečně převzít existující frontu, neřešit výpadek ručním retry.
 Podklad hlášení: tři `pending`, nula `processing` a `failed`, šest `sent`; dva
 starší příklady mají nula pokusů a prošlý čas `available_at`. Konkrétní adresy
-ani tokeny se do Gitu nezapisují. Tyto počty jsou hlášení, ne nezávislé produkční
-měření.
+ani tokeny se do Gitu nezapisují. Výchozí počty následně potvrdil čtecí produkční
+status; viz [protokol](verification/auth-mail-worker-20261121/RESULTS.md).
 
-**Předběžná příčina v kódu:** `bin/club-event-notifications.php` zpracovává obě
+**Potvrzená příčina:** `bin/club-event-notifications.php` zpracovává obě
 fronty, ale v repozitáři není jeho produkční schedule ani instalátor hostitelského
 CRONu. `trainer-access-operations.php` filtruje pouze `target_type=trainer` a
-`kind=reset`. Proto rodičovský `pending` s nula pokusy odpovídá neaktivnímu
-plánovači. Produkční příčinu je nutno potvrdit čtecím stavem: poslední běh
-`transactional_notifications`, skutečná přítomnost CRON souboru, počty `due`,
-připravenost schématu/klíčů, místní transport a bezpečný souhrn logů. Konfigurace
+`kind=reset`. Čtecí produkční běh potvrdil chybějící plánovač i poslední běh
+společného workeru `null`, tři splatné rodičovské zprávy a připravené schéma,
+klíče i místní transport. Konfigurace
 odesílání používá PHP `mail()`; projekt nemá vlastní SMTP klient ani SMTP
 přihlašovací údaje.
 
@@ -42,24 +41,29 @@ Postup a akceptace:
    neměnit.
 4. Ověřit přirozený tick, `pending → sent/cancelled/failed`, počet pokusů a
    skutečné doručení obou typů na řízené TEST schránce. `sent` dokládá přijetí
-   transportem, nikoli doručení do schránky. Produkční test a doručení zatím
+   transportem, nikoli doručení do schránky. Dva přirozené tick-y a bezpečné
+   vypořádání staré fronty **PASS**; kontrolní schránka a doručení obou typů
    **NOT RUN**. Přetrvávající skutečné nedoručení vyžaduje samostatné prověření
    hostitelského mail transportu a jeho logů.
 
 Výsledky a předání: [protokol](verification/auth-mail-worker-20261121/RESULTS.md),
 [registr](WORK_PLAN_CURRENT.md#auth-mail-01--rodičovské-ověřovací-a-obnovovací-e-maily-21-11-2026).
 
-Implementace v této větvi: `parent-auth-mail-operations.php` má `status`, `install`
+Implementace v [PR #506](https://github.com/KovoPraha/evidenceTreninku/pull/506): `parent-auth-mail-operations.php` má `status`, `install`
 a `process`. `status` čte souhrny bez příjemců a tokenů, poslední běh původního
 společného workeru a vlastní heartbeat. Chráněný workflow
 `parent-auth-mail-production.yml` kontroluje hash nasazeného kódu; po vydání
-nejprve spustit `status` s potvrzením `OVERIT-RODICOVSKOU-POSTU`. Teprve po
-vyhodnocení výsledku spustit `install` s `ZAPNOUT-RODICOVSKOU-POSTU`.
+nejprve spustit `status` s potvrzením `OVERIT-RODICOVSKOU-POSTU`. Po
+vyhodnocení výsledku spustit `install` s `ZAPNOUT-RODICOVSKOU-POSTU`; obojí
+provedeno 21. 11. 2026.
 Hostitelský minutový CRON používá neblokující zámek a limit 20 zpráv na běh;
 `process` vybírá pouze `public` ověření/obnovu a `child` obnovu. Instalátor
 odmítne cizí soubor a nemění jiné crony. Výchozí vydání samotného kódu nic
 neodesílá. Vypršelé nebo nahrazené odkazy worker zruší; uživatel si pak vyžádá
-nový odkaz. Syntetické testy neprokazují produkční doručení.
+nový odkaz. První přirozený běh zrušil dva staré resety a transport přijal jedno
+ověření. Druhý běh potvrdil pravidelnou aktivitu bez další práce. Klubových sedm
+čekajících oznámení zůstalo netknutých. Syntetické testy ani `mail()` neprokazují
+doručení do schránky.
 
 Trenérská obnova připravená 31. 10. 2026 používá stejnou šifrovanou frontu,
 ale vlastní tokeny a `target_type=trainer`. Její samostatný chráněný worker
