@@ -10,7 +10,6 @@ Podrobná metoda a opravy: [audit DOC02](PLAN_CATALOG_AUDIT_2026-11-07.md).
 Všechny textové soubory a binární plány/přílohy včetně protokolů, fixtures a exportů jsou zvlášť v
 [úplném indexu](PLAN_DOCUMENT_INDEX.md); nejsou vydávány za samostatné schválené plány.
 Strojová data: [katalog](verification/plan-catalog-audit-20261107/catalog.json).
-Starší [prompty a pravidla shody osob](PLAN_DOCUMENT_INDEX.md) jsou dohledatelné jako historické či referenční podklady; nejde o nové úkoly.
 Aktivní položky C01–C04 jsou dosud neschválené/odložené záměry, nikoli nová
 autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný registr.
 
