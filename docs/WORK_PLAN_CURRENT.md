@@ -6,6 +6,10 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
 
+## AUTH-MAIL-02 — třídenní obnova a náhrada dvou odkazů (21. 11. 2026)
+
+ROZPRACOVÁNO. Pokyn vlastníka vystavit dvě nové obnovy místo zrušených starých odkazů a platnost nových odkazů změnit na 72 hodin. Vlastník vývoj KIS; větev `codex/auth-mail-reset-72h-reissue-20261121`, oddělený worktree z `origin/main` `eb78c45b`. [Rozsah, postup, bezpečnost a akceptace](identity-email-queue.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-starých-odkazů-21-11-2026), [průběžný protokol](verification/auth-mail-reset-20261121/RESULTS.md). Čtecí produkční stav potvrdil přesně dva zrušené `public reset` a úspěšný heartbeat; individuální oprávnění a nepřítomnost novější žádosti se ověří před vydáním. Další krok: kód, syntetické testy, CI, deploy, čtecí preflight, jednorázové zařazení, přirozený tick. Doručení do schránky otevřené.
+
 ## AUTH-MAIL-01 — rodičovské ověřovací a obnovovací e-maily (21. 11. 2026)
 
 AUTOMATIKA NASAZENA A AKTIVNÍ; doručení do schránky otevřené. Vlastník vývoj KIS; implementace `codex/auth-mail-worker-repair-20261121` v [PR #506](https://github.com/KovoPraha/evidenceTreninku/pull/506), výsledky `codex/auth-mail-release-proof-20261121` v odděleném worktree. [Příčina, plán a akceptace](identity-email-queue.md#auth-mail-01--oprava-automatického-zpracování-rodičovské-fronty-21-11-2026), [produkční protokol](verification/auth-mail-worker-20261121/RESULTS.md). Čtecí produkční stav potvrdil chybějící plán, 3 splatné zprávy a připravený transport; po instalaci přirozený běh vyprázdnil frontu: 1 `verify` přijal `mail()`, 2 neplatné staré `reset` zrušeny, `failed=0`, klubové zprávy nedotčeny. Druhý tick potvrdil pravidelný běh. Další krok: řízené doručení obou typů do TEST schránky, případně provozní mail/MTA logy; rodiče zrušených resetů musí požádat o nový odkaz. Skutečné doručení NOT RUN.

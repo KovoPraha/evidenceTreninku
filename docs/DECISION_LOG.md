@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-21-AM02
+
+Vlastník požádal o nové obnovovací e-maily pro dva zrušené odkazy a platnost 3 dny. Zvoleno nové vydání jednorázových tokenů v jedné DB transakci s frontou, po kontrole dvou různých aktuálně oprávněných účtů a novějších žádostí. Staré zrušené odkazy nelze bezpečně opakovat ani prodloužit; ruční vložení plaintextu či duplicitní odeslání se nepoužije. Běžné rodičovské resety budou mít 72 hodin; trenérské, aktivační a ověřovací odkazy nejsou součástí tohoto pokynu. [Plán](identity-email-queue.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-starých-odkazů-21-11-2026), [výsledky](verification/auth-mail-reset-20261121/RESULTS.md).
+
 ## D2026-11-21-AM01
 
 Pokyn vlastníka opravit automatické odesílání rodičovských ověřovacích a obnovovacích zpráv. Nejprve provést čtecí produkční diagnostiku, poté zřídit omezený plán pouze pro `public` ověření/obnovu a `child` obnovu. Společný CLI worker je sice již implementován, ale jeho spuštění bez inventury by mohlo uvolnit i klubová oznámení. Trenérský plán veřejné účty výslovně vylučuje. Ruční opakování jednotlivých e-mailů problém plánování neřeší. [Plán, meze a akceptace](identity-email-queue.md#auth-mail-01--oprava-automatického-zpracování-rodičovské-fronty-21-11-2026), [výsledky](verification/auth-mail-worker-20261121/RESULTS.md).

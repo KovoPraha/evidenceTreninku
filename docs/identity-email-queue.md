@@ -1,5 +1,43 @@
 # Ověřovací a obnovovací e-maily
 
+## AUTH-MAIL-02 — třídenní obnova a náhrada dvou starých odkazů (21. 11. 2026)
+
+**Stav: ROZPRACOVÁNO.** Pokyn vlastníka: poslat nové obnovovací zprávy dvěma
+příjemcům, jejichž původní zprávy zrušil první běh rodičovského workeru, a
+prodloužit platnost nových odkazů na 3 dny. Vlastník vývoj KIS; větev
+`codex/auth-mail-reset-72h-reissue-20261121`, oddělený worktree z `origin/main`
+`eb78c45b`. Produkční odeslání je výslovně povoleno tímto pokynem, ale musí
+proběhnout až po ověření přesného rozsahu, nasazení a čtecí kontrole. Adresy,
+tokeny ani těla zpráv se neukládají do Gitu či výstupu workflow.
+
+Rozsah: běžná samoobslužná obnova veřejného/rodičovského účtu má mít platnost
+72 hodin v tokenu i textu e-mailu. Trenérské a aktivační odkazy ani ověření
+registrace se tím nemění. Zrušené staré zprávy se nesmějí opakovat: nová
+žádost vydá nový jednorázový token a šifrovanou zprávu ve stejné DB transakci.
+
+Postup a akceptace:
+
+1. Připravit čtecí produkční inventuru právě dvou zrušených `public reset`
+   zpráv z incidentu. Ověřit dva různé stále oprávněné účty, aktuální adresu,
+   nepřítomnost novější aktivní žádosti a běžící rodičovský worker. Do výstupu
+   dát pouze identifikátory starých frontových řádků a bezpečné souhrny.
+2. Změnit TTL obvyklé rodičovské obnovy z 1 hodiny na 72 hodin a upravit text.
+   Synteticky ověřit hranici expirace, jednorázovost, idempotenci řízené
+   náhrady a odmítnutí změněného účtu/adresy či novější žádosti.
+3. Po CI, merge a nasazení spustit znovu čtecí inventuru. Chráněná jednorázová
+   operace musí v jedné transakci vystavit právě dva nové tokeny, zařadit dvě
+   zprávy a označit staré řádky jako nahrazené. Opakovaný běh nic nevydá.
+4. Přirozeným během ověřit `pending → sent/failed/cancelled` a platnost nových
+   tokenů 72 hodin bez jejich zveřejnění. `sent` znamená přijetí `mail()`, ne
+   potvrzené doručení do schránky; kontrola schránky zůstává samostatná.
+
+Závislost: dostupný produkční worker AUTH-MAIL-01. Záložní provozní režim
+navrhnout po tomto urgentním kroku; druhý transport bez důkazu nedoručení
+nesmí automaticky přeposílat zprávu s nejistým výsledkem.
+
+Výsledky: [protokol AUTH-MAIL-02](verification/auth-mail-reset-20261121/RESULTS.md),
+[registr](WORK_PLAN_CURRENT.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-odkazů-21-11-2026).
+
 ## AUTH-MAIL-01 — oprava automatického zpracování rodičovské fronty (21. 11. 2026)
 
 **Stav: AUTOMATIKA NASAZENA A AKTIVNÍ; doručení do schránky K OVĚŘENÍ.** Vlastník: vývoj KIS;
