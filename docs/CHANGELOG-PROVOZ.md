@@ -5,6 +5,10 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 21. 11. 2026 — oprava propojení rodičovského účtu
+
+[PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) byl sloučen jako `7d856ed6` a [deploy 44912234389](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44912234389) skončil SUCCESS na stejném SHA. [Výsledky a meze](verification/parent-link-permissions-20261121/RESULTS.md#produkční-vydání-21-11-2026). Přihlášené produkční UAT a kontrola účtu č. 453 zůstávají otevřené.
+
 ## 6. 11. 2026 — přechod členství na hostingový denní plán
 
 [Protokol přechodu](verification/membership-scheduler-20261106/RESULTS.md). Předchozí aktuální stav:
