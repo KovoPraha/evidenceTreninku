@@ -8,6 +8,25 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-WIP-AUDIT-20261121 | [Inventura historických checkoutů](verification/worktree-reconciliation-20261121/RESULTS.md) | verification / SUPPORT | WIP-AUDIT-01/SEC01 |
+| PL-f4f6043c1f | [P15 čtecí synchronizace ČSC/Sportsoft](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md) | plan / PARTIAL | P15 |
+| PL-8465995434 | [P15 S0 čtecí kontrakt](CSC_SPORTSOFT_S0_CONTRACT_V1.md) | reference / SUPPORT | P15 |
+| PL-b8000d96f9 | [P15 S0 oddělená stanice](CSC_SPORTSOFT_S0_STATION.md) | reference / SUPPORT | P15 |
+| PL-d0ee3c3e30 | [P15 čtecí průzkum](verification/csc-sportsoft-discovery-20261107/RESULTS.md) | verification / SUPPORT | P15 |
+| PL-bf46335bf2 | [P15 strukturovaný průzkum](verification/csc-sportsoft-discovery-20261107/discovery.json) | artifact / SUPPORT | P15 |
+| PL-7d3ce8bdbf | [P15 S0 výsledky](verification/csc-sportsoft-s0-20261107/RESULTS.md) | verification / SUPPORT | P15 |
+| PL-6aa891eb3d | [P15 S0 předávací prompt](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md) | reference / SUPPORT | P15 |
+| PL-f3f68a192c | [P15 S0 JSON Schema](verification/csc-sportsoft-s0-20261107/contract.schema.json) | artifact / SUPPORT | P15 |
+| PL-ea508a0d92 | [P15 S0 syntetické fixtures](verification/csc-sportsoft-s0-20261107/fixtures.json) | artifact / SUPPORT | P15 |
+| PL-43db11dcee | [P15 S0 syntetický HTML podklad](verification/csc-sportsoft-s0-20261107/source-fixtures.html) | artifact / SUPPORT | P15 |
+| PL-2eba69f6f2 | [P15 S0 čtecí Windows inventura](verification/csc-sportsoft-s0-20261107/station-inventory.ps1) | artifact / SUPPORT | P15 |
+| PL-DOC01-UX01-RESULT | [UX01 vydání průvodce](verification/year-offer-release-20261108/RESULTS.md) | verification / SUPPORT | UX01 |
+| PL-DOC01-Q2-UAT | [Q2-TIME přihlášené UAT](verification/training-form-uat-20261109/RESULTS.md) | verification / SUPPORT | Q2-TIME |
+| PL-DOC01-Q2-JSON | [Q2-TIME pozorování](verification/training-form-uat-20261109/observations.json) | artifact / SUPPORT | Q2-TIME |
+| PL-DOC01-Q2-RELOAD-TXT | [Q2-TIME hodnoty po reloadu](verification/training-form-uat-20261109/after-reload-fields.txt) | artifact / SUPPORT | Q2-TIME |
+| PL-DOC01-Q2-WINDOW-TXT | [Q2-TIME hodnoty po zavření okna](verification/training-form-uat-20261109/after-window-close-fields.txt) | artifact / SUPPORT | Q2-TIME |
+| PL-DOC01-Q2-RELOAD-PNG | [Q2-TIME stav po reloadu](verification/training-form-uat-20261109/after-reload-status.png) | artifact / SUPPORT | Q2-TIME |
+| PL-DOC01-Q2-CONCEPT-PNG | [Q2-TIME stav konceptu](verification/training-form-uat-20261109/concept-status.png) | artifact / SUPPORT | Q2-TIME |
 | PL-SEC01-20261108 | [SEC01 — soukromé úložiště](SECURITY_AUDIT_2026-11-08.md) | plan / PARTIAL | WIP-AUDIT-01/SEC01 |
 | PL-WIP-AUDIT-20261121 | [Inventura starých checkoutů](verification/worktree-reconciliation-20261121/RESULTS.md) | evidence / SUPPORT | WIP-AUDIT-01/SEC01 |
 | PL-coach-attendance-20261113 | [E4-06 — docházka trenéra z rozvrhu](COACH_ATTENDANCE_2026-11-13.md) | plan / PARTIAL | E4-06 |

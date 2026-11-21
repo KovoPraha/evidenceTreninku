@@ -4,7 +4,7 @@
 
 **Stav: K OVĚŘENÍ — kód připraven, produkční diagnostika otevřená.** Vlastník: vývoj KIS;
 větev `codex/auth-mail-worker-repair-20261121`, oddělený worktree z `origin/main`
-`11505aed`. Zadání vlastníka: opravit automatické zpracování ověření účtu a obnovy
+`11505aed`, převzaté souběžné `main` `5acd225f` v PR #506. Zadání vlastníka: opravit automatické zpracování ověření účtu a obnovy
 hesla rodičů, bezpečně převzít existující frontu, neřešit výpadek ručním retry.
 Podklad hlášení: tři `pending`, nula `processing` a `failed`, šest `sent`; dva
 starší příklady mají nula pokusů a prošlý čas `available_at`. Konkrétní adresy

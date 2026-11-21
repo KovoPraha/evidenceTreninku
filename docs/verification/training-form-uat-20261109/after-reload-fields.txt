@@ -1,0 +1,63 @@
+267 text 
+			268 text Náplň tréninku  *
+			269 text entry area (settable) Náplň tréninku *, ID: napln, Value: TEST Q2-TIME 2026-11-09 — NEUKLÁDAT
+Kontrola ztráty textu: rozjetí, 200 m, vyjetí.
+			270 text 
+			271 text Poznámka
+			272 text neveřejné
+			273 text entry area (settable) Poznámka neveřejné, Value: TESTOVACÍ KONCEPT — zachovat poznámku po obnovení i zavření okna., ID: poznamka
+		274 container
+			275 text 
+			276 text Měření
+			277 text 
+			278 text Každé měření patří jednomu sportovci. Vyberte sportovce ze seznamu (začněte psát jméno).
+			279 text 
+			280 text Čas:  MM:SS(.mmm)  nebo  HH:MM:SS(.mmm) Vzdálenost vždy doplňte jednotkou m nebo km.
+			281 button Přidat řádek, ID: btnAddMereni
+				282 text 
+				283 text Přidat řádek
+			284 container
+				285 text Sportovec
+				286 text field (settable) Description: Sportovec pro měření, Value: TEST-COACH-20261031 TEST Alfa
+				287 text Typ měření
+				288 pop up button (collapsed, settable) Description: Typ měření, Value: Kolo, Secondary Actions: Expand
+					289 menu
+						290 — vyber —
+						291 (selected) Kolo
+						292 Kolo - Kroužek
+						293 Kolo - Silnice
+						294 Kolo - MTB
+						295 Běh
+						296 Posilovna
+				297 button Odebrat měření
+					298 text 
+				299 text Vzdálenost
+				300 stepper (settable, integer) Description: Vzdálenost, Value: 200
+				301 pop up button (collapsed, settable) Description: Jednotka vzdálenosti, Value: m, Secondary Actions: Expand
+					302 menu
+						303 jednotka
+						304 (selected) m
+						305 km
+				306 text Čas  mm:ss.xx
+				307 text field (settable) Description: Čas měření, Help: MM:SS, MM:SS.mmm, HH:MM:SS nebo HH:MM:SS.mmm, Value: 13,456
+				308 text např. 2 min 13,45 s → 02:13.45 Převod  (vol.)
+				309 text field (settable) Převod
+				310 text Poznámka  (vol.)
+				311 text field (settable) Poznámka k měření
+		312 container
+			313 text 
+			314 text Účastníci
+			315 text Hledat sportovce
+			316 text field (settable) Hledat sportovce, ID: ucastnici_input
+			317 text 
+			318 text Vybraní sportovci se zobrazí i v poli Sportovec u měření.
+		319 container
+			320 text 
+			321 text Tagy
+			322 text Přidat tag
+			323 text field (settable) Přidat tag, ID: tag_input
+			324 text 
+			325 text Nový tag stačí napsat a stisknout Enter.
+		326 container
+			327 text 
+			328 text

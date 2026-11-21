@@ -18,6 +18,10 @@ Pokyn vlastníka vyjasnit a dokončit zdánlivé souběžné WIP. Původní hlav
 
 Podle zadání testerky má hlavní tabulka zobrazovat členství platné k vybranému dni a ostatní intervaly mají být dostupné v rozbalovací historii. Zvolený výklad `removed`: ukončené členství zůstává platné do uloženého `valid_to` včetně, stejně jako v existujícím výpočtu `kisRosterEffectiveMemberIds()`. Alternativa bezpodmínečně vyloučit všechny řádky `removed` by skryla dítě i při zobrazení dne před ukončením a rozcházela by se s počtem členů a nadřazenými skupinami. Změna odděluje pouze čtení a vykreslení; historické řádky se nemažou. [Rozsah a ověření](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026).
 
+## D2026-11-21-DOC01
+
+Pět dokumentačních PR #399/#401/#402/#417/#371 zůstalo otevřených s konflikty v obecných přehledech, přesto obsahují samostatné release důkazy, přihlášené UAT, přejímací scénář a P15 S0 kontrakt. Věcný obsah se převádí na dnešní `main` a historické CURRENT/HANDOFF z jejich větví se nepřebírají. Původní PR lze po ověření a merge nového společného předání uzavřít jako nahrazené. P15 runtime drafty #376/#380/#382 a audit #386 zůstávají samostatně otevřené do cílové inventury a revize; přenesení S0 dokumentace nespouští ingest ani worker. [Inventura](verification/worktree-reconciliation-20261121/RESULTS.md), [registr](WORK_PLAN_CURRENT.md#doc-wip-01--převzetí-starých-dokumentačních-pr-21-11-2026).
+
 ## D2026-11-15-CA01
 
 Po zeleném CI vydat trenérskou docházku E4-06 jako kód, ale neschvalovat tím
@@ -142,6 +146,14 @@ role/drafty/kanonické zápisy PASS. [Plán](ATTENDANCE_PERSON_PICKER_2026-11-07
 Přijaté D10 je jiné pověření k deployi #372; nepřenáší se na tuto relaci.
 Původní pracovní D10/E30 v3ca7e028 kolidovaly s přijatými ID, nyní D11/E36/E37.
 
+## D2026-11-07-P15-S0
+
+Vlastník 7. 11. určil jiný Windows počítač s osobním Rikim a předání čtecí inventury místnímu Codexu. KIS nesmí číst, zapisovat ani indexovat soukromá data Rikiho. Navržen je samostatný nativní Windows účet a worker; WSL/Docker a Rikiho interaktivní úloha nejsou důkazem izolace ani bootu bez loginu. Když účet a ACL nepostačí, je alternativou oddělený host/VM. S0 stanoví pouze čtyři čtecí kolekce, striktní UCI párování na serveru a nejisté hodnoty ponechává jako neznámé. Instalace a aktivace nebyly schváleny ani provedeny. [Plán stanice](CSC_SPORTSOFT_S0_STATION.md), [kontrakt](CSC_SPORTSOFT_S0_CONTRACT_V1.md), [výsledek](verification/csc-sportsoft-s0-20261107/RESULTS.md).
+
+## D2026-11-07-P15
+
+Přijatý směr vlastníka 7. 11.: čtecí synchronizace licencí ČSC, členů Sportsoftu a existujících přihlášek přes oddělené integrační snímky a UCI ID. Existující jmenný/data narození fallback se pro automatické spojení této integrace nepoužije a kanonické karty se nepřepisují. Nejde o povolení zápisu do portálů, produkčního ingestu nebo pravidelné aktivace. [P15 plán](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md), [průzkum](verification/csc-sportsoft-discovery-20261107/RESULTS.md), [registr](WORK_PLAN_CURRENT.md#p15--čtecí-čsc--sportsoft-a-oddělená-stanice). ID P15 nahrazuje pracovní ID 09, které kolidovalo s dřívějším rozhodnutím pro picker.
+
 ## D2026-11-07-09
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026; vlastník zadal optimalizovat výběr osob
@@ -225,6 +237,8 @@ HTML/data parita a relativní úspora zůstávají; vadné reporty jsou odmítan
   doplňuje původní technickou přejímku; mobilní redesign zatím jen doporučený.
 
 ## D2026-11-07-03
+
+- Doplnění 8. 11. 2026: vlastník výslovně požadoval reálnou přejímku. [P07-UAT](SHOP_DOCUMENT_AUTOMATION_2026-11-07.md#p07-uat--reálná-produkční-přejímka) stanoví důkazy a vlastníky; CI a prázdný worker nenahrazují bankovní pohyb ani přijetí PDF ve schránce. Kroky zůstávají NOT RUN, podklady vlastník 21. 11. přislíbil dodat později.
 
 - **Stav / datum:** PŘIJATO, 7. 11. 2026. Vlastník zadal automatické doklady,
   e-maily při vytvoření/stornu/vratce, ověření, sloučení a nasazení.
