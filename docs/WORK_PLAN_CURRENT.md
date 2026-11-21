@@ -6,6 +6,9 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
 
+## TRAINING-PLAN-ACL-01 — správce a kolize plánovaných tréninků (21. 11. 2026)
+
+K OVĚŘENÍ v [PR #508](https://github.com/KovoPraha/evidenceTreninku/pull/508) připraveném k revizi. [Rozsah a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#training-plan-acl-01--plánování-správcem-a-kolize-21-11-2026), [místní a CI výsledky](verification/training-plan-admin-collision-20261121/RESULTS.md). Vlastník vývoj KIS; větev `codex/training-plan-admin-collision-20261121` z `11505aed`, převzatý `main` až po `ccac61ab`, pracovní strom `C:\xampp\htdocs\evidencePavel`. Závislosti: plánovací mutex, audit a KIS soupisky. Společné `e5cf1ef2` prošlo 21/21 CI, PHPUnit 2531/60328; po posledním převzetí main nové CI otevřené. Další krok revize PR a přihlášené UAT rolí. Merge/deploy/UAT NOT RUN.
 ## AUTH-MAIL-02 — třídenní obnova a náhrada dvou odkazů (21. 11. 2026)
 
 ROZPRACOVÁNO. Pokyn vlastníka vystavit dvě nové obnovy místo zrušených starých odkazů a platnost nových odkazů změnit na 72 hodin. Vlastník vývoj KIS; větev `codex/auth-mail-reset-72h-reissue-20261121`, oddělený worktree z `origin/main` `eb78c45b`. [Rozsah, postup, bezpečnost a akceptace](identity-email-queue.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-starých-odkazů-21-11-2026), [průběžný protokol](verification/auth-mail-reset-20261121/RESULTS.md). Čtecí produkční stav potvrdil přesně dva zrušené `public reset` a úspěšný heartbeat; individuální oprávnění a nepřítomnost novější žádosti se ověří před vydáním. Další krok: kód, syntetické testy, CI, deploy, čtecí preflight, jednorázové zařazení, přirozený tick. Doručení do schránky otevřené.

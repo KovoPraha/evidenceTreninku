@@ -2293,12 +2293,6 @@ parameters:
 			path: planovany_trenink_form.php
 
 		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 40
-			path: planovany_trenink_form.php
-
-		-
 			message: '#^Variable \$podskupinyIds in empty\(\) always exists and is always falsy\.$#'
 			identifier: empty.variable
 			count: 1
