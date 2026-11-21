@@ -20,3 +20,5 @@ Jeden termín s více soupiskami používá existující `training_roster_links`
 Po otevření PR se `main` posunul na `5acd225f` (SEC01 a dokumentační podklady DOC01/P15/Q2). Větev jej převzala sloučením; v konfliktních souborech jsou zachovány obě agendy. Po sloučení je třeba znovu ověřit čistý CI běh a odkazy.
 
 Po zeleném 21/21 CI se `main` posunul na `741c0625` (AUTH-MAIL-01). Větev jej převzala bez změny plánovací logiky; konfliktní přehledy a logy zachovávají obě agendy. Nový čistý CI běh společného stromu otevřený.
+
+Společný `3e8f90e4` po převzetí `741c0625` prošel 21/21 CI. Během běhu byl v `main` sloučen `eb78c45b` s produkčním výsledkem AUTH-MAIL-01; poslední dokumentační konflikt byl spojen se zachováním novějšího provozního stavu. Plánovací kód beze změny, další CI společného stromu otevřené.
