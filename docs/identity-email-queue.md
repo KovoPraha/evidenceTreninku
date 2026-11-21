@@ -38,7 +38,7 @@ nesmí automaticky přeposílat zprávu s nejistým výsledkem.
 Výsledky: [protokol AUTH-MAIL-02](verification/auth-mail-reset-20261121/RESULTS.md),
 [registr](WORK_PLAN_CURRENT.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-odkazů-21-11-2026).
 
-Produkční výsledek: [deploy 44908781060](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44908781060) SUCCESS;
+Produkční výsledek v [dokumentačním PR #511](https://github.com/KovoPraha/evidenceTreninku/pull/511): [deploy 44908781060](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44908781060) SUCCESS;
 [čtecí inventura 44909136270](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44909136270) PASS pro staré řádky 3 a 8;
 [jednorázové vydání 44909270205](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44909270205) vytvořilo nové řádky 10 a 11 s expirací 24. 11. 2026 ve 13:31:35 UTC. Přirozený běh
 oba předal PHP `mail()` a zanechal `pending=0`, `failed=0`; skutečné doručení

@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## AUTH-MAIL-02 — třídenní obnova a náhrada dvou odkazů (21. 11. 2026)
 
-K OVĚŘENÍ DORUČENÍ. Vlastník vývoj KIS; implementace `codex/auth-mail-reset-72h-reissue-20261121` v [PR #510](https://github.com/KovoPraha/evidenceTreninku/pull/510), výsledková dokumentace `codex/auth-mail-reset-release-proof-20261121`. [Plán a akceptace](identity-email-queue.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-starých-odkazů-21-11-2026), [produkční protokol](verification/auth-mail-reset-20261121/RESULTS.md). 72h reset nasazen; čtecí inventura potvrdila dva oprávněné cíle, jednorázová operace vytvořila dvě nové zprávy a přirozený tick obě předal `mail()`. Rodičovská fronta `pending=0`, `failed=0`. Další krok: potvrdit skutečný příjem v obou schránkách, případně prověřit mail/MTA logy. Doručení do schránky NOT RUN.
+K OVĚŘENÍ DORUČENÍ. Vlastník vývoj KIS; implementace `codex/auth-mail-reset-72h-reissue-20261121` v [PR #510](https://github.com/KovoPraha/evidenceTreninku/pull/510), výsledková dokumentace `codex/auth-mail-reset-release-proof-20261121` v [PR #511](https://github.com/KovoPraha/evidenceTreninku/pull/511). [Plán a akceptace](identity-email-queue.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-starých-odkazů-21-11-2026), [produkční protokol](verification/auth-mail-reset-20261121/RESULTS.md). 72h reset nasazen; čtecí inventura potvrdila dva oprávněné cíle, jednorázová operace vytvořila dvě nové zprávy a přirozený tick obě předal `mail()`. Rodičovská fronta `pending=0`, `failed=0`. Další krok: potvrdit skutečný příjem v obou schránkách, případně prověřit mail/MTA logy. Doručení do schránky NOT RUN.
 
 ## AUTH-MAIL-03 — záložní provoz rodičovské pošty (21. 11. 2026)
 
