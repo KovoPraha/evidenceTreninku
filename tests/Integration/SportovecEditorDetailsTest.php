@@ -180,6 +180,65 @@ final class SportovecEditorDetailsTest extends TestCase
         self::assertSame(2, (int)$pdo->query("SELECT account_id FROM kis_person_contacts WHERE display_name='LOCALHOST Nový'")->fetchColumn());
     }
 
+    public function testRegistrarCanApprovePendingParentWithoutSensitiveAccessOrEnablingAccount(): void
+    {
+        $pdo = $this->pdo();
+        sportovecEditorDetailsFixture($pdo);
+        accountPersonRoleApprove($pdo, 2, 10, 'guardian', 7, 'LOCALHOST připravená vazba');
+        $pdo->exec("UPDATE account_person_roles SET status='pending',approved_by_trainer_id=NULL WHERE account_id=2 AND sportovec_id=10");
+        $_SESSION['role'] = 'hlavni';
+
+        $context = sportovecEditorContext($pdo, 10);
+        self::assertCount(2, $context['roles']);
+        self::assertSame([], $context['sensitive']);
+        try {
+            personSensitiveRequireAdmin();
+            self::fail('Registrar gained access to birth number');
+        } catch (\PersonSensitiveException) {
+            self::assertTrue(true);
+        }
+
+        $beforePeople = (int)$pdo->query('SELECT COUNT(*) FROM sportovci')->fetchColumn();
+        $result = sportovecEditorGuardianAccount($pdo, 10, 2, 7, 'LOCALHOST ověřená identita rodiče');
+        self::assertSame(['account_active' => false, 'email_verified' => false], $result);
+        self::assertSame('approved', $pdo->query('SELECT status FROM account_person_roles WHERE account_id=2 AND sportovec_id=10')->fetchColumn());
+        self::assertFalse(accountPersonCanManage($pdo, 2, 10));
+        self::assertSame($beforePeople, (int)$pdo->query('SELECT COUNT(*) FROM sportovci')->fetchColumn());
+        sportovecEditorGuardianAccount($pdo, 10, 2, 7, 'LOCALHOST opakované potvrzení');
+        self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM account_person_roles WHERE account_id=2 AND sportovec_id=10')->fetchColumn());
+        $pdo->exec('UPDATE verejni_uzivatele SET aktivni=1 WHERE id=2');
+        self::assertFalse(accountPersonCanManage($pdo, 2, 10));
+        $pdo->exec('UPDATE verejni_uzivatele SET aktivni=0,email_overeno=1 WHERE id=2');
+        self::assertFalse(accountPersonCanManage($pdo, 2, 10));
+        $pdo->exec('UPDATE verejni_uzivatele SET aktivni=1,email_overeno=1 WHERE id=2');
+        self::assertTrue(accountPersonCanManage($pdo, 2, 10));
+    }
+
+    public function testParentLinkRequiresCurrentRegistrarGrant(): void
+    {
+        $pdo = $this->pdo();
+        sportovecEditorDetailsFixture($pdo);
+        $_SESSION['role'] = 'hlavni';
+        $_SESSION['staff_positions'] = ['coach', 'registrar'];
+        $_SESSION['staff_active_position'] = 'coach';
+        try {
+            sportovecEditorGuardianAccount($pdo, 10, 2, 7, 'LOCALHOST nepovolená pozice');
+            self::fail('Wrong position approved relation');
+        } catch (\DomainException $exception) {
+            self::assertStringContainsString('Registrář', $exception->getMessage());
+        }
+        $_SESSION['staff_active_position'] = 'registrar';
+        $pdo->exec('DELETE FROM staff_user_positions WHERE trainer_id=7');
+        try {
+            sportovecEditorGuardianAccount($pdo, 10, 2, 7, 'LOCALHOST odebraný grant');
+            self::fail('Revoked grant approved relation');
+        } catch (\DomainException $exception) {
+            self::assertSame('Pracovní oprávnění již neplatí.', $exception->getMessage());
+        }
+        self::assertFalse($pdo->inTransaction());
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM account_person_roles WHERE account_id=2 AND sportovec_id=10')->fetchColumn());
+    }
+
     public function testForeignParentAndAccountIdentifiersAreRejected(): void
     {
         $pdo = $this->pdo();

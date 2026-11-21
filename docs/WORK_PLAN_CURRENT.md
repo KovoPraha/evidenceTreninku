@@ -6,6 +6,9 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
 
+## KIS-PARENT-LINK-01 — propojení rodičovského účtu (21. 11. 2026)
+
+SCHVÁLENO K NASAZENÍ vlastníkem („nasadit“), [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main` včetně `6dcd0a20`. [Nález, akceptace a rozsah schválení](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Head `fa817de4` 11/11 CI PASS, po #508 čeká nová CI. Další krok: ověřit společný strom, merge #507 a chráněný deploy s UAT/import false; přihlášená přejímka samostatně. Produkční zápis a lidské UAT dosud NOT RUN.
 ## TRAINING-PLAN-ACL-01 — správce a kolize plánovaných tréninků (21. 11. 2026)
 
 KÓD NASAZEN, přihlášené UAT otevřené. [Rozsah a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#training-plan-acl-01--plánování-správcem-a-kolize-21-11-2026), [výsledky](verification/training-plan-admin-collision-20261121/RESULTS.md). Vlastník vývoj KIS; implementace `codex/training-plan-admin-collision-20261121` v [PR #508](https://github.com/KovoPraha/evidenceTreninku/pull/508), vydaná jako `6dcd0a20` v [deploy 44910511209](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44910511209) SUCCESS; release evidence `codex/training-plan-admin-release-20261121`. Závislosti: plánovací mutex, audit a KIS soupisky. Finální CI 21/21; UAT/import false. Další krok přihlášené UAT správce a běžného trenéra v kontrolovaném prostředí; skutečné organizační potvrzení a lidská přejímka NOT RUN.
