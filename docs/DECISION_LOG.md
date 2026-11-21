@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-21-DA02
+
+Vývojové doporučení ke schválení vlastníkem: pět starých draftů neslučovat kvůli úklidu seznamu. #376/#380/#382 tvoří navazující P15 runtime a #386 jeho audit; jejich další práce závisí na S0 inventuře a volbě pokračovat. #384 měří již vydaný zdravotní filtr a lze jej po zachování unikátních důkazů odložit, není-li měření aktuální prioritou. Varianta hromadného merge by zavedla neověřený starý runtime, hromadné zavření bez evidence by skrylo LOW nález a nedokončené měření. **Jde o KONCEPT, nikoli o rozhodnutí vlastníka zavřít PR nebo spustit P15.** [Postup](verification/branch-documentation-audit-20261121/RESULTS.md#koncept-doc-branch-close-01--rozhodnutí-o-pěti-draftech-21-11-2026).
+
 ## D2026-11-21-DA01
 
 Na žádost vlastníka zjednodušit dokumentaci a prověřit nedokončené větve byly krátké přehledy převedeny na navigaci k aktuálním vydáním a otevřeným přejímkám; původní text je zachován v [historickém snímku](verification/branch-documentation-audit-20261121/STATE_BEFORE.md). Větve se nyní pouze inventarizují v CSV, protože 468 místních headů není přímým předkem main a toto samo nerozliší squash merge od chybějící práce. Pět otevřených draft PR má věcný rozsah a zůstává k individuální revizi. Alternativa hromadně smazat nebo sloučit staré větve by mohla ztratit obsah či vrátit zastaralý kód. [Metoda a výsledky](verification/branch-documentation-audit-20261121/RESULTS.md), [registr](WORK_PLAN_CURRENT.md#doc-branch-audit-01--soulad-dokumentace-a-větví-21-11-2026).
