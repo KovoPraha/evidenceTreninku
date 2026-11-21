@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## TRAINING-PLAN-ACL-01 — správce a kolize plánovaných tréninků (21. 11. 2026)
 
-K OVĚŘENÍ v [draft PR #508](https://github.com/KovoPraha/evidenceTreninku/pull/508). [Rozsah, oprávnění, postup a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#training-plan-acl-01--plánování-správcem-a-kolize-21-11-2026), [místní výsledky](verification/training-plan-admin-collision-20261121/RESULTS.md). Vlastník vývoj KIS; větev `codex/training-plan-admin-collision-20261121` z `11505aed`, pracovní strom `C:\xampp\htdocs\evidencePavel`. Závislosti: stávající plánovací mutex, audit a KIS soupisky. Cílené testy PASS; další krok Linux CI a přihlášené UAT rolí. Merge/deploy/UAT NOT RUN.
+K OVĚŘENÍ v [PR #508](https://github.com/KovoPraha/evidenceTreninku/pull/508) připraveném k revizi. [Rozsah, oprávnění, postup a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#training-plan-acl-01--plánování-správcem-a-kolize-21-11-2026), [místní výsledky](verification/training-plan-admin-collision-20261121/RESULTS.md). Vlastník vývoj KIS; větev `codex/training-plan-admin-collision-20261121` z `11505aed`, pracovní strom `C:\xampp\htdocs\evidencePavel`. Závislosti: stávající plánovací mutex, audit a KIS soupisky. Cílené testy PASS; další krok Linux CI a přihlášené UAT rolí. Merge/deploy/UAT NOT RUN.
 
 ## ROSTER-HISTORY-01 — výchozí seznam členů a historie (21. 11. 2026)
 
