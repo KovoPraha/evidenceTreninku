@@ -10,6 +10,8 @@ Postup: oddělit kontrolu zápisu rodičovské vazby od oprávnění k rodnému 
 
 Akceptace: registrář načte vazby a schválí čekající vazbu bez přístupu k RČ; odebraný grant či jiná pozice zápis odmítne s vysvětlením; neaktivní/neověřený účet nemá přístup do portálu; nevznikne nový `sportovci` ani duplicitní vztah. Ověření pouze synteticky. [Výsledky a meze](verification/parent-link-permissions-20261121/RESULTS.md). Další krok: dokončit CI a review [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507); produkční UAT zůstává otevřené.
 
+Souběh: `origin/main` `5acd225f` (#505) převzato v `84af1987`; obě konfliktní evidence byly sloučeny, 33 cílených testů / 218 assertions a dokumentační kontrola znovu PASS. Nová PR CI čeká na úplný výsledek.
+
 ## Povolení vydání 12. 11. 2026
 
 Vlastník pokynem „nasadit“ povolil sloučení PR #463 a chráněné vydání kódu a migrace do KIS po zeleném CI, ověřené záloze a standardních kontrolách. [Vydání 43322186478](verification/parent-activation-release-20261112/RESULTS.md) skončilo SUCCESS na `373b8d89`, s `uat_schvaleno=false` a `importovat_krouzky=false`. Pokyn neautorizuje schválení rodinných vazeb, zařazení pozvánek do fronty ani odeslání pilotní dávky. Text pozvánky, identifikační postup a rozsah pilotu musí vedení potvrdit před první skutečnou pozvánkou.

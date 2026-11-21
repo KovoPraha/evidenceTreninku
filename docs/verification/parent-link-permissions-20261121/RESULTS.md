@@ -20,3 +20,9 @@ Větev `codex/parent-link-permissions-20261121` z `origin/main` `11505aed51`; sa
 | Přihlášený browser proti produkci, skutečný účet, CI, merge, deploy | NOT RUN. |
 
 Omezení: syntetický test neprokazuje skutečné oprávnění konkrétního produkčního správce ani to, že konkrétní rodič prokázal vztah k dítěti. Provozní schválení vazby zůstává individuálním lidským krokem. Žádný skutečný rodičovský účet nebyl změněn.
+
+## Souběh 21. 11. 2026
+
+Nové `origin/main` `5acd225f` z dokumentačního #505 bylo převzato merge commitem `84af1987`. Konflikty v `EVENT_LOG` a `HANDOFF_CURRENT` byly vyřešeny zachováním obou věcných záznamů; další sdílené dokumenty z #505 zůstaly v jejich novější podobě. Po sloučení PASS: `php tools/check-current-docs.php` (80/80 řádků, 5861 odkazů, 0 chyb), `git diff --check` a 33 cílených PHPUnit testů / 218 assertions. PR #507 je znovu mergeable; jeho nová CI revize ještě běží. Produkční merge a deploy NOT RUN.
+
+Předchozí aplikační commit `c15e854c` dokončil [Testy 44901514147](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44901514147) SUCCESS včetně PHPUnit a MariaDB 10.3/11.4; samostatné PHP quality a dokumentační workflow byly také SUCCESS. Nový head po převzetí `main` má vlastní CI, jejíž výsledek zatím není převzat.
