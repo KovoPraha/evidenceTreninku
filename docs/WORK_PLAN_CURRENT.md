@@ -6,6 +6,10 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
 
+## KIS-PARENT-LINK-01 — propojení rodičovského účtu (21. 11. 2026)
+
+K OVĚŘENÍ CI. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main`. [Nález, rozsah a akceptace](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Integrace lokálně PASS; další krok: CI a PR, poté řízená přihlášená přejímka. Produkční zápis a lidské UAT NOT RUN.
+
 ## ROSTER-HISTORY-01 — výchozí seznam členů a historie (21. 11. 2026)
 
 KÓD NASAZEN, přihlášené UAT otevřené. [Rozsah, rozhodnutí a akceptace](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026), [PR #502](https://github.com/KovoPraha/evidenceTreninku/pull/502) → `85a81986`, 11 CI PASS; [deploy 44896953740](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44896953740) SUCCESS na stejném SHA, záloha/migrace/VS/HTTP PASS, UAT/import false. [Dokumentační #503](https://github.com/KovoPraha/evidenceTreninku/pull/503) sloučený. Vlastník vývoj KIS; `codex/roster-membership-history-20261121`. Výchozí seznam používá časovou platnost, ostatní intervaly jsou v rozbalovací historii; 22 cílených testů PASS. Další krok: testerka v přihlášené administraci ověří dnešek, poslední platný den a dřívější den, včetně nadřazené skupiny.

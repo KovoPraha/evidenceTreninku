@@ -183,8 +183,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $notice = 'Rodič byl odpojen od sportovce.';
                     $fragment = 'parents-title';
                 } elseif ($akce === 'attach_account') {
-                    sportovecEditorGuardianAccount($pdo, $editId, (int)($_POST['account_id'] ?? 0), $actor, (string)($_POST['reason'] ?? ''), (string)($_POST['contact_key'] ?? ''));
+                    $accountState = sportovecEditorGuardianAccount($pdo, $editId, (int)($_POST['account_id'] ?? 0), $actor, (string)($_POST['reason'] ?? ''), (string)($_POST['contact_key'] ?? ''));
                     $notice = 'Účet rodiče byl propojen se sportovcem.';
+                    if (!$accountState['account_active'] || !$accountState['email_verified']) {
+                        $notice .= ' Přístup do portálu zatím není možný: '
+                            . implode(' a ', array_filter([
+                                !$accountState['account_active'] ? 'účet je neaktivní' : '',
+                                !$accountState['email_verified'] ? 'e-mail není ověřený' : '',
+                            ])) . '.';
+                    }
                     $fragment = 'accounts-title';
                 } elseif ($akce === 'revoke_account') {
                     sportovecEditorRevokeAccount($pdo, $editId, (int)($_POST['relation_id'] ?? 0), $actor, 'Odpojení rodičovského přístupu z detailu sportovce.');
@@ -220,7 +227,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $editError = $exception instanceof InvalidArgumentException ||
      $exception instanceof PersonSensitiveException ||
      $exception instanceof AccountPersonRoleException ||
-     $exception instanceof KisRosterException
+     $exception instanceof KisRosterException ||
+     $exception instanceof DomainException
                 ? $exception->getMessage()
                 : 'Údaje se nepodařilo bezpečně načíst nebo uložit. Zkuste akci znovu.';
             if (!$exception instanceof InvalidArgumentException) {

@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-21-PL01
+
+Podle zadání vlastníka se správa rodičovské vazby řídí pracovní pozicí registráře a aktuálním DB grantem; přístup k RČ zůstává samostatně omezený. Dosavadní opětovné použití `personSensitiveRequireAdmin()` pro obě operace odmítalo oprávněného registráře matoucí hláškou. Schválení vztahu neaktivního či neověřeného účtu je možné po kontrole identity, ale `accountPersonEligibleParticipants()` jej nesmí pustit do portálu před splněním obou podmínek. [Plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické ověření](verification/parent-link-permissions-20261121/RESULTS.md).
+
 ## D2026-11-21-WIP01
 
 Pokyn vlastníka vyjasnit a dokončit zdánlivé souběžné WIP. Původní hlavní checkout se vrací na dnešní `main`, protože lokální změna měnila jen neaktivní přesměrovací stránku a funkční Fio bylo dávno vydané. Před obnovou se lokální patch uchoval mimo Git. Historické checkouty ani soukromé výstupy se nemažou: BAR a P05/P07 potřebují skutečné provozní hodnoty, Packeta cenu a první zásilku, picker čtecí přejímku. Bezpečnostní #391 má věcný kód a prošlé původní CI, proto se jeho dvě změny převádějí na současný main s novým CI namísto přijetí konfliktů starých souhrnných dokumentů. [Inventura a důkazy](verification/worktree-reconciliation-20261121/RESULTS.md), [SEC01](SECURITY_AUDIT_2026-11-08.md).

@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/account_person_role.php';
 require_once __DIR__ . '/kis_roster.php';
 require_once __DIR__ . '/club_finance.php';
+require_once __DIR__ . '/operational_cases.php';
 
 function sportovecEditorStatusLabel(?string $status): string
 {
@@ -30,6 +31,15 @@ function sportovecEditorRequireActor(int $actor): void
     if (personSensitiveRequireAdmin() !== $actor) {
         throw new InvalidArgumentException('Neplatný správce změny.');
     }
+}
+
+/** Parent contacts and account relations belong to the registrar, not the birth-number reader. */
+function sportovecEditorRequireParentActor(PDO $pdo, int $actor): void
+{
+    if ($actor < 1 || $actor !== (int)($_SESSION['trener_id'] ?? 0) || !staffActivePositionIs('registrar')) {
+        throw new DomainException('Správa rodičovských vazeb vyžaduje aktivní pracovní pozici Registrář členů a KIS.');
+    }
+    operationalCaseActor($pdo, $actor, 'registrar');
 }
 
 function sportovecEditorSaveBirthNumber(
@@ -138,9 +148,9 @@ function sportovecEditorParentValues(array $input, array $before = []): array
 
 function sportovecEditorSaveParent(PDO $pdo, int $id, string $linkKey, array $input, int $actor): void
 {
-    sportovecEditorRequireActor($actor);
     $pdo->beginTransaction();
     try {
+        sportovecEditorRequireParentActor($pdo, $actor);
         sportovecEditorPerson($pdo, $id, true);
         $before = [];
         if ($linkKey !== '') {
@@ -232,9 +242,9 @@ function sportovecEditorSaveParent(PDO $pdo, int $id, string $linkKey, array $in
 
 function sportovecEditorUnlinkParent(PDO $pdo, int $id, string $linkKey, int $actor): void
 {
-    sportovecEditorRequireActor($actor);
     $pdo->beginTransaction();
     try {
+        sportovecEditorRequireParentActor($pdo, $actor);
         sportovecEditorPerson($pdo, $id, true);
         $stmt = $pdo->prepare(('SELECT l.*,c.account_id FROM kis_person_links l JOIN kis_person_contacts c ON c.contact_key=l.contact_key '
     .
@@ -278,10 +288,10 @@ function sportovecEditorGuardianAccount(
     int $actor,
     string $reason,
     string $contactKey = ''
-): void {
-    sportovecEditorRequireActor($actor);
+): array {
     $pdo->beginTransaction();
     try {
+        sportovecEditorRequireParentActor($pdo, $actor);
         sportovecEditorPerson($pdo, $id, true);
         if ($contactKey !== '') {
             $stmt = $pdo->prepare(('SELECT c.account_id FROM kis_person_contacts c JOIN kis_person_links l ON l.contact_key=c.contact_key WHERE '
@@ -297,12 +307,16 @@ function sportovecEditorGuardianAccount(
             }
         }
         accountPersonRoleApprove($pdo, $accountId, $id, 'guardian', $actor, $reason);
+        $account = $pdo->prepare('SELECT aktivni,email_overeno FROM verejni_uzivatele WHERE id=?');
+        $account->execute([$accountId]);
+        $accountState = $account->fetch(PDO::FETCH_ASSOC);
         if ($contactKey !== '') {
             $pdo->prepare("UPDATE kis_person_contacts SET account_id=?,account_state='admin_linked' WHERE contact_key=?")->execute([$accountId,
 
      $contactKey]);
         }
         $pdo->commit();
+        return ['account_active' => (bool)$accountState['aktivni'], 'email_verified' => (bool)$accountState['email_overeno']];
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
@@ -312,13 +326,22 @@ function sportovecEditorGuardianAccount(
 
 function sportovecEditorRevokeAccount(PDO $pdo, int $id, int $relationId, int $actor, string $reason): void
 {
-    sportovecEditorRequireActor($actor);
-    $stmt = $pdo->prepare("SELECT id FROM account_person_roles WHERE id=? AND sportovec_id=? AND relation_role='guardian'");
-    $stmt->execute([$relationId, $id]);
-    if (!$stmt->fetchColumn()) {
-        throw new InvalidArgumentException('Rodičovská vazba nepatří k tomuto sportovci.');
+    $pdo->beginTransaction();
+    try {
+        sportovecEditorRequireParentActor($pdo, $actor);
+        $stmt = $pdo->prepare("SELECT id FROM account_person_roles WHERE id=? AND sportovec_id=? AND relation_role='guardian'");
+        $stmt->execute([$relationId, $id]);
+        if (!$stmt->fetchColumn()) {
+            throw new InvalidArgumentException('Rodičovská vazba nepatří k tomuto sportovci.');
+        }
+        accountPersonRoleRevoke($pdo, $relationId, $actor, $reason);
+        $pdo->commit();
+    } catch (Throwable $exception) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $exception;
     }
-    accountPersonRoleRevoke($pdo, $relationId, $actor, $reason);
 }
 
 function sportovecEditorAddRoster(PDO $pdo, int $id, int $teamId, int $actor, string $validFrom, string $reason): void
