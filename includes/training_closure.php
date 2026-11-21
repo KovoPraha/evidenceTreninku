@@ -404,10 +404,17 @@ function trainingClosureStatesForPerson(PDO $pdo, int $personId, string $from, s
 
 /** Serialize all planning writers, including copying a week and a recurring series. */
 function trainingScheduleAssertAvailable(
-    PDO $pdo, int $actor, int $trainerId, string $date, ?string $from, ?string $to,
-    ?int $venueId, array $teamIds, int $excludePlan = 0, ?array &$trainerCollisions = null
-): void
-{
+    PDO $pdo,
+    int $actor,
+    int $trainerId,
+    string $date,
+    ?string $from,
+    ?string $to,
+    ?int $venueId,
+    array $teamIds,
+    int $excludePlan = 0,
+    ?array &$trainerCollisions = null
+): void {
     if (!trainingClosureReady($pdo)) {
         return;
     }

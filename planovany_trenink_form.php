@@ -158,9 +158,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $trainerCollisions = $isManager ? [] : null;
                     trainingScheduleAssertAvailable($pdo, $trenerId, $assignedTrainerId, $datum, $casOd, $casDo, $sportId, $teamIds, $editId, $trainerCollisions);
                     $collisionWarning = $trainerCollisions ?? [];
-                    trainingScheduleAssertCollisionDecision($collisionWarning,
+                    trainingScheduleAssertCollisionDecision(
+                        $collisionWarning,
                         [$editId, $assignedTrainerId, $nazev, $kategorie, $teamIds, $datum, $casOd, $casDo, $sportId, $popis, $jeVerejny],
-                        !empty($_POST['confirm_trainer_collision']));
+                        !empty($_POST['confirm_trainer_collision'])
+                    );
                     $oldTeamIds = trainingRosterBridgePlanTeamIds($pdo, $editId);
                     sort($oldTeamIds, SORT_NUMERIC);
                     $newTeamIds = $teamIds;
@@ -214,9 +216,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     clubMakeupSyncPlanRules($pdo, $editId);
                     if ($collisionWarning !== [] || (int)$current['trener_id'] !== $assignedTrainerId) {
-                        zapisAuditLog($pdo, $trenerId, 'planned_training_assignment', 'planovane_treninky', $editId,
+                        zapisAuditLog(
+                            $pdo,
+                            $trenerId,
+                            'planned_training_assignment',
+                            'planovane_treninky',
+                            $editId,
                             ['trainer_id' => $assignedTrainerId, 'previous_trainer_id' => (int)$current['trener_id'],
-                                'confirmed_trainer_collisions' => $collisionWarning]);
+                                'confirmed_trainer_collisions' => $collisionWarning]
+                        );
                     }
                     $pdo->commit();
                     unset($_SESSION['plan_collision_confirmation']);
@@ -285,9 +293,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         trainingScheduleAssertAvailable($pdo, $trenerId, $assignedTrainerId, $d, $casOd, $casDo, $sportId, $teamIds, 0, $dateCollisions);
                         array_push($collisionWarning, ...($dateCollisions ?? []));
                     }
-                    trainingScheduleAssertCollisionDecision($collisionWarning,
+                    trainingScheduleAssertCollisionDecision(
+                        $collisionWarning,
                         [0, $assignedTrainerId, $nazev, $kategorie, $teamIds, $datumy, $casOd, $casDo, $sportId, $popis, $jeVerejny],
-                        !empty($_POST['confirm_trainer_collision']));
+                        !empty($_POST['confirm_trainer_collision'])
+                    );
 
                     $jeSerie   = count($datumy) > 1;
                     $prveId    = null;
@@ -308,9 +318,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         trainingRosterBridgeReplacePlanTeams($pdo, $planId, $teamIds, $trenerId);
                         clubMakeupSyncPlanRules($pdo, $planId);
                         if ($isManager && ($assignedTrainerId !== $trenerId || $collisionWarning !== [])) {
-                            zapisAuditLog($pdo, $trenerId, 'planned_training_assignment', 'planovane_treninky', $planId,
+                            zapisAuditLog(
+                                $pdo,
+                                $trenerId,
+                                'planned_training_assignment',
+                                'planovane_treninky',
+                                $planId,
                                 ['trainer_id' => $assignedTrainerId, 'confirmed_trainer_collisions' => array_values(array_filter(
-                                    $collisionWarning, static fn (array $collision): bool => $collision['date'] === $d))]);
+                                    $collisionWarning,
+                                    static fn (array $collision): bool => $collision['date'] === $d
+                                ))]
+                            );
                         }
                     }
                     // Nastavit serie_id = ID prvního záznamu pro všechny instance série
