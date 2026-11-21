@@ -281,6 +281,7 @@ function sportovecEditorUnlinkParent(PDO $pdo, int $id, string $linkKey, int $ac
     }
 }
 
+/** @return array{account_active:bool,email_verified:bool} */
 function sportovecEditorGuardianAccount(
     PDO $pdo,
     int $id,
@@ -310,6 +311,9 @@ function sportovecEditorGuardianAccount(
         $account = $pdo->prepare('SELECT aktivni,email_overeno FROM verejni_uzivatele WHERE id=?');
         $account->execute([$accountId]);
         $accountState = $account->fetch(PDO::FETCH_ASSOC);
+        if (!is_array($accountState)) {
+            throw new AccountPersonRoleException('Veřejný účet nebyl nalezen.');
+        }
         if ($contactKey !== '') {
             $pdo->prepare("UPDATE kis_person_contacts SET account_id=?,account_state='admin_linked' WHERE contact_key=?")->execute([$accountId,
 
