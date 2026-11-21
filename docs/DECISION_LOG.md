@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-21-DA01
+
+Na žádost vlastníka zjednodušit dokumentaci a prověřit nedokončené větve byly krátké přehledy převedeny na navigaci k aktuálním vydáním a otevřeným přejímkám; původní text je zachován v [historickém snímku](verification/branch-documentation-audit-20261121/STATE_BEFORE.md). Větve se nyní pouze inventarizují v CSV, protože 468 místních headů není přímým předkem main a toto samo nerozliší squash merge od chybějící práce. Pět otevřených draft PR má věcný rozsah a zůstává k individuální revizi. Alternativa hromadně smazat nebo sloučit staré větve by mohla ztratit obsah či vrátit zastaralý kód. [Metoda a výsledky](verification/branch-documentation-audit-20261121/RESULTS.md), [registr](WORK_PLAN_CURRENT.md#doc-branch-audit-01--soulad-dokumentace-a-větví-21-11-2026).
+
 ## D2026-11-21-AM03
 
 Podnět vlastníka k záložnímu režimu e-mailů je zatím koncept, nikoli schválení druhého odesílatele. První volba k prověření je nezávislý čtecí dohled a řízené záložní spuštění již zabezpečeného workeru; navazuje na potvrzený výpadek plánovače. Druhý transport má smysl při prokázané nedoručitelnosti, ale automaticky přeposlat zprávu s nejasným přijetím `mail()` by mohlo vytvořit duplicitní odkazy. Výběr poskytovatele, kanál upozornění a aktivace jsou otevřené. [Koncept](identity-email-queue.md#auth-mail-03--záložní-provoz-rodičovské-pošty-21-11-2026).
