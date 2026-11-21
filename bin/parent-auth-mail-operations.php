@@ -21,8 +21,11 @@ try {
     require $root . '/config.php';
     require_once $root . '/includes/parent_auth_mail_scheduler.php';
     require_once $root . '/includes/transactional_notification_worker.php';
-    if (!defined('APP_BASE_URL') || APP_BASE_URL !== 'https://kis.kovopraha.cz'
-        || !defined('JE_LOKALNE') || JE_LOKALNE !== false) {
+    if (!parentAuthMailIdentity(
+        $host,
+        defined('APP_BASE_URL') ? APP_BASE_URL : null,
+        defined('JE_LOKALNE') ? JE_LOKALNE : null
+    )) {
         throw new RuntimeException('parent_mail_target_refused');
     }
     $paths = parentAuthMailPaths($root, (string)getenv('PARENT_AUTH_MAIL_OPERATIONS_DIR'));

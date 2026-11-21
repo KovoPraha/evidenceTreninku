@@ -12,6 +12,9 @@ final class ParentAuthMailSchedulerTest extends TestCase
 {
     public function testOwnedCronIsInstalledOnceAndForeignFileIsRefused(): void
     {
+        self::assertTrue(\parentAuthMailIdentity('kis.kovopraha.cz', 'https://kis.kovopraha.cz', false));
+        self::assertFalse(\parentAuthMailIdentity('localhost', 'https://kis.kovopraha.cz', false));
+        self::assertFalse(\parentAuthMailIdentity('kis.kovopraha.cz', 'http://localhost', true));
         $base = sys_get_temp_dir() . '/parent-mail-scheduler-' . bin2hex(random_bytes(8));
         $root = $base . '/kis.kovopraha.cz';
         $operations = $base . '/data/.kis-deploy';

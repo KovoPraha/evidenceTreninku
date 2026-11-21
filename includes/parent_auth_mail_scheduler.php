@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+function parentAuthMailIdentity(string $host, mixed $baseUrl, mixed $local): bool
+{
+    return $host === 'kis.kovopraha.cz' && $baseUrl === 'https://kis.kovopraha.cz' && $local === false;
+}
+
 /** Own only the parent access-mail cron file in the hosting minute directory. */
 function parentAuthMailPaths(string $root, string $operations): array
 {
