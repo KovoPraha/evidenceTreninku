@@ -4,6 +4,17 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-training-plan-admin-result",
+      "path": "docs/verification/training-plan-admin-collision-20261121/RESULTS.md",
+      "title": "TRAINING-PLAN-ACL-01 — místní ověření, 21. 11. 2026",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "TRAINING-PLAN-ACL-01",
+      "disposition": "Místní výsledek a meze ověření TRAINING-PLAN-ACL-01.",
+      "evidence": []
+    },
+    {
       "id": "PL-WIP-AUDIT-20261121",
       "path": "docs/verification/worktree-reconciliation-20261121/RESULTS.md",
       "title": "Inventura historických checkoutů",

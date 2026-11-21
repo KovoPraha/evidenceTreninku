@@ -403,12 +403,28 @@ function trainingClosureStatesForPerson(PDO $pdo, int $personId, string $from, s
 }
 
 /** Serialize all planning writers, including copying a week and a recurring series. */
-function trainingScheduleAssertAvailable(PDO $pdo, int $actor, int $trainerId, string $date, ?string $from, ?string $to, ?int $venueId, array $teamIds, int $excludePlan = 0): void
-{
+function trainingScheduleAssertAvailable(
+    PDO $pdo,
+    int $actor,
+    int $trainerId,
+    string $date,
+    ?string $from,
+    ?string $to,
+    ?int $venueId,
+    array $teamIds,
+    int $excludePlan = 0,
+    ?array &$trainerCollisions = null
+): void {
     if (!trainingClosureReady($pdo)) {
         return;
     }
     trainingClosureAssertActor($pdo, $actor);
+    if ($trainerCollisions !== null) {
+        if (!staffActivePositionIs('sports_lead')) {
+            throw new TrainingClosureException('Kolizi trenéra smí posoudit pouze vedoucí sportu.');
+        }
+        $trainerCollisions = [];
+    }
     if (!staffActivePositionIs('sports_lead') && $trainerId !== $actor) {
         throw new TrainingClosureException('Plán jiného trenéra spravuje vedoucí sportu.');
     }
@@ -430,11 +446,12 @@ function trainingScheduleAssertAvailable(PDO $pdo, int $actor, int $trainerId, s
     foreach ($teamIds as $id) {
         $branch = array_merge($branch, kisRosterDescendantIds($pdo, (int)$id, $date));
     }
-    $s = $pdo->prepare(('SELECT id,trener_id,sportoviste_id,nazev FROM planovane_treninky WHERE datum=? AND stav<>\'zruseny\' AND id<>? AND ' .
+    $s = $pdo->prepare(('SELECT id,trener_id,sportoviste_id,nazev,cas_od,cas_do FROM planovane_treninky WHERE datum=? AND stav<>\'zruseny\' AND id<>? AND ' .
     'COALESCE(cas_od,\'00:00:00\')<? AND COALESCE(cas_do,\'23:59:59\')>?').trainingClosureLockSuffix($pdo));
     $s->execute([$date,$excludePlan,$to,$from]);
     foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $other) {
-        $collision = (int)$other['trener_id'] === $trainerId ? 'trenér' : null;
+        $trainerCollision = (int)$other['trener_id'] === $trainerId;
+        $collision = $trainerCollision ? 'trenér' : null;
         if ($venueId && (int)$other['sportoviste_id'] === $venueId) {
             $collision = 'sportoviště';
         }
@@ -446,7 +463,15 @@ function trainingScheduleAssertAvailable(PDO $pdo, int $actor, int $trainerId, s
             }
         }
         if ($collision) {
-            throw new TrainingClosureException('Kolize: '.$collision.' má v tomto čase lekci #'.$other['id'].'. Společnou lekci založte jako jeden termín s více soupiskami.');
+            $detail = ['id' => (int)$other['id'], 'date' => $date,
+                'from' => $other['cas_od'] === null ? 'čas nezadán' : substr((string)$other['cas_od'], 0, 5),
+                'to' => $other['cas_do'] === null ? 'čas nezadán' : substr((string)$other['cas_do'], 0, 5)];
+            if ($collision === 'trenér' && $trainerCollisions !== null) {
+                $trainerCollisions[] = $detail;
+                continue;
+            }
+            throw new TrainingClosureException('Kolize: '.$collision.' má lekci #'.$detail['id'].' dne '.$date.' v čase '
+                .$detail['from'].'–'.$detail['to'].'. Společnou lekci založte jako jeden termín s více soupiskami.');
         }
     }
     if ($venueId && memberChargeReadTableExists($pdo, 'rezervace_sportovist')) {
@@ -478,6 +503,22 @@ function trainingScheduleAssertAvailable(PDO $pdo, int $actor, int $trainerId, s
         if ($s->fetchColumn()) {
             throw new TrainingClosureException('Sportoviště již má rezervaci. Vyberte jiný čas nebo místo.');
         }
+    }
+}
+
+/** A second submit must confirm the same proposal and the same observed trainer collisions. */
+function trainingScheduleAssertCollisionDecision(array $collisions, array $proposal, bool $confirmed): void
+{
+    if ($collisions === []) {
+        return;
+    }
+    if (!staffActivePositionIs('sports_lead')) {
+        throw new TrainingClosureException('Kolizi trenéra smí potvrdit pouze vedoucí sportu.');
+    }
+    $fingerprint = hash('sha256', serialize([$proposal, $collisions]));
+    if (!$confirmed || !hash_equals((string)($_SESSION['plan_collision_confirmation'] ?? ''), $fingerprint)) {
+        $_SESSION['plan_collision_confirmation'] = $fingerprint;
+        throw new TrainingClosureException('Přiřazený trenér má souběžnou lekci. Vyberte jiného trenéra, nebo kolizi výslovně potvrďte.');
     }
 }
 
