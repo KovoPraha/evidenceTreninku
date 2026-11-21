@@ -16,7 +16,7 @@ KÓD NASAZEN, přihlášené UAT otevřené. [Rozsah, rozhodnutí a akceptace](M
 
 ## DOC-WIP-01 — převzetí starých dokumentačních PR (21. 11. 2026)
 
-Z konfliktních #399, #401, #402, #417 a #371 byly na současném `main` převzaty pouze věcné výsledky, přejímací scénáře, syntetické důkazy a kontrakt P15 S0. Historické společné CURRENT/HANDOFF z jejich větví se nepřebírají. [Protokol převzetí](verification/worktree-reconciliation-20261121/RESULTS.md) rozlišuje vydaný kód a další NOT RUN. Tento dokumentační krok nespouští nové nasazení aplikace ani provozní aktivaci.
+Z konfliktních #399, #401, #402, #417 a #371 byly do [PR #505](https://github.com/KovoPraha/evidenceTreninku/pull/505) na současném `main` připraveny věcné výsledky, přejímací scénáře, syntetické důkazy a kontrakt P15 S0. Historické společné CURRENT/HANDOFF z jejich větví se nepřebírají. [Protokol převzetí](verification/worktree-reconciliation-20261121/RESULTS.md) rozlišuje vydaný kód a další NOT RUN. Tento dokumentační krok nespouští nové nasazení aplikace ani provozní aktivaci.
 
 ## P15 — čtecí ČSC / Sportsoft a oddělená stanice
 

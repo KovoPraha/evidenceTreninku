@@ -1,6 +1,6 @@
 # P15 — Čtecí synchronizace ČSC a Sportsoftu do KIS
 
-Aktualizace 21. 11. 2026: historické S0 podklady z konfliktního [#371](https://github.com/KovoPraha/evidenceTreninku/pull/371) byly převzaty do aktuálního společného dokumentačního předání. Kontrakt a plán stanice jsou podkladem; cílová inventura, worker, ingest a aktivace stále NOT RUN. Stav a závislosti vede [registr](WORK_PLAN_CURRENT.md#p15--čtecí-čsc--sportsoft-a-oddělená-stanice).
+Aktualizace 21. 11. 2026: historické S0 podklady z konfliktního [#371](https://github.com/KovoPraha/evidenceTreninku/pull/371) byly převzaty do aktuálního společného dokumentačního [PR #505](https://github.com/KovoPraha/evidenceTreninku/pull/505). Kontrakt a plán stanice jsou podkladem; cílová inventura, worker, ingest a aktivace stále NOT RUN. Stav a závislosti vede [registr](WORK_PLAN_CURRENT.md#p15--čtecí-čsc--sportsoft-a-oddělená-stanice).
 
 Datum: 7. 11. 2026, Europe/Prague. Vlastník: Marek / klub; realizace: vývoj KIS.
 Stav: **S0 ČÁSTEČNĚ HOTOVO; kontrakt a předání stanici hotové, cílová inventura otevřená**.
