@@ -101,7 +101,7 @@ final class PasswordResetTest extends TestCase
         self::assertNotNull(\passwordResetConsume($pdo, $tokens[1], 'NoveBezpecneHeslo123!', 1_700_000_020));
 
         \passwordResetRequest($pdo, 'parent@example.test', $deliver, 1_700_100_000);
-        self::assertNull(\passwordResetConsume($pdo, $tokens[2], 'JineBezpecneHeslo123!', 1_700_103_601));
+        self::assertNull(\passwordResetConsume($pdo, $tokens[2], 'JineBezpecneHeslo123!', 1_700_359_201));
     }
 
     public function testOneParentCanResetTwoChildrenWithoutCrossInvalidation(): void

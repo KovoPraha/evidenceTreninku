@@ -6,9 +6,16 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-21-PL02
+
+Vlastník 21. 11. výslovně požádal „nasadit“ opravu propojení rodiče. Vydání PR #507 proto proběhne pouze chráněným `deploy-production.yml` z `main`, s `uat_schvaleno=false` a `importovat_krouzky=false`. Souběžný kód AUTH-MAIL-02 v main nebude v tomto kroku spouštět jednorázovou operaci vydání resetů; ta má samostatný provozní postup a oprávnění. Produkční zásah do účtu č. 453 ani lidské UAT nejsou automatickou součástí deploye. [Plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026).
+
 ## D2026-11-21-PL01
 
 Podle zadání vlastníka se správa rodičovské vazby řídí pracovní pozicí registráře a aktuálním DB grantem; přístup k RČ zůstává samostatně omezený. Dosavadní opětovné použití `personSensitiveRequireAdmin()` pro obě operace odmítalo oprávněného registráře matoucí hláškou. Schválení vztahu neaktivního či neověřeného účtu je možné po kontrole identity, ale `accountPersonEligibleParticipants()` jej nesmí pustit do portálu před splněním obou podmínek. [Plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické ověření](verification/parent-link-permissions-20261121/RESULTS.md).
+## D2026-11-21-AM02
+
+Vlastník požádal o nové obnovovací e-maily pro dva zrušené odkazy a platnost 3 dny. Zvoleno nové vydání jednorázových tokenů v jedné DB transakci s frontou, po kontrole dvou různých aktuálně oprávněných účtů a novějších žádostí. Staré zrušené odkazy nelze bezpečně opakovat ani prodloužit; ruční vložení plaintextu či duplicitní odeslání se nepoužije. Běžné rodičovské resety budou mít 72 hodin; trenérské, aktivační a ověřovací odkazy nejsou součástí tohoto pokynu. [Plán](identity-email-queue.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-starých-odkazů-21-11-2026), [výsledky](verification/auth-mail-reset-20261121/RESULTS.md).
 
 ## D2026-11-21-AM01
 

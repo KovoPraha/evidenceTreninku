@@ -8,7 +8,10 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## KIS-PARENT-LINK-01 — propojení rodičovského účtu (21. 11. 2026)
 
-K REVIEW, [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main` včetně `eb78c45b`. [Nález a akceptace](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Head `5a372d46` 11/11 CI PASS; po převzetí #506 40/273 lokálně PASS, #509 měnilo dokumentaci. Další krok: review, pak řízená přihlášená přejímka. Produkční zápis a lidské UAT NOT RUN.
+SCHVÁLENO K NASAZENÍ vlastníkem („nasadit“), [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main` včetně `ccac61ab`. [Nález, akceptace a rozsah schválení](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Head `47ac275d` 11/11 CI PASS, po #510 čeká nová CI. Další krok: ověřit společný strom, merge #507 a chráněný deploy s UAT/import false; přihlášená přejímka samostatně. Produkční zápis a lidské UAT dosud NOT RUN.
+## AUTH-MAIL-02 — třídenní obnova a náhrada dvou odkazů (21. 11. 2026)
+
+ROZPRACOVÁNO. Pokyn vlastníka vystavit dvě nové obnovy místo zrušených starých odkazů a platnost nových odkazů změnit na 72 hodin. Vlastník vývoj KIS; větev `codex/auth-mail-reset-72h-reissue-20261121`, oddělený worktree z `origin/main` `eb78c45b`. [Rozsah, postup, bezpečnost a akceptace](identity-email-queue.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-starých-odkazů-21-11-2026), [průběžný protokol](verification/auth-mail-reset-20261121/RESULTS.md). Čtecí produkční stav potvrdil přesně dva zrušené `public reset` a úspěšný heartbeat; individuální oprávnění a nepřítomnost novější žádosti se ověří před vydáním. Další krok: kód, syntetické testy, CI, deploy, čtecí preflight, jednorázové zařazení, přirozený tick. Doručení do schránky otevřené.
 
 ## AUTH-MAIL-01 — rodičovské ověřovací a obnovovací e-maily (21. 11. 2026)
 

@@ -14,6 +14,8 @@ Souběh: `origin/main` `5acd225f` (#505) převzato v `84af1987`; obě konfliktn�
 
 Další souběh: head `f96abbf8` prošel všemi 11 CI kontrolami. Následné `main` `741c0625` (#506, rodičovské e-maily) převzato bez překryvu aplikačního kódu; společné dokumenty zachovány. Na výsledném stromu 40 cílených testů / 273 assertions PASS; head `5a372d46` má 11/11 CI PASS.
 
+Vydání 21. 11.: vlastník výslovně napsal „nasadit“. Tím schválil merge této opravy a spuštění chráněného `deploy-production.yml` z `main`. Není tím schváleno zapnutí `uat_schvaleno`, import kroužků, jednorázové vydání resetů z AUTH-MAIL-02 ani zápis do účtu č. 453. Nejdříve převzít souběžné `main` `ccac61ab` (#510), ověřit společný strom a CI, sloučit PR #507, nasadit přes workflow s `potvrzeni=NASADIT`, ostatní přepínače false, ověřit release a zapsat důkaz. Přihlášené UAT zůstává samostatné.
+
 ## Povolení vydání 12. 11. 2026
 
 Vlastník pokynem „nasadit“ povolil sloučení PR #463 a chráněné vydání kódu a migrace do KIS po zeleném CI, ověřené záloze a standardních kontrolách. [Vydání 43322186478](verification/parent-activation-release-20261112/RESULTS.md) skončilo SUCCESS na `373b8d89`, s `uat_schvaleno=false` a `importovat_krouzky=false`. Pokyn neautorizuje schválení rodinných vazeb, zařazení pozvánek do fronty ani odeslání pilotní dávky. Text pozvánky, identifikační postup a rozsah pilotu musí vedení potvrdit před první skutečnou pozvánkou.
