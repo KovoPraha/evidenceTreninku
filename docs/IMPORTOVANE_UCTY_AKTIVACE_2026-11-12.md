@@ -1,5 +1,23 @@
 # KIS: aktivace importovaných účtů rodičů
 
+## KIS-PARENT-LINK-01 — oprávnění při propojení rodiče (21. 11. 2026)
+
+Stav: K REVIEW; [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník: vývoj KIS. Větev `codex/parent-link-permissions-20261121`, samostatný worktree z `origin/main` v `C:\Users\Marek\Documents\Codex\evidencePavel-parent-link-20261121`. Zadání vlastníka pokrývá opravu a syntetické ověření správy vazeb; neautorizuje zápis do produkčních účtů ani lidskou přejímku.
+
+Nález: `sprava_sportovcu.php` načítá sekci „Napojené uživatelské účty“ běžným čtením bez dešifrování citlivého záznamu. Akce `attach_account` volá `sportovecEditorGuardianAccount()` → `sportovecEditorRequireActor()` → `personSensitiveRequireAdmin()`, která kontroluje přesnou legacy roli `admin` a vyhazuje hlášku o citlivém údaji. Správu vazeb přitom vlastní aktivní pozice `registrar` a `eshop_identity_admin.php` v této pozici schvaluje stejné `account_person_roles`.
+
+Postup: oddělit kontrolu zápisu rodičovské vazby od oprávnění k rodnému číslu; na zápisu v transakci znovu ověřit aktivní pozici a její aktuální DB grant. Citlivé zobrazení a změna RČ si ponechají vlastní striktní kontrolu. Neaktivní/neověřený účet lze po kontrole identity propojit ke stávajícímu ID sportovce, portál jej ale podle stávající podmínky `accountPersonEligibleParticipants()` nepustí. Rozhraní uvede konkrétní překážku. Důvod schválení a audit vazby zůstávají povinné.
+
+Akceptace: registrář načte vazby a schválí čekající vazbu bez přístupu k RČ; odebraný grant či jiná pozice zápis odmítne s vysvětlením; neaktivní/neověřený účet nemá přístup do portálu; nevznikne nový `sportovci` ani duplicitní vztah. Ověření pouze synteticky. [Výsledky a meze](verification/parent-link-permissions-20261121/RESULTS.md). Další krok: review [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507); produkční UAT zůstává otevřené.
+
+Souběh: `origin/main` `5acd225f` (#505) převzato v `84af1987`; obě konfliktní evidence byly sloučeny, 33 cílených testů / 218 assertions a dokumentační kontrola znovu PASS. Nová PR CI čeká na úplný výsledek.
+
+Další souběh: head `f96abbf8` prošel všemi 11 CI kontrolami. Následné `main` `741c0625` (#506, rodičovské e-maily) převzato bez překryvu aplikačního kódu; společné dokumenty zachovány. Na výsledném stromu 40 cílených testů / 273 assertions PASS; head `5a372d46` má 11/11 CI PASS.
+
+Vydání 21. 11.: vlastník výslovně napsal „nasadit“. Tím schválil merge této opravy a spuštění chráněného `deploy-production.yml` z `main`. Není tím schváleno zapnutí `uat_schvaleno`, import kroužků, jednorázové vydání resetů z AUTH-MAIL-02 ani zápis do účtu č. 453. Nejdříve převzít souběžné `main` `ccac61ab` (#510), ověřit společný strom a CI, sloučit PR #507, nasadit přes workflow s `potvrzeni=NASADIT`, ostatní přepínače false, ověřit release a zapsat důkaz. Přihlášené UAT zůstává samostatné.
+
+Souběh před merge: revize `fa817de4` po #510 prošla 11/11 CI. Před samotným sloučením přibyl do `main` `6dcd0a20` (#508, plánování trenéra); jeho aplikační kód se s rodičovskou vazbou nepřekrývá. Nový společný strom se ověřuje a PR #507 zůstává otevřený do dokončení CI.
+
 ## Povolení vydání 12. 11. 2026
 
 Vlastník pokynem „nasadit“ povolil sloučení PR #463 a chráněné vydání kódu a migrace do KIS po zeleném CI, ověřené záloze a standardních kontrolách. [Vydání 43322186478](verification/parent-activation-release-20261112/RESULTS.md) skončilo SUCCESS na `373b8d89`, s `uat_schvaleno=false` a `importovat_krouzky=false`. Pokyn neautorizuje schválení rodinných vazeb, zařazení pozvánek do fronty ani odeslání pilotní dávky. Text pozvánky, identifikační postup a rozsah pilotu musí vedení potvrdit před první skutečnou pozvánkou.
