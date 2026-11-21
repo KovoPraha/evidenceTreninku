@@ -12,6 +12,8 @@ Akceptace: registrář načte vazby a schválí čekající vazbu bez přístupu
 
 Souběh: `origin/main` `5acd225f` (#505) převzato v `84af1987`; obě konfliktní evidence byly sloučeny, 33 cílených testů / 218 assertions a dokumentační kontrola znovu PASS. Nová PR CI čeká na úplný výsledek.
 
+Další souběh: head `f96abbf8` prošel všemi 11 CI kontrolami. Následné `main` `741c0625` (#506, rodičovské e-maily) převzato bez překryvu aplikačního kódu; společné dokumenty zachovány. Na výsledném stromu 40 cílených testů / 273 assertions PASS, nová CI otevřená.
+
 ## Povolení vydání 12. 11. 2026
 
 Vlastník pokynem „nasadit“ povolil sloučení PR #463 a chráněné vydání kódu a migrace do KIS po zeleném CI, ověřené záloze a standardních kontrolách. [Vydání 43322186478](verification/parent-activation-release-20261112/RESULTS.md) skončilo SUCCESS na `373b8d89`, s `uat_schvaleno=false` a `importovat_krouzky=false`. Pokyn neautorizuje schválení rodinných vazeb, zařazení pozvánek do fronty ani odeslání pilotní dávky. Text pozvánky, identifikační postup a rozsah pilotu musí vedení potvrdit před první skutečnou pozvánkou.

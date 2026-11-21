@@ -185,20 +185,24 @@ function authMailTokenIsCurrent(PDO $pdo, array $row, ?int $now = null): bool
 }
 
 /** @return array<string,mixed>|null */
-function authMailClaim(PDO $pdo, bool $trainerOnly = false): ?array
+function authMailClaim(PDO $pdo, bool $trainerOnly = false, bool $publicOnly = false): ?array
 {
     require_once __DIR__ . "/notification_claim_retry.php";
-    return notificationClaimWithRetry($pdo, static fn (): ?array => authMailClaimAttempt($pdo, $trainerOnly));
+    return notificationClaimWithRetry($pdo, static fn (): ?array => authMailClaimAttempt($pdo, $trainerOnly, $publicOnly));
 }
 
-function authMailClaimAttempt(PDO $pdo, bool $trainerOnly = false): ?array
+function authMailClaimAttempt(PDO $pdo, bool $trainerOnly = false, bool $publicOnly = false): ?array
 {
+    if ($trainerOnly && $publicOnly) {
+        throw new InvalidArgumentException('Vyberte pouze jeden typ fronty.');
+    }
     $pdo->beginTransaction();
     try {
         $mysql = (string)$pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
         $stale = $mysql ? 'CURRENT_TIMESTAMP - INTERVAL 15 MINUTE' : "datetime('now','-15 minutes')";
-        $filter = $trainerOnly ? " AND target_type='trainer' AND kind='reset'" : '';
-        if ($trainerOnly) {
+        $filter = $trainerOnly ? " AND target_type='trainer' AND kind='reset'"
+            : ($publicOnly ? " AND ((target_type='public' AND kind IN ('verify','reset')) OR (target_type='child' AND kind='reset'))" : '');
+        if ($trainerOnly || $publicOnly) {
             $pdo->exec("UPDATE auth_mail_outbox SET status='failed',claim_token=NULL,last_error='delivery_unknown: ověřit doručení před ručním opakováním.',updated_at=CURRENT_TIMESTAMP "
                 . "WHERE status='processing' AND claimed_at<" . $stale . $filter);
         } else {
@@ -255,9 +259,9 @@ function authMailComplete(PDO $pdo, array $row, string $status, string $error = 
 /** @param callable(string,string,string):bool $sender
  * @return 'sent'|'failed'|'cancelled'|null
  */
-function authMailProcessOne(PDO $pdo, callable $sender, ?array $keyConfig = null, bool $trainerOnly = false): ?string
+function authMailProcessOne(PDO $pdo, callable $sender, ?array $keyConfig = null, bool $trainerOnly = false, bool $publicOnly = false): ?string
 {
-    $row = authMailClaim($pdo, $trainerOnly);
+    $row = authMailClaim($pdo, $trainerOnly, $publicOnly);
     if ($row === null) {
         return null;
     }

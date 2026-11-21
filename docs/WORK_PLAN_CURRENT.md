@@ -8,7 +8,11 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## KIS-PARENT-LINK-01 — propojení rodičovského účtu (21. 11. 2026)
 
-K OVĚŘENÍ CI, [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main` včetně `5acd225f`. [Nález a akceptace](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Po převzetí main 33/218 lokálně PASS; další krok: CI a review, poté řízená přihlášená přejímka. Produkční zápis a lidské UAT NOT RUN.
+K OVĚŘENÍ NOVÉ CI, [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main` včetně `741c0625`. [Nález a akceptace](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Předchozí head 11 CI PASS; po dalším převzetí main 40/273 lokálně PASS. Další krok: CI/review, pak řízená přihlášená přejímka. Produkční zápis a lidské UAT NOT RUN.
+
+## AUTH-MAIL-01 — rodičovské ověřovací a obnovovací e-maily (21. 11. 2026)
+
+KÓD V [PR #506](https://github.com/KovoPraha/evidenceTreninku/pull/506), CI PO PŘEVZETÍ MAIN. Vlastník vývoj KIS; větev `codex/auth-mail-worker-repair-20261121`, samostatný worktree z `origin/main` `11505aed`. [Příčina v kódu, plán a akceptace](identity-email-queue.md#auth-mail-01--oprava-automatického-zpracování-rodičovské-fronty-21-11-2026), [průběžný protokol](verification/auth-mail-worker-20261121/RESULTS.md). Hlášení uvádí prošlé `pending` s nula pokusy; společný worker nemá v repozitáři produkční plánovač, trenérský worker rodiče vylučuje. Kód omezeného plánu pro `public` ověření/obnovu a `child` obnovu má 21/186 syntetických kontrol PASS. Další krok: PR CI, merge/deploy kódu, čtecí produkční diagnostika, potom samostatná instalace plánu. Produkční aktivace a doručení NOT RUN.
 
 ## ROSTER-HISTORY-01 — výchozí seznam členů a historie (21. 11. 2026)
 
