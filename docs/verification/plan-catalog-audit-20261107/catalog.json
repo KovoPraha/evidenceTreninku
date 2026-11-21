@@ -4,6 +4,17 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-WIP-AUDIT-20261121",
+      "path": "docs/verification/worktree-reconciliation-20261121/RESULTS.md",
+      "title": "Inventura historických checkoutů",
+      "primary": false,
+      "role": "verification",
+      "status": "SUPPORT",
+      "registry": "WIP-AUDIT-01/SEC01",
+      "disposition": "Čtecí inventura a převzetí WIP; provozní kroky mají samostatné podmínky.",
+      "evidence": []
+    },
+    {
       "id": "PL-SEC01-20261108",
       "path": "docs/SECURITY_AUDIT_2026-11-08.md",
       "title": "SEC01 — soukromé úložiště",
@@ -11,7 +22,7 @@
       "role": "plan",
       "status": "PARTIAL",
       "registry": "WIP-AUDIT-01/SEC01",
-      "disposition": "Kód a testy původního #391 přeneseny na aktuální main; nové CI, merge a produkční vydání otevřené.",
+      "disposition": "#504 sloučený a nasazený na 11505aed; 11 CI PASS, přihlášená provozní přejímka soukromého dokumentu otevřená.",
       "evidence": [
         "docs/verification/worktree-reconciliation-20261121/RESULTS.md"
       ]
@@ -11499,6 +11510,207 @@
       "evidence": [
         "docs/verification/bar-display-stock-20261110/RESULTS.md"
       ]
+    },
+    {
+      "id": "PL-f4f6043c1f",
+      "path": "docs/CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md",
+      "title": "Čtecí synchronizace ČSC a Sportsoftu do KIS",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "P15",
+      "disposition": "S0 kontrakt a prompt hotové; cílová inventura otevřená. Bez aktivace.",
+      "evidence": [
+        "docs/verification/csc-sportsoft-discovery-20261107/RESULTS.md",
+        "docs/verification/csc-sportsoft-s0-20261107/RESULTS.md"
+      ]
+    },
+    {
+      "id": "PL-d0ee3c3e30",
+      "path": "docs/verification/csc-sportsoft-discovery-20261107/RESULTS.md",
+      "title": "P15: průzkum ČSC a Sportsoftu",
+      "primary": false,
+      "role": "verification",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Pozorovaný DOM, hranice a ověření dokumentace.",
+      "evidence": []
+    },
+    {
+      "id": "PL-bf46335bf2",
+      "path": "docs/verification/csc-sportsoft-discovery-20261107/discovery.json",
+      "title": "Strukturovaný čtecí průzkum bez osobních hodnot",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Bezpečný souhrn průzkumu; žádné cookies ani osobní hodnoty.",
+      "evidence": []
+    },
+    {
+      "id": "PL-8465995434",
+      "path": "docs/CSC_SPORTSOFT_S0_CONTRACT_V1.md",
+      "title": "P15 S0 přesný čtecí kontrakt v1",
+      "primary": false,
+      "role": "reference",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-b8000d96f9",
+      "path": "docs/CSC_SPORTSOFT_S0_STATION.md",
+      "title": "P15 S0 nonstop stanice oddělená od Rikiho",
+      "primary": false,
+      "role": "reference",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-6aa891eb3d",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md",
+      "title": "P15 S0 prompt pro cílový Codex",
+      "primary": false,
+      "role": "reference",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-7d3ce8bdbf",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/RESULTS.md",
+      "title": "P15 S0 výsledky a hranice předání",
+      "primary": false,
+      "role": "verification",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-2eba69f6f2",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/station-inventory.ps1",
+      "title": "P15 S0 čtecí Windows inventura",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-f3f68a192c",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/contract.schema.json",
+      "title": "P15 S0 JSON Schema čtecího přenosu",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-ea508a0d92",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/fixtures.json",
+      "title": "P15 S0 syntetické kontraktové fixtures",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-43db11dcee",
+      "path": "docs/verification/csc-sportsoft-s0-20261107/source-fixtures.html",
+      "title": "P15 S0 syntetický HTML podklad",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "P15",
+      "disposition": "Podpůrný výstup S0; cílová inventura a provozní aktivace nejsou dokončené.",
+      "evidence": []
+    },
+    {
+      "id": "PL-DOC01-UX01-RESULT",
+      "path": "docs/verification/year-offer-release-20261108/RESULTS.md",
+      "title": "UX01 vydání průvodce",
+      "primary": false,
+      "role": "verification",
+      "status": "SUPPORT",
+      "registry": "UX01",
+      "disposition": "Historický neosobní doklad převzatý z dokumentačního PR; provozní meze v RESULTS.md.",
+      "evidence": []
+    },
+    {
+      "id": "PL-DOC01-Q2-UAT",
+      "path": "docs/verification/training-form-uat-20261109/RESULTS.md",
+      "title": "Q2-TIME přihlášené UAT",
+      "primary": false,
+      "role": "verification",
+      "status": "SUPPORT",
+      "registry": "Q2-TIME",
+      "disposition": "Historický neosobní doklad převzatý z dokumentačního PR; provozní meze v RESULTS.md.",
+      "evidence": []
+    },
+    {
+      "id": "PL-DOC01-Q2-JSON",
+      "path": "docs/verification/training-form-uat-20261109/observations.json",
+      "title": "Q2-TIME pozorování",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "Q2-TIME",
+      "disposition": "Historický neosobní doklad převzatý z dokumentačního PR; provozní meze v RESULTS.md.",
+      "evidence": []
+    },
+    {
+      "id": "PL-DOC01-Q2-RELOAD-TXT",
+      "path": "docs/verification/training-form-uat-20261109/after-reload-fields.txt",
+      "title": "Q2-TIME hodnoty po reloadu",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "Q2-TIME",
+      "disposition": "Historický neosobní doklad převzatý z dokumentačního PR; provozní meze v RESULTS.md.",
+      "evidence": []
+    },
+    {
+      "id": "PL-DOC01-Q2-WINDOW-TXT",
+      "path": "docs/verification/training-form-uat-20261109/after-window-close-fields.txt",
+      "title": "Q2-TIME hodnoty po zavření okna",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "Q2-TIME",
+      "disposition": "Historický neosobní doklad převzatý z dokumentačního PR; provozní meze v RESULTS.md.",
+      "evidence": []
+    },
+    {
+      "id": "PL-DOC01-Q2-RELOAD-PNG",
+      "path": "docs/verification/training-form-uat-20261109/after-reload-status.png",
+      "title": "Q2-TIME stav po reloadu",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "Q2-TIME",
+      "disposition": "Historický neosobní doklad převzatý z dokumentačního PR; provozní meze v RESULTS.md.",
+      "evidence": []
+    },
+    {
+      "id": "PL-DOC01-Q2-CONCEPT-PNG",
+      "path": "docs/verification/training-form-uat-20261109/concept-status.png",
+      "title": "Q2-TIME stav konceptu",
+      "primary": false,
+      "role": "artifact",
+      "status": "SUPPORT",
+      "registry": "Q2-TIME",
+      "disposition": "Historický neosobní doklad převzatý z dokumentačního PR; provozní meze v RESULTS.md.",
+      "evidence": []
     }
   ],
   "checked_main": "3b37e053",

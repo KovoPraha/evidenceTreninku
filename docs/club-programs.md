@@ -2,7 +2,7 @@
 
 ## UX01 — doplnění celoroční nabídky ke stávajícím skupinám (8. 11. 2026)
 
-Stav: KÓD SLOUČENÝ A NASAZENÝ; [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) vytvořil `1c828fbf`, [deploy 42492821311](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42492821311) na stejném SHA skončil SUCCESS. Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Pověření k nasazení kódu neuvádělo částky ani pokyn vytvořit ostré nabídky. Podrobný dokumentační [PR #401](https://github.com/KovoPraha/evidenceTreninku/pull/401) je k 12. 11. otevřený. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
+Stav: KÓD SLOUČENÝ A NASAZENÝ; [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395) vytvořil `1c828fbf`, [deploy 42492821311](https://github.com/KovoPraha/evidenceTreninku/actions/runs/42492821311) na stejném SHA skončil SUCCESS. [Dobový release důkaz a hranice](verification/year-offer-release-20261108/RESULTS.md) převzaté z konfliktního dokumentačního #401. Vlastník: vývoj; ceny a zveřejnění konkrétních nabídek schvaluje vedení klubu. Pověření k nasazení kódu neuvádělo částky ani pokyn vytvořit ostré nabídky. Položka [registru](WORK_PLAN_CURRENT.md#ux01--celoroční-nabídka-stávajícího-kroužku).
 
 Produkční čtecí kontrola 8. 11. ukázala zveřejněné Točňáky úterý, čtvrtek a 2× týdně, každý s prvním i druhým pololetím a bez celoroční nabídky. Starší společná nabídka 1× týdně je skrytá/uzavřená. Běžné administrační založení další varianty nyní vyžaduje ruční název, kód, SKU, platnost, prodejní okno, cenu, kapacitu a věk pro každou skupinu zvlášť.
 
@@ -16,7 +16,17 @@ Lokální ověření 8. 11.: syntetické integrační testy kroužků a sdílen�
 
 CI pro kódový commit `56f1db82` v [PR #395](https://github.com/KovoPraha/evidenceTreninku/pull/395): 11/11 PASS dne 8. 11. 2026, včetně PHPStan a changed-file style, PHPUnit na PHP 8.2, obou MariaDB 10.3/11.4 integračních smoke a čtecích profilů, docs a CodeQL. První běh PHPStanu odhalil čtyři statické chyby v nových souborech, opravené v `56f1db82`; následný úplný běh prošel. Produkční vydání proběhlo 8. 11.; reálný nákup a přihlášené UAT zůstávají NOT RUN.
 
-Release 8. 11. proběhl na přesném `1c828fbf`. Dalším krokem je přihlášené čtecí ověření nového administračního formuláře. Nevytvářet objednávky ani skutečné celoroční varianty bez schválených cen. Podrobný protokol je připraven v otevřeném [PR #401](https://github.com/KovoPraha/evidenceTreninku/pull/401); do jeho převzetí je zde potvrzen stav merge a úspěch workflow.
+Release 8. 11. proběhl na přesném `1c828fbf`. Dalším krokem je přihlášené čtecí ověření nového administračního formuláře. Nevytvářet objednávky ani skutečné celoroční varianty bez schválených cen. [Podrobný protokol](verification/year-offer-release-20261108/RESULTS.md) uvádí skutečný rozsah vydání.
+
+## Postup pro testerku po nasazení
+
+1. Přihlásit se správcovským účtem a otevřít **Kroužky → Doplnit celý rok** (`club_program_offers_admin.php` → `club_program_year_offer_admin.php`).
+2. Vyhledat **Točňáci**. Pro školní rok 2026/27 zkontrolovat samostatně úterní 1× týdně, čtvrteční 1× týdně a 2× týdně. Formulář ukazuje jen skupiny se dvěma pololetními nabídkami bez celoroční varianty; nejednoznačný řádek označí důvodem a nedovolí jej vybrat.
+3. Vybrat požadované skupiny a pro každou zadat **schválenou celoroční cenu**. Cena se z pololetí neodhaduje ani nepřebírá.
+4. Kliknout na **Zkontrolovat vybrané nabídky**. V náhledu zkontrolovat název skupiny, období, prodejní okno, soupisku, kapacitu, ročníky a cenu. Do tohoto bodu se nic nepublikuje.
+5. Tlačítko **Zveřejnit** použít až po schválení cen a obsahu vedením. Pak systém vytvoří celoroční varianty v již existujících produktech a soupiskách, všechny vybrané skupiny v jedné transakci. Teprve poté ověřit jejich zobrazení a nákupní cestu v e-shopu.
+
+Pokud řádek chybí, je blokovaný, neodpovídají údaje v náhledu, nebo tlačítko není dostupné, testerka pošle název skupiny, školní rok, text chyby a snímek obrazovky. Nemá zakládat náhradní produkt nebo nový kroužek, aby problém obešla. Přihlášené ověření náhledu a skutečný nákup po vydání zatím NOT RUN.
 
 ## Doménový model
 
