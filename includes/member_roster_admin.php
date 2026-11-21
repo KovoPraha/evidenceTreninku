@@ -201,7 +201,7 @@ function memberRosterMutate(PDO $pdo, array $input): array
     }
 }
 
-/** One roster, including future and ended intervals; no dependency on seasons. */
+/** One roster at a date, with other intervals available separately for history. */
 function memberRosterRead(PDO $pdo, int $teamId, string $on): array
 {
     memberRosterActor($pdo);
@@ -212,9 +212,18 @@ function memberRosterRead(PDO $pdo, int $teamId, string $on): array
     if (!$team) {
         throw new KisRosterException('Skupina nebo soupiska nebyla nalezena.');
     }
-    $query = $pdo->prepare('SELECT m.*,p.jmeno,p.prijmeni FROM club_roster_members m '
-        . 'JOIN sportovci p ON p.id=m.sportovec_id WHERE m.team_id=? ORDER BY p.prijmeni,p.jmeno,m.valid_from,m.id');
-    $query->execute([$teamId]);
-    return ['team' => $team, 'members' => $query->fetchAll(PDO::FETCH_ASSOC),
+    // A removed interval remains valid through valid_to, including in historical views.
+    // Keep this predicate aligned with kisRosterEffectiveMemberIds().
+    $validAtDate = "m.valid_from<=? AND (m.valid_to IS NULL OR m.valid_to>=?) "
+        . "AND m.status<>'cancelled' AND (m.status<>'removed' OR m.valid_to IS NOT NULL)";
+    $select = 'SELECT m.*,p.jmeno,p.prijmeni FROM club_roster_members m '
+        . 'JOIN sportovci p ON p.id=m.sportovec_id WHERE m.team_id=? AND ';
+    $order = ' ORDER BY p.prijmeni,p.jmeno,m.valid_from,m.id';
+    $query = $pdo->prepare($select.$validAtDate.$order);
+    $query->execute([$teamId, $on, $on]);
+    $members = $query->fetchAll(PDO::FETCH_ASSOC);
+    $query = $pdo->prepare($select.'NOT ('.$validAtDate.')'.$order);
+    $query->execute([$teamId, $on, $on]);
+    return ['team' => $team, 'members' => $members, 'history_members' => $query->fetchAll(PDO::FETCH_ASSOC),
         'effective_ids' => kisRosterEffectiveMemberIds($pdo, $teamId, $on), 'on' => $on];
 }
