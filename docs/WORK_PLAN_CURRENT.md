@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## ROSTER-HISTORY-01 — výchozí seznam členů a historie (21. 11. 2026)
 
-IMPLEMENTOVÁNO, vydání a přihlášené UAT otevřené. [Rozsah, rozhodnutí a akceptace](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026), [PR #502 a průběžné CI](https://github.com/KovoPraha/evidenceTreninku/pull/502). Vlastník vývoj KIS; `codex/roster-membership-history-20261121`, samostatný worktree z `origin/main` `9cec4360`. Testerka hlásí ukončené dítě v hlavní tabulce. Výchozí seznam nyní používá časovou platnost, ostatní intervaly jsou v rozbalovací historii. Regresní test 13/151 a hierarchie 9/51 PASS, PHP syntaxe i dokumentační kontrola PASS; produkční nasazení a UAT NOT RUN. Další krok: dokončit PR kontroly a po vydání ověřit registrářský pohled k dnešnímu a historickému dni.
+KÓD SLOUČEN, produkční vydání a přihlášené UAT otevřené. [Rozsah, rozhodnutí a akceptace](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026), [PR #502](https://github.com/KovoPraha/evidenceTreninku/pull/502) → `85a81986`, 11 CI PASS. Vlastník vývoj KIS; `codex/roster-membership-history-20261121`, samostatný worktree z `origin/main` `9cec4360`. Testerka hlásí ukončené dítě v hlavní tabulce. Výchozí seznam nyní používá časovou platnost, ostatní intervaly jsou v rozbalovací historii. Regresní test 13/151 a hierarchie 9/51 PASS, PHP syntaxe i dokumentační kontrola PASS; produkční nasazení a UAT NOT RUN. Další krok: po vydání ověřit registrářský pohled k dnešnímu a historickému dni.
 
 ## E4-06 — docházka trenéra z rozvrhu (13. 11. 2026)
 

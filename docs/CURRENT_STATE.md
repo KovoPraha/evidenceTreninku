@@ -76,5 +76,5 @@ Aktualizováno 19. 11. 2026 (Europe/Prague). Poslední ověřený [deploy 444738
   inventura/ocenění, vazby a trenérské rozsahy, dohody/částky a dvě přílohy.
   [Rozhodnutí](CLUB_COMPLETION_DECISIONS.md), [pilot](CLUB_PILOT_D12_D14.md).
   Technické dokončení není odstranění všech legacy nálezů ani schválení UAT.
-ROSTER-HISTORY-01: [oprava výchozí soupisky a historie členství](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026) předána přes [PR #502](https://github.com/KovoPraha/evidenceTreninku/pull/502); 22 cílených testů PASS, CI sleduje PR. Produkční nasazení a přihlášené UAT NOT RUN; stav produkčního release se tím nemění.
+ROSTER-HISTORY-01: [oprava výchozí soupisky a historie členství](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026) sloučena přes [PR #502](https://github.com/KovoPraha/evidenceTreninku/pull/502) jako `85a81986` po 11 PASS kontrolách včetně PHPUnit, obou MariaDB a dokumentace; 22 místních cílených testů PASS. Produkční nasazení a přihlášené UAT NOT RUN; stav produkčního release se tím nemění.
 [Převzetí](HANDOFF_CURRENT.md) · [Deník](EVENT_LOG.md) · [Rozhodnutí / uzavřené plány](DECISION_LOG.md) · [Historie provozu](CHANGELOG-PROVOZ.md) · [Pravidla](WORK_DOCUMENTATION_POLICY.md)
