@@ -1,6 +1,6 @@
 # Aktuální session handoff
 
-Aktualizováno 21. 11. 2026. Výchozí společný kód je `origin/main` `a4df047d`; aktuální přehled vydání je [CURRENT_STATE](CURRENT_STATE.md). Starší pracovní checkouty nejsou výchozí verze. [Audit větví a dokumentace](verification/branch-documentation-audit-20261121/RESULTS.md) uvádí ověřený rozsah a meze inventury.
+Aktualizováno 21. 11. 2026. Audit vyšel z `origin/main` `a4df047d`; při dalším převzetí ověř nový HEAD. Aktuální přehled vydání je [CURRENT_STATE](CURRENT_STATE.md). Starší pracovní checkouty nejsou výchozí verze. [Audit větví a dokumentace](verification/branch-documentation-audit-20261121/RESULTS.md) uvádí ověřený rozsah a meze inventury.
 
 ## Co převzít jako další
 
