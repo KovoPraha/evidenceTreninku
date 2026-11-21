@@ -68,6 +68,29 @@ final class AuthMailOutboxTest extends TestCase
         self::assertNull(\authMailProcessOne($pdo,static fn():bool=>true,$this->keys));
     }
 
+    public function testParentWorkerClaimsVerifyAndBothResetTypesWithoutTrainerMail(): void
+    {
+        $pdo = $this->database();
+        $trainerMigration = require dirname(__DIR__, 2) . '/migrations/20261031090000_trainer_password_reset.php';
+        $trainerMigration['up']($pdo);
+        $pdo->beginTransaction();
+        \authMailEnqueue($pdo, 'reset', 'trainer', 9, str_repeat('a', 64), 'coach@example.test', 'Trainer', 'Trainer', $this->keys);
+        \authMailEnqueue($pdo, 'verify', 'public', 1, str_repeat('b', 64), 'parent@example.test', 'Verify', 'Verify', $this->keys);
+        \authMailEnqueue($pdo, 'reset', 'public', 1, str_repeat('c', 64), 'parent@example.test', 'Reset', 'Reset', $this->keys);
+        \authMailEnqueue($pdo, 'reset', 'child', 2, str_repeat('d', 64), 'parent@example.test', 'Child reset', 'Child reset', $this->keys);
+        $pdo->commit();
+
+        self::assertSame('verify', \authMailClaim($pdo, false, true)['kind']);
+        self::assertSame('reset', \authMailClaim($pdo, false, true)['kind']);
+        self::assertSame('child', \authMailClaim($pdo, false, true)['target_type']);
+        self::assertNull(\authMailClaim($pdo, false, true));
+        self::assertSame('pending', $pdo->query('SELECT status FROM auth_mail_outbox WHERE id=1')->fetchColumn());
+        self::assertSame(0, (int)$pdo->query('SELECT attempts FROM auth_mail_outbox WHERE id=1')->fetchColumn());
+        $pdo->exec("UPDATE auth_mail_outbox SET status='processing',claimed_at=datetime('now','-1 hour') WHERE id=1");
+        self::assertNull(\authMailClaim($pdo, false, true));
+        self::assertSame('processing', $pdo->query('SELECT status FROM auth_mail_outbox WHERE id=1')->fetchColumn());
+    }
+
     public function testResendReplacesOnlyUnverifiedAccountLinkWithoutEnumeratingAddress(): void
     {
         $pdo=$this->database();
@@ -104,9 +127,11 @@ final class AuthMailOutboxTest extends TestCase
     {
         $pdo=new PDO('sqlite::memory:',null,null,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
         $pdo->exec('PRAGMA foreign_keys=ON');
-        $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,jmeno TEXT,email TEXT,heslo_hash TEXT,aktivni INTEGER,email_overeno INTEGER,verifikacni_token TEXT,verifikacni_token_expires_at TEXT,trener_id INTEGER)');
+        $pdo->exec('CREATE TABLE verejni_uzivatele(id INTEGER PRIMARY KEY,jmeno TEXT,email TEXT,heslo_hash TEXT,'
+            . 'aktivni INTEGER,email_overeno INTEGER,verifikacni_token TEXT,verifikacni_token_expires_at TEXT,trener_id INTEGER)');
         $pdo->exec("INSERT INTO verejni_uzivatele VALUES(1,'Rodič','parent@example.test','old',1,0,NULL,NULL,NULL)");
-        $pdo->exec('CREATE TABLE password_reset_tokens(id INTEGER PRIMARY KEY AUTOINCREMENT,target_type TEXT,target_id INTEGER,delivery_account_id INTEGER,token_hash TEXT,expires_at TEXT,consumed_at TEXT)');
+        $pdo->exec('CREATE TABLE password_reset_tokens(id INTEGER PRIMARY KEY AUTOINCREMENT,target_type TEXT,'
+            . 'target_id INTEGER,delivery_account_id INTEGER,token_hash TEXT,expires_at TEXT,consumed_at TEXT)');
         $migration=require dirname(__DIR__,2).'/migrations/20261019100000_auth_mail_outbox.php';
         $migration['up']($pdo);self::assertTrue($migration['verify']($pdo));
         return $pdo;

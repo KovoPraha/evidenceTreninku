@@ -2762,11 +2762,13 @@
       "path": "docs/identity-email-queue.md",
       "title": "Ověřovací a obnovovací e-maily",
       "primary": true,
-      "role": "reference",
-      "status": "REFERENCE",
-      "registry": "DOC02",
-      "disposition": "Referenční podklad, nikoli samostatný schválený implementační plán.",
-      "evidence": []
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "AUTH-MAIL-01",
+      "disposition": "AUTH-MAIL-01: kód samostatného rodičovského workeru připraven; produkční diagnostika, aktivace a doručení otevřené.",
+      "evidence": [
+        "docs/verification/auth-mail-worker-20261121/RESULTS.md"
+      ]
     },
     {
       "id": "PL-1c05fd48e3",
