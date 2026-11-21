@@ -6,6 +6,10 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
 
+## AUTH-MAIL-01 — rodičovské ověřovací a obnovovací e-maily (21. 11. 2026)
+
+KÓD V [PR #506](https://github.com/KovoPraha/evidenceTreninku/pull/506), CI PO PŘEVZETÍ MAIN. Vlastník vývoj KIS; větev `codex/auth-mail-worker-repair-20261121`, samostatný worktree z `origin/main` `11505aed`. [Příčina v kódu, plán a akceptace](identity-email-queue.md#auth-mail-01--oprava-automatického-zpracování-rodičovské-fronty-21-11-2026), [průběžný protokol](verification/auth-mail-worker-20261121/RESULTS.md). Hlášení uvádí prošlé `pending` s nula pokusy; společný worker nemá v repozitáři produkční plánovač, trenérský worker rodiče vylučuje. Kód omezeného plánu pro `public` ověření/obnovu a `child` obnovu má 21/186 syntetických kontrol PASS. Další krok: PR CI, merge/deploy kódu, čtecí produkční diagnostika, potom samostatná instalace plánu. Produkční aktivace a doručení NOT RUN.
+
 ## ROSTER-HISTORY-01 — výchozí seznam členů a historie (21. 11. 2026)
 
 KÓD NASAZEN, přihlášené UAT otevřené. [Rozsah, rozhodnutí a akceptace](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026), [PR #502](https://github.com/KovoPraha/evidenceTreninku/pull/502) → `85a81986`, 11 CI PASS; [deploy 44896953740](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44896953740) SUCCESS na stejném SHA, záloha/migrace/VS/HTTP PASS, UAT/import false. [Dokumentační #503](https://github.com/KovoPraha/evidenceTreninku/pull/503) sloučený. Vlastník vývoj KIS; `codex/roster-membership-history-20261121`. Výchozí seznam používá časovou platnost, ostatní intervaly jsou v rozbalovací historii; 22 cílených testů PASS. Další krok: testerka v přihlášené administraci ověří dnešek, poslední platný den a dřívější den, včetně nadřazené skupiny.
