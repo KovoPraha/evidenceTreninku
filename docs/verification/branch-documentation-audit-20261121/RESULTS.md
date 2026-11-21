@@ -35,4 +35,4 @@ Přihlášené UAT KIS-PARENT-LINK-01, TRAINING-PLAN-ACL-01, E4-06/MAKEUP-AUTO-0
 
 ## Ověření tohoto řezu
 
-`php tools/check-current-docs.php`: PASS, CURRENT 17 řádků, 5820 lokálních odkazů, 108 archivních bloků, 0 chyb. `git diff --check`: PASS. Kontrola textu a odkazů: PASS v rozsahu dokumentačního checkeru; úplná věcná revize všech historických plánů NOT RUN. [PR #514](https://github.com/KovoPraha/evidenceTreninku/pull/514) otevřený, CI a merge při tomto zápisu PENDING; produkční deploy se neplánuje.
+`php tools/check-current-docs.php`: PASS, 0 chyb. `git diff --check`: PASS. Kontrola textu a odkazů: PASS v rozsahu dokumentačního checkeru; úplná věcná revize všech historických plánů NOT RUN. [PR #514](https://github.com/KovoPraha/evidenceTreninku/pull/514): první PHPUnit běh FAIL v `CurrentDocumentationContractTest` kvůli chybějícímu historickému release odkazu ve zkráceném CURRENT. Odkaz, SHA, run ID a klubové rozhodnutí doplněny s výslovným označením historického vydání. Nové CI/merge PENDING; produkční deploy se neplánuje.
