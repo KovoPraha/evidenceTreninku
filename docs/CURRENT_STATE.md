@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-Aktualizováno 21. 11. 2026 (Europe/Prague). Poslední ověřený produkční deploy workflow je [44912234389](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44912234389) na `7d856ed6` (KIS-PARENT-LINK-01): SUCCESS, záloha, migrace `current/pending []`, VS a HTTP 200 PASS. `uat_schvaleno=false`, import kroužků přeskočen. Pozdější PR #511–#513 jsou dokumentační a samy web nenasazují. Stav serveru po případném zásahu mimo workflow tím není ověřen.
+Aktualizováno 21. 11. 2026 (Europe/Prague). Poslední ověřený produkční deploy workflow je [44912234389](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44912234389) na `7d856ed6` (KIS-PARENT-LINK-01): SUCCESS, záloha, migrace `current/pending []`, VS a HTTP 200 PASS. `uat_schvaleno=false`, import kroužků přeskočen. Následné dokumentační PR samy web nenasazují. Stav serveru po případném zásahu mimo workflow tím není ověřen.
 
 ## Poslední vydané řezy a otevřená přejímka
 
