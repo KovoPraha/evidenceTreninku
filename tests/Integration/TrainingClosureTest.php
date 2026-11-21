@@ -212,6 +212,81 @@ final class TrainingClosureTest extends TestCase
         \trainingScheduleAssertAvailable($p, 2, 1, '2026-01-02', '16:30', '17:30', null, [3]);
         $p->commit();
     }
+    public function testManagerCanInspectTrainerCollisionsButCoachCannotBypassThem(): void
+    {
+        $p = $this->fixture();
+        $p->exec("INSERT INTO planovane_treninky VALUES(4,1,'2026-01-02','15:00','16:30',NULL,'planovany',NULL,'LOCALHOST')");
+        $p->exec("INSERT INTO planovane_treninky VALUES(5,1,'2026-01-02','16:00','17:00',NULL,'planovany',NULL,'LOCALHOST')");
+        $p->beginTransaction();
+        $collisions = [];
+        \trainingScheduleAssertAvailable($p, 2, 1, '2026-01-02', '16:15', '16:45', null, [3], 0, $collisions);
+        self::assertSame([
+            ['id' => 4, 'date' => '2026-01-02', 'from' => '15:00', 'to' => '16:30'],
+            ['id' => 5, 'date' => '2026-01-02', 'from' => '16:00', 'to' => '17:00'],
+        ], $collisions);
+        $p->exec('INSERT INTO training_roster_links VALUES(1,4,NULL,3)');
+        try {
+            \trainingScheduleAssertAvailable($p, 2, 1, '2026-01-02', '16:15', '16:45', null, [3], 0, $collisions);
+            self::fail('Manager bypassed roster collision');
+        } catch (\TrainingClosureException $e) {
+            self::assertStringContainsString('soupiska', $e->getMessage());
+        }
+        $p->exec('DELETE FROM training_roster_links');
+        $p->exec('UPDATE planovane_treninky SET sportoviste_id=7 WHERE id=4');
+        try {
+            \trainingScheduleAssertAvailable($p, 2, 1, '2026-01-02', '16:15', '16:45', 7, [3], 0, $collisions);
+            self::fail('Manager bypassed venue collision');
+        } catch (\TrainingClosureException $e) {
+            self::assertStringContainsString('sportoviště', $e->getMessage());
+        }
+        $p->exec("INSERT INTO staff_user_positions VALUES(1,'coach')");
+        $_SESSION = ['trener_id' => 1, 'staff_positions' => ['coach'], 'staff_active_position' => 'coach'];
+        try {
+            \trainingScheduleAssertAvailable($p, 1, 1, '2026-01-02', '16:15', '16:45', null, [3], 0, $collisions);
+            self::fail('Coach inspected override collisions');
+        } catch (\TrainingClosureException $e) {
+            self::assertStringContainsString('pouze vedoucí', $e->getMessage());
+        }
+        try {
+            \trainingScheduleAssertAvailable($p, 1, 1, '2026-01-02', '16:15', '16:45', null, [3]);
+            self::fail('Coach collision accepted');
+        } catch (\TrainingClosureException $e) {
+            self::assertStringContainsString('lekci #4', $e->getMessage());
+            self::assertStringContainsString('15:00–16:30', $e->getMessage());
+        }
+        $p->rollBack();
+    }
+    public function testCollisionConfirmationExpiresWhenProposalOrCollisionChanges(): void
+    {
+        $this->fixture();
+        $collisions = [['id' => 4, 'date' => '2026-01-02', 'from' => '15:00', 'to' => '16:30']];
+        $proposal = [1, '2026-01-02', '16:00', '17:00'];
+        try {
+            \trainingScheduleAssertCollisionDecision($collisions, $proposal, true);
+            self::fail('First submit bypassed warning');
+        } catch (\TrainingClosureException $e) {
+            self::assertStringContainsString('výslovně', $e->getMessage());
+        }
+        try {
+            \trainingScheduleAssertCollisionDecision($collisions, $proposal, false);
+            self::fail('Unchecked confirmation accepted');
+        } catch (\TrainingClosureException) {
+            self::assertTrue(true);
+        }
+        \trainingScheduleAssertCollisionDecision($collisions, $proposal, true);
+        foreach ([[$collisions, [1, '2026-01-02', '16:30', '17:30']],
+            [[['id' => 5, 'date' => '2026-01-02', 'from' => '15:00', 'to' => '16:30']], $proposal]] as [$newCollisions, $newProposal]) {
+            try {
+                \trainingScheduleAssertCollisionDecision($newCollisions, $newProposal, true);
+                self::fail('Changed proposal accepted without review');
+            } catch (\TrainingClosureException) {
+                self::assertTrue(true);
+            }
+        }
+        $_SESSION['staff_active_position'] = 'coach';
+        $this->expectException(\TrainingClosureException::class);
+        \trainingScheduleAssertCollisionDecision($collisions, $proposal, true);
+    }
     public function testMakeupRequiresCurrentClosedRevisionAndActualEnd(): void
     {
         $p = $this->fixture();

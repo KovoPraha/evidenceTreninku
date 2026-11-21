@@ -7,6 +7,7 @@ if (!isset($_SESSION['trener_id'])) {
 }
 require_once 'includes/funkce.php';
 require_once 'db.php';
+/** @var PDO $pdo */
 if (!canAccess('planovac')) {
     header('Location: index.php');
     exit;
@@ -24,7 +25,9 @@ function h(mixed $s): string
 }
 
 $trenerId = (int)$_SESSION['trener_id'];
+$isManager = staffActivePositionIs('sports_lead');
 $errors   = [];
+$collisionWarning = [];
 $editId   = (int)($_GET['id'] ?? 0);  // >0 = editace existujícího
 
 // ── Načtení pro editaci ───────────────────────────────────────────────────────
@@ -69,6 +72,7 @@ $def = [
     'sportoviste_id' => $existujici['sportoviste_id'] ?? '',
     'popis'         => $existujici['popis']         ?? '',
     'je_verejny'    => (int)($existujici['je_verejny'] ?? 0),
+    'trener_id'     => (int)($existujici['trener_id'] ?? $trenerId),
 ];
 
 // ── POST ─────────────────────────────────────────────────────────────────────
@@ -77,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Neplatný CSRF token.';
     } else {
         $nazev         = trim($_POST['nazev'] ?? '');
+        $assignedTrainerId = $isManager ? (int)($_POST['trener_id'] ?? 0) : $trenerId;
         $kategorie     = $_POST['kategorie'] ?? '';
         $teamIds        = array_values(array_unique(array_filter(array_map('intval', $_POST['team_ids'] ?? []))));
         $rosterMode     = (string)($_POST['roster_mode'] ?? 'teams');
@@ -115,6 +120,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($rosterMode === 'internal') {
             $teamIds = [];
         }
+        if ($assignedTrainerId < 1) {
+            $errors[] = 'Vyberte přiřazeného trenéra.';
+        }
 
         if (empty($errors)) {
             if ($editId) {
@@ -122,6 +130,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->beginTransaction();
                 try {
                     coachScopeAssertPlan($pdo, $editId);
+                    if ($isManager) {
+                        coachScopeAssertManager($pdo, $trenerId);
+                    }
+                    $trainerCheck = $pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.trainingClosureLockSuffix($pdo));
+                    $trainerCheck->execute([$assignedTrainerId]);
+                    if (!$trainerCheck->fetchColumn()) {
+                        throw new RuntimeException('Vybraný trenér již není aktivní.');
+                    }
                     coachTrainingAssertTeams($pdo, $teamIds, $datum);
                     $currentSql = 'SELECT datum,cas_od,cas_do,sportoviste_id,trener_id,stav FROM planovane_treninky WHERE id=?';
                     if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
@@ -133,10 +149,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!$current) {
                         throw new RuntimeException('Plánovaný trénink již neexistuje.');
                     }
+                    if (!$isManager && (int)$current['trener_id'] !== $trenerId) {
+                        throw new RuntimeException('Plán již není přiřazen vám.');
+                    }
                     if ($current['stav'] !== 'planovany') {
                         throw new RuntimeException('Zapsaný trénink upravte přes skutečnou docházku.');
                     }
-                    trainingScheduleAssertAvailable($pdo, $trenerId, (int)$current['trener_id'], $datum, $casOd, $casDo, $sportId, $teamIds, $editId);
+                    $trainerCollisions = $isManager ? [] : null;
+                    trainingScheduleAssertAvailable($pdo, $trenerId, $assignedTrainerId, $datum, $casOd, $casDo, $sportId, $teamIds, $editId, $trainerCollisions);
+                    $collisionWarning = $trainerCollisions ?? [];
+                    trainingScheduleAssertCollisionDecision(
+                        $collisionWarning,
+                        [$editId, $assignedTrainerId, $nazev, $kategorie, $teamIds, $datum, $casOd, $casDo, $sportId, $popis, $jeVerejny],
+                        !empty($_POST['confirm_trainer_collision'])
+                    );
                     $oldTeamIds = trainingRosterBridgePlanTeamIds($pdo, $editId);
                     sort($oldTeamIds, SORT_NUMERIC);
                     $newTeamIds = $teamIds;
@@ -172,10 +198,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     $pdo->prepare("
                         UPDATE planovane_treninky SET
-                            nazev=?, kategorie=?, skupina_id=?, podskupina_id=?,
+                            trener_id=?, nazev=?, kategorie=?, skupina_id=?, podskupina_id=?,
                             datum=?, cas_od=?, cas_do=?, sportoviste_id=?, popis=?, je_verejny=?
                         WHERE id=?
-                    ")->execute([$nazev, $kategorie, $skupinaId, $podskupinaId,
+                    ")->execute([$assignedTrainerId, $nazev, $kategorie, $skupinaId, $podskupinaId,
                                  $datum, $casOd, $casDo, $sportId, $popis, $jeVerejny, $editId]);
                     // Aktualizace podskupin v junction tabulce
                     $pdo->prepare("DELETE FROM planovane_treninky_podskupiny WHERE plan_id=?")->execute([$editId]);
@@ -189,7 +215,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         trainingRosterBridgeReplacePlanTeams($pdo, $editId, $teamIds, $trenerId);
                     }
                     clubMakeupSyncPlanRules($pdo, $editId);
+                    if ($collisionWarning !== [] || (int)$current['trener_id'] !== $assignedTrainerId) {
+                        zapisAuditLog(
+                            $pdo,
+                            $trenerId,
+                            'planned_training_assignment',
+                            'planovane_treninky',
+                            $editId,
+                            ['trainer_id' => $assignedTrainerId, 'previous_trainer_id' => (int)$current['trener_id'],
+                                'confirmed_trainer_collisions' => $collisionWarning]
+                        );
+                    }
                     $pdo->commit();
+                    unset($_SESSION['plan_collision_confirmation']);
                     $_SESSION['flash_success'] = 'Plánovaný trénink upraven.';
                 } catch (Exception $e) {
                     $pdo->rollBack();
@@ -199,6 +237,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Nový — s případným opakováním
                 $pdo->beginTransaction();
                 try {
+                    if ($isManager) {
+                        coachScopeAssertManager($pdo, $trenerId);
+                    }
+                    $trainerCheck = $pdo->prepare('SELECT id FROM treneri WHERE id=? AND aktivni=1'.trainingClosureLockSuffix($pdo));
+                    $trainerCheck->execute([$assignedTrainerId]);
+                    if (!$trainerCheck->fetchColumn()) {
+                        throw new RuntimeException('Vybraný trenér již není aktivní.');
+                    }
                     coachTrainingAssertTeams($pdo, $teamIds, $datum);
                     $stmt   = $pdo->prepare("
                         INSERT INTO planovane_treninky
@@ -239,14 +285,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
-                    $jeSerie   = count($datumy) > 1;
-                    $prveId    = null;
+                    // Prověřit celou sérii před prvním zápisem, aby potvrzení pokrývalo všechny kolize.
+                    $collisionWarning = [];
                     foreach ($datumy as $d) {
                         coachTrainingAssertTeams($pdo, $teamIds, $d);
-                        trainingScheduleAssertAvailable($pdo, $trenerId, $trenerId, $d, $casOd, $casDo, $sportId, $teamIds);
-                        $stmt->execute([$trenerId, $nazev, $kategorie, $skupinaId, $podskupinaId,
+                        $dateCollisions = $isManager ? [] : null;
+                        trainingScheduleAssertAvailable($pdo, $trenerId, $assignedTrainerId, $d, $casOd, $casDo, $sportId, $teamIds, 0, $dateCollisions);
+                        array_push($collisionWarning, ...($dateCollisions ?? []));
+                    }
+                    trainingScheduleAssertCollisionDecision(
+                        $collisionWarning,
+                        [0, $assignedTrainerId, $nazev, $kategorie, $teamIds, $datumy, $casOd, $casDo, $sportId, $popis, $jeVerejny],
+                        !empty($_POST['confirm_trainer_collision'])
+                    );
+
+                    $jeSerie   = count($datumy) > 1;
+                    $prveId    = null;
+                    $createdIds = [];
+                    foreach ($datumy as $d) {
+                        $stmt->execute([$assignedTrainerId, $nazev, $kategorie, $skupinaId, $podskupinaId,
                                         $d, $casOd, $casDo, $sportId, $popis, null, $jeVerejny]);
                         $planId = (int)$pdo->lastInsertId();
+                        $createdIds[] = $planId;
                         if ($prveId === null) {
                             $prveId = $planId;
                         }
@@ -257,14 +317,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                         trainingRosterBridgeReplacePlanTeams($pdo, $planId, $teamIds, $trenerId);
                         clubMakeupSyncPlanRules($pdo, $planId);
+                        if ($isManager && ($assignedTrainerId !== $trenerId || $collisionWarning !== [])) {
+                            zapisAuditLog(
+                                $pdo,
+                                $trenerId,
+                                'planned_training_assignment',
+                                'planovane_treninky',
+                                $planId,
+                                ['trainer_id' => $assignedTrainerId, 'confirmed_trainer_collisions' => array_values(array_filter(
+                                    $collisionWarning,
+                                    static fn (array $collision): bool => $collision['date'] === $d
+                                ))]
+                            );
+                        }
                     }
                     // Nastavit serie_id = ID prvního záznamu pro všechny instance série
                     if ($jeSerie && $prveId) {
-                        $pdo->prepare("UPDATE planovane_treninky SET serie_id=? WHERE id >= ? AND trener_id=? AND nazev=? AND datum >= ?")
-                            ->execute([$prveId, $prveId, $trenerId, $nazev, $datumy[0]]);
+                        $idsSql = implode(',', array_fill(0, count($createdIds), '?'));
+                        $pdo->prepare("UPDATE planovane_treninky SET serie_id=? WHERE id IN ($idsSql)")
+                            ->execute(array_merge([$prveId], $createdIds));
                     }
 
                     $pdo->commit();
+                    unset($_SESSION['plan_collision_confirmation']);
                     $pocet = count($datumy);
                     $_SESSION['flash_success'] = $pocet > 1
                         ? "Vypsáno {$pocet} plánovaných tréninků jako opakující se série."
@@ -289,12 +364,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $def['cas_od']         = $casOd ?? '';
         $def['cas_do']         = $casDo ?? '';
         $def['je_verejny']     = $jeVerejny ?? 0;
+        $def['trener_id']      = $assignedTrainerId;
     }
 }
 
 // ── Data pro selecty ─────────────────────────────────────────────────────────
 $skupiny     = $pdo->query("SELECT id, nazev FROM skupiny ORDER BY nazev")->fetchAll(PDO::FETCH_ASSOC);
 $sportovist  = $pdo->query("SELECT id, nazev FROM sportovist WHERE aktivni=1 ORDER BY poradi, nazev")->fetchAll(PDO::FETCH_ASSOC);
+$trainers = $isManager ? $pdo->query('SELECT id,jmeno FROM treneri WHERE aktivni=1 ORDER BY jmeno,id')->fetchAll(PDO::FETCH_ASSOC) : [];
 $podskupiny  = [];
 if (!empty($def['skupina_id'])) {
     $stPs = $pdo->prepare("SELECT id, nazev FROM podskupiny WHERE skupina_id=? ORDER BY poradi, nazev");
@@ -346,6 +423,19 @@ integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEw
     <?php foreach ($errors as $e): ?>
         <div class="alert alert-danger"><?= h($e) ?></div>
     <?php endforeach; ?>
+
+    <?php if ($isManager && $collisionWarning !== []): ?>
+        <div class="alert alert-warning" role="alert">
+            <strong>Časová kolize přiřazeného trenéra</strong>
+            <ul class="mb-2">
+                <?php foreach ($collisionWarning as $collision): ?>
+                    <li>Lekce #<?= (int)$collision['id'] ?>, <?= h($collision['date']) ?>,
+                        <?= h($collision['from']) ?>–<?= h($collision['to']) ?></li>
+                <?php endforeach; ?>
+            </ul>
+            Vyberte jiného trenéra nebo níže výslovně potvrďte souběh.
+        </div>
+    <?php endif; ?>
 
     <div class="card shadow-sm">
         <div class="card-body p-4">
@@ -411,6 +501,20 @@ nevyberete, stará vazba zůstane zachována.</div>
                 </div>
 
                 <!-- Datum + Časy -->
+                <?php if ($isManager): ?>
+                <div class="mb-3">
+                    <label class="form-label req" for="assigned-trainer">Přiřazený trenér</label>
+                    <select name="trener_id" id="assigned-trainer" class="form-select" required>
+                        <option value="">— vyberte trenéra —</option>
+                        <?php foreach ($trainers as $trainer): ?>
+                            <option value="<?= (int)$trainer['id'] ?>" <?= (int)$def['trener_id'] === (int)$trainer['id'] ? 'selected' : '' ?>>
+                                <?= h($trainer['jmeno']) ?> (#<?= (int)$trainer['id'] ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="form-text">Termín může být pro jiné skupiny než vlastní skupiny trenéra. Kolize se posuzuje podle zde přiřazeného trenéra.</div>
+                </div>
+                <?php endif; ?>
                 <div class="row g-3 mb-3">
                     <div class="col-sm-4">
                         <label class="form-label req">Datum</label>
@@ -510,7 +614,13 @@ nevyberete, stará vazba zůstane zachována.</div>
                 </div>
                 <?php endif; ?>
 
-                <div class="d-flex gap-2">
+                <div class="d-flex flex-wrap gap-2">
+                    <?php if ($isManager && $collisionWarning !== []): ?>
+                        <div class="form-check w-100 mb-2">
+                            <input class="form-check-input" type="checkbox" name="confirm_trainer_collision" value="1" id="confirm-trainer-collision" required>
+                            <label class="form-check-label" for="confirm-trainer-collision">Výslovně potvrzuji, že souběh uvedených lekcí přiřazeného trenéra je organizačně záměrný.</label>
+                        </div>
+                    <?php endif; ?>
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-floppy me-1">
 </i>
