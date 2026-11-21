@@ -343,11 +343,24 @@ endforeach;
                 <?php
 endif;
     ?>
+                <?php foreach ([
+                    ['rows' => $memberView['members'], 'history' => false],
+                    ['rows' => $memberView['history_members'], 'history' => true],
+                ] as $memberTable): ?>
+                <?php if ($memberTable['history']): ?>
+                    <details class="mt-3"><summary>Historie členství (<?= count($memberTable['rows']) ?>)</summary>
+                    <p class="small text-muted mt-2">Členství neplatná k vybranému dni, včetně budoucích a zrušených.</p>
+                <?php else: ?>
+                    <h2 class="h6 mt-3">Platní členové k <?= krha($selectedDate) ?></h2>
+                <?php endif; ?>
+                <?php if (!$memberTable['rows']): ?>
+                    <p class="text-muted">Žádná členství.</p>
+                <?php else: ?>
                 <div class="table-responsive"><table class="table table-sm align-middle">
                     <thead><tr><th>Sportovec</th><th>Platnost</th><th>Stav k vybranému dni</th><th>Zdroj</th><th>Změna</th></tr></thead>
                     <tbody>
                     <?php
-foreach ($memberView['members'] as $member):
+foreach ($memberTable['rows'] as $member):
     $cancelled = $member['status'] === 'cancelled';
     $state = $cancelled ? 'Zrušeno' : ($member['valid_from'] > $selectedDate ? 'Budoucí' :
         ($member['valid_to'] !== null && $member['valid_to'] < $selectedDate ? 'Ukončené' : 'Platné'));
@@ -420,11 +433,14 @@ endforeach;
                         </tr>
                     <?php
 endforeach;
-?>
+                    ?>
                     </tbody>
                 </table></div>
+                <?php endif; ?>
+                <?php if ($memberTable['history']): ?></details><?php endif; ?>
+                <?php endforeach; ?>
             <?php
-endif;
+                    endif;
 ?>
         <?php
 endif;

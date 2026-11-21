@@ -6,6 +6,10 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
 
+## ROSTER-HISTORY-01 — výchozí seznam členů a historie (21. 11. 2026)
+
+IMPLEMENTOVÁNO NA VĚTVI, vydání a přihlášené UAT otevřené. [Rozsah, rozhodnutí a akceptace](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026). Vlastník vývoj KIS; `codex/roster-membership-history-20261121`, samostatný worktree z `origin/main` `9cec4360`. Testerka hlásí ukončené dítě v hlavní tabulce. Výchozí seznam nyní používá časovou platnost, ostatní intervaly jsou v rozbalovací historii. Regresní test 13/151 a hierarchie 9/51 PASS, PHP syntaxe PASS; CI, nasazení a produkční UAT NOT RUN. Další krok: dokumentační kontrola, PR/CI a registrářské ověření výchozího a historického dne po vydání.
+
 ## E4-06 — docházka trenéra z rozvrhu (13. 11. 2026)
 
 KÓD NASAZEN: [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474) → `ea995408`, [deploy 43651304138](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43651304138) SUCCESS; 21/21 CI, záloha, migrace a HTTP 200 PASS, `uat_schvaleno=false`, import přeskočen. [Audit a převzetí požadavku testerky](COACH_ATTENDANCE_2026-11-13.md), [technické a vizuální důkazy](verification/coach-attendance-20261113/RESULTS.md). Trenérský zápis, omluvy, rezervovaní náhradníci, verzované opravy, historie dítěte a mobilní rozhraní jsou vydané. Místní HTTP tok náhrady 31/31 a izolovaná vizuální rezervace automatického cíle i zápis běžnou rolí `trener` PASS. **Produkční přihlášené UAT E4-06 a MAKEUP-AUTO-01 NOT RUN.** [Čtecí prověrka 43654981616](verification/coach-attendance-20261113/RESULTS.md#čtecí-prověrka-produkčního-uat-15-11-2026) vrátila `ready=false`; zkusmé okno bylo vráceno bez produkčních zápisů. Další krok: v nově schváleném okně ověřit trenérskou dostupnost, skutečnou absenci, nárok a rodičovskou rezervaci pomocí TEST rolí; pravidla a automatický režim aktivovat až po samostatném schválení.

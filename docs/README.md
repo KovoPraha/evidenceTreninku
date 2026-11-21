@@ -8,6 +8,7 @@ webrootem, migračním katalogem a kanonickou databází osob. Produkce běží 
 
 ## Aktuální vývoj a otevřená přejímka
 
+- [Oprava výchozí soupisky a historie členství](MEMBER_EVIDENCE_IMPLEMENTATION_2026-11-02.md#roster-history-01--výchozí-soupiska-a-historie-členství-21-11-2026): ukončené dítě se po posledním dni zobrazí jen v historii, při starším rozhodném dni znovu v platné soupisce; vydání a přihlášené UAT otevřené.
 - **Pro testerku:** [aktuální scénář první aktivace rodičů](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md) lze otevřít na GitHubu a stáhnout tlačítkem **Raw → Uložit jako**. [Změna KIS-ACT-01](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) je nasazená; [release protokol](verification/parent-activation-release-20261112/RESULTS.md) odděluje technické PASS od dosud neprovedených pozvánek a rodičovského UAT.
 - [Stav vydání](CURRENT_STATE.md) a [stručné předání](HANDOFF_CURRENT.md) uvádějí aktuální ověřený produkční commit, přepínače a otevřenou přejímku.
 - [Kopírování tréninků](verification/training-copy-20261112/RESULTS.md), [styly formulářů](verification/training-form-bootstrap-20261112/RESULTS.md) a [styly přihlášení](verification/signin-bootstrap-20261111/RESULTS.md) jsou nasazené; přihlášené produkční UAT posledních řezů je otevřené.

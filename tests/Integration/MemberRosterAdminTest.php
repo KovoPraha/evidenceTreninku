@@ -77,8 +77,35 @@ final class MemberRosterAdminTest extends TestCase
         self::assertSame([10, 11], \kisRosterEffectiveMemberIds($pdo, $source, '2026-12-31'));
         self::assertSame([11], \kisRosterEffectiveMemberIds($pdo, $source, '2027-01-01'));
         self::assertSame([10], \kisRosterEffectiveMemberIds($pdo, $target, '2027-01-01'));
-        self::assertCount(2, \memberRosterRead($pdo, $source, '2027-01-01')['members']);
+        self::assertCount(1, \memberRosterRead($pdo, $source, '2027-01-01')['members']);
+        self::assertCount(1, \memberRosterRead($pdo, $source, '2027-01-01')['history_members']);
         self::assertSame([11], \memberRosterRead($pdo, $source, '2027-01-01')['effective_ids']);
+    }
+
+    public function testEndedAndCancelledMembershipsMoveToHistoryWithoutLosingPastMembership(): void
+    {
+        $pdo = $this->database();
+        $team = $this->team($pdo, 'HISTORY');
+        $ended = \kisRosterGrantPeriod($pdo, $team, 10, 7, 'manual', '2026-11-01', null, 'LOCALHOST členství');
+        $cancelled = \kisRosterGrantPeriod($pdo, $team, 11, 7, 'manual', '2026-12-01', null, 'LOCALHOST budoucí');
+        $this->apply($pdo, ['action' => 'end_member', 'team_id' => $team, 'member_id' => $ended['id'],
+            'valid_to' => '2026-11-20', 'reason' => 'LOCALHOST ukončení']);
+        $this->apply($pdo, ['action' => 'end_member', 'team_id' => $team, 'member_id' => $cancelled['id'],
+            'valid_to' => '2026-11-30', 'reason' => 'LOCALHOST zrušení před začátkem']);
+
+        $today = \memberRosterRead($pdo, $team, '2026-11-21');
+        self::assertSame([], $today['members']);
+        self::assertSame([10, 11], array_map('intval', array_column($today['history_members'], 'sportovec_id')));
+        self::assertSame([], $today['effective_ids']);
+        self::assertSame(['removed', 'cancelled'], array_column($today['history_members'], 'status'));
+
+        $lastDay = \memberRosterRead($pdo, $team, '2026-11-20');
+        self::assertSame([10], array_map('intval', array_column($lastDay['members'], 'sportovec_id')));
+        self::assertSame([10], $lastDay['effective_ids']);
+        $earlier = \memberRosterRead($pdo, $team, '2026-11-19');
+        self::assertSame([10], array_map('intval', array_column($earlier['members'], 'sportovec_id')));
+        self::assertSame([10], $earlier['effective_ids']);
+        self::assertSame(2, (int) $pdo->query('SELECT COUNT(*) FROM club_roster_members')->fetchColumn());
     }
 
     public function testFailedBatchAndFailedTransferRollBackEveryChange(): void

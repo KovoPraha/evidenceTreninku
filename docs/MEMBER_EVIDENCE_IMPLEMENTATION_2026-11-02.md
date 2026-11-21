@@ -4,6 +4,14 @@ Navazuje na [pracovní plán](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md). Tento do
 
 ## Co aplikace nově používá
 
+### ROSTER-HISTORY-01 — výchozí soupiska a historie členství (21. 11. 2026)
+
+Stav: implementace v PR; produkční nasazení a přihlášená přejímka NOT RUN. Vlastník: vývoj KIS. Větev `codex/roster-membership-history-20261121` z `origin/main` `9cec4360`, oddělený worktree. Zadání vychází z hlášení testerky: po ukončení členství se osoba správně nepočítala jako aktivní, ale zůstala v hlavní tabulce `kis_roster_hierarchy_admin.php`.
+
+`memberRosterRead()` pro vybranou soupisku a den vrací `members` platné k tomu dni a `history_members` pro ostatní intervaly. Platný interval splňuje `valid_from <= den`, `valid_to IS NULL OR valid_to >= den` a není `cancelled`. `removed` je stav uložený při ukončení i pro zpětně platnou část intervalu; s nenulovým `valid_to` proto zůstává do posledního dne včetně v historickém pohledu platný. `removed` bez konce platný není. Toto pravidlo odpovídá `kisRosterEffectiveMemberIds()`, aby tabulka a počty v soupisce a nadřazené skupině vycházely ze stejného časového modelu. Doslovné vyloučení všech `removed` by porušilo požadavek zobrazit dítě před ukončením.
+
+Hlavní tabulka ukazuje jen platné intervaly. Rozbalovací „Historie členství“ obsahuje ukončené, zrušené i budoucí intervaly neplatné k vybranému dni, se stávajícími možnostmi správy. Změna pole „Členství k datu“ přepočítá obě sady i efektivní počet. Neprovádí se migrace, `DELETE` ani změna práv a auditních zápisů. Akceptace: poslední den včera → dnes pouze historie; poslední den a dřívější platný den → hlavní tabulka; zrušené před začátkem → vždy historie; počet záznamů v DB se nemění. Technické ověření: `MemberRosterAdminTest`, PHP syntaxe, dokumentační kontrola a CI; skutečný přihlášený průchod testerky je samostatný otevřený krok.
+
 - Registrář pracuje v `kis_roster_hierarchy_admin.php`: vytváří trvalou skupinu nebo soupisku, nastaví zaměření, zobrazí osoby k datu, hromadně zařadí nejvýše 100 osob, ukončí ruční členství nebo provede přestup. Zařazení/ukončení/přestup mají náhled, důvod, otisk vstupů a opakovatelnou potvrzovací operaci. Změna práv se kontroluje znovu v transakci.
 - `club_teams.activity_kind` obsahuje `circle`, `competitive`, `other` nebo dočasné `unclassified`. Klasifikace je explicitní na soupisce a nedědí se ze skupiny. Migrační převod původního jednoznačného `season_type` slouží pouze k zachování stávající klasifikace; nové zápisy sezonu nepotřebují. Neurčené zařazení musí správce doplnit.
 - Členství používá `club_roster_members.valid_from/valid_to`, oba dny včetně. Přestup od dne D ukončí původní interval D−1. Ruční správa nesmí ukončit nárok ze zaplaceného programu; ten mění jeho zdrojová objednávka/přijetí. Budoucí RSVP, přihláška či rezervace náhrady dotčené osoby přestup nebo ukončení blokuje do vypořádání.
