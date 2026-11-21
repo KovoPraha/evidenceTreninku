@@ -9,6 +9,9 @@ Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 ## D2026-11-21-TP01
 
 Podle zadání vlastníka je při plánování správcem organizačně potvrditelná pouze kolize přiřazeného trenéra. Zvolený postup před prvním zápisem celé série zobrazí čísla a časy všech překryvů a vyžaduje druhé odeslání stejného návrhu v téže session; změna návrhu nebo překrývající lekce potvrzení zneplatní. Zápis potvrzení a přiřazeného trenéra je auditován v transakci. Kolize soupisky, sportoviště a skutečné rezervace zůstávají blokující. Alternativa vypnout kontrolu kolizí pro správce by skryla organizační konflikt i nebezpečné rezervace. Stávající politika záskoků dovoluje trenérům vybírat všechny aktivní soupisky; tato práce ji nemění, běžný trenér však nemůže potvrdit překryv ani přiřadit jiného trenéra. [Plán](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#training-plan-acl-01--plánování-správcem-a-kolize-21-11-2026), [ověření](verification/training-plan-admin-collision-20261121/RESULTS.md).
+## D2026-11-21-AM01
+
+Pokyn vlastníka opravit automatické odesílání rodičovských ověřovacích a obnovovacích zpráv. Nejprve provést čtecí produkční diagnostiku, poté zřídit omezený plán pouze pro `public` ověření/obnovu a `child` obnovu. Společný CLI worker je sice již implementován, ale jeho spuštění bez inventury by mohlo uvolnit i klubová oznámení. Trenérský plán veřejné účty výslovně vylučuje. Ruční opakování jednotlivých e-mailů problém plánování neřeší. [Plán, meze a akceptace](identity-email-queue.md#auth-mail-01--oprava-automatického-zpracování-rodičovské-fronty-21-11-2026), [výsledky](verification/auth-mail-worker-20261121/RESULTS.md).
 
 ## D2026-11-21-WIP01
 

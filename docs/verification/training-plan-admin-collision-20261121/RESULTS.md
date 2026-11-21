@@ -18,3 +18,5 @@ Prostředí: Windows, PHP 8.2.12, PHPUnit 11.5.56, izolovaná SQLite paměťová
 Jeden termín s více soupiskami používá existující `training_roster_links`; plánovač nyní nevytváří další termíny kvůli souběhu trenéra. Sériové přiřazení `serie_id` aktualizuje jen ID právě vytvořených termínů.
 
 Po otevření PR se `main` posunul na `5acd225f` (SEC01 a dokumentační podklady DOC01/P15/Q2). Větev jej převzala sloučením; v konfliktních souborech jsou zachovány obě agendy. Po sloučení je třeba znovu ověřit čistý CI běh a odkazy.
+
+Po zeleném 21/21 CI se `main` posunul na `741c0625` (AUTH-MAIL-01). Větev jej převzala bez změny plánovací logiky; konfliktní přehledy a logy zachovávají obě agendy. Nový čistý CI běh společného stromu otevřený.
