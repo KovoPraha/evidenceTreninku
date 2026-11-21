@@ -2,7 +2,7 @@
 
 ## Převzetí na aktuální main — 21. 11. 2026
 
-Původní [PR #391](https://github.com/KovoPraha/evidenceTreninku/pull/391) zůstal otevřený s konflikty v obecných projektových dokumentech. Jeho změny `includes/private_storage.php` a `tests/Unit/PrivateStorageTest.php` byly porovnány s dnešním `main`: po původní základně se tyto dva soubory věcně nezměnily. Byly proto přeneseny spolu s tímto auditem do větve `codex/wip-reconciliation-20261121`, založené na `origin/main` po #503. Tím se nemíchají zastaralé přehledy z 8. 11. do dnešního release stavu.
+Původní [PR #391](https://github.com/KovoPraha/evidenceTreninku/pull/391) zůstal otevřený s konflikty v obecných projektových dokumentech. Jeho změny `includes/private_storage.php` a `tests/Unit/PrivateStorageTest.php` byly porovnány s dnešním `main`: po původní základně se tyto dva soubory věcně nezměnily. Byly proto přeneseny spolu s tímto auditem do [PR #504](https://github.com/KovoPraha/evidenceTreninku/pull/504) z větve `codex/wip-reconciliation-20261121`, založené na `origin/main` po #503. Tím se nemíchají zastaralé přehledy z 8. 11. do dnešního release stavu.
 
 Cílený PHP lint obou souborů PASS. Místní Windows PHPUnit: 10 testů, 21 assertions PASS, tři testy symlinků SKIP z důvodu platformy. Původní Linux CI #391 mělo 11 PASS kontrol včetně obou MariaDB, ale pro dnešní společný strom je rozhodující nové CI aktuální větve. Dokud neprojde a nebude sloučeno, produkce tuto opravu neobsahuje. Produkční práva soukromého adresáře a test skutečného souboru zůstávají NOT RUN; testovací soubory byly syntetické.
 

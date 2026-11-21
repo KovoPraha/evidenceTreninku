@@ -18,7 +18,7 @@ Ověřeny `git status`, `git diff`, `git worktree list`, historie větví, otev�
 | Packeta, `evidencePavel-order-status-system-mail-20261021` | PR #163 už je sloučený. Pět necommitnutých historických dokumentů z 22. 10. zachycuje schválení registrace, prázdné seznamy v omezeném období, uložení veřejného klíče, fungující samostatnou CZ Z-BOX mapu a chybu klienta Packety při zobrazení smluvního ceníku. Nejde o důkaz skutečné zásilky ani její ceny. | Do společné evidence převzít pouze tento neosobní souhrn a ponechat lokální důkazy soukromé. Doprava zůstává vypnutá; smluvní cenu a první skutečný štítek/podání je třeba doložit před provozní aktivací. |
 | Dočasný `evidence-security-audit-20261024` | Detached temp checkout s 1 564 sledovanými soubory označenými jako smazané; příčina nebyla prokázána. | Necommitovat hromadné mazání a strom zachovat pro případnou obnovu. |
 
-Původní Fio patch je v lokálním `.codex-tmp/`, nikoli v Gitu; archiv není oprávnění vrátit historickou stránku do provozu. V hlavním checkoutu po přepnutí nejsou sledované lokální změny. Netracked výstupy zůstaly nedotčené.
+Původní Fio patch je v lokálním `.codex-tmp/`, nikoli v Gitu; archiv není oprávnění vrátit historickou stránku do provozu. Následně byly do stejného lokálního adresáře `wip-archive-20261121/` uloženy patche BAR, P05 a Packety, staged planner patch i picker dokumenty a tři konfliktní verze. `git merge --abort` uzavřel nehotový picker merge; po archivaci byly obnoveny pouze sledované dokumenty BAR, P05, Packety, pickeru a šest W85 souborů bez obsahového diffu. Jejich sledované pracovní stromy jsou čisté. Netracked a soukromé výstupy zůstaly nedotčené. Dočasný bezpečnostní checkout s 1 564 chybějícími soubory zůstal zachován, protože příčina tohoto stavu není prokázaná.
 
 ## Otevřené GitHub PR k okamžiku inventury
 
@@ -32,4 +32,4 @@ Tyto PR nevznikly v současném hlavním checkoutu a samotný otevřený stav ne
 - SEC01: původní bezpečnostní PR #391 je obsahově převzaté do aktuální větve; před novým merge/deploy musí projít dnešním Linux CI. [Tematický audit](../../SECURITY_AUDIT_2026-11-08.md) odděluje původní reprodukci od současného vydání.
 - Fio, BAR obrazovky/sklad, stará Packeta aplikace a W85: aplikace již byla dříve vydaná. Opakovaný deploy z výše uvedených starých stromů by nic potřebného nedokončil.
 - BAR fyzická inventura a kasa, skutečné P05/P07 objednání/platba/PDF, smluvní cena a první přeprava Packety jsou provozní kroky, které nelze pravdivě uzavřít z Git historie. Aktuální stav vede [registr](../../WORK_PLAN_CURRENT.md).
-- Neaktivní checkouty a soukromé výstupy jsou zachované. Úklid lze řešit až po převzetí hodnotných důkazů a vyřešení otevřených PR; není součástí produkčního vydání soupisky.
+- Neaktivní checkouty a soukromé výstupy jsou zachované; historické sledované patche jsou lokálně archivované a popsané výše. Úplné odstranění starých worktrees není součástí produkčního vydání soupisky.
