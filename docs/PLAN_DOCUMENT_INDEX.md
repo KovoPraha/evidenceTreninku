@@ -8,6 +8,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-WIP-AUDIT-20261121 | [Inventura historických checkoutů](verification/worktree-reconciliation-20261121/RESULTS.md) | verification / SUPPORT | WIP-AUDIT-01/SEC01 |
 | PL-f4f6043c1f | [P15 čtecí synchronizace ČSC/Sportsoft](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md) | plan / PARTIAL | P15 |
 | PL-8465995434 | [P15 S0 čtecí kontrakt](CSC_SPORTSOFT_S0_CONTRACT_V1.md) | reference / SUPPORT | P15 |
 | PL-b8000d96f9 | [P15 S0 oddělená stanice](CSC_SPORTSOFT_S0_STATION.md) | reference / SUPPORT | P15 |

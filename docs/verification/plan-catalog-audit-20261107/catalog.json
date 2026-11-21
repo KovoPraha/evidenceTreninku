@@ -4,6 +4,17 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-WIP-AUDIT-20261121",
+      "path": "docs/verification/worktree-reconciliation-20261121/RESULTS.md",
+      "title": "Inventura historických checkoutů",
+      "primary": false,
+      "role": "verification",
+      "status": "SUPPORT",
+      "registry": "WIP-AUDIT-01/SEC01",
+      "disposition": "Čtecí inventura a převzetí WIP; provozní kroky mají samostatné podmínky.",
+      "evidence": []
+    },
+    {
       "id": "PL-SEC01-20261108",
       "path": "docs/SECURITY_AUDIT_2026-11-08.md",
       "title": "SEC01 — soukromé úložiště",
