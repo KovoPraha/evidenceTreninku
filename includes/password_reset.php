@@ -11,6 +11,8 @@ final class PasswordResetException extends RuntimeException
 {
 }
 
+const PASSWORD_RESET_EMAIL_TTL_SECONDS = 3 * 86400;
+
 /**
  * @param callable(string,string):bool $deliver receives verified e-mail and plaintext token
  * @return array{accepted:true,issued:bool}
@@ -27,7 +29,7 @@ function passwordResetRequest(PDO $pdo, string $identifier, callable $deliver, ?
         return ['accepted' => true, 'issued' => false];
     }
 
-    $issued = one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET, 3600, $now);
+    $issued = one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET, PASSWORD_RESET_EMAIL_TTL_SECONDS, $now);
     $nowSql = gmdate('Y-m-d H:i:s', $now ?? time());
     $pdo->beginTransaction();
     try {
@@ -74,7 +76,7 @@ function passwordResetQueueRequest(PDO $pdo, string $identifier, string $resetUr
     if ($target === null) {
         return ['accepted' => true,'issued' => false,'token' => null];
     }
-    $issued = one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET, 3600, $now);
+    $issued = one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET, PASSWORD_RESET_EMAIL_TTL_SECONDS, $now);
     $pdo->beginTransaction();
     try {
         $pdo->prepare('INSERT INTO password_reset_tokens(target_type,target_id,delivery_account_id,token_hash,expires_at) VALUES(?,?,?,?,?)')
@@ -88,7 +90,7 @@ function passwordResetQueueRequest(PDO $pdo, string $identifier, string $resetUr
             $issued['hash'],
             (string)$target['email'],
             'Obnova hesla — Kovopraha',
-            "Pro nastavení nového hesla otevřete odkaz:\n{$link}\n\nOdkaz je platný 60 minut.",
+            "Pro nastavení nového hesla otevřete odkaz:\n{$link}\n\nOdkaz je platný 3 dny.",
             $keyConfig
         );
         $pdo->commit();

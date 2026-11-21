@@ -22,3 +22,5 @@ Po otevření PR se `main` posunul na `5acd225f` (SEC01 a dokumentační podklad
 Po zeleném 21/21 CI se `main` posunul na `741c0625` (AUTH-MAIL-01). Větev jej převzala bez změny plánovací logiky; konfliktní přehledy a logy zachovávají obě agendy. Nový čistý CI běh společného stromu otevřený.
 
 Společný `3e8f90e4` po převzetí `741c0625` prošel 21/21 CI. Během běhu byl v `main` sloučen `eb78c45b` s produkčním výsledkem AUTH-MAIL-01; poslední dokumentační konflikt byl spojen se zachováním novějšího provozního stavu. Plánovací kód beze změny, další CI společného stromu otevřené.
+
+Společný `e5cf1ef2` po převzetí `eb78c45b` prošel 21/21 CI. Mezitím se `main` posunul na `ccac61ab` (AUTH-MAIL-02); větev jej převzala se zachováním obou plánů a souvisejících výsledků. Plánovací kód se nezměnil. Nové CI společného stromu čeká; merge, nasazení a přihlášené UAT plánování NOT RUN.

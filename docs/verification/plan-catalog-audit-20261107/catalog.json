@@ -2786,10 +2786,11 @@
       "primary": true,
       "role": "plan",
       "status": "PARTIAL",
-      "registry": "AUTH-MAIL-01",
-      "disposition": "AUTH-MAIL-01: kód samostatného rodičovského workeru připraven; produkční diagnostika, aktivace a doručení otevřené.",
+      "registry": "AUTH-MAIL-01/AUTH-MAIL-02",
+      "disposition": "AUTH-MAIL-01: produkční worker aktivní, doručení do schránky otevřené. AUTH-MAIL-02: třídenní reset a náhrada dvou zrušených odkazů rozpracované.",
       "evidence": [
-        "docs/verification/auth-mail-worker-20261121/RESULTS.md"
+        "docs/verification/auth-mail-worker-20261121/RESULTS.md",
+        "docs/verification/auth-mail-reset-20261121/RESULTS.md"
       ]
     },
     {
