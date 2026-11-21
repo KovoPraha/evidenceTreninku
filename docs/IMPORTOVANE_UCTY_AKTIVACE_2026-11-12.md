@@ -2,7 +2,7 @@
 
 ## KIS-PARENT-LINK-01 — oprávnění při propojení rodiče (21. 11. 2026)
 
-Stav: K REVIEW; [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník: vývoj KIS. Větev `codex/parent-link-permissions-20261121`, samostatný worktree z `origin/main` v `C:\Users\Marek\Documents\Codex\evidencePavel-parent-link-20261121`. Zadání vlastníka pokrývá opravu a syntetické ověření správy vazeb; neautorizuje zápis do produkčních účtů ani lidskou přejímku.
+Stav: KÓD NASAZEN, přihlášené UAT otevřené; [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) sloučený. Vlastník: vývoj KIS. Větev `codex/parent-link-permissions-20261121`, samostatný worktree z `origin/main` v `C:\Users\Marek\Documents\Codex\evidencePavel-parent-link-20261121`. Zadání vlastníka pokrývá opravu a syntetické ověření správy vazeb; neautorizuje zápis do produkčních účtů ani lidskou přejímku.
 
 Nález: `sprava_sportovcu.php` načítá sekci „Napojené uživatelské účty“ běžným čtením bez dešifrování citlivého záznamu. Akce `attach_account` volá `sportovecEditorGuardianAccount()` → `sportovecEditorRequireActor()` → `personSensitiveRequireAdmin()`, která kontroluje přesnou legacy roli `admin` a vyhazuje hlášku o citlivém údaji. Správu vazeb přitom vlastní aktivní pozice `registrar` a `eshop_identity_admin.php` v této pozici schvaluje stejné `account_person_roles`.
 
@@ -17,6 +17,8 @@ Další souběh: head `f96abbf8` prošel všemi 11 CI kontrolami. Následné `ma
 Vydání 21. 11.: vlastník výslovně napsal „nasadit“. Tím schválil merge této opravy a spuštění chráněného `deploy-production.yml` z `main`. Není tím schváleno zapnutí `uat_schvaleno`, import kroužků, jednorázové vydání resetů z AUTH-MAIL-02 ani zápis do účtu č. 453. Nejdříve převzít souběžné `main` `ccac61ab` (#510), ověřit společný strom a CI, sloučit PR #507, nasadit přes workflow s `potvrzeni=NASADIT`, ostatní přepínače false, ověřit release a zapsat důkaz. Přihlášené UAT zůstává samostatné.
 
 Souběh před merge: revize `fa817de4` po #510 prošla 11/11 CI. Před samotným sloučením přibyl do `main` `6dcd0a20` (#508, plánování trenéra); jeho aplikační kód se s rodičovskou vazbou nepřekrývá. Nový společný strom se ověřuje a PR #507 zůstává otevřený do dokončení CI.
+
+Výsledek vydání: finální head `069cbe37` po #508 prošel 11/11 CI a [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) byl sloučen jako `7d856ed6`. Chráněný [deploy 44912234389](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44912234389) na stejném SHA skončil SUCCESS s `uat_schvaleno=false` a `importovat_krouzky=false`. Ověřená záloha, migrace, zachování variabilních symbolů a HTTP smoke prošly. [Release důkazy](verification/parent-link-permissions-20261121/RESULTS.md#produkční-vydání-21-11-2026). Přihlášené UAT registráře/rodiče a skutečné propojení účtu č. 453 zůstávají otevřené.
 
 ## Povolení vydání 12. 11. 2026
 
