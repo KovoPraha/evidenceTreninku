@@ -1,6 +1,6 @@
 # KIS-PARENT-LINK-01 — kontrola propojení rodiče, 21. 11. 2026
 
-Větev `codex/parent-link-permissions-20261121` z `origin/main` `11505aed51`; samostatný worktree. Použity pouze syntetické účty a SQLite v paměti, bez produkčního čtení a zápisu. PR/CI/merge/deploy/uživatelská přejímka: NOT RUN při místním ověření.
+Větev `codex/parent-link-permissions-20261121` z `origin/main` `11505aed51`; samostatný worktree. Použity pouze syntetické účty a SQLite v paměti, bez produkčního čtení a zápisu. Commit `47f4362d` pushnutý, [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený; CI ve frontě, merge/deploy/uživatelská přejímka NOT RUN při tomto zápisu.
 
 ## Nález a změna
 

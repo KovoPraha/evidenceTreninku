@@ -8,7 +8,7 @@ jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 
 ## KIS-PARENT-LINK-01 — propojení rodičovského účtu (21. 11. 2026)
 
-K OVĚŘENÍ CI. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main`. [Nález, rozsah a akceptace](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Integrace lokálně PASS; další krok: CI a PR, poté řízená přihlášená přejímka. Produkční zápis a lidské UAT NOT RUN.
+K OVĚŘENÍ CI, [PR #507](https://github.com/KovoPraha/evidenceTreninku/pull/507) otevřený. Vlastník vývoj KIS, větev `codex/parent-link-permissions-20261121`, vlastní worktree z `origin/main`. [Nález a akceptace](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [syntetické výsledky](verification/parent-link-permissions-20261121/RESULTS.md). Integrace lokálně PASS; další krok: CI a review, poté řízená přihlášená přejímka. Produkční zápis a lidské UAT NOT RUN.
 
 ## ROSTER-HISTORY-01 — výchozí seznam členů a historie (21. 11. 2026)
 
