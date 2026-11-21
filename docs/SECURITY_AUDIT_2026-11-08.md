@@ -4,7 +4,9 @@
 
 Původní [PR #391](https://github.com/KovoPraha/evidenceTreninku/pull/391) zůstal otevřený s konflikty v obecných projektových dokumentech. Jeho změny `includes/private_storage.php` a `tests/Unit/PrivateStorageTest.php` byly porovnány s dnešním `main`: po původní základně se tyto dva soubory věcně nezměnily. Byly proto přeneseny spolu s tímto auditem do [PR #504](https://github.com/KovoPraha/evidenceTreninku/pull/504) z větve `codex/wip-reconciliation-20261121`, založené na `origin/main` po #503. Tím se nemíchají zastaralé přehledy z 8. 11. do dnešního release stavu.
 
-Cílený PHP lint obou souborů PASS. Místní Windows PHPUnit: 10 testů, 21 assertions PASS, tři testy symlinků SKIP z důvodu platformy. Původní Linux CI #391 mělo 11 PASS kontrol včetně obou MariaDB, ale pro dnešní společný strom je rozhodující nové CI aktuální větve. Dokud neprojde a nebude sloučeno, produkce tuto opravu neobsahuje. Produkční práva soukromého adresáře a test skutečného souboru zůstávají NOT RUN; testovací soubory byly syntetické.
+Cílený PHP lint obou souborů PASS. Místní Windows PHPUnit: 10 testů, 21 assertions PASS, tři testy symlinků SKIP z důvodu platformy. Původní Linux CI #391 mělo 11 PASS kontrol včetně obou MariaDB; dnešní společný strom byl samostatně ověřen novým CI níže. Test skutečného soukromého souboru zůstává NOT RUN; testovací soubory byly syntetické.
+
+Aktualizace: nové [CI PR #504](https://github.com/KovoPraha/evidenceTreninku/pull/504) dokončeno 11/11 PASS včetně Linux PHPUnit, obou MariaDB, PHPStan/stylu, dokumentace a CodeQL. Sloučeno do `main` jako `11505aed`; konfliktní #391 uzavřen jako nahrazený. [Deploy 44899472344](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44899472344) SUCCESS na stejném SHA: testy, předletová kontrola, ověřená záloha, příprava soukromého úložiště, migrace, zachování VS, aktivace a HTTP smoke PASS; import kroužků přeskočen, `uat_schvaleno=false`. Přihlášený provozní průchod se skutečným soukromým souborem NOT RUN.
 
 - Stav: implementace a místní ověření HOTOVO, předáno PR #391 / CI otevřené; vlastník: vývoj / zadavatel.
 - Oprávnění: přímé zadání auditu, oprav a dokumentace; předání přes PR.

@@ -2,7 +2,7 @@
 
 ## TRAINING-PLAN-ACL-01 — plánování správcem a kolize (21. 11. 2026)
 
-Stav: K OVĚŘENÍ v PR. Vlastník: vývoj KIS. Oprávnění: zadání vlastníka v tomto úkolu; bez oprávnění k produkčnímu testovacímu zápisu či aktivaci. Větev `codex/training-plan-admin-collision-20261121` z `11505aed` (`origin/main`), pracovní strom `C:\xampp\htdocs\evidencePavel`; cizí nesledované výstupy zachovány.
+Stav: K OVĚŘENÍ v PR. Vlastník: vývoj KIS. Oprávnění: zadání vlastníka v tomto úkolu; bez oprávnění k produkčnímu testovacímu zápisu či aktivaci. Větev `codex/training-plan-admin-collision-20261121` založená z `11505aed`, následně převzatý `origin/main` `5acd225f`; pracovní strom `C:\xampp\htdocs\evidencePavel`, cizí nesledované výstupy zachovány.
 
 Cíl: správce v aktivní pozici `sports_lead` může při vytvoření termínu zvolit libovolnou aktivní KIS skupinu/soupisku a aktivního trenéra. Jeden termín smí cílit na více soupisek. Běžný trenér nadále plánuje jen pod vlastním ID a nesmí potvrdit překryv. Editace zachová kontrolu vlastnictví plánu a správci umožní změnu přiřazeného trenéra.
 

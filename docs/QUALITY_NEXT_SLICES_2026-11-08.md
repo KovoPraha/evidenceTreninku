@@ -42,7 +42,7 @@ otevřené PR a neslučuje se s tímto řezem.
 
 ## Q2-TIME — odolný zápis tréninku (9. 11. 2026)
 
-Stav NASAZENO / technické ověření PASS / přihlášené UAT K OVĚŘENÍ; vlastník vývoj. Chybný čas nesmí odeslat
+Stav NASAZENO / technické ověření PASS / cílené přihlášené UAT 3/3 PASS; vlastník vývoj. Chybný čas nesmí odeslat
 formulář ani vymazat text; uchovat koncept při přerušení. Větev
 `codex/training-form-resilience-20261109`, vlastní worktree
 `C:/Users/Marek/Documents/Codex/evidencePavel-training-resilience-20261109`, base `2c61df14`.
@@ -74,6 +74,24 @@ protokolu, CURRENT a handoffu. Souhlas nevyžaduje novou aktivaci automatizace.
 Výsledek: #412 sloučený a nasazený, [produkční protokol](verification/training-form-resilience-release-20261109/RESULTS.md).
 Deploy SUCCESS; 6 HTTP a přesný JS PASS. Předání důkazů vede
 `codex/training-resilience-release-proof-20261109` ve stejném vlastním worktree.
-Přihlášené UAT NOT RUN: Computer Use ukončil ovládání, protože nedokázal
+Při původním vydání přihlášené UAT NOT RUN: Computer Use ukončil ovládání, protože nedokázal
 bezpečně určit URL Chrome. Další krok: testerka projde šest bodů v protokolu,
 zejména chybný čas, reload a znovuotevření konceptu. Otevřené UAT není PASS.
+
+### Q2-TIME-UAT — nový pokus 9. 11. 2026
+
+Vlastník zadal znovu ověřit chybný čas, zachování textu při reloadu a zavření
+okna. Vlastník práce vývoj; větev `codex/training-form-uat-20261109`, vlastní
+worktree shodný s Q2-TIME, base `fa8315eb`. Rozsah: syntetický rozepsaný
+formulář v přihlášeném Chrome, bez uložení skutečného tréninku a bez zásahu
+do cizích konceptů. Zavření vlastního testovacího okna/karty nezavírá cizí práci.
+Akceptace: blokace chybného času a přesné zachování textu v obou návratech;
+výsledky a hranice budou doplněné do [protokolu](verification/training-form-resilience-release-20261109/RESULTS.md).
+Výsledek: vlastník se přihlásil a všechny tři požadované scénáře prošly.
+[Produkční UAT 3/3 PASS a hranice](verification/training-form-uat-20261109/RESULTS.md):
+blokace neplatného času, přesná obnova textu/měření při reloadu i po zavření
+samostatného testovacího okna. Správný čas prošel čtecí kontrolou validity.
+Platný submit nebyl proveden. Po potvrzení odstranění vlastního konceptu
+selhala závěrečná kontrola CDP a nástroj zastavil ovládání kvůli neověřené URL.
+Další krok: ověřit úklid konkrétního TEST konceptu; úplný zápis a výpadek při POST
+zůstávají mimo tento převzatý rozsah. Důkazy neobsahují session ani submission klíče.
