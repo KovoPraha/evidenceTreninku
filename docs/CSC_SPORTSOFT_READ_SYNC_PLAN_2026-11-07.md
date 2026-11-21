@@ -11,7 +11,7 @@ Zvolený rozsah: čtení obou portálů, párování UCI ID, worker na nonstop s
 Větev: `codex/csc-sportsoft-read-sync-plan-20261107`.
 Worktree: `C:/Users/Marek/Documents/Codex/evidencePavel-csc-sportsoft-plan-20261107`.
 Základ inspekce kódu: `8e9cdce1ef758529dfa5a9950424518d39a79dc6`.
-Předání: větev publikována, [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371) otevřené; merge/deploy/aktivace NOT RUN.
+Původní předání 7. 11.: větev publikována, [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371) otevřený, merge/deploy/aktivace tehdy NOT RUN. Aktuální převzetí S0 vede #505; runtime/aktivace stále NOT RUN.
 Navazující zadání vlastníka: provést S0 a průběžně zapsat inventuru a seznam polí.
 Stanice je jiný Windows počítač s Rikim; KIS má být provozně oddělený.
 Podrobnosti: [kontrakt S0](CSC_SPORTSOFT_S0_CONTRACT_V1.md),

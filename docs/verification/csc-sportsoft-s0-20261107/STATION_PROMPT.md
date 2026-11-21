@@ -20,10 +20,11 @@ neznamená oprávnění jej číst.
 - Použij pouze již dostupný repozitář Evidence; nehledej ho plošným scanem
   disku/profilů. Načti jeho AGENTS.md, CLAUDE.md, CURRENT, HANDOFF,
   WORK_DOCUMENTATION_POLICY a P15 soubory odkazované výše.
-- Zkontroluj WIP, fetch origin a skutečný stav PR #371. Pokud není sloučený,
-  použij jako zdroj jeho aktuální větev
-  `origin/codex/csc-sportsoft-read-sync-plan-20261107`; samotný starý main
-  S0 podklady nemusí obsahovat. Pokud je sloučený, vyjdi z aktuálního main.
+- Zkontroluj WIP, fetch origin a skutečný stav dokumentačního PR #505, který
+  převzal S0 podklady z konfliktního historického #371. Pokud #505 ještě není
+  sloučený, použij jako zdroj `origin/codex/wip-final-record-20261121` a
+  uveď závislost. Po jeho sloučení vyjdi z aktuálního main; starou větev
+  #371 neslučuj duplicitně.
 - Vytvoř vlastní worktree a větev `codex/csc-sportsoft-station-s0-20261107`
   v běžné pracovní oblasti Evidence. Existující checkout, cizí WIP ani
   jinou stejnou větev nepřepisuj. Zapiš přesný base SHA a použitou cestu.
@@ -108,7 +109,7 @@ projektových pravidel. Zachovej souběžnou práci; pro nové rozhodnutí/udál
 použij jmenné ID s `P15-STATION`, ať nevznikne kolize čísel mezi pracovišti.
 Spusť `php tools/check-current-docs.php`, `git diff --check`, kontrolu
 sanitizace; commit a push jen vlastní změny, předej vlastní PR proti main.
-Pokud #371 ještě není sloučené, popiš závislost a neslučuj duplicity.
+Pokud #505 ještě není sloučené, popiš závislost a neslučuj duplicity.
 
 S0 neoznač jako celé HOTOVO, pokud chybí inventura/oddělení účtů nebo
 otevřené mapování zdrojů. Provozní headless/restart a ostrý ingest jsou

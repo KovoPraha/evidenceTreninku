@@ -5,7 +5,7 @@ Datum: 7. 11. 2026. Vlastník: Marek / vývoj KIS.
 [datový kontrakt](CSC_SPORTSOFT_S0_CONTRACT_V1.md),
 [prompt pro místní Codex](verification/csc-sportsoft-s0-20261107/STATION_PROMPT.md).
 Stav: požadavky a předání připravené; živá inventura cílové stanice NOT RUN.
-Dokumentace je v otevřeném [PR #371](https://github.com/KovoPraha/evidenceTreninku/pull/371).
+Aktuální převzetí této dokumentace je v [PR #505](https://github.com/KovoPraha/evidenceTreninku/pull/505); původní #371 měl konflikty ve společných přehledech.
 
 ## Co skutečně víme
 
