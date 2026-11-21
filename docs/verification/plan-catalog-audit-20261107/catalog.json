@@ -4,6 +4,127 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-person-match-rules",
+      "path": "docs/pravidla-shody-osob.md",
+      "title": "Pravidla shody osob (kontrakt `person-match-v1`)",
+      "primary": false,
+      "role": "reference",
+      "status": "REFERENCE",
+      "registry": "DOC02",
+      "disposition": "Kanonické pravidlo shody osob.",
+      "evidence": []
+    },
+    {
+      "id": "PL-prompt-a",
+      "path": "docs/PROMPT-A-opravy-testovani.md",
+      "title": "Prompt A — Opravy z první vlny uživatelského testování (P0 + P1)",
+      "primary": false,
+      "role": "historical-plan",
+      "status": "HISTORICAL",
+      "registry": "DOC02",
+      "disposition": "Historický podklad; neuděluje nové oprávnění k realizaci.",
+      "evidence": []
+    },
+    {
+      "id": "PL-prompt-a2",
+      "path": "docs/PROMPT-A2-nasazeni.md",
+      "title": "Prompt A2 — Bezpečné dokončení a nasazení oprav z první vlny",
+      "primary": false,
+      "role": "historical-plan",
+      "status": "HISTORICAL",
+      "registry": "DOC02",
+      "disposition": "Historický podklad; neuděluje nové oprávnění k realizaci.",
+      "evidence": []
+    },
+    {
+      "id": "PL-prompt-b",
+      "path": "docs/PROMPT-B-registrace-sportovce.md",
+      "title": "Prompt B — Samoobslužná registrace sportovce",
+      "primary": false,
+      "role": "historical-plan",
+      "status": "HISTORICAL",
+      "registry": "DOC02",
+      "disposition": "Historický podklad; neuděluje nové oprávnění k realizaci.",
+      "evidence": []
+    },
+    {
+      "id": "PL-prompt-c",
+      "path": "docs/PROMPT-C-p2-opravy.md",
+      "title": "Prompt C — Opravy P2 z první vlny testování",
+      "primary": false,
+      "role": "historical-plan",
+      "status": "HISTORICAL",
+      "registry": "DOC02",
+      "disposition": "Historický podklad; neuděluje nové oprávnění k realizaci.",
+      "evidence": []
+    },
+    {
+      "id": "PL-prompt-d",
+      "path": "docs/PROMPT-D-notifikace-plateb.md",
+      "title": "Prompt D — Notifikace zákazníkovi po přijetí platby",
+      "primary": false,
+      "role": "historical-plan",
+      "status": "HISTORICAL",
+      "registry": "DOC02",
+      "disposition": "Historický podklad; neuděluje nové oprávnění k realizaci.",
+      "evidence": []
+    },
+    {
+      "id": "PL-prompt-e",
+      "path": "docs/PROMPT-E-rucni-katalog-a-krouzky.md",
+      "title": "Prompt E — Ruční správa katalogu, parametry, kategorie a prodej kroužků",
+      "primary": false,
+      "role": "historical-plan",
+      "status": "HISTORICAL",
+      "registry": "DOC02",
+      "disposition": "Historický podklad; neuděluje nové oprávnění k realizaci.",
+      "evidence": []
+    },
+    {
+      "id": "PL-prompt-f",
+      "path": "docs/PROMPT-F-dokonceni-driftu.md",
+      "title": "Prompt F — Oprava kompatibility registru podmínek a nasazení zbylých commitů",
+      "primary": false,
+      "role": "historical-plan",
+      "status": "HISTORICAL",
+      "registry": "DOC02",
+      "disposition": "Historický podklad; neuděluje nové oprávnění k realizaci.",
+      "evidence": []
+    },
+    {
+      "id": "PL-prompt-g",
+      "path": "docs/PROMPT-G-worker-notifikaci.md",
+      "title": "Prompt G — Zprovoznění workeru notifikací na produkci",
+      "primary": false,
+      "role": "historical-plan",
+      "status": "HISTORICAL",
+      "registry": "DOC02",
+      "disposition": "Historický podklad; neuděluje nové oprávnění k realizaci.",
+      "evidence": []
+    },
+    {
+      "id": "PL-prompt-h",
+      "path": "docs/PROMPT-H-oprava-deploye-a-r9-r12.md",
+      "title": "Prompt H — Odblokovat nasazení a dokončit R9–R12",
+      "primary": false,
+      "role": "historical-plan",
+      "status": "HISTORICAL",
+      "registry": "DOC02",
+      "disposition": "Historický podklad; neuděluje nové oprávnění k realizaci.",
+      "evidence": []
+    },
+    {
+      "id": "PL-training-plan-admin-result",
+      "path": "docs/verification/training-plan-admin-collision-20261121/RESULTS.md",
+      "title": "TRAINING-PLAN-ACL-01 — místní ověření, 21. 11. 2026",
+      "primary": false,
+      "role": "evidence",
+      "status": "SUPPORT",
+      "registry": "TRAINING-PLAN-ACL-01",
+      "disposition": "Místní výsledek a meze ověření TRAINING-PLAN-ACL-01.",
+      "evidence": []
+    },
+    {
       "id": "PL-SEC01-20261108",
       "path": "docs/SECURITY_AUDIT_2026-11-08.md",
       "title": "SEC01 — soukromé úložiště",

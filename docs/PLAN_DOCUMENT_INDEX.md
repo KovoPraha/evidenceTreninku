@@ -8,6 +8,17 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-person-match-rules | [pravidla-shody-osob.md](pravidla-shody-osob.md) | reference / REFERENCE | DOC02 |
+| PL-prompt-a | [PROMPT-A-opravy-testovani.md](PROMPT-A-opravy-testovani.md) | historical-plan / HISTORICAL | DOC02 |
+| PL-prompt-a2 | [PROMPT-A2-nasazeni.md](PROMPT-A2-nasazeni.md) | historical-plan / HISTORICAL | DOC02 |
+| PL-prompt-b | [PROMPT-B-registrace-sportovce.md](PROMPT-B-registrace-sportovce.md) | historical-plan / HISTORICAL | DOC02 |
+| PL-prompt-c | [PROMPT-C-p2-opravy.md](PROMPT-C-p2-opravy.md) | historical-plan / HISTORICAL | DOC02 |
+| PL-prompt-d | [PROMPT-D-notifikace-plateb.md](PROMPT-D-notifikace-plateb.md) | historical-plan / HISTORICAL | DOC02 |
+| PL-prompt-e | [PROMPT-E-rucni-katalog-a-krouzky.md](PROMPT-E-rucni-katalog-a-krouzky.md) | historical-plan / HISTORICAL | DOC02 |
+| PL-prompt-f | [PROMPT-F-dokonceni-driftu.md](PROMPT-F-dokonceni-driftu.md) | historical-plan / HISTORICAL | DOC02 |
+| PL-prompt-g | [PROMPT-G-worker-notifikaci.md](PROMPT-G-worker-notifikaci.md) | historical-plan / HISTORICAL | DOC02 |
+| PL-prompt-h | [PROMPT-H-oprava-deploye-a-r9-r12.md](PROMPT-H-oprava-deploye-a-r9-r12.md) | historical-plan / HISTORICAL | DOC02 |
+| PL-training-plan-admin-result | [verification/training-plan-admin-collision-20261121/RESULTS.md](verification/training-plan-admin-collision-20261121/RESULTS.md) | evidence / SUPPORT | TRAINING-PLAN-ACL-01 |
 | PL-SEC01-20261108 | [SEC01 — soukromé úložiště](SECURITY_AUDIT_2026-11-08.md) | plan / PARTIAL | WIP-AUDIT-01/SEC01 |
 | PL-WIP-AUDIT-20261121 | [Inventura starých checkoutů](verification/worktree-reconciliation-20261121/RESULTS.md) | evidence / SUPPORT | WIP-AUDIT-01/SEC01 |
 | PL-coach-attendance-20261113 | [E4-06 — docházka trenéra z rozvrhu](COACH_ATTENDANCE_2026-11-13.md) | plan / PARTIAL | E4-06 |
