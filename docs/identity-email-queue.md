@@ -2,12 +2,12 @@
 
 ## AUTH-MAIL-02 — třídenní obnova a náhrada dvou starých odkazů (21. 11. 2026)
 
-**Stav: ROZPRACOVÁNO.** Pokyn vlastníka: poslat nové obnovovací zprávy dvěma
+**Stav: K OVĚŘENÍ DORUČENÍ — kód nasazen, dvě nové zprávy přijaty transportem.** Pokyn vlastníka: poslat nové obnovovací zprávy dvěma
 příjemcům, jejichž původní zprávy zrušil první běh rodičovského workeru, a
 prodloužit platnost nových odkazů na 3 dny. Vlastník vývoj KIS; větev
 `codex/auth-mail-reset-72h-reissue-20261121`, oddělený worktree z `origin/main`
-`eb78c45b`. Produkční odeslání je výslovně povoleno tímto pokynem, ale musí
-proběhnout až po ověření přesného rozsahu, nasazení a čtecí kontrole. Adresy,
+`eb78c45b`, [PR #510](https://github.com/KovoPraha/evidenceTreninku/pull/510) v `main` jako `ccac61ab`. Produkční odeslání bylo výslovně povoleno tímto pokynem a
+proběhlo po ověření přesného rozsahu, nasazení a čtecí kontrole. Adresy,
 tokeny ani těla zpráv se neukládají do Gitu či výstupu workflow.
 
 Rozsah: běžná samoobslužná obnova veřejného/rodičovského účtu má mít platnost
@@ -37,6 +37,42 @@ nesmí automaticky přeposílat zprávu s nejistým výsledkem.
 
 Výsledky: [protokol AUTH-MAIL-02](verification/auth-mail-reset-20261121/RESULTS.md),
 [registr](WORK_PLAN_CURRENT.md#auth-mail-02--třídenní-obnova-a-náhrada-dvou-odkazů-21-11-2026).
+
+Produkční výsledek: [deploy 44908781060](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44908781060) SUCCESS;
+[čtecí inventura 44909136270](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44909136270) PASS pro staré řádky 3 a 8;
+[jednorázové vydání 44909270205](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44909270205) vytvořilo nové řádky 10 a 11 s expirací 24. 11. 2026 ve 13:31:35 UTC. Přirozený běh
+oba předal PHP `mail()` a zanechal `pending=0`, `failed=0`; skutečné doručení
+do obou schránek je stále **NOT RUN**. Původní zrušené odkazy zůstaly neplatné.
+
+## AUTH-MAIL-03 — záložní provoz rodičovské pošty (21. 11. 2026)
+
+**Stav: KONCEPT.** Vlastník požádal o záložní režim; rozsah druhého odesílatele
+ani provozní aktivace zatím nejsou určené. Vlastník návrhu vývoj KIS; evidence
+ve větvi `codex/auth-mail-reset-release-proof-20261121` z `origin/main`
+`ccac61ab`. Cíl: včas odhalit zastavený plánovač či stárnoucí `pending` a mít
+bezpečnou náhradní cestu bez duplicitního odesílání jednorázových odkazů.
+
+První etapa: nezávislá čtecí kontrola každých několik minut sleduje stáří
+heartbeatu, splatné rodičovské `pending`, `failed` a chybějící klíče. Výsledek
+bez adres/tokenů vytvoří provozní upozornění; konkrétní komunikační kanál
+správce se musí určit. Existující chráněná akce `process` umožňuje řízené
+náhradní spuštění stejného workeru po diagnostice. Claim, zámek a validace
+tokenu brání souběžnému převzetí stejné zprávy. Automatické opakování zprávy,
+kterou `mail()` mohlo přijmout, není přípustné.
+
+Druhá etapa, pokud se prokáže výpadek transportu nebo nedoručitelnost:
+zvolit a nakonfigurovat nezávislý ověřitelný transport s provozními logy.
+Přepnutí pouze při prokazatelném odmítnutí před přijetím; neznámý výsledek
+zůstane k prověření. Tajemství poskytovatele zůstanou mimo Git. Test na
+řízených schránkách musí prokázat obě cesty a chování při výpadku.
+
+Alternativy: druhý identický CRON na stejném hostingu nepokrývá výpadek
+hostingu; automatické přeposlání všeho `pending`/`sent` vytváří duplicitní
+odkazy a nemá důkaz nedoručení. Akceptace: upozornění na vynechané tick-y,
+bezpečné řízené obnovení běhu a teprve poté, pokud je potřeba, ověřená
+alternativní doručovací cesta. Další krok: rozhodnout provozní upozornění a
+ověřit doručení současného transportu; poté samostatně implementovat a
+testovat první etapu. [Registr](WORK_PLAN_CURRENT.md#auth-mail-03--záložní-provoz-rodičovské-pošty-21-11-2026).
 
 ## AUTH-MAIL-01 — oprava automatického zpracování rodičovské fronty (21. 11. 2026)
 

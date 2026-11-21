@@ -2775,8 +2775,8 @@
       "primary": true,
       "role": "plan",
       "status": "PARTIAL",
-      "registry": "AUTH-MAIL-01/AUTH-MAIL-02",
-      "disposition": "AUTH-MAIL-01: produkční worker aktivní, doručení do schránky otevřené. AUTH-MAIL-02: třídenní reset a náhrada dvou zrušených odkazů rozpracované.",
+      "registry": "AUTH-MAIL-01/AUTH-MAIL-02/AUTH-MAIL-03",
+      "disposition": "AUTH-MAIL-01: produkční worker aktivní. AUTH-MAIL-02: dva nové 72h resety přijaty transportem, doručení do schránek otevřené. AUTH-MAIL-03: záložní režim koncept.",
       "evidence": [
         "docs/verification/auth-mail-worker-20261121/RESULTS.md",
         "docs/verification/auth-mail-reset-20261121/RESULTS.md"
