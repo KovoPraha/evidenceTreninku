@@ -1,6 +1,6 @@
 # Úplný index verzovaných podkladů
 
-Inventura založena 7. 11. 2026, aktualizována 13. 11. 2026. [Katalog plánů](PLAN_CATALOG.md) obsahuje hlavní
+Inventura založena 7. 11. 2026, aktualizována 21. 11. 2026. [Katalog plánů](PLAN_CATALOG.md) obsahuje hlavní
 plány, koncepty a vložené ověřovací plány; tento seznam eviduje i zbytek
 textové dokumentace i binární plány/přílohy, aby žádný soubor nezmizel jen kvůli názvu, formátu nebo složce.
 Historický protokol/fixture není nové schválení ani tvrzení o dnešním provozu.
@@ -8,6 +8,8 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-SEC01-20261108 | [SEC01 — soukromé úložiště](SECURITY_AUDIT_2026-11-08.md) | plan / PARTIAL | WIP-AUDIT-01/SEC01 |
+| PL-WIP-AUDIT-20261121 | [Inventura starých checkoutů](verification/worktree-reconciliation-20261121/RESULTS.md) | evidence / SUPPORT | WIP-AUDIT-01/SEC01 |
 | PL-coach-attendance-20261113 | [E4-06 — docházka trenéra z rozvrhu](COACH_ATTENDANCE_2026-11-13.md) | plan / PARTIAL | E4-06 |
 | PL-9d3bb013a4 | [KIS-ACT-01 — aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) | plan / PARTIAL | KIS-ACT-01 |
 | PL-4dc01803a8 | [KIS-ACT-01 — scénář pro testerku](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md) | evidence / SUPPORT | KIS-ACT-01 |

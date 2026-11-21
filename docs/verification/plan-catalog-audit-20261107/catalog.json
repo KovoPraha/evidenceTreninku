@@ -4,6 +4,19 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-SEC01-20261108",
+      "path": "docs/SECURITY_AUDIT_2026-11-08.md",
+      "title": "SEC01 — soukromé úložiště",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "WIP-AUDIT-01/SEC01",
+      "disposition": "Kód a testy původního #391 přeneseny na aktuální main; nové CI, merge a produkční vydání otevřené.",
+      "evidence": [
+        "docs/verification/worktree-reconciliation-20261121/RESULTS.md"
+      ]
+    },
+    {
       "id": "PL-coach-attendance-20261113",
       "path": "docs/COACH_ATTENDANCE_2026-11-13.md",
       "title": "E4-06 — docházka trenéra z rozvrhu",

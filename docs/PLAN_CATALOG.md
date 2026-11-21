@@ -1,6 +1,6 @@
 # Katalog všech plánů a konceptů
 
-Aktualizováno 18. 11. 2026. Součást jediného [registru práce](WORK_PLAN_CURRENT.md),
+Aktualizováno 21. 11. 2026. Součást jediného [registru práce](WORK_PLAN_CURRENT.md),
 nikoli druhé pořadí realizace. Záznam identifikuje soubor, dispozici, položku
 registru, důkaz nebo meze ověření. Záměr v historickém auditu není schválený úkol.
 HOTOVO/DONE označuje pouze vymezený technický/dokumentační řez, ne všechny
@@ -17,6 +17,7 @@ autorizace implementace. P01–P14 a konkrétní PR nadále řídí společný r
 
 | ID | Soubor | Stav / registr | Dispozice a důkaz |
 | --- | --- | --- | --- |
+| PL-SEC01-20261108 | [SEC01 — soukromé úložiště](SECURITY_AUDIT_2026-11-08.md) | PARTIAL / WIP-AUDIT-01/SEC01 | Původní #391 prošel CI, ale konfliktuje s dnešním main. Kód/testy přeneseny do aktuální větve; nové CI, merge a deploy otevřené. [Inventura](verification/worktree-reconciliation-20261121/RESULTS.md). |
 | PL-coach-attendance-20261113 | [E4-06 — docházka trenéra z rozvrhu](COACH_ATTENDANCE_2026-11-13.md) | PARTIAL / E4-06 | [PR #474](https://github.com/KovoPraha/evidenceTreninku/pull/474) je návrh; jádro CI a lokální ověření PASS, vedlejší výkonové browser kontroly červené, nasazení a produkční UAT otevřené. [Protokol](verification/coach-attendance-20261113/RESULTS.md). |
 | PL-cfc153f135 | [Kroužkové programy, období a účasti (M1.4)](club-programs.md) | PARTIAL / DOC02/P11-PADMIN/P11-PCAP | PADMIN #477 a PCAP #479 nasazeno, [kapacitní měření](verification/program-capacity-read-20261114/RESULTS.md); ostatní obchodní etapy a přihlášené produkční UAT otevřené. |
 | PL-9d3bb013a4 | [KIS-ACT-01: aktivace importovaných rodičů](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md) | PARTIAL / KIS-ACT-01 | #463 a [deploy 43322186478](https://github.com/KovoPraha/evidenceTreninku/actions/runs/43322186478) SUCCESS; technické vydání dokončené, [pilot, pozvánky a rodičovské UAT](verification/parent-activation-release-20261112/RESULTS.md) otevřené. [Scénář pro testerku](TESTER_KIS_AKTIVACE_RODICU_2026-11-13.md). |
