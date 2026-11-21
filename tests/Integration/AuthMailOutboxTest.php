@@ -8,6 +8,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__DIR__, 2).'/includes/password_reset.php';
+require_once dirname(__DIR__, 2).'/includes/parent_reset_reissue.php';
 
 final class AuthMailOutboxTest extends TestCase
 {
@@ -52,6 +53,10 @@ final class AuthMailOutboxTest extends TestCase
         $pdo = $this->database();
         $pdo->exec('UPDATE verejni_uzivatele SET email_overeno=1 WHERE id=1');
         $first = \passwordResetQueueRequest($pdo, 'parent@example.test', 'https://example.test/reset.php', $this->keys);
+        $firstBody = \authMailDecrypt($pdo->query('SELECT * FROM auth_mail_outbox WHERE id=1')->fetch(PDO::FETCH_ASSOC), $this->keys);
+        self::assertStringContainsString('Odkaz je platný 3 dny.', $firstBody);
+        $firstExpiry = strtotime((string)$pdo->query('SELECT expires_at FROM password_reset_tokens WHERE id=1')->fetchColumn() . ' UTC');
+        self::assertGreaterThanOrEqual(time() + 259190, $firstExpiry);
         $second = \passwordResetQueueRequest($pdo, 'parent@example.test', 'https://example.test/reset.php', $this->keys);
         self::assertTrue($first['issued']);
         self::assertTrue($second['issued']);
@@ -66,6 +71,78 @@ final class AuthMailOutboxTest extends TestCase
             throw new \LogicException('Changed recipient was sent');
         }, $this->keys));
         self::assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM auth_mail_outbox_events')->fetchColumn());
+    }
+
+    public function testTwoCancelledParentResetsAreReissuedOnceForThreeDays(): void
+    {
+        $pdo = $this->database();
+        $oldIds = $this->cancelledParentResets($pdo);
+        self::assertSame(['ready' => true, 'old_ids' => $oldIds, 'reason' => null], \parentResetReissueInspect($pdo));
+        $before = time();
+        $issued = \parentResetReissueTwo($pdo, $oldIds, 'https://example.test/reset.php', $this->keys);
+        self::assertSame(2, $issued['queued']);
+        self::assertSame($oldIds, $issued['old_ids']);
+        self::assertCount(2, $issued['new_ids']);
+        self::assertSame(2, (int)$pdo->query('SELECT COUNT(*) FROM password_reset_tokens')->fetchColumn());
+        self::assertFalse(\parentResetReissueInspect($pdo)['ready']);
+        $rows = $pdo->query("SELECT * FROM auth_mail_outbox WHERE status='pending' ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
+        self::assertCount(2, $rows);
+        foreach ($rows as $row) {
+            $body = \authMailDecrypt($row, $this->keys);
+            self::assertStringContainsString('Odkaz je platný 3 dny.', $body);
+            self::assertSame(1, preg_match('~#token=([a-f0-9]{64})~', $body, $match));
+            $tokenHash = \one_time_token_hash(\ONE_TIME_TOKEN_PASSWORD_RESET, $match[1]);
+            $query = $pdo->prepare('SELECT expires_at FROM password_reset_tokens WHERE token_hash=?');
+            $query->execute([$tokenHash]);
+            $expires = strtotime((string)$query->fetchColumn() . ' UTC');
+            self::assertGreaterThanOrEqual($before + 259200, $expires);
+            self::assertLessThanOrEqual(time() + 259200, $expires);
+        }
+        $sent = [];
+        self::assertSame('sent', \authMailProcessOne($pdo, static function (string $email) use (&$sent): bool {
+            $sent[] = $email;
+            return true;
+        }, $this->keys, false, true));
+        self::assertSame('sent', \authMailProcessOne($pdo, static function (string $email) use (&$sent): bool {
+            $sent[] = $email;
+            return true;
+        }, $this->keys, false, true));
+        self::assertSame(['parent@example.test', 'first@example.test'], $sent);
+        $this->expectException(\RuntimeException::class);
+        \parentResetReissueTwo($pdo, $oldIds, 'https://example.test/reset.php', $this->keys);
+    }
+
+    public function testReissueRefusesNewerRequest(): void
+    {
+        $pdo = $this->database();
+        $oldIds = $this->cancelledParentResets($pdo);
+        \passwordResetQueueRequest($pdo, 'parent@example.test', 'https://example.test/reset.php', $this->keys);
+        self::assertSame('newer_request_exists', \parentResetReissueInspect($pdo)['reason']);
+        $this->expectException(\RuntimeException::class);
+        \parentResetReissueTwo($pdo, $oldIds, 'https://example.test/reset.php', $this->keys);
+    }
+
+    public function testReissueRefusesChangedRecipient(): void
+    {
+        $pdo = $this->database();
+        $oldIds = $this->cancelledParentResets($pdo);
+        $pdo->exec("UPDATE verejni_uzivatele SET email='changed@example.test' WHERE id=2");
+        self::assertSame('target_changed', \parentResetReissueInspect($pdo)['reason']);
+        $this->expectException(\RuntimeException::class);
+        \parentResetReissueTwo($pdo, $oldIds, 'https://example.test/reset.php', $this->keys);
+    }
+
+    private function cancelledParentResets(PDO $pdo): array
+    {
+        $pdo->exec("UPDATE verejni_uzivatele SET email_overeno=1 WHERE id=1");
+        $pdo->exec("INSERT INTO verejni_uzivatele(id,jmeno,email,heslo_hash,aktivni,email_overeno) VALUES(2,'Druhý','first@example.test','old',1,1)");
+        $pdo->beginTransaction();
+        \authMailEnqueue($pdo, 'reset', 'public', 1, str_repeat('a', 64), 'parent@example.test', 'Reset', 'Expired', $this->keys);
+        \authMailEnqueue($pdo, 'reset', 'public', 2, str_repeat('b', 64), 'first@example.test', 'Reset', 'Expired', $this->keys);
+        $pdo->commit();
+        $statement = $pdo->prepare("UPDATE auth_mail_outbox SET status='cancelled',attempts=1,body_ciphertext=NULL,last_error=?");
+        $statement->execute([\PARENT_RESET_INCIDENT_CANCEL_REASON]);
+        return [1, 2];
     }
 
     public function testFailedTransportIsRetryableAndClaimRespectsBackoff(): void
