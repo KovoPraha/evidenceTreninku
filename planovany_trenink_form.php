@@ -7,6 +7,7 @@ if (!isset($_SESSION['trener_id'])) {
 }
 require_once 'includes/funkce.php';
 require_once 'db.php';
+/** @var PDO $pdo */
 if (!canAccess('planovac')) {
     header('Location: index.php');
     exit;
