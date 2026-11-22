@@ -2,7 +2,7 @@
 
 ## AUTH-MAIL-04 — dohledatelnost požadavku na obnovu hesla (22. 11. 2026)
 
-**Stav: PR #517, kódové CI 13/13 PASS; produkční vydání otevřené.** Vlastník: vývoj KIS. Větev
+**Stav: KÓD NASAZEN; přihlášené UAT a doručení otevřené.** Vlastník: vývoj KIS. Větev
 `codex/auth-mail-reset-request-audit-20261122` v odděleném worktree
 `C:\Users\Marek\Documents\Codex\evidencePavel-auth-mail-repair-20261121` z
 `origin/main` `2341f16c`. Oprávnění: prověřit a opravit formulář a evidenci
@@ -40,9 +40,11 @@ Závislosti: nová migrace před vydáním kódu, zálohovací ownership tabulky
 aktuální rodičovský worker a bezpečná administrátorská role. Implementace a
 syntetický POST stránky prošly 38 cílenými testy; do produkce se zatím nic
 nevydalo. [PR #517](https://github.com/KovoPraha/evidenceTreninku/pull/517)
-obsahuje kód, migraci, testy i tuto dokumentaci. Další krok: schválit sloučení
-a řízené vydání; potom migrace,
-nasazení a kontrola skutečného POST v produkci. Auditní tabulka zatím nemá
+obsahuje kód, migraci, testy i tuto dokumentaci. Vlastník 22. 11. 2026 schválil
+sloučení a nasazení; PR byl sloučen do `main` jako `641493a6` a
+[workflow 44972109908](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44972109908)
+prošel. Živý formulář vrátil referenci při syntetickém odmítnutí; přihlášené
+dohledání a oprávněný reset čekají na kontrolní účet a správce. Auditní tabulka zatím nemá
 schválenou dobu retence; stanovit ji před dlouhodobým provozem.
 
 [Místní výsledky a meze](verification/auth-mail-request-audit-20261122/RESULTS.md).
