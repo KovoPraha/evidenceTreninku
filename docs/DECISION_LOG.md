@@ -6,6 +6,14 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-22-AM05
+
+Assetový HTTP profil vznikl pro porovnání odstranění duplicitního CSS a původně vyžadoval stejný PHP obsah resetovací stránky. AUTH-MAIL-04 mění její formulář i POST, proto je v profilu výjimka omezena na přesný otisk schválené nové stránky. Ostatní tři stránky stále podléhají původnímu tokenovému porovnání; reset se kontroluje přímým testem POST a v profilu HTTP, CSRF a dvěma očekávanými auditními zápisy. Historické profily čtení připouštějí jen prokazatelný rozdíl +5 tabulek/+2 migrační řádky proti svému starému základu, z toho +1/+1 tvoří tato migrace. Varianta odstranit reset z kontroly bez náhradního otisku by skryla pozdější nechtěnou změnu. [Výsledky](verification/auth-mail-request-audit-20261122/RESULTS.md).
+
+## D2026-11-22-AM04
+
+Nové hlášení obnovy bez záznamu v outboxu vyžaduje dohledatelný výsledek každého POST, aniž by veřejná odpověď prozradila existenci účtu. Zvoleno náhodné referenční ID, audit pouze stavu/strojového důvodu a případného outbox ID, atomický zápis úspěchu s tokenem a frontou a administrátorské dohledání reference. Samotný serverový log by nepokryl tiché zamítnutí limitem či nezpůsobilý účet; ukládat plaintext e-mailů/IP do nové evidence je zbytečné. Dřívější ochrany CSRF a limit zůstávají. Bez údaje o konkrétním pokusu jde zatím o potvrzené možné cesty v kódu, nikoli o forenzně určenou příčinu hlášeného případu. [Plán](identity-email-queue.md#auth-mail-04--dohledatelnost-požadavku-na-obnovu-hesla-22-11-2026).
+
 ## D2026-11-21-DA02
 
 Vývojové doporučení ke schválení vlastníkem: pět starých draftů neslučovat kvůli úklidu seznamu. #376/#380/#382 tvoří navazující P15 runtime a #386 jeho audit; jejich další práce závisí na S0 inventuře a volbě pokračovat. #384 měří již vydaný zdravotní filtr a lze jej po zachování unikátních důkazů odložit, není-li měření aktuální prioritou. Varianta hromadného merge by zavedla neověřený starý runtime, hromadné zavření bez evidence by skrylo LOW nález a nedokončené měření. **Jde o KONCEPT, nikoli o rozhodnutí vlastníka zavřít PR nebo spustit P15.** [Postup](verification/branch-documentation-audit-20261121/RESULTS.md#koncept-doc-branch-close-01--rozhodnutí-o-pěti-draftech-21-11-2026).

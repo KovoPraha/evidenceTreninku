@@ -1,12 +1,13 @@
 # Aktuální session handoff
 
-Aktualizováno 21. 11. 2026. Audit vyšel z `origin/main` `a4df047d` a [#514](https://github.com/KovoPraha/evidenceTreninku/pull/514) byl sloučen jako `cdf57d76`; při dalším převzetí ověř nový HEAD. Aktuální přehled vydání je [CURRENT_STATE](CURRENT_STATE.md). Starší pracovní checkouty nejsou výchozí verze. [Audit větví a dokumentace](verification/branch-documentation-audit-20261121/RESULTS.md) uvádí ověřený rozsah a meze inventury.
+Aktualizováno 22. 11. 2026. Audit vyšel z `origin/main` `a4df047d` a [#514](https://github.com/KovoPraha/evidenceTreninku/pull/514) byl sloučen jako `cdf57d76`; při dalším převzetí ověř nový HEAD. Aktuální přehled vydání je [CURRENT_STATE](CURRENT_STATE.md). Starší pracovní checkouty nejsou výchozí verze. [Audit větví a dokumentace](verification/branch-documentation-audit-20261121/RESULTS.md) uvádí ověřený rozsah a meze inventury.
 
 ## Co převzít jako další
 
 | Oblast | Skutečný další krok |
 | --- | --- |
 | Rodičovská pošta AUTH-MAIL-01/02 | Dvě nové obnovy byly přijaty `mail()`; potvrdit přijetí ve dvou schránkách nebo prověřit MTA logy. [Plán a záložní KONCEPT](identity-email-queue.md), [výsledek](verification/auth-mail-reset-20261121/RESULTS.md). |
+| AUTH-MAIL-04 | Lokálně opraveno a 38 cílených testů PASS; [PR #517](https://github.com/KovoPraha/evidenceTreninku/pull/517) má 13/13 CI PASS na kódu. [Plán a akceptace](identity-email-queue.md#auth-mail-04--dohledatelnost-požadavku-na-obnovu-hesla-22-11-2026), [výsledek](verification/auth-mail-request-audit-20261122/RESULTS.md), [registr](WORK_PLAN_CURRENT.md#auth-mail-04--dohledatelnost-požadavku-na-obnovu-hesla-22-11-2026). Další krok: rozhodnout o merge a vydání migrace/kódu, produkční POST na kontrolním účtu a dohledání reference; historický případ zatím neurčen. |
 | KIS-PARENT-LINK-01 | Přihlášeně ověřit registráře a rodiče, včetně dotčeného účtu; [plán](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md#kis-parent-link-01--oprávnění-při-propojení-rodiče-21-11-2026), [protokol](verification/parent-link-permissions-20261121/RESULTS.md). |
 | TRAINING-PLAN-ACL-01 | V kontrolovaném UAT zkusit plánování správcem a běžným trenérem, bez zásahu do skutečných rozvrhů; [plán](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#training-plan-acl-01--plánování-správcem-a-kolize-21-11-2026), [výsledek](verification/training-plan-admin-collision-20261121/RESULTS.md). |
 | E4-06 / MAKEUP-AUTO-01 | Zajistit TEST role a nové okno pro celý tok omluva → docházka → nárok → rezervace. Aktivace pravidel vyžaduje samostatné schválení; [plán](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md), [protokol](verification/coach-attendance-20261113/RESULTS.md). |

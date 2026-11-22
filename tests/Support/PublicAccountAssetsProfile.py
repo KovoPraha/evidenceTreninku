@@ -138,7 +138,8 @@ try:
     # No application file outside the four explicitly selected routes may differ.
     # Replay the four CSS deletions on the CURRENT shared bootstrap. Every other
     # rendered PHP file must be byte-identical between the paired document roots.
-    # The four selected routes keep their original exact source-token contract.
+    # Three routes keep the original token contract. The reset route is pinned
+    # to its reviewed AUTH-MAIL-04 revision by the source contract.
     shared_files=list(root.glob('*.php'))+list((root/'includes').rglob('*.php'))+list((root/'booking').rglob('*.php'))
     verified_shared=[]
     for path in shared_files:

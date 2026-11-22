@@ -2786,11 +2786,12 @@
       "primary": true,
       "role": "plan",
       "status": "PARTIAL",
-      "registry": "AUTH-MAIL-01/AUTH-MAIL-02/AUTH-MAIL-03",
-      "disposition": "AUTH-MAIL-01: produkční worker aktivní. AUTH-MAIL-02: dva nové 72h resety přijaty transportem, doručení do schránek otevřené. AUTH-MAIL-03: záložní režim koncept.",
+      "registry": "AUTH-MAIL-01/AUTH-MAIL-02/AUTH-MAIL-03/AUTH-MAIL-04",
+      "disposition": "AUTH-MAIL-01: produkční worker aktivní. AUTH-MAIL-02: dva nové 72h resety přijaty transportem, doručení do schránek otevřené. AUTH-MAIL-03: záložní režim koncept. AUTH-MAIL-04: audit požadavků rozpracován.",
       "evidence": [
         "docs/verification/auth-mail-worker-20261121/RESULTS.md",
-        "docs/verification/auth-mail-reset-20261121/RESULTS.md"
+        "docs/verification/auth-mail-reset-20261121/RESULTS.md",
+        "docs/verification/auth-mail-request-audit-20261122/RESULTS.md"
       ]
     },
     {

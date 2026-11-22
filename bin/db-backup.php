@@ -230,6 +230,7 @@ const EVIDENCE_TABLES = [
     'auth_login_limits',
     'auth_mail_outbox',
     'auth_mail_outbox_events',
+    'password_reset_request_audit',
     'club_makeup_config_events',
     'club_makeup_auto_settings',
     'club_makeup_offer_auto',

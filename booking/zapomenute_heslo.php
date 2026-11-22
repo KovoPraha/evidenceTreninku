@@ -9,10 +9,8 @@ if (!isset($pdo) || !$pdo instanceof PDO) {
     throw new RuntimeException('Database bootstrap unavailable.');
 }
 require_once dirname(__DIR__) . '/csrf_helper.php';
-require_once dirname(__DIR__) . '/includes/auth_rate_limit.php';
-require_once dirname(__DIR__) . '/includes/password_reset.php';
+require_once dirname(__DIR__) . '/includes/password_reset_request_audit.php';
 require_once dirname(__DIR__) . '/includes/app_url.php';
-require_once dirname(__DIR__) . '/includes/trainer_password_reset.php';
 
 $trainerReset = ($_GET['pro'] ?? '') === 'trener';
 $loginUrl = $trainerReset ? '../login.php' : 'prihlaseni.php';
@@ -20,29 +18,29 @@ $loginUrl = $trainerReset ? '../login.php' : 'prihlaseni.php';
 $submitted = false;
 $errors = [];
 $localResetLink = null;
+$requestId = null;
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-    if (!csrf_verify((string)($_POST['csrf_token'] ?? ''))) {
+    $csrfInput = $_POST['csrf_token'] ?? null;
+    $identifierInput = $_POST['identifier'] ?? null;
+    $csrfValid = is_string($csrfInput) && csrf_verify($csrfInput);
+    $result = passwordResetRequestHandle(
+        $pdo,
+        $trainerReset,
+        is_string($identifierInput) ? $identifierInput : '',
+        $csrfValid,
+        auth_rate_limit_request_ip(),
+        appUrl('booking/nove_heslo.php') . ($trainerReset ? '?pro=trener' : '')
+    );
+    $requestId = $result['request_id'];
+    if (!$csrfValid) {
         $errors[] = 'Neplatný bezpečnostní token.';
     } else {
-        $identifier = trim((string)($_POST['identifier'] ?? ''));
-        try {
-            $ip = auth_rate_limit_request_ip();
-            if (auth_rate_limit_reserve_attempt($pdo, 'password_reset', $identifier, $ip)) {
-                $result = $trainerReset
-                    ? trainerPasswordResetQueueRequest($pdo, $identifier, appUrl('booking/nove_heslo.php') . '?pro=trener')
-                    : passwordResetQueueRequest($pdo, $identifier, appUrl('booking/nove_heslo.php'));
-                if (app_session_request_is_local() && is_string($result['token'])) {
-                    $localResetLink = $trainerReset
-                        ? 'nove_heslo.php?pro=trener#token=' . rawurlencode($result['token'])
-                        : 'nove_heslo.php#token=' . rawurlencode($result['token']);
-                }
-            }
-            $submitted = true;
-        } catch (Throwable $exception) {
-            error_log('Password reset request failed: ' . $exception->getMessage());
-            // Fail closed without revealing whether the identifier exists.
-            $submitted = true;
+        if (app_session_request_is_local() && is_string($result['token'])) {
+            $localResetLink = $trainerReset
+                ? 'nove_heslo.php?pro=trener#token=' . rawurlencode($result['token'])
+                : 'nove_heslo.php#token=' . rawurlencode($result['token']);
         }
+        $submitted = true;
     }
 }
 ?>
@@ -66,8 +64,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 <?= htmlspecialchars($error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>
 </div>
 <?php endforeach; ?>
+<?php if ($requestId !== null): ?>
+<div class="alert alert-secondary small">Reference požadavku: <code><?= htmlspecialchars($requestId, ENT_QUOTES, 'UTF-8') ?></code>. Pokud zpráva nepřijde, sdělte tuto referenci správci klubu.</div>
+<?php endif; ?>
 <?php if ($submitted): ?>
-<div class="alert alert-success">Pokud účet existuje a lze jej bezpečně ověřit, zařadili jsme další postup k odeslání na příslušný e-mail.</div>
+<div class="alert alert-info">Pokud lze žádost zpracovat, pošleme odkaz na příslušný e-mail. Zkontrolujte také spam.</div>
 <?php if ($localResetLink !== null): ?>
 <div class="alert alert-warning">
 <strong>Jen localhost:</strong> <a class="alert-link" href="<?= htmlspecialchars($localResetLink, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">Otevřít testovací odkaz pro obnovu</a>.</div>
@@ -88,7 +89,7 @@ Zadejte e-mail rodičovského účtu nebo přihlašovací jméno sportovce.
 <?= $trainerReset ? 'E-mail trenérského účtu' : 'E-mail nebo přihlašovací jméno' ?>
 </label>
 <input class="form-control" id="password-reset-identifier" name="identifier"
- type="<?= $trainerReset ? 'email' : 'text' ?>" maxlength="254" autocomplete="username" required autofocus>
+ type="<?= $trainerReset ? 'email' : 'text' ?>" maxlength="<?= $trainerReset ? 254 : 160 ?>" autocomplete="username" required autofocus>
 </div>
 <button class="btn btn-primary w-100">Poslat odkaz pro obnovu</button>
 </form>
