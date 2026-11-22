@@ -2,7 +2,7 @@
 
 ## AUTH-MAIL-04 — dohledatelnost požadavku na obnovu hesla (22. 11. 2026)
 
-**Stav: LOKÁLNĚ OVĚŘENO; PR a produkční vydání otevřené.** Vlastník: vývoj KIS. Větev
+**Stav: PR #517, CI běží; produkční vydání otevřené.** Vlastník: vývoj KIS. Větev
 `codex/auth-mail-reset-request-audit-20261122` v odděleném worktree
 `C:\Users\Marek\Documents\Codex\evidencePavel-auth-mail-repair-20261121` z
 `origin/main` `2341f16c`. Oprávnění: prověřit a opravit formulář a evidenci
@@ -39,7 +39,9 @@ merge, deploy a provozní přejímka se evidují odděleně.
 Závislosti: nová migrace před vydáním kódu, zálohovací ownership tabulky,
 aktuální rodičovský worker a bezpečná administrátorská role. Implementace a
 syntetický POST stránky prošly 37 cílenými testy; do produkce se zatím nic
-nevydalo. Další krok: cílená statická analýza, PR a CI, poté řízená migrace,
+nevydalo. [PR #517](https://github.com/KovoPraha/evidenceTreninku/pull/517)
+obsahuje kód, migraci, testy i tuto dokumentaci. Další krok: dokončit CI,
+poté řízená migrace,
 nasazení a kontrola skutečného POST v produkci. Auditní tabulka zatím nemá
 schválenou dobu retence; stanovit ji před dlouhodobým provozem.
 
