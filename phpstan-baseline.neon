@@ -139,12 +139,6 @@ parameters:
 			path: auditlog/seznam.php
 
 		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 5
-			path: auth_mail_admin.php
-
-		-
 			message: '#^Result of \|\| is always true\.$#'
 			identifier: booleanOr.alwaysTrue
 			count: 1

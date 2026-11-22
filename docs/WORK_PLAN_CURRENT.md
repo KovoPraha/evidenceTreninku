@@ -1,10 +1,14 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
-Aktualizováno 21. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
+Aktualizováno 22. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
 [provozní inventura](verification/operations-inventory-20261106/RESULTS.md).
+
+## AUTH-MAIL-04 — dohledatelnost požadavku na obnovu hesla (22. 11. 2026)
+
+LOKÁLNĚ OVĚŘENO; PR a produkční vydání otevřené. Vlastník vývoj KIS; větev `codex/auth-mail-reset-request-audit-20261122`, oddělený worktree `C:\Users\Marek\Documents\Codex\evidencePavel-auth-mail-repair-20261121` z `origin/main` `2341f16c`. [Příčina, varianty, plán a akceptace](identity-email-queue.md#auth-mail-04--dohledatelnost-požadavku-na-obnovu-hesla-22-11-2026), [místní výsledek](verification/auth-mail-request-audit-20261122/RESULTS.md). Rozsah: POST formulář, vyhledání účtu, CSRF/limit/validace, atomické vložení a bezpečná auditní reference v administraci. 37 cílených testů PASS; skutečný historický případ bez staré reference neurčen. Oprávnění k implementaci; produkční odesílání, deploy a uživatelské UAT nejsou provedena. Závislosti: migrace, zálohovací kontrakt, role administrátora, worker a rozhodnutí o retenci. Další krok: PR/CI, potom řízené vydání a provozní ověření.
 
 ## DOC-BRANCH-AUDIT-01 — soulad dokumentace a větví (21. 11. 2026)
 

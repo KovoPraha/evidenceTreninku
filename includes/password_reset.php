@@ -66,23 +66,32 @@ function passwordResetRequest(PDO $pdo, string $identifier, callable $deliver, ?
 }
 
 /** Queue an encrypted reset link. Earlier delivered links remain valid until used or expired. */
-function passwordResetQueueRequest(PDO $pdo, string $identifier, string $resetUrl, ?array $keyConfig = null, ?int $now = null): array
+function passwordResetQueueRequest(PDO $pdo, string $identifier, string $resetUrl, ?array $keyConfig = null, ?int $now = null, ?string $auditRequestId = null): array
 {
     $identifier = trim($identifier);
     if ($identifier === '' || strlen($identifier) > 160) {
         return ['accepted' => true,'issued' => false,'token' => null];
     }
-    $target = passwordResetResolveTarget($pdo, $identifier);
+    try {
+        $target = passwordResetResolveTarget($pdo, $identifier);
+    } catch (Throwable $exception) {
+        if ($auditRequestId === null) {
+            throw $exception;
+        }
+        throw new PasswordResetException('lookup_error', 0, $exception);
+    }
     if ($target === null) {
         return ['accepted' => true,'issued' => false,'token' => null];
     }
     $issued = one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET, PASSWORD_RESET_EMAIL_TTL_SECONDS, $now);
     $pdo->beginTransaction();
+    $stage = 'token_insert_error';
     try {
         $pdo->prepare('INSERT INTO password_reset_tokens(target_type,target_id,delivery_account_id,token_hash,expires_at) VALUES(?,?,?,?,?)')
             ->execute([$target['type'],$target['target_id'],$target['delivery_account_id'],$issued['hash'],$issued['expires_at']]);
         $link = $resetUrl.'#token='.rawurlencode($issued['token']);
-        authMailEnqueue(
+        $stage = 'mail_enqueue_error';
+        $outboxId = authMailEnqueue(
             $pdo,
             'reset',
             $target['type'],
@@ -93,12 +102,21 @@ function passwordResetQueueRequest(PDO $pdo, string $identifier, string $resetUr
             "Pro nastavení nového hesla otevřete odkaz:\n{$link}\n\nOdkaz je platný 3 dny.",
             $keyConfig
         );
+        if ($auditRequestId !== null) {
+            $stage = 'audit_update_error';
+            passwordResetAuditFinish($pdo, $auditRequestId, 'queued', 'queued', $outboxId);
+        }
+        $stage = 'commit_error';
         $pdo->commit();
         return ['accepted' => true,'issued' => true,'token' => $issued['token']];
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
-        }throw $exception;
+        }
+        if ($auditRequestId === null) {
+            throw $exception;
+        }
+        throw new PasswordResetException($stage, 0, $exception);
     }
 }
 
@@ -109,14 +127,26 @@ function passwordResetResolveTarget(PDO $pdo, string $identifier): ?array
     if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $account = $pdo->prepare(
             'SELECT * FROM verejni_uzivatele '
-            . 'WHERE email=? AND aktivni=1 AND email_overeno=1 LIMIT 1'
+            . 'WHERE email=? AND aktivni=1 AND email_overeno=1 ORDER BY id LIMIT 2'
         );
         $account->execute([$email]);
-        $row = $account->fetch(PDO::FETCH_ASSOC);
+        $accounts = $account->fetchAll(PDO::FETCH_ASSOC);
+        if ($accounts === []) {
+            $account = $pdo->prepare(
+                'SELECT * FROM verejni_uzivatele '
+                . 'WHERE LOWER(TRIM(email))=? AND aktivni=1 AND email_overeno=1 ORDER BY id LIMIT 2'
+            );
+            $account->execute([$email]);
+            $accounts = $account->fetchAll(PDO::FETCH_ASSOC);
+        }
+        if (count($accounts) > 1) {
+            return null;
+        }
+        $row = $accounts[0] ?? null;
         if ($row && (int)($row['trener_id'] ?? 0) > 0 && staffAccountHasTechnicalEmail($pdo, (int)$row['trener_id'])) {
             return null;
         }
-        if ($row) {
+        if ($row && filter_var((string)$row['email'], FILTER_VALIDATE_EMAIL)) {
             return [
                 'type' => 'public',
                 'target_id' => (int)$row['id'],

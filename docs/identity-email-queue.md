@@ -1,5 +1,50 @@
 # Ověřovací a obnovovací e-maily
 
+## AUTH-MAIL-04 — dohledatelnost požadavku na obnovu hesla (22. 11. 2026)
+
+**Stav: LOKÁLNĚ OVĚŘENO; PR a produkční vydání otevřené.** Vlastník: vývoj KIS. Větev
+`codex/auth-mail-reset-request-audit-20261122` v odděleném worktree
+`C:\Users\Marek\Documents\Codex\evidencePavel-auth-mail-repair-20261121` z
+`origin/main` `2341f16c`. Oprávnění: prověřit a opravit formulář a evidenci
+požadavků; bez produkčního odesílání, ručního vydávání tokenů či změny účtů.
+[Registr](WORK_PLAN_CURRENT.md#auth-mail-04--dohledatelnost-požadavku-na-obnovu-hesla-22-11-2026).
+
+**Zjištění z kódu:** POST na `booking/zapomenute_heslo.php` volá rate limit a
+frontovací službu, ale při zamítnutí limitem (`false`), nenalezeném nebo
+nezpůsobilém účtu (`issued=false`) a výjimce zobrazí stejné obecné potvrzení.
+Ve frontě pak nemusí být žádný řádek. Limit je 5 pokusů na identifikátor a 40
+na IP za 15 minut; konkrétní hlášený případ bez časového údaje a identifikátoru
+nelze zpětně přiřadit k jedné z těchto cest. Veřejný formulář dovoluje 254
+znaků, frontovací služba tiše odmítá identifikátor delší než 160 znaků.
+
+**Volba:** Zachovat stejnou veřejnou odpověď pro existující i neexistující
+účet. Každému POST přidělit náhodné referenční ID a do nové omezeně přístupné
+auditní tabulky zapsat pouze stav, strojový důvod a případné ID frontového
+řádku; bez adresy, IP, hesla, tokenu a těla zprávy. Úspěšné `queued` musí být
+uloženo ve stejné transakci jako token a outbox. Při chybě zařazení zůstane
+auditní `failed` a strukturovaný serverový log s referencí. Administrace
+umožní hledání reference a ukáže navázaný stav fronty. Pokud selže samotný
+zápis auditu, zařazení se nespustí a reference zůstane alespoň v serverovém
+logu. Alternativa pouze `error_log` by neukázala zamítnutí limitem ani
+nezpůsobilý účet; ukládat plaintext adresy by zbytečně rozšiřovalo osobní data.
+
+Akceptace: syntetický POST s platným CSRF a způsobilým účtem vytvoří právě
+jeden token, outbox a audit `queued` se stejnou referencí. Zamítnuté CSRF,
+limit, neplatný vstup a nezpůsobilý účet mají auditní důvod bez outboxu.
+Vynucené selhání šifrování nebo INSERTu vrátí transakci včetně tokenu a
+zanechá dohledatelné `failed`. Formulář nesmí z odpovědi odhalit existenci
+účtu. Správce dohledá reference i stav zprávy. Lokální testy, migrace, CI,
+merge, deploy a provozní přejímka se evidují odděleně.
+
+Závislosti: nová migrace před vydáním kódu, zálohovací ownership tabulky,
+aktuální rodičovský worker a bezpečná administrátorská role. Implementace a
+syntetický POST stránky prošly 37 cílenými testy; do produkce se zatím nic
+nevydalo. Další krok: cílená statická analýza, PR a CI, poté řízená migrace,
+nasazení a kontrola skutečného POST v produkci. Auditní tabulka zatím nemá
+schválenou dobu retence; stanovit ji před dlouhodobým provozem.
+
+[Místní výsledky a meze](verification/auth-mail-request-audit-20261122/RESULTS.md).
+
 ## AUTH-MAIL-02 — třídenní obnova a náhrada dvou starých odkazů (21. 11. 2026)
 
 **Stav: K OVĚŘENÍ DORUČENÍ — kód nasazen, dvě nové zprávy přijaty transportem.** Pokyn vlastníka: poslat nové obnovovací zprávy dvěma

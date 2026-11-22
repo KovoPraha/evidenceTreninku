@@ -46,22 +46,25 @@ function trainerPasswordResetTarget(PDO $pdo, string $email, bool $lock = false)
 }
 
 /** @return array{accepted:true,issued:bool,token:?string} */
-function trainerPasswordResetQueueRequest(PDO $pdo, string $email, string $resetUrl, ?array $keys = null, ?int $now = null): array
+function trainerPasswordResetQueueRequest(PDO $pdo, string $email, string $resetUrl, ?array $keys = null, ?int $now = null, ?string $auditRequestId = null): array
 {
     $pdo->beginTransaction();
+    $stage = 'lookup_error';
     try {
         $target = trainerPasswordResetTarget($pdo, $email, true);
         if ($target === null) {
             $pdo->rollBack();
             return ['accepted' => true, 'issued' => false, 'token' => null];
         }
+        $stage = 'token_insert_error';
         $issued = one_time_token_issue(TRAINER_PASSWORD_RESET_PURPOSE, 3600, $now);
         $insert = $pdo->prepare(
             'INSERT INTO trainer_password_reset_tokens(trainer_id,recipient_email,session_version,public_account_id,public_session_version,token_hash,expires_at) VALUES(?,?,?,?,?,?,?)'
         );
         $insert->execute([...array_values($target), $issued['hash'], $issued['expires_at']]);
         $link = $resetUrl . '#token=' . rawurlencode($issued['token']);
-        authMailEnqueue(
+        $stage = 'mail_enqueue_error';
+        $outboxId = authMailEnqueue(
             $pdo,
             'reset',
             'trainer',
@@ -72,13 +75,21 @@ function trainerPasswordResetQueueRequest(PDO $pdo, string $email, string $reset
             "Pro nastavení nového hesla k trenérskému účtu otevřete odkaz:\n{$link}\n\nOdkaz je platný 60 minut. Pokud jste o změnu nežádali, zprávu ignorujte.",
             $keys
         );
+        if ($auditRequestId !== null) {
+            $stage = 'audit_update_error';
+            passwordResetAuditFinish($pdo, $auditRequestId, 'queued', 'queued', $outboxId);
+        }
+        $stage = 'commit_error';
         $pdo->commit();
         return ['accepted' => true, 'issued' => true, 'token' => $issued['token']];
     } catch (Throwable $error) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
         }
-        throw $error;
+        if ($auditRequestId === null) {
+            throw $error;
+        }
+        throw new PasswordResetException($stage, 0, $error);
     }
 }
 
