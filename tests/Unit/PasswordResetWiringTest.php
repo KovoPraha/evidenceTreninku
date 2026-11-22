@@ -14,11 +14,14 @@ final class PasswordResetWiringTest extends TestCase
         $request = (string)file_get_contents($root . '/booking/zapomenute_heslo.php');
         $consume = (string)file_get_contents($root . '/booking/nove_heslo.php');
         $handler = (string)file_get_contents($root . '/includes/password_reset_form.php');
+        $requestHandler = (string)file_get_contents($root . '/includes/password_reset_request_audit.php');
 
         self::assertStringContainsString('csrf_verify', $request);
-        self::assertStringContainsString('auth_rate_limit_reserve_attempt', $request);
+        self::assertStringContainsString('passwordResetRequestHandle', $request);
+        self::assertStringContainsString('auth_rate_limit_reserve_attempt', $requestHandler);
+        self::assertStringContainsString('passwordResetAuditStart', $requestHandler);
         self::assertStringContainsString("nove_heslo.php#token=", $request);
-        self::assertStringContainsString('Pokud účet existuje', $request);
+        self::assertStringContainsString('Pokud lze žádost zpracovat', $request);
         self::assertStringContainsString('app_session_request_is_local()', $request);
         self::assertStringContainsString('Jen localhost:', $request);
         self::assertStringContainsString('csrf_verify', $consume);
@@ -28,7 +31,7 @@ final class PasswordResetWiringTest extends TestCase
         self::assertStringContainsString('for="password-reset-identifier"', $request);
         self::assertStringContainsString("appUrl('booking/nove_heslo.php')", $request);
         self::assertStringNotContainsString('HTTP_HOST', $request);
-        self::assertStringContainsString('trainerPasswordResetQueueRequest', $request);
+        self::assertStringContainsString('trainerPasswordResetQueueRequest', $requestHandler);
         self::assertStringContainsString('passwordResetFormSubmit', $consume);
         self::assertStringContainsString('trainerPasswordResetConsume', $handler);
         self::assertStringContainsString('window.location.pathname + window.location.search', $consume);

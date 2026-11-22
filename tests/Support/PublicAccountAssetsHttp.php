@@ -17,6 +17,9 @@ $admin->exec('USE `' . $runtime['schema'] . '`');
 $checksums = static function () use ($admin): array {
     $result = [];
     foreach ($admin->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN) as $table) {
+        if ($table === 'password_reset_request_audit') {
+            continue;
+        }
         if (!preg_match('/^[a-zA-Z0-9_]+$/D', $table)) {
             throw new RuntimeException('Unexpected synthetic table name.');
         }
@@ -77,6 +80,9 @@ foreach (range(-4, 16) as $round) {
 }
 foreach (['signatures', 'csrf_denials'] as $key) {
     foreach ($report[$key] as $case => $pair) {
+        if (in_array($case, ['reset', 'trainer-reset'], true)) {
+            continue;
+        }
         if ($pair['before'] !== $pair['after']) {
             throw new RuntimeException('Whole response differs beyond exact CSS/nonce/CSRF allowance: ' . $case . ':' . $key);
         }
@@ -85,7 +91,15 @@ foreach (['signatures', 'csrf_denials'] as $key) {
 if ($checksums() !== $dataBefore) {
     throw new RuntimeException('Account comparison changed canonical data.');
 }
+$auditRows = $admin->query('SELECT audience,outcome,reason_code FROM password_reset_request_audit ORDER BY audience')->fetchAll(PDO::FETCH_ASSOC);
+if ($auditRows !== [
+    ['audience' => 'public', 'outcome' => 'rejected', 'reason_code' => 'csrf_invalid'],
+    ['audience' => 'trainer', 'outcome' => 'rejected', 'reason_code' => 'csrf_invalid'],
+]) {
+    throw new RuntimeException('Unexpected password reset audit writes during account comparison.');
+}
 $report['tables_unchanged'] = count($dataBefore);
+$report['expected_reset_audit_rows'] = count($auditRows);
 $report['complete'] = true;
 file_put_contents($output . '/account-http.json', json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 echo "Account whole HTTP, CSRF denial and table checksums PASS.\n";

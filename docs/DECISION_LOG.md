@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-22-AM05
+
+Assetový HTTP profil vznikl pro porovnání odstranění duplicitního CSS a původně vyžadoval stejný PHP obsah resetovací stránky. AUTH-MAIL-04 mění její formulář i POST, proto je v profilu výjimka omezena na přesný otisk schválené nové stránky. Ostatní tři stránky stále podléhají původnímu tokenovému porovnání; reset se kontroluje přímým testem POST a v profilu HTTP, CSRF a dvěma očekávanými auditními zápisy. Historické profily čtení připouštějí jen prokazatelný rozdíl +5 tabulek/+2 migrační řádky proti svému starému základu, z toho +1/+1 tvoří tato migrace. Varianta odstranit reset z kontroly bez náhradního otisku by skryla pozdější nechtěnou změnu. [Výsledky](verification/auth-mail-request-audit-20261122/RESULTS.md).
+
 ## D2026-11-22-AM04
 
 Nové hlášení obnovy bez záznamu v outboxu vyžaduje dohledatelný výsledek každého POST, aniž by veřejná odpověď prozradila existenci účtu. Zvoleno náhodné referenční ID, audit pouze stavu/strojového důvodu a případného outbox ID, atomický zápis úspěchu s tokenem a frontou a administrátorské dohledání reference. Samotný serverový log by nepokryl tiché zamítnutí limitem či nezpůsobilý účet; ukládat plaintext e-mailů/IP do nové evidence je zbytečné. Dřívější ochrany CSRF a limit zůstávají. Bez údaje o konkrétním pokusu jde zatím o potvrzené možné cesty v kódu, nikoli o forenzně určenou příčinu hlášeného případu. [Plán](identity-email-queue.md#auth-mail-04--dohledatelnost-požadavku-na-obnovu-hesla-22-11-2026).

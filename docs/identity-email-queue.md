@@ -38,7 +38,7 @@ merge, deploy a provozní přejímka se evidují odděleně.
 
 Závislosti: nová migrace před vydáním kódu, zálohovací ownership tabulky,
 aktuální rodičovský worker a bezpečná administrátorská role. Implementace a
-syntetický POST stránky prošly 37 cílenými testy; do produkce se zatím nic
+syntetický POST stránky prošly 38 cílenými testy; do produkce se zatím nic
 nevydalo. [PR #517](https://github.com/KovoPraha/evidenceTreninku/pull/517)
 obsahuje kód, migraci, testy i tuto dokumentaci. Další krok: dokončit CI,
 poté řízená migrace,
