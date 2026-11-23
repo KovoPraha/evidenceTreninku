@@ -2,7 +2,7 @@
 
 ## BAR-CHECKOUT-TABLET-01 — kompaktní pokladna na tabletu (23. 11. 2026)
 
-**Stav: K OVĚŘENÍ v [PR #519](https://github.com/KovoPraha/evidenceTreninku/pull/519), místní vizuální kontrola PASS.** Vlastník zadal zmenšení webové pokladny baru, protože je na tabletu vidět málo produktů. Vývoj: `codex/bar-checkout-tablet-20261123`, oddělený worktree z `origin/main` `71c80d7e`. [Registr](WORK_PLAN_CURRENT.md#bar-checkout-tablet-01--kompaktní-pokladna-baru-23-11-2026), [protokol](verification/bar-checkout-tablet-20261123/RESULTS.md).
+**Stav: K OVĚŘENÍ v [PR #519](https://github.com/KovoPraha/evidenceTreninku/pull/519), místní vizuální kontrola a CI `5703074b` PASS.** Vlastník zadal zmenšení webové pokladny baru, protože je na tabletu vidět málo produktů. Vývoj: `codex/bar-checkout-tablet-20261123`, oddělený worktree z `origin/main` `71c80d7e`. [Registr](WORK_PLAN_CURRENT.md#bar-checkout-tablet-01--kompaktní-pokladna-baru-23-11-2026), [protokol](verification/bar-checkout-tablet-20261123/RESULTS.md).
 
 Rozsah: pouze rozvržení pokladny `/bar/checkout.php` v tabletové šířce, bez změny cen, skladu, plateb, serverového výpočtu a potvrzování. Současná tabulka má u každého produktu 64px fotografii a sdílené styly přidávají velké odsazení a minimální výšku ovládání. Volba: zmenšit obrázky a odsazení řádků, využít šířku tabletu, zachovat názvy, cenu, dostupnost a pohodlné pole počtu. Alternativa celkově zmenšit písmo či dotykové ovládání by ztížila obsluhu; nový pokladní tok by měnil obchodní chování mimo zadání. Rozhodnutí vývoje: [D2026-11-23-BAR01](DECISION_LOG.md#d2026-11-23-bar01).
 

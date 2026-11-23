@@ -1,6 +1,6 @@
 # Aktuální stav projektu
 
-BAR-CHECKOUT-TABLET-01 K OVĚŘENÍ v [PR #519](https://github.com/KovoPraha/evidenceTreninku/pull/519): kompaktní pokladna na tabletu má místní syntetické vizuální PASS; změna dosud není v main ani nasazena, produkční UAT NOT RUN. [Plán](BAR_INTEGRATION_PLAN_2026-11-05.md#bar-checkout-tablet-01--kompaktní-pokladna-na-tabletu-23-11-2026), [registr](WORK_PLAN_CURRENT.md#bar-checkout-tablet-01--kompaktní-pokladna-baru-23-11-2026), [ověření](verification/bar-checkout-tablet-20261123/RESULTS.md).
+BAR-CHECKOUT-TABLET-01 K OVĚŘENÍ v [PR #519](https://github.com/KovoPraha/evidenceTreninku/pull/519): syntetický tabletový náhled a CI `5703074b` 4/4 workflow PASS; změna dosud není v main ani nasazena, produkční UAT NOT RUN. [Plán](BAR_INTEGRATION_PLAN_2026-11-05.md#bar-checkout-tablet-01--kompaktní-pokladna-na-tabletu-23-11-2026), [registr](WORK_PLAN_CURRENT.md#bar-checkout-tablet-01--kompaktní-pokladna-baru-23-11-2026), [ověření](verification/bar-checkout-tablet-20261123/RESULTS.md).
 
 Aktualizováno 22. 11. 2026 (Europe/Prague). Poslední ověřený produkční deploy je [44972109908](https://github.com/KovoPraha/evidenceTreninku/actions/runs/44972109908) na `641493a6` (AUTH-MAIL-04): SUCCESS, ověřená záloha, migrace `current/pending []` a HTTP 200. `uat_schvaleno=false`, import kroužků přeskočen. Následné dokumentační PR web nenasazuje; stav serveru po zásahu mimo workflow tím není ověřen.
 
