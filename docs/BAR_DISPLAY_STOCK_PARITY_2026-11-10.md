@@ -2,7 +2,7 @@
 
 ## BAR-PHOTO-SCREEN-01 — chybějící fotografie na živé obrazovce (23. 11. 2026)
 
-**Stav: K OVĚŘENÍ, místní oprava a prohlížeč PASS.** Vlastník hlásí, že na fotografické obrazovce BAR jsou po migraci prázdné karty a zobrazí se jen menší fotografie tyčinky. Oprava je autorizovaná jako odstranění hlášené závady, produkční zápis do katalogu ani opakování migrace nejsou součástí. Vývoj BAR, větev `codex/bar-photo-screen-20261123`, samostatný worktree z `origin/main` `2ad73643`. [Registr](WORK_PLAN_CURRENT.md#bar-photo-screen-01--fotografie-barové-obrazovky-23-11-2026), [ověření](verification/bar-photo-screen-20261123/RESULTS.md).
+**Stav: K OVĚŘENÍ v [PR #521](https://github.com/KovoPraha/evidenceTreninku/pull/521), místní oprava a prohlížeč PASS.** Vlastník hlásí, že na fotografické obrazovce BAR jsou po migraci prázdné karty a zobrazí se jen menší fotografie tyčinky. Oprava je autorizovaná jako odstranění hlášené závady, produkční zápis do katalogu ani opakování migrace nejsou součástí. Vývoj BAR, větev `codex/bar-photo-screen-20261123`, samostatný worktree z `origin/main` `2ad73643`. [Registr](WORK_PLAN_CURRENT.md#bar-photo-screen-01--fotografie-barové-obrazovky-23-11-2026), [ověření](verification/bar-photo-screen-20261123/RESULTS.md).
 
 Nález: veřejná nabídka nyní obsahuje 45 produktů a 45 URL fotografií; kontrolované originály odpovídají typu a dekódují se. Tříkartová obrazovka mění karty po 10 s. Například obraz Bolognese má 2 585 938 B a při čtecím GET trval 11,55 s; tyčinka má 479 217 B a trvala 2,23 s. Prázdné karty byly reprodukovány v živém prohlížeči. Pravděpodobnou příčinou je, že větší přenosy nedoběhnou před výměnou karet; závěr podložit srovnáním po opravě.
 

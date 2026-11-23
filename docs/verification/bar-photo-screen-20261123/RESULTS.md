@@ -12,6 +12,7 @@
 | Místní prohlížeč | PASS: stejný CSS/JS cyklus se třemi zmenšenými produktovými fotografiemi vykreslil všechny tři (`complete=true`, 960 × 960) v náhledu 1920 × 1080. [Snímek](after-synthetic-1920x1080.png). Místní server není produkční TV. |
 | Jednotkové testy, JS a styl | 5 PHPUnit testů / 30 tvrzení PASS; JS smoke střídání karet 1/1 PASS; PHP CS Fixer 5 souborů PASS. PHP lint všech 5 změněných souborů PASS. |
 | Dokumentační kontrakt a diff | `php tools/check-current-docs.php`: CURRENT 24 řádků, 5888 odkazů, 0 chyb; `git diff --check` PASS. |
-| CI / merge / deploy / skutečná TV přejímka | NOT RUN. |
+| Předání / CI | Implementace `d07656bb` pushnuta do [PR #521](https://github.com/KovoPraha/evidenceTreninku/pull/521). CI posledního dokumentačního commitu čeká. |
+| Merge / deploy / skutečná TV přejímka | NOT RUN. |
 
 Žádné produkční produkty, obrázky, zásoby ani účetní záznamy se v diagnostice neměnily.
