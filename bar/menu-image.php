@@ -5,6 +5,7 @@ declare(strict_types=1);
 require_once dirname(__DIR__) . '/includes/init.php';
 require_once dirname(__DIR__) . '/includes/bar/offers.php';
 require_once dirname(__DIR__) . '/includes/bar/transfer_assets.php';
+require_once dirname(__DIR__) . '/includes/bar/screen_photo.php';
 if (!isset($pdo) || !$pdo instanceof PDO) {
     throw new RuntimeException('Databázové připojení není dostupné.');
 }
@@ -27,5 +28,17 @@ try {
 }
 header("Content-Security-Policy: default-src 'none'; frame-ancestors 'none'");
 header('X-Content-Type-Options: nosniff');
-header('Content-Type: ' . $asset['mime_type']);
-readfile($path);
+if (($_GET['screen'] ?? null) === '1') {
+    try {
+        $bytes = barScreenPhotoBytes($path);
+    } catch (RuntimeException $error) {
+        http_response_code(404);
+        exit;
+    }
+    header('Content-Type: image/jpeg');
+    header('Content-Length: ' . strlen($bytes));
+    echo $bytes;
+} else {
+    header('Content-Type: ' . $asset['mime_type']);
+    readfile($path);
+}

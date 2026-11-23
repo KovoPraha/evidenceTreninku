@@ -56,7 +56,7 @@ function barScreenHtml(array $menu, string $view): string
             'vyprodano' => (int)$product['sold_out'] === 1];
         $categories[$categoryKey]['produkty'][] = $row;
         $produkty[] = array_replace($row, ['cena' => barDisplayPrice($row['cena']), 'kategorie' => $category,
-            'barva' => $color, 'obrazek' => $product['image_id'] === null ? null : 'menu-image.php?id=' . (int)$product['image_id']]);
+            'barva' => $color, 'obrazek' => $product['image_id'] === null ? null : 'menu-image.php?id=' . (int)$product['image_id'] . '&screen=1']);
     }
     $kategorie = array_values($categories);
     $sloupce = barDisplayColumns($kategorie);
