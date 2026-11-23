@@ -1,5 +1,9 @@
 # Průběžný plán, registr rozpracované a plánované práce
 
+## BAR-CHECKOUT-TABLET-01 — kompaktní pokladna baru (23. 11. 2026)
+
+K OVĚŘENÍ v PR. Vlastník požaduje vidět na tabletu více produktů pokladny. Rozsah: rozvržení `/bar/checkout.php`, bez změn prodejní logiky a dat. Vlastník vývoj BAR; větev `codex/bar-checkout-tablet-20261123`, samostatný worktree z `origin/main` `71c80d7e`. [Plán a akceptace](BAR_INTEGRATION_PLAN_2026-11-05.md#bar-checkout-tablet-01--kompaktní-pokladna-na-tabletu-23-11-2026), [výsledek](verification/bar-checkout-tablet-20261123/RESULTS.md). Syntetický prohlížeč: 768 × 1024 z 7 na 17 viditelných řádků, 1024 × 768 z 5 na 12; 44px pole počtu, bez přetékání. Další krok: PR/CI a přihlášená přejímka na tabletu po vydání.
+
 Aktualizováno 22. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí

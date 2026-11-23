@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-23-BAR01
+
+Pro tabletovou pokladnu zvoleno hustší rozvržení produktu a úspora vertikálního prostoru pouze na stránce pokladny. Zůstane čitelná cena, dostupnost a minimálně 44px vysoké pole pro počet. Prosté celkové zmenšení stránky by zmenšilo dotykové cíle; přestavba pokladního procesu by měnila obchodní tok mimo zadání. Rozhodnutí vývoje podle požadavku vlastníka z 23. 11.; [plán](BAR_INTEGRATION_PLAN_2026-11-05.md#bar-checkout-tablet-01--kompaktní-pokladna-na-tabletu-23-11-2026).
+
 ## D2026-11-22-AM05
 
 Assetový HTTP profil vznikl pro porovnání odstranění duplicitního CSS a původně vyžadoval stejný PHP obsah resetovací stránky. AUTH-MAIL-04 mění její formulář i POST, proto je v profilu výjimka omezena na přesný otisk schválené nové stránky. Ostatní tři stránky stále podléhají původnímu tokenovému porovnání; reset se kontroluje přímým testem POST a v profilu HTTP, CSRF a dvěma očekávanými auditními zápisy. Historické profily čtení připouštějí jen prokazatelný rozdíl +5 tabulek/+2 migrační řádky proti svému starému základu, z toho +1/+1 tvoří tato migrace. Varianta odstranit reset z kontroly bez náhradního otisku by skryla pozdější nechtěnou změnu. [Výsledky](verification/auth-mail-request-audit-20261122/RESULTS.md).
