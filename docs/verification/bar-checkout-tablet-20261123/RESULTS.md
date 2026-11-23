@@ -10,6 +10,6 @@
 | Mobil 390 × 844 | PASS pro šířku celé stránky 390 px; tabulka zachovává vnitřní horizontální posun jako dosud. Přihlášená mobilní přejímka NOT RUN. |
 | Formulář a čitelnost | PASS v syntetickém náhledu: 45 polí počtu, název prvního `quantities[1]`, `action=quote`, sleva a kelímky přítomny; ceny a dostupnost čitelné. Odeslání skutečného prodeje NOT RUN. |
 | Syntaxe PHP, styl, dokumentace a `git diff --check` | Dva PHP lint PASS; PHP CS Fixer nad oběma změněnými soubory PASS. Kontrola dokumentace: 22 řádků CURRENT, 5865 místních odkazů, 0 chyb; diff PASS před předáním. PHPUnit v izolovaném worktree NOT RUN, protože zde není `vendor/`; CI zůstává brána PR. |
-| PR/CI, merge, deploy, přihlášené produkční UAT obsluhy | NOT RUN |
+| PR/CI, merge, deploy, přihlášené produkční UAT obsluhy | [PR #519](https://github.com/KovoPraha/evidenceTreninku/pull/519) OPEN, CI po závěrečném dokumentačním commitu čeká; merge, deploy a UAT NOT RUN. |
 
 Metoda: Playwright CLI proti lokálnímu PHP náhledu se 45 syntetickými produkty. Původní vykreslení formuláře pochází z `origin/main` `71c80d7e`, nové ze změněné větve; oba náhledy mají stejná data a simulovanou 64px hlavičku KIS. Náhled nepoužil produkční účty, databázi ani zásoby; nenahrazuje skutečnou stránku s přihlášenou obsluhou.
