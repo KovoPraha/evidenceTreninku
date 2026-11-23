@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-23-BAR03
+
+Po prvním vydání BAR-PHOTO-SCREEN-01 se malé fotografie načítají, ale výměna DOM okamžitě po desetisekundovém cyklu vytvořila krátce prázdné karty. Zvoleno přednačíst a dekódovat další trojici mimo DOM, starou ponechat viditelnou až do dokončení, a teprve pak provést původní 720ms přechod. Při chybě či 8s čekání se použije textový zástupný obsah, aby obrazovka nezůstala zablokovaná. Varianta pouze dále zmenšit obrázky by nevyloučila krátké zpoždění sítě; prodloužit cyklus by měnilo původní TV chování. Rozhodnutí vývoje k živě reprodukovanému stavu 23. 11.; [plán](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md#bar-photo-screen-01--chybějící-fotografie-na-živé-obrazovce-23-11-2026), [protokol](verification/bar-photo-screen-20261123/RESULTS.md).
+
 ## D2026-11-23-BAR02
 
 Fotografická TV obrazovka po migraci načítala ověřené, ale příliš velké originály: 2MB JPEG potřeboval při čtecím měření více než její 10s interval pro výměnu karet. Zvolena převodní JPEG varianta pouze pro veřejné TV karty, nejvýše 960 px na delší straně, zachovávající originál a stejnou kontrolu publikace. Nevytváří se nový soubor v soukromém úložišti ani nový katalogový záznam; data a zálohy zůstávají beze změny. Prodloužení střídání by změnilo původní chování, nové nahrání originálů by zasáhlo skutečná data. Rozhodnutí vývoje k hlášené závadě vlastníka 23. 11. 2026; [plán](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md#bar-photo-screen-01--chybějící-fotografie-na-živé-obrazovce-23-11-2026), [ověření](verification/bar-photo-screen-20261123/RESULTS.md).
