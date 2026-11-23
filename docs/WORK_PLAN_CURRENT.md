@@ -2,7 +2,7 @@
 
 ## BAR-PHOTO-SCREEN-01 — fotografie barové obrazovky (23. 11. 2026)
 
-K OVĚŘENÍ v [PR #521](https://github.com/KovoPraha/evidenceTreninku/pull/521): vlastník hlásí prázdné fotografické karty po migraci, zobrazuje se pouze menší fotografie tyčinky. Vývoj BAR, `codex/bar-photo-screen-20261123` v samostatném worktree z `origin/main` `2ad73643`. [Nález, varianty, rozsah a akceptace](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md#bar-photo-screen-01--chybějící-fotografie-na-živé-obrazovce-23-11-2026), [výsledky](verification/bar-photo-screen-20261123/RESULTS.md). TV varianty čtyř živých originálů mají 49–105 kB místo 0,48–2,59 MB; tři místní karty vykreslené PASS. Další krok: CI, poté produkční browser/TV přejímka; merge/deploy samostatně.
+PRVNÍ OPRAVA NASAZENA, následné přednačtení K OVĚŘENÍ: [#521](https://github.com/KovoPraha/evidenceTreninku/pull/521) → `bc0c3067`, [deploy 45226205445](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45226205445) SUCCESS. Vlastník hlásil prázdné fotografické karty po migraci. Vývoj BAR: `codex/bar-photo-screen-20261123` a `codex/bar-photo-screen-preload-20261123` v oddělených worktree. [Nález, rozsah a akceptace](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md#bar-photo-screen-01--chybějící-fotografie-na-živé-obrazovce-23-11-2026), [výsledky](verification/bar-photo-screen-20261123/RESULTS.md). Varianta 49–105 kB se živě načítá, ale při střídání byl zachycen krátký prázdný stav; místní přednačtení s 3s zpožděním PASS. Další krok: CI/PR a vydání druhého řezu, poté skutečná TV přejímka.
 
 ## BAR-CHECKOUT-TABLET-01 — kompaktní pokladna baru (23. 11. 2026)
 

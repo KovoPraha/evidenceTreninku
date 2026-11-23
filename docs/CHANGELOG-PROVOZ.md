@@ -5,6 +5,10 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 23. 11. 2026 — první oprava fotografií TV baru
+
+[PR #521](https://github.com/KovoPraha/evidenceTreninku/pull/521) sloučený jako `bc0c3067`, [deploy 45226205445](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45226205445) SUCCESS. Veřejná obrazovka používá malé varianty; při výměně karet ještě vznikal krátký prázdný stav, navazuje přednačtení. [Protokol](verification/bar-photo-screen-20261123/RESULTS.md).
+
 ## 23. 11. 2026 — kompaktní pokladna BAR pro tablet
 
 [PR #519](https://github.com/KovoPraha/evidenceTreninku/pull/519) byl po schválení vlastníka sloučen jako `e647b7bf`; [deploy 45156963794](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45156963794) SUCCESS na stejném SHA. [Výsledky a meze](verification/bar-checkout-tablet-20261123/RESULTS.md). Přihlášená přejímka obsluhy na skutečném tabletu zůstává otevřená.
