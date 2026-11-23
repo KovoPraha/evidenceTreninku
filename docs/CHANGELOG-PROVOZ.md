@@ -5,6 +5,10 @@ Text uvnitř bloků je přesunut beze změny; shodné zápisy obou zdrojů zůst
 kvůli úplnosti zachované. Hodnoty a oprávnění jsou historické, nikoli aktuální.
 Aktuální stav je pouze v [CURRENT_STATE.md](CURRENT_STATE.md).
 
+## 23. 11. 2026 — přednačtení fotografií TV baru
+
+[PR #522](https://github.com/KovoPraha/evidenceTreninku/pull/522) sloučený jako `7918ca05`, [deploy 45233456861](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45233456861) SUCCESS. Nová trojice fotografií se připravuje před výměnou karet, JS má nový klíč cache. Místní zpožděný browser test PASS, živé dlouhé měření rotace se zaseklo; fyzická TV přejímka otevřená. [Protokol](verification/bar-photo-screen-20261123/RESULTS.md).
+
 ## 23. 11. 2026 — první oprava fotografií TV baru
 
 [PR #521](https://github.com/KovoPraha/evidenceTreninku/pull/521) sloučený jako `bc0c3067`, [deploy 45226205445](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45226205445) SUCCESS. Veřejná obrazovka používá malé varianty; při výměně karet ještě vznikal krátký prázdný stav, navazuje přednačtení. [Protokol](verification/bar-photo-screen-20261123/RESULTS.md).
