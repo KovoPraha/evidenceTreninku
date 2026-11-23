@@ -34,7 +34,7 @@ final class BarScreenViewTest extends TestCase
         $html = \barMenuHtml($this->menu('photos'));
         self::assertStringContainsString('class="plocha"', $html);
         self::assertStringContainsString('bar-photos.js', $html);
-        self::assertStringContainsString('menu-image.php?id=7', $html);
+        self::assertStringContainsString('menu-image.php?id=7\\u0026screen=1', $html);
         self::assertStringNotContainsString('LOCALHOST </script>', $html);
         self::assertStringContainsString('\\u003C', $html);
         self::assertSame('35,25 Kč', \barDisplayPrice(3525));
