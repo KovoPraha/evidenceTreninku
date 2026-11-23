@@ -60,7 +60,7 @@ function barRenderCheckoutPage(PDO $pdo, bool $consumption): void
         $quote = null;
     }
     $history = $consumption ? barRecentOwnSales($pdo, true) : [];
-    barCheckoutPageStart($pdo, $consumption ? 'Vlastní spotřeba baru' : 'Pokladna baru');
+    barCheckoutPageStart($pdo, $consumption ? 'Vlastní spotřeba baru' : 'Pokladna baru', !$consumption, true);
     if ($error !== '') {
         echo '<div class="alert alert-danger" role="alert">' . barH($error) . '</div>';
     }
@@ -87,19 +87,22 @@ function barRenderCartForm(array $products, array $cart, bool $consumption, bool
 {
     $quantities = array_column($cart, 'quantity', 'product_id');
     ?>
-    <section class="card card-body mt-4">
+    <section class="card card-body mt-4 bar-checkout-cart">
         <h2 class="h4">Vybrat produkty</h2>
         <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="quote">
-            <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Produkt</th><th>Cena</th><th>Dostupné kusy</th><th>Počet</th></tr></thead><tbody>
+            <div class="table-responsive"><table class="table align-middle bar-checkout-table"><thead><tr><th>Produkt</th><th>Cena</th><th>Dostupné kusy</th><th>Počet</th></tr></thead><tbody>
             <?php foreach ($products as $product): ?>
-                <tr><td>
+                <tr><td><div class="bar-checkout-product">
                     <?php if ($product['image_id'] !== null): ?>
-                        <img src="<?= barH(appUiUrl('bar/image.php?id=' . (int)$product['image_id'])) ?>" alt="" width="64" height="64" style="object-fit:contain" loading="lazy">
+                        <img class="bar-checkout-photo" src="<?= barH(appUiUrl('bar/image.php?id=' . (int)$product['image_id'])) ?>" alt="" width="64" height="64" loading="lazy">
                     <?php endif; ?>
-                    <label for="bar-qty-<?= (int)$product['id'] ?>"><?= barH($product['name']) ?></label><div class="small"><?= barH($product['category']) ?></div></td>
+                    <div class="bar-checkout-product-text">
+                        <label for="bar-qty-<?= (int)$product['id'] ?>"><?= barH($product['name']) ?></label>
+                        <div class="small"><?= barH($product['category']) ?></div>
+                    </div></div></td>
                     <td><?= $consumption ? 'Vlastní spotřeba' : barH(barFormatMoney((int)$product['price_minor'])) ?></td>
                     <td><?= $product['available'] === null ? 'Nesledováno' : (int)$product['available'] ?></td>
-                    <td><input class="form-control" style="min-width:5rem;max-width:8rem" type="number" min="0" max="500"
+                    <td><input class="form-control bar-checkout-quantity" type="number" min="0" max="500"
                         id="bar-qty-<?= (int)$product['id'] ?>" name="quantities[<?= (int)$product['id'] ?>]" value="<?= (int)($quantities[(int)$product['id']] ?? 0) ?>"></td></tr>
             <?php endforeach; ?></tbody></table></div>
             <?php if ($consumption): ?>
@@ -110,14 +113,17 @@ function barRenderCartForm(array $products, array $cart, bool $consumption, bool
                 </select>
                 <label class="form-label" for="bar-consumption-reason">Důvod odběru</label>
                 <input class="form-control mb-2" id="bar-consumption-reason" name="reason" value="<?= barH($reason) ?>" minlength="5" maxlength="1000" required>
-            <?php else: ?>
+            <?php else: ?><div class="bar-checkout-extras">
+                <div>
                 <label class="form-label" for="bar-discount">Sleva na zboží</label>
                 <select class="form-select mb-2" name="discount" id="bar-discount">
                     <option value="0">Bez slevy</option><option value="20" <?= $discount === 20 ? 'selected' : '' ?>>Trenér −20 %</option>
                 </select>
                 <p class="form-text">Při trenérské slevě se cena zboží zaokrouhlí dolů na celé desetikoruny. Zálohy se neslevují.</p>
+                </div><div>
                 <label class="form-label" for="bar-cups">Počet zálohovaných kelímků</label>
                 <input class="form-control mb-2" type="number" min="0" max="200" id="bar-cups" name="cups" value="<?= $cups ?>">
+                </div></div>
             <?php endif; ?>
             <button class="btn btn-primary">Zobrazit souhrn k potvrzení</button>
         </form>

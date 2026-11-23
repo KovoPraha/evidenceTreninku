@@ -5,18 +5,19 @@ declare(strict_types=1);
 require_once __DIR__ . '/web.php';
 require_once __DIR__ . '/checkout_read.php';
 
-function barCheckoutPageStart(PDO $pdo, string $title): void
+function barCheckoutPageStart(PDO $pdo, string $title, bool $compactCart = false, bool $cartStyles = false): void
 {
     ?>
 <!doctype html><html lang="cs"><head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
     <title><?= barH($title) ?> | KIS</title><?php appUiAssets(); ?>
-</head><body>
+    <?php if ($cartStyles): ?><link href="<?= barH(appUiUrl('assets/bar-checkout.css') . '?v=' . filemtime(dirname(__DIR__, 2) . '/assets/bar-checkout.css')) ?>" rel="stylesheet"><?php endif; ?>
+</head><body<?= $compactCart ? ' class="bar-checkout-page"' : '' ?>>
 <?php require dirname(__DIR__, 2) . '/hlavicka.php'; ?>
-<main class="container py-4"><h1><?= barH($title) ?></h1>
+<main class="container py-4<?= $compactCart ? ' bar-checkout-main' : '' ?>"><h1><?= barH($title) ?></h1>
     <?php barRenderRequestRecoveryMount(); ?>
     <?php if (in_array($_SESSION['staff_active_position'] ?? '', ['bar_operator', 'bar_admin'], true)): ?>
-    <p><a href="<?= barH(appUiUrl('bar/checkout.php')) ?>">Pokladna</a> ·
+    <p<?= $compactCart ? ' class="bar-checkout-nav"' : '' ?>><a href="<?= barH(appUiUrl('bar/checkout.php')) ?>">Pokladna</a> ·
         <a href="<?= barH(appUiUrl('bar/cashbox.php')) ?>">Moje kasa</a> ·
         <a href="<?= barH(appUiUrl('bar/consumption.php')) ?>">Vlastní spotřeba</a></p>
     <?php else: ?>
