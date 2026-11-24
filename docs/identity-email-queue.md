@@ -2,28 +2,20 @@
 
 ## AUTH-MAIL-05 — společný přehled pošty, kontrolní kopie a bezpečné opakování (24. 11. 2026)
 
-**Stav: ROZPRACOVÁNO; lokální implementace probíhá, nasazení NOT RUN.**
-Vlastník zadání: Marek/klub; návrh: vývoj KIS. Větev
-`codex/auth-mail-admin-plan-20261124`, samostatný worktree
-`C:\Users\Marek\Documents\Codex\evidencePavel-auth-mail-admin-plan-20261124`
-z `origin/main` `7eeacfa7`. Vlastník 24. 11. výslovně požádal
-„implementuj a nasaď“ celý AUTH-MAIL-05 včetně skutečné BCC; chráněné
-nasazení je povoleno po ověření a sloučení, bez hromadného uvolnění jiných
-front a bez změny cizích účtů.
-[Registr](WORK_PLAN_CURRENT.md#auth-mail-05--společná-administrace-e-mailů-24-11-2026).
-[PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524)
-je otevřený; implementační commit `e57b8455` pushnut, následné lokální opravy
-CI čekají na další push, merge/deploy NOT RUN.
-[Průběžný výsledek](verification/auth-mail-unified-20261124/RESULTS.md).
-Vlastník následně upřesnil, že požaduje **skutečnou BCC stejné zprávy**
-včetně autentizačních e-mailů, přístupnou k nastavení pouze administrátorovi
-a vypnutelnou po testování. Tato volba nahrazuje původní návrh redigované
-kontrolní zprávy; [rozhodnutí D2026-11-24-02](DECISION_LOG.md#d2026-11-24-02--administrátorská-skrytá-kopie-pro-testování).
-Místní `php tools/check-current-docs.php` a `git diff --check` PASS.
-Původní CI [run 45380794696](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45380794696)
-zastavil `composer audit --locked` před testy. Lokální WIP aktualizuje dvě
-dotčené knihovny i nezbytné závislosti; `composer audit --locked` nyní PASS.
-Nové CI implementace dosud NOT RUN.
+**Stav: NASAZENO; přihlášené UAT a doručení do schránky otevřené.**
+Vlastník Marek/klub 24. 11. výslovně schválil implementaci a nasazení.
+Vývojová větev `codex/auth-mail-admin-plan-20261124`, samostatný worktree
+`C:\Users\Marek\Documents\Codex\evidencePavel-auth-mail-admin-plan-20261124`.
+[PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524) byl sloučen
+jako `2cae19d6`; [produkční nasazení 45396452344](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45396452344)
+prošlo se zálohou, migrací a HTTP smoke. [Registr](WORK_PLAN_CURRENT.md#auth-mail-05--společná-administrace-e-mailů-24-11-2026),
+[výsledek](verification/auth-mail-unified-20261124/RESULTS.md).
+Skutečná administrátorská BCC stejné zprávy včetně autentizačních odkazů
+je po nasazení výchozně vypnutá; lze ji na omezenou dobu zapnout a připojit
+jen k dosud neodeslané konkrétní zprávě. [Rozhodnutí D2026-11-24-02](DECISION_LOG.md#d2026-11-24-02--administrátorská-skrytá-kopie-pro-testování).
+Živý čtecí [status 45397914894](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45397914894)
+potvrdil nedávný úspěšný rodičovský CRON a `pending=0`, `failed=0`, `sent=12`.
+Skutečné doručení konkrétní registrace zatím potvrzeno nebylo.
 
 ### Nález a hranice důkazu
 
