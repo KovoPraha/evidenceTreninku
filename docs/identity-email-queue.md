@@ -9,6 +9,8 @@ Vlastník zadání: Marek/klub; návrh: vývoj KIS. Větev
 z `origin/main` `7eeacfa7`. Oprávnění: čtecí diagnostika a dokumentační PR;
 bez zkušebního odeslání, změny účtů, zapnutí jiné fronty či nasazení.
 [Registr](WORK_PLAN_CURRENT.md#auth-mail-05--společná-administrace-e-mailů-24-11-2026).
+[Dokumentační PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524)
+je otevřený; push proveden, merge/implementace/deploy NOT RUN.
 
 ### Nález a hranice důkazu
 
