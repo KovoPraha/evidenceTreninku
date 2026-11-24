@@ -1,6 +1,6 @@
 # Úplný index verzovaných podkladů
 
-Inventura založena 7. 11. 2026, aktualizována 21. 11. 2026. [Katalog plánů](PLAN_CATALOG.md) obsahuje hlavní
+Inventura založena 7. 11. 2026, aktualizována 24. 11. 2026. [Katalog plánů](PLAN_CATALOG.md) obsahuje hlavní
 plány, koncepty a vložené ověřovací plány; tento seznam eviduje i zbytek
 textové dokumentace i binární plány/přílohy, aby žádný soubor nezmizel jen kvůli názvu, formátu nebo složce.
 Historický protokol/fixture není nové schválení ani tvrzení o dnešním provozu.
@@ -8,6 +8,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-auth-mail-tester-20261124 | [Návod pro testerku: správa e-mailů KIS](TESTER_AUTH_MAIL_2026-11-24.md) | reference / SUPPORT | AUTH-MAIL-05 |
 | PL-training-plan-admin-result | [verification/training-plan-admin-collision-20261121/RESULTS.md](verification/training-plan-admin-collision-20261121/RESULTS.md) | evidence / SUPPORT | TRAINING-PLAN-ACL-01 |
 | PL-WIP-AUDIT-20261121 | [Inventura historických checkoutů](verification/worktree-reconciliation-20261121/RESULTS.md) | verification / SUPPORT | WIP-AUDIT-01/SEC01 |
 | PL-f4f6043c1f | [P15 čtecí synchronizace ČSC/Sportsoft](CSC_SPORTSOFT_READ_SYNC_PLAN_2026-11-07.md) | plan / PARTIAL | P15 |

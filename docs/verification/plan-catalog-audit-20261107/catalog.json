@@ -4,6 +4,17 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-auth-mail-tester-20261124",
+      "path": "docs/TESTER_AUTH_MAIL_2026-11-24.md",
+      "title": "TESTER — nová správa e-mailů KIS (AUTH-MAIL-05)",
+      "primary": false,
+      "role": "reference",
+      "status": "SUPPORT",
+      "registry": "AUTH-MAIL-05",
+      "disposition": "Návod pro přihlášené UAT nasazené poštovní administrace; skutečné doručení dosud neověřeno.",
+      "evidence": []
+    },
+    {
       "id": "PL-training-plan-admin-result",
       "path": "docs/verification/training-plan-admin-collision-20261121/RESULTS.md",
       "title": "TRAINING-PLAN-ACL-01 — místní ověření, 21. 11. 2026",
