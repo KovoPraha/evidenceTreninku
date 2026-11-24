@@ -6,6 +6,50 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-24-03 — opakování přes původní fronty a vazbu nových odkazů
+
+Vlastník 24. 11. požádal o implementaci a nasazení AUTH-MAIL-05. Zvoleno
+sjednocené čtecí zobrazení nad šesti existujícími frontami, zatímco jejich
+workery a obchodní ochrany zůstávají místem skutečného odeslání. Adminem
+potvrzené opakování neautentizační zprávy vrací původní řádek do původní fronty;
+nový ověřovací či resetovací odkaz vytváří atomicky nový token a nový řádek,
+vazba na původní ID brání dvojitému vydání z jednoho starého e-mailu. Přímé
+odeslání z administračního POST by obešlo souběh a audit. Přesné hledání
+nezařazených žádostí používá účelově oddělený klíčovaný otisk adresy z
+existujícího autentizačního tajemství; audit neukládá plaintext adresu. BCC
+je po migraci vypnutá, s omezenou dobou zapnutí. Přijetí PHP `mail()` není
+důkaz doručení do schránky. [Plán](identity-email-queue.md#auth-mail-05--společný-přehled-pošty-kontrolní-kopie-a-bezpečné-opakování-24-11-2026),
+[ověření](verification/auth-mail-unified-20261124/RESULTS.md).
+
+## D2026-11-24-02 — administrátorská skrytá kopie pro testování
+
+**PŘIJATO jako produktová volba vlastníka pro návrh AUTH-MAIL-05; v okamžiku
+tohoto rozhodnutí nešlo o souhlas s implementací, aktivací nebo produkčním
+odesláním. Následně vlastník výslovně požádal „implementuj a nasaď“;
+viz [D2026-11-24-03](#d2026-11-24-03--opakování-přes-původní-fronty-a-vazbu-nových-odkazů).** Vlastník
+24. 11. upřesnil, že chce skutečnou BCC stejného e-mailu, také u registrace
+a obnovy hesla, kterou může nastavit pouze administrátor a po testování
+vypnout. Nahrazuje doporučení redigované kontrolní zprávy v
+[D2026-11-24-01](#d2026-11-24-01--navržená-hranice-kontrolních-kopií).
+Jednorázový odkaz v BCC je použitelný; administrace proto vyžaduje
+výslovné potvrzení, důvod, audit a dočasný vypínatelný režim. Adresa BCC
+se nesmí objevit u hlavního příjemce. Vypnutí zastaví další kopie, nevrací
+již přijatou zprávu. U dříve `sent` zprávy lze BCC dodat jen v nové bezpečně
+vydané zprávě. Přijetí BCC nedokazuje doručení hlavnímu příjemci.
+[Plán](identity-email-queue.md#auth-mail-05--společný-přehled-pošty-kontrolní-kopie-a-bezpečné-opakování-24-11-2026).
+
+## D2026-11-24-01 — navržená hranice kontrolních kopií
+
+**NAHRAZENO rozhodnutím [D2026-11-24-02](#d2026-11-24-02--administrátorská-skrytá-kopie-pro-testování).** Po hlášení nedoručené
+registrace je navržen sjednocený přehled požadavků a transportních důkazů.
+Doslovná BCC libovolné adresy u hesla nebo ověření by předala použitelný
+jednorázový odkaz další osobě. Doporučena kontrolní zpráva bez odkazu a
+testovací účet pro ověření plného e-mailu; u běžných zpráv jen kopie na
+ověřenou správcovskou adresu. Přijatá kopie ani výsledek PHP `mail()`
+neprokazují doručení hlavnímu příjemci. Nejasné `sent` se nemá slepě
+opakovat a vypršelý odkaz se nemá znovu odeslat; nový odkaz vydá bezpečná
+doménová služba. Rozsah, varianty a akceptace: [AUTH-MAIL-05](identity-email-queue.md#auth-mail-05--společný-přehled-pošty-kontrolní-kopie-a-bezpečné-opakování-24-11-2026).
+
 ## D2026-11-23-BAR03
 
 Po prvním vydání BAR-PHOTO-SCREEN-01 se malé fotografie načítají, ale výměna DOM okamžitě po desetisekundovém cyklu vytvořila krátce prázdné karty. Zvoleno přednačíst a dekódovat další trojici mimo DOM, starou ponechat viditelnou až do dokončení, a teprve pak provést původní 720ms přechod. Při chybě či 8s čekání se použije textový zástupný obsah, aby obrazovka nezůstala zablokovaná. Varianta pouze dále zmenšit obrázky by nevyloučila krátké zpoždění sítě; prodloužit cyklus by měnilo původní TV chování. Rozhodnutí vývoje k živě reprodukovanému stavu 23. 11.; [plán](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md#bar-photo-screen-01--chybějící-fotografie-na-živé-obrazovce-23-11-2026), [protokol](verification/bar-photo-screen-20261123/RESULTS.md).

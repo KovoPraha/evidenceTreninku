@@ -147,7 +147,7 @@ final class PasswordResetRequestAuditTest extends TestCase
         $pdo->exec('CREATE TABLE auth_login_limits(scope TEXT,key_hash TEXT,window_started_at INTEGER,attempts INTEGER,blocked_until INTEGER,updated_at INTEGER,PRIMARY KEY(scope,key_hash))');
         $pdo->exec('CREATE TABLE password_reset_tokens(id INTEGER PRIMARY KEY AUTOINCREMENT,target_type TEXT,'
             . 'target_id INTEGER,delivery_account_id INTEGER,token_hash TEXT,expires_at TEXT,consumed_at TEXT)');
-        foreach (['20261019100000_auth_mail_outbox', '20261122120000_password_reset_request_audit'] as $name) {
+        foreach (['20261019100000_auth_mail_outbox', '20261122120000_password_reset_request_audit', '20261124120000_mail_admin_unified'] as $name) {
             $migration = require dirname(__DIR__, 2) . '/migrations/' . $name . '.php';
             $migration['up']($pdo);
             self::assertTrue($migration['verify']($pdo));

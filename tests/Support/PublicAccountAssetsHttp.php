@@ -17,7 +17,7 @@ $admin->exec('USE `' . $runtime['schema'] . '`');
 $checksums = static function () use ($admin): array {
     $result = [];
     foreach ($admin->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN) as $table) {
-        if ($table === 'password_reset_request_audit') {
+        if (in_array($table, ['password_reset_request_audit', 'mail_request_audit'], true)) {
             continue;
         }
         if (!preg_match('/^[a-zA-Z0-9_]+$/D', $table)) {
@@ -80,7 +80,9 @@ foreach (range(-4, 16) as $round) {
 }
 foreach (['signatures', 'csrf_denials'] as $key) {
     foreach ($report[$key] as $case => $pair) {
-        if (in_array($case, ['reset', 'trainer-reset'], true)) {
+        // Registration and reset handlers intentionally changed in AUTH-MAIL-05;
+        // their source contracts and per-variant stability remain checked above.
+        if (in_array($case, ['registration-family', 'registration-shop', 'registration-sport', 'reset', 'trainer-reset'], true)) {
             continue;
         }
         if ($pair['before'] !== $pair['after']) {
@@ -98,8 +100,13 @@ if ($auditRows !== [
 ]) {
     throw new RuntimeException('Unexpected password reset audit writes during account comparison.');
 }
+$registrationAudit = $admin->query('SELECT kind,outcome,reason_code FROM mail_request_audit ORDER BY request_id')->fetchAll(PDO::FETCH_ASSOC);
+if ($registrationAudit !== [['kind' => 'registration', 'outcome' => 'rejected', 'reason_code' => 'csrf_invalid']]) {
+    throw new RuntimeException('Unexpected registration audit writes during account comparison.');
+}
 $report['tables_unchanged'] = count($dataBefore);
 $report['expected_reset_audit_rows'] = count($auditRows);
+$report['expected_registration_audit_rows'] = count($registrationAudit);
 $report['complete'] = true;
 file_put_contents($output . '/account-http.json', json_encode($report, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT));
 echo "Account whole HTTP, CSRF denial and table checksums PASS.\n";

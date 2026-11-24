@@ -63,7 +63,8 @@ try {
         if ($drain['sent'] !== min(20, $size) || $drain['processed'] !== $calls || $calls !== min(20, $size)) {
             throw new RuntimeException('Bounded drain contract failed.');
         }
-        if ($counts['prepared_sql'] > 9 || $counts['fetched_rows'] > 7 || count($pdo->profile) > 75) {
+        // One live BCC lookup per claimed message keeps administrator disable effective during a drain.
+        if ($counts['prepared_sql'] > 9 || $counts['fetched_rows'] > 7 || count($pdo->profile) > 95) {
             throw new RuntimeException('Queue SQL/row budget exceeded.');
         }
         $results[] = ['rows_per_queue' => $size, 'status' => $counts + ['warmups' => 2, 'samples' => $samples],

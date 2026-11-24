@@ -5,6 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/auth_rate_limit.php';
 require_once __DIR__ . '/password_reset.php';
 require_once __DIR__ . '/trainer_password_reset.php';
+require_once __DIR__ . '/mail_request_audit.php';
 
 /** @return array{request_id:string,csrf_valid:bool,issued:bool,token:?string} */
 function passwordResetRequestHandle(
@@ -22,7 +23,7 @@ function passwordResetRequestHandle(
     $stage = 'audit_start';
 
     try {
-        passwordResetAuditStart($pdo, $requestId, $trainerReset ? 'trainer' : 'public');
+        passwordResetAuditStart($pdo, $requestId, $trainerReset ? 'trainer' : 'public', $identifier);
         $auditStarted = true;
         if (!$csrfValid) {
             passwordResetAuditFinish($pdo, $requestId, 'rejected', 'csrf_invalid');
@@ -76,14 +77,14 @@ function passwordResetRequestHandle(
     }
 }
 
-function passwordResetAuditStart(PDO $pdo, string $requestId, string $audience): void
+function passwordResetAuditStart(PDO $pdo, string $requestId, string $audience, string $identifier = ''): void
 {
     if (preg_match('/^[a-f0-9]{32}$/D', $requestId) !== 1 || !in_array($audience, ['public', 'trainer'], true)) {
         throw new InvalidArgumentException('Invalid password reset audit start.');
     }
     $pdo->prepare(
-        "INSERT INTO password_reset_request_audit(request_id,audience,outcome,reason_code) VALUES(?,?,'received','received')"
-    )->execute([$requestId, $audience]);
+        "INSERT INTO password_reset_request_audit(request_id,audience,identifier_hash,outcome,reason_code) VALUES(?,?,?,'received','received')"
+    )->execute([$requestId, $audience, mailRequestIdentifierHash($identifier)]);
 }
 
 function passwordResetAuditFinish(PDO $pdo, string $requestId, string $outcome, string $reason, ?int $outboxId = null): void

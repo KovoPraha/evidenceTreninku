@@ -63,6 +63,17 @@ foreach (['prihlaseni.php', 'registrace.php', 'sportovec_prihlaseni.php', 'zapom
         $replacement = substr($guard, 0, $offset) . '{ ' . substr($guard, $offset) . ' }';
         $expected = str_replace($guard, $replacement, $expected);
     }
+    if ($name === 'registrace.php') {
+        // AUTH-MAIL-05 adds the registration request audit and a three-day link.
+        $approvedHash = '085ad6550c0250cf95a7b20cf0a4e35ce6d1b05d544c71cb7524f1a198a63679';
+        if (hash('sha256', $after) !== $approvedHash) {
+            throw new RuntimeException('Registration route differs from approved AUTH-MAIL-05 source.');
+        }
+        $report[$path] = ['source_sha256' => $approvedHash, 'approved_registration_audit_revision' => true,
+            'literal_html_except_one_tag_equal' => false, 'php_tokens_except_listed_guard_braces_equal' => false,
+            'guard_braces_count' => 0];
+        continue;
+    }
     if ($name === 'zapomenute_heslo.php') {
         // AUTH-MAIL-04 intentionally changes the reset route. Pin the reviewed source
         // instead of treating its new POST audit and form copy as a CSS-only edit.

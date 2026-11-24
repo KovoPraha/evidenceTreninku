@@ -19,9 +19,9 @@ $newCases = array_filter($after['cases'], static fn (array $case): bool => $case
 $indexes = [1 => array_keys($oldCases), 2 => array_keys($newCases)];
 $oldCases = array_values($oldCases);
 $newCases = array_values($newCases);
-// Makeup adds four tables; AUTH-MAIL-04 adds one audit table and one migration row.
-$knownSchemaOnly = $after['fixture_tables'] === $before['fixture_tables'] + 5
-    && $after['migration_ledger_count'] === $before['migration_ledger_count'] + 2;
+// Makeup adds four tables; AUTH-MAIL-04 adds one; AUTH-MAIL-05 adds five and one migration row.
+$knownSchemaOnly = $after['fixture_tables'] === $before['fixture_tables'] + 10
+    && $after['migration_ledger_count'] === $before['migration_ledger_count'] + 3;
 if (!$before['complete'] || !$after['complete'] || count($oldCases) !== 9 || count($newCases) !== 9
     || $before['server'] !== $after['server'] || $before['php'] !== $after['php']
     || (!$knownSchemaOnly && ($before['fixture_tables'] !== $after['fixture_tables']

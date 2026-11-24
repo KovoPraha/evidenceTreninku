@@ -381,7 +381,7 @@ function familyWeeklyDeliveryComplete(
     }
 }
 
-/** @param callable(string,string,string):bool $sender */
+/** @param callable(string,string,string,?string=):bool $sender */
 function familyWeeklyDeliveryProcessOne(
     PDO $pdo,
     callable $sender,
@@ -397,11 +397,17 @@ function familyWeeklyDeliveryProcessOne(
             notificationQueueHold($pdo, 'family_weekly_summaries', $row, 'delivery_blocked: oprávnění nebo kontakt se změnily; ověřit rodinu.');
             return false;
         }
+        require_once __DIR__ . '/mail_admin_unified.php';
+        $bcc = mailAdminBccFor($pdo, 'weekly', (int)$row['id']);
         $sent = $sender(
             (string)$row['recipient_email'],
             (string)$row['subject_plain'],
-            (string)$row['body_plain']
+            (string)$row['body_plain'],
+            $bcc
         );
+        if ($sent) {
+            mailAdminBccAccepted($pdo, 'weekly', (int)$row['id'], $bcc);
+        }
     } catch (Throwable $exception) {
         try {
             notificationQueueHold($pdo, 'family_weekly_summaries', $row, 'delivery_unknown: ověřit oprávnění a doručení před opakováním.');
@@ -442,18 +448,19 @@ function familyWeeklyDeliveryLocalOutboxSender(string $appHost, ?string $directo
     }
 }
 
-function familyWeeklyDeliveryMailSender(string $recipient, string $subject, string $body): bool
+function familyWeeklyDeliveryMailSender(string $recipient, string $subject, string $body, ?string $bcc = null): bool
 {
     if (!filter_var($recipient, FILTER_VALIDATE_EMAIL)
         || preg_match('/[\r\n]/', $recipient . $subject) === 1
     ) {
         throw new FamilyWeeklyDeliveryException('Souhrn obsahuje neplatnou e-mailovou hlavičku.');
     }
+    require_once __DIR__ . '/mail_admin_unified.php';
     return mail(
         $recipient,
         '=?UTF-8?B?' . base64_encode($subject) . '?=',
         $body,
-        "Content-Type: text/plain; charset=UTF-8\r\n"
+        "Content-Type: text/plain; charset=UTF-8\r\n" . mailAdminBccHeader($bcc)
     );
 }
 

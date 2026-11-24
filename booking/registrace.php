@@ -9,6 +9,10 @@ require_once __DIR__ . '/../includes/app_url.php';
 require_once __DIR__ . '/../includes/password_security.php';
 require_once __DIR__ . '/../includes/auth_rate_limit.php';
 require_once __DIR__ . '/../includes/auth_mail_outbox.php';
+require_once __DIR__ . '/../includes/mail_request_audit.php';
+if (!isset($pdo) || !$pdo instanceof PDO) {
+    throw new RuntimeException('Database bootstrap unavailable.');
+}
 
 function h(string $s): string
 {
@@ -33,11 +37,25 @@ if (isset($_SESSION['verejny_uzivatel_id'])) {
 $errors  = [];
 $success = false;
 $existingAccount = false;
+$requestId = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!csrf_verify($_POST['csrf_token'] ?? '')) {
+    $requestId = bin2hex(random_bytes(16));
+    $auditReady = false;
+    $auditFinished = false;
+    $auditOutcome = 'rejected';
+    $auditReason = 'invalid_input';
+    try {
+        mailRequestAuditStart($pdo, $requestId, 'registration', is_string($_POST['email'] ?? null) ? $_POST['email'] : '');
+        $auditReady = true;
+    } catch (Throwable $exception) {
+        error_log('Registration audit start failed: request_id=' . $requestId . ' class=' . get_class($exception));
+        $errors[] = 'Registrace momentálně není dostupná. Zkuste to později.';
+    }
+    if ($auditReady && !csrf_verify($_POST['csrf_token'] ?? '')) {
+        $auditReason = 'csrf_invalid';
         $errors[] = 'Neplatný CSRF token.';
-    } else {
+    } elseif ($auditReady) {
         $jmeno    = trim($_POST['jmeno']    ?? '');
         $prijmeni = trim($_POST['prijmeni'] ?? '');
         $email    = strtolower(trim($_POST['email']  ?? ''));
@@ -54,10 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email,
                 auth_rate_limit_request_ip()
             )) {
+                $auditReason = 'rate_limited';
                 $errors[] = 'Příliš mnoho pokusů. Zkuste registraci později.';
             }
         } catch (Throwable $exception) {
-            error_log('booking/registrace.php rate limit: ' . $exception->getMessage());
+            $auditOutcome = 'failed';
+            $auditReason = 'rate_limit_error';
+            error_log('booking/registrace.php rate limit: request_id=' . $requestId . ' class=' . get_class($exception));
             $errors[] = 'Registrace momentálně není dostupná. Zkuste to později.';
         }
 
@@ -91,22 +112,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($errors)) {
             // Kontrola duplicity
-            $st = $pdo->prepare(
-                "SELECT id FROM verejni_uzivatele WHERE LOWER(email)=? "
-                . "UNION SELECT id FROM treneri WHERE LOWER(email)=? LIMIT 1"
-            );
-            $st->execute([$email, $email]);
-            $existingAccount = $st->fetchColumn() !== false;
+            try {
+                $st = $pdo->prepare(
+                    "SELECT id FROM verejni_uzivatele WHERE LOWER(email)=? "
+                    . "UNION SELECT id FROM treneri WHERE LOWER(email)=? LIMIT 1"
+                );
+                $st->execute([$email, $email]);
+                $existingAccount = $st->fetchColumn() !== false;
+            } catch (Throwable $exception) {
+                $auditOutcome = 'failed';
+                $auditReason = 'lookup_error';
+                error_log('Registration lookup failed: request_id=' . $requestId . ' class=' . get_class($exception));
+                $errors[] = 'Registrace momentálně není dostupná. Zkuste to později.';
+            }
         }
 
         if (empty($errors) && $existingAccount) {
             // Stejná odpověď jako u nové registrace brání zjišťování existence účtu.
+            $auditReason = 'account_exists';
             $success = true;
         }
 
         if (empty($errors) && !$existingAccount) {
-            $verification = one_time_token_issue(ONE_TIME_TOKEN_EMAIL_VERIFICATION, 86400);
             try {
+                $verification = one_time_token_issue(ONE_TIME_TOKEN_EMAIL_VERIFICATION, 3 * 86400);
                 $pdo->beginTransaction();
                 $pdo->prepare("
                     INSERT INTO verejni_uzivatele
@@ -135,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $link = appUrl('booking/overeni.php') . '#token=' . rawurlencode($verification['token'])
                     . '&redirect=' . rawurlencode($redirect);
-                authMailEnqueue(
+                $outboxId = authMailEnqueue(
                     $pdo,
                     'verify',
                     'public',
@@ -143,18 +172,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $verification['hash'],
                     $email,
                     'Ověření registrace — Kovopraha',
-                    "Dobrý den {$jmeno},\n\nPro dokončení registrace otevřete odkaz:\n{$link}\n\nOdkaz je platný 24 hodin."
+                    "Dobrý den {$jmeno},\n\nPro dokončení registrace otevřete odkaz:\n{$link}\n\nOdkaz je platný 3 dny."
                 );
+                mailRequestAuditFinish($pdo, $requestId, 'queued', 'queued', $outboxId);
                 $pdo->commit();
+                $auditFinished = true;
                 $success = true;
             } catch (Throwable $exception) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
                 }
-                error_log('booking/registrace.php public profile: ' . $exception->getMessage());
+                $auditOutcome = 'failed';
+                $auditReason = 'enqueue_error';
+                error_log('booking/registrace.php public profile: request_id=' . $requestId . ' class=' . get_class($exception));
                 $errors[] = 'Účet se nepodařilo vytvořit bez částečného zápisu.';
             }
 
+        }
+    }
+    if ($auditReady && !$auditFinished) {
+        try {
+            mailRequestAuditFinish($pdo, $requestId, $auditOutcome, $auditReason);
+        } catch (Throwable $exception) {
+            error_log('Registration audit finish failed: request_id=' . $requestId . ' class=' . get_class($exception));
+            $errors[] = 'Výsledek registrace se nepodařilo zaevidovat.';
         }
     }
 }
@@ -174,6 +215,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card shadow">
         <div class="card-body p-4">
             <h1 class="h4 mb-4 text-center"><i class="bi bi-person-plus me-2"></i>Registrace</h1>
+
+            <?php if ($requestId !== null): ?>
+                <div class="alert alert-secondary small">Reference požadavku: <code><?=h($requestId)?></code>. Pokud e-mail nepřijde, sdělte ji správci klubu.</div>
+            <?php endif; ?>
 
             <?php if ($success): ?>
                 <div class="alert alert-success text-center">

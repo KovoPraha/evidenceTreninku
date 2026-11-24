@@ -648,12 +648,6 @@ parameters:
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'
 			identifier: variable.undefined
-			count: 10
-			path: booking/registrace.php
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
 			count: 4
 			path: booking/registrace_sportovce.php
 
@@ -785,12 +779,6 @@ parameters:
 			count: 3
 			path: booking/verejny_profil.php
 
-
-		-
-			message: '#^Variable \$pdo might not be defined\.$#'
-			identifier: variable.undefined
-			count: 2
-			path: booking/znovu_overit_email.php
 
 		-
 			message: '#^Variable \$pdo might not be defined\.$#'

@@ -97,7 +97,8 @@ function authMailResendVerification(
     string $email,
     string $verificationUrl,
     ?array $keyConfig = null,
-    mixed $returnTo = null
+    mixed $returnTo = null,
+    ?string $requestId = null
 ): array {
     $email = strtolower(trim($email));
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -116,7 +117,7 @@ function authMailResendVerification(
             $pdo->commit();
             return ['accepted' => true,'queued' => false];
         }
-        $issued = one_time_token_issue(ONE_TIME_TOKEN_EMAIL_VERIFICATION, 86400);
+        $issued = one_time_token_issue(ONE_TIME_TOKEN_EMAIL_VERIFICATION, 3 * 86400);
         $id = (int)$row['id'];
         $pdo->prepare('UPDATE verejni_uzivatele SET verifikacni_token=?,verifikacni_token_expires_at=? WHERE id=? AND email_overeno=0')
             ->execute([$issued['hash'],$issued['expires_at'],$id]);
@@ -126,7 +127,7 @@ function authMailResendVerification(
             ->execute([$id]);
         $link = $verificationUrl.'#token='.rawurlencode($issued['token'])
             .'&redirect='.rawurlencode(bookingReturnDestination($returnTo, 'moje_osoby.php'));
-        authMailEnqueue(
+        $outboxId = authMailEnqueue(
             $pdo,
             'verify',
             'public',
@@ -134,9 +135,13 @@ function authMailResendVerification(
             $issued['hash'],
             (string)$row['email'],
             'Ověření registrace — Kovopraha',
-            "Dobrý den {$row['jmeno']},\n\nPro dokončení registrace otevřete odkaz:\n{$link}\n\nOdkaz je platný 24 hodin.",
+            "Dobrý den {$row['jmeno']},\n\nPro dokončení registrace otevřete odkaz:\n{$link}\n\nOdkaz je platný 3 dny.",
             $keyConfig
         );
+        if ($requestId !== null) {
+            require_once __DIR__ . '/mail_request_audit.php';
+            mailRequestAuditFinish($pdo, $requestId, 'queued', 'queued', $outboxId);
+        }
         $pdo->commit();
         return ['accepted' => true,'queued' => true];
     } catch (Throwable $exception) {
@@ -256,7 +261,7 @@ function authMailComplete(PDO $pdo, array $row, string $status, string $error = 
     }
 }
 
-/** @param callable(string,string,string):bool $sender
+/** @param callable(string,string,string,array=,?string=):bool $sender
  * @return 'sent'|'failed'|'cancelled'|null
  */
 function authMailProcessOne(PDO $pdo, callable $sender, ?array $keyConfig = null, bool $trainerOnly = false, bool $publicOnly = false): ?string
@@ -271,11 +276,18 @@ function authMailProcessOne(PDO $pdo, callable $sender, ?array $keyConfig = null
     }
     try {
         $body = authMailDecrypt($row, $keyConfig);
+        require_once __DIR__ . '/mail_admin_unified.php';
+        $bcc = mailAdminBccFor($pdo, 'auth', (int)$row['id']);
         $sent = $sender(
             (string)$row['recipient_email'],
             (string)$row['subject_plain'],
-            $body
+            $body,
+            [],
+            $bcc
         );
+        if ($sent) {
+            mailAdminBccAccepted($pdo, 'auth', (int)$row['id'], $bcc);
+        }
         authMailComplete($pdo, $row, $sent ? 'sent' : 'failed', $sent ? '' : 'Transport odmítl zprávu.');
         return $sent ? 'sent' : 'failed';
     } catch (Throwable $exception) {

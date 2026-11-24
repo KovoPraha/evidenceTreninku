@@ -2786,8 +2786,8 @@
       "primary": true,
       "role": "plan",
       "status": "PARTIAL",
-      "registry": "AUTH-MAIL-01/AUTH-MAIL-02/AUTH-MAIL-03/AUTH-MAIL-04",
-      "disposition": "AUTH-MAIL-01: produkční worker aktivní. AUTH-MAIL-02: dva nové 72h resety přijaty transportem, doručení do schránek otevřené. AUTH-MAIL-03: záložní režim koncept. AUTH-MAIL-04: audit požadavků nasazen, přihlášené UAT otevřené.",
+      "registry": "AUTH-MAIL-01/AUTH-MAIL-02/AUTH-MAIL-03/AUTH-MAIL-04/AUTH-MAIL-05",
+      "disposition": "AUTH-MAIL-01: produkční worker aktivní. AUTH-MAIL-02: dva nové 72h resety přijaty transportem, doručení do schránek otevřené. AUTH-MAIL-03: záložní režim koncept. AUTH-MAIL-04: audit požadavků nasazen, přihlášené UAT otevřené. AUTH-MAIL-05: společná administrace koncept, dočasná skutečná BCC přijata jako volba vlastníka.",
       "evidence": [
         "docs/verification/auth-mail-worker-20261121/RESULTS.md",
         "docs/verification/auth-mail-reset-20261121/RESULTS.md",

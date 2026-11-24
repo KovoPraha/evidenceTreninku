@@ -369,7 +369,7 @@ function memberChargeReminderComplete(
     }
 }
 
-/** @param callable(string,string,string):bool $sender */
+/** @param callable(string,string,string,?string=):bool $sender */
 function memberChargeReminderProcessOne(
     PDO $pdo,
     callable $sender,
@@ -400,11 +400,17 @@ function memberChargeReminderProcessOne(
             return false;
         }
         $row['body_plain'] = preg_replace('/Částka: [^\r\n]+/u', 'Částka: '.number_format($remaining / 100, 2, ',', ' ').' CZK', (string)$row['body_plain']);
+        require_once __DIR__ . '/mail_admin_unified.php';
+        $bcc = mailAdminBccFor($pdo, 'reminder', (int)$row['id']);
         $sent = $sender(
             (string)$row['recipient_email'],
             (string)$row['subject_plain'],
-            (string)$row['body_plain']
+            (string)$row['body_plain'],
+            $bcc
         );
+        if ($sent) {
+            mailAdminBccAccepted($pdo, 'reminder', (int)$row['id'], $bcc);
+        }
         memberChargeReminderComplete(
             $pdo,
             (int)$row['id'],
@@ -421,13 +427,14 @@ function memberChargeReminderProcessOne(
     }
 }
 
-function memberChargeReminderMailSender(string $recipient, string $subject, string $body): bool
+function memberChargeReminderMailSender(string $recipient, string $subject, string $body, ?string $bcc = null): bool
 {
     if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $recipient
     . $subject) === 1) {
         throw new MemberChargeReminderException('Připomínka obsahuje neplatnou e-mailovou hlavičku.');
     }
-    return mail($recipient, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, "Content-Type: text/plain; charset=UTF-8\r\n");
+    require_once __DIR__ . '/mail_admin_unified.php';
+    return mail($recipient, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, "Content-Type: text/plain; charset=UTF-8\r\n" . mailAdminBccHeader($bcc));
 }
 
 /** @return callable(string,string,string):bool */
