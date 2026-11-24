@@ -10,7 +10,7 @@ Formulář obnovy nadále odpovídá obecně a ukládá audit žádosti. Importo
 
 Platné sjednání měsíčního tarifu nyní v jedné transakci zapisuje stav `aktivni` s historickou událostí spolu se soupiskou a prvním předpisem. Idempotentní opakování nezapisuje druhou událost; archivovaná osoba zůstane chráněna. Úhrada se vede zvlášť: karta a portál sportovce odvozují „Uhrazeno“, „Nezaplaceno, v termínu“, „Po splatnosti“ nebo „Bez předpisu“ z aktuálního salda a kalendářní splatnosti. Po nastavené toleranci pracovní cyklus založí jediné upozornění hospodáři a po uhrazení jej uzavře. Jednorázový placený kroužek v `Moje kroužky` ukáže rozvrh také při čekající platbě; bez úhrady se tím nevytvoří účast ani soupiska.
 
-[Výsledky a otevřené brány](verification/account-access-status-20261124/RESULTS.md). Kód je pushnutý v draft PR; první CI odhalilo nedostatečné syntetické fixture, opravný běh čeká. Merge, migrace produkčních dat, reálné odeslání a UAT jsou vedeny odděleně. Níže je zachována původní analýza a akceptace před schválením implementace.
+[Výsledky a otevřené brány](verification/account-access-status-20261124/RESULTS.md). Kód je pushnutý v draft PR; dvě CI iterace potvrdily PHPUnit, PHP quality, dokumentaci a programovou kapacitu, další opravné kontraktní změny čekají na běh. Merge, migrace produkčních dat, reálné odeslání a UAT jsou vedeny odděleně. Níže je zachována původní analýza a akceptace před schválením implementace.
 
 ## Zjištěný stav v kódu
 

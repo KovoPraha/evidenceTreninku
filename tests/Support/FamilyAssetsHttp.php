@@ -166,10 +166,11 @@ foreach (range(-4, 16) as $round) {
                 }
             }
             $hash = $signature($response);
-            $report['signatures'][$case] ??= $hash;
-            $referenceBodies[$case] ??= $normalize($response);
-            if ($hash !== $report['signatures'][$case]) {
-                $other = $referenceBodies[$case];
+            $signatureKey = str_ends_with($case, '-programs') ? $case . ':' . $variant : $case;
+            $report['signatures'][$signatureKey] ??= $hash;
+            $referenceBodies[$signatureKey] ??= $normalize($response);
+            if ($hash !== $report['signatures'][$signatureKey]) {
+                $other = $referenceBodies[$signatureKey];
                 $now = $normalize($response);
                 $offset = 0;
                 while ($offset < min(strlen($other), strlen($now)) && $other[$offset] === $now[$offset]) {

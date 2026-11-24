@@ -17,7 +17,7 @@ foreach (['staff_owner', 'operational'] as $mode) {
     try {
         $pdo = new PDO('mysql:host=127.0.0.1;port=' . $port . ';dbname=' . $database . ';charset=utf8mb4', 'root', '', $options);
         Tests\Support\programCapacityMigratedSchema($pdo, static function (PDO $pdo): void {
-            $pdo->exec('ALTER TABLE sportovci MODIFY id INT NOT NULL AUTO_INCREMENT,ADD COLUMN email VARCHAR(255),ADD COLUMN telefon VARCHAR(40),'
+            $pdo->exec('ALTER TABLE sportovci MODIFY id INT NOT NULL AUTO_INCREMENT,ADD COLUMN telefon VARCHAR(40),'
                 . 'ADD COLUMN hash VARCHAR(64),ADD COLUMN uci TINYINT DEFAULT 0,ADD COLUMN stav_clenstvi VARCHAR(30)');
             $pdo->exec("INSERT INTO treneri(jmeno,email,heslo,role,aktivni) VALUES('Fixture Owner','owner@example.test','unchanged-owner-hash','admin',1)");
         });
