@@ -1,5 +1,146 @@
 # Ověřovací a obnovovací e-maily
 
+## AUTH-MAIL-05 — společný přehled pošty, kontrolní kopie a bezpečné opakování (24. 11. 2026)
+
+**Stav: KONCEPT K REVIZI, pouze návrh; implementace a nasazení NOT RUN.**
+Vlastník zadání: Marek/klub; návrh: vývoj KIS. Větev
+`codex/auth-mail-admin-plan-20261124`, samostatný worktree
+`C:\Users\Marek\Documents\Codex\evidencePavel-auth-mail-admin-plan-20261124`
+z `origin/main` `7eeacfa7`. Oprávnění: čtecí diagnostika a dokumentační PR;
+bez zkušebního odeslání, změny účtů, zapnutí jiné fronty či nasazení.
+[Registr](WORK_PLAN_CURRENT.md#auth-mail-05--společná-administrace-e-mailů-24-11-2026).
+
+### Nález a hranice důkazu
+
+Vlastník 24. 11. hlásí, že nová registrace nedostává ověřovací e-mail a žádá
+úplný přehled všech požadavků, ruční resend a kontrolní skrytou kopii. Aktuální
+`auth_mail_admin.php` ukazuje bez filtru jen aktivní/selhané, nejvýše 100 řádků;
+`sent` lze vybrat kartou, ale chybí datum, hledání adresy, detail pokusů a
+důkaz doručení. Reset má vlastní audit žádostí včetně nezařazených, registrace
+a nové ověření nikoli. `eshop_notifications_admin.php` spravuje samostatnou
+frontu. Další fronty jsou `roster_message_recipients`,
+`family_weekly_summaries`, `member_charge_reminders` a
+`monthly_membership_messages`; při implementaci provést úplnou inventuru
+všech produkčních odesílacích cest včetně přímých volání transportu.
+
+`booking/registrace.php` vytváří účet, ověřovací token a řádek
+`auth_mail_outbox` atomicky. Neúspěch vložení vrací transakci včetně účtu;
+duplicitní e-mail vrací obecné potvrzení bez nové zprávy. Rate limit, CSRF a
+validace mohou požadavek zastavit ještě před frontou. Tyto cesty dnes nemají
+jednotnou referenci v administraci. Čtecí produkční [status 45379814959](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45379814959)
+ve 24. 11. 2026 10:58 UTC ukázal nedávný úspěšný CRON, rodičovskou frontu
+`pending=0`, `processing=0`, `failed=0`, `sent=11`, `cancelled=2` a
+`mailbox_delivery_verified=false`. Proti 22. 11. přibyla jedna zpráva `sent`;
+bez reference konkrétní registrace ji nelze přiřadit. `sent` znamená přijetí
+PHP `mail()`, nikoli převzetí příjemcovým serverem nebo doručení do schránky.
+Souhrnný `attention_required` se týká i oddělené klubové fronty (10 `pending`,
+87 `failed`), nikoli rodičovské fronty; její výdej se tímto návrhem nezapíná.
+
+### Doporučená podoba administrace
+
+1. Stránka **Veškerá pošta**: stránkovaný chronologický přehled všech
+   registrovaných požadavků z jednotlivých front a žádostí před frontou.
+   Sloupce: čas vzniku, reference, oblast/typ, příjemce jen oprávněné roli,
+   stav požadavku, stav fronty, počet pokusů, čas posledního pokusu,
+   transportní výsledek, detail/důvod. Filtry: období, druh, stav, přesná
+   adresa, reference/ID; export pouze minimálních metadat a po zvláštním
+   oprávnění. Žádný výchozí limit skrytých starších záznamů: stránkování a
+   souhrny s celkovým počtem. Detail spojí žádost, frontový řádek, pokusy,
+   ruční zásahy a stav odkazu; nikdy neukáže heslo, token ani plný text
+   bezpečnostního e-mailu.
+2. Jednotné názvy stavů: **přijato → zamítnuto / nezařazeno / ve frontě →
+   zpracovává se → přijato transportem / odmítnuto / doručení nejasné /
+   nahrazeno**. „Doručeno“ se zobrazí jen při doložené události dopravce
+   nebo potvrzení schránky, s uvedením původu důkazu. Administrace nesmí
+   označovat výsledek `mail()` za doručení.
+3. Akce **opakovat** v detailu vyžaduje oprávnění, CSRF, povinný důvod,
+   potvrzení a neměnnou auditní událost. `failed` s prokazatelně odmítnutým
+   odesláním a stále platným odkazem lze znovu zařadit pod zámkem. `sent` a
+   `delivery_unknown` nelze slepě zopakovat: nejprve ověřit logy/doručení.
+   Pro ověření a obnovu po expiraci nebo nejistém výsledku akce vystaví
+   **nový** jednorázový odkaz přes existující doménovou službu, zneplatní
+   starý podle pravidel typu, zaznamená vazbu `nahrazuje/nahrazeno` a zabrání
+   dvojitému kliknutí idempotentním klíčem. Nic neodesílat přímo z webového
+   POST; po zařazení odesílá příslušný worker. U ostatních typů znovu ověřit
+   aktuálnost události a dosavadní deduplikační pravidla.
+4. **Kontrolní kopie:** pro běžné neautentizační zprávy umožnit před jejich
+   prvním pokusem zvolit ověřenou správcovskou kontrolní adresu ze seznamu;
+   kopie má samostatný stav a audit a nesmí změnit hlavního příjemce.
+   U hesla/ověření se použitelný jednorázový odkaz neposílá na libovolnou
+   další adresu: držitel kopie by mohl převzít účet. Správci lze poslat
+   oddělené kontrolní oznámení bez odkazu/tokenů a pro skutečný test celé
+   zprávy použít řízený testovací účet a schránku. Volně zadanou adresu lze
+   použít jen pro samostatný neautentizační test transportu po jejím ověření;
+   takový test sám o sobě nedokazuje doručení konkrétnímu rodiči. Skutečná
+   BCC se nemá přidávat dodatečně k již odeslanému řádku ani opětovně posílat
+   použitý odkaz.
+
+### Návrh dat a realizace
+
+- Zavést lehký společný **registr záměrů a doručovacích pokusů** s odkazem na
+  původní frontu, nikoli převádět všechna těla zpráv do nové tabulky. Každá
+  žádost dostane stabilní náhodnou referenci, `source_type/source_id`, druh,
+  čas, stav a strojový důvod; auditní události zachytí přechody, aktéra,
+  transportní ID a případnou kontrolní kopii. Vazbu na účet/adresu ukládat
+  jen tam, kde ji správce potřebuje a s omezenou retencí. Pro přesné hledání
+  nezařazených pokusů podle adresy použít klíčovaný otisk normalizované
+  adresy; správce zadá celou adresu a server porovná otisk, neukládá ji do
+  auditní tabulky jako plaintext. Klíč a rotaci oddělit od veřejných tokenů.
+  Citlivé obsahy
+  zůstanou šifrované v původních frontách; `sent` u auth nyní maže šifrované
+  tělo, takže historickou zprávu nelze znovu vykreslit ani přesně odeslat.
+- Staré existující řádky načíst čtecí sjednocenou projekcí a označit jejich
+  důkazní meze. Nezařazené historické pokusy bez auditu se nedají věrohodně
+  zpětně vytvořit. Nové registrační, ověřovací a obnovovací POSTy auditovat
+  už od vstupu: `received`, validace/CSRF/limit/duplicitní účet, chyba zápisu,
+  nebo `queued`. U úspěšné registrace zapsat `queued` ve stejné transakci
+  s účtem, tokenem a outboxem; při rollbacku uložit bezpečný `failed` pod
+  stejnou referencí mimo vrácenou transakci. Veřejné odpovědi zůstanou
+  obecné, aby nebylo možné zjišťovat existenci účtů. Audit nesmí obsahovat
+  heslo, token, tělo ani volnou výjimku s osobními daty.
+- Pro výsledek přepravy nahradit nebo doplnit PHP `mail()` dopravcem s
+  korelačním ID, logem přijetí/odmítnutí a ověřenými doručovacími událostmi
+  (delivery/bounce), případně získat ekvivalentní MTA logy hostingu. Zvolit
+  dopravce až po porovnání přístupů, DNS/SPF/DKIM/DMARC a retenčních podmínek.
+  Všechna potvrzení musí být ověřena, idempotentní a spojena s konkrétním
+  pokusem. Ani přijatá kontrolní kopie není důkazem přijetí hlavním příjemcem.
+- Přidat dohled nad stářím `pending`, chybami, heartbeaty jednotlivých workerů,
+  odmítnutími a bouncy. Výstraha má ukazovat oblast a referenci, ne obsah.
+  Druhý transport nebo automatický failover navazuje na AUTH-MAIL-03 až po
+  definování bezpečného chování při neznámém výsledku.
+
+### Etapy a přejímka
+
+1. **Bez odesílání:** ověřit hlášenou registraci podle času/reference, účet a
+   audit, frontu, CRON a hostingové MTA logy; rozlišit `not queued`,
+   `mail accepted`, SMTP odmítnutí a doručení/spam. Inventarizovat všechny
+   PHP odesílací cesty a dostupná provozní data. Bez tohoto důkazu není
+   příčina aktuálního případu určena.
+2. **Evidence a přehled:** migrace/backup ownership, jednotné reference,
+   zápis výsledků před frontou, čtecí sjednocený přehled, filtry a detail.
+   Testovat oprávnění, stránkování, úplnost proti inventuře a ochranu PII.
+3. **Zásahy a kontrola:** auditované akce podle typu stavu, bezpečné vydání
+   nového odkazu, kontrolní oznámení bez tokenu, řízené testovací schránky.
+   Souběh dvou správců nesmí vytvořit dva odkazy nebo dvě akce.
+4. **Doručovací důkazy:** zvolený transport/MTA integrace, bezpečné události,
+   bounce/odmítnutí, alarmy a přejímka na testovacích adresách pro registraci,
+   nový ověřovací odkaz, reset i běžné oznámení. Ověřit skutečný příjem v
+   kontrolní schránce a korelaci na ID pokusu. Připravit provozní návod pro
+   případy `sent` bez doručení a expirované odkazy.
+
+Akceptace: každý **nový** POST registrace/obnovy/nového ověření je dohledatelný
+pod referencí včetně nezařazení; každý frontový řádek ze všech inventarizovaných
+zdrojů se objeví právě jednou v přehledu a ve filtrech; správce pozná rozdíl
+mezi přijetím PHP transportem a doloženým doručením. Bezpečné opakování a
+kontrolní kopie neumožní získat cizí ověřovací/resetovací token, nevytvoří
+duplicitní účet a každá akce je auditovaná. CI, chráněný deploy, živý čtecí
+stav a přejímka skutečné schránky se vyhodnotí odděleně. Retenci a okruh
+oprávněných správců je nutné schválit před implementací produkčních dat.
+
+Další krok: věcně schválit rozsah etap, seznam kontrolních adres/oprávněných
+rolí a pravidlo retence; současně pokračovat v čtecí diagnostice konkrétní
+registrace. Dnešní návrh neprokazuje, proč daná zpráva nedorazila.
+
 ## AUTH-MAIL-04 — dohledatelnost požadavku na obnovu hesla (22. 11. 2026)
 
 **Stav: KÓD NASAZEN; přihlášené UAT a doručení otevřené.** Vlastník: vývoj KIS. Větev

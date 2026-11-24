@@ -6,6 +6,18 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-24-01 — navržená hranice kontrolních kopií
+
+**KONCEPT, nikoli přijaté produktové rozhodnutí.** Po hlášení nedoručené
+registrace je navržen sjednocený přehled požadavků a transportních důkazů.
+Doslovná BCC libovolné adresy u hesla nebo ověření by předala použitelný
+jednorázový odkaz další osobě. Doporučena kontrolní zpráva bez odkazu a
+testovací účet pro ověření plného e-mailu; u běžných zpráv jen kopie na
+ověřenou správcovskou adresu. Přijatá kopie ani výsledek PHP `mail()`
+neprokazují doručení hlavnímu příjemci. Nejasné `sent` se nemá slepě
+opakovat a vypršelý odkaz se nemá znovu odeslat; nový odkaz vydá bezpečná
+doménová služba. Rozsah, varianty a akceptace: [AUTH-MAIL-05](identity-email-queue.md#auth-mail-05--společný-přehled-pošty-kontrolní-kopie-a-bezpečné-opakování-24-11-2026).
+
 ## D2026-11-23-BAR03
 
 Po prvním vydání BAR-PHOTO-SCREEN-01 se malé fotografie načítají, ale výměna DOM okamžitě po desetisekundovém cyklu vytvořila krátce prázdné karty. Zvoleno přednačíst a dekódovat další trojici mimo DOM, starou ponechat viditelnou až do dokončení, a teprve pak provést původní 720ms přechod. Při chybě či 8s čekání se použije textový zástupný obsah, aby obrazovka nezůstala zablokovaná. Varianta pouze dále zmenšit obrázky by nevyloučila krátké zpoždění sítě; prodloužit cyklus by měnilo původní TV chování. Rozhodnutí vývoje k živě reprodukovanému stavu 23. 11.; [plán](BAR_DISPLAY_STOCK_PARITY_2026-11-10.md#bar-photo-screen-01--chybějící-fotografie-na-živé-obrazovce-23-11-2026), [protokol](verification/bar-photo-screen-20261123/RESULTS.md).
