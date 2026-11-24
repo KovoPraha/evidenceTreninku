@@ -20,7 +20,7 @@ function programCapacityMigratedSchema(PDO $pdo, ?callable $prepareLegacy = null
         CREATE TABLE treneri(id INT AUTO_INCREMENT PRIMARY KEY,jmeno VARCHAR(100),email VARCHAR(255) UNIQUE,heslo VARCHAR(255),role VARCHAR(30),
         aktivni TINYINT NOT NULL DEFAULT 1) ENGINE=InnoDB
         SQL);
-    $pdo->exec('CREATE TABLE sportovci(id INT PRIMARY KEY,jmeno VARCHAR(100),prijmeni VARCHAR(160),narozeni DATE NULL) ENGINE=InnoDB');
+    $pdo->exec('CREATE TABLE sportovci(id INT PRIMARY KEY,jmeno VARCHAR(100),prijmeni VARCHAR(160),narozeni DATE NULL,email VARCHAR(255) NULL) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE sportovist(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec(<<<'SQL'
         CREATE TABLE individualni_lekce(id INT PRIMARY KEY,nazev VARCHAR(255),datum DATE,cas_od TIME,cas_do TIME,

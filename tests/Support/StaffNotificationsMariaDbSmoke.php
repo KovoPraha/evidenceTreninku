@@ -21,6 +21,7 @@ try {
     $pdo->exec('CREATE TABLE staff_user_positions(trainer_id INT,position_code VARCHAR(40)) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE staff_superadmins(trainer_id INT) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE account_person_claim_requests(id BIGINT UNSIGNED PRIMARY KEY,status VARCHAR(24)) ENGINE=InnoDB');
+    $pdo->exec('CREATE TABLE monthly_membership_overdue_alerts(id BIGINT UNSIGNED PRIMARY KEY,status VARCHAR(24)) ENGINE=InnoDB');
     $pdo->exec("CREATE TABLE club_event_notifications(id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,dedupe_key VARCHAR(128) UNIQUE,
         notification_type VARCHAR(64),recipient_email VARCHAR(180),recipient_name VARCHAR(180),subject_plain TEXT,body_plain TEXT,
         status ENUM('pending','processing','sent','failed') NOT NULL DEFAULT 'pending',attempts INT DEFAULT 0,

@@ -143,11 +143,23 @@ try:
     )
     baseline = {}
     sources = {}
+    # The account-facing order projection and its schedule preview live in this
+    # interval. Administrative capacity readers around it remain frozen.
+    canonical = "includes/club_program.php"
+    before_canonical = subprocess.check_output(["git", "show", base + ":" + canonical], cwd=root).decode()
+    after_canonical = (root / canonical).read_text(encoding="utf-8")
+    for marker, keep_before in [
+        ("function clubProgramPendingOrderItems(", True),
+        ("function clubProgramEnrollmentsForAccount(", False),
+    ]:
+        before_part = before_canonical.split(marker, 1)
+        after_part = after_canonical.split(marker, 1)
+        assert len(before_part) == len(after_part) == 2
+        index = 0 if keep_before else 1
+        assert before_part[index] == after_part[index], "Administrative program logic must remain unchanged"
     for route in routes:
         before = subprocess.check_output(["git", "show", base + ":" + route], cwd=root)
         assert before == original[route], "Administrative page must remain byte-identical"
-        canonical = "includes/club_program.php"
-        assert subprocess.check_output(["git", "show", base + ":" + canonical], cwd=root) == (root / canonical).read_bytes()
         baseline[route] = before
         sources[route] = dict(
             baseline=base, head=head,
