@@ -6,9 +6,24 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-24-02 — administrátorská skrytá kopie pro testování
+
+**PŘIJATO jako produktová volba vlastníka pro návrh AUTH-MAIL-05; nejde o
+souhlas s implementací, aktivací nebo produkčním odesláním.** Vlastník
+24. 11. upřesnil, že chce skutečnou BCC stejného e-mailu, také u registrace
+a obnovy hesla, kterou může nastavit pouze administrátor a po testování
+vypnout. Nahrazuje doporučení redigované kontrolní zprávy v
+[D2026-11-24-01](#d2026-11-24-01--navržená-hranice-kontrolních-kopií).
+Jednorázový odkaz v BCC je použitelný; administrace proto vyžaduje
+výslovné potvrzení, důvod, audit a dočasný vypínatelný režim. Adresa BCC
+se nesmí objevit u hlavního příjemce. Vypnutí zastaví další kopie, nevrací
+již přijatou zprávu. U dříve `sent` zprávy lze BCC dodat jen v nové bezpečně
+vydané zprávě. Přijetí BCC nedokazuje doručení hlavnímu příjemci.
+[Plán](identity-email-queue.md#auth-mail-05--společný-přehled-pošty-kontrolní-kopie-a-bezpečné-opakování-24-11-2026).
+
 ## D2026-11-24-01 — navržená hranice kontrolních kopií
 
-**KONCEPT, nikoli přijaté produktové rozhodnutí.** Po hlášení nedoručené
+**NAHRAZENO rozhodnutím [D2026-11-24-02](#d2026-11-24-02--administrátorská-skrytá-kopie-pro-testování).** Po hlášení nedoručené
 registrace je navržen sjednocený přehled požadavků a transportních důkazů.
 Doslovná BCC libovolné adresy u hesla nebo ověření by předala použitelný
 jednorázový odkaz další osobě. Doporučena kontrolní zpráva bez odkazu a

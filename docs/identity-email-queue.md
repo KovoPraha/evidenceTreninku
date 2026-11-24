@@ -11,6 +11,10 @@ bez zkušebního odeslání, změny účtů, zapnutí jiné fronty či nasazení
 [Registr](WORK_PLAN_CURRENT.md#auth-mail-05--společná-administrace-e-mailů-24-11-2026).
 [Dokumentační PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524)
 je otevřený; push proveden, merge/implementace/deploy NOT RUN.
+Vlastník následně upřesnil, že požaduje **skutečnou BCC stejné zprávy**
+včetně autentizačních e-mailů, přístupnou k nastavení pouze administrátorovi
+a vypnutelnou po testování. Tato volba nahrazuje původní návrh redigované
+kontrolní zprávy; [rozhodnutí D2026-11-24-02](DECISION_LOG.md#d2026-11-24-02--administrátorská-skrytá-kopie-pro-testování).
 Místní `php tools/check-current-docs.php` a `git diff --check` PASS.
 V CI [run 45380794696](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45380794696)
 prošel `docs`; job PHPUnit selhal před testy na `composer audit --locked`
@@ -70,17 +74,24 @@ Souhrnný `attention_required` se týká i oddělené klubové fronty (10 `pendi
    dvojitému kliknutí idempotentním klíčem. Nic neodesílat přímo z webového
    POST; po zařazení odesílá příslušný worker. U ostatních typů znovu ověřit
    aktuálnost události a dosavadní deduplikační pravidla.
-4. **Kontrolní kopie:** pro běžné neautentizační zprávy umožnit před jejich
-   prvním pokusem zvolit ověřenou správcovskou kontrolní adresu ze seznamu;
-   kopie má samostatný stav a audit a nesmí změnit hlavního příjemce.
-   U hesla/ověření se použitelný jednorázový odkaz neposílá na libovolnou
-   další adresu: držitel kopie by mohl převzít účet. Správci lze poslat
-   oddělené kontrolní oznámení bez odkazu/tokenů a pro skutečný test celé
-   zprávy použít řízený testovací účet a schránku. Volně zadanou adresu lze
-   použít jen pro samostatný neautentizační test transportu po jejím ověření;
-   takový test sám o sobě nedokazuje doručení konkrétnímu rodiči. Skutečná
-   BCC se nemá přidávat dodatečně k již odeslanému řádku ani opětovně posílat
-   použitý odkaz.
+4. **Skutečná skrytá kopie (BCC) podle pokynu vlastníka:** v detailu
+   konkrétní zprávy může pouze administrátor zadat jednu další platnou
+   e-mailovou adresu. BCC dostane stejný obsah včetně ověřovacího či
+   resetovacího odkazu; adresa BCC není vidět hlavnímu příjemci ani ve
+   veřejných odpovědích. Pro každou zprávu je volba výslovná, s potvrzením,
+   důvodem a neměnným auditem aktéra, adresy, času a výsledku. V UI jasně
+   uvést, že držitel kopie může použít jednorázový odkaz a získat přístup
+   k účtu. Přístup k nastavení i zobrazení BCC má jen administrátor;
+   adresa se nikdy nedostane do Gitu, veřejných logů ani exportu pro nižší
+   role. Validovat adresu a odmítnout CR/LF a hlavičkové injekce.
+5. **Dočasný režim:** centrální přepínač BCC je po nasazení vypnutý;
+   administrátor jej výslovně zapne pro omezené testovací období. Vypnutí
+   nebo uplynutí doby zastaví i BCC přidané k dosud neodeslaným zprávám,
+   zaznamená vynechání kopie a hlavní zprávu ponechá ve frontě. Již
+   přijatou/odeslanou kopii nelze vzít zpět. Každá změna přepínače je
+   auditovaná. K již odeslanému `sent` nelze kopii zpětně připojit:
+   případné nové odeslání se řídí bezpečným resend postupem výše a u
+   autentizace vydá nový token; BCC se nastaví na nový řádek.
 
 ### Návrh dat a realizace
 
@@ -88,7 +99,7 @@ Souhrnný `attention_required` se týká i oddělené klubové fronty (10 `pendi
   původní frontu, nikoli převádět všechna těla zpráv do nové tabulky. Každá
   žádost dostane stabilní náhodnou referenci, `source_type/source_id`, druh,
   čas, stav a strojový důvod; auditní události zachytí přechody, aktéra,
-  transportní ID a případnou kontrolní kopii. Vazbu na účet/adresu ukládat
+  transportní ID a případnou BCC. Vazbu na účet/adresu ukládat
   jen tam, kde ji správce potřebuje a s omezenou retencí. Pro přesné hledání
   nezařazených pokusů podle adresy použít klíčovaný otisk normalizované
   adresy; správce zadá celou adresu a server porovná otisk, neukládá ji do
@@ -110,7 +121,11 @@ Souhrnný `attention_required` se týká i oddělené klubové fronty (10 `pendi
   (delivery/bounce), případně získat ekvivalentní MTA logy hostingu. Zvolit
   dopravce až po porovnání přístupů, DNS/SPF/DKIM/DMARC a retenčních podmínek.
   Všechna potvrzení musí být ověřena, idempotentní a spojena s konkrétním
-  pokusem. Ani přijatá kontrolní kopie není důkazem přijetí hlavním příjemcem.
+  pokusem. BCC musí být skutečný skrytý příjemce v obálce/hlavičce dopravce:
+  běžný příjemce ji nesmí vidět. V první etapě ověřit chování PHP `mail()`
+  na kontrolním transportu; při integraci dopravce ukládat výsledek pro
+  hlavního příjemce a BCC odděleně. Ani přijatá BCC není důkazem doručení
+  hlavnímu příjemci.
 - Přidat dohled nad stářím `pending`, chybami, heartbeaty jednotlivých workerů,
   odmítnutími a bouncy. Výstraha má ukazovat oblast a referenci, ne obsah.
   Druhý transport nebo automatický failover navazuje na AUTH-MAIL-03 až po
@@ -127,8 +142,11 @@ Souhrnný `attention_required` se týká i oddělené klubové fronty (10 `pendi
    zápis výsledků před frontou, čtecí sjednocený přehled, filtry a detail.
    Testovat oprávnění, stránkování, úplnost proti inventuře a ochranu PII.
 3. **Zásahy a kontrola:** auditované akce podle typu stavu, bezpečné vydání
-   nového odkazu, kontrolní oznámení bez tokenu, řízené testovací schránky.
-   Souběh dvou správců nesmí vytvořit dva odkazy nebo dvě akce.
+   nového odkazu, administrátorská BCC stejné zprávy, dočasný přepínač a
+   řízené testovací schránky. Ověřit, že BCC dostane celý obsah, hlavní
+   příjemce nevidí její adresu, vypnutí zabrání další kopii a běžný uživatel
+   ani trenér ji nemůže nastavit. Souběh dvou správců nesmí vytvořit dva
+   odkazy nebo dvě akce.
 4. **Doručovací důkazy:** zvolený transport/MTA integrace, bezpečné události,
    bounce/odmítnutí, alarmy a přejímka na testovacích adresách pro registraci,
    nový ověřovací odkaz, reset i běžné oznámení. Ověřit skutečný příjem v
@@ -138,14 +156,16 @@ Souhrnný `attention_required` se týká i oddělené klubové fronty (10 `pendi
 Akceptace: každý **nový** POST registrace/obnovy/nového ověření je dohledatelný
 pod referencí včetně nezařazení; každý frontový řádek ze všech inventarizovaných
 zdrojů se objeví právě jednou v přehledu a ve filtrech; správce pozná rozdíl
-mezi přijetím PHP transportem a doloženým doručením. Bezpečné opakování a
-kontrolní kopie neumožní získat cizí ověřovací/resetovací token, nevytvoří
-duplicitní účet a každá akce je auditovaná. CI, chráněný deploy, živý čtecí
+mezi přijetím PHP transportem a doloženým doručením. BCC obdrží použitelný
+odkaz jen při výslovné administrátorské volbě se zapnutým dočasným režimem;
+její adresu hlavní příjemce nevidí. Bezpečné opakování nevytvoří duplicitní
+účet a každá akce je auditovaná. CI, chráněný deploy, živý čtecí
 stav a přejímka skutečné schránky se vyhodnotí odděleně. Retenci a okruh
 oprávněných správců je nutné schválit před implementací produkčních dat.
 
-Další krok: věcně schválit rozsah etap, seznam kontrolních adres/oprávněných
-rolí a pravidlo retence; současně pokračovat v čtecí diagnostice konkrétní
+Další krok: BCC je vlastníkem vybraná součást návrhu; upřesnit délku
+testovacího období, oprávněné administrátory a retenci, zároveň pokračovat
+v čtecí diagnostice konkrétní
 registrace. Dnešní návrh neprokazuje, proč daná zpráva nedorazila.
 
 ## AUTH-MAIL-04 — dohledatelnost požadavku na obnovu hesla (22. 11. 2026)
