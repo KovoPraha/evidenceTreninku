@@ -11,6 +11,11 @@ bez zkušebního odeslání, změny účtů, zapnutí jiné fronty či nasazení
 [Registr](WORK_PLAN_CURRENT.md#auth-mail-05--společná-administrace-e-mailů-24-11-2026).
 [Dokumentační PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524)
 je otevřený; push proveden, merge/implementace/deploy NOT RUN.
+Místní `php tools/check-current-docs.php` a `git diff --check` PASS.
+V CI [run 45380794696](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45380794696)
+prošel `docs`; job PHPUnit selhal před testy na `composer audit --locked`
+(39 advisories ve 2 balíčcích existujícího `composer.lock`, který PR nemění).
+Jde o samostatný blokátor CI; testy návrhu neproběhly, protože návrh nemění kód.
 
 ### Nález a hranice důkazu
 
