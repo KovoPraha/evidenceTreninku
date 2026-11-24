@@ -22,7 +22,7 @@ umask(0077);
 set_time_limit(0);
 
 const EVIDENCE_BACKUP_FORMAT_VERSION = 1;
-const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-06.1';
+const EVIDENCE_OWNERSHIP_CONTRACT_VERSION = '2026-11-24.1';
 
 /**
  * Schema evolutions on already-owned tables that change their write contract.
@@ -121,6 +121,10 @@ const EVIDENCE_OWNED_COLUMN_CONTRACT = [
         'is_default',
         'assigned_by_trainer_id',
     ],
+    // System-created athlete access and direct reset no longer require a staff
+    // creator or a public account as the delivery route.
+    'child_access_accounts' => ['created_by_trainer_id'],
+    'password_reset_tokens' => ['delivery_account_id'],
     // Kalendář odděluje jistotu konání, viditelnost a registraci. Ztráta
     // těchto sloupců by mohla zveřejnit interní plán nebo ztratit cenu účasti.
     'club_events' => [
@@ -218,6 +222,7 @@ const EVIDENCE_TABLES = [
     'account_person_claim_events',
     'account_person_claim_requests',
     'staff_notification_events',
+    'monthly_membership_overdue_alerts',
     'staff_notifications',
     'account_person_role_events',
     'account_person_roles',
@@ -296,6 +301,7 @@ const EVIDENCE_TABLES = [
     'club_team_series',
     'club_teams',
     'child_access_accounts',
+    'athlete_email_trust',
     'child_access_events',
     'cviky',
     'dalsi_cinnosti',
@@ -462,6 +468,7 @@ const EVIDENCE_TABLES = [
     'oznameni_targets',
     'payments',
     'password_reset_tokens',
+    'existing_email_trust',
     'public_account_activation_events',
     'trainer_password_reset_tokens',
     'planovane_treninky',

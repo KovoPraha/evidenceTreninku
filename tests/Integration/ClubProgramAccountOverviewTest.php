@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Integration;
@@ -116,40 +117,62 @@ final class ClubProgramAccountOverviewTest extends TestCase
     public function testActivationActionIsSuppressedForEveryKnownBlockingState(): void
     {
         $ready = [
-            'payment_status'=>'paid', 'order_status'=>'processing', 'request_status'=>'approved',
-            'enrollment_id'=>null, 'account_active'=>1, 'email_overeno'=>1, 'beneficiary_sportovec_id'=>100,
-            'line_amount_minor'=>10000, 'quantity'=>1, 'offer_status'=>'active', 'terms_valid'=>true,
+            'payment_status' => 'paid', 'order_status' => 'processing', 'request_status' => 'approved',
+            'enrollment_id' => null, 'account_active' => 1, 'email_overeno' => 1, 'beneficiary_sportovec_id' => 100,
+            'line_amount_minor' => 10000, 'quantity' => 1, 'offer_status' => 'active', 'terms_valid' => true,
         ];
         self::assertTrue(\clubProgramAccountItemState($ready)['can_activate']);
         foreach ([
-            ['payment_status'=>'pending','order_status'=>'placed'],
-            ['payment_status'=>'refund_required'], ['payment_status'=>'refunded'],
-            ['order_status'=>'cancelled'], ['payment_status'=>'cancelled'],
-            ['request_status'=>'rejected'], ['request_status'=>'cancelled'],
-            ['account_active'=>0], ['email_overeno'=>0], ['beneficiary_sportovec_id'=>null],
-            ['offer_status'=>'closed'], ['quantity'=>2], ['line_amount_minor'=>-1],
-            ['terms_valid'=>false], ['duplicate_enrollment'=>1],
-            ['roster_status'=>'removed','roster_source'=>'manual'],
-            ['order_status'=>'placed'],
-            ['enrollment_id'=>1,'enrollment_status'=>'cancelled'],
-            ['enrollment_id'=>1,'enrollment_status'=>'active','roster_status'=>'removed'],
-            ['enrollment_id'=>1,'enrollment_status'=>'active','roster_status'=>'active'],
+            ['payment_status' => 'pending','order_status' => 'placed'],
+            ['payment_status' => 'refund_required'], ['payment_status' => 'refunded'],
+            ['order_status' => 'cancelled'], ['payment_status' => 'cancelled'],
+            ['request_status' => 'rejected'], ['request_status' => 'cancelled'],
+            ['account_active' => 0], ['email_overeno' => 0], ['beneficiary_sportovec_id' => null],
+            ['offer_status' => 'closed'], ['quantity' => 2], ['line_amount_minor' => -1],
+            ['terms_valid' => false], ['duplicate_enrollment' => 1],
+            ['roster_status' => 'removed','roster_source' => 'manual'],
+            ['order_status' => 'placed'],
+            ['enrollment_id' => 1,'enrollment_status' => 'cancelled'],
+            ['enrollment_id' => 1,'enrollment_status' => 'active','roster_status' => 'removed'],
+            ['enrollment_id' => 1,'enrollment_status' => 'active','roster_status' => 'active'],
         ] as $overrides) {
             self::assertFalse(\clubProgramAccountItemState(array_replace($ready, $overrides))['can_activate'], json_encode($overrides));
         }
-        self::assertTrue(\clubProgramAccountItemState(array_replace($ready, ['line_amount_minor'=>0,'payment_status'=>'pending','order_status'=>'placed']))['can_activate']);
-        self::assertSame('payment_pending', \clubProgramAccountItemState(array_replace($ready, ['payment_status'=>'pending']))['code']);
-        self::assertSame('Období skončilo', \clubProgramAccountEnrollmentLabel(['status'=>'active','valid_from'=>'2025-01-01','valid_to'=>'2025-02-01','roster_status'=>'active'], '2026-10-20'));
-        self::assertSame('Aktivováno pro budoucí období', \clubProgramAccountEnrollmentLabel(['status'=>'active','valid_from'=>'2027-01-01','valid_to'=>'2027-02-01','roster_status'=>'active'], '2026-10-20'));
+        self::assertTrue(\clubProgramAccountItemState(array_replace($ready, ['line_amount_minor' => 0,'payment_status' => 'pending','order_status' => 'placed']))['can_activate']);
+        self::assertSame('payment_pending', \clubProgramAccountItemState(array_replace($ready, ['payment_status' => 'pending']))['code']);
+        self::assertSame('Období skončilo', \clubProgramAccountEnrollmentLabel([
+            'status' => 'active', 'valid_from' => '2025-01-01', 'valid_to' => '2025-02-01', 'roster_status' => 'active',
+        ], '2026-10-20'));
+        self::assertSame('Aktivováno pro budoucí období', \clubProgramAccountEnrollmentLabel([
+            'status' => 'active', 'valid_from' => '2027-01-01', 'valid_to' => '2027-02-01', 'roster_status' => 'active',
+        ], '2026-10-20'));
+    }
+
+    public function testOrderedScheduleIsVisibleWhilePaymentWaitsWithoutGrantingEnrollment(): void
+    {
+        $pdo = $this->database();
+        $pdo->exec('CREATE TABLE club_program_schedule_slots('
+            . 'id INTEGER PRIMARY KEY,program_id INTEGER,weekday INTEGER,starts_at TEXT,ends_at TEXT,'
+            . 'location_name TEXT,sort_order INTEGER,valid_from TEXT,valid_to TEXT)');
+        $pdo->exec("INSERT INTO club_program_schedule_slots VALUES(1,1,2,'16:00','17:00','LOCALHOST hala',1,'2026-09-01','2027-01-31')");
+        $pdo->exec("UPDATE shop_orders SET status='placed',payment_status='pending' WHERE id=1");
+        $item = \clubProgramPendingOrderItems($pdo, 10)[0];
+        self::assertSame('payment_pending', \clubProgramAccountItemState($item)['code']);
+        self::assertCount(1, \clubProgramOrderedSchedule($pdo, $item));
+        self::assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn());
+        $item['order_status'] = 'cancelled';
+        self::assertSame([], \clubProgramOrderedSchedule($pdo, $item));
     }
 
     private function database(): PDO
     {
-        $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+        $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         foreach ([
             'verejni_uzivatele(id INTEGER PRIMARY KEY,aktivni INTEGER,email_overeno INTEGER)',
             'shop_orders(id INTEGER PRIMARY KEY,account_id INTEGER,public_code TEXT,payment_status TEXT,status TEXT,created_at TEXT)',
-            'shop_order_items(id INTEGER PRIMARY KEY,order_id INTEGER,product_id INTEGER,variant_id INTEGER,beneficiary_sportovec_id INTEGER,athlete_registration_request_id INTEGER,quantity INTEGER,product_name_snapshot TEXT,line_amount_minor INTEGER,currency TEXT)',
+            'shop_order_items(id INTEGER PRIMARY KEY,order_id INTEGER,product_id INTEGER,variant_id INTEGER,'
+                . 'beneficiary_sportovec_id INTEGER,athlete_registration_request_id INTEGER,quantity INTEGER,'
+                . 'product_name_snapshot TEXT,line_amount_minor INTEGER,currency TEXT)',
             'club_programs(id INTEGER PRIMARY KEY,name TEXT)',
             'club_program_offers(id INTEGER PRIMARY KEY,program_id INTEGER,product_id INTEGER,variant_id INTEGER,team_id INTEGER,name TEXT,code TEXT,status TEXT,starts_on TEXT,ends_on TEXT)',
             'club_teams(id INTEGER PRIMARY KEY,name TEXT)',
@@ -158,7 +181,9 @@ final class ClubProgramAccountOverviewTest extends TestCase
             'account_person_claim_requests(id INTEGER PRIMARY KEY,account_id INTEGER,status TEXT,claimed_jmeno TEXT,claimed_prijmeni TEXT)',
             'club_program_enrollments(id INTEGER PRIMARY KEY,offer_id INTEGER,sportovec_id INTEGER,account_id INTEGER,source_order_item_id INTEGER,status TEXT,valid_from TEXT,valid_to TEXT)',
             'club_roster_members(team_id INTEGER,sportovec_id INTEGER,status TEXT,source TEXT,valid_from TEXT,valid_to TEXT)',
-        ] as $table) $pdo->exec('CREATE TABLE '.$table);
+        ] as $table) {
+            $pdo->exec('CREATE TABLE '.$table);
+        }
         $pdo->exec("INSERT INTO verejni_uzivatele VALUES(10,1,1),(11,1,1)");
         $pdo->exec("INSERT INTO shop_orders VALUES(1,10,'LOCALHOST-NEPLATIT','paid','processing','2026-10-20')");
         $pdo->exec("INSERT INTO shop_order_items VALUES(1,1,1,1,NULL,50,1,'LOCALHOST kroužek',10000,'CZK')");

@@ -39,9 +39,20 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         $notice = staffNotificationRead($pdo, $actor, (int)($_POST['notice_id'] ?? 0), $action !== 'unread');
         if ($action === 'open') {
             $def = staffNotificationType($notice['event_type']);
+            $destination = $def['route'] . '?request_id=' . (int)$notice['source_id'];
+            if ($notice['event_type'] === 'monthly_overdue') {
+                $charge = $pdo->prepare('SELECT c.sportovec_id FROM monthly_membership_overdue_alerts a '
+                    . 'JOIN club_member_charges c ON c.id=a.charge_id WHERE a.id=?');
+                $charge->execute([(int)$notice['source_id']]);
+                $sportovecId = (int)$charge->fetchColumn();
+                if ($sportovecId < 1) {
+                    throw new DomainException('Předpis již není dostupný.');
+                }
+                $destination = 'club_finance_receipt_admin.php?sportovec_id=' . $sportovecId;
+            }
             staffWorkspaceRefreshSession($pdo, $actor);
             staffSwitchPosition($pdo, $actor, $def['position'], 'Otevření pracovního upozornění');
-            header('Location: ' . $def['route'] . '?request_id=' . (int)$notice['source_id'], true, 303);
+            header('Location: ' . $destination, true, 303);
             exit;
         }
         header('Location: staff_notifications.php', true, 303);

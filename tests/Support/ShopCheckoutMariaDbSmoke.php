@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/includes/migration_runner.php';
@@ -41,7 +42,9 @@ function shopCheckoutSmokeWorker(string $database, string $key, string $fingerpr
         . ' ' . escapeshellarg($workerId);
     $pipes = [];
     $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes);
-    if (!is_resource($process)) throw new RuntimeException('Cannot start checkout concurrency worker.');
+    if (!is_resource($process)) {
+        throw new RuntimeException('Cannot start checkout concurrency worker.');
+    }
     fclose($pipes[0]);
     return ['process' => $process, 'pipes' => $pipes];
 }
@@ -56,7 +59,9 @@ function shopCheckoutSmokePaymentWorker(string $database, int $paymentId, string
         . ' ' . escapeshellarg($workerId);
     $pipes = [];
     $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes);
-    if (!is_resource($process)) throw new RuntimeException('Cannot start payment confirmation concurrency worker.');
+    if (!is_resource($process)) {
+        throw new RuntimeException('Cannot start payment confirmation concurrency worker.');
+    }
     fclose($pipes[0]);
     return ['process' => $process, 'pipes' => $pipes];
 }
@@ -73,7 +78,9 @@ function shopCheckoutSmokeProgramWorker(string $database, int $accountId, string
         . ' ' . escapeshellarg($workerId);
     $pipes = [];
     $process = proc_open($command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes);
-    if (!is_resource($process)) throw new RuntimeException('Cannot start program-capacity concurrency worker.');
+    if (!is_resource($process)) {
+        throw new RuntimeException('Cannot start program-capacity concurrency worker.');
+    }
     fclose($pipes[0]);
     return ['process' => $process, 'pipes' => $pipes];
 }
@@ -180,31 +187,53 @@ try {
     $pdo = shopCheckoutSmokePdo($database);
     $pdo->exec('CREATE TABLE nastaveni(klic VARCHAR(100) PRIMARY KEY,hodnota TEXT NOT NULL) ENGINE=InnoDB');
     $pdo->prepare('INSERT INTO nastaveni(klic,hodnota) VALUES(?,?)')->execute(['schema_version', LEGACY_SCHEMA_VERSION]);
-    $pdo->exec('CREATE TABLE treneri(id INT AUTO_INCREMENT PRIMARY KEY,jmeno VARCHAR(100),email VARCHAR(255) UNIQUE,heslo VARCHAR(255),role VARCHAR(30),aktivni TINYINT NOT NULL DEFAULT 1) ENGINE=InnoDB');
-    $pdo->exec('CREATE TABLE sportovci(id INT PRIMARY KEY,jmeno VARCHAR(100),prijmeni VARCHAR(160),narozeni DATE NULL) ENGINE=InnoDB');
+    $pdo->exec('CREATE TABLE treneri(id INT AUTO_INCREMENT PRIMARY KEY,jmeno VARCHAR(100),email VARCHAR(255) UNIQUE,heslo VARCHAR(255),role
+        VARCHAR(30),aktivni TINYINT NOT NULL DEFAULT 1) ENGINE=InnoDB');
+    $pdo->exec('CREATE TABLE sportovci(id INT PRIMARY KEY,jmeno VARCHAR(100),prijmeni VARCHAR(160),narozeni DATE NULL,email VARCHAR(255) NULL) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE sportovist(id INT PRIMARY KEY) ENGINE=InnoDB');
-    $pdo->exec('CREATE TABLE individualni_lekce(id INT PRIMARY KEY,nazev VARCHAR(255),datum DATE,cas_od TIME,cas_do TIME,public_exclusive_booking TINYINT NOT NULL DEFAULT 0,cena_kc DECIMAL(10,2)) ENGINE=InnoDB');
+    $pdo->exec('CREATE TABLE individualni_lekce(id INT PRIMARY KEY,nazev VARCHAR(255),datum DATE,cas_od TIME,cas_do TIME,
+        public_exclusive_booking TINYINT NOT NULL DEFAULT 0,cena_kc DECIMAL(10,2)) ENGINE=InnoDB');
     $pdo->exec("CREATE TABLE planovane_treninky(id INT PRIMARY KEY,datum DATE NOT NULL,stav VARCHAR(30) NOT NULL DEFAULT 'planovany') ENGINE=InnoDB");
     $pdo->exec('CREATE TABLE treninky(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE mereni_zaznamy(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE zavod_sportovec(zavod_id INT NOT NULL,sportovec_id INT NULL) ENGINE=InnoDB');
-    $pdo->exec('CREATE TABLE verejni_uzivatele(id INT PRIMARY KEY,jmeno VARCHAR(100),prijmeni VARCHAR(160),email VARCHAR(255),aktivni TINYINT NOT NULL DEFAULT 1,email_overeno TINYINT NOT NULL DEFAULT 0,verifikacni_token VARCHAR(255) NULL,registrovan DATETIME NOT NULL) ENGINE=InnoDB');
-    $pdo->exec("CREATE TABLE verejne_rezervace(id INT PRIMARY KEY,lekce_id INT NULL,stav VARCHAR(30) NOT NULL DEFAULT 'ceka',slot_cas_od TIME NULL,potvrzovaci_token VARCHAR(255) NULL,cas_rezervace DATETIME NOT NULL) ENGINE=InnoDB");
-    $pdo->exec("CREATE TABLE kis_import_runs(id INT AUTO_INCREMENT PRIMARY KEY,created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,created_by INT NULL,status ENUM('preview','applied','failed','cancelled') NOT NULL DEFAULT 'preview',source_users VARCHAR(255),source_payments VARCHAR(255),source_rosters VARCHAR(255),stats_json LONGTEXT,warnings_json LONGTEXT,applied_at DATETIME,note TEXT) ENGINE=InnoDB");
-    $pdo->exec("CREATE TABLE kis_import_rows(id INT AUTO_INCREMENT PRIMARY KEY,run_id INT NOT NULL,person_key VARCHAR(180) NOT NULL,jmeno VARCHAR(100) NOT NULL,prijmeni VARCHAR(160) NOT NULL,narozeni DATE,email VARCHAR(255),uciid VARCHAR(80),oddil VARCHAR(160),kis_aktivni TINYINT NOT NULL DEFAULT 0,kis_platebne_aktivni TINYINT NOT NULL DEFAULT 0,kis_neuhrazeno DECIMAL(10,2) NOT NULL DEFAULT 0,kis_posledni_uhrada DATE,kis_soupisky TEXT,raw_json LONGTEXT) ENGINE=InnoDB");
-    $pdo->exec("CREATE TABLE kis_import_matches(id INT AUTO_INCREMENT PRIMARY KEY,run_id INT NOT NULL,row_id INT NOT NULL,sportovec_id INT,match_status ENUM('new','matched','ambiguous','conflict','ignored') NOT NULL,confidence TINYINT UNSIGNED NOT NULL DEFAULT 0,reason VARCHAR(255),candidate_json LONGTEXT,resolved_by INT,resolved_at DATETIME,resolved_action ENUM('create','update','link','ignore','manual')) ENGINE=InnoDB");
+    $pdo->exec('CREATE TABLE verejni_uzivatele(id INT PRIMARY KEY,jmeno VARCHAR(100),prijmeni VARCHAR(160),email VARCHAR(255),aktivni TINYINT
+        NOT NULL DEFAULT 1,email_overeno TINYINT NOT NULL DEFAULT 0,verifikacni_token VARCHAR(255) NULL,registrovan DATETIME NOT
+        NULL) ENGINE=InnoDB');
+    $pdo->exec("CREATE TABLE verejne_rezervace(id INT PRIMARY KEY,lekce_id INT NULL,stav VARCHAR(30) NOT NULL DEFAULT 'ceka',slot_cas_od TIME
+        NULL,potvrzovaci_token VARCHAR(255) NULL,cas_rezervace DATETIME NOT NULL) ENGINE=InnoDB");
+    $pdo->exec("CREATE TABLE kis_import_runs(id INT AUTO_INCREMENT PRIMARY KEY,created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        created_by INT NULL,status ENUM('preview','applied','failed','cancelled') NOT NULL DEFAULT 'preview',source_users
+        VARCHAR(255),source_payments VARCHAR(255),source_rosters VARCHAR(255),stats_json LONGTEXT,warnings_json LONGTEXT,applied_at
+        DATETIME,note TEXT) ENGINE=InnoDB");
+    $pdo->exec("CREATE TABLE kis_import_rows(id INT AUTO_INCREMENT PRIMARY KEY,run_id INT NOT NULL,person_key VARCHAR(180) NOT NULL,jmeno
+        VARCHAR(100) NOT NULL,prijmeni VARCHAR(160) NOT NULL,narozeni DATE,email VARCHAR(255),uciid VARCHAR(80),oddil VARCHAR(160),
+        kis_aktivni TINYINT NOT NULL DEFAULT 0,kis_platebne_aktivni TINYINT NOT NULL DEFAULT 0,kis_neuhrazeno DECIMAL(10,2) NOT NULL
+        DEFAULT 0,kis_posledni_uhrada DATE,kis_soupisky TEXT,raw_json LONGTEXT) ENGINE=InnoDB");
+    $pdo->exec("CREATE TABLE kis_import_matches(id INT AUTO_INCREMENT PRIMARY KEY,run_id INT NOT NULL,row_id INT NOT NULL,sportovec_id INT,
+        match_status ENUM('new','matched','ambiguous','conflict','ignored') NOT NULL,confidence TINYINT UNSIGNED NOT NULL DEFAULT 0,
+        reason VARCHAR(255),candidate_json LONGTEXT,resolved_by INT,resolved_at DATETIME,resolved_action ENUM('create','update',
+        'link','ignore','manual')) ENGINE=InnoDB");
 
     $catalog = EvidenceMigrationCatalog::load(dirname(__DIR__, 2) . '/migrations');
     $result = (new EvidenceMigrationRunner($pdo, $catalog))->apply();
-    if (!$result['current']) throw new RuntimeException('MariaDB migration catalog is not current before checkout smoke.');
+    if (!$result['current']) {
+        throw new RuntimeException('MariaDB migration catalog is not current before checkout smoke.');
+    }
 
     $pdo->exec("INSERT INTO treneri(id,jmeno,email,heslo,role,aktivni) VALUES(7,'Smoke Admin','smoke-admin@example.test','not-a-login-secret','admin',1)");
     $pdo->exec("INSERT INTO verejni_uzivatele(id,jmeno,prijmeni,email,aktivni,email_overeno,registrovan) VALUES(10,'Race','Tester','race@example.test',1,1,CURRENT_TIMESTAMP)");
-    $pdo->exec("INSERT INTO shop_catalog_import_runs(id,source_sha256,source_filename,contract_version,status,product_count,variant_count,warning_count,manual_review_count) VALUES(1,'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','smoke.csv','smoke-v1','promoted',1,1,0,0)");
-    $pdo->exec("INSERT INTO shop_catalog_product_candidates(id,run_id,external_product_key,name,offer_type,classification_confidence,needs_manual_review,payload_json) VALUES(501,1,'race-product','Race item','goods','high',0,'{}')");
-    $pdo->exec("INSERT INTO shop_catalog_variant_candidates(id,run_id,product_candidate_id,sku,price_mode,amount_minor,currency,stock_quantity_decimal,payload_json) VALUES(601,1,501,'RACE-ONE','fixed',12500,'CZK','1.000000','{}')");
+    $pdo->exec("INSERT INTO shop_catalog_import_runs(id,source_sha256,source_filename,contract_version,status,product_count,variant_count,
+        warning_count,manual_review_count) VALUES(1,'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','smoke.csv',
+        'smoke-v1','promoted',1,1,0,0)");
+    $pdo->exec("INSERT INTO shop_catalog_product_candidates(id,run_id,external_product_key,name,offer_type,classification_confidence,
+        needs_manual_review,payload_json) VALUES(501,1,'race-product','Race item','goods','high',0,'{}')");
+    $pdo->exec("INSERT INTO shop_catalog_variant_candidates(id,run_id,product_candidate_id,sku,price_mode,amount_minor,currency,
+        stock_quantity_decimal,payload_json) VALUES(601,1,501,'RACE-ONE','fixed',12500,'CZK','1.000000','{}')");
     $pdo->exec("INSERT INTO shop_products(id,source_candidate_id,source_run_id,external_product_key,name,offer_type,catalog_status) VALUES(501,501,1,'race-product','Race item','goods','active')");
-    $pdo->exec("INSERT INTO shop_variants(id,product_id,source_candidate_id,sku,attributes_json,price_mode,amount_minor,currency,includes_vat,vat_rate_basis_points,stock_quantity_decimal,visible,catalog_status) VALUES(601,501,601,'RACE-ONE','{}','fixed',12500,'CZK',1,2100,'1.000000',1,'active')");
+    $pdo->exec("INSERT INTO shop_variants(id,product_id,source_candidate_id,sku,attributes_json,price_mode,amount_minor,currency,includes_vat,
+        vat_rate_basis_points,stock_quantity_decimal,visible,catalog_status) VALUES(601,501,601,'RACE-ONE','{}','fixed',12500,'CZK',1,
+        2100,'1.000000',1,'active')");
     $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary,decision_note) VALUES(501,'active','Race item','Concurrency smoke','Approved smoke fixture')");
     $pdo->exec('CREATE TABLE smoke_worker_ready(worker_id VARCHAR(20) PRIMARY KEY) ENGINE=InnoDB');
 
@@ -228,11 +257,13 @@ try {
         $active->execute([$database]);
         $activeWorkers = (int)$active->fetchColumn();
     } while (($ready < 2 || $activeWorkers < 2) && microtime(true) < $deadline);
-    if ($ready !== 2 || $activeWorkers < 2) throw new RuntimeException('Checkout workers did not reach the locked race window.');
+    if ($ready !== 2 || $activeWorkers < 2) {
+        throw new RuntimeException('Checkout workers did not reach the locked race window.');
+    }
     $pdo->commit();
 
     $outcomes = array_map('shopCheckoutSmokeFinishWorker', $workers);
-    usort($outcomes, static fn(array $a, array $b): int => (int)$a['replayed'] <=> (int)$b['replayed']);
+    usort($outcomes, static fn (array $a, array $b): int => (int)$a['replayed'] <=> (int)$b['replayed']);
     if ($outcomes[0]['id'] !== $outcomes[1]['id'] || array_column($outcomes, 'replayed') !== [false, true]) {
         throw new RuntimeException('Concurrent duplicate checkout was not returned as one order plus one replay.');
     }
@@ -261,11 +292,13 @@ try {
         $active->execute([$database]);
         $activeWorkers = (int)$active->fetchColumn();
     } while (($ready < 2 || $activeWorkers < 2) && microtime(true) < $deadline);
-    if ($ready !== 2 || $activeWorkers < 2) throw new RuntimeException('Payment workers did not reach the locked race window.');
+    if ($ready !== 2 || $activeWorkers < 2) {
+        throw new RuntimeException('Payment workers did not reach the locked race window.');
+    }
     $pdo->commit();
 
     $paymentOutcomes = array_map('shopCheckoutSmokeFinishWorker', $paymentWorkers);
-    usort($paymentOutcomes, static fn(array $a, array $b): int => (int)$b['changed'] <=> (int)$a['changed']);
+    usort($paymentOutcomes, static fn (array $a, array $b): int => (int)$b['changed'] <=> (int)$a['changed']);
     if (array_column($paymentOutcomes, 'changed') !== [true, false]
         || array_unique(array_column($paymentOutcomes, 'order_id')) !== [$orderId]
         || (int)$pdo->query("SELECT COUNT(*) FROM club_event_notifications WHERE order_id={$orderId} AND notification_type='shop_payment_received'")->fetchColumn() !== 1
@@ -277,12 +310,20 @@ try {
 
     $pdo->exec("INSERT INTO verejni_uzivatele(id,jmeno,prijmeni,email,aktivni,email_overeno,registrovan) VALUES(11,'Capacity','Tester','capacity@example.test',1,1,CURRENT_TIMESTAMP)");
     $pdo->exec("INSERT INTO sportovci(id,jmeno,prijmeni,narozeni) VALUES(101,'První','Dítě','2017-03-01'),(102,'Druhé','Dítě','2018-04-02')");
-    $pdo->exec("INSERT INTO account_person_roles(account_id,sportovec_id,relation_role,status,source,valid_from,created_by_trainer_id,approved_by_trainer_id,decision_note) VALUES(10,101,'guardian','approved','admin','2020-01-01',7,7,'smoke'),(11,102,'guardian','approved','admin','2020-01-01',7,7,'smoke')");
-    $pdo->exec("INSERT INTO shop_catalog_product_candidates(id,run_id,external_product_key,name,offer_type,classification_confidence,needs_manual_review,payload_json) VALUES(502,1,'capacity-program','Capacity program','program','high',0,'{}')");
-    $pdo->exec("INSERT INTO shop_catalog_variant_candidates(id,run_id,product_candidate_id,sku,price_mode,amount_minor,currency,stock_quantity_decimal,payload_json) VALUES(602,1,502,'PROGRAM-LAST-SPOT','fixed',15000,'CZK',NULL,'{}')");
-    $pdo->exec("INSERT INTO shop_products(id,source_candidate_id,source_run_id,external_product_key,name,offer_type,catalog_status) VALUES(502,502,1,'capacity-program','Capacity program','program','active')");
-    $pdo->exec("INSERT INTO shop_variants(id,product_id,source_candidate_id,sku,attributes_json,price_mode,amount_minor,currency,includes_vat,vat_rate_basis_points,stock_quantity_decimal,visible,catalog_status) VALUES(602,502,602,'PROGRAM-LAST-SPOT','{}','fixed',15000,'CZK',1,0,NULL,1,'active')");
-    $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary,decision_note) VALUES(502,'active','Capacity program','Last-place concurrency smoke','Approved smoke fixture')");
+    $pdo->exec("INSERT INTO account_person_roles(account_id,sportovec_id,relation_role,status,source,valid_from,created_by_trainer_id,
+        approved_by_trainer_id,decision_note) VALUES(10,101,'guardian','approved','admin','2020-01-01',7,7,'smoke'),(11,102,
+        'guardian','approved','admin','2020-01-01',7,7,'smoke')");
+    $pdo->exec("INSERT INTO shop_catalog_product_candidates(id,run_id,external_product_key,name,offer_type,classification_confidence,
+        needs_manual_review,payload_json) VALUES(502,1,'capacity-program','Capacity program','program','high',0,'{}')");
+    $pdo->exec("INSERT INTO shop_catalog_variant_candidates(id,run_id,product_candidate_id,sku,price_mode,amount_minor,currency,
+        stock_quantity_decimal,payload_json) VALUES(602,1,502,'PROGRAM-LAST-SPOT','fixed',15000,'CZK',NULL,'{}')");
+    $pdo->exec("INSERT INTO shop_products(id,source_candidate_id,source_run_id,external_product_key,name,offer_type,catalog_status)
+        VALUES(502,502,1,'capacity-program','Capacity program','program','active')");
+    $pdo->exec("INSERT INTO shop_variants(id,product_id,source_candidate_id,sku,attributes_json,price_mode,amount_minor,currency,includes_vat,
+        vat_rate_basis_points,stock_quantity_decimal,visible,catalog_status) VALUES(602,502,602,'PROGRAM-LAST-SPOT','{}','fixed',
+        15000,'CZK',1,0,NULL,1,'active')");
+    $pdo->exec("INSERT INTO shop_product_publications(product_id,status,public_name,public_summary,decision_note) VALUES(502,'active',
+        'Capacity program','Last-place concurrency smoke','Approved smoke fixture')");
     $pdo->exec("INSERT INTO club_seasons(id,code,name,starts_on,ends_on,status,created_by_trainer_id) VALUES(1,'SMOKE-2026','Smoke season','2026-01-01','2027-12-31','active',7)");
     $pdo->exec("INSERT INTO club_teams(id,season_id,code,name,discipline,age_label,status,created_by_trainer_id) VALUES(1,1,'SMOKE-TEAM','Smoke team','all','2016-2019','active',7)");
     $programId = (int)clubProgramCreate($pdo, 7, 'SMOKE-PROGRAM', 'Capacity program')['id'];
@@ -311,83 +352,117 @@ try {
         $active->execute([$database]);
         $activeWorkers = (int)$active->fetchColumn();
     } while (($ready < 2 || $activeWorkers < 2) && microtime(true) < $deadline);
-    if ($ready !== 2 || $activeWorkers < 2) throw new RuntimeException('Program workers did not reach the locked last-place race window.');
+    if ($ready !== 2 || $activeWorkers < 2) {
+        throw new RuntimeException('Program workers did not reach the locked last-place race window.');
+    }
     $pdo->commit();
 
     $programOutcomes = array_map('shopCheckoutSmokeFinishWorker', $programWorkers);
-    usort($programOutcomes, static fn(array $a, array $b): int => (int)$b['success'] <=> (int)$a['success']);
+    usort($programOutcomes, static fn (array $a, array $b): int => (int)$b['success'] <=> (int)$a['success']);
     if (array_column($programOutcomes, 'success') !== [true, false]
         || !str_contains((string)$programOutcomes[1]['error'], 'Kapacita nabídky je naplněna.')
-        || (int)$pdo->query("SELECT COUNT(*) FROM shop_orders o JOIN shop_order_items oi ON oi.order_id=o.id WHERE oi.variant_id=602 AND o.status='placed' AND o.payment_status='pending'")->fetchColumn() !== 1
+        || (int)$pdo->query("SELECT COUNT(*) FROM shop_orders o JOIN shop_order_items oi ON oi.order_id=o.id "
+            . "WHERE oi.variant_id=602 AND o.status='placed' AND o.payment_status='pending'")->fetchColumn() !== 1
         || (int)clubProgramOfferForVariant($pdo, 602)['held_order_count'] !== 1
     ) {
         throw new RuntimeException('Concurrent last-place checkout did not produce exactly one hold and one fail-closed rejection: ' . json_encode($programOutcomes, JSON_THROW_ON_ERROR));
     }
     // Native prepares + migrated unique keys: two siblings, one payment, two financial shares.
-    shopOrderAdminCancel($pdo,(int)$programOutcomes[0]['id'],7,'SMOKE release last-place order.',true);
+    shopOrderAdminCancel($pdo, (int)$programOutcomes[0]['id'], 7, 'SMOKE release last-place order.', true);
     $pdo->exec('UPDATE club_program_offers SET capacity=2 WHERE variant_id=602');
-    $pdo->exec("INSERT INTO account_person_roles(account_id,sportovec_id,relation_role,status,source,valid_from,created_by_trainer_id,approved_by_trainer_id,decision_note) VALUES(10,102,'guardian','approved','admin','2020-01-01',7,7,'SMOKE sibling')");
+    $pdo->exec("INSERT INTO account_person_roles(account_id,sportovec_id,relation_role,status,source,valid_from,created_by_trainer_id,
+        approved_by_trainer_id,decision_note) VALUES(10,102,'guardian','approved','admin','2020-01-01',7,7,'SMOKE sibling')");
     // Upgrade the synthetic goods fixture to the physical warehouse, preserving its older open order.
     $pdo->exec("INSERT INTO staff_superadmins(trainer_id,reason) VALUES(7,'SMOKE isolated warehouse actor')");
     $pdo->exec("UPDATE shop_variants SET unit_code='piece' WHERE id=601");
-    shopInventoryConfigure($pdo,7,'SMOKE warehouse','fifo','SMOKE policy','SMOKE isolated warehouse policy.',true);
-    $legacyItemId=(int)$pdo->query('SELECT id FROM shop_order_items WHERE order_id='.$orderId.' AND variant_id=601')->fetchColumn();
-    shopInventoryOpen($pdo,7,601,['physical_quantity'=>4,'blocked_quantity'=>0,'unit_cost_minor'=>5000,'evidence'=>'SMOKE counted stock','effective_on'=>date('Y-m-d'),'reservations'=>[$legacyItemId=>1]],'SMOKE verified opening stock.',true,'smoke-family-opening');
-    shopCartSetQuantity($pdo,10,602,1,101);shopCartSetQuantity($pdo,10,602,1,102);
-    shopCartSetQuantity($pdo,10,601,2);
-    shopCouponAdminCreate($pdo,7,'SMOKE-FAMILY','fixed',1001,0,null,1,'','','SMOKE program-only discount.',true,SHOP_COUPON_CLUB_PROGRAM);
-    shopCouponApplyToCart($pdo,10,'SMOKE-FAMILY');
-    $familyCart=shopCartDetail($pdo,10);$accept=[];
-    foreach($familyCart['items'] as $line)$accept['item:'.$line['cart_item_id']]=1;
-    $beforeOrders=(int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn();
-    $beforeStock=shopInventoryBalance($pdo,601);
+    shopInventoryConfigure($pdo, 7, 'SMOKE warehouse', 'fifo', 'SMOKE policy', 'SMOKE isolated warehouse policy.', true);
+    $legacyItemId = (int)$pdo->query('SELECT id FROM shop_order_items WHERE order_id='.$orderId.' AND variant_id=601')->fetchColumn();
+    shopInventoryOpen($pdo, 7, 601, [
+        'physical_quantity' => 4, 'blocked_quantity' => 0, 'unit_cost_minor' => 5000,
+        'evidence' => 'SMOKE counted stock', 'effective_on' => date('Y-m-d'),
+        'reservations' => [$legacyItemId => 1],
+    ], 'SMOKE verified opening stock.', true, 'smoke-family-opening');
+    shopCartSetQuantity($pdo, 10, 602, 1, 101);
+    shopCartSetQuantity($pdo, 10, 602, 1, 102);
+    shopCartSetQuantity($pdo, 10, 601, 2);
+    shopCouponAdminCreate($pdo, 7, 'SMOKE-FAMILY', 'fixed', 1001, 0, null, 1, '', '', 'SMOKE program-only discount.', true, SHOP_COUPON_CLUB_PROGRAM);
+    shopCouponApplyToCart($pdo, 10, 'SMOKE-FAMILY');
+    $familyCart = shopCartDetail($pdo, 10);
+    $accept = [];
+    foreach ($familyCart['items'] as $line) {
+        $accept['item:'.$line['cart_item_id']] = 1;
+    }
+    $beforeOrders = (int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn();
+    $beforeStock = shopInventoryBalance($pdo, 601);
     $pdo->exec('UPDATE club_program_offers SET capacity=1 WHERE variant_id=602');
     try {
-        shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),SHOP_CHECKOUT_SMOKE_BANK,$familyCart['fingerprint'],$accept,102);
+        shopCheckoutPlace($pdo, 10, bin2hex(random_bytes(16)), SHOP_CHECKOUT_SMOKE_BANK, $familyCart['fingerprint'], $accept, 102);
         throw new RuntimeException('Two siblings unexpectedly fit into the last place.');
     } catch (ShopCheckoutException $e) {
-        if(!str_contains($e->getMessage(),'Kapacita'))throw $e;
+        if (!str_contains($e->getMessage(), 'Kapacita')) {
+            throw $e;
+        }
     }
-    if((int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn()!==$beforeOrders
-        ||shopInventoryBalance($pdo,601)!==$beforeStock
-        ||(int)$pdo->query('SELECT COUNT(*) FROM shop_coupon_redemptions')->fetchColumn()!==0
-        ||shopCartDetail($pdo,10)['fingerprint']!==$familyCart['fingerprint'])throw new RuntimeException('Failed family checkout did not roll back stock, coupon, order and cart atomically.');
+    if ((int)$pdo->query('SELECT COUNT(*) FROM shop_orders')->fetchColumn() !== $beforeOrders
+        || shopInventoryBalance($pdo, 601) !== $beforeStock
+        || (int)$pdo->query('SELECT COUNT(*) FROM shop_coupon_redemptions')->fetchColumn() !== 0
+        || shopCartDetail($pdo, 10)['fingerprint'] !== $familyCart['fingerprint']) {
+        throw new RuntimeException('Failed family checkout did not roll back stock, coupon, order and cart atomically.');
+    }
     $pdo->exec('UPDATE club_program_offers SET capacity=2 WHERE variant_id=602');
-    $family=shopCheckoutPlace($pdo,10,bin2hex(random_bytes(16)),SHOP_CHECKOUT_SMOKE_BANK,$familyCart['fingerprint'],$accept,102);
-    if((int)$family['total_minor']!==53999 || (int)clubProgramOfferForVariant($pdo,602)['held_order_count']!==2)throw new RuntimeException('Family checkout did not reserve two places with the exact discounted total.');
-    $shares=$pdo->query('SELECT sportovec_id,amount_minor FROM shop_order_finance_shares WHERE order_id='.(int)$family['id'].' ORDER BY sportovec_id')->fetchAll(PDO::FETCH_KEY_PAIR);
-    if(array_map('intval',$shares)!==[101=>14500,102=>39499])throw new RuntimeException('Program-only coupon must preserve every minor unit and assign goods to their explicit owner.');
-    $stock=shopInventoryBalance($pdo,601);
-    if($stock['physical_quantity']!==4||$stock['reserved_quantity']!==3||$stock['available_quantity']!==1)throw new RuntimeException('Mixed order stock was not reserved exactly once.');
-    require_once dirname(__DIR__,2).'/includes/accounting_documents.php';
-    $document=accountingDocumentSource($pdo,'order',(int)$family['id']);
-    $childLines=array_values(array_filter($document['lines'],static fn(array $line):bool=>!empty($line['beneficiary']['person_id'])));
-    if(count($document['lines'])!==4||count(array_unique(array_column($document['lines'],'line_key')))!==4
-        ||array_sum(array_column($document['lines'],'amount_minor'))!==53999
-        ||array_map('intval',array_column(array_column($childLines,'beneficiary'),'person_id'))!==[101,102])throw new RuntimeException('Accountant source must preserve goods, both child lines and the exact discount.');
-    $firstReceipt=clubFinanceRecordBankReceipt($pdo,101,14500,'SMOKE-SIBLING-101',date('Y-m-d'),7,'SMOKE first child share.',true);
-    $status=$pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn();
-    if($status!=='pending'||$firstReceipt['allocated_minor']!==14500||clubFinanceBalanceForAthlete($pdo,102)['open_minor']!==39499)throw new RuntimeException('First child payment must not settle sibling debt.');
-    $partialReceipt=clubFinanceRecordBankReceipt($pdo,102,10000,'SMOKE-SIBLING-102-PART',date('Y-m-d'),7,'SMOKE partial second share.',true);
-    if($partialReceipt['allocated_minor']!==10000||clubFinanceBalanceForAthlete($pdo,102)['open_minor']!==29499
-        ||$pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn()!=='pending'
-        ||(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn()!==0)throw new RuntimeException('A partial second share must keep both enrollments inactive.');
-    $secondReceipt=clubFinanceRecordBankReceipt($pdo,102,30000,'SMOKE-SIBLING-102',date('Y-m-d'),7,'SMOKE second child balance and overpayment.',true);
-    $status=$pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn();
-    if($status!=='paid'||$secondReceipt['allocated_minor']!==29499||$secondReceipt['credit_minor']!==501
-        ||clubFinanceBalanceForAthlete($pdo,101)['credit_minor']!==0||clubFinanceBalanceForAthlete($pdo,102)['credit_minor']!==501
-        ||(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments WHERE status=\'active\'')->fetchColumn()!==2)throw new RuntimeException('Both shares must activate both children once and retain overpayment only for its owner.');
-    $goodsItemId=(int)$pdo->query('SELECT id FROM shop_order_items WHERE order_id='.(int)$family['id'].' AND variant_id=601')->fetchColumn();
-    $issuedAt=date('Y-m-d H:i:s');
-    $issued=shopFulfillmentIssue($pdo,(int)$family['id'],[$goodsItemId=>2],7,'SMOKE parent',$issuedAt,'SMOKE mixed goods handover.','smoke-family-issue');
-    $replayed=shopFulfillmentIssue($pdo,(int)$family['id'],[$goodsItemId=>2],7,'SMOKE parent',$issuedAt,'SMOKE mixed goods handover.','smoke-family-issue');
-    $stock=shopInventoryBalance($pdo,601);
-    if(!$issued['changed']||$replayed['changed']||$stock['physical_quantity']!==2||$stock['reserved_quantity']!==1
-        ||(int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments WHERE status=\'active\'')->fetchColumn()!==2)throw new RuntimeException('Goods handover must be idempotent and preserve both course enrollments.');
+    $family = shopCheckoutPlace($pdo, 10, bin2hex(random_bytes(16)), SHOP_CHECKOUT_SMOKE_BANK, $familyCart['fingerprint'], $accept, 102);
+    if ((int)$family['total_minor'] !== 53999 || (int)clubProgramOfferForVariant($pdo, 602)['held_order_count'] !== 2) {
+        throw new RuntimeException('Family checkout did not reserve two places with the exact discounted total.');
+    }
+    $shares = $pdo->query('SELECT sportovec_id,amount_minor FROM shop_order_finance_shares WHERE order_id='.(int)$family['id'].' ORDER BY sportovec_id')->fetchAll(PDO::FETCH_KEY_PAIR);
+    if (array_map('intval', $shares) !== [101 => 14500,102 => 39499]) {
+        throw new RuntimeException('Program-only coupon must preserve every minor unit and assign goods to their explicit owner.');
+    }
+    $stock = shopInventoryBalance($pdo, 601);
+    if ($stock['physical_quantity'] !== 4 || $stock['reserved_quantity'] !== 3 || $stock['available_quantity'] !== 1) {
+        throw new RuntimeException('Mixed order stock was not reserved exactly once.');
+    }
+    require_once dirname(__DIR__, 2).'/includes/accounting_documents.php';
+    $document = accountingDocumentSource($pdo, 'order', (int)$family['id']);
+    $childLines = array_values(array_filter($document['lines'], static fn (array $line): bool => !empty($line['beneficiary']['person_id'])));
+    if (count($document['lines']) !== 4 || count(array_unique(array_column($document['lines'], 'line_key'))) !== 4
+        || array_sum(array_column($document['lines'], 'amount_minor')) !== 53999
+        || array_map('intval', array_column(array_column($childLines, 'beneficiary'), 'person_id')) !== [101,102]) {
+        throw new RuntimeException('Accountant source must preserve goods, both child lines and the exact discount.');
+    }
+    $firstReceipt = clubFinanceRecordBankReceipt($pdo, 101, 14500, 'SMOKE-SIBLING-101', date('Y-m-d'), 7, 'SMOKE first child share.', true);
+    $status = $pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn();
+    if ($status !== 'pending' || $firstReceipt['allocated_minor'] !== 14500 || clubFinanceBalanceForAthlete($pdo, 102)['open_minor'] !== 39499) {
+        throw new RuntimeException('First child payment must not settle sibling debt.');
+    }
+    $partialReceipt = clubFinanceRecordBankReceipt($pdo, 102, 10000, 'SMOKE-SIBLING-102-PART', date('Y-m-d'), 7, 'SMOKE partial second share.', true);
+    if ($partialReceipt['allocated_minor'] !== 10000 || clubFinanceBalanceForAthlete($pdo, 102)['open_minor'] !== 29499
+        || $pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn() !== 'pending'
+        || (int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments')->fetchColumn() !== 0) {
+        throw new RuntimeException('A partial second share must keep both enrollments inactive.');
+    }
+    $secondReceipt = clubFinanceRecordBankReceipt($pdo, 102, 30000, 'SMOKE-SIBLING-102', date('Y-m-d'), 7, 'SMOKE second child balance and overpayment.', true);
+    $status = $pdo->query('SELECT payment_status FROM shop_orders WHERE id='.(int)$family['id'])->fetchColumn();
+    if ($status !== 'paid' || $secondReceipt['allocated_minor'] !== 29499 || $secondReceipt['credit_minor'] !== 501
+        || clubFinanceBalanceForAthlete($pdo, 101)['credit_minor'] !== 0 || clubFinanceBalanceForAthlete($pdo, 102)['credit_minor'] !== 501
+        || (int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments WHERE status=\'active\'')->fetchColumn() !== 2) {
+        throw new RuntimeException('Both shares must activate both children once and retain overpayment only for its owner.');
+    }
+    $goodsItemId = (int)$pdo->query('SELECT id FROM shop_order_items WHERE order_id='.(int)$family['id'].' AND variant_id=601')->fetchColumn();
+    $issuedAt = date('Y-m-d H:i:s');
+    $issued = shopFulfillmentIssue($pdo, (int)$family['id'], [$goodsItemId => 2], 7, 'SMOKE parent', $issuedAt, 'SMOKE mixed goods handover.', 'smoke-family-issue');
+    $replayed = shopFulfillmentIssue($pdo, (int)$family['id'], [$goodsItemId => 2], 7, 'SMOKE parent', $issuedAt, 'SMOKE mixed goods handover.', 'smoke-family-issue');
+    $stock = shopInventoryBalance($pdo, 601);
+    if (!$issued['changed'] || $replayed['changed'] || $stock['physical_quantity'] !== 2 || $stock['reserved_quantity'] !== 1
+        || (int)$pdo->query('SELECT COUNT(*) FROM club_program_enrollments WHERE status=\'active\'')->fetchColumn() !== 2) {
+        throw new RuntimeException('Goods handover must be idempotent and preserve both course enrollments.');
+    }
     require_once __DIR__.'/FamilyAccountingAcceptance.php';
-    FamilyAccountingAcceptance::run($pdo,$family,[$firstReceipt,$partialReceipt,$secondReceipt]);
+    FamilyAccountingAcceptance::run($pdo, $family, [$firstReceipt,$partialReceipt,$secondReceipt]);
     echo "MariaDB concurrent checkout, payment idempotency, last-place rollback, mixed siblings/coupon/stock/accounting/partial receipts/overpayment/handover smoke OK\n";
 } finally {
-    if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
     $server->exec('DROP DATABASE IF EXISTS ' . $quotedDatabase);
 }

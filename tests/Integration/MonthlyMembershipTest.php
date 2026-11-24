@@ -41,8 +41,20 @@ final class MonthlyMembershipTest extends TestCase
     {
         $t = Fixture::tariff($this->pdo);
         $id = Fixture::subscribe($this->pdo, $t);
+        $person = $this->pdo->query('SELECT * FROM sportovci WHERE id=1')->fetch(PDO::FETCH_ASSOC);
+        self::assertSame('aktivni', $person['stav_clenstvi']);
+        self::assertSame('system', \sportovecStatusCompute($person)['verification']);
+        self::assertSame(1, (int)$this->pdo->query("SELECT COUNT(*) FROM sportovec_history WHERE event_type='status_membership_purchase'")->fetchColumn());
+        $firstBalance = \clubFinanceBalanceForAthlete($this->pdo, 1, new DateTimeImmutable('2026-09-01'));
+        self::assertSame('due', \clubFinancePaymentStatus($this->pdo, 1, $firstBalance)['code']);
+        self::assertSame('overdue', \clubFinancePaymentStatus(
+            $this->pdo,
+            1,
+            \clubFinanceBalanceForAthlete($this->pdo, 1, new DateTimeImmutable('2026-09-16'))
+        )['code']);
         self::assertSame($id, Fixture::subscribe($this->pdo, $t));
         self::assertSame(1, (int)$this->pdo->query('SELECT COUNT(*) FROM club_member_charges')->fetchColumn());
+        self::assertSame(1, (int)$this->pdo->query("SELECT COUNT(*) FROM sportovec_history WHERE event_type='status_membership_purchase'")->fetchColumn());
         self::assertSame(1, (int)$this->pdo->query("SELECT COUNT(*) FROM club_roster_members WHERE source='shop'")
     ->fetchColumn());
         self::assertSame(1, \monthlyMembershipTransaction($this->pdo, fn () => \monthlyMembershipGenerateLocked($this
@@ -63,6 +75,7 @@ final class MonthlyMembershipTest extends TestCase
         } catch (\DomainException) {
             self::assertSame(0, (int)$this->pdo->query('SELECT COUNT(*) FROM monthly_memberships')->fetchColumn());
             self::assertSame(0, (int)$this->pdo->query('SELECT COUNT(*) FROM club_member_charges')->fetchColumn());
+            self::assertSame('cekajici', $this->pdo->query('SELECT stav_clenstvi FROM sportovci WHERE id=1')->fetchColumn());
         }
     }
 
@@ -76,6 +89,11 @@ final class MonthlyMembershipTest extends TestCase
         $b = Fixture::movement($this->pdo, 'LOCALHOST-OVER', '1900');
         self::assertTrue(\monthlyMembershipImportMovement($this->pdo, $b, 'CZ6508000000192000145399'));
         self::assertSame('paid', $this->pdo->query('SELECT status FROM club_member_charges WHERE id=1')->fetchColumn());
+        self::assertSame('paid', \clubFinancePaymentStatus(
+            $this->pdo,
+            1,
+            \clubFinanceBalanceForAthlete($this->pdo, 1, new DateTimeImmutable('2026-09-16'))
+        )['code']);
         self::assertSame(120000, \monthlyMembershipCredit($this->pdo, 20));
         \monthlyMembershipTransaction($this->pdo, fn () => \monthlyMembershipGenerateLocked($this->pdo, $id, '2026-10-01'));
         self::assertSame(0, \monthlyMembershipCredit($this->pdo, 20));
@@ -85,6 +103,21 @@ final class MonthlyMembershipTest extends TestCase
     ->fetchColumn());
         $this->expectException(\ClubFinanceException::class);
         \clubFinanceAssertBankReferenceUnused($this->pdo, 'LOCALHOST-PART', 50000, '2026-09-16');
+    }
+
+    public function testOverdueStaffAlertIsDeduplicatedAndResolvesAfterPayment(): void
+    {
+        Fixture::subscribe($this->pdo, Fixture::tariff($this->pdo));
+        \monthlyMembershipQueueOverdue($this->pdo, new DateTimeImmutable('2026-10-01'));
+        self::assertSame(1, (int)$this->pdo->query("SELECT COUNT(*) FROM monthly_membership_overdue_alerts WHERE status='pending'")->fetchColumn());
+        self::assertSame(1, (int)$this->pdo->query("SELECT COUNT(*) FROM staff_notification_events WHERE event_type='monthly_overdue'")->fetchColumn());
+        \monthlyMembershipQueueOverdue($this->pdo, new DateTimeImmutable('2026-10-01'));
+        self::assertSame(1, (int)$this->pdo->query('SELECT COUNT(*) FROM monthly_membership_overdue_alerts')->fetchColumn());
+        $movement = Fixture::movement($this->pdo, 'LOCALHOST-ALERT-PAID', '1200', '2026-10-02');
+        self::assertTrue(\monthlyMembershipImportMovement($this->pdo, $movement, 'CZ6508000000192000145399'));
+        \monthlyMembershipQueueOverdue($this->pdo, new DateTimeImmutable('2026-10-03'));
+        self::assertSame('resolved', $this->pdo->query('SELECT status FROM monthly_membership_overdue_alerts')->fetchColumn());
+        self::assertNotNull($this->pdo->query("SELECT resolved_at FROM staff_notification_events WHERE event_type='monthly_overdue'")->fetchColumn());
     }
     public function testOnePayerCanPayTwoChildrenAndOldestChargesFirst(): void
     {

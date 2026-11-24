@@ -8,6 +8,8 @@ require_once __DIR__.'/family_portal.php';
 require_once __DIR__.'/fio_readonly_import.php';
 require_once __DIR__.'/roster_hierarchy.php';
 require_once __DIR__.'/accounting_documents.php';
+require_once __DIR__.'/sportovec_status_lib.php';
+require_once __DIR__.'/staff_notifications.php';
 
 function monthlyMembershipToday(?DateTimeImmutable $now = null): string
 {
@@ -243,6 +245,7 @@ function monthlyMembershipSubscribe(
             'first_period' => 'full', 'termination' => 'period_end',
         ]);
         monthlyMembershipGenerateLocked($pdo, $id, $today);
+        sportovecMembershipActivateFromSubscription($pdo, $person, $id);
         return $id;
     });
 }
@@ -532,14 +535,32 @@ function monthlyMembershipQueue(PDO $pdo, int $charge, int $account, string $kin
 function monthlyMembershipQueueOverdue(PDO $pdo, ?DateTimeImmutable $now = null): int
 {
     $today = monthlyMembershipToday($now);
+    $graceDays = clubFinanceSettings($pdo)['grace_days'];
     $made = 0;
-    return monthlyMembershipTransaction($pdo, static function () use ($pdo, $today, &$made): int {
+    return monthlyMembershipTransaction($pdo, static function () use ($pdo, $today, $graceDays, &$made): int {
         $q = $pdo->query(('SELECT c.id,c.payer_account_id,c.due_on FROM club_member_charges c JOIN monthly_membership_periods p ON p.charge_id=c.id '
     .
     'WHERE c.status=\'pending\''));
         foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $c) {
             if (monthlyMembershipRemaining($pdo, (int)$c['id']) < 1) {
                 continue;
+            }
+            if (clubFinancePastGrace((string)$c['due_on'], $today, $graceDays)) {
+                $insert = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? 'INSERT IGNORE' : 'INSERT OR IGNORE';
+                $pdo->prepare($insert . " INTO monthly_membership_overdue_alerts(charge_id,status) VALUES(?,'pending')")
+                    ->execute([(int)$c['id']]);
+                $alert = $pdo->prepare('SELECT id,status FROM monthly_membership_overdue_alerts WHERE charge_id=?');
+                $alert->execute([(int)$c['id']]);
+                $row = $alert->fetch(PDO::FETCH_ASSOC);
+                if ($row['status'] !== 'pending') {
+                    $pdo->prepare("UPDATE monthly_membership_overdue_alerts SET status='pending',resolved_at=NULL WHERE id=?")
+                        ->execute([(int)$row['id']]);
+                    $pdo->prepare("UPDATE staff_notification_events SET resolved_at=NULL WHERE event_type='monthly_overdue' AND source_id=?")
+                        ->execute([(int)$row['id']]);
+                    $pdo->prepare('UPDATE staff_notifications SET read_at=NULL WHERE event_id IN (SELECT id FROM staff_notification_events WHERE event_type=? AND source_id=?)')
+                        ->execute(['monthly_overdue', (int)$row['id']]);
+                }
+                staffNotificationRecord($pdo, 'monthly_overdue', (int)$row['id']);
             }
             $days = (int)(new DateTimeImmutable($c['due_on']))->diff(new DateTimeImmutable($today))->format('%r%a');
             // Catch-up sends only the latest relevant stage, not three messages at once.
@@ -555,6 +576,19 @@ function monthlyMembershipQueueOverdue(PDO $pdo, ?DateTimeImmutable $now = null)
             }
             $pdo->prepare("UPDATE monthly_membership_messages SET status='cancelled' WHERE charge_id=? AND kind<>'issued' AND kind<>? AND status='pending'")
     ->execute([$c['id'],'overdue'.$stage]);
+        }
+        $open = $pdo->query("SELECT a.id,a.charge_id FROM monthly_membership_overdue_alerts a WHERE a.status='pending'");
+        foreach ($open->fetchAll(PDO::FETCH_ASSOC) as $alert) {
+            $charge = $pdo->prepare('SELECT status,due_on FROM club_member_charges WHERE id=?');
+            $charge->execute([(int)$alert['charge_id']]);
+            $record = $charge->fetch(PDO::FETCH_ASSOC);
+            if (!$record || $record['status'] !== 'pending'
+                || monthlyMembershipRemaining($pdo, (int)$alert['charge_id']) < 1
+                || !clubFinancePastGrace((string)$record['due_on'], $today, $graceDays)) {
+                $pdo->prepare("UPDATE monthly_membership_overdue_alerts SET status='resolved',resolved_at=CURRENT_TIMESTAMP WHERE id=?")
+                    ->execute([(int)$alert['id']]);
+                staffNotificationResolve($pdo, 'monthly_overdue', (int)$alert['id']);
+            }
         }
         return $made;
     });

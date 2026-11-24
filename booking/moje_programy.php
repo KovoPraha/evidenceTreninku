@@ -14,6 +14,10 @@ function clubProgramPageH(mixed $value): string
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
     ;
 }
+function clubProgramPageWeekday(int $day): string
+{
+    return [1 => 'Pondělí', 2 => 'Úterý', 3 => 'Středa', 4 => 'Čtvrtek', 5 => 'Pátek', 6 => 'Sobota', 7 => 'Neděle'][$day] ?? '';
+}
 $accountId = (int)$_SESSION['verejny_uzivatel_id'];
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -83,6 +87,7 @@ endif;
         <tbody>
         <?php
 foreach ($items as $item): $state = clubProgramAccountItemState($item);
+    $schedule = clubProgramOrderedSchedule($pdo ?? throw new LogicException('Databáze není dostupná.'), $item);
     ?>
         <tr>
             <td><?=
@@ -111,6 +116,21 @@ endif;
     ?></span><div class="small my-1"><?=
     clubProgramPageH($state['detail'])
     ?></div>
+    <?php if ($schedule !== []): ?>
+        <div class="small border-top pt-1">
+            <strong>Rozvrh objednaného kroužku:</strong>
+            <?php foreach ($schedule as $slot): ?>
+                <div><?= clubProgramPageH(
+                    clubProgramPageWeekday((int)$slot['weekday']) . ' '
+                    . substr((string)$slot['starts_at'], 0, 5) . '–' . substr((string)$slot['ends_at'], 0, 5)
+                    . (!empty($slot['location_name']) ? ' · ' . $slot['location_name'] : '')
+                ) ?></div>
+            <?php endforeach; ?>
+            <?php if ($state['code'] === 'payment_pending'): ?>
+                <div class="text-muted">Rozvrh je dostupný po objednání; účast se aktivuje až podle pravidel platby.</div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
                 <?php
 if ($state['can_activate']):
     ?><form method="post"><?=

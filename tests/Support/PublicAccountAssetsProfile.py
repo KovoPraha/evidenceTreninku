@@ -161,6 +161,17 @@ try:
         assert variants['after']['total_ms']<variants['before']['total_ms']*1.2+20,(case,variants)
     (safe/'native-summary.json').write_text(json.dumps(native_summary,indent=2))
     if os.environ.get('ACCOUNT_ASSETS_BROWSER')=='1':
+        # The reset copy changed after the frozen CSS baseline. Keep the native
+        # before/after audit above, then compare identical current reset markup
+        # with only the one historical duplicate stylesheet restored.
+        reset_route=baseline_root/'booking/zapomenute_heslo.php'
+        current_reset=(root/'booking/zapomenute_heslo.php').read_text()
+        marker='<?php appUiAssets(); ?>'
+        duplicate='''<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+ integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+'''
+        assert current_reset.count(marker)==1 and duplicate not in current_reset
+        reset_route.write_text(current_reset.replace(marker,duplicate+marker))
         subprocess.run(['playwright-cli','--session','account-assets','open','http://127.0.0.1:18099/booking/prihlaseni.php','--browser=chrome'],cwd=root,check=True,stdout=subprocess.DEVNULL)
         summary=[]
         for case in ['login','registration','athlete','reset','trainer-reset','control']:

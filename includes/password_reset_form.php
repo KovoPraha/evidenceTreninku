@@ -8,11 +8,11 @@ require_once __DIR__ . '/trainer_password_reset.php';
 /**
  * Both the fragment preflight and password submission use the current database state.
  * A successful preflight is not authority to write: Consume checks again under lock.
- * @return array{errors:list<string>,success:bool,showForm:bool,token:string}
+ * @return array{errors:list<string>,success:bool,showForm:bool,token:string,target_type:?string}
  */
 function passwordResetFormSubmit(PDO $pdo, bool $trainerReset, array $input, bool $csrfValid): array
 {
-    $state = ['errors' => [], 'success' => false, 'showForm' => false, 'token' => ''];
+    $state = ['errors' => [], 'success' => false, 'showForm' => false, 'token' => '', 'target_type' => null];
     if (!$csrfValid) {
         $state['errors'][] = 'Neplatný bezpečnostní token.';
         return $state;
@@ -31,6 +31,7 @@ function passwordResetFormSubmit(PDO $pdo, bool $trainerReset, array $input, boo
         }
         $state['showForm'] = true;
         $state['token'] = $token;
+        $state['target_type'] = $trainerReset ? 'trainer' : (string)$reset['target_type'];
         if ($action === 'check') {
             return $state;
         }

@@ -38,6 +38,7 @@ final class StaffNotificationsTest extends TestCase
         ParentJourneyNotificationFixture::install($pdo);
         $migration = require dirname(__DIR__, 2) . '/migrations/20261106090000_staff_notifications.php';
         $migration['up']($pdo);
+        $pdo->exec('CREATE TABLE monthly_membership_overdue_alerts(id INTEGER PRIMARY KEY,charge_id INTEGER,status TEXT)');
         $migration['up']($pdo);
         self::assertTrue($migration['verify']($pdo));
         return $pdo;

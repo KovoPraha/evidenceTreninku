@@ -361,6 +361,40 @@ function clubFinanceBalanceForAthlete(PDO $pdo, int $sportovecId, ?DateTimeImmut
      max(0, $credit - $open),'items' => $items,'as_of' => $asOf->format('Y-m-d H:i:s')];
 }
 
+/** A payment label is derived from outstanding obligations, never from the historical import flag. */
+function clubFinancePaymentStatus(PDO $pdo, int $sportovecId, array $balance): array
+{
+    $open = (int)$balance['open_minor'];
+    $items = $balance['items'];
+    if ($open <= 0) {
+        $hasCharge = false;
+        if (clubFinanceTableExists($pdo, 'club_member_charges')) {
+            $q = $pdo->prepare("SELECT 1 FROM club_member_charges WHERE sportovec_id=? AND status IN ('paid','pending') LIMIT 1");
+            $q->execute([$sportovecId]);
+            $hasCharge = (bool)$q->fetchColumn();
+        }
+        return $hasCharge || $items !== []
+            ? ['code' => 'paid', 'label' => 'Uhrazeno', 'class' => 'text-bg-success']
+            : ['code' => 'no_charge', 'label' => 'Bez předpisu', 'class' => 'text-bg-secondary'];
+    }
+    $today = substr((string)$balance['as_of'], 0, 10);
+    $gross = 0;
+    $pastDue = 0;
+    foreach ($items as $item) {
+        $amount = max(0, (int)$item['amount_minor']);
+        $gross += $amount;
+        if ($amount > 0 && preg_match('/^\d{4}-\d{2}-\d{2}$/D', (string)($item['due_on'] ?? ''))
+            && (string)$item['due_on'] < $today) {
+            $pastDue += $amount;
+        }
+    }
+    // Available credit is applied to the oldest due obligations first.
+    $pastDue = max(0, $pastDue - max(0, $gross - $open));
+    return $pastDue > 0
+        ? ['code' => 'overdue', 'label' => 'Po splatnosti', 'class' => 'text-bg-danger']
+        : ['code' => 'due', 'label' => 'Nezaplaceno, v termínu', 'class' => 'text-bg-warning'];
+}
+
 function clubFinancePastGrace(string $dueOn, string $today, int $days): bool
 {
     if (preg_match('/^\d{4}-\d{2}-\d{2}$/D', $dueOn) !== 1) {

@@ -79,6 +79,19 @@ foreach ($insertions as $path => $changes) {
         array_splice($tokens, $position, 0, $braces);
     }
     $after = str_replace("\r\n", "\n", (string) file_get_contents($root . '/' . $path));
+    if ($path === 'booking/moje_programy.php') {
+        // KIS-ACCESS-STATUS-01 adds a read-only schedule preview to this route.
+        // Keep the complete reviewed source pinned; the other routes retain token parity.
+        $approvedHash = '87135e64def1b10a869675105424adf0a284e1e2e84535b7dd618bdecc449d96';
+        if (hash('sha256', $after) !== $approvedHash) {
+            throw new RuntimeException('Program route differs from approved schedule preview source.');
+        }
+        $routes[$path] = ['source_sha256' => $approvedHash, 'approved_schedule_preview_revision' => true,
+            'whole_literal_html_except_exact_duplicate_equal' => false,
+            'php_tokens_except_exact_listed_guard_braces_equal' => false,
+            'brace_insertions' => []];
+        continue;
+    }
     if ($tokens !== $signature($after)) {
         throw new RuntimeException('Unexpected PHP token or literal HTML change: ' . $path);
     }

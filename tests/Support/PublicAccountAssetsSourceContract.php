@@ -75,9 +75,9 @@ foreach (['prihlaseni.php', 'registrace.php', 'sportovec_prihlaseni.php', 'zapom
         continue;
     }
     if ($name === 'zapomenute_heslo.php') {
-        // AUTH-MAIL-04 intentionally changes the reset route. Pin the reviewed source
-        // instead of treating its new POST audit and form copy as a CSS-only edit.
-        $approvedHash = 'bfb2e3a409eee369e771eb556a97eec6e5a2be0107001a6685abfab91ab0061b';
+        // KIS-ACCESS-STATUS-01 updates the reset instructions for direct athlete login.
+        // Pin the reviewed route rather than treating it as a CSS-only edit.
+        $approvedHash = '9159f5bea9cce91b07d97653509f5149a873763a98fdd5e8006d3cd8bc57e223';
         if (hash('sha256', $after) !== $approvedHash) {
             throw new RuntimeException('Password reset route differs from approved AUTH-MAIL-04 source.');
         }

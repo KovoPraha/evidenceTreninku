@@ -19,14 +19,18 @@ $errors = [];
 $success = false;
 $showForm = false;
 $token = '';
+$targetType = null;
 $checkLink = ($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST';
 if (!$checkLink) {
-    ['errors' => $errors, 'success' => $success, 'showForm' => $showForm, 'token' => $token] = passwordResetFormSubmit(
+    ['errors' => $errors, 'success' => $success, 'showForm' => $showForm, 'token' => $token, 'target_type' => $targetType] = passwordResetFormSubmit(
         $pdo,
         $trainerReset,
         $_POST,
         csrf_verify((string)($_POST['csrf_token'] ?? ''))
     );
+    if ($success && $targetType === 'child') {
+        $loginUrl = 'sportovec_prihlaseni.php';
+    }
     if ($success) {
         auth_session_clear_identity('public');
         auth_session_clear_identity('child');
