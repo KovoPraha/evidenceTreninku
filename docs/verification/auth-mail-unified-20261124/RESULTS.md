@@ -55,6 +55,8 @@ SUCCESS na stejném SHA. Lidská přejímka NOT RUN.
 | Veřejné/nepřihlášené HTTP po deployi | PASS: `booking/registrace.php` 200; `mail_admin.php` 302 na login. Přihlášená administrace NOT RUN. |
 | Skutečné doručení hlavní zprávy a BCC do schránky | NOT RUN; nebyla k dispozici potvrzená kontrolní schránka ani reference konkrétního hlášeného pokusu. |
 
+[Scénáře pro testerku](../../TESTER_AUTH_MAIL_2026-11-24.md) jsou připravené v [PR #526](https://github.com/KovoPraha/evidenceTreninku/pull/526); provedení přihlášeného UAT a skutečné doručení zůstávají NOT RUN.
+
 **Meze důkazu:** Starší nezařazené žádosti bez historického auditu nelze
 rekonstruovat. Stav `sent` a čas `bcc_accepted_at` znamená přijetí PHP `mail()`;
 neprokazuje doručení hlavnímu příjemci ani kontrolní schránce. Skutečná příčina
