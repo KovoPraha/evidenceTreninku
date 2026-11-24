@@ -381,7 +381,7 @@ function familyWeeklyDeliveryComplete(
     }
 }
 
-/** @param callable(string,string,string):bool $sender */
+/** @param callable(string,string,string,?string=):bool $sender */
 function familyWeeklyDeliveryProcessOne(
     PDO $pdo,
     callable $sender,

@@ -62,6 +62,8 @@ final class MailAdminUnifiedTest extends TestCase
         \mailAdminBccToggle($pdo, 7, 0, 'Test skončil');
         self::assertNull(\mailAdminBccFor($pdo, 'club', 2));
         self::assertNotNull($pdo->query('SELECT skipped_at FROM mail_admin_bcc WHERE source_id=2')->fetchColumn());
+        \mailAdminBccToggle($pdo, 7, 1, 'Další testovací období');
+        self::assertNull(\mailAdminBccFor($pdo, 'club', 2));
         $_SESSION['role'] = 'trener';
         $this->expectException(\MailAdminException::class);
         \mailAdminBccToggle($pdo, 7, 1, 'Nepovolený pokus');

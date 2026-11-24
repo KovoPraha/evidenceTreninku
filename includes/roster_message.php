@@ -195,7 +195,7 @@ function rosterMessageComplete(PDO$pdo, array$row, bool$sent, string$error = '')
     }
 }
 
-/** @param callable(string,string,string):bool $sender */
+/** @param callable(string,string,string,?string=):bool $sender */
 function rosterMessageProcessOne(PDO$pdo, callable$sender): ?bool
 {
     $row = rosterMessageClaim($pdo);

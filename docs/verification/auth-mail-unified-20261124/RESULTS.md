@@ -1,10 +1,10 @@
 # AUTH-MAIL-05 — průběžný výsledek implementace (24. 11. 2026)
 
-**Stav: lokální implementace ROZPRACOVÁNO.** Vlastník Marek/klub výslovně
+**Stav: implementace v PR, CI po opravách běží.** Vlastník Marek/klub výslovně
 schválil implementaci a nasazení. Větev `codex/auth-mail-admin-plan-20261124`,
-[PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524) zatím obsahuje
-jen předchozí dokumentační commit. Lokální kód dosud nebyl pushnutý; merge,
-migrace, produkční deploy a lidská přejímka NOT RUN.
+[PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524) obsahuje kód
+v commitu `e57b8455`. Následné lokální opravy CI kontraktů a BCC lifecycle
+zatím nepushnuté; merge, migrace, produkční deploy a lidská přejímka NOT RUN.
 
 ## Rozsah lokální změny
 
@@ -35,7 +35,7 @@ migrace, produkční deploy a lidská přejímka NOT RUN.
 | Kontrola | Výsledek |
 | --- | --- |
 | `composer audit --locked` po aktualizaci knihoven | PASS, bez oznámených zranitelností |
-| `MailAdminUnifiedTest` | PASS, 3 testy / 25 tvrzení: seznam, filtry, oprávnění, BCC, vypnutí, resend, jednorázové nové ověření i reset |
+| `MailAdminUnifiedTest` | PASS, 3 testy / 26 tvrzení: seznam, filtry, oprávnění, BCC, vypnutí a znovuzapnutí bez oživení staré kopie, resend, jednorázové nové ověření i reset |
 | `AuthSecurityMigrationTest` po doplnění nové migrace | PASS, 1 test / 93 tvrzení, opakovaný běh migračního katalogu |
 | `PasswordResetRequestAuditTest` | PASS, 7 testů / 68 tvrzení |
 | `PasswordResetRequestPageTest` | PASS, 1 test / 8 tvrzení |
@@ -45,7 +45,8 @@ migrace, produkční deploy a lidská přejímka NOT RUN.
 | Cílený PHPStan pro nové služby, stránky a migraci | PASS, bez chyb; plný běh na Windows překročil pětiminutový limit Composeru |
 | `php tools/check-php-style.php` | PASS, 20 změněných PHP souborů |
 | `php tools/check-current-docs.php`, `git diff --check` | PASS |
-| CI, MariaDB a produkční nasazení | NOT RUN |
+| První CI PR #524 na `e57b8455` | PHPUnit PASS; docs a CodeQL PASS. PHPStan odhalil pět starých anotací callbacků; HTTP profily správně zachytily změnu registrace/hlavičky; profil front překročil starý SQL rozpočet o živé čtení BCC. Opraveno lokálně, nové CI čeká na push. MariaDB smoke prvního běhu ještě běží. |
+| Produkční nasazení | NOT RUN |
 
 **Meze důkazu:** Starší nezařazené žádosti bez historického auditu nelze
 rekonstruovat. Stav `sent` a čas `bcc_accepted_at` znamená přijetí PHP `mail()`;

@@ -369,7 +369,7 @@ function memberChargeReminderComplete(
     }
 }
 
-/** @param callable(string,string,string):bool $sender */
+/** @param callable(string,string,string,?string=):bool $sender */
 function memberChargeReminderProcessOne(
     PDO $pdo,
     callable $sender,

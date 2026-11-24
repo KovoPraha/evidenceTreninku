@@ -64,6 +64,10 @@ function mailAdminBccToggle(PDO $pdo, int $actorId, int $hours, string $reason):
         $pdo->query('SELECT id FROM mail_admin_bcc_settings WHERE id=1' . $lock)->fetchColumn();
         $pdo->prepare('UPDATE mail_admin_bcc_settings SET enabled_until=?,changed_by_trainer_id=?,updated_at=CURRENT_TIMESTAMP WHERE id=1')
             ->execute([$until, $actorId]);
+        if ($hours === 0) {
+            $pdo->exec('UPDATE mail_admin_bcc SET cancelled_at=CURRENT_TIMESTAMP,skipped_at=CURRENT_TIMESTAMP '
+                . 'WHERE cancelled_at IS NULL');
+        }
         mailAdminEvent($pdo, null, null, $actorId, $hours === 0 ? 'bcc_disabled' : 'bcc_enabled', $reason);
         $pdo->commit();
     } catch (Throwable $exception) {
@@ -87,7 +91,8 @@ function mailAdminBccAttach(PDO $pdo, string $source, int $id, string $email, in
     $pdo->beginTransaction();
     try {
         $lock = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql' ? ' FOR UPDATE' : '';
-        if (!$pdo->query('SELECT 1 FROM mail_admin_bcc_settings WHERE id=1 AND enabled_until>CURRENT_TIMESTAMP' . $lock)->fetchColumn()) {
+        $enabledUntil = $pdo->query('SELECT enabled_until FROM mail_admin_bcc_settings WHERE id=1 AND enabled_until>CURRENT_TIMESTAMP' . $lock)->fetchColumn();
+        if (!is_string($enabledUntil)) {
             throw new MailAdminException('Testovací skrytá kopie je vypnutá.');
         }
         $table = mailAdminSources()[$source];
@@ -108,8 +113,8 @@ function mailAdminBccAttach(PDO $pdo, string $source, int $id, string $email, in
         if ($existing->fetch(PDO::FETCH_ASSOC)) {
             throw new MailAdminException('Tato zpráva již má nastavenou nebo zrušenou skrytou kopii.');
         }
-        $pdo->prepare('INSERT INTO mail_admin_bcc(source_type,source_id,bcc_email,actor_trainer_id,reason) VALUES(?,?,?,?,?)')
-            ->execute([$source, $id, $email, $actorId, $reason]);
+        $pdo->prepare('INSERT INTO mail_admin_bcc(source_type,source_id,bcc_email,actor_trainer_id,reason,expires_at) VALUES(?,?,?,?,?,?)')
+            ->execute([$source, $id, $email, $actorId, $reason, $enabledUntil]);
         mailAdminEvent($pdo, $source, $id, $actorId, 'bcc_attached', $reason);
         $pdo->commit();
     } catch (Throwable $exception) {
@@ -126,9 +131,9 @@ function mailAdminBccFor(PDO $pdo, string $source, int $id): ?string
         return null;
     }
     try {
-        $statement = $pdo->prepare('SELECT bcc_email FROM mail_admin_bcc WHERE source_type=? AND source_id=? AND cancelled_at IS NULL');
+        $statement = $pdo->prepare('SELECT bcc_email,expires_at FROM mail_admin_bcc WHERE source_type=? AND source_id=? AND cancelled_at IS NULL');
         $statement->execute([$source, $id]);
-        $email = $statement->fetchColumn();
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $exception) {
         // Legacy in-memory worker fixtures predate this optional administration table.
         if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite'
@@ -137,15 +142,16 @@ function mailAdminBccFor(PDO $pdo, string $source, int $id): ?string
         }
         throw $exception;
     }
-    if (!is_string($email)) {
+    if (!$row || !is_string($row['bcc_email'])) {
         return null;
     }
-    if (!mailAdminBccSettings($pdo)['active']) {
+    $current = $pdo->query('SELECT CURRENT_TIMESTAMP')->fetchColumn();
+    if (!mailAdminBccSettings($pdo)['active'] || (string)$row['expires_at'] <= (string)$current) {
         $pdo->prepare('UPDATE mail_admin_bcc SET skipped_at=CURRENT_TIMESTAMP WHERE source_type=? AND source_id=? AND skipped_at IS NULL')
             ->execute([$source, $id]);
         return null;
     }
-    return $email;
+    return (string)$row['bcc_email'];
 }
 
 function mailAdminBccAccepted(PDO $pdo, string $source, int $id, ?string $bcc): void
@@ -424,7 +430,8 @@ function mailAdminUnifiedList(PDO $pdo, array $filters = []): array
     $count->execute($params);
     $statement = $pdo->prepare('SELECT feed.source,feed.source_id,feed.kind,feed.recipient_email,feed.status,'
         . 'feed.attempts,feed.available_at,feed.sent_at,feed.reason,feed.created_at,feed.reference,'
-        . 'b.bcc_email,b.accepted_at AS bcc_accepted_at,b.skipped_at AS bcc_skipped_at FROM (' . $union . ') feed'
+        . 'b.bcc_email,b.accepted_at AS bcc_accepted_at,b.skipped_at AS bcc_skipped_at,'
+        . 'b.cancelled_at AS bcc_cancelled_at FROM (' . $union . ') feed'
         . ' LEFT JOIN mail_admin_bcc b ON b.source_type=feed.source AND b.source_id=feed.source_id'
         . $condition . ' ORDER BY feed.created_at DESC,feed.source DESC,feed.source_id DESC LIMIT 50 OFFSET ' . (($page - 1) * 50));
     $statement->execute($params);

@@ -12,8 +12,9 @@ nasazení je povoleno po ověření a sloučení, bez hromadného uvolnění jin
 front a bez změny cizích účtů.
 [Registr](WORK_PLAN_CURRENT.md#auth-mail-05--společná-administrace-e-mailů-24-11-2026).
 [PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524)
-je otevřený; předchozí dokumentační push proveden, nové implementační změny
-zatím jen lokální, merge/deploy NOT RUN. [Průběžný výsledek](verification/auth-mail-unified-20261124/RESULTS.md).
+je otevřený; implementační commit `e57b8455` pushnut, následné lokální opravy
+CI čekají na další push, merge/deploy NOT RUN.
+[Průběžný výsledek](verification/auth-mail-unified-20261124/RESULTS.md).
 Vlastník následně upřesnil, že požaduje **skutečnou BCC stejné zprávy**
 včetně autentizačních e-mailů, přístupnou k nastavení pouze administrátorovi
 a vypnutelnou po testování. Tato volba nahrazuje původní návrh redigované

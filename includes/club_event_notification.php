@@ -155,7 +155,7 @@ function clubEventNotificationComplete(PDO $pdo, int $id, string $token, bool $s
     }
 }
 
-/** @param callable(string,string,string):bool $sender */
+/** @param callable(string,string,string,array=,?string=):bool $sender */
 function clubEventNotificationProcessOne(PDO $pdo, callable $sender, bool $staffOnly = false, bool $shopOnly = false): bool
 |string|null
 {

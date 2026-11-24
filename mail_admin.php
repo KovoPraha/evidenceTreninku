@@ -219,8 +219,13 @@ Kopie obsahuje i jednorázový odkaz, který její příjemce může použít. V
 <td>
 <?=mailAdminH($row['recipient_email'] ?? '—')?>
 <?php if ($row['bcc_email'] !== null):?>
+<?php
+    $bccStatus = $row['bcc_cancelled_at'] !== null ? 'vypnuto'
+        : ($row['bcc_accepted_at'] !== null ? 'přijato transportem'
+        : ($row['bcc_skipped_at'] !== null ? 'vynecháno' : 'čeká'));
+    ?>
 <br>
-<small>BCC: <?=mailAdminH($row['bcc_email'])?> · <?= $row['bcc_accepted_at'] !== null ? 'přijato transportem' : ($row['bcc_skipped_at'] !== null ? 'vypnuto před odesláním' : 'čeká') ?>
+<small>BCC: <?=mailAdminH($row['bcc_email'])?> · <?=mailAdminH($bccStatus)?>
 </small>
 <?php endif;?>
 </td>
@@ -247,7 +252,7 @@ Kopie obsahuje i jednorázový odkaz, který její příjemce může použít. V
 <input type="hidden" name="message_id" value="<?=(int)$row['source_id']?>">
 <input class="form-control form-control-sm" name="reason" maxlength="1000" required placeholder="Důvod opakování">
 <label class="small">
-<input type="checkbox" name="confirmed" value="1" required> Potvrzuji nové odeslání</label>
+<input type="checkbox" name="confirmed" value="1" required> Potvrzuji nové odeslání včetně případné nastavené BCC</label>
 <button class="btn btn-outline-primary btn-sm">Opakovat</button>
 </form>
 <?php endif;?>

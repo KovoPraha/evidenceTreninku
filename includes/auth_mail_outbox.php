@@ -261,7 +261,7 @@ function authMailComplete(PDO $pdo, array $row, string $status, string $error = 
     }
 }
 
-/** @param callable(string,string,string):bool $sender
+/** @param callable(string,string,string,array=,?string=):bool $sender
  * @return 'sent'|'failed'|'cancelled'|null
  */
 function authMailProcessOne(PDO $pdo, callable $sender, ?array $keyConfig = null, bool $trainerOnly = false, bool $publicOnly = false): ?string
