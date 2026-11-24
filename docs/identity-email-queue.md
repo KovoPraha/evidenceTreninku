@@ -9,7 +9,8 @@ Vývojová větev `codex/auth-mail-admin-plan-20261124`, samostatný worktree
 [PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524) byl sloučen
 jako `2cae19d6`; [produkční nasazení 45396452344](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45396452344)
 prošlo se zálohou, migrací a HTTP smoke. [Registr](WORK_PLAN_CURRENT.md#auth-mail-05--společná-administrace-e-mailů-24-11-2026),
-[výsledek](verification/auth-mail-unified-20261124/RESULTS.md).
+[výsledek](verification/auth-mail-unified-20261124/RESULTS.md),
+[návod pro testerku](TESTER_AUTH_MAIL_2026-11-24.md) připravený v [PR #526](https://github.com/KovoPraha/evidenceTreninku/pull/526).
 Skutečná administrátorská BCC stejné zprávy včetně autentizačních odkazů
 je po nasazení výchozně vypnutá; lze ji na omezenou dobu zapnout a připojit
 jen k dosud neodeslané konkrétní zprávě. [Rozhodnutí D2026-11-24-02](DECISION_LOG.md#d2026-11-24-02--administrátorská-skrytá-kopie-pro-testování).
