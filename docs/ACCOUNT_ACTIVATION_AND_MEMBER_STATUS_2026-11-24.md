@@ -1,6 +1,6 @@
 # KIS-ACCESS-STATUS-01 — účty importovaných osob a stav členství
 
-Datum: 24. 11. 2026. Stav: **KONCEPT / čtecí analýza**. Vlastník zadání: Marek / vedení klubu; návrh a analýza: vývoj KIS. Větev `codex/account-membership-concept-20261124`, samostatný worktree z `origin/main` `b8830ea7`. [Registr](WORK_PLAN_CURRENT.md#kis-access-status-01--aktivace-a-stavy-členství-24-11-2026). Pokyn povoluje analýzu a návrh; implementace, změna účtů/dat, e-maily, merge runtime a nasazení nejsou schválené ani provedené. Návaznost: [KIS-ACT-01](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md), [bezsezonní členský model](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [kroužky](club-programs.md), [členské tarify](CLUB_MEMBERSHIP_CATALOG_2026-11-05.md).
+Datum: 24. 11. 2026. Stav: **KONCEPT / čtecí analýza**. Vlastník zadání: Marek / vedení klubu; návrh a analýza: vývoj KIS. Větev `codex/account-membership-concept-20261124`, samostatný worktree z `origin/main` `b8830ea7`; dokumentace pushnuta v [draft PR #527](https://github.com/KovoPraha/evidenceTreninku/pull/527), nesloučena do `main`. [Registr](WORK_PLAN_CURRENT.md#kis-access-status-01--aktivace-a-stavy-členství-24-11-2026). Pokyn povoluje analýzu a návrh; implementace, změna účtů/dat, e-maily, merge runtime a nasazení nejsou schválené ani provedené. Návaznost: [KIS-ACT-01](IMPORTOVANE_UCTY_AKTIVACE_2026-11-12.md), [bezsezonní členský model](MEMBER_EVIDENCE_WORK_PLAN_2026-11-02.md), [kroužky](club-programs.md), [členské tarify](CLUB_MEMBERSHIP_CATALOG_2026-11-05.md).
 
 ## Zjištěný stav v kódu
 
