@@ -730,9 +730,13 @@ if ($is_admin):
     ?>" href="eshop_events_admin.php">
                                 <i class="bi bi-calendar-event me-2 text-primary"></i>Klubové akce a soupisky</a></li>
                             <li><a class="dropdown-item<?=
+     _dropActive('mail_admin.php')
+    ?>" href="mail_admin.php">
+                                <i class="bi bi-envelope-exclamation me-2 text-warning"></i>Veškerá pošta</a></li>
+                            <li><a class="dropdown-item<?=
      _dropActive('eshop_notifications_admin.php')
     ?>" href="eshop_notifications_admin.php">
-                                <i class="bi bi-envelope-exclamation me-2 text-warning"></i>Fronta e-mailů K3</a></li>
+                                <i class="bi bi-envelope me-2 text-warning"></i>Fronta e-mailů K3</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><h6 class="dropdown-header">Členové a KIS</h6></li>
                             <li><a class="dropdown-item<?=

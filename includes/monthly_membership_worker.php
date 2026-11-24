@@ -86,7 +86,12 @@ function monthlyMembershipSendOne(PDO $pdo, callable $sender, ?DateTimeImmutable
                 return false;
             }
             // All membership bank allocations hold the same lock until delivery completes.
-            $sent = (bool)$sender($message['email'], $message['subject'], $message['body']);
+            require_once __DIR__ . '/mail_admin_unified.php';
+            $bcc = mailAdminBccFor($pdo, 'monthly', $id);
+            $sent = (bool)$sender($message['email'], $message['subject'], $message['body'], $bcc);
+            if ($sent) {
+                mailAdminBccAccepted($pdo, 'monthly', $id, $bcc);
+            }
             $pdo->prepare("UPDATE monthly_membership_messages SET status=?,sent_at=?,claim_token=NULL,last_error=? WHERE id=?")
                 ->execute([$sent ? 'sent' : 'failed',$sent ? date('Y-m-d H:i:s') : null,$sent ? null : 'Transport odmítl zprávu; ověřte před opakováním.'
     ,$id]);

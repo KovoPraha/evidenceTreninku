@@ -206,11 +206,17 @@ function rosterMessageProcessOne(PDO$pdo, callable$sender): ?bool
         if (!rosterMessageRecipientAllowed($pdo, $row)) {
             notificationQueueHold($pdo, 'roster_message_recipients', $row, 'delivery_blocked: příjemce již není oprávněn.');
             return false;
-        }$sent = $sender(
+        }require_once __DIR__ . '/mail_admin_unified.php';
+        $bcc = mailAdminBccFor($pdo, 'roster', (int)$row['id']);
+        $sent = $sender(
             (string)$row['recipient_email'],
             (string)$row['subject_plain'],
-            (string)$row['body_plain']
+            (string)$row['body_plain'],
+            $bcc
         );
+        if ($sent) {
+            mailAdminBccAccepted($pdo, 'roster', (int)$row['id'], $bcc);
+        }
         rosterMessageComplete($pdo, $row, $sent, $sent ? '' : 'Transport odmítl zprávu.');
         return$sent;
     } catch (Throwable$exception) {
@@ -219,10 +225,11 @@ function rosterMessageProcessOne(PDO$pdo, callable$sender): ?bool
     }
 }
 
-function rosterMessageMailSender(string$recipient, string$subject, string$body): bool
+function rosterMessageMailSender(string$recipient, string$subject, string$body, ?string $bcc = null): bool
 {
     if (!filter_var($recipient, FILTER_VALIDATE_EMAIL) || preg_match('/[\r\n]/', $recipient
     .$subject) === 1) {
         throw new RosterMessageException('Zpráva obsahuje neplatnou hlavičku.');
-    }return mail($recipient, '=?UTF-8?B?'.base64_encode($subject).'?=', $body, "Content-Type: text/plain; charset=UTF-8\r\n");
+    }require_once __DIR__ . '/mail_admin_unified.php';
+    return mail($recipient, '=?UTF-8?B?'.base64_encode($subject).'?=', $body, "Content-Type: text/plain; charset=UTF-8\r\n" . mailAdminBccHeader($bcc));
 }

@@ -2,24 +2,27 @@
 
 ## AUTH-MAIL-05 — společný přehled pošty, kontrolní kopie a bezpečné opakování (24. 11. 2026)
 
-**Stav: KONCEPT K REVIZI, pouze návrh; implementace a nasazení NOT RUN.**
+**Stav: ROZPRACOVÁNO; lokální implementace probíhá, nasazení NOT RUN.**
 Vlastník zadání: Marek/klub; návrh: vývoj KIS. Větev
 `codex/auth-mail-admin-plan-20261124`, samostatný worktree
 `C:\Users\Marek\Documents\Codex\evidencePavel-auth-mail-admin-plan-20261124`
-z `origin/main` `7eeacfa7`. Oprávnění: čtecí diagnostika a dokumentační PR;
-bez zkušebního odeslání, změny účtů, zapnutí jiné fronty či nasazení.
+z `origin/main` `7eeacfa7`. Vlastník 24. 11. výslovně požádal
+„implementuj a nasaď“ celý AUTH-MAIL-05 včetně skutečné BCC; chráněné
+nasazení je povoleno po ověření a sloučení, bez hromadného uvolnění jiných
+front a bez změny cizích účtů.
 [Registr](WORK_PLAN_CURRENT.md#auth-mail-05--společná-administrace-e-mailů-24-11-2026).
-[Dokumentační PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524)
-je otevřený; push proveden, merge/implementace/deploy NOT RUN.
+[PR #524](https://github.com/KovoPraha/evidenceTreninku/pull/524)
+je otevřený; předchozí dokumentační push proveden, nové implementační změny
+zatím jen lokální, merge/deploy NOT RUN. [Průběžný výsledek](verification/auth-mail-unified-20261124/RESULTS.md).
 Vlastník následně upřesnil, že požaduje **skutečnou BCC stejné zprávy**
 včetně autentizačních e-mailů, přístupnou k nastavení pouze administrátorovi
 a vypnutelnou po testování. Tato volba nahrazuje původní návrh redigované
 kontrolní zprávy; [rozhodnutí D2026-11-24-02](DECISION_LOG.md#d2026-11-24-02--administrátorská-skrytá-kopie-pro-testování).
 Místní `php tools/check-current-docs.php` a `git diff --check` PASS.
-V CI [run 45380794696](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45380794696)
-prošel `docs`; job PHPUnit selhal před testy na `composer audit --locked`
-(39 advisories ve 2 balíčcích existujícího `composer.lock`, který PR nemění).
-Jde o samostatný blokátor CI; testy návrhu neproběhly, protože návrh nemění kód.
+Původní CI [run 45380794696](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45380794696)
+zastavil `composer audit --locked` před testy. Lokální WIP aktualizuje dvě
+dotčené knihovny i nezbytné závislosti; `composer audit --locked` nyní PASS.
+Nové CI implementace dosud NOT RUN.
 
 ### Nález a hranice důkazu
 

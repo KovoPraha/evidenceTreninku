@@ -6,10 +6,27 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-24-03 — opakování přes původní fronty a vazbu nových odkazů
+
+Vlastník 24. 11. požádal o implementaci a nasazení AUTH-MAIL-05. Zvoleno
+sjednocené čtecí zobrazení nad šesti existujícími frontami, zatímco jejich
+workery a obchodní ochrany zůstávají místem skutečného odeslání. Adminem
+potvrzené opakování neautentizační zprávy vrací původní řádek do původní fronty;
+nový ověřovací či resetovací odkaz vytváří atomicky nový token a nový řádek,
+vazba na původní ID brání dvojitému vydání z jednoho starého e-mailu. Přímé
+odeslání z administračního POST by obešlo souběh a audit. Přesné hledání
+nezařazených žádostí používá účelově oddělený klíčovaný otisk adresy z
+existujícího autentizačního tajemství; audit neukládá plaintext adresu. BCC
+je po migraci vypnutá, s omezenou dobou zapnutí. Přijetí PHP `mail()` není
+důkaz doručení do schránky. [Plán](identity-email-queue.md#auth-mail-05--společný-přehled-pošty-kontrolní-kopie-a-bezpečné-opakování-24-11-2026),
+[ověření](verification/auth-mail-unified-20261124/RESULTS.md).
+
 ## D2026-11-24-02 — administrátorská skrytá kopie pro testování
 
-**PŘIJATO jako produktová volba vlastníka pro návrh AUTH-MAIL-05; nejde o
-souhlas s implementací, aktivací nebo produkčním odesláním.** Vlastník
+**PŘIJATO jako produktová volba vlastníka pro návrh AUTH-MAIL-05; v okamžiku
+tohoto rozhodnutí nešlo o souhlas s implementací, aktivací nebo produkčním
+odesláním. Následně vlastník výslovně požádal „implementuj a nasaď“;
+viz [D2026-11-24-03](#d2026-11-24-03--opakování-přes-původní-fronty-a-vazbu-nových-odkazů).** Vlastník
 24. 11. upřesnil, že chce skutečnou BCC stejného e-mailu, také u registrace
 a obnovy hesla, kterou může nastavit pouze administrátor a po testování
 vypnout. Nahrazuje doporučení redigované kontrolní zprávy v

@@ -195,12 +195,16 @@ function clubEventNotificationProcessOne(PDO $pdo, callable $sender, bool $staff
         return false;
     }
     try {
+        require_once __DIR__ . '/mail_admin_unified.php';
+        $bcc = mailAdminBccFor($pdo, 'club', (int)$notification['id']);
         $arguments = [(string)$notification['recipient_email'], (string)$notification['subject_plain'], (string)$notification
     ['body_plain']];
-        if ($attachments !== []) {
-            $arguments[] = $attachments;
-        }
+        $arguments[] = $attachments;
+        $arguments[] = $bcc;
         $sent = $sender(...$arguments);
+        if ($sent) {
+            mailAdminBccAccepted($pdo, 'club', (int)$notification['id'], $bcc);
+        }
         clubEventNotificationComplete(
             $pdo,
             (int)$notification['id'],
@@ -219,7 +223,7 @@ function clubEventNotificationProcessOne(PDO $pdo, callable $sender, bool $staff
     }
 }
 
-function clubEventNotificationMailSender(string $recipient, string $subject, string $body, array $attachments = []): bool
+function clubEventNotificationMailSender(string $recipient, string $subject, string $body, array $attachments = [], ?string $bcc = null): bool
 {
     if (!filter_var($recipient, FILTER_VALIDATE_EMAIL)
         || preg_match('/[\r\n]/', $recipient . $subject) === 1
@@ -227,11 +231,13 @@ function clubEventNotificationMailSender(string $recipient, string $subject, str
         throw new ClubEventNotificationException('Oznámení obsahuje neplatnou e-mailovou hlavičku.');
     }
     $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
+    require_once __DIR__ . '/mail_admin_unified.php';
+    $bccHeader = mailAdminBccHeader($bcc);
     if ($attachments !== []) {
         $mime = clubEventNotificationMime($body, $attachments);
-        return mail($recipient, $encodedSubject, $mime['body'], $mime['headers']);
+        return mail($recipient, $encodedSubject, $mime['body'], $mime['headers'] . $bccHeader);
     }
-    return mail($recipient, $encodedSubject, $body, "Content-Type: text/plain; charset=UTF-8\r\n");
+    return mail($recipient, $encodedSubject, $body, "Content-Type: text/plain; charset=UTF-8\r\n" . $bccHeader);
 }
 
 /** Bounded, server-generated PDF attachments only; never a caller-supplied path or MIME header. */
