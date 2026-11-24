@@ -8,6 +8,7 @@ ID jsou stabilní podle cesty. Odkazy zde nepřepisují obsah neměnných důkaz
 
 | ID | Soubor | Role / dispozice | Registr |
 | --- | --- | --- | --- |
+| PL-kis-access-status-20261124 | [Aktivace účtů a stavy členství](ACCOUNT_ACTIVATION_AND_MEMBER_STATUS_2026-11-24.md) | plan / CONCEPT | KIS-ACCESS-STATUS-01 |
 | PL-auth-mail-tester-20261124 | [Návod pro testerku: správa e-mailů KIS](TESTER_AUTH_MAIL_2026-11-24.md) | reference / SUPPORT | AUTH-MAIL-05 |
 | PL-training-plan-admin-result | [verification/training-plan-admin-collision-20261121/RESULTS.md](verification/training-plan-admin-collision-20261121/RESULTS.md) | evidence / SUPPORT | TRAINING-PLAN-ACL-01 |
 | PL-WIP-AUDIT-20261121 | [Inventura historických checkoutů](verification/worktree-reconciliation-20261121/RESULTS.md) | verification / SUPPORT | WIP-AUDIT-01/SEC01 |

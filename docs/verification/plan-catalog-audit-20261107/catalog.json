@@ -4,6 +4,17 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-kis-access-status-20261124",
+      "path": "docs/ACCOUNT_ACTIVATION_AND_MEMBER_STATUS_2026-11-24.md",
+      "title": "KIS-ACCESS-STATUS-01 — účty importovaných osob a stav členství",
+      "primary": true,
+      "role": "plan",
+      "status": "CONCEPT",
+      "registry": "KIS-ACCESS-STATUS-01",
+      "disposition": "Čtecí analýza a varianty; produkční inventura a produktové rozhodnutí otevřené, bez implementace.",
+      "evidence": []
+    },
+    {
       "id": "PL-auth-mail-tester-20261124",
       "path": "docs/TESTER_AUTH_MAIL_2026-11-24.md",
       "title": "TESTER — nová správa e-mailů KIS (AUTH-MAIL-05)",

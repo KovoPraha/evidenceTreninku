@@ -6,6 +6,10 @@ Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 `DYYYY-MM-DD-NN`; ID neměň. Starší doménová rozhodnutí nepřečíslovávej.
 Při nahrazení doplň stav a odkaz na nástupce; zachovej původní důvody.
 
+## D2026-11-24-04 — otevřená volba ověření importovaných kontaktů a členství
+
+**KONCEPT, bez rozhodnutí a bez implementačního oprávnění.** Vlastník žádá obnovu pro importované rodiče a sportovce, automatický význam aktivního člena a viditelnou platební situaci. Varianta hromadného `email_overeno=1` by zaměnila importní údaj za důkaz držení schránky a sama nepovolí reset účtu s `aktivni=0`; mohla by rozšířit přístup přes již schválené vazby. Doporučená varianta využívá individuálně kontrolovanou první aktivaci KIS-ACT-01 a ověřuje vlastní kontakt sportovce zvlášť. Pro placený jednorázový kroužek je na výběr okamžitý náhled rozvrhu s čekající úhradou, nebo plná účast před úhradou s novými pravidly kapacity/storna; průběžné členství již zařazuje při sjednání. Členství, účast, účet a finance zůstávají oddělené. Rozhodující osoba: vedení klubu po čtecí inventuře; otevřené body a akceptace v [konceptu](ACCOUNT_ACTIVATION_AND_MEMBER_STATUS_2026-11-24.md).
+
 ## D2026-11-24-03 — opakování přes původní fronty a vazbu nových odkazů
 
 Vlastník 24. 11. požádal o implementaci a nasazení AUTH-MAIL-05. Zvoleno
