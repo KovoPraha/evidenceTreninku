@@ -57,6 +57,7 @@ return [
                 created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 cancelled_at DATETIME NULL,
                 accepted_at DATETIME NULL,
+                accepted_count INT UNSIGNED NOT NULL DEFAULT 0,
                 skipped_at DATETIME NULL,
                 PRIMARY KEY (source_type,source_id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
@@ -71,6 +72,7 @@ return [
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 cancelled_at TEXT NULL,
                 accepted_at TEXT NULL,
+                accepted_count INTEGER NOT NULL DEFAULT 0,
                 skipped_at TEXT NULL,
                 PRIMARY KEY (source_type,source_id)
             )

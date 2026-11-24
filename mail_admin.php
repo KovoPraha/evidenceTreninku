@@ -220,8 +220,10 @@ Kopie obsahuje i jednorázový odkaz, který její příjemce může použít. V
 <?=mailAdminH($row['recipient_email'] ?? '—')?>
 <?php if ($row['bcc_email'] !== null):?>
 <?php
-    $bccStatus = $row['bcc_cancelled_at'] !== null ? 'vypnuto'
-        : ($row['bcc_accepted_at'] !== null ? 'přijato transportem'
+    $bccStatus = $row['bcc_accepted_at'] !== null
+        ? 'přijato transportem ' . (int)$row['bcc_accepted_count'] . '×; naposledy ' . $row['bcc_accepted_at']
+            . ($row['bcc_cancelled_at'] !== null ? '; nyní vypnuto' : '')
+        : ($row['bcc_cancelled_at'] !== null ? 'vypnuto'
         : ($row['bcc_skipped_at'] !== null ? 'vynecháno' : 'čeká'));
     ?>
 <br>

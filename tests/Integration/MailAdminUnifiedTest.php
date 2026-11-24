@@ -55,6 +55,9 @@ final class MailAdminUnifiedTest extends TestCase
         \mailAdminBccAttach($pdo, 'club', 2, 'audit@example.test', 7, 'Kontrolní schránka');
         self::assertSame('audit@example.test', \mailAdminBccFor($pdo, 'club', 2));
         self::assertSame("Bcc: audit@example.test\r\n", \mailAdminBccHeader('audit@example.test'));
+        \mailAdminBccAccepted($pdo, 'club', 2, 'audit@example.test');
+        \mailAdminBccAccepted($pdo, 'club', 2, 'audit@example.test');
+        self::assertSame(2, (int)$pdo->query('SELECT accepted_count FROM mail_admin_bcc WHERE source_id=2')->fetchColumn());
         $pdo->exec("UPDATE club_event_notifications SET status='sent' WHERE id=2");
         \mailAdminResend($pdo, 'club', 2, 7, 'Příjemce požádal znovu', true);
         self::assertSame('pending', $pdo->query('SELECT status FROM club_event_notifications WHERE id=2')->fetchColumn());

@@ -35,7 +35,7 @@ zatím nepushnuté; merge, migrace, produkční deploy a lidská přejímka NOT 
 | Kontrola | Výsledek |
 | --- | --- |
 | `composer audit --locked` po aktualizaci knihoven | PASS, bez oznámených zranitelností |
-| `MailAdminUnifiedTest` | PASS, 3 testy / 26 tvrzení: seznam, filtry, oprávnění, BCC, vypnutí a znovuzapnutí bez oživení staré kopie, resend, jednorázové nové ověření i reset |
+| `MailAdminUnifiedTest` | PASS, 3 testy / 27 tvrzení: seznam, filtry, oprávnění, BCC a počet transportních přijetí, vypnutí a znovuzapnutí bez oživení staré kopie, resend, jednorázové nové ověření i reset |
 | `AuthSecurityMigrationTest` po doplnění nové migrace | PASS, 1 test / 93 tvrzení, opakovaný běh migračního katalogu |
 | `PasswordResetRequestAuditTest` | PASS, 7 testů / 68 tvrzení |
 | `PasswordResetRequestPageTest` | PASS, 1 test / 8 tvrzení |

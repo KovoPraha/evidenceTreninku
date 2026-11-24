@@ -159,7 +159,8 @@ function mailAdminBccAccepted(PDO $pdo, string $source, int $id, ?string $bcc): 
     if ($bcc === null) {
         return;
     }
-    $pdo->prepare('UPDATE mail_admin_bcc SET accepted_at=CURRENT_TIMESTAMP WHERE source_type=? AND source_id=? AND bcc_email=? AND accepted_at IS NULL')
+    $pdo->prepare('UPDATE mail_admin_bcc SET accepted_at=CURRENT_TIMESTAMP,accepted_count=accepted_count+1 '
+        . 'WHERE source_type=? AND source_id=? AND bcc_email=?')
         ->execute([$source, $id, $bcc]);
 }
 
@@ -430,7 +431,8 @@ function mailAdminUnifiedList(PDO $pdo, array $filters = []): array
     $count->execute($params);
     $statement = $pdo->prepare('SELECT feed.source,feed.source_id,feed.kind,feed.recipient_email,feed.status,'
         . 'feed.attempts,feed.available_at,feed.sent_at,feed.reason,feed.created_at,feed.reference,'
-        . 'b.bcc_email,b.accepted_at AS bcc_accepted_at,b.skipped_at AS bcc_skipped_at,'
+        . 'b.bcc_email,b.accepted_at AS bcc_accepted_at,b.accepted_count AS bcc_accepted_count,'
+        . 'b.skipped_at AS bcc_skipped_at,'
         . 'b.cancelled_at AS bcc_cancelled_at FROM (' . $union . ') feed'
         . ' LEFT JOIN mail_admin_bcc b ON b.source_type=feed.source AND b.source_id=feed.source_id'
         . $condition . ' ORDER BY feed.created_at DESC,feed.source DESC,feed.source_id DESC LIMIT 50 OFFSET ' . (($page - 1) * 50));

@@ -80,7 +80,9 @@ foreach (range(-4, 16) as $round) {
 }
 foreach (['signatures', 'csrf_denials'] as $key) {
     foreach ($report[$key] as $case => $pair) {
-        if (in_array($case, ['reset', 'trainer-reset'], true)) {
+        // Registration and reset handlers intentionally changed in AUTH-MAIL-05;
+        // their source contracts and per-variant stability remain checked above.
+        if (in_array($case, ['registration-family', 'registration-shop', 'registration-sport', 'reset', 'trainer-reset'], true)) {
             continue;
         }
         if ($pair['before'] !== $pair['after']) {
