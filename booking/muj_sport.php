@@ -102,8 +102,10 @@ try {
 }
 $person = $overview['person'];
 $financeBalance = null;
+$paymentStatus = null;
 try {
     $financeBalance = clubFinanceBalanceForAthlete($pdo, (int)$person['sportovec_id']);
+    $paymentStatus = clubFinancePaymentStatus($pdo ?? throw new LogicException('Databáze není dostupná.'), (int)$person['sportovec_id'], $financeBalance);
 } catch (Throwable $exception) {
     error_log('booking/muj_sport.php finance balance: '.$exception->getMessage());
 }
@@ -210,7 +212,8 @@ if ($financeBalance !== null):
 
         'flex-wrap justify-content-between gap-3"><div><strong>Saldo klubových služeb</strong><div class="small ' .
 
-        'text-muted">Neuhrazené předpisy a platné objednávky e-shopu přiřazené tomuto profilu.</div></div><div ' .
+        'text-muted">Neuhrazené předpisy a platné objednávky e-shopu přiřazené tomuto profilu.</div><span class="badge ' .
+        $paymentStatus['class'] . '">' . childPageH($paymentStatus['label']) . '</span></div><div ' .
 
         'class="text-end"><strong class="fs-4 ');
     ?><?=

@@ -189,6 +189,9 @@ final class AuthSecurityMigrationTest extends TestCase
                 '20261112150000_imported_account_activation',
                 '20261122120000_password_reset_request_audit',
                 '20261124120000_mail_admin_unified',
+                '20261124160000_existing_email_trust',
+                '20261124161000_monthly_overdue_alerts',
+                '20261124162000_athlete_self_access',
 
             ],
             array_keys($catalog)
@@ -285,10 +288,8 @@ final class AuthSecurityMigrationTest extends TestCase
         self::assertTrue($this->indexExists($pdo, 'idx_auth_login_limits_blocked'));
         self::assertTrue($this->indexExists($pdo, 'uq_verejni_uzivatele_trener'));
         self::assertTrue($this->indexExists($pdo, 'idx_planovane_treninky_verejne'));
-        self::assertSame(
-            one_time_token_hash(ONE_TIME_TOKEN_EMAIL_VERIFICATION, str_repeat('a', 64)),
-            $pdo->query('SELECT verifikacni_token FROM verejni_uzivatele WHERE id = 1')->fetchColumn()
-        );
+        self::assertNull($pdo->query('SELECT verifikacni_token FROM verejni_uzivatele WHERE id = 1')->fetchColumn());
+        self::assertSame(1, (int)$pdo->query('SELECT email_overeno FROM verejni_uzivatele WHERE id = 1')->fetchColumn());
         self::assertSame(
             one_time_token_hash(ONE_TIME_TOKEN_BOOKING_APPROVAL, str_repeat('b', 48)),
             $pdo->query('SELECT potvrzovaci_token FROM verejne_rezervace WHERE id = 1')->fetchColumn()
@@ -322,7 +323,7 @@ final class AuthSecurityMigrationTest extends TestCase
     .
     'INTEGER NOT NULL DEFAULT 1)'));
         $pdo->exec("INSERT INTO treneri (id,jmeno,email,heslo,role,aktivni) VALUES (1,'Admin','admin@example.test','x','admin',1)");
-        $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY)');
+        $pdo->exec('CREATE TABLE sportovci (id INTEGER PRIMARY KEY,email TEXT)');
         $pdo->exec('CREATE TABLE kis_import_matches (id INTEGER PRIMARY KEY,run_id INTEGER NOT NULL,row_id INTEGER NOT NULL)');
         $pdo->exec('CREATE TABLE sportovist (id INTEGER PRIMARY KEY)');
         $pdo->exec('CREATE TABLE individualni_lekce (id INTEGER PRIMARY KEY)');
@@ -333,12 +334,13 @@ final class AuthSecurityMigrationTest extends TestCase
         $pdo->exec("CREATE TABLE planovane_treninky (id INTEGER PRIMARY KEY, datum TEXT NOT NULL, stav TEXT NOT NULL DEFAULT 'planovany')");
         $pdo->exec(
             'CREATE TABLE verejni_uzivatele ('
-            . 'id INTEGER PRIMARY KEY, aktivni INTEGER NOT NULL DEFAULT 1, '
-            . 'verifikacni_token TEXT NULL, registrovan TEXT NOT NULL)'
+            . 'id INTEGER PRIMARY KEY, email TEXT NOT NULL, email_overeno INTEGER NOT NULL DEFAULT 0, '
+            . 'aktivni INTEGER NOT NULL DEFAULT 1, verifikacni_token TEXT NULL, '
+            . 'verifikacni_token_expires_at TEXT NULL, registrovan TEXT NOT NULL)'
         );
         $pdo->exec(
-            "INSERT INTO verejni_uzivatele (id, aktivni, verifikacni_token, registrovan) "
-            . "VALUES (1, 1, '" . str_repeat('a', 64) . "', '2026-08-02 08:00:00')"
+            "INSERT INTO verejni_uzivatele (id, email, aktivni, verifikacni_token, registrovan) "
+            . "VALUES (1, 'parent@example.test', 1, '" . str_repeat('a', 64) . "', '2026-08-02 08:00:00')"
         );
         $pdo->exec(
             'CREATE TABLE verejne_rezervace ('

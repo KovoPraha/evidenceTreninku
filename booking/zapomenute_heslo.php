@@ -79,7 +79,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 Zadejte e-mail uložený u vašeho trenérského účtu.
 Pokud k němu nemáte přístup nebo zpráva nedorazí ani do spamu, obraťte se na správce klubu.
 <?php else: ?>
-Zadejte e-mail rodičovského účtu nebo přihlašovací jméno sportovce.
+Zadejte e-mail rodičovského účtu, e-mail sportovce nebo přihlašovací jméno sportovce. U sdíleného e-mailu použijte přihlašovací jméno konkrétního sportovce; sdělí vám je klub.
 <?php endif; ?>
 </p>
 <form method="post">

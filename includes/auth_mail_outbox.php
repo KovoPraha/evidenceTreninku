@@ -183,7 +183,13 @@ function authMailTokenIsCurrent(PDO $pdo, array $row, ?int $now = null): bool
         if (!passwordResetTargetStillAuthorized($pdo, $reset)) {
             return false;
         }
-        $email = $pdo->prepare('SELECT 1 FROM verejni_uzivatele WHERE id=? AND email=? AND aktivni=1 AND email_overeno=1');
+        if ($reset['target_type'] === 'child' && $reset['delivery_account_id'] === null) {
+            return hash_equals(
+                mb_strtolower((string)$reset['delivery_email'], 'UTF-8'),
+                mb_strtolower((string)$row['recipient_email'], 'UTF-8')
+            );
+        }
+        $email = $pdo->prepare('SELECT 1 FROM verejni_uzivatele WHERE id=? AND email=? AND email_overeno=1');
     }
     $email->execute([(int)$reset['delivery_account_id'],(string)$row['recipient_email']]);
     return (bool)$email->fetchColumn();

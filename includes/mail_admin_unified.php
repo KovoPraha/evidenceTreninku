@@ -247,10 +247,11 @@ function mailAdminAuthResend(PDO $pdo, int $id, int $actorId, string $reason, bo
             throw new MailAdminException('K této zprávě už byl vydán nový odkaz.');
         }
         if ($old['target_type'] === 'public') {
-            $account = $pdo->prepare('SELECT id,jmeno,email,aktivni,email_overeno FROM verejni_uzivatele WHERE id=?' . $lock);
+            $account = $pdo->prepare('SELECT * FROM verejni_uzivatele WHERE id=?' . $lock);
             $account->execute([(int)$old['target_id']]);
             $target = $account->fetch(PDO::FETCH_ASSOC);
-            if (!$target || (int)$target['aktivni'] !== 1 || strcasecmp((string)$target['email'], (string)$old['recipient_email']) !== 0
+            if (!$target || strcasecmp((string)$target['email'], (string)$old['recipient_email']) !== 0
+                || ((int)$target['aktivni'] !== 1 && !($old['kind'] === 'reset' && existingEmailTrustCanActivate($pdo, $target)))
                 || (int)$target['email_overeno'] !== ($old['kind'] === 'verify' ? 0 : 1)) {
                 throw new MailAdminException('Účet nebo jeho adresa se změnily; nový odkaz nelze vydat.');
             }
@@ -279,8 +280,8 @@ function mailAdminAuthResend(PDO $pdo, int $id, int $actorId, string $reason, bo
             );
         } elseif ($old['target_type'] === 'public' && $old['kind'] === 'reset') {
             $issued = one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET, PASSWORD_RESET_EMAIL_TTL_SECONDS);
-            $pdo->prepare('INSERT INTO password_reset_tokens(target_type,target_id,delivery_account_id,token_hash,expires_at) VALUES(?,?,?,?,?)')
-                ->execute(['public', $targetId, $targetId, $issued['hash'], $issued['expires_at']]);
+            passwordResetInsertToken($pdo, ['type' => 'public', 'target_id' => $targetId,
+                'delivery_account_id' => $targetId, 'email' => $email], $issued);
             $link = ($resetUrl ?? appUrl('booking/nove_heslo.php')) . '#token=' . rawurlencode($issued['token']);
             $newId = authMailEnqueue(
                 $pdo,
@@ -321,7 +322,7 @@ function mailAdminAuthResend(PDO $pdo, int $id, int $actorId, string $reason, bo
                 $keyConfig
             );
         } elseif ($old['target_type'] === 'child' && $old['kind'] === 'reset') {
-            $child = $pdo->prepare('SELECT login_key FROM child_access_accounts WHERE id=? AND active=1' . $lock);
+            $child = $pdo->prepare('SELECT login_key FROM child_access_accounts WHERE id=?' . $lock);
             $child->execute([(int)$old['target_id']]);
             $login = $child->fetchColumn();
             $contact = is_string($login) ? passwordResetResolveTarget($pdo, $login) : null;
@@ -330,8 +331,7 @@ function mailAdminAuthResend(PDO $pdo, int $id, int $actorId, string $reason, bo
                 throw new MailAdminException('Oprávněný kontakt dítěte se změnil; nový odkaz nelze vydat.');
             }
             $issued = one_time_token_issue(ONE_TIME_TOKEN_PASSWORD_RESET, PASSWORD_RESET_EMAIL_TTL_SECONDS);
-            $pdo->prepare('INSERT INTO password_reset_tokens(target_type,target_id,delivery_account_id,token_hash,expires_at) VALUES(?,?,?,?,?)')
-                ->execute(['child',$contact['target_id'],$contact['delivery_account_id'],$issued['hash'],$issued['expires_at']]);
+            passwordResetInsertToken($pdo, $contact, $issued);
             $link = ($resetUrl ?? appUrl('booking/nove_heslo.php')) . '#token=' . rawurlencode($issued['token']);
             $newId = authMailEnqueue(
                 $pdo,
@@ -341,7 +341,9 @@ function mailAdminAuthResend(PDO $pdo, int $id, int $actorId, string $reason, bo
                 $issued['hash'],
                 (string)$contact['email'],
                 'Obnova hesla — Kovopraha',
-                "Pro nastavení nového hesla otevřete odkaz:\n{$link}\n\nOdkaz je platný 3 dny.",
+                "Pro nastavení nového hesla otevřete odkaz:\n{$link}\n"
+                    . (isset($contact['login_name']) ? "\nPřihlašovací jméno sportovce: {$contact['login_name']}\n" : '')
+                    . "\nOdkaz je platný 3 dny.",
                 $keyConfig
             );
         } else {

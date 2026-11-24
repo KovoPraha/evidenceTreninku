@@ -1321,7 +1321,7 @@ function clubProgramPendingOrderItems(PDO $pdo, int $accountId): array
          $termsSelect .
          'o.account_id,o.public_code,o.payment_status,o.status AS order_status,vu.aktivni AS account_active,vu.email_overeno,'
     .
-         'cp.name AS program_name,co.name AS offer_name,co.status AS offer_status,co.starts_on,co.ends_on,' .
+         'cp.id AS program_id,cp.name AS program_name,co.name AS offer_name,co.status AS offer_status,co.starts_on,co.ends_on,' .
 
 
          'e.id AS enrollment_id,e.status AS enrollment_status,rm.status AS roster_status,rm.source AS roster_source,' .
@@ -1356,6 +1356,23 @@ function clubProgramPendingOrderItems(PDO $pdo, int $accountId): array
     }
     unset($row);
     return $rows;
+}
+
+/** Read-only schedule preview for an already authorized order item; no roster or attendance grant. */
+function clubProgramOrderedSchedule(PDO $pdo, array $item): array
+{
+    if ((int)($item['program_id'] ?? 0) < 1
+        || !clubProgramRuntimeTableExists($pdo, 'club_program_schedule_slots')
+        || !in_array((string)($item['order_status'] ?? ''), ['placed','processing','ready','completed'], true)
+        || in_array((string)($item['payment_status'] ?? ''), ['cancelled','refunded','refund_required'], true)
+        || (int)($item['account_active'] ?? 0) !== 1 || (int)($item['email_overeno'] ?? 0) !== 1) {
+        return [];
+    }
+    $q = $pdo->prepare('SELECT weekday,starts_at,ends_at,location_name FROM club_program_schedule_slots '
+        . 'WHERE program_id=? AND (valid_from IS NULL OR valid_from<=?) AND (valid_to IS NULL OR valid_to>=?) '
+        . 'ORDER BY sort_order,weekday,starts_at,id');
+    $q->execute([(int)$item['program_id'], (string)$item['ends_on'], (string)$item['starts_on']]);
+    return $q->fetchAll(PDO::FETCH_ASSOC);
 }
 /** @return list<array<string,mixed>> */
 function clubProgramEnrollmentsForAccount(PDO $pdo, int $accountId): array

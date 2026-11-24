@@ -78,7 +78,7 @@ try {
         role VARCHAR(30),
         aktivni TINYINT NOT NULL DEFAULT 1) ENGINE=InnoDB
         SQL);
-    $pdo->exec('CREATE TABLE sportovci(id INT PRIMARY KEY) ENGINE=InnoDB');
+    $pdo->exec('CREATE TABLE sportovci(id INT PRIMARY KEY,email VARCHAR(255) NULL) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE sportovist(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE individualni_lekce(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec(('CREATE TABLE planovane_treninky(id INT PRIMARY KEY,datum DATE NOT NULL,stav VARCHAR(30) NOT NULL DEFAULT '
@@ -87,7 +87,9 @@ try {
     $pdo->exec('CREATE TABLE treninky(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE mereni_zaznamy(id INT PRIMARY KEY) ENGINE=InnoDB');
     $pdo->exec('CREATE TABLE zavod_sportovec(zavod_id INT NOT NULL,sportovec_id INT NULL) ENGINE=InnoDB');
-    $pdo->exec(('CREATE TABLE verejni_uzivatele(id INT PRIMARY KEY,aktivni TINYINT NOT NULL DEFAULT 1,verifikacni_token '
+    $pdo->exec(('CREATE TABLE verejni_uzivatele(id INT PRIMARY KEY,email VARCHAR(255) UNIQUE,email_overeno TINYINT NOT NULL DEFAULT 0,'
+    .
+    'aktivni TINYINT NOT NULL DEFAULT 1,verifikacni_token '
     .
     'VARCHAR(255) NULL,registrovan DATETIME NOT NULL) ENGINE=InnoDB'));
     $pdo->exec(<<<'SQL'
@@ -209,7 +211,7 @@ try {
 
     $manifestPath = $backupRoot . DIRECTORY_SEPARATOR . basename((string)$payload['manifest']);
     $manifest = json_decode((string)file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
-    if (($manifest['ownership_contract'] ?? '') !== '2026-11-06.1') {
+    if (($manifest['ownership_contract'] ?? '') !== '2026-11-24.1') {
         throw new RuntimeException('Database backup smoke used an unexpected ownership contract.');
     }
     $expectedColumnContract = [
@@ -261,6 +263,8 @@ try {
         'shop_variants' => ['source_candidate_id', 'origin', 'created_by_trainer_id'],
         'shop_coupons' => ['archived_at'],
         'staff_user_positions' => ['position_code', 'is_default', 'assigned_by_trainer_id'],
+        'child_access_accounts' => ['created_by_trainer_id'],
+        'password_reset_tokens' => ['delivery_account_id'],
         'club_events' => ['activity_kind', 'planning_status', 'visibility', 'participant_fee_minor', 'legacy_race_id']
     ,
 

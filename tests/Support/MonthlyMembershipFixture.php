@@ -21,11 +21,22 @@ final class MonthlyMembershipFixture
         }
         $base = new \Tests\Integration\MemberFeePlanTest('testPreviewSkipsMissingPayerAndGenerationIsIdempotent');
         $p = (new ReflectionMethod($base, 'database'))->invoke($base);
+        $p->exec("ALTER TABLE sportovci ADD COLUMN stav_clenstvi TEXT NOT NULL DEFAULT 'cekajici';
+            ALTER TABLE sportovci ADD COLUMN stav_manualni INTEGER NOT NULL DEFAULT 0;
+            ALTER TABLE sportovci ADD COLUMN stav_duvod TEXT;
+            ALTER TABLE sportovci ADD COLUMN stav_aktualizovan TEXT;
+            CREATE TABLE sportovec_history(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,sportovec_id INTEGER,created_by INTEGER,source TEXT,
+                event_type TEXT,title TEXT,detail TEXT,old_json TEXT,new_json TEXT,ref_table TEXT,
+                ref_id INTEGER,created_at TEXT DEFAULT CURRENT_TIMESTAMP)");
         foreach (['20260922120000_member_fee_plans','20260922190000_member_fee_standing_orders','20261021120000_member_payer_variable_symbols'
     ,'20261022221000_accounting_documents','20261105150000_monthly_memberships','20261105200000_membership_catalog'] as $name) {
             $m = require dirname(__DIR__, 2).'/migrations/'.$name.'.php';
             $m['up']($p);
         }
+        (require dirname(__DIR__, 2).'/migrations/20261124161000_monthly_overdue_alerts.php')['up']($p);
+        $p->exec('CREATE TABLE staff_notification_events(id INTEGER PRIMARY KEY AUTOINCREMENT,event_type TEXT,source_id INTEGER,resolved_at TEXT,UNIQUE(event_type,source_id));
+            CREATE TABLE staff_notifications(id INTEGER PRIMARY KEY AUTOINCREMENT,event_id INTEGER,trainer_id INTEGER,read_at TEXT)');
         $p->exec(('ALTER TABLE treneri ADD COLUMN aktivni INTEGER DEFAULT 1;
             ALTER TABLE payments ADD COLUMN payment_source TEXT;
 ' .

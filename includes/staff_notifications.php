@@ -13,6 +13,11 @@ function staffNotificationTypes(): array
         'title' => 'Žádost o propojení nebo registraci sportovce',
         'text' => 'Zkontrolujte žádost a ověřte vztah účtu ke sportovci.',
         'route' => 'eshop_identity_admin.php',
+    ], 'monthly_overdue' => [
+        'position' => 'finance_manager', 'table' => 'monthly_membership_overdue_alerts',
+        'title' => 'Členský příspěvek po toleranci splatnosti',
+        'text' => 'Zkontrolujte neuhrazený předpis a případně kontaktujte plátce.',
+        'route' => 'club_finance_receipt_admin.php',
     ]];
 }
 

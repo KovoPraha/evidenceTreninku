@@ -9,10 +9,10 @@
       "title": "KIS-ACCESS-STATUS-01 — účty importovaných osob a stav členství",
       "primary": true,
       "role": "plan",
-      "status": "CONCEPT",
+      "status": "PARTIAL",
       "registry": "KIS-ACCESS-STATUS-01",
-      "disposition": "Čtecí analýza a varianty; produkční inventura a produktové rozhodnutí otevřené, bez implementace.",
-      "evidence": []
+      "disposition": "Místní implementace a cílené testy; produkční inventura, merge, nasazení a UAT otevřené.",
+      "evidence": ["docs/verification/account-access-status-20261124/RESULTS.md"]
     },
     {
       "id": "PL-auth-mail-tester-20261124",
