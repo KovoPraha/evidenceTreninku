@@ -6,7 +6,7 @@ BAR-PHOTO-SCREEN-01 NASAZENO: [#521](https://github.com/KovoPraha/evidenceTrenin
 
 BAR-CHECKOUT-TABLET-01 NASAZENO: [PR #519](https://github.com/KovoPraha/evidenceTreninku/pull/519) → `e647b7bf`, [deploy 45156963794](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45156963794) SUCCESS. [Plán](BAR_INTEGRATION_PLAN_2026-11-05.md#bar-checkout-tablet-01--kompaktní-pokladna-na-tabletu-23-11-2026), [registr](WORK_PLAN_CURRENT.md#bar-checkout-tablet-01--kompaktní-pokladna-baru-23-11-2026), [výsledek](verification/bar-checkout-tablet-20261123/RESULTS.md). Další krok: přihlášené UAT obsluhy na skutečném tabletu; produkční prodej kvůli této změně nebyl proveden.
 
-Aktualizováno 22. 11. 2026. Audit vyšel z `origin/main` `a4df047d` a [#514](https://github.com/KovoPraha/evidenceTreninku/pull/514) byl sloučen jako `cdf57d76`; při dalším převzetí ověř nový HEAD. Aktuální přehled vydání je [CURRENT_STATE](CURRENT_STATE.md). Starší pracovní checkouty nejsou výchozí verze. [Audit větví a dokumentace](verification/branch-documentation-audit-20261121/RESULTS.md) uvádí ověřený rozsah a meze inventury.
+Aktualizováno 24. 11. 2026. Audit z 22. 11. vyšel z `origin/main` `a4df047d` a [#514](https://github.com/KovoPraha/evidenceTreninku/pull/514) byl sloučen jako `cdf57d76`; při dalším převzetí ověř nový HEAD. Aktuální přehled vydání je [CURRENT_STATE](CURRENT_STATE.md). Starší pracovní checkouty nejsou výchozí verze. [Audit větví a dokumentace](verification/branch-documentation-audit-20261121/RESULTS.md) uvádí ověřený rozsah a meze inventury.
 
 ## Co převzít jako další
 
