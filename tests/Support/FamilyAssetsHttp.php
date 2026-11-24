@@ -200,8 +200,10 @@ foreach (range(-4, 16) as $round) {
         }
     }
 }
-if ($report['denials']['before'] !== $report['denials']['after']) {
-    throw new RuntimeException('CSRF whole HTML differs.');
+foreach (['people', 'reservations'] as $route) {
+    if ($report['denials']['before'][$route] !== $report['denials']['after'][$route]) {
+        throw new RuntimeException('CSRF whole HTML differs for ' . $route . '.');
+    }
 }
 $relation = $admin->query("SELECT id,status,updated_at FROM account_person_roles WHERE account_id=10 AND sportovec_id=1")->fetch(PDO::FETCH_ASSOC);
 try {
