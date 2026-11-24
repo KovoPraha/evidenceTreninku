@@ -12,7 +12,7 @@ KÓD NASAZEN, TV UAT OTEVŘENÉ: [#521](https://github.com/KovoPraha/evidenceTre
 
 KÓD NASAZEN, přihlášené UAT otevřené: [PR #519](https://github.com/KovoPraha/evidenceTreninku/pull/519) sloučený jako `e647b7bf`, [deploy 45156963794](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45156963794) SUCCESS. Vlastník požaduje vidět na tabletu více produktů pokladny. Rozsah: rozvržení `/bar/checkout.php`, bez změn prodejní logiky a dat. Vlastník vývoj BAR; implementace `codex/bar-checkout-tablet-20261123`, dokumentace vydání `codex/bar-checkout-tablet-release-20261123` v odděleném worktree. [Plán a akceptace](BAR_INTEGRATION_PLAN_2026-11-05.md#bar-checkout-tablet-01--kompaktní-pokladna-na-tabletu-23-11-2026), [výsledek](verification/bar-checkout-tablet-20261123/RESULTS.md). Syntetický prohlížeč: 768 × 1024 z 7 na 17 viditelných řádků, 1024 × 768 z 5 na 12; 44px pole počtu. Další krok: přihlášená přejímka obsluhou na skutečném tabletu.
 
-Aktualizováno 22. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
+Aktualizováno 24. 11. 2026, Europe/Prague. Produkční stav určují výsledkové protokoly a [CURRENT_STATE](CURRENT_STATE.md). [Předchozí revize](verification/documentation-sync-20261112/RESULTS.md).
 Tento soubor průběžně eviduje práci a další kroky; živé SHA/flags a release důkazy
 jsou pouze v [CURRENT_STATE](CURRENT_STATE.md). Převzetí řídí
 [HANDOFF_CURRENT](HANDOFF_CURRENT.md), datované podklady
