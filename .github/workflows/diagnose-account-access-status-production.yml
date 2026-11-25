@@ -7,6 +7,14 @@ on:
         description: 'Pro čtecí inventuru napište OVERIT-PRISTUPY'
         required: true
         type: string
+      phase:
+        description: 'Čtení před nebo po převodu'
+        required: true
+        type: choice
+        options:
+          - before
+          - after
+        default: before
 
 permissions:
   contents: read
@@ -33,6 +41,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$POTVRZENI" = 'OVERIT-PRISTUPY'
+          test '${{ inputs.phase }}' = before || test '${{ inputs.phase }}' = after
           test "$APP_HOST" = 'kis.kovopraha.cz'
           [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]] && [[ "$REMOTE_DIR" != /* ]]
 
@@ -75,12 +84,13 @@ jobs:
           putenv('APP_HOST=$APP_HOST');
           putenv('APP_ROOT=$REMOTE_DIR');
           putenv('ACCESS_STATUS_SOURCE_SHA=${{ github.sha }}');
+          putenv('ACCESS_STATUS_PHASE=${{ inputs.phase }}');
           require __DIR__ . '/diagnose-account-access-status.php';
           diagnoseAccountAccessStatusMain();
           EOF
           production_retry "${SCP[@]}" /tmp/run-account-access-inventory.php "$SSH_USER@$SSH_HOST:$DEPLOY_BASE/run-account-access-inventory.php"
           "${SSH[@]}" "php '$DEPLOY_BASE/run-account-access-inventory.php'" | tee /tmp/kis-account-access-inventory.json
-          jq -e '.contract == "account-access-predeploy-v1" and .ok == true and .read_only == true and .personal_data_exported == false and .athletes.total >= .athletes.missing_access and .public_accounts.cohort >= .public_accounts.cohort_valid' /tmp/kis-account-access-inventory.json >/dev/null
+          jq -e --arg phase '${{ inputs.phase }}' '.contract == "account-access-inventory-v1" and .phase == $phase and .ok == true and .read_only == true and .personal_data_exported == false and .athletes.total >= .athletes.missing_access and .public_accounts.cohort >= .public_accounts.cohort_valid' /tmp/kis-account-access-inventory.json >/dev/null
           EXPECTED_PROBE_SHA=$(sha256sum bin/diagnose-account-access-status.php | cut -d ' ' -f 1)
           jq -e --arg sha "$EXPECTED_PROBE_SHA" '.probe_sha256 == $sha' /tmp/kis-account-access-inventory.json >/dev/null
 
@@ -88,7 +98,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: account-access-predeploy
+          name: account-access-${{ inputs.phase }}
           path: /tmp/kis-account-access-inventory.json
           if-no-files-found: warn
           retention-days: 30

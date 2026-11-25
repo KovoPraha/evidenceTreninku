@@ -101,6 +101,21 @@ function accountAccessStatusInventory(PDO $pdo): array
         $stmt->execute([$table]);
         $schema[$table] = (int)$stmt->fetchColumn() === 1;
     }
+    $converted = null;
+    if (!in_array(false, $schema, true)) {
+        $converted = [
+            'public_total' => $count('SELECT COUNT(*) FROM existing_email_trust'),
+            'public_trusted' => $count("SELECT COUNT(*) FROM existing_email_trust WHERE state='trusted'"),
+            'public_undeliverable' => $count("SELECT COUNT(*) FROM existing_email_trust WHERE state='undeliverable'"),
+            'athlete_total' => $count('SELECT COUNT(*) FROM athlete_email_trust'),
+            'athlete_trusted' => $count("SELECT COUNT(*) FROM athlete_email_trust WHERE state='trusted'"),
+            'athlete_undeliverable' => $count("SELECT COUNT(*) FROM athlete_email_trust WHERE state='undeliverable'"),
+            'athlete_disabled' => $count("SELECT COUNT(*) FROM athlete_email_trust WHERE state='disabled'"),
+            'athlete_login_conflict' => $count("SELECT COUNT(*) FROM athlete_email_trust WHERE state='login_conflict'"),
+            'athlete_auto_created' => $count('SELECT COUNT(*) FROM athlete_email_trust WHERE auto_created=1'),
+            'overdue_alerts' => $count('SELECT COUNT(*) FROM monthly_membership_overdue_alerts'),
+        ];
+    }
     return ['cutoff_utc' => '2026-11-24T15:21:06Z', 'public_accounts' => $public,
         'athletes' => $athletes, 'child_accounts' => $childAccounts, 'trainers' => $trainers,
         'import_contacts' => $contacts,
@@ -109,7 +124,25 @@ function accountAccessStatusInventory(PDO $pdo): array
         'active_roster_rows' => $count("SELECT COUNT(*) FROM club_roster_members WHERE status='active' AND valid_from<=CURRENT_DATE AND (valid_to IS NULL OR valid_to>=CURRENT_DATE)"),
         'pending_charges' => $count("SELECT COUNT(*) FROM club_member_charges WHERE status='pending'"),
         'past_due_charges' => $count("SELECT COUNT(*) FROM club_member_charges WHERE status='pending' AND due_on<CURRENT_DATE"),
-        'new_tables_already_present' => $schema];
+        'new_tables_already_present' => $schema, 'converted' => $converted];
+}
+
+function accountAccessStatusInventoryOk(array $summary, string $phase): bool
+{
+    if ($phase === 'before') {
+        return !in_array(true, $summary['new_tables_already_present'], true)
+            && $summary['athletes']['total'] >= $summary['child_accounts']['total'];
+    }
+    $converted = $summary['converted'];
+    return $phase === 'after' && !in_array(false, $summary['new_tables_already_present'], true)
+        && is_array($converted)
+        && $converted['public_total'] === $summary['public_accounts']['cohort']
+        && $converted['public_trusted'] + $converted['public_undeliverable'] === $converted['public_total']
+        && $summary['public_accounts']['cohort_unverified'] === 0
+        && $converted['athlete_total'] === $summary['athletes']['total']
+        && $converted['athlete_trusted'] + $converted['athlete_undeliverable']
+            + $converted['athlete_disabled'] + $converted['athlete_login_conflict'] === $converted['athlete_total']
+        && $summary['athletes']['missing_access'] === 0;
 }
 
 function diagnoseAccountAccessStatusMain(): void
@@ -119,8 +152,9 @@ function diagnoseAccountAccessStatusMain(): void
     try {
         $root = realpath((string)getenv('APP_ROOT'));
         $sha = (string)getenv('ACCESS_STATUS_SOURCE_SHA');
+        $phase = (string)getenv('ACCESS_STATUS_PHASE');
         if (getenv('APP_HOST') !== 'kis.kovopraha.cz' || $root === false || !is_file($root . '/config.php')
-            || preg_match('/^[a-f0-9]{40}$/D', $sha) !== 1) {
+            || preg_match('/^[a-f0-9]{40}$/D', $sha) !== 1 || !in_array($phase, ['before', 'after'], true)) {
             throw new RuntimeException('Unexpected inventory target.');
         }
         $_SERVER['HTTP_HOST'] = 'kis.kovopraha.cz';
@@ -147,10 +181,9 @@ function diagnoseAccountAccessStatusMain(): void
         $step = 'inventory';
         $summary = accountAccessStatusInventory($pdo);
         $pdo->rollBack();
-        $ok = !in_array(true, $summary['new_tables_already_present'], true)
-            && $summary['athletes']['total'] >= $summary['child_accounts']['total'];
+        $ok = accountAccessStatusInventoryOk($summary, $phase);
         echo json_encode(
-            ['contract' => 'account-access-predeploy-v1', 'ok' => $ok,
+            ['contract' => 'account-access-inventory-v1', 'phase' => $phase, 'ok' => $ok,
             'read_only' => true, 'personal_data_exported' => false, 'source_sha' => $sha,
             'at_utc' => gmdate('c'), 'probe_sha256' => hash_file('sha256', __FILE__)] + $summary,
             JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
