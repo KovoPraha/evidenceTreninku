@@ -469,6 +469,12 @@ jobs:
             du -sk -- * | sort -nr | head -30
             echo '=== data children KiB ==='
             du -sk -- data/* data/.[!.]* | sort -nr | head -30
+            echo '=== KIS backup children KiB ==='
+            du -sk -- '$BACKUP_DIR'/* | sort -nr | head -30
+            if test -d '$BACKUP_DIR/files'; then
+              echo '=== largest KIS file backups KiB ==='
+              du -sk -- '$BACKUP_DIR/files'/* | sort -nr | head -20
+            fi
             echo '=== KIS release count ==='
             find '$DEPLOY_BASE/releases' -mindepth 1 -maxdepth 1 -type d | wc -l
             echo '=== largest KIS releases KiB ==='

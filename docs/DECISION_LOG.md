@@ -2,7 +2,7 @@
 
 ## D2026-11-25-01 — pořadí úklidu hostingu
 
-Vlastník požaduje zmenšit obsazené místo a dovoluje odstranit vlastní zálohy při zajištění obnovy hostingem. Historický důkaz ukazuje velký počet kompletních release kopií a relativně malé vlastní zálohy. Proto je první čtecí prioritou inventura release adresářů a aktivní/rollback verze, potom inventura vlastních záloh a ověření konkrétní hostingové obnovy. Varianta okamžitě smazat všechny zálohy bez dnešního rozpisu by mohla ztratit delší historii i obnovu souborů nad 1 GB; varianta čistit soukromé přílohy není doložená. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [výsledky](verification/server-storage-20261125/RESULTS.md).
+Vlastník požaduje zmenšit obsazené místo a dovoluje odstranit vlastní zálohy při zajištění obnovy hostingem. Historický důkaz ukazuje velký počet kompletních release kopií; soupis 116 MiB pokryl jen přímé DB záložní soubory, nikoli úplné ZIP archivy v podsložce `files/` (jednotlivě doloženo 0,6–0,7 GB). Proto současně inventarizovat release adresáře, DB zálohy a ZIP archivy, pak vybrat dávku podle skutečné úspory, aktivní/rollback verze a konkrétní hostingové obnovy. Varianta okamžitě smazat všechny zálohy bez dnešního rozpisu by mohla ztratit delší historii i obnovu souborů nad 1 GB; varianta čistit soukromé přílohy není doložená. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [výsledky](verification/server-storage-20261125/RESULTS.md).
 
 Společný vstup pro rozhodnutí napříč projektem. Aktuální stav je v
 [CURRENT](CURRENT_STATE.md), otevřené koncepty/plány v [registru](WORK_PLAN_CURRENT.md),
