@@ -4,6 +4,17 @@
   "date": "2026-11-07",
   "entries": [
     {
+      "id": "PL-server-storage-20261125",
+      "path": "docs/SERVER_STORAGE_AUDIT_2026-11-25.md",
+      "title": "SERVER-STORAGE-01 — inventura kapacity hostingu",
+      "primary": true,
+      "role": "plan",
+      "status": "PARTIAL",
+      "registry": "SERVER-STORAGE-01",
+      "disposition": "Čtecí inventura; provozní úklid a ověření obnovy hostingových záloh otevřené.",
+      "evidence": ["docs/verification/server-storage-20261125/RESULTS.md"]
+    },
+    {
       "id": "PL-kis-access-status-20261124",
       "path": "docs/ACCOUNT_ACTIVATION_AND_MEMBER_STATUS_2026-11-24.md",
       "title": "KIS-ACCESS-STATUS-01 — účty importovaných osob a stav členství",
