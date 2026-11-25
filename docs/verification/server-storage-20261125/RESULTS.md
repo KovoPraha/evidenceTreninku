@@ -14,6 +14,8 @@ Přihlášená [správa hostingu kovopraha.cz](https://muj.cesky-hosting.cz/inde
 
 V [administraci hostingových záloh](https://muj.cesky-hosting.cz/index.php?page=domeny-zalohy&id_domain=70155) jsou pro tuto doménu skutečně dostupné seznamy 11 WWW generací (31. 10.–24. 11. 2026, nejnovější 24. 11. 23:31) a 11 MariaDB generací (28. 10.–24. 11. 2026, nejnovější 24. 11. 22:14). Připojení generace a izolované ověření souborů, soukromých příloh i DB **NOT RUN**; samotný seznam nedokazuje úplnost ani obnovitelnost.
 
+[PR #530](https://github.com/KovoPraha/evidenceTreninku/pull/530) byl po zelených povinných kontrolách sloučen jako `6ab46ab9`. První čtecí [běh 45655069369](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45655069369) z `main` **FAIL**: SSH krok skončil návratovým kódem 1 ještě před prvním vzdáleným výpisem; nic nesmazal, žádnou velikost nevrátil. Příčina neprokázaná. Následuje samostatný diagnostický PR s výpisem dostupnosti cest a příkazů před měřením a tolerancí chyb u volitelných sekcí. Místní přístup bez příslušného produkčního klíče byl odmítnut; není zdrojem měření.
+
 ## Čtecí průběh 25. 11. 2026
 
 | Kontrola | Výsledek | Omezení |

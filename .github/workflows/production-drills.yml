@@ -457,30 +457,34 @@ jobs:
           source .github/scripts/production-ssh-retry.sh
           production_ssh_init
           production_retry "${SSH[@]}" "
-            set -eu
-            test -d '$REMOTE_DIR'
-            test -d '$DEPLOY_BASE/releases'
-            test -d '$BACKUP_DIR'
-            command -v du >/dev/null
-            command -v df >/dev/null
+            echo '=== account location ==='
+            pwd
+            echo '=== target directories ==='
+            for target in '$REMOTE_DIR' '$DEPLOY_BASE/releases' '$BACKUP_DIR' '$BACKUP_DIR/files'; do
+              if test -d \"\$target\"; then echo \"present \$target\"; else echo \"missing \$target\"; fi
+            done
+            echo '=== available commands ==='
+            for command in du df find sort head; do
+              if command -v \"\$command\" >/dev/null; then echo \"present \$command\"; else echo \"missing \$command\"; fi
+            done
             echo '=== filesystems KiB ==='
-            df -Pk . '$REMOTE_DIR'
+            if command -v df >/dev/null; then df -Pk . '$REMOTE_DIR' || true; fi
             echo '=== entire accessible account KiB ==='
-            du -sk -- .
+            if command -v du >/dev/null; then du -sk -- . || true; fi
             echo '=== account top-level KiB ==='
-            du -sk -- * .[!.]* ..?* 2>/dev/null | sort -nr | head -50
+            if command -v du >/dev/null; then du -sk -- * .[!.]* ..?* 2>/dev/null | sort -nr | head -50; fi
             echo '=== data children KiB ==='
-            du -sk -- data/* data/.[!.]* | sort -nr | head -30
+            if test -d data && command -v du >/dev/null; then du -sk -- data/* data/.[!.]* 2>/dev/null | sort -nr | head -30; fi
             echo '=== KIS backup children KiB ==='
-            du -sk -- '$BACKUP_DIR'/* | sort -nr | head -30
-            if test -d '$BACKUP_DIR/files'; then
+            if test -d '$BACKUP_DIR' && command -v du >/dev/null; then du -sk -- '$BACKUP_DIR'/* 2>/dev/null | sort -nr | head -30; fi
+            if test -d '$BACKUP_DIR/files' && command -v du >/dev/null; then
               echo '=== largest KIS file backups KiB ==='
-              du -sk -- '$BACKUP_DIR/files'/* | sort -nr | head -20
+              du -sk -- '$BACKUP_DIR/files'/* 2>/dev/null | sort -nr | head -20
             fi
             echo '=== KIS release count ==='
-            find '$DEPLOY_BASE/releases' -mindepth 1 -maxdepth 1 -type d | wc -l
+            if test -d '$DEPLOY_BASE/releases'; then find '$DEPLOY_BASE/releases' -mindepth 1 -maxdepth 1 -type d | wc -l; fi
             echo '=== largest KIS releases KiB ==='
-            du -sk -- '$DEPLOY_BASE/releases'/* | sort -nr | head -20
+            if test -d '$DEPLOY_BASE/releases' && command -v du >/dev/null; then du -sk -- '$DEPLOY_BASE/releases'/* 2>/dev/null | sort -nr | head -20; fi
           "
 
       - name: Overit pracovni pristupy bez zmen existujicich roli
