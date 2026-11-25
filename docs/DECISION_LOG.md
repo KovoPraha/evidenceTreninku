@@ -1,5 +1,9 @@
 # Rozhodovací log a rejstřík uzavřených plánů
 
+## D2026-11-25-03 — nejprve staré release kopie
+
+Aktuální čtecí měření celé domény prokázalo 13,89 GiB v `data/.kis-deploy`, 4,70 GiB ve vlastních zálohách a pouze 0,63 GiB v živém webu KIS. Deploy kopíruje připravený release do živého webového adresáře pomocí rsync; staré adresáře v `releases/` jsou historické kopie. Přednost při návrhu úklidu proto mají staré release po úplném manifestu a výslovném ponechání několika posledních úspěšných vydání pro návrat. Vlastní zálohy ponechat do ověření obsahu a obnovy konkrétní generace hostingu; seznam generací sám nestačí. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [výsledky](verification/server-storage-20261125/RESULTS.md).
+
 ## D2026-11-25-02 — rozsah celé domény a příčina kvóty
 
 Vlastník upřesnil kontrolu na celý hosting domény `kovopraha.cz`, nikoli jen KIS, a schválil merge čtecí diagnostiky. Přihlášená administrace po aktualizaci potvrdila překročení WWW kvóty o 2 773 MB; pošta a DB mají vlastní volnou kvótu. Přednost proto má soupis všech webových adresářů včetně subdomén a skrytých položek, s porovnáním k 22 773 MB a 996 361 souborům. E-mailové schránky a DB byly ověřeny jako samostatné segmenty; jejich mazání by neřešilo překročenou WWW kvótu. Seznamy 11 hostingových WWW a DB záloh potvrzují existenci generací, nikoli jejich úplnost nebo obnovitelnost. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [výsledky](verification/server-storage-20261125/RESULTS.md).
