@@ -1,6 +1,6 @@
 # SERVER-STORAGE-01 — inventura kapacity hostingu (25. 11. 2026)
 
-**Stav:** ROZPRACOVÁNO, čtecí inventura v [PR #530](https://github.com/KovoPraha/evidenceTreninku/pull/530); merge/deploy NOT RUN. **Vlastník:** Marek / provoz hostingu; technická analýza vývoj KIS. **Větev a worktree:** `codex/server-storage-audit-20261125`, `C:\Users\Marek\Documents\Codex\evidencePavel-server-storage-audit-20261125`, základ `origin/main` `dabb1d71`. [Registr](WORK_PLAN_CURRENT.md#server-storage-01--inventura-kapacity-hostingu-25-11-2026), [výsledky](verification/server-storage-20261125/RESULTS.md).
+**Stav:** ROZPRACOVÁNO, čtecí inventura v [PR #530](https://github.com/KovoPraha/evidenceTreninku/pull/530); merge/deploy NOT RUN. **Vlastník:** Marek / provoz hostingu; technická analýza vývoj KIS. **Větev a worktree:** `codex/server-storage-audit-20261125`, `C:\Users\Marek\Documents\Codex\evidencePavel-server-storage-audit-20261125`, původní základ `dabb1d71`, převzato `origin/main` `c6c6ea62`. [Registr](WORK_PLAN_CURRENT.md#server-storage-01--inventura-kapacity-hostingu-25-11-2026), [výsledky](verification/server-storage-20261125/RESULTS.md).
 
 ## Cíl, oprávnění a meze
 
