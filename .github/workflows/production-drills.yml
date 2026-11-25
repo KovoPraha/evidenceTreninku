@@ -15,6 +15,7 @@ on:
           - overit-ucetni-vazby
           - overit-uat-pripravenost
           - overit-dopad-kluboveho-vydani
+          - overit-kapacitu-hostingu
           - overit-tv-programy
           - overit-pracovni-pristupy
           - pripravit-uat-ucty-a-data
@@ -446,6 +447,33 @@ jobs:
             production_ssh_init
             production_retry "${SSH[@]}" "rm -f -- '$DEPLOY_BASE/club-release-impact.php' '$DEPLOY_BASE/run-club-release-impact.php'"
           fi
+
+      - name: Zmerit obsazeni hostingu pouze ctenim
+        if: inputs.operace == 'overit-kapacitu-hostingu'
+        run: |
+          set -euo pipefail
+          test "$APP_HOST" = 'kis.kovopraha.cz'
+          [[ "$REMOTE_DIR" =~ ^[A-Za-z0-9._/-]+$ ]] && [[ "$REMOTE_DIR" != *..* ]] && [[ "$REMOTE_DIR" != /* ]]
+          source .github/scripts/production-ssh-retry.sh
+          production_ssh_init
+          production_retry "${SSH[@]}" "
+            set -eu
+            test -d '$REMOTE_DIR'
+            test -d '$DEPLOY_BASE/releases'
+            test -d '$BACKUP_DIR'
+            command -v du >/dev/null
+            command -v df >/dev/null
+            echo '=== filesystems KiB ==='
+            df -Pk . '$REMOTE_DIR'
+            echo '=== account top-level KiB ==='
+            du -sk -- * | sort -nr | head -30
+            echo '=== data children KiB ==='
+            du -sk -- data/* data/.[!.]* | sort -nr | head -30
+            echo '=== KIS release count ==='
+            find '$DEPLOY_BASE/releases' -mindepth 1 -maxdepth 1 -type d | wc -l
+            echo '=== largest KIS releases KiB ==='
+            du -sk -- '$DEPLOY_BASE/releases'/* | sort -nr | head -20
+          "
 
       - name: Overit pracovni pristupy bez zmen existujicich roli
         if: inputs.operace == 'overit-pracovni-pristupy'
