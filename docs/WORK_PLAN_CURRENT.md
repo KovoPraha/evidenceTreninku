@@ -2,7 +2,7 @@
 
 ## SERVER-STORAGE-01 — inventura kapacity hostingu (25. 11. 2026)
 
-ROZPRACOVÁNO, čtecí inventura; provozní úklid NOT RUN. Vlastník Marek / provoz hostingu, vývoj KIS; větev `codex/server-storage-audit-20261125`, oddělený worktree z `origin/main` `dabb1d71`. [Rozsah, oprávnění, varianty a akceptace](SERVER_STORAGE_AUDIT_2026-11-25.md), [protokol](verification/server-storage-20261125/RESULTS.md). Závislosti: dnešní kvóta a rozpis hostingu, potvrzení retence a obnovy hostingových záloh. Další krok: chráněný čtecí drill, soupis kandidátů a jejich úspory.
+ROZPRACOVÁNO, čtecí inventura; provozní úklid NOT RUN. Vlastník Marek / provoz hostingu, vývoj KIS; větev `codex/server-storage-audit-20261125`, oddělený worktree z `origin/main` `dabb1d71`. [Rozsah, oprávnění, varianty a akceptace](SERVER_STORAGE_AUDIT_2026-11-25.md), [protokol](verification/server-storage-20261125/RESULTS.md). Historicky 184 release adresářů a 116 MiB vlastních záloh, dnešní rozpis nezměřen. Ochrana `production` odmítla branch drill před spuštěním. Závislosti: revize/merge diagnostiky do `main`, dnešní segment kvóty, použitelná hostingová obnova. Další krok: čtecí drill z `main`, soupis kandidátů a jejich úspory.
 
 ## KIS-ACCESS-STATUS-01 — aktivace a stavy členství (24. 11. 2026)
 

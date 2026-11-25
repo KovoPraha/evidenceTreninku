@@ -17,4 +17,4 @@ Možné varianty: redukce počtu starých release, přesun nebo odstranění vla
 
 ## Akceptace a další krok
 
-PASS: aktuální měření celku a hlavních kategorií, seznam konkrétních kandidátů s odhadovanou úsporou, doložené zálohování/obnova, stav před a po bezpečném úklidu, kontrola služby. Dokud chybí dnešní serverové měření, uvolněné místo = **NOT RUN**. Další krok: čtecí drill a analýza jeho výstupu.
+PASS: aktuální měření celku a hlavních kategorií, seznam konkrétních kandidátů s odhadovanou úsporou, doložené zálohování/obnova, stav před a po bezpečném úklidu, kontrola služby. Dosavadní [čtecí výsledky](verification/server-storage-20261125/RESULTS.md) ukazují historické množství release kopií; nová diagnostika z pracovní větve se nespustila, protože `production` povoluje jen `main`. Ochranu neobcházet. Dokud chybí dnešní serverové měření, uvolněné místo = **NOT RUN**. Další krok: revize/merge čtecího workflow, spuštění z `main`, ověření segmentu kvóty a hostingové obnovy, poté konkrétní úklidová dávka.
