@@ -48,5 +48,20 @@ final class AccountAccessStatusInventoryTest extends TestCase
         self::assertStringNotContainsString('example.test', json_encode($result, JSON_THROW_ON_ERROR));
         self::assertSame(['existing_email_trust' => false, 'athlete_email_trust' => false,
             'monthly_membership_overdue_alerts' => false], $result['new_tables_already_present']);
+        self::assertTrue(\accountAccessStatusInventoryOk($result, 'before'));
+        self::assertFalse(\accountAccessStatusInventoryOk($result, 'after'));
+
+        $pdo->exec("UPDATE verejni_uzivatele SET email_overeno=1 WHERE email='parent@example.test'");
+        $pdo->exec('INSERT INTO child_access_accounts VALUES(2,0),(3,0)');
+        $pdo->exec('CREATE TABLE existing_email_trust(state TEXT)');
+        $pdo->exec("INSERT INTO existing_email_trust VALUES('trusted')");
+        $pdo->exec('CREATE TABLE athlete_email_trust(state TEXT,auto_created INT)');
+        $pdo->exec("INSERT INTO athlete_email_trust VALUES('trusted',1),('trusted',1),('undeliverable',1)");
+        $pdo->exec('CREATE TABLE monthly_membership_overdue_alerts(id INT)');
+        $after = \accountAccessStatusInventory($pdo);
+        self::assertTrue(\accountAccessStatusInventoryOk($after, 'after'));
+        self::assertFalse(\accountAccessStatusInventoryOk($after, 'before'));
+        self::assertSame(3, $after['converted']['athlete_auto_created']);
+        self::assertStringNotContainsString('example.test', json_encode($after, JSON_THROW_ON_ERROR));
     }
 }
