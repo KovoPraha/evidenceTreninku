@@ -2,7 +2,7 @@
 
 ## SERVER-STORAGE-01 — inventura kapacity hostingu (25. 11. 2026)
 
-ROZPRACOVÁNO, čtecí diagnostika v [PR #530](https://github.com/KovoPraha/evidenceTreninku/pull/530); merge, měření a úklid NOT RUN. Vlastník Marek / provoz hostingu, vývoj KIS; větev `codex/server-storage-audit-20261125`, oddělený worktree z původního `origin/main` `dabb1d71`, převzatý `c6c6ea62`. [Rozsah, oprávnění, varianty a akceptace](SERVER_STORAGE_AUDIT_2026-11-25.md), [protokol](verification/server-storage-20261125/RESULTS.md). Historicky 184 release adresářů a 116 MiB záloh na první úrovni; úplné ZIP archivy v podsložce nezapočítané. Dnešní rozpis nezměřen. Ochrana `production` odmítla branch drill před spuštěním. Závislosti: revize/merge diagnostiky do `main`, dnešní segment kvóty, použitelná hostingová obnova. Další krok: čtecí drill z `main`, soupis kandidátů a jejich úspory.
+ROZPRACOVÁNO, celá doména `kovopraha.cz`; vlastník schválil merge čtecí diagnostiky v [PR #530](https://github.com/KovoPraha/evidenceTreninku/pull/530), merge/drill/úklid NOT RUN. Vlastník Marek / provoz hostingu, vývoj KIS; větev `codex/server-storage-audit-20261125`, oddělený worktree z `origin/main` `5c009cae`. [Rozsah, oprávnění, varianty a akceptace](SERVER_STORAGE_AUDIT_2026-11-25.md), [protokol](verification/server-storage-20261125/RESULTS.md). Přihlášená administrace po aktualizaci: WWW 22 773 / 20 000 MB (996 361 souborů), e-maily 5 669 / 9 330 MB, DB 70 / 500 MB; 11 generací WWW i DB vypsáno, obnova NOT RUN. Závislosti: merge čtecího workflow, dnešní rozpis WWW všech subdomén a skrytých adresářů, použitelná hostingová obnova. Další krok: drill z `main`, soupis kandidátů a jejich úspory.
 
 ## KIS-ACCESS-STATUS-01 — aktivace a stavy členství (24. 11. 2026)
 

@@ -465,8 +465,10 @@ jobs:
             command -v df >/dev/null
             echo '=== filesystems KiB ==='
             df -Pk . '$REMOTE_DIR'
+            echo '=== entire accessible account KiB ==='
+            du -sk -- .
             echo '=== account top-level KiB ==='
-            du -sk -- * | sort -nr | head -30
+            du -sk -- * .[!.]* ..?* 2>/dev/null | sort -nr | head -50
             echo '=== data children KiB ==='
             du -sk -- data/* data/.[!.]* | sort -nr | head -30
             echo '=== KIS backup children KiB ==='
