@@ -1,5 +1,7 @@
 # SERVER-STORAGE-01 — výsledky
 
+[PR #542](https://github.com/KovoPraha/evidenceTreninku/pull/542) sloučen po zeleném CI; pátý [izolovaný import 45865416694](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45865416694) **FAIL** bezpečně před importem. Diagnostika ukázala přesně známou veřejnou direktivu `/*M!999999\\- enable the sandbox mode */` s jednou koncovou ASCII mezerou. Následující větev `codex/hosting-restore-header-space-20261126` povolí pouze koncové vodorovné mezery této úvodní řádky, SQL data nemění. Obnova DB, soukromých souborů a mazání **NOT RUN**.
+
 [PR #541](https://github.com/KovoPraha/evidenceTreninku/pull/541) sloučen po všech zelených kontrolách; čtvrtý [izolovaný import 45862562073](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45862562073) **FAIL**: přísná kontrola neočekávala skutečnou první řádku SQL exportu a zastavila proud před importem. `gzip -t` prošel, produkce zůstala beze změny. Větev `codex/hosting-restore-header-diagnostic-20261126` připravuje omezenou diagnostiku formátu hlavičky: vypíše pouze veřejnou sandbox direktivu, pokud ji rozpozná, jinak jen délku a SHA-256 první řádky; SQL obsah se do logu nevypisuje. Úplná obnova databáze, soukromých souborů a mazání **NOT RUN**.
 
 ## Třetí izolovaný import DB 26. 11. — FAIL na direktivě klienta
