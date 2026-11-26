@@ -4,12 +4,26 @@ set -euo pipefail
 test "$GITHUB_REF" = refs/heads/main
 test "$APP_HOST" = kis.kovopraha.cz
 test "$REMOTE_DIR" = kis.kovopraha.cz
-case "$STORAGE_PHASE" in preview|apply) ;; *) exit 2;; esac
+case "$STORAGE_PHASE" in preview|apply|inspect_www) ;; *) exit 2;; esac
 
 TASK_TMP="$RUNNER_TEMP/storage-plan-$GITHUB_RUN_ID"
 install -d -m 700 "$TASK_TMP"
 source .github/scripts/production-ssh-retry.sh
 production_ssh_init
+
+if [ "$STORAGE_PHASE" = inspect_www ]; then
+  production_retry_capture "${SSH[@]}" "
+    set -eu
+    test -d backups
+    echo '=== mounted backup root ==='
+    find backups -mindepth 1 -maxdepth 2 -type d | sort | head -80
+    echo '=== KIS web and private directory matches ==='
+    find backups -maxdepth 6 -type d \( -name kis.kovopraha.cz -o -name kis-private \) | sort | head -30
+    echo '=== deployment marker matches ==='
+    find backups -maxdepth 6 -type f -name deployment.json | sort | head -30
+  "
+  exit 0
+fi
 
 # Every top-level entry is measured. Unknown names or size drift abort planning.
 production_retry_capture "${SSH[@]}" "set -eu; test -d '$DEPLOY_BASE/releases'; find '$DEPLOY_BASE/releases' -mindepth 1 -maxdepth 1 -exec du -sk -- {} +" > "$TASK_TMP/releases.tsv"
