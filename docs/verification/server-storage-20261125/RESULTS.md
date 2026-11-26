@@ -1,5 +1,9 @@
 # SERVER-STORAGE-01 — výsledky
 
+## První izolovaný import DB 26. 11. — FAIL, oprava prostředí
+
+[PR #538](https://github.com/KovoPraha/evidenceTreninku/pull/538) sloučen jako `851615a8` po zelených CI. [Běh 45843451119](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45843451119) **FAIL** při importu hostingového `kovoprahacz09.sql.gz` do dočasného kontejneru: na řádku 23 dump přepnul na `kovoprahacz09`, která v kontejneru zatím neexistovala (`ERROR 1049`). Přenos souboru a `gzip -t` prošly; produkční DB nebyla cílem importu a nedošlo k žádnému mazání. Větev `codex/hosting-backup-restore-schema-20261126` připravuje vytvoření stejnojmenného schématu výhradně v izolovaném kontejneru a opakování zkoušky. Obnovitelnost **NOT RUN / FAIL**, `apply` nadále blokováno.
+
 ## Databázová generace a příprava izolované obnovy 26. 11.
 
 Klientská sekce připojila nejnovější dostupnou databázovou generaci **25. 11. 22:33:00** dne 26. 11. v 15:34:41 do čtecího `backups/`. Chráněný [běh 45840458944](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45840458944) z `main` **PASS**: 11 souborů `.sql.gz`, dohromady 11 364 KiB; KIS podle produkční dokumentace odpovídá `kovoprahacz09.sql.gz`. Generace je připojená nejvýše hodinu. Větev `codex/hosting-backup-restore-20261126` připravuje izolovaný import této SQL zálohy do dočasného kontejneru MariaDB a samostatné stažení soukromých souborů z WWW generace do dočasného runneru. Izolovaná obnova **NOT RUN**; produkční DB a soubory se nemění. Úklid **NOT RUN**.
