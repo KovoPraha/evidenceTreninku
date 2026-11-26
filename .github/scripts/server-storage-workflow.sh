@@ -67,23 +67,29 @@ if [ "$STORAGE_PHASE" = restore_db ]; then
   RESTORE_TMP="$RUNNER_TEMP/hosting-db-$GITHUB_RUN_ID"
   CONTAINER="hosting-restore-$GITHUB_RUN_ID"
   install -d -m 700 "$RESTORE_TMP"
-  trap 'docker rm -f "$CONTAINER" >/dev/null 2>&1 || :; rm -f -- "$RESTORE_TMP/kovoprahacz09.sql.gz"' EXIT
+  trap 'docker rm -f "$CONTAINER" >/dev/null 2>&1 || :; rm -f -- "$RESTORE_TMP/kovoprahacz09.sql.gz" "$RESTORE_TMP/import.out" "$RESTORE_TMP/import.err"' EXIT
   production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:backups/kovoprahacz09.sql.gz" "$RESTORE_TMP/kovoprahacz09.sql.gz"
   gzip -t "$RESTORE_TMP/kovoprahacz09.sql.gz"
   RESTORE_PASSWORD="$(openssl rand -hex 24)"
-  docker run -d --name "$CONTAINER" --network none -e MARIADB_ROOT_PASSWORD="$RESTORE_PASSWORD" mariadb:11.4 >/dev/null
+  # The hosted dump contains a legacy stored generated column on a foreign
+  # key with ON DELETE SET NULL, rejected by newer MariaDB releases. Restore
+  # in the older isolated engine used by the project's compatibility CI.
+  docker run -d --name "$CONTAINER" --network none -e MARIADB_ROOT_PASSWORD="$RESTORE_PASSWORD" mariadb:10.3 >/dev/null
   READY=0
   for i in $(seq 1 60); do
-    if docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse 'SELECT 1' >/dev/null 2>&1; then READY=1; break; fi
+    if docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse 'SELECT 1' >/dev/null 2>&1; then READY=1; break; fi
     sleep 2
   done
   test "$READY" = 1
   # Hosting dump includes USE kovoprahacz09; create that schema only inside
   # the isolated container before importing it.
-  docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE DATABASE kovoprahacz09 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
-  gzip -dc "$RESTORE_TMP/kovoprahacz09.sql.gz" | docker exec -i "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" kis_restore
-  TABLES=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA IN ('kis_restore','kovoprahacz09') AND TABLE_TYPE='BASE TABLE'")
-  TRIGGERS=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA IN ('kis_restore','kovoprahacz09')")
+  docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE DATABASE kovoprahacz09 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+  if ! gzip -dc "$RESTORE_TMP/kovoprahacz09.sql.gz" | docker exec -i "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" kis_restore >"$RESTORE_TMP/import.out" 2>"$RESTORE_TMP/import.err"; then
+    grep -m 1 '^ERROR ' "$RESTORE_TMP/import.err" || echo 'Hosting snapshot import failed; details kept off logs.'
+    exit 1
+  fi
+  TABLES=$(docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA IN ('kis_restore','kovoprahacz09') AND TABLE_TYPE='BASE TABLE'")
+  TRIGGERS=$(docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA IN ('kis_restore','kovoprahacz09')")
   test "$TABLES" -ge 390
   test "$TRIGGERS" -ge 2
   echo "Hosting KIS database snapshot isolated restore PASS: $TABLES tables, $TRIGGERS triggers"
