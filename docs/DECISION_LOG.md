@@ -1,5 +1,9 @@
 # Rozhodovací log a rejstřík uzavřených plánů
 
+## D2026-11-26-01 — koncept ponechat deset vydání
+
+Úplná čtecí inventura 26. 11. prokázala 280 release adresářů o součtu 13,87 GiB. Deset nejnovějších odpovídá posledním deseti úspěšným produkčním deployům a zabírá 568 MiB; zbylých 270 historických kopií zabírá 13,31 GiB. Návrh úklidu se proto omezí na tyto přesné cesty v [manifestu](verification/server-storage-20261125/release-manifest-20261126.json). Jde o **KONCEPT**, nikoli schválení mazání. Varianta odstranit všechny release by zrušila místní návratové kopie; varianta odstranit vlastní KIS zálohy 4,70 GiB čeká na ověření hostingové obnovy. Před zásahem znovu zkontrolovat skutečný produkční stav, obsah a obnovu záloh, pak požádat vlastníka o konkrétní schválení dávky. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [protokol](verification/server-storage-20261125/RESULTS.md).
+
 ## D2026-11-25-03 — nejprve staré release kopie
 
 Aktuální čtecí měření celé domény prokázalo 13,89 GiB v `data/.kis-deploy`, 4,70 GiB ve vlastních zálohách a pouze 0,63 GiB v živém webu KIS. Deploy kopíruje připravený release do živého webového adresáře pomocí rsync; staré adresáře v `releases/` jsou historické kopie. Přednost při návrhu úklidu proto mají staré release po úplném manifestu a výslovném ponechání několika posledních úspěšných vydání pro návrat. Vlastní zálohy ponechat do ověření obsahu a obnovy konkrétní generace hostingu; seznam generací sám nestačí. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [výsledky](verification/server-storage-20261125/RESULTS.md).

@@ -1,0 +1,1975 @@
+{
+  "schema": "server-storage-release-manifest-v1",
+  "observed_on": "2026-11-26",
+  "source_run": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/45807461553",
+  "root": "data/.kis-deploy/releases",
+  "policy": "Keep the ten newest successful production deploy releases; candidates are older historical release directories only. No deletion authorized by this manifest.",
+  "release_count": 280,
+  "release_kib": 14542752,
+  "keep_count": 10,
+  "keep_kib": 581704,
+  "candidate_count": 270,
+  "candidate_kib": 13961048,
+  "items": [
+    {
+      "path": "data/.kis-deploy/releases/dabb1d7176b0d99590aadfa596d138990a237fac-45602767579",
+      "sha": "dabb1d7176b0d99590aadfa596d138990a237fac",
+      "run_id": 45602767579,
+      "kib": 58448,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/2cae19d6ffdbaf21425be26ad8201e0b4b122c3a-45396452344",
+      "sha": "2cae19d6ffdbaf21425be26ad8201e0b4b122c3a",
+      "run_id": 45396452344,
+      "kib": 58392,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7918ca05da6888709667620fe4af6395dd4ec064-45233456861",
+      "sha": "7918ca05da6888709667620fe4af6395dd4ec064",
+      "run_id": 45233456861,
+      "kib": 58112,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/bc0c306757ecc5640bb844c79e63f5dd8c53777c-45226205445",
+      "sha": "bc0c306757ecc5640bb844c79e63f5dd8c53777c",
+      "run_id": 45226205445,
+      "kib": 58112,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e647b7bffdc4d19eec5ef7b4c9f1d40137bfa567-45156963794",
+      "sha": "e647b7bffdc4d19eec5ef7b4c9f1d40137bfa567",
+      "run_id": 45156963794,
+      "kib": 58112,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/641493a691ff95920e2e406f3d01ec25aba91551-44972109908",
+      "sha": "641493a691ff95920e2e406f3d01ec25aba91551",
+      "run_id": 44972109908,
+      "kib": 58172,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7d856ed667be5a0a3ff02a6893abd30018e1456e-44912234389",
+      "sha": "7d856ed667be5a0a3ff02a6893abd30018e1456e",
+      "run_id": 44912234389,
+      "kib": 58100,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/6dcd0a2026791b16e7ef039f84c41ee364c4d338-44910511209",
+      "sha": "6dcd0a2026791b16e7ef039f84c41ee364c4d338",
+      "run_id": 44910511209,
+      "kib": 58092,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ccac61abf28b19f1af2202dd70fbd5b9cc25a7c4-44908781060",
+      "sha": "ccac61abf28b19f1af2202dd70fbd5b9cc25a7c4",
+      "run_id": 44908781060,
+      "kib": 58084,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/741c0625427acef1badc9df8a7311183876d6620-44904278420",
+      "sha": "741c0625427acef1badc9df8a7311183876d6620",
+      "run_id": 44904278420,
+      "kib": 58080,
+      "disposition": "keep"
+    },
+    {
+      "path": "data/.kis-deploy/releases/11505aed51b36b9595c9f343d1ac386b12fad24d-44899472344",
+      "sha": "11505aed51b36b9595c9f343d1ac386b12fad24d",
+      "run_id": 44899472344,
+      "kib": 58056,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/85a819867755989e42a2a9b856ca679d7e33cf8c-44896953740",
+      "sha": "85a819867755989e42a2a9b856ca679d7e33cf8c",
+      "run_id": 44896953740,
+      "kib": 58056,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/62c00649080ecdedd5bdd48b536b72d2dae84451-44473829467",
+      "sha": "62c00649080ecdedd5bdd48b536b72d2dae84451",
+      "run_id": 44473829467,
+      "kib": 58060,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a752cd96d1a9cd2dee47498974178950cb156fac-44404265875",
+      "sha": "a752cd96d1a9cd2dee47498974178950cb156fac",
+      "run_id": 44404265875,
+      "kib": 58168,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e846e5a5afa5aaaa14516f2cdd353f6f58a22e40-44367469594",
+      "sha": "e846e5a5afa5aaaa14516f2cdd353f6f58a22e40",
+      "run_id": 44367469594,
+      "kib": 58136,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/4312157834bd0b70dcc871e40d9e19c812537f47-44269813909",
+      "sha": "4312157834bd0b70dcc871e40d9e19c812537f47",
+      "run_id": 44269813909,
+      "kib": 58080,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/8347ff50e65ab33f18c9383bfbc462f2d10d5c99-44189981302",
+      "sha": "8347ff50e65ab33f18c9383bfbc462f2d10d5c99",
+      "run_id": 44189981302,
+      "kib": 58052,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a3796752830c7d82503a52be6c1d6bfafd892c29-44152881039",
+      "sha": "a3796752830c7d82503a52be6c1d6bfafd892c29",
+      "run_id": 44152881039,
+      "kib": 58052,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/4270d0ccdf97499891a059d70e28df3169444247-44131137781",
+      "sha": "4270d0ccdf97499891a059d70e28df3169444247",
+      "run_id": 44131137781,
+      "kib": 58048,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9a0bc834fc8d83f593700df985a35993ae9ab1e4-44114428641",
+      "sha": "9a0bc834fc8d83f593700df985a35993ae9ab1e4",
+      "run_id": 44114428641,
+      "kib": 58044,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ea9954080c20c491885e60d6e30623b226612a93-43651304138",
+      "sha": "ea9954080c20c491885e60d6e30623b226612a93",
+      "run_id": 43651304138,
+      "kib": 58040,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/837a7112afdd53f1a84d3c875e14b2948ea94f3f-43649462751",
+      "sha": "837a7112afdd53f1a84d3c875e14b2948ea94f3f",
+      "run_id": 43649462751,
+      "kib": 58008,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c7b77fa528558ac18529112260941d926f58f401-43633315305",
+      "sha": "c7b77fa528558ac18529112260941d926f58f401",
+      "run_id": 43633315305,
+      "kib": 58004,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/b4d5cfe2714ebf6af16f7ed2d4f36a99569d087f-43478690110",
+      "sha": "b4d5cfe2714ebf6af16f7ed2d4f36a99569d087f",
+      "run_id": 43478690110,
+      "kib": 57992,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/b2ca9f4b223fa88e4ac029eb13c74f49aaa3de1c-43447880903",
+      "sha": "b2ca9f4b223fa88e4ac029eb13c74f49aaa3de1c",
+      "run_id": 43447880903,
+      "kib": 57992,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/cd04bad6eef682f46a9ba20ddb79f3a36e0b17f5-43386354560",
+      "sha": "cd04bad6eef682f46a9ba20ddb79f3a36e0b17f5",
+      "run_id": 43386354560,
+      "kib": 57988,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/be4ce55ad54a5c4eaed6dba12f93ccaccf574d1f-43326177751",
+      "sha": "be4ce55ad54a5c4eaed6dba12f93ccaccf574d1f",
+      "run_id": 43326177751,
+      "kib": 57988,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/373b8d89b5c724c6e499c88d9cb1458334ef59d7-43322186478",
+      "sha": "373b8d89b5c724c6e499c88d9cb1458334ef59d7",
+      "run_id": 43322186478,
+      "kib": 57984,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/22d151f7541856332084afcf9c7896bde74c43f0-43320369018",
+      "sha": "22d151f7541856332084afcf9c7896bde74c43f0",
+      "run_id": 43320369018,
+      "kib": 58012,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/428a2258c3a740b0d244f9b93c4fbaa9db2713f1-43269836068",
+      "sha": "428a2258c3a740b0d244f9b93c4fbaa9db2713f1",
+      "run_id": 43269836068,
+      "kib": 57952,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/87171a67b0e9c580cbc2a78e00751f2f7d38e5b3-43215069511",
+      "sha": "87171a67b0e9c580cbc2a78e00751f2f7d38e5b3",
+      "run_id": 43215069511,
+      "kib": 57900,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/dbab9e6e112b9e77e14f7cab2c9705ed0f9c5815-43164465663",
+      "sha": "dbab9e6e112b9e77e14f7cab2c9705ed0f9c5815",
+      "run_id": 43164465663,
+      "kib": 57936,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/18bd541b922e8b1d93dc9a4144e791da5a34e49b-43104809135",
+      "sha": "18bd541b922e8b1d93dc9a4144e791da5a34e49b",
+      "run_id": 43104809135,
+      "kib": 57892,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d8ae4f8595e58e4b8556866011576eee3d5c8972-42979420239",
+      "sha": "d8ae4f8595e58e4b8556866011576eee3d5c8972",
+      "run_id": 42979420239,
+      "kib": 57920,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/b753f6e765d83c402cc5e3b2c48ae448865749bb-42920002806",
+      "sha": "b753f6e765d83c402cc5e3b2c48ae448865749bb",
+      "run_id": 42920002806,
+      "kib": 57896,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c29642f137aaa963d805fddd14cd01826542fb38-42905781826",
+      "sha": "c29642f137aaa963d805fddd14cd01826542fb38",
+      "run_id": 42905781826,
+      "kib": 57888,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c9e5501a4911f724ae5e6ed253941cb4cb8e7830-42881039034",
+      "sha": "c9e5501a4911f724ae5e6ed253941cb4cb8e7830",
+      "run_id": 42881039034,
+      "kib": 57900,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9ef52268e1f5a8925cb62af6ab6b59ba27f75ac6-42863352343",
+      "sha": "9ef52268e1f5a8925cb62af6ab6b59ba27f75ac6",
+      "run_id": 42863352343,
+      "kib": 57888,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/8182489e43d9f5013e02c58f2a8ccbc257b168ef-42855987339",
+      "sha": "8182489e43d9f5013e02c58f2a8ccbc257b168ef",
+      "run_id": 42855987339,
+      "kib": 57840,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/4e3df207319fbce8a2f65e01213c7e4ba11cbf3d-42852365591",
+      "sha": "4e3df207319fbce8a2f65e01213c7e4ba11cbf3d",
+      "run_id": 42852365591,
+      "kib": 57832,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/94c10708d44972fb3a942584a099c28a6a7afebe-42837011604",
+      "sha": "94c10708d44972fb3a942584a099c28a6a7afebe",
+      "run_id": 42837011604,
+      "kib": 57820,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/beead42591c1f84c66f42c411ce6f1681c02a16a-42810948814",
+      "sha": "beead42591c1f84c66f42c411ce6f1681c02a16a",
+      "run_id": 42810948814,
+      "kib": 57812,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/706a8d429197c779c36ffc333751b77ee1f9ba14-42790212078",
+      "sha": "706a8d429197c779c36ffc333751b77ee1f9ba14",
+      "run_id": 42790212078,
+      "kib": 57808,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/f682cc46de7d6dbb6876f79187b069589b134614-42774356221",
+      "sha": "f682cc46de7d6dbb6876f79187b069589b134614",
+      "run_id": 42774356221,
+      "kib": 57816,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9dbd9eaf1f78e364d1dacd1ae0e3969758b7a176-42727693090",
+      "sha": "9dbd9eaf1f78e364d1dacd1ae0e3969758b7a176",
+      "run_id": 42727693090,
+      "kib": 57812,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/17110a7f2f4338584ec36e5de835150abe17bb17-42679050552",
+      "sha": "17110a7f2f4338584ec36e5de835150abe17bb17",
+      "run_id": 42679050552,
+      "kib": 57816,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/5cc9cf83193ca547d641e39afb0df41e4f8ee457-42654922651",
+      "sha": "5cc9cf83193ca547d641e39afb0df41e4f8ee457",
+      "run_id": 42654922651,
+      "kib": 57792,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e3f299037517c35b96752edfbf40dfa0e8e41f94-42637712723",
+      "sha": "e3f299037517c35b96752edfbf40dfa0e8e41f94",
+      "run_id": 42637712723,
+      "kib": 57796,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c3d34b8772b45c7095c8b2257413ce9d5769c5e8-42625502461",
+      "sha": "c3d34b8772b45c7095c8b2257413ce9d5769c5e8",
+      "run_id": 42625502461,
+      "kib": 57784,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/4f92b225ec33464fd03c5fbf55e6922f12d74453-42622226704",
+      "sha": "4f92b225ec33464fd03c5fbf55e6922f12d74453",
+      "run_id": 42622226704,
+      "kib": 57784,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c47d4008cf2c3814779f5f4eed4651e1448182cf-42587406908",
+      "sha": "c47d4008cf2c3814779f5f4eed4651e1448182cf",
+      "run_id": 42587406908,
+      "kib": 57816,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ca5fc219ab9d32e0b5ea9a50c669436d39d50ab9-42574460894",
+      "sha": "ca5fc219ab9d32e0b5ea9a50c669436d39d50ab9",
+      "run_id": 42574460894,
+      "kib": 57800,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/95cb33e5676480beea12af4e9049aea9b858c820-42531190845",
+      "sha": "95cb33e5676480beea12af4e9049aea9b858c820",
+      "run_id": 42531190845,
+      "kib": 57776,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/82efa16decf5bc380bb73bf850d829e17d5002f0-42521982178",
+      "sha": "82efa16decf5bc380bb73bf850d829e17d5002f0",
+      "run_id": 42521982178,
+      "kib": 57768,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/da152282ad4274690595c188a78dec0c90422f38-42494231010",
+      "sha": "da152282ad4274690595c188a78dec0c90422f38",
+      "run_id": 42494231010,
+      "kib": 57748,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/1c828fbf35372568993aa43af309b96c9a202f1b-42492821311",
+      "sha": "1c828fbf35372568993aa43af309b96c9a202f1b",
+      "run_id": 42492821311,
+      "kib": 57744,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9681a56a0c8f549f5d3eadbf90dffd96fcac4304-42488777710",
+      "sha": "9681a56a0c8f549f5d3eadbf90dffd96fcac4304",
+      "run_id": 42488777710,
+      "kib": 57716,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ab49947d9f673636d717fbbb4acb04f608eff477-42486500282",
+      "sha": "ab49947d9f673636d717fbbb4acb04f608eff477",
+      "run_id": 42486500282,
+      "kib": 57716,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/755b20a22a4401f54fd8117d8098a89e8603b77c-42483838259",
+      "sha": "755b20a22a4401f54fd8117d8098a89e8603b77c",
+      "run_id": 42483838259,
+      "kib": 57708,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/519ff098961943f1aa58a70e40fed3ffba37cc96-42477866185",
+      "sha": "519ff098961943f1aa58a70e40fed3ffba37cc96",
+      "run_id": 42477866185,
+      "kib": 57708,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/938e9c50317be43e8b206da93294ca41d10065c0-42405912779",
+      "sha": "938e9c50317be43e8b206da93294ca41d10065c0",
+      "run_id": 42405912779,
+      "kib": 57680,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e36c9ba6e461b7da842c53939c2fe20eed821f38-42394551344",
+      "sha": "e36c9ba6e461b7da842c53939c2fe20eed821f38",
+      "run_id": 42394551344,
+      "kib": 57672,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/56f5ce08e9ffbe1df9acfe7b844234b449171ad8-42380611292",
+      "sha": "56f5ce08e9ffbe1df9acfe7b844234b449171ad8",
+      "run_id": 42380611292,
+      "kib": 57664,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/269684c234698cb40ae661e4080e318d4a05cfd3-42374036053",
+      "sha": "269684c234698cb40ae661e4080e318d4a05cfd3",
+      "run_id": 42374036053,
+      "kib": 57652,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c70939d45b53c718083f01110d26b6cf12fb35b0-42372002993",
+      "sha": "c70939d45b53c718083f01110d26b6cf12fb35b0",
+      "run_id": 42372002993,
+      "kib": 57652,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/3b37e0537f50f7064ae2d8a84b5a1daee4af50aa-42365946802",
+      "sha": "3b37e0537f50f7064ae2d8a84b5a1daee4af50aa",
+      "run_id": 42365946802,
+      "kib": 57640,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9460ee76fab0c3251dcc2e85b710d1b7cfb8b432-42362258878",
+      "sha": "9460ee76fab0c3251dcc2e85b710d1b7cfb8b432",
+      "run_id": 42362258878,
+      "kib": 57628,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ebb8b2e31cc0505a83e091ae1b6dec5fd6eab5d8-42360171293",
+      "sha": "ebb8b2e31cc0505a83e091ae1b6dec5fd6eab5d8",
+      "run_id": 42360171293,
+      "kib": 57568,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/acb511cc5338911f141bc49334d515c0b21034fa-42265034726",
+      "sha": "acb511cc5338911f141bc49334d515c0b21034fa",
+      "run_id": 42265034726,
+      "kib": 57496,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c55b1615885c9e8753bb334d95f06119022963cd-42240723957",
+      "sha": "c55b1615885c9e8753bb334d95f06119022963cd",
+      "run_id": 42240723957,
+      "kib": 57480,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7d8a62ba772f5d47fd0fa8af82f97cf63dcd1f55-42236370197",
+      "sha": "7d8a62ba772f5d47fd0fa8af82f97cf63dcd1f55",
+      "run_id": 42236370197,
+      "kib": 57460,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9c543ff9ef7870d3503ec7f38fc05f2b376d0a82-42172409868",
+      "sha": "9c543ff9ef7870d3503ec7f38fc05f2b376d0a82",
+      "run_id": 42172409868,
+      "kib": 57456,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/76bf0370a06e0ab80bab5ee9af1815835ac24efc-42084130988",
+      "sha": "76bf0370a06e0ab80bab5ee9af1815835ac24efc",
+      "run_id": 42084130988,
+      "kib": 57304,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ad09174ea969505154f9a135dad3324dcf632867-42076138376",
+      "sha": "ad09174ea969505154f9a135dad3324dcf632867",
+      "run_id": 42076138376,
+      "kib": 56152,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9b0dec083a650df933b09ecd4545d782069daa62-42064630068",
+      "sha": "9b0dec083a650df933b09ecd4545d782069daa62",
+      "run_id": 42064630068,
+      "kib": 56124,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/504fd69a415488bbd4c4039e78311978a44f888c-42019877235",
+      "sha": "504fd69a415488bbd4c4039e78311978a44f888c",
+      "run_id": 42019877235,
+      "kib": 56000,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d-42006918844",
+      "sha": "436b1f85dc4319a0d22e9d00864b0fc5fdbe7e9d",
+      "run_id": 42006918844,
+      "kib": 55976,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/bc627ab12c22ba16feb0ca6cba3340fb87de31a9-41987993980",
+      "sha": "bc627ab12c22ba16feb0ca6cba3340fb87de31a9",
+      "run_id": 41987993980,
+      "kib": 55964,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/97cf47929e09fae420b2171c443b98289fa8a1b5-41978905942",
+      "sha": "97cf47929e09fae420b2171c443b98289fa8a1b5",
+      "run_id": 41978905942,
+      "kib": 55948,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/3a3893fd4d604da63e40659f07834510bc567879-41977082925",
+      "sha": "3a3893fd4d604da63e40659f07834510bc567879",
+      "run_id": 41977082925,
+      "kib": 55944,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0171ba5ad2c05c26caf4322db1837bb81fd396b7-41899167396",
+      "sha": "0171ba5ad2c05c26caf4322db1837bb81fd396b7",
+      "run_id": 41899167396,
+      "kib": 55856,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7e7a6364a3527bce1c6ec4b789468bd716f28fb4-41870966110",
+      "sha": "7e7a6364a3527bce1c6ec4b789468bd716f28fb4",
+      "run_id": 41870966110,
+      "kib": 55856,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/94982c44d7b7737bddcca46d3ebb9fb4f698abef-41835865547",
+      "sha": "94982c44d7b7737bddcca46d3ebb9fb4f698abef",
+      "run_id": 41835865547,
+      "kib": 55856,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7c31ea174dae063fc781f708b8caa105ba57feb6-41539094174",
+      "sha": "7c31ea174dae063fc781f708b8caa105ba57feb6",
+      "run_id": 41539094174,
+      "kib": 55844,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d920515952fe8bab36f1c34f8dddb44435264c3b-41533206850",
+      "sha": "d920515952fe8bab36f1c34f8dddb44435264c3b",
+      "run_id": 41533206850,
+      "kib": 55820,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/2aa5cbd89040474074678c6a04cfb099cc8235a9-41466371562",
+      "sha": "2aa5cbd89040474074678c6a04cfb099cc8235a9",
+      "run_id": 41466371562,
+      "kib": 55668,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/1ebce95af73ab53b146be15eb78c6d047d53a0a9-41461212920",
+      "sha": "1ebce95af73ab53b146be15eb78c6d047d53a0a9",
+      "run_id": 41461212920,
+      "kib": 55664,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7e8132b1a7bc02c2ef2edf3dc10cf8d2aad58668-41455392457",
+      "sha": "7e8132b1a7bc02c2ef2edf3dc10cf8d2aad58668",
+      "run_id": 41455392457,
+      "kib": 55648,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/51796fcafa16823f6c84208406a5c75682023409-41437064975",
+      "sha": "51796fcafa16823f6c84208406a5c75682023409",
+      "run_id": 41437064975,
+      "kib": 55640,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c1686b4895c2d45428a4ca492b3c56fc4d0fe286-41365449270",
+      "sha": "c1686b4895c2d45428a4ca492b3c56fc4d0fe286",
+      "run_id": 41365449270,
+      "kib": 55624,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/acce3c1351cddbcad12fb5fea11afe6ae8936001-41349120615",
+      "sha": "acce3c1351cddbcad12fb5fea11afe6ae8936001",
+      "run_id": 41349120615,
+      "kib": 55624,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/87596760f4267c9db378e8a4062e604fd22d68fa-41330031591",
+      "sha": "87596760f4267c9db378e8a4062e604fd22d68fa",
+      "run_id": 41330031591,
+      "kib": 55620,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/256744513ecc1201ee5ae3071f30cbd4a637be58-41194869109",
+      "sha": "256744513ecc1201ee5ae3071f30cbd4a637be58",
+      "run_id": 41194869109,
+      "kib": 55616,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/4eb54d210e3c4deb1e0ec398139503318ddc9482-41188114928",
+      "sha": "4eb54d210e3c4deb1e0ec398139503318ddc9482",
+      "run_id": 41188114928,
+      "kib": 55596,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/3d19aae6f9e0c9e008fe4c80e7229faa07b09cf1-41185815825",
+      "sha": "3d19aae6f9e0c9e008fe4c80e7229faa07b09cf1",
+      "run_id": 41185815825,
+      "kib": 55584,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d-41129311692",
+      "sha": "d3f507bc2d21e4e25cfab4c3ad867a9aadf33b5d",
+      "run_id": 41129311692,
+      "kib": 55556,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7828758cfe832a99c11ddeafe916b8480e501feb-41077903487",
+      "sha": "7828758cfe832a99c11ddeafe916b8480e501feb",
+      "run_id": 41077903487,
+      "kib": 55500,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/360355fd30238c11fc7bdd608b7c30f5a0140c0c-41074968191",
+      "sha": "360355fd30238c11fc7bdd608b7c30f5a0140c0c",
+      "run_id": 41074968191,
+      "kib": 55484,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a9906d6552e56f20471016a23ff98cc6535ed254-41070277597",
+      "sha": "a9906d6552e56f20471016a23ff98cc6535ed254",
+      "run_id": 41070277597,
+      "kib": 55476,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/46ffede1c368d33c25c524f967be02f2040cb1a9-41063201796",
+      "sha": "46ffede1c368d33c25c524f967be02f2040cb1a9",
+      "run_id": 41063201796,
+      "kib": 55468,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/50c542b057944c740e9424ad12f56d28e8183e98-41060582108",
+      "sha": "50c542b057944c740e9424ad12f56d28e8183e98",
+      "run_id": 41060582108,
+      "kib": 55460,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/df09eab94ccc6545e57b71a41bc24aa0011850c0-41055183388",
+      "sha": "df09eab94ccc6545e57b71a41bc24aa0011850c0",
+      "run_id": 41055183388,
+      "kib": 55436,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c6a260acef86218bb3e429c912d12746f712b75f-41051708252",
+      "sha": "c6a260acef86218bb3e429c912d12746f712b75f",
+      "run_id": 41051708252,
+      "kib": 55436,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a3fae123cf6dcb2a4ce5ffe37ddd892874e436fe-41047950067",
+      "sha": "a3fae123cf6dcb2a4ce5ffe37ddd892874e436fe",
+      "run_id": 41047950067,
+      "kib": 55428,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/4628845c9e0a7b61e2f2e24b4a6362c27fa70e55-41029345885",
+      "sha": "4628845c9e0a7b61e2f2e24b4a6362c27fa70e55",
+      "run_id": 41029345885,
+      "kib": 55432,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7000ec60007015d0ca0044190de7db68f6e25a46-40951722439",
+      "sha": "7000ec60007015d0ca0044190de7db68f6e25a46",
+      "run_id": 40951722439,
+      "kib": 55400,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/66521929f7e9ce55f7a03d669cb7821f49382f6c-40939479761",
+      "sha": "66521929f7e9ce55f7a03d669cb7821f49382f6c",
+      "run_id": 40939479761,
+      "kib": 55408,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/81544542bb40cb96e7141791ea22e4b382531d5e-40930536923",
+      "sha": "81544542bb40cb96e7141791ea22e4b382531d5e",
+      "run_id": 40930536923,
+      "kib": 55392,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/3a168a68050be1d44648086bdb190df7c556617e-40914561899",
+      "sha": "3a168a68050be1d44648086bdb190df7c556617e",
+      "run_id": 40914561899,
+      "kib": 55396,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/330f8bde7a02984e21dc59309a7d8e6fb85bac62-40877039442",
+      "sha": "330f8bde7a02984e21dc59309a7d8e6fb85bac62",
+      "run_id": 40877039442,
+      "kib": 55392,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a14d1026800822a09ee713a9e6924651be052913-40777286733",
+      "sha": "a14d1026800822a09ee713a9e6924651be052913",
+      "run_id": 40777286733,
+      "kib": 55388,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e40df7d3c532ed933541013f833b8f64e5951c47-40771509403",
+      "sha": "e40df7d3c532ed933541013f833b8f64e5951c47",
+      "run_id": 40771509403,
+      "kib": 55384,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/09510ac6e44cfd01f571b91f5e52bc2d9d6eb9df-40761965370",
+      "sha": "09510ac6e44cfd01f571b91f5e52bc2d9d6eb9df",
+      "run_id": 40761965370,
+      "kib": 55380,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/331bd97474b676bf4e22f529508a9db434dc64c6-40752209335",
+      "sha": "331bd97474b676bf4e22f529508a9db434dc64c6",
+      "run_id": 40752209335,
+      "kib": 55372,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/20ab863701bfb1b90e3a7f5a7c1357cceda3c30b-40701923049",
+      "sha": "20ab863701bfb1b90e3a7f5a7c1357cceda3c30b",
+      "run_id": 40701923049,
+      "kib": 55356,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/fc0d3779306e70362e013f088f30974725bbf8ff-40330758548",
+      "sha": "fc0d3779306e70362e013f088f30974725bbf8ff",
+      "run_id": 40330758548,
+      "kib": 55108,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d12e7c792ce796260f3fc5d07b25a395c310fcca-40317875183",
+      "sha": "d12e7c792ce796260f3fc5d07b25a395c310fcca",
+      "run_id": 40317875183,
+      "kib": 77432,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/5df4b0278129a3d66b62a19657911567d7196dee-40242443325",
+      "sha": "5df4b0278129a3d66b62a19657911567d7196dee",
+      "run_id": 40242443325,
+      "kib": 77292,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a23e393f64eeffafd75df834e6e5ba8c78213b72-40198413027",
+      "sha": "a23e393f64eeffafd75df834e6e5ba8c78213b72",
+      "run_id": 40198413027,
+      "kib": 75164,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/115a617d3660bc9e3cba48891737b56fc6ab068f-40189517120",
+      "sha": "115a617d3660bc9e3cba48891737b56fc6ab068f",
+      "run_id": 40189517120,
+      "kib": 74592,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51-40131981680",
+      "sha": "6bf57d6fe4c20fd9d9e182d3bde4253b1abc4a51",
+      "run_id": 40131981680,
+      "kib": 70592,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/065ed2a6fb797e21928d0eb5d1d5b84af0c04d93-40085679569",
+      "sha": "065ed2a6fb797e21928d0eb5d1d5b84af0c04d93",
+      "run_id": 40085679569,
+      "kib": 70516,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9-40025423618",
+      "sha": "ebc3081cbee3a1b38f75bcc2989e4bf6800b1cb9",
+      "run_id": 40025423618,
+      "kib": 70444,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/43a825e01235e66baa1601c3bc957365df011009-40009024140",
+      "sha": "43a825e01235e66baa1601c3bc957365df011009",
+      "run_id": 40009024140,
+      "kib": 70140,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c6e3328be0567a1ea4b242f18eb6d66c4e1e9202-40002714298",
+      "sha": "c6e3328be0567a1ea4b242f18eb6d66c4e1e9202",
+      "run_id": 40002714298,
+      "kib": 69520,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/313cd61ba5111f0d88e158b5107bb1160cb0d374-39997113354",
+      "sha": "313cd61ba5111f0d88e158b5107bb1160cb0d374",
+      "run_id": 39997113354,
+      "kib": 69060,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30-39987332095",
+      "sha": "ee6cff62f9b7628ec1dda7bb4c3571b7272a9b30",
+      "run_id": 39987332095,
+      "kib": 68908,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e78af565d6d89492e54f0b9e2ecb2b63a4b534c7-39937236344",
+      "sha": "e78af565d6d89492e54f0b9e2ecb2b63a4b534c7",
+      "run_id": 39937236344,
+      "kib": 68244,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/fb2e00c72eaeb576b79fc413000278df8174b153-39926289201",
+      "sha": "fb2e00c72eaeb576b79fc413000278df8174b153",
+      "run_id": 39926289201,
+      "kib": 67508,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0b03b564dfa6b20817478848fa8721fea09ca082-39922198281",
+      "sha": "0b03b564dfa6b20817478848fa8721fea09ca082",
+      "run_id": 39922198281,
+      "kib": 67172,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ab7d67d924451bc99876b76da7f3ec334579188b-39920859510",
+      "sha": "ab7d67d924451bc99876b76da7f3ec334579188b",
+      "run_id": 39920859510,
+      "kib": 67164,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/cc9c9280f137465eb59f20523d827b5502416e20-39779478133",
+      "sha": "cc9c9280f137465eb59f20523d827b5502416e20",
+      "run_id": 39779478133,
+      "kib": 53424,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/b6b4251548fc6a99a4c654dc00a70589cc8d2386-39776493246",
+      "sha": "b6b4251548fc6a99a4c654dc00a70589cc8d2386",
+      "run_id": 39776493246,
+      "kib": 53400,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/1441683ae1ae2bb9da16d8be3af62ce40f35385c-39609254832",
+      "sha": "1441683ae1ae2bb9da16d8be3af62ce40f35385c",
+      "run_id": 39609254832,
+      "kib": 53324,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/574328421fff748b48f7d744a3ce454b9b50dd1e-39603396933",
+      "sha": "574328421fff748b48f7d744a3ce454b9b50dd1e",
+      "run_id": 39603396933,
+      "kib": 53236,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/61ed73854b57ff44a6b3bf56fb3b5401c8ae7941-39598974747",
+      "sha": "61ed73854b57ff44a6b3bf56fb3b5401c8ae7941",
+      "run_id": 39598974747,
+      "kib": 53168,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/f5d6276838239ace6426aa8c326c01a213730a36-39593524611",
+      "sha": "f5d6276838239ace6426aa8c326c01a213730a36",
+      "run_id": 39593524611,
+      "kib": 53120,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/f813264b16ffd49224bd41a908adc33d9687af88-39590481900",
+      "sha": "f813264b16ffd49224bd41a908adc33d9687af88",
+      "run_id": 39590481900,
+      "kib": 53100,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/3c64dc530fa8025854f2cc8be07e74bdc1a51aab-39588673226",
+      "sha": "3c64dc530fa8025854f2cc8be07e74bdc1a51aab",
+      "run_id": 39588673226,
+      "kib": 53092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e935950ed5be7181687dadba4b1fc2daf8dd5095-39585582515",
+      "sha": "e935950ed5be7181687dadba4b1fc2daf8dd5095",
+      "run_id": 39585582515,
+      "kib": 53064,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/246dee2a4df5dc3152c1a769a9af128b87a91092-39496342888",
+      "sha": "246dee2a4df5dc3152c1a769a9af128b87a91092",
+      "run_id": 39496342888,
+      "kib": 53060,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/175f92c7a59294acff7e15fe09cbed258707fa2e-39483597831",
+      "sha": "175f92c7a59294acff7e15fe09cbed258707fa2e",
+      "run_id": 39483597831,
+      "kib": 53052,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/f47f78bfacacd8aa6dfcfd9a36eaf93be3d07d4e-39483198464",
+      "sha": "f47f78bfacacd8aa6dfcfd9a36eaf93be3d07d4e",
+      "run_id": 39483198464,
+      "kib": 53052,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/872ac1a471e4aece6963345eef3aa9ed4d8c4994-39481745765",
+      "sha": "872ac1a471e4aece6963345eef3aa9ed4d8c4994",
+      "run_id": 39481745765,
+      "kib": 53048,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/4991c91f966eb65852876fd0084dd6ad041e3b69-39472709660",
+      "sha": "4991c91f966eb65852876fd0084dd6ad041e3b69",
+      "run_id": 39472709660,
+      "kib": 52968,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/4991c91f966eb65852876fd0084dd6ad041e3b69-39472178866",
+      "sha": "4991c91f966eb65852876fd0084dd6ad041e3b69",
+      "run_id": 39472178866,
+      "kib": 52968,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/6a1c878922b45782490066478f1008f8ead1ccf9-39455223760",
+      "sha": "6a1c878922b45782490066478f1008f8ead1ccf9",
+      "run_id": 39455223760,
+      "kib": 52748,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c29b91c7eb307d5fe33f6fe12f67c3b8bfc0bff1-39447722092",
+      "sha": "c29b91c7eb307d5fe33f6fe12f67c3b8bfc0bff1",
+      "run_id": 39447722092,
+      "kib": 52684,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/190fb0763119dfb676e16611c828331eecf01cc2-39446946033",
+      "sha": "190fb0763119dfb676e16611c828331eecf01cc2",
+      "run_id": 39446946033,
+      "kib": 52640,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7c0d5ce7e931b43018a5b1cffeda8b89fde404c5-39443899457",
+      "sha": "7c0d5ce7e931b43018a5b1cffeda8b89fde404c5",
+      "run_id": 39443899457,
+      "kib": 52640,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/f4e355bee3e6cfe53efea82d36da3f842c1501c6-39437493692",
+      "sha": "f4e355bee3e6cfe53efea82d36da3f842c1501c6",
+      "run_id": 39437493692,
+      "kib": 52620,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/1d62b42326f0ce93fee92dd0c208f1584d99466f-39432933051",
+      "sha": "1d62b42326f0ce93fee92dd0c208f1584d99466f",
+      "run_id": 39432933051,
+      "kib": 52588,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/4711b822240db446589fd10a8b83ecc7b5ae2aa1-39431709085",
+      "sha": "4711b822240db446589fd10a8b83ecc7b5ae2aa1",
+      "run_id": 39431709085,
+      "kib": 52584,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/daccea3575e2f11195b1bda916832c7d81ec635c-39430685521",
+      "sha": "daccea3575e2f11195b1bda916832c7d81ec635c",
+      "run_id": 39430685521,
+      "kib": 52584,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/899f1a1f8be1580106bd03f02fd70608c3054a2e-39429875793",
+      "sha": "899f1a1f8be1580106bd03f02fd70608c3054a2e",
+      "run_id": 39429875793,
+      "kib": 52576,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a4232fd78fcea1135bcbfabbf5bd7cca3cfb2e67-39428032209",
+      "sha": "a4232fd78fcea1135bcbfabbf5bd7cca3cfb2e67",
+      "run_id": 39428032209,
+      "kib": 52572,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/313cb9aa5aea37267f796dd63e070dab8a3d92ca-39427040168",
+      "sha": "313cb9aa5aea37267f796dd63e070dab8a3d92ca",
+      "run_id": 39427040168,
+      "kib": 52572,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/2dc0f6b3d80ae4fe66407feb5b0c5be5b9117480-39426611610",
+      "sha": "2dc0f6b3d80ae4fe66407feb5b0c5be5b9117480",
+      "run_id": 39426611610,
+      "kib": 52520,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0db2a09229800bd037f3a30c937f8b087d980d01-39425486301",
+      "sha": "0db2a09229800bd037f3a30c937f8b087d980d01",
+      "run_id": 39425486301,
+      "kib": 52520,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d06f6ac132c935e46d8deff6f081781a9f633fba-39424730070",
+      "sha": "d06f6ac132c935e46d8deff6f081781a9f633fba",
+      "run_id": 39424730070,
+      "kib": 52520,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/acdbbd38e9910212d838d0c05d4fd3535041ebd7-39423820549",
+      "sha": "acdbbd38e9910212d838d0c05d4fd3535041ebd7",
+      "run_id": 39423820549,
+      "kib": 52520,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e23aa3e81a9dfeab219101aac1b90a5e21824fef-39423546754",
+      "sha": "e23aa3e81a9dfeab219101aac1b90a5e21824fef",
+      "run_id": 39423546754,
+      "kib": 52520,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/dffd4a063ef2f140bc5a1d3d1912f40b784c3bc4-39423141614",
+      "sha": "dffd4a063ef2f140bc5a1d3d1912f40b784c3bc4",
+      "run_id": 39423141614,
+      "kib": 52520,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c4f5d92fe6aa56df51ec886af01ee0b4385a18b9-39417627138",
+      "sha": "c4f5d92fe6aa56df51ec886af01ee0b4385a18b9",
+      "run_id": 39417627138,
+      "kib": 52476,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/5bff9e05da239e324fd9c7da23b770c2b7f73b83-39417281774",
+      "sha": "5bff9e05da239e324fd9c7da23b770c2b7f73b83",
+      "run_id": 39417281774,
+      "kib": 52448,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/6460d1087f71145a9b9eb80adb7282d83e78ea4f-39415133193",
+      "sha": "6460d1087f71145a9b9eb80adb7282d83e78ea4f",
+      "run_id": 39415133193,
+      "kib": 52440,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/2439a1b4afea842546f042b6b11407a5b4bb56fa-39410683370",
+      "sha": "2439a1b4afea842546f042b6b11407a5b4bb56fa",
+      "run_id": 39410683370,
+      "kib": 52416,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/fd6ccc1584beb3a3266e8147497263cb8a38044f-39402251446",
+      "sha": "fd6ccc1584beb3a3266e8147497263cb8a38044f",
+      "run_id": 39402251446,
+      "kib": 52288,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d6b10e70230f1e5497e0a59bcfaf217594523f4c-39400982446",
+      "sha": "d6b10e70230f1e5497e0a59bcfaf217594523f4c",
+      "run_id": 39400982446,
+      "kib": 52288,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/2b6bc7998d2fb621dc3a694a3c3d5102a3def54b-39277058891",
+      "sha": "2b6bc7998d2fb621dc3a694a3c3d5102a3def54b",
+      "run_id": 39277058891,
+      "kib": 52212,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7fbaf9acd14d055aa81b318bdc5593a570fbbde7-39276002304",
+      "sha": "7fbaf9acd14d055aa81b318bdc5593a570fbbde7",
+      "run_id": 39276002304,
+      "kib": 52212,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9de3ba9d1075be8f070950dab157771ba3ab359a-39274516212",
+      "sha": "9de3ba9d1075be8f070950dab157771ba3ab359a",
+      "run_id": 39274516212,
+      "kib": 52212,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0f7098cb33c31091384b58f71860368d86fd099d-39273282949",
+      "sha": "0f7098cb33c31091384b58f71860368d86fd099d",
+      "run_id": 39273282949,
+      "kib": 52192,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/b02aeddbf3a4d133199b2dece220dada061136cc-39252026915",
+      "sha": "b02aeddbf3a4d133199b2dece220dada061136cc",
+      "run_id": 39252026915,
+      "kib": 52092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c2afa43b49358a813cbd8c2a9379c7be3b4eb3cb-39249359945",
+      "sha": "c2afa43b49358a813cbd8c2a9379c7be3b4eb3cb",
+      "run_id": 39249359945,
+      "kib": 52092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/55bac2e1154fe78269f70b3d69a63df2ef137215-39246914143",
+      "sha": "55bac2e1154fe78269f70b3d69a63df2ef137215",
+      "run_id": 39246914143,
+      "kib": 52092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/098a921946fab8365aba76b8d572891b43fc1312-39245446439",
+      "sha": "098a921946fab8365aba76b8d572891b43fc1312",
+      "run_id": 39245446439,
+      "kib": 52092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9f33438cd7afecb024f852764a6284a7b71fe0e3-39244341106",
+      "sha": "9f33438cd7afecb024f852764a6284a7b71fe0e3",
+      "run_id": 39244341106,
+      "kib": 52092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7e29bdcd304d53db99fbea0fbd741019020d6586-39235686104",
+      "sha": "7e29bdcd304d53db99fbea0fbd741019020d6586",
+      "run_id": 39235686104,
+      "kib": 52044,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/76ae9ebeb4bdb774968285337aa2ccefa12eeefa-39161587218",
+      "sha": "76ae9ebeb4bdb774968285337aa2ccefa12eeefa",
+      "run_id": 39161587218,
+      "kib": 51892,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/57a9d3493c09a87a6d64ad7dc4bf726c9f463c49-39156463795",
+      "sha": "57a9d3493c09a87a6d64ad7dc4bf726c9f463c49",
+      "run_id": 39156463795,
+      "kib": 52416,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d8574fce71c697ff3cf57b37b343f37dfb647851-39155934036",
+      "sha": "d8574fce71c697ff3cf57b37b343f37dfb647851",
+      "run_id": 39155934036,
+      "kib": 52408,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/452b060cae7a025b39e86648d3e7f63fd1cf7881-39154407357",
+      "sha": "452b060cae7a025b39e86648d3e7f63fd1cf7881",
+      "run_id": 39154407357,
+      "kib": 52408,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/219995ed99ad0b693ac8443578240d5b464fe217-39154092013",
+      "sha": "219995ed99ad0b693ac8443578240d5b464fe217",
+      "run_id": 39154092013,
+      "kib": 52408,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/219995ed99ad0b693ac8443578240d5b464fe217-39153801080",
+      "sha": "219995ed99ad0b693ac8443578240d5b464fe217",
+      "run_id": 39153801080,
+      "kib": 52408,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/26b62e1654bba901b3647ba9f666f4e86ee97190-39136803819",
+      "sha": "26b62e1654bba901b3647ba9f666f4e86ee97190",
+      "run_id": 39136803819,
+      "kib": 52392,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/99d6d633f049cc8d0c23289d09c20794e83cb74b-39030808927",
+      "sha": "99d6d633f049cc8d0c23289d09c20794e83cb74b",
+      "run_id": 39030808927,
+      "kib": 52388,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/44a651fa5a49f6f5e8973fa938f0e66e1b1eb897-39030184038",
+      "sha": "44a651fa5a49f6f5e8973fa938f0e66e1b1eb897",
+      "run_id": 39030184038,
+      "kib": 52388,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/37623d3d53e3ea7db8d7e9d2cc82b2039f6a01ae-38934034754",
+      "sha": "37623d3d53e3ea7db8d7e9d2cc82b2039f6a01ae",
+      "run_id": 38934034754,
+      "kib": 52352,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/3204d66b1ee6e025bd513ed3aa12fa4ec220e4c2-38911652908",
+      "sha": "3204d66b1ee6e025bd513ed3aa12fa4ec220e4c2",
+      "run_id": 38911652908,
+      "kib": 52324,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/276a5969314c7ae5834433b9ebe65f31dd80a267-38904105596",
+      "sha": "276a5969314c7ae5834433b9ebe65f31dd80a267",
+      "run_id": 38904105596,
+      "kib": 52304,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/276a5969314c7ae5834433b9ebe65f31dd80a267-38898916241",
+      "sha": "276a5969314c7ae5834433b9ebe65f31dd80a267",
+      "run_id": 38898916241,
+      "kib": 52304,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a6f92e0f8d77b79c96344c64a63beb5681e4da86-38775571533",
+      "sha": "a6f92e0f8d77b79c96344c64a63beb5681e4da86",
+      "run_id": 38775571533,
+      "kib": 52284,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/978798e35c0ad51e0c2e141232078138a19bb8f7-38768530436",
+      "sha": "978798e35c0ad51e0c2e141232078138a19bb8f7",
+      "run_id": 38768530436,
+      "kib": 52280,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/42cbe6bba4b7bffd3d44410d5808fb99e5aa6d7f-38753299248",
+      "sha": "42cbe6bba4b7bffd3d44410d5808fb99e5aa6d7f",
+      "run_id": 38753299248,
+      "kib": 52264,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d041eec17b672843ef3e3f74d839da3a9a0d98fb-38749435557",
+      "sha": "d041eec17b672843ef3e3f74d839da3a9a0d98fb",
+      "run_id": 38749435557,
+      "kib": 52260,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/90067fa6434afddc9483bf9d9ace589df2cf0bbf-38747056536",
+      "sha": "90067fa6434afddc9483bf9d9ace589df2cf0bbf",
+      "run_id": 38747056536,
+      "kib": 52260,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/90067fa6434afddc9483bf9d9ace589df2cf0bbf-38742513409",
+      "sha": "90067fa6434afddc9483bf9d9ace589df2cf0bbf",
+      "run_id": 38742513409,
+      "kib": 52260,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/fd3251720c8d8ee337d79b9e830e11315724413f-38741749502",
+      "sha": "fd3251720c8d8ee337d79b9e830e11315724413f",
+      "run_id": 38741749502,
+      "kib": 52276,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d64141fc7a72a553507846a09ea81fa87125a5b0-38723373164",
+      "sha": "d64141fc7a72a553507846a09ea81fa87125a5b0",
+      "run_id": 38723373164,
+      "kib": 52152,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c745afa5b502fa46884e09ce6308aac78d2cd9bb-38559658036",
+      "sha": "c745afa5b502fa46884e09ce6308aac78d2cd9bb",
+      "run_id": 38559658036,
+      "kib": 52116,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/2905c985a88bca2890df917d877eac8b9a7f6420-38552820201",
+      "sha": "2905c985a88bca2890df917d877eac8b9a7f6420",
+      "run_id": 38552820201,
+      "kib": 51992,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/2751f953455c004a96a7304a67b3c62c2bd70c2a-38552030655",
+      "sha": "2751f953455c004a96a7304a67b3c62c2bd70c2a",
+      "run_id": 38552030655,
+      "kib": 51992,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/82547116945755529d31dff127c62a8e0f5ec345-38094706416",
+      "sha": "82547116945755529d31dff127c62a8e0f5ec345",
+      "run_id": 38094706416,
+      "kib": 51988,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/16b7d4d60883f3f4f655c097339339c68c1be07d-37886677875",
+      "sha": "16b7d4d60883f3f4f655c097339339c68c1be07d",
+      "run_id": 37886677875,
+      "kib": 51984,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/134fcb037bbfc62c13ca5df36695407d8d783f65-37778058404",
+      "sha": "134fcb037bbfc62c13ca5df36695407d8d783f65",
+      "run_id": 37778058404,
+      "kib": 51956,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7ad2104652efcba978bd5661ebe0c6b02977ff4b-37766211885",
+      "sha": "7ad2104652efcba978bd5661ebe0c6b02977ff4b",
+      "run_id": 37766211885,
+      "kib": 51924,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0d20a2cc807c2f4a06c6cc92972c47946bb87716-37701308547",
+      "sha": "0d20a2cc807c2f4a06c6cc92972c47946bb87716",
+      "run_id": 37701308547,
+      "kib": 51880,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/fabd68848490225245a6b79b30e9819fa4db1f25-37700920583",
+      "sha": "fabd68848490225245a6b79b30e9819fa4db1f25",
+      "run_id": 37700920583,
+      "kib": 51880,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/d856215f4bce607fb9fa22dba8199a8763a217cc-37699638201",
+      "sha": "d856215f4bce607fb9fa22dba8199a8763a217cc",
+      "run_id": 37699638201,
+      "kib": 51880,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/6ee86267441ac5c94532cdeb6113dceabde904b0-37697156729",
+      "sha": "6ee86267441ac5c94532cdeb6113dceabde904b0",
+      "run_id": 37697156729,
+      "kib": 51876,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c1aacb2dbd8f64a90ac713a04ab4b503aba43960-37693824958",
+      "sha": "c1aacb2dbd8f64a90ac713a04ab4b503aba43960",
+      "run_id": 37693824958,
+      "kib": 51872,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c1aacb2dbd8f64a90ac713a04ab4b503aba43960-37664994379",
+      "sha": "c1aacb2dbd8f64a90ac713a04ab4b503aba43960",
+      "run_id": 37664994379,
+      "kib": 51872,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/49c38c72c6704826182aff7f59855f47b5818bb8-37636084395",
+      "sha": "49c38c72c6704826182aff7f59855f47b5818bb8",
+      "run_id": 37636084395,
+      "kib": 51792,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ccf71ac5f5479571d26e14e27790f0da369840de-37634269407",
+      "sha": "ccf71ac5f5479571d26e14e27790f0da369840de",
+      "run_id": 37634269407,
+      "kib": 51792,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/deea75bf12a528609920d8f2b3c6c8652ac940b3-37633168687",
+      "sha": "deea75bf12a528609920d8f2b3c6c8652ac940b3",
+      "run_id": 37633168687,
+      "kib": 51796,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/5917b525a13c1aa74a4807d85c965a8eea6c8a2b-37631754019",
+      "sha": "5917b525a13c1aa74a4807d85c965a8eea6c8a2b",
+      "run_id": 37631754019,
+      "kib": 51796,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/1893c25481a9f9c2209002a82d48e062065666a5-37629360071",
+      "sha": "1893c25481a9f9c2209002a82d48e062065666a5",
+      "run_id": 37629360071,
+      "kib": 51796,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/933cf5f6a78ab8946d85873fee2224f3fe93f837-37627295663",
+      "sha": "933cf5f6a78ab8946d85873fee2224f3fe93f837",
+      "run_id": 37627295663,
+      "kib": 51796,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/623e161e0b2d7eefeffe6d87d4586926265ba02a-37605872735",
+      "sha": "623e161e0b2d7eefeffe6d87d4586926265ba02a",
+      "run_id": 37605872735,
+      "kib": 51796,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/8e7735bc14edf379d7064128105b407b86fd562d-37605120447",
+      "sha": "8e7735bc14edf379d7064128105b407b86fd562d",
+      "run_id": 37605120447,
+      "kib": 51796,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/126164927da819fe0a26b0eeadf50dae1731d5f4-37602884881",
+      "sha": "126164927da819fe0a26b0eeadf50dae1731d5f4",
+      "run_id": 37602884881,
+      "kib": 51784,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/cfd38a4159c9e4515515ffd2dd124e002496c699-36712994231",
+      "sha": "cfd38a4159c9e4515515ffd2dd124e002496c699",
+      "run_id": 36712994231,
+      "kib": 51736,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/b5dd873d48fb985114faa346415c080219d510ab-36129615696",
+      "sha": "b5dd873d48fb985114faa346415c080219d510ab",
+      "run_id": 36129615696,
+      "kib": 51724,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/34115a9094a9681565762f662e8a6b37d685de3b-36128652555",
+      "sha": "34115a9094a9681565762f662e8a6b37d685de3b",
+      "run_id": 36128652555,
+      "kib": 51724,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e5e3bf121d80ad86cf334afb14d50d54ff167c4b-36127953124",
+      "sha": "e5e3bf121d80ad86cf334afb14d50d54ff167c4b",
+      "run_id": 36127953124,
+      "kib": 51724,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/3ba2ae94d57b5a2aac37ceb55ce2ce3167ab02b1-36026495118",
+      "sha": "3ba2ae94d57b5a2aac37ceb55ce2ce3167ab02b1",
+      "run_id": 36026495118,
+      "kib": 41948,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0a8ce5fbb364ee4ce1aad0850f44bba2a60348c8-36025894371",
+      "sha": "0a8ce5fbb364ee4ce1aad0850f44bba2a60348c8",
+      "run_id": 36025894371,
+      "kib": 41948,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a693ceb4114c1b5e1d482d98fad65ff25d8c3809-36025303287",
+      "sha": "a693ceb4114c1b5e1d482d98fad65ff25d8c3809",
+      "run_id": 36025303287,
+      "kib": 41948,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/2b0c3800188e55e4e7dfba20852f72153038177e-35908259273",
+      "sha": "2b0c3800188e55e4e7dfba20852f72153038177e",
+      "run_id": 35908259273,
+      "kib": 38960,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/fba22b847a657c22a37ce5c283f8cbe89961c313-35897390576",
+      "sha": "fba22b847a657c22a37ce5c283f8cbe89961c313",
+      "run_id": 35897390576,
+      "kib": 37092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/5fdf0f85af6641f35852772582b74d3502c5bef4-35781322580",
+      "sha": "5fdf0f85af6641f35852772582b74d3502c5bef4",
+      "run_id": 35781322580,
+      "kib": 37092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/01fcd420d2986d75ad1866e9c70a9726ee089d40-35769331436",
+      "sha": "01fcd420d2986d75ad1866e9c70a9726ee089d40",
+      "run_id": 35769331436,
+      "kib": 37060,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/1d7fe4fd3086001478db32ad9cf540dfb287c4bb-35745661167",
+      "sha": "1d7fe4fd3086001478db32ad9cf540dfb287c4bb",
+      "run_id": 35745661167,
+      "kib": 37016,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/1f80e7e7a3e5d47ff0de47045ce7ee7a64084689-35743390315",
+      "sha": "1f80e7e7a3e5d47ff0de47045ce7ee7a64084689",
+      "run_id": 35743390315,
+      "kib": 37012,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0135e34e47243ba983ee9239ab67087a5b6f35f1-35729597409",
+      "sha": "0135e34e47243ba983ee9239ab67087a5b6f35f1",
+      "run_id": 35729597409,
+      "kib": 36396,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/77d38a95f45baf23864bd194f5a27e5e05c47b95-35720431929",
+      "sha": "77d38a95f45baf23864bd194f5a27e5e05c47b95",
+      "run_id": 35720431929,
+      "kib": 36304,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/b4626655a9c0def59e562020c99e8ee0586263a4-35718995067",
+      "sha": "b4626655a9c0def59e562020c99e8ee0586263a4",
+      "run_id": 35718995067,
+      "kib": 36304,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/f9b28840eb282887cbc1e767d6677c30b9f64f09-35717421355",
+      "sha": "f9b28840eb282887cbc1e767d6677c30b9f64f09",
+      "run_id": 35717421355,
+      "kib": 36300,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/5aaf054aacbe0b1cdc9e4b3512427ed1e04cf062-35716613832",
+      "sha": "5aaf054aacbe0b1cdc9e4b3512427ed1e04cf062",
+      "run_id": 35716613832,
+      "kib": 36300,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/6affbbf169cf62c2466df8d46513af6ac9e2ba0d-35716024237",
+      "sha": "6affbbf169cf62c2466df8d46513af6ac9e2ba0d",
+      "run_id": 35716024237,
+      "kib": 36300,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a5d964f233403ded6f0207043850007e9f1a3fff-35637790385",
+      "sha": "a5d964f233403ded6f0207043850007e9f1a3fff",
+      "run_id": 35637790385,
+      "kib": 36272,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/abddf9aa43143a50e6d28cc66ae9872c8c070ad9-34368708480",
+      "sha": "abddf9aa43143a50e6d28cc66ae9872c8c070ad9",
+      "run_id": 34368708480,
+      "kib": 36236,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/53d446a1af36aff35615cecf17705ee866ae1ee5-34366996165",
+      "sha": "53d446a1af36aff35615cecf17705ee866ae1ee5",
+      "run_id": 34366996165,
+      "kib": 36228,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9de214e78b2abbaac06f6adce23bdb43c0226eba-34361992599",
+      "sha": "9de214e78b2abbaac06f6adce23bdb43c0226eba",
+      "run_id": 34361992599,
+      "kib": 36212,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/24aa51c042f5cad46dcc4ece50a155c80bb1b368-34213705707",
+      "sha": "24aa51c042f5cad46dcc4ece50a155c80bb1b368",
+      "run_id": 34213705707,
+      "kib": 36132,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/11f7b1fe883b16b3ccd2d35fe0f4f674fb405647-32775632074",
+      "sha": "11f7b1fe883b16b3ccd2d35fe0f4f674fb405647",
+      "run_id": 32775632074,
+      "kib": 35016,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/30a357551b1e9f483055bf190260deb491d36823-32734119026",
+      "sha": "30a357551b1e9f483055bf190260deb491d36823",
+      "run_id": 32734119026,
+      "kib": 34900,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c6369b410a6cbc336acfd1d78e1f046eeca9e38a-32733027246",
+      "sha": "c6369b410a6cbc336acfd1d78e1f046eeca9e38a",
+      "run_id": 32733027246,
+      "kib": 34900,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/7f620b57d0e10f03e1c8274053c3a6affa882639-32643921241",
+      "sha": "7f620b57d0e10f03e1c8274053c3a6affa882639",
+      "run_id": 32643921241,
+      "kib": 34868,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0cce35a3136cdc6129fc99881f7cc56751b9ea35-32642425656",
+      "sha": "0cce35a3136cdc6129fc99881f7cc56751b9ea35",
+      "run_id": 32642425656,
+      "kib": 34868,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/a380e0a839368c5193dca090103dd244fe437952-32639314197",
+      "sha": "a380e0a839368c5193dca090103dd244fe437952",
+      "run_id": 32639314197,
+      "kib": 34872,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c5a02e6fe650cc2c073d5d693c04ea3ab6b104f4-32630309160",
+      "sha": "c5a02e6fe650cc2c073d5d693c04ea3ab6b104f4",
+      "run_id": 32630309160,
+      "kib": 34872,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e6b154bcbca09dee3f977cadfe86061103ee62b8-32595605006",
+      "sha": "e6b154bcbca09dee3f977cadfe86061103ee62b8",
+      "run_id": 32595605006,
+      "kib": 34872,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/33efd29cc992afa914f0c54d8dacb795503bb781-32512843356",
+      "sha": "33efd29cc992afa914f0c54d8dacb795503bb781",
+      "run_id": 32512843356,
+      "kib": 34728,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/00bf6c6bf8d7c3af207b0ca8a794109417ac45c6-32472693942",
+      "sha": "00bf6c6bf8d7c3af207b0ca8a794109417ac45c6",
+      "run_id": 32472693942,
+      "kib": 34648,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c5f638f57ca52d717265700f2ffd5e3fe96972a5-32451651704",
+      "sha": "c5f638f57ca52d717265700f2ffd5e3fe96972a5",
+      "run_id": 32451651704,
+      "kib": 34644,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/b2f5523f0cc50c32d0d29c97674ae57c4ad14e34-32418793534",
+      "sha": "b2f5523f0cc50c32d0d29c97674ae57c4ad14e34",
+      "run_id": 32418793534,
+      "kib": 34472,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/612c793a170ad2572ac379ac64103adc54db91fa-32245326447",
+      "sha": "612c793a170ad2572ac379ac64103adc54db91fa",
+      "run_id": 32245326447,
+      "kib": 34408,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0e43a8bbccde14bccff47dcd85710f58526ba697-31966862633",
+      "sha": "0e43a8bbccde14bccff47dcd85710f58526ba697",
+      "run_id": 31966862633,
+      "kib": 34164,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/2f1161262febd4d8d06fbbb2f324107dff7b1a78-31966025460",
+      "sha": "2f1161262febd4d8d06fbbb2f324107dff7b1a78",
+      "run_id": 31966025460,
+      "kib": 34036,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/44dd1c19181b8ec6b428c19ebf2351210f4f4c02-31956663648",
+      "sha": "44dd1c19181b8ec6b428c19ebf2351210f4f4c02",
+      "run_id": 31956663648,
+      "kib": 34012,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/85dc547a9a3d0146b28b739ec7020ab9a822d5c6-31849487137",
+      "sha": "85dc547a9a3d0146b28b739ec7020ab9a822d5c6",
+      "run_id": 31849487137,
+      "kib": 33824,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/c735fb93eeabafe22eff92a909cad81d14f0104c-31848052952",
+      "sha": "c735fb93eeabafe22eff92a909cad81d14f0104c",
+      "run_id": 31848052952,
+      "kib": 33816,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e229f733cfe44aea97abb92731c2ff5e1a480cac-31444075242",
+      "sha": "e229f733cfe44aea97abb92731c2ff5e1a480cac",
+      "run_id": 31444075242,
+      "kib": 33808,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/0ce72d314fa92ee65f043f99d7b6cda8c7243a9d-31436854302",
+      "sha": "0ce72d314fa92ee65f043f99d7b6cda8c7243a9d",
+      "run_id": 31436854302,
+      "kib": 33472,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/340edb80d0240780b1c5cce7cbca195ef492f3b4-31435848888",
+      "sha": "340edb80d0240780b1c5cce7cbca195ef492f3b4",
+      "run_id": 31435848888,
+      "kib": 33472,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/ef022a9e68f4d8a242e8a2b92fee3be5f0a92c9f-31432849863",
+      "sha": "ef022a9e68f4d8a242e8a2b92fee3be5f0a92c9f",
+      "run_id": 31432849863,
+      "kib": 33460,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/6993693c7cd133ede8a5c2e666468a2b3cc6c8b1-31432462031",
+      "sha": "6993693c7cd133ede8a5c2e666468a2b3cc6c8b1",
+      "run_id": 31432462031,
+      "kib": 33452,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/6993693c7cd133ede8a5c2e666468a2b3cc6c8b1-31432225018",
+      "sha": "6993693c7cd133ede8a5c2e666468a2b3cc6c8b1",
+      "run_id": 31432225018,
+      "kib": 33452,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/5336d309370a3a6d8d2a36ea4f83c7828567f72a-31424918271",
+      "sha": "5336d309370a3a6d8d2a36ea4f83c7828567f72a",
+      "run_id": 31424918271,
+      "kib": 33448,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/9b135cda77b2eca0d6d04e975f7c51bb80a8a94e-31423958627",
+      "sha": "9b135cda77b2eca0d6d04e975f7c51bb80a8a94e",
+      "run_id": 31423958627,
+      "kib": 33448,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/34c185b64643e531ced4ac53004b23aa11593cbb-31409725853",
+      "sha": "34c185b64643e531ced4ac53004b23aa11593cbb",
+      "run_id": 31409725853,
+      "kib": 33440,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/fe4997ed1ef5c78ee8eb21274a221e0e411e17e0-31401440915",
+      "sha": "fe4997ed1ef5c78ee8eb21274a221e0e411e17e0",
+      "run_id": 31401440915,
+      "kib": 33436,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/e4a5dc07f28570a0a56a9040ce7acc5578276a5a-31340114330",
+      "sha": "e4a5dc07f28570a0a56a9040ce7acc5578276a5a",
+      "run_id": 31340114330,
+      "kib": 33404,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/080f66a650e794af8c02f9cfffd6bf4799230ef4-31309163626",
+      "sha": "080f66a650e794af8c02f9cfffd6bf4799230ef4",
+      "run_id": 31309163626,
+      "kib": 33380,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/91c4a0bf2dbd2c66bd6897c6c2ea2d54399e5b45-31297782515",
+      "sha": "91c4a0bf2dbd2c66bd6897c6c2ea2d54399e5b45",
+      "run_id": 31297782515,
+      "kib": 29092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/91c4a0bf2dbd2c66bd6897c6c2ea2d54399e5b45-31245815284",
+      "sha": "91c4a0bf2dbd2c66bd6897c6c2ea2d54399e5b45",
+      "run_id": 31245815284,
+      "kib": 29092,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/5c99509e60c3a8512a596783844068f6d165e38d-31160805599",
+      "sha": "5c99509e60c3a8512a596783844068f6d165e38d",
+      "run_id": 31160805599,
+      "kib": 29156,
+      "disposition": "candidate"
+    },
+    {
+      "path": "data/.kis-deploy/releases/fadd983ce3cb7e24c3c5df01971102570fbeab39-31157923182",
+      "sha": "fadd983ce3cb7e24c3c5df01971102570fbeab39",
+      "run_id": 31157923182,
+      "kib": 29152,
+      "disposition": "candidate"
+    }
+  ]
+}
