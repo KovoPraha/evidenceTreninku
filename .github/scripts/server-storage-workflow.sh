@@ -78,7 +78,9 @@ if [ "$STORAGE_PHASE" = restore_db ]; then
     sleep 2
   done
   test "$READY" = 1
-  docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+  # Hosting dump includes USE kovoprahacz09; create that schema only inside
+  # the isolated container before importing it.
+  docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE DATABASE kovoprahacz09 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
   gzip -dc "$RESTORE_TMP/kovoprahacz09.sql.gz" | docker exec -i "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" kis_restore
   TABLES=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA IN ('kis_restore','kovoprahacz09') AND TABLE_TYPE='BASE TABLE'")
   TRIGGERS=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA IN ('kis_restore','kovoprahacz09')")
