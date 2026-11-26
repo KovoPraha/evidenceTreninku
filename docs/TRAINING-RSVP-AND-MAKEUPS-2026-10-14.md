@@ -1,5 +1,41 @@
 # Účast na tréninku a návrh náhradních lekcí
 
+## KIS-ROSTER-CALENDAR-01 — veřejný a osobní kalendář (26. 11. 2026)
+
+**Stav:** K OVĚŘENÍ (místní testy PASS, PR/CI/UAT otevřené); vlastník vývoj KIS,
+zadání vlastníka 26. 11. 2026.
+Větev `codex/athlete-roster-calendar-20261126`, izolovaný worktree
+`C:\Users\Marek\Documents\Codex\evidencePavel-athlete-roster-calendar-20261126`,
+base `origin/main` `cbc0da53`. [Registr](WORK_PLAN_CURRENT.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-tréninků-26-11-2026),
+[výsledky](verification/athlete-roster-calendar-20261126/RESULTS.md).
+
+**Zjištění a rozsah.** `booking/treninky.php` čte jen veřejně označené plánované
+tréninky přes `publicTrainingSchedule()`. Jde o klubový rozvrh i při přihlášeném
+sportovci. Neurčitý název „Tréninky“ v hlavní navigaci vedl sportovce sem a
+vytvářel dojem osobního kalendáře. Osobní měsíční kalendář v `muj_sport.php`
+volá `trainingRsvpUpcomingForChild()`, který po ověření identity na serveru
+kontroluje cílovou soupisku a členství v den tréninku. Rodinný přehled a
+soukromý ICS používají obdobnou kontrolu; `soupiskove_treninky.php` ukazuje
+časově platnou historii a skutečnou účast. Zdroj pravdy je
+`club_roster_members` spolu s `training_roster_links` a hierarchií soupisek.
+
+**Rozhodnutí/postup.** Zachovat veřejný SELECT, zveřejnění a stávající
+serverovou kontrolu osobních dat. Výslovně označit klubový rozvrh a přidat
+přihlášenému sportovci přímý vstup do jeho kalendáře. Alternativa filtrovat
+veřejnou stránku podle session by změnila veřejný význam URL a skryla
+zveřejněné tréninky návštěvníkům. Nová tabulka, úprava členství a tréninků,
+docházky či RSVP nejsou potřeba. Akceptace: dvě současné soupisky, vyloučení
+cizí, poslední platný den a den po odebrání, zrušené členství, nezměněný
+veřejný seznam a explicitní navigace. Přihlášené UAT a produkční vydání jsou
+samostatné kroky po PR review a CI.
+
+**Implementace a další krok.** Hlavní navigace nyní výslovně říká „Veřejné
+tréninky“ a přihlášenému sportovci nabízí „Moje tréninky“ do kalendáře v jeho
+ověřeném profilu. Dotčené SELECTy, RSVP, docházka a publikace beze změny.
+Místní syntetické a regresní testy PASS; další krok PR, zelené CI, review a
+přihlášená přejímka podle protokolu. Merge/deploy NOT RUN.
+
+
 ## TRAINING-PLAN-ACL-01 — plánování správcem a kolize (21. 11. 2026)
 
 Stav: KÓD NASAZEN, přihlášené UAT otevřené. Vlastník: vývoj KIS. Oprávnění: zadání vlastníka a výslovný pokyn „merge a nasadit“ z 21. 11. 2026; produkční testovací zápis ani aktivace další automatiky nebyly zadány. Implementace `codex/training-plan-admin-collision-20261121` v [PR #508](https://github.com/KovoPraha/evidenceTreninku/pull/508), release dokumentace `codex/training-plan-admin-release-20261121` ve vlastním worktree.

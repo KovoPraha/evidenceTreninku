@@ -1,5 +1,9 @@
 # Rozhodovací log a rejstřík uzavřených plánů
 
+## D2026-11-26-04 — veřejný rozvrh ponechat pro všechny, sportovci zpřístupnit osobní vstup
+
+Na základě zadání vlastníka 26. 11. zůstává `booking/treninky.php` veřejným rozvrhem podle příznaku publikace i po přihlášení. V hlavní navigaci bude takto výslovně označen a sportovec získá samostatný přímý odkaz do již serverově filtrovaného kalendáře v „Můj sport“. Filtrovat veřejné URL podle session by změnilo význam stejné adresy; další evidence členství by zdvojila `club_roster_members`. [Rozsah](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-26-11-2026), [důkazy](verification/athlete-roster-calendar-20261126/RESULTS.md).
+
 ## D2026-11-26-03 — obnovu hostingu prověřit odděleně od produkce
 
 Po ověření shodných počtů a velikostí WWW generace a dostupnosti `kovoprahacz09.sql.gz` se skutečná obnovitelnost prověří v dočasném runneru a izolovaném kontejneru MariaDB. Produkční DB ani živé soukromé soubory nejsou cílem této zkoušky. Důvod: seznam snapshotů ani přítomnost souboru neprokazují úspěšný import a čitelnost. Akceptace: SQL gzip integrita, dokončený import, nejméně 390 tabulek a dva triggery; všech 57 soukromých souborů přenesených se shodným součtem bajtů. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md#připojená-hostingová-www-záloha-26-11), [protokol](verification/server-storage-20261125/RESULTS.md).

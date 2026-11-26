@@ -57,7 +57,7 @@ function publicShellNav(string $active = ''): void
         'home' => ['Domů', 'index.php'],
         'programs' => ['Kroužky', 'booking/cyklisticke_krouzky.php'],
         'shop' => ['E-shop', 'booking/eshop.php'],
-        'training' => ['Tréninky', 'booking/treninky.php'],
+        'training' => ['Veřejné tréninky', 'booking/treninky.php'],
         'calendar' => ['Akce a kalendář', 'booking/klubovy_kalendar.php'],
         'lessons' => ['Individuální lekce', 'booking/kalendar.php'],
         'velodrome' => ['Velodrom', 'booking/velodrom.php'],
@@ -82,6 +82,9 @@ function publicShellNav(string $active = ''): void
  publicShellH($label) ?></a></li>
             <?php endforeach; ?>
           </ul>
+          <?php if ($athlete): ?>
+            <a class="btn btn-outline-primary btn-sm me-xxl-2 mb-2 mb-xxl-0" href="<?= publicShellH(appUiUrl('booking/muj_sport.php')) ?>#potvrzeni-treninku">Moje tréninky</a>
+          <?php endif; ?>
           <div class="d-flex flex-column flex-xxl-row align-items-stretch align-items-xxl-center gap-2 ms-xxl-2 pb-2 pb-xxl-0">
             <?php if ($customer): ?>
               <a class="btn btn-outline-primary btn-sm" href="<?= publicShellH(appUiUrl('booking/sportovni_prehled.php')) ?>"><i class="bi bi-person-heart me-1"></i>Můj přehled</a>
