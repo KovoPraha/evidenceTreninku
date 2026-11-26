@@ -3,7 +3,7 @@
 ## KIS-ROSTER-CALENDAR-01 — veřejný a osobní kalendář (26. 11. 2026)
 
 **Stav:** K OVĚŘENÍ v [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543)
-(místní testy PASS, CI/review/UAT otevřené); vlastník vývoj KIS,
+(místní testy a finální kódové CI PASS; review/UAT otevřené); vlastník vývoj KIS,
 zadání vlastníka 26. 11. 2026.
 Větev `codex/athlete-roster-calendar-20261126`, izolovaný worktree
 `C:\Users\Marek\Documents\Codex\evidencePavel-athlete-roster-calendar-20261126`,
@@ -37,8 +37,8 @@ docházka a publikace beze změny. Původní pokus upravit společnou navigaci
 narazil v CI na historické výkonnostní parity s fixním obsahem `ui_shell.php`;
 společná navigace proto zůstává beze změny.
 Místní syntetické a regresní testy PASS; commit `882cce77` pushnut do PR #543.
-Další krok zelené CI, review a
-přihlášená přejímka podle protokolu. Merge/deploy NOT RUN.
+Finální kódové CI po převzetí `main` jako `a600db94` PASS.
+Další krok review a přihlášená přejímka podle protokolu. Merge/deploy NOT RUN.
 
 
 ## TRAINING-PLAN-ACL-01 — plánování správcem a kolize (21. 11. 2026)

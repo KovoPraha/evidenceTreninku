@@ -2,7 +2,7 @@
 
 ## KIS-ROSTER-CALENDAR-01 — veřejný a osobní kalendář tréninků (26. 11. 2026)
 
-K OVĚŘENÍ v [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543), větev `codex/athlete-roster-calendar-20261126` v izolovaném worktree z `origin/main` `cbc0da53`; vlastník vývoj KIS. [Příčina, rozsah, rozhodnutí a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-26-11-2026), [protokol](verification/athlete-roster-calendar-20261126/RESULTS.md). Závislost: existující časově platné členství a cílení tréninků. Místní testy PASS; první CI `882cce77` odhalilo fixní paritu společné navigace, proto je úprava přesunuta na veřejnou stránku. Další krok nové CI, review a přihlášená přejímka sportovce; merge/deploy/UAT NOT RUN.
+K OVĚŘENÍ v [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543), větev `codex/athlete-roster-calendar-20261126` v izolovaném worktree z `origin/main` `cbc0da53`, převzatý `main` `e8f2a3b5`; vlastník vývoj KIS. [Příčina, rozsah, rozhodnutí a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-26-11-2026), [protokol](verification/athlete-roster-calendar-20261126/RESULTS.md). Závislost: existující časově platné členství a cílení tréninků. Místní testy a finální kódové CI `a600db94` PASS. Další krok review a přihlášená přejímka sportovce; merge/deploy/UAT NOT RUN.
 
 ## SERVER-STORAGE-01 — inventura kapacity hostingu (25. 11. 2026)
 
