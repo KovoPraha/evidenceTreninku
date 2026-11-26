@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // Executed only from data/.kis-deploy on the production host. Never print
