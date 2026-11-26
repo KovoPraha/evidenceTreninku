@@ -7,7 +7,9 @@ import sys
 
 
 def main() -> int:
-    first_line = sys.stdin.buffer.readline().rstrip(b"\r\n")
+    # The hosting exporter ends this directive with one ASCII space. Ignore
+    # horizontal trailing whitespace on this line only, never in SQL data.
+    first_line = sys.stdin.buffer.readline().rstrip(b"\r\n").rstrip(b" \t")
     if first_line != b"/*M!999999\\- enable the sandbox mode */":
         print("Unexpected hosting dump header; refusing to alter SQL stream.", file=sys.stderr)
         # The directive itself is public format metadata. Never print an
