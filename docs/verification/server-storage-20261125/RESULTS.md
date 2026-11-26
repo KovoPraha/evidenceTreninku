@@ -1,5 +1,9 @@
 # SERVER-STORAGE-01 — výsledky
 
+## Čtecí struktura hostingové WWW generace 26. 11.
+
+[PR #536](https://github.com/KovoPraha/evidenceTreninku/pull/536) po zelených kontrolách sloučen jako `3f93f696`. Chráněný [běh 45832051776](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45832051776) z `main` **PASS**: v připojené generaci z 26. 11. 02:59 jsou adresáře `backups/kis.kovopraha.cz/` a `backups/data/kis-private/`, včetně KIS `uploads/`, `nahrane_obrazky/` a markerů `var/deployment.json`. Šlo o čtení struktury; soubory a DB ještě nebyly obnoveny. Obsahová kontrola WWW a připojení DB generace **NOT RUN**. Chráněné fáze `verify_www` a `inspect_db` se připravují na větvi `codex/hosting-backup-content-20261126`.
+
 ## Připojení WWW generace 26. 11. 2026
 
 Přihlášená správa domény `kovopraha.cz` vypsala nejnovější WWW generaci **26. 11. 02:59:07**. Po volbě `Připojit zálohu` panel potvrdil, že je od **26. 11. 14:26:12** připojená do čtecího adresáře `backups/` na serveru a bude automaticky odpojena po hodině. Obsah souborů, úplnost soukromých příloh a obnova dat **NOT RUN**; následuje chráněná SSH kontrola připojené generace. DB generace dosud nepřipojena.
