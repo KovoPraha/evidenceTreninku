@@ -1,0 +1,96 @@
+name: Chraneny uklid uloziste KIS
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: 'Nejprve cteci preview; apply maze pouze presne potvrzeny plan'
+        required: true
+        type: choice
+        options: [preview, apply]
+      potvrzeni:
+        description: 'Pro spusteni napiste presne PROVEST'
+        required: true
+        type: string
+      digest:
+        description: 'Pouze apply: SHA-256 digest planu z preview'
+        type: string
+      storage_confirm:
+        description: 'Pouze apply: napiste presne SMAZAT-KIS-KOPIE-A-ZALOHY'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: produkce-kis
+  cancel-in-progress: false
+
+env:
+  APP_HOST: ${{ vars.KIS_APP_HOST }}
+  REMOTE_DIR: ${{ vars.KIS_REMOTE_DIR }}
+  DEPLOY_BASE: data/.kis-deploy
+  BACKUP_DIR: data/.kis-backups
+
+jobs:
+  cleanup:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: production
+    steps:
+      - name: Overit potvrzeni a konfiguraci
+        env:
+          POTVRZENI: ${{ inputs.potvrzeni }}
+        run: |
+          test "$POTVRZENI" = PROVEST
+          test -n "$APP_HOST"
+          test -n "$REMOTE_DIR"
+
+      - name: Stahnout kod
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Pripravit overene SSH spojeni
+        env:
+          SSH_HOST_SECRET: ${{ secrets.SSH_HOST }}
+          SSH_PORT_SECRET: ${{ secrets.SSH_PORT }}
+          SSH_USER_SECRET: ${{ secrets.SSH_USER }}
+          SSH_KEY_SECRET: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS_SECRET: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for promenna in SSH_HOST_SECRET SSH_USER_SECRET SSH_KEY_SECRET SSH_KNOWN_HOSTS_SECRET; do
+            test -n "${!promenna}"
+          done
+          PORT="${SSH_PORT_SECRET:-22}"
+          [[ "$PORT" =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY_SECRET" | tr -d '\r' > ~/.ssh/id_ed25519
+          printf '%s\n' "$SSH_KNOWN_HOSTS_SECRET" | tr -d '\r' > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
+          if [ "$PORT" = 22 ]; then HLEDAT="$SSH_HOST_SECRET"; else HLEDAT="[$SSH_HOST_SECRET]:$PORT"; fi
+          ssh-keygen -F "$HLEDAT" -f ~/.ssh/known_hosts > /dev/null
+          echo "SSH_HOST=$SSH_HOST_SECRET" >> "$GITHUB_ENV"
+          echo "SSH_PORT=$PORT" >> "$GITHUB_ENV"
+          echo "SSH_USER=$SSH_USER_SECRET" >> "$GITHUB_ENV"
+
+      - name: Sestavit a pripadne provest presny uklid
+        env:
+          STORAGE_PHASE: ${{ inputs.phase }}
+          STORAGE_DIGEST: ${{ inputs.digest }}
+          STORAGE_CONFIRM: ${{ inputs.storage_confirm }}
+        run: bash .github/scripts/server-storage-workflow.sh
+
+      - name: Uchovat presny plan uklidu
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: server-storage-plan-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/storage-plan-${{ github.run_id }}/plan.json
+            ${{ runner.temp }}/storage-plan-${{ github.run_id }}/after.txt
+          if-no-files-found: warn
+          retention-days: 30

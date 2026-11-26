@@ -2,7 +2,7 @@
 
 ## Příprava chráněného úklidu 26. 11. 2026
 
-Vlastník po inventuře výslovně požádal odstranit historická vydání KIS i vlastní aplikační zálohy. Připravená implementace workflow `uklidit-storage` je zatím jen na větvi `codex/server-storage-cleanup-20261126`. Čtecí `preview` má v produkci sestavit přesný plán a otisk; `apply` vyžaduje doloženou obnovu hostingového snapshotu ve verzovaném `hosting-restore-proof.json`, shodu otisku, potvrzení a ochranu prostředí. Bez souboru s důkazem je `apply` blokováno. Čtyři syntetické testy plánovače **PASS**: přesná dávka ponechává aktuální vydání a malé podpůrné složky, změněná velikost release, neznámý záložní adresář nebo starý aktivní marker operaci zastaví. Produkční `preview`, ověření hostingové obnovy a jakékoli mazání **NOT RUN**.
+Vlastník po inventuře výslovně požádal odstranit historická vydání KIS i vlastní aplikační zálohy. Připravená implementace samostatného workflow `server-storage-cleanup.yml` je zatím jen na větvi `codex/server-storage-cleanup-20261126`. Čtecí `preview` má v produkci sestavit přesný plán a otisk; `apply` vyžaduje doloženou obnovu hostingového snapshotu ve verzovaném `hosting-restore-proof.json`, shodu otisku, potvrzení a ochranu prostředí. Bez souboru s důkazem je `apply` blokováno. Čtyři syntetické testy plánovače **PASS**: přesná dávka ponechává aktuální vydání a malé podpůrné složky, změněná velikost release, neznámý záložní adresář nebo starý aktivní marker operaci zastaví. Produkční `preview`, ověření hostingové obnovy a jakékoli mazání **NOT RUN**.
 
 ## Úplný manifest vydání 26. 11. 2026
 
