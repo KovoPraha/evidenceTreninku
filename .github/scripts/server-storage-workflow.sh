@@ -63,11 +63,11 @@ fi
 if [ "$STORAGE_PHASE" = restore_db ]; then
   # The mounted hosting generation is read-only. Import its KIS dump into an
   # isolated runner container, never into production or the runner host DB.
-  REMOTE_NAME="$DEPLOY_BASE/hosting-db-name-$GITHUB_RUN_ID.php"
-  production_retry "${SCP[@]}" .github/scripts/hosting-db-name.php "$SSH_USER@$SSH_HOST:$REMOTE_NAME"
-  DB_NAME=$(production_retry_capture "${SSH[@]}" "php '$REMOTE_NAME'; result=\$?; rm -f -- '$REMOTE_NAME'; exit \$result")
-  [[ "$DB_NAME" =~ ^kovoprahacz(0[1-9]|10)?$ ]]
-  echo "Active KIS database from production config: $DB_NAME"
+  # Hosting administration labels 10 as "new KIS" (45 MB); 09 is a 10 MB
+  # legacy database and restored only 122 tables / one trigger. Keep this
+  # explicit until a separate production config read is available.
+  DB_NAME=kovoprahacz10
+  echo "Hosting new KIS database snapshot: $DB_NAME"
   production_retry_capture "${SSH[@]}" "test -s 'backups/$DB_NAME.sql.gz'"
   RESTORE_TMP="$RUNNER_TEMP/hosting-db-$GITHUB_RUN_ID"
   CONTAINER="hosting-restore-$GITHUB_RUN_ID"
