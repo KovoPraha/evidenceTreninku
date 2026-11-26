@@ -1,5 +1,9 @@
 # SERVER-STORAGE-01 — výsledky
 
+## Produkční čtecí plán 26. 11. 2026
+
+[PR #534](https://github.com/KovoPraha/evidenceTreninku/pull/534) s odděleným chráněným workflow byl sloučen jako `b7dbcb2c` po všech zelených kontrolách. [Běh preview 45819148629](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45819148629) na stejném SHA **PASS** a neprovedl žádné mazání. [Přesný JSON plán](cleanup-plan-45819148629.json) obsahuje 279 starších release o součtu 14 484 304 KiB a 78 záložních položek o součtu 4 923 136 KiB. Celková možná úspora je 19 407 440 KiB / 18,51 GiB. Aktivní release `dabb1d7176b0d99590aadfa596d138990a237fac-45602767579` je mimo dávku; ponechány jsou také `data/.kis-backups/config`, `keys` a `private-storage`. Digest `37b589ae14a7a5a93f5e86f4707ddcc151ed00971754d06a8ba1c74b4f0d31f9` odpovídá nezávislému přepočtu kanonického JSON a součty odpovídají položkám. Toto je čtecí důkaz pro návrh, **nikoli skutečná úspora**. Hostingová WWW/DB obnova, `apply` a produkční smoke po smazání **NOT RUN**.
+
 ## Příprava chráněného úklidu 26. 11. 2026
 
 Vlastník po inventuře výslovně požádal odstranit historická vydání KIS i vlastní aplikační zálohy. Připravená implementace samostatného workflow `server-storage-cleanup.yml` je zatím jen na větvi `codex/server-storage-cleanup-20261126`. Čtecí `preview` má v produkci sestavit přesný plán a otisk; `apply` vyžaduje doloženou obnovu hostingového snapshotu ve verzovaném `hosting-restore-proof.json`, shodu otisku, potvrzení a ochranu prostředí. Bez souboru s důkazem je `apply` blokováno. Čtyři syntetické testy plánovače **PASS**: přesná dávka ponechává aktuální vydání a malé podpůrné složky, změněná velikost release, neznámý záložní adresář nebo starý aktivní marker operaci zastaví. Produkční `preview`, ověření hostingové obnovy a jakékoli mazání **NOT RUN**.
