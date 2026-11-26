@@ -12,7 +12,7 @@ base `origin/main` `cbc0da53`. [Registr](WORK_PLAN_CURRENT.md#kis-roster-calenda
 
 **Zjištění a rozsah.** `booking/treninky.php` čte jen veřejně označené plánované
 tréninky přes `publicTrainingSchedule()`. Jde o klubový rozvrh i při přihlášeném
-sportovci. Neurčitý název „Tréninky“ v hlavní navigaci vedl sportovce sem a
+sportovci. Obecný název „Tréninky“ v navigaci vedl sportovce sem a
 vytvářel dojem osobního kalendáře. Osobní měsíční kalendář v `muj_sport.php`
 volá `trainingRsvpUpcomingForChild()`, který po ověření identity na serveru
 kontroluje cílovou soupisku a členství v den tréninku. Rodinný přehled a
@@ -21,8 +21,8 @@ soukromý ICS používají obdobnou kontrolu; `soupiskove_treninky.php` ukazuje
 `club_roster_members` spolu s `training_roster_links` a hierarchií soupisek.
 
 **Rozhodnutí/postup.** Zachovat veřejný SELECT, zveřejnění a stávající
-serverovou kontrolu osobních dat. Výslovně označit klubový rozvrh a přidat
-přihlášenému sportovci přímý vstup do jeho kalendáře. Alternativa filtrovat
+serverovou kontrolu osobních dat. Na veřejné stránce výslovně označit klubový
+rozvrh a přidat přihlášenému sportovci přímý vstup do jeho kalendáře. Alternativa filtrovat
 veřejnou stránku podle session by změnila veřejný význam URL a skryla
 zveřejněné tréninky návštěvníkům. Nová tabulka, úprava členství a tréninků,
 docházky či RSVP nejsou potřeba. Akceptace: dvě současné soupisky, vyloučení
@@ -30,9 +30,12 @@ cizí, poslední platný den a den po odebrání, zrušené členství, nezměn�
 veřejný seznam a explicitní navigace. Přihlášené UAT a produkční vydání jsou
 samostatné kroky po PR review a CI.
 
-**Implementace a další krok.** Hlavní navigace nyní výslovně říká „Veřejné
-tréninky“ a přihlášenému sportovci nabízí „Moje tréninky“ do kalendáře v jeho
-ověřeném profilu. Dotčené SELECTy, RSVP, docházka a publikace beze změny.
+**Implementace a další krok.** Veřejná stránka nyní výslovně říká „Veřejný
+klubový rozvrh tréninků“ a přihlášenému sportovci nabízí odkaz „Moje tréninky
+ze soupisek“ do kalendáře v jeho ověřeném profilu. Dotčené SELECTy, RSVP,
+docházka a publikace beze změny. Původní pokus upravit společnou navigaci
+narazil v CI na historické výkonnostní parity s fixním obsahem `ui_shell.php`;
+společná navigace proto zůstává beze změny.
 Místní syntetické a regresní testy PASS; commit `882cce77` pushnut do PR #543.
 Další krok zelené CI, review a
 přihlášená přejímka podle protokolu. Merge/deploy NOT RUN.

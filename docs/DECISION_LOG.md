@@ -2,7 +2,7 @@
 
 ## D2026-11-26-04 — veřejný rozvrh ponechat pro všechny, sportovci zpřístupnit osobní vstup
 
-Na základě zadání vlastníka 26. 11. zůstává `booking/treninky.php` veřejným rozvrhem podle příznaku publikace i po přihlášení. V hlavní navigaci bude takto výslovně označen a sportovec získá samostatný přímý odkaz do již serverově filtrovaného kalendáře v „Můj sport“. Filtrovat veřejné URL podle session by změnilo význam stejné adresy; další evidence členství by zdvojila `club_roster_members`. [Rozsah](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-26-11-2026), [důkazy](verification/athlete-roster-calendar-20261126/RESULTS.md).
+Na základě zadání vlastníka 26. 11. zůstává `booking/treninky.php` veřejným rozvrhem podle příznaku publikace i po přihlášení. Přímo na stránce bude výslovně označen a sportovec získá odkaz do již serverově filtrovaného kalendáře v „Můj sport“. Původní úprava společné navigace vyvolala selhání starých paritních testů s pevně uloženým zdrojem; po diagnostice byla vrácena. Filtrovat veřejné URL podle session by změnilo význam stejné adresy; další evidence členství by zdvojila `club_roster_members`. [Rozsah](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-26-11-2026), [důkazy](verification/athlete-roster-calendar-20261126/RESULTS.md).
 
 ## D2026-11-26-03 — obnovu hostingu prověřit odděleně od produkce
 
