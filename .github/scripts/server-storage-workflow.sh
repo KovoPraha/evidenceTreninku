@@ -63,7 +63,9 @@ fi
 if [ "$STORAGE_PHASE" = restore_db ]; then
   # The mounted hosting generation is read-only. Import its KIS dump into an
   # isolated runner container, never into production or the runner host DB.
-  DB_NAME=$(production_retry_capture "${SSH[@]}" "php -r 'require \"$REMOTE_DIR/config.php\"; echo DB_NAME;'")
+  REMOTE_NAME="$DEPLOY_BASE/hosting-db-name-$GITHUB_RUN_ID.php"
+  production_retry "${SCP[@]}" .github/scripts/hosting-db-name.php "$SSH_USER@$SSH_HOST:$REMOTE_NAME"
+  DB_NAME=$(production_retry_capture "${SSH[@]}" "php '$REMOTE_NAME'; result=\$?; rm -f -- '$REMOTE_NAME'; exit \$result")
   [[ "$DB_NAME" =~ ^kovoprahacz(0[1-9]|10)?$ ]]
   echo "Active KIS database from production config: $DB_NAME"
   production_retry_capture "${SSH[@]}" "test -s 'backups/$DB_NAME.sql.gz'"
