@@ -1,5 +1,9 @@
 # SERVER-STORAGE-01 — výsledky
 
+## Druhý izolovaný import DB 26. 11. — FAIL na nekompatibilitě enginu
+
+[PR #539](https://github.com/KovoPraha/evidenceTreninku/pull/539) sloučen jako `726ce630`; [běh 45845940744](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45845940744) **FAIL** na `ERROR 1901` při `CREATE TABLE projects_notes`: MariaDB 11.4 odmítla historickou uloženou generovanou hodnotu založenou na cizím klíči s `ON DELETE SET NULL`. [Dokumentace MariaDB](https://mariadb.com/docs/release-notes/enterprise-server/old-releases/10.4/10.4.31-21) popisuje omezení novějších řad. Nejde o selhání čtení gzip ani o zápis do produkce. Větev `codex/hosting-restore-mariadb-compat-20261126` připravuje opakování v izolované MariaDB 10.3, kterou projekt používá v kompatibilitním CI; chybové SQL se nebude tisknout do logů. Úplná obnova **FAIL / čeká na opakování**, mazání **NOT RUN**.
+
 ## První izolovaný import DB 26. 11. — FAIL, oprava prostředí
 
 [PR #538](https://github.com/KovoPraha/evidenceTreninku/pull/538) sloučen jako `851615a8` po zelených CI. [Běh 45843451119](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45843451119) **FAIL** při importu hostingového `kovoprahacz09.sql.gz` do dočasného kontejneru: na řádku 23 dump přepnul na `kovoprahacz09`, která v kontejneru zatím neexistovala (`ERROR 1049`). Přenos souboru a `gzip -t` prošly; produkční DB nebyla cílem importu a nedošlo k žádnému mazání. Větev `codex/hosting-backup-restore-schema-20261126` připravuje vytvoření stejnojmenného schématu výhradně v izolovaném kontejneru a opakování zkoušky. Obnovitelnost **NOT RUN / FAIL**, `apply` nadále blokováno.
