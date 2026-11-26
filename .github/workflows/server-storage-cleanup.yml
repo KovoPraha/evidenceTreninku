@@ -7,7 +7,7 @@ on:
         description: 'Nejprve cteci preview; apply maze pouze presne potvrzeny plan'
         required: true
         type: choice
-        options: [preview, apply]
+        options: [preview, apply, inspect_www]
       potvrzeni:
         description: 'Pro spusteni napiste presne PROVEST'
         required: true
@@ -85,7 +85,7 @@ jobs:
         run: bash .github/scripts/server-storage-workflow.sh
 
       - name: Uchovat presny plan uklidu
-        if: always()
+        if: always() && inputs.phase != 'inspect_www'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: server-storage-plan-${{ github.run_id }}

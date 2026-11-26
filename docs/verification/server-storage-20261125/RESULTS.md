@@ -1,5 +1,9 @@
 # SERVER-STORAGE-01 — výsledky
 
+## Připojení WWW generace 26. 11. 2026
+
+Přihlášená správa domény `kovopraha.cz` vypsala nejnovější WWW generaci **26. 11. 02:59:07**. Po volbě `Připojit zálohu` panel potvrdil, že je od **26. 11. 14:26:12** připojená do čtecího adresáře `backups/` na serveru a bude automaticky odpojena po hodině. Obsah souborů, úplnost soukromých příloh a obnova dat **NOT RUN**; následuje chráněná SSH kontrola připojené generace. DB generace dosud nepřipojena.
+
 ## Produkční čtecí plán 26. 11. 2026
 
 [PR #534](https://github.com/KovoPraha/evidenceTreninku/pull/534) s odděleným chráněným workflow byl sloučen jako `b7dbcb2c` po všech zelených kontrolách. [Běh preview 45819148629](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45819148629) na stejném SHA **PASS** a neprovedl žádné mazání. [Přesný JSON plán](cleanup-plan-45819148629.json) obsahuje 279 starších release o součtu 14 484 304 KiB a 78 záložních položek o součtu 4 923 136 KiB. Celková možná úspora je 19 407 440 KiB / 18,51 GiB. Aktivní release `dabb1d7176b0d99590aadfa596d138990a237fac-45602767579` je mimo dávku; ponechány jsou také `data/.kis-backups/config`, `keys` a `private-storage`. Digest `37b589ae14a7a5a93f5e86f4707ddcc151ed00971754d06a8ba1c74b4f0d31f9` odpovídá nezávislému přepočtu kanonického JSON a součty odpovídají položkám. Toto je čtecí důkaz pro návrh, **nikoli skutečná úspora**. Hostingová WWW/DB obnova, `apply` a produkční smoke po smazání **NOT RUN**.
