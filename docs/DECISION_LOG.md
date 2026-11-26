@@ -1,5 +1,9 @@
 # Rozhodovací log a rejstřík uzavřených plánů
 
+## D2026-11-26-02 — vlastník požaduje odstranit historická vydání i vlastní zálohy
+
+Vlastník po úplné inventuře 26. 11. výslovně požádal uklidit a smazat historická vydání KIS i aplikační zálohy. Návrh se tedy posouvá od ponechání deseti vydání k ponechání pouze aktuálního aktivovaného vydání. Vlastní zálohy aplikace jsou v rozsahu, ale podmínkou jejich odstranění zůstává prokázaná úplnost a obnova hostingové generace webu, soukromých příloh a DB. Pouhé vypsání jedenácti generací tuto podmínku nesplňuje. Chráněný postup před zásahem znovu ověří produkční cesty a objemy; tajemství, živý web a kanonická data nejsou cílem. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md#pokyn-vlastníka-k-úklidu-26-11-2026), [protokol](verification/server-storage-20261125/RESULTS.md).
+
 ## D2026-11-26-01 — koncept ponechat deset vydání
 
 Úplná čtecí inventura 26. 11. prokázala 280 release adresářů o součtu 13,87 GiB. Deset nejnovějších odpovídá posledním deseti úspěšným produkčním deployům a zabírá 568 MiB; zbylých 270 historických kopií zabírá 13,31 GiB. Návrh úklidu se proto omezí na tyto přesné cesty v [manifestu](verification/server-storage-20261125/release-manifest-20261126.json). Jde o **KONCEPT**, nikoli schválení mazání. Varianta odstranit všechny release by zrušila místní návratové kopie; varianta odstranit vlastní KIS zálohy 4,70 GiB čeká na ověření hostingové obnovy. Před zásahem znovu zkontrolovat skutečný produkční stav, obsah a obnovu záloh, pak požádat vlastníka o konkrétní schválení dávky. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [protokol](verification/server-storage-20261125/RESULTS.md).

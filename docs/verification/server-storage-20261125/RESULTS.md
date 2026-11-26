@@ -1,5 +1,9 @@
 # SERVER-STORAGE-01 — výsledky
 
+## Příprava chráněného úklidu 26. 11. 2026
+
+Vlastník po inventuře výslovně požádal odstranit historická vydání KIS i vlastní aplikační zálohy. Připravená implementace workflow `uklidit-storage` je zatím jen na větvi `codex/server-storage-cleanup-20261126`. Čtecí `preview` má v produkci sestavit přesný plán a otisk; `apply` vyžaduje doloženou obnovu hostingového snapshotu ve verzovaném `hosting-restore-proof.json`, shodu otisku, potvrzení a ochranu prostředí. Bez souboru s důkazem je `apply` blokováno. Čtyři syntetické testy plánovače **PASS**: přesná dávka ponechává aktuální vydání a malé podpůrné složky, změněná velikost release, neznámý záložní adresář nebo starý aktivní marker operaci zastaví. Produkční `preview`, ověření hostingové obnovy a jakékoli mazání **NOT RUN**.
+
 ## Úplný manifest vydání 26. 11. 2026
 
 [PR #532](https://github.com/KovoPraha/evidenceTreninku/pull/532) byl sloučen jako `eac47e90`. Rozšířený chráněný [čtecí běh 45807461553](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45807461553) **PASS**: vypisuje všech 280 adresářů `data/.kis-deploy/releases/`, všechny děti `data/.kis-backups/` a hlavní adresáře subdomén. Součet release je 14 542 752 KiB (13,87 GiB); dalších 36 KiB představuje režii nadřazeného adresáře. Součet účtu v tomto běhu je 23 552 116 KiB. Rozdíl oproti běhu 25. 11. je 32 KiB; pro kvótu nadále platí administrace hostingu ze dne 25. 11.
