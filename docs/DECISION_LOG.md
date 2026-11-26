@@ -1,5 +1,9 @@
 # Rozhodovací log a rejstřík uzavřených plánů
 
+## D2026-11-26-03 — obnovu hostingu prověřit odděleně od produkce
+
+Po ověření shodných počtů a velikostí WWW generace a dostupnosti `kovoprahacz09.sql.gz` se skutečná obnovitelnost prověří v dočasném runneru a izolovaném kontejneru MariaDB. Produkční DB ani živé soukromé soubory nejsou cílem této zkoušky. Důvod: seznam snapshotů ani přítomnost souboru neprokazují úspěšný import a čitelnost. Akceptace: SQL gzip integrita, dokončený import, nejméně 390 tabulek a dva triggery; všech 57 soukromých souborů přenesených se shodným součtem bajtů. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md#připojená-hostingová-www-záloha-26-11), [protokol](verification/server-storage-20261125/RESULTS.md).
+
 ## D2026-11-26-02 — vlastník požaduje odstranit historická vydání i vlastní zálohy
 
 Vlastník po úplné inventuře 26. 11. výslovně požádal uklidit a smazat historická vydání KIS i aplikační zálohy. Návrh se tedy posouvá od ponechání deseti vydání k ponechání pouze aktuálního aktivovaného vydání. Vlastní zálohy aplikace jsou v rozsahu, ale podmínkou jejich odstranění zůstává prokázaná úplnost a obnova hostingové generace webu, soukromých příloh a DB. Pouhé vypsání jedenácti generací tuto podmínku nesplňuje. Chráněný postup před zásahem znovu ověří produkční cesty a objemy; tajemství, živý web a kanonická data nejsou cílem. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md#pokyn-vlastníka-k-úklidu-26-11-2026), [protokol](verification/server-storage-20261125/RESULTS.md).
