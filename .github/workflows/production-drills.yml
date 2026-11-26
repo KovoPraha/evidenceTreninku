@@ -473,18 +473,29 @@ jobs:
             if command -v du >/dev/null; then du -sk -- . || true; fi
             echo '=== account top-level KiB ==='
             if command -v du >/dev/null; then du -sk -- * .[!.]* ..?* 2>/dev/null | sort -nr | head -50; fi
+            echo '=== main website children KiB ==='
+            if test -d kovopraha.cz && command -v du >/dev/null; then du -sk -- kovopraha.cz/* kovopraha.cz/.[!.]* 2>/dev/null | sort -nr | head -30; fi
+            echo '=== data subdomain children KiB ==='
+            if test -d data.kovopraha.cz && command -v du >/dev/null; then du -sk -- data.kovopraha.cz/* data.kovopraha.cz/.[!.]* 2>/dev/null | sort -nr | head -30; fi
+            echo '=== live KIS children KiB ==='
+            if test -d '$REMOTE_DIR' && command -v du >/dev/null; then du -sk -- '$REMOTE_DIR'/* '$REMOTE_DIR'/.[!.]* 2>/dev/null | sort -nr | head -30; fi
+            echo '=== team and bar children KiB ==='
+            if test -d team.kovopraha.cz && command -v du >/dev/null; then du -sk -- team.kovopraha.cz/* team.kovopraha.cz/.[!.]* 2>/dev/null | sort -nr | head -15; fi
+            if test -d bar.kovopraha.cz && command -v du >/dev/null; then du -sk -- bar.kovopraha.cz/* bar.kovopraha.cz/.[!.]* 2>/dev/null | sort -nr | head -15; fi
             echo '=== data children KiB ==='
             if test -d data && command -v du >/dev/null; then du -sk -- data/* data/.[!.]* 2>/dev/null | sort -nr | head -30; fi
             echo '=== KIS backup children KiB ==='
-            if test -d '$BACKUP_DIR' && command -v du >/dev/null; then du -sk -- '$BACKUP_DIR'/* 2>/dev/null | sort -nr | head -30; fi
+            if test -d '$BACKUP_DIR' && command -v du >/dev/null; then du -sk -- '$BACKUP_DIR'/* 2>/dev/null | sort -nr; fi
             if test -d '$BACKUP_DIR/files' && command -v du >/dev/null; then
               echo '=== largest KIS file backups KiB ==='
               du -sk -- '$BACKUP_DIR/files'/* 2>/dev/null | sort -nr | head -20
             fi
             echo '=== KIS release count ==='
             if test -d '$DEPLOY_BASE/releases'; then find '$DEPLOY_BASE/releases' -mindepth 1 -maxdepth 1 -type d | wc -l; fi
-            echo '=== largest KIS releases KiB ==='
-            if test -d '$DEPLOY_BASE/releases' && command -v du >/dev/null; then du -sk -- '$DEPLOY_BASE/releases'/* 2>/dev/null | sort -nr | head -20; fi
+            echo '=== deploy children KiB ==='
+            if test -d '$DEPLOY_BASE' && command -v du >/dev/null; then du -sk -- '$DEPLOY_BASE'/* 2>/dev/null | sort -nr; fi
+            echo '=== all KIS releases KiB ==='
+            if test -d '$DEPLOY_BASE/releases' && command -v du >/dev/null; then du -sk -- '$DEPLOY_BASE/releases'/* 2>/dev/null | sort -nr; fi
           "
 
       - name: Overit pracovni pristupy bez zmen existujicich roli

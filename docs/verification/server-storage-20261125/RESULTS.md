@@ -14,7 +14,26 @@ Přihlášená [správa hostingu kovopraha.cz](https://muj.cesky-hosting.cz/inde
 
 V [administraci hostingových záloh](https://muj.cesky-hosting.cz/index.php?page=domeny-zalohy&id_domain=70155) jsou pro tuto doménu skutečně dostupné seznamy 11 WWW generací (31. 10.–24. 11. 2026, nejnovější 24. 11. 23:31) a 11 MariaDB generací (28. 10.–24. 11. 2026, nejnovější 24. 11. 22:14). Připojení generace a izolované ověření souborů, soukromých příloh i DB **NOT RUN**; samotný seznam nedokazuje úplnost ani obnovitelnost.
 
-[PR #530](https://github.com/KovoPraha/evidenceTreninku/pull/530) byl po zelených povinných kontrolách sloučen jako `6ab46ab9`. První čtecí [běh 45655069369](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45655069369) z `main` **FAIL**: SSH krok skončil návratovým kódem 1 ještě před prvním vzdáleným výpisem; nic nesmazal, žádnou velikost nevrátil. Příčina neprokázaná. Následuje samostatný diagnostický PR s výpisem dostupnosti cest a příkazů před měřením a tolerancí chyb u volitelných sekcí. Místní přístup bez příslušného produkčního klíče byl odmítnut; není zdrojem měření.
+[PR #530](https://github.com/KovoPraha/evidenceTreninku/pull/530) byl po zelených povinných kontrolách sloučen jako `6ab46ab9`. První čtecí [běh 45655069369](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45655069369) z `main` **FAIL**: SSH krok skončil návratovým kódem 1 ještě před prvním vzdáleným výpisem; nic nesmazal, žádnou velikost nevrátil. Následující diagnostika prokázala chybějící `df` v chrootu. Místní přístup bez příslušného produkčního klíče byl odmítnut; není zdrojem měření.
+
+## Úplný čtecí rozpis dostupného účtu
+
+Oprava v [PR #531](https://github.com/KovoPraha/evidenceTreninku/pull/531) byla sloučena jako `a9bd46a1`; druhý chráněný [drill 45658314928](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45658314928) **PASS**. Potvrdil pracovní kořen SSH `/`, přítomnost KIS webu, release i záloh a nepřítomnost nástroje `df` v chrootu; právě povinná kontrola `df` zastavila první běh. `du` je dostupné. Součet čtecího `du -sk .` je **23 552 148 KiB = 22,46 GiB**; administrace kvóty hlásí 22 773 MB. Rozdíl cca 227 MiB může zahrnovat chrootové systémové adresáře a odlišnou metodu účtování; pro limit platí administrace hostingu.
+
+| Položka v dostupném účtu | KiB | Přibližně GiB | Podíl součtu účtu |
+| --- | ---: | ---: | ---: |
+| `data/` celkem | 19 625 408 | 18,72 | 83,3 % |
+| `data/.kis-deploy/` | **14 562 028** | **13,89** | **61,8 %** |
+| `data/.kis-backups/` | **4 923 288** | **4,70** | **20,9 %** |
+| z toho `data/.kis-backups/files/` (5 úplných ZIPů) | 3 312 640 | 3,16 | 14,1 % |
+| hlavní `kovopraha.cz/` | 1 851 496 | 1,77 | 7,9 % |
+| `data.kovopraha.cz/` | 794 032 | 0,76 | 3,4 % |
+| živý web `kis.kovopraha.cz/` | 657 532 | 0,63 | 2,8 % |
+| `team.kovopraha.cz/` | 158 992 | 0,15 | 0,7 % |
+| `bar.kovopraha.cz/` | 142 824 | 0,14 | 0,6 % |
+| `data/kis-private/` | 105 940 | 0,10 | 0,4 % |
+
+Číslo pro `data/.kis-backups/files/` je podmnožina záloh, nesčítat jej znovu. Ostatní subdomény jsou každá pod 44 000 KiB; obě skryté KIS složky dohromady představují 82,7 % součtu dostupného účtu. Drill našel **280 release adresářů** (proti historickým 184 dne 30. 10.). Největší jednotlivé mají 58–77 MiB. Ještě chybí součet samotného `releases/`, seznam posledních release kopií a explicitní ponechané verze; celých 13,89 GiB `.kis-deploy` proto nelze bez dalšího označit k smazání.
 
 ## Čtecí průběh 25. 11. 2026
 
@@ -29,4 +48,4 @@ V [administraci hostingových záloh](https://muj.cesky-hosting.cz/index.php?pag
 
 Český hosting uvádí [noční zálohování souborů, databází a e-mailů](https://www.cesky-hosting.cz/napoveda/zalohovani-a-obnoveni-dat/), 7 denních a nejméně 3 týdenní generace. Výjimky: adresáře `cache`, `sessions`, `temp` a soubory větší než 1 GB. Zálohu lze připojit v klientské sekci pro obnovu. [Kvóty WWW, e-mailů a DB jsou oddělené](https://www.cesky-hosting.cz/napoveda/objednavky-a-zrizeni-sluzeb/doplnkove-sluzby/); přihlášená administrace nyní potvrdila, že nad limitem je WWW. Dostupnost generací je ověřena výpisem, jejich obsah a obnova **NOT RUN**.
 
-**Předběžní kandidáti:** staré release kopie po ověření aktivní a rollback verze; úplné ZIP archivy i DB zálohy podle přesného seznamu a ověřené hostingové obnovy; prokazatelně dočasné skripty. Soukromé přílohy, produkční DB a novější release nejsou kandidáti bez samostatného důkazu. Dnešní kvóta je změřená v administraci; rozpis WWW adresářů, uvolněné místo a produkční funkční kontrola **NOT RUN**.
+**Předběžní kandidáti:** staré release kopie po potvrzení ponechaných rollback verzí; úplné ZIP archivy i DB zálohy podle přesného seznamu a ověřené hostingové obnovy; prokazatelně dočasné skripty. Soukromé přílohy, produkční DB a novější release nejsou kandidáti bez samostatného důkazu. Dnešní kvóta i hlavní WWW adresáře jsou změřené; úplný manifest release, uvolněné místo a produkční funkční kontrola **NOT RUN**.
