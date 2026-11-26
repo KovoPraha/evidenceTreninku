@@ -38,7 +38,9 @@ narazil v CI na historické výkonnostní parity s fixním obsahem `ui_shell.php
 společná navigace proto zůstává beze změny.
 Místní syntetické a regresní testy PASS; commit `882cce77` pushnut do PR #543.
 Finální kódové CI po převzetí `main` jako `a600db94` PASS.
-Další krok review a přihlášená přejímka podle protokolu. Merge/deploy NOT RUN.
+Vlastník 26. 11. výslovně požádal sloučit a nasadit. Další krok dokončit
+merge po kontrolách, spustit chráněný deploy s UAT/import přepínači vypnutými,
+ověřit vydaný SHA a živý veřejný pohled. Přihlášená přejímka zůstává samostatná.
 
 
 ## TRAINING-PLAN-ACL-01 — plánování správcem a kolize (21. 11. 2026)
