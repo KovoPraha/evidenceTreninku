@@ -90,6 +90,7 @@ if [ "$STORAGE_PHASE" = restore_db ]; then
   fi
   TABLES=$(docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA IN ('kis_restore','kovoprahacz09') AND TABLE_TYPE='BASE TABLE'")
   TRIGGERS=$(docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA IN ('kis_restore','kovoprahacz09')")
+  echo "Hosting snapshot import completed: $TABLES tables, $TRIGGERS triggers; checking minimums."
   test "$TABLES" -ge 390
   test "$TRIGGERS" -ge 2
   echo "Hosting KIS database snapshot isolated restore PASS: $TABLES tables, $TRIGGERS triggers"
