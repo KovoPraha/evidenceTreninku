@@ -1,12 +1,16 @@
 # Rozhodovací log a rejstřík uzavřených plánů
 
-## D2026-11-26-05 — veřejný rozvrh ponechat pro všechny, sportovci zpřístupnit osobní vstup
+## D2026-11-26-20 — veřejný rozvrh ponechat pro všechny, sportovci zpřístupnit osobní vstup
 
 Na základě zadání vlastníka 26. 11. zůstává `booking/treninky.php` veřejným rozvrhem podle příznaku publikace i po přihlášení. Přímo na stránce je výslovně označen a sportovec získá odkaz do již serverově filtrovaného kalendáře v „Můj sport“. Původní úprava společné navigace vyvolala selhání starých paritních testů s pevně uloženým zdrojem; po diagnostice byla vrácena. Filtrovat veřejné URL podle session by změnilo význam stejné adresy; další evidence členství by zdvojila `club_roster_members`. [Rozsah](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-26-11-2026), [důkazy](verification/athlete-roster-calendar-20261126/RESULTS.md).
 
 ## D2026-11-26-04 — Při ověření hostingové DB vycházet z živé konfigurace KIS
 
 Import historicky dokumentovaného `kovoprahacz09.sql.gz` dokončil jen 122 tabulek a 1 trigger, zatímco nedávná produkční záloha KIS uvádí 400 tabulek a 2 triggery. Nelze proto považovat přítomnost souboru `09` za důkaz obnovitelnosti dnešní aplikace. Ověřovací workflow smí z produkčního `config.php` vypsat pouze název DB (nikoli přihlašovací údaje), porovnat jej s omezeným seznamem hostingových exportů a v odděleném kontejneru obnovit odpovídající generaci. Pokud název či obnova nesedí, vlastní zálohy se nemažou. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [výsledky](verification/server-storage-20261125/RESULTS.md).
+
+## D2026-11-26-05 — Obnovovací zkoušku zaměřit na DB 10 podle správy hostingu
+
+Přihlášená správa hostingu jednoznačně označuje `kovoprahacz10` jako „new KIS“ (45 MB), zatímco `kovoprahacz09` má 10 MB a izolovaně jen 122 tabulek/1 trigger. Pokusy číst DB jméno přes omezený hostingový PHP shell se zastavily před importem. Pro tuto zkoušku se proto použije explicitní hostingový export DB 10; jeho počet tabulek/triggerů a úplný import musí stále projít původní branou. Pomocný čtecí skript se odstraní. Pokud export DB 10 neprojde, vlastní archivy se nemažou. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [výsledek](verification/server-storage-20261125/RESULTS.md).
 
 ## D2026-11-26-03 — obnovu hostingu prověřit odděleně od produkce
 
