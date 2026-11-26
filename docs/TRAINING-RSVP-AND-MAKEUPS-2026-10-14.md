@@ -2,7 +2,8 @@
 
 ## KIS-ROSTER-CALENDAR-01 — veřejný a osobní kalendář (26. 11. 2026)
 
-**Stav:** K OVĚŘENÍ (místní testy PASS, PR/CI/UAT otevřené); vlastník vývoj KIS,
+**Stav:** K OVĚŘENÍ v [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543)
+(místní testy PASS, CI/review/UAT otevřené); vlastník vývoj KIS,
 zadání vlastníka 26. 11. 2026.
 Větev `codex/athlete-roster-calendar-20261126`, izolovaný worktree
 `C:\Users\Marek\Documents\Codex\evidencePavel-athlete-roster-calendar-20261126`,
@@ -32,7 +33,8 @@ samostatné kroky po PR review a CI.
 **Implementace a další krok.** Hlavní navigace nyní výslovně říká „Veřejné
 tréninky“ a přihlášenému sportovci nabízí „Moje tréninky“ do kalendáře v jeho
 ověřeném profilu. Dotčené SELECTy, RSVP, docházka a publikace beze změny.
-Místní syntetické a regresní testy PASS; další krok PR, zelené CI, review a
+Místní syntetické a regresní testy PASS; commit `882cce77` pushnut do PR #543.
+Další krok zelené CI, review a
 přihlášená přejímka podle protokolu. Merge/deploy NOT RUN.
 
 

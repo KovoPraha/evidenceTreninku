@@ -3,6 +3,7 @@
 Prostředí: Windows, PHP 8.2.12, PHPUnit 11.5.56; izolovaná SQLite fixture.
 Žádný produkční zápis, změna tréninku ani členství. Větev
 `codex/athlete-roster-calendar-20261126` z `origin/main` `cbc0da53`.
+Implementační commit `882cce77` je pushnutý do [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543).
 
 | Kontrola | Výsledek | Hranice |
 | --- | --- | --- |
@@ -11,7 +12,8 @@ Prostředí: Windows, PHP 8.2.12, PHPUnit 11.5.56; izolovaná SQLite fixture.
 | Stávající `TrainingRsvpTest`, `FamilyCalendarReadOptimizationTest`, `AthleteTimelineReadOptimizationTest` | PASS 19 testů / 143 tvrzení | Regrese osobního RSVP, rodičovského kalendáře a historické časové projekce. |
 | `php -l` dvou změněných PHP souborů | PASS | Syntaxe. |
 | `php tools/check-current-docs.php`, `composer validate --strict`, `php tools/check-php-style.php`, `git diff --check` | PASS | Místní kontrakt dokumentace, Composer a styl. |
-| PR review / CI / merge / deploy / přihlášené KIS UAT | NOT RUN | Samostatné kroky. |
+| PR review / CI | IN PROGRESS | [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543); výsledek po dokončení ověřit. |
+| Merge / deploy / přihlášené KIS UAT | NOT RUN | Samostatné kroky. |
 
 Přihlášená přejímka: sportovec se dvěma platnými soupiskami otevře „Moje
 tréninky“ a uvidí termíny obou; v osobním přehledu neuvidí cizí Techniku MTB.
