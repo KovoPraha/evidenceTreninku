@@ -4,7 +4,7 @@ set -euo pipefail
 test "$GITHUB_REF" = refs/heads/main
 test "$APP_HOST" = kis.kovopraha.cz
 test "$REMOTE_DIR" = kis.kovopraha.cz
-case "$STORAGE_PHASE" in preview|apply|inspect_www) ;; *) exit 2;; esac
+case "$STORAGE_PHASE" in preview|apply|inspect_www|verify_www|inspect_db) ;; *) exit 2;; esac
 
 TASK_TMP="$RUNNER_TEMP/storage-plan-$GITHUB_RUN_ID"
 install -d -m 700 "$TASK_TMP"
@@ -22,6 +22,41 @@ if [ "$STORAGE_PHASE" = inspect_www ]; then
     echo '=== deployment marker matches ==='
     find backups -maxdepth 6 -type f -name deployment.json | sort | head -30
   "
+  exit 0
+fi
+
+if [ "$STORAGE_PHASE" = verify_www ]; then
+  production_retry_capture "${SSH[@]}" '
+    set -eu
+    test -d backups/kis.kovopraha.cz
+    test -d backups/data/kis-private
+    test -s backups/kis.kovopraha.cz/var/deployment.json
+    for path in kis.kovopraha.cz data/kis-private kis.kovopraha.cz/uploads kis.kovopraha.cz/nahrane_obrazky; do
+      test -d "backups/$path"
+      test -d "$path"
+      echo "=== $path ==="
+      du -sk -- "$path" "backups/$path"
+      printf "live_files="; find "$path" -type f | wc -l
+      printf "snapshot_files="; find "backups/$path" -type f | wc -l
+      printf "snapshot_over_1GiB="; find "backups/$path" -type f -size +1G | wc -l
+    done
+    echo "WWW snapshot structure and nonempty deployment marker: PASS"
+  '
+  exit 0
+fi
+
+if [ "$STORAGE_PHASE" = inspect_db ]; then
+  production_retry_capture "${SSH[@]}" '
+    set -eu
+    test -d backups
+    echo "=== mounted database snapshot directories ==="
+    find backups -mindepth 1 -maxdepth 3 -type d | sort | head -80
+    echo "=== mounted database snapshot files ==="
+    find backups -mindepth 1 -maxdepth 4 -type f | sort | head -80
+    echo "=== total snapshot size KiB and file count ==="
+    du -sk -- backups
+    find backups -type f | wc -l
+  '
   exit 0
 fi
 
