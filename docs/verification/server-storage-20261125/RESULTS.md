@@ -1,5 +1,11 @@
 # SERVER-STORAGE-01 — výsledky
 
+## Databázová generace a příprava izolované obnovy 26. 11.
+
+Klientská sekce připojila nejnovější dostupnou databázovou generaci **25. 11. 22:33:00** dne 26. 11. v 15:34:41 do čtecího `backups/`. Chráněný [běh 45840458944](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45840458944) z `main` **PASS**: 11 souborů `.sql.gz`, dohromady 11 364 KiB; KIS podle produkční dokumentace odpovídá `kovoprahacz09.sql.gz`. Generace je připojená nejvýše hodinu. Větev `codex/hosting-backup-restore-20261126` připravuje izolovaný import této SQL zálohy do dočasného kontejneru MariaDB a samostatné stažení soukromých souborů z WWW generace do dočasného runneru. Izolovaná obnova **NOT RUN**; produkční DB a soubory se nemění. Úklid **NOT RUN**.
+
+Chráněný [běh WWW 45835629606](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45835629606) **PASS**: živý KIS `657 532 KiB / 4 592 souborů`, hostingový snapshot `657 528 KiB / 4 592`; `data/kis-private` v obou `105 940 KiB / 57`; `uploads` v obou `143 456 KiB / 386`; `nahrane_obrazky` v obou `405 172 KiB / 68`. V žádné z těchto zálohovaných složek nebyl soubor nad 1 GiB. [PR #537](https://github.com/KovoPraha/evidenceTreninku/pull/537) sloučen jako `9588e255`. Shodná velikost a počet nejsou úplným kryptografickým srovnáním; zkušební stažení a databázová obnova následují.
+
 ## Čtecí struktura hostingové WWW generace 26. 11.
 
 [PR #536](https://github.com/KovoPraha/evidenceTreninku/pull/536) po zelených kontrolách sloučen jako `3f93f696`. Chráněný [běh 45832051776](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45832051776) z `main` **PASS**: v připojené generaci z 26. 11. 02:59 jsou adresáře `backups/kis.kovopraha.cz/` a `backups/data/kis-private/`, včetně KIS `uploads/`, `nahrane_obrazky/` a markerů `var/deployment.json`. Šlo o čtení struktury; soubory a DB ještě nebyly obnoveny. Obsahová kontrola WWW a připojení DB generace **NOT RUN**. Chráněné fáze `verify_www` a `inspect_db` se připravují na větvi `codex/hosting-backup-content-20261126`.

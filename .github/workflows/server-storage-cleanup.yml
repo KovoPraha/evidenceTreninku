@@ -7,7 +7,7 @@ on:
         description: 'Nejprve cteci preview; apply maze pouze presne potvrzeny plan'
         required: true
         type: choice
-        options: [preview, apply, inspect_www, verify_www, inspect_db]
+        options: [preview, apply, inspect_www, verify_www, inspect_db, restore_db, restore_www]
       potvrzeni:
         description: 'Pro spusteni napiste presne PROVEST'
         required: true

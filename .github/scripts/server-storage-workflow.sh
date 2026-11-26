@@ -4,7 +4,7 @@ set -euo pipefail
 test "$GITHUB_REF" = refs/heads/main
 test "$APP_HOST" = kis.kovopraha.cz
 test "$REMOTE_DIR" = kis.kovopraha.cz
-case "$STORAGE_PHASE" in preview|apply|inspect_www|verify_www|inspect_db) ;; *) exit 2;; esac
+case "$STORAGE_PHASE" in preview|apply|inspect_www|verify_www|inspect_db|restore_db|restore_www) ;; *) exit 2;; esac
 
 TASK_TMP="$RUNNER_TEMP/storage-plan-$GITHUB_RUN_ID"
 install -d -m 700 "$TASK_TMP"
@@ -57,6 +57,57 @@ if [ "$STORAGE_PHASE" = inspect_db ]; then
     du -sk -- backups
     find backups -type f | wc -l
   '
+  exit 0
+fi
+
+if [ "$STORAGE_PHASE" = restore_db ]; then
+  # The mounted hosting generation is read-only. Import its KIS dump into an
+  # isolated runner container, never into production or the runner host DB.
+  production_retry_capture "${SSH[@]}" 'test -s backups/kovoprahacz09.sql.gz'
+  RESTORE_TMP="$RUNNER_TEMP/hosting-db-$GITHUB_RUN_ID"
+  CONTAINER="hosting-restore-$GITHUB_RUN_ID"
+  install -d -m 700 "$RESTORE_TMP"
+  trap 'docker rm -f "$CONTAINER" >/dev/null 2>&1 || :; rm -f -- "$RESTORE_TMP/kovoprahacz09.sql.gz"' EXIT
+  production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:backups/kovoprahacz09.sql.gz" "$RESTORE_TMP/kovoprahacz09.sql.gz"
+  gzip -t "$RESTORE_TMP/kovoprahacz09.sql.gz"
+  RESTORE_PASSWORD="$(openssl rand -hex 24)"
+  docker run -d --name "$CONTAINER" --network none -e MARIADB_ROOT_PASSWORD="$RESTORE_PASSWORD" mariadb:11.4 >/dev/null
+  READY=0
+  for i in $(seq 1 60); do
+    if docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse 'SELECT 1' >/dev/null 2>&1; then READY=1; break; fi
+    sleep 2
+  done
+  test "$READY" = 1
+  docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
+  gzip -dc "$RESTORE_TMP/kovoprahacz09.sql.gz" | docker exec -i "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" kis_restore
+  TABLES=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA IN ('kis_restore','kovoprahacz09') AND TABLE_TYPE='BASE TABLE'")
+  TRIGGERS=$(docker exec "$CONTAINER" mariadb -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA IN ('kis_restore','kovoprahacz09')")
+  test "$TABLES" -ge 390
+  test "$TRIGGERS" -ge 2
+  echo "Hosting KIS database snapshot isolated restore PASS: $TABLES tables, $TRIGGERS triggers"
+  exit 0
+fi
+
+if [ "$STORAGE_PHASE" = restore_www ]; then
+  # Restore all 57 private files to the ephemeral runner and check their
+  # aggregate size against the immutable mounted snapshot.
+  SOURCE_KIB=$(production_retry_capture "${SSH[@]}" 'test -d backups/data/kis-private; du -sk -- backups/data/kis-private' | awk '{print $1}')
+  SOURCE_FILES=$(production_retry_capture "${SSH[@]}" 'find backups/data/kis-private -type f | wc -l' | tr -d '[:space:]')
+  test "$SOURCE_KIB" -ge 100000
+  test "$SOURCE_FILES" -ge 57
+  RESTORE_TMP="$RUNNER_TEMP/hosting-www-$GITHUB_RUN_ID"
+  install -d -m 700 "$RESTORE_TMP"
+  trap 'rm -rf -- "$RESTORE_TMP/kis-private"' EXIT
+  production_retry "${SCP[@]}" -r "$SSH_USER@$SSH_HOST:backups/data/kis-private" "$RESTORE_TMP/kis-private"
+  RESTORED_KIB=$(du -sk -- "$RESTORE_TMP/kis-private" | awk '{print $1}')
+  RESTORED_FILES=$(find "$RESTORE_TMP/kis-private" -type f | wc -l)
+  test "$RESTORED_FILES" -eq "$SOURCE_FILES"
+  # Filesystem allocation may differ between the host and the runner. Check
+  # bytes for every file instead of comparing du block allocation.
+  SOURCE_BYTES=$(production_retry_capture "${SSH[@]}" 'find backups/data/kis-private -type f -exec wc -c -- {} + | tail -n 1' | awk '{print $1}')
+  RESTORED_BYTES=$(find "$RESTORE_TMP/kis-private" -type f -exec wc -c -- {} + | tail -n 1 | awk '{print $1}')
+  test "$RESTORED_BYTES" = "$SOURCE_BYTES"
+  echo "Hosting KIS private files isolated restore PASS: $RESTORED_FILES files, $RESTORED_BYTES bytes, $RESTORED_KIB runner KiB"
   exit 0
 fi
 
