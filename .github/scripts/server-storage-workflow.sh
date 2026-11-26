@@ -84,7 +84,7 @@ if [ "$STORAGE_PHASE" = restore_db ]; then
   # Hosting dump includes USE kovoprahacz09; create that schema only inside
   # the isolated container before importing it.
   docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -e 'CREATE DATABASE kis_restore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; CREATE DATABASE kovoprahacz09 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
-  if ! gzip -dc "$RESTORE_TMP/kovoprahacz09.sql.gz" | docker exec -i "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" kis_restore >"$RESTORE_TMP/import.out" 2>"$RESTORE_TMP/import.err"; then
+  if ! gzip -dc "$RESTORE_TMP/kovoprahacz09.sql.gz" | python3 .github/scripts/strip-mariadb-sandbox.py | docker exec -i "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" kis_restore >"$RESTORE_TMP/import.out" 2>"$RESTORE_TMP/import.err"; then
     grep -m 1 '^ERROR ' "$RESTORE_TMP/import.err" || echo 'Hosting snapshot import failed; details kept off logs.'
     exit 1
   fi
