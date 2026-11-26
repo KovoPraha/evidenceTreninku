@@ -4,6 +4,10 @@
 
 Import historicky dokumentovaného `kovoprahacz09.sql.gz` dokončil jen 122 tabulek a 1 trigger, zatímco nedávná produkční záloha KIS uvádí 400 tabulek a 2 triggery. Nelze proto považovat přítomnost souboru `09` za důkaz obnovitelnosti dnešní aplikace. Ověřovací workflow smí z produkčního `config.php` vypsat pouze název DB (nikoli přihlašovací údaje), porovnat jej s omezeným seznamem hostingových exportů a v odděleném kontejneru obnovit odpovídající generaci. Pokud název či obnova nesedí, vlastní zálohy se nemažou. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [výsledky](verification/server-storage-20261125/RESULTS.md).
 
+## D2026-11-26-05 — Obnovovací zkoušku zaměřit na DB 10 podle správy hostingu
+
+Přihlášená správa hostingu jednoznačně označuje `kovoprahacz10` jako „new KIS“ (45 MB), zatímco `kovoprahacz09` má 10 MB a izolovaně jen 122 tabulek/1 trigger. Pokusy číst DB jméno přes omezený hostingový PHP shell se zastavily před importem. Pro tuto zkoušku se proto použije explicitní hostingový export DB 10; jeho počet tabulek/triggerů a úplný import musí stále projít původní branou. Pomocný čtecí skript se odstraní. Pokud export DB 10 neprojde, vlastní archivy se nemažou. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md), [výsledek](verification/server-storage-20261125/RESULTS.md).
+
 ## D2026-11-26-03 — obnovu hostingu prověřit odděleně od produkce
 
 Po ověření shodných počtů a velikostí WWW generace a dostupnosti `kovoprahacz09.sql.gz` se skutečná obnovitelnost prověří v dočasném runneru a izolovaném kontejneru MariaDB. Produkční DB ani živé soukromé soubory nejsou cílem této zkoušky. Důvod: seznam snapshotů ani přítomnost souboru neprokazují úspěšný import a čitelnost. Akceptace: SQL gzip integrita, dokončený import, nejméně 390 tabulek a dva triggery; všech 57 soukromých souborů přenesených se shodným součtem bajtů. [Plán](SERVER_STORAGE_AUDIT_2026-11-25.md#připojená-hostingová-www-záloha-26-11), [protokol](verification/server-storage-20261125/RESULTS.md).
