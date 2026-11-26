@@ -1,5 +1,9 @@
 # SERVER-STORAGE-01 — výsledky
 
+## Třetí izolovaný import DB 26. 11. — FAIL na direktivě klienta
+
+[PR #540](https://github.com/KovoPraha/evidenceTreninku/pull/540) sloučen jako `242f7098`; [běh 45849009795](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45849009795) s MariaDB 10.3 **FAIL** na prvním řádku: `Unknown command '\-'`. Moderní `mariadb-dump` vkládá direktivu sandbox režimu, kterou starší klient neumí načíst; [výrobce to dokumentuje](https://mariadb.com/docs/server/clients-and-utilities/backup-restore-and-import-clients/mariadb-dump). Nejde o poškození gzip ani o změnu produkce. Po opětovném přihlášení byla tatáž DB generace z 25. 11. 22:33 znovu připojena 26. 11. v **17:37:40** na hodinu. Větev `codex/hosting-restore-sandbox-header-20261126` připravuje kontrolované odstranění pouze přesně očekávané první direktivy v dočasném importním streamu; neznámou hlavičku odmítne. Lokální syntetická zkouška: známá direktiva odstraněna, neznámá hlavička odmítnuta **PASS**. Úplný DB import a mazání stále **NOT RUN**.
+
 ## Druhý izolovaný import DB 26. 11. — FAIL na nekompatibilitě enginu
 
 [PR #539](https://github.com/KovoPraha/evidenceTreninku/pull/539) sloučen jako `726ce630`; [běh 45845940744](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45845940744) **FAIL** na `ERROR 1901` při `CREATE TABLE projects_notes`: MariaDB 11.4 odmítla historickou uloženou generovanou hodnotu založenou na cizím klíči s `ON DELETE SET NULL`. [Dokumentace MariaDB](https://mariadb.com/docs/release-notes/enterprise-server/old-releases/10.4/10.4.31-21) popisuje omezení novějších řad. Nejde o selhání čtení gzip ani o zápis do produkce. Větev `codex/hosting-restore-mariadb-compat-20261126` připravuje opakování v izolované MariaDB 10.3, kterou projekt používá v kompatibilitním CI; chybové SQL se nebude tisknout do logů. Úplná obnova **FAIL / čeká na opakování**, mazání **NOT RUN**.
