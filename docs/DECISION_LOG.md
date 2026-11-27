@@ -1,5 +1,7 @@
 # Rozhodovací log a rejstřík uzavřených plánů
 
+SERVER-STORAGE-01 dokončeno 27. 11. 2026: historická vydání a vlastní záložní položky odstraněny podle [rozhodnutí D2026-11-26-02](#d2026-11-26-02--vlastník-požaduje-odstranit-historická-vydání-i-vlastní-zálohy); hostingové zálohy zachovány. [Plán a uzavření](SERVER_STORAGE_AUDIT_2026-11-25.md#dokončený-úklid-27-11), [protokol](verification/server-storage-20261125/RESULTS.md), [událost E2026-11-27-05](EVENT_LOG.md).
+
 ## D2026-11-26-20 — veřejný rozvrh ponechat pro všechny, sportovci zpřístupnit osobní vstup
 
 Na základě zadání vlastníka 26. 11. zůstává `booking/treninky.php` veřejným rozvrhem podle příznaku publikace i po přihlášení. Přímo na stránce je výslovně označen a sportovec získá odkaz do již serverově filtrovaného kalendáře v „Můj sport“. Původní úprava společné navigace vyvolala selhání starých paritních testů s pevně uloženým zdrojem; po diagnostice byla vrácena. Filtrovat veřejné URL podle session by změnilo význam stejné adresy; další evidence členství by zdvojila `club_roster_members`. [Rozsah](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-26-11-2026), [důkazy](verification/athlete-roster-calendar-20261126/RESULTS.md).
