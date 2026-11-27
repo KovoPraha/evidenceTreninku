@@ -150,7 +150,7 @@ production_retry_capture "${SSH[@]}" "set -eu; test -d '$BACKUP_DIR/files'; find
 production_retry_capture "${SSH[@]}" "set -eu; test -s '$REMOTE_DIR/var/deployment.json'; cat '$REMOTE_DIR/var/deployment.json'" > "$TASK_TMP/deployment.json"
 
 python3 .github/scripts/server-storage-plan.py \
-  --manifest docs/verification/server-storage-20261125/release-manifest-20261126.json \
+  --manifest docs/verification/server-storage-20261125/release-manifest-20261127.json \
   --releases "$TASK_TMP/releases.tsv" \
   --backups "$TASK_TMP/backups.tsv" \
   --files "$TASK_TMP/files.tsv" \
