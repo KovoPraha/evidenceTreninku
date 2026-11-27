@@ -1,0 +1,20 @@
+{
+  "schema": "hosting-restore-proof-v1",
+  "verified_at": "2026-11-27T11:00:52Z",
+  "www_snapshot": true,
+  "db_snapshot": true,
+  "private_files": true,
+  "isolated_restore": true,
+  "www_generation": "2026-11-27 03:33:50 Europe/Prague",
+  "db_generation": "2026-11-26 22:32:50 Europe/Prague",
+  "www_check_run": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/45986690771",
+  "db_restore_run": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/45982894521",
+  "private_files_restore_run": "https://github.com/KovoPraha/evidenceTreninku/actions/runs/45985738647",
+  "www_files": 4592,
+  "db_tables": 433,
+  "db_triggers": 2,
+  "app_manifest_tables": 403,
+  "missing_app_tables": 0,
+  "private_file_count": 57,
+  "private_file_bytes": 108348568
+}
