@@ -2,9 +2,10 @@
 
 ## KIS-ROSTER-CALENDAR-01 — veřejný a osobní kalendář (26. 11. 2026)
 
-**Stav:** K OVĚŘENÍ v [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543)
-(místní testy a finální kódové CI PASS; review/UAT otevřené); vlastník vývoj KIS,
-zadání vlastníka 26. 11. 2026.
+**Stav:** NASAZENO, přihlášené sportovcovské UAT OTEVŘENÉ. [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543)
+sloučen 26. 11. jako [`c3a51d0c`](https://github.com/KovoPraha/evidenceTreninku/commit/c3a51d0cb5e1932aa535633b7429effa54f74f28),
+[produkční deploy 45879461608](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45879461608) SUCCESS;
+vlastník vývoj KIS, zadání a souhlas s merge/nasazením od vlastníka 26. 11. 2026.
 Větev `codex/athlete-roster-calendar-20261126`, izolovaný worktree
 `C:\Users\Marek\Documents\Codex\evidencePavel-athlete-roster-calendar-20261126`,
 base `origin/main` `cbc0da53`. [Registr](WORK_PLAN_CURRENT.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-tréninků-26-11-2026),
@@ -37,10 +38,15 @@ docházka a publikace beze změny. Původní pokus upravit společnou navigaci
 narazil v CI na historické výkonnostní parity s fixním obsahem `ui_shell.php`;
 společná navigace proto zůstává beze změny.
 Místní syntetické a regresní testy PASS; commit `882cce77` pushnut do PR #543.
-Finální kódové CI po převzetí `main` jako `a600db94` PASS.
-Vlastník 26. 11. výslovně požádal sloučit a nasadit. Další krok dokončit
-merge po kontrolách, spustit chráněný deploy s UAT/import přepínači vypnutými,
-ověřit vydaný SHA a živý veřejný pohled. Přihlášená přejímka zůstává samostatná.
+Povinné kontroly na aktuální větvi `1b3d86f7` PASS: PHPUnit, MariaDB 10.3/11.4,
+PHPStan, dokumentace a CodeQL. Deploy přesně sloučeného SHA `c3a51d0c`
+provedl zálohu, kontrolu migrací (`pending=[]`), aktivaci a HTTP smoke; nový
+veřejný nadpis i vysvětlení se 26. 11. v produkci vrátily s HTTP 200.
+Přepínače UAT a importu kroužků byly vypnuté. Produkční členství ani tréninky
+se pro tuto opravu neupravovaly. Další krok: v přihlášeném sportovcovském profilu
+ověřit dvě vlastní soupisky, cizí Techniku MTB, odebrání a platnost členství;
+veřejný rozvrh má nadále ukazovat všechny zveřejněné tréninky. Bez této lidské
+přejímky není osobní chování potvrzeno přímo v KIS.
 
 
 ## TRAINING-PLAN-ACL-01 — plánování správcem a kolize (21. 11. 2026)
