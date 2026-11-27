@@ -1,6 +1,6 @@
 # Rozhodovací log a rejstřík uzavřených plánů
 
-SERVER-STORAGE-01 dokončeno 27. 11. 2026: historická vydání a vlastní záložní položky odstraněny podle [rozhodnutí D2026-11-26-02](#d2026-11-26-02--vlastník-požaduje-odstranit-historická-vydání-i-vlastní-zálohy); hostingové zálohy zachovány. [Plán a uzavření](SERVER_STORAGE_AUDIT_2026-11-25.md#dokončený-úklid-27-11), [protokol](verification/server-storage-20261125/RESULTS.md), [událost E2026-11-27-05](EVENT_LOG.md).
+SERVER-STORAGE-01 dokončeno 27. 11. 2026: historická vydání a vlastní záložní položky odstraněny podle [rozhodnutí D2026-11-26-02](#d2026-11-26-02--vlastník-požaduje-odstranit-historická-vydání-i-vlastní-zálohy); hostingové zálohy zachovány. [Plán a uzavření](SERVER_STORAGE_AUDIT_2026-11-25.md#dokončený-úklid-27-11), [protokol](verification/server-storage-20261125/RESULTS.md), [událost E2026-11-27-05](EVENT_LOG.md), [výsledkový PR #553](https://github.com/KovoPraha/evidenceTreninku/pull/553) sloučen jako `5ab2f209`.
 
 ## D2026-11-26-20 — veřejný rozvrh ponechat pro všechny, sportovci zpřístupnit osobní vstup
 
