@@ -2,7 +2,7 @@
 
 ## KIS-ROSTER-CALENDAR-01 — veřejný a osobní kalendář tréninků (26. 11. 2026)
 
-K OVĚŘENÍ v [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543), větev `codex/athlete-roster-calendar-20261126` v izolovaném worktree z `origin/main` `cbc0da53`, převzatý `main` `9b2d2f97`; vlastník vývoj KIS. [Příčina, rozsah, rozhodnutí a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-26-11-2026), [protokol](verification/athlete-roster-calendar-20261126/RESULTS.md). Místní testy a CI `08c50c42` PASS. Vlastník 26. 11. požádal o merge a nasazení; další krok chráněný deploy a čtecí kontrola po merge, přihlášené UAT samostatné.
+NASAZENO / PŘIHLÁŠENÉ UAT OTEVŘENÉ. Vlastník vývoj KIS; [PR #543](https://github.com/KovoPraha/evidenceTreninku/pull/543) → `c3a51d0c`, [deploy 45879461608](https://github.com/KovoPraha/evidenceTreninku/actions/runs/45879461608) SUCCESS pro tentýž SHA, živý veřejný HTTP 200. Větev vydání `codex/athlete-roster-calendar-release-20261127` v izolovaném worktree; implementace `codex/athlete-roster-calendar-20261126`. [Příčina, rozsah, rozhodnutí a akceptace](TRAINING-RSVP-AND-MAKEUPS-2026-10-14.md#kis-roster-calendar-01--veřejný-a-osobní-kalendář-26-11-2026), [protokol](verification/athlete-roster-calendar-20261126/RESULTS.md). Další krok: přihlášené UAT dvou vlastních soupisek, cizího tréninku a platnosti členství; automatické testy jej nenahrazují.
 
 ## SERVER-STORAGE-01 — inventura kapacity hostingu (25. 11. 2026)
 
