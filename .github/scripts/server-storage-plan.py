@@ -51,8 +51,11 @@ def plan(args):
     if manifest.get("schema") != "server-storage-release-manifest-v1":
         raise ValueError("Unexpected release manifest schema")
     items = manifest["items"]
-    if len(items) != 280 or len({item["path"] for item in items}) != 280:
-        raise ValueError("Release manifest is not the complete 280-item inventory")
+    release_count = manifest.get("release_count")
+    if (not isinstance(release_count, int) or release_count < 280
+            or len(items) != release_count
+            or len({item["path"] for item in items}) != release_count):
+        raise ValueError("Release manifest count does not match its complete inventory")
     expected = {}
     for item in items:
         match = RELEASE_RE.fullmatch(item["path"])
@@ -102,7 +105,7 @@ def plan(args):
         "release_delete_kib": sum(item["kib"] for item in release_delete),
         "backup_delete_kib": sum(item["kib"] for item in backup_delete),
     }
-    if len(release_delete) != 279 or len(backup_delete) < 70:
+    if len(release_delete) != release_count - 1 or len(backup_delete) < 70:
         raise ValueError("Cleanup target count differs from the reviewed scope")
     result["digest"] = hashlib.sha256(canonical(result)).hexdigest()
     return result

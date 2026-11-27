@@ -94,3 +94,15 @@ jobs:
             ${{ runner.temp }}/storage-plan-${{ github.run_id }}/after.txt
           if-no-files-found: warn
           retention-days: 30
+
+      - name: Uchovat cteci inventuru pro kontrolu zmen
+        if: always() && inputs.phase == 'preview'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: server-storage-inventory-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/storage-plan-${{ github.run_id }}/releases.tsv
+            ${{ runner.temp }}/storage-plan-${{ github.run_id }}/backups.tsv
+            ${{ runner.temp }}/storage-plan-${{ github.run_id }}/files.tsv
+          if-no-files-found: warn
+          retention-days: 30

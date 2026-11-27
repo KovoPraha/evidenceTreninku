@@ -81,9 +81,13 @@ if [ "$STORAGE_PHASE" = restore_db ]; then
   # key with ON DELETE SET NULL, rejected by newer MariaDB releases. Restore
   # in the older isolated engine used by the project's compatibility CI.
   docker run -d --name "$CONTAINER" --network none -e MARIADB_ROOT_PASSWORD="$RESTORE_PASSWORD" mariadb:10.3 >/dev/null
+  # The MariaDB entrypoint briefly starts a temporary server while creating
+  # the data directory, then stops it and starts the final server. A plain
+  # SELECT 1 can succeed on that temporary server and race with the restart.
   READY=0
   for i in $(seq 1 60); do
-    if docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse 'SELECT 1' >/dev/null 2>&1; then READY=1; break; fi
+    # The temporary server uses --skip-networking; the final one does not.
+    if [ "$(docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse 'SELECT @@skip_networking' 2>/dev/null || :)" = 0 ]; then READY=1; break; fi
     sleep 2
   done
   test "$READY" = 1

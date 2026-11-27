@@ -29,7 +29,8 @@ class StoragePlanTest(unittest.TestCase):
                 }
             )
         self.write("manifest.json", json.dumps({
-            "schema": "server-storage-release-manifest-v1", "items": self.items
+            "schema": "server-storage-release-manifest-v1",
+            "release_count": len(self.items), "items": self.items
         }))
         self.write("releases.tsv", "".join(
             f"{item['kib']}\t{item['path']}\n" for item in self.items
@@ -93,6 +94,30 @@ class StoragePlanTest(unittest.TestCase):
         ))
         with self.assertRaisesRegex(ValueError, "differ"):
             MODULE.plan(self.args())
+
+    def test_new_deployment_requires_reviewed_manifest(self):
+        new_item = {
+            "path": "data/.kis-deploy/releases/" + "f" * 40 + "-2000",
+            "sha": "f" * 40,
+            "run_id": 2000,
+            "kib": 120,
+            "disposition": "keep",
+        }
+        self.write("releases.tsv", (self.root / "releases.tsv").read_text()
+                   + f"120\t{new_item['path']}\n")
+        self.write("deployment.json", json.dumps({
+            "sha": new_item["sha"], "run_id": new_item["run_id"]
+        }))
+        with self.assertRaisesRegex(ValueError, "differ"):
+            MODULE.plan(self.args())
+        self.items.append(new_item)
+        self.write("manifest.json", json.dumps({
+            "schema": "server-storage-release-manifest-v1",
+            "release_count": len(self.items), "items": self.items
+        }))
+        result = MODULE.plan(self.args())
+        self.assertEqual(result["active_release"], new_item["path"])
+        self.assertEqual(len(result["release_delete"]), 280)
 
     def test_unknown_backup_entry_aborts_before_delete(self):
         self.backups["data/.kis-backups/current-private-data"] = 200
