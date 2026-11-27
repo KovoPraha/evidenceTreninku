@@ -97,6 +97,19 @@ if [ "$STORAGE_PHASE" = restore_db ]; then
   TABLES=$(docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA IN ('kis_restore','$DB_NAME') AND TABLE_TYPE='BASE TABLE'")
   TRIGGERS=$(docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT COUNT(*) FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA IN ('kis_restore','$DB_NAME')")
   echo "Hosting snapshot import completed: $TABLES tables, $TRIGGERS triggers; checking minimums."
+  # Compare schema names only with the latest application backup manifest.
+  # The manifest is small and contains table names/counts, not row contents.
+  APP_MANIFEST=$(production_retry_capture "${SSH[@]}" "ls -1t '$BACKUP_DIR'/evidence_*.manifest.json | head -n 1")
+  [[ "$APP_MANIFEST" =~ ^data/\.kis-backups/evidence_[0-9A-Za-z_-]+\.manifest\.json$ ]]
+  production_retry "${SCP[@]}" "$SSH_USER@$SSH_HOST:$APP_MANIFEST" "$RESTORE_TMP/app-manifest.json"
+  jq -r '.tables | keys[]' "$RESTORE_TMP/app-manifest.json" | sort -u > "$RESTORE_TMP/expected-tables.txt"
+  docker exec "$CONTAINER" mysql -uroot -p"$RESTORE_PASSWORD" -Nse "SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA IN ('kis_restore','$DB_NAME') AND TABLE_TYPE='BASE TABLE' ORDER BY TABLE_NAME" | sort -u > "$RESTORE_TMP/restored-tables.txt"
+  comm -23 "$RESTORE_TMP/expected-tables.txt" "$RESTORE_TMP/restored-tables.txt" > "$RESTORE_TMP/missing-tables.txt"
+  echo "Application backup manifest tables: $(wc -l < "$RESTORE_TMP/expected-tables.txt"); missing from hosting snapshot: $(wc -l < "$RESTORE_TMP/missing-tables.txt")"
+  if [ -s "$RESTORE_TMP/missing-tables.txt" ]; then
+    echo 'Missing schema table names:'
+    head -40 "$RESTORE_TMP/missing-tables.txt"
+  fi
   test "$TABLES" -ge 390
   test "$TRIGGERS" -ge 2
   echo "Hosting KIS database snapshot isolated restore PASS: $TABLES tables, $TRIGGERS triggers"
